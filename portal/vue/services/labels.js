@@ -242,7 +242,7 @@ import { getLocale } from './lang';
 			for (let label of entry.labels) {
 				let row = byLabel[label];
 				if (!row) {
-					row = byLabel[label] = { label : label, checks : [], summary : "", count : 0 };
+					row = byLabel[label] = { label : label, checks : [], letters : "", summary : "", count : 0 };
 					output.push(row);
 				}				
 			}
@@ -251,8 +251,12 @@ import { getLocale } from './lang';
 			for (let row of output) {
 				if (entry.labels.indexOf(row.label)>=0) {
 					row.checks.push(true);
+					row.letters += entry.letter;
 					row.count++;					
-				 } else row.checks.push(false);
+				 } else {
+					 row.checks.push(false);
+					 row.letters += " ";
+				 }
 			}
 		}
 		for (let row of output) {

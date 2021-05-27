@@ -33,7 +33,7 @@
 		      <td v-t="'manageapp.type'"></td>
 			  <td><b>{{ $t('enum.plugintype.' + app.type) }}</b>
 			  <span v-if="app.type=='external'"> - 
-			  <a href="javascript:" ui-sref="^.servicekeys" v-t="'manageapp.manageyourkeys'"></a>
+			  <router-link :to="{ path : './servicekeys' }" v-t="'manageapp.manageyourkeys'"></router-link>
 			  </span>
 			  </td>
 		    </tr><tr>
@@ -46,15 +46,15 @@
             <tr>
               <td v-t="'manageapp.creator'"></td>
               <td>
-                <span v-if="hasSubRole('USERADMIN')"><a ui-sref="^.address({userId : app.creator })"><b>{{ app.creatorLogin }}</b></a></span>
+                <span v-if="hasSubRole('USERADMIN')"><router-link :to="{ path : './address', query :  {userId : app.creator }}"><b>{{ app.creatorLogin }}</b></router-link></span>
                 <span v-if="!hasSubRole('USERADMIN')"><b>{{ app.creatorLogin }}</b></span>
               </td>
             </tr>
             <tr v-if="app.developerTeamLogins.length">
               <td v-t="'manageapp.developerTeam'"></td>
               <td>
-                <div v-for="login in app.developerTeamLogins" :key="login">
-                <span v-if="hasSubRole('USERADMIN')"><a ui-sref="^.address({userId : app.developerTeam[$index] })"><b>{{ login }}</b></a></span>
+                <div v-for="(login,idx) in app.developerTeamLogins" :key="login">
+                <span v-if="hasSubRole('USERADMIN')"><router-link :to="{ path : './address', query :  {userId : app.developerTeam[idx] }}"><b>{{ login }}</b></router-link></span>
                 <span v-if="!hasSubRole('USERADMIN')"><b>{{ login }}</b></span>
                 </div>
               </td>

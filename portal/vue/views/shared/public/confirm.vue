@@ -69,15 +69,20 @@
 			    <section class="summary">
 					
 					<p><strong v-t="'oauth2.sharing_summary'"></strong></p>
-					<table class="table table-sm">
+					<div v-for="inp of input" :key="inp.letter">
+						<b>{{ inp.letter }}</b> : {{ inp.system }} ({{ inp.short}})
+					</div>
+					<table class="table table-sm mt-2">
 						<tr>
 							<th v-t="'oauth2.requests_access_short'"></th>
-							<th v-for="sh in short" :key="sh">{{ sh }}</th>
+							<th class="d-none d-sm-table-cell" v-for="sh in short" :key="sh">{{ sh }}</th>
 							<!-- <td></td> -->
 						</tr>
 						<tr v-for="line in summary" :key="line.label">
-							<td>{{ line.label }}</td>
-							<td v-for="(sh,idx) in short" :key="idx"><i class="fas fa-check" v-if="line.checks[idx]"></i></td>
+							<td>{{ line.label }}
+								<div class="d-inline-block d-sm-none float-right text-muted">{{ line.letters }}</div>
+							</td>
+							<td class="d-none d-sm-table-cell" v-for="(sh,idx) in short" :key="idx"><i class="fas fa-check" v-if="line.checks[idx]"></i></td>
 							<!-- <td>{{ line.summary }}</td> -->
 						</tr>
 					</table>
@@ -163,6 +168,7 @@ export default {
     pages : [],
 	summary : [],
 	short: [],
+	input : [],
 	termsLabel: "",
     inlineTerms : false,
     project : 0,
@@ -359,31 +365,37 @@ export default {
 	prepareQuerySummary() {
 		const { $data, $t } = this, me = this;
 		let short = [];
-		let letters = ["", " A"," B"," C"," D"," E"," F"," G"," H"," I"];
-		let idx = 0;
+		let letters = ["", "A","B","C","D","E","F","G","H","I"];
+		let idx = 1;
 		let projectIdx = 0;
 		let input = [];
 		let req = [];	
+		
 		$data.termsLabel = null;	
 		//if ($data.showApp) {
-			input.push({ system : me.appname(), labels:$data.labels });
-			short.push($t('oauth2.short_app'));
+			input.push({ system : me.appname(), letter : letters[idx], short : $t('oauth2.short_app'), labels:$data.labels });
+			short.push(letters[idx]);
 			req.push(me.appname());
+			idx++;
 		//}
-		if ($data.extra.length > 1) idx++;
+		
 		for (let link of $data.extra) {
-			input.push({ system : me.getLinkName(link), labels : link.labels });
+			
 			if (link.type.indexOf("REQUIRE_P")>=0 && link.type.indexOf("OFFER_P") <0) req.push(me.getLinkName(link));
+			let sname = "";
 			if (!link.linkTargetType || link.linkTargetType=="STUDY") {
-				short.push($t('oauth2.short_'+(link.study.type.toLowerCase()))+letters[idx]);
-				idx++;				
+				sname = $t('oauth2.short_'+(link.study.type.toLowerCase()));
+				
 			} else if (link.linkTargetType=="SERVICE") {
-				short.push($t('oauth2.short_service')+letters[idx]);
-				idx++
+				sname = $t('oauth2.short_service');
+				
 			} else if (link.linkTargetType=="ORGANIZATION") {
-				short.push($t('oauth2.short_party')+letters[idx]);
-				idx++;
+				sname = $t('oauth2.short_party');
+				
 			}
+			short.push(letters[idx]);
+			input.push({ system : me.getLinkName(link), letter : letters[idx], short : sname, labels : link.labels });
+			idx++;
 		}
 		if (req.length>1) {
 			let last = req.pop();
@@ -392,6 +404,7 @@ export default {
 		console.log(input);
 		$data.summary = labels.joinQueries(this.$t, input);
 		$data.short = short;
+		$data.input = input;
 	}
 		    
   },
@@ -416,7 +429,8 @@ export default {
 			var addToUrl = "";
 			if (project) addToUrl = "?project="+encodeURIComponent(project);
 			waitFor.push(me.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app-use", $data.app._id).url+addToUrl)
-			.then(function(data) {		    	
+			.then(function(data) {	
+				console.log(data.data);
 				let links = [];
 				var r = [];
 				
