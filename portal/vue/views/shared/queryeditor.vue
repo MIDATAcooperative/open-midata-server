@@ -355,7 +355,7 @@ export default {
 	
 		isFiltered(block) {
 			const { $data, $route, $router } = this, me = this;
-			return labels.isFiltered(block, $data.app != null ? $data.app.filename : null, true);
+			return labels.isFiltered(block, null, true);
 		},
 	
 		basicAppResources() {

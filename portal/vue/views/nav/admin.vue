@@ -54,10 +54,11 @@
 								<router-link class="dropdown-item" v-if="hasSubRole('NEWSWRITER')" :to="{ path : './news' }" v-t="'admin_navbar.news'"></router-link>
 								<router-link class="dropdown-item" v-if="hasSubRole('NEWSWRITER')" :to="{ path : './mails' }" v-t="'admin_navbar.mails'"></router-link>
 							</div></li>
+						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" :to="{ path : './workspace' }" v-t="'developer_navbar.workspace'"></router-link></li>
 						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" :to="{ path : './yourapps2' }" v-t="'developer_navbar.yourapps'"></router-link></li>
 						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" :to="{ path : './studies' }" v-t="'researcher_navbar.studies'"></router-link></li>
 						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" :to="{ path : './sandbox' }" v-t="'developer_navbar.sandbox'"></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" :to="{ path : './records' }" v-t="'developer_navbar.records'"></router-link></li>
+						<!-- <li class="nav-item" ui-sref-active="active"><router-link class="nav-link" :to="{ path : './records' }" v-t="'developer_navbar.records'"></router-link></li> -->
 						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" :to="{ path : './testusers' }" v-t="'developer_navbar.testusers'"></router-link></li>
 
 					</ul>

@@ -70,7 +70,7 @@
 					
 					<p><strong v-t="'oauth2.sharing_summary'"></strong></p>
 					<div v-for="inp of input" :key="inp.letter">
-						<b>{{ inp.letter }}</b> : {{ inp.system }} ({{ inp.short}})
+						<b>{{ inp.letter }}</b> : <span v-if="inp.mode">{{ $t(inp.mode) }} <i class="fas fa-arrow-right"></i></span> {{ inp.system }} ({{ inp.short}}) {{ inp.target }}
 					</div>
 					<table class="table table-sm mt-2">
 						<tr>
@@ -373,7 +373,7 @@ export default {
 		
 		$data.termsLabel = null;	
 		//if ($data.showApp) {
-			input.push({ system : me.appname(), letter : letters[idx], short : $t('oauth2.short_app'), labels:$data.labels });
+			input.push({ system : me.appname(), letter : letters[idx], short : $t('oauth2.short_app'), target : ($data.app.resharesData ? null : $t("oauth2.target_device")), labels:$data.labels, mode : "oauth2.mode_all" });
 			short.push(letters[idx]);
 			req.push(me.appname());
 			idx++;
@@ -383,18 +383,24 @@ export default {
 			
 			if (link.type.indexOf("REQUIRE_P")>=0 && link.type.indexOf("OFFER_P") <0) req.push(me.getLinkName(link));
 			let sname = "";
+			let mode = "oauth2.mode_all";
+			let target = null;
 			if (!link.linkTargetType || link.linkTargetType=="STUDY") {
 				sname = $t('oauth2.short_'+(link.study.type.toLowerCase()));
-				
+				if (link.study.anonymous) mode = "oauth2.mode_anonymized";
+				else if (link.study.requiredInformation=="RESTRICTED" || link.study.requiredInformation=="NONE") mode = "oauth2.mode_pseudonymized";
+				if (link.study.type!="COMMUNITY") {
+					if (link.study.ownerName) target = $t("oauth2.target_performed")+" "+link.study.ownerName;
+				} else if (link.study.type="COMMUNITY") target = $t("oauth2.target_community");
 			} else if (link.linkTargetType=="SERVICE") {
 				sname = $t('oauth2.short_service');
-				
+				if (link.serviceApp && link.serviceApp.publisher) target =  $t("oauth2.target_operated")+" "+link.serviceApp.publisher;
 			} else if (link.linkTargetType=="ORGANIZATION") {
 				sname = $t('oauth2.short_party');
-				
+				target = link.provider.name;
 			}
 			short.push(letters[idx]);
-			input.push({ system : me.getLinkName(link), letter : letters[idx], short : sname, labels : link.labels });
+			input.push({ system : me.getLinkName(link), letter : letters[idx], short : sname, labels : link.labels, mode : mode, target : target });
 			idx++;
 		}
 		if (req.length>1) {

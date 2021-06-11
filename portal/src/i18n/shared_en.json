@@ -1045,7 +1045,7 @@
     "confirm_btn" : "Confirm Access",
     "continue_btn" : "Continue",
     "requests_access" : "Access requested by the application:",
-    "requests_access_short" : "Access requested",
+    "requests_access_short" : "Data type",
     "requests_sharing" : "Data shared with the project:",
     "requests_sharing_service" : "Data shared with the external service:",
     "shares_group" : "Group: {{ group }}",
@@ -1072,7 +1072,7 @@
     "link_CITIZENSCIENCE_optional" : "Additionally you may participate in a citizen science project:",
     "link_COMMUNITY_required" : "In order to use this application you must participate in a community project:",
     "link_COMMUNITY_optional" : "Additionally you may participate in a community project:", 
-    "sharing_summary" : "Summary",
+    "sharing_summary" : "Summary of data flow",
     "all" : "All",
     "both" : "Both",
     "only" : "Only:",
@@ -1080,10 +1080,17 @@
     "short_app" : "App",
     "short_service" : "Service",
     "short_project" : "Project",
-    "short_clinical" : "Study",
-    "short_citizenscience" : "Project",
+    "short_clinical" : "Clinical Trial",
+    "short_citizenscience" : "Citizen Science Project",
     "short_community" : "Community",
-    "short_party" : "Party"
+    "short_party" : "Party",
+    "mode_pseudonymized" : "pseudonymized data",
+    "mode_anonymized" : "anonymized data",
+    "mode_all" : "raw data",
+    "target_device" : "on your device",
+    "target_operated" : "operated by",
+    "target_performed" : "performed by",
+    "target_community" : "for other participants"
   },
 
   "dashboard" : {

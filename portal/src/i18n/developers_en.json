@@ -12,9 +12,10 @@
   
   "developer_navbar" : {
     "yourapps" : "Your Applications",
-	"sandbox" : "Sandbox",
-	"records" : "Test Records",
-	"testusers" : "Test User"
+	  "sandbox" : "Sandbox",
+    "workspace" : "Workspace",
+	  "records" : "Test Records",
+	  "testusers" : "Test User"
   },
   
   "developer_testusers" : {
@@ -43,7 +44,7 @@
   "appmessages" : {
     "title" : "Predefined Messages for Application:",
     "reason" : "Event (Trigger)",
-	"code" : "Code",
+  	"code" : "Code",
     "languages" : "Languages",
     "empty" : "There are no application specfic messages defined yet.",
     "lang" : "Language",
@@ -350,16 +351,19 @@
   "workspace" : {
      
      "title" : "Workspace",
+     "add_something" : "Please add an app or a project you are working on. You may also add a test user.",
      "browser" : "Users Browser",
      "midata" : "Midata Backend",
      "useraccount" : "User Account",
      "newapp_btn" : "Add Application",
      "newproject_btn" : "Add Project",
+     "newuser_btn" : "Add User",
      "reset_btn" : "Reset Workspace",
      "issues" : "Issues",
+     "no_issues" : "No issues found.",
      "severity" : {
        "severity" : "Severity",
-       "info" : "Info",
+       "zinfo" : "Info",
        "warning" : "Warning",
        "error" : "Error"
      },
@@ -368,6 +372,9 @@
      "param" : "Param",
      "summary" : "Access Filter Summary",
      "add_app" : "Add Application to Workspace",
+     "add_user" : "Add User Account to Workspace",
+     "testusers_only" : "Use only with test accounts! Plain text password will be stored in your browser!",
+     "role" : "Role",
      "add_btn" : "Add",
      "appname" : "Internal Application Name",
      "projectname" : "Project Code",
@@ -382,9 +389,14 @@
         "no_send_reports" : "Error report notifications (emails) are disabled for this app.",
         "has_comments" : "Comments available in the error and performance statistics.",
         "project_not_validated" : "Project has not been validated yet.",
-        "project_not_searching" : "Project not searching for participants."
+        "project_not_searching" : "Project not searching for participants.",
+        "no_user_for_app" : "None of the test accounts use the application",
+        "no_user_for_project" : "None of test accounts participate to the project",
+        "appinstance_status" : "Application instance not active",
+        "appinstance_outdated" : "App version is newer than app. consent. Needs reconfirm.",
+        "not_accepted" : "Participation not accepted"
      },
-     "error" : {
+     "error" : {       
        "no_tags" : "No tags for app selected. Plugin cannot be added by user.",
        "no_url" : "Plugin does not have initial URL",
        "never_deployed" : "Plugin has repository information but had never been checked out successful.",
@@ -396,7 +408,9 @@
        "project_aborted" : "Project has been aborted.",
        "project_no_groups" : "No participant groups defined for project.",
        "app_no_exist" : "Application does not exist.",
-       "project_no_exist" : "Project does not exist."
+       "project_no_exist" : "Project does not exist.",
+       "login_failed" : "Account login failed",
+       "appinstance_rejected" : "Application instance rejected"
      },
      "info" : {
         "no_requirements" : "No requirements selected for application.",
