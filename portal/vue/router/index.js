@@ -500,6 +500,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/yourapps.vue')
   },
   {
+    base : ["admin", "developer"],
+    path : "workspace",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/workspace.vue')
+  },
+  {
     base : ["admin"],
     path : "defineplugin",
     component: () => import(/* webpackChunkName: "admin" */ 'views/admin/defineplugin.vue')
