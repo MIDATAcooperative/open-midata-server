@@ -44,6 +44,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.ProjectTools;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -160,6 +161,7 @@ public class UserGroups extends APIController {
         JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "name");
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		
 		UserGroup userGroup = new UserGroup();
 		
@@ -188,12 +190,12 @@ public class UserGroups extends APIController {
 																				
 		Map<String, Object> accessData = new HashMap<String, Object>();
 		accessData.put("aliaskey", KeyManager.instance.generateAlias(userGroup._id, member._id));
-		RecordManager.instance.createPrivateAPS(executorId, member._id);
-		RecordManager.instance.setMeta(executorId, member._id, "_usergroup", accessData);
+		RecordManager.instance.createPrivateAPS(context.getCache(), executorId, member._id);
+		RecordManager.instance.setMeta(context, member._id, "_usergroup", accessData);
 						
 		member.add();
 				
-		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
+		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 		
 		return ok(JsonOutput.toJson(userGroup, "UserGroup", UserGroup.ALL)).as("application/json");
 	}
@@ -274,6 +276,7 @@ public class UserGroups extends APIController {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "members", "group");
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 	
 		MidataId groupId = JsonValidation.getMidataId(json, "group");
 		Set<MidataId> targetUserIds = JsonExtraction.extractMidataIdSet(json.get("members"));
@@ -304,7 +307,7 @@ public class UserGroups extends APIController {
 			if (role == null || !role.pseudo) throw new BadRequestException("error.invalid.anonymous", "Unpseudonymized access not allowed");
 		}
 		
-		ProjectTools.addToUserGroup(executorId, self, role, targetUserIds);
+		ProjectTools.addToUserGroup(context, self, role, targetUserIds);
 		
 		AuditManager.instance.success();
 		return ok();

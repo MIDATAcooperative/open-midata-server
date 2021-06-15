@@ -31,6 +31,7 @@ import models.enums.SecondaryAuthType;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
+import utils.access.AccessContext;
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
@@ -75,7 +76,7 @@ public class ExtendedSessionToken extends PortalSessionToken {
 	
 	public Set<MidataId> confirmations;
 	
-	public MidataId currentExecutor;
+	public AccessContext currentContext;
 	
 	public String joinCode;
 	

@@ -63,7 +63,7 @@ public class DummyAccessContext extends AccessContext {
 
 	@Override
 	public MidataId getTargetAps() {
-		return cache.getExecutor();
+		return cache.getAccessor();
 	}
 
 	@Override

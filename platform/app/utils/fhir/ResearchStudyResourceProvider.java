@@ -337,7 +337,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		boolean doupdate = false;
 		Record oldRecord = null;
 		
-		List<Record> records = RecordManager.instance.list(info().executorId, info().role, info().context, CMaps.map("_id",study._id).map("format","fhir/ResearchStudy").map("public","only").map("content","ResearchStudy"), RecordManager.COMPLETE_DATA); 
+		List<Record> records = RecordManager.instance.list(info().role, info().context, CMaps.map("_id",study._id).map("format","fhir/ResearchStudy").map("public","only").map("content","ResearchStudy"), RecordManager.COMPLETE_DATA); 
 		if (!records.isEmpty()) oldRecord = records.get(0);								  
 				
 		if (oldRecord != null) {

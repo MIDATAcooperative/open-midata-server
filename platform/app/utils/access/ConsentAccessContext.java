@@ -197,5 +197,9 @@ public class ConsentAccessContext extends AccessContext{
 		}
 		return "Consent of type '"+result+"'";
 	}
-
+	
+	public AccessContext forConsent(Consent consent) throws AppException {
+		if (this.consent._id == consent._id) return this;
+		return super.forConsent(consent);
+	}	
 }

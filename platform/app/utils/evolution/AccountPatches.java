@@ -46,6 +46,8 @@ import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.AccessLog;
+import utils.access.AccessContext;
+import utils.access.ConsentAccessContext;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
@@ -60,15 +62,15 @@ public class AccountPatches {
 
 	public static final int currentAccountVersion = 20200221;
 	
-	public static boolean check(User user) throws AppException {
+	public static boolean check(AccessContext context, User user) throws AppException {
 		boolean isold = user.accountVersion < currentAccountVersion;
 		
 		if (user.accountVersion < 20160324) { formatPatch20160324(user); }	
 		if (user.accountVersion < 20160407) { formatPatch20160407(user); }
 		if (user.accountVersion < 20160902) { formatPatch20160902(user); }
 		if (user.accountVersion < 20161205) { formatPatch20161205(user); }
-		if (user.accountVersion < 20171206) { formatPatch20171206(user); }
-		if (user.accountVersion < 20190206) { formatPatch20190206(user); }
+		if (user.accountVersion < 20171206) { formatPatch20171206(context, user); }
+		if (user.accountVersion < 20190206) { formatPatch20190206(context, user); }
 		if (user.accountVersion < 20200221) { formatPatch20200221(user); }
 		//if (user.accountVersion < 20180130) { formatPatch20180130(user); }
 		//if (user.accountVersion < 20170206) { formatPatch20170206(user); }
@@ -86,14 +88,14 @@ public class AccountPatches {
 	public static void formatPatch20160324(User user) throws AppException {
 		AccessLog.logBegin("start patch 2016 03 24");
 	   Set<String> formats = Sets.create("fhir/Observation/String", "fhir/Observation/Quantity", "fhir/Observation/CodeableConcept");
-	   List<Record> recs = RecordManager.instance.list(user._id, UserRole.ANY, RecordManager.instance.createContextFromAccount(user._id), CMaps.map("format", formats).map("owner", "self"), RecordManager.COMPLETE_DATA);
+	   List<Record> recs = RecordManager.instance.list(UserRole.ANY, RecordManager.instance.createContextFromAccount(user._id), CMaps.map("format", formats).map("owner", "self"), RecordManager.COMPLETE_DATA);
 	   for (Record r : recs) {
 		   MidataId oldId = r._id;
 		   r._id = new MidataId();
 		   
 		   r.format = "fhir/Observation";
 		   try {
-		     RecordManager.instance.addRecord(user._id, r);
+		     RecordManager.instance.addRecord(RecordManager.instance.createContextFromAccount(user._id),  r, null);
 		   } catch (AppException e) {}
 		   
 	   }
@@ -173,7 +175,7 @@ public class AccountPatches {
 		AccessLog.logEnd("end patch 2017 02 06");
 	}
 	
-	public static void formatPatch20171206(User user) throws AppException {
+	public static void formatPatch20171206(AccessContext context, User user) throws AppException {
 		AccessLog.logBegin("start patch 2017 12 06");
 		
 		if (user.role.equals(UserRole.RESEARCH)) {
@@ -206,11 +208,11 @@ public class AccountPatches {
 						member.role = ResearcherRole.SPONSOR();
 						Map<String, Object> accessData = new HashMap<String, Object>();
 						accessData.put("aliaskey", KeyManager.instance.generateAlias(userGroup._id, member._id));
-						RecordManager.instance.createPrivateAPS(ru._id, member._id);
-						RecordManager.instance.setMeta(ru._id, member._id, "_usergroup", accessData);						
+						RecordManager.instance.createPrivateAPS(context.getCache(), ru._id, member._id);
+						RecordManager.instance.setMeta(context, member._id, "_usergroup", accessData);						
 						member.add();
 								
-						RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
+						RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 					
 						Set<StudyParticipation> parts = StudyParticipation.getParticipantsByStudy(study._id, StudyParticipation.ALL);
 						
@@ -219,8 +221,9 @@ public class AccountPatches {
 							part.authorized.remove(ru._id);
 							StudyParticipation.set(part._id, "authorized", part.authorized);
 							if (part.status == ConsentStatus.ACTIVE) {
-							  RecordManager.instance.shareAPS(part._id, null, ru._id, Collections.singleton(study._id));
-							  RecordManager.instance.unshareAPS(part._id, ru._id, Collections.singleton(ru._id));
+								AccessContext partContext = new ConsentAccessContext(part, context);
+							  RecordManager.instance.shareAPS(partContext, Collections.singleton(study._id));
+							  RecordManager.instance.unshareAPS(partContext, part._id, Collections.singleton(ru._id));
 						    }
 						}
 						
@@ -230,7 +233,7 @@ public class AccountPatches {
 		} else if (user.role.equals(UserRole.MEMBER)) {
 			Set<Consent> parts = Consent.getAllByOwner(user._id, CMaps.map("type", ConsentType.STUDYPARTICIPATION), Sets.create("_id", "owner"), 0);
 			for (Consent c : parts) {
-			  Circles.autosharePatientRecord(user._id, c);
+			  Circles.autosharePatientRecord(context, c);
 			}
 			
 		}
@@ -240,14 +243,14 @@ public class AccountPatches {
 		AccessLog.logEnd("end patch 2017 12 06");
 	}
 	
-	public static void formatPatch20190206(User user) throws AppException {
+	public static void formatPatch20190206(AccessContext context, User user) throws AppException {
 		AccessLog.logBegin("start patch 2019 02 06");
 		
 		if (user.role.equals(UserRole.ADMIN)) {
 			try {
-		      RecordManager.instance.getMeta(user._id, user._id, "test");
+		      RecordManager.instance.getMeta(context, user._id, "test");
 			} catch (APSNotExistingException e) {
-			  RecordManager.instance.createPrivateAPS(user._id, user._id);
+			  RecordManager.instance.createPrivateAPS(context.getCache(), user._id, user._id);
 			  PatientResourceProvider.updatePatientForAccount(user._id);
 			}
 			makeCurrent(user, 20190206);

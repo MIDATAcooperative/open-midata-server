@@ -53,10 +53,13 @@ import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
 import models.enums.UserStatus;
+import utils.access.AccessContext;
+import utils.access.ConsentAccessContext;
 import utils.access.Feature_FormatGroups;
 import utils.access.Feature_QueryRedirect;
 import utils.access.Feature_UserGroups;
 import utils.access.RecordManager;
+import utils.access.RepresentativeAccessContext;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
@@ -75,7 +78,7 @@ import utils.stats.UsageStatsRecorder;
  */
 public class ApplicationTools {
 
-	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm, Set<StudyAppLink> links) throws AppException {
+	public static MobileAppInstance installApp(AccessContext context, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm, Set<StudyAppLink> links) throws AppException {
 		AccessLog.logBegin("beginn install app id="+appId);
 		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 		if (app == null) throw new InternalServerException("error.internal", "App not found");
@@ -95,7 +98,8 @@ public class ApplicationTools {
 		if (app.type.equals("external")) {
 			Set<ServiceInstance> instances = ServiceInstance.getByApp(appId, ServiceInstance.ALL);
 			if (instances.size() == 1) {
-				appInstance = createServiceUseInstance(member._id, app, instances.iterator().next());
+				if (context == null) throw new InternalServerException("error.internal", "Missing context");
+				appInstance = createServiceUseInstance(context, context.getOwner(), app, instances.iterator().next());
 			} else throw new InternalServerException("error.internal", "No service instance");
 			
 		} else appInstance = createAppInstance(member._id, phrase, app, null, observers);	
@@ -104,10 +108,10 @@ public class ApplicationTools {
 		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_FIRST_USE).withApp(app._id).withActorUser(member).withConsent(appInstance));		    	    	
 		
 		// Create consents for project (moved from before confirm)
-		createConsentsForProjects(executor, member, studyConfirm, app, links);
+		if (context != null) createConsentsForProjects(context, member, studyConfirm, app, links);
 
 		// Create APS for AppInstance *
-		if (!app.type.equals("external")) createAppInstanceAPS(executor, member._id, phrase, autoConfirm, app, appInstance);
+		if (!app.type.equals("external")) createAppInstanceAPS(context, member._id, phrase, autoConfirm, app, appInstance);
 		
 		// Add app to set of used apps
 		if (!member.apps.contains(app._id)) {
@@ -140,20 +144,20 @@ public class ApplicationTools {
 	 * @return
 	 * @throws AppException
 	 */
-	public static MobileAppInstance refreshOrInstallService(MidataId executor, MidataId serviceAppId, User member,  Set<MidataId> studyConfirm) throws AppException {
+	public static MobileAppInstance refreshOrInstallService(AccessContext context, MidataId serviceAppId, User member,  Set<MidataId> studyConfirm) throws AppException {
 		Set<MobileAppInstance> insts = MobileAppInstance.getActiveByApplicationAndOwner(serviceAppId, member._id, MobileAppInstance.APPINSTANCE_ALL);
 		MobileAppInstance result = null;
 		boolean foundValid = false;
 		for (MobileAppInstance inst : insts) {
 			if (foundValid) {
-				removeAppInstance(executor, inst);
+				removeAppInstance(context.getAccessor(), inst);
 			} else if (OAuth2.verifyAppInstance(inst, member._id, serviceAppId, null)) {
 				foundValid = true;
 				result = inst;
 			}
 		}
 		if (!foundValid) {
-			result = installApp(executor, serviceAppId, member, null, true, studyConfirm, null);
+			result = installApp(context, serviceAppId, member, null, true, studyConfirm, null);
 		}
 		return result;
 	}
@@ -178,7 +182,7 @@ public class ApplicationTools {
 		return getObserversForApp(StudyAppLink.getByApp(appId));
 	}
 
-	public static MobileAppInstance createServiceApiKey(MidataId executor, ServiceInstance serviceInstance) throws AppException {
+	public static MobileAppInstance createServiceApiKey(AccessContext context, ServiceInstance serviceInstance) throws AppException {
 		AccessLog.logBegin("begin create service api key");
 		Plugin app = Plugin.getById(serviceInstance.appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 		if (app == null) throw new InternalServerException("error.internal", "App not found");
@@ -190,7 +194,7 @@ public class ApplicationTools {
 		
 		// Create APS for AppInstance *
 		// create APS *						
-		RecordManager.instance.createPrivateAPS(executor, appInstance._id);
+		RecordManager.instance.createPrivateAPS(context.getCache(), context.getAccessor(), appInstance._id);
 		Set<MidataId> targetUsers = new HashSet<MidataId>();
 		targetUsers.add(serviceInstance.managerAccount);
 		targetUsers.add(serviceInstance.executorAccount);
@@ -198,12 +202,12 @@ public class ApplicationTools {
 		if (serviceInstance.endpoint != null && serviceInstance.endpoint.length()>0) {
 			targetUsers.add(RuntimeConstants.instance.publicUser);
 		}
-		RecordManager.instance.shareAPS(appInstance._id, null, executor, targetUsers);			
+		RecordManager.instance.shareAPS(new ConsentAccessContext(appInstance, context), targetUsers);			
 		
 		// Write phrase into APS *
 		Map<String, Object> meta = new HashMap<String, Object>();
 		meta.put("phrase", phrase);		
-		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
+		RecordManager.instance.setMeta(context, appInstance._id, "_app", meta);
 								
 		Map<String, Object> query = appInstance.sharingQuery;
 		if (serviceInstance.linkedStudy != null) query.put("study", serviceInstance.linkedStudy.toString());
@@ -216,21 +220,22 @@ public class ApplicationTools {
 		if (serviceInstance.studyRelatedOnly) query.put("study-related", "true");
 
 		appInstance.set(appInstance._id, "sharingQuery", query);
-		RecordManager.instance.shareByQuery(executor, serviceInstance._id, appInstance._id, appInstance.sharingQuery);
+		AccessContext sharingContext = RecordManager.instance.createSharingContext(context, serviceInstance._id);
+		RecordManager.instance.shareByQuery(sharingContext, appInstance._id, appInstance.sharingQuery);
 		
 		// Confirm app consent *		
-		Circles.consentStatusChange(executor, appInstance, ConsentStatus.ACTIVE);
+		Circles.consentStatusChange(context, appInstance, ConsentStatus.ACTIVE);
 		
 		// Gain access to executor account
 		if (serviceInstance.executorAccount.equals(serviceInstance._id)) {
-			Map<String, Object> si = RecordManager.instance.getMeta(executor, serviceInstance.executorAccount, "_si").toMap();
+			Map<String, Object> si = RecordManager.instance.getMeta(context, serviceInstance.executorAccount, "_si").toMap();
 			MidataId keyId = MidataId.from(si.get("id"));
 			byte[] key = (byte[]) si.get("key");
 			KeyManager.instance.unlock(serviceInstance.executorAccount, keyId, key);
 		}
 
 		// Link with executor account
-		linkMobileConsentWithExecutorAccount(executor, serviceInstance.executorAccount, appInstance._id);
+		linkMobileConsentWithExecutorAccount(context, serviceInstance.executorAccount, appInstance._id);
 
 		//appInstance.status = ConsentStatus.ACTIVE;	
 		if (!app.type.equals("endpoint")) {
@@ -245,7 +250,7 @@ public class ApplicationTools {
 		return appInstance;
 	}
 
-	public static ServiceInstance createServiceInstance(MidataId executor, Plugin app, Study study, String group, String endpoint, boolean studyRelatedOnly) throws AppException {
+	public static ServiceInstance createServiceInstance(AccessContext context, Plugin app, Study study, String group, String endpoint, boolean studyRelatedOnly) throws AppException {
 		AccessLog.log("create service instance");
 
 		if (!app.type.equals("analyzer") && !app.type.equals("endpoint")) throw new InternalServerException("error.internal", "Wrong app type");
@@ -282,7 +287,7 @@ public class ApplicationTools {
 		Map<String, Object> obj = new HashMap<String, Object>();
 		obj.put("key", splitKey);
 		obj.put("id", keyId.toString());
-		RecordManager.instance.setMeta(executor, si._id, "_si", obj);
+		RecordManager.instance.setMeta(context, si._id, "_si", obj);
 		
 		// app first use audit entry
 		//AuditManager.instance.addAuditEvent(AuditEventType.APP_FIRST_USE, app._id, member, null, appInstance, null, null);		    	    	
@@ -296,7 +301,7 @@ public class ApplicationTools {
 		return si;
 	}
 
-	public static ServiceInstance createServiceInstance(MidataId executor, Plugin app, MidataId managerId) throws AppException {
+	public static ServiceInstance createServiceInstance(AccessContext context, Plugin app, MidataId managerId) throws AppException {
 		AccessLog.log("create service instance");
 		ServiceInstance si = new ServiceInstance();
 		si._id = new MidataId();
@@ -309,7 +314,7 @@ public class ApplicationTools {
 		si.name = app.name;
 		si.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(si._id, null);
 		si.add();
-		RecordManager.instance.getMeta(executor, executor, "_");
+		RecordManager.instance.getMeta(context, context.getAccessor(), "_");
 		// Create service instance APS and store key
 		RecordManager.instance.createAnonymizedAPS(si._id, managerId, si._id, false, false, true);
 		MidataId keyId = new MidataId();
@@ -317,7 +322,7 @@ public class ApplicationTools {
 		Map<String, Object> obj = new HashMap<String, Object>();
 		obj.put("key", splitKey);
 		obj.put("id", keyId.toString());
-		RecordManager.instance.setMeta(executor, si._id, "_si", obj);
+		RecordManager.instance.setMeta(context, si._id, "_si", obj);
 
 		// protokoll app installation
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.INSTALL);
@@ -330,14 +335,14 @@ public class ApplicationTools {
 
 
 
-	public static ServiceInstance checkServiceInstanceOwner(MidataId executor, MidataId serviceId) throws AppException {
+	public static ServiceInstance checkServiceInstanceOwner(AccessContext context, MidataId serviceId) throws AppException {
 		ServiceInstance instance = ServiceInstance.getById(serviceId, ServiceInstance.ALL);
 		if (instance == null) throw new BadRequestException("error.unknown.service", "Service Instance does not exist");
-		if (instance.managerAccount.equals(executor)) return instance;
+		if (instance.managerAccount.equals(context.getAccessor())) return instance;
 
-		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(instance.managerAccount, executor);
+		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(instance.managerAccount, context.getAccessor());
 		if (ugm != null) {
-			Feature_UserGroups.loadKey(ugm);
+			Feature_UserGroups.loadKey(context, ugm);
 			return instance;
 		}
 
@@ -374,7 +379,7 @@ public class ApplicationTools {
 		return appInstance;
 	}
 
-	private static MobileAppInstance createServiceUseInstance(MidataId owner, Plugin app, ServiceInstance si)
+	private static MobileAppInstance createServiceUseInstance(AccessContext context, MidataId owner, Plugin app, ServiceInstance si)
 			throws InternalServerException, BadRequestException, AppException {
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance.name = "External: "+ app.name;
@@ -394,12 +399,12 @@ public class ApplicationTools {
 		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);						   
 		}
 		
-		Circles.addConsent(owner, appInstance, true, null, false);
+		Circles.addConsent(context, appInstance, true, null, false);
 		
 		return appInstance;
 	}
 
-	private static void createAppInstanceAPS(MidataId executor, MidataId owner, String phrase, boolean autoConfirm, Plugin app,
+	private static void createAppInstanceAPS(AccessContext context, MidataId owner, String phrase, boolean autoConfirm, Plugin app,
 			MobileAppInstance appInstance) throws AppException, JsonValidationException {
 		AccessLog.log("create new app instance APS id="+appInstance._id);
 		// create APS *				
@@ -408,17 +413,18 @@ public class ApplicationTools {
 		// Write phrase into APS *
 		Map<String, Object> meta = new HashMap<String, Object>();
 		meta.put("phrase", phrase);
-		if (executor == null) executor = appInstance._id;
-		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
+		if (context == null) context = RecordManager.instance.createLoginOnlyContext(appInstance._id);
+		RecordManager.instance.setMeta(context, appInstance._id, "_app", meta);
 		
 		// Write access filter into APS *
-		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
-		    RecordManager.instance.shareByQuery(executor, owner, appInstance._id, appInstance.sharingQuery);
+		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
+			AccessContext sharingContext = RecordManager.instance.createSharingContext(context, owner);
+		    RecordManager.instance.shareByQuery(sharingContext, appInstance._id, appInstance.sharingQuery);
 		}						
 		
 		// Confirm app consent *
 		if (autoConfirm) {
-		   HealthProvider.confirmConsent(owner, appInstance._id);
+		   HealthProvider.confirmConsent(context, appInstance._id);
 		   appInstance.status = ConsentStatus.ACTIVE;
 		}
 	}
@@ -433,28 +439,28 @@ public class ApplicationTools {
 		}
     }
 
-    private static void createConsentsForProjects(MidataId executor, User member, Set<MidataId> studyConfirm, Plugin app,
+    private static void createConsentsForProjects(AccessContext context, User member, Set<MidataId> studyConfirm, Plugin app,
             Set<StudyAppLink> links) throws AppException, InternalServerException {
         for (StudyAppLink sal : links) {
 			if (sal.isConfirmed()) {	
 				if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
 					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {
 						
-						if (LinkTools.findConsentForAppLink(executor,sal)==null) {
+						if (LinkTools.findConsentForAppLink(context.getAccessor(),sal)==null) {
 							RecordManager.instance.clearCache();
 							Set<MidataId> observers = ApplicationTools.getObserversForApp(links);
-							LinkTools.createConsentForAppLink(member._id, sal, observers);
+							LinkTools.createConsentForAppLink(context, sal, observers);
 						}
 					}
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
 					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.serviceAppId))) {					
 						RecordManager.instance.clearCache();
-						refreshOrInstallService(executor, sal.serviceAppId, member, studyConfirm);											
+						refreshOrInstallService(context, sal.serviceAppId, member, studyConfirm);											
 					}
 				} else
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
 					RecordManager.instance.clearCache();
-			        controllers.members.Studies.requestParticipation(new ExecutionInfo(executor, member.getRole()), member._id, sal.studyId, app._id, sal.dynamic ? JoinMethod.API : JoinMethod.APP, null);
+			        controllers.members.Studies.requestParticipation(new ExecutionInfo(context.getAccessor(), member.getRole()), member._id, sal.studyId, app._id, sal.dynamic ? JoinMethod.API : JoinMethod.APP, null);
 				}
 			}
 		}
@@ -497,19 +503,19 @@ public class ApplicationTools {
 		}
     }
 
-	public static void linkMobileConsentWithExecutorAccount(MidataId executorId, MidataId targetAccountId, MidataId consentId) throws AppException {
+	public static void linkMobileConsentWithExecutorAccount(AccessContext context, MidataId targetAccountId, MidataId consentId) throws AppException {
 		AccessLog.log("link app instance to account from="+consentId+" to="+targetAccountId);
-		BSONObject meta = RecordManager.instance.getMeta(executorId, consentId, "_app");
+		BSONObject meta = RecordManager.instance.getMeta(context, consentId, "_app");
 		if (meta == null) throw new InternalServerException("error.internal", "_app object not found,");
 		MidataId alias = new MidataId();
 		byte[] key = KeyManager.instance.generateAlias(targetAccountId, alias);
 		meta.put("alias", alias.toString());
 		meta.put("aliaskey", key);
 		meta.put("targetAccount", targetAccountId.toString());
-		RecordManager.instance.setMeta(executorId, consentId, "_app", meta.toMap());
+		RecordManager.instance.setMeta(context, consentId, "_app", meta.toMap());
 	}
 	
-	public static void linkRepresentativeConsentWithExecutorAccount(MidataId executorId, MidataId targetAccountId, MidataId consentId) throws AppException {
+	public static void linkRepresentativeConsentWithExecutorAccount(AccessContext context, MidataId targetAccountId, MidataId consentId) throws AppException {
 		AccessLog.log("link representative consent to account from="+consentId+" to="+targetAccountId);
 		Map<String, Object> meta = new HashMap<String, Object>();
 		MidataId alias = new MidataId();
@@ -517,8 +523,36 @@ public class ApplicationTools {
 		meta.put("alias", alias.toString());
 		meta.put("aliaskey", key);
 		meta.put("targetAccount", targetAccountId.toString());
-		RecordManager.instance.setMeta(executorId, consentId, "_representative", meta);
+		RecordManager.instance.setMeta(context, consentId, "_representative", meta);
 	}
+	
+	public static AccessContext actAsRepresentative(AccessContext context, MidataId targetUser) throws AppException {
+		
+		
+		if (context.getAccessor().equals(targetUser)) return context;
+		if (context.getCache().hasSubCache(targetUser)) return new RepresentativeAccessContext(context.getCache().getSubCache(targetUser), context);
+		
+		Consent consent = Consent.getRepresentativeActiveByAuthorizedAndOwner(context.getActor(), targetUser);
+		
+		if (consent != null) {				
+			Map<String, Object> meta = RecordManager.instance.getMeta(context, consent._id, "_representative").toMap();
+			if (meta.containsKey("aliaskey") && meta.containsKey("alias")) {
+				AccessLog.log("Act as representative: unlock "+targetUser);
+				MidataId alias = new MidataId(meta.get("alias").toString());
+				byte[] key = (byte[]) meta.get("aliaskey");
+				KeyManager.instance.unlock(targetUser, alias, key);			
+				//RecordManager.instance.clearCache();
+				
+				return new RepresentativeAccessContext(context.getCache().getSubCache(targetUser), context);
+			}
+		}
+		
+		return null;
+	}
+									
+									
+				
+	
 
 	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
 		AccessLog.logBegin("start refresh app id="+appInstance._id);
@@ -536,24 +570,9 @@ public class ApplicationTools {
 	    }
 		appInstance.lastUpdated = new Date();
 		
-		RecordManager.instance.shareAPS(appInstance._id, executor, appInstance.publicKey);
+		RecordManager.instance.shareAPS(RecordManager.instance.createContextFromApp(executor, appInstance), appInstance.publicKey);
 		MobileAppInstance.upsert(appInstance);
-		
-	/*
-	    RecordManager.instance.deleteAPS(appInstance._id, executor);
-		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
-				
-		Map<String, Object> meta = new HashMap<String, Object>();
-		meta.put("phrase", phrase);
-		if (executor == null) executor = appInstance._id;
-		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
-		
-		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
-		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery));
-		}
-		
-		linkMobileConsentWithExecutorAccount(executor, executor, appInstance._id);
-		*/							
+					
 		AuditManager.instance.success();
 		AccessLog.logEnd("end refresh app time="+(System.currentTimeMillis()-tStart));
 		return appInstance;
@@ -563,7 +582,7 @@ public class ApplicationTools {
 	public static void removeAppInstance(MidataId executorId, MobileAppInstance appInstance) throws AppException {
 		AccessLog.logBegin("start remove app instance");
 		// Device or password changed, regenerates consent				
-		Circles.consentStatusChange(executorId, appInstance, ConsentStatus.EXPIRED);
+		Circles.consentStatusChange(null, appInstance, ConsentStatus.EXPIRED);
 		Plugin app = Plugin.getById(appInstance.applicationId);
 		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
 		RecordManager.instance.deleteAPS(appInstance._id, executorId);									
@@ -574,11 +593,11 @@ public class ApplicationTools {
 		AccessLog.logEnd("end remove app instance");
 	}
 
-	public static void deleteServiceInstance(MidataId executorId, ServiceInstance instance) throws InternalServerException {
+	public static void deleteServiceInstance(AccessContext context, ServiceInstance instance) throws InternalServerException {
         Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.ALL);
         for (MobileAppInstance appInstance : appInstances) {
             try {
-              ApplicationTools.removeAppInstance(executorId, appInstance);            
+              ApplicationTools.removeAppInstance(context.getAccessor(), appInstance);            
             } catch (Exception e) {
                 MobileAppInstance.delete(instance.executorAccount, appInstance._id);
             }

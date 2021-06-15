@@ -59,6 +59,7 @@ import models.Plugin;
 import models.PluginIcon;
 import models.PluginReview;
 import models.Plugin_i18n;
+import models.Research;
 import models.ServiceInstance;
 import models.SoftwareChangeLog;
 import models.Space;
@@ -95,8 +96,10 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.InstanceConfig;
+import utils.access.AccessContext;
 import utils.access.Feature_FormatGroups;
 import utils.access.Query;
+import utils.access.RecordManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
@@ -143,6 +146,7 @@ public class Market extends APIController {
 			
 		// validate request
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
@@ -218,7 +222,7 @@ public class Market extends APIController {
 															
 					Set<ServiceInstance> si = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
 					if (si.isEmpty() && userId.equals(app.creator)) {
-						ApplicationTools.createServiceInstance(userId, app, userId);
+						ApplicationTools.createServiceInstance(context, app, userId);
 					}
 					for (ServiceInstance instance : si) {
 						User manager = User.getById(instance.managerAccount, User.ALL_USER);
@@ -582,6 +586,7 @@ public class Market extends APIController {
 
 		// validate request
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		
 		Developer dev = Developer.getById(userId, Sets.create("email"));
 		
@@ -680,7 +685,7 @@ public class Market extends APIController {
 		Plugin.add(plugin);
 
 		if (plugin.type.equals("service")) {
-			ApplicationTools.createServiceInstance(userId, plugin, userId);
+			ApplicationTools.createServiceInstance(context, plugin, userId);
 		}
 		
 		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
@@ -1109,9 +1114,11 @@ public class Market extends APIController {
 			
 			for (StudyAppLink sal : result) {
 				if (sal.linkTargetType == null || sal.linkTargetType == LinkTargetType.STUDY) {
-				  Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods", "infos", "recordQuery", "requiredInformation"));
+				  Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods", "infos", "recordQuery", "requiredInformation", "anonymous", "owner"));				  
 				  sal.study = study;
 				  sal.termsOfUse = study.termsOfUse;
+				  Research research = Research.getById(study.owner, Sets.create("name"));
+				  if (research!=null) study.ownerName = research.name;
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
 				  sal.serviceApp = Plugin.getById(sal.serviceAppId);
 				  sal.termsOfUse = sal.serviceApp.termsOfUse;
@@ -1143,7 +1150,7 @@ public class Market extends APIController {
 		Map<String, Set<String>> mapping = new HashMap<String, Set<String>>();
 		mapping.put("Plugin", Plugin.ALL_PUBLIC);
 		mapping.put("HealthcareProvider", HealthcareProvider.ALL);
-		mapping.put("Study", Sets.create("_id", "code","name","type", "description", "termsOfUse", "executionStatus", "validationStatus", "participantSearchStatus", "joinMethods", "infos", "recordQuery", "requiredInformation"));
+		mapping.put("Study", Sets.create("_id", "code","name","type", "description", "termsOfUse", "executionStatus", "validationStatus", "participantSearchStatus", "joinMethods", "infos", "recordQuery", "requiredInformation", "anonymous", "ownerName"));
 		mapping.put("StudyAppLink", StudyAppLink.ALL);
 		
 		return ok(JsonOutput.toJson(result, mapping)).as("application/json");
@@ -1446,6 +1453,7 @@ public class Market extends APIController {
 		JsonNode json = request().body().asJson();	
 		JsonValidation.validate(json, "appId", "licenseeId", "licenseeType");
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		
 		Admin me = Admin.getById(userId, Sets.create("email"));
 		
@@ -1492,10 +1500,10 @@ public class Market extends APIController {
 
 		if (service) {
 			for (ServiceInstance inst :  ServiceInstance.getByApp(plugin._id, ServiceInstance.ALL)) {
-				ApplicationTools.deleteServiceInstance(userId, inst);
+				ApplicationTools.deleteServiceInstance(context, inst);
 			}
 			
-			ApplicationTools.createServiceInstance(userId, plugin, licence.licenseeId);
+			ApplicationTools.createServiceInstance(context, plugin, licence.licenseeId);
 			
 		} else licence.add();
 		

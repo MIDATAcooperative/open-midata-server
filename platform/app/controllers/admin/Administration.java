@@ -77,6 +77,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.access.AccessContext;
 import utils.access.DBRecord;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
@@ -236,6 +237,7 @@ public class Administration extends APIController {
 		requireSubUserRole(SubUserRole.SUPERADMIN);
 		
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language", "subroles");
@@ -300,7 +302,7 @@ public class Administration extends APIController {
 					
 			Admin.add(user);
 							
-			RecordManager.instance.createPrivateAPS(user._id, user._id);						
+			RecordManager.instance.createPrivateAPS(context.getCache(), user._id, user._id);						
 			PatientResourceProvider.updatePatientForAccount(user._id);
 			
 			Application.sendWelcomeMail(user, executingUser);
@@ -467,7 +469,7 @@ public class Administration extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActorUser(executorId).withModifiedUser(selected));
 		
-		Users.doAccountWipe(executorId, userId);
+		Users.doAccountWipe(portalContext(), userId);
 		
 		AuditManager.instance.success();
 		

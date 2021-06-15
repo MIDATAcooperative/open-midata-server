@@ -49,6 +49,7 @@ import play.mvc.BodyParser;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
+import utils.access.AccessContext;
 import utils.access.EncryptionUtils;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -163,12 +164,13 @@ public class PWRecovery extends APIController {
 	}
 	
 	private static void provideServiceKey(User user) throws AppException {
-		BSONObject obj = RecordManager.instance.getMeta(user._id, user._id, "_aeskey");
+		AccessContext context = RecordManager.instance.createContextFromAccount(user._id);
+		BSONObject obj = RecordManager.instance.getMeta(context, user._id, "_aeskey");
 		if (obj == null) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			byte[] key = EncryptionUtils.randomize(EncryptionUtils.generateKey());
 			map.put("key", key);
-			RecordManager.instance.setMeta(user._id, user._id, "_aeskey", map);
+			RecordManager.instance.setMeta(context, user._id, "_aeskey", map);
 			ServiceHandler.setKey(key);
 			ServiceHandler.shareKey();
 		} else {

@@ -189,7 +189,7 @@ public class Feature_UserGroups extends Feature {
 			}				
 		}
 		
-		AccessLog.log("no suitable cache: targetAps="+targetAps+" executor="+cache.getExecutor());
+		AccessLog.log("no suitable cache: targetAps="+targetAps+" executor="+cache.getAccessor());
 		return null;
 	}
 	
@@ -209,9 +209,9 @@ public class Feature_UserGroups extends Feature {
 		return cache.getSubCache(ugm.userGroup);				
 	}
 
-	public static void loadKey(UserGroupMember ugm) throws AppException {				
+	public static void loadKey(AccessContext context, UserGroupMember ugm) throws AppException {				
 		
-		BSONObject obj = RecordManager.instance.getMeta(ugm.member, ugm._id, "_usergroup");
+		BSONObject obj = RecordManager.instance.getMeta(context /*ugm.member*/, ugm._id, "_usergroup");
 		KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));				
 	}
 		

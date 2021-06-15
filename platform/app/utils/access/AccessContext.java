@@ -19,9 +19,15 @@ package utils.access;
 
 import java.util.Map;
 
+import models.Consent;
 import models.MidataId;
 import models.Record;
+import models.Space;
+import models.UserGroupMember;
+import models.enums.ConsentStatus;
+import utils.RuntimeConstants;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public abstract class AccessContext {
 	
@@ -57,10 +63,24 @@ public abstract class AccessContext {
 	
 	public abstract MidataId getTargetAps();
 	
+	/**
+	 * who is the owner of data with this context?
+	 * @return
+	 */
 	public abstract MidataId getOwner();
 	
+	/**
+	 * who is the pseudonymized owner of data with this context?
+	 * @return
+	 * @throws AppException
+	 */
 	public abstract MidataId getOwnerPseudonymized() throws AppException;
 	
+	/**
+	 * what is the name of the owner (possibly pseudonymized)
+	 * @return
+	 * @throws AppException
+	 */
 	public abstract String getOwnerName() throws AppException;
 	
 	public Map<String, Object> getQueryRestrictions() {
@@ -74,10 +94,27 @@ public abstract class AccessContext {
 	public APSCache getCache() {
 		return cache;
 	}
+	
+	public APSCache getRootCache() {
+		if (parent != null) return parent.getRootCache();
+		return getCache();
+	}
 
-	public MidataId getNewRecordCreator() {
-		if (parent != null) return parent.getNewRecordCreator();
-		return cache.getExecutor();
+	/**
+	 * who is the actor, e.g. the person creating records or creating audit events
+	 * @return
+	 */
+	public MidataId getActor() {
+		if (parent != null) return parent.getActor();
+		return cache.getAccessor();
+	}
+	
+	/**
+	 * who is the accessor, e.g. entity with the primary key unlocked
+	 * @return
+	 */
+	public MidataId getAccessor() {
+		return cache.getAccessor();
 	}
 	
 	protected String parentString() {
@@ -105,6 +142,43 @@ public abstract class AccessContext {
 		String report = getContextName()+" "+getAccessInfo(record)+": result mayCreate="+result;
 		if (parent != null) return parent.getMayCreateRecordReport(record)+"\n"+report;
 		return report;
+	}
+	
+	public AccessContext forConsent(Consent consent) throws AppException {		
+		return new ConsentAccessContext(consent, getCache(), this);
+	}
+	
+	public AccessContext forConsentReshare(Consent consent) throws AppException {
+		return new ConsentAccessContext(consent, getCache(), null);
+	}
+	
+	public AccessContext forPublic() throws AppException {
+		return new PublicAccessContext(Feature_PublicData.getPublicAPSCache(getRootCache()), this);
+	}
+	
+	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
+		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(getCache(), ugm), this);
+	}
+	
+	public AccessContext forAps(MidataId aps) throws AppException {
+		if (getTargetAps().equals(aps)) return this;
+		else if (aps.equals(RuntimeConstants.instance.publicUser)) return forPublic();
+		else {
+          Consent consent = Consent.getByIdUnchecked(aps, Consent.ALL);
+          if (consent != null) {
+        	  if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN && !consent.owner.equals(getAccessor())) throw new InternalServerException("error.internal",  "Consent-Context creation not possible");
+        	  return forConsent(consent);
+          }
+          
+          Space space = Space.getByIdAndOwner(aps, getOwner(), Space.ALL);
+          if (space != null) return new SpaceAccessContext(space, getCache(), null, space.owner);
+		}
+		
+		throw new InternalServerException("error.internal",  "Consent creation not possible");
+	}
+	
+	public AccessContext forApsReshare(MidataId aps) throws AppException {
+		return forAps(aps);
 	}
 	
 }

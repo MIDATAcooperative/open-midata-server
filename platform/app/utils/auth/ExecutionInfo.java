@@ -79,6 +79,15 @@ public class ExecutionInfo {
 		this.role = role;
 	}
 	
+	public ExecutionInfo(MidataId executor, UserRole role, AccessContext context) throws InternalServerException {
+		this.executorId = executor;
+		this.ownerId = executor;
+		this.targetAPS = executor;
+		this.pluginId = RuntimeConstants.instance.portalPlugin;
+		this.context = context;
+		this.role = role;
+	}
+	
 	public static ExecutionInfo checkToken(Request request, String token, boolean allowInactive) throws AppException {
 		String plaintext = TokenCrypto.decryptToken(token);
 		if (plaintext == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");	
@@ -115,9 +124,9 @@ public class ExecutionInfo {
 			result.recordId = authToken.recordId;			
 			result.ownerId = authToken.userId;
 			
-			Consent consent = Circles.getConsentById(authToken.userId, authToken.spaceId, Consent.ALL);
+			Consent consent = Circles.getConsentById(RecordManager.instance.createLoginOnlyContext(authToken.userId), authToken.spaceId, Consent.ALL);
 			if (consent != null) {
-			  result.context = RecordManager.instance.createContextFromConsent(authToken.executorId, consent);
+			  result.context = RecordManager.instance.createRootContextFromConsent(authToken.executorId, consent);
 			} else {
 			  result.context = RecordManager.instance.createContextFromAccount(authToken.executorId);
 			}
@@ -133,13 +142,13 @@ public class ExecutionInfo {
 					
 			User targetUser = Member.getById(authToken.userId,Sets.create("myaps", "tokens"));
 			if (targetUser == null) {
-				Consent c = Circles.getConsentById(authToken.executorId, authToken.userId, Sets.create("owner", "authorized"));
+				Consent c = Circles.getConsentById(RecordManager.instance.createLoginOnlyContext(authToken.executorId), authToken.userId, Sets.create("owner", "authorized"));
 				if (c != null) {
 					result.ownerId = c.owner;
 				} else throw new BadRequestException("error.internal", "Invalid authToken.");
 			}
 			
-			result.context = RecordManager.instance.createContextFromSpace(result.executorId, space, result.ownerId);
+			result.context = RecordManager.instance.createRootContextFromSpace(result.executorId, space, result.ownerId);
 			
 			if (result.role.equals(UserRole.PROVIDER) && !result.ownerId.equals(result.executorId)) {
 				result.context = ((SpaceAccessContext) result.context).withRestrictions(CMaps.map("consent-type-exclude", "HEALTHCARE"));
@@ -150,16 +159,15 @@ public class ExecutionInfo {
 			if (appInstance == null) OAuth2.invalidToken(); 
 
 		    if (!appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
-		        
-		        
-			if (appInstance.sharingQuery == null) {
-				appInstance.sharingQuery = RecordManager.instance.getMeta(authToken.executorId, authToken.spaceId, "_query").toMap();
-			}
-									                                               
+		        		        												                                              
 			result.ownerId = appInstance.owner;
 			result.pluginId = appInstance.applicationId;
 			result.targetAPS = appInstance._id;
 			result.context = RecordManager.instance.createContextFromApp(result.executorId, appInstance);
+			
+			if (appInstance.sharingQuery == null) {
+				appInstance.sharingQuery = RecordManager.instance.getMeta(result.context, authToken.spaceId, "_query").toMap();
+			}
 			
 		} 
 	   AccessLog.log("using as context:"+result.context.toString());
@@ -195,11 +203,13 @@ public class ExecutionInfo {
 		result.executorId = appInstance._id;
 		result.role = authToken.role;
         
+		AccessContext tempContext = RecordManager.instance.createLoginOnlyContext(authToken.appInstanceId);
+		
 		if (appInstance.sharingQuery == null) {
-			appInstance.sharingQuery = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_query").toMap();
+			appInstance.sharingQuery = RecordManager.instance.getMeta(tempContext, authToken.appInstanceId, "_query").toMap();
 		}
 		
-		Map<String, Object> appobj = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_app").toMap();
+		Map<String, Object> appobj = RecordManager.instance.getMeta(tempContext, authToken.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
 			MidataId alias = new MidataId(appobj.get("alias").toString());
 			byte[] key = (byte[]) appobj.get("aliaskey");

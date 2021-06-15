@@ -760,7 +760,7 @@ export default {
 	confirmConsent() {
         const { $data, $route, $router } = this, me = this;
 		circles.unconfirmed = 0;
-		me.doAction("confirm", hc.confirm($data.consent._id).then(function() { $data.reinit(); }));	
+		me.doAction("confirm", hc.confirm($data.consent._id).then(function() { me.reinit(); }));	
 	},
 	
 	mayReject() {

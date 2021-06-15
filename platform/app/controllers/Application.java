@@ -64,6 +64,7 @@ import play.routing.JavaScriptReverseRouter;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.access.AccessContext;
 import utils.access.DBRecord;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -571,7 +572,7 @@ public class Application extends APIController {
 		
 		// This is a dummy query to check if provided passphrase works
 		try {
-		  RecordManager.instance.list(userId, getRole(), RecordManager.instance.createContextFromAccount(userId), CMaps.map("format","zzzzzz"), Sets.create("name"));
+		  RecordManager.instance.list(getRole(), portalContext(), CMaps.map("format","zzzzzz"), Sets.create("name"));
 		} catch (InternalServerException e) { throw new BadRequestException("error.passphrase_old", "Old passphrase not correct."); }
 		
 		KeyManager.instance.changePassphrase(userId, passphrase);
@@ -747,6 +748,7 @@ public class Application extends APIController {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "passphrase");
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		
 		String passphrase = JsonValidation.getString(json, "passphrase");
 		
@@ -754,13 +756,13 @@ public class Application extends APIController {
 		KeyManager.instance.persist(userId);
 		
 		try {
-		  RecordManager.instance.list(userId, getRole(),  RecordManager.instance.createContextFromAccount(userId), CMaps.map("format","zzzzzzz"), Sets.create("name"));
+		  RecordManager.instance.list(getRole(),  context, CMaps.map("format","zzzzzzz"), Sets.create("name"));
 		} catch (InternalServerException e) {
 		  throw new BadRequestException("error.invalid.passphrase", "Bad Passphrase");
 		}
 					
 		User user = User.getById(userId , Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
-		user = PostLoginActions.check(user);
+		user = PostLoginActions.check(context, user);
 		
 		// response
 		return ok();
@@ -835,7 +837,7 @@ public class Application extends APIController {
 		  KeyManager.instance.newFutureLogin(user);	
 		  PWRecovery.storeRecoveryData(user._id, recover);
 			
-		  user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
+		  user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 		  Member.set(user._id, "myaps", user.myaps);
 			
 		  PatientResourceProvider.updatePatientForAccount(user._id);
@@ -843,13 +845,13 @@ public class Application extends APIController {
 		} else {
 		  handle = registerCreateUser(user);		
 		}
-		Circles.fetchExistingConsents(user._id, user.emailLC);
+		Circles.fetchExistingConsents(RecordManager.instance.createContextFromAccount(user._id), user.emailLC);
 		
 		sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);
 		UsageStatsRecorder.protokoll(RuntimeConstants.instance.portalPlugin, "portal", UsageAction.REGISTRATION);
 		
-		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, user._id);				
+		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));				
 	}
 	
 	/*public static void handlePreCreated(Member user) throws AppException {
@@ -905,7 +907,7 @@ public class Application extends APIController {
 		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 		KeyManager.instance.unlock(user._id, null);	
 		
-		user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
+		user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
 		
 		PatientResourceProvider.updatePatientForAccount(user._id);

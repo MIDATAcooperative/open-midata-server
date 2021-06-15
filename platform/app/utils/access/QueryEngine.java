@@ -69,8 +69,8 @@ class QueryEngine {
 		return fullQuery(properties, fields, aps, context, cache);
 	}
 	
-	public static Collection<RecordsInfo> info(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, AggregationType aggrType) throws AppException {		
-		return infoQuery(new Query("info-query",properties, Sets.create("group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps, context != null ? context : new DummyAccessContext(cache), null), aps, false, aggrType, null);
+	public static Collection<RecordsInfo> info(MidataId aps, AccessContext context, Map<String, Object> properties, AggregationType aggrType) throws AppException {		
+		return infoQuery(new Query("info-query",properties, Sets.create("group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(context.getCache(), aps), aps, context, null), aps, false, aggrType, null);
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, MidataId aps, List<DBRecord> candidates) throws AppException {

@@ -64,7 +64,7 @@ public class Feature_Indexes extends Feature {
 			return null;
 		if (q.getApsId().equals(aps))
 			return q.getContext();
-		if (q.getCache().getExecutor().equals(aps))
+		if (q.getCache().getAccessor().equals(aps))
 			return new AccountAccessContext(q.getCache(), q.getContext());
 		Consent c = q.getCache().getConsent(aps);
 		if (c == null)
@@ -80,13 +80,13 @@ public class Feature_Indexes extends Feature {
 			if (!q.restrictedBy("format"))
 				throw new BadRequestException("error.invalid.query", "Queries using an index must be restricted by format!");
 		
-			boolean forceCreate = q.getCache().getExecutor().equals(RuntimeConstants.publicGroup) && q.getApsId().equals(RuntimeConstants.instance.publicUser);
-			IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), forceCreate);
+			boolean forceCreate = q.getCache().getAccessor().equals(RuntimeConstants.publicGroup) && q.getApsId().equals(RuntimeConstants.instance.publicUser);
+			IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getAccessor(), q.getApsId(), forceCreate);
 
 			if (pseudo == null) {
 				List<DBRecord> recs = next.query(q);
 				if (recs.size() > AUTOCREATE_INDEX_COUNT) {
-					pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
+					pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getAccessor(), q.getApsId(), true);
 				} else {
 					return ProcessingTools.dbiterator("non-indexed()", recs.iterator());
 				}
@@ -348,7 +348,7 @@ public class Feature_Indexes extends Feature {
 
 			}
 			
-			myAccess.revalidate(q.getCache().getExecutor(), result);	
+			myAccess.revalidate(q.getCache().getAccessor(), result);	
             }
 			Collections.sort(result);
 			size = result.size();
@@ -482,7 +482,7 @@ public class Feature_Indexes extends Feature {
 				matches = IndexManager.instance.queryIndex(root, condition);
 			}
 			if (doupdate)
-				IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
+				IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getAccessor(), index, targetAps);
 			AccessLog.log("Index use: prep=" + (t2 - t1) + " query=" + (System.currentTimeMillis() - t2));
 			return matches;
 

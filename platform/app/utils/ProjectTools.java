@@ -29,6 +29,7 @@ import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ResearcherRole;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.KeyManager;
@@ -42,8 +43,8 @@ import utils.exceptions.InternalServerException;
  */
 public class ProjectTools {
 
-    public static void addToUserGroup(MidataId executorId, UserGroupMember self, ResearcherRole role, Set<MidataId> targetUserIds) throws AppException {
-        BSONObject meta = RecordManager.instance.getMeta(executorId, self._id, "_usergroup");
+    public static void addToUserGroup(AccessContext context, UserGroupMember self, ResearcherRole role, Set<MidataId> targetUserIds) throws AppException {
+        BSONObject meta = RecordManager.instance.getMeta(context, self._id, "_usergroup");
         byte[] key = (byte[]) meta.get("aliaskey");
         MidataId groupId = self.userGroup;
 		KeyManager.instance.unlock(groupId, self._id, key);
@@ -51,10 +52,10 @@ public class ProjectTools {
 		for (MidataId targetUserId : targetUserIds) {
 			UserGroupMember old = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
 			if (old == null) {	
-				addToUserGroup(executorId, role, groupId, targetUserId);
+				addToUserGroup(context, role, groupId, targetUserId);
 			} else {
 								
-				AuditManager.instance.addAuditEvent(AuditEventType.UPDATED_ROLE_IN_TEAM, null, executorId, targetUserId, null, groupId);
+				AuditManager.instance.addAuditEvent(AuditEventType.UPDATED_ROLE_IN_TEAM, null, context.getActor(), targetUserId, null, groupId);
 				
 				if (old.member.equals(self.member)) {
 					int size = UserGroupMember.getAllActiveByGroup(self.userGroup).size();
@@ -76,9 +77,9 @@ public class ProjectTools {
 				
     }
 
-    public static void addToUserGroup(MidataId executorId, ResearcherRole role, MidataId groupId, MidataId targetUserId)
+    public static void addToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, MidataId targetUserId)
             throws AppException, AuthException, InternalServerException {
-        AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, executorId, targetUserId, null, groupId);
+        AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, context.getActor(), targetUserId, null, groupId);
         
         UserGroupMember member = new UserGroupMember();
         member._id = new MidataId();
@@ -90,8 +91,8 @@ public class ProjectTools {
         																					
         Map<String, Object> accessData = new HashMap<String, Object>();
         accessData.put("aliaskey", KeyManager.instance.generateAlias(groupId, member._id));
-        RecordManager.instance.createAnonymizedAPS(targetUserId, executorId, member._id, false);
-        RecordManager.instance.setMeta(executorId, member._id, "_usergroup", accessData);
+        RecordManager.instance.createAnonymizedAPS(targetUserId, context.getAccessor(), member._id, false);
+        RecordManager.instance.setMeta(context, member._id, "_usergroup", accessData);
         
         member.add();
     }

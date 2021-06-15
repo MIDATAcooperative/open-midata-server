@@ -172,9 +172,9 @@ public class Feature_Pseudonymization extends Feature {
 	
 	private final static Set<String> FIELDS_FOR_PSEUDONYMIZATION = Collections.unmodifiableSet(Sets.create("_id","format"));
 	
-	public static Pair<MidataId,String> pseudonymizeUser(MidataId executor, Consent consent) throws AppException {
+	public static Pair<MidataId,String> pseudonymizeUser(AccessContext context, Consent consent) throws AppException {
 		if (consent.getOwnerName() != null && !consent.getOwnerName().equals("?")) return Pair.of(consent._id,consent.ownerName);
-		BasicBSONObject patient = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_patient");
+		BasicBSONObject patient = (BasicBSONObject) RecordManager.instance.getMeta(context, consent._id, "_patient");
 		if (patient != null) {
 			MidataId pseudoId = new MidataId(patient.getString("id"));
 			String pseudoName = patient.getString("name");
@@ -193,7 +193,7 @@ public class Feature_Pseudonymization extends Feature {
 			String pseudoName = patient.getString("name");
 			return Pair.of(pseudoId, pseudoName);
 		}
-		AccessLog.log(consent._id+" ow="+consent.owner+" executor="+cache.getExecutor()+" acowner="+cache.getAccountOwner());
+		AccessLog.log(consent._id+" ow="+consent.owner+" executor="+cache.getAccessor()+" acowner="+cache.getAccountOwner());
 		throw new InternalServerException("error.internal", "Cannot pseudonymize");
 	}
 	
@@ -212,8 +212,8 @@ public class Feature_Pseudonymization extends Feature {
 		throw new InternalServerException("error.internal", "Cannot unpseudonymize");
 	}
 	
-	public static void addPseudonymization(MidataId executorId, MidataId consentId, MidataId pseudoId, String pseudoName) throws AppException {
-		RecordManager.instance.setMeta(executorId, consentId, "_patient", CMaps.map("id", pseudoId.toString()).map("name", pseudoName));		
+	public static void addPseudonymization(AccessContext context, MidataId consentId, MidataId pseudoId, String pseudoName) throws AppException {
+		RecordManager.instance.setMeta(context, consentId, "_patient", CMaps.map("id", pseudoId.toString()).map("name", pseudoName));		
 	}
 
 }

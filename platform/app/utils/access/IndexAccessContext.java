@@ -60,7 +60,7 @@ public class IndexAccessContext extends AccessContext {
 
 	@Override
 	public MidataId getTargetAps() {
-		return cache.getExecutor();
+		return cache.getAccessor();
 	}
 
 	@Override

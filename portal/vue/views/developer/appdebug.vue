@@ -175,7 +175,8 @@ export default {
             { value : "PROVIDER" , name : "enum.userrole.PROVIDER"},
             { value : "RESEARCH" , name : "enum.userrole.RESEARCH"},   		
             { value : "DEVELOPER" , name : "enum.userrole.DEVELOPER"}
-        ]
+        ],
+        body : ""
     }),
 
     components: {  Panel, ErrorBox, FormGroup, ChangeLog, Password },
@@ -202,7 +203,7 @@ export default {
           if ($data.type !== "GET") {
           try {
             body = JSON.parse($data.body);
-          } catch (e) {
+          } catch (e) {          
             $data.results = "Error processing body: \n"+e;
             return;
           }
