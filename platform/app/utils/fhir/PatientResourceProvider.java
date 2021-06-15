@@ -573,16 +573,18 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	public static void createPatientForStudyParticipation(ExecutionInfo inf, Study study, StudyParticipation part, Member member) throws AppException {
 
+		AccessContext context = RecordManager.instance.createSharingContext(inf.context, part.owner);
 		PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
 		PatientResourceProvider.setExecutionInfo(inf);
 		String userName = "P-" + CodeGenerator.nextUniqueCode();			
 		Record record = PatientResourceProvider.newRecord("fhir/Patient");
+		record.owner = context.getOwner();
 		MidataId pseudo = CodeGenerator.nextMidataId();
 		Patient patient = generatePatientForStudyParticipation(pseudo, userName, member, study);
 		patient.setId(pseudo.toString());
 		patientProvider.prepare(record, patient);
 		record.content = "PseudonymizedPatient";
-		AccessContext context = RecordManager.instance.createSharingContext(inf.context, part.owner);
+		
 		patientProvider.insertRecord(record, patient, context);
 
 		Feature_Pseudonymization.addPseudonymization(context, part._id, pseudo, userName);

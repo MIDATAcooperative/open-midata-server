@@ -125,7 +125,7 @@ public class Services extends APIController {
         for (MobileAppInstance inst : instances) {
             if (inst.appVersion != app.pluginVersion) inst.status = ConsentStatus.FROZEN;
         }
-        return ok(JsonOutput.toJson(new ArrayList(instances), "Consent", MobileAppInstance.APPINSTANCE_ALL)).as("application/json");
+        return ok(JsonOutput.toJson(new ArrayList(instances), "MobileAppInstance", MobileAppInstance.APPINSTANCE_ALL)).as("application/json");
     }
     
 	@APICall

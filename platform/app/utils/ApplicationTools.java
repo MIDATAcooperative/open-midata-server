@@ -220,11 +220,11 @@ public class ApplicationTools {
 		if (serviceInstance.studyRelatedOnly) query.put("study-related", "true");
 
 		appInstance.set(appInstance._id, "sharingQuery", query);
-		AccessContext sharingContext = RecordManager.instance.createSharingContext(context, serviceInstance._id);
+		AccessContext sharingContext = context.forServiceInstance(serviceInstance);
 		RecordManager.instance.shareByQuery(sharingContext, appInstance._id, appInstance.sharingQuery);
 		
 		// Confirm app consent *		
-		Circles.consentStatusChange(context, appInstance, ConsentStatus.ACTIVE);
+		Circles.consentStatusChange(sharingContext, appInstance, ConsentStatus.ACTIVE);
 		
 		// Gain access to executor account
 		if (serviceInstance.executorAccount.equals(serviceInstance._id)) {

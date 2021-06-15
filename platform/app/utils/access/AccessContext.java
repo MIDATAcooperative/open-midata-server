@@ -22,6 +22,7 @@ import java.util.Map;
 import models.Consent;
 import models.MidataId;
 import models.Record;
+import models.ServiceInstance;
 import models.Space;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
@@ -154,6 +155,10 @@ public abstract class AccessContext {
 	
 	public AccessContext forPublic() throws AppException {
 		return new PublicAccessContext(Feature_PublicData.getPublicAPSCache(getRootCache()), this);
+	}
+	
+	public AccessContext forServiceInstance(ServiceInstance instance) throws AppException {
+		return new ServiceInstanceAccessContext(getCache(), instance);
 	}
 	
 	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
