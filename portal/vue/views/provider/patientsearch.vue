@@ -51,14 +51,14 @@
 			</div>		
 			
 			<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary mr-1" v-t="'common.search_btn'"></button>
-			<router-link v-if="searched && !member._id" :to="{ path : './addpatient', query : { email : criteria.email } }" class="btn btn-default mr-1" v-t="'provider_patientsearch.add_new_account_btn'"></router-link>
+			<router-link v-if="searched && (!member || !member._id)" :to="{ path : './addpatient', query : { email : criteria.email } }" class="btn btn-default mr-1" v-t="'provider_patientsearch.add_new_account_btn'"></router-link>
 			<button v-if="searched" @click="addConsent();" :disabled="action!=null" class="btn btn-default mr-1" v-t="'provider_patientsearch.add_new_consent_btn'"></button>
 				
 		</form>
 		
     </panel>
 	
-	<div v-if="member">
+	<div v-if="member && !isBusy">
 	    <div class="row">
             <div class="col-sm-6">
                 <panel :title="$t('provider_patientsearch.address')" :busy="isBusy">

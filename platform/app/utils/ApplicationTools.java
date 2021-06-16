@@ -599,6 +599,7 @@ public class ApplicationTools {
             try {
               ApplicationTools.removeAppInstance(context.getAccessor(), appInstance);            
             } catch (Exception e) {
+            	AccessLog.logEnd("end remove app instance (exception)");
                 MobileAppInstance.delete(instance.executorAccount, appInstance._id);
             }
         }

@@ -55,7 +55,7 @@
                             <center>{{ $t('workspace.midata') }}</center>
                             <div class="useraccount">{{ $t('workspace.useraccount') }}
                                 <div v-for="user in usedAccounts" :key="user.sessionToken">{{ user.role }}: {{ user.name }}</div>
-                                <div v-for="user in usedAccounts" :key="user.sessionToken">{{ user }}</div>
+                                <!-- <div v-for="user in usedAccounts" :key="user.sessionToken">{{ user }}</div> -->
                             </div>
 
                             <div @click="goapp(app)" class="clickable service" v-for="app in services" :key="app._id">
@@ -144,18 +144,24 @@
         <p v-else v-t="'workspace.no_issues'"></p>
     </panel>
 
-    <panel :title="$t('workspace.summary')" :busy="isBusy" v-if="summary.length">
-        <table class="table table-sm">
-			<tr>
-				<th v-t="'oauth2.requests_access_short'"></th>
-				<th v-for="sh in short" :key="sh">{{ sh }}</th>			
-			</tr>
-			<tr v-for="line in summary" :key="line.label">
-				<td>{{ line.label }}</td>
-				<td v-for="(sh,idx) in short" :key="idx"><i class="fas fa-check" v-if="line.checks[idx]"></i></td>
-			
-			</tr>
-		</table>    
+    <panel :title="$t('workspace.summary')" :busy="isBusy" v-if="summary.length">        
+        <div v-for="inp of input" :key="inp.letter">
+            <b>{{ inp.letter }}</b> : <span v-if="inp.mode">{{ $t(inp.mode) }} <i class="fas fa-arrow-right"></i></span> {{ inp.system }} ({{ inp.short}}) {{ inp.target }}
+        </div>
+        <table class="table table-sm mt-2">
+            <tr>
+                <th v-t="'oauth2.requests_access_short'"></th>
+                <th class="d-none d-sm-table-cell" v-for="sh in short" :key="sh">{{ sh }}</th>
+                <!-- <td></td> -->
+            </tr>
+            <tr v-for="line in summary" :key="line.label">
+                <td>{{ line.label }}
+                    <div class="d-inline-block d-sm-none float-right text-muted">{{ line.letters }}</div>
+                </td>
+                <td class="d-none d-sm-table-cell" v-for="(sh,idx) in short" :key="idx"><i class="fas fa-check" v-if="line.checks[idx]"></i></td>
+                <!-- <td>{{ line.summary }}</td> -->
+            </tr>
+        </table>
 
     </panel>
 
@@ -475,7 +481,7 @@ function analyze(usedApps, usedProjects, usedAccounts, issues) {
         if (project.executionStatus == "PRE") add("zinfo", "workspace.info.project_not_running", project.name);
         if (project.executionStatus == "FINISHED") add("error", "workspace.error.project_finished", project.name);
         if (project.executionStatus == "ABORTED") add("error", "workspace.error.project_aborted", project.name);
-        if (!project.groups || project.groups.length==0) add("error", "workspace.error.project_no_groups", project.name);
+        // if (!project.groups || project.groups.length==0) add("error", "workspace.error.project_no_groups", project.name);
         if (!project.requirements || project.requirements.length==0) add("zinfo", "workspace.info.project_no_requirements", project.name);
 
         if (usedAccounts.length) {
@@ -644,9 +650,9 @@ export default {
                         if (result.data.length==0) {
                             me.addError("workspace.error.project_no_exist", entry.name);
                         } else {
-                            return server.get(jsRoutes.controllers.research.Studies.get(result.data[0]._id).url)
+                            return server.get(jsRoutes.controllers.members.Studies.get(result.data[0]._id).url)
                             .then(function(result2) {
-                                let project = result2.data;
+                                let project = result2.data.study;
                                 project.labels = [];
                                 $data.usedProjects.push(project);                                  
                                 return labels.prepareQuery($t, project.recordQuery, null, project.labels, project.requiredInformation)
@@ -811,22 +817,29 @@ export default {
             let idx = 1;          
             let input = [];
             	
-            	
-            for (let app of $data.usedApps) {
-                input.push({ system : app.name, labels:app.labels });
-                if (app.type == "service" || app.type == "external") { short.push($t('oauth2.short_service')+letters[idx]); }
-                else short.push($t('oauth2.short_app')+letters[idx]); 
+           
+		
+		  for (let app of $data.usedApps) {
+                let shortName =(app.type == "service" || app.type == "external") ? $t('oauth2.short_service') : $t('oauth2.short_app');
+                input.push({ system : app.name, letter : letters[idx], labels:app.labels, short : shortName });                
+                short.push(letters[idx]); 
                 idx++;           
             }
 
             for (let project of $data.usedProjects) {
-                input.push({ system : project.name, labels:project.labels });
-                short.push($t('oauth2.short_'+(project.type.toLowerCase()))+letters[idx]);
+                input.push({ system : project.name, letter : letters[idx], labels:project.labels, short : $t('oauth2.short_'+(project.type.toLowerCase())) });
+                short.push(letters[idx]);
                 idx++;	
             }
-                                    
-            $data.summary = labels.joinQueries(this.$t, input);
-            $data.short = short;
+
+
+		//if ($data.
+		console.log(input);
+		$data.summary = labels.joinQueries(this.$t, input);
+		$data.short = short;
+		$data.input = input;
+            	
+                                            
         }
                    
     },

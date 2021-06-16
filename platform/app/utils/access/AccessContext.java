@@ -119,7 +119,7 @@ public abstract class AccessContext {
 	}
 	
 	protected String parentString() {
-		if (parent==null) return "";
+		if (parent==null) return "(cache "+cache.getAccessor()+"/"+cache.getAccountOwner()+")";
 		return parent.toString();
 	}
 	

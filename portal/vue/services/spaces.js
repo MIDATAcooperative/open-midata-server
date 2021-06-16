@@ -119,7 +119,7 @@ import server from "./server";
 						if (app.type === "oauth1" || app.type === "oauth2") {
 							$router.push({ path : "./importrecords", query : { "spaceId" : target._id, "params" : JSON.stringify(data.params) } });
 						} else {
-							$router.push({ path : "./spaces", query : { spaceId : target._id, params : JSON.stringify(data.params), user : data.user } });
+							$router.push({ path : "./spaces", query : { spaceId : target._id, user : data.user, params : JSON.stringify(data.params || {}) } });
 						}
 					} else {														
 						return apps.installPlugin(app._id, { applyRules : true, context : data.context, study : data.study })
@@ -129,7 +129,7 @@ import server from "./server";
 								if (app.type === "oauth1" || app.type === "oauth2") {
 									$router.push({ path : "./importrecords", query : { "spaceId" : result.data._id, params : JSON.stringify(data.params) } });
 								} else { 
-									$router.push({ path : './spaces', query : { spaceId : result.data._id, params : JSON.stringify(data.params), user : data.user } });
+									$router.push({ path : './spaces', query : { spaceId : result.data._id, user : data.user, params : JSON.stringify(data.params || {})  } });
 								}
 							} else {
 								if (app.type === "external" || app.type === "service") {

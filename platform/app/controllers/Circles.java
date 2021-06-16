@@ -72,6 +72,7 @@ import utils.access.APS;
 import utils.access.AccessContext;
 import utils.access.ConsentAccessContext;
 import utils.access.Feature_Streams;
+import utils.access.PasscodeAccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
@@ -560,14 +561,14 @@ public class Circles extends APIController {
 		try {
 		   String hpasscode = PasswordHash.createHashGivenSalt(passcode.toCharArray(), ownerId.toByteArray());
 		   
-		   Consent consent = Consent.getByOwnerAndPasscode(ownerId, hpasscode, Consent.SMALL);
+		   Consent consent = Consent.getByOwnerAndPasscode(ownerId, hpasscode, Consent.ALL);
 		   if (consent == null) throw new BadRequestException("error.invalid.passcode", "Bad passcode");
 		   
 		   KeyManager.instance.unlock(consent._id, passcode);
 		   		   		   
 		   // Maybe executor problem consent._id vs executor RecordManager.instance.shareAPS(consent._id, RecordManager.instance.createContextFromConsent(executorId, consent),consent._id, Collections.singleton(groupExecutorId));		   
-		   
-		   RecordManager.instance.shareAPS(context.forConsentReshare(consent), Collections.singleton(groupExecutorId));
+		   AccessContext passcodeContext = new PasscodeAccessContext(context, consent, consent._id);
+		   RecordManager.instance.shareAPS(passcodeContext, Collections.singleton(groupExecutorId));
 		   
 		   consent.authorized.add(groupExecutorId);
 		   if (!groupExecutorId.equals(executorId)) {

@@ -92,7 +92,7 @@ export default {
 		        return;
 	        }
         
-            me.doAction("install", spaces.openAppLink($router, $route, $data.userId, { plugin : app, context : $route.query.context, study : $route.query.study }));	       
+            me.doAction("install", spaces.openAppLink($router, $route, $data.userId, { plugin : app, context : $route.query.context, study : $route.query.study, user : $route.query.user }));	       
 	    },
         
         init() {

@@ -41,7 +41,7 @@ public class Feature_PublicData extends Feature {
 	}
 				
 	@Override
-	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {		
 		if (q.restrictedBy("public") && q.getApsId().equals(q.getCache().getAccountOwner())) {
 			String mode = q.getStringRestriction("public");
 			

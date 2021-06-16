@@ -42,7 +42,7 @@ public class ServiceInstanceAccessContext extends AccessContext {
 
 	@Override
 	public MidataId getTargetAps() {
-		return serviceInstance._id;
+		return serviceInstance.executorAccount;
 	}
 	
 	
