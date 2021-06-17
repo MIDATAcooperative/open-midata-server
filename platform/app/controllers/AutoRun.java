@@ -62,6 +62,7 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.ServerTools;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.auth.SpaceToken;
@@ -285,6 +286,7 @@ public class AutoRun extends APIController {
 		    		AccessLog.logStart("jobs", request.toString());
 			    	KeyManager.instance.continueSession(request.handle);
 			    	MidataId autorunner = request.autorunner;
+			    	AccessContext context = RecordManager.instance.createContextFromAccount(autorunner);
 			    	Space space = request.space;
 			        
 			    	final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
@@ -312,7 +314,7 @@ public class AutoRun extends APIController {
 					}
 		
 					if (plugin.type != null && plugin.type.equals("oauth2")) {
-						BSONObject oauthmeta = RecordManager.instance.getMeta(autorunner, space._id, "_oauth");
+						BSONObject oauthmeta = RecordManager.instance.getMeta(context, space._id, "_oauth");
 						if (oauthmeta != null) {
 							if (oauthmeta.get("refreshToken") != null) {							                        				
 								Plugins.requestAccessTokenOAuth2FromRefreshToken(request.handle, autorunner, plugin, space._id.toString(), oauthmeta.toMap()).thenAcceptAsync(success1 -> {
@@ -341,7 +343,7 @@ public class AutoRun extends APIController {
 							}
 						} else {}
 					} else if (plugin.type != null && plugin.type.equals("oauth1")) {
-						BSONObject oauthmeta = RecordManager.instance.getMeta(autorunner, space._id, "_oauth1");
+						BSONObject oauthmeta = RecordManager.instance.getMeta(context, space._id, "_oauth1");
 						if (oauthmeta != null) {
 							AccessLog.log("OAuth 1");
 							AccessLog.log(nodepath+" "+visPath+"/"+plugin.filename+"/server.js"+" "+tokenstr+" "+lang);

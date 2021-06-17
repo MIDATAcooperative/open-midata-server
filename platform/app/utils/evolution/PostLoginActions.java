@@ -22,13 +22,14 @@ import models.User;
 import models.enums.AccountActionFlags;
 import models.enums.UserRole;
 import utils.AccessLog;
+import utils.access.AccessContext;
 import utils.exceptions.AppException;
 import utils.fhir.PatientResourceProvider;
 
 public class PostLoginActions {
 
-	public static User check(User user) throws AppException {
-		boolean wasOld = AccountPatches.check(user);
+	public static User check(AccessContext context, User user) throws AppException {
+		boolean wasOld = AccountPatches.check(context, user);
 		
 		if (wasOld) {
 			AccessLog.log("Finished patching account.");

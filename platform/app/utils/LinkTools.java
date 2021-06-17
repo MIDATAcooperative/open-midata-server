@@ -35,6 +35,7 @@ import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.LinkTargetType;
 import models.enums.WritePermissionType;
+import utils.access.AccessContext;
 import utils.access.Feature_FormatGroups;
 import utils.access.Query;
 import utils.collections.CMaps;
@@ -59,9 +60,9 @@ public class LinkTools {
 		}
 	}
 	
-	public static void createConsentForAppLink(MidataId targetUser, StudyAppLink link, Set<MidataId> observers) throws AppException {
+	public static void createConsentForAppLink(AccessContext context, StudyAppLink link, Set<MidataId> observers) throws AppException {
 	   MemberKey consent = new MemberKey();
-	   consent.owner = targetUser;
+	   consent.owner = context.getAccessor();
 	   consent.categoryCode = link.identifier;
 	   consent.name = "??";		
 	   consent.authorized = new HashSet<MidataId>();
@@ -80,7 +81,7 @@ public class LinkTools {
 		  consent.sharingQuery = convertAppQueryToConsent(pl.defaultQuery);		  
 	   }
 			
- 	   Circles.addConsent(targetUser, consent, true, null, false);					
+ 	   Circles.addConsent(context, consent, true, null, false);					
 		
 	}
 	

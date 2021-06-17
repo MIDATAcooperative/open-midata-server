@@ -163,14 +163,14 @@ public class Providers extends APIController {
 		KeyManager.instance.newFutureLogin(user);	
 		PWRecovery.storeRecoveryData(user._id, recover);
 				
-		RecordManager.instance.createPrivateAPS(user._id, user._id);		
+		RecordManager.instance.createPrivateAPS(null, user._id, user._id);		
 		
 		OrganizationResourceProvider.updateFromHP(user._id, provider);
 		
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		
-		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, user._id);
+		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));
 		
 	}
 	
@@ -204,7 +204,7 @@ public class Providers extends APIController {
 		}
 		HPUser.add(user);
 					
-		RecordManager.instance.createPrivateAPS(user._id, user._id);		
+		RecordManager.instance.createPrivateAPS(null, user._id, user._id);		
 		
 		Application.sendWelcomeMail(user, executingUser);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);

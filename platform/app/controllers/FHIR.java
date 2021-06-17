@@ -45,6 +45,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.RuntimeConstants;
+import utils.access.AccessContext;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
@@ -135,7 +136,7 @@ public class FHIR extends Controller {
 		ExecutionInfo info = getExecutionInfo(req);
         if (info != null && info.pluginId != null) {
 		
-        BSONObject query = RecordManager.instance.getMeta(info.executorId, info.targetAPS, "_query");
+        BSONObject query = RecordManager.instance.getMeta(info.context, info.targetAPS, "_query");
         if (query != null) {        	
         	Object st = query.get("study");
         	if (st instanceof Collection) st = ((Collection) st).iterator().next(); 
@@ -301,16 +302,16 @@ public class FHIR extends Controller {
 				        
         KeyManager.instance.login(60000l, false);
         KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
-        
+        AccessContext tempContext = RecordManager.instance.createLoginOnlyContext(RuntimeConstants.instance.publicUser);
 		info.executorId = instance._id;
 		info.role = UserRole.ANY;
 		info.overrideBaseUrl = baseURL;
         
 		if (instance.sharingQuery == null) {
-			instance.sharingQuery = RecordManager.instance.getMeta(RuntimeConstants.instance.publicUser, instance._id, "_query").toMap();
+			instance.sharingQuery = RecordManager.instance.getMeta(tempContext, instance._id, "_query").toMap();
 		}
 		
-		Map<String, Object> appobj = RecordManager.instance.getMeta(RuntimeConstants.instance.publicUser, instance._id, "_app").toMap();
+		Map<String, Object> appobj = RecordManager.instance.getMeta(tempContext, instance._id, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
 			MidataId alias = new MidataId(appobj.get("alias").toString());
 			byte[] key = (byte[]) appobj.get("aliaskey");

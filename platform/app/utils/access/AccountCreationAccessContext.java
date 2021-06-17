@@ -22,9 +22,9 @@ import models.Record;
 import utils.exceptions.AppException;
 
 public class AccountCreationAccessContext extends AccessContext {
-	
-	public AccountCreationAccessContext(AccessContext parent) throws AppException {
-	  super(parent.getCache(), parent);
+		
+	public AccountCreationAccessContext(AccessContext parent, MidataId newAccountId) throws AppException {
+	    super(new APSCache(newAccountId, newAccountId), parent);
 	}
 	
 	@Override
@@ -49,7 +49,7 @@ public class AccountCreationAccessContext extends AccessContext {
 
 	@Override
 	public MidataId getTargetAps() {
-		return parent.getTargetAps();
+		return getCache().getAccountOwner();
 	}
 
 	@Override
@@ -64,17 +64,17 @@ public class AccountCreationAccessContext extends AccessContext {
 
 	@Override
 	public MidataId getOwner() {
-		return parent.getOwner();
+		return getCache().getAccountOwner();
 	}
 
 	@Override
 	public MidataId getOwnerPseudonymized() throws AppException  {		
-		return parent.getOwnerPseudonymized();
+		return getCache().getAccountOwner();
 	}
 
 	@Override
 	public MidataId getSelf() {
-		return parent.getSelf();
+		return getCache().getAccountOwner();
 	}
 
 	@Override
@@ -95,6 +95,20 @@ public class AccountCreationAccessContext extends AccessContext {
 	@Override
 	public String getContextName() {
 		return "New account";
+	}
+
+	@Override
+	public MidataId getActor() {
+		return parent != null ? parent.getActor() : getCache().getAccountOwner();
+	}
+
+	@Override
+	public MidataId getAccessor() {
+		return getCache().getAccessor();
+	}
+	
+	public void close() throws AppException {
+		getCache().finishTouch();
 	}
 
 }

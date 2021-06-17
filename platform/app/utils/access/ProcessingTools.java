@@ -120,11 +120,10 @@ public class ProcessingTools {
 
 	public static List<DBRecord> collect(DBIterator<DBRecord> input) throws AppException {
 		List<DBRecord> result = new ArrayList<DBRecord>();
-		// int fail = 0;
-		
+				
 		while (input.hasNext()) {
 			result.add(input.next());
-			// fail++; if (fail > 1000) return result; // XXXXXXX
+			
 		}		
 		AccessLog.log("collected "+result.size()+" records from "+input.toString());
 		return result;

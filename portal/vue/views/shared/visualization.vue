@@ -110,7 +110,7 @@ export default {
         install(app) {
             const { $data, $route, $router } = this, me = this;
 	                    
-            me.doAction("install", spaces.openAppLink($router, $route, $data.userId, { plugin : app, context : $data.options.context, study : $route.query.study }));
+            me.doAction("install", spaces.openAppLink($router, $route, $route.query.user, { plugin : app, context : $data.options.context, study : $route.query.study, user : $route.query.user }));
 		
 	    },
         

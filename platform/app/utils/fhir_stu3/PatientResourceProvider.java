@@ -110,6 +110,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.access.AccessContext;
 import utils.access.DBIterator;
 import utils.access.Feature_Pseudonymization;
 import utils.access.RecordManager;
@@ -145,7 +146,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		MidataId targetId = new MidataId(id);
 
 		ExecutionInfo info = info();
-		List<Record> allRecs = RecordManager.instance.list(info.executorId, info.role, info.context, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
+		List<Record> allRecs = RecordManager.instance.list(info.role, info.context, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
 				RecordManager.COMPLETE_DATA);
 
 		if (allRecs == null || allRecs.size() == 0)
@@ -169,7 +170,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			
 			ExecutionInfo info = info();
 			MidataId targetId = MidataId.from(theId.getIdPart());
-			List<Record> allRecs = RecordManager.instance.list(info.executorId, info.role, info.context, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
+			List<Record> allRecs = RecordManager.instance.list(info.role, info.context, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
 					RecordManager.COMPLETE_DATA);
 
 			if (allRecs == null || allRecs.size() == 0)
@@ -204,7 +205,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		String id = theId.getIdPart();
 		MidataId targetId = new MidataId(id);
 
-		List<Record> records = RecordManager.instance.list(info().executorId, info().role, info().context,
+		List<Record> records = RecordManager.instance.list(info().role, info().context,
 				CMaps.map("owner", targetId).map("format", "fhir/Patient").map("history", true).map("sort", "lastUpdated desc"), RecordManager.COMPLETE_DATA);
 		if (records.isEmpty())
 			throw new ResourceNotFoundException(theId);
@@ -500,7 +501,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	public void updatePatientForAccount(Member member) throws AppException {
 		if (!member.role.equals(UserRole.MEMBER)) return;
-		List<Record> allExisting = RecordManager.instance.list(info().executorId, info().role, member._id,
+		AccessContext context = RecordManager.instance.createSharingContext(info().context, member._id);
+		List<Record> allExisting = RecordManager.instance.list(info().role, context,
 				CMaps.map("format", "fhir/Patient").map("owner", member._id).map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
 
 		if (allExisting.isEmpty()) {
@@ -566,7 +568,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		record.content = "PseudonymizedPatient";
 		patientProvider.insertRecord(record, patient);
 
-		RecordManager.instance.share(inf.executorId, member._id, part._id, Collections.singleton(record._id), false);
+		RecordManager.instance.share(inf.context, member._id, part._id, Collections.singleton(record._id), false);
 	}
 
 	public void prepare(Record record, Patient thePatient) {
@@ -591,7 +593,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			  if (sal.isConfirmed() && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
 				  StudyParticipation part = StudyParticipation.getByStudyAndMember(sal.studyId, record.owner, Sets.create("_id", "ownerName"));			  
 				  if (part != null && part.getOwnerName() != null) {					  					  
-					 Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(record.owner, part);
+					 Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(info().context, part);
 					  
 					 resource.addIdentifier(new Identifier().setValue(pseudo.getRight()).setSystem("http://midata.coop/identifier/participant-name"));
 					 resource.addIdentifier(new Identifier().setValue(pseudo.getLeft().toString()).setSystem("http://midata.coop/identifier/participant-id"));
@@ -806,7 +808,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		Plugin plugin = Plugin.getById(info().pluginId);
 		if (plugin.targetUserRole.equals(UserRole.RESEARCH)) {
 			AccessLog.log("is researcher app");
-			query = RecordManager.instance.getMeta(info().executorId, info().context.getTargetAps(), "_query");
+			query = RecordManager.instance.getMeta(info().context, info().context.getTargetAps(), "_query");
 			AccessLog.log("q=" + query.toString());
 		}
 
@@ -844,7 +846,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			executorId = user._id;
 			RecordManager.instance.setAccountOwner(user._id, user._id);
 
-			user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
+			user.myaps = RecordManager.instance.createPrivateAPS(info().context.getCache(),user._id, user._id);
 			Member.set(user._id, "myaps", user.myaps);
 
 			//Record record = newRecord("fhir/Patient");
@@ -887,7 +889,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			consent.sharingQuery.put("owner", "self");
 			consent.sharingQuery.put("app", plugin.filename);
 
-			Circles.addConsent(executorId, consent, false, null, true);
+			Circles.addConsent(info().context, consent, false, null, true);
 			
 			if (consent.status == ConsentStatus.UNCONFIRMED) {
 				try {
@@ -908,7 +910,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			if (existing == null) {
 				part = controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id, info().pluginId.equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP, null);
 			} else {
-				part = controllers.members.Studies.match(executorId, user._id, studyId, plugin._id, info().pluginId.equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP);
+				part = controllers.members.Studies.match(info.context, user._id, studyId, plugin._id, info().pluginId.equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP);
 			}
 			AccessLog.log("end request part");
 		}

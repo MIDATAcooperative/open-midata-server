@@ -246,6 +246,10 @@ public class Consent extends Model implements Comparable<Consent> {
 	public static Consent getMessagingActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.IMPLICIT), Consent.SMALL);
 	}
+	
+	public static Consent getRepresentativeActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
+		return Model.get(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.REPRESENTATIVE), Consent.SMALL);
+	}
 		
 	public static void set(MidataId consentId, String field, Object value) throws InternalServerException {
 		Model.set(Consent.class, collection, consentId, field, value);

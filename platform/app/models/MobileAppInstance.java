@@ -22,6 +22,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import utils.PasswordHash;
@@ -34,6 +36,7 @@ import utils.exceptions.InternalServerException;
  * data model class for a consent between a MIDATA member and a mobile application.
  *
  */
+@JsonFilter("MobileAppInstance")
 public class MobileAppInstance extends Consent {
 
 	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.ALL, "applicationId", "appVersion", "licence", "serviceId", "deviceId", "passcode");

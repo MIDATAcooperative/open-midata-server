@@ -79,7 +79,7 @@ public class MinimalSetup {
 			Admin.add(admin);
 			
 			//KeyManager.instance.unlock(admin._id, null);
-			RecordManager.instance.createPrivateAPS(admin._id, admin._id);
+			RecordManager.instance.createPrivateAPS(null, admin._id, admin._id);
 		}
 		
 		if (Developer.getByEmail("developers@midata.coop", Sets.create("_id")) == null) {
@@ -107,7 +107,7 @@ public class MinimalSetup {
 			Developer.add(developer);
 			
 			//KeyManager.instance.unlock(developer._id, null);
-			RecordManager.instance.createPrivateAPS(developer._id, developer._id);
+			RecordManager.instance.createPrivateAPS(null, developer._id, developer._id);
 		}	
 		
 		if (Admin.getByEmail(RuntimeConstants.AUTORUN_USERNAME, Sets.create("_id")) == null) {
@@ -135,7 +135,7 @@ public class MinimalSetup {
 			Admin.add(admin);
 			
 			//KeyManager.instance.unlock(admin._id, null);
-			RecordManager.instance.createPrivateAPS(admin._id, admin._id);
+			RecordManager.instance.createPrivateAPS(null, admin._id, admin._id);
 		}
 		
 		if (Admin.getByEmail(RuntimeConstants.BACKEND_SERVICE, Sets.create("_id")) == null) {
@@ -163,7 +163,7 @@ public class MinimalSetup {
 			Admin.add(admin);
 			
 			//KeyManager.instance.unlock(admin._id, null);
-			RecordManager.instance.createPrivateAPS(admin._id, admin._id);
+			RecordManager.instance.createPrivateAPS(null, admin._id, admin._id);
 		}
 		
 		if (Member.getByEmail(RuntimeConstants.PUBLIC_USER, Sets.create("_id")) == null) {
@@ -201,14 +201,14 @@ public class MinimalSetup {
 			ug.add();
 			
 			RecordManager.instance.createAnonymizedAPS(publicUser._id, ug._id, publicUser._id, false);
-			RecordManager.instance.createPrivateAPS(ug._id, ug._id);
+			RecordManager.instance.createPrivateAPS(null, ug._id, ug._id);
 		}
 		
 		// Bugfix for test instance - remove after next update
 		if (AccessPermissionSet.getById(RuntimeConstants.publicGroup)==null) {
 			KeyManager.instance.login(5000, false);
 			KeyManager.instance.unlock(RuntimeConstants.publicGroup, null);
-			RecordManager.instance.createPrivateAPS(RuntimeConstants.publicGroup, RuntimeConstants.publicGroup);
+			RecordManager.instance.createPrivateAPS(null, RuntimeConstants.publicGroup, RuntimeConstants.publicGroup);
 		}
 		// End bugfix
 		

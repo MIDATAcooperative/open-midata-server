@@ -18,6 +18,7 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -68,6 +69,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -138,7 +140,7 @@ public class Users extends APIController {
 		
 		if (properties.containsKey("_id") && properties.get("_id").toString().equals(request().attrs().get(play.mvc.Security.USERNAME))) {
 		  Rights.chk("Users.getSelf", getRole(), properties, fields);
-		} else if (properties.containsKey("role")) {
+		} else if (properties.containsKey("role") && !(properties.get("role") instanceof Collection)) {
 		  role = UserRole.valueOf(properties.get("role").toString());
 		  if (Rights.existsAction("Users.get"+role, getRole())) {
 		    Rights.chk("Users.get"+role.toString(), getRole(), properties, fields);
@@ -523,7 +525,7 @@ public class Users extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, userId);
 		
-		doAccountWipe(userId, userId);
+		doAccountWipe(portalContext(), userId);
 			
 		AuditManager.instance.success();
 		
@@ -534,7 +536,8 @@ public class Users extends APIController {
 		return ok();
 	}
 	
-	public static void doAccountWipe(MidataId executorId, MidataId userId) throws AppException {
+	public static void doAccountWipe(AccessContext context, MidataId userId) throws AppException {
+		MidataId executorId = context.getAccessor();
         SubscriptionData.deleteByOwner(userId);
 		
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
@@ -558,7 +561,7 @@ public class Users extends APIController {
 		for (StudyParticipation study : studies) {
 			if (study.pstatus == ParticipationStatus.MEMBER_REJECTED || study.pstatus == ParticipationStatus.MEMBER_RETREATED || study.pstatus == ParticipationStatus.RESEARCH_REJECTED) continue;
 			try {
-			  controllers.members.Studies.retreatParticipation(executorId, userId, study.study);
+			  controllers.members.Studies.retreatParticipation(context, userId, study.study);
 			} catch (Exception e) {}			
 		}
 		

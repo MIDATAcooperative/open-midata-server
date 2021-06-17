@@ -71,7 +71,7 @@ public class AuditEventBuilder {
 	}
 	
 	public AuditEventBuilder withModifiedUser(MidataId modifiedUser) throws InternalServerException {		
-		this.modifiedUser = User.getById(modifiedUser, User.ALL_USER);
+		if (modifiedUser!=null) this.modifiedUser = User.getById(modifiedUser, User.ALL_USER);
 		return this;
 	}
 	
@@ -103,7 +103,7 @@ public class AuditEventBuilder {
 	}
 	
 	public AuditEventBuilder withStudy(MidataId studyId) throws InternalServerException {
-		this.study = Study.getById(studyId, Study.ALL);
+		if (studyId!=null) this.study = Study.getById(studyId, Study.ALL);
 		return this;
 	}
 	

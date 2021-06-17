@@ -30,6 +30,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.collections.Sets;
@@ -55,11 +56,12 @@ public class PortalConfig extends APIController {
 	public Result getConfig() throws JsonValidationException, AppException {
 	
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		
 	    Space config = Space.getByOwnerSpecialContext(userId, "portal", Sets.create("name"));
 	    if (config == null) return ok();
 	    
-		BSONObject meta = RecordManager.instance.getMeta(userId, config._id, "_config");		
+		BSONObject meta = RecordManager.instance.getMeta(context, config._id, "_config");		
 		if (meta != null) return ok(Json.toJson(meta.toMap()));
 		
 		return ok();
@@ -76,6 +78,7 @@ public class PortalConfig extends APIController {
 	@APICall
 	public Result setConfig() throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 
 		// validate json
 		JsonNode json = request().body().asJson();		
@@ -88,7 +91,7 @@ public class PortalConfig extends APIController {
 		
 		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
 		
-		RecordManager.instance.setMeta(userId, configspace._id, "_config", config);
+		RecordManager.instance.setMeta(context, configspace._id, "_config", config);
 						
 		return ok();
 	}

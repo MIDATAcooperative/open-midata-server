@@ -26,6 +26,8 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.access.AccessContext;
+import utils.access.RecordManager;
 import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
 import utils.exceptions.AuthException;
@@ -60,6 +62,11 @@ public abstract class APIController extends Controller {
 	 */
 	public static UserRole getRole() {
 		return PortalSessionToken.session().getRole();
+	}
+	
+	public static AccessContext portalContext() throws InternalServerException {
+		MidataId userId = new MidataId(request().attrs().get(Security.USERNAME));
+		return RecordManager.instance.createContextFromAccount(userId);
 	}
 	
 	/**

@@ -71,6 +71,12 @@ public class Study extends Model {
 	public MidataId owner;
 	
 	/**
+	 * name of research organization
+	 */
+	@NotMaterialized
+	public String ownerName;
+	
+	/**
 	 * id of researcher who created the study
 	 */
 	public MidataId createdBy; // references ResearchUser

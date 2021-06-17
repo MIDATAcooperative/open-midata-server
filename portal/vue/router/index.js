@@ -373,6 +373,16 @@ const routes = [
   },
   {
     base : ["provider"],
+    path : "editusergroup",
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/editusergroup.vue')    
+  },
+  {
+    base : ["provider"],
+    path : "newusergroup",
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/editusergroup.vue')    
+  },
+  {
+    base : ["provider"],
     path : "memberdetails",
     component: () => import(/* webpackChunkName: "provider" */ 'views/provider/memberdetails.vue')    
   },
