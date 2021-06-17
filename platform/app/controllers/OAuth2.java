@@ -126,7 +126,7 @@ public class OAuth2 extends Controller {
 	public static long OAUTH_CODE_LIFETIME = 1000l * 60l * 5l;
 			
 	
-	public static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId, Set<StudyAppLink> links) throws AppException {
+	public static boolean verifyAppInstance(AccessContext context, MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId, Set<StudyAppLink> links) throws AppException {
 		if (appInstance == null) return false;
         if (!appInstance.owner.equals(ownerId)) throw new InternalServerException("error.invalid.token", "Wrong app instance owner!");
         if (!appInstance.applicationId.equals(applicationId)) throw new InternalServerException("error.invalid.token", "Wrong app for app instance!");
@@ -138,7 +138,7 @@ public class OAuth2 extends Controller {
         
         AccessLog.log("app-instance:"+appInstance.appVersion+" vs plugin:"+app.pluginVersion);
         if (appInstance.appVersion != app.pluginVersion) {
-        	ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
+        	ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
         	return false;
         }
         
@@ -153,13 +153,17 @@ public class OAuth2 extends Controller {
       				Plugin checkedPlugin = Plugin.getById(mai.applicationId); 
       				if (checkedPlugin == null || mai.appVersion != checkedPlugin.pluginVersion) {
       					AccessLog.log("linked service outdated: "+checkedPlugin.filename);
-      					ApplicationTools.removeAppInstance(mai.owner, mai);
+      					if (context != null) {	      					
+	      					ApplicationTools.removeAppInstance(context, mai.owner, mai);
+      					}
       					c = null;
       				}
       			  }
       			  if (c == null) {
-      				  AccessLog.log("remove instance due to missing linked service: "+sal.serviceAppId);
-      				  ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
+      				  
+	      				  AccessLog.log("remove instance due to missing linked service: "+sal.serviceAppId);
+	      				  ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
+      				  
 		                  return false;
       			  }
       		   } else {
@@ -167,7 +171,7 @@ public class OAuth2 extends Controller {
         		   
         		   if (sp == null) {
         			    AccessLog.log("remove instance due to missing project: "+sal.studyId);
-	               		ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
+	               		ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
 	                   	return false;
 	               	}
 				    if ( 
@@ -342,7 +346,7 @@ public class OAuth2 extends Controller {
 			if (isInvalid) OAuth2.invalidToken();
 		}
 		
-		if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId, null)) throw new BadRequestException("error.internal", "Bad refresh token.");
+		if (!verifyAppInstance(null, appInstance, refreshToken.ownerId, refreshToken.appId, null)) throw new BadRequestException("error.internal", "Bad refresh token.");
 		
 		Plugin app = Plugin.getById(appInstance.applicationId);
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");			
@@ -726,7 +730,7 @@ public class OAuth2 extends Controller {
 		//KeyManager.instance.login(60000l, false);		
 		
 		if (appInstance != null) {
-			if (verifyAppInstance(appInstance, token.ownerId, token.appId, links)) {
+			if (verifyAppInstance(null, appInstance, token.ownerId, token.appId, links)) {
 				token.appInstanceId = appInstance._id;
 				token.setAppUnlockedWithCode();
 				token.setAppConfirmed();

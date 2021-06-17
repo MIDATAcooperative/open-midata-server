@@ -122,7 +122,7 @@ public class MobileAPI extends Controller {
 		if (candidates.size() >= 10) {
 			if (InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable()) {
 				for (MobileAppInstance mai : candidates) {
-					ApplicationTools.removeAppInstance(owner, mai);
+					ApplicationTools.removeAppInstance(null, owner, mai);
 				}
 				throw new BadRequestException("error.blocked.app_test", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
 			} else 
@@ -145,7 +145,7 @@ public class MobileAPI extends Controller {
 					AccessLog.log("getAppInstance: Set missing device id");
 					return instance;
 				} else if (cleanJunk) {
-					ApplicationTools.removeAppInstance(owner, instance);
+					ApplicationTools.removeAppInstance(null, owner, instance);
 				}
 			}
 		}
@@ -237,7 +237,7 @@ public class MobileAPI extends Controller {
 			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion", "deviceId"));
 			
 			
-			if (appInstance != null && !OAuth2.verifyAppInstance(appInstance, user._id, app._id, null)) {
+			if (appInstance != null && !OAuth2.verifyAppInstance(tempContext, appInstance, user._id, app._id, null)) {
 				AccessLog.log("CSCLEAR");
 				appInstance = null;
 				RecordManager.instance.clearCache();

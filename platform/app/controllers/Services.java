@@ -172,7 +172,7 @@ public class Services extends APIController {
 
         if (appInstance == null || appInstance.serviceId == null || !appInstance.serviceId.equals(serviceInstance._id)) throw new InternalServerException("error.internal", "User not authorized to do action.");
 
-        ApplicationTools.removeAppInstance(managerId, appInstance);
+        ApplicationTools.removeAppInstance(context, managerId, appInstance);
         return ok();
     }
 }
