@@ -79,7 +79,7 @@ import utils.stats.UsageStatsRecorder;
 public class ApplicationTools {
 
 	public static MobileAppInstance installApp(AccessContext context, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm, Set<StudyAppLink> links) throws AppException {
-		AccessLog.logBegin("beginn install app id="+appId);
+		AccessLog.logBegin("beginn install app id="+appId+" context="+context.toString());
 		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 		if (app == null) throw new InternalServerException("error.internal", "App not found");
 
@@ -145,13 +145,14 @@ public class ApplicationTools {
 	 * @throws AppException
 	 */
 	public static MobileAppInstance refreshOrInstallService(AccessContext context, MidataId serviceAppId, User member,  Set<MidataId> studyConfirm) throws AppException {
+		AccessLog.logBegin("begin refresh or install service:"+serviceAppId);
 		Set<MobileAppInstance> insts = MobileAppInstance.getActiveByApplicationAndOwner(serviceAppId, member._id, MobileAppInstance.APPINSTANCE_ALL);
 		MobileAppInstance result = null;
 		boolean foundValid = false;
 		for (MobileAppInstance inst : insts) {
 			if (foundValid) {
-				removeAppInstance(context.getAccessor(), inst);
-			} else if (OAuth2.verifyAppInstance(inst, member._id, serviceAppId, null)) {
+				removeAppInstance(context, context.getAccessor(), inst);
+			} else if (OAuth2.verifyAppInstance(context, inst, member._id, serviceAppId, null)) {
 				foundValid = true;
 				result = inst;
 			}
@@ -159,6 +160,7 @@ public class ApplicationTools {
 		if (!foundValid) {
 			result = installApp(context, serviceAppId, member, null, true, studyConfirm, null);
 		}
+		AccessLog.logEnd("end refresh or install service:"+serviceAppId);
 		return result;
 	}
 	
@@ -579,10 +581,10 @@ public class ApplicationTools {
 	
 	}
 
-	public static void removeAppInstance(MidataId executorId, MobileAppInstance appInstance) throws AppException {
-		AccessLog.logBegin("start remove app instance");
+	public static void removeAppInstance(AccessContext context, MidataId executorId, MobileAppInstance appInstance) throws AppException {
+		AccessLog.logBegin("start remove app instance: "+appInstance._id);
 		// Device or password changed, regenerates consent				
-		Circles.consentStatusChange(null, appInstance, ConsentStatus.EXPIRED);
+		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);
 		Plugin app = Plugin.getById(appInstance.applicationId);
 		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
 		RecordManager.instance.deleteAPS(appInstance._id, executorId);									
@@ -597,7 +599,7 @@ public class ApplicationTools {
         Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.ALL);
         for (MobileAppInstance appInstance : appInstances) {
             try {
-              ApplicationTools.removeAppInstance(context.getAccessor(), appInstance);            
+              ApplicationTools.removeAppInstance(context, context.getAccessor(), appInstance);            
             } catch (Exception e) {
             	AccessLog.logEnd("end remove app instance (exception)");
                 MobileAppInstance.delete(instance.executorAccount, appInstance._id);
