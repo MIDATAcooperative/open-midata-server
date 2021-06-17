@@ -118,6 +118,14 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 
 	public ConsentResourceProvider() {
 		registerSearches("Consent", getClass(), "getConsent");
+		searchParamNameToPathMap.put("Consent:patient", "patient");
+		searchParamNameToTypeMap.put("Consent:patient", Sets.create("Patient"));
+		searchParamNameToPathMap.put("Consent:actor", "provision.actor.reference");
+		searchParamNameToPathMap.put("Consent:data", "provision.data.reference");
+		searchParamNameToPathMap.put("Consent:consentor", "performer");
+		searchParamNameToPathMap.put("Consent:organization", "organization");
+		searchParamNameToTypeMap.put("Consent:organization", Sets.create("Organization"));
+		searchParamNameToPathMap.put("Consent:source-reference", "source");							
 	}
 	
 	@Override

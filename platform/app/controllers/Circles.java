@@ -799,14 +799,16 @@ public class Circles extends APIController {
 			}
 		} else if (!active && wasActive) {
 			
-			if (context == null && (consent.type.equals(ConsentType.REPRESENTATIVE) || (consent.authorized != null && !consent.authorized.isEmpty()))) throw new InternalServerException("error.internal", "Cannot set consent to passive state without proper context");
+			Set<MidataId> auth = consent.authorized;
+			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
+			
+			if (context == null && (consent.type.equals(ConsentType.REPRESENTATIVE) || !auth.isEmpty())) throw new InternalServerException("error.internal", "Cannot set consent to passive state without proper context");
 			
 			if (consent.type.equals(ConsentType.REPRESENTATIVE)) {
 				RecordManager.instance.removeMeta(context, consent._id, "_representative");
 			}
 			
-			Set<MidataId> auth = consent.authorized;
-			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
+			
 			if (consent.authorized != null && consent.authorized.size()>0) RecordManager.instance.unshareAPSRecursive(context.forConsentReshare(consent), consent._id, consent.authorized);
 			
 			if (consent.type.equals(ConsentType.EXTERNALSERVICE)) {
