@@ -34,17 +34,6 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@uirouter/angularjs": "^1.0.28",
-    "angular": "^1.8.0",
-    "angular-cookies": "1.8.0",
-    "angular-post-message": "~1.4.1",
-    "angular-sanitize": "~1.8.0",
-    "angular-translate": "^2.18.3",
-    "angular-translate-loader-partial": "^2.18.3",
-    "angular-translate-storage-cookie": "^2.18.3",
-    "angular-translate-storage-local": "^2.18.3",
-    "angular-ui-bootstrap": "~2.5.0",
-    "angular-utils-pagination": "~0.11.1",
     "axios": "^0.21.1",
     "basic-vue3-components": "~1.0.8",
     "bootstrap": "~4.3.1",
