@@ -72,7 +72,7 @@ stop-mongo:
 	@echo 'Shutting down MongoDB...'
 	if [ -e switches/local-mongo ]; then pkill mongod; fi
 
-update: tasks/check-config tasks/install-packages tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
+update: tasks/check-config tasks/install-packages tasks/install-node tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
 
 test: tasks/build-portal tasks/build-platform
 	
@@ -157,7 +157,7 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	$(info ------------------------------)
 	$(info Installing Node JS... )
 	$(info ------------------------------)
-	curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+	curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 	sudo apt-get install -y nodejs	
 	sudo chmod -R ugo+rx /usr/lib/node_modules
 	touch tasks/install-node

@@ -50,7 +50,7 @@ $fa-font-path:                "/fonts";
 .btn-default { @extend .btn-outline-secondary }
 .in { @extend .show }
  
-.was-validated.has-error .form-control:valid { @extend .form-control.is-invalid } 
+.was-validated.has-error .form-control:valid { @extend .form-control, .is-invalid } 
 .has-error .invalid-feedback { display:block; }
 .has-feedback .invalid-feedback { display:block; }
 .vishidden { visibility:hidden; } 
