@@ -20,11 +20,12 @@
     <panel :title="$t('apps.title')" :busy="isBusy">
         <error-box :error="error"></error-box>
                             
-        <p>{{ $t('apps.count', {count : apps.length }) }}</p>
+        <p>{{ $t('apps.count', {count : apps.all.length }) }}</p>
 
-		<table class="table table-hover clickable" v-if="apps.length">
-				
-			<tr v-for="app in apps" :key="app._id" :class="{ 'table-warning' : app.status == 'UNCONFIRMED' }" @click="editConsent(app);">
+	    <pagination v-model="apps" search="search"></pagination>
+		<table class="table table-hover clickable" v-if="apps.filtered.length">
+			<tbody>
+			<tr v-for="app in apps.filtered" :key="app._id" :class="{ 'table-warning' : app.status == 'UNCONFIRMED' }" @click="editConsent(app);">
 				<td>{{ app.name }}</td>				
 				<td class="status-column">
 					<span class="icon fas fa-check-circle" v-show="app.status == 'ACTIVE'"></span>
@@ -35,6 +36,7 @@
 					
 					
 			</tr>
+			</tbody>
 		</table>
             
     </panel>
@@ -63,7 +65,7 @@ import session from "services/session.js"
 import { getLocale } from "services/lang.js"
 import apps from "services/apps.js"
 import spaces from "services/spaces.js"
-import { status, ErrorBox } from 'basic-vue3-components'
+import { status, rl, ErrorBox } from 'basic-vue3-components'
 import ENV from 'config';
 
 
@@ -71,14 +73,14 @@ export default {
   
     data: () => ({
         pluginToSpace : {},
-        apps : [],
+        apps : { filtered : [] },
         filtered : []
 	}),	
 		
 
     components: {  Panel, ErrorBox },
 
-    mixins : [ status ],
+    mixins : [ status, rl ],
   
     methods : {
         getName(app) {            
@@ -90,9 +92,14 @@ export default {
             const { $data } = this, me = this;
 		    me.doBusy(apps.listUserApps([ "name", "authorized", "type", "status", "applicationId"])
 		    .then(function(data) {
-                $data.apps = data.data;
+				let allapps = data.data;                
                 let pluginToSpace = $data.pluginToSpace;
-                for (let app of $data.apps) pluginToSpace[app.applicationId] = true;                
+                for (let app of allapps) {
+					pluginToSpace[app.applicationId] = true;                
+					app.search = me.getName(app);
+				}
+
+				$data.apps = me.process(allapps, { filter : { search : "" }});
                 $data.pluginToSpace = Object.assign({}, $data.pluginToSpace);
 			}));
 		},

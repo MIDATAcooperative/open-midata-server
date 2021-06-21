@@ -56,13 +56,13 @@ import actions from './actions';
 			return server.post("/v1/continue", params || {});
 		},
 		
-		postLogin : function(result, $router, $route) {
+		postLogin : function(result, $router, $route) {			
 			session.progress = null;
 			if (result.data.sessionToken) {
 				sessionStorage.token = result.data.sessionToken;
 				console.log("Session started");
 			}
-			if (result.data.status) {
+			if (result.data.status) {				
 				session.progress = result.data;
 				  let postregParams = { actions : $route.query.actions };
 				  for (let param of ['street','zip','city','phone','mobile']) {
@@ -72,11 +72,11 @@ import actions from './actions';
 				  }
 				  postregParams.ts = Date.now();
 				  $router.push({ path : "./postregister", query : postregParams , location : false });			
-			} else if (result.data.role == "admin") {
+			} else if (result.data.role == "admin") {				
 				if (result.data.keyType == 1) {
 					$router.push({ name : 'public_developer.passphrase_admin', query : $route.query });
-				} else {
-					$router.push({ name : 'admin.stats' });	
+				} else {					
+					$router.push({ path : '/admin/stats' });	
 				}
 			} else if (result.data.role == "developer") {
 				if (result.data.keyType == 1) {			
@@ -120,8 +120,9 @@ import actions from './actions';
 					var result = result1.data;
 					var userId = result.user;
 					if (requiredRole && result.role != requiredRole.toUpperCase()) {
-					document.location.href="/#/public/login";
-					return;
+						console.log("Wrong role "+result.role+" vs "+requiredRole.toUpperCase());
+						document.location.href="/#/public/login";
+						return;
 					}
 					//$cookies.put("session", userId);
 					//session.storedCookie = userId;
@@ -134,7 +135,10 @@ import actions from './actions';
 					//if (session.user.language) $translate.use(session.user.language);
 					resolve(userId);
 					});																					
-				}, function() { document.location.href="/#/public/login"; });		
+				}, function() {
+					console.log("session.login error branch");
+					document.location.href="/#/public/login"; 
+				});		
 			});
 		
 			session.currentUser = def;
@@ -154,6 +158,7 @@ import actions from './actions';
 		},
 		 
 		debugReturn : function() {		
+			console.log("debug - return");
 			session.logout();
 			sessionStorage.token = sessionStorage.oldToken;
 			sessionStorage.oldToken = undefined;						
@@ -183,28 +188,23 @@ import actions from './actions';
 		   return c;
 		},
 		
-		save : function(name, scope, fields){
+		save : function(name, component, fields){			
             if(!_states[name])
                 _states[name] = {};
             for(var i=0; i<fields.length; i++){
-                _states[name][fields[i]] = scope[fields[i]];
-            }
+                _states[name][fields[i]] = JSON.stringify(component.$data[fields[i]]);
+            }			
         },
     
-        load : function(name, scope, fields){
-        	
-        	scope.$on('$destroy', function() {
-        		console.log("save: "+name);
-                session.save(name, scope, fields);
-            });
-        	console.log("load: "+name);
+        load : function(name, component, fields){        	        	
             if(!_states[name])
-                return scope;
+                return component;
             for(var i=0; i<fields.length; i++){            	
-                if(typeof _states[name][fields[i]] !== 'undefined')
-                    scope[fields[i]] = _states[name][fields[i]];
+                if(typeof _states[name][fields[i]] !== 'undefined') {
+				  component.$data[fields[i]] = JSON.parse(_states[name][fields[i]]);				
+				}
             }
-            return scope;
+            return component;
         },
         
         map : function(array, name) {

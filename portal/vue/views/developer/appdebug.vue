@@ -24,7 +24,7 @@
         <div v-if="saved.length">
         <label>Saved Requests:</label>
        <div class="list-group">
-        <a v-for="ext in saved" :key="ext.url" class="list-group-item clearfix" href="javascript:" @click="doload(ext);">[{{ ext.type }}] <b>{{ ext.url }}</b> (<span class="small text-info">{{ ext.body }}</span>)<div class="float-right"><button class="btn btn-sm btn-default" @click="dodelete(ext);">delete</button></div></a>
+        <a v-for="ext in saved" :key="ext.url" class="list-group-item clearfix" href="javascript:" @click="doload(ext);">[{{ ext.type }}] <b>{{ ext.url }}</b> (<span class="small text-info">{{ ext.body }}</span>)<div class="float-right"><button type="button" class="btn btn-sm btn-default" @click="dodelete(ext);">delete</button></div></a>
        </div>
        
        </div>
@@ -81,8 +81,8 @@
          <div class="col-2">
           <label v-t="'appdebug.backend_services'">Backend Services:</label>
         
-		  <button class="btn btn-default" @click="stopDebug()" v-if="app.debugHandle" v-t="'appsubscriptions.debug.stop_btn'"></button>
-          <button class="btn btn-default" @click="startDebug()" v-else v-t="'appsubscriptions.debug.start_btn'"></button>
+		  <button :disabled="action!=null" type="button" class="btn btn-default" @click="stopDebug()" v-if="app.debugHandle" v-t="'appsubscriptions.debug.stop_btn'"></button>
+      <button :disabled="action!=null" type="button" class="btn btn-default" @click="startDebug()" v-else v-t="'appsubscriptions.debug.start_btn'"></button>
 		 </div>
 		  <div class="col-8">
 		  <label v-if="app.debugHandle" v-t="'appsubscriptions.debug.cmd_to_run'"></label>
@@ -124,8 +124,8 @@
         <div class="row">
         <div class="col-12 extraspace">
         <router-link :to="{ path : './manageapp', query : {appId:appId}}" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
-        <button class="btn btn-primary mr-1" type="button" @click="dosubmit();">submit</button> 
-        <button class="btn btn-default mr-1" type="button" @click="dosave();">save</button>
+        <button class="btn btn-primary mr-1" :disabled="action!=null" type="button" @click="dosubmit();">submit</button> 
+        <button class="btn btn-default mr-1" :disabled="action!=null" type="button" @click="dosave();">save</button>
         </div>
         </div>
        
@@ -150,6 +150,7 @@ import apps from "services/apps.js"
 import { rl, status, ErrorBox, FormGroup, Password } from 'basic-vue3-components'
 import ENV from "config";
 import Axios from "axios";
+import _ from "lodash";
 
 export default {
 
@@ -174,7 +175,8 @@ export default {
             { value : "PROVIDER" , name : "enum.userrole.PROVIDER"},
             { value : "RESEARCH" , name : "enum.userrole.RESEARCH"},   		
             { value : "DEVELOPER" , name : "enum.userrole.DEVELOPER"}
-        ]
+        ],
+        body : ""
     }),
 
     components: {  Panel, ErrorBox, FormGroup, ChangeLog, Password },
@@ -201,7 +203,7 @@ export default {
           if ($data.type !== "GET") {
           try {
             body = JSON.parse($data.body);
-          } catch (e) {
+          } catch (e) {          
             $data.results = "Error processing body: \n"+e;
             return;
           }
@@ -220,7 +222,7 @@ export default {
                 $data.authheader = "Bearer " + data.authToken;
               } 
               $data.results = JSON.stringify(data, null, 2); 
-              }, function(x) { $data.results = x.status + ":" + JSON.stringify(x.data, null, 2); });
+              }, function(x) { $data.results = x.response.status + ":" + JSON.stringify(x.response.data, null, 2); });
           
         },
 
@@ -255,7 +257,7 @@ export default {
               //$data.body = "{\n    \"appname\":\""+$data.app.filename+"\",\n    \"device\" : \"debug\",\n    \"secret\" : \""+$data.app.secret+"\",\n    \"username\" : \"FILLOUT\",\n    \"password\" : \"FILLOUT\",\n    \"role\" : \""+$data.app.targetUserRole+"\"\n}";
               
               if ($route.query.code) {
-                requestAccessToken($route.query.code);
+                me.requestAccessToken($route.query.code);
               }
           }));
 	    },
@@ -278,6 +280,7 @@ export default {
         sessionStorage.oldToken = sessionStorage.token;
         sessionStorage.oldDevice = $data.device;
         sessionStorage.oldFhirRelease = $data.fhirRelease;
+        sessionStorage.oldApp = $data.app._id;
         window.document.location.href = me.getOAuthLogin();
 	    },
 	
@@ -326,7 +329,7 @@ export default {
                   });			       
                 
           }
-        }).catch(function(err) { $data.error = err.data; });
+        }).catch(function(err) { $data.error = err.response.data; });
 	    },
         
       requestAccessToken(code) {
@@ -350,16 +353,16 @@ export default {
             var arguments1 = url.split("&");
             var keys = _.map(arguments1, function(argument) { return argument.split("=")[0]; });
             var values = _.map(arguments1, function(argument) { return argument.split("=")[1]; });
-            var params = _.object(keys, values);
+            var params = _.zipObject(keys, values);
             
             if (_.has(params, "error")) {
                 error = "The following error occurred: " + params.error + ". Please try again.";
             } else if (_.has(params, "code")) {
                 message = "User authorization granted. Requesting access token...";
-                requestAccessToken(params.code);
+                me.requestAccessToken(params.code);
             } else if (_.has(params, "oauth_verifier")) {
                 message = "User authorization granted. Requesting access token...";
-                requestAccessToken(params.oauth_verifier, params);
+                me.requestAccessToken(params.oauth_verifier, params);
             } else {
                 error = "An unknown error occured while requesting authorization. Please try again.";
             }
@@ -384,7 +387,7 @@ export default {
           if (!$data.saved) $data.saved = [];         
           //console.log($data.saved);
         }
-        session.currentUser.then(function(userId) { me.init(userId, $route.query.appId); });	
+        session.currentUser.then(function(userId) { me.init(userId, $route.query.appId || sessionStorage.oldApp); });	
     }
 }
 </script>

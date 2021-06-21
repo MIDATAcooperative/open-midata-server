@@ -72,7 +72,7 @@ public class StudyPublishBuffer {
 	public void save() throws AppException {
 		if (records_to_publish == null || records_to_publish.isEmpty()) return;
 						
-		BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
+		BSONObject query = RecordManager.instance.getMeta(inf.context, inf.targetAPS, "_query");
 		if (query != null && query.containsField("target-study")) {
 			Map<String, Object> q = query.toMap(); 
 			MidataId studyId = MidataId.from(q.get("target-study"));
@@ -82,7 +82,7 @@ public class StudyPublishBuffer {
 			Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));
 			if (!srs.isEmpty()) {
 				for (StudyRelated sr : srs ) {
-				  RecordManager.instance.share(inf.executorId, inf.ownerId, sr._id, records_to_publish, false);
+				  RecordManager.instance.share(inf.context, inf.ownerId, sr._id, records_to_publish, false);
 				}
 			}
 		}

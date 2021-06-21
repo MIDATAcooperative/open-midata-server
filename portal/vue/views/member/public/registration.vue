@@ -249,7 +249,8 @@ export default {
 	},
 
 	birthdayNeeded() {
-		const { $data } = this;
+		const { $data, $route } = this;
+		if ($route.query.birthdate) return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('BIRTHDAY_SET') >= 0);
 	},
 

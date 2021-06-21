@@ -51,8 +51,12 @@ export default {
 
     methods : {        
         update() {
-            const { $data } = this;
-            if (this.query) labels.parseAccessQuery(getLocale(), this.query).then(function(result) { $data.blocks = result; });
+            const { $data } = this;           
+            if (this.query) {
+                labels.parseAccessQuery(getLocale(), this.query).then(function(result) {            
+                    $data.blocks = result; 
+                });
+            }
         }
     },
 

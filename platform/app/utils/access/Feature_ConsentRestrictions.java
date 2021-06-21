@@ -59,7 +59,7 @@ public class Feature_ConsentRestrictions extends Feature {
 			  Date until = filter.getDate("valid-until");
 			  if (until.before(new Date(System.currentTimeMillis()))) {
 				  AccessLog.log("consent not valid anymore");			
-				  Circles.consentExpired(q.getCache().getExecutor(), q.getApsId());
+				  Circles.consentExpired(q.getContext(), q.getApsId());
 				  return ProcessingTools.empty();
 			  }
 		  }

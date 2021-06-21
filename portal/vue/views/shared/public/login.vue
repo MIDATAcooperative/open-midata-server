@@ -23,7 +23,7 @@
 
                 <div v-show="!notPublic" style="margin-bottom:40px"></div>
               
-                <h1 style="color:white;" v-t="'member_login.teaser'"></h1>
+                <h1 style="color:white;">{{ $t('member_login.teaser') }}</h1>
                 <div v-show="notPublic">
                     <div v-t="'member_login.info1'"></div>
                     <div v-t="'member_login.info2'"></div>

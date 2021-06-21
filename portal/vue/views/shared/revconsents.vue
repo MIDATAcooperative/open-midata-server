@@ -102,7 +102,7 @@ export default {
 	    },
 	
 	    changeView() {
-		    this.$router.push({ path : "./consents" });
+		    this.$router.push({ path : "./circles" });
 	    },
 		    		
         init() {

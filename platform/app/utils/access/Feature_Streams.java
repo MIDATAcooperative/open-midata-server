@@ -279,7 +279,7 @@ public class Feature_Streams extends Feature {
 	
 	private static DBRecord createStream(AccessContext context, MidataId owner, MidataId targetAPS, Map<String, Object> properties,
 			boolean direct) throws AppException {
-		AccessLog.logBegin("begin create Stream: who="+context.getCache().getExecutor().toString()+" direct="+direct+" into="+targetAPS);
+		AccessLog.logBegin("begin create Stream: who="+context.getCache().getAccessor().toString()+" direct="+direct+" into="+targetAPS);
 		DBRecord result = new DBRecord();
 		result._id = new MidataId();
 		result.owner = owner;
@@ -321,7 +321,7 @@ public class Feature_Streams extends Feature {
 
 	    AccessLog.log("create aps for stream");
 	    
-		RecordManager.instance.createAPSForRecord(context.getCache().getExecutor(), unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
+		RecordManager.instance.createAPSForRecord(context.getCache().getAccessor(), unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
 		
 		apswrapper.addPermission(unecrypted, targetAPS != null && !targetAPS.equals(unecrypted.owner));
 		

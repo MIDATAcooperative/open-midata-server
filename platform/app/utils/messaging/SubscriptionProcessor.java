@@ -62,6 +62,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
@@ -294,8 +295,8 @@ public class SubscriptionProcessor extends AbstractActor {
 			System.out.println("NEW OAUTH2 - 1");
 			try {
 				KeyManager.instance.continueSession(handle, subscription.owner);
-               			
-				BSONObject oauthmeta = RecordManager.instance.getMeta(subscription.owner, subscription.instance, "_oauth");
+               	AccessContext context = RecordManager.instance.createContextFromAccount(subscription.owner);	
+				BSONObject oauthmeta = RecordManager.instance.getMeta(context, subscription.instance, "_oauth");
 				if (oauthmeta != null) {
 					System.out.println("NEW OAUTH2 - 2");
 					if (oauthmeta.get("refreshToken") != null) {

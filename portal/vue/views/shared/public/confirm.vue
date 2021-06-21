@@ -20,15 +20,13 @@
        <div class="row">
 		  <div class="col-sm-12">
              <panel :busy="!allLoaded">  
-	<div id="x" v-if="(!(terms.active && !inlineTerms))">
-		<div v-if="pleaseConfirm">
-			
-			<section>
-				<p>{{ $t('oauth2.please_confirm', { consent }) }}</p>			
-			</section>
-			
-		</div>
-			
+				<div id="x" v-if="(!(terms.active && !inlineTerms))">
+				<div v-if="pleaseConfirm">			
+					<section>
+						<p>{{ $t('oauth2.please_confirm', { consent }) }}</p>			
+					</section>			
+				</div>
+						   
                 <div v-if="showApp">
 				<section>
 					<strong>{{ appname() }}</strong> <span v-t="'oauth2.requesting_app'"></span>
@@ -44,66 +42,81 @@
                     <input type="text" class="form-control" id="unlockCode"
 						   name="unlockCode" :placeholder="$t('registration.unlock_code')" v-model="login.unlockCode" v-validate required>									
 			    </section>
+				</div>
 				
-				<section v-if="labels.length">
-					<span v-t="'oauth2.requests_access'"></span>
-
-                    <ul>
-						<li v-for="label in labels" :key="label">{{ label }}</li>						
-                    </ul>
-					<p v-t="'oauth2.reshares_data'" v-if="app.resharesData"></p>
-					<p v-t="'oauth2.allows_user_search'" v-if="app.allowsUserSearch"></p>                    
-				</section>
-			    </div>
-
+								
 				<div v-for="link in extra" :key="link._id">
-					<hr>
-					<section v-if="link.formatted.length && !(link.inlineTerms)">
-						<span v-if="link.study" v-t="'enum.studytype.'+link.study.type"></span><br>
-						<strong>{{ getLinkName(link) }}</strong>
-
+					<div v-if="!(link.inlineTerms)">
+						<hr>
+						<div>{{ getLinkHeading(link) }}</div>
+						<strong>{{ getLinkName(link) }}</strong>					
+					</div>
+					<section v-if="link.formatted.length && !(link.inlineTerms)">						
 						<div v-for="line in link.formatted" :key="line">
 							<span>{{ line }}</span>
-
 						</div>																	
+					</section>
+					<section v-if="link.serviceApp">
+						{{ description(link.serviceApp) }}
 					</section>
 
 					<section v-if="link.inlineTerms">	
 						<terms :which="link.termsOfUse"></terms>						
 					</section>
-
-					<section v-if="link.labels.length && !(link.inlineTerms)">
-						<span v-if="link.study" v-t="'oauth2.requests_sharing'"></span>
-						<span v-if="link.serviceApp" v-t="'oauth2.requests_sharing_service'"></span>
-	
-						<ul>
-							<li v-for="label in link.labels" :key="label"><span>{{ label }}</span></li>						
-						</ul>						
-						
-					</section>
+					
 				</div>
 			
+			    <section class="summary">
+					
+					<p><strong v-t="'oauth2.sharing_summary'"></strong></p>
+					<div v-for="inp of input" :key="inp.letter">
+						<b>{{ inp.letter }}</b> : <span v-if="inp.mode">{{ $t(inp.mode) }} <i class="fas fa-arrow-right"></i></span> {{ inp.system }} ({{ inp.short}}) {{ inp.target }}
+					</div>
+					<table class="table table-sm mt-2">
+						<tr>
+							<th v-t="'oauth2.requests_access_short'"></th>
+							<th class="d-none d-sm-table-cell" v-for="sh in short" :key="sh">{{ sh }}</th>
+							<!-- <td></td> -->
+						</tr>
+						<tr v-for="line in summary" :key="line.label">
+							<td>{{ line.label }}
+								<div class="d-inline-block d-sm-none float-right text-muted">{{ line.letters }}</div>
+							</td>
+							<td class="d-none d-sm-table-cell" v-for="(sh,idx) in short" :key="idx"><i class="fas fa-check" v-if="line.checks[idx]"></i></td>
+							<!-- <td>{{ line.summary }}</td> -->
+						</tr>
+					</table>
+					<p v-t="'oauth2.reshares_data'" v-if="app.resharesData"></p>
+					<p v-t="'oauth2.allows_user_search'" v-if="app.allowsUserSearch"></p>                    				
+				</section>
 				
 				<section v-if="app.termsOfUse && showApp">
-					<fieldset>
-						<input id="appAgb" name="appAgb" class="form-control" type="checkbox" v-model="login.appAgb" />
+					<div class="form-check">
+						<input id="appAgb" name="appAgb" class="form-check-input" type="checkbox" v-model="login.appAgb" />
 							
-						<label for="appAgb">
+						<label for="appAgb" class="form-check-label">
 						   <span v-t="'registration.app_agb2'"></span>
-						   <a @click="terms({which : app.termsOfUse })" href="javascript:" v-t="'registration.app_agb3'"></a>
+						   <a @click="showTerms({which : app.termsOfUse })" href="javascript:" v-t="'registration.app_agb3'"></a>
 						 </label>							 					
 						 
-					</fieldset>
+					</div>
 					
 				</section>
 				
+				<section v-if="!app.termsOfUse && showApp && termsLabel">
+					<div class="form-check">
+						<input id="appAgb" name="appAgb" class="form-check-input" type="checkbox" v-model="login.appAgb" />							
+						<label class="form-check-label" for="appAgb">{{ termsLabel }}</label>	
+					</div>						 											 
+					
+				</section>
 				
 				<section v-for="link in extra" :key="link._id">
-					<div class="form-check">
+					<div class="form-check" v-if="link.extraCheckbox">
 						<input type="checkbox" class="form-check-input" :id="link._id" :name="link._id" value="" :checked="login.confirmStudy.indexOf(link.studyId || link.userId || link.serviceAppId)>=0" @click="toggle(login.confirmStudy, link.studyId || link.userId || link.serviceAppId)" /> 
 						<label :for="link._id" class="form-check-label">
 						  <span>{{ $t(getLinkLabel(link)) }}</span>:
-						  <a v-if="link.termsOfUse && !(link.inlineTerms)" @click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }} {{ link.provider.name }} {{ link.serviceApp.name }}</a>
+						  <a v-if="link.termsOfUse && !(link.inlineTerms)" @click="showTerms({which : link.termsOfUse })" href="javascript:">{{ (link.study || {}).name }} {{ (link.provider || {}).name }} {{ (link.serviceApp || {}).name }}</a>
 						  <span v-if="!(link.termsOfUse && !(link.inlineTerms))">{{ getLinkName(link) }}</span>
 						 </label>
 					</div>					
@@ -139,6 +152,7 @@ import oauth from "services/oauth.js";
 import { status, FormGroup, ErrorBox } from 'basic-vue3-components';
 import ENV from "config";
 import TermsModal from 'components/TermsModal.vue';
+import Terms from 'components/Terms.vue';
 import Panel from 'components/Panel.vue';
 import { getLocale } from 'services/lang';
 //import { $ts } from 'vue-i18n';
@@ -152,6 +166,10 @@ export default {
     labels : [],
     extra : [],
     pages : [],
+	summary : [],
+	short: [],
+	input : [],
+	termsLabel: "",
     inlineTerms : false,
     project : 0,
     device : "",
@@ -161,7 +179,7 @@ export default {
   }),
 
   components : {
-     FormGroup, ErrorBox, TermsModal, Panel
+     FormGroup, ErrorBox, TermsModal, Panel, Terms
   },
 
   mixins : [ status ],
@@ -196,11 +214,23 @@ export default {
 		 if ($data.app && $data.app.i18n && $data.app.i18n[$data.lang] && $data.app.i18n[$data.lang].description) return $data.app.i18n[$data.lang].description;
 		 return $data.app.description;
 	},
+
+	description(app) {
+		 const { $data } = this;
+		 if (app && app.i18n && app.i18n[$data.lang] && app.i18n[$data.lang].description) return app.i18n[$data.lang].description;
+		 return app.description;
+	},
 	
 	toggle(array,itm) {	
 		let pos = array.indexOf(itm);
 		if (pos < 0) array.push(itm); else array.splice(pos, 1);
     },
+
+	getLinkHeading(link) {
+		let t = (link.study && link.study.type) ? link.study.type : (link.linkTargetType || "STUDY");
+		
+		return this.$t('oauth2.link_'+t+"_"+((link.type.indexOf("REQUIRE_P") >= 0) ? "required" : "optional"));
+	},
    
     getLinkLabel(link) {
 	    if (link.linkTargetType == "ORGANIZATION") {
@@ -226,7 +256,7 @@ export default {
 		if (link.study) return link.study.name;
 		if (link.provider) return link.provider.name;
 		if (link.serviceApp) 
-			return link.serviceApp.i18n[getLocale()] ? link.serviceApp.i18n[getLocale()].name : link.serviceApp.name;
+			return (link.serviceApp.i18n[getLocale()] && link.serviceApp.i18n[getLocale()].name) ? link.serviceApp.i18n[getLocale()].name : link.serviceApp.name;
 		return "???";
     },
 
@@ -270,8 +300,8 @@ export default {
     },
     
     nextPage() {
-        const { $data } = this;
-		if ($data.app.termsOfUse && !($data.login.appAgb)) {
+        const { $data } = this, me = this;
+		if (($data.app.termsOfUse || $data.termsLabel) && !($data.login.appAgb)) {
 			$data.error = { code : "error.missing.agb" };
 			return true;
 		}
@@ -287,8 +317,9 @@ export default {
 	   $data.showApp = false;
 	   $data.extra = [ $data.pages[$data.project] ];
 	   $data.inlineTerms = $data.extra[0].inlineTerms;
-	   if ($data.inlineTerms) this.terms({ which : $data.extra[0].termsOfUse });
+	   if ($data.inlineTerms) me.showTerms({ which : $data.extra[0].termsOfUse });
 	   $data.allLoaded = true;
+	   me.prepareQuerySummary();
 	   $data.project++;
 	   return true;
     },
@@ -297,11 +328,12 @@ export default {
         const { $data } = this;
         const me = this;
 		$data.labels = [];
-		this.prepareQuery($data.app.defaultQuery, $data.app.filename, $data.labels).then(function() {
-			if ($data.showApp && $data.labels.length == 0 && !$data.app.terms && $data.extra.length==0) {
+		this.prepareQuery($data.app.defaultQuery, null/*$data.app.filename*/, $data.labels).then(function() {
+			if ($data.showApp && !$data.app.terms && $data.extra.length==0 && $data.pages.length > 0) {
 				me.confirm();
 			} else  {
 				$data.allLoaded = true;
+				me.prepareQuerySummary();
 			}
 		});		
 	},
@@ -325,9 +357,60 @@ export default {
 		return labels.prepareQuery(this.$t, defaultQuery, appName, genLabels, reqInf);
 	},
 
-	terms(def) {
+	showTerms(def) {
 		const { $data } = this;
 		$data.terms = { which : def, active : false };
+	},
+
+	prepareQuerySummary() {
+		const { $data, $t } = this, me = this;
+		let short = [];
+		let letters = ["", "A","B","C","D","E","F","G","H","I"];
+		let idx = 1;
+		let projectIdx = 0;
+		let input = [];
+		let req = [];	
+		
+		$data.termsLabel = null;	
+		//if ($data.showApp) {
+			input.push({ system : me.appname(), letter : letters[idx], short : $t('oauth2.short_app'), target : ($data.app.resharesData ? null : $t("oauth2.target_device")), labels:$data.labels, mode : "oauth2.mode_all" });
+			short.push(letters[idx]);
+			req.push(me.appname());
+			idx++;
+		//}
+		
+		for (let link of $data.extra) {
+			
+			if (link.type.indexOf("REQUIRE_P")>=0 && link.type.indexOf("OFFER_P") <0) req.push(me.getLinkName(link));
+			let sname = "";
+			let mode = "oauth2.mode_all";
+			let target = null;
+			if (!link.linkTargetType || link.linkTargetType=="STUDY") {
+				sname = $t('oauth2.short_'+(link.study.type.toLowerCase()));
+				if (link.study.anonymous) mode = "oauth2.mode_anonymized";
+				else if (link.study.requiredInformation=="RESTRICTED" || link.study.requiredInformation=="NONE") mode = "oauth2.mode_pseudonymized";
+				if (link.study.type!="COMMUNITY") {
+					if (link.study.ownerName) target = $t("oauth2.target_performed")+" "+link.study.ownerName;
+				} else if (link.study.type="COMMUNITY") target = $t("oauth2.target_community");
+			} else if (link.linkTargetType=="SERVICE") {
+				sname = $t('oauth2.short_service');
+				if (link.serviceApp && link.serviceApp.publisher) target =  $t("oauth2.target_operated")+" "+link.serviceApp.publisher;
+			} else if (link.linkTargetType=="ORGANIZATION") {
+				sname = $t('oauth2.short_party');
+				target = link.provider.name;
+			}
+			short.push(letters[idx]);
+			input.push({ system : me.getLinkName(link), letter : letters[idx], short : sname, labels : link.labels, mode : mode, target : target });
+			idx++;
+		}
+		if (req.length>1) {
+			let last = req.pop();
+			$data.termsLabel = $t('oauth2.confirm_app')+" "+req.join(", ")+" "+$t('oauth2.and')+" "+last+".";
+		}
+		console.log(input);
+		$data.summary = labels.joinQueries(this.$t, input);
+		$data.short = short;
+		$data.input = input;
 	}
 		    
   },
@@ -352,16 +435,18 @@ export default {
 			var addToUrl = "";
 			if (project) addToUrl = "?project="+encodeURIComponent(project);
 			waitFor.push(me.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app-use", $data.app._id).url+addToUrl)
-			.then(function(data) {		    	
+			.then(function(data) {	
+				console.log(data.data);
 				let links = [];
 				var r = [];
 				
 				for (var l=0;l<data.data.length;l++) {
 					var link = data.data[l];	
 					
-					if (link.type.indexOf("OFFER_P")>=0) {
+					if (link.type.indexOf("OFFER_P")>=0 || link.type.indexOf("REQUIRE_P")>=0) {
 						link.labels = [];							
-						link.formatted = [];					
+						link.formatted = [];
+						link.extraCheckbox = (link.type.indexOf("OFFER_P")>=0);					
 						if (link.study && link.study.infos) {		
 							
 							for(let info of link.study.infos) {
@@ -399,7 +484,7 @@ export default {
 					    } else {
 							$data.extra.push(link);
 						}
-						let recordQuery = link.study ? link.study.recordQuery : link.serviceApp ? link.serviceApp.defaultQuery : {};
+						let recordQuery = link.study ? link.study.recordQuery : (link.serviceApp ? link.serviceApp.defaultQuery : {});
 						r.push(me.prepareQuery(recordQuery, null, link.labels, link.study ? link.study.requiredInformation : null));	
 					}
 				}
@@ -409,10 +494,21 @@ export default {
 			})));							
 		}
 
-		Promise.all(waitFor).then(me.prepareConfirm);
+		Promise.all(waitFor).then(() => me.prepareConfirm());
         
 
 	 }
   }
 }
 </script>
+<style scoped>
+.summary { 
+	background-color: #c0c0c0;
+	margin-left: -15px;
+	margin-right: -15px;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+</style>

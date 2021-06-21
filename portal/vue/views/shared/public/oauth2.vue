@@ -194,7 +194,10 @@ export default {
 			
 		  if (result === "CONFIRM" || result === "CONFIRM-STUDYOK") {
 			  let params = JSON.parse(JSON.stringify($route.query)) || {};
-			  if (result === "CONFIRM-STUDYOK") params.nostudies = true;
+			  if (result === "CONFIRM-STUDYOK") { 
+				  console.log("already confirmed studies");
+				  params.nostudies = true; 
+			  }
 			  
 			  $router.push({ path : "./oauthconfirm", query : params });
 			  
@@ -212,14 +215,14 @@ export default {
   },
 
   created: function () {
-	  const { $route, $data, $methods } = this;		  
+	  const { $route, $data } = this, me = this;		  
 	  $data.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	
 	  $data.lang = getLocale();
 
-      if ($route.query.lang) {
-		  $data.lang = $route.query.lang;
-		  setLocale($route.query.lang);
+      if ($route.query.language) {
+		  $data.lang = $route.query.language;
+		  setLocale($route.query.language);
 	  }
 
 	  if ($route.query.email) {
@@ -236,12 +239,12 @@ export default {
 			if (!$data.app || !$data.app.targetUserRole) $data.error ="error.unknown.app";
 				
 			$data.login.role = $data.app.targetUserRole === 'ANY'? "MEMBER" : $data.app.targetUserRole;
-			oauth.init($route.query.client_id, $route.query.redirect_uri, $route.query.state, $route.query.code_challenge, $route.query.code_challenge_method, $route.query.device_id);
+			oauth.init(me, $route.query.client_id, $route.query.redirect_uri, $route.query.state, $route.query.code_challenge, $route.query.code_challenge_method, $route.query.device_id);
 			$data.device = oauth.getDeviceShort();
 			$data.consent = "App: "+$data.app.name+" (Device: "+$data.device+")";			
 			oauth.app = $data.app;
 				
-			if ($route.query.isnew=="true") $methods.showRegister();
+			if ($route.query.isnew=="true") me.showRegister();
 			if ($route.query.isnew=="never") $data.hideRegistration = true;
 		
 		}));  

@@ -40,6 +40,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
@@ -99,11 +100,12 @@ public class Services extends APIController {
     public Result removeServiceInstance(String instanceIdStr) throws AppException {
 
         MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext();
         MidataId instanceId = MidataId.from(instanceIdStr);
         
-        ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(managerId, instanceId);        
+        ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);        
 
-        ApplicationTools.deleteServiceInstance(managerId, instance);
+        ApplicationTools.deleteServiceInstance(context, instance);
         return ok();
     }
 
@@ -113,16 +115,17 @@ public class Services extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
     public Result listApiKeys(String serviceIdStr) throws AppException {
         MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext();
         MidataId instanceId = MidataId.from(serviceIdStr);
         
-        ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(managerId, instanceId);        
+        ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);        
         Plugin app = Plugin.getById(instance.appId);
         
         Set<MobileAppInstance> instances = MobileAppInstance.getByService(instance._id, MobileAppInstance.APPINSTANCE_ALL);
         for (MobileAppInstance inst : instances) {
             if (inst.appVersion != app.pluginVersion) inst.status = ConsentStatus.FROZEN;
         }
-        return ok(JsonOutput.toJson(new ArrayList(instances), "Consent", MobileAppInstance.APPINSTANCE_ALL)).as("application/json");
+        return ok(JsonOutput.toJson(new ArrayList(instances), "MobileAppInstance", MobileAppInstance.APPINSTANCE_ALL)).as("application/json");
     }
     
 	@APICall
@@ -131,16 +134,17 @@ public class Services extends APIController {
         AccessLog.log("add api key!");
 
         MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext();
         MidataId instanceId = MidataId.from(serviceIdStr);
         
-        ServiceInstance serviceInstance = ApplicationTools.checkServiceInstanceOwner(executorId, instanceId);  
+        ServiceInstance serviceInstance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);  
         
-        MobileAppInstance appInstance = ApplicationTools.createServiceApiKey(executorId, serviceInstance);
+        MobileAppInstance appInstance = ApplicationTools.createServiceApiKey(context, serviceInstance);
         
         String aeskey = KeyManager.instance.newAESKey(appInstance._id);	
 
         MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + SERVICE_EXPIRATION_TIME, UserRole.ANY); 
-        OAuthRefreshToken refresh = OAuth2.createRefreshToken(executorId, appInstance, aeskey);
+        OAuthRefreshToken refresh = OAuth2.createRefreshToken(context, appInstance, aeskey);
         
         ObjectNode obj = Json.newObject();	 
 
@@ -159,15 +163,16 @@ public class Services extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
     public Result removeApiKey(String serviceIdStr, String apikeyIdStr) throws AppException {
         MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext();
         MidataId instanceId = MidataId.from(serviceIdStr);
         MidataId apikeyId = MidataId.from(apikeyIdStr);
         
-        ServiceInstance serviceInstance = ApplicationTools.checkServiceInstanceOwner(managerId, instanceId);          
+        ServiceInstance serviceInstance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);          
         MobileAppInstance appInstance = MobileAppInstance.getById(apikeyId, MobileAppInstance.APPINSTANCE_ALL);
 
         if (appInstance == null || appInstance.serviceId == null || !appInstance.serviceId.equals(serviceInstance._id)) throw new InternalServerException("error.internal", "User not authorized to do action.");
 
-        ApplicationTools.removeAppInstance(managerId, appInstance);
+        ApplicationTools.removeAppInstance(context, managerId, appInstance);
         return ok();
     }
 }

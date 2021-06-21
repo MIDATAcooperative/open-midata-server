@@ -93,8 +93,8 @@
 			    <td v-t="'admin_address.last_login'"></td><td>{{ $filters.date(member.login) }}</td>
 			</tr>
 		</table>
-		<router-link :to="{ path : './members' }" class="btn btn-default" v-t="'common.back_btn'"></router-link>
-		<button v-if="member.status == 'DELETED'" class="btn btn-danger" :disabled="action!=null" @click="wipe()" v-t="'admin_address.wipe_btn'"></button>
+		<router-link :to="{ path : './members' }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
+		<button v-if="member.status == 'DELETED'" class="btn btn-danger mr-1" :disabled="action!=null" @click="wipe()" v-t="'admin_address.wipe_btn'"></button>
     </panel>
     <panel :title="$t('admin_address.history')" :busy="isBusy">
 	

@@ -144,7 +144,8 @@ public class JsonValidation {
 			long dateLong = dateNode.asLong();
 			if (dateLong > 0) return new Date(dateLong);
 		}
-		String dateStr = dateNode.asText();
+		if (dateNode.isNull()) return null;
+		String dateStr = dateNode.asText();		
 		if (dateStr == null || dateStr.length() == 0) return null;		
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		try {

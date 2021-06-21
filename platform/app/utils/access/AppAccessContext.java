@@ -130,10 +130,10 @@ public class AppAccessContext extends AccessContext {
 		return true;
 	}
 
-	public MidataId getNewRecordCreator() {
+	public MidataId getActor() {
 		
 		if (plugin.type.equals("external")) return plugin._id;		
-		return cache.getExecutor();
+		return cache.getAccessor();
 	}
 	
 	@Override

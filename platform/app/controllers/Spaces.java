@@ -44,6 +44,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.LicenceChecker;
@@ -82,6 +83,7 @@ public class Spaces extends APIController {
 		// validate json
 		JsonNode json = request().body().asJson();
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		JsonValidation.validate(json, "properties", "fields");
 		
 		// get parameters
@@ -95,7 +97,7 @@ public class Spaces extends APIController {
 		
 		if (fields.contains("query")) {
 			for (Space space : spaces) {
-				BSONObject q = RecordManager.instance.getMeta(userId, space._id, "_query");
+				BSONObject q = RecordManager.instance.getMeta(context, space._id, "_query");
 				if (q != null) space.query = q.toMap();
 			}
 		}
@@ -127,6 +129,7 @@ public class Spaces extends APIController {
 		
 		// validate request
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context1 = portalContext();
 		String name = JsonValidation.getString(json, "name");		
 		MidataId visualizationId = JsonValidation.getMidataId(json, "visualization" );					
 		String context = JsonValidation.getString(json, "context");
@@ -149,10 +152,10 @@ public class Spaces extends APIController {
 		Space space = add(userId, name, visualizationId, plg.type, context, licence);
 		
 		if (query != null) {
-			RecordManager.instance.shareByQuery(userId, userId, space._id, query);		
+			RecordManager.instance.shareByQuery(context1, space._id, query);		
 		}
 		if (config != null) {
-			RecordManager.instance.setMeta(userId, space._id, "_config", config);
+			RecordManager.instance.setMeta(context1, space._id, "_config", config);
 		}
 				
 		return ok(JsonOutput.toJson(space, "Space", Space.ALL)).as("application/json");
@@ -180,7 +183,7 @@ public class Spaces extends APIController {
 		space.context = context;
 		space.type = type;
 		space.licence = licence;
-		RecordManager.instance.createPrivateAPS(userId, space._id);
+		RecordManager.instance.createPrivateAPS(null, userId, space._id);
 		
 		Space.add(space);		
 		return space;
@@ -247,6 +250,7 @@ public class Spaces extends APIController {
 		
 		// validate request
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		MidataId spaceId = new MidataId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
@@ -260,7 +264,7 @@ public class Spaces extends APIController {
 		
 		// add records to space (implicit: if not already present)
 		Set<MidataId> recordIds = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("records")));		
-		RecordManager.instance.share(userId, owner.myaps, space._id, recordIds, true);
+		RecordManager.instance.share(context, owner.myaps, space._id, recordIds, true);
 						
 		return ok();
 	}
@@ -294,6 +298,7 @@ public class Spaces extends APIController {
 		
 	public static CompletionStage<Result> getUrl(String spaceIdString, boolean auth, String targetUser) throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		MidataId spaceId = new MidataId(spaceIdString);
 		MidataId targetUserId = (targetUser != null) ? MidataId.from(targetUser) : userId;		
 		
@@ -327,7 +332,7 @@ public class Spaces extends APIController {
 		obj.put("owner", targetUserId.toString());
 		
 		if (visualization.type != null && visualization.type.equals("oauth2")) {
-  		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");  		  
+  		  BSONObject oauthmeta = RecordManager.instance.getMeta(context, new MidataId(spaceIdString), "_oauth");  		  
 		  if (oauthmeta == null) return CompletableFuture.completedFuture((Result) Plugins.oauthInfo(visualization, obj)); 
 			 
 		  Map<String, Object> data = oauthmeta.toMap();
@@ -337,7 +342,7 @@ public class Spaces extends APIController {
 		  AccessLog.log("No refresh token requested.");
 		} 
 		if (visualization.type != null && visualization.type.equals("oauth1")) {
-	  		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");  		  
+	  		  BSONObject oauthmeta = RecordManager.instance.getMeta(context, new MidataId(spaceIdString), "_oauth");  		  
 			  if (oauthmeta == null) return CompletableFuture.completedFuture((Result) Plugins.oauthInfo(visualization, obj)); 
 				 		
 			  Map<String, Object> oauthData = oauthmeta.toMap();

@@ -66,6 +66,7 @@ import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.ServerTools;
+import utils.access.AccessContext;
 import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
@@ -212,6 +213,7 @@ public class Plugins extends APIController {
 	public Result install(String visualizationIdString) throws AppException {
 		JsonNode json = request().body().asJson();
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context1 = portalContext();
 		MidataId visualizationId = null;
 		Plugin visualization = null;
 		if (MidataId.isValid(visualizationIdString)) {
@@ -229,12 +231,12 @@ public class Plugins extends APIController {
 		if (visualization.type.equals("service")) {
 			
 				User user = User.getById(userId, User.ALL_USER_INTERNAL);
-				ApplicationTools.refreshOrInstallService(userId, visualization._id, user, Collections.emptySet());
+				ApplicationTools.refreshOrInstallService(context1, visualization._id, user, Collections.emptySet());
 			
 		} else if (visualization.type.equals("external")) {
 			
 				User user = User.getById(userId, User.ALL_USER_INTERNAL);
-				ApplicationTools.refreshOrInstallService(userId, visualization._id, user, Collections.emptySet());
+				ApplicationTools.refreshOrInstallService(context1, visualization._id, user, Collections.emptySet());
 			
 		} else {
 			String spaceName = JsonValidation.getString(json, "spaceName");
@@ -254,7 +256,7 @@ public class Plugins extends APIController {
 	
 	public static Space install(MidataId userId, Plugin visualization, String context, String spaceName, MidataId study) throws AppException {
 		AccessLog.log("install userId="+userId.toString()+" context="+context+" study="+study);
-							
+		AccessContext context1 = RecordManager.instance.createContextFromAccount(userId);			
 		if (visualization == null)
 			throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
 		if (visualization.status == PluginStatus.DELETED)
@@ -311,7 +313,7 @@ public class Plugins extends APIController {
 					query.put("study", study.toString());
 					AccessLog.log("set link");					
 				} 
-				RecordManager.instance.shareByQuery(userId, userId, space._id, query);
+				RecordManager.instance.shareByQuery(context1, space._id, query);
 				
 			}
 
@@ -378,8 +380,9 @@ public class Plugins extends APIController {
 	@APICall
 	public CompletionStage<Result> isAuthorized(String spaceIdString) throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 
-		BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");
+		BSONObject oauthmeta = RecordManager.instance.getMeta(context, new MidataId(spaceIdString), "_oauth");
 		if (oauthmeta == null)
 			return CompletableFuture.completedFuture((Result) ok(Json.toJson(false)));
 
@@ -453,6 +456,7 @@ public class Plugins extends APIController {
 		// get app details
 		final MidataId spaceId = new MidataId(spaceIdString);
 		final MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		String origin = config.getString("portal.originUrl");
 		if (origin.equals("https://demo.midata.coop:9002"))
 			origin = "https://demo.midata.coop";
@@ -479,7 +483,7 @@ public class Plugins extends APIController {
 		session("secret", requestToken.secret);
 
 		Map<String, Object> tokens = CMaps.map("token", requestToken.token).map("secret", requestToken.secret);
-		RecordManager.instance.setMeta(userId, space._id, "_oauth1", tokens);
+		RecordManager.instance.setMeta(context, space._id, "_oauth1", tokens);
 
 		return ok(client.redirectUrl(requestToken.token));
 	}
@@ -499,6 +503,7 @@ public class Plugins extends APIController {
 		// get app details
 		final MidataId spaceId = new MidataId(spaceIdString);
 		final MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("visualization", "type"));
 		if (space == null)
@@ -510,7 +515,7 @@ public class Plugins extends APIController {
 		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret");
 		Plugin app = Plugin.get(properties, fields);
 
-		BSONObject oauth1Params = RecordManager.instance.getMeta(userId, space._id, "_oauth1");
+		BSONObject oauth1Params = RecordManager.instance.getMeta(context, space._id, "_oauth1");
 		Map<String, Object> reqTokens = oauth1Params.toMap();
 
 		// request access token
@@ -532,10 +537,10 @@ public class Plugins extends APIController {
 		additionalParams.remove("oauth_token");
 		additionalParams.remove("oauth_verifier");
 		if (!additionalParams.isEmpty()) {
-			RecordManager.instance.setMeta(userId, spaceId, "_oauthParams", additionalParams);
+			RecordManager.instance.setMeta(context, spaceId, "_oauthParams", additionalParams);
 		}
 
-		RecordManager.instance.setMeta(userId, spaceId, "_oauth", tokens);
+		RecordManager.instance.setMeta(context, spaceId, "_oauth", tokens);
 
 		return ok();
 	}
@@ -555,6 +560,7 @@ public class Plugins extends APIController {
 		// get app details
 		final MidataId spaceId = new MidataId(spaceIdString);
 		final MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		final String sessionHandle = PortalSessionToken.session().handle;
 
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("visualization", "type"));
@@ -614,7 +620,7 @@ public class Plugins extends APIController {
 						}
 
 						Map<String, Object> tokens = CMaps.map("appId", appId.toString()).map("accessToken", accessToken).mapNotEmpty("refreshToken", refreshToken);
-						RecordManager.instance.setMeta(userId, spaceId, "_oauth", tokens);
+						RecordManager.instance.setMeta(context, spaceId, "_oauth", tokens);
 
 						return ok();
 					} else {
@@ -712,7 +718,7 @@ public class Plugins extends APIController {
 				}
 				try {
 					tokens.put("accessToken", accessToken);
-					RecordManager.instance.setMeta(userId, spaceId, "_oauth", tokens);
+					RecordManager.instance.setMeta(RecordManager.instance.createContextFromAccount(userId), spaceId, "_oauth", tokens);
 				} catch (InternalServerException e) {
 					return false;
 				} finally {

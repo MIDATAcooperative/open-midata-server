@@ -57,7 +57,7 @@
                         <form-group name="address1" label="registration.address" :path="errors.address">
                             <input type="text" class="form-control" id="address1" name="address1" :placeholder="$t('registration.address_line1')" v-model="registration.address1" required v-validate>
                         </form-group>
-                        <form-group name="address2" label="">
+                        <form-group name="address2" label="common.empty">
                             <input type="text" class="form-control" id="address2" name="address2" :placeholder="$t('registration.address_line2')" v-model="registration.address2" v-validate>
                         </form-group>
                                     

@@ -760,7 +760,7 @@ export default {
 	confirmConsent() {
         const { $data, $route, $router } = this, me = this;
 		circles.unconfirmed = 0;
-		me.doAction("confirm", hc.confirm($data.consent._id).then(function() { $data.reinit(); }));	
+		me.doAction("confirm", hc.confirm($data.consent._id).then(function() { me.reinit(); }));	
 	},
 	
 	mayReject() {
@@ -874,11 +874,13 @@ export default {
     },
 
 	watch:{
-		$route (){
+		$route (to, from ){
 			const { $data, $route } = this, me = this;
-			session.currentUser.then(function(userId) {	
-            	me.init(userId);
-        	});
+			if (to.path.indexOf("consent")>=0) {
+				session.currentUser.then(function(userId) {	
+	            	me.init(userId);
+	        	});
+        	}
 		}
 	},
 

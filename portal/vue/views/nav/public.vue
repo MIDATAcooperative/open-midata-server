@@ -85,7 +85,7 @@
 </div>
 <footer id="footer">
 	<div class="container">
-		<p>{{ $t('footer.copyright', { now : currentYear }) }}</p>
+		<p>&nbsp;</p>
 
 		<ul>
 			<li><a :href="homepage" v-t="'footer.homepage'"></a></li>			
@@ -130,8 +130,8 @@ export default {
 	 $data.actions = $route.query.actions;
 	 $data.hideCookieBar = localStorage.hideCookieBar;
 
-	 if (!$route.meta || !$route.meta.keep) {	
-		 session.logout();
+	 if (!$route.meta || !$route.meta.keep) {		 	
+		session.logout();
 	 }
 
 	 addBundle("members");

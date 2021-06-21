@@ -79,7 +79,8 @@ export default {
         entities : ["USER","USERGROUP","ORGANIZATION"],
         roles : ["MEMBER", "PROVIDER", "RESEARCH", "DEVELOPER"],
         user : null,
-        usergroup : null
+        usergroup : null,
+        apps : []
     }),
 
     components: {  Panel, ErrorBox, FormGroup, CheckBox, Typeahead },
@@ -104,6 +105,7 @@ export default {
 	    updateLicence() {
 			const { $data, $router } = this, me = this;
             if ($data.licence._id == null) {
+                if ($data.licence.expireDate == "") $data.licence.expireDate = "";
                 me.doAction('submit', server.post(jsRoutes.controllers.Market.addLicence().url, $data.licence))
                 .then(function(data) { $router.push({ path : "./licenses" }); });
             } 

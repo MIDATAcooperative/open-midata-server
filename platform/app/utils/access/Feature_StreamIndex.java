@@ -147,8 +147,8 @@ public class Feature_StreamIndex extends Feature {
 						AccessLog.log(r.context.toString());
 					}
 					if (add.size()>0) {
-						IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
-						IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index.getModel(), null);		        
+						IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getAccessor(), q.getApsId(), true);
+						IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getAccessor(), index.getModel(), null);		        
 					}
 					
 					result = QueryEngine.combine(result, add);				

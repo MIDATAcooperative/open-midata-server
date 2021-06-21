@@ -112,9 +112,9 @@ public class RecordManager {
 		if (apsCache.get() == null)
 			apsCache.set(new APSCache(who, who));
 		APSCache result = apsCache.get();
-		if (!result.getExecutor().equals(who)) throw new InternalServerException("error.internal", "Owner Change!");
+		if (!result.getAccessor().equals(who)) throw new InternalServerException("error.internal", "Owner Change!");
 		return result;
-	}	
+	}
 	
 	public void setAccountOwner(MidataId executor, MidataId accountOwner) throws InternalServerException {
 		getCache(executor).setAccountOwner(accountOwner);
@@ -147,14 +147,14 @@ public class RecordManager {
 	 * @return ID of APS
 	 * @throws AppException
 	 */
-	public MidataId createPrivateAPS(MidataId who, MidataId proposedId)
+	public MidataId createPrivateAPS(APSCache cache, MidataId who, MidataId proposedId)
 			throws AppException {
 		AccessLog.logBegin("begin createPrivateAPS who="+who.toString()+" id="+proposedId.toString());
 		EncryptedAPS eaps = new EncryptedAPS(proposedId, who, who, APSSecurityLevel.HIGH, false);
 		EncryptionUtils.addKey(who, eaps);		
 		eaps.create();
-		APSCache current = apsCache.get();
-		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getExecutor(), eaps.getAPSKey(), eaps.getOwner())));
+		APSCache current = cache != null ? cache : apsCache.get();
+		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getAccessor(), eaps.getAPSKey(), eaps.getOwner())));
         AccessLog.logEnd("end createPrivateAPS");
 		return eaps.getId();
 	}
@@ -182,7 +182,7 @@ public class RecordManager {
 		if (history) eaps.getPermissions().put("_history", new BasicBSONList()); // Init with history
 		eaps.create();
 		APSCache current = apsCache.get();
-		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getExecutor(), eaps.getAPSKey(), eaps.getOwner())));
+		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getAccessor(), eaps.getAPSKey(), eaps.getOwner())));
        
 		AccessLog.logEnd("end createAnonymizedAPS");
 		return eaps.getId();
@@ -222,30 +222,29 @@ public class RecordManager {
 	 * @param targetUsers IDs of user to share APS with
 	 * @throws AppException
 	 */
-	public void shareAPS(MidataId apsId, AccessContext context, MidataId executorId,
-			Set<MidataId> targetUsers) throws AppException {		
+	public void shareAPS(AccessContext context, Set<MidataId> targetUsers) throws AppException {		
 		if (targetUsers==null || targetUsers.isEmpty()) return;
 		
-		AccessLog.logBegin("begin shareAPS aps="+apsId.toString()+" executor="+executorId.toString()+" #targetUsers="+targetUsers.size());
-		APSCache cache = getCache(executorId);
-		if (context != null) {
-		  DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, apsId, context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()).map("ignore-redirect","true"),SHARING_FIELDS);
+		AccessLog.logBegin("begin shareAPS aps="+context.getTargetAps().toString()+" executor="+context.getAccessor().toString()+" #targetUsers="+targetUsers.size());
+		APSCache cache = context.getCache();
+		//if (context != null) {
+		  DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, context.getTargetAps(), context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()).map("ignore-redirect","true"),SHARING_FIELDS);
 		  shareRecursive(cache, it, targetUsers);
-		}
-		getCache(executorId).getAPS(apsId).addAccess(targetUsers);
+		//}
+		cache.getAPS(context.getTargetAps()).addAccess(targetUsers);
 		AccessLog.logEnd("end shareAPS");
 	}
 	
-	public void reshareAPS(MidataId apsId, AccessContext context, MidataId executorId, MidataId groupWithAccessId,
+	public void reshareAPS(AccessContext context, MidataId groupWithAccessId,
 			Set<MidataId> targetUsers) throws AppException {
-		if (groupWithAccessId == null || groupWithAccessId.equals(executorId)) {
-			shareAPS(apsId, context, executorId, targetUsers);
+		if (groupWithAccessId == null || groupWithAccessId.equals(context.getAccessor())) {
+			shareAPS(context, targetUsers);
 		} else {
-			AccessLog.logBegin("begin reshareAPS aps="+apsId.toString()+" executor="+executorId.toString()+" #targetUsers="+targetUsers.size());
-			APSCache cache = getCache(executorId);
-			DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, apsId, context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()), SHARING_FIELDS);
+			AccessLog.logBegin("begin reshareAPS aps="+context.getTargetAps().toString()+" executor="+context.getAccessor().toString()+" #targetUsers="+targetUsers.size());
+			APSCache cache = context.getCache();
+			DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, context.getTargetAps(), context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()), SHARING_FIELDS);
 			shareRecursive(cache, it, targetUsers);
-			Feature_UserGroups.findApsCacheToUse(cache, apsId).getAPS(apsId).addAccess(targetUsers);
+			Feature_UserGroups.findApsCacheToUse(cache, context.getTargetAps()).getAPS(context.getTargetAps()).addAccess(targetUsers);
 			AccessLog.logEnd("end shareAPS");
 		}
 	}
@@ -258,10 +257,10 @@ public class RecordManager {
 	 * @param publickey public key of target entity
 	 * @throws AppException
 	 */
-	public void shareAPS(MidataId apsId, MidataId executorId,
+	public void shareAPS(AccessContext context,
 			byte[] publickey) throws AppException {
-		AccessLog.logBegin("begin shareAPS aps="+apsId.toString()+" executor="+executorId);
-		getCache(executorId).getAPS(apsId).addAccess(apsId, publickey);
+		AccessLog.logBegin("begin shareAPS aps="+context.getTargetAps().toString()+" executor="+context.getAccessor());
+		context.getCache().getAPS(context.getTargetAps()).addAccess(context.getTargetAps(), publickey);
 		AccessLog.logEnd("end shareAPS");
 	}
 
@@ -272,10 +271,10 @@ public class RecordManager {
 	 * @param targetUsers set of IDs of target users
 	 * @throws InternalServerException
 	 */
-	public void unshareAPS(MidataId apsId, MidataId executorId,
+	public void unshareAPS(AccessContext context,MidataId apsId,
 			Set<MidataId> targetUsers) throws InternalServerException {
-		AccessLog.logBegin("begin unshareAPS aps="+apsId.toString()+" executor="+executorId.toString()+" #targets="+targetUsers.size());
-		getCache(executorId).getAPS(apsId).removeAccess(targetUsers);
+		AccessLog.logBegin("begin unshareAPS aps="+apsId.toString()+" executor="+context.getAccessor().toString()+" #targets="+targetUsers.size());
+		context.getCache().getAPS(apsId).removeAccess(targetUsers);
 		AccessLog.logEnd("end unshareAPS");
 	}
 	
@@ -287,13 +286,13 @@ public class RecordManager {
 	 * @param targetUsers set of IDs of target users
 	 * @throws AppException
 	 */
-	public void unshareAPSRecursive(MidataId apsId, MidataId executorId,
+	public void unshareAPSRecursive(AccessContext context, MidataId apsId, 
 			Set<MidataId> targetUsers) throws AppException {
-		AccessLog.logBegin("begin unshareAPSRecursive aps="+apsId.toString()+" executor="+executorId.toString()+" #targets="+targetUsers.size());
-		if (getCache(executorId).getAPS(apsId).isAccessible()) {
-			List<DBRecord> to_unshare = QueryEngine.listInternal(getCache(executorId), apsId, null, CMaps.map("streams", "only").map("ignore-redirect", true), Sets.create("_id"));
-			for (DBRecord rec : to_unshare) unshareAPS(rec._id, executorId, targetUsers);
-			getCache(executorId).getAPS(apsId).removeAccess(targetUsers);
+		AccessLog.logBegin("begin unshareAPSRecursive aps="+apsId.toString()+" executor="+context.getAccessor().toString()+" #targets="+targetUsers.size());
+		if (context.getCache().getAPS(apsId).isAccessible()) {
+			List<DBRecord> to_unshare = QueryEngine.listInternal(context.getCache(), apsId, null, CMaps.map("streams", "only").map("ignore-redirect", true), Sets.create("_id"));
+			for (DBRecord rec : to_unshare) unshareAPS(context, apsId, targetUsers);
+			context.getCache().getAPS(apsId).removeAccess(targetUsers);
 		}
 		AccessLog.logEnd("end unshareAPSRecursive");
 	}
@@ -310,9 +309,9 @@ public class RecordManager {
 		}		
 	}		
 	
-	public void share(MidataId who, MidataId fromAPS, MidataId toAPS, 
+	public void share(AccessContext context, MidataId fromAPS, MidataId toAPS, 
 			Set<MidataId> records, boolean withOwnerInformation) throws AppException {
-		share(who, fromAPS, toAPS, null, records, withOwnerInformation);
+		share(context, fromAPS, toAPS, null, records, withOwnerInformation);
 	}
 	
 	/**
@@ -324,10 +323,10 @@ public class RecordManager {
 	 * @param withOwnerInformation 
 	 * @throws AppException
 	 */
-	public void share(MidataId who, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
+	public void share(AccessContext context, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
 			Set<MidataId> records, boolean withOwnerInformation)
 			throws AppException {
-		share(who, getCache(who), fromAPS, toAPS, toAPSOwner, records, withOwnerInformation);
+		share(context.getAccessor(), context.getCache(), fromAPS, toAPS, toAPSOwner, records, withOwnerInformation);
 	}
 	
 	protected void share(MidataId who, APSCache cache, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
@@ -366,19 +365,21 @@ public class RecordManager {
         AccessLog.logEnd("end share");
 	}
 	
-	public int share(MidataId who, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
+	public int share(AccessContext fromContext, MidataId toAPS, MidataId toAPSOwner,
 			Map<String, Object> query, boolean withOwnerInformation) throws AppException {
 		
-		APSCache cache = getCache(who);
-		if (!who.equals(fromAPS)) {
+		APSCache cache = fromContext.getCache();
+		
+		/*if (!who.equals(fromAPS)) {
 			UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(fromAPS, who);
 			if (ugm!=null) {
 				cache = Feature_UserGroups.findApsCacheToUse(cache, ugm);
 			}
-		}
+		}*/
+		
 		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
-		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, fromAPS, null,
-				CMaps.map(query).map("owner", fromAPS),	RecordManager.SHARING_FIELDS);
+		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, fromContext.getTargetAps(), fromContext,
+				CMaps.map(query).map("owner", fromContext.getOwner()),	RecordManager.SHARING_FIELDS);
 		
 		share(cache, toAPS, toAPSOwner, recordEntries, withOwnerInformation);
 		
@@ -399,7 +400,7 @@ public class RecordManager {
 	}
 	
 	
-	protected void share(APSCache cache, MidataId toAPS, MidataId toAPSOwner,
+	public void share(APSCache cache, MidataId toAPS, MidataId toAPSOwner,
 			List<DBRecord> recordEntries, boolean withOwnerInformation)
 			throws AppException {		
         
@@ -452,21 +453,21 @@ public class RecordManager {
 	 * @param query the query to be applied to the records
 	 * @throws AppException
 	 */
-	public void shareByQuery(MidataId who, MidataId fromAPS, MidataId toAPS,
+	public void shareByQuery(AccessContext fromContext, MidataId toAPS,
 			Map<String, Object> query) throws AppException {
-        AccessLog.log("shareByQuery who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+ "query="+query.toString());
+        AccessLog.log("shareByQuery who="+fromContext.getAccessor().toString()+" from="+fromContext.getTargetAps().toString()+" to="+toAPS.toString()+ "query="+query.toString());
 		//if (toAPS.equals(who)) throw new BadRequestException("error.internal", "Bad call to shareByQuery. target APS may not be user APS!");
-        APS apswrapper = getCache(who).getAPS(toAPS);
+        APS apswrapper = fromContext.getCache().getAPS(toAPS);
         
         // Resolve "app" into IDs
-        Query q = new Query("share-by-query",query, Sets.create("_id"), getCache(who), toAPS, new DummyAccessContext(getCache(who), fromAPS), null);
+        Query q = new Query("share-by-query",query, Sets.create("_id"), fromContext.getCache(), toAPS, fromContext, null);
         query = q.getProperties();
         
         query.remove("aps");
         if (query.isEmpty()) {
            apswrapper.removeMeta("_query");
         } else {
-		   query.put("aps", fromAPS.toString());
+		   query.put("aps", fromContext.getTargetAps().toString());
 		   apswrapper.setMeta("_query", query);
         }
         
@@ -478,71 +479,10 @@ public class RecordManager {
 			apswrapper.removeMeta("_exclude");
 		}
         
-        List<DBRecord> doubles = QueryEngine.listInternal(getCache(who), toAPS, null, CMaps.map(query).map("ignore-redirect", "true").map("flat", "true").map("streams", "true"), APSEntry.groupingFields);
+        List<DBRecord> doubles = QueryEngine.listInternal(fromContext.getCache(), toAPS, fromContext, CMaps.map(query).map("ignore-redirect", "true").map("flat", "true").map("streams", "true"), APSEntry.groupingFields);
         apswrapper.removePermission(doubles);        
 	}
-	
-	/**
-	 * Materialize the query results of an APS into the APS and remove the query
-	 * @param who executing person
-	 * @param targetAPS the APS with a query redirect
-	 * @throws AppException
-	 */
-	public void materialize(MidataId executorAndOwnerId, MidataId targetAPS) throws AppException {
-		APS apswrapper = getCache(executorAndOwnerId).getAPS(targetAPS);
-		if (apswrapper.getMeta("_query") != null) {
-
-			AccessLog.logBegin("start materialize query APS="+targetAPS.toString());
-			Set<String> fields = Sets.create("owner");
-			fields.addAll(APSEntry.groupingFields);
-			List<DBRecord> content = QueryEngine.listInternal(getCache(executorAndOwnerId), targetAPS, null, CMaps.map("redirect-only", "true"), fields);
-			Set<MidataId> ids = new HashSet<MidataId>();
-			for (DBRecord rec : content) ids.add(rec._id);
-			
-			BasicBSONObject query = apswrapper.getMeta("_query");
-			Circles.setQuery(executorAndOwnerId, executorAndOwnerId, targetAPS, query);
-			apswrapper.removeMeta("_query");
-       	    RecordManager.instance.applyQuery(new DummyAccessContext(getCache(executorAndOwnerId)), query, executorAndOwnerId, targetAPS, true);
-			
-       	    RecordManager.instance.share(executorAndOwnerId, executorAndOwnerId, targetAPS, ids, true);
-             
-			
-			//Feature_Expiration.setup(apswrapper);
-						
-			
-			AccessLog.logEnd("end materialize query");
-
-		}
-		if (apswrapper.getMeta("_filter") != null) {
-			AccessLog.logBegin("start materialize consent APS="+targetAPS.toString());
-			Set<String> fields = Sets.create("owner");
-			fields.addAll(APSEntry.groupingFields);
-			List<DBRecord> content = QueryEngine.listInternal(getCache(executorAndOwnerId), targetAPS, null, CMaps.map(), fields);
-			apswrapper.clearPermissions();
-			apswrapper.addPermission(content, true);
-			
-			Member member = Member.getById(executorAndOwnerId, Sets.create("queries", "rqueries"));
-			
-			if (member.queries != null) {			 
-			  String key = targetAPS.toString();
-		      if (member.queries.containsKey(key)) {
-		    	  member.queries.remove(key);
-		    	  Member.set(executorAndOwnerId, "queries", member.queries);
-		      }
-			}
-			
-			if (member.rqueries != null) {			 
-				  String key = targetAPS.toString();
-			      if (member.rqueries.containsKey(key)) {
-			    	  member.rqueries.remove(key);
-			    	  Member.set(executorAndOwnerId, "rqueries", member.rqueries);
-			      }
-			}
-			
-			apswrapper.removeMeta("_filter");
-			AccessLog.logEnd("end materialize query");
-		}
-	}
+		
 
 	/**
 	 * remove records from an APS
@@ -551,6 +491,7 @@ public class RecordManager {
 	 * @param records set of record ids to remove from APS
 	 * @throws AppException
 	 */
+	/*
 	public void unshare(MidataId who, MidataId apsId, Set<MidataId> records)
 			throws AppException {
 		if (records.size() == 0) return;
@@ -563,16 +504,30 @@ public class RecordManager {
 		apswrapper.removePermission(recordEntries);
 		for (DBRecord rec : recordEntries) cache.changeWatches().removeWatchingAps(rec, apsId);
 		AccessLog.logEnd("end unshare");
+	}*/
+	
+	public void unshare(AccessContext context, Set<MidataId> records)
+			throws AppException {
+		if (records.size() == 0) return;
+		
+        AccessLog.logBegin("begin unshare who="+context.getCache().getAccessor().toString()+" aps="+context.getTargetAps().toString()+" #recs="+records.size());
+        APSCache cache = context.getCache();
+		APS apswrapper = cache.getAPS(context.getTargetAps());
+		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, context.getTargetAps(), null,
+				CMaps.map("_id", records), Sets.create("_id", "format", "content", "watches"));		
+		apswrapper.removePermission(recordEntries);
+		for (DBRecord rec : recordEntries) cache.changeWatches().removeWatchingAps(rec, context.getTargetAps());
+		AccessLog.logEnd("end unshare");
 	}
 	
-	public void unshare(MidataId who, MidataId apsId, Collection<Record> records)
+	public void unshare(AccessContext context, Collection<Record> records)
 			throws AppException {
 		if (records.size() == 0) return;
 		
 		Set<MidataId> ids = new HashSet<MidataId>();
 		for (Record r : records) ids.add(r._id);
 		
-		unshare(who, apsId, ids);
+		unshare(context, ids);
 	}
 
 	/**
@@ -583,10 +538,10 @@ public class RecordManager {
 	 * @return
 	 * @throws AppException
 	 */
-	public BSONObject getMeta(MidataId who, MidataId apsId, String key) throws AppException {
-		AccessLog.logBegin("begin getMeta who="+who.toString()+" aps="+apsId.toString()+" key="+key);
+	public BSONObject getMeta(AccessContext context, MidataId apsId, String key) throws AppException {
+		AccessLog.logBegin("begin getMeta accessor="+context.getCache().getAccessor().toString()+" aps="+apsId.toString()+" key="+key);
 		try {
-		  BSONObject result = Feature_UserGroups.findApsCacheToUse(getCache(who), apsId).getAPS(apsId).getMeta(key);
+		  BSONObject result = Feature_UserGroups.findApsCacheToUse(context.getCache(), apsId).getAPS(apsId).getMeta(key);
 		  return result;
 		} finally {
 		  AccessLog.logEnd("end getMeta");
@@ -601,9 +556,9 @@ public class RecordManager {
 	 * @param data key,value map containing the data to be stored
 	 * @throws AppException
 	 */
-	public void setMeta(MidataId who, MidataId apsId, String key, Map<String,Object> data) throws AppException {
-		AccessLog.logBegin("begin setMeta who="+who.toString()+" aps="+apsId.toString()+" key="+key);
-		Feature_UserGroups.findApsCacheToUse(getCache(who), apsId).getAPS(apsId).setMeta(key, data);
+	public void setMeta(AccessContext context, MidataId apsId, String key, Map<String,Object> data) throws AppException {
+		AccessLog.logBegin("begin setMeta who="+context.getCache().getAccessor().toString()+" aps="+apsId.toString()+" key="+key);
+		Feature_UserGroups.findApsCacheToUse(context.getCache(), apsId).getAPS(apsId).setMeta(key, data);
 		AccessLog.logEnd("end setMeta");
 	}
 	
@@ -614,52 +569,12 @@ public class RecordManager {
 	 * @param key unique name of meta data object	
 	 * @throws AppException
 	 */
-	public void removeMeta(MidataId who, MidataId apsId, String key) throws AppException {
-		AccessLog.logBegin("begin removeMeta who="+who.toString()+" aps="+apsId.toString()+" key="+key);
-		getCache(who).getAPS(apsId).removeMeta(key);
+	public void removeMeta(AccessContext context, MidataId apsId, String key) throws AppException {
+		AccessLog.logBegin("begin removeMeta who="+context.getCache().getAccessor().toString()+" aps="+apsId.toString()+" key="+key);
+		context.getCache().getAPS(apsId).removeMeta(key);
 		AccessLog.logEnd("end removeMeta");
 	}
 
-
-
-	/**
-	 * add a new record to the database 
-	 * @param executingPerson id of executing person
-	 * @param record the record to be saved
-	 * @throws AppException
-	 */
-	public void addRecord(MidataId executingPerson, Record record) throws AppException {
-		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		byte[] enckey = addRecordIntern(createContextFromAccount(executingPerson), dbrecord, false, null, false);	
-		//createAndShareDependend(executingPerson, dbrecord, record.dependencies, enckey);
-		
-	}
-	
-	/*
-	protected void createAndShareDependend(MidataId executingPerson, DBRecord record, Set<MidataId> dependencies, byte[] enckey) throws AppException {
-		if (dependencies != null && !dependencies.isEmpty()) {
-			createAPSForRecord(executingPerson, record.owner, record._id, enckey, false);
-			share(executingPerson, executingPerson, record._id, dependencies, false);
-			
-			AccessLog.logBegin("start applying queries");
-			Member member = Member.getById(record.owner, Sets.create("queries"));
-			if (member.queries!=null) {
-				for (String key : member.queries.keySet()) {
-					Map<String, Object> query = member.queries.get(key);
-					if (QueryEngine.isInQuery(getCache(executingPerson), query, record)) {
-						try {
-						  MidataId targetAps = new MidataId(key);
-						  getCache(executingPerson).getAPS(targetAps, record.owner);
-						  RecordManager.instance.share(executingPerson, record.owner, targetAps, Collections.singleton(record._id), true);
-						} catch (APSNotExistingException e) {
-							
-						}
-					}
-				}
-			}
-			AccessLog.logEnd("end applying queries");			
-		}
-	}*/
 	
 	/**
 	 * Add a new record containing an attachment to the database
@@ -1058,10 +973,7 @@ public class RecordManager {
 		return usedKey;	
 	}
 	
-	public void applyQuery(MidataId executor, MidataId ownerId, Map<String, Object> query, MidataId sourceaps, MidataId targetaps, boolean ownerInformation) throws AppException {
-		applyQuery(new DummyAccessContext(getCache(executor), ownerId), query, sourceaps, targetaps, ownerInformation);
-	}
-	
+		
 	/**
 	 * Share (stream) records from one APS to another by applying a query once.
 	 * @param userId id of executing user
@@ -1071,34 +983,36 @@ public class RecordManager {
 	 * @param ownerInformation include owner information?
 	 * @throws AppException
 	 */
-	public void applyQuery(AccessContext context, Map<String, Object> query, MidataId sourceaps, MidataId targetaps, boolean ownerInformation) throws AppException {
+	public void applyQuery(AccessContext context, Map<String, Object> query, MidataId sourceaps, Consent target, boolean ownerInformation) throws AppException {
 		
+		MidataId targetaps = target._id;
 		Pair<Map<String, Object>, Map<String, Object>> pair = Feature_Streams.convertToQueryPair(query);
 				
 		AccessLog.logBegin("BEGIN APPLY QUERY");
-		MidataId userId = context.getCache().getExecutor();
+		MidataId userId = context.getCache().getAccessor();
+		AccessContext targetContext = new ConsentAccessContext(target, context);
 		if (pair.getRight() != null) {
 			AccessLog.logBegin("SINGLE RECORDS");
-			List<DBRecord> recs = QueryEngine.listInternal(getCache(userId), sourceaps, context, CMaps.map(pair.getRight()).map("owner", context.getSelf()), RecordManager.SHARING_FIELDS);			
-			RecordManager.instance.share(getCache(userId), targetaps, null, recs, ownerInformation);
+			List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), sourceaps, context, CMaps.map(pair.getRight()).map("owner", context.getSelf()), RecordManager.SHARING_FIELDS);			
+			RecordManager.instance.share(context.getCache(), targetaps, null, recs, ownerInformation);
 		}
 		if (pair.getLeft() != null) {
-			List<Record> recs = RecordManager.instance.list(userId, UserRole.ANY, targetaps, CMaps.map(pair.getLeft()).map("flat", "true").map("owner", context.getSelf()), Sets.create("_id"));
+			List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), targetaps, targetContext, CMaps.map(pair.getLeft()).map("flat", "true").map("owner", context.getSelf()), Sets.create("_id"));
 			Set<MidataId> remove = new HashSet<MidataId>();
-			for (Record r : recs) remove.add(r._id);
+			for (DBRecord r : recs) remove.add(r._id);
 			AccessLog.log("REMOVE DUPLICATES:"+remove.size());
-			RecordManager.instance.unshare(userId, targetaps, remove);		
+			RecordManager.instance.unshare(targetContext, remove);		
 			
 			
 			Map<String, Object> selectionQuery = CMaps.map(pair.getLeft()).map("streams", "true").map("flat", "true").map("owner", context.getSelf());		
-			List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, null, selectionQuery, RecordManager.SHARING_FIELDS);
+			List<DBRecord> records = QueryEngine.listInternal(context.getCache(), sourceaps, context, selectionQuery, RecordManager.SHARING_FIELDS);
 			
 			AccessLog.log("SHARE QUALIFIED STREAMS:"+records.size());
 			if (records.size() > 0) {				
-				RecordManager.instance.share(getCache(userId), targetaps, null, records, ownerInformation);
+				RecordManager.instance.share(context.getCache(), targetaps, null, records, ownerInformation);
 			}
 			
-			List<DBRecord> streams = QueryEngine.listInternal(getCache(userId), targetaps, null, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
+			List<DBRecord> streams = QueryEngine.listInternal(context.getCache(), targetaps, targetContext, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
 			AccessLog.log("UNSHARE STREAMS CANDIDATES = "+streams.size());
 			
 			List<DBRecord> stillOkay = QueryEngine.listFromMemory(context, pair.getLeft(), streams);
@@ -1109,7 +1023,7 @@ public class RecordManager {
 			}
 			
 			AccessLog.log("UNSHARE STREAMS QUALIFIED = "+remove.size());
-			RecordManager.instance.unshare(userId, targetaps, remove);
+			RecordManager.instance.unshare(targetContext, remove);
 			AccessLog.logEnd("END APPLY RULES");
 		}
 		
@@ -1166,6 +1080,7 @@ public class RecordManager {
 		AccessLog.logEnd("end applying queries");
 	}
 	
+	/*
 	public Set<MidataId> findAllSharingAps(MidataId executorId, Record record1) throws AppException {
 		 
 		    DBRecord record = RecordConversion.instance.toDB(record1);
@@ -1176,32 +1091,29 @@ public class RecordManager {
 			Member member = Member.getById(recordOwner, Sets.create("rqueries", "queries"));
 			if (member.queries!=null) {
 				for (String key : member.queries.keySet()) {
-					//try {
+					
 					Map<String, Object> query = member.queries.get(key);
 					if (QueryEngine.isInQuery(context, query, record)) {
 						result.add(new MidataId(key));						
 					}
-					//} catch (BadRequestException e) {
-				//		AccessLog.logException("error while sharing", e);
-				//	}  
+					
 				}
 			}
 									
 			if (member.rqueries!=null) {
 				for (String key : member.rqueries.keySet()) {
-					//try {
+				
 					Map<String, Object> query = member.rqueries.get(key);
 					if (QueryEngine.isInQuery(context, query, record)) {
 						result.add(new MidataId(key));						
 					}
-					//} catch (BadRequestException e) {
-					//	AccessLog.logException("error while sharing", e);
-					//}  
+					
 				}
 			}
 		
 			return result;		
 	}
+	*/
 	
     /**
      * Delete an access permission set
@@ -1229,36 +1141,7 @@ public class RecordManager {
 		AccessLog.logEnd("end deleteAPS");
 	}
 
-	/**
-	 * Query for records matching some criteria.
-	 * In the result list only those fields of the record need to be filled out that have been requested.
-	 * Additional fields may be set if they were needed to processing the query.
-	 * 
-	 * @param who id of executing person
-	 * @param apsId id of APS to access
-	 * @param properties key,value map containing the restrictions
-	 * @param fields set of fields to return from the query
-	 * @return list of records matching properties
-	 * @throws AppException
-	 */
-	public List<Record> list(MidataId who, UserRole role, MidataId apsId,
-			Map<String, Object> properties, Set<String> fields)
-			throws AppException {
-		AccessContext context = null;
-		if (who.equals(apsId)) context = createContextFromAccount(who);
-		else {
-          Consent consent = Consent.getByIdUnchecked(apsId, Consent.ALL);
-          if (consent != null) {
-        	  if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN && !consent.owner.equals(who)) return Collections.emptyList();
-        	  context =  createContextFromConsent(who, consent);
-          } else return Collections.emptyList(); 
-		}
-		AccessLog.log("context="+context);
-		QueryTagTools.handleSecurityTags(role, properties, fields);
-		return QueryEngine.list(context.getCache(), apsId, context, properties, fields);
-	}
-		
-	
+			
 	public DBIterator<Record> listIterator(MidataId who, UserRole role, AccessContext context,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {	
@@ -1274,7 +1157,7 @@ public class RecordManager {
 	}
 	*/
 	
-	public List<Record> list(MidataId who, UserRole role, AccessContext context,
+	public List<Record> list(UserRole role, AccessContext context,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {
 		QueryTagTools.handleSecurityTags(role, properties, fields);
@@ -1290,7 +1173,7 @@ public class RecordManager {
 	 * @return list of RecordsInfo objects containing a summary of the records
 	 * @throws AppException
 	 */
-	public Collection<RecordsInfo> info(MidataId who, UserRole role, MidataId aps, AccessContext context, Map<String, Object> properties, AggregationType aggrType) throws AppException {
+	public Collection<RecordsInfo> info(UserRole role, MidataId aps, AccessContext context, Map<String, Object> properties, AggregationType aggrType) throws AppException {
 		// Only allow specific properties as results are materialized
 		Map<String, Object> nproperties = new HashMap<String, Object>();
 		nproperties.put("streams", "true");
@@ -1321,19 +1204,19 @@ public class RecordManager {
 		}
 		
 		try {
-		    Collection<RecordsInfo> result = QueryEngine.info(context.getCache(), aps, context, nproperties, aggrType);
+		    Collection<RecordsInfo> result = QueryEngine.info(aps, context, nproperties, aggrType);
 		    
 		    if (properties.containsKey("include-records")) {		    	
 			    for (RecordsInfo inf : result) {
 			    	if (inf.newestRecord != null) {
-			    		inf.newestRecordContent = fetch(who, role, context, inf.newestRecord, null);
+			    		inf.newestRecordContent = fetch(role, context, inf.newestRecord, null);
 			    	}
 			    }
 		    }
 		    
 		    return result;
 		} catch (APSNotExistingException e) {
-			checkRecordsInAPS(who, aps, false, "", new ArrayList<String>());
+			checkRecordsInAPS(context, aps, false, "", new ArrayList<String>());
 			//fixAccount(who);
 			throw e;
 		}
@@ -1346,8 +1229,8 @@ public class RecordManager {
 	 * @return the complete record (no attachment)
 	 * @throws AppException
 	 */
-	public Record fetch(MidataId who, UserRole role, RecordToken token) throws AppException {
-		return fetch(who, role, token, RecordManager.COMPLETE_DATA);
+	public Record fetch(AccessContext context, UserRole role, RecordToken token) throws AppException {
+		return fetch(context, role, token, RecordManager.COMPLETE_DATA);
 	}
 	
 	/**
@@ -1357,8 +1240,8 @@ public class RecordManager {
 	 * @return the attachment content
 	 * @throws AppException
 	 */
-	public FileData fetchFile(MidataId who, RecordToken token) throws AppException {		
-		List<DBRecord> result = QueryEngine.listInternal(getCache(who), new MidataId(token.apsId), createContext(who, MidataId.from(token.apsId)), CMaps.map("_id", new MidataId(token.recordId)), Sets.create("key", "data"));
+	public FileData fetchFile(AccessContext context, RecordToken token) throws AppException {		
+		List<DBRecord> result = QueryEngine.listInternal(context.getCache(), new MidataId(token.apsId), context.forAps(MidataId.from(token.apsId)), CMaps.map("_id", new MidataId(token.recordId)), Sets.create("key", "data"));
 				
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
 		DBRecord rec = result.get(0);
@@ -1395,9 +1278,9 @@ public class RecordManager {
 	 * @return the record to be returned
 	 * @throws AppException
 	 */
-	public Record fetch(MidataId who, UserRole role, RecordToken token, Set<String> fields)
+	public Record fetch(AccessContext context, UserRole role, RecordToken token, Set<String> fields)
 			throws AppException {
-		List<Record> result = list(who, role, createContext(who, MidataId.from(token.apsId)),
+		List<Record> result = list(role, context.forAps(MidataId.from(token.apsId)),
 				CMaps.map("_id", new MidataId(token.recordId)), fields);
 		if (result.isEmpty())
 			return null;
@@ -1413,9 +1296,9 @@ public class RecordManager {
 	 * @return the record to be returned
 	 * @throws AppException
 	 */
-	public Record fetch(MidataId who, UserRole role, AccessContext context, MidataId recordId, String format)
+	public Record fetch(UserRole role, AccessContext context, MidataId recordId, String format)
 			throws AppException {
-		List<Record> result = list(who, role, context, CMaps.map("_id", recordId).mapNotEmpty("format", format),
+		List<Record> result = list(role, context, CMaps.map("_id", recordId).mapNotEmpty("format", format),
 				RecordManager.COMPLETE_DATA);
 		if (result.isEmpty())
 			return null;
@@ -1430,9 +1313,9 @@ public class RecordManager {
 	 * @return set with record ids as strings
 	 * @throws AppException
 	 */
-	public Set<String> listRecordIds(MidataId who, UserRole role, AccessContext context)
+	public Set<String> listRecordIds(UserRole role, AccessContext context)
 			throws AppException {
-		return listRecordIds(who, role, context, RecordManager.FULLAPS_LIMITED_SIZE);
+		return listRecordIds(role, context, RecordManager.FULLAPS_LIMITED_SIZE);
 	}
 
 	/**
@@ -1443,9 +1326,9 @@ public class RecordManager {
 	 * @return set with record ids as strings
 	 * @throws AppException
 	 */
-	public Set<String> listRecordIds(MidataId who, UserRole role, AccessContext context,
+	public Set<String> listRecordIds(UserRole role, AccessContext context,
 			Map<String, Object> properties) throws AppException {
-		List<Record> result = list(who, role, context, properties,
+		List<Record> result = list(role, context, properties,
 				RecordManager.INTERNALIDONLY);
 		Set<String> ids = new HashSet<String>();
 		for (Record record : result)
@@ -1461,7 +1344,7 @@ public class RecordManager {
 	private int resetInfo(MidataId who) throws AppException {
 		AccessLog.logBegin("start reset info user="+who.toString());
 		int count = 0;
-		List<Record> result = list(who, UserRole.ANY, RecordManager.instance.createContextFromAccount(who), CMaps.map("streams", "only").map("flat", "true"), Sets.create("_id", "owner"));
+		List<Record> result = list(UserRole.ANY, RecordManager.instance.createContextFromAccount(who), CMaps.map("streams", "only").map("flat", "true"), Sets.create("_id", "owner"));
 		for (Record stream : result) {
 			try {
 			  AccessLog.log("reset stream:"+stream._id.toString());
@@ -1485,19 +1368,19 @@ public class RecordManager {
 				
 		List<String> msgs = new ArrayList<String>();
 		msgs.add(IndexManager.instance.clearIndexes(getCache(userId), userId));
-		
-		APSCache cache = getCache(userId);
+		AccessContext context = createContextFromAccount(userId);
+		APSCache cache = context.getCache();
 				
 		
 		AccessLog.logBegin("start search for missing records");
-		checkRecordsInAPS(userId, userId, true, "account:", msgs);		
+		checkRecordsInAPS(context, userId, true, "account:", msgs);		
 		AccessLog.logEnd("end search for missing records");
 		
 		AccessLog.logBegin("start search for broken user groups");
 		Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(userId);
 		for (UserGroupMember ugm : ugms) {
 			try {
-			  Feature_UserGroups.loadKey(ugm);
+			  Feature_UserGroups.loadKey(context, ugm);
 			} catch (Exception e) {
 				msgs.add("disabled usergroup "+ugm.userGroup.toString());
 				ugm.status = ConsentStatus.EXPIRED;
@@ -1517,21 +1400,21 @@ public class RecordManager {
 				Consent.delete(userId, consent._id);
 				continue;
 			}
-			checkRecordsInAPS(userId, consent._id, true, "owned consent "+consent._id.toString()+": ",msgs);
+			checkRecordsInAPS(context, consent._id, true, "owned consent "+consent._id.toString()+": ",msgs);
 		}
 		AccessLog.logEnd("end searching for missing records in consents");
 		
 		AccessLog.logBegin("start searching for missing records in authorized consents");		
 		consents = Consent.getAllActiveByAuthorized(userId);
 		for (Consent consent : consents) {
-			checkRecordsInAPS(userId, consent._id, false, "consent "+consent._id.toString()+": ",msgs);
+			checkRecordsInAPS(context, consent._id, false, "consent "+consent._id.toString()+": ",msgs);
 		}
 		AccessLog.logEnd("end searching for missing records in authorized consents");
 						
 		AccessLog.logBegin("start searching for missing records in spaces");
 		Set<Space> spaces = Space.getAllByOwner(userId, Sets.create("_id"));
 		for (Space space : spaces) {			
-			checkRecordsInAPS(userId,space._id, true, "space "+space._id.toString()+": ", msgs);
+			checkRecordsInAPS(context, space._id, true, "space "+space._id.toString()+": ", msgs);
 		}
 		AccessLog.logEnd("end searching for missing records in spaces");
 		
@@ -1566,8 +1449,8 @@ public class RecordManager {
 		return msgs;
 	}
 	
-	public void checkRecordsInAPS(MidataId userId, MidataId apsId, boolean instreams, String prefix, List<String> results) throws AppException {		
-		APSCache cache = getCache(userId);
+	public void checkRecordsInAPS(AccessContext context, MidataId apsId, boolean instreams, String prefix, List<String> results) throws AppException {		
+		APSCache cache = context.getCache();
 		AccessLog.logBegin("check records in APS:"+apsId.toString());
 		List<DBRecord> recs = QueryEngine.listInternal(cache, apsId, null, CMaps.map("owner", "self").map("streams", "only").map("flat", "true"), Sets.create("_id"));
 		Set<String> idOnly = Sets.create("_id");
@@ -1588,7 +1471,7 @@ public class RecordManager {
 		recs = QueryEngine.listInternal(cache, apsId, null, CMaps.map("owner", "self"), Sets.create("_id"));		
 		for (DBRecord rec : recs) {
 			if (DBRecord.getById(rec._id, idOnly) == null) {
-				if (instreams && rec.stream != null) cache.getAPS(rec.stream, userId).removePermission(rec);
+				if (instreams && rec.stream != null) cache.getAPS(rec.stream, rec.owner).removePermission(rec);
 				cache.getAPS(apsId).removePermission(rec);
 				results.add(prefix+"removed permission for non existing record "+rec._id.toString()+" from "+apsId.toString());
 			} 			
@@ -1653,11 +1536,11 @@ public class RecordManager {
 		IndexManager.instance.clearIndexes(RecordManager.instance.getCache(userId), userId);		
 	}
 	
-	public SpaceAccessContext createContextFromSpace(MidataId executorId, Space space, MidataId self) throws InternalServerException {
+	public SpaceAccessContext createRootContextFromSpace(MidataId executorId, Space space, MidataId self) throws InternalServerException {
 		return new SpaceAccessContext(space, getCache(executorId), null, self);
 	}	
 	
-	public ConsentAccessContext createContextFromConsent(MidataId executorId, Consent consent) throws AppException {
+	public ConsentAccessContext createRootContextFromConsent(MidataId executorId, Consent consent) throws AppException {
 		return new ConsentAccessContext(consent, getCache(executorId), null);
 	}
 	
@@ -1665,25 +1548,42 @@ public class RecordManager {
 		return new AccountAccessContext(getCache(executorId), null);
 	}
 	
-	public PublicAccessContext createPublicContext(MidataId executorId, AccessContext parent) throws InternalServerException {
-		return new PublicAccessContext(Feature_PublicData.getPublicAPSCache(getCache(executorId)), parent);
+	public AccessContext createLoginOnlyContext(MidataId executorId) throws InternalServerException {
+		return new AccountAccessContext(getCache(executorId), null);
 	}
+			
 	
-	public AccessContext createContext(MidataId executor, MidataId aps) throws AppException {
-		if (executor.equals(aps)) return createContextFromAccount(executor);
-		else if (aps.equals(RuntimeConstants.instance.publicUser)) return createPublicContext(executor, createContextFromAccount(executor));
-		else {
-          Consent consent = Consent.getByIdUnchecked(aps, Consent.ALL);
-          if (consent != null) {
-        	  if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN && !consent.owner.equals(executor)) throw new InternalServerException("error.internal",  "Consent-Context creation not possible");
-        	  return  createContextFromConsent(executor, consent);
-          }
-          
-          Space space = Space.getByIdAndOwner(aps, executor, Space.ALL);
-          if (space != null) return createContextFromSpace(executor, space, space.owner);
+	public AccessContext createSharingContext(AccessContext context1, MidataId aps) throws AppException {
+		AccessLog.log("create sharing context user="+context1.getAccessor()+" source aps="+aps);
+		APSCache cache = context1.getCache();
+		AccessContext context = new AccountAccessContext(cache, null);
+		if (context1.getAccessor().equals(aps)) return context;
+		
+		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(aps, context1.getAccessor());
+		if (ugm!=null) {
+			cache = Feature_UserGroups.findApsCacheToUse(cache, ugm);
+			return new UserGroupAccessContext(ugm, cache, context);
+		}
+	
+		
+		if (context.getCache().hasSubCache(aps)) return new RepresentativeAccessContext(context.getCache().getSubCache(aps), context);
+		
+		Consent consent = Consent.getRepresentativeActiveByAuthorizedAndOwner(context1.getAccessor(), aps);
+		
+		if (consent != null) {				
+			Map<String, Object> meta = RecordManager.instance.getMeta(context, consent._id, "_representative").toMap();
+			if (meta.containsKey("aliaskey") && meta.containsKey("alias")) {
+				AccessLog.log("Act as representative: unlock "+aps);
+				MidataId alias = new MidataId(meta.get("alias").toString());
+				byte[] key = (byte[]) meta.get("aliaskey");
+				KeyManager.instance.unlock(aps, alias, key);			
+				//RecordManager.instance.clearCache();
+				
+				return new RepresentativeAccessContext(context.getCache().getSubCache(aps), context);
+			}
 		}
 		
-		throw new InternalServerException("error.internal",  "Consent creation not possible");
+		throw new InternalServerException("error.internal", "Context for data sharing cannot be created");
 	}
 	
 	public AppAccessContext createContextFromApp(MidataId executorId, MobileAppInstance app) throws InternalServerException {
@@ -1691,8 +1591,6 @@ public class RecordManager {
 		return new AppAccessContext(app, plugin, getCache(executorId), null);
 	}
 	
-	public UserGroupAccessContext createContextForUserGroup(UserGroupMember ugm, AccessContext parent) throws AppException {
-		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(parent.getCache(), ugm), parent);
-	}
+	
 
 }

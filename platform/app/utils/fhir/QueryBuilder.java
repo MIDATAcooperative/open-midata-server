@@ -493,11 +493,12 @@ public class QueryBuilder {
 				Date lDate = null;
 				Date hDate = null;
 				
-				//Calendar cal = dateParam.getValueAsDateTimeDt().getValueAsCalendar();
+				
+				if (dateParam.getValue() == null) throw new UnprocessableEntityException("Invalid date in date restriction");
+				
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(dateParam.getValue());
-
-				if (cal == null) throw new UnprocessableEntityException("Invalid date in date restriction");
+				
 				switch (precision) {					  
 				case SECOND: 
 					cal.set(Calendar.MILLISECOND, 0);

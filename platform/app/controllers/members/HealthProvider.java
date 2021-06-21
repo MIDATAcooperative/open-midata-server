@@ -48,7 +48,9 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.ApplicationTools;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
@@ -154,41 +156,42 @@ public class HealthProvider extends APIController {
 	public Result confirmConsent() throws AppException, JsonValidationException {
 		
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "consent");
 		
 		MidataId consentId = JsonValidation.getMidataId(json, "consent");		
-		confirmConsent(userId, consentId);
+		confirmConsent(context, consentId);
 		
 		AuditManager.instance.success();
 		return ok();
 	}
 	
-    public static void confirmConsent(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
+    public static void confirmConsent(AccessContext context, MidataId consentId) throws AppException, JsonValidationException {
 										
-		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Consent.FHIR);
+		MemberKey target = MemberKey.getByIdAndOwner(consentId, context.getAccessor(), Consent.FHIR);
 		
 		if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
 			   //AuditManager.instance.addAuditEvent(AuditEventType.APP_, userId, target);
 		} else {
-			   AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_APPROVED, userId, target);
+			   AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_APPROVED, context.getActor(), target);
 		}
 		
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
-				ApplicationTools.linkMobileConsentWithExecutorAccount(userId, userId, consentId);
+				ApplicationTools.linkMobileConsentWithExecutorAccount(context, context.getAccessor(), consentId);
 				
 				MobileAppInstance mai = MobileAppInstance.getById(target._id, Sets.create("applicationId"));
 				Plugin plugin = Plugin.getById(mai.applicationId);
-				SubscriptionManager.activateSubscriptions(userId, plugin, mai._id, true);
+				SubscriptionManager.activateSubscriptions(context.getAccessor(), plugin, mai._id, true);
 				
 			}	
 			if (target.externalAuthorized != null && !target.externalAuthorized.isEmpty()) {
 				throw new BadRequestException("error.invalid.consent_members", "Consent has external persons.");
 			}
 			target.setConfirmDate(new Date());			
-			Circles.consentStatusChange(userId, target, ConsentStatus.ACTIVE);
-			Circles.sendConsentNotifications(userId, target, ConsentStatus.ACTIVE);
+			Circles.consentStatusChange(context, target, ConsentStatus.ACTIVE);
+			Circles.sendConsentNotifications(context.getAccessor(), target, ConsentStatus.ACTIVE);
 		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");		
 		
 		
@@ -206,43 +209,45 @@ public class HealthProvider extends APIController {
 	public Result rejectConsent() throws AppException, JsonValidationException {
 		
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "consent");
 		
 		MidataId consentId = JsonValidation.getMidataId(json, "consent");
-		rejectConsent(userId, consentId);		
+		rejectConsent(context, userId, consentId);		
 	
 		return ok();
 	}
 	
-    public static void rejectConsent(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
+    public static void rejectConsent(AccessContext context, MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
 		
 		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Consent.FHIR);
 			
 		if (target==null) {
-			rejectConsentAsAuthorized(userId, consentId);
+			rejectConsentAsAuthorized(context, userId, consentId);
 			return;
 		}
 		
 		if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
-		   AuditManager.instance.addAuditEvent(AuditEventType.APP_REJECTED, userId, target);
+		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_REJECTED).withActorUser(context.getActor()).withModifiedUser(userId).withConsent(target));
 		} else {
-		   AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_REJECTED, userId, target);
+		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_REJECTED).withActorUser(context.getActor()).withModifiedUser(userId).withConsent(target));
 		}
 		
 		if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE)) {
 			target.setConfirmDate(new Date());			
-			Circles.consentStatusChange(userId, target, ConsentStatus.REJECTED);
+			Circles.consentStatusChange(context, target, ConsentStatus.REJECTED);
 			Circles.sendConsentNotifications(userId, target, ConsentStatus.REJECTED);
 		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");
 	
 		AuditManager.instance.success();
 	}
     
-    public static void rejectConsentAsAuthorized(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
-	   Consent consent = Circles.getConsentById(userId, consentId, Consent.FHIR);
+    public static void rejectConsentAsAuthorized(AccessContext context, MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
+	   Consent consent = Circles.getConsentById(context, consentId, Consent.FHIR);
 	   if (consent == null) throw new BadRequestException("error.notfound.consent", "Consent not found");
 	   
+	   AccessContext contextConsent = context.forConsent(consent);
 	   if (consent.status != ConsentStatus.ACTIVE) return;
 	   AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_REJECTED, userId, consent);
 	   if (consent.authorized.contains(userId)) {
@@ -251,8 +256,8 @@ public class HealthProvider extends APIController {
 			   consent.authorized.remove(userId);		   		   		   
 			   Consent.set(consent._id, "authorized", consent.authorized);
 			   Consent.set(consent._id, "lastUpdated", new Date());				
-			   RecordManager.instance.unshareAPSRecursive(consent._id, userId, Collections.singleton(userId));
-		   } else Circles.consentStatusChange(userId, consent, ConsentStatus.REJECTED);
+			   RecordManager.instance.unshareAPSRecursive(contextConsent, consent._id, Collections.singleton(userId));
+		   } else Circles.consentStatusChange(context, consent, ConsentStatus.REJECTED);
 	   } else {
 		   Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(userId);
 		   for (UserGroupMember ugm : ugms) {
@@ -262,8 +267,8 @@ public class HealthProvider extends APIController {
 					   consent.authorized.remove(ugm.userGroup);
 					   Consent.set(consent._id, "authorized", consent.authorized);
 					   Consent.set(consent._id, "lastUpdated", new Date());				
-					   RecordManager.instance.unshareAPSRecursive(consent._id, userId, Collections.singleton(ugm.userGroup));
-				   } else Circles.consentStatusChange(userId, consent, ConsentStatus.REJECTED);
+					   RecordManager.instance.unshareAPSRecursive(contextConsent, consent._id, Collections.singleton(ugm.userGroup));
+				   } else Circles.consentStatusChange(context, consent, ConsentStatus.REJECTED);
 			   }
 		   }
 	   }

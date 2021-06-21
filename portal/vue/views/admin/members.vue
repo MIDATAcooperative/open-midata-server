@@ -146,8 +146,8 @@ export default {
     methods : {
         reload(searchName, comeback) {		
             const { $data } = this, me = this;
-            if (searchName) $data.search = session.map($data.searches, "name")[searchName];
-            
+            if (searchName && (!$data.search || !comeback)) $data.search = session.map($data.searches, "name")[searchName];
+              
             if ($data.search.searchable && !$data.search.criteria.lastname && !$data.search.criteria.email) return;
             if (!$data.search.criteria.lastname) { delete $data.search.criteria.lastname; }
             if (!$data.search.criteria.email) { delete $data.search.criteria.email; }
@@ -169,8 +169,12 @@ export default {
 
     created() {
         const { $data } = this, me = this;
-        //session.load("MembersListCtrl", $data, ["search", "page"]);	    
+        session.load("MembersListCtrl", me, ["search", "searchName"]);	    
 	    me.reload($data.searchName, true);
+    },
+
+    unmounted() {
+        session.save("MembersListCtrl", this, ["search", "searchName"]);
     }
     
 }

@@ -73,7 +73,9 @@ export default {
     },
 
     created() {
-        this.$data.criteria.to = this.$filters.usDate(new Date());
+        let today = new Date();
+        today.setDate(today.getDate() + 1);
+        this.$data.criteria.to = this.$filters.usDate(today);
         this.recalc();
     }
    

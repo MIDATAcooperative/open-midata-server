@@ -94,7 +94,7 @@ public class SpaceAccessContext extends AccessContext {
 	@Override
 	public boolean mayAccess(String content, String format) throws AppException {
 		if (!sharingQuery && space.query == null) {
-			  BSONObject q = RecordManager.instance.getMeta(cache.getExecutor(), space._id, "_query");
+			  BSONObject q = RecordManager.instance.getMeta(this, space._id, "_query");
 			  if (q != null) space.query = q.toMap();			  
 			  sharingQuery = true;
 		}

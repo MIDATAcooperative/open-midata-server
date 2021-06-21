@@ -67,6 +67,7 @@ import utils.access.AccessContext;
 import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
+import utils.access.SpaceAccessContext;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.ExecutionInfo;
@@ -142,9 +143,10 @@ public class Records extends APIController {
 		if (tk == null)
 			throw new BadRequestException("error.invalid.token", "Bad token");
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 
 		// execute
-		Record target = RecordManager.instance.fetch(userId, getRole(), tk);
+		Record target = RecordManager.instance.fetch(context, getRole(), tk);
 		if (target != null) ReferenceTool.resolveOwners(Collections.singleton(target), true, true);
 		return ok(JsonOutput.toJson(target, "Record", Record.ALL_PUBLIC_WITHNAMES)).as("application/json");
 	}
@@ -180,7 +182,7 @@ public class Records extends APIController {
 		}
 
 		try {
-			records.addAll(RecordManager.instance.list(userId, getRole(), RecordManager.instance.createContext(userId, aps), properties, fields));
+			records.addAll(RecordManager.instance.list(getRole(), portalContext().forAps(aps), properties, fields));
 		} catch (RequestTooLargeException e) {
 			return ok();
 		}
@@ -214,7 +216,7 @@ public class Records extends APIController {
 		AggregationType aggrType = json.has("summarize") ? JsonValidation.getEnum(json, "summarize", AggregationType.class) : AggregationType.GROUP;
 
 		try {
-			Collection<RecordsInfo> result = RecordManager.instance.info(userId, getRole(), aps, RecordManager.instance.createContext(userId, aps), properties, aggrType);
+			Collection<RecordsInfo> result = RecordManager.instance.info(getRole(), aps, portalContext().forAps(aps), properties, aggrType);
 			return ok(Json.toJson(result));
 		} catch (RequestTooLargeException e) {
 			return status(202);
@@ -234,26 +236,27 @@ public class Records extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result getSharingDetails(String aps) throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext tempContext = portalContext();
 		MidataId apsId = new MidataId(aps);
 
 		Map<String, Object> query = null;
 		boolean readRecords = true;
 		AccessContext context = null;
 
-		Consent consent = Circles.getConsentById(userId, apsId, Sets.create(Consent.SMALL, "authorized"));
+		Consent consent = Circles.getConsentById(tempContext, apsId, Sets.create(Consent.SMALL, "authorized"));
 		if (consent != null) {
 
-			Circles.fillConsentFields(userId, Collections.singleton(consent), Sets.create("sharingQuery"));
+			Circles.fillConsentFields(tempContext, Collections.singleton(consent), Sets.create("sharingQuery"));
 			query = consent.sharingQuery;
 			if (!consent.status.equals(ConsentStatus.ACTIVE) && !userId.equals(consent.owner))
 				readRecords = false;
-			context = RecordManager.instance.createContextFromConsent(userId, consent);
+			context = tempContext.forConsent(consent);
 		} else {
-			BSONObject b = RecordManager.instance.getMeta(userId, apsId, APS.QUERY);
+			BSONObject b = RecordManager.instance.getMeta(tempContext, apsId, APS.QUERY);
 			if (b != null) {
 				query = b.toMap();
 			}
-			context = RecordManager.instance.createContext(userId, apsId);
+			context = tempContext.forAps(apsId);
 		}
 		if (query != null)
 			Feature_FormatGroups.convertQueryToGroups("v1", query);
@@ -262,12 +265,12 @@ public class Records extends APIController {
 		result.set("query", Json.toJson(query));
 
 		if (readRecords) {
-			Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, getRole(), context);
+			Set<String> recordsIds = RecordManager.instance.listRecordIds(getRole(), context);
 			result.set("records", Json.toJson(recordsIds));
 
 			try {
 				Map<String, Object> props = new HashMap<String, Object>();
-				Collection<RecordsInfo> infos = RecordManager.instance.info(userId, getRole(), apsId, context, props, AggregationType.CONTENT);
+				Collection<RecordsInfo> infos = RecordManager.instance.info(getRole(), apsId, context, props, AggregationType.CONTENT);
 				result.set("summary", Json.toJson(infos));
 			} catch (RequestTooLargeException e) {
 				result.putArray("summary");
@@ -295,6 +298,8 @@ public class Records extends APIController {
 
 		// update spaces
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
+		
 		MidataId recordId = new MidataId(recordIdString);
 		Set<MidataId> spaceIds = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("spaces")));
 		Set<MidataId> recordIds = new HashSet<MidataId>();
@@ -305,9 +310,9 @@ public class Records extends APIController {
 
 		for (Space space : spaces) {
 			if (spaceIds.contains(space._id)) {
-				RecordManager.instance.share(userId, owner.myaps, space._id, recordIds, true);
+				RecordManager.instance.share(context, owner.myaps, space._id, recordIds, true);
 			} else {
-				RecordManager.instance.unshare(userId, space._id, recordIds);
+				RecordManager.instance.unshare(new SpaceAccessContext(space, context.getCache(), null, context.getAccessor()), recordIds);
 			}
 		}
 
@@ -375,6 +380,7 @@ public class Records extends APIController {
 
 		// validate request: record
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 
 		Set<MidataId> started = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("started")));
 		Set<MidataId> stopped = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("stopped")));
@@ -400,7 +406,7 @@ public class Records extends APIController {
 			boolean withMember = false;
 			boolean hasAccess = true;
 			MidataId apsOwner = userId;
-			Consent consent = Circles.getConsentById(userId, start, Sets.create("type", "status", "owner", "authorized", "sharingQuery"));
+			Consent consent = Circles.getConsentById(context, start, Consent.ALL);
 			if (consent == null) {
 				Space space = Space.getByIdAndOwner(start, userId, Sets.create("_id"));
 				if (space == null) {
@@ -421,7 +427,7 @@ public class Records extends APIController {
 
 			if (hasAccess) {
 				for (String sourceAps : records.keySet()) {
-					RecordManager.instance.share(userId, new MidataId(sourceAps), start, ObjectIdConversion.toMidataIds(records.get(sourceAps)), withMember);
+					RecordManager.instance.share(context, new MidataId(sourceAps), start, ObjectIdConversion.toMidataIds(records.get(sourceAps)), withMember);
 				}
 			}
 
@@ -431,20 +437,21 @@ public class Records extends APIController {
 
 				if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
 					if (hasAccess) {
-						List<Record> recs = RecordManager.instance.list(userId, UserRole.ANY, RecordManager.instance.createContext(userId, start), CMaps.map(query).map("flat", "true"), Sets.create("_id"));
+						AccessContext targetContext = context.forApsReshare(start);
+						List<Record> recs = RecordManager.instance.list(UserRole.ANY, context, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
 						Set<MidataId> remove = new HashSet<MidataId>();
 						for (Record r : recs)
 							remove.add(r._id);
-						RecordManager.instance.unshare(userId, start, remove);
+						RecordManager.instance.unshare(targetContext, remove);
 					}
 
-					RecordManager.instance.shareByQuery(userId, userId, start, query);
+					RecordManager.instance.shareByQuery(context, start, query);
 				} else {
 					consent.set(consent._id, "sharingQuery", query);
 					if (consent.status == ConsentStatus.ACTIVE) {
-						Circles.setQuery(userId, apsOwner, start, query);
+						Circles.setQuery(context, apsOwner, start, query);
 						if (hasAccess)
-							RecordManager.instance.applyQuery(RecordManager.instance.createContextFromAccount(userId), query, userId, start, withMember);
+							RecordManager.instance.applyQuery(context, query, userId, consent, withMember);
 					}
 				}
 			}
@@ -457,7 +464,7 @@ public class Records extends APIController {
 			boolean withMember = false;
 			boolean hasAccess = true;
 			MidataId apsOwner = userId;
-			Consent consent = Circles.getConsentById(userId, start, Sets.create("type", "status", "owner", "authorized"));
+			Consent consent = Circles.getConsentById(context, start, Consent.ALL);
 			if (consent == null) {
 				Space space = Space.getByIdAndOwner(start, userId, Sets.create("_id"));
 				if (space == null) {
@@ -473,10 +480,11 @@ public class Records extends APIController {
 				apsOwner = consent.owner;
 
 			}
-
+			
 			if (hasAccess) {
+				AccessContext targetContext = context.forApsReshare(start);
 				for (String sourceAps : records.keySet()) {
-					RecordManager.instance.unshare(userId, start, ObjectIdConversion.toMidataIds(records.get(sourceAps)));
+					RecordManager.instance.unshare(targetContext, ObjectIdConversion.toMidataIds(records.get(sourceAps)));
 				}
 			}
 
@@ -484,13 +492,13 @@ public class Records extends APIController {
 				Feature_FormatGroups.convertQueryToContents(query);
 
 				if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
-					RecordManager.instance.shareByQuery(userId, userId, start, query);
+					RecordManager.instance.shareByQuery(context, start, query);
 				} else {
 					consent.set(consent._id, "sharingQuery", query);
 					if (consent.status == ConsentStatus.ACTIVE) {
-						Circles.setQuery(userId, apsOwner, start, query);
+						Circles.setQuery(context, apsOwner, start, query);
 						if (hasAccess)
-							RecordManager.instance.applyQuery(RecordManager.instance.createContextFromAccount(userId), query, userId, start, withMember);
+							RecordManager.instance.applyQuery(context, query, userId, consent, withMember);
 					}
 				}
 			}
@@ -506,9 +514,10 @@ public class Records extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result getRecordUrl(String recordIdString) throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 		RecordToken tk = Records.getRecordTokenFromString(recordIdString);
 
-		Record record = RecordManager.instance.fetch(userId, getRole(), tk, Sets.create("format", "created"));
+		Record record = RecordManager.instance.fetch(context, getRole(), tk, Sets.create("format", "created"));
 		if (record == null)
 			throw new BadRequestException("error.unknown.record", "Record not found!");
 		if (record.format == null)
@@ -552,11 +561,12 @@ public class Records extends APIController {
 
 		RecordToken tk = getRecordTokenFromString(id);
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext();
 
 		if (tk == null)
 			throw new BadRequestException("error.invalid.token", "Bad token");		
 		
-		FileData fileData = RecordManager.instance.fetchFile(userId, tk);
+		FileData fileData = RecordManager.instance.fetchFile(context, tk);
 		
 		String contentType = "application/binary";
 		if (fileData.contentType != null) contentType = fileData.contentType;
@@ -642,7 +652,8 @@ public class Records extends APIController {
 					try {
 						StringBuffer out = new StringBuffer();
 						KeyManager.instance.continueSession(handle);
-						ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
+						ExecutionInfo inf = new ExecutionInfo(executorId, role);
+						ResourceProvider.setExecutionInfo(inf);
 						Record rec = it.next();
 						String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 
@@ -654,7 +665,7 @@ public class Records extends APIController {
 							int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
 							if (attpos > 0) {
 								out.append((first?"":",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(executorId, new RecordToken(rec._id.toString(), rec.stream.toString()));
+								FileData fileData = RecordManager.instance.fetchFile(inf.context, new RecordToken(rec._id.toString(), rec.stream.toString()));
 
 								int BUFFER_SIZE = 3 * 1024;
 

@@ -30,14 +30,14 @@
 
 							<div class="alert alert-success" v-if="success">
 								<p v-t="'setpw.success'"></p>
-								<p><router-link to="{ path : './login' }" v-t="'setpw.back_to_login'"></router-link></p>
+								<p><router-link :to="{ path : '/public/login' }" v-t="'setpw.back_to_login'"></router-link></p>
 							</div>
 							<div v-if="!success">
 								<p v-t="'setpw.enter_new'"></p>
 								<p v-t="'registration.password_policy'"></p>
-								<form @submit.prevent="submit()" role="form" novalidate>
-									<password class="form-control" :placeholder="$t('setpw.new_password')" v-model="setpw.password" required style="margin-bottom:5px;" autofocus />								
-									<password class="form-control" :placeholder="$t('setpw.new_password_repeat')" v-model="setpw.passwordRepeat" required style="margin-bottom:5px;" />
+								<form @submit.prevent="submit()" name="myform" ref="myform" role="form" novalidate>
+									<password class="form-control" :placeholder="$t('setpw.new_password')" v-model="setpw.password" name="password" required style="margin-bottom:5px;" autofocus />								
+									<password class="form-control" :placeholder="$t('setpw.new_password_repeat')" v-model="setpw.passwordRepeat" name="passwordRepeat" required style="margin-bottom:5px;" />
 									<button type="submit" :disabled="action!=null" class="btn btn-primary btn-block" v-submit v-t="'setpw.set_new_btn'">Set New Password</button>
 								</form>
 							</div>

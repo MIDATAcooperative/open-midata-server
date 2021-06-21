@@ -202,7 +202,7 @@ public class QuickRegistration extends APIController {
 			  KeyManager.instance.newFutureLogin(user);	
 			  PWRecovery.storeRecoveryData(user._id, recover);
 				
-			  user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
+			  user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 			  Member.set(user._id, "myaps", user.myaps);
 				
 			  PatientResourceProvider.updatePatientForAccount(user._id);
@@ -211,7 +211,7 @@ public class QuickRegistration extends APIController {
 		}
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
-		Circles.fetchExistingConsents(user._id, user.emailLC);
+		Circles.fetchExistingConsents(RecordManager.instance.createContextFromAccount(user._id), user.emailLC);
 		Application.sendWelcomeMail(app._id, user, null);
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REGISTRATION);
 	
@@ -226,9 +226,9 @@ public class QuickRegistration extends APIController {
 			   return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withAppInstance(appInstance), json, app, user._id);
 			}*/
 					
-			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, user._id);
+			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
 		} else {
-			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, user._id);
+			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
 		}
 	}
 	

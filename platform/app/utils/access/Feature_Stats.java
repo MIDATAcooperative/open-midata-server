@@ -136,8 +136,8 @@ public class Feature_Stats extends Feature {
 				
 				if (consents.size() >= Feature_AccountQuery.MAX_CONSENTS_IN_QUERY) {
 					
-					IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
-					IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index.getModel(), null);
+					IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getAccessor(), q.getApsId(), true);
+					IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getAccessor(), index.getModel(), null);
 					
 					throw new RequestTooLargeException("error.toomany.consents", "Too many consents in query #="+consents.size());
 				}
@@ -164,8 +164,8 @@ public class Feature_Stats extends Feature {
 					map.putIfAbsent(getKey(inf), inf);
 				}
 				
-				IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
-				IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index.getModel(), null);
+				IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getAccessor(), q.getApsId(), true);
+				IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getAccessor(), index.getModel(), null);
 								
 			}
 				

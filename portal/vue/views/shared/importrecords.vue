@@ -31,7 +31,7 @@
 				    <div class="extraspace"></div>				
                 </div>
 				<p v-if="message" class="alert alert-info">{{message}}</p>
-				<div v-if="authorized">			      	
+				<div v-if="authorized && url != null">			      	
 				  <div id="iframe" style="min-height:200px;width:100%;" v-pluginframe="url"></div>								
 				</div>                
             </panel>
@@ -136,23 +136,23 @@ export default {
 	},
 	
 	onAuthorized(url) {
-		
+		const { $data, $route } = this, me = this;
 		var message = null;
 		var error = null;
 
 		var arguments1 = url.split("&");
 		var keys = _.map(arguments1, function(argument) { return argument.split("=")[0]; });
 		var values = _.map(arguments1, function(argument) { return argument.split("=")[1]; });
-		var params = _.object(keys, values);
+		var params = _.zipObject(keys, values);
 		
 		if (_.has(params, "error")) {
 			error = "The following error occurred: " + params.error + ". Please try again.";
 		} else if (_.has(params, "code")) {
 			message = "User authorization granted. Requesting access token...";
-			requestAccessToken(params.code);
+			me.requestAccessToken(params.code);
 		} else if (_.has(params, "oauth_verifier")) {
 			message = "User authorization granted. Requesting access token...";
-			requestAccessToken(params.oauth_verifier, params);
+			me.requestAccessToken(params.oauth_verifier, params);
 		} else {
 			error = "An unknown error occured while requesting authorization. Please try again.";
 		}
@@ -180,7 +180,7 @@ export default {
             $data.authorized = true;
             $data.authorizing = false;
             $data.message = "Loading app...";
-            getAuthToken($data.spaceId, true);
+            me.getAuthToken($data.spaceId, true);
         }, function(err) {
             $data.error = "Requesting access token failed: " + err.data;
             $data.authorizing = false;
@@ -201,7 +201,9 @@ export default {
     },
 
 	watch : {		
-		$route() { this.init(); }
+		$route(to, from) {
+		  if (to.path.indexOf("import")>=0) this.init(); 
+		}
 	},
 
     created() {

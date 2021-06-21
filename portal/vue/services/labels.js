@@ -143,7 +143,7 @@ import { getLocale } from './lang';
 			if (query.$or) {
 				for (var i = 0;i<query.$or.length;i++) waitFor.push(service.parseAccessQuery(lang, query.$or[i], query, result));
 			} else {
-				if (Object.keys(query).length === 0) return [];
+				if (Object.keys(query).length === 0) {resolve([]);return;}
 				var nblock = {};
 				if (ac("format")) nblock.format = ac("format");
 				if (ac("content")) nblock.content = ac("content");
@@ -177,7 +177,7 @@ import { getLocale } from './lang';
 					if (!r.owner) r.owner = "all";
 					
 					var c = r.content;
-					if (c === "Patient" || c === "Group" || c === "Person" || c === "Practitioner") return;	
+					if (c === "Patient" || c === "Group" || c === "Person" || c === "Practitioner") continue;	
 					
 					if (r.content) {
 						r.display = "x";
@@ -198,7 +198,7 @@ import { getLocale } from './lang';
 					result.push(r); 
 				}
 			}
-			
+		
 			Promise.all(waitFor).then(() => resolve(result));			
 		});
 	};
@@ -206,12 +206,12 @@ import { getLocale } from './lang';
 	service.prepareQuery = function($t, defaultQuery, appName, genLabels, reqInf) {
 				
 		var sq = service.simplifyQuery(defaultQuery, appName, true);
-		
+		console.log(sq);
 		var result = [];		
 		if (sq) {
 			if (sq.content) {
 				for (let r of sq.content) {
-				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner" || r === "ValueSet") return;
+				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner" || r === "ValueSet") continue;
 				  result.push(service.getContentLabel(getLocale(), r).then(function(lab) {
 					if (genLabels.indexOf(lab)<0) genLabels.push(lab); 
 				  }));
@@ -230,6 +230,57 @@ import { getLocale } from './lang';
 		if (reqInf == 'NONE') genLabels.push($t("studydetails.information_none"));
 		return Promise.all(result);
 				
+	};
+
+	// input: array of { system : String, labels:Array<String> }
+	// returns: array of { label : String, summary : String, checks:Array of Boolean }
+	service.joinQueries = function($t, input) {
+		let output = [];
+		let byLabel = {};		
+		let hasMultiple = input.length > 1;
+		for (let entry of input) {
+			for (let label of entry.labels) {
+				let row = byLabel[label];
+				if (!row) {
+					row = byLabel[label] = { label : label, checks : [], letters : "", summary : "", count : 0 };
+					output.push(row);
+				}				
+			}
+		}
+		for (let entry of input) {
+			for (let row of output) {
+				if (entry.labels.indexOf(row.label)>=0) {
+					row.checks.push(true);
+					row.letters += entry.letter;
+					row.count++;					
+				 } else {
+					 row.checks.push(false);
+					 row.letters += " ";
+				 }
+			}
+		}
+		for (let row of output) {
+			if (input.length==1) {
+				row.summary = "";
+			} else if (row.count==input.length) {
+				if (input.length > 2) row.summary = $t("studydetails.all"); else row.summary = $t("studydetails.both");
+			} else if (row.count == 1) {
+				for (let i=0;i<row.checks.length;i++) {
+					if (row.checks[i]) row.summary = $t("studydetails.only")+" "+input[i].system;
+				}
+			} else if (row.count == input.length - 1) {
+				for (let i=0;i<row.checks.length;i++) {
+					if (!row.checks[i]) row.summary = $t("studydetails.not")+" "+input[i].system;
+				}
+			} else {
+				let sys = [];
+				for (let i=0;i<row.checks.length;i++) {
+					if (row.checks[i]) sys.push(input[i].system);
+				}
+				row.summary = sys.join(", ");
+			}
+		}
+		return output;
 	};
 		
 	export default service;

@@ -21,6 +21,7 @@ import App from './App.vue';
 import router from './router';
 import { setupI18n, loadLocaleMessages } from "services/lang.js";
 import Vue3Components, { Filters } from 'basic-vue3-components';
+import VueCookies from 'vue3-cookies';
 import PluginFrame from "directives/pluginframe.js";
 
 require('bootstrap/dist/js/bootstrap.bundle');
@@ -36,6 +37,7 @@ const app = createApp(App);
 app.config.globalProperties.$filters = Filters;
 app.config.globalProperties.$t = i18n.$ts;
 app.use(Vue3Components);
+app.use(VueCookies);
 app.directive('t', {
   mounted(el, binding) { 	 
 	let v = i18n.$t(binding.value);

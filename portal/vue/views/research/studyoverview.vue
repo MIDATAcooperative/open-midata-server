@@ -32,9 +32,9 @@
             <div v-if="primaryCheck">
                 <p><span v-t="'studyoverview.nextstep'"></span>: <a href="javascript:" @click="go(primaryCheck.page);" class="alert-link" v-t="primaryCheck.title"></a></p>
                 <p><i>{{ $t(primaryCheck.title + '_help') }}</i></p>
-                <a v-if="primaryCheck.page != '.'" href="javascript:" @click="go(primaryCheck.page);" class="btn btn-default" v-t="'studyoverview.visitnow_btn'" ></a>               
-                <button v-if="primaryCheck.flag && !primaryCheck.done" @click="addProcessTag(primaryCheck.flag)" class="btn btn-default" v-t="'studyoverview.markdone_btn'"></button>
-                <button @click="primaryCheck.action()" class="btn btn-default" v-if="primaryCheck.action && primaryCheck.check()" v-t="'studyoverview.donow_btn'"></button>
+                <a v-if="primaryCheck.page != '.'" href="javascript:" @click="go(primaryCheck.page);" class="btn btn-default mr-1" v-t="'studyoverview.visitnow_btn'" ></a>               
+                <button v-if="primaryCheck.flag && !primaryCheck.done" @click="addProcessTag(primaryCheck.flag)" class="btn btn-default mr-1" v-t="'studyoverview.markdone_btn'"></button>
+                <button @click="primaryCheck.action()" class="btn btn-default mr-1" v-if="primaryCheck.action && primaryCheck.check()" v-t="'studyoverview.donow_btn'"></button>
             </div>
     
         </div>
