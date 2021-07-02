@@ -290,7 +290,9 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 		
 		String date = theBasic.getCreatedElement().toHumanDisplay();
 		
-		record.name = display != null ? (display + " / " + date) : date;    	    	
+		record.name = display != null ? (display + " / " + date) : date;   
+		
+		clean(theBasic);
     }
     
     public void processResource(Record record, Basic resource) throws AppException {
