@@ -63,7 +63,10 @@
     },
 
     "provider_patients" : {
-        "title" : "Pazienti"
+        "title" : "Pazienti",
+
+        // TODO NEW: No patients found.
+        "empty" : "No patients found."
     },
 
     "provider_usergroups" : {

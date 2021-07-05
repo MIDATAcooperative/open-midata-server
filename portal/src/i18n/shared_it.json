@@ -142,6 +142,9 @@
             "projectconsent" : "Avete ritirato la vostra partecipazione a questo progetto di ricerca e non potete quindi più utilizzare questa applicazione.",
             "consent" : "Avete impostato nel portale @PLATFORM che questa applicazione non può più accedere ai vostri dati. Se si desidera utilizzare nuovamente questa applicazione, è necessario riautorizzarla nel portale @PLATFORM.",
             "app" : "Si è autorizzati a utilizzare questa applicazione su un numero massimo di 10 dispositivi. Eliminare i consensi non utilizzati sul portale @PLATFORM.",
+
+            // TODO NEW: You are allowed to use this application on a maximum of 10 devices. On this TEST instance consents have been reset for you. Please retry.
+            "app_test" : "You are allowed to use this application on a maximum of 10 devices. On this TEST instance consents have been reset for you. Please retry.",
             "joinmethod" : "Non è consentito aderire al progetto con questo metodo."
         },
 
@@ -315,6 +318,9 @@
         },
         "consenttype" : {
             "CIRCLE" : "Altri titolari di un account",
+
+            // TODO NEW: Representative
+            "REPRESENTATIVE" : "Representative",
             "EXTERNALSERVICE" : "Applicazione esterna",
             "API" : "Servizio esterno",
             "HCRELATED" : "Prestazioni sanitarie",
@@ -464,6 +470,9 @@
             "Planning" : "Pianificazione",
             "Tools" : "Strumenti",
             "Protocol" : "Protocollo",
+
+            // TODO NEW: Expert Plugins
+            "Expert" : "Expert Plugins",
             "Available" : "Plugin disponibili"
         },
         "plugintype" : {
@@ -518,6 +527,12 @@
     },
 
     "common" : {
+
+        // TODO NEW:  
+        "empty" : " ",
+
+        // TODO NEW: Done
+        "done_btn" : "Done",
         "back_btn" : "Indietro",
         "search_btn" : "Cerca",
         "add_btn" : "Aggiungi",
@@ -790,6 +805,7 @@
         "for_participants" : "Info sulla partecipazione",
         "please_review1" : "Decidere di partecipare",
         "please_review2" : "Si prega di rivedere questo progetto di ricerca. Vuoi partecipare? Clicca su 'Salta (nessuna modifica)' se vuoi lasciare questa pagina senza modifiche."
+
     },
 
     "user" : {
@@ -804,6 +820,9 @@
         "change_passphrase_btn" : "Modificare la frase segreta",
         "auditlog_btn" : "Visualizza il registro di revisione",
         "change_email_btn" : "Modifica indirizzo e-mail",
+
+        // TODO NEW: Show Expert Plugins
+        "expert_tools_btn" : "Show Expert Plugins",
         "repair_account_btn" : "Ripara account",
         "reset_spaces_btn" : "Ripristina portale",
         "export_btn" : "Esporta i tuoi dati",
@@ -860,6 +879,9 @@
         "type" : "Che tipo di consenso si desidera creare?",
         "share_with_members" : "Desidero condividere i dati con altri titolari di un account.",
         "share_with_provider" : "Desidero condividere i dati con un professionista sanitario.",
+
+        // TODO NEW: I would like to add a representative for my account.
+        "share_representative" : "I would like to add a representative for my account.",
         "select" : "Seleziona",
         "use_passcode" : "Includere un codice password?",
         "use_passcode2" : "Non so ancora con chi condividere i dati. Aggiungere un codice password a questo consenso in modo che io possa comunicarlo a un professionista sanitario.",
@@ -904,6 +926,9 @@
         "what_is_shared" : "Quali dati sono condivisi?",
         "consent_empty" : "Attualmente questo consenso non condivide alcun dato.",
         "type_circle" : "Questo consenso condivide dati con altri titolari di un account @PLATFORM.",
+
+        // TODO NEW: This consent authorizes another person to use your account. All data of the account owner is shared with the representative.
+        "type_representative" : "This consent authorizes another person to use your account. All data of the account owner is shared with the representative.",
         "type_healthcare" : "Questo consenso condivide dati con professionisti sanitari.",
         "type_studyparticipation" : "Questo consenso condivide dati con un progetto di ricerca.",
         "type_studyrelated" : "Questo consenso condivide dati con un partecipante al progetto.",
@@ -1003,6 +1028,9 @@
         "type_implicit" : "Implicito",
         "type_healthcare" : "Medico / Ospedale",
         "type_studyparticipation" : "Ricerca",
+
+        // TODO NEW: Representative
+        "type_representative" : "Representative",
         "show" : "Mostra:",
         "my_data" : "I miei dati",
         "all_data" : "Tutti i dati",
@@ -1024,17 +1052,27 @@
         "no_account" : "Non hai ancora un account?",
         "have_account" : "Hai un account @PLATFORM?",
         "have_account2" : "Perfetto, accedi.",
+
+        // TODO NEW: Role
+        "role" : "Role",
         "sign_up_btn" : "Iscriviti",
         "reshares_data" : "L'applicazione può condividere i dati a cui ha accesso con terzi.",
         "allows_user_search" : "Il tuo nome e indirizzo e-mail può essere cercato da altre persone utilizzando questa applicazione.",
         "requesting_app" : "richiede l'accesso ai tuoi dati.",
         "sign_in" : "Accesso @PLATFORM per:",
         "sign_in_btn" : "Accedi",
+
+        // TODO CHANGED
+        // OLD: Device: {{ device}}
+        // NEW: Device: {{device}}
         "device" : "Dispositivo: {{ device}}",
         "please_confirm" : "Confermare l'attivazione dell'applicazione utilizzando il portale @PLATFORM, quindi riprovare. Il titolo del consenso è: {{ consent }}",
         "confirm_btn" : "Conferma l'accesso",
         "continue_btn" : "Continua",
         "requests_access" : "Accesso richiesto dall'applicazione:",
+
+        // TODO NEW: Data type
+        "requests_access_short" : "Data type",
         "requests_sharing" : "Dati condivisi con il progetto:",
         "requests_sharing_service" : "Dati condivisi con il servizio esterno:",
         "shares_group" : "Gruppo: {{ group }}",
@@ -1042,13 +1080,110 @@
         "shares_content" : "Contenuti: {{ content }}",
         "confirm_provider" : "Accetto di condividere i dati con questo fornitore esterno",
         "confirm_provider_opt" : "Accetto di condividere i dati con questo fornitore esterno (optionale)",
+
+        // TODO CHANGED
+        // OLD: I accept to share data with this external service
+        // NEW: I accept the terms of use of the application and to share data with the linked service
         "confirm_service" : "Accetto di condividere i dati con questo servizio esterno",
         "confirm_service_opt" : "Accetto di condividere i dati con questo servizio esterno (optionale)",
         "confirm_study" : "Accetto le condizioni d'uso della domanda e di partecipare al progetto",
         "confirm_study_opt" : "Accetto di partecipare al progetto",
         "confirm_citizen_science" : "Accetto di partecipare al progetto scienza cittadina",
         "confirm_community" : "Accetto i termini di utilizzo dell'applicazione e dei servizi della comunità",
-        "confirm_community_opt" : "Accetto di condividere i dati con il servizio alla comunità"
+        "confirm_community_opt" : "Accetto di condividere i dati con il servizio alla comunità",
+
+        // TODO NEW: I accept the terms of use and to share data with 
+        "confirm_app" : "I accept the terms of use and to share data with ",
+
+        // TODO NEW: and
+        "and" : "and",
+
+        // TODO NEW: An additional service is required to use this application:
+        "link_SERVICE_required" : "An additional service is required to use this application:",
+
+        // TODO NEW: You may additionally subscribe to use this service:
+        "link_SERVICE_optional" : "You may additionally subscribe to use this service:",
+
+        // TODO NEW: A third party needs access to your data to use this application:
+        "link_ORGANIZATION_required" : "A third party needs access to your data to use this application:",
+
+        // TODO NEW: You may share data with this 3rd party:
+        "link_ORGANIZATION_optional" : "You may share data with this 3rd party:",
+
+        // TODO NEW: In order to use this application you need to participate in a clinical trial:
+        "link_CLINICAL_required" : "In order to use this application you need to participate in a clinical trial:",
+
+        // TODO NEW: Additionally you may participate in a clinical trial:
+        "link_CLINICAL_optional" : "Additionally you may participate in a clinical trial:",
+
+        // TODO NEW: In order to use this application you must participate in a citizen science project:
+        "link_CITIZENSCIENCE_required" : "In order to use this application you must participate in a citizen science project:",
+
+        // TODO NEW: Additionally you may participate in a citizen science project:
+        "link_CITIZENSCIENCE_optional" : "Additionally you may participate in a citizen science project:",
+
+        // TODO NEW: In order to use this application you must participate in a community project:
+        "link_COMMUNITY_required" : "In order to use this application you must participate in a community project:",
+
+        // TODO NEW: Additionally you may participate in a community project:
+        "link_COMMUNITY_optional" : "Additionally you may participate in a community project:",
+
+        // TODO NEW: Summary of data flow
+        "sharing_summary" : "Summary of data flow",
+
+        // TODO NEW: All
+        "all" : "All",
+
+        // TODO NEW: Both
+        "both" : "Both",
+
+        // TODO NEW: Only:
+        "only" : "Only:",
+
+        // TODO NEW: All but:
+        "not" : "All but:",
+
+        // TODO NEW: App
+        "short_app" : "App",
+
+        // TODO NEW: Service
+        "short_service" : "Service",
+
+        // TODO NEW: Project
+        "short_project" : "Project",
+
+        // TODO NEW: Clinical Trial
+        "short_clinical" : "Clinical Trial",
+
+        // TODO NEW: Citizen Science Project
+        "short_citizenscience" : "Citizen Science Project",
+
+        // TODO NEW: Community
+        "short_community" : "Community",
+
+        // TODO NEW: Party
+        "short_party" : "Party",
+
+        // TODO NEW: pseudonymized data
+        "mode_pseudonymized" : "pseudonymized data",
+
+        // TODO NEW: anonymized data
+        "mode_anonymized" : "anonymized data",
+
+        // TODO NEW: raw data
+        "mode_all" : "raw data",
+
+        // TODO NEW: on your device
+        "target_device" : "on your device",
+
+        // TODO NEW: operated by
+        "target_operated" : "operated by",
+
+        // TODO NEW: performed by
+        "target_performed" : "performed by",
+
+        // TODO NEW: for other participants
+        "target_community" : "for other participants"
     },
 
     "dashboard" : {
@@ -1189,6 +1324,9 @@
         "refresh_btn" : "Aggiorna",
         "via" : "via",
         "CIRCLE" : "Consenso",
+
+        // TODO NEW: Representative
+        "REPRESENTATIVE" : "Representative",
         "ResearchStudy" : "Progetto di ricerca",
         "EXTERNALSERVICE" : "Applicazione",
         "API" : "Servizio",
@@ -1341,6 +1479,9 @@
     },
 
     "changelog" : {
+
+        // TODO NEW: Server Change Log
+        "title" : "Server Change Log",
         "F" : "Nuova funzionalità",
         "B" : "Bugfix",
         "I" : "Miglioramento",
