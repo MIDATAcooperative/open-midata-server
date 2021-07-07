@@ -128,7 +128,7 @@
 		    <p class="form-control-plaintext">{{ currentBlock.content }}</p>
 		  </form-group>
 		  <form-group name="code" label="queryeditor.code" v-if="currentBlock.code" :path="errors.code">
-		    <p class="form-control-plaintext">{{ currentBlock.code }}</p>
+		    <p class="form-control-plaintext">{{ currentBlock.code }} <button class="btn btn-sm btn-default" @click="noCode(currentBlock)" v-t="'queryeditor.no_code_btn'"></button></p> 
 		  </form-group>
 		  <form-group name="public" label="queryeditor.public" v-if="mode=='app' && !currentBlock.flags.nopublic">
 		    <div class="form-check">
@@ -812,6 +812,10 @@ export default {
 				}
 				Promise.all(waitFor).then(() => resolve(result));
 			});
+		},
+
+		noCode(block) {
+			block.code = undefined;
 		}
     },
 
