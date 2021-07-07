@@ -128,8 +128,7 @@ module.exports = {
                           plugins: () => [autoprefixer()]
                         }
                     },
-                    //'sass-loader',
-                    'less-loader'
+                    //'sass-loader',                   
                 ]
             },
             {
@@ -163,7 +162,11 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader'
-            }
+            }/*,
+            {
+               test: /\.js$/,
+               use: 'babel-loader'
+            } */
         ]
     },
 
@@ -178,6 +181,11 @@ module.exports = {
           path.resolve(__dirname + '/vue'),
           path.resolve(__dirname + '/node_modules'),
           path.resolve(__dirname + '/src')
-        ]
+        ],
+        fallback : { 
+	       "crypto": require.resolve("crypto-browserify"),
+           "buffer": require.resolve("buffer/"),
+           "stream": require.resolve("stream-browserify") 
+        }
     }
 };

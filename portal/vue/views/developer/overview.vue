@@ -16,8 +16,8 @@
 -->
 <template>
     <panel :title="$t('manageapp.overview')" :busy="isBusy">		  	
-		
-		
+		<error-box :error="error"></error-box>
+		<div v-if="app">
 	      <div class="float-left" v-if="hasIcon()" style="margin-right:10px">
 	        <img style="max-width:64px" :src="getIconUrl()">
 	      </div>	
@@ -191,7 +191,7 @@
 			</tr>
 			
 		 </table>
-											    	 
+	  </div>								    	 
     </panel>
 </template>
 <script>
@@ -279,7 +279,7 @@ export default {
                     var status = reviews.data[i].status;
                     $data.reviews[reviews.data[i].check] = (status == "OBSOLETE" ? null : status);
                 }			
-            }));
+            }).catch(function() { $data.reviews = {}; }));
 	    },
 
         exportPlugin() {

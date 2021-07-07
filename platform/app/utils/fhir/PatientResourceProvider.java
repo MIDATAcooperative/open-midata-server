@@ -596,6 +596,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		record.name = thePatient.getName().get(0).getNameAsSingleString();
 		if (record.name == null || record.name.length() == 0)
 			record.name = thePatient.getName().get(0).getText();
+		thePatient.getMeta().setExtension(null);
 	}
 
 	public void processResource(Record record, Patient resource) throws AppException {

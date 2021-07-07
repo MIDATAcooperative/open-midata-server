@@ -53,7 +53,7 @@ function init(bits){
 		
 	config.logs = logs;
 	config.exps = exps;
-};
+}
 
 /** @expose **/
 exports.init = init;
@@ -63,7 +63,7 @@ function isInited(){
 		return false;
 	}
 	return true;
-};
+}
 
 // Returns a pseudo-random number generator of the form function(bits){}
 // which should output a random string of 1's and 0's of length `bits`
@@ -134,7 +134,7 @@ function getRNG(){
 		}
 		return str;
 	};
-};
+}
 
 // Warn about using insecure rng.
 // Called when Math.random() is being used.
@@ -167,7 +167,7 @@ exports.setRNG = function(rng, alert){
 
 function isSetRNG(){
 	return typeof config.rng === 'function'; 
-};
+}
 
 // Generates a random bits-length number string using the PRNG
 /** @expose **/
@@ -287,7 +287,7 @@ function horner(x, coeffs){
 		fx = config.exps[ (logx + config.logs[fx]) % config.max ] ^ coeffs[i];
 	}
 	return fx;
-};
+}
 
 function inArray(arr,val){
 	for(var i = 0,len=arr.length; i < len; i++) {
@@ -296,7 +296,7 @@ function inArray(arr,val){
 	 	}
  	}
 	return false;
-};
+}
 
 function processShare(share){
 	
@@ -321,7 +321,7 @@ function processShare(share){
 		'id': id,
 		'value': share
 	};
-};
+}
 
 /** @expose **/
 exports._processShare = processShare;
@@ -368,7 +368,7 @@ function combine(at, shares){
 	}else{// generating a new share
 		return bin2hex(result);
 	}
-};
+}
 
 // Combine `shares` Array into the original secret
 /** @expose **/
@@ -421,7 +421,7 @@ function lagrange(at, x, y){
 		sum = product === -1 ? sum : sum ^ config.exps[product]; // though exps[-1]= undefined and undefined ^ anything = anything in chrome, this behavior may not hold everywhere, so do the check
 	}
 	return sum;
-};
+}
 
 /** @expose **/
 exports._lagrange = lagrange;
@@ -441,14 +441,14 @@ function split(str, padLength){
 	}	
 	parts.push(parseInt(str.slice(0, i), 2));	
 	return parts;
-};
+}
 	
 // Pads a string `str` with zeros on the left so that its length is a multiple of `bits`
 function padLeft(str, bits){
 	bits = bits || config.bits
 	var missing = str.length % bits;
 	return (missing ? new Array(bits - missing + 1).join('0') : '') + str;
-};
+}
 
 function hex2bin(str){
 	var bin = '', num;
