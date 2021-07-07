@@ -300,7 +300,7 @@ public class Spaces extends APIController {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		AccessContext context = portalContext();
 		MidataId spaceId = new MidataId(spaceIdString);
-		MidataId targetUserId = (targetUser != null) ? MidataId.from(targetUser) : userId;		
+		MidataId targetUserId = (targetUser != null && targetUser.trim().length()>0) ? MidataId.from(targetUser) : userId;		
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization", "type", "name","licence"));
 		

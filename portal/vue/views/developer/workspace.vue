@@ -365,14 +365,17 @@ import {  rl, status, ErrorBox, FormGroup, Typeahead, Modal, Password } from 'ba
 let index = 0;
 let issues = [];
 
-function analyze(usedApps, usedProjects, usedAccounts, issues) {
+function analyze(usedApps, usedProjects, usedAccounts, issues, accprojects) {
 
-    const applink = function(page, id) {
+    const applink = function(page, id) {       
         return { path : "./"+page, query : { appId : id }};
     }
 
     const projectlink = function(page, id) {
-        return { path : "./"+page, query : { studyId : id }};
+       
+        if (_.filter(accprojects, (x) => x._id == id).length > 0) {
+          return { path : "./"+page, query : { studyId : id }};
+        } else return null;
     }
 
     const add = function(type, key, component, param, link) {            
@@ -382,6 +385,7 @@ function analyze(usedApps, usedProjects, usedAccounts, issues) {
 
     let appConsents = {};
     let participations = {};
+    let projects = {};
 
     for (let account of usedAccounts) {
         if (account.message) add("error", "workspace.error.login_failed", account.name, account.message);
@@ -443,7 +447,9 @@ function analyze(usedApps, usedProjects, usedAccounts, issues) {
         if (!app.sendReports) add("warning", "workspace.warning.no_send_reports", app.filename, null, applink("editapp", app._id));
 
         let hasComments = false;
-        for (let stat of app.stats) {
+        if (app.stats == null) {
+           add("warning", "workspace.warning.no_access", app.filename, null);
+        } else for (let stat of app.stats) {
             if (stat.comments) {
                 for (let c of stat.comments) {
                     if (c.toLowerCase().indexOf("error")>=0) {
@@ -470,19 +476,20 @@ function analyze(usedApps, usedProjects, usedAccounts, issues) {
     }
 
     for (let project of usedProjects) {
-        if (!project.joinMethods || project.joinMethods.length == 0) add("error","workspace.error.no_join_method", project.name);
-        if (project.validationStatus == "DRAFT") add("warning", "workspace.warning.project_not_validated", project.name);
-        if (project.validationStatus == "VALIDATION") add("error", "workspace.error.project_in_validation", project.name);
-        if (project.validationStatus == "REJECTED") add("error", "workspace.error.project_rejected", project.name);
+        projects[project._id] = project;
+        if (!project.joinMethods || project.joinMethods.length == 0) add("error","workspace.error.no_join_method", project.name, null, projectlink("study.overview", project._id));
+        if (project.validationStatus == "DRAFT") add("warning", "workspace.warning.project_not_validated", project.name, null, projectlink("study.overview", project._id));
+        if (project.validationStatus == "VALIDATION") add("error", "workspace.error.project_in_validation", project.name, null, projectlink("study.overview", project._id));
+        if (project.validationStatus == "REJECTED") add("error", "workspace.error.project_rejected", project.name, null, projectlink("study.overview", project._id));
 
-        if (project.participantSearchStatus == "PRE") add("warning", "workspace.warning.project_not_searching", project.name);
-        if (project.participantSearchStatus == "CLOSED") add("error", "workspace.warning.project_not_searching", project.name);
+        if (project.participantSearchStatus == "PRE") add("warning", "workspace.warning.project_not_searching", project.name, null, projectlink("study.overview", project._id));
+        if (project.participantSearchStatus == "CLOSED") add("error", "workspace.warning.project_not_searching", project.name, null, projectlink("study.overview", project._id));
 
-        if (project.executionStatus == "PRE") add("zinfo", "workspace.info.project_not_running", project.name);
-        if (project.executionStatus == "FINISHED") add("error", "workspace.error.project_finished", project.name);
-        if (project.executionStatus == "ABORTED") add("error", "workspace.error.project_aborted", project.name);
+        if (project.executionStatus == "PRE") add("zinfo", "workspace.info.project_not_running", project.name, null, projectlink("study.overview", project._id));
+        if (project.executionStatus == "FINISHED") add("error", "workspace.error.project_finished", project.name, null, projectlink("study.overview", project._id));
+        if (project.executionStatus == "ABORTED") add("error", "workspace.error.project_aborted", project.name, null, projectlink("study.overview", project._id));
         // if (!project.groups || project.groups.length==0) add("error", "workspace.error.project_no_groups", project.name);
-        if (!project.requirements || project.requirements.length==0) add("zinfo", "workspace.info.project_no_requirements", project.name);
+        if (!project.requirements || project.requirements.length==0) add("zinfo", "workspace.info.project_no_requirements", project.name, null, projectlink("study.overview", project._id));
 
         if (usedAccounts.length) {
             let parts = participations[project._id];
@@ -498,10 +505,16 @@ function analyze(usedApps, usedProjects, usedAccounts, issues) {
     
     for (let app of usedApps) {
         for (let link of app.links) {
-            console.log(link);
+            if (link.study) {
+                
+              if (link.validationResearch != "VALIDATED") add("error", "workspace.link_not_validated_research", app.filename, link.study.name, applink("applink", app._id));
+              if (link.validationDeveloper != "VALIDATED") add("error", "workspace.link_not_validated_developer", app.filename, link.study.name, applink("applink", app._id));
+              if (link.usePeriod.indexOf(link.study.executionStatus)<0) add("warning", "studyactions.status.study_wrong_status", link.study.name, null, projectlink("study.overview", link.study._id));
+              if (link.type.indexOf('REQUIRE_P')>=0 && link.study.participantSearchStatus != 'SEARCHING') add("error","error.closed.study", link.study.name, null, projectlink("study.overview", link.study._id));
+              if ((link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0) add("error", "studyactions.status.study_no_app_participation", link.study.name, null, projectlink("study.rules", link.study._id));
+            }	
         }
     }
-
     
     
 }
@@ -608,8 +621,10 @@ export default {
         },
 
         goproject(prj) {
-            const { $router } = this;
-            $router.push({ path : './study.overview', query : { studyId : prj._id }});
+            const { $router, $data } = this;
+            if (_.filter($data.availableProjects, (x) => x._id == prj._id).length > 0) {
+                $router.push({ path : './study.overview', query : { studyId : prj._id }});
+            }
         },
 
         redo() {
@@ -620,6 +635,8 @@ export default {
             $data.usedAccounts = [];
             issues = [];
             let waitFor = [];
+            waitFor.push(server.get(jsRoutes.controllers.research.Studies.list().url)
+            .then((st) => { $data.availableProjects = st.data }));
             for (let entry of $data.setup) {
                 if (entry.type == "app") {
                     waitFor.push(apps.getApps({ filename : entry.name }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving"])
@@ -631,14 +648,14 @@ export default {
                             app.labels = [];
                             $data.usedApps.push(app);                            
                             return labels.prepareQuery($t, app.defaultQuery, null, app.labels, null).then(function() {
-                                 return server.get(jsRoutes.controllers.Market.getPluginStats(app._id).url)
-                                .then(function(stats) {	    	
-                                    app.stats = stats.data;     
-                                    return server.get(jsRoutes.controllers.Market.getStudyAppLinks("app", app._id).url)
-                                    .then(function(links) {
-                                        app.links = links.data;
-                                        
-                                    });
+                                      
+                                return server.get(jsRoutes.controllers.Market.getStudyAppLinks("app", app._id).url)
+                                .then(function(links) {
+                                    app.links = links.data;
+                                    return server.get(jsRoutes.controllers.Market.getPluginStats(app._id).url)
+                                    .then(function(stats) {	    	
+                                        app.stats = stats.data;       
+                                    }).catch(function() { app.stats = null; });
                                 });	
                             });
                         }
@@ -660,7 +677,17 @@ export default {
                                     return server.get(jsRoutes.controllers.Services.listServiceInstancesStudy(project._id).url)
                                     .then(function(services) {
                                         project.services = services.data;
-                                        
+
+                                        let rapp = function(serv) {
+                                            return apps.getApps({ _id : serv.appId }, ["filename"])
+                                            .then((a) => { if (a.data.length>0) serv.filename = a.data[0].filename; });
+                                        }
+                                        let allService = [];
+                                        for (let serv of project.services) {
+                                            allService.push(rapp(serv));
+                                            
+                                        }
+                                        return Promise.all(allService);
                                     }).catch(function() { project.services = []; return Promise.resolve(); });
                                 });
                             });
@@ -726,7 +753,7 @@ export default {
 
         analyze() {
             const { $data, $t } = this, me = this;
-            analyze($data.usedApps, $data.usedProjects, $data.usedAccounts, issues);
+            analyze($data.usedApps, $data.usedProjects, $data.usedAccounts, issues, $data.availableProjects);
         },
 
         tryadd(entry) {
@@ -747,7 +774,18 @@ export default {
                         if (link.linkTargetType == "STUDY") {
                             mustredo = this.tryadd({ name : link.study.code, type : "project" }) || mustredo;
                         } else if (link.linkTargetType == "SERVICE") {
+                            
                             mustredo = this.tryadd({ name : link.serviceApp.filename, type : "app" }) || mustredo;
+                        }
+                    }
+                }
+            }
+            for (let project of $data.usedProjects) {
+                if (project.services) {
+                    for (let service of project.services) {
+                        if (service.status == "ACTIVE") {
+                            
+                            mustredo = this.tryadd({ name : service.filename, type : "app" }) || mustredo;
                         }
                     }
                 }
@@ -832,9 +870,7 @@ export default {
                 idx++;	
             }
 
-
-		//if ($data.
-		console.log(input);
+	
 		$data.summary = labels.joinQueries(this.$t, input);
 		$data.short = short;
 		$data.input = input;

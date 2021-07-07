@@ -552,7 +552,7 @@ public class Studies extends APIController {
 		for (UserGroupMember ugm : ugms)
 			ids.add(ugm.userGroup);
 
-		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus");
+		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "code", "participantSearchStatus", "validationStatus");
 		Set<Study> studies = Study.getAll(null, CMaps.map("_id", ids), fields);
 
 		return ok(JsonOutput.toJson(studies, "Study", fields));
