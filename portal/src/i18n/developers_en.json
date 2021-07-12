@@ -286,7 +286,6 @@
       "stop_btn" : "Stop debugging",
       "cmd_to_run" : "Command to run on your computer:"
     }
-	
   },
   
   "appreviews" : {
@@ -349,11 +348,10 @@
   },
 
   "workspace" : {
-     
      "title" : "Workspace",
-     "add_something" : "Please add an app or a project you are working on. You may also add a test user.",
+     "add_something" : "Please add an application or a project you are working on. You may also add a test user.",
      "browser" : "Users Browser",
-     "midata" : "Midata Backend",
+     "midata" : "MIDATA Back-end",
      "useraccount" : "User Account",
      "newapp_btn" : "Add Application",
      "newproject_btn" : "Add Project",
@@ -380,11 +378,11 @@
      "projectname" : "Project Code",
      "add_project" : "Add Project to Workspace",
      "warning" : {
-        "app_deprecated" : "App is deprecated and should not be used.",
+        "app_deprecated" : "Application is deprecated and should not be used.",
         "no_orgname" : "No developer organization name specified in app definition.",
         "no_publisher" : "No publisher specified in app definition.",
-        "no_app_description" : "App description is missing",
-        "not_spotlighted" : "Plugin is not available in Midata store. Ask an admin.",
+        "no_app_description" : "Application description is missing",
+        "not_spotlighted" : "Plugin is not available in MIDATA store. Ask an admin.",
         "no_repository" : "No repository for code checkout-provided.",
         "no_send_reports" : "Error report notifications (emails) are disabled for this app.",
         "has_comments" : "Comments available in the error and performance statistics.",

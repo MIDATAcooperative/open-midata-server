@@ -14,8 +14,6 @@
     "developer_navbar" : {
         "yourapps" : "Ihre Applikationen",
         "sandbox" : "Sandbox",
-
-        // TODO NEW: Workspace
         "workspace" : "Workspace",
         "records" : "Testeinträge",
         "testusers" : "Testbenutzer"
@@ -79,12 +77,8 @@
     },
 
     "manageapp" : {
-
-        // TODO NEW: Register a new application
-        "title_new" : "Register a new application",
-
-        // TODO NEW: Manage application
-        "title_edit" : "Manage application",
+        "title_new" : "Neue Applikation registrieren",
+        "title_edit" : "Applikation verwalten",
         "overview" : "Applikations-Übersicht",
         "choose" : "Funktionen zur Verwaltung Ihrer Applikation",
         "defined" : "definiert",
@@ -270,24 +264,18 @@
         "params" : "URL / Dateiname",
         "triggers" : {
             "fhir_Consent" : "Zustimmungsänderungen",
-            "fhir_MessageHeader" : "FHIR Nachricht",
+            "fhir_MessageHeader" : "FHIR-Nachricht",
             "fhir_Resource" : "Ressourcenänderungen",
             "time" : "Täglich",
             "time/30m" : "Alle 30 Minuten",
             "init" : "Wenn hinzugefügt",
-
-            // TODO NEW: FHIR message (forwarded)
-            "forwarded" : "FHIR message (forwarded)"
+            "forwarded" : "FHIR-Nachricht (weitergeleitet)"
         },
         "actions" : {
             "rest-hook" : "REST Hook aufrufen",
             "email" : "E-Mail versenden",
-
-            // TODO NEW: Send SMS
-            "sms" : "Send SMS",
-
-            // TODO NEW: Forward to other application
-            "app" : "Forward to other application",
+            "sms" : "Send SMS versenden",
+            "app" : "Weiterleiten an andere Applikation",
             "nodejs" : "Node.js Script aufrufen"
         },
         "debug" : {
@@ -299,7 +287,6 @@
             "stop_btn" : "Debugging beenden",
             "cmd_to_run" : "Befehl zur Ausführung auf Ihrem Computer:"
         }
-
     },
 
     "appreviews" : {
@@ -312,9 +299,7 @@
         "comment" : "Bemerkung",
         "status" : "Status",
         "noreviews" : "Auf dieser Instanz wurden noch keine Überprüfungen vorgenommen.",
-
-        // TODO NEW: Review has been added.
-        "success" : "Review has been added.",
+        "success" : "Überprüfung wurde hinzugefügt.",
         "CONCEPT" : "Applikationskonzept",
         "DATA_MODEL" : "Datenmodell",
         "ACCESS_FILTER" : "Access Filter",
@@ -336,9 +321,7 @@
         "title" : "Lizenz",
         "required" : "Lizenz erforderlich?",
         "allowedEntities" : "Zulässige Entitäten",
-
-        // TODO NEW: Licence requirements have been updated.
-        "success" : "Licence requirements have been updated."
+        "success" : "Die Lizenzanforderungen wurden aktualisiert."
     },
 
     "repository" : {
@@ -366,31 +349,14 @@
     },
 
     "workspace" : {
-
-
-        // TODO NEW: Workspace
         "title" : "Workspace",
-
-        // TODO NEW: Please add an app or a project you are working on. You may also add a test user.
-        "add_something" : "Please add an app or a project you are working on. You may also add a test user.",
-
-        // TODO NEW: Users Browser
-        "browser" : "Users Browser",
-
-        // TODO NEW: Midata Backend
-        "midata" : "Midata Backend",
-
-        // TODO NEW: User Account
-        "useraccount" : "User Account",
-
-        // TODO NEW: Add Application
-        "newapp_btn" : "Add Application",
-
-        // TODO NEW: Add Project
-        "newproject_btn" : "Add Project",
-
-        // TODO NEW: Add User
-        "newuser_btn" : "Add User",
+        "add_something" : "Bitte fügen Sie eine Applikation oder ein Projekt hinzu, an dem Sie gerade arbeiten. Sie können auch einen Testbenutzer hinzufügen.",
+        "browser" : "Benutzer-Browser",
+        "midata" : "Back-end MIDATA",
+        "useraccount" : "Benutzerkonto",
+        "newapp_btn" : "Applikation hinzufügen",
+        "newproject_btn" : "Projekt hinzufügen",
+        "newuser_btn" : "Benutzer hinzufügen",
 
         // TODO NEW: Reset Workspace
         "reset_btn" : "Reset Workspace",

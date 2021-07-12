@@ -14,8 +14,6 @@
     "developer_navbar" : {
         "yourapps" : "I tuoi applicazioni",
         "sandbox" : "Sandbox",
-
-        // TODO NEW: Workspace
         "workspace" : "Workspace",
         "records" : "Record di test",
         "testusers" : "Utente di test"
@@ -79,12 +77,8 @@
     },
 
     "manageapp" : {
-
-        // TODO NEW: Register a new application
-        "title_new" : "Register a new application",
-
-        // TODO NEW: Manage application
-        "title_edit" : "Manage application",
+        "title_new" : "Registra una nuova applicazione",
+        "title_edit" : "Gestire l'applicazione",
         "overview" : "Panoramica dell'applicazione",
         "choose" : "Funzioni per gestire la propria applicazione",
         "defined" : "definito",
@@ -275,19 +269,13 @@
             "time" : "Quotidiano",
             "time/30m" : "Ogni 30 minuti",
             "init" : "Quando aggiunto",
-
-            // TODO NEW: FHIR message (forwarded)
-            "forwarded" : "FHIR message (forwarded)"
+            "forwarded" : "Messaggio FHIR (inoltrato)"
         },
         "actions" : {
             "rest-hook" : "Chiamare un REST Hook",
             "email" : "Inviare e-mail",
-
-            // TODO NEW: Send SMS
-            "sms" : "Send SMS",
-
-            // TODO NEW: Forward to other application
-            "app" : "Forward to other application",
+            "sms" : "Inviare SMS",
+            "app" : "Inoltrare ad altre applicazioni",
             "nodejs" : "Chiamare Node.js script"
         },
         "debug" : {
@@ -299,7 +287,6 @@
             "stop_btn" : "Interrompere il debugging",
             "cmd_to_run" : "Comando da eseguire sul computer:"
         }
-
     },
 
     "appreviews" : {
@@ -312,9 +299,7 @@
         "comment" : "Commento",
         "status" : "Stato",
         "noreviews" : "Non sono ancora state fatte recensioni su questo istanza.",
-
-        // TODO NEW: Review has been added.
-        "success" : "Review has been added.",
+        "success" : "La recensione è stata aggiunta.",
         "CONCEPT" : "Concetto dell'applicazione",
         "DATA_MODEL" : "Data Model",
         "ACCESS_FILTER" : "Access Filter",
@@ -336,9 +321,7 @@
         "title" : "Licenza",
         "required" : "È richiesta una licenza?",
         "allowedEntities" : "Entità permesse",
-
-        // TODO NEW: Licence requirements have been updated.
-        "success" : "Licence requirements have been updated."
+        "success" : "I requisiti della licenza sono stati aggiornati."
     },
 
     "repository" : {
@@ -366,31 +349,14 @@
     },
 
     "workspace" : {
-
-
-        // TODO NEW: Workspace
         "title" : "Workspace",
-
-        // TODO NEW: Please add an app or a project you are working on. You may also add a test user.
-        "add_something" : "Please add an app or a project you are working on. You may also add a test user.",
-
-        // TODO NEW: Users Browser
-        "browser" : "Users Browser",
-
-        // TODO NEW: Midata Backend
-        "midata" : "Midata Backend",
-
-        // TODO NEW: User Account
-        "useraccount" : "User Account",
-
-        // TODO NEW: Add Application
-        "newapp_btn" : "Add Application",
-
-        // TODO NEW: Add Project
-        "newproject_btn" : "Add Project",
-
-        // TODO NEW: Add User
-        "newuser_btn" : "Add User",
+        "add_something" : "Aggiungi un'applicazione o un progetto a cui stai lavorando. Puoi anche aggiungere un utente di prova.",
+        "browser" : "Browser degli utenti",
+        "midata" : "Back-end MIDATA",
+        "useraccount" : "Account utente",
+        "newapp_btn" : "Aggiungi applicazione",
+        "newproject_btn" : "Aggiungi progetto",
+        "newuser_btn" : "Aggiungi utente",
 
         // TODO NEW: Reset Workspace
         "reset_btn" : "Reset Workspace",

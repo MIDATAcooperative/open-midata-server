@@ -64,9 +64,7 @@
 
     "provider_patients" : {
         "title" : "Pazienti",
-
-        // TODO NEW: No patients found.
-        "empty" : "No patients found."
+        "empty" : "Nessun paziente trovato."
     },
 
     "provider_usergroups" : {
