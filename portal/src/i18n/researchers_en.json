@@ -148,7 +148,7 @@
   "studyoverview" : {
     "name" : "Name",
     "type" : "Type of Research",
-    "created_at" : "Created on",
+    "created_at" : "Created at",
     "created_by" : "Created by",
     "description" : "Description",
     "code" : "Code",

@@ -51,7 +51,7 @@
         "lang" : "Langue",
         "msgtitle" : "Libellé du message",
         "text" : "Texte du message",
-        "available_tags" : "Variables disponibles",
+        "available_tags" : "Catégories disponibles",
         "reasons" : {
             "REGISTRATION" : "Inscription d'un nouvel utilisateur",
             "REGISTRATION_BY_OTHER_PERSON" : "Inscription d'un nouvel utilisateur par une autre personne",
@@ -102,7 +102,7 @@
         "repository_btn" : "Code Repository",
         "repository_help" : "Checkout de la dernière version de votre code",
         "icon_btn" : "Icônes et images de l'application",
-        "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, le Store, etc.",
+        "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, la boutique, etc.",
         "messages_btn" : "Messages e-mail de l'application",
         "messages_help" : "Fournissez vos propres textes d'e-mails envoyés aux nouveaux comptes d'utilisateurs, dès la première utilisation de votre application, pour accepter les consentements et plus encore.",
         "stats_btn" : "Statistiques sur les erreurs et les performances",
@@ -140,9 +140,9 @@
             "pseudonymize" : "Lire les données pseudonymisées. Ne met pas à jour les enregistrements des participants.",
             "resharesData" : "L'application est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
             "allowsUserSearch" : "Les utilisateurs de l'application sont autorisés à rechercher d'autres utilisateurs de la même application.",
-            "consentObserving" : "Ce service surveille-t-il les consentements des utilisateurs ? Ajoutez 'Consentements' à l'Access Filter afin de l'activer.",
+            "consentObserving" : "Ce service surveille-t-il les consentements des utilisateurs ? Ajoutez 'Consentements (Consents)' au filtre d'accès aux données (Data Access Filter) afin de l'activer.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
-            "tags" : "Catégories sous lesquelles le plugin sera listé dans le Store.",
+            "tags" : "Catégories sous lesquelles le plugin sera listé dans la boutique.",
             "url" : "URL de la page principale du plugin. Si vous utilisez le modèle @PLATFORM, c'est 'dist/index.html#!?authToken=:authToken''",
             "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
             "defaultSpaceContext" : "Choisissez 'Tableau de bord' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
@@ -164,7 +164,7 @@
         "nostudy" : "Non liée à un projet de recherche",
         "optionalParticipation" : "Participation optionnelle",
         "access_query_json" : "Data Access Filter",
-        "queryeditor_btn" : "Aller à l'éditeur du Data Access Filter",
+        "queryeditor_btn" : "Aller à l'éditeur du filtre d'accès aux données (Data Access Filter)",
         "no_update_history" : "Pas d'historique des ressources FHIR",
         "pseudonymize" : "Lire pseudonymisé",
         "usagestats_btn" : "Statistiques d'utilisation",
@@ -302,7 +302,7 @@
         "success" : "La revue a été ajoutée.",
         "CONCEPT" : "Concept de l'application",
         "DATA_MODEL" : "Modèle de données",
-        "ACCESS_FILTER" : "Access Filter",
+        "ACCESS_FILTER" : "Data Access Filter",
         "QUERIES" : "Queries",
         "DESCRIPTION" : "Description",
         "ICONS" : "Icônes",
@@ -352,177 +352,71 @@
         "title" : "Workspace",
         "add_something" : "Veuillez ajouter une application ou un projet sur lequel vous travaillez. Vous pouvez également ajouter un utilisateur de test.",
         "browser" : "Navigateur des utilisateurs",
-        "midata" : "Back-end MIDATA",
+        "midata" : "Back-end @PLATFORM",
         "useraccount" : "Compte utilisateur",
         "newapp_btn" : "Ajouter une application",
         "newproject_btn" : "Ajouter un projet",
         "newuser_btn" : "Ajouter un utilisateur",
-
-        // TODO NEW: Reset Workspace
-        "reset_btn" : "Reset Workspace",
-
-        // TODO NEW: Issues
-        "issues" : "Issues",
-
-        // TODO NEW: No issues found.
-        "no_issues" : "No issues found.",
+        "reset_btn" : "Réinitialiser le Workspace",
+        "issues" : "Problèmes",
+        "no_issues" : "Aucun problème trouvé.",
         "severity" : {
-
-            // TODO NEW: Severity
-            "severity" : "Severity",
-
-            // TODO NEW: Info
+            "severity" : "Gravité",
             "zinfo" : "Info",
-
-            // TODO NEW: Warning
-            "warning" : "Warning",
-
-            // TODO NEW: Error
-            "error" : "Error"
+            "warning" : "Avertissement",
+            "error" : "Erreur"
         },
-
-        // TODO NEW: Component
-        "component" : "Component",
-
-        // TODO NEW: Issue
-        "issue" : "Issue",
-
-        // TODO NEW: Param
-        "param" : "Param",
-
-        // TODO NEW: Access Filter Summary
-        "summary" : "Access Filter Summary",
-
-        // TODO NEW: Add Application to Workspace
-        "add_app" : "Add Application to Workspace",
-
-        // TODO NEW: Add User Account to Workspace
-        "add_user" : "Add User Account to Workspace",
-
-        // TODO NEW: Use only with test accounts! Plain text password will be stored in your browser!
-        "testusers_only" : "Use only with test accounts! Plain text password will be stored in your browser!",
-
-        // TODO NEW: Role
-        "role" : "Role",
-
-        // TODO NEW: Add
-        "add_btn" : "Add",
-
-        // TODO NEW: Internal Application Name
-        "appname" : "Internal Application Name",
-
-        // TODO NEW: Project Code
-        "projectname" : "Project Code",
-
-        // TODO NEW: Add Project to Workspace
-        "add_project" : "Add Project to Workspace",
+        "component" : "Composant",
+        "issue" : "Problème",
+        "param" : "Paramètre",
+        "summary" : "Résumé Data Access Filter",
+        "add_app" : "Ajouter une application au Workspace",
+        "add_user" : "Ajouter un utilisateur au Workspace",
+        "testusers_only" : "A utiliser uniquement avec des comptes de test ! Le mot de passe en texte clair sera stocké dans votre navigateur !",
+        "role" : "Rôle",
+        "add_btn" : "Ajouter",
+        "appname" : "Nom interne de l'application",
+        "projectname" : "Code du projet",
+        "add_project" : "Ajouter un projet au Workspace",
         "warning" : {
-
-            // TODO NEW: App is deprecated and should not be used.
-            "app_deprecated" : "App is deprecated and should not be used.",
-
-            // TODO NEW: No developer organization name specified in app definition.
-            "no_orgname" : "No developer organization name specified in app definition.",
-
-            // TODO NEW: No publisher specified in app definition.
-            "no_publisher" : "No publisher specified in app definition.",
-
-            // TODO NEW: App description is missing
-            "no_app_description" : "App description is missing",
-
-            // TODO NEW: Plugin is not available in Midata store. Ask an admin.
-            "not_spotlighted" : "Plugin is not available in Midata store. Ask an admin.",
-
-            // TODO NEW: No repository for code checkout-provided.
-            "no_repository" : "No repository for code checkout-provided.",
-
-            // TODO NEW: Error report notifications (emails) are disabled for this app.
-            "no_send_reports" : "Error report notifications (emails) are disabled for this app.",
-
-            // TODO NEW: Comments available in the error and performance statistics.
-            "has_comments" : "Comments available in the error and performance statistics.",
-
-            // TODO NEW: Project has not been validated yet.
-            "project_not_validated" : "Project has not been validated yet.",
-
-            // TODO NEW: Project not searching for participants.
-            "project_not_searching" : "Project not searching for participants.",
-
-            // TODO NEW: None of the test accounts use the application
-            "no_user_for_app" : "None of the test accounts use the application",
-
-            // TODO NEW: None of test accounts participate to the project
-            "no_user_for_project" : "None of test accounts participate to the project",
-
-            // TODO NEW: Application instance not active
-            "appinstance_status" : "Application instance not active",
-
-            // TODO NEW: App version is newer than app. consent. Needs reconfirm.
-            "appinstance_outdated" : "App version is newer than app. consent. Needs reconfirm.",
-
-            // TODO NEW: Participation not accepted
-            "not_accepted" : "Participation not accepted"
+            "app_deprecated" : "L'application est obsolète et ne doit pas être utilisée.",
+            "no_orgname" : "Aucun nom d'organisation de développement n'est spécifié dans la définition de l'application.",
+            "no_publisher" : "Aucun éditeur n'est spécifié dans la définition de l'application.",
+            "no_app_description" : "La description de l'application manque.",
+            "not_spotlighted" : "Le plugin n'est pas disponible dans la boutique @PLATFORM. Demandez à un administrateur.",
+            "no_repository" : "Pas de repository de code spécifié pour le checkout.",
+            "no_send_reports" : "Les notifications de rapports d'erreurs (e-mails) sont désactivées pour cette application.",
+            "has_comments" : "Commentaires disponibles dans les statistiques d'erreurs et de performances.",
+            "project_not_validated" : "Le projet n'a pas encore été validé.",
+            "project_not_searching" : "Le projet ne recherche pas de participants.",
+            "no_user_for_app" : "Aucun des comptes de test n'utilise l'application.",
+            "no_user_for_project" : "Aucun des comptes de test ne participe au projet.",
+            "appinstance_status" : "L'instance d'application n'est pas active.",
+            "appinstance_outdated" : "La version de l'application est plus récente que le consentement de l'application. Il faut reconfirmer.",
+            "not_accepted" : "Participation non acceptée"
         },
         "error" : {
-
-            // TODO NEW: No tags for app selected. Plugin cannot be added by user.
-            "no_tags" : "No tags for app selected. Plugin cannot be added by user.",
-
-            // TODO NEW: Plugin does not have initial URL
-            "no_url" : "Plugin does not have initial URL",
-
-            // TODO NEW: Plugin has repository information but had never been checked out successful.
-            "never_deployed" : "Plugin has repository information but had never been checked out successful.",
-
-            // TODO NEW: No access filter provided for application
-            "no_access_filter" : "No access filter provided for application",
-
-            // TODO NEW: Project has no join methods selected.
-            "no_join_method" : "Project has no join methods selected.",
-
-            // TODO NEW: Project is currently validated by an administrator.
-            "project_in_validation" : "Project is currently validated by an administrator.",
-
-            // TODO NEW: Project has been rejected.
-            "project_rejected" : "Project has been rejected.",
-
-            // TODO NEW: Project is already finished.
-            "project_finished" : "Project is already finished.",
-
-            // TODO NEW: Project has been aborted.
-            "project_aborted" : "Project has been aborted.",
-
-            // TODO NEW: No participant groups defined for project.
-            "project_no_groups" : "No participant groups defined for project.",
-
-            // TODO NEW: Application does not exist.
-            "app_no_exist" : "Application does not exist.",
-
-            // TODO NEW: Project does not exist.
-            "project_no_exist" : "Project does not exist.",
-
-            // TODO NEW: Account login failed
-            "login_failed" : "Account login failed",
-
-            // TODO NEW: Application instance rejected
-            "appinstance_rejected" : "Application instance rejected"
+            "no_tags" : "Aucune catégorie d'application sélectionnée. Le plugin ne peut pas être ajouté par l'utilisateur.",
+            "no_url" : "Le plugin n'a pas d'URL initiale.",
+            "never_deployed" : "Le plugin possède des informations sur le repository mais aucun checkout n'a jamais été fait.",
+            "no_access_filter" : "Aucun filtre d'accès aux données (Data Access Filter) n'est défini pour l'application.",
+            "no_join_method" : "Aucune méthode d'adhésion n'a été sélectionnée pour le projet.",
+            "project_in_validation" : "Le projet est actuellement en cours de validation par un administrateur.",
+            "project_rejected" : "Le projet a été rejeté.",
+            "project_finished" : "Le projet est déjà terminé.",
+            "project_aborted" : "Le projet a été abandonné.",
+            "project_no_groups" : "Aucun groupe de participants n'a été défini pour le projet.",
+            "app_no_exist" : "L'application n'existe pas.",
+            "project_no_exist" : "Le projet n'existe pas.",
+            "login_failed" : "La connexion au compte a échoué.",
+            "appinstance_rejected" : "Application bloquée par l'utilisateur."
         },
         "info" : {
-
-            // TODO NEW: No requirements selected for application.
-            "no_requirements" : "No requirements selected for application.",
-
-            // TODO NEW: No icons uploaded for application.
-            "no_icons" : "No icons uploaded for application.",
-
-            // TODO NEW: Project has not been started yet.
-            "project_not_running" : "Project has not been started yet.",
-
-            // TODO NEW: No requirements selected for project.
-            "project_no_requirements" : "No requirements selected for project.",
-
-            // TODO NEW: Application is still in development
-            "app_in_development" : "Application is still in development"
+            "no_requirements" : "Aucune exigence sélectionnée pour l'application.",
+            "no_icons" : "Pas d'icônes téléchargées pour l'application.",
+            "project_not_running" : "Le projet n'a pas encore été lancé.",
+            "project_no_requirements" : "Aucune exigence sélectionnée pour le projet.",
+            "app_in_development" : "L'application est encore en développement."
         }
     }
 }
