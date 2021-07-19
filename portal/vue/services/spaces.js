@@ -63,6 +63,8 @@ import server from "./server";
 		var url = urlInfo.base + path.replace(":authToken", urlInfo.token).replace(":path", (params && params.path) ? params.path : "");
 		if (url.indexOf("?")>=0) url += "&lang="+encodeURIComponent(lang); else url+="?lang="+encodeURIComponent(lang);
 		if (urlInfo.owner) url+="&owner="+urlInfo.owner;
+		if (urlInfo.id) url+="&id="+urlInfo.id;
+		if (urlInfo.resourceType) url+="&resourceType="+urlInfo.resourceType;
 		if (params) {
 			for (let k in params) {
 				let v = params[k];			

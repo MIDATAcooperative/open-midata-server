@@ -392,7 +392,7 @@
         "no_user_for_project" : "None of test accounts participate to the project.",
         "appinstance_status" : "Application instance not active.",
         "appinstance_outdated" : "Application version is newer than application consent. Needs reconfirm.",
-        "not_accepted" : "Participation not accepted."
+        "not_accepted" : "Participation not accepted.",
         "no_access" : "You are no developer of this application. Some features are not available to you."
      },
      "error" : {       
