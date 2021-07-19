@@ -543,7 +543,12 @@ public class Records extends APIController {
 		obj.put("main", visualization.url);
 		obj.put("type", visualization.type);
 		obj.put("name", record.name);
-
+		obj.put("id", record._id.toString());
+		if (record.format.startsWith("fhir/")) {
+		  obj.put("resourceType", record.format.substring("fhir/".length()));
+		} else {
+		  obj.put("format", record.format);
+		}
 		return ok(obj);
 	}
 
