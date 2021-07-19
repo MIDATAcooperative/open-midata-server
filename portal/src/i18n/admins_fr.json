@@ -73,7 +73,7 @@
         "language" : "Langue",
         "title" : "Intitulé",
         "expires" : "Date d'expiration",
-        "delete_btn" : "Effacer",
+        "delete_btn" : "Supprimer",
         "empty" : "Aucune News trouvée"
     },
 
@@ -112,7 +112,7 @@
         "plugin_developer" : "Dévelopeur",
         "plugin_type" : "Type",
         "plugin_role" : "Rôle cible",
-        "plugin_market" : "Store",
+        "plugin_market" : "Boutique",
         "plugin_stats" : "Statistiques",
         "plugin_status" : "État",
         "add_definition_btn" : "Importer la définition d'une application"
@@ -133,7 +133,10 @@
         "title" : "Projets de recherche",
         "criteria" : "Critère de recherche",
         "empty" : "Aucun projet correspondant trouvé.",
-        "add_definition_btn" : "Importer la définition d'un project"
+        "add_definition_btn" : "Importer la définition d'un project",
+        "name" : "Nom du project",
+        "type" : "Type",
+        "created" : "Créé le"
     },
 
     "admin_terms" : {
@@ -159,8 +162,8 @@
     "admin_study" : {
         "title" : "Projet de recherche",
         "name" : "Nom",
-        "created_at" : "Créée le",
-        "created_by" : "Créée par",
+        "created_at" : "Créé le",
+        "created_by" : "Créé par",
         "description" : "Description",
         "joinmethods" : "Procédures de participation",
         "type" : "Type",
@@ -187,7 +190,7 @@
         "links" : "Applications liées",
         "end_validation_btn" : "Finaliser la validation",
         "back_to_draft_btn" : "Revenir à l'ébauche",
-        "delete_study_btn" : "Effacer le projet",
+        "delete_study_btn" : "Supprimer le projet",
         "export_btn" : "Exporter"
     },
 
@@ -303,5 +306,37 @@
         "test_btn" : "Test: envoyez à vous-même",
         "save_btn" : "Enregistrer l'e-mail",
         "send_btn" : "Envoyer"
+    },
+
+    "content" : {
+        "intro" : "Recherche de codes, types de contenu et groupes existants.",
+        "createnew_btn" : "Nouveau code",
+        "creategroup_btn" : "Nouveau groupe",
+        "make_selection" : "Sélectionnez l'élément que vous voulez modifier ou auquel vous voulez ajouter un nouveau code",
+        "new_code" : "Nouveau code à ajouter",
+        "edit_code" : "Modifier le code existant",
+        "edit_content" : "Modifier le type de contenu MIDATA existant",
+        "new_content" : "Nouveau type de contenu MIDATA à ajouter",
+        "edit_group" : "Modifier un groupe existant dans l'arborescence des données",
+        "new_group" : "Nouveau groupe dans l'arborescence des données",
+        "system" : "Système de code",
+        "version" : "Version",
+        "code" : "Code",
+        "display" : "Libellé",
+        "content" : "Type de contenu MIDATA",
+        "security" : "Clés d'encryption des données",
+        "medium" : "Réutiliser les clés pour les données de même type de la même personne",
+        "high" : "Utiliser une nouvelle clé pour chaque enregistrement",
+        "group" : "Groupe dans l'arborescence des données",
+        "defaultCode" : "Code par défaut",
+        "resource_type" : "Type de ressource FHIR par défaut",
+        "delete_content_btn" : "Supprimer le code et le type de contenu",
+        "delete_code_btn" : "Supprimer le code",
+        "group_name" : "Nom du groupe",
+        "parent_group" : "Groupe parent",
+        "group_system" : "Système de regroupement",
+        "save_group_btn" : "Enregistrer le groupe",
+        "delete_group_btn" : "Supprimer le groupe",
+        "save_btn" : "Enregistrer le code et le type de contenu"
     }
 }

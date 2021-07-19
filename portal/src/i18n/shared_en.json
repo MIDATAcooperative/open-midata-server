@@ -112,7 +112,7 @@
        "space" : "The requested space does no longer exist.",
        "consent" : "Consent not found",
        "study" : "Research project does not exist.",
-       "content" : "Record Content-Type is not registered with the platform.",
+       "content" : "Record content type is not registered on the platform.",
        "group" : "Unknown group name",
        "code" : "Unknown code",
        "record" : "Unknown record",
@@ -192,7 +192,6 @@
      "notrequired" : {
        "licence" : "No license is required for this application"
      }
-
    },
 
    "enum" : {
@@ -404,7 +403,7 @@
 	   "PLUGINADMIN" : "Application Admin",
 	   "NEWSWRITER" : "News Author",
 	   "SUPERADMIN" : "Super Admin",
-	   "TRIALUSER" : "Trial User",
+	   "TRIALUSER" : "Trial Participant",
 	   "STUDYPARTICIPANT" : "Project Participant",
 	   "APPUSER" : "Application User",
 	   "NONMEMBERUSER" : "Validated Account Holder",
@@ -750,7 +749,7 @@
 	"owned_by" : "Owned by:",
 	"created_by" : "Created by:",
     "created_with" : "Created with:",
-    "created_on" : "Created on:",
+    "created_on" : "Created at:",
     "content" : "Content:",
     "format" : "Format:",
     "download_btn" : "Download",
@@ -794,7 +793,6 @@
 	"for_participants" : "Participation Info",
 	"please_review1" : "Decide about participation",
     "please_review2" : "Please review this research project. Do you want to participate? Click on 'Skip (No change)' if you want to leave this page without any changes."
-   
   },
 
   "user" : {
@@ -896,7 +894,7 @@
     "title" : "Consent",
     "owner" : "Owner of Consent",
     "name" : "Name of Consent",
-    "date_of_creation" : "Consent created on",
+    "date_of_creation" : "Consent created at",
     "type" : "Type of Consent",
     "status" : "Status of Consent",
     "people" : "With which persons(s) do you want to share data?",
@@ -938,8 +936,8 @@
   },
   
   "editconsent2" : {
-    "date_of_creation" : "created on",
-    "valid_until" : "expires on",
+    "date_of_creation" : "created at",
+    "valid_until" : "expires at",
     "status_active" : "Active now",
     "status_expired" : "Expired",
     "status_unconfirmed" : "Needs confirmation",
@@ -1011,7 +1009,7 @@
 	"type_implicit" : "Implicit",
 	"type_healthcare" : "Doctor / Hospital",
 	"type_studyparticipation" : "Research",
-  "type_representative" : "Representative",
+ 	"type_representative" : "Representative",
 	"show" : "Show:",
 	"my_data" : "My Data",
 	"all_data" : "All Data",
@@ -1065,9 +1063,9 @@
     "link_SERVICE_required" : "An additional service is required to use this application:",
     "link_SERVICE_optional" : "You may additionally subscribe to use this service:", 
     "link_ORGANIZATION_required" : "A third party needs access to your data to use this application:",
-    "link_ORGANIZATION_optional" : "You may share data with this 3rd party:", 
-    "link_CLINICAL_required" : "In order to use this application you need to participate in a clinical trial:",
-    "link_CLINICAL_optional" : "Additionally you may participate in a clinical trial:",
+    "link_ORGANIZATION_optional" : "You may share data with this third party:", 
+    "link_CLINICAL_required" : "In order to use this application you need to participate in a clinical study:",
+    "link_CLINICAL_optional" : "Additionally you may participate in a clinical study:",
     "link_CITIZENSCIENCE_required" : "In order to use this application you must participate in a citizen science project:",
     "link_CITIZENSCIENCE_optional" : "Additionally you may participate in a citizen science project:",
     "link_COMMUNITY_required" : "In order to use this application you must participate in a community project:",
@@ -1077,13 +1075,13 @@
     "both" : "Both",
     "only" : "Only:",
     "not" : "All but:", 
-    "short_app" : "App",
+    "short_app" : "Application",
     "short_service" : "Service",
     "short_project" : "Project",
-    "short_clinical" : "Clinical Trial",
+    "short_clinical" : "Clinical Study",
     "short_citizenscience" : "Citizen Science Project",
-    "short_community" : "Community",
-    "short_party" : "Party",
+    "short_community" : "Community Project",
+    "short_party" : "Third party",
     "mode_pseudonymized" : "pseudonymized data",
     "mode_anonymized" : "anonymized data",
     "mode_all" : "raw data",
@@ -1377,8 +1375,6 @@
   },
   
   "timeline" : {
-    "spaces" : "MIDATA",
-    "title" : "Timeline",
     "fitness" : "Fitness",
     "health" : "Health Data",
     "analyze" : "Data Analysis"

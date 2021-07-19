@@ -133,7 +133,10 @@
         "title" : "Forschungsprojekte",
         "criteria" : "Suchkriterien",
         "empty" : "Kein passendes Projekt gefunden.",
-        "add_definition_btn" : "Projektdefinition importieren"
+        "add_definition_btn" : "Projektdefinition importieren",
+        "name" : "Projektname",
+        "type" : "Typ",
+        "created" : "Erstellt am"
     },
 
     "admin_terms" : {
@@ -303,5 +306,37 @@
         "test_btn" : "Test: an sich selbst schicken",
         "save_btn" : "E-Mail speichern",
         "send_btn" : "Senden"
+    },
+
+    "content" : {
+        "intro" : "Suche nach vorhandenen Codes, Inhaltstypen und Gruppen.",
+        "createnew_btn" : "Neuer Code",
+        "creategroup_btn" : "Neue Gruppe",
+        "make_selection" : "Wählen Sie das Element, das Sie bearbeiten oder dem Sie einen neuen Code hinzufügen möchten",
+        "new_code" : "Neuer Code, der hinzugefügt werden soll",
+        "edit_code" : "Vorhandenen Code bearbeiten",
+        "edit_content" : "Vorhandenen MIDATA-Inhaltstyp bearbeiten",
+        "new_content" : "Neuer MIDATA-Inhaltstyp hinzuzufügen",
+        "edit_group" : "Vorhandene Gruppe im Datenbaum bearbeiten",
+        "new_group" : "Neue Gruppe im Datenbaum",
+        "system" : "Code-System",
+        "version" : "Version",
+        "code" : "Code",
+        "display" : "Bezeichnung",
+        "content" : "MIDATA-Inhaltstyp",
+        "security" : "Verschlüsselungsschlüssel der Daten",
+        "medium" : "Wiederverwendung von Schlüsseln für Daten desselben Typs und derselben Person",
+        "high" : "Für jeden Datensatz einen neuen Schlüssel verwenden",
+        "group" : "Gruppe im Datenbaum",
+        "defaultCode" : "Standard-Code",
+        "resource_type" : "Standard FHIR-Ressourcentyp",
+        "delete_content_btn" : "Code & Inhaltstyp löschen",
+        "delete_code_btn" : "Code löschen",
+        "group_name" : "Gruppenname",
+        "parent_group" : "Übergeordnete Gruppe",
+        "group_system" : "Gruppierungssystem",
+        "save_group_btn" : "Gruppe speichern",
+        "delete_group_btn" : "Gruppe löschen",
+        "save_btn" : "Code & Inhaltstyp speichern"
     }
 }

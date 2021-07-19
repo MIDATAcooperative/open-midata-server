@@ -14,6 +14,7 @@
     "developer_navbar" : {
         "yourapps" : "Ihre Applikationen",
         "sandbox" : "Sandbox",
+        "workspace" : "Workspace",
         "records" : "Testeinträge",
         "testusers" : "Testbenutzer"
     },
@@ -50,7 +51,7 @@
         "lang" : "Sprache",
         "msgtitle" : "Meldungsüberschrift",
         "text" : "Meldungstext",
-        "available_tags" : "Verfügbare Variablen",
+        "available_tags" : "Verfügbare Kategorien",
         "reasons" : {
             "REGISTRATION" : "Neue Benutzerregistrierung",
             "REGISTRATION_BY_OTHER_PERSON" : "Registrierung eines neuen Benutzers durch eine andere Person",
@@ -76,6 +77,8 @@
     },
 
     "manageapp" : {
+        "title_new" : "Neue Applikation registrieren",
+        "title_edit" : "Applikation verwalten",
         "overview" : "Applikations-Übersicht",
         "choose" : "Funktionen zur Verwaltung Ihrer Applikation",
         "defined" : "definiert",
@@ -137,7 +140,7 @@
             "pseudonymize" : "Pseudonymisierte Daten lesen. Aktualisiert keine Datensätze von Teilnehmern.",
             "resharesData" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
             "allowsUserSearch" : "Benutzer dieser Applikation dürfen nach anderen Benutzern der gleichen Applikation suchen.",
-            "consentObserving" : "Überwacht dieser Dienst die Einwilligungen der Benutzer? Fügen Sie 'Zustimmungen' zum Access Filter hinzu, um es zu aktivieren.",
+            "consentObserving" : "Überwacht dieser Dienst die Einwilligungen der Benutzer? Fügen Sie 'Zustimmungen (Consents)' zum Datenzugriffsfilter (Data Access Filter) hinzu, um es zu aktivieren.",
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
             "tags" : "Kategorien unter welchen das Plugin im Store erscheinen wird.",
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das @PLATFORM Template verwenden ist es 'dist/index.html#!?authToken=:authToken''",
@@ -161,7 +164,7 @@
         "nostudy" : "Nicht an einem Forschungsprojekt gebunden",
         "optionalParticipation" : "Teilnahme optional",
         "access_query_json" : "Data Access Filter",
-        "queryeditor_btn" : "Zum Data Access Filter Editor wechseln",
+        "queryeditor_btn" : "Zum Editor des Datenzugriffsfilters (Data Access Filter) wechseln",
         "no_update_history" : "Keine FHIR Ressourcenhistorie",
         "pseudonymize" : "Pseudonymisiert lesen",
         "usagestats_btn" : "Nutzungsstatistiken",
@@ -261,15 +264,18 @@
         "params" : "URL / Dateiname",
         "triggers" : {
             "fhir_Consent" : "Zustimmungsänderungen",
-            "fhir_MessageHeader" : "FHIR Nachricht",
+            "fhir_MessageHeader" : "FHIR-Nachricht",
             "fhir_Resource" : "Ressourcenänderungen",
             "time" : "Täglich",
             "time/30m" : "Alle 30 Minuten",
-            "init" : "Wenn hinzugefügt"
+            "init" : "Wenn hinzugefügt",
+            "forwarded" : "FHIR-Nachricht (weitergeleitet)"
         },
         "actions" : {
             "rest-hook" : "REST Hook aufrufen",
             "email" : "E-Mail versenden",
+            "sms" : "Send SMS versenden",
+            "app" : "Weiterleiten an andere Applikation",
             "nodejs" : "Node.js Script aufrufen"
         },
         "debug" : {
@@ -281,7 +287,6 @@
             "stop_btn" : "Debugging beenden",
             "cmd_to_run" : "Befehl zur Ausführung auf Ihrem Computer:"
         }
-
     },
 
     "appreviews" : {
@@ -294,9 +299,10 @@
         "comment" : "Bemerkung",
         "status" : "Status",
         "noreviews" : "Auf dieser Instanz wurden noch keine Überprüfungen vorgenommen.",
+        "success" : "Überprüfung wurde hinzugefügt.",
         "CONCEPT" : "Applikationskonzept",
         "DATA_MODEL" : "Datenmodell",
-        "ACCESS_FILTER" : "Access Filter",
+        "ACCESS_FILTER" : "Data Access Filter",
         "QUERIES" : "Queries",
         "DESCRIPTION" : "Beschreibung",
         "ICONS" : "Icons",
@@ -314,7 +320,8 @@
     "applicence" : {
         "title" : "Lizenz",
         "required" : "Lizenz erforderlich?",
-        "allowedEntities" : "Zulässige Entitäten"
+        "allowedEntities" : "Zulässige Entitäten",
+        "success" : "Die Lizenzanforderungen wurden aktualisiert."
     },
 
     "repository" : {
@@ -339,5 +346,77 @@
         "install" : "Installation der Packages",
         "audit" : "Sicherheitsaudit",
         "build" : "Build-Prozess"
+    },
+
+    "workspace" : {
+        "title" : "Workspace",
+        "add_something" : "Bitte fügen Sie eine Applikation oder ein Projekt hinzu, an dem Sie gerade arbeiten. Sie können auch einen Testbenutzer hinzufügen.",
+        "browser" : "Benutzer-Browser",
+        "midata" : "@PLATFORM Back-end",
+        "useraccount" : "Benutzerkonto",
+        "newapp_btn" : "Applikation hinzufügen",
+        "newproject_btn" : "Projekt hinzufügen",
+        "newuser_btn" : "Benutzer hinzufügen",
+        "reset_btn" : "Workspace zurücksetzen",
+        "issues" : "Probleme",
+        "no_issues" : "Keine Probleme gefunden.",
+        "severity" : {
+            "severity" : "Schweregrad",
+            "zinfo" : "Info",
+            "warning" : "Warnung",
+            "error" : "Fehler"
+        },
+        "component" : "Komponente",
+        "issue" : "Problem",
+        "param" : "Parameter",
+        "summary" : "Zusammenfassung Data Access Filter",
+        "add_app" : "Applikation zum Workspace hinzufügen",
+        "add_user" : "Benutzerkonto zum Workspace hinzufügen",
+        "testusers_only" : "Nur bei Testkonten verwenden! Klartext-Passwort wird in Ihrem Browser gespeichert!",
+        "role" : "Rolle",
+        "add_btn" : "Hinzufügen",
+        "appname" : "Interner Applikationsname",
+        "projectname" : "Projektcode",
+        "add_project" : "Projekt zum Workspace hinzufügen",
+        "warning" : {
+            "app_deprecated" : "Applikation ist veraltet und sollte nicht verwendet werden.",
+            "no_orgname" : "In der Applikationsdefinition ist kein Name der Entwicklerorganisation angegeben.",
+            "no_publisher" : "In der Applikationsdefinition ist kein Herausgeber angegeben.",
+            "no_app_description" : "Es fehlt die Applikationsbeschreibung.",
+            "not_spotlighted" : "Das Plugin ist nicht im @PLATFORM Store verfügbar. Fragen Sie einen Administrator.",
+            "no_repository" : "Kein Repository für das Auschecken des Codes vorhanden.",
+            "no_send_reports" : "Fehlerberichtsbenachrichtigungen (E-Mails) sind für diese Applikation deaktiviert.",
+            "has_comments" : "Kommentare in der Fehler- und Performance-Statistiken verfügbar.",
+            "project_not_validated" : "Das Projekt wurde noch nicht validiert.",
+            "project_not_searching" : "Das Projekt sucht nicht nach Teilnehmern.",
+            "no_user_for_app" : "Keines der Testkonten verwendet die Applikation.",
+            "no_user_for_project" : "Keines der Testkonten nimmt am Projekt teil.",
+            "appinstance_status" : "Applikationsinstanz nicht aktiv.",
+            "appinstance_outdated" : "Die Version der Applikation ist neuer als die Applikationszustimmung. Muss erneut bestätigt werden.",
+            "not_accepted" : "Teilnahme nicht akzeptiert"
+        },
+        "error" : {
+            "no_tags" : "Keine Applikations-Kategorie ausgewählt. Das Plugin kann vom Benutzer nicht hinzugefügt werden.",
+            "no_url" : "Das Plugin hat keine Initial-URL.",
+            "never_deployed" : "Plugin hat Repository-Informationen, wurde aber nie erfolgreich ausgecheckt.",
+            "no_access_filter" : "Kein Datenzugriffsfilter (Data Access Filter) für Applikation vorhanden.",
+            "no_join_method" : "Im Projekt sind keine Beitrittsmethoden ausgewählt.",
+            "project_in_validation" : "Das Projekt wird derzeit von einem Administrator validiert.",
+            "project_rejected" : "Das Projekt wurde abgelehnt.",
+            "project_finished" : "Das Projekt ist bereits abgeschlossen.",
+            "project_aborted" : "Das Projekt wurde abgebrochen.",
+            "project_no_groups" : "Für das Projekt sind keine Teilnehmergruppen definiert.",
+            "app_no_exist" : "Die Applikation existiert nicht.",
+            "project_no_exist" : "Das Projekt existiert nicht.",
+            "login_failed" : "Die Kontoanmeldung ist fehlgeschlagen.",
+            "appinstance_rejected" : "Applikation vom Benutzer gesperrt."
+        },
+        "info" : {
+            "no_requirements" : "Keine Anforderungen für die Applikation ausgewählt.",
+            "no_icons" : "Es wurden keine Icons für die Applikation hochgeladen.",
+            "project_not_running" : "Das Projekt wurde noch nicht gestartet.",
+            "project_no_requirements" : "Keine Anforderungen für das Projekt ausgewählt.",
+            "app_in_development" : "Die Applikation ist noch in Entwicklung."
+        }
     }
 }

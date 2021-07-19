@@ -133,7 +133,10 @@
         "title" : "Progetti di ricerca",
         "criteria" : "Criteri di ricerca",
         "empty" : "Non è stato trovato alcun progetto corrispondente.",
-        "add_definition_btn" : "Importare la definizione di un progetto"
+        "add_definition_btn" : "Importare la definizione di un progetto",
+        "name" : "Nome del progetto",
+        "type" : "Tipo",
+        "created" : "Creato il"
     },
 
     "admin_terms" : {
@@ -303,5 +306,37 @@
         "test_btn" : "Prova: invia a te stesso",
         "save_btn" : "Memorizza l'e-mail",
         "send_btn" : "Spedire"
+    },
+
+    "content" : {
+        "intro" : "Cerca codici, tipi di contenuto e gruppi esistenti.",
+        "createnew_btn" : "Nuovo codice",
+        "creategroup_btn" : "Nuovo gruppo",
+        "make_selection" : "Seleziona l'elemento che vuoi modificare o aggiungere un nuovo codice",
+        "new_code" : "Nuovo codice da aggiungere",
+        "edit_code" : "Modifica il codice esistente",
+        "edit_content" : "Modifica il tipo di contenuto MIDATA esistente",
+        "new_content" : "Nuovo tipo di contenuto MIDATA da aggiungere",
+        "edit_group" : "Modifica il gruppo esistente nell'albero dei dati",
+        "new_group" : "Nuovo gruppo nell'albero dei dati",
+        "system" : "Sistema di codice",
+        "version" : "Versione",
+        "code" : "Codice",
+        "display" : "Denominazione",
+        "content" : "Tipo di contenuto MIDATA",
+        "security" : "Chiavi di crittografia dei dati",
+        "medium" : "Riutilizzare le chiavi per dati dello stesso tipo e persona",
+        "high" : "Utilizzare una nuova chiave per ogni record",
+        "group" : "Gruppo nell'albero dei dati",
+        "defaultCode" : "Codice predefinito",
+        "resource_type" : "Tipo di risorsa FHIR predefinito",
+        "delete_content_btn" : "Cancella il codice e il tipo di contenuto",
+        "delete_code_btn" : "Cancella il codice ",
+        "group_name" : "Nome del gruppo",
+        "parent_group" : "Gruppo parente",
+        "group_system" : "Sistema di raggruppamento",
+        "save_group_btn" : "Salva il gruppo",
+        "delete_group_btn" : "Cancella il gruppo",
+        "save_btn" : "Salva codice e tipo di contenuto"
     }
 }

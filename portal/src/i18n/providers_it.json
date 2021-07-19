@@ -17,7 +17,7 @@
         "new_patient" : "Nuovo paziente",
         "patients" : "Pazienti",
         "research" : "Ricerca",
-        "workspace" : "Spazio di lavoro",
+        "workspace" : "Workspace",
         "market" : "Store",
         "org" : "Impresa",
         "organization" : "Organizzazione",
@@ -63,7 +63,8 @@
     },
 
     "provider_patients" : {
-        "title" : "Pazienti"
+        "title" : "Pazienti",
+        "empty" : "Nessun paziente trovato."
     },
 
     "provider_usergroups" : {
