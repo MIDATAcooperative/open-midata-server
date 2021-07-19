@@ -34,7 +34,10 @@ public class ServiceInstance extends Model {
 	
 	public @NotMaterialized final static Set<String> ALL = 
 			 Sets.create("_id", "name", "endpoint", "appId", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey", "studyRelatedOnly", "status");
-    
+   
+	public @NotMaterialized final static Set<String> LIMITED = 
+			 Sets.create("_id", "name", "endpoint", "appId", "linkedStudy", "status");
+  
     /** 
      * name of service
     */

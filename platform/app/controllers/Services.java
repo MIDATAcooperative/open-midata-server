@@ -73,13 +73,10 @@ public class Services extends APIController {
 			throw new BadRequestException("error.unknown.study", "Unknown Study");
 				
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, managerId);
-		if (self == null)
-			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		//if (!self.role.maySetup())
-		//	throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
-
-        Set<ServiceInstance> instances = ServiceInstance.getByManager(studyId, ServiceInstance.ALL);
-        return ok(JsonOutput.toJson(instances, "ServiceInstance", ServiceInstance.ALL)).as("application/json");
+		Set<String> fields = (self == null) ? ServiceInstance.LIMITED : ServiceInstance.ALL;
+		
+        Set<ServiceInstance> instances = ServiceInstance.getByManager(studyId, fields);
+        return ok(JsonOutput.toJson(instances, "ServiceInstance", fields)).as("application/json");
     }
     
 	@APICall

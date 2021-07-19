@@ -74,5 +74,6 @@ id0072	04.11.2020	a.kreutz	F	FHIR List resource now supported
 id0073	11.03.2021	a.kreutz	F	New consent type	A new power of attorney consent type is now available that grants full control over the target account to the grantee.
 id0074	11.03.2021	a.kreutz	I	Partly failed FHIR transactions produce better error messages	Error messages of failed transaction/batch entries are also recorded in the error statistics.
 id0075	11.03.2021	a.kreutz	F	Support for document bundles	The transaction endpoint now also accepts Bundles of type document.
-id0076	11.03.2021	a.kreutz	S	Corrected lifespan of API tokens	
+id0076	11.03.2021	a.kreutz	S	Corrected lifespan of API tokens
+id0077	07.07.2021	a.kreutz	F	Added experimental workspace feature for developers	
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

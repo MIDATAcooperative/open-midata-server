@@ -25,6 +25,7 @@ const instance = require('./../config/instance.json');
 const autoprefixer = require('autoprefixer');
 const { VueLoaderPlugin } = require('vue-loader')
 const webpack = require('webpack');
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 /**
  * Distribution mode:
@@ -32,7 +33,7 @@ const webpack = require('webpack');
  * - development: Sets process.env.NODE_ENV on DefinePlugin to value development. Enables NamedChunksPlugin and NamedModulesPlugin.
  * for more information see https://webpack.js.org/concepts/mode/
  */
-var MODE_DISTRIBUTION = 'none'; // 'development'
+var MODE_DISTRIBUTION = 'development'
 
 /**
  * Variables
@@ -77,6 +78,9 @@ var My_Plugins = [
        __VUE_OPTIONS_API__ : true,
        __VUE_PROD_DEVTOOLS__ : false
     }),
+    /*new ESLintPlugin({
+      extensions : ['js','vue']
+    }),*/
     new VueLoaderPlugin()
 ];
 
@@ -119,11 +123,9 @@ module.exports = {
      * CONFIGURATION TO DEPLOY
      */
     devServer: {
-        contentBase: DIST_DIR,
+        static: DIST_DIR,
         port: 9002,
-        https: true,
-        publicPath: PUBLIC_PATH,
-        openPage: ''//APP_NAME + '/dist/index.html'
+        https: true        
     },
 
     /**
@@ -142,8 +144,7 @@ module.exports = {
                           plugins: () => [autoprefixer()]
                         }
                     },
-                    //'sass-loader',
-                    'less-loader'
+                    //'sass-loader',                   
                 ]
             },
             {
@@ -177,7 +178,11 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader'
-            }
+            }/*,
+            {
+                test: /\.js$/,
+                use: 'babel-loader'
+            }*/
         ]
     },
 
@@ -192,6 +197,11 @@ module.exports = {
           path.resolve(__dirname + '/vue'),
           path.resolve(__dirname + '/node_modules'),
           path.resolve(__dirname + '/src')          
-        ]
+        ],
+        fallback: { 
+	       "crypto": require.resolve("crypto-browserify"),
+           "buffer": require.resolve("buffer/"),
+           "stream": require.resolve("stream-browserify") 
+        }
     }
 };

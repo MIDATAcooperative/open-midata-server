@@ -1324,6 +1324,7 @@
     "expert_mode_btn" : "Expert Mode",
     "add_basic_btn" : "Basic Resources",
     "add_data_btn" : "Add More Data Types",
+    "no_code_btn" : "Remove code restriction",
     "owner" : "Data Owner",
     "owner_all" : "Use also shared data (from projects, friends, patients)",
     "owner_self" : "Only data from the user of the application",
