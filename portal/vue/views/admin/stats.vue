@@ -107,7 +107,7 @@
 		        <th class="text-right" v-t="'admin_stats.diff_week'"></th>
 		    </tr>
 		     
-		    <tr v-for="role in today.userCount" :key="role" :class="{ 'info' : role == 'MEMBER' }" v-show="!(role=='ANY')">
+		    <tr v-for="(role1,role) in today.userCount" :key="role" :class="{ 'info' : role == 'MEMBER' }" v-show="!(role=='ANY')">
 		        <td>{{ $t('enum.userrole.'+role) }}</td>
 		        <td class="text-right">{{ today.userCount[role] }}</td>
 		        <td class="text-right">{{ today.userCount[role] - yesterday.userCount[role] }}</td>
@@ -121,7 +121,7 @@
 		        <th class="text-right" v-t="'admin_stats.diff_week'"></th>
 		    </tr>
 		     
-		    <tr v-for="lang in today.languages" :key="lang">
+		    <tr v-for="(lang1,lang) in today.languages" :key="lang">
 		        <td>{{ $t('enum.language.'+lang.toUpperCase()) }}</td>
 		        <td class="text-right">{{ today.languages[lang] }}</td>
 		        <td class="text-right">{{ today.languages[lang] - (yesterday.languages[lang] || 0) }}</td>
@@ -135,7 +135,7 @@
 		        <th class="text-right" v-t="'admin_stats.diff_week'"></th>
 		    </tr>
 		     
-		    <tr v-for="type in today.consentCount" :key="type">
+		    <tr v-for="(type1,type) in today.consentCount" :key="type">
 		        <td>{{$t('enum.consenttype.'+type) }}</td>
 		        <td class="text-right">{{ today.consentCount[type] }}</td>
 		        <td class="text-right">{{ today.consentCount[type] - yesterday.consentCount[type] }}</td>

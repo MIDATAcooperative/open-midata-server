@@ -105,7 +105,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/oauth2.vue')
   },
   {
-    base : ['public', 'oauth', "developer", "admin", "public_research", "public_developer", "public_provider"],
+    base : ['public', 'oauth', "developer", "public_research", "public_developer", "public_provider"],
     path : 'registration',
     name: 'registration',
     component: () => import(/* webpackChunkName: "oauth" */ 'views/member/public/registration.vue')
@@ -364,6 +364,14 @@ const routes = [
     component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),
     meta : {
       mode : "provider"
+    }
+  },
+  {
+    base : ["admin"],
+    path : "registration",
+    component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),
+    meta : {
+      mode : "admin"
     }
   },
   {
