@@ -145,6 +145,15 @@
                         <formerror myid="unlockCode" type="invalid" message="error.invalid.unlock_code"></formerror>
                     </form-group>
                 </div> -->
+
+                <form-group name="coach" label="registration.coach" :path="errors.coach" v-if="role=='developer'">
+					<input type="text" class="form-control" id="coach" name="coach" v-validate v-model="registration.coach">
+				</form-group>
+                <form-group name="reason" label="registration.reason" :path="errors.reason" v-if="role=='developer'">
+                    <textarea class="form-control" rows="5" id="reason" name="reason" v-validate v-model="registration.reason" required></textarea>
+                    <p class="form-text text-muted" translate="developer_registration.reason_fillout"></p>
+                </form-group>
+
                 <form-group name="agb" label="registration.agb" >
                     <check-box v-model="registration.agb" name="agb" :path="errors.agb">                                 
                         <span v-t="'registration.agb2'"></span>&nbsp;
@@ -238,13 +247,13 @@ export default {
 
 	addressNeeded() {
         const { $data } = this;
-		if ($data.role == "research" || $data.role == "provider" ) return true;
+		if ($data.role == "research" || $data.role == "provider" || $data.role == "developer" ) return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('ADDRESS_ENTERED') >= 0 ||  $data.app.requirements.indexOf('ADDRESS_VERIFIED') >=0 );
 	},
 	
 	phoneNeeded() {
         const { $data } = this;
-		if ($data.role == "research" || $data.role == "provider") return true;
+		if ($data.role == "research" || $data.role == "provider" || $data.role == "developer") return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('PHONE_ENTERED') >= 0 ||  $data.app.requirements.indexOf('PHONE_VERIFIED') >=0 );
 	},
 
@@ -367,6 +376,9 @@ export default {
 			} else if ($data.role == "provider") {
 				me.doAction("register", server.post(jsRoutes.controllers.providers.Providers.register().url, data))
 		        .then(function(data) { session.postLogin(data, $router, $route); });			
+			} else if ($data.role == "developer") {
+				me.doAction("register", server.post(jsRoutes.controllers.Developers.register().url, data))
+		        .then(function(data) { session.postLogin(data, $router, $route); });	
 			} else {			
 				me.doAction("register", server.post(jsRoutes.controllers.Application.register().url, data)).
 				then(function(data) { session.postLogin(data, $router, $route); });
@@ -402,6 +414,9 @@ export default {
 		 $data.registration.secure = true;
 	 } else if ($data.role == "provider") {
 		 addBundle("providers");
+		 $data.registration.secure = true;
+	 } else if ($data.role == "developer") {
+		 addBundle("developers");
 		 $data.registration.secure = true;
 	 }
      this.doBusy(server.get(jsRoutes.controllers.Terms.currentTerms().url).then(function(result) { $data.currentTerms = result.data; }));

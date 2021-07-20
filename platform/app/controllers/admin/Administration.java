@@ -303,7 +303,7 @@ public class Administration extends APIController {
 			Admin.add(user);
 							
 			RecordManager.instance.createPrivateAPS(context.getCache(), user._id, user._id);						
-			PatientResourceProvider.updatePatientForAccount(user._id);
+			//PatientResourceProvider.updatePatientForAccount(user._id);
 			
 			Application.sendWelcomeMail(user, executingUser);
 				

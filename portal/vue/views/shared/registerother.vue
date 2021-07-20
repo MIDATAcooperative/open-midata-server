@@ -81,8 +81,24 @@
                         <form-group name="mobile" label="registration.mobile_phone" :path="errors.mobile">
                             <input type="text" class="form-control" id="mobile" name="mobile" :placeholder="$t('registration.mobile_phone')" v-model="registration.mobile" required v-validate>
                         </form-group>
-                    </div>                  
-                </div>           
+                    </div>  
+                </div>  
+                <div v-if="mode=='admin'">
+                    <form-group :name="subrole" label="common.empty">
+                        <div v-for="subrole in subroles" :key="subrole">
+                            
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" :id="subrole" :name="subrole" :checked="hasSubRole(subrole)" @click="changeSubRole(subrole)">
+                                        <span>{{ $t('enum.subuserrole.'+subrole) }}</span>
+                                    </label>
+                                </div>
+                            
+                        </div>
+                    </form-group>
+                </div>
+
+                         
                 <form-group name="x" label="common.empty">
                     <button class="btn btn-primary" type="submit" :disabled="action!=null" v-t="'registration.sign_up_btn'" v-submit>					
                     </button>
@@ -109,6 +125,7 @@ export default {
 	countries : languages.countries,	
 	flags : { optional : false },
     genders : ["FEMALE","MALE","OTHER"],  
+    subroles : ["SUPERADMIN", "USERADMIN", "STUDYADMIN", "CONTENTADMIN", "PLUGINADMIN", "NEWSWRITER"],
     mode : null,
     study : null
   }),
@@ -124,6 +141,7 @@ export default {
         const { $data, $t } = this;
         if ($data.mode=="researcher") return $t('addresearcher.sign_up');
         if ($data.mode=="provider") return $t('addprovider.sign_up');
+        if ($data.mode=="admin") return $t('admin_registration.sign_up');
         return $t('addparticipant.sign_up');
     },
 
@@ -157,6 +175,17 @@ export default {
 		return $data.study != null; //&& $data.study.requirements && ($data.study.requirements.indexOf('BIRTHDAY_SET') >= 0);
 	},
 
+    changeSubRole(subrole) {
+        const { $data } = this;
+	    var idx = $data.registration.subroles.indexOf(subrole);
+	    if (idx >= 0) $data.registration.subroles.splice(idx,1); else $data.registration.subroles.push(subrole);
+	},
+	
+	hasSubRole(subrole) {
+        const { $data } = this;
+		return $data.registration.subroles.indexOf(subrole) >= 0;
+	},
+
     register() {		        
 		const { $data, $route, $router } = this, me = this;				
 		var data = $data.registration;			        	
@@ -164,6 +193,11 @@ export default {
 		    me.doAction("register", server.post(jsRoutes.controllers.research.Researchers.registerOther().url, data));						
         } else if ($route.meta.mode == "provider") {
 		    me.doAction("register", server.post(jsRoutes.controllers.providers.Providers.registerOther().url, data));						
+        } else if ($route.meta.mode == "admin") {
+		    me.doAction("register", server.post(jsRoutes.controllers.admin.Administration.register().url, data))
+            .then(function(result) { 
+                $router.push({ path : "./address", query : { userId : result.data._id } }); 
+            });	
         } else if ($route.meta.mode == "participant") {
             
                                              		
@@ -261,6 +295,9 @@ export default {
   created() {    
     const { $data, $route } = this, me = this;
     $data.mode = $route.meta.mode;
+    if ($data.mode == "admin") {
+        $data.registration = { language : getLocale(), subroles : [] };
+    }
     if ($data.mode == "participant") {
         me.reload();
     } else me.ready();
