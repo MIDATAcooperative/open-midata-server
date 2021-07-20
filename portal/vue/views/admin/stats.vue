@@ -180,7 +180,7 @@ export default {
 		    me.doBusy(server.post(jsRoutes.controllers.admin.Administration.getStats().url, data)
 		    .then(function(result) {
 			    						
-			    var ordered = _.orderBy(result.data, [ "date" ], [ true ]);
+			    var ordered = _.orderBy(result.data, [ "date" ], [ "desc" ]);
 				$data.result = ordered;	
                 if (ordered.length) {
                     $data.today = ordered[0];
