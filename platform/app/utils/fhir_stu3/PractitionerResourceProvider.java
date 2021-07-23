@@ -18,6 +18,7 @@
 package utils.fhir_stu3;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,6 +41,7 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.HPUser;
 import models.MidataId;
 import models.User;
@@ -67,6 +69,7 @@ public class PractitionerResourceProvider extends ResourceProvider<Practitioner,
 	 */
 	@Read()
 	public Practitioner getResourceById(@IdParam IIdType theId) throws AppException {
+		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
 		HPUser member = HPUser.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
 		if (member == null) return null;
 		return practitionerFromMidataUser(member);
@@ -177,7 +180,9 @@ public class PractitionerResourceProvider extends ResourceProvider<Practitioner,
 	    }
 	
 	@Override
-	public List<User> searchRaw(SearchParameterMap params) throws AppException {		
+	public List<User> searchRaw(SearchParameterMap params) throws AppException {	
+		if (!checkAccessible()) return Collections.emptyList();
+		
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, null);
 		

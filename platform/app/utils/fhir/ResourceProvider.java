@@ -395,5 +395,10 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	
 	protected abstract void convertToR4(Object in);
 	
+	public boolean checkAccessible() throws AppException {
+		ExecutionInfo info = info();					
+		if (!info.context.mayAccess(getResourceType().getName(), "fhir/"+getResourceType().getName())) return false;
+		return true;
+	}
 
 }

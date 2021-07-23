@@ -85,6 +85,8 @@ play.mailer.bulk {
   from="BULK_MAIL_SENDER"
 }
 
+play.http.errorHandler = "utils.ErrorHandler"
+
 
 emails.admin="MAIL_ADMIN"
 

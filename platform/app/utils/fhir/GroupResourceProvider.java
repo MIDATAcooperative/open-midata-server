@@ -18,6 +18,7 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +108,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	 */
 	@Read()
 	public Group getResourceById(@IdParam IIdType theId) throws AppException {
+		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
 		UserGroup group = UserGroup.getById(MidataId.from(theId.getIdPart()), UserGroup.FHIR);	
 		if (group != null) return readGroupFromMidataUserGroup(group, true);
 		return super.getResourceById(theId);		
@@ -263,7 +265,9 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	    }
 	
 	@Override
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {		
+	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+		if (!checkAccessible()) return Collections.emptyList();
+		
 		ExecutionInfo info = info();
 
 		Query query = new Query();		

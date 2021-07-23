@@ -18,6 +18,7 @@
 package utils.fhir_stu3;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,6 +41,7 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.MidataId;
 import models.User;
 import utils.collections.Sets;
@@ -70,6 +72,7 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	 */
 	@Read()
 	public Person getResourceById(@IdParam IIdType theId) throws AppException {
+		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
 		User member = User.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
 		if (member == null) return null;
 		return personFromMidataUser(member);
@@ -208,7 +211,9 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	    }
 	
 	@Override
-	public List<User> searchRaw(SearchParameterMap params) throws AppException {		
+	public List<User> searchRaw(SearchParameterMap params) throws AppException {	
+		if (!checkAccessible()) return Collections.emptyList();
+		
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, null);
 		
