@@ -197,6 +197,11 @@ public enum AuditEventType {
 	
 	AUDIT_LOG_USE(new Coding(System.DCM,"110101","Audit Log Used"), new Coding(System.MIDATA, "audit-log-used", "Audit Log Used"), AuditEventAction.R),
 	
+	/**
+	 * a user has searched for the Person record of another user
+	 */
+	USER_SEARCHED(new Coding(System.DCM,"110112","Query"), new Coding(System.MIDATA, "user-searched", "User searched"), AuditEventAction.R),
+	
 	ADDED_AS_TEAM_MEMBER(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "added-as-team-member", "Added as team member"), AuditEventAction.C),
 	
 	UPDATED_ROLE_IN_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "updated-role-in-team", "Updated role in team"), AuditEventAction.U),

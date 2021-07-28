@@ -284,7 +284,8 @@
 	   "updated-role-in-team" :  "Updated role in team",
 	   "removed-from-team" : "Removed from team",
 	   "communication-rejected" : "Unsubscribed from communication channel",
-	   "communication-approved" : "Subscribed to communication channel"	   
+	   "communication-approved" : "Subscribed to communication channel",
+	   "user-searched" : "User searched"	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",

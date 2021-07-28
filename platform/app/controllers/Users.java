@@ -71,6 +71,7 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.AccessContext;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.ExtendedSessionToken;
@@ -196,6 +197,19 @@ public class Users extends APIController {
 			for (User user : users) user.name = (user.firstname + " "+ user.lastname).trim();
 		}
 		
+		if (!getRole().equals(UserRole.ADMIN)) {
+			for (User result : users) {
+				if (!result._id.equals(PortalSessionToken.session().ownerId)) {
+					AuditManager.instance.addAuditEvent(
+							AuditEventBuilder
+							.withType(AuditEventType.USER_SEARCHED)
+							.withActorUser(PortalSessionToken.session().ownerId)					
+					        .withModifiedUser(result._id));
+				}
+			}
+			AuditManager.instance.success();
+		}
+		
 		Collections.sort(users);
 		return ok(JsonOutput.toJson(users, "User", fields)).as("application/json");
 	}
@@ -237,6 +251,16 @@ public class Users extends APIController {
 		}
 		
 		List<Member> users = new ArrayList<Member>(result);
+		for (User user : users) {
+			if (!user._id.equals(PortalSessionToken.session().ownerId)) {
+				AuditManager.instance.addAuditEvent(
+						AuditEventBuilder
+						.withType(AuditEventType.USER_SEARCHED)
+						.withActorUser(PortalSessionToken.session().ownerId)					
+				        .withModifiedUser(user._id));
+			}
+		}
+		AuditManager.instance.success();
 		Collections.sort(users);
 		return ok(JsonOutput.toJson(users, "User", fields));
 	}

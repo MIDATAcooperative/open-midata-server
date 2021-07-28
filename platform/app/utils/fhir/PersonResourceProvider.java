@@ -41,9 +41,14 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.MidataId;
 import models.User;
+import models.enums.AuditEventType;
+import utils.audit.AuditEventBuilder;
+import utils.audit.AuditManager;
+import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -214,9 +219,17 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	public List<User> searchRaw(SearchParameterMap params) throws AppException {	
 		if (!checkAccessible()) return Collections.emptyList();
 		
+		if (
+			 !params.containsKey("email") &&
+		    (!params.containsKey("name") || !params.containsKey("birthdate")) &&
+		     !params.containsKey("_id")
+		) {
+			throw new InvalidRequestException("Person must be restricted by _id or email or name and birthdate!");
+		}
+		
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, null);
-		
+						
 		builder.handleIdRestriction();
 		builder.restriction("name", true, QueryBuilder.TYPE_STRING, "firstname", QueryBuilder.TYPE_STRING, "lastname");
 		builder.restriction("email", true, QueryBuilder.TYPE_STRING, "emailLC");
@@ -233,7 +246,20 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 		if (keywords != null) properties.put("keywordsLC", keywords);
 		properties.put("searchable", true);
 		properties.put("status", User.NON_DELETED);
-		Set<User> users = User.getAllUser(properties, Sets.create("firstname","lastname","birthday","gender","email","phone","city","country","zip","address1","address2","role"));
+		Set<User> users = User.getAllUser(properties, Sets.create("firstname","lastname","birthday","gender","email",/*"phone",*/"city","country","zip",/*"address1","address2"*/"role"));
+		if (users.size() > 5) throw new InvalidRequestException("Person search must be more specific!");
+		
+		for (User result : users) {
+			if (!result._id.equals(info().context.getActor())) {
+				AuditManager.instance.addAuditEvent(
+						AuditEventBuilder
+						.withType(AuditEventType.USER_SEARCHED)
+						.withActorUser(info().context.getActor())
+						.withApp(info().pluginId)
+				        .withModifiedUser(result));
+			}
+		}
+		AuditManager.instance.success();
 		return new ArrayList<User>(users);
 
 	} 	
