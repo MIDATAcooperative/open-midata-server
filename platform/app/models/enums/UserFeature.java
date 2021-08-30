@@ -108,7 +108,17 @@ public enum UserFeature {
 	/**
 	 * A valid licence is required
 	 */
-	VALID_LICENCE;
+	VALID_LICENCE,
+	
+	/**
+	 * current app must be confirmed
+	 */
+	APP_CONFIRM,
+	
+	/**
+	 * current app must be confirmed; projects have already been confirmed
+	 */
+	APP_NO_PROJECT_CONFIRM;
 	
 	/**
 	 * Does a user satisfy this feature?
@@ -145,6 +155,10 @@ public enum UserFeature {
 				if (user.authType == null || (user.authType.equals(SecondaryAuthType.SMS) && user.mobile == null)) return false;
 				return true;
 			case VALID_LICENCE:
+				return true;
+			case APP_CONFIRM:
+				return true;
+			case APP_NO_PROJECT_CONFIRM:
 				return true;
 		}
 		return false;

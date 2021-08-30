@@ -379,7 +379,7 @@ public class Plugins extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public CompletionStage<Result> isAuthorized(String spaceIdString) throws AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		
 		AccessContext context = portalContext();
 
 		BSONObject oauthmeta = RecordManager.instance.getMeta(context, new MidataId(spaceIdString), "_oauth");
@@ -685,8 +685,10 @@ public class Plugins extends APIController {
 		final MidataId spaceId = new MidataId(spaceIdStr);
 		// get app details
 		Object rt = tokens.get("refreshToken");
-		if (rt == null)
+		if (rt == null) {
 			AccessLog.log("tokens=" + tokens.toString());
+			return CompletableFuture.completedFuture(false);
+		}
 		String refreshToken = rt.toString();
 
 		String postBuilder = app.tokenExchangeParams;

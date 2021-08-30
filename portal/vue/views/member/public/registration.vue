@@ -75,7 +75,7 @@
                 <form-group name="secure" label="registration.secure" v-if="secureChoice()">
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" v-model="registration.secure">
+                            <input class="form-check-input" type="checkbox" v-model="registration.secure" disabled>
                             <span v-t="'registration.secure2'"></span>
                         </label>
                     </div>
@@ -205,7 +205,7 @@ import TermsModal from 'components/TermsModal.vue';
 
 export default {
   data: () => ({
-    registration : { language : getLocale(), confirmStudy : [], unlockCode : null },
+    registration : { language : getLocale(), confirmStudy : [], unlockCode : null, secure : true },
 	languages : languages.all,
 	countries : languages.countries,	
 	flags : { optional : false },
@@ -352,7 +352,8 @@ export default {
 		
 		
 		var finishRegistration = function() { 
-			if (oauth.getAppname()) {		  
+			if (oauth.getAppname()) {	
+			  oauth.setDuringRegistration(true);	  
 			  data.app = oauth.getAppname();
 			  data.device = oauth.getDevice();
 			  if ($data.registration.unlockCode) oauth.setUnlockCode($data.registration.unlockCode);
@@ -364,11 +365,13 @@ export default {
 			  me.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, data)).
 			  then(function(datax) { 			 
 				  oauth.setUser($data.registration.email, $data.registration.password1);			  
-				  $data.welcomemsg = true;	
-				  
-				  if ($data.app && $data.app.requirements && $data.app.requirements.indexOf('EMAIL_VERIFIED') >= 0) {
+				  				
+				  session.postLogin(datax, $router, $route);	  
+				  /*if ($data.app && $data.app.requirements && $data.app.requirements.indexOf('EMAIL_VERIFIED') >= 0) {
 					  me.confirmWelcome(); 
-				  }
+				  } else {
+				      $data.welcomemsg = true;
+				  }*/
 			  });
 			} else if ($data.role == "research") {
 				me.doAction("register", server.post(jsRoutes.controllers.research.Researchers.register().url, data))

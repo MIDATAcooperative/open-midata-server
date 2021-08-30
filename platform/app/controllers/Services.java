@@ -96,7 +96,7 @@ public class Services extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
     public Result removeServiceInstance(String instanceIdStr) throws AppException {
 
-        MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        //MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
         AccessContext context = portalContext();
         MidataId instanceId = MidataId.from(instanceIdStr);
         
@@ -111,7 +111,7 @@ public class Services extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
     public Result listApiKeys(String serviceIdStr) throws AppException {
-        MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        //MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
         AccessContext context = portalContext();
         MidataId instanceId = MidataId.from(serviceIdStr);
         
@@ -130,7 +130,7 @@ public class Services extends APIController {
     public Result addApiKey(String serviceIdStr) throws AppException {
         AccessLog.log("add api key!");
 
-        MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        //MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
         AccessContext context = portalContext();
         MidataId instanceId = MidataId.from(serviceIdStr);
         

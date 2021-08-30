@@ -40,6 +40,7 @@ import models.KeyInfoExtern;
 import models.Member;
 import models.MidataId;
 import models.Plugin;
+import models.RateLimitedAction;
 import models.ResearchUser;
 import models.User;
 import models.enums.AccountActionFlags;
@@ -67,6 +68,7 @@ import utils.RuntimeConstants;
 import utils.access.AccessContext;
 import utils.access.DBRecord;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
@@ -101,6 +103,9 @@ public class Application extends APIController {
 
 	public final static long MAX_TIME_UNTIL_EMAIL_CONFIRMATION = 1000l * 60l * 60l * 24l;
 	public final static long EMAIL_TOKEN_LIFETIME = 1000l * 60l * 60l * 24l *3l;
+	
+	public final static long MIN_BETWEEN_MAILS = 1000l * 60l * 5l;
+	public final static long PER_DAY = 1000l * 60l * 60l * 24l;
 	
 	// public final static long MAX_TRIAL_DURATION = 1000l * 60l * 60l * 24l * 30l;
 			
@@ -141,9 +146,15 @@ public class Application extends APIController {
 			break;
 		default: break;		
 		}
-		if (user != null) {		
+		if (user != null) {				
 		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, user._id);
 		  if (user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
+		  
+		  if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.USER_PASSWORD_CHANGE_REQUEST, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
+			  AuditManager.instance.fail(400, "Rate limit reached", "error.ratelimit");
+			  return ok();
+		  }
+		  		  
 		  PasswordResetToken token;
 		  if (user.resettoken != null && user.resettokenTs > 0 && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME - 1000l * 60l * 60l) {
 			  token = new PasswordResetToken(user._id, role, user.resettoken);
@@ -205,6 +216,10 @@ public class Application extends APIController {
 	
 	public static void sendWelcomeMail(MidataId sourcePlugin, User user, User executingUser) throws AppException {
 	   if (user.developer == null) {
+		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
+			   throw new InternalServerException("error.ratelimit", "Rate limit hit");
+		   }
+		   
 		   if (user.email == null) return;
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
 		   user.set("resettoken", token.token);
@@ -226,10 +241,12 @@ public class Application extends APIController {
 		   
 		   AccessLog.log("send welcome mail: "+user.email);
 		   if (executingUser == null) {
+			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(user._id));
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
 				   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, user.role.toString(), Collections.singleton(user._id), null, replacements);
 			   }	  	   
 		   } else {
+			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(executingUser).withModifiedUser(user._id));
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, null, Collections.singleton(user._id), null, replacements)) {
 				   if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, user.role.toString(), Collections.singleton(user._id), null, replacements)) {
 					   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
@@ -238,6 +255,7 @@ public class Application extends APIController {
 				   }
 			   }	  	   
 		   }
+		   AuditManager.instance.success();
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
 		   User.set(user._id, "emailStatus", user.emailStatus);
@@ -309,6 +327,7 @@ public class Application extends APIController {
 			*/
 			
 		    if (tk != null) {
+		    	if (tk.getHandle() == null) throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 			    try {
 			      KeyManager.instance.continueSession(tk.getHandle());
 			      handle = tk.getHandle();
@@ -668,37 +687,38 @@ public class Application extends APIController {
 	
 	public static Result loginHelperResult(PortalSessionToken token, User user, Set<UserFeature> missing) throws AppException {
 		ObjectNode obj = Json.newObject();
-		obj.put("status", user.status.toString());
-		obj.put("contractStatus", user.contractStatus.toString());		
-		obj.put("agbStatus", user.agbStatus.toString());
-		obj.put("emailStatus", user.emailStatus.toString());
-		obj.put("mobileStatus", user.mobileStatus == null ? EMailStatus.UNVALIDATED.toString() : user.mobileStatus.toString());
+		if (user != null) {
+			obj.put("status", user.status.toString());
+			obj.put("contractStatus", user.contractStatus.toString());		
+			obj.put("agbStatus", user.agbStatus.toString());
+			obj.put("emailStatus", user.emailStatus.toString());
+			obj.put("mobileStatus", user.mobileStatus == null ? EMailStatus.UNVALIDATED.toString() : user.mobileStatus.toString());
+			obj.put("confirmationCode", user.confirmedAt != null);
+			obj.put("role", user.role.toString().toLowerCase());
+			obj.put("termsOfUse", InstanceConfig.getInstance().getTermsOfUse(user.role));
+			obj.put("privacyPolicy", InstanceConfig.getInstance().getPrivacyPolicy(user.role));
+			obj.put("userId", user._id.toString());
+			if (token.is2FAVerified(user)) {
+			  obj.set("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
+			}
+		} else {
+			obj.put("status", UserStatus.NEW.toString());
+			obj.put("contractStatus", ContractStatus.NEW.toString());		
+			obj.put("agbStatus", ContractStatus.NEW.toString());
+			obj.put("emailStatus", EMailStatus.UNVALIDATED.toString());
+			obj.put("mobileStatus", EMailStatus.UNVALIDATED.toString());
+			obj.put("confirmationCode", false);
+			obj.put("role", token.userRole.toString());
+			obj.put("termsOfUse", InstanceConfig.getInstance().getTermsOfUse(token.userRole));
+			obj.put("privacyPolicy", InstanceConfig.getInstance().getPrivacyPolicy(token.userRole));
+			obj.put("userId", token.ownerId.toString());
+		}
+						
 		ArrayNode ar = obj.putArray("requirements");
 		for (UserFeature feature : missing) ar.add(feature.toString());
-		obj.put("confirmationCode", user.confirmedAt != null);
-		obj.put("role", user.role.toString().toLowerCase());
-		obj.put("termsOfUse", InstanceConfig.getInstance().getTermsOfUse(user.role));
-		obj.put("privacyPolicy", InstanceConfig.getInstance().getPrivacyPolicy(user.role));
-		obj.put("userId", user._id.toString());
-		if (token.is2FAVerified(user)) {
-		  obj.set("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
-		}
 		token.setRemoteAddress(request());
 		obj.put("sessionToken", token.encrypt());
-		
-		/*
-		if (user.status.equals(UserStatus.ACTIVE) || user.status.equals(UserStatus.NEW)) {			
-		   String handle = KeyManager.instance.currentHandleOptional(user._id);
-		   if (handle != null) {
-			   PortalSessionToken token = null;		   	
-			   token = new PortalSessionToken(handle, user._id, UserRole.ANY, null, user.developer);
-			   token.setRemoteAddress(request());
-			   obj.put("sessionToken", token.encrypt());
-			   //KeyManager.instance.unlock(user._id, null);
-			   KeyManager.instance.persist(user._id);
-		   }
-		}*/
-					
+			
 		AuditManager.instance.success();
 		return ok(obj).as("application/json");
 	}
@@ -786,7 +806,10 @@ public class Application extends APIController {
 
 		// check status
 		if (Member.existsByEMail(email)) {
-		  throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
+			//AccessLog.log("A user with this email address already exists.");
+			//return OAuth2.loginHelper(new ExtendedSessionToken().forFake(), json, null, null);
+			AuditManager.instance.addAuditEvent(AuditEventType.TRIED_USER_REREGISTRATION, Member.getByEmail(email, User.PUBLIC));
+		    throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
 		}
 		
 		// create the user

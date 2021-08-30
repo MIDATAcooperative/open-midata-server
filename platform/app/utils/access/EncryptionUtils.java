@@ -88,6 +88,11 @@ public class EncryptionUtils {
 		System.arraycopy(enc, 0, result, 4, enc.length);
 		return result;
 	}
+	
+	public static boolean isDeprecatedKey(byte[] key) {
+		return key[0] < DEFAULT_KEY_ALGORITHM || key[1] < DEFAULT_CIPHER_ALGORITHM;
+	}
+	
 
 	public static byte[] generateKey(byte keyAlgorithm, byte cipherAlg) {
 		
@@ -174,7 +179,7 @@ public class EncryptionUtils {
 			Cipher c = Cipher.getInstance(ciperAlg);
 			if (NONCE_LEN[alg] > 0) {
 				newNonce = new byte[NONCE_LEN[alg]];
-		        new SecureRandom().nextBytes(newNonce);
+		        random.nextBytes(newNonce);
 				IvParameterSpec iv = new IvParameterSpec(newNonce);
 		        c.init(Cipher.ENCRYPT_MODE, keySpec, iv);
 			} else {
@@ -219,7 +224,7 @@ public class EncryptionUtils {
 			Cipher c = Cipher.getInstance(ciperAlg);
 			if (NONCE_LEN[alg] > 0) {
 				newNonce = new byte[NONCE_LEN[alg]];
-		        new SecureRandom().nextBytes(newNonce);
+		        random.nextBytes(newNonce);
 				IvParameterSpec iv = new IvParameterSpec(newNonce);
 		        c.init(Cipher.ENCRYPT_MODE, keySpec, iv);
 			} else {

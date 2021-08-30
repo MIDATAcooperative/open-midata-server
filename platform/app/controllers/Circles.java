@@ -131,7 +131,10 @@ public class Circles extends APIController {
 			  circles = new ArrayList<Circle>(Circle.getAllByMember(member));
 			}
 			ReferenceTool.resolveOwners(circles, true);
-		} else JsonValidation.validate(json, "owner");
+		} else {
+			JsonValidation.validate(json, "owner");
+			return ok();
+		}
 		Collections.sort(circles);
 		return ok(JsonOutput.toJson(circles, "Consent", Sets.create("name", "order", "owner", "authorized"))).as("application/json");
 	}
@@ -800,7 +803,7 @@ public class Circles extends APIController {
 		} else if (!active && wasActive) {
 			
 			Set<MidataId> auth = consent.authorized;
-			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
+			if (auth != null && auth.contains(consent.owner)) { auth.remove(consent.owner); }
 			
 			if (context == null && (consent.type.equals(ConsentType.REPRESENTATIVE) || !auth.isEmpty())) throw new InternalServerException("error.internal", "Cannot set consent to passive state without proper context");
 			

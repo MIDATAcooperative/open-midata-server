@@ -155,7 +155,7 @@ public class HealthProvider extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result confirmConsent() throws AppException, JsonValidationException {
 		
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		//MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		AccessContext context = portalContext();
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "consent");

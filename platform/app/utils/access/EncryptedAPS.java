@@ -34,6 +34,7 @@ import models.Consent;
 import models.MidataId;
 import models.enums.APSSecurityLevel;
 import utils.AccessLog;
+import utils.auth.EncryptionNotSupportedException;
 import utils.auth.KeyManager;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
@@ -103,8 +104,9 @@ public class EncryptedAPS {
 		aps.permissions.put("owner", owner.toString());
 		aps.keys = new HashMap<String, byte[]>();		
 		
-		if (! lvl.equals(APSSecurityLevel.NONE)) {
-		  encryptionKey = (encKey != null) ? encKey : EncryptionUtils.generateKey();		  
+		if (! lvl.equals(APSSecurityLevel.NONE)) {			
+		  encryptionKey = (encKey != null) ? encKey : EncryptionUtils.generateKey();
+		  if (encryptionKey[0] != 0) aps.format = 1;
 		}
 		
 		keyProvided = true;
@@ -173,7 +175,13 @@ public class EncryptedAPS {
 	}
 	
 	protected byte[] getAPSKey() throws AppException {
+		if (!keyProvided && !isValidated) validate();		
+		return encryptionKey;
+	}
+	
+	protected byte[] exportAPSKey() throws AppException {
 		if (!keyProvided && !isValidated) validate();
+		if (encryptionKey != null && !keyProvided && needsKeyUpgrade()) doKeyUpgrade();
 		return encryptionKey;
 	}
 	
@@ -227,7 +235,8 @@ public class EncryptedAPS {
 	public Map<String, Object> getPermissions() throws AppException {
 		if (acc_aps != aps) return acc_aps.permissions;
 		//if (owner!=null && !isAccessable()) return getPermissions(owner);
-		if (!isValidated) validate();		
+		if (!isValidated) validate();	
+		if (needsKeyUpgrade()) doKeyUpgrade();
 		return acc_aps.permissions;
 	}
 	
@@ -390,6 +399,43 @@ public class EncryptedAPS {
 	public boolean needsMerge() throws InternalServerException{
 		if (!isLoaded()) load();		
 		return isAccessable() && (aps.unmerged != null && aps.unmerged.size() > 0);
+	}
+	
+	public boolean needsKeyUpgrade() throws InternalServerException {
+		if (isLoaded() && isAccessable() && aps.security == APSSecurityLevel.HIGH &&
+				(apsId.equals(owner) || aps.consent)) {			
+			return EncryptionUtils.isDeprecatedKey(encryptionKey);
+		} else return false;
+	}
+	
+	protected void doKeyUpgrade() throws AppException  {
+		
+		AccessLog.logBegin("begin key upgrade:" + getId().toString());
+		if (!isValidated) validate();
+		try {
+			byte[] newKey = EncryptionUtils.generateKey();
+		    for (String ckey : keyNames()) {
+			   try {	
+				   if (ckey.equals("owner")) {
+					   setKey(ckey, KeyManager.instance.encryptKey(owner, newKey));
+				   } else {
+					   setKey(ckey, KeyManager.instance.encryptKey(new MidataId(ckey), newKey));  
+				   }			      
+			   } catch (EncryptionNotSupportedException e) {
+				   throw new InternalServerException("error.internal", e);
+			   }			   
+			}
+		    encryptionKey = newKey;
+		    aps.format = 1;
+		    
+		    encodeAPS();
+			aps.updateAll();
+		} catch (LostUpdateException e) {
+			reload();
+			if (needsKeyUpgrade()) doKeyUpgrade();
+		}
+		AccessLog.logEnd("end key upgrade");
+		
 	}
 		 		
 	private void decodeAPS() throws InternalServerException  {

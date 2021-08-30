@@ -17,6 +17,8 @@
 
 package utils.access.index;
 
+import java.util.Arrays;
+
 import utils.access.op.Condition;
 
 public class Lookup extends BaseLookup<IndexKey> {
@@ -45,6 +47,6 @@ public class Lookup extends BaseLookup<IndexKey> {
 	}
 	
 	public String toString() {
-		return condition.toString();
+		return Arrays.toString(condition);
 	}
 }

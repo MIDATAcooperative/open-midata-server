@@ -63,6 +63,17 @@ public class APICallAction extends Action<APICall> {
     	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token, Prefer, X-Filename");
     	  ctx.response().setHeader("Pragma", "no-cache");
     	  ctx.response().setHeader("Cache-Control", "no-cache, no-store");
+    	  
+    	  String host = ctx.request().header("Host").orElse(null);   
+    	  //System.out.println("A:"+host);
+    	  //System.out.println("B:"+InstanceConfig.getInstance().getDefaultHost());
+    	  if (host==null) return CompletableFuture.completedFuture((Result) badRequest("missing http host header"));
+    	  if (!(
+    		  host.equals(InstanceConfig.getInstance().getPortalServerDomain())
+    	  )) {    		  
+    		  return CompletableFuture.completedFuture((Result) badRequest("http host header error"));
+    	  }
+    	      	  
     	  try {
     		AccessLog.logStart("api", "(Portal) ["+ctx.request().method()+"] "+ctx.request().path());    	
             return delegate.call(ctx);

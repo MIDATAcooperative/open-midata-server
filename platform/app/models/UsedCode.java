@@ -43,7 +43,7 @@ public class UsedCode extends Model {
 
 	@Override
 	public boolean equals(Object other) {
-		if (this.getClass().equals(other.getClass())) {
+		if (other != null && this.getClass().equals(other.getClass())) {
 			UsedCode otherModel = (UsedCode) other;
 			return code.equals(otherModel.code);
 		}

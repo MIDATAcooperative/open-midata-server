@@ -111,9 +111,10 @@ public class Circle extends Consent {
 			} catch (DatabaseException e) {
 				throw new InternalServerException("error.internal", e);
 			}
+			
+			circle.setStatus(ConsentStatus.DELETED);
         }
-		
-        circle.setStatus(ConsentStatus.DELETED);
+		        
 		//Model.delete(Circle.class, collection, CMaps.map("owner", ownerId).map("_id", circleId));
 	}
 

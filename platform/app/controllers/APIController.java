@@ -24,6 +24,7 @@ import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Controller;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.AccessContext;
@@ -113,6 +114,17 @@ public abstract class APIController extends Controller {
 	public static void setAttachmentContentDisposition(String filename) {
 		String fn = filename == null ? "file" : filename.replaceAll("[^a-zA-Z0-9_\\-\\.üöäßÜÖÄ \\[\\]\\(\\)]", "");
 		response().setHeader("Content-Disposition", "attachment; filename=\"" + fn+"\"");
+	}
+	
+	public static String getIPAdress() {
+		Request req = request();
+		if (req.hasHeader("X-Real-IP-LB")) {
+			return req.header("X-Real-IP-LB").get();
+		}
+		if (req.hasHeader("X-Real-IP")) {
+			return req.header("X-Real-IP").get();
+		}
+		return req.remoteAddress();
 	}
 	
 	

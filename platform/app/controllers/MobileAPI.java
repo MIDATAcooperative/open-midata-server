@@ -423,7 +423,7 @@ public class MobileAPI extends Controller {
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "name", "format");
-		if (!json.has("content") && !json.has("code")) new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
+		if (!json.has("content") && !json.has("code")) throw new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
 		
 		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
 		Stats.setPlugin(inf.pluginId);	

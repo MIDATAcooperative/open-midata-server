@@ -142,7 +142,7 @@ public class Records extends APIController {
 		RecordToken tk = getRecordTokenFromString(id);
 		if (tk == null)
 			throw new BadRequestException("error.invalid.token", "Bad token");
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		//MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		AccessContext context = portalContext();
 
 		// execute
@@ -456,7 +456,7 @@ public class Records extends APIController {
 				}
 			}
 			
-			Consent.set(consent._id, "lastUpdated", new Date());
+			if (consent != null) Consent.set(consent._id, "lastUpdated", new Date());
 		}
 
 		for (MidataId start : stopped) {
@@ -503,7 +503,7 @@ public class Records extends APIController {
 				}
 			}
 			
-			Consent.set(consent._id, "lastUpdated", new Date());
+			if (consent != null) Consent.set(consent._id, "lastUpdated", new Date());
 
 		}
 
@@ -565,7 +565,7 @@ public class Records extends APIController {
 	public Result getFile(String id) throws AppException {
 
 		RecordToken tk = getRecordTokenFromString(id);
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		//MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		AccessContext context = portalContext();
 
 		if (tk == null)

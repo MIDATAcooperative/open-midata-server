@@ -346,6 +346,7 @@ tasks/reimport-build-mongodb: tasks/reimport-mongodb tasks/build-mongodb
 nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf/certificate.conf	
 	mkdir -p nginx/sites-available
 	cp nginx/templates/$* nginx/sites-available/$*
+	if [ $(INSTANCE_TYPE) = PROD ]; then sed -i 's|https://localhost:9004 ||' nginx/sites-available/$*; sed -i 's|https://localhost:9004 ||' nginx/sites-available/$* ; sed -i 's|https://localhost:9004 ||' nginx/sites-available/$* ; fi 
 	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
 	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
 	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*

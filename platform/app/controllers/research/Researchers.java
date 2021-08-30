@@ -270,7 +270,7 @@ public class Researchers extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result getOrganization(String id) throws AppException {
 			
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		//MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId researchid = MidataId.from(id);
 						
 		Research research = Research.getById(researchid, Research.ALL);

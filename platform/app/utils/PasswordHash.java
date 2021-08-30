@@ -43,6 +43,8 @@ public class PasswordHash {
 	public static final int SALT_INDEX = 1;
 	public static final int PBKDF2_INDEX = 2;
 	public static final int ALGORITHM_INDEX = 3;
+	
+	private static SecureRandom random = new SecureRandom();
 
 	/**
 	 * Returns a salted PBKDF2 hash of the password.
@@ -69,8 +71,7 @@ public class PasswordHash {
 	}
 	
 	public static String createHash(char[] password, int hashAlgorithm, int saltByteSize, int pbkdf2Iterations, int hashByteSize) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		// Generate a random salt
-		SecureRandom random = new SecureRandom();
+		// Generate a random salt		
 		byte[] salt = new byte[saltByteSize];
 		random.nextBytes(salt);
 

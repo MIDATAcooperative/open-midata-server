@@ -122,7 +122,7 @@ public class UserGroups extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result listUserGroupMembers() throws AppException {
 		JsonNode json = request().body().asJson();				
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		//MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
         JsonValidation.validate(json, "usergroup");
         MidataId groupId = JsonValidation.getMidataId(json, "usergroup");

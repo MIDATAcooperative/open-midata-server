@@ -1386,9 +1386,8 @@ public class Studies extends APIController {
 		Plugin plugin = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (plugin == null)
 			throw new BadRequestException("error.invalid.plugin", "Plugin not found.");
-		if (plugin.status == PluginStatus.DELETED)
-			if (plugin.status == PluginStatus.DELETED)
-				throw new BadRequestException("error.invalid.plugin", "Plugin not found.");
+		if (plugin.status == PluginStatus.DELETED)			
+			throw new BadRequestException("error.invalid.plugin", "Plugin not found.");
 		if (plugin.targetUserRole != UserRole.RESEARCH)
 			throw new BadRequestException("error.invalid.plugin", "Wrong target role.");
 
@@ -1956,7 +1955,7 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(ResearchOrDeveloperSecured.class)
 	public Result getRequiredInformationSetup(String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		//MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 

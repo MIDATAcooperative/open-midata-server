@@ -89,7 +89,7 @@ public class ErrorReporter {
 			} 
 			
 			MailUtils.sendTextMail(MailSenderType.STATUS, bugReportEmail, bugReportName, "Error Report: ["+plg.name+"] "+InstanceConfig.getInstance().getPortalServerDomain(), txt);
-			if (e!=null) Stats.addComment("Error: "+e.getClass().getName()+": "+e.getMessage());
+			Stats.addComment("Error: "+e.getClass().getName()+": "+e.getMessage());
 		} catch (InternalServerException e2) {
 			report(fromWhere, ctx, e2);
 		}

@@ -67,7 +67,7 @@ public class FHIRVersionConvert {
 	    		obj = ((BasicBSONObject) obj).get(path[i]);
 	    	} else if (obj instanceof BasicBSONList) {
 	    		if (((BasicBSONList) obj).isEmpty()) return null;
-	    		((BasicBSONList) obj).get(0);
+	    		return ((BasicBSONList) obj).get(0);
 	    	}
 	    }
 		return obj;

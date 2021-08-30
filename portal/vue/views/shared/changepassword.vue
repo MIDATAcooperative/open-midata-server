@@ -37,7 +37,7 @@
 					required autocomplete="off" />
         </form-group>
 		<form-group name="secure" label="registration.secure">
-            <check-box name="secure" v-model="pw.secure" :path="errors.secure">
+            <check-box name="secure" v-model="pw.secure" :path="errors.secure" disabled>
                 <span v-t="'registration.secure2'"></span>
             </check-box>
         </form-group>				
@@ -59,7 +59,7 @@ import { status, ErrorBox, FormGroup, CheckBox, Success, Password } from 'basic-
 export default {
   
     data: () => ({
-        pw : { oldPassword:"", password:"", password2:"", secure : false }
+        pw : { oldPassword:"", password:"", password2:"", secure : true }
 	}),	
 
     components: {  Panel, FormGroup, ErrorBox, Success, CheckBox, Password },
@@ -105,7 +105,7 @@ export default {
         init() {
             const { $data } = this;
             this.doBusy(session.currentUser.then(function() {
-		        $data.pw.secure = session.user.security == "KEY_EXT_PASSWORD";
+		        $data.pw.secure = true; // Only use secure; session.user.security == "KEY_EXT_PASSWORD";
 	        }));
         }
     },

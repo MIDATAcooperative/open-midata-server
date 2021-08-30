@@ -40,7 +40,7 @@ public class RuntimeConstants {
 	public final MidataId autorunService = Admin.getByEmail(AUTORUN_USERNAME, Sets.create("_id"))._id;
 	public final MidataId backendService = Admin.getByEmail(BACKEND_SERVICE, Sets.create("_id"))._id;
 	public final MidataId publicUser = Member.getByEmail(PUBLIC_USER, Sets.create("_id"))._id;
-	public static final MidataId publicGroup = new MidataId("5ccab0dcaed6452048f2b011");
+	public static final MidataId publicGroup = new MidataId("5ccab0dcaed6452048f2b011");	
 	
 	public RuntimeConstants() throws InternalServerException {		
 	}

@@ -31,7 +31,7 @@ public class PreLoginSecured extends Security.Authenticator {
 	    PortalSessionToken tk = PortalSessionToken.decrypt(ctx.request());
 	    if (tk == null) return null;
 	    try {
-	      KeyManager.instance.continueSession(tk.getHandle());
+	      if (tk.getHandle()!=null) KeyManager.instance.continueSession(tk.getHandle());
 	    } catch (AppException e) { return null; }	    
 	   
 		// id is the user id in String form

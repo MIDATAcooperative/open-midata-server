@@ -28,12 +28,12 @@ import utils.access.DBRecord;
 
 public class StatsLookup extends BaseLookup<StatsIndexKey>{
 
-	private Set<String> owner;	
+	private Set<MidataId> owner;	
 	private Set<String> studyGroup;
 	private Set<String> format;
 	private Set<String> content;
 	private Set<String> group;
-	private Set<String> app;
+	private Set<MidataId> app;
 	private MidataId aps;
 	private MidataId stream;
 	
@@ -44,10 +44,10 @@ public class StatsLookup extends BaseLookup<StatsIndexKey>{
 		 format = Collections.singleton((String) rec.meta.get("format"));
 		 content = Collections.singleton((String) rec.meta.get("content"));
 		 group = Collections.singleton(rec.group);
-		 owner = Collections.singleton(rec.owner.toString());
+		 owner = Collections.singleton(rec.owner);
 		 		   
 		 String app1 = (String) rec.meta.get("app"); 
-		 if (app1 != null) app = Collections.singleton(app1);
+		 if (app1 != null) app = Collections.singleton(new MidataId(app1));
 		  		 
 	}
 		
@@ -67,11 +67,11 @@ public class StatsLookup extends BaseLookup<StatsIndexKey>{
 		this.stream = stream;
 	}
 
-	public Set<String> getOwner() {
+	public Set<MidataId> getOwner() {
 		return owner;
 	}
 
-	public void setOwner(Set<String> owner) {
+	public void setOwner(Set<MidataId> owner) {
 		this.owner = owner;
 	}
 
@@ -107,11 +107,11 @@ public class StatsLookup extends BaseLookup<StatsIndexKey>{
 		this.group = group;
 	}
 
-	public Set<String> getApp() {
+	public Set<MidataId> getApp() {
 		return app;
 	}
 
-	public void setApp(Set<String> app) {
+	public void setApp(Set<MidataId> app) {
 		this.app = app;
 	}
 

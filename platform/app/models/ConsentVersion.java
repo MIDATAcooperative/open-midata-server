@@ -59,7 +59,7 @@ public class ConsentVersion extends Model {
 	
 	@Override
 	public boolean equals(Object other) {
-		if (this.getClass().equals(other.getClass())) {
+		if (other != null && this.getClass().equals(other.getClass())) {
 			ConsentVersion otherModel = (ConsentVersion) other;
 			return _id.equals(otherModel._id) && version.equals(otherModel.version);
 		}

@@ -41,6 +41,7 @@
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "@OPERATOR membership required!",
      "mustbemember_detail" : "In order to use this feature you must be member of the cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
+     "ratelimit" : "Rate limit for current action reached. Try again later.",
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
        "fields" : "You are not authorized to query the provided fields",
@@ -285,7 +286,9 @@
 	   "removed-from-team" : "Removed from team",
 	   "communication-rejected" : "Unsubscribed from communication channel",
 	   "communication-approved" : "Subscribed to communication channel",
-	   "user-searched" : "User searched"	   
+	   "user-searched" : "User searched",
+	   "welcome-sent" : "Welcome mail sent",
+	   "tried-user-reregistration" : "Attempted user re-registration"	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -1423,6 +1426,10 @@
     "title" : "Unsubscribe",
     "success" : "Unsubscription successful.",
     "back_to_login" : "Go to login page"
+  },
+  
+  "timeline" : {
+    "title" : "Timeline"
   },
   
   "-1" : "unknown"

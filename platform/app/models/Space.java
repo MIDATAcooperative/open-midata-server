@@ -17,6 +17,7 @@
 
 package models;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ import utils.messaging.SubscriptionManager;
  *
  */
 @JsonFilter("Space")
-public class Space extends Model implements Comparable<Space> {
+public class Space extends Model implements Comparable<Space>, Serializable {
 
 	protected @NotMaterialized static final String collection = "spaces";
 	/**
@@ -46,6 +47,8 @@ public class Space extends Model implements Comparable<Space> {
 	 */
 	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name","owner", "visualization", "type", "order", "type", "context", "autoShare", "licence");
 
+	private @NotMaterialized static final long serialVersionUID = 6535855157383731147L;
+	
 	/**
 	 * the name of the space.
 	 * 

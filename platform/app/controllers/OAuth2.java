@@ -152,7 +152,7 @@ public class OAuth2 extends Controller {
       				MobileAppInstance mai = (MobileAppInstance) c;
       				Plugin checkedPlugin = Plugin.getById(mai.applicationId); 
       				if (checkedPlugin == null || mai.appVersion != checkedPlugin.pluginVersion) {
-      					AccessLog.log("linked service outdated: "+checkedPlugin.filename);
+      					AccessLog.log("linked service outdated");
       					if (context != null) {	      					
 	      					ApplicationTools.removeAppInstance(context, mai.owner, mai);
       					}
@@ -524,6 +524,7 @@ public class OAuth2 extends Controller {
 		
 		User user = null;
 		UserRole role = token.userRole;
+		if (role == UserRole.ANY) return null;
 		
 		if (token.ownerId != null) {			
 			switch (role) {
@@ -745,7 +746,7 @@ public class OAuth2 extends Controller {
 		return appInstance;
 	}
 	
-	private static final Result checkAppConfirmationRequired(ExtendedSessionToken token, JsonNode node, Set<StudyAppLink> links) throws AppException {
+	private static final UserFeature checkAppConfirmationRequired(ExtendedSessionToken token, JsonNode node, Set<StudyAppLink> links) throws AppException {
 		if (token.appId == null) return null;
 		
 		if (!token.getAppConfirmed()) {
@@ -767,7 +768,7 @@ public class OAuth2 extends Controller {
 					}
 				}
 			}
-			return allRequired ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");				
+			return allRequired ? UserFeature.APP_NO_PROJECT_CONFIRM : UserFeature.APP_CONFIRM;				
 		}
 
 		return null;
@@ -933,16 +934,24 @@ public class OAuth2 extends Controller {
 		Set<UserFeature> requirements = determineRequirements(token, app, links, token.confirmations);
 					
 																		
-		User user = identifyUserForLogin(token, json);		
+		User user = identifyUserForLogin(token, json);
+		Set<UserFeature> notok;
+		MobileAppInstance appInstance = null;
+		
+		if (token.getFake()) {		
+			AccessLog.log("is fake login");			
+		    return Application.loginHelperResult(token, user, Collections.singleton(UserFeature.EMAIL_VERIFIED));
+		}
+		
 		Result pw = checkPasswordAuthentication(token, json, user);
 		if (pw != null) return pw;
-		//handlePrecreation(token, user);				    
-		
+						    		
 		Result studySelectionRequired = checkStudySelectionRequired(token, json);
 		if (studySelectionRequired != null) return studySelectionRequired;
-					
-		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
+		notok = Application.loginHelperPreconditionsFailed(user, requirements);
+	
+	 
 		int keyType;
 		if (token.handle != null) {			
 			if (token.currentContext == null) {
@@ -957,12 +966,13 @@ public class OAuth2 extends Controller {
 			keyType = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey); 
 		}		
 		
-		MobileAppInstance appInstance = checkExistingAppInstance(token, json, links);	
+		appInstance = checkExistingAppInstance(token, json, links);
+				
 	
-		Result recheck = checkAppConfirmationRequired(token, json, links);
+		UserFeature recheck = checkAppConfirmationRequired(token, json, links);
 		if (recheck != null) {
-			if (token.handle != null) KeyManager.instance.persist(user._id);
-			return recheck;
+			if (notok == null) notok = new HashSet<UserFeature>();
+			notok.add(recheck);			
 		}
 		
 		if (app != null && app.unlockCode != null && !token.getAppUnlockedWithCode()) {				

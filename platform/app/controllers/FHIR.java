@@ -132,7 +132,7 @@ public class FHIR extends Controller {
 		
 		//Stats.startRequest(request());
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
-		PlayHttpServletResponse res = new PlayHttpServletResponse(response());				
+		//PlayHttpServletResponse res = new PlayHttpServletResponse(response());				
 		ExecutionInfo info = getExecutionInfo(req);
         if (info != null && info.pluginId != null) {
 		

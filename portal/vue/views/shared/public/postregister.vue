@@ -83,7 +83,7 @@
 						</form-group>
 						<div class="dynheight">
 							<form-group name="secure" label="registration.secure">
-                                <check-box v-model="setpw.secure" name="secure">			
+                                <check-box v-model="setpw.secure" name="secure" disabled> 			
 							      <span v-t="'registration.secure2'"></span>
                                 </check-box>							    
 							</form-group>
@@ -316,7 +316,7 @@ export default {
 		registration : {},
 		user : {},
 		passphrase : {},
-		setpw : {},
+		setpw : { secure : true },
 		progress : {},
 		mailSuccess : false,
 		codeSuccess : false,

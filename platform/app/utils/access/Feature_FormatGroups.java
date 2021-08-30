@@ -266,7 +266,7 @@ public class Feature_FormatGroups extends Feature {
 		
 			BasicBSONObject meta = record.meta;
 			   
-			if (meta == null) AccessLog.log("NO META");
+			if (meta == null) throw new NullPointerException();
 			record.group = RecordGroup.getGroupForSystemAndContent(system, (String) meta.get("content"));
 		
 			return record;

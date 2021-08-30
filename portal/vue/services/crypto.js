@@ -27,7 +27,7 @@ import forge from 'node-forge';
 	service.generateKeys = function(password) {
 							
 		return new Promise((resolve,reject) => {		
-			rsa.generateKeyPair({bits: 2048, workers: 2}, function(err, keypair) {
+			rsa.generateKeyPair({bits: 4096, workers: 2}, function(err, keypair) {
 						
 				var result = {};
 										

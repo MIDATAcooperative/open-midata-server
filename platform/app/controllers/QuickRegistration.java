@@ -30,6 +30,7 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.Study;
 import models.StudyAppLink;
+import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.Gender;
@@ -50,6 +51,7 @@ import utils.auth.ExecutionInfo;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.fhir.PatientResourceProvider;
@@ -138,7 +140,10 @@ public class QuickRegistration extends APIController {
 		
 		// check status
 		if (Member.existsByEMail(email)) {
-		  throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
+			// Idea for account enumeration prevention. But there are so many ways to do account enumeration
+			AuditManager.instance.addAuditEvent(AuditEventType.TRIED_USER_REREGISTRATION, Member.getByEmail(email, User.PUBLIC), app._id);
+			//return OAuth2.loginHelper(new ExtendedSessionToken().forFake().withApp(app._id, device), json, app, null);
+		    throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
 		}
 		
 		// create the user

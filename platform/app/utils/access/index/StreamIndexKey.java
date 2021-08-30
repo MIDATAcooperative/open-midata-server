@@ -134,6 +134,13 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 		return false;
 	}
 	
+	
+	
+	@Override
+	public int hashCode() {
+		return id.hashCode() + format.hashCode() + content.hashCode() + owner.hashCode() + aps.hashCode() + owner.hashCode() + (app != null ? app.hashCode() : 0);
+	}
+
 	@Override
 	public DBRecord toMatch() {
 		return toDBRecord();
