@@ -206,8 +206,12 @@ import forge from 'node-forge';
 		return null;
 	};
 	
-	service.isValidPassword = function(pw) {
+	service.isValidPassword = function(pw, advanced) {
 		if (!pw || !pw.length || pw.length < 8) return false;
+		if (advanced) {
+			if (pw.length < 12) return false;
+			if (! /[^0-9a-zA-Z]/.test(pw)) return false;
+		}
 		if (! /[0-9]/.test(pw)) return false;
 		if (! /[a-zA-Z]/.test(pw)) return false;
 		return true;

@@ -17,8 +17,10 @@
 
 package utils.auth;
 
+import java.util.Optional;
+
 import models.enums.UserRole;
-import play.mvc.Http.Context;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 
 /**
@@ -28,17 +30,17 @@ import play.mvc.Result;
 public class MemberSecured extends AnyRoleSecured {
 
 	@Override
-	public String getUsername(Context ctx) {
-		String result = super.getUsername(ctx);
+	public Optional<String> getUsername(Request ctx) {
+		String result = super.getUsername(ctx).orElse(null);
 		if (result != null) {
 		  UserRole role = PortalSessionToken.session().getRole();
 		  if (! UserRole.MEMBER.equals(role)) return null;				  
 		}
-		return result;
+		return Optional.of(result);
 	}
 
 	@Override
-	public Result onUnauthorized(Context ctx) {
+	public Result onUnauthorized(Request ctx) {
 		return unauthorized();
 	}
 

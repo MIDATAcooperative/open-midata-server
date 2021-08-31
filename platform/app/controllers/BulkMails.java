@@ -49,6 +49,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
@@ -74,9 +75,9 @@ public class BulkMails extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result get() throws JsonValidationException, InternalServerException {
+	public Result get(Request request) throws JsonValidationException, InternalServerException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "properties");
 		
@@ -101,13 +102,13 @@ public class BulkMails extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result add() throws JsonValidationException, InternalServerException {
+	public Result add(Request request) throws JsonValidationException, InternalServerException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "name");
 		
-		MidataId creator = MidataId.from(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId creator = MidataId.from(request.attrs().get(play.mvc.Security.USERNAME));
         User creatorUser = User.getById(creator, Sets.create("email"));
 		
 		// create new news item
@@ -129,9 +130,9 @@ public class BulkMails extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result update() throws JsonValidationException, InternalServerException {
+	public Result update(Request request) throws JsonValidationException, InternalServerException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "name");		
 		
@@ -230,7 +231,7 @@ public class BulkMails extends Controller {
 	
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-    public Result test(String mailItemIdString) throws AppException {
+    public Result test(Request request, String mailItemIdString) throws AppException {
 		
 		MidataId mailItemId = MidataId.from(mailItemIdString);
 		
@@ -238,7 +239,7 @@ public class BulkMails extends Controller {
 		if (mailCampaign == null) throw new BadRequestException("error.unknown.bulkmail", "Mail not found");
 		//if (mailCampaign.status == BulkMailStatus.FINISHED) throw new BadRequestException("error.invalid.bulkmail", "Mail not found");
 		
-		MidataId executor = MidataId.from(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId executor = MidataId.from(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		MidataId studyId = null;
 		if (mailCampaign.type==BulkMailType.PROJECT) studyId = mailCampaign.studyId;
@@ -356,8 +357,8 @@ public class BulkMails extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)	
 	@APICall
-	public Result unsubscribe() throws AppException {
-		JsonNode json = request().body().asJson();		
+	public Result unsubscribe(Request request) throws AppException {
+		JsonNode json = request.body().asJson();		
 		if (!json.has("token")) throw new BadRequestException("error.missing.token", "No token");
 		
 		UnsubscribeToken tk = UnsubscribeToken.decrypt(JsonValidation.getString(json, "token"));

@@ -43,6 +43,7 @@ import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.access.AccessContext;
@@ -106,13 +107,13 @@ public class FHIR extends Controller {
 	 * Determine FHIR Version to be used by looking at content-type and accept headers
 	 * @return fhir version as integer (3 or 4) or 0 for unknown
 	 */
-	public int getFhirVersion() {
-		Optional<String> contentType = request().header("Content-Type");
+	public int getFhirVersion(Request request) {
+		Optional<String> contentType = request.header("Content-Type");
 		if (contentType.isPresent()) {
 			if (contentType.get().indexOf("fhirVersion=4.")>0) return 4;
 			if (contentType.get().indexOf("fhirVersion=3.")>0) return 3;
 		}
-		Optional<String> accept = request().header("Accept");
+		Optional<String> accept = request.header("Accept");
 		if (accept.isPresent()) {
 			if (accept.get().indexOf("fhirVersion=4.")>0) return 4;
 			if (accept.get().indexOf("fhirVersion=3.")>0) return 3;
@@ -128,12 +129,12 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
-	public Result getRoot() throws AppException, IOException, ServletException {
+	public Result getRoot(Request request) throws AppException, IOException, ServletException {
 		
-		//Stats.startRequest(request());
-		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
+		//Stats.startRequest(request);
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request);
 		//PlayHttpServletResponse res = new PlayHttpServletResponse(response());				
-		ExecutionInfo info = getExecutionInfo(req);
+		ExecutionInfo info = getExecutionInfo(request, req);
         if (info != null && info.pluginId != null) {
 		
         BSONObject query = RecordManager.instance.getMeta(info.context, info.targetAPS, "_query");
@@ -168,17 +169,17 @@ public class FHIR extends Controller {
         	return controllers.research.Studies.downloadFHIR(info, handle, studyId, info.role, from, to, studyGroup, mode);
         }
 		
-		//Stats.finishRequest(request(), String.valueOf(res.getStatus()));
+		//Stats.finishRequest(request, String.valueOf(res.getStatus()));
 		
         }
-		return get("/");
+		return get(request, "/");
 		
 		
 		
 	}
 	
 	
-	private ExecutionInfo getExecutionInfo(PlayHttpServletRequest req) throws AppException {
+	private ExecutionInfo getExecutionInfo(Request request, PlayHttpServletRequest req) throws AppException {
 		
 		boolean cert_direct = false;
 		String valid = req.getHeader("X-Client-Valid-LB");
@@ -210,14 +211,14 @@ public class FHIR extends Controller {
 		String param = req.getHeader("Authorization");
 		
 		if (param != null && param.startsWith("Bearer ")) {
-	          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
+	          ExecutionInfo info = ExecutionInfo.checkToken(request, param.substring("Bearer ".length()), false);
 	          Stats.setPlugin(info.pluginId);
 	          ResourceProvider.setExecutionInfo(info);
 	          return info;
 		} else {
 		 	 String portal = req.getHeader("X-Session-Token");
 			 if (portal != null) {
-				PortalSessionToken tk = PortalSessionToken.decrypt(request());
+				PortalSessionToken tk = PortalSessionToken.decrypt(request);
 			    if (tk == null || tk.getRole() == UserRole.ANY) return null;
 			    try {
 				      KeyManager.instance.continueSession(tk.getHandle(), tk.ownerId);
@@ -246,43 +247,36 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
-	public Result get(String all) throws AppException, IOException, ServletException {
-		Stats.startRequest(request());
-		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
-		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
+	public Result get(Request request, String all) throws AppException, IOException, ServletException {
+		Stats.startRequest(request);
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request);
+		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
-		ExecutionInfo info = getExecutionInfo(req);
+		ExecutionInfo info = getExecutionInfo(request, req);
         if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.GET);		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
-		switch(getFhirVersion()) {
+		switch(getFhirVersion(request)) {
 		  case 4:servlet_r4.doGet(req, res);break;
 		  default: servlet_stu3.doGet(req, res);
 		}
 		AccessLog.logEnd("end FHIR get request");
 			
 		
-		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
-		if (res.getContentType() != null && res.getResponseWriter() != null) {
-			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
-		}
-		
-		if (res.getContentType() != null && res.getResponseStream() != null) {		
-			return status(res.getStatus(), res.getResponseStream().toByteArray()).as(res.getContentType());
-		}
-						
-		return status(res.getStatus());
+		Stats.finishRequest(request, String.valueOf(res.getStatus()));
+							
+		return res.asPlayResult();
 	}
 	
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
-	public Result getRootWithEndpoint(String endpoint, String all) throws AppException, IOException, ServletException {
-		return getWithEndpoint(endpoint, "/");
+	public Result getRootWithEndpoint(Request request, String endpoint, String all) throws AppException, IOException, ServletException {
+		return getWithEndpoint(request, endpoint, "/");
 	}
 	
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
-	public Result getWithEndpoint(String endpoint, String all) throws AppException, IOException, ServletException {
-		Stats.startRequest(request());
+	public Result getWithEndpoint(Request request, String endpoint, String all) throws AppException, IOException, ServletException {
+		Stats.startRequest(request);
 		
 		ServiceInstance si = ServiceInstance.getByEndpoint(endpoint, ServiceInstance.ALL);
 		if (si == null || si.status != UserStatus.ACTIVE) return notFound();
@@ -295,8 +289,8 @@ public class FHIR extends Controller {
 		if (instance == null) return notFound();
 		
 		String baseURL = "/opendata/"+si.endpoint+"/fhir";
-		PlayHttpServletRequest req = new PlayHttpServletRequest(request(), baseURL);
-		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request, baseURL);
+		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
 		ExecutionInfo info = new ExecutionInfo();
 				        
@@ -332,7 +326,7 @@ public class FHIR extends Controller {
 										
         if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.GET);		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
-		switch(getFhirVersion()) {
+		switch(getFhirVersion(request)) {
 		  case 3:servlet_stu3.doGet(req, res);break;
 		  case 4:
 		  default:
@@ -340,16 +334,9 @@ public class FHIR extends Controller {
 		}
 		AccessLog.logEnd("end FHIR get request");
 					
-		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
-		if (res.getContentType() != null && res.getResponseWriter() != null) {
-			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
-		}
+		Stats.finishRequest(request, String.valueOf(res.getStatus()));
 		
-		if (res.getContentType() != null && res.getResponseStream() != null) {		
-			return status(res.getStatus(), res.getResponseStream().toByteArray()).as(res.getContentType());
-		}
-						
-		return status(res.getStatus());
+		return res.asPlayResult();
 	}
 	
 	/**
@@ -361,8 +348,8 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(value = BodyParser.Raw.class)
-	public Result postRoot() throws AppException, IOException, ServletException {
-		return post("/");
+	public Result postRoot(Request request) throws AppException, IOException, ServletException {
+		return post(request, "/");
 	}
 	
 	/**
@@ -374,8 +361,8 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall(maxtime = 60l * 1000l)
 	@BodyParser.Of(value = BodyParser.Raw.class)
-	public Result postProcessMessage(String p) throws AppException, IOException, ServletException {
-		return post("/$process-message");
+	public Result postProcessMessage(Request request, String p) throws AppException, IOException, ServletException {
+		return post(request, "/$process-message");
 	}
 	
 	
@@ -391,35 +378,26 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(value = BodyParser.Raw.class)
-	public Result post(String all) throws AppException, IOException, ServletException {
+	public Result post(Request request, String all) throws AppException, IOException, ServletException {
 				
-		Stats.startRequest(request());
+		Stats.startRequest(request);
 		
-		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
-		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request);
+		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
-		ExecutionInfo info = getExecutionInfo(req);
+		ExecutionInfo info = getExecutionInfo(request, req);
 		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.POST);   
 		
 		AccessLog.logBegin("begin FHIR post request: "+req.getRequestURI());
-		switch(getFhirVersion()) {
+		switch(getFhirVersion(request)) {
 		  case 4:servlet_r4.doPost(req, res);break;
 		  default: servlet_stu3.doPost(req, res);
 		}
 		AccessLog.logEnd("end FHIR post request");
 		
-		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
-		if (res.getContentType() != null && res.getResponseWriter() != null) {			
-			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
-		}
+		Stats.finishRequest(request, String.valueOf(res.getStatus()));
 		
-		if (res.getContentType() != null && res.getResponseStream() != null) {			
-			byte[] bytes = res.getResponseStream().toByteArray();			
-			return status(res.getStatus(), bytes).as(res.getContentType());
-		}
-		
-		
-		return status(res.getStatus());
+		return res.asPlayResult();
 	}
 	
 	/**
@@ -431,8 +409,8 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(value = BodyParser.Raw.class)
-	public Result putRoot() throws AppException, IOException, ServletException {
-		return put("/");
+	public Result putRoot(Request request) throws AppException, IOException, ServletException {
+		return put(request, "/");
 	}
 	
 	/**
@@ -446,33 +424,24 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(value = BodyParser.Raw.class)
-	public Result put(String all) throws AppException, IOException, ServletException {
-		Stats.startRequest(request());
+	public Result put(Request request, String all) throws AppException, IOException, ServletException {
+		Stats.startRequest(request);
 		
-		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
-		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request);
+		PlayHttpServletResponse res = new PlayHttpServletResponse();
 			
-		ExecutionInfo info = getExecutionInfo(req);
+		ExecutionInfo info = getExecutionInfo(request, req);
 		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.PUT);        
 		
 		AccessLog.log(req.getRequestURI());
-		switch(getFhirVersion()) {
+		switch(getFhirVersion(request)) {
 		  case 4:servlet_r4.doPut(req, res);break;
 		  default: servlet_stu3.doPut(req, res);
 		}
 		
-		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
-		
-		if (res.getContentType() != null && res.getResponseWriter() != null) {			
-			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
-		}
-		
-		if (res.getContentType() != null && res.getResponseStream() != null) {			
-			byte[] bytes = res.getResponseStream().toByteArray();			
-			return status(res.getStatus(), bytes).as(res.getContentType());
-		}
-		
-		return status(res.getStatus());
+		Stats.finishRequest(request, String.valueOf(res.getStatus()));
+				
+		return res.asPlayResult();
 	}
 	
 	/**
@@ -484,8 +453,8 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
-	public Result deleteRoot() throws AppException, IOException, ServletException {
-		return delete("/");
+	public Result deleteRoot(Request request) throws AppException, IOException, ServletException {
+		return delete(request, "/");
 	}
 	
 	/**
@@ -499,44 +468,35 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
-	public Result delete(String all) throws AppException, IOException, ServletException {
-		Stats.startRequest(request());
+	public Result delete(Request request, String all) throws AppException, IOException, ServletException {
+		Stats.startRequest(request);
 		
-		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
-		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request);
+		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
-		ExecutionInfo info = getExecutionInfo(req);		
+		ExecutionInfo info = getExecutionInfo(request, req);		
 		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.DELETE);
 		
 		AccessLog.log(req.getRequestURI());
-		switch(getFhirVersion()) {
+		switch(getFhirVersion(request)) {
 		  case 4:servlet_r4.doDelete(req, res);break;
 		  default: servlet_stu3.doDelete(req, res);
 		}
 		
-		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
-		
-		if (res.getContentType() != null && res.getResponseWriter() != null) {			
-			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
-		}
-		
-		if (res.getContentType() != null && res.getResponseStream() != null) {			
-			byte[] bytes = res.getResponseStream().toByteArray();			
-			return status(res.getStatus(), bytes).as(res.getContentType());
-		}
-		
-		return status(res.getStatus());
+		Stats.finishRequest(request, String.valueOf(res.getStatus()));
+				
+		return res.asPlayResult();
 	}
 	
 	@MobileCall
 	@BodyParser.Of(value = BinaryFileBodyParser.class)
-	public Result binaryUpload() throws AppException, IOException, ServletException {
+	public Result binaryUpload(Request request) throws AppException, IOException, ServletException {
 				
-		Stats.startRequest(request());
+		Stats.startRequest(request);
 		
-		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request);
         	
-		EncryptedFileHandle handle = request().body().as(EncryptedFileHandle.class);
+		EncryptedFileHandle handle = request.body().as(EncryptedFileHandle.class);
 		
 		if (handle != null) {
 			AccessLog.log("File handle present");
@@ -547,7 +507,7 @@ public class FHIR extends Controller {
 		ExecutionInfo info = null;
 		try {
 			AccessLog.log("Validating session...");
-		    info = getExecutionInfo(req);
+		    info = getExecutionInfo(request, req);
 		    if (info != null) {
 		    	AccessLog.log("Execution context okay.");
 		    } else {
@@ -568,7 +528,7 @@ public class FHIR extends Controller {
 		
 		AccessLog.logEnd("end FHIR binary post request");
 		
-		Stats.finishRequest(request(), "201");	
+		Stats.finishRequest(request, "201");	
 		
 		return created().withHeader("Location", url);
 	}

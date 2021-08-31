@@ -65,6 +65,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.InstanceConfig;
@@ -160,9 +161,9 @@ public class MobileAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public Result authenticate() throws AppException {
+	public Result authenticate(Request request) throws AppException {
 				
-        JsonNode json = request().body().asJson();		
+        JsonNode json = request.body().asJson();		
 		//JsonValidation.validate(json, "appname", "secret");
 		if (!json.has("refreshToken")) JsonValidation.validate(json, "appname", "secret", "username", "password" /*, "device" */);
 		
@@ -332,11 +333,11 @@ public class MobileAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public Result getRecords() throws JsonValidationException, AppException {		
+	public Result getRecords(Request request) throws JsonValidationException, AppException {		
 		// validate json
-		Stats.startRequest(request());
+		Stats.startRequest(request);
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "fields");
 		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
@@ -363,7 +364,7 @@ public class MobileAPI extends Controller {
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
-		Stats.finishRequest(request(), "200", properties.keySet());
+		Stats.finishRequest(request, "200", properties.keySet());
 		return ok(JsonOutput.toJson(records, "Record", fields)).as("application/json");
 	}
 	
@@ -374,39 +375,40 @@ public class MobileAPI extends Controller {
 	 * @throws JsonValidationException
 	 */	
 	@MobileCall	
-	public Result getFile() throws AppException, JsonValidationException {
-		Stats.startRequest(request());
+	public Result getFile(Request request) throws AppException, JsonValidationException {
+		Stats.startRequest(request);
 		// validate json
-		JsonNode json = request().body().asJson();				
+		JsonNode json = request.body().asJson();				
 						
 		ExecutionInfo info = null;
 		
-		Optional<String> param = request().header("Authorization");
-		String param2 = request().getQueryString("access_token");
+		Optional<String> param = request.header("Authorization");
+		String param2 = request.getQueryString("access_token");
 		
 		if (param.isPresent() && param.get().startsWith("Bearer ")) {
-          info = ExecutionInfo.checkToken(request(), param.get().substring("Bearer ".length()), false);                  
+          info = ExecutionInfo.checkToken(request, param.get().substring("Bearer ".length()), false);                  
 		} else if (json != null && json.has("authToken")) {
-		  info = ExecutionInfo.checkToken(request(), JsonValidation.getString(json, "authToken"), false);
+		  info = ExecutionInfo.checkToken(request, JsonValidation.getString(json, "authToken"), false);
 		} else if (param2 != null) {
-		  info = ExecutionInfo.checkToken(request(), param2, false);
+		  info = ExecutionInfo.checkToken(request, param2, false);
 		} else throw new BadRequestException("error.auth", "Please provide authorization token as 'Authorization' header or 'authToken' request parameter.");
 					
-		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request().getQueryString("_id"));
+		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request.getQueryString("_id"));
 		
-		return getFile(info, recordId, false);
+		return getFile(request, info, recordId, false);
 	}
 	
-	public static Result getFile(ExecutionInfo info, MidataId recordId, boolean asAttachment) throws AppException {					
+	public static Result getFile(Request request, ExecutionInfo info, MidataId recordId, boolean asAttachment) throws AppException {					
 		FileData fileData = RecordManager.instance.fetchFile(info.context, new RecordToken(recordId.toString(), info.targetAPS.toString()));
 		if (fileData == null) return badRequest();
 		String contentType = "application/binary";
 		if (fileData.contentType != null) contentType = fileData.contentType;
 		if (contentType.startsWith("data:")) contentType = "application/binary";
-		if (asAttachment) PluginsAPI.setAttachmentContentDisposition(fileData.filename);
-		
-		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
-		return ok(fileData.inputStream).as(contentType);
+				
+		Stats.finishRequest(request, "200", Collections.EMPTY_SET);
+		Result result = ok(fileData.inputStream).as(contentType);
+		if (asAttachment) PluginsAPI.setAttachmentContentDisposition(result, fileData.filename);
+		return result;
 	}
 	
 	/**
@@ -417,11 +419,11 @@ public class MobileAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public Result createRecord() throws AppException, JsonValidationException {
-		Stats.startRequest(request());
+	public Result createRecord(Request request) throws AppException, JsonValidationException {
+		Stats.startRequest(request);
 		
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "name", "format");
 		if (!json.has("content") && !json.has("code")) throw new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
 		
@@ -471,7 +473,7 @@ public class MobileAPI extends Controller {
 								
 		PluginsAPI.createRecord(inf, record, null, null,null, inf.context);
 		
-		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
+		Stats.finishRequest(request, "200", Collections.EMPTY_SET);
 		ObjectNode obj = Json.newObject();		
 		obj.put("_id", record._id.toString());		
 		return ok(JsonOutput.toJson(record, "Record", Sets.create("_id", "created", "version"))).as("application/json");
@@ -485,11 +487,11 @@ public class MobileAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public Result updateRecord() throws AppException, JsonValidationException {
+	public Result updateRecord(Request request) throws AppException, JsonValidationException {
 		
-		Stats.startRequest(request());
+		Stats.startRequest(request);
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "_id", "version");
 		
 		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
@@ -514,7 +516,7 @@ public class MobileAPI extends Controller {
 				
 		String version = PluginsAPI.updateRecord(inf, record);
 		
-		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
+		Stats.finishRequest(request, "200", Collections.EMPTY_SET);
 		
 		ObjectNode obj = Json.newObject();		
 		obj.put("version", version);		
@@ -526,9 +528,9 @@ public class MobileAPI extends Controller {
 	@MobileCall
 	public static Result deleteRecord() throws AppException, JsonValidationException {
 		
-		Stats.startRequest(request());
+		Stats.startRequest(request);
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties");
 		
 		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
@@ -546,17 +548,17 @@ public class MobileAPI extends Controller {
 		AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, inf.executorId, null, message);
 		RecordManager.instance.delete(inf.executorId,  properties);		
 				
-		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);						
+		Stats.finishRequest(request, "200", Collections.EMPTY_SET);						
 		return ok();
 	}*/
 	
 	@MobileCall	
 	@BodyParser.Of(BodyParser.Json.class)
-    public Result unshareRecord() throws AppException, JsonValidationException {
+    public Result unshareRecord(Request request) throws AppException, JsonValidationException {
 		
-		Stats.startRequest(request());
+		Stats.startRequest(request);
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "target-study", "target-study-group");
 		
 		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
@@ -594,11 +596,11 @@ public class MobileAPI extends Controller {
 
     @MobileCall	
     @BodyParser.Of(BodyParser.Json.class)
-    public Result shareRecord() throws AppException, JsonValidationException {
+    public Result shareRecord(Request request) throws AppException, JsonValidationException {
 		
-		Stats.startRequest(request());
+		Stats.startRequest(request);
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "target-study", "target-study-group");
 		
 		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
@@ -652,10 +654,10 @@ public class MobileAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public Result getInfo() throws AppException, JsonValidationException {
+	public Result getInfo(Request request) throws AppException, JsonValidationException {
  	
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();				
+		JsonNode json = request.body().asJson();				
 		JsonValidation.validate(json, "authToken", "properties", "summarize");
 		
 		// decrypt authToken 
@@ -684,9 +686,9 @@ public class MobileAPI extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public Result getConsents() throws JsonValidationException, AppException {		
+	public Result getConsents(Request request) throws JsonValidationException, AppException {		
 		// validate json
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "fields");
 		
 		//Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));

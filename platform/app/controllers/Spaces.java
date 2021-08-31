@@ -42,6 +42,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.access.AccessContext;
@@ -79,11 +80,11 @@ public class Spaces extends APIController {
      */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result get() throws JsonValidationException, AppException {
+	public Result get(Request request) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		JsonNode json = request.body().asJson();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		JsonValidation.validate(json, "properties", "fields");
 		
 		// get parameters
@@ -122,14 +123,14 @@ public class Spaces extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result add() throws JsonValidationException, AppException {
+	public Result add(Request request) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "name", "visualization");
 		
 		// validate request
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context1 = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context1 = portalContext(request);
 		String name = JsonValidation.getString(json, "name");		
 		MidataId visualizationId = JsonValidation.getMidataId(json, "visualization" );					
 		String context = JsonValidation.getString(json, "context");
@@ -197,9 +198,9 @@ public class Spaces extends APIController {
 	 * @throws AppException
 	 */
 	@APICall
-	public Result delete(String spaceIdString) throws AppException {
+	public Result delete(Request request, String spaceIdString) throws AppException {
 		// validate request
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId spaceId = new MidataId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
@@ -219,9 +220,9 @@ public class Spaces extends APIController {
 	}
 	
 	@APICall
-	public Result reset() throws AppException {
+	public Result reset(Request request) throws AppException {
 		// validate request
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		Set<Space> spaces = Space.getAllByOwner(userId, Sets.create("_id"));
 		
@@ -243,14 +244,14 @@ public class Spaces extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result addRecords(String spaceIdString) throws JsonValidationException, AppException {
+	public Result addRecords(Request request, String spaceIdString) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "records");
 		
 		// validate request
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId spaceId = new MidataId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
@@ -270,8 +271,8 @@ public class Spaces extends APIController {
 	}
 
 	@APICall
-	public Result getToken(String spaceIdString) throws AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result getToken(Request request, String spaceIdString) throws AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId spaceId = new MidataId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
@@ -282,23 +283,23 @@ public class Spaces extends APIController {
 
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId, getRole());
-		return ok(spaceToken.encrypt(request()));
+		return ok(spaceToken.encrypt(request));
 	}
 	
 	@APICall
-	public CompletionStage<Result> getUrl(String spaceIdString, String userId) throws AppException {
-		return getUrl(spaceIdString, true, userId);
+	public CompletionStage<Result> getUrl(Request request, String spaceIdString, String userId) throws AppException {
+		return getUrl(request, spaceIdString, true, userId);
 	}
 	
 	@APICall
-	public CompletionStage<Result> regetUrl(String spaceIdString) throws AppException {
-		return getUrl(spaceIdString, false, null);
+	public CompletionStage<Result> regetUrl(Request request, String spaceIdString) throws AppException {
+		return getUrl(request, spaceIdString, false, null);
 	}
 	
 		
-	public static CompletionStage<Result> getUrl(String spaceIdString, boolean auth, String targetUser) throws AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+	public static CompletionStage<Result> getUrl(Request request, String spaceIdString, boolean auth, String targetUser) throws AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId spaceId = new MidataId(spaceIdString);
 		MidataId targetUserId = (targetUser != null && targetUser.trim().length()>0) ? MidataId.from(targetUser) : userId;		
 		
@@ -323,7 +324,7 @@ public class Spaces extends APIController {
 					
 		ObjectNode obj = Json.newObject();
 		obj.put("base", visualizationServer+"/");
-		obj.put("token", spaceToken.encrypt(request()));
+		obj.put("token", spaceToken.encrypt(request));
 		obj.put("preview", visualization.previewUrl);
 		obj.put("add", visualization.addDataUrl);
 		obj.put("main", visualization.url);
@@ -337,7 +338,7 @@ public class Spaces extends APIController {
 			 
 		  Map<String, Object> data = oauthmeta.toMap();
 		  if (data != null && data.get("refreshToken") != null) {					
-		    return Plugins.requestAccessTokenOAuth2FromRefreshToken(spaceIdString, data, obj);
+		    return Plugins.requestAccessTokenOAuth2FromRefreshToken(request, spaceIdString, data, obj);
 		  }
 		  AccessLog.log("No refresh token requested.");
 		} 

@@ -60,6 +60,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.APS;
@@ -109,7 +110,7 @@ public class Records extends APIController {
 	 *            record ID to be parsed
 	 * @return
 	 */
-	protected static RecordToken getRecordTokenFromString(String id) {
+	protected static RecordToken getRecordTokenFromString(Request request, String id) {
 		int pos = id.indexOf('.');
 
 		if (pos > 0) {
@@ -117,7 +118,7 @@ public class Records extends APIController {
 		} else if (id.length() > 25) {
 			return RecordToken.decrypt(id);
 		} else {
-			MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+			MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 			return new RecordToken(id, userId.toString());
 		}
 	}
@@ -132,18 +133,18 @@ public class Records extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result get() throws JsonValidationException, AppException {
+	public Result get(Request request) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "_id");
 
 		// get parameters
 		String id = JsonValidation.getString(json, "_id");
-		RecordToken tk = getRecordTokenFromString(id);
+		RecordToken tk = getRecordTokenFromString(request, id);
 		if (tk == null)
 			throw new BadRequestException("error.invalid.token", "Bad token");
-		//MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		//MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 
 		// execute
 		Record target = RecordManager.instance.fetch(context, getRole(), tk);
@@ -162,10 +163,10 @@ public class Records extends APIController {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result getRecords() throws AppException, JsonValidationException {
+	public Result getRecords(Request request) throws AppException, JsonValidationException {
 
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		JsonNode json = request().body().asJson();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "properties", "fields");
 
 		MidataId aps = JsonValidation.getMidataId(json, "aps");
@@ -182,7 +183,7 @@ public class Records extends APIController {
 		}
 
 		try {
-			records.addAll(RecordManager.instance.list(getRole(), portalContext().forAps(aps), properties, fields));
+			records.addAll(RecordManager.instance.list(getRole(), portalContext(request).forAps(aps), properties, fields));
 		} catch (RequestTooLargeException e) {
 			return ok();
 		}
@@ -202,10 +203,10 @@ public class Records extends APIController {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result getInfo() throws AppException, JsonValidationException {
+	public Result getInfo(Request request) throws AppException, JsonValidationException {
 
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		JsonNode json = request().body().asJson();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "properties");
 
 		MidataId aps = JsonValidation.getMidataId(json, "aps");
@@ -216,7 +217,7 @@ public class Records extends APIController {
 		AggregationType aggrType = json.has("summarize") ? JsonValidation.getEnum(json, "summarize", AggregationType.class) : AggregationType.GROUP;
 
 		try {
-			Collection<RecordsInfo> result = RecordManager.instance.info(getRole(), aps, portalContext().forAps(aps), properties, aggrType);
+			Collection<RecordsInfo> result = RecordManager.instance.info(getRole(), aps, portalContext(request).forAps(aps), properties, aggrType);
 			return ok(Json.toJson(result));
 		} catch (RequestTooLargeException e) {
 			return status(202);
@@ -234,9 +235,9 @@ public class Records extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result getSharingDetails(String aps) throws AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext tempContext = portalContext();
+	public Result getSharingDetails(Request request, String aps) throws AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext tempContext = portalContext(request);
 		MidataId apsId = new MidataId(aps);
 
 		Map<String, Object> query = null;
@@ -290,15 +291,15 @@ public class Records extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public Result updateSpaces(String recordIdString) throws JsonValidationException, AppException {
+	public Result updateSpaces(Request request, String recordIdString) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 
 		JsonValidation.validate(json, "spaces");
 
 		// update spaces
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
 		MidataId recordId = new MidataId(recordIdString);
 		Set<MidataId> spaceIds = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("spaces")));
@@ -330,13 +331,13 @@ public class Records extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result delete() throws JsonValidationException, AppException {
-		JsonNode json = request().body().asJson();
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result delete(Request request) throws JsonValidationException, AppException {
+		JsonNode json = request.body().asJson();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 
 		if (json.has("_id")) {
 			String id = JsonValidation.getString(json, "_id");
-			RecordToken tk = getRecordTokenFromString(id);
+			RecordToken tk = getRecordTokenFromString(request, id);
 			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, "id=" + tk.recordId);
 			RecordManager.instance.delete(userId, CMaps.map("_id", tk.recordId));
 			if (getRole().equals(UserRole.ADMIN)) RecordManager.instance.deleteFromPublic(userId, CMaps.map("_id", tk.recordId));
@@ -373,14 +374,14 @@ public class Records extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result updateSharing() throws JsonValidationException, AppException {
+	public Result updateSharing(Request request) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "records", "started", "stopped");
 
 		// validate request: record
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 
 		Set<MidataId> started = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("started")));
 		Set<MidataId> stopped = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("stopped")));
@@ -392,7 +393,7 @@ public class Records extends APIController {
 
 		Map<String, Set<String>> records = new HashMap<String, Set<String>>();
 		for (String recordId : recordIds) {
-			RecordToken rt = getRecordTokenFromString(recordId);
+			RecordToken rt = getRecordTokenFromString(request, recordId);
 			Set<String> recs = records.get(rt.apsId);
 			if (recs == null) {
 				recs = new HashSet<String>();
@@ -512,10 +513,10 @@ public class Records extends APIController {
 
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result getRecordUrl(String recordIdString) throws AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
-		RecordToken tk = Records.getRecordTokenFromString(recordIdString);
+	public Result getRecordUrl(Request request, String recordIdString) throws AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
+		RecordToken tk = Records.getRecordTokenFromString(request, recordIdString);
 
 		Record record = RecordManager.instance.fetch(context, getRole(), tk, Sets.create("format", "created"));
 		if (record == null)
@@ -538,7 +539,7 @@ public class Records extends APIController {
 
 		ObjectNode obj = Json.newObject();
 		obj.put("base", visualizationServer);
-		obj.put("token", spaceToken.encrypt(request()));
+		obj.put("token", spaceToken.encrypt(request));
 		obj.put("preview", visualization.previewUrl);
 		obj.put("main", visualization.url);
 		obj.put("type", visualization.type);
@@ -562,11 +563,11 @@ public class Records extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result getFile(String id) throws AppException {
+	public Result getFile(Request request, String id) throws AppException {
 
-		RecordToken tk = getRecordTokenFromString(id);
-		//MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		RecordToken tk = getRecordTokenFromString(request, id);
+		//MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 
 		if (tk == null)
 			throw new BadRequestException("error.invalid.token", "Bad token");		
@@ -576,8 +577,10 @@ public class Records extends APIController {
 		String contentType = "application/binary";
 		if (fileData.contentType != null) contentType = fileData.contentType;
 		if (contentType.startsWith("data:")) contentType = "application/binary";
-		setAttachmentContentDisposition(fileData.filename);
-		return ok(fileData.inputStream).as(contentType);
+		
+		Result result = ok(fileData.inputStream).as(contentType);
+		setAttachmentContentDisposition(result, fileData.filename);
+		return result;
 	}
 
 	/**
@@ -589,8 +592,8 @@ public class Records extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result fixAccount() throws AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result fixAccount(Request request) throws AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 
 		List<String> messages = RecordManager.instance.fixAccount(userId);
 
@@ -601,14 +604,12 @@ public class Records extends APIController {
 
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result downloadAccountData() throws AppException, IOException {
+	public Result downloadAccountData(Request request) throws AppException, IOException {
 
-		final MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		final MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         final UserRole role = getRole();
 		AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId);
-
-		setAttachmentContentDisposition("yourdata.json");
-
+	
 		final String handle = PortalSessionToken.session().handle;
 
 		KeyManager.instance.continueSession(handle);
@@ -714,18 +715,20 @@ public class Records extends APIController {
 		Source<ByteString, NotUsed> outstream = header.concat(main).concat(footer);
 
 		// Serves this stream with 200 OK
-		return ok().chunked(outstream).as("application/json+fhir");
+		Result result = ok().chunked(outstream).as("application/json+fhir");
+		setAttachmentContentDisposition(result, "yourdata.json");		
+		return result;
 	}
 	
 	@APICall
 	@Security.Authenticated(ResearchOrDeveloperSecured.class)
-    public Result unshareRecord() throws AppException, JsonValidationException {
+    public Result unshareRecord(Request request) throws AppException, JsonValidationException {
 				
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "properties", "target-study", "target-study-group");
 		
-		final MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		final MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         final UserRole role = getRole();
         
 		ExecutionInfo inf = new ExecutionInfo(executorId, role);		
@@ -742,13 +745,13 @@ public class Records extends APIController {
 	
 	@APICall
 	@Security.Authenticated(ResearchOrDeveloperSecured.class)
-    public Result shareRecord() throws AppException, JsonValidationException {
+    public Result shareRecord(Request request) throws AppException, JsonValidationException {
 				
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "properties", "target-study", "target-study-group");
 		
-		final MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		final MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         final UserRole role = getRole();
         
 		ExecutionInfo inf = new ExecutionInfo(executorId, role);		

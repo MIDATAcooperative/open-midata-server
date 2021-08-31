@@ -68,6 +68,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.InstanceConfig;
 import utils.access.AccessContext;
 import utils.access.RecordManager;
@@ -114,9 +115,9 @@ public class Users extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result get() throws AppException, JsonValidationException {
+	public Result get(Request request) throws AppException, JsonValidationException {
 		// validate json
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "properties", "fields");
 		
 		// get parameters
@@ -139,7 +140,7 @@ public class Users extends APIController {
 		
 		
 		
-		if (properties.containsKey("_id") && properties.get("_id").toString().equals(request().attrs().get(play.mvc.Security.USERNAME))) {
+		if (properties.containsKey("_id") && properties.get("_id").toString().equals(request.attrs().get(play.mvc.Security.USERNAME))) {
 		  Rights.chk("Users.getSelf", getRole(), properties, fields);
 		} else if (properties.containsKey("role") && !(properties.get("role") instanceof Collection)) {
 		  role = UserRole.valueOf(properties.get("role").toString());
@@ -239,9 +240,9 @@ public class Users extends APIController {
      */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result search(String query) throws AppException {
+	public Result search(Request request, String query) throws AppException {
 		
-		requireUserFeature(UserFeature.EMAIL_VERIFIED);
+		requireUserFeature(request, UserFeature.EMAIL_VERIFIED);
 		
 		Set<String> fields =  Sets.create("firstname", "lastname", "name", "role");
 		Set<Member> result = Member.getAll(CMaps.map("emailLC", query.toLowerCase()).map("searchable", true).map("status", User.NON_DELETED).map("role", UserRole.MEMBER), fields);
@@ -270,8 +271,8 @@ public class Users extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result loadContacts() throws InternalServerException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result loadContacts(Request request) throws InternalServerException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		Set<MidataId> contactIds = new HashSet<MidataId>();
 		Set<Member> contacts;
 	
@@ -304,17 +305,17 @@ public class Users extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
-	public Result updateAddress() throws AppException {
+	public Result updateAddress(Request request) throws AppException {
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "user");//, "firstname", "lastname", "gender", "city", "zip", "country", "address1");
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");			
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
-		  requireSubUserRole(SubUserRole.USERADMIN);
+		  requireSubUserRole(request, SubUserRole.USERADMIN);
 		} 
 		 			
 		//String email = JsonValidation.getEMail(json, "email");
@@ -429,20 +430,20 @@ public class Users extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result updateSettings() throws AppException {
+	public Result updateSettings(Request request) throws AppException {
 		// validate 
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "language");
 		
 		boolean searchable = JsonValidation.getBoolean(json, "searchable");
 		
 		if (searchable) {
-			requireUserFeature(UserFeature.EMAIL_VERIFIED);			
+			requireUserFeature(request, UserFeature.EMAIL_VERIFIED);			
 		}
 		
 		String language = JsonValidation.getString(json, "language");
 					
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		SecondaryAuthType authType = JsonValidation.getEnum(json, "authType", SecondaryAuthType.class);
 						
@@ -462,7 +463,7 @@ public class Users extends APIController {
 		PatientResourceProvider.updatePatientForAccount(userId);
 		
 		if (authType.equals(SecondaryAuthType.SMS)) {
-			requireUserFeature(UserFeature.PHONE_ENTERED);
+			requireUserFeature(request, UserFeature.PHONE_ENTERED);
 		}
 		
 		return ok();		
@@ -475,8 +476,8 @@ public class Users extends APIController {
 	 */	
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
-	public Result requestMembership() throws AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result requestMembership(Request request) throws AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		return requestMembershipHelper(userId);
 	}
 	
@@ -528,12 +529,12 @@ public class Users extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result accountWipe() throws AppException {
+	public Result accountWipe(Request request) throws AppException {
 		if (!InstanceConfig.getInstance().getInstanceType().getAccountWipeAvailable()) throw new InternalServerException("error.internal", "Only allowed on demo server");
 		
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "_id", "password");
 		
 		String password = JsonValidation.getString(json, "password");
@@ -549,7 +550,7 @@ public class Users extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, userId);
 		
-		doAccountWipe(portalContext(), userId);
+		doAccountWipe(portalContext(request), userId);
 			
 		AuditManager.instance.success();
 		

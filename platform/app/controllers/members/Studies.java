@@ -53,6 +53,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.ApplicationTools;
 import utils.access.AccessContext;
 import utils.access.RecordManager;
@@ -88,8 +89,8 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public Result list() throws JsonValidationException, InternalServerException {
-	   MidataId user = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result list(Request request) throws JsonValidationException, InternalServerException {
+	   MidataId user = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 	   
 	   Set<String> fields = Sets.create("study","studyName", "pstatus");
 	   Set<StudyParticipation> participation = StudyParticipation.getAllByMember(user, fields);
@@ -107,10 +108,10 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result search() throws JsonValidationException, InternalServerException, AuthException {
-	   MidataId user = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result search(Request request) throws JsonValidationException, InternalServerException, AuthException {
+	   MidataId user = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 	   
-	   JsonNode json = request().body().asJson();
+	   JsonNode json = request.body().asJson();
 	   JsonValidation.validate(json, "properties", "fields");
 							   		
 	   Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
@@ -132,13 +133,13 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result enterCode() throws AppException {
-        JsonNode json = request().body().asJson();
+	public Result enterCode(Request request) throws AppException {
+        JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "code");
 		String codestr = JsonValidation.getString(json, "code");
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
 		Member user = Member.getById(userId, Sets.create("firstname","lastname","birthday","country","gender"));
 				
@@ -203,11 +204,11 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result updateParticipation(String id) throws JsonValidationException, AppException {
-		JsonNode json = request().body().asJson();
+	public Result updateParticipation(Request request, String id) throws JsonValidationException, AppException {
+		JsonNode json = request.body().asJson();
 		MidataId studyId = new MidataId(id);
-		MidataId memberId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId memberId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
 		StudyParticipation part = StudyParticipation.getByStudyAndMember(studyId, memberId, StudyParticipation.STUDY_EXTRA);
 		if (part == null) throw new BadRequestException("error.unknown.participation", "Study Participation not found.");
@@ -334,8 +335,8 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result get(String id) throws JsonValidationException, InternalServerException {
-	   MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));	
+	public Result get(Request request, String id) throws JsonValidationException, InternalServerException {
+	   MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));	
 	    	   
 	   Set<String> studyFields = Sets.create("_id", "type", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","infosPart", "owner","participantRules","recordQuery","studyKeywords","requiredInformation","anonymous","assistance", "startDate", "endDate", "dataCreatedBefore", "termsOfUse", "joinMethods");
 	   Set<String> consentFields = Sets.create("_id", "pstatus", "providers");
@@ -374,20 +375,20 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public Result requestParticipation(String id) throws AppException {
+	public Result requestParticipation(Request request, String id) throws AppException {
 		/*if (!InstanceConfig.getInstance().getInstanceType().equals(InstanceType.PERFTEST)) {
 		  forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
 		  forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
 		  forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);	
 		}*/
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));		
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
 		MidataId studyId = new MidataId(id);	
 		
 		User user = Member.getById(userId, Member.ALL_USER_INTERNAL);
 		
 		Set<UserFeature> requirements = precheckRequestParticipation(userId, studyId);
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
-		if (notok != null && !notok.isEmpty()) requireUserFeature(notok.iterator().next());
+		if (notok != null && !notok.isEmpty()) requireUserFeature(request, notok.iterator().next());
 		
 		requestParticipation(new ExecutionInfo(userId, getRole()), userId, studyId, null, JoinMethod.PORTAL, null);		
 		return ok();
@@ -488,9 +489,9 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public Result noParticipation(String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));		
-		AccessContext context = portalContext();
+	public Result noParticipation(Request request, String id) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
+		AccessContext context = portalContext(request);
 		MidataId studyId = new MidataId(id);
 		noParticipation(context, userId, studyId);
 		return ok();
@@ -524,9 +525,9 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public Result retreatParticipation(String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+	public Result retreatParticipation(Request request, String id) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId studyId = new MidataId(id);
 		
 		retreatParticipation(context, userId, studyId);		

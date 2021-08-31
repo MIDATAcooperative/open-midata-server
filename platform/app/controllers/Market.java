@@ -88,8 +88,10 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import models.stats.PluginDevStats;
+import play.api.libs.Files.TemporaryFile;
 import play.mvc.BodyParser;
 import play.mvc.Http.MultipartFormData;
+import play.mvc.Http.Request;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -139,14 +141,14 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)	
-	public Result updatePlugin(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result updatePlugin(Request request, String pluginIdStr) throws JsonValidationException, AppException {
 		//if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 			
 		// validate request
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
@@ -339,9 +341,9 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result updatePluginStatus(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result updatePluginStatus(Request request, String pluginIdStr) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 			
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
@@ -366,10 +368,10 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)
-	public Result updateLicence(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result updateLicence(Request request, String pluginIdStr) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		JsonNode json = request.body().asJson();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
@@ -405,13 +407,13 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)	
-	public Result updateDefaultSubscriptions(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result updateDefaultSubscriptions(Request request, String pluginIdStr) throws JsonValidationException, AppException {
 		//if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 			
 		// validate request
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
@@ -456,8 +458,8 @@ public class Market extends APIController {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
-	public Result importPlugin() throws JsonValidationException, AppException {
-        JsonNode json = request().body().asJson();		
+	public Result importPlugin(Request request) throws JsonValidationException, AppException {
+        JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "base64");
 		String base64 = JsonValidation.getString(json, "base64");
 		
@@ -557,9 +559,9 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)
-	public Result registerPlugin() throws JsonValidationException, AppException {
+	public Result registerPlugin(Request request) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "name", "type", "writes");
 		String type = JsonValidation.getString(json, "type");
@@ -585,8 +587,8 @@ public class Market extends APIController {
 		}
 
 		// validate request
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
 		Developer dev = Developer.getById(userId, Sets.create("email"));
 		
@@ -883,11 +885,11 @@ public class Market extends APIController {
      */
     @APICall
     @Security.Authenticated(DeveloperSecured.class)
-    public Result deletePluginDeveloper(String pluginIdStr) throws JsonValidationException, AppException {
+    public Result deletePluginDeveloper(Request request, String pluginIdStr) throws JsonValidationException, AppException {
             
         // validate request     
         MidataId pluginId = new MidataId(pluginIdStr);
-        MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
@@ -919,28 +921,28 @@ public class Market extends APIController {
 		
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)	
-	public Result getPluginStats(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result getPluginStats(Request request, String pluginIdStr) throws JsonValidationException, AppException {
 		//if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		
 		MidataId pluginId = new MidataId(pluginIdStr);
-        MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
         if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
    
-		List<PluginDevStats> stats = new ArrayList(PluginDevStats.getByPlugin(pluginId, PluginDevStats.ALL));
+		List<PluginDevStats> stats = new ArrayList<PluginDevStats>(PluginDevStats.getByPlugin(pluginId, PluginDevStats.ALL));
 		
 		return ok(JsonOutput.toJson(stats, "PluginDevStats", PluginDevStats.ALL)).as("application/json");
 	}
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
-	public Result deletePluginStats(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result deletePluginStats(Request request, String pluginIdStr) throws JsonValidationException, AppException {
 		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		
 		MidataId pluginId = new MidataId(pluginIdStr);
-        MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
@@ -982,20 +984,20 @@ public class Market extends APIController {
 	 */	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
-	public Result uploadIcon(String pluginIdStr) throws AppException {
+	public Result uploadIcon(Request request, String pluginIdStr) throws AppException {
 		MidataId pluginId = MidataId.from(pluginIdStr);
 		try {
 		
 			//response().setHeader("Access-Control-Allow-Origin", "*");
 	
 			// check meta data
-			MultipartFormData formData = request().body().asMultipartFormData();
+			MultipartFormData<TemporaryFile> formData = request.body().asMultipartFormData();
 			Map<String, String[]> metaData = formData.asFormUrlEncoded();
 			if (!metaData.containsKey("use")) {
 				throw new BadRequestException("error.internal", "At least one request parameter is missing.");
 			}
 							
-			MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));			
+			MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));			
 			IconUse use = IconUse.valueOf(metaData.get("use")[0]);
 			if (use == null) throw new BadRequestException("error.internal", "Unknown icon use");
 					
@@ -1005,11 +1007,12 @@ public class Market extends APIController {
 		
 			
 			// extract file from data
-			FilePart fileData = formData.getFile("file");
+			FilePart<TemporaryFile> fileData = formData.getFile("file");
 			if (fileData == null) {
 				throw new BadRequestException("error.internal", "No file found.");
 			}
-			File file = (File) fileData.getFile();
+			TemporaryFile ref = fileData.getRef();
+			File file = ref.path().toFile();
 			if (file.length() > 1024 * 1024) throw new BadRequestException("error.too_large.file", "Maximum file size is 100kb");
 			String filename = fileData.getFilename().toUpperCase();
 			String contentType = fileData.getContentType();
@@ -1060,13 +1063,13 @@ public class Market extends APIController {
 	 */	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
-	public Result deleteIcon(String pluginIdStr, String useStr) throws AppException {
+	public Result deleteIcon(Request request, String pluginIdStr, String useStr) throws AppException {
 		MidataId pluginId = MidataId.from(pluginIdStr);
 		
 		IconUse use = IconUse.valueOf(useStr);
 		if (use == null) throw new BadRequestException("error.internal", "Unknown icon use");
 									
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));			
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));			
 					
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");			
@@ -1082,9 +1085,9 @@ public class Market extends APIController {
 	}
 	
 	@APICall
-	public Result getStudyAppLinks(String type, String idStr) throws AppException {
+	public Result getStudyAppLinks(Request request, String type, String idStr) throws AppException {
 		
-		String project = request().getQueryString("project");
+		String project = request.getQueryString("project");
 		
 		Set<StudyAppLink> result = Collections.emptySet();
 		if (type.equals("study") || type.equals("study-use")) {
@@ -1159,12 +1162,12 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result insertStudyAppLink() throws AppException {
-        JsonNode json = request().body().asJson();	
+	public Result insertStudyAppLink(Request request) throws AppException {
+        JsonNode json = request.body().asJson();	
         
         LinkTargetType lt = JsonValidation.getEnum(json, "linkTargetType", LinkTargetType.class);
-		if (lt != null && lt.equals(LinkTargetType.ORGANIZATION)) return insertAppLink();
-		if (lt != null && lt.equals(LinkTargetType.SERVICE)) return insertAppLink();
+		if (lt != null && lt.equals(LinkTargetType.ORGANIZATION)) return insertAppLink(request);
+		if (lt != null && lt.equals(LinkTargetType.SERVICE)) return insertAppLink(request);
         
 		JsonValidation.validate(json, "studyId", "appId", "type", "usePeriod");
 
@@ -1184,7 +1187,7 @@ public class Market extends APIController {
 		link.validationResearch = StudyValidationStatus.VALIDATION;
 		link.validationDeveloper = StudyValidationStatus.VALIDATION;
 		
-		checkValidation(link);
+		checkValidation(request, link);
 										
 		link.add();
 		
@@ -1196,8 +1199,8 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result insertAppLink() throws AppException {
-        JsonNode json = request().body().asJson();		
+	public Result insertAppLink(Request request) throws AppException {
+        JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "linkTargetType", "appId", "type");
 
 		
@@ -1229,7 +1232,7 @@ public class Market extends APIController {
 		link.validationResearch = StudyValidationStatus.VALIDATION;
 		link.validationDeveloper = StudyValidationStatus.VALIDATION;
 		
-		checkValidation(link);
+		checkValidation(request, link);
 										
 		link.add();
 		
@@ -1241,18 +1244,18 @@ public class Market extends APIController {
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result deleteStudyAppLink(String id) throws AppException {		
+	public Result deleteStudyAppLink(Request request, String id) throws AppException {		
 		StudyAppLink link = StudyAppLink.getById(MidataId.from(id));		
-		checkValidation(link);		
+		checkValidation(request, link);		
 		link.delete();		
 		return ok();
 	}
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result validateStudyAppLink(String id) throws AppException {
+	public Result validateStudyAppLink(Request request, String id) throws AppException {
 		StudyAppLink link = StudyAppLink.getById(MidataId.from(id));		
-		checkValidation(link);
+		checkValidation(request, link);
 		link.update();
 		return ok();
 	}
@@ -1270,10 +1273,10 @@ public class Market extends APIController {
 		}
 	}
 	
-	private static void checkValidation(StudyAppLink link) throws AppException {
+	private static void checkValidation(Request request, StudyAppLink link) throws AppException {
 		if (link == null) throw new BadRequestException("error.internal", "Unknown link");
 		
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		UserRole role = getRole();
 		
 		Plugin plugin = Plugin.getById(link.appId);   
@@ -1344,9 +1347,9 @@ public class Market extends APIController {
 	
 	@MobileCall
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result answerDebugCall(String handle) throws AppException {
+	public Result answerDebugCall(Request request, String handle) throws AppException {
 		AccessLog.log("Answer debug call handle="+handle);
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		String sender = JsonValidation.getJsonString(json, "returnPath");
 		String content = JsonValidation.getJsonString(json, "content");
 		int status = JsonValidation.getInteger(json, "status", -100, 10000);
@@ -1361,11 +1364,11 @@ public class Market extends APIController {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result setSubscriptionDebug() throws AppException {
-		JsonNode json = request().body().asJson();	
+	public Result setSubscriptionDebug(Request request) throws AppException {
+		JsonNode json = request.body().asJson();	
 		JsonValidation.validate(json, "plugin", "action");
 		
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = JsonValidation.getMidataId(json, "plugin");
 		String action = JsonValidation.getString(json, "action");
 		
@@ -1402,9 +1405,9 @@ public class Market extends APIController {
 	
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)	
-	public Result getReviews(String pluginIdStr) throws AppException {
+	public Result getReviews(Request request, String pluginIdStr) throws AppException {
 		MidataId pluginId = new MidataId(pluginIdStr);
-        MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
@@ -1418,10 +1421,10 @@ public class Market extends APIController {
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result addReview() throws AppException {
-		JsonNode json = request().body().asJson();	
+	public Result addReview(Request request) throws AppException {
+		JsonNode json = request.body().asJson();	
 		JsonValidation.validate(json, "pluginId", "check", "status");
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		Admin me = Admin.getById(userId, Sets.create("email"));
 		
@@ -1449,11 +1452,11 @@ public class Market extends APIController {
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result addLicence() throws AppException {
-		JsonNode json = request().body().asJson();	
+	public Result addLicence(Request request) throws AppException {
+		JsonNode json = request.body().asJson();	
 		JsonValidation.validate(json, "appId", "licenseeId", "licenseeType");
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
 		Admin me = Admin.getById(userId, Sets.create("email"));
 		
@@ -1513,8 +1516,8 @@ public class Market extends APIController {
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result searchLicenses() throws AppException {
-		JsonNode json = request().body().asJson();
+	public Result searchLicenses(Request request) throws AppException {
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "properties");
 
 		// get visualizations
@@ -1532,14 +1535,14 @@ public class Market extends APIController {
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result updateFromRepository(String pluginIdStr) throws AppException {
-		JsonNode json = request().body().asJson();
+	public Result updateFromRepository(Request request, String pluginIdStr) throws AppException {
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "_id", "repositoryUrl");
 		
 		String repo = JsonValidation.getString(json, "repositoryUrl");
 		String token = JsonValidation.getStringOrNull(json, "repositoryToken");
 		
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
 		boolean doDelete = JsonValidation.getBoolean(json, "doDelete");
 		
@@ -1565,8 +1568,8 @@ public class Market extends APIController {
 	
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)
-	public Result getDeployStatus(String pluginIdStr) throws AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result getDeployStatus(Request request, String pluginIdStr) throws AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
 		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl"));

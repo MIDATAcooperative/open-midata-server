@@ -257,7 +257,7 @@ platform/conf/application.conf: platform/conf/application.conf.template conf/set
 	$(info ------------------------------)
 	cp platform/conf/application.conf.template platform/conf/application.conf
 	$(eval PORTAL_ORIGIN:=$(shell if [ -e switches/use-run ]; then echo "https://$(DOMAIN):9002";else echo "https://$(DOMAIN)";fi;))
-	$(eval CLUSTERSERVERS:=$(foreach a,$(CLUSTER),"akka.tcp://midata@$(a):9006"))
+	$(eval CLUSTERSERVERS:=$(foreach a,$(CLUSTER),"akka://midata@$(a):9006"))
 	$(eval CLUSTERX:=$(call join-with,$(komma),$(CLUSTERSERVERS))) 
 	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' platform/conf/application.conf
 	sed -i 's|PLUGINS_SERVER|$(DOMAIN)/plugin|' platform/conf/application.conf

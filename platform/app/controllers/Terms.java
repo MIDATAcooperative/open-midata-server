@@ -34,6 +34,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.InstanceConfig;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
@@ -52,10 +53,10 @@ public class Terms extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result add() throws AppException {
+	public Result add(Request request) throws AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		JsonNode json = request.body().asJson();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		JsonValidation.validate(json, "title", "text", "name", "version", "language");		
 
@@ -90,9 +91,9 @@ public class Terms extends APIController {
 	
 	@BodyParser.Of(BodyParser.Json.class)		
 	@APICall
-	public Result get() throws JsonValidationException, AppException {
+	public Result get(Request request) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "name", "language");
 		
@@ -139,9 +140,9 @@ public class Terms extends APIController {
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result agreedToTerms() throws AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		JsonNode json = request().body().asJson();
+	public Result agreedToTerms(Request request) throws AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "terms", "app");
 		
 		String terms = JsonValidation.getString(json, "terms");
@@ -156,15 +157,15 @@ public class Terms extends APIController {
 				
 		user.agreedToTerms(terms, app);
 		
-		return OAuth2.loginHelper();	
+		return OAuth2.loginHelper(request);	
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result search() throws JsonValidationException, InternalServerException {
+	public Result search(Request request) throws JsonValidationException, InternalServerException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
         JsonValidation.validate(json, "properties", "fields");
 		

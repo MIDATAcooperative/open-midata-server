@@ -43,6 +43,7 @@ import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.ProjectTools;
 import utils.access.AccessContext;
 import utils.access.RecordManager;
@@ -75,9 +76,9 @@ public class UserGroups extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result search() throws AppException {
-		JsonNode json = request().body().asJson();				
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result search(Request request) throws AppException {
+		JsonNode json = request.body().asJson();				
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
         JsonValidation.validate(json, "properties", "fields");
 		
@@ -120,9 +121,9 @@ public class UserGroups extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result listUserGroupMembers() throws AppException {
-		JsonNode json = request().body().asJson();				
-		//MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result listUserGroupMembers(Request request) throws AppException {
+		JsonNode json = request.body().asJson();				
+		//MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
         JsonValidation.validate(json, "usergroup");
         MidataId groupId = JsonValidation.getMidataId(json, "usergroup");
@@ -157,11 +158,11 @@ public class UserGroups extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result createUserGroup() throws AppException {
-        JsonNode json = request().body().asJson();		
+	public Result createUserGroup(Request request) throws AppException {
+        JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "name");
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
 		UserGroup userGroup = new UserGroup();
 		
@@ -207,8 +208,8 @@ public class UserGroups extends APIController {
 	 */	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result deleteUserGroup(String groupIdStr) throws AppException {       
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result deleteUserGroup(Request request, String groupIdStr) throws AppException {       
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId groupId = MidataId.from(groupIdStr);
 		
 		UserGroupMember execMember = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
@@ -252,10 +253,10 @@ public class UserGroups extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result editUserGroup(String groupIdStr) throws AppException {
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result editUserGroup(Request request, String groupIdStr) throws AppException {
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId groupId = MidataId.from(groupIdStr);
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "name");
 		
 		UserGroupMember execMember = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
@@ -272,11 +273,11 @@ public class UserGroups extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result addMembersToUserGroup() throws AppException {
-		JsonNode json = request().body().asJson();		
+	public Result addMembersToUserGroup(Request request) throws AppException {
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "members", "group");
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 	
 		MidataId groupId = JsonValidation.getMidataId(json, "group");
 		Set<MidataId> targetUserIds = JsonExtraction.extractMidataIdSet(json.get("members"));
@@ -316,10 +317,10 @@ public class UserGroups extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result deleteUserGroupMembership() throws AppException  {
-		JsonNode json = request().body().asJson();		
+	public Result deleteUserGroupMembership(Request request) throws AppException  {
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "member", "group");
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 	
 		MidataId groupId = JsonValidation.getMidataId(json, "group");
 		MidataId targetUserId = JsonValidation.getMidataId(json, "member");

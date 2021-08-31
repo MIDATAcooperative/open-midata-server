@@ -402,7 +402,7 @@ public class EncryptedAPS {
 	}
 	
 	public boolean needsKeyUpgrade() throws InternalServerException {
-		if (isLoaded() && isAccessable() && aps.security == APSSecurityLevel.HIGH &&
+		if (isLoaded() && isAccessable() && aps.security == APSSecurityLevel.HIGH && owner != null &&
 				(apsId.equals(owner) || aps.consent)) {			
 			return EncryptionUtils.isDeprecatedKey(encryptionKey);
 		} else return false;
@@ -422,7 +422,7 @@ public class EncryptedAPS {
 					   setKey(ckey, KeyManager.instance.encryptKey(new MidataId(ckey), newKey));  
 				   }			      
 			   } catch (EncryptionNotSupportedException e) {
-				   throw new InternalServerException("error.internal", e);
+				   if (! e.getMessage().equals("No public key")) throw new InternalServerException("error.internal", e);
 			   }			   
 			}
 		    encryptionKey = newKey;
@@ -432,9 +432,11 @@ public class EncryptedAPS {
 			aps.updateAll();
 		} catch (LostUpdateException e) {
 			reload();
+			validate();
 			if (needsKeyUpgrade()) doKeyUpgrade();
+		} finally {
+		   AccessLog.logEnd("end key upgrade");
 		}
-		AccessLog.logEnd("end key upgrade");
 		
 	}
 		 		

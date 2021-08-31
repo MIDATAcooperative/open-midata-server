@@ -54,6 +54,7 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
@@ -91,8 +92,8 @@ public class Providers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result register() throws AppException {
-		JsonNode json = request().body().asJson();
+	public Result register(Request request) throws AppException {
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "name", "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "pub", "priv_pw", "recovery");
 					
@@ -139,7 +140,7 @@ public class Providers extends APIController {
 		user.visualizations = new HashSet<MidataId>();
 		//user.authType = SecondaryAuthType.SMS;
 		
-		Application.developerRegisteredAccountCheck(user, json);
+		Application.developerRegisteredAccountCheck(request, user, json);
 		Terms.addAgreedToDefaultTerms(user);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
@@ -170,14 +171,17 @@ public class Providers extends APIController {
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		
-		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));
+		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));
 		
 	}
 	
 	public static void register(HPUser user, HealthcareProvider provider, User executingUser) throws AppException {
 		
 		if (provider != null && HealthcareProvider.existsByName(provider.name)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider with this name already exists.");			
-		if (HPUser.existsByEMail(user.email)) throw new JsonValidationException("error.exists.user", "email", "exists", "A user with this email address already exists.");
+		if (HPUser.existsByEMail(user.email)) {
+			AuditManager.instance.addAuditEvent(AuditEventType.TRIED_USER_REREGISTRATION, HPUser.getByEmail(user.email, User.PUBLIC));
+			throw new JsonValidationException("error.exists.user", "email", "exists", "A user with this email address already exists.");
+		}
 				
 		if (user._id == null) user._id = new MidataId();
 		user.role = UserRole.PROVIDER;
@@ -219,16 +223,16 @@ public class Providers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ProviderSecured.class)
-	public Result registerOther() throws AppException {
+	public Result registerOther(Request request) throws AppException {
 		
-		requireSubUserRole(SubUserRole.MASTER);
+		requireSubUserRole(request, SubUserRole.MASTER);
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language");
 							
 		String email = JsonValidation.getEMail(json, "email");
 			
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		User executingUser = User.getById(executorId, User.ALL_USER);
 		
 	    HPUser user = new HPUser(email);
@@ -251,7 +255,7 @@ public class Providers extends APIController {
 		
 		//user.authType = SecondaryAuthType.SMS;
 						
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request.attrs().get(play.mvc.Security.USERNAME)), user);
 		register(user ,null, executingUser);
 			
 		AuditManager.instance.success();
@@ -265,8 +269,8 @@ public class Providers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result login() throws AppException {
-		JsonNode json = request().body().asJson();
+	public Result login(Request request) throws AppException {
+		JsonNode json = request.body().asJson();
 			
 		JsonValidation.validate(json, "email", "password");
 			
@@ -275,7 +279,7 @@ public class Providers extends APIController {
 		token.created = System.currentTimeMillis();                               
 		token.userRole = UserRole.PROVIDER;                
 											    				
-		return OAuth2.loginHelper(token, json, null, null);						
+		return OAuth2.loginHelper(request, token, json, null, null);						
 	}
 	
 	/**
@@ -287,9 +291,9 @@ public class Providers extends APIController {
 	@Security.Authenticated(ProviderSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result search() throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		JsonNode json = request().body().asJson();
+	public Result search(Request request) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		JsonNode json = request.body().asJson();
 		
 		Member result = null;
 		boolean removeIfNoConsents = false;
@@ -340,9 +344,9 @@ public class Providers extends APIController {
      */
 	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
-	public Result list() throws JsonValidationException, InternalServerException {
+	public Result list(Request request) throws JsonValidationException, InternalServerException {
 		
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 
 		Set<MemberKey> memberKeys = MemberKey.getByAuthorizedPerson(userId, Sets.create("owner"), Circles.RETURNED_CONSENT_LIMIT);
 		Set<MidataId> ids = new HashSet<MidataId>();
@@ -362,8 +366,8 @@ public class Providers extends APIController {
 	 */
 	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
-	public Result getMember(String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result getMember(Request request, String id) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId memberId = MidataId.from(id);
 		
 		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(userId, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", memberId), Consent.ALL);		
@@ -398,9 +402,9 @@ public class Providers extends APIController {
 	@Security.Authenticated(ProviderSecured.class)
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result getVisualizationToken() throws JsonValidationException, InternalServerException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		JsonNode json = request().body().asJson();
+	public Result getVisualizationToken(Request request) throws JsonValidationException, InternalServerException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		JsonNode json = request.body().asJson();
 						
 		JsonValidation.validate(json, "consent");
 		
@@ -410,14 +414,14 @@ public class Providers extends APIController {
 
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, consentId, userId, getRole());
-		return ok(spaceToken.encrypt(request()));
+		return ok(spaceToken.encrypt(request));
 	}
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result getOrganization(String id) throws AppException {
 			
-		//MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		//MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId providerid = MidataId.from(id);
 						
 		HealthcareProvider provider = HealthcareProvider.getById(providerid, HealthcareProvider.ALL);
@@ -429,11 +433,11 @@ public class Providers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ProviderSecured.class)
-	public Result updateOrganization(String id) throws AppException {
-		requireSubUserRole(SubUserRole.MASTER);
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result updateOrganization(Request request, String id) throws AppException {
+		requireSubUserRole(request, SubUserRole.MASTER);
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "_id", "name");
 					

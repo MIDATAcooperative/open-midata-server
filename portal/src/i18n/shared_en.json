@@ -126,7 +126,7 @@
        "user" : "A person with this email is already registered.",
        "member" : "A person with this email is already registered.",
        "provider" : "A healthcare provider with this name already exists.",
-       "research" : "A research organization with this name already exists.",
+       "organization" : "An organization with this name already exists.",
        "passcode" : "Please choose a different passcode!",
        "plugin" : "An application with the same name already exists.",
        "study" : "A research project with this name already exists.",
@@ -156,6 +156,7 @@
 
      "tooshort" : {
        "password" : "The password must be at least 8 characters long and contain one letter and one digit.",
+       "password2" : "The password must be at least 12 characters long and contain one letter,one digit and a special character.",
        "passphrase" : "Passphrases must be at least 8 characters long."
      },
 
@@ -1379,6 +1380,7 @@
   },
   
   "timeline" : {
+    "title" : "Timeline",
     "fitness" : "Fitness",
     "health" : "Health Data",
     "analyze" : "Data Analysis"
@@ -1427,11 +1429,7 @@
     "success" : "Unsubscription successful.",
     "back_to_login" : "Go to login page"
   },
-  
-  "timeline" : {
-    "title" : "Timeline"
-  },
-  
+   
   "-1" : "unknown"
     
 }

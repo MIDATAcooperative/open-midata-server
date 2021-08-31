@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -96,7 +97,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getCharacterEncoding() {
-		String ct = request.getHeader("Content-Type");
+		String ct = request.header("Content-Type").orElseThrow();
 		int p = ct.indexOf(";charset=");
 		if (p>=0) return ct.substring(p+";charset=".length());
 		return "UTF-8";		
@@ -315,28 +316,26 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 	@Override
 	public String getHeader(String arg0) {
 		if (arg0.toLowerCase().equals("content-type")) {
-			String r = request.getHeader(arg0);
-			if (r == null) return "application/json+fhir";
-			return r;
+			return request.header(arg0).orElse("application/json+fhir");			
 		}
 				
-		return request.getHeader(arg0);
+		return request.header(arg0).orElse(null);
 	}
 
 	@Override
 	public Enumeration<String> getHeaderNames() {
-		return Collections.enumeration(request.headers().keySet());
+		return Collections.enumeration(request.getHeaders().asMap().keySet());
 	}
 
 	@Override
 	public Enumeration<String> getHeaders(String arg0) {
-		String[] headers = request.headers().get(arg0);
-		if (headers == null) {
+		List<String> headers = request.getHeaders().getAll(arg0);
+		if (headers == null || headers.isEmpty()) {
 			AccessLog.log("header not found:"+arg0);
 			if (arg0.toLowerCase().equals("content-type")) return Collections.enumeration(Collections.singleton("application/json+fhir"));
 			return Collections.emptyEnumeration();
 		}
-		return Collections.enumeration(Arrays.asList(headers));
+		return Collections.enumeration(headers);
 	}
 
 	@Override

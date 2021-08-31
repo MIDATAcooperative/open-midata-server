@@ -311,9 +311,9 @@ export default {
 			return;
 		}
 
-		var pwvalid = crypto.isValidPassword($data.registration.password1);         
+		var pwvalid = crypto.isValidPassword($data.registration.password1, $data.role && $data.role != "member");         
         if (!pwvalid) {
-			this.setError("password", $t("error.tooshort.password"));
+			this.setError("password", $t(($data.role && $data.role != "member") ? "error.tooshort.password2" : "error.tooshort.password"));
         	return;
         }
 

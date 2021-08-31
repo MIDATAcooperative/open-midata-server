@@ -409,6 +409,11 @@ const routes = [
   },
   {
     base : ["research", "developer", "admin"],
+    path : "description",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/createstudy.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
     path : "study.overview",
     component: () => import(/* webpackChunkName: "research" */ 'views/research/studyoverview.vue')
   },

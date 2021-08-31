@@ -69,6 +69,7 @@ import utils.messaging.Messager;
 import utils.messaging.ServiceHandler;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 
 // read -p "Enter Share:" x;printf $x| base64 -d |openssl rsautl -decrypt -inkey key.pem;echo
 
@@ -77,12 +78,12 @@ public class PWRecovery extends APIController {
 	@BodyParser.Of(BodyParser.Json.class) 
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result storeRecoveryData() throws AppException {
+	public Result storeRecoveryData(Request request) throws AppException {
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "user", "entries");	
 		
-		MidataId user =  new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId user =  new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId usercheck = JsonValidation.getMidataId(json, "user");
 		
 		if (!user.equals(usercheck)) throw new InternalServerException("error.internal", "User mismatch");
@@ -96,9 +97,9 @@ public class PWRecovery extends APIController {
 	@BodyParser.Of(BodyParser.Json.class) 
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result storeRecoveryShare() throws AppException {
+	public Result storeRecoveryShare(Request request) throws AppException {
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "_id", "shares");	
 				
 		MidataId user = JsonValidation.getMidataId(json, "_id");
@@ -115,9 +116,9 @@ public class PWRecovery extends APIController {
 	@BodyParser.Of(BodyParser.Json.class) 
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result finishRecovery() throws AppException {
+	public Result finishRecovery(Request request) throws AppException {
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "_id", "session");
 		
 		MidataId userid = JsonValidation.getMidataId(json, "_id");
@@ -202,11 +203,11 @@ public class PWRecovery extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result changePassword() throws JsonValidationException, AppException {
+	public Result changePassword(Request request) throws JsonValidationException, AppException {
 		// validate 
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "oldPassword", "oldPasswordHash", "password");
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		String oldPassword = JsonValidation.getString(json, "oldPassword");
 		String oldPasswordHash = JsonValidation.getString(json, "oldPasswordHash");
@@ -340,8 +341,8 @@ public class PWRecovery extends APIController {
     @BodyParser.Of(BodyParser.Json.class)
     @APICall
 	@Security.Authenticated(AdminSecured.class)
-    public Result requestServiceKeyRecovery() throws AppException {
-    	JsonNode json = request().body().asJson();	
+    public Result requestServiceKeyRecovery(Request request) throws AppException {
+    	JsonNode json = request.body().asJson();	
     	KeyManager.instance.login(60000, false);
     	User autorun = Admin.getByEmail(RuntimeConstants.BACKEND_SERVICE, User.FOR_LOGIN);
   	    int keytype = KeyManager.instance.unlock(autorun._id, null);

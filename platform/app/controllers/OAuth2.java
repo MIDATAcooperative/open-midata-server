@@ -73,6 +73,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Http;
+import play.mvc.Http.Request;
 import play.mvc.Http.Status;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -191,9 +192,9 @@ public class OAuth2 extends Controller {
 	
 	@BodyParser.Of(BodyParser.FormUrlEncoded.class)
 	@MobileCall
-	public Result authenticate() throws AppException {
+	public Result authenticate(Request request) throws AppException {
 				
-        Map<String, String[]> data = request().body().asFormUrlEncoded();
+        Map<String, String[]> data = request.body().asFormUrlEncoded();
        
         MobileAppInstance appInstance = null;
         AccessContext tempContext = null;
@@ -234,7 +235,7 @@ public class OAuth2 extends Controller {
             if (data.containsKey("client_id")) {
               client_id = data.get("client_id")[0];
             } else {
-            	Optional<String> authh = request().header("Authorization");
+            	Optional<String> authh = request.header("Authorization");
             	if (authh.isPresent() && authh.get().startsWith("Basic")) {
             		String authstr = authh.get().substring("Basic ".length());
             		int p = authstr.indexOf(':');
@@ -318,11 +319,8 @@ public class OAuth2 extends Controller {
 		obj.put("expires_in", MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME / 1000l);
 		obj.put("patient", appInstance.owner.toString());
 		obj.put("refresh_token", refresh.encrypt());
-				
-		response().setHeader("Cache-Control", "no-store");
-		response().setHeader("Pragma", "no-cache"); 
-		
-		return ok(obj);
+						
+		return ok(obj).withHeader("Cache-Control", "no-store").withHeader("Pragma", "no-cache");
 	}
 
 	public static Pair<User, MobileAppInstance> useRefreshToken(String refresh_token) throws AppException {
@@ -824,9 +822,9 @@ public class OAuth2 extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result login() throws AppException {
+	public Result login(Request request) throws AppException {
 			
-        JsonNode json = request().body().asJson();		
+        JsonNode json = request.body().asJson();		
         JsonValidation.validate(json, "appname", "username", "password", "device", "state", "redirectUri");
 
         ExtendedSessionToken token = new ExtendedSessionToken();
@@ -841,14 +839,14 @@ public class OAuth2 extends Controller {
 		Plugin app = validatePlugin(token, json);		
 		readyCodeChallenge(token, json);
 		
-		return loginHelper(token, json, app, null);
+		return loginHelper(request, token, json, app, null);
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
-	public Result continuelogin() throws AppException {
-		JsonNode json = request().body().asJson();		
+	public Result continuelogin(Request request) throws AppException {
+		JsonNode json = request.body().asJson();		
        
 		PortalSessionToken token1 = PortalSessionToken.session();
 		ExtendedSessionToken token;
@@ -868,7 +866,7 @@ public class OAuth2 extends Controller {
         
         Plugin app = token.getPortal() ? null : validatePlugin(token, json);
                        
-        return loginHelper(token, json, app, null);
+        return loginHelper(request, token, json, app, null);
 	}
 	
 	/**
@@ -880,14 +878,14 @@ public class OAuth2 extends Controller {
 		throw new BadRequestException("error.invalid.token", "Invalid or expired authToken.", Http.Status.UNAUTHORIZED);
 	}
 
-	public static Result loginHelper() throws AppException {
+	public static Result loginHelper(Request request) throws AppException {
 		PortalSessionToken tk = PortalSessionToken.session();
 		if (tk instanceof ExtendedSessionToken) {
 			ExtendedSessionToken token = (ExtendedSessionToken) tk;
 			token.currentContext = RecordManager.instance.createContextFromAccount(tk.ownerId);
 			JsonNode json = Json.newObject();
 			Plugin app = token.appId != null ? validatePlugin(token, json) : null;
-			return loginHelper(token, json, app, token.currentContext);
+			return loginHelper(request, token, json, app, token.currentContext);
 		} else {
 			ExtendedSessionToken token = new ExtendedSessionToken();
 			token.ownerId = tk.ownerId;
@@ -900,12 +898,12 @@ public class OAuth2 extends Controller {
             token.currentContext = RecordManager.instance.createContextFromAccount(tk.ownerId);
             token.setPortal();
             JsonNode json = Json.newObject();
-            return loginHelper(token, json, null, token.currentContext);
+            return loginHelper(request, token, json, null, token.currentContext);
 		}
 		//throw new AuthException("error.internal", "Wrong token type");
 	}
 	
-	public static Result loginHelper(ExtendedSessionToken token, JsonNode json, Plugin app, AccessContext currentContext) throws AppException {
+	public static Result loginHelper(Request request, ExtendedSessionToken token, JsonNode json, Plugin app, AccessContext currentContext) throws AppException {
 
 		token.currentContext = currentContext;		
 		
@@ -940,7 +938,7 @@ public class OAuth2 extends Controller {
 		
 		if (token.getFake()) {		
 			AccessLog.log("is fake login");			
-		    return Application.loginHelperResult(token, user, Collections.singleton(UserFeature.EMAIL_VERIFIED));
+		    return Application.loginHelperResult(request, token, user, Collections.singleton(UserFeature.EMAIL_VERIFIED));
 		}
 		
 		Result pw = checkPasswordAuthentication(token, json, user);
@@ -980,7 +978,7 @@ public class OAuth2 extends Controller {
 		}
 		
 		if (app != null && !LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
-			return Application.loginHelperResult(token, user, Collections.singleton(UserFeature.VALID_LICENCE));
+			return Application.loginHelperResult(request, token, user, Collections.singleton(UserFeature.VALID_LICENCE));
 		}
 	
 		checkTwoFactorRequired(token, json, user, notok);
@@ -993,7 +991,7 @@ public class OAuth2 extends Controller {
 		  if (notok.contains(UserFeature.BIRTHDAY_SET)) notok = Collections.singleton(UserFeature.BIRTHDAY_SET);
 		  
 		  
-		  return Application.loginHelperResult(token, user, notok);
+		  return Application.loginHelperResult(request, token, user, notok);
 		}
 			
 		checkJoinWithCode(token, links);
@@ -1036,7 +1034,7 @@ public class OAuth2 extends Controller {
 			obj.put("role", user.role.toString().toLowerCase());
 			obj.set("subroles", Json.toJson(user.subroles));
 			obj.set("lastLogin", Json.toJson(user.login));
-			token.setRemoteAddress(request());
+			token.setRemoteAddress(request);
 			obj.put("sessionToken", token.asPortalSession().encrypt());
 			  
 			User.set(user._id, "login", new Date());			    

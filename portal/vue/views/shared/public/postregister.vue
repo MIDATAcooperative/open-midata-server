@@ -420,10 +420,10 @@ export default {
 				this.setError("password", $t('error.invalid.password_repetition'));
 				return;
 			}
-			let pwvalid = crypto.isValidPassword($data.setpw.password); 
+			let pwvalid = crypto.isValidPassword($data.setpw.password, $data.progress.role != "MEMBER"); 
         
         	if (!pwvalid) {
-        		this.setError("password", $t('error.tooshort.password'));
+        		this.setError("password", ($data.progress.role != "MEMBER" ? $t('error.tooshort.password2') : $t('error.tooshort.password')));
 				return;				
         	}
 				

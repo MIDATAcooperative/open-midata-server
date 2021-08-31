@@ -44,6 +44,7 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import play.mvc.Http.Request;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -69,9 +70,9 @@ public class QuickRegistration extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result register() throws AppException {
+	public Result register(Request request) throws AppException {
 		// validate 
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "country", "app", "language");
 		
 		
@@ -231,9 +232,9 @@ public class QuickRegistration extends APIController {
 			   return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withAppInstance(appInstance), json, app, user._id);
 			}*/
 					
-			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
+			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
 		} else {
-			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
+			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
 		}
 	}
 	
@@ -246,7 +247,7 @@ public class QuickRegistration extends APIController {
 	@MobileCall
 	public static Result registerFromApp() throws AppException {
 		// validate 
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "birthday", "appname", "secret", "device", "language");
 				
 		String appName = JsonValidation.getString(json, "appname");

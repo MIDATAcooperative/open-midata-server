@@ -47,6 +47,7 @@ import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -80,8 +81,8 @@ public class Researchers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result register() throws AppException {
-		JsonNode json = request().body().asJson();
+	public Result register(Request request) throws AppException {
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "name", "email", "description", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language");
 					
@@ -113,11 +114,14 @@ public class Researchers extends APIController {
 				
 		user._id = new MidataId();
 		//user.authType = SecondaryAuthType.SMS;
-		Application.developerRegisteredAccountCheck(user, json);		
+		Application.developerRegisteredAccountCheck(request, user, json);		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
 		if (research != null && Research.existsByName(research.name)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A research organization with this name already exists.");			
-		if (ResearchUser.existsByEMail(user.email)) throw new JsonValidationException("error.exists.user", "email", "exists", "A user with this email address already exists.");
+		if (ResearchUser.existsByEMail(user.email)) {
+			AuditManager.instance.addAuditEvent(AuditEventType.TRIED_USER_REREGISTRATION, ResearchUser.getByEmail(email, User.PUBLIC));
+			throw new JsonValidationException("error.exists.user", "email", "exists", "A user with this email address already exists.");
+		}
 						
 		user.role = UserRole.RESEARCH;
 		user.subroles = EnumSet.of(SubUserRole.MASTER);
@@ -156,7 +160,7 @@ public class Researchers extends APIController {
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 			
-		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));
+		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));
 			
 	}
 	
@@ -168,15 +172,15 @@ public class Researchers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public Result registerOther() throws AppException {
-		requireSubUserRole(SubUserRole.MASTER);
+	public Result registerOther(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.MASTER);
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language");
 							
 		String email = JsonValidation.getEMail(json, "email");
 			
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		User executingUser = User.getById(executorId, User.ALL_USER);
 		
 	    ResearchUser user = new ResearchUser(email);
@@ -198,7 +202,7 @@ public class Researchers extends APIController {
 		user.status = UserStatus.ACTIVE;
 		//user.authType = SecondaryAuthType.SMS;
 						
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request.attrs().get(play.mvc.Security.USERNAME)), user);
 		register(user ,null, executingUser);
 			
 		AuditManager.instance.success();
@@ -250,9 +254,9 @@ public class Researchers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result login() throws AppException {
+	public Result login(Request request) throws AppException {
 		
-	    JsonNode json = request().body().asJson();
+	    JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "email", "password");
 		
@@ -261,7 +265,7 @@ public class Researchers extends APIController {
 		token.created = System.currentTimeMillis();                               
 	    token.userRole = UserRole.RESEARCH;                
 										    				
-		return OAuth2.loginHelper(token, json, null, null);
+		return OAuth2.loginHelper(request, token, json, null, null);
 							
 	}
 	
@@ -270,7 +274,7 @@ public class Researchers extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result getOrganization(String id) throws AppException {
 			
-		//MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		//MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId researchid = MidataId.from(id);
 						
 		Research research = Research.getById(researchid, Research.ALL);
@@ -282,11 +286,11 @@ public class Researchers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public Result updateOrganization(String id) throws AppException {
-		requireSubUserRole(SubUserRole.MASTER);
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result updateOrganization(Request request, String id) throws AppException {
+		requireSubUserRole(request, SubUserRole.MASTER);
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "_id", "name", "description");
 					

@@ -65,8 +65,8 @@ public abstract class APIController extends Controller {
 		return PortalSessionToken.session().getRole();
 	}
 	
-	public static AccessContext portalContext() throws InternalServerException {
-		MidataId userId = new MidataId(request().attrs().get(Security.USERNAME));
+	public static AccessContext portalContext(Request request) throws InternalServerException {
+		MidataId userId = new MidataId(request.attrs().get(Security.USERNAME));
 		return RecordManager.instance.createContextFromAccount(userId);
 	}
 	
@@ -76,20 +76,20 @@ public abstract class APIController extends Controller {
 	 * @throws AuthException if user does not have required SubUserRole
 	 * @throws InternalServerException if a database error occurs
 	 */
-	public static void requireSubUserRole(SubUserRole subUserRole) throws AuthException, InternalServerException {
-		MidataId userId = new MidataId(request().attrs().get(Security.USERNAME));
+	public static void requireSubUserRole(Request request, SubUserRole subUserRole) throws AuthException, InternalServerException {
+		MidataId userId = new MidataId(request.attrs().get(Security.USERNAME));
 		User user = User.getById(userId, Sets.create("subroles"));
 		if (!user.subroles.contains(subUserRole)) throw new AuthException("error.notauthorized.action", "You need to have subrole '"+subUserRole.toString()+"' for this action.", subUserRole);
 	}
 	
-	public static void requireUserFeature(UserFeature feature) throws AuthException, InternalServerException {
-		MidataId userId = new MidataId(request().attrs().get(Security.USERNAME));
+	public static void requireUserFeature(Request request, UserFeature feature) throws AuthException, InternalServerException {
+		MidataId userId = new MidataId(request.attrs().get(Security.USERNAME));
 		User user = User.getById(userId, User.ALL_USER);
 		if (!feature.isSatisfiedBy(user)) throw new AuthException("error.notauthorized.action", "You need to have feature '"+feature.toString()+"' for this action.", feature);
 	}
 	
-	public static void requireSubUserRoleForRole(SubUserRole subUserRole, UserRole role) throws AuthException, InternalServerException {
-		MidataId userId = new MidataId(request().attrs().get(Security.USERNAME));
+	public static void requireSubUserRoleForRole(Request request, SubUserRole subUserRole, UserRole role) throws AuthException, InternalServerException {
+		MidataId userId = new MidataId(request.attrs().get(Security.USERNAME));
 		User user = User.getById(userId, Sets.create("role", "subroles"));
 		if (user.role == role && !user.subroles.contains(subUserRole)) throw new AuthException("error.notauthorized.action", "You need to have subrole '"+subUserRole.toString()+"' for this action.", subUserRole);
 	}
@@ -101,8 +101,8 @@ public abstract class APIController extends Controller {
 	 * @throws AuthException if user does have forbidden SubUserRole
 	 * @throws InternalServerException if a database error occurs
 	 */
-	public static void forbidSubUserRole(SubUserRole subUserRole, SubUserRole requested) throws AuthException, InternalServerException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public static void forbidSubUserRole(Request request, SubUserRole subUserRole, SubUserRole requested) throws AuthException, InternalServerException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		User user = User.getById(userId, Sets.create("subroles"));
 		if (user.subroles.contains(subUserRole)) throw new AuthException("error.notauthorized.action", "Subrole '"+subUserRole.toString()+"' is not allowed for this action.", requested);
 	}
@@ -111,13 +111,13 @@ public abstract class APIController extends Controller {
 	 * set content disposition header for attachments
 	 * @param filename filename for attachment
 	 */
-	public static void setAttachmentContentDisposition(String filename) {
+	public static Result setAttachmentContentDisposition(Result result, String filename) {
 		String fn = filename == null ? "file" : filename.replaceAll("[^a-zA-Z0-9_\\-\\.üöäßÜÖÄ \\[\\]\\(\\)]", "");
-		response().setHeader("Content-Disposition", "attachment; filename=\"" + fn+"\"");
+		return result.withHeader("Content-Disposition", "attachment; filename=\"" + fn+"\"");
 	}
 	
-	public static String getIPAdress() {
-		Request req = request();
+	public static String getIPAdress(Request request) {
+		Request req = request;
 		if (req.hasHeader("X-Real-IP-LB")) {
 			return req.header("X-Real-IP-LB").get();
 		}

@@ -38,6 +38,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.access.AccessContext;
@@ -63,9 +64,9 @@ public class Services extends APIController {
 
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-    public Result listServiceInstancesStudy(String studyIdStr) throws AppException {
+    public Result listServiceInstancesStudy(Request request, String studyIdStr) throws AppException {
 
-        MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        MidataId managerId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         MidataId studyId = MidataId.from(studyIdStr);
         Study study = Study.getById(studyId, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "createdBy", "code"));
 
@@ -81,9 +82,9 @@ public class Services extends APIController {
     
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-    public Result listServiceInstances() throws AppException {
+    public Result listServiceInstances(Request request) throws AppException {
 
-        MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));     
+        MidataId managerId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));     
         Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(managerId);
         Set<MidataId> managers = new HashSet<MidataId>();
         managers.add(managerId);
@@ -94,10 +95,10 @@ public class Services extends APIController {
     
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-    public Result removeServiceInstance(String instanceIdStr) throws AppException {
+    public Result removeServiceInstance(Request request, String instanceIdStr) throws AppException {
 
-        //MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-        AccessContext context = portalContext();
+        //MidataId managerId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext(request);
         MidataId instanceId = MidataId.from(instanceIdStr);
         
         ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);        
@@ -110,9 +111,9 @@ public class Services extends APIController {
     
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-    public Result listApiKeys(String serviceIdStr) throws AppException {
-        //MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-        AccessContext context = portalContext();
+    public Result listApiKeys(Request request, String serviceIdStr) throws AppException {
+        //MidataId managerId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext(request);
         MidataId instanceId = MidataId.from(serviceIdStr);
         
         ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);        
@@ -127,11 +128,11 @@ public class Services extends APIController {
     
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-    public Result addApiKey(String serviceIdStr) throws AppException {
+    public Result addApiKey(Request request, String serviceIdStr) throws AppException {
         AccessLog.log("add api key!");
 
-        //MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-        AccessContext context = portalContext();
+        //MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext(request);
         MidataId instanceId = MidataId.from(serviceIdStr);
         
         ServiceInstance serviceInstance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);  
@@ -149,18 +150,18 @@ public class Services extends APIController {
 		obj.put("expires_in", SERVICE_EXPIRATION_TIME / 1000l);		
 		obj.put("refresh_token", refresh.encrypt());
 		obj.put("cn", appInstance._id+"."+aeskey);
-				
-		response().setHeader("Cache-Control", "no-store");
-		response().setHeader("Pragma", "no-cache"); 
-		
-		return ok(obj).as("application/json");
+						
+		return ok(obj)
+				.as("application/json")
+				.withHeader("Cache-Control", "no-store")
+				.withHeader(serviceIdStr, aeskey);
     }
     
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-    public Result removeApiKey(String serviceIdStr, String apikeyIdStr) throws AppException {
-        MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-        AccessContext context = portalContext();
+    public Result removeApiKey(Request request, String serviceIdStr, String apikeyIdStr) throws AppException {
+        MidataId managerId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext(request);
         MidataId instanceId = MidataId.from(serviceIdStr);
         MidataId apikeyId = MidataId.from(apikeyIdStr);
         

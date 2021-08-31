@@ -30,6 +30,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
@@ -53,10 +54,10 @@ public class PortalConfig extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result getConfig() throws JsonValidationException, AppException {
+	public Result getConfig(Request request) throws JsonValidationException, AppException {
 	
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
 	    Space config = Space.getByOwnerSpecialContext(userId, "portal", Sets.create("name"));
 	    if (config == null) return ok();
@@ -76,12 +77,12 @@ public class PortalConfig extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result setConfig() throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+	public Result setConfig(Request request) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 
 		// validate json
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "config");
 		
 		Space configspace = Space.getByOwnerSpecialContext(userId, "portal", Sets.create("name"));
