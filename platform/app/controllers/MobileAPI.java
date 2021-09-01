@@ -407,7 +407,7 @@ public class MobileAPI extends Controller {
 				
 		Stats.finishRequest(request, "200", Collections.EMPTY_SET);
 		Result result = ok(fileData.inputStream).as(contentType);
-		if (asAttachment) PluginsAPI.setAttachmentContentDisposition(result, fileData.filename);
+		if (asAttachment) return PluginsAPI.setAttachmentContentDisposition(result, fileData.filename);
 		return result;
 	}
 	

@@ -325,8 +325,7 @@ public class Studies extends APIController {
 
 		AuditManager.instance.success();
 		Result result = ok(servletOutputStream.toByteArray());
-		setAttachmentContentDisposition(result, "study.zip");
-		return result;
+		return setAttachmentContentDisposition(result, "study.zip");		
 
 	}
 
@@ -532,8 +531,7 @@ public class Studies extends APIController {
 
 		// Serves this stream with 200 OK
 		Result result = ok().chunked(outstream).as("application/json+fhir");
-		setAttachmentContentDisposition(result, "study.json");		
-		return result;
+		return setAttachmentContentDisposition(result, "study.json");				
 	}
 
 	/**
