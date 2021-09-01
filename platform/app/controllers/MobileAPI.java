@@ -383,7 +383,7 @@ public class MobileAPI extends Controller {
 		ExecutionInfo info = null;
 		
 		Optional<String> param = request.header("Authorization");
-		String param2 = request.getQueryString("access_token");
+		String param2 = request.queryString("access_token").orElse(null);
 		
 		if (param.isPresent() && param.get().startsWith("Bearer ")) {
           info = ExecutionInfo.checkToken(request, param.get().substring("Bearer ".length()), false);                  
@@ -393,7 +393,7 @@ public class MobileAPI extends Controller {
 		  info = ExecutionInfo.checkToken(request, param2, false);
 		} else throw new BadRequestException("error.auth", "Please provide authorization token as 'Authorization' header or 'authToken' request parameter.");
 					
-		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request.getQueryString("_id"));
+		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request.queryString("_id").orElseThrow());
 		
 		return getFile(request, info, recordId, false);
 	}

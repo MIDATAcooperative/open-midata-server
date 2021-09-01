@@ -71,8 +71,8 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     		
     	  //JsonNode json = ctx.request().body().asJson();
     	  //ctx.args.put("json", json);
-    	  String host = request.header("Host").get();
-    	  origin = request.header("Origin").get();
+    	  String host = request.header("Host").orElse(null);
+    	  origin = request.header("Origin").orElse(null);
     	  //AccessLog.debug("VA:"+host);
 
     	  // XXX test for auto import

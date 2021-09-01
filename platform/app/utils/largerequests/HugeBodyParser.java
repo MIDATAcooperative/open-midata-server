@@ -70,7 +70,7 @@ public class HugeBodyParser extends DelegatingMultipartFormDataBodyParser<Encryp
 	
     @Inject
     public HugeBodyParser(Materializer materializer, play.api.http.HttpConfiguration config, UploadUndoErrorHandler errorhandler) {
-        super(materializer, config.parser().maxMemoryBuffer(), config.parser().maxDiskBuffer(), (HttpErrorHandler) errorhandler);
+        super(materializer, config.parser().maxMemoryBuffer(), config.parser().maxDiskBuffer(), errorhandler);
         errors =  errorhandler;       
     }
 
