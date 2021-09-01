@@ -62,6 +62,7 @@ import models.enums.WritePermissionType;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
@@ -114,24 +115,27 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public Result get() throws JsonValidationException, InternalServerException {
+	public Result get(Request request) throws JsonValidationException, InternalServerException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 						
 		List<Circle> circles = null;
 
 		if (json.has("owner")) {
-			MidataId owner = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+			MidataId owner = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 			circles = new ArrayList<Circle>(Circle.getAllByOwner(owner));
 		} else if (json.has("member")) {
-			MidataId member = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+			MidataId member = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 			if (json.has("status")) {
 			  circles = new ArrayList<Circle>(Circle.getAllActiveByMember(member));
 			} else {
 			  circles = new ArrayList<Circle>(Circle.getAllByMember(member));
 			}
 			ReferenceTool.resolveOwners(circles, true);
-		} else JsonValidation.validate(json, "owner");
+		} else {
+			JsonValidation.validate(json, "owner");
+			return ok();
+		}
 		Collections.sort(circles);
 		return ok(JsonOutput.toJson(circles, "Consent", Sets.create("name", "order", "owner", "authorized"))).as("application/json");
 	}
@@ -146,9 +150,9 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result listConsents() throws JsonValidationException, AppException, AuthException {
+	public Result listConsents(Request request) throws JsonValidationException, AppException, AuthException {
 		// validate json
-		JsonNode json = request().body().asJson();					
+		JsonNode json = request.body().asJson();					
 		JsonValidation.validate(json, "properties", "fields");
 		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));	
@@ -160,8 +164,8 @@ public class Circles extends APIController {
 		
 		List<Consent> consents = null;
 	
-		MidataId owner = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId owner = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
 		if (properties.containsKey("_id")) {
 			MidataId target = MidataId.from(properties.get("_id"));
@@ -197,9 +201,9 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result listApps() throws JsonValidationException, AppException, AuthException {
+	public Result listApps(Request request) throws JsonValidationException, AppException, AuthException {
 		// validate json
-		JsonNode json = request().body().asJson();					
+		JsonNode json = request.body().asJson();					
 		JsonValidation.validate(json, "fields");
 				
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
@@ -207,7 +211,7 @@ public class Circles extends APIController {
 						
 		List<MobileAppInstance> consents = null;
 	
-		MidataId owner = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId owner = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		consents = new ArrayList<MobileAppInstance>(MobileAppInstance.getByOwner(owner, fields));											
 		
@@ -307,18 +311,18 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result add() throws JsonValidationException, AppException {
+	public Result add(Request request) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "name", "type");
 		
-		requireUserFeature(UserFeature.EMAIL_VERIFIED);		
+		requireUserFeature(request, UserFeature.EMAIL_VERIFIED);		
 		
 		// validate request
 		ConsentType type = JsonValidation.getEnum(json, "type", ConsentType.class);
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		String name = JsonValidation.getString(json, "name");
 		MidataId userId = JsonValidation.getMidataId(json, "owner");
 		String externalOwner = JsonValidation.getEMail(json, "externalOwner");
@@ -541,12 +545,12 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result joinByPasscode() throws JsonValidationException, AppException {
+	public Result joinByPasscode(Request request) throws JsonValidationException, AppException {
 		// validate json
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId groupExecutorId = executorId;
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "passcode", "owner");
 		String passcode = JsonValidation.getString(json, "passcode");
 		MidataId ownerId = JsonValidation.getMidataId(json, "owner");
@@ -595,10 +599,10 @@ public class Circles extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result delete(String circleIdString) throws JsonValidationException, AppException {
+	public Result delete(Request request, String circleIdString) throws JsonValidationException, AppException {
 		// validate request
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId circleId = new MidataId(circleIdString);
 		
 		Consent consent = Consent.getByIdAndOwner(circleId, userId, Consent.FHIR);
@@ -644,14 +648,14 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result addUsers(String circleIdString) throws JsonValidationException, AppException {
+	public Result addUsers(Request request, String circleIdString) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "users");
 		
 		// validate request
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId circleId = new MidataId(circleIdString);
 		
 		Consent consent = getConsentById(context, circleId, Sets.create("owner", "authorized","authorizedTypes", "type", "status"));
@@ -710,10 +714,10 @@ public class Circles extends APIController {
 	 */
 	@Security.Authenticated(MemberSecured.class)
 	@APICall
-	public Result removeMember(String circleIdString, String memberIdString) throws JsonValidationException, AppException {
+	public Result removeMember(Request request, String circleIdString, String memberIdString) throws JsonValidationException, AppException {
 		// validate request
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId circleId = new MidataId(circleIdString);
 		
 		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","type"));
@@ -800,7 +804,7 @@ public class Circles extends APIController {
 		} else if (!active && wasActive) {
 			
 			Set<MidataId> auth = consent.authorized;
-			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
+			if (auth != null && auth.contains(consent.owner)) { auth.remove(consent.owner); }
 			
 			if (context == null && (consent.type.equals(ConsentType.REPRESENTATIVE) || !auth.isEmpty())) throw new InternalServerException("error.internal", "Cannot set consent to passive state without proper context");
 			

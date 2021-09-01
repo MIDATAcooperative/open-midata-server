@@ -187,6 +187,14 @@ public enum InstanceType {
 	public boolean simpleServiceKeyProtection() {
 		return this == DEMO;
 	}
+	
+	/**
+	 * Are developers allowed to test plugins from localhost?
+	 * @return
+	 */
+	public boolean allowTestingFromLocalhost() {
+		return this == TEST || this == PERFTEST; 
+	}
 		
 	
 	/**

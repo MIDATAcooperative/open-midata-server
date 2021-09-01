@@ -83,7 +83,7 @@
 						</form-group>
 						<div class="dynheight">
 							<form-group name="secure" label="registration.secure">
-                                <check-box v-model="setpw.secure" name="secure">			
+                                <check-box v-model="setpw.secure" name="secure" disabled> 			
 							      <span v-t="'registration.secure2'"></span>
                                 </check-box>							    
 							</form-group>
@@ -316,7 +316,7 @@ export default {
 		registration : {},
 		user : {},
 		passphrase : {},
-		setpw : {},
+		setpw : { secure : true },
 		progress : {},
 		mailSuccess : false,
 		codeSuccess : false,
@@ -420,10 +420,10 @@ export default {
 				this.setError("password", $t('error.invalid.password_repetition'));
 				return;
 			}
-			let pwvalid = crypto.isValidPassword($data.setpw.password); 
+			let pwvalid = crypto.isValidPassword($data.setpw.password, $data.progress.role != "MEMBER"); 
         
         	if (!pwvalid) {
-        		this.setError("password", $t('error.tooshort.password'));
+        		this.setError("password", ($data.progress.role != "MEMBER" ? $t('error.tooshort.password2') : $t('error.tooshort.password')));
 				return;				
         	}
 				

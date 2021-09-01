@@ -75,6 +75,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.AccessContext;
@@ -124,13 +125,13 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result changeStatus() throws JsonValidationException, AppException {
+	public Result changeStatus(Request request) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "user", "status");
 				
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));		
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
@@ -233,13 +234,13 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result register() throws AppException {
-		requireSubUserRole(SubUserRole.SUPERADMIN);
+	public Result register(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.SUPERADMIN);
 		
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language", "subroles");
 							
 		String email = JsonValidation.getEMail(json, "email");
@@ -251,7 +252,7 @@ public class Administration extends APIController {
 		Admin user;
 		if (existing != null) {
 			user = Admin.getById(existing._id, User.ALL_USER_INTERNAL);
-			AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request.attrs().get(play.mvc.Security.USERNAME)), user);
 			user.role = UserRole.ADMIN;
 			user.subroles = JsonValidation.getEnumSet(json, "subroles", SubUserRole.class);
 			if (user.authType == SecondaryAuthType.NONE) {
@@ -292,7 +293,7 @@ public class Administration extends APIController {
 			user.confirmationCode = CodeGenerator.nextCode();
 			if (user.mobile != null && user.mobile.length() > 0) user.authType = SecondaryAuthType.SMS;
 			
-			AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request.attrs().get(play.mvc.Security.USERNAME)), user);
 			
 			user.apps = new HashSet<MidataId>();		
 			user.visualizations = new HashSet<MidataId>();
@@ -322,16 +323,16 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result addComment() throws AppException {
-		requireSubUserRole(SubUserRole.USERADMIN);
+	public Result addComment(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.USERADMIN);
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "user", "comment");
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		String comment = JsonValidation.getString(json, "comment");
 		
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));				
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));				
 		
 		User targetUser = User.getByIdAlsoDeleted(userId, User.ALL_USER);
 		AuditManager.instance.addAuditEvent(AuditEventType.INTERNAL_COMMENT, null, executorId, targetUser, comment);
@@ -349,20 +350,20 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result changeUserEmail() throws AppException {
+	public Result changeUserEmail(Request request) throws AppException {
 		
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "user", "email");
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		String email = JsonValidation.getEMail(json, "email");
 		
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
-		  requireSubUserRole(SubUserRole.USERADMIN);
+		  requireSubUserRole(request, SubUserRole.USERADMIN);
 		}
 		
 		User targetUser = User.getByIdAlsoDeleted(userId, User.ALL_USER);
@@ -415,16 +416,16 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
-	public Result changeBirthday() throws AppException {	
-		JsonNode json = request().body().asJson();		
+	public Result changeBirthday(Request request) throws AppException {	
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "user", "birthday");
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");			
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
-		  requireSubUserRole(SubUserRole.USERADMIN);
+		  requireSubUserRole(request, SubUserRole.USERADMIN);
 		}				
 				
 		Member user = Member.getById(userId, Sets.create("_id", "birthday", "firstname", "lastname", "email", "role", "flags")); 
@@ -455,21 +456,21 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result adminWipeAccount() throws JsonValidationException, AppException {
-		requireSubUserRole(SubUserRole.USERADMIN);
+	public Result adminWipeAccount(Request request) throws JsonValidationException, AppException {
+		requireSubUserRole(request, SubUserRole.USERADMIN);
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "user");
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");
-		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		User selected = User.getByIdAlsoDeleted(userId, User.ALL_USER);
 		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
 		
 		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActorUser(executorId).withModifiedUser(selected));
 		
-		Users.doAccountWipe(portalContext(), userId);
+		Users.doAccountWipe(portalContext(request), userId);
 		
 		AuditManager.instance.success();
 		
@@ -483,8 +484,8 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result searchAuditLog() throws JsonValidationException, AppException {
-		JsonNode json = request().body().asJson();					
+	public Result searchAuditLog(Request request) throws JsonValidationException, AppException {
+		JsonNode json = request.body().asJson();					
 		JsonValidation.validate(json, "properties", "fields");
 		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));	
@@ -511,8 +512,8 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result deleteStudy(String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result deleteStudy(Request request, String id) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 		
@@ -562,8 +563,8 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result getStats() throws AppException {
-		JsonNode json = request().body().asJson();					
+	public Result getStats(Request request) throws AppException {
+		JsonNode json = request.body().asJson();					
 		JsonValidation.validate(json, "properties");
 		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));	
@@ -579,8 +580,8 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result getUsageStats() throws AppException {
-		JsonNode json = request().body().asJson();					
+	public Result getUsageStats(Request request) throws AppException {
+		JsonNode json = request.body().asJson();					
 		JsonValidation.validate(json, "properties");
 		
 		UsageStatsRecorder.flush();

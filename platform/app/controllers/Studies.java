@@ -27,6 +27,7 @@ import models.Study;
 import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import play.mvc.Http.Request;
 import utils.auth.Rights;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AuthException;
@@ -53,9 +54,9 @@ public class Studies extends APIController {
 	@APICall
 	
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result search() throws JsonValidationException, InternalServerException, AuthException {
-	   //MidataId user = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));	   
-	   JsonNode json = request().body().asJson();
+	public Result search(Request request) throws JsonValidationException, InternalServerException, AuthException {
+	   //MidataId user = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));	   
+	   JsonNode json = request.body().asJson();
 	   JsonValidation.validate(json, "properties", "fields");
 							   		
 	   Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));

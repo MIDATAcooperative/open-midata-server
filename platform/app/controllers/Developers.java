@@ -41,6 +41,7 @@ import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -69,8 +70,8 @@ public class Developers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result register() throws AppException {
-		JsonNode json = request().body().asJson();		
+	public Result register(Request request) throws AppException {
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "reason", "priv_pw", "pub", "recovery");
 							
 		String email = JsonValidation.getEMail(json, "email");
@@ -136,7 +137,7 @@ public class Developers extends APIController {
 		Market.correctOwners();
 		
 		
-		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));
+		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));
 			
 	}
 	
@@ -147,9 +148,9 @@ public class Developers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result login() throws AppException {
+	public Result login(Request request) throws AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "email", "password");
 		
@@ -158,7 +159,7 @@ public class Developers extends APIController {
 		token.created = System.currentTimeMillis();                               
 	    token.userRole = UserRole.DEVELOPER;                
 										    				
-		return OAuth2.loginHelper(token, json, null, null);
+		return OAuth2.loginHelper(request, token, json, null, null);
 				
 	}
 	
@@ -170,10 +171,10 @@ public class Developers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)
-	public Result resetTestAccountPassword() throws AppException {
-		JsonNode json = request().body().asJson();
+	public Result resetTestAccountPassword(Request request) throws AppException {
+		JsonNode json = request.body().asJson();
 			
-		MidataId developerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId developerId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId targetUserId = JsonValidation.getMidataId(json, "user");
 		User target = User.getById(targetUserId, Sets.create("developer", "role", "password","security"));		
 		if (target == null || !target.developer.equals(developerId)) throw new BadRequestException("error.unknown.user", "No test user");

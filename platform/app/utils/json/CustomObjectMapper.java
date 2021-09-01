@@ -37,10 +37,9 @@ public class CustomObjectMapper extends ObjectMapper {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static ObjectMapper me;
+	public static ObjectMapper me = new CustomObjectMapper();
 
-	public CustomObjectMapper() {
-		me = this;
+	public CustomObjectMapper() {		
 		SimpleModule module = new SimpleModule("MidataIdModule");
 		module.addSerializer(MidataId.class, new MidataIdSerializer());
 		this.registerModule(module);

@@ -37,8 +37,12 @@ import utils.exceptions.InternalServerException;
  * 
  */
 public class StudyParticipation extends Consent {
-		
+	
+	/**
+	 * this fields marks superclass field in Consent. This is intentional and cannot be removed easily.
+	 */
 	public String ownerName;
+	
 	public MidataId study; //study that the member is related to
 	public String studyName; // replication of study name
 	public ParticipationStatus pstatus; //how is the member related to the study?

@@ -24,6 +24,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.EncryptedAPS;
@@ -49,11 +50,11 @@ public class Debug extends Controller {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result get(String id) throws JsonValidationException, AppException {
+	public Result get(Request request, String id) throws JsonValidationException, AppException {
 				
 		if (InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable()) {
 		
-			MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+			MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 			MidataId apsId = id.equals("-") ? userId : new MidataId(id);
 			
 			EncryptedAPS enc = new EncryptedAPS(apsId, userId);

@@ -108,6 +108,14 @@ public class ExtendedSessionToken extends PortalSessionToken {
 		return (flags & (1 << 2)) > 0;
 	}
 	
+	public void setFake() {
+		flags |= (1 << 3);
+	}
+	
+	public boolean getFake() {
+		return (flags & (1 << 3)) > 0;
+	}
+	
 	protected void populate(Map<String, Object> map) {
 		super.populate(map);
 		if (appInstanceId != null) map.put("i", appInstanceId.toString());
@@ -204,6 +212,14 @@ public class ExtendedSessionToken extends PortalSessionToken {
     	this.userRole = user.role;
     	this.developerId = user.developer;
     	this.created = System.currentTimeMillis();
+    	return this;
+    }
+    
+    public ExtendedSessionToken forFake() {    	
+    	this.userRole = UserRole.ANY;
+    	this.ownerId = new MidataId();    	
+    	this.created = System.currentTimeMillis();
+    	setFake();
     	return this;
     }
     

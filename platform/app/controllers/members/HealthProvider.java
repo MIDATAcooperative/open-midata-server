@@ -45,6 +45,7 @@ import models.enums.ConsentType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.ApplicationTools;
@@ -80,9 +81,9 @@ public class HealthProvider extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public Result list() throws InternalServerException {
+	public Result list(Request request) throws InternalServerException {
 	      
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));	
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));	
 		Set<MemberKey> memberkeys = MemberKey.getByOwner(userId);
 		
 		return ok(JsonOutput.toJson(memberkeys, "Consent", Sets.create("owner", "organization", "authorized", "status", "confirmDate", "aps", "comment", "name")));
@@ -97,9 +98,9 @@ public class HealthProvider extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result search() throws AppException, JsonValidationException {
+	public Result search(Request request) throws AppException, JsonValidationException {
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "properties", "fields");
 		
 		// get users
@@ -153,11 +154,11 @@ public class HealthProvider extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result confirmConsent() throws AppException, JsonValidationException {
+	public Result confirmConsent(Request request) throws AppException, JsonValidationException {
 		
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
-		JsonNode json = request().body().asJson();
+		//MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "consent");
 		
 		MidataId consentId = JsonValidation.getMidataId(json, "consent");		
@@ -206,11 +207,11 @@ public class HealthProvider extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result rejectConsent() throws AppException, JsonValidationException {
+	public Result rejectConsent(Request request) throws AppException, JsonValidationException {
 		
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
-		JsonNode json = request().body().asJson();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "consent");
 		
 		MidataId consentId = JsonValidation.getMidataId(json, "consent");

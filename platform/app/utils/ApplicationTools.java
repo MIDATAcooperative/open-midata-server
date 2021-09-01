@@ -79,7 +79,7 @@ import utils.stats.UsageStatsRecorder;
 public class ApplicationTools {
 
 	public static MobileAppInstance installApp(AccessContext context, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm, Set<StudyAppLink> links) throws AppException {
-		AccessLog.logBegin("beginn install app id="+appId+" context="+context.toString());
+		AccessLog.logBegin("beginn install app id="+appId+" context="+(context != null ? context.toString() : "null"));
 		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 		if (app == null) throw new InternalServerException("error.internal", "App not found");
 

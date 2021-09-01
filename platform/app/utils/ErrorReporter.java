@@ -22,7 +22,7 @@ import java.util.Date;
 
 import models.MidataId;
 import models.Plugin;
-import play.mvc.Http;
+import play.mvc.Http.Request;
 import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;
@@ -47,14 +47,14 @@ public class ErrorReporter {
 	 * @param ctx http context or null
 	 * @param e Exception to be reported
 	 */
-	public static void report(String fromWhere, Http.Context ctx, Exception e) {
+	public static void report(String fromWhere, Request request, Exception e) {
 		long now = System.currentTimeMillis();
 		if (now - lastReport < 1000 * 60) return;
 		lastReport = now;
 		String path = "none";
 		String user = "none";
-		if (ctx != null) {
-		   path = "["+ctx.request().method()+"] "+ctx.request().host()+ctx.request().path();
+		if (request != null) {
+		   path = "["+request.method()+"] "+request.host()+request.path();
 		   PortalSessionToken tsk = PortalSessionToken.session();
 		   if (tsk != null) {
 		     user = tsk.getRole().toString()+" "+tsk.getOwnerId().toString();
@@ -67,17 +67,17 @@ public class ErrorReporter {
 		if (e!=null) Stats.addComment("Error: "+e.getClass().getName()+": "+e.getMessage());
 	}
 	
-	public static void reportPluginProblem(String fromWhere, Http.Context ctx, PluginException e) {
+	public static void reportPluginProblem(String fromWhere, Request request, PluginException e) {
 		try {
 			MidataId pluginId = e.getPluginId();
 			if (pluginId==null) {
-				report(fromWhere, ctx, e);
+				report(fromWhere, request, e);
 				return;
 			}
 			
 			Plugin plg = Plugin.getById(pluginId, Sets.create("creatorLogin", "name", "filename", "sendReports"));
 			if (plg==null || plg.creatorLogin==null) {
-				report(fromWhere, ctx, e);
+				report(fromWhere, request, e);
 				return;
 			}
 	
@@ -89,20 +89,20 @@ public class ErrorReporter {
 			} 
 			
 			MailUtils.sendTextMail(MailSenderType.STATUS, bugReportEmail, bugReportName, "Error Report: ["+plg.name+"] "+InstanceConfig.getInstance().getPortalServerDomain(), txt);
-			if (e!=null) Stats.addComment("Error: "+e.getClass().getName()+": "+e.getMessage());
+			Stats.addComment("Error: "+e.getClass().getName()+": "+e.getMessage());
 		} catch (InternalServerException e2) {
-			report(fromWhere, ctx, e2);
+			report(fromWhere, request, e2);
 		}
 	}
 	
-	public static void reportPerformance(String fromWhere, Http.Context ctx, long duration) {
+	public static void reportPerformance(String fromWhere, Request request, long duration) {
 		long now = System.currentTimeMillis();
 		if (now - lastReport < 1000 * 60) return;
 		lastReport = now;
 		String path = "none";
 		String user = "none";
-		if (ctx != null) {
-		   path = "["+ctx.request().method()+"] "+ctx.request().host()+ctx.request().path();
+		if (request != null) {
+		   path = "["+request.method()+"] "+request.host()+request.path();
 		   PortalSessionToken tsk = PortalSessionToken.session();
 		   if (tsk != null) {
 		     user = tsk.getRole().toString()+" "+tsk.getOwnerId().toString();

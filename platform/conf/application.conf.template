@@ -85,6 +85,8 @@ play.mailer.bulk {
   from="BULK_MAIL_SENDER"
 }
 
+play.http.errorHandler = "utils.ErrorHandler"
+
 
 emails.admin="MAIL_ADMIN"
 
@@ -179,9 +181,11 @@ midata {
 	    
 	    remote {
 	      log-remote-lifecycle-events = on
-          netty.tcp {
-             hostname = "PLATFORM_HOSTNAME"
-             port = 9006
+         
+          artery {
+             transport = tcp 
+             canonical.hostname = "PLATFORM_HOSTNAME"
+             canonical.port = 9006
           }
 	    	      	      
 	      log-sent-messages = on

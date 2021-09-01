@@ -58,7 +58,7 @@ public class FasterDecryptTool {
 		for (Consent c : consents) {	
 			try {
 				byte[] key = root.getKey(c._id);
-				if (key != null) {
+				if (key != null && !EncryptionUtils.isDeprecatedKey(key)) {
 					keys.put(c._id, key);
 				} else {
 					if (c.status==ConsentStatus.ACTIVE && c.status==ConsentStatus.FROZEN) missing.add(c);
@@ -75,8 +75,8 @@ public class FasterDecryptTool {
 		try {
 			for (Consent c : missing) {
 			  APS targetAPS = cache.getAPS(c._id);
-			  if (targetAPS.isAccessible()) {
-				  byte[] newkey = ((APSImplementation) targetAPS).eaps.getAPSKey();
+			  if (targetAPS.isAccessible()) {				  
+				  byte[] newkey = ((APSImplementation) targetAPS).eaps.exportAPSKey();
 				  root.addEntry(new ConsentToKeyIndexKey(c._id, newkey));			  
 			  }
 			}

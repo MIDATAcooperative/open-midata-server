@@ -153,20 +153,20 @@ public class MediumStreamAPS extends APS {
 		if (!q.restrictedBy("deleted")) {
 			query.put("encryptedData", NOTNULL);
 		}
-		boolean useCache = true;
+		//boolean useCache = true;
 		if (q.restrictedBy("_id")) {
 				                				
 			Set<MidataId> idRestriction = q.getMidataIdRestriction("_id");
 							query.put("_id", idRestriction);
-			useCache = false;
+			//useCache = false;
 		}
 			
-		useCache = !q.addMongoTimeRestriction(query, false) && useCache;
+		q.addMongoTimeRestriction(query, false);
 		List<DBRecord> directResult;
 			
-		if (useCache && cachedRecords != null) {
-				return Collections.unmodifiableList(cachedRecords);
-		}
+		//if (useCache && cachedRecords != null) {
+		//		return Collections.unmodifiableList(cachedRecords);
+		//}
 			
 		directResult = DBRecord.getAllList(query, q.getFieldsFromDB());
 		for (DBRecord record : directResult) {

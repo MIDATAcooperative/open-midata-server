@@ -40,6 +40,7 @@ import models.KeyInfoExtern;
 import models.Member;
 import models.MidataId;
 import models.Plugin;
+import models.RateLimitedAction;
 import models.ResearchUser;
 import models.User;
 import models.enums.AccountActionFlags;
@@ -60,6 +61,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import play.routing.JavaScriptReverseRouter;
 import utils.AccessLog;
 import utils.InstanceConfig;
@@ -67,6 +69,7 @@ import utils.RuntimeConstants;
 import utils.access.AccessContext;
 import utils.access.DBRecord;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
@@ -102,6 +105,9 @@ public class Application extends APIController {
 	public final static long MAX_TIME_UNTIL_EMAIL_CONFIRMATION = 1000l * 60l * 60l * 24l;
 	public final static long EMAIL_TOKEN_LIFETIME = 1000l * 60l * 60l * 24l *3l;
 	
+	public final static long MIN_BETWEEN_MAILS = 1000l * 60l * 5l;
+	public final static long PER_DAY = 1000l * 60l * 60l * 24l;
+	
 	// public final static long MAX_TRIAL_DURATION = 1000l * 60l * 60l * 24l * 30l;
 			
 	/**
@@ -122,9 +128,9 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class) 
 	@APICall
-	public Result requestPasswordResetToken() throws AppException {
+	public Result requestPasswordResetToken(Request request) throws AppException {
 		// validate input
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "role");				
 		String email = JsonValidation.getEMail(json, "email");
 		String role = JsonValidation.getString(json, "role");
@@ -141,9 +147,15 @@ public class Application extends APIController {
 			break;
 		default: break;		
 		}
-		if (user != null) {		
+		if (user != null) {				
 		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, user._id);
 		  if (user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
+		  
+		  if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.USER_PASSWORD_CHANGE_REQUEST, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
+			  AuditManager.instance.fail(400, "Rate limit reached", "error.ratelimit");
+			  return ok();
+		  }
+		  		  
 		  PasswordResetToken token;
 		  if (user.resettoken != null && user.resettokenTs > 0 && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME - 1000l * 60l * 60l) {
 			  token = new PasswordResetToken(user._id, role, user.resettoken);
@@ -179,9 +191,9 @@ public class Application extends APIController {
 	 */	
 	@APICall	
 	@BodyParser.Of(BodyParser.Json.class) 
-	public Result requestWelcomeMail() throws AppException {
+	public Result requestWelcomeMail(Request request) throws AppException {
 		
-		JsonNode json = request().body().asJson();	
+		JsonNode json = request.body().asJson();	
 		JsonValidation.validate(json, "userId");				
 		MidataId userId = JsonValidation.getMidataId(json, "userId");
 		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "emailStatus", "status", "role"));
@@ -205,6 +217,10 @@ public class Application extends APIController {
 	
 	public static void sendWelcomeMail(MidataId sourcePlugin, User user, User executingUser) throws AppException {
 	   if (user.developer == null) {
+		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
+			   throw new InternalServerException("error.ratelimit", "Rate limit hit");
+		   }
+		   
 		   if (user.email == null) return;
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
 		   user.set("resettoken", token.token);
@@ -226,10 +242,12 @@ public class Application extends APIController {
 		   
 		   AccessLog.log("send welcome mail: "+user.email);
 		   if (executingUser == null) {
+			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(user._id));
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
 				   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, user.role.toString(), Collections.singleton(user._id), null, replacements);
 			   }	  	   
 		   } else {
+			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(executingUser).withModifiedUser(user._id));
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, null, Collections.singleton(user._id), null, replacements)) {
 				   if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, user.role.toString(), Collections.singleton(user._id), null, replacements)) {
 					   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
@@ -238,6 +256,7 @@ public class Application extends APIController {
 				   }
 			   }	  	   
 		   }
+		   AuditManager.instance.success();
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
 		   User.set(user._id, "emailStatus", user.emailStatus);
@@ -267,10 +286,10 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result confirmAccountEmail() throws AppException {
+	public Result confirmAccountEmail(Request request) throws AppException {
 						
 		// validate 
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		
 		EMailStatus wanted = json.has("mode") ? JsonValidation.getEnum(json, "mode", EMailStatus.class) : null;
 		String password = json.has("password") ? JsonValidation.getPassword(json, "password") : null;
@@ -299,7 +318,7 @@ public class Application extends APIController {
 			
 		} else {
 			
-			PortalSessionToken tk = PortalSessionToken.decrypt(request());
+			PortalSessionToken tk = PortalSessionToken.decrypt(request);
 			
 			/*
 			JsonValidation.validate(json, "userId", "code", "role");
@@ -309,6 +328,7 @@ public class Application extends APIController {
 			*/
 			
 		    if (tk != null) {
+		    	if (tk.getHandle() == null) throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 			    try {
 			      KeyManager.instance.continueSession(tk.getHandle());
 			      handle = tk.getHandle();
@@ -370,7 +390,7 @@ public class Application extends APIController {
 		if (wanted != null) {
 			if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {
 				if (user.password == null) {					
-					return OAuth2.loginHelper();	
+					return OAuth2.loginHelper(request);	
 				}
 			       if (user.resettoken != null 		    		    
 			    		   && user.resettoken.equals(token)
@@ -416,7 +436,7 @@ public class Application extends APIController {
 			
 		AuditManager.instance.success();	
 		
-		return OAuth2.loginHelper();	
+		return OAuth2.loginHelper(request);	
 				
 	}
 	
@@ -428,12 +448,12 @@ public class Application extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
-	public Result confirmAccountAddress() throws AppException {
+	public Result confirmAccountAddress(Request request) throws AppException {
 		// validate 
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "confirmationCode");
 				
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		String confirmationCode = JsonValidation.getString(json, "confirmationCode");
 		
 		User user = User.getById(userId, User.FOR_LOGIN);
@@ -456,7 +476,7 @@ public class Application extends APIController {
 		checkAccount(user);
 					
 		// response
-		return OAuth2.loginHelper();		
+		return OAuth2.loginHelper(request);		
 	}
 	
 	public static void checkAccount(User user) throws AppException {
@@ -513,8 +533,8 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result setPasswordWithToken() throws JsonValidationException, AppException {
-		return confirmAccountEmail();				
+	public Result setPasswordWithToken(Request request) throws JsonValidationException, AppException {
+		return confirmAccountEmail(request);				
 	}
 	
 	/**
@@ -526,12 +546,12 @@ public class Application extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result changePassword() throws JsonValidationException, AppException {
-		return new PWRecovery().changePassword();
+	public Result changePassword(Request request) throws JsonValidationException, AppException {
+		return new PWRecovery().changePassword(request);
 		// validate 
-		/*JsonNode json = request().body().asJson();		
+		/*JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "oldPassword", "password");
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		String oldPassword = JsonValidation.getString(json, "oldPassword");
 		String password = JsonValidation.getPassword(json, "password");
@@ -556,12 +576,12 @@ public class Application extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result changePassphrase() throws AppException {
-		requireUserFeature(UserFeature.ADDRESS_VERIFIED);
+	public Result changePassphrase(Request request) throws AppException {
+		requireUserFeature(request, UserFeature.ADDRESS_VERIFIED);
 		
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "oldPassphrase", "passphrase");
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		String oldPassphrase = JsonValidation.getStringOrNull(json, "oldPassphrase");
 		String passphrase = JsonValidation.getPassword(json, "passphrase");
@@ -572,7 +592,7 @@ public class Application extends APIController {
 		
 		// This is a dummy query to check if provided passphrase works
 		try {
-		  RecordManager.instance.list(getRole(), portalContext(), CMaps.map("format","zzzzzz"), Sets.create("name"));
+		  RecordManager.instance.list(getRole(), portalContext(request), CMaps.map("format","zzzzzz"), Sets.create("name"));
 		} catch (InternalServerException e) { throw new BadRequestException("error.passphrase_old", "Old passphrase not correct."); }
 		
 		KeyManager.instance.changePassphrase(userId, passphrase);
@@ -591,9 +611,9 @@ public class Application extends APIController {
 	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result authenticate() throws AppException {
+	public Result authenticate(Request request) throws AppException {
 		// validate 
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "password");	
 			
 		ExtendedSessionToken token = new ExtendedSessionToken();
@@ -601,7 +621,7 @@ public class Application extends APIController {
 		token.created = System.currentTimeMillis();                               
 	    token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
 										    				
-		return OAuth2.loginHelper(token, json, null, null);
+		return OAuth2.loginHelper(request, token, json, null, null);
 		
 		
 		
@@ -666,39 +686,40 @@ public class Application extends APIController {
 		return missing;
 	}
 	
-	public static Result loginHelperResult(PortalSessionToken token, User user, Set<UserFeature> missing) throws AppException {
+	public static Result loginHelperResult(Request request, PortalSessionToken token, User user, Set<UserFeature> missing) throws AppException {
 		ObjectNode obj = Json.newObject();
-		obj.put("status", user.status.toString());
-		obj.put("contractStatus", user.contractStatus.toString());		
-		obj.put("agbStatus", user.agbStatus.toString());
-		obj.put("emailStatus", user.emailStatus.toString());
-		obj.put("mobileStatus", user.mobileStatus == null ? EMailStatus.UNVALIDATED.toString() : user.mobileStatus.toString());
+		if (user != null) {
+			obj.put("status", user.status.toString());
+			obj.put("contractStatus", user.contractStatus.toString());		
+			obj.put("agbStatus", user.agbStatus.toString());
+			obj.put("emailStatus", user.emailStatus.toString());
+			obj.put("mobileStatus", user.mobileStatus == null ? EMailStatus.UNVALIDATED.toString() : user.mobileStatus.toString());
+			obj.put("confirmationCode", user.confirmedAt != null);
+			obj.put("role", user.role.toString().toLowerCase());
+			obj.put("termsOfUse", InstanceConfig.getInstance().getTermsOfUse(user.role));
+			obj.put("privacyPolicy", InstanceConfig.getInstance().getPrivacyPolicy(user.role));
+			obj.put("userId", user._id.toString());
+			if (token.is2FAVerified(user)) {
+			  obj.set("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
+			}
+		} else {
+			obj.put("status", UserStatus.NEW.toString());
+			obj.put("contractStatus", ContractStatus.NEW.toString());		
+			obj.put("agbStatus", ContractStatus.NEW.toString());
+			obj.put("emailStatus", EMailStatus.UNVALIDATED.toString());
+			obj.put("mobileStatus", EMailStatus.UNVALIDATED.toString());
+			obj.put("confirmationCode", false);
+			obj.put("role", token.userRole.toString());
+			obj.put("termsOfUse", InstanceConfig.getInstance().getTermsOfUse(token.userRole));
+			obj.put("privacyPolicy", InstanceConfig.getInstance().getPrivacyPolicy(token.userRole));
+			obj.put("userId", token.ownerId.toString());
+		}
+						
 		ArrayNode ar = obj.putArray("requirements");
 		for (UserFeature feature : missing) ar.add(feature.toString());
-		obj.put("confirmationCode", user.confirmedAt != null);
-		obj.put("role", user.role.toString().toLowerCase());
-		obj.put("termsOfUse", InstanceConfig.getInstance().getTermsOfUse(user.role));
-		obj.put("privacyPolicy", InstanceConfig.getInstance().getPrivacyPolicy(user.role));
-		obj.put("userId", user._id.toString());
-		if (token.is2FAVerified(user)) {
-		  obj.set("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
-		}
-		token.setRemoteAddress(request());
+		token.setRemoteAddress(request);
 		obj.put("sessionToken", token.encrypt());
-		
-		/*
-		if (user.status.equals(UserStatus.ACTIVE) || user.status.equals(UserStatus.NEW)) {			
-		   String handle = KeyManager.instance.currentHandleOptional(user._id);
-		   if (handle != null) {
-			   PortalSessionToken token = null;		   	
-			   token = new PortalSessionToken(handle, user._id, UserRole.ANY, null, user.developer);
-			   token.setRemoteAddress(request());
-			   obj.put("sessionToken", token.encrypt());
-			   //KeyManager.instance.unlock(user._id, null);
-			   KeyManager.instance.persist(user._id);
-		   }
-		}*/
-					
+			
 		AuditManager.instance.success();
 		return ok(obj).as("application/json");
 	}
@@ -723,12 +744,12 @@ public class Application extends APIController {
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result downloadToken() throws AppException {
+	public Result downloadToken(Request request) throws AppException {
 		PortalSessionToken current = PortalSessionToken.session();
 		PortalSessionToken token = new PortalSessionToken(current.getHandle(), current.getOwnerId(), current.getRole(), current.getOrgId(), current.getDeveloperId());
 		
 		ObjectNode obj = Json.newObject();
-		token.setRemoteAddress(request());
+		token.setRemoteAddress(request);
 		token.setTimeout(1000 * 10);
 		obj.put("token", token.encrypt());
 		
@@ -743,12 +764,12 @@ public class Application extends APIController {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result providePassphrase() throws AppException {
+	public Result providePassphrase(Request request) throws AppException {
 		// validate 
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "passphrase");
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
 		String passphrase = JsonValidation.getString(json, "passphrase");
 		
@@ -775,9 +796,9 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result register() throws AppException {
+	public Result register(Request request) throws AppException {
 		// validate 
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language","password");
 		String email = JsonValidation.getEMail(json, "email");
 		String firstName = JsonValidation.getString(json, "firstname");
@@ -786,7 +807,10 @@ public class Application extends APIController {
 
 		// check status
 		if (Member.existsByEMail(email)) {
-		  throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
+			//AccessLog.log("A user with this email address already exists.");
+			//return OAuth2.loginHelper(new ExtendedSessionToken().forFake(), json, null, null);
+			AuditManager.instance.addAuditEvent(AuditEventType.TRIED_USER_REREGISTRATION, Member.getByEmail(email, User.PUBLIC));
+		    throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
 		}
 		
 		// create the user
@@ -814,7 +838,7 @@ public class Application extends APIController {
 		//user.authType = SecondaryAuthType.NONE;	
 		
 		registerSetDefaultFields(user, true);				
-		developerRegisteredAccountCheck(user, json);
+		developerRegisteredAccountCheck(request, user, json);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		//handlePreCreated(user);
@@ -851,7 +875,7 @@ public class Application extends APIController {
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);
 		UsageStatsRecorder.protokoll(RuntimeConstants.instance.portalPlugin, "portal", UsageAction.REGISTRATION);
 		
-		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));				
+		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));				
 	}
 	
 	/*public static void handlePreCreated(Member user) throws AppException {
@@ -922,11 +946,11 @@ public class Application extends APIController {
 	 * @throws JsonValidationException
 	 * @throws AuthException
 	 */
-	public static void developerRegisteredAccountCheck(User newuser, JsonNode json) throws JsonValidationException, AuthException {
+	public static void developerRegisteredAccountCheck(Request request, User newuser, JsonNode json) throws JsonValidationException, AuthException {
 		if (InstanceConfig.getInstance().getInstanceType().developersMayRegisterTestUsers()) {		  
 		   newuser.developer = JsonValidation.getMidataId(json, "developer");
 		   if (newuser.developer != null) {
-			  PortalSessionToken token = PortalSessionToken.decrypt(request());
+			  PortalSessionToken token = PortalSessionToken.decrypt(request);
 			  if (token == null) throw new AuthException("error.internal", "You need to be logged in as this developer");
 		     if (!newuser.developer.equals(token.ownerId)) throw new AuthException("error.internal", "You need to be logged in as this developer");
 		     newuser.status = UserStatus.ACTIVE;
@@ -957,7 +981,7 @@ public class Application extends APIController {
 	
 	@APICall
 	public Result javascriptRoutes() {		
-          return ok(JavaScriptReverseRouter.create("jsRoutes", 	
+          return ok(JavaScriptReverseRouter.create("jsRoutes", "test",InstanceConfig.getInstance().getPlatformServer(), 	
 				// Application
 				
 				controllers.routes.javascript.Application.authenticate(),

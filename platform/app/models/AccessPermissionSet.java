@@ -54,6 +54,11 @@ public class AccessPermissionSet extends Model {
 	public long version;
 	
 	/**
+	 * which format does the APS have
+	 */
+	public int format;
+	
+	/**
 	 * key table. one entry for each entity that has access to this APS.
 	 * map keys are the object ids of the entities and the word "owner" for the owner of the APS.
 	 * each map value is the RSA encrypted AES key of this APS.
@@ -104,6 +109,14 @@ public class AccessPermissionSet extends Model {
 	public void updateEncrypted() throws InternalServerException, LostUpdateException {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "encrypted", "unmerged");
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
+	public void updateAll() throws InternalServerException, LostUpdateException {
+		try {
+		   DBLayer.secureUpdate(this, collection, "version", "encrypted", "keys", "unmerged", "format");
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}

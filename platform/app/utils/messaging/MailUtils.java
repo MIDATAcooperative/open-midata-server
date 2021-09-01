@@ -58,7 +58,7 @@ public class MailUtils {
 				sub.getInt("port") , 
 				sub.getBoolean("ssl"), 
 				sub.getBoolean("tls"), 
-				false /*sub.getBoolean("tlsRequired")*/, Option.apply(sub.getString("user")), Option.apply(sub.getString("password")), false, Option.empty(), Option.empty(), false);
+				false /*sub.getBoolean("tlsRequired")*/, Option.apply(sub.getString("user")), Option.apply(sub.getString("password")), false, Option.empty(), Option.empty(), sub, false);
         return new SMTPMailer(conf);		
 	}
 	

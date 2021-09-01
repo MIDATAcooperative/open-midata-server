@@ -105,6 +105,10 @@ import server from './server.js';
 		cred.project = project;
 	};
 	
+	service.setDuringRegistration = function(reg) {
+		cred.reg = reg;
+	}
+	
 	service.getProject = function() { return cred.project; };
 	
 	service.login = function(confirm, confirmStudy) {	    	
