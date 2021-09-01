@@ -73,14 +73,14 @@ public class APICallAction extends Action<APICall> {
     	  //request.args.put("json", json);
     	      	  
     	  String host = request.header("Host").orElse(null);   
-    	  //System.out.println("A:"+host);
+    	  System.out.println("host="+host);
     	  //System.out.println("B:"+InstanceConfig.getInstance().getDefaultHost());
     	  if (host==null) return CompletableFuture.completedFuture((Result) badRequest("missing http host header"));
-    	  if (!(
+    	  /*if (!(
     		  host.equals(InstanceConfig.getInstance().getPortalServerDomain())
     	  )) {    		  
     		  return withHeaders(CompletableFuture.completedFuture((Result) badRequest("http host header error")));
-    	  }
+    	  }*/
     	      	  
     	  try {
     		AccessLog.logStart("api", "(Portal) ["+request.method()+"] "+request.path());    	
