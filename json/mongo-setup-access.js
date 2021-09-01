@@ -29,4 +29,5 @@ db.groupmember.createIndex({ "userGroup" : 1 });
 db.auditevents.createIndex({ "authorized" : 1, "event" : 1 });
 db.auditevents.createIndex({ "about" : 1, "authorized" : 1 });
 db.auditevents.createIndex({ "timestamp" : 1, "event" : 1 });
+db.auditevents.createIndex({ "timestamp" : 1 });
 db.subscriptions.createIndex({ "owner" : 1, "format" : 1 });
