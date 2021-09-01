@@ -504,7 +504,7 @@ public class OAuth2 extends Controller {
 	 * @param token
 	 * @param json
 	 */
-	private static final void readyCodeChallenge(ExtendedSessionToken token, JsonNode json) {
+	private static final void readyCodeChallenge(ExtendedSessionToken token, JsonNode json) throws JsonValidationException {
 		token.codeChallenge = JsonValidation.getStringOrNull(json, "code_challenge");
 	    token.codeChallengeMethod = JsonValidation.getStringOrNull(json, "code_challenge_method");
 	    
