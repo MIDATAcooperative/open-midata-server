@@ -37,12 +37,18 @@ public class JsonExtraction {
 	/**
 	 * Extracts a set with elements guaranteed to be strings.
 	 */
-	public static Set<String> extractStringSet(JsonNode json) {
+	public static Set<String> extractStringSet(JsonNode json) throws JsonValidationException {
 		if (json == null) return null;
-		if (json.isTextual()) return Collections.singleton(json.asText());
+		if (json.isTextual()) {
+			String txt = json.asText();
+			if (txt.length() > JsonValidation.MAX_STRING_LENGTH) throw new JsonValidationException("error.toolong.field","JSON too long");
+			return Collections.singleton(txt);
+		}
 		Set<String> set = new HashSet<String>();
 		for (JsonNode jsonNode : json) {
-			set.add(jsonNode.asText());
+			String txt = jsonNode.asText();
+			if (txt.length() > JsonValidation.MAX_STRING_LENGTH) throw new JsonValidationException("error.toolong.field","JSON too long");
+			set.add(txt);
 		}
 		return set;
 	}
@@ -80,14 +86,14 @@ public class JsonExtraction {
 	/**
 	 * Extracts a general map.
 	 */
-	public static Map<String, Object> extractMap(JsonNode json) {
+	public static Map<String, Object> extractMap(JsonNode json) throws JsonValidationException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Iterator<Entry<String, JsonNode>> iterator = json.fields();
 		while (iterator.hasNext()) {
 			Entry<String, JsonNode> cur = iterator.next();
 			String key = cur.getKey();
 			if (key.startsWith("!!!")) key = "$"+key.substring(3);
-			String ck = key.trim().toLowerCase();
+			String ck = key.trim().toLowerCase();	
 			if (!ck.startsWith("$where")) { 
 			  map.put(key, extract(cur.getValue()));
 			}
@@ -112,7 +118,7 @@ public class JsonExtraction {
 	/**
 	 * Extracts a general set.
 	 */
-	public static Set<Object> extractSet(JsonNode json) {
+	public static Set<Object> extractSet(JsonNode json) throws JsonValidationException  {
 		Set<Object> set = new HashSet<Object>();
 		for (JsonNode element : json) {
 			set.add(extract(element));
@@ -123,7 +129,7 @@ public class JsonExtraction {
 	/**
 	 * Extracts a general list.
 	 */
-	public static List<Object> extractList(JsonNode json) {
+	public static List<Object> extractList(JsonNode json) throws JsonValidationException  {
 		List<Object> set = new ArrayList<Object>();
 		for (JsonNode element : json) {
 			set.add(extract(element));
@@ -134,7 +140,7 @@ public class JsonExtraction {
 	/**
 	 * Extracts any data type.
 	 */
-	private static Object extract(JsonNode json) {
+	private static Object extract(JsonNode json) throws JsonValidationException  {
 		if (json.isObject() && json.has("$oid")) {
 			return new MidataId(json.get("$oid").asText());
 		} else if (json.isObject()) {
@@ -150,7 +156,9 @@ public class JsonExtraction {
 		} else if (json.isNumber()) {
 			return json.asDouble();
 		} else {
-			return json.asText();
+			String txt = json.asText();
+			if (txt != null && txt.length() > JsonValidation.MAX_STRING_LENGTH) throw new JsonValidationException("error.toolong.field","JSON too long");
+			return txt;
 		}
 	}
 
