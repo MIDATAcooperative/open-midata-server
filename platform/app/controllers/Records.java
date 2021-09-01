@@ -579,8 +579,7 @@ public class Records extends APIController {
 		if (contentType.startsWith("data:")) contentType = "application/binary";
 		
 		Result result = ok(fileData.inputStream).as(contentType);
-		setAttachmentContentDisposition(result, fileData.filename);
-		return result;
+		return setAttachmentContentDisposition(result, fileData.filename);		
 	}
 
 	/**
@@ -716,8 +715,7 @@ public class Records extends APIController {
 
 		// Serves this stream with 200 OK
 		Result result = ok().chunked(outstream).as("application/json+fhir");
-		setAttachmentContentDisposition(result, "yourdata.json");		
-		return result;
+		return setAttachmentContentDisposition(result, "yourdata.json");				
 	}
 	
 	@APICall
