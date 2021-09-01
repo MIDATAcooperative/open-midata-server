@@ -149,6 +149,9 @@ quick-work-dispatcher {
   throughput = 10
 }
 
+akka.actor.allow-java-serialization=on
+midata.akka.actor.allow-java-serialization=on
+
 akka {   
   actor {
                 
