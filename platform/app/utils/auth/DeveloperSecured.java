@@ -33,9 +33,10 @@ public class DeveloperSecured extends AnyRoleSecured {
 		String result = super.getUsername(ctx).orElse(null);
 		if (result != null) {
 		  UserRole role = PortalSessionToken.session().getRole();
-		  if (! UserRole.DEVELOPER.equals(role) &&  ! UserRole.ADMIN.equals(role)) return Optional.empty();				  
+		  if (! UserRole.DEVELOPER.equals(role) &&  ! UserRole.ADMIN.equals(role)) return Optional.empty();
+		  return Optional.of(result);
 		}
-		return Optional.of(null);
+		return Optional.empty();
 	}
 
 }

@@ -35,7 +35,7 @@ public class PreLoginSecured extends Security.Authenticator {
 	    if (tk == null) return Optional.empty();
 	    try {
 	      if (tk.getHandle()!=null) KeyManager.instance.continueSession(tk.getHandle());
-	    } catch (AppException e) { return null; }	    
+	    } catch (AppException e) { return Optional.empty(); }	    
 	   
 		// id is the user id in String form
 		return Optional.of(tk.getOwnerId().toString());

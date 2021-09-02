@@ -296,8 +296,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 					if (fileName!=null) handle.rename(fileName);
 					file.delete();
 				} else {				
-					try {
-					  data = new URL(attachment.getUrl()).openStream();
+					try {					  
+					  if (url.startsWith("http://") || url.startsWith("https://")) {
+					    data = new URL(url).openStream();
+					  } else throw new UnprocessableEntityException("Malformed URL");
 					} catch (MalformedURLException e) {
 						throw new UnprocessableEntityException("Malformed URL");
 					} catch (IOException e2) {
