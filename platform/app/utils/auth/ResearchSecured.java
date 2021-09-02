@@ -35,9 +35,10 @@ public class ResearchSecured extends AnyRoleSecured {
 		String result = super.getUsername(ctx).orElse(null);
 		if (result != null) {
 		  UserRole role = PortalSessionToken.session().getRole();
-		  if (! UserRole.RESEARCH.equals(role)) return Optional.empty();				  
+		  if (! UserRole.RESEARCH.equals(role)) return Optional.empty();
+		  return Optional.of(result);
 		}
-		return Optional.of(result);
+		return Optional.empty();
 	}
 	
 }

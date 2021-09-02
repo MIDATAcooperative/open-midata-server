@@ -34,9 +34,10 @@ public class ProviderSecured extends AnyRoleSecured {
 		String result = super.getUsername(ctx).orElse(null);
 		if (result != null) {
 		  UserRole role = PortalSessionToken.session().getRole();
-		  if (! UserRole.PROVIDER.equals(role)) return Optional.empty();				  
+		  if (! UserRole.PROVIDER.equals(role)) return Optional.empty();
+		  return Optional.of(result);
 		}
-		return Optional.of(result);
+		return Optional.empty();
 	}
 
 
