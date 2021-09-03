@@ -154,7 +154,7 @@ public class Services extends APIController {
 		return ok(obj)
 				.as("application/json")
 				.withHeader("Cache-Control", "no-store")
-				.withHeader(serviceIdStr, aeskey);
+				.withHeader("Pragma", "no-cache");
     }
     
 	@APICall
