@@ -36,6 +36,7 @@ public class InstanceConfig {
 	private String platformServer;
 	private String adminEmail;
 	private String portalOriginUrl;
+	private String internalBuilderUrl;
 	
 	private String defaultLanguage;
 	private List<String> countries;
@@ -94,6 +95,10 @@ public class InstanceConfig {
 	
 	public String getPortalOriginUrl() {
 		return portalOriginUrl;
+	}
+	
+	public String getInternalBuilderUrl() {
+		return getInternalBuilderUrl();
 	}
 	
 	/**
@@ -160,6 +165,12 @@ public class InstanceConfig {
 		adminEmail = config.getString("emails.admin");
 		
 		defaultLanguage = config.getString("default.language");
+		
+		if (config.hasPath("platform.builder")) {
+		  internalBuilderUrl = config.getString("platform.builder");
+		} else {
+		  internalBuilderUrl = null;
+		}
 		
 		//countries = config.getStringList("default.countries");
 		} catch (ConfigException e) {

@@ -203,5 +203,9 @@ module.exports = {
            "buffer": require.resolve("buffer/"),
            "stream": require.resolve("stream-browserify") 
         }
+    },
+
+    externals: {
+      config: "config"
     }
 };
