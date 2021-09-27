@@ -16,13 +16,16 @@
  */
 
 import forge from 'node-forge';
+import Axios from 'axios';
 
 	var service = {};
 
 	var rsa = forge.pki.rsa;
 	var ssss = require('./../../src/secrets.js');
 	
-	var recoveryPubKeys = require('./../../../conf/recoverykeys.json');
+	var recoveryPubKeys = null;
+		
+	Axios.get("/config/recoverykeys.json").then(response => recoveryPubKeys = response.data );
 		
 	service.generateKeys = function(password) {
 							

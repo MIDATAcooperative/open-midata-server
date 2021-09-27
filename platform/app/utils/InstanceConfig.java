@@ -98,7 +98,7 @@ public class InstanceConfig {
 	}
 	
 	public String getInternalBuilderUrl() {
-		return getInternalBuilderUrl();
+		return internalBuilderUrl;
 	}
 	
 	/**
