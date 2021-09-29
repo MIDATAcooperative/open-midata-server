@@ -60,6 +60,7 @@ import models.SubscriptionData;
 import models.User;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
+import models.enums.ConsentType;
 import models.enums.EntityType;
 import models.enums.MessageReason;
 import models.enums.UserRole;
@@ -78,6 +79,8 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.ConsentResourceProvider;
+import utils.fhir.FHIRServlet;
 import utils.fhir.FHIRTools;
 import utils.fhir.SubscriptionResourceProvider;
 import utils.sync.Instances;
@@ -387,8 +390,12 @@ class SubscriptionChecker extends AbstractActor {
 				}
 								
 			}
-			
-			resource = consent.fhirConsent.toString();
+			ConsentResourceProvider prov = (ConsentResourceProvider) FHIRServlet.myProviders.get("Consent"); 
+			try {
+			    resource = prov.serialize(prov.readConsentFromMidataConsent(consent, consent.type != ConsentType.STUDYRELATED));
+			} catch (AppException e) {
+				ErrorReporter.report("Subscripion processing", null, e);
+			}
 			content = "Consent";
 		} else if (change.getResource() instanceof Record) {
 			Record record = (Record) change.getResource();
