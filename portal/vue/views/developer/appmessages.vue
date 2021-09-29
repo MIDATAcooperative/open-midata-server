@@ -158,13 +158,12 @@ export default {
 
         loadApp(appId) {
             const { $data } = this, me = this;
-            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "predefinedMessages", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "writes"])
+            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "predefinedMessages", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "writes", "loginTemplate", "loginButtonsTemplate"])
             .then(function(data) { 
                 let app = data.data[0];
                 if (!app.predefinedMessages) app.predefinedMessages = {};
                 $data.app = app;
-                $data.messages = [];
-                console.log(data.data);
+                $data.messages = [];                
                 for (let msg in app.predefinedMessages) { $data.messages.push(app.predefinedMessages[msg]); }
             }));
 	    },

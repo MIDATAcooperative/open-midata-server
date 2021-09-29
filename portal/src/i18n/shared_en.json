@@ -1046,6 +1046,7 @@
     "device" : "Device: {{device}}",
     "please_confirm" : "Please confirm the activation of the application using the @PLATFORM portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
+    "reject_btn" : "Reject",
     "continue_btn" : "Continue",
     "requests_access" : "Access requested by the application:",
     "requests_access_short" : "Data type",

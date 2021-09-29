@@ -329,6 +329,8 @@ export default {
 		countries : languages.countries	
 	}),
 
+	props: ['preview'],
+
 	components: { CheckBox, RadioBox, ErrorBox, FormGroup, Panel, TermsModal, Password },
 
 	mixins : [ status ],
@@ -395,8 +397,7 @@ export default {
 	    	} else {
 				let r = me.doAction("login",session.retryLogin(params));				
 				r.then(function(result) {					
-					if (result.data.istatus === "ACTIVE") {
-						console.log("retry C-OA");
+					if (result.data.istatus === "ACTIVE") {						
 						oauth.postLogin(result);
 					}
 					else {
@@ -583,14 +584,20 @@ export default {
 				for (let i in $data.progress.requirements) {
 					$data.progress[$data.progress.requirements[i]] = true;
 				}
-				$data.registration = $data.progress.user;
+				$data.registration = $data.progress.user || {};
 				this.addAddressParams();
 			}
 		},
 
 		init() {
 			const { $data, $route } = this, me = this;
-			if ($route.query.feature) {
+			if (this.preview) {
+				if (this.preview.requirement) {
+				  $data.progress = { requirements : [ this.preview.requirement ] };
+				} else {
+				  $data.progress = { requirements : this.preview.requirements };
+				}
+			} else if ($route.query.feature) {
 				$data.progress = { requirements : [ $route.query.feature ] };
 		
 				this.doBusy(session.currentUser.then(function (userId) {

@@ -85,6 +85,14 @@ public enum InstanceType {
 	}
 	
 	/**
+	 * Login screens do not need to be validated
+	 * @return 
+	 */
+	public boolean getNoLoginScreenValidation() {
+		return this == TEST || this == DEMO || this == PERFTEST;
+	}
+	
+	/**
 	 * Membership Requests are immediately granted
 	 * @return 
 	 */

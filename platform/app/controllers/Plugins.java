@@ -46,6 +46,7 @@ import models.Space;
 import models.StudyAppLink;
 import models.StudyParticipation;
 import models.User;
+import models.enums.LoginTemplate;
 import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.UserFeature;
@@ -66,6 +67,7 @@ import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
+import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.AccessContext;
 import utils.access.Feature_QueryRedirect;
@@ -192,11 +194,13 @@ public class Plugins extends APIController {
 		if (type == null || !type.equals("visualization")) type = "mobile";
 
 		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "termsOfUse", "requirements",
-				"orgName", "publisher", "unlockCode", "targetUserRole", "icons", "filename");
+				"orgName", "publisher", "unlockCode", "targetUserRole", "icons", "filename", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate");
 		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", type), fields);
 		if (plugin != null && plugin.unlockCode != null)
 			plugin.unlockCode = "true";
-
+        if (plugin != null && plugin.loginTemplateApprovedDate == null && !InstanceConfig.getInstance().getInstanceType().getNoLoginScreenValidation()) {
+        	if (plugin.loginTemplate != LoginTemplate.TERMS_OF_USE_AND_GENERATED) plugin.loginTemplate = LoginTemplate.GENERATED;        	
+        }
 		return ok(JsonOutput.toJson(plugin, "Plugin", fields)).as("application/json");
 	}
 
