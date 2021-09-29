@@ -14,7 +14,7 @@ public class RateLimitedAction extends Model {
 
 	protected @NotMaterialized static final String collection = "ratelimited";
 	
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "account", "action", "lastDone", "count");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "account", "action", "lastDone", "count", "counterStartedAt");
 	
 	public String account;
 	public AuditEventType action;
