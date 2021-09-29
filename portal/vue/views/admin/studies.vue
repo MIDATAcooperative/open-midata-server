@@ -26,10 +26,11 @@
 		   </form-group>		      
 	    </form>	
 			
-        <pagination v-model="results" search="name"></pagination>
+        <pagination v-model="results" search="codeName"></pagination>
 	    <table v-if="results.filtered.length" class="table table-hover">
 	        <thead>
 	            <tr>
+                    <Sorter sortby="code" v-model="results" v-t="'admin_studies.code'"></Sorter>
 	                <Sorter sortby="name" v-model="results" v-t="'admin_studies.name'"></Sorter>
 	                <Sorter sortby="type" v-model="results" v-t="'admin_studies.type'"></Sorter>
 	                <Sorter sortby="createdAt" v-model="results" v-t="'admin_studies.created'"></Sorter>
@@ -37,6 +38,7 @@
 	        </thead>
 	        <tbody>
 	            <tr v-for="study in results.filtered" :key="study._id">
+                    <td><router-link :to="{ path : './astudy' ,query : { studyId : study._id}}">{{ study.code }}</router-link></td>
 	                <td><router-link :to="{ path : './astudy' ,query : { studyId : study._id}}">{{ study.name }}</router-link></td>
 	                <td>{{ $t('enum.studytype.' + study.type) }}</td>
 	                <td>{{ $filters.date(study.createdAt) }}</td>	         
@@ -98,6 +100,12 @@ export default {
                 properties : {
                     "validationStatus" : "VALIDATED"
                 }
+            },
+            {
+                id : "admin_studies.ALL",
+                properties : {
+                    
+                }
             }
                 
 	    ]
@@ -111,8 +119,9 @@ export default {
         doreload() {
 			const { $data } = this, me = this;
             me.doBusy(server.post(jsRoutes.controllers.research.Studies.listAdmin().url, $data.searches[$data.selection.criteria])
-            .then(function(data) { 				
-                    $data.results = me.process(data.data, { filter : { name : "" }});	
+            .then(function(data) {
+                    for (let st of data.data) st.codeName = st.name+" "+st.code;
+                    $data.results = me.process(data.data, { filter : { codeName : "" }});	
             }));
 	    }
     },

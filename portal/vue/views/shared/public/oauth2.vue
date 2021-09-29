@@ -141,6 +141,8 @@ export default {
 	doneLock : false
   }),
 
+  props: ['preview'],
+
   components : {
      FormGroup, ErrorBox, Panel, Password
   },
@@ -233,6 +235,11 @@ export default {
 		$data.login.email = $route.query.login;
 	  }
 
+	  if (this.preview) {
+		  $data.app = this.preview;
+		  this.ready();
+		  return;
+	  }
       this.doBusy(getAppInfo($route.query.client_id)     	
 		  .then(function(results) {
 			$data.app = results.data;      

@@ -54,7 +54,8 @@ public class RateLimitedAction extends Model {
 		if (System.currentTimeMillis() - ac.lastDone.getTime() < minDistance) return false;
 						
 		if (ac.count >= maxCounter) {
-			if (System.currentTimeMillis() - ac.counterStartedAt.getTime() < counterTimeFrame) return false;
+			
+			if (ac.counterStartedAt != null && System.currentTimeMillis() - ac.counterStartedAt.getTime() < counterTimeFrame) return false;
 			ac.count = 0;
 			ac.counterStartedAt = new Date();
 		}

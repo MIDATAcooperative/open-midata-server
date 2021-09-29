@@ -88,7 +88,7 @@ export default {
 
         newreview : null, 
 		reviews : [],
-        checks : [ "CONCEPT", "DATA_MODEL", "ACCESS_FILTER", "QUERIES", "DESCRIPTION", "ICONS", "MAILS", "PROJECTS", "CODE_REVIEW", "TEST_CONCEPT", "TEST_PROTOKOLL", "CONTRACT" ],
+        checks : [ "CONCEPT", "DATA_MODEL", "ACCESS_FILTER", "QUERIES", "DESCRIPTION", "ICONS", "MAILS", "PROJECTS", "CODE_REVIEW", "TEST_CONCEPT", "TEST_PROTOKOLL", "CONTRACT", "TERMS_OF_USE_MATCH_QUERY" ],
 	    stati : ["ACCEPTED","NEEDS_FIXING"],
 	    allowReview : false
     }),

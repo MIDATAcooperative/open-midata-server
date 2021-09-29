@@ -572,7 +572,7 @@ public class Studies extends APIController {
 
 		JsonNode json = request.body().asJson();
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		Set<String> fields = Sets.create("type", "createdAt", "createdBy", "description", "name", "startDate", "endDate", "dataCreatedBefore");
+		Set<String> fields = Sets.create("type", "createdAt", "createdBy", "description", "name", "code", "startDate", "endDate", "dataCreatedBefore");
 		Set<Study> studies = Study.getAll(null, properties, fields);
 
 		return ok(JsonOutput.toJson(studies, "Study", fields));
