@@ -77,6 +77,11 @@ public enum AppReviewChecklist {
 	/**
 	 * contracts have been made
 	 */
-	CONTRACT
+	CONTRACT,
+	
+	/**
+	 * Terms of use provided match the access query
+	 */
+	TERMS_OF_USE_MATCH_QUERY
 		
 }

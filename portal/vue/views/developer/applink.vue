@@ -187,7 +187,7 @@ export default {
         appId : null,
         crit : { group : "" },
         types : studies.linktypes,
-        types2 : ["OFFER_P", "REQUIRE_P", "OFFER_EXTRA_PAGE", "OFFER_INLINE_AGB"],
+        types2 : ["OFFER_P", "REQUIRE_P"],
 	    periods : studies.executionStati,
 	    selection : undefined,
         apps : [],

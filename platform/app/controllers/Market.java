@@ -76,6 +76,8 @@ import models.enums.EntityType;
 import models.enums.IconUse;
 import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
+import models.enums.LoginButtonsTemplate;
+import models.enums.LoginTemplate;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.PluginStatus;
@@ -201,7 +203,13 @@ public class Market extends APIController {
 				app.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
 				app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
 				if (app.type.equals("analyzer") || app.type.equals("endpoint") ) app.targetUserRole = UserRole.RESEARCH;
-				app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
+				Map<String, Object> query =JsonExtraction.extractMap(json.get("defaultQuery"));
+				if (query == null || !query.equals(app.defaultQuery)) {
+					app.loginTemplateApprovedByEmail = null;
+					app.loginTemplateApprovedById = null;
+					app.loginTemplateApprovedDate = null;
+				}
+				app.defaultQuery = query;
 												
 				app.resharesData = JsonValidation.getBoolean(json, "resharesData");				
 				app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
@@ -220,6 +228,19 @@ public class Market extends APIController {
 				
 				app.consentObserving = app.type.equals("external") && Feature_FormatGroups.mayAccess(app.defaultQuery, "Consent", "fhir/Consent");
 
+				if (json.has("loginTemplate")) {
+				  LoginTemplate template = JsonValidation.getEnum(json, "loginTemplate", LoginTemplate.class); 
+				  if (app.loginTemplate != template) {
+					  app.loginTemplate = template;
+					  app.loginTemplateApprovedByEmail = null;
+					  app.loginTemplateApprovedById = null;
+					  app.loginTemplateApprovedDate = null;
+				  }
+				}
+				if (json.has("loginButtonsTemplate")) {
+				  app.loginButtonsTemplate = JsonValidation.getEnum(json, "loginButtonsTemplate", LoginButtonsTemplate.class);
+				}
+				
 				if (app.type.equals("external")) {
 															
 					Set<ServiceInstance> si = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
@@ -254,6 +275,7 @@ public class Market extends APIController {
 			app.developmentServer = "https://localhost:9004/"+app.filename;
 			//app.developmentServer = JsonValidation.getStringOrNull(json, "developmentServer");
 			app.tags = JsonExtraction.extractStringSet(json.get("tags"));
+			
 					
 			app.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 			app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
@@ -282,6 +304,12 @@ public class Market extends APIController {
 					*/
 				
 			   String termsOfUse = JsonValidation.getStringOrNull(json, "termsOfUse");
+			   if (termsOfUse == null || !termsOfUse.equals(app.termsOfUse)) {
+				   app.loginTemplateApprovedByEmail = null;
+				   app.loginTemplateApprovedById = null;
+				   app.loginTemplateApprovedDate = null;
+				   markReviewObsolete(app._id, AppReviewChecklist.TERMS_OF_USE_MATCH_QUERY);
+			   }
 			   app.termsOfUse = termsOfUse;
 			}
 			
@@ -363,6 +391,54 @@ public class Market extends APIController {
 		}
 		
 		return ok();
+	}
+	
+	/**
+	 * approve login template
+	 * @param pluginIdStr ID of plugin to update
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	 public void approveLoginTemplate(MidataId pluginId, MidataId userId) throws JsonValidationException, AppException {
+		
+		
+		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+								
+		User executor = User.getById(userId, User.ALL_USER);
+		
+		app.loginTemplateApprovedByEmail = executor.email;
+		app.loginTemplateApprovedById = executor._id;
+		app.loginTemplateApprovedDate = new Date(System.currentTimeMillis());
+						
+		try {
+		   app.update();
+		   PluginIcon.updateStatus(app.filename, app.status);
+		} catch (LostUpdateException e) {
+			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
+		}
+				
+	}
+	 
+	 public void unapproveLoginTemplate(MidataId pluginId, MidataId userId) throws JsonValidationException, AppException {
+						
+			Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+			if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+															
+			app.loginTemplateApprovedByEmail = null;
+			app.loginTemplateApprovedById = null;
+			app.loginTemplateApprovedDate = null;
+							
+			try {
+			   app.update();
+			   PluginIcon.updateStatus(app.filename, app.status);
+			} catch (LostUpdateException e) {
+				throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
+			}
+			
+			markReviewObsolete(pluginId, AppReviewChecklist.TERMS_OF_USE_MATCH_QUERY);
+					
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -651,7 +727,21 @@ public class Market extends APIController {
 		}
 		
 		plugin.consentObserving = plugin.type.equals("external") && Feature_FormatGroups.mayAccess(plugin.defaultQuery, "Consent", "fhir/Consent");
-		
+		if (json.has("loginTemplate")) {
+			plugin.loginTemplate = JsonValidation.getEnum(json, "loginTemplate", LoginTemplate.class);
+			plugin.loginTemplateApprovedDate = JsonValidation.getDate(json, "loginTemplateApprovedDate");
+			plugin.loginTemplateApprovedByEmail = JsonValidation.getString(json, "loginTemplateApprovedByEmail");
+			plugin.loginTemplateApprovedById = null;
+		} else {
+			plugin.loginTemplate = null;
+			plugin.loginTemplateApprovedDate = null;
+			plugin.loginTemplateApprovedByEmail = null;
+			plugin.loginTemplateApprovedById = null;
+		}
+		if (json.has("loginButtonsTemplate")) {
+		  plugin.loginButtonsTemplate = JsonValidation.getEnum(json, "loginButtonsTemplate", LoginButtonsTemplate.class);
+		}
+				
 		plugin.status = PluginStatus.DEVELOPMENT;
 		plugin.i18n = new HashMap<String, Plugin_i18n>();
 		Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
@@ -753,6 +843,18 @@ public class Market extends APIController {
 		app.i18n = new HashMap<String, Plugin_i18n>();
 		app.pluginVersion = System.currentTimeMillis();	
 		app.sendReports = false;
+		if (json.has("loginTemplate")) {
+		  LoginTemplate template = JsonValidation.getEnum(json, "loginTemplate", LoginTemplate.class); 
+		  if (app.loginTemplate != template) {
+			  app.loginTemplate = template;
+			  app.loginTemplateApprovedByEmail = null;
+			  app.loginTemplateApprovedById = null;
+			  app.loginTemplateApprovedDate = null;
+		  }
+		}
+		if (json.has("loginButtonsTemplate")) {
+		  app.loginButtonsTemplate = JsonValidation.getEnum(json, "loginButtonsTemplate", LoginButtonsTemplate.class);
+		}
 		
 		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
 		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;
@@ -1439,6 +1541,16 @@ public class Market extends APIController {
 		review.status = JsonValidation.getEnum(json, "status", ReviewStatus.class);
 		
 		review.add();
+		
+		if (review.check == AppReviewChecklist.TERMS_OF_USE_MATCH_QUERY) {
+			if (review.status == ReviewStatus.ACCEPTED) {
+			  approveLoginTemplate(review.pluginId, userId);
+			} else {
+			  unapproveLoginTemplate(review.pluginId, userId);
+			}
+		}
+		
+		
 		return ok();
 	}
 	

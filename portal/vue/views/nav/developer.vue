@@ -179,8 +179,7 @@ export default {
 		addBundle("developers");
 		addBundle("researchers");
 		addBundle("branding");
-		console.log("dev menu"+$route.meta.role);
-		console.log(document.location.href);
+		
 		session.login($route.meta.role);		
 		this.updateNav();
 	

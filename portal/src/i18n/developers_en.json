@@ -84,6 +84,8 @@
     "filename" : "Internal Name",
     "type" : "Application Type",
     "targetUserRole" : "Target Role",  
+    "loginTemplate" : "Login Process Texts",
+    "loginButtonsTemplate": "Login Process Flow",
     "edit_btn" : "Change Settings",
     "edit_help" : "Change the setup for your application.",
     "query_btn" : "Change Data Access Filter",
@@ -96,6 +98,8 @@
     "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
     "serverimport_btn" : "Test automatic import script.",
     "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
+    "applogin_btn" : "Login Process",
+    "applogin_help" : "View and edit login process",
     "link_btn" : "Links with research projects or external parties",
     "link_help" : "Applications may suggest or require participation in a research project. Research projects may recommend the use of applications. Use of the application may require a user's consent to healthcare professionals or teams to view their data.",
     "repository_btn" : "Code Repository",
@@ -131,6 +135,8 @@
     "info" : {
        "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
+       "loginTemplate" : "How should the login process look like? Some settings need admin approval",
+       "loginButtonsTemplate" : "How should buttons be arranged?",
        "type" : "Choose 'Plugin' if your application will run on the @PLATFORM portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.",
        "name" : "The name of your application that will be presented to the end user.",
        "description" : "The description of your application that will be shown on the Marketplace.",
@@ -313,7 +319,8 @@
     "CONTRACT" : "Contract",
     "ACCEPTED" : "Accepted",
     "NEEDS_FIXING" : "Needs fixing",
-    "OBSOLETE" : "Obsolete"
+    "OBSOLETE" : "Obsolete",
+    "TERMS_OF_USE_MATCH_QUERY" : "Terms of use match access filter"
   },
   
   "applicence" : {
@@ -418,5 +425,58 @@
         "project_no_requirements" : "No requirements selected for project.",
         "app_in_development" : "Application is still in development."
      }
+    },
+
+    "applogin" : {
+       "title" : "Application login",
+       "description" : "View and configure app login process.",
+       "preview" : "Which process do you want to preview?",
+       "previewtype" : {
+          "NEW" : "First login. User has no account yet.",
+          "EXISTING" : "First login. User already has an account.",
+          "RELOGIN" : "Returning user - Relogin"
+       },
+       "required" : "always",
+       "optional" : "if necessary",
+       "not_approved" : "Setting must be approved by an administrator",
+       "approvedby" : "Approved by",
+       "approvedat" : "at",
+       "show_terms" : "View terms of use",
+       "no_terms" : "No terms of use",
+       "links" : "Linked projects",
+       "no_links" : "None (yet)",
+       "step" : {
+         "login" : "Login",
+         "registration" : "Registration",
+         "confirmation" : "Consent",
+         "confirmation2" : "Project Consent",
+         "password_set" : "Enter password",
+         "email_verified" : "Email verification",
+         "admin_verified" : "Admin verification",
+         "phone_verified" : "Phone verification",
+         "newest_terms_agreed" : "Agree to terms",
+         "address_entered" : "Enter address",
+         "address_phone_entered" : "Address & Phone",
+         "phone_entered" : "Enter phone",
+         "address_verified" : "Address verification",
+         "auth2factorsetup" : "2FA Setup",
+         "auth2factor" : "2FA",
+         "birthday_set" : "Enter birthday"
+       }
+    },
+    
+    "enum" : {
+        "logintemplate" : {
+            "GENERATED" : "Generate app-consent from definition",
+            "TERMS_OF_USE_AND_GENERATED" : "Show terms of use as text page with generated consent",
+	        "TERMS_OF_USE" : "Show terms of use as text page (needs admin approval)",
+	        "TERMS_WITH_VARIABLES" : "Show terms of use with variables",
+	        "REDUCED" : "Give consent on registration page (needs admin approval)"
+        },
+        "loginbuttonstemplate" : {
+            "ONE_CONFIRM_AND_OPTIONAL_CHECKBOXES" : "One required confirm button and optional checkboxes",
+            "ONE_CONFIRM_PER_PAGE" : "One decision per page",
+            "CHECKBOXES_WITH_LINKED_TERMS" : "Checkboxes with linked terms of use"
+        }
     }
 }

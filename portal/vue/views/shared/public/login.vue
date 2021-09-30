@@ -34,7 +34,7 @@
 		</div></div>
 		</div><div class="container"><div class="row">
 			<div class="col-sm-12">
-                <panel :title="$t('member_login.sign_in')+getAppName()" style="max-width:330px; padding-top:30px; margin:0 auto;">                    
+                <panel :title="$t('member_login.sign_in')+getAppName()" style="max-width:330px; padding-top:20px; margin:0 auto;">                    
 				    <div class="alert alert-info" v-if="serviceLogin && !app">
 		                <strong class="alert-heading" v-t="'login.service_login'"></strong>                 
                         <div v-if="!app" v-t="'login.service_login2'"></div>                                                     

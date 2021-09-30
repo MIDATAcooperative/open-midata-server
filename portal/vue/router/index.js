@@ -647,6 +647,11 @@ const routes = [
   },
   {
     base : ["admin", "developer"],
+    path : "applogin",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/applogin.vue')
+  },
+  {
+    base : ["admin", "developer"],
     path : "appmessages",
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/appmessages.vue')
   },

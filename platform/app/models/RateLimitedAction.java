@@ -14,7 +14,7 @@ public class RateLimitedAction extends Model {
 
 	protected @NotMaterialized static final String collection = "ratelimited";
 	
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "account", "action", "lastDone", "count");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "account", "action", "lastDone", "count", "counterStartedAt");
 	
 	public String account;
 	public AuditEventType action;
@@ -54,7 +54,8 @@ public class RateLimitedAction extends Model {
 		if (System.currentTimeMillis() - ac.lastDone.getTime() < minDistance) return false;
 						
 		if (ac.count >= maxCounter) {
-			if (System.currentTimeMillis() - ac.counterStartedAt.getTime() < counterTimeFrame) return false;
+			
+			if (ac.counterStartedAt != null && System.currentTimeMillis() - ac.counterStartedAt.getTime() < counterTimeFrame) return false;
 			ac.count = 0;
 			ac.counterStartedAt = new Date();
 		}

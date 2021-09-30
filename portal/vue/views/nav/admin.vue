@@ -200,8 +200,7 @@ export default {
 		addBundle("admins");
 		addBundle("developers");
 		addBundle("researchers");
-		addBundle("branding");
-	    console.log("admin menu"+$route.meta.role);
+		addBundle("branding");	    
 		session.login($route.meta.role);		
 		this.updateNav();
 	
