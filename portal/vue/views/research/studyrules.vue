@@ -63,6 +63,19 @@
                     <span class="margin-left" v-t="'enum.userfeature.'+req"></span>
                 </check-box>		 
             </form-group>
+
+            <form-group name="leavePolicy" label="studyrules.leavePolicy" :path="errors.leavePolicy">
+                <select id="leavePolicy" name="leavePolicy" class="form-control" :disabled="studyLocked()" v-validate v-model="study.leavePolicy" required>
+                    <option v-for="policy in leavePolicies" :key="policy" :value="policy">{{ $t('enum.projectleavepolicy.'+policy) }}</option>
+                </select>
+            </form-group>
+
+            <form-group name="rejoinPolicy" label="studyrules.rejoinPolicy" :path="errors.rejoinPolicy">
+                <select id="rejoinPolicy" name="rejoinPolicy" class="form-control" :disabled="studyLocked()" v-validate v-model="study.rejoinPolicy" required>
+                    <option v-for="policy in rejoinPolicies" :key="policy" :value="policy">{{ $t('enum.rejoinpolicy.'+policy) }}</option>
+                </select>
+            </form-group>
+
             <form-group label="common.empty">
                 <button type="submit" :disabled="action !=null || studyLocked()" class="btn btn-primary" v-t="'common.change_btn'"></button>
                 <success :finished="finished" action="change" msg="common.save_ok"></success>        
@@ -94,6 +107,8 @@ export default {
         query : {},
         codesystems : formats.codesystems,
         joinmethods : studies.joinmethods,
+        leavePolicies : studies.leavePolicies,
+        rejoinPolicies : studies.rejoinPolicies,
         terms : [],
         observers : null
     }),
@@ -136,7 +151,7 @@ export default {
                 $data.study.consentObserverNames = plugins;
             } else $data.study.consentObserverNames = [];
                         
-            let data = { joinMethods : $data.study.joinMethods, termsOfUse : $data.study.termsOfUse, requirements: $data.study.requirements, startDate : $data.study.startDate, endDate : $data.study.endDate, dataCreatedBefore : $data.study.dataCreatedBefore, consentObserverNames : $data.study.consentObserverNames };
+            let data = { joinMethods : $data.study.joinMethods, termsOfUse : $data.study.termsOfUse, requirements: $data.study.requirements, startDate : $data.study.startDate, endDate : $data.study.endDate, dataCreatedBefore : $data.study.dataCreatedBefore, consentObserverNames : $data.study.consentObserverNames, leavePolicy : $data.study.leavePolicy, rejoinPolicy : $data.study.rejoinPolicy };
             me.doAction("change", server.put(jsRoutes.controllers.research.Studies.update($data.studyid).url, data)
             .then(function(data) { 				
                 me.reload();            

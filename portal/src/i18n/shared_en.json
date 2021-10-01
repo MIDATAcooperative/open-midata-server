@@ -381,6 +381,15 @@
 	   "VALIDATED" : "Project has been validated",
 	   "VALIDATION" : "Validation running"
 	 },
+   "projectleavepolicy" : {
+     "FREEZE" : "Freeze data on withdrawal", 
+     "REJECT" : "Data is no longer shared",
+     "DELETE" : "Consent is deleted"
+   },
+   "rejoinpolicy" : {
+     "NO_REJOIN" : "Participants cannot rejoin",
+     "DELETE_LAST" : "Replace previous participation"
+   },
 	 "pcodestatus" : {
 	    "UNUSED" : "Not used",
 	    "SHARED" : "Given away",

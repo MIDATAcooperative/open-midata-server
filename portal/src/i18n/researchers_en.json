@@ -241,6 +241,8 @@
     "dataCreatedBefore" : "Data freeze date",
     "sharing_query" : "Data Access Filter",
     "join_methods" : "Allowed Participation Procedures",
+    "leavePolicy" : "Participant withdrawal policy",
+    "rejoinPolicy" : "Participant rejoin policy",
     "queryeditor_btn" : "Edit",    
     "terms_of_use" : "General Terms and Conditions",
     "terms_of_use_hint" : "If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to a platform administrator. We will upload the text in the correct format and provide you with the ID you need to enter here.",
