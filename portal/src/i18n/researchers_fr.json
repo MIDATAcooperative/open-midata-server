@@ -149,6 +149,10 @@
     "studyoverview" : {
         "name" : "Nom",
         "type" : "Type de recherche",
+
+        // TODO CHANGED
+        // OLD: Created on
+        // NEW: Created at
         "created_at" : "Créé le",
         "created_by" : "Créé par",
         "description" : "Description",
@@ -242,6 +246,12 @@
         "dataCreatedBefore" : "Données figées dès le",
         "sharing_query" : "Data Access Filter",
         "join_methods" : "Procédures de participation autorisées",
+
+        // TODO NEW: Participant withdrawal policy
+        "leavePolicy" : "Participant withdrawal policy",
+
+        // TODO NEW: Participant rejoin policy
+        "rejoinPolicy" : "Participant rejoin policy",
         "queryeditor_btn" : "Modifier",
         "terms_of_use" : "Conditions générales",
         "terms_of_use_hint" : "Si les conditions générales du projet doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à un administrateur de la plateforme. Nous téléchargerons le texte au bon format et vous fournirons l'ID que vous devez saisir ici.",
