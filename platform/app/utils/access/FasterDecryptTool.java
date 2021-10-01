@@ -40,6 +40,11 @@ public class FasterDecryptTool {
 	public static void accelerate(APSCache cache, List<Consent> consents) throws AppException {
 		AccessLog.logBegin("start accelerate consent access");
 		MidataId owner = cache.getAccountOwner();
+		
+		// Bugfix for key change
+		IndexManager.instance.getIndexPseudonym(cache, cache.getAccountOwner(), cache.getAccountOwner(), true);
+		// End bugfix
+		
 		APS main = cache.getAPS(owner);
 		
 		BasicBSONObject obj = main.getMeta("_consents");

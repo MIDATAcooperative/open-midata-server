@@ -72,6 +72,14 @@
 		  </ul>
 	    </td>
 	  </tr>
+	  <tr>
+	    <td v-t="'admin_study.leavePolicy'"></td>
+	    <td>{{ $t('enum.projectleavepolicy.' + (study.leavePolicy || 'FREEZE')) }}</td>
+	  </tr>
+	  <tr>
+	    <td v-t="'admin_study.rejoinPolicy'"></td>
+	    <td>{{ $t('enum.rejoinpolicy.' + (study.rejoinPolicy || 'NO_REJOIN')) }}</td>
+	  </tr>
     </table>	
     </panel> 
 		  
