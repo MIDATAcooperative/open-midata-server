@@ -60,6 +60,7 @@ public class Admin extends User {
 	}
 
 	public static void add(Admin user) throws InternalServerException {
+		user.updateKeywords(false);
 		Model.insert(collection, user);
 	}
 
