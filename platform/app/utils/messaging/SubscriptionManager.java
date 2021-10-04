@@ -72,7 +72,9 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
+import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
@@ -104,9 +106,17 @@ public class SubscriptionManager {
 	}
 	
 	
-	public static void resourceChange(Consent consent) {	
+	public static void resourceChange(AccessContext context, Consent consent) {	
 		AccessLog.log("Resource change: Consent");
-		subscriptionChecker.tell(new ResourceChange("fhir/Consent", consent), ActorRef.noSender());							
+		
+		ConsentResourceProvider prov = (ConsentResourceProvider) FHIRServlet.myProviders.get("Consent"); 
+		try {
+		    String resource = prov.serialize(prov.readConsentFromMidataConsent(context, consent, consent.type != ConsentType.STUDYRELATED));
+		    subscriptionChecker.tell(new ResourceChange("fhir/Consent", consent, resource), ActorRef.noSender());
+		} catch (AppException e) {
+			ErrorReporter.report("Subscripion processing", null, e);
+		}
+											
 	}
 	
 	public static void resourceChange(Record record) {	
@@ -231,9 +241,18 @@ class ResourceChange {
 	 */
 	final Model resource;
 	
+	final String fhir;
+	
 	ResourceChange(String type, Model resource) {
 		this.type = type;
 		this.resource = resource;
+		this.fhir = null;
+	}
+	
+	ResourceChange(String type, Model resource, String fhir) {
+		this.type = type;
+		this.resource = resource;
+		this.fhir = fhir;
 	}
 
 	public String getType() {
@@ -242,7 +261,11 @@ class ResourceChange {
 
 	public Model getResource() {
 		return resource;
-	}	
+	}
+	
+	public String getFhir() {
+		return fhir;
+	}
 	
 	public String toString() {
 		return type;
@@ -386,16 +409,14 @@ class SubscriptionChecker extends AbstractActor {
 					try {
 					  Set<ServiceInstance> instances = ServiceInstance.getByApp(appId, Sets.create("_id","executorAccount","status"));
 					  for (ServiceInstance instance : instances) if (instance.status == UserStatus.ACTIVE) affected.add(instance.executorAccount);
-					} catch (InternalServerException e) {}
+					} catch (InternalServerException e) {
+					  ErrorReporter.report("Subscripion processing", null, e);
+					}
 				}
 								
 			}
-			ConsentResourceProvider prov = (ConsentResourceProvider) FHIRServlet.myProviders.get("Consent"); 
-			try {
-			    resource = prov.serialize(prov.readConsentFromMidataConsent(consent, consent.type != ConsentType.STUDYRELATED));
-			} catch (AppException e) {
-				ErrorReporter.report("Subscripion processing", null, e);
-			}
+			resource = change.getFhir();
+			
 			content = "Consent";
 		} else if (change.getResource() instanceof Record) {
 			Record record = (Record) change.getResource();
