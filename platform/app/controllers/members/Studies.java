@@ -315,7 +315,7 @@ public class Studies extends APIController {
 		
 		
 		
-		Circles.prepareConsent(part, true);
+		Circles.prepareConsent(context, part, true);
 		//StudyParticipation.add(part);		
 		Circles.setQuery(context, member._id, part._id, study.recordQuery);
 		Circles.consentSettingChange(context, part);

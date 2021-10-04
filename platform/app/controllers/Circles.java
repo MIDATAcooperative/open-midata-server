@@ -78,6 +78,7 @@ import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.Rights;
@@ -840,7 +841,7 @@ public class Circles extends APIController {
 			Circles.removeQueries(consent.owner, consent._id);
 		}
 		
-		prepareConsent(consent, newStatus == null);
+		prepareConsent(context, consent, newStatus == null);
 	}
 	 
 	
@@ -874,7 +875,7 @@ public class Circles extends APIController {
 	 * @param consent
 	 * @throws AppException
 	 */
-	public static void prepareConsent(Consent consent, boolean isNew) throws AppException {
+	public static void prepareConsent(AccessContext context, Consent consent, boolean isNew) throws AppException {
 		ConsentResourceProvider.updateMidataConsent(consent, null);		
 		if (consent.authorized == null && consent.type != ConsentType.EXTERNALSERVICE) throw new InternalServerException("error.internal", "Missing authorized");
 		if (isNew) {
@@ -882,7 +883,7 @@ public class Circles extends APIController {
 		} else {
 			Consent.set(consent._id, "fhirConsent", consent.fhirConsent);
 		}
-		SubscriptionManager.resourceChange(consent);
+		SubscriptionManager.resourceChange(context, consent);
 	}
 	
 	public static void sendConsentNotifications(MidataId executorId, Consent consent, ConsentStatus reason) throws AppException {
@@ -941,7 +942,7 @@ public class Circles extends APIController {
 			consent.externalAuthorized.remove(emailLC);
 			Consent.set(consent._id, "externalAuthorized", consent.externalAuthorized);
 			
-			prepareConsent(consent, false);
+			prepareConsent(context, consent, false);
 		}
 		
 		consents = Consent.getByExternalOwnerEmail(emailLC);
@@ -955,7 +956,7 @@ public class Circles extends APIController {
 			Consent.set(consent._id, "owner", consent.owner);
 			Consent.set(consent._id, "externalOwner", consent.externalOwner);
 			
-			prepareConsent(consent, false);
+			prepareConsent(context, consent, false);
 		}
 	}
 	

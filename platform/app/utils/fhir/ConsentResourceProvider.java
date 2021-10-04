@@ -147,12 +147,12 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		if (theId.hasVersionIdPart()) {
 			String versionStr = theId.getVersionIdPart();			
 			if (versionStr.equals(getVersion(consent))) {
-				return readConsentFromMidataConsent(consent, true);
+				return readConsentFromMidataConsent(info().context, consent, true);
 			}
 			ConsentVersion version = ConsentVersion.getByIdAndVersion(consent._id, versionStr, ConsentVersion.ALL);
 			 IParser parser = ctx().newJsonParser();
 			 return parser.parseResource(getResourceType(), version.fhirConsent.toString());
-		} else return readConsentFromMidataConsent(consent, true);
+		} else return readConsentFromMidataConsent(info().context, consent, true);
 	}
 	
 	@History()
@@ -170,7 +170,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			//processResource(record, p);
 			result.add(p);
 	   }
-	   result.add(readConsentFromMidataConsent(consent, true));
+	   result.add(readConsentFromMidataConsent(info().context, consent, true));
 	   
 	   return result;
 	}
@@ -182,9 +182,9 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	 * @return FHIR person
 	 * @throws AppException
 	 */
-	public org.hl7.fhir.r4.model.Consent readConsentFromMidataConsent(models.Consent consentToConvert, boolean addMembers) throws AppException {
+	public org.hl7.fhir.r4.model.Consent readConsentFromMidataConsent(AccessContext context, models.Consent consentToConvert, boolean addMembers) throws AppException {
 		if (consentToConvert.fhirConsent==null) {
-			Circles.fillConsentFields(info().context, Collections.singleton(consentToConvert), models.Consent.FHIR);
+			Circles.fillConsentFields(context, Collections.singleton(consentToConvert), models.Consent.FHIR);
 			updateMidataConsent(consentToConvert, null);
 		} else {
 			convertToR4(consentToConvert, consentToConvert.fhirConsent);
@@ -193,7 +193,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		AccessLog.log(consentToConvert.fhirConsent.toString());
 		org.hl7.fhir.r4.model.Consent p = parser.parseResource(getResourceType(), consentToConvert.fhirConsent.toString());		
 		
-		if (consentToConvert.sharingQuery == null) Circles.fillConsentFields(info().context, Collections.singleton(consentToConvert), Sets.create("sharingQuery"));
+		if (consentToConvert.sharingQuery == null) Circles.fillConsentFields(context, Collections.singleton(consentToConvert), Sets.create("sharingQuery"));
 		
 		addQueryToConsent(consentToConvert, p);			
 		addActorsToConsent(consentToConvert, p);
@@ -825,7 +825,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			}
 			ConsentResourceProvider.updateMidataConsent(part, theResource);
 			Consent.set(part._id, "fhirConsent", part.fhirConsent);
-			SubscriptionManager.resourceChange(part);
+			SubscriptionManager.resourceChange(info().context, part);
 			processDataSharing(part, theResource);
 		} else {
 		
@@ -893,7 +893,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		ConsentState state = theResource.getStatus();
 		ConsentResourceProvider.updateMidataConsent(consent, theResource);				
 		Consent.set(consent._id, "fhirConsent", consent.fhirConsent);		
-		SubscriptionManager.resourceChange(consent);
+		SubscriptionManager.resourceChange(info().context, consent);
 		theResource.setStatus(state);
 						
 		switch(consent.status) {
@@ -948,7 +948,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	public List<org.hl7.fhir.r4.model.Consent> parse(List<Consent> consents, Class<org.hl7.fhir.r4.model.Consent> resultClass) throws AppException {
 		List<org.hl7.fhir.r4.model.Consent> result = new ArrayList<org.hl7.fhir.r4.model.Consent>();
 		for (models.Consent consent : consents) {
-			result.add(readConsentFromMidataConsent(consent, true));
+			result.add(readConsentFromMidataConsent(info().context, consent, true));
 		}
 		
 		return result;
