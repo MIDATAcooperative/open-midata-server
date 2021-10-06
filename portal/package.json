@@ -42,7 +42,7 @@
     "eslint-webpack-plugin": "^2.5.4"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "basic-vue3-components": "~1.0.8",
     "bootstrap": "~4.6.0",
     "buffer": "^6.0.3",
