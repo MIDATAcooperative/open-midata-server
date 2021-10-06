@@ -22,13 +22,14 @@ version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.13.6"
 
 libraryDependencies += guice
 
 libraryDependencies ++= Seq(
     ws,
     "org.mongodb" % "mongo-java-driver" % "3.12.7",
+    "joda-time" % "joda-time" % "2.10.10",
     "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "5.0.2",
     "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu3" % "5.0.2",
     "ca.uhn.hapi.fhir" % "hapi-fhir-structures-r4" % "5.0.2",  	    
@@ -37,15 +38,16 @@ libraryDependencies ++= Seq(
     "com.fasterxml.jackson.core" % "jackson-core" % "2.10.0",
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.10.0",
     "com.fasterxml.jackson.core" % "jackson-annotations" % "2.10.0",
-    "com.typesafe.akka" %% "akka-remote" % "2.5.21",
-    "com.typesafe.akka" %% "akka-cluster" % "2.5.21",
-    "com.typesafe.akka" %% "akka-contrib" % "2.5.21",
-    "com.typesafe.akka" %% "akka-stream" % "2.5.21",
-    "com.typesafe.akka" %% "akka-cluster-tools" % "2.5.21",
+    "com.typesafe.akka" %% "akka-remote" % "2.6.14",
+    "com.typesafe.akka" %% "akka-cluster" % "2.6.14",
+    "com.typesafe.akka" %% "akka-cluster-typed" % "2.6.14",
+//    "com.typesafe.akka" %% "akka-contrib" % "2.5.32",
+    "com.typesafe.akka" %% "akka-stream" % "2.6.14",
+    "com.typesafe.akka" %% "akka-cluster-tools" % "2.6.14",    
     "javax.servlet" % "javax.servlet-api" % "3.1.0",
-    "com.typesafe.play" %% "play-mailer" % "6.0.1",
-    "com.typesafe.play" %% "play-mailer-guice" % "6.0.1",
-    "com.typesafe.play" %% "play-json" % "2.6.0"        
+    "com.typesafe.play" %% "play-mailer" % "8.0.1",
+    "com.typesafe.play" %% "play-mailer-guice" % "8.0.1",
+    "com.typesafe.play" %% "play-json" % "2.9.2"        
 )
 routesGenerator := InjectedRoutesGenerator
 

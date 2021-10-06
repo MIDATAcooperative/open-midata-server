@@ -133,6 +133,7 @@ class QueryEngine {
 			StatsIndexKey inf2 = (StatsIndexKey) record.attached;	
 			if (inf2==null) {
 				AccessLog.log("ERROR RECORD="+record);
+				throw new NullPointerException();
 			}
 			
 			String k = getInfoKey(aggrType, inf2.group, inf2.content, inf2.format, record.owner, inf2.app == null ? "empty" : inf2.app.toString());

@@ -74,7 +74,7 @@ public class VersionedDBRecord extends DBRecord {
 	
 	@Override
 	public boolean equals(Object other) {
-		if (this.getClass().equals(other.getClass())) {
+		if (other != null && this.getClass().equals(other.getClass())) {
 			VersionedDBRecord otherModel = (VersionedDBRecord) other;
 			return _id.equals(otherModel._id) && version.equals(otherModel.version);
 		}

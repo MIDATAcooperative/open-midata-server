@@ -1,2 +1,3 @@
 upgrade nginx
 install clamav-daemon 
+use java 11 version

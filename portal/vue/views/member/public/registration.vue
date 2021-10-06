@@ -21,7 +21,7 @@
 			<div class="col-sm-12">
 	<div v-if="!terms.active && !welcomemsg">
 		<!-- Registration -->
-		<panel style="max-width:630px; padding-top:30px; margin:0 auto;" :title="$t('registration.sign_up')" :busy="isBusy">
+		<panel style="max-width:630px; padding-top:20px; margin:0 auto;" :title="$t('registration.sign_up')" :busy="isBusy">
 			
 			<div class="midatalogo">
 				<img src="/images/logo.png" style="height: 36px;" alt="">
@@ -75,7 +75,7 @@
                 <form-group name="secure" label="registration.secure" v-if="secureChoice()">
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" v-model="registration.secure">
+                            <input class="form-check-input" type="checkbox" v-model="registration.secure" disabled>
                             <span v-t="'registration.secure2'"></span>
                         </label>
                     </div>
@@ -91,8 +91,8 @@
                     <form-group name="gender" label="registration.gender" :path="errors.gender">
                         <select class="form-control" id="gender" name="gender" v-model="registration.gender" required v-validate>
                             <option value="FEMALE" v-t="'enum.gender.FEMALE'">female</option>
-                            <option value="MALE" v-t="'enum.gender.MALE'"></option>
-                            <option value="OTHER" v-t="'enum.gender.OTHER'"></option>
+                            <option value="MALE" v-t="'enum.gender.MALE'">male</option>
+                            <option value="OTHER" v-t="'enum.gender.OTHER'">other</option>
                         </select>
                     </form-group>
 				</div>
@@ -145,15 +145,50 @@
                         <formerror myid="unlockCode" type="invalid" message="error.invalid.unlock_code"></formerror>
                     </form-group>
                 </div> -->
+
+                <form-group name="coach" label="registration.coach" :path="errors.coach" v-if="role=='developer'">
+					<input type="text" class="form-control" id="coach" name="coach" v-validate v-model="registration.coach">
+				</form-group>
+                <form-group name="reason" label="registration.reason" :path="errors.reason" v-if="role=='developer'">
+                    <textarea class="form-control" rows="5" id="reason" name="reason" v-validate v-model="registration.reason" required></textarea>
+                    <p class="form-text text-muted" translate="developer_registration.reason_fillout"></p>
+                </form-group>
+
                 <form-group name="agb" label="registration.agb" >
                     <check-box v-model="registration.agb" name="agb" :path="errors.agb">                                 
                         <span v-t="'registration.agb2'"></span>&nbsp;
                         <a @click="showTerms(currentTerms.member.termsOfUse);" href="javascript:" v-t="'registration.agb3'"></a>&nbsp;
                         <span v-t="'registration.privacypolicy2'"></span>&nbsp;
                         <a @click="showTerms(currentTerms.member.privacyPolicy);" href="javascript:" v-t="'registration.privacypolicy3'"></a>
-                    </check-box>                        
-                </form-group>                                                          
+                    </check-box>   
 
+					<div v-if="app && app.loginTemplate == 'REDUCED'">					
+					<section v-if="app.termsOfUse">
+						<div class="form-check">
+							<input id="appAgb" name="appAgb" class="form-check-input" type="checkbox" v-model="login.appAgb" />
+							
+							<label for="appAgb" class="form-check-label">
+						   		<span v-t="'registration.app_agb2'"></span>
+						   		<a @click="showTerms(app.termsOfUse)" href="javascript:" v-t="'registration.app_agb3'"></a>
+						 	</label>							 					
+						 
+						</div>					
+					</section>
+					<section v-for="link in links" :key="link._id">
+						<div class="form-check" v-if="link.type.indexOf('OFFER_P')>0">
+							<input type="checkbox" class="form-check-input" :id="link._id" :name="link._id" value="" :checked="registration.confirmStudy.indexOf(link.studyId || link.userId || link.serviceAppId)>=0" @click="toggle(registration.confirmStudy, link.studyId || link.userId || link.serviceAppId)" /> 
+							<label :for="link._id" class="form-check-label">
+							<span>{{ $t(getLinkLabel(link)) }}</span>:
+							<a v-if="link.termsOfUse" @click="showTerms(link.termsOfUse)" href="javascript:">{{ (link.study || {}).name }} {{ (link.provider || {}).name }} {{ (link.serviceApp || {}).name }}</a>
+							<span v-if="!(link.termsOfUse)">{{ getLinkName(link) }}</span>
+							</label>
+						</div>					
+					</section>                           
+				</div>
+
+                </form-group>   
+
+				
                 <button class="btn btn-primary btn-block" type="submit" :disabled="action!=null" v-t="'registration.sign_up_btn'" v-submit>					
                 </button>
 			
@@ -177,7 +212,8 @@
     </div>
 
 </div>
-        </div></div>
+        </div>
+	 </div>
   
 </template>
 <script>
@@ -196,7 +232,7 @@ import TermsModal from 'components/TermsModal.vue';
 
 export default {
   data: () => ({
-    registration : { language : getLocale(), confirmStudy : [], unlockCode : null },
+    registration : { language : getLocale(), confirmStudy : [], unlockCode : null, secure : true },
 	languages : languages.all,
 	countries : languages.countries,	
 	flags : { optional : false },
@@ -208,8 +244,11 @@ export default {
 
     actions : null,
     login : null,
-	role : "user"
+	role : "user",
+	links : []
   }),
+
+  props: ['preview', 'previewlinks'],
 
   components : {
      FormGroup, ErrorBox, Panel, TermsModal, CheckBox, Password 
@@ -238,13 +277,13 @@ export default {
 
 	addressNeeded() {
         const { $data } = this;
-		if ($data.role == "research" || $data.role == "provider" ) return true;
+		if ($data.role == "research" || $data.role == "provider" || $data.role == "developer" ) return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('ADDRESS_ENTERED') >= 0 ||  $data.app.requirements.indexOf('ADDRESS_VERIFIED') >=0 );
 	},
 	
 	phoneNeeded() {
         const { $data } = this;
-		if ($data.role == "research" || $data.role == "provider") return true;
+		if ($data.role == "research" || $data.role == "provider" || $data.role == "developer") return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('PHONE_ENTERED') >= 0 ||  $data.app.requirements.indexOf('PHONE_VERIFIED') >=0 );
 	},
 
@@ -293,6 +332,40 @@ export default {
 		return v==true ? "" : $t('error.missing.agb')
 	},
 
+	getLinkHeading(link) {
+		let t = (link.study && link.study.type) ? link.study.type : (link.linkTargetType || "STUDY");
+		
+		return this.$t('oauth2.link_'+t+"_"+((link.type.indexOf("REQUIRE_P") >= 0) ? "required" : "optional"));
+	},
+   
+    getLinkLabel(link) {
+	    if (link.linkTargetType == "ORGANIZATION") {
+			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_provider";
+			return "oauth2.confirm_provider_opt";
+		} 
+		if (link.linkTargetType == "SERVICE") {
+			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_service";
+			return "oauth2.confirm_service_opt";
+		} 
+		if (link.study.type == "CLINICAL") {
+			if (link.type.indexOf("REQUIRE_P") >= 0 /*&& !(link.type.indexOf("OFFER_EXTRA_PAGE") >=0)*/) return "oauth2.confirm_study";
+			return "oauth2.confirm_study_opt";
+		}
+		if (link.study.type == "CITIZENSCIENCE") return "oauth2.confirm_citizen_science";		
+		if (link.study.type == "COMMUNITY") {
+			if (link.type.indexOf("REQUIRE_P") >= 0 /*&& !(link.type.indexOf("OFFER_EXTRA_PAGE") >=0)*/) return "oauth2.confirm_community";
+			return "oauth2.confirm_community_opt";
+		}		
+	},
+
+	getLinkName(link) {
+		if (link.study) return link.study.name;
+		if (link.provider) return link.provider.name;
+		if (link.serviceApp) 
+			return (link.serviceApp.i18n[getLocale()] && link.serviceApp.i18n[getLocale()].name) ? link.serviceApp.i18n[getLocale()].name : link.serviceApp.name;
+		return "???";
+    },
+
     register() {		        
 		const { $data, $router, $route, $t } = this, me = this;
 		
@@ -302,9 +375,9 @@ export default {
 			return;
 		}
 
-		var pwvalid = crypto.isValidPassword($data.registration.password1);         
+		var pwvalid = crypto.isValidPassword($data.registration.password1, $data.role && $data.role != "member");         
         if (!pwvalid) {
-			this.setError("password", $t("error.tooshort.password"));
+			this.setError("password", $t(($data.role && $data.role != "member") ? "error.tooshort.password2" : "error.tooshort.password"));
         	return;
         }
 
@@ -343,7 +416,8 @@ export default {
 		
 		
 		var finishRegistration = function() { 
-			if (oauth.getAppname()) {		  
+			if (oauth.getAppname()) {	
+			  oauth.setDuringRegistration(true);	  
 			  data.app = oauth.getAppname();
 			  data.device = oauth.getDevice();
 			  if ($data.registration.unlockCode) oauth.setUnlockCode($data.registration.unlockCode);
@@ -355,11 +429,13 @@ export default {
 			  me.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, data)).
 			  then(function(datax) { 			 
 				  oauth.setUser($data.registration.email, $data.registration.password1);			  
-				  $data.welcomemsg = true;	
-				  
-				  if ($data.app && $data.app.requirements && $data.app.requirements.indexOf('EMAIL_VERIFIED') >= 0) {
+				  				
+				  session.postLogin(datax, $router, $route);	  
+				  /*if ($data.app && $data.app.requirements && $data.app.requirements.indexOf('EMAIL_VERIFIED') >= 0) {
 					  me.confirmWelcome(); 
-				  }
+				  } else {
+				      $data.welcomemsg = true;
+				  }*/
 			  });
 			} else if ($data.role == "research") {
 				me.doAction("register", server.post(jsRoutes.controllers.research.Researchers.register().url, data))
@@ -367,6 +443,9 @@ export default {
 			} else if ($data.role == "provider") {
 				me.doAction("register", server.post(jsRoutes.controllers.providers.Providers.register().url, data))
 		        .then(function(data) { session.postLogin(data, $router, $route); });			
+			} else if ($data.role == "developer") {
+				me.doAction("register", server.post(jsRoutes.controllers.Developers.register().url, data))
+		        .then(function(data) { session.postLogin(data, $router, $route); });	
 			} else {			
 				me.doAction("register", server.post(jsRoutes.controllers.Application.register().url, data)).
 				then(function(data) { session.postLogin(data, $router, $route); });
@@ -403,6 +482,9 @@ export default {
 	 } else if ($data.role == "provider") {
 		 addBundle("providers");
 		 $data.registration.secure = true;
+	 } else if ($data.role == "developer") {
+		 addBundle("developers");
+		 $data.registration.secure = true;
 	 }
      this.doBusy(server.get(jsRoutes.controllers.Terms.currentTerms().url).then(function(result) { $data.currentTerms = result.data; }));
 
@@ -411,11 +493,27 @@ export default {
 	 var i = 0;
 	 for (i=1;i <= 9; i++ ) { $data.months.push("0"+i); }
 	 for (i=10;i <= 12; i++ ) $data.months.push(""+i);
-	
-	if (oauth.getAppname()) {		
-	   $data.app = oauth.app;
-	   $data.links = oauth.links;
-	}
+     if (this.preview) {
+		$data.app = this.preview;
+		$data.links = this.previewlinks;
+	 } else if (oauth.getAppname()) {		
+	    $data.app = oauth.app;
+		$data.links = oauth.links;
+		if ($data.app.loginTemplate=="REDUCED") {
+			me.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app-use", $data.app._id).url)
+			.then(function(data) {	
+			
+				let links = [];
+				for (var l=0;l<data.data.length;l++) {
+					var link = data.data[l];					
+					if (link.type.indexOf("OFFER_P")>=0) links.push(link);
+
+				}
+				$data.links = oauth.links = links;
+			}));
+		}
+	    
+	 }
 	
 	
 	

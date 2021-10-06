@@ -30,6 +30,7 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.Study;
 import models.StudyAppLink;
+import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.Gender;
@@ -43,6 +44,7 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import play.mvc.Http.Request;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -50,6 +52,7 @@ import utils.auth.ExecutionInfo;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.fhir.PatientResourceProvider;
@@ -67,9 +70,9 @@ public class QuickRegistration extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result register() throws AppException {
+	public Result register(Request request) throws AppException {
 		// validate 
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "country", "app", "language");
 		
 		
@@ -138,7 +141,10 @@ public class QuickRegistration extends APIController {
 		
 		// check status
 		if (Member.existsByEMail(email)) {
-		  throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
+			// Idea for account enumeration prevention. But there are so many ways to do account enumeration
+			AuditManager.instance.addAuditEvent(AuditEventType.TRIED_USER_REREGISTRATION, Member.getByEmail(email, User.PUBLIC), app._id);
+			//return OAuth2.loginHelper(new ExtendedSessionToken().forFake().withApp(app._id, device), json, app, null);
+		    throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
 		}
 		
 		// create the user
@@ -226,9 +232,9 @@ public class QuickRegistration extends APIController {
 			   return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withAppInstance(appInstance), json, app, user._id);
 			}*/
 					
-			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
+			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
 		} else {
-			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
+			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
 		}
 	}
 	
@@ -241,7 +247,7 @@ public class QuickRegistration extends APIController {
 	@MobileCall
 	public static Result registerFromApp() throws AppException {
 		// validate 
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "birthday", "appname", "secret", "device", "language");
 				
 		String appName = JsonValidation.getString(json, "appname");

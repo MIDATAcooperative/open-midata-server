@@ -18,6 +18,7 @@
 package utils.access;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -102,14 +103,22 @@ public class IndexManager {
 		BSONObject obj = aps.getMeta("_pseudo");
 		
 		if (obj == null && !create && !user.equals(targetAPS)) return null;
-				
-		if (obj == null) { 
-		obj = new BasicBSONObject();
-		obj.put("name", UUID.randomUUID());
-		aps.setMeta("_pseudo", obj.toMap());			
-		}
+
+		byte key[] = ((APSImplementation) aps).eaps.exportAPSKey();
+		if (obj == null || ! obj.containsField("key") || !Arrays.equals(key, (byte[]) obj.get("key"))) {
+			
+			obj = new BasicBSONObject();
+			obj.put("name", UUID.randomUUID());
+			obj.put("key", key);
+			aps.setMeta("_pseudo", obj.toMap());
+			AccessLog.log("providing new index pseudonym");
+			
+			aps.removeMeta("_streamindex");
+			aps.removeMeta("_statsindex");
+			aps.removeMeta("_consents");
+		} 
 		
-		return new IndexPseudonym(obj.get("name").toString(), ((APSImplementation) aps).eaps.getAPSKey());
+		return new IndexPseudonym(obj.get("name").toString(), key);
 	}
 	
 	public StreamIndexRoot getStreamIndex(APSCache cache, MidataId user) throws AppException {
@@ -630,6 +639,8 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		}
 				
 		cache.getAPS(user).removeMeta("_statsindex");
+		cache.getAPS(user).removeMeta("_streamindex");
+		cache.getAPS(user).removeMeta("_consents");
 		cache.getAPS(user).removeMeta("_pseudo");
 		AccessLog.logEnd("end clear indexes");
 		

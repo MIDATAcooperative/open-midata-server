@@ -57,7 +57,7 @@ public abstract class Model implements JsonSerializable {
 
 	@Override
 	public boolean equals(Object other) {
-		if (this.getClass().equals(other.getClass())) {
+		if (other != null && this.getClass().equals(other.getClass())) {
 			Model otherModel = (Model) other;
 			return _id.equals(otherModel._id);
 		}

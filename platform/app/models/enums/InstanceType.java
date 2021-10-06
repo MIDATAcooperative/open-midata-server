@@ -85,6 +85,14 @@ public enum InstanceType {
 	}
 	
 	/**
+	 * Login screens do not need to be validated
+	 * @return 
+	 */
+	public boolean getNoLoginScreenValidation() {
+		return this == TEST || this == DEMO || this == PERFTEST;
+	}
+	
+	/**
 	 * Membership Requests are immediately granted
 	 * @return 
 	 */
@@ -186,6 +194,14 @@ public enum InstanceType {
 	 */
 	public boolean simpleServiceKeyProtection() {
 		return this == DEMO;
+	}
+	
+	/**
+	 * Are developers allowed to test plugins from localhost?
+	 * @return
+	 */
+	public boolean allowTestingFromLocalhost() {
+		return this == TEST || this == PERFTEST; 
 	}
 		
 	

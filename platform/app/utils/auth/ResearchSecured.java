@@ -17,8 +17,12 @@
 
 package utils.auth;
 
+
+import java.util.Optional;
+
 import models.enums.UserRole;
-import play.mvc.Http.Context;
+import play.mvc.Http.Request;
+
 
 /**
  * This authenticator allows only researchers as users
@@ -27,13 +31,14 @@ import play.mvc.Http.Context;
 public class ResearchSecured extends AnyRoleSecured {
 
 	@Override
-	public String getUsername(Context ctx) {
-		String result = super.getUsername(ctx);
+	public Optional<String> getUsername(Request ctx) {
+		String result = super.getUsername(ctx).orElse(null);
 		if (result != null) {
 		  UserRole role = PortalSessionToken.session().getRole();
-		  if (! UserRole.RESEARCH.equals(role)) return null;				  
+		  if (! UserRole.RESEARCH.equals(role)) return Optional.empty();
+		  return Optional.of(result);
 		}
-		return result;
+		return Optional.empty();
 	}
 	
 }

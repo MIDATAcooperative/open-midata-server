@@ -18,6 +18,7 @@
 import crypto from './crypto';
 import server from './server';
 import actions from './actions';
+import oauth from './oauth';
 
 	
 	var _states = {};
@@ -71,7 +72,13 @@ import actions from './actions';
 					  }
 				  }
 				  postregParams.ts = Date.now();
-				  $router.push({ path : "./postregister", query : postregParams , location : false });			
+				  if (result.data && result.data.requirements && (result.data.requirements.indexOf("APP_CONFIRM")>=0 || result.data.requirements.indexOf("APP_NO_PROJECT_CONFIRM")>=0)) {
+					 $router.push({ path : "./oauthconfirm", query : $route.query, location : false });					 
+				  } else {	
+				     $router.push({ path : "./postregister", query : postregParams , location : false });
+		          }		
+            } else if (oauth.getAppname()) {
+	           oauth.postLogin(result);	
 			} else if (result.data.role == "admin") {				
 				if (result.data.keyType == 1) {
 					$router.push({ name : 'public_developer.passphrase_admin', query : $route.query });

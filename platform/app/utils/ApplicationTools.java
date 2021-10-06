@@ -79,7 +79,7 @@ import utils.stats.UsageStatsRecorder;
 public class ApplicationTools {
 
 	public static MobileAppInstance installApp(AccessContext context, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm, Set<StudyAppLink> links) throws AppException {
-		AccessLog.logBegin("beginn install app id="+appId+" context="+context.toString());
+		AccessLog.logBegin("beginn install app id="+appId+" context="+(context != null ? context.toString() : "null"));
 		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 		if (app == null) throw new InternalServerException("error.internal", "App not found");
 
@@ -582,7 +582,7 @@ public class ApplicationTools {
 	}
 
 	public static void removeAppInstance(AccessContext context, MidataId executorId, MobileAppInstance appInstance) throws AppException {
-		AccessLog.logBegin("start remove app instance: "+appInstance._id);
+		AccessLog.logBegin("start remove app instance: "+appInstance._id+" context="+context.toString());
 		// Device or password changed, regenerates consent				
 		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);
 		Plugin app = Plugin.getById(appInstance.applicationId);

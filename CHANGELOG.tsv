@@ -75,5 +75,7 @@ id0073	11.03.2021	a.kreutz	F	New consent type	A new power of attorney consent ty
 id0074	11.03.2021	a.kreutz	I	Partly failed FHIR transactions produce better error messages	Error messages of failed transaction/batch entries are also recorded in the error statistics.
 id0075	11.03.2021	a.kreutz	F	Support for document bundles	The transaction endpoint now also accepts Bundles of type document.
 id0076	11.03.2021	a.kreutz	S	Corrected lifespan of API tokens
-id0077	07.07.2021	a.kreutz	F	Added experimental workspace feature for developers	
+id0077	07.07.2021	a.kreutz	F	Added experimental workspace feature for developers
+id0078	29.09.2021	a.kreutz	F	Login Templates	and Preview	A new developer function allows to choose from different login views and offers preview functionality for logins
+id0079	01.10.2021	a.kreutz	F	Project Leave Policy and Rejoin Policy defineable	Projects may now have policies for participants that withdraw from the project or want to rejoin.	
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

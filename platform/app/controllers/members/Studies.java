@@ -47,12 +47,16 @@ import models.enums.JoinMethod;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
+import models.enums.ProjectLeavePolicy;
+import models.enums.RejoinPolicy;
 import models.enums.UserFeature;
 import models.enums.WritePermissionType;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
+import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.access.AccessContext;
 import utils.access.RecordManager;
@@ -88,8 +92,8 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public Result list() throws JsonValidationException, InternalServerException {
-	   MidataId user = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result list(Request request) throws JsonValidationException, InternalServerException {
+	   MidataId user = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 	   
 	   Set<String> fields = Sets.create("study","studyName", "pstatus");
 	   Set<StudyParticipation> participation = StudyParticipation.getAllByMember(user, fields);
@@ -107,10 +111,10 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result search() throws JsonValidationException, InternalServerException, AuthException {
-	   MidataId user = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result search(Request request) throws JsonValidationException, InternalServerException, AuthException {
+	   MidataId user = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 	   
-	   JsonNode json = request().body().asJson();
+	   JsonNode json = request.body().asJson();
 	   JsonValidation.validate(json, "properties", "fields");
 							   		
 	   Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
@@ -132,13 +136,13 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result enterCode() throws AppException {
-        JsonNode json = request().body().asJson();
+	public Result enterCode(Request request) throws AppException {
+        JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "code");
 		String codestr = JsonValidation.getString(json, "code");
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
 		Member user = Member.getById(userId, Sets.create("firstname","lastname","birthday","country","gender"));
 				
@@ -203,11 +207,11 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result updateParticipation(String id) throws JsonValidationException, AppException {
-		JsonNode json = request().body().asJson();
+	public Result updateParticipation(Request request, String id) throws JsonValidationException, AppException {
+		JsonNode json = request.body().asJson();
 		MidataId studyId = new MidataId(id);
-		MidataId memberId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		MidataId memberId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		
 		StudyParticipation part = StudyParticipation.getByStudyAndMember(studyId, memberId, StudyParticipation.STUDY_EXTRA);
 		if (part == null) throw new BadRequestException("error.unknown.participation", "Study Participation not found.");
@@ -311,7 +315,7 @@ public class Studies extends APIController {
 		
 		
 		
-		Circles.prepareConsent(part, true);
+		Circles.prepareConsent(context, part, true);
 		//StudyParticipation.add(part);		
 		Circles.setQuery(context, member._id, part._id, study.recordQuery);
 		Circles.consentSettingChange(context, part);
@@ -334,11 +338,11 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result get(String id) throws JsonValidationException, InternalServerException {
-	   MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));	
+	public Result get(Request request, String id) throws JsonValidationException, InternalServerException {
+	   MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));	
 	    	   
-	   Set<String> studyFields = Sets.create("_id", "type", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","infosPart", "owner","participantRules","recordQuery","studyKeywords","requiredInformation","anonymous","assistance", "startDate", "endDate", "dataCreatedBefore", "termsOfUse", "joinMethods");
-	   Set<String> consentFields = Sets.create("_id", "pstatus", "providers");
+	   Set<String> studyFields = Sets.create("_id", "type", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","infosPart", "owner","participantRules","recordQuery","studyKeywords","requiredInformation","anonymous","assistance", "startDate", "endDate", "dataCreatedBefore", "termsOfUse", "joinMethods", "leavePolicy", "rejoinPolicy");
+	   Set<String> consentFields = Sets.create("_id", "pstatus", "status", "providers");
 	   Set<String> researchFields = Sets.create("_id", "name", "description");
 	  
 	   Study study;
@@ -374,20 +378,20 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public Result requestParticipation(String id) throws AppException {
+	public Result requestParticipation(Request request, String id) throws AppException {
 		/*if (!InstanceConfig.getInstance().getInstanceType().equals(InstanceType.PERFTEST)) {
 		  forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
 		  forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
 		  forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);	
 		}*/
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));		
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
 		MidataId studyId = new MidataId(id);	
 		
 		User user = Member.getById(userId, Member.ALL_USER_INTERNAL);
 		
 		Set<UserFeature> requirements = precheckRequestParticipation(userId, studyId);
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
-		if (notok != null && !notok.isEmpty()) requireUserFeature(notok.iterator().next());
+		if (notok != null && !notok.isEmpty()) requireUserFeature(request, notok.iterator().next());
 		
 		requestParticipation(new ExecutionInfo(userId, getRole()), userId, studyId, null, JoinMethod.PORTAL, null);		
 		return ok();
@@ -398,7 +402,7 @@ public class Studies extends APIController {
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA);		
-		Study study = Study.getById(studyId, Sets.create("name", "joinMethods", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup", "type", "consentObserver"));
+		Study study = Study.getById(studyId, Sets.create("name", "joinMethods", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup", "type", "consentObserver", "rejoinPolicy"));
 		ParticipationCode code = null;
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		        
@@ -414,7 +418,14 @@ public class Studies extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_REQUESTED, userId, participation, study);
 		
-		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
+		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
+			if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
+				if (participation.status != ConsentStatus.DELETED) {
+					Circles.consentStatusChange(inf.context, participation, ConsentStatus.DELETED);	
+				}
+				return requestParticipation(inf, userId, studyId, usingApp, joinMethod, joinCode);
+			} else throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
+		}
 		
 		participation.setPStatus(ParticipationStatus.REQUEST, joinMethod);	
 		
@@ -465,7 +476,7 @@ public class Studies extends APIController {
 				
 		Member user = userId != null ? Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country")) : null;		
 		StudyParticipation participation = userId != null ? StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA) : null;		
-		Study study = Study.getById(studyId, Sets.create("type", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "requirements", "code"));
+		Study study = Study.getById(studyId, Sets.create("type", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "requirements", "code", "rejoinPolicy"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) {
@@ -474,7 +485,12 @@ public class Studies extends APIController {
 		}
 		
 		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return study.requirements;			
-		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
+		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
+			if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
+			  return study.requirements;			  
+			}
+			throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
+		}
 		
 		return study.requirements;
 	}
@@ -488,9 +504,9 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public Result noParticipation(String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));		
-		AccessContext context = portalContext();
+	public Result noParticipation(Request request, String id) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
+		AccessContext context = portalContext(request);
 		MidataId studyId = new MidataId(id);
 		noParticipation(context, userId, studyId);
 		return ok();
@@ -524,9 +540,9 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public Result retreatParticipation(String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+	public Result retreatParticipation(Request request, String id) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId studyId = new MidataId(id);
 		
 		retreatParticipation(context, userId, studyId);		
@@ -539,7 +555,7 @@ public class Studies extends APIController {
 				
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA);		
-		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "createdBy", "code", "type"));
+		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "createdBy", "code", "type", "leavePolicy"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) throw new BadRequestException("error.blocked.participation", "Member does not participate in study.");
@@ -551,11 +567,17 @@ public class Studies extends APIController {
 			Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
 		} else {
 		
-		   AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_MEMBER_RETREAT, userId, participation, study);
-		   if (participation.pstatus != ParticipationStatus.ACCEPTED) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
-		
+		   AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_MEMBER_RETREAT, userId, participation, study);		   
+		   if (participation.pstatus != ParticipationStatus.ACCEPTED) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");		   
 		   participation.setPStatus(ParticipationStatus.MEMBER_RETREATED);
-		   Circles.consentStatusChange(context, participation, ConsentStatus.FROZEN);
+		   if (study.leavePolicy == null || study.leavePolicy == ProjectLeavePolicy.FREEZE) {
+		     Circles.consentStatusChange(context, participation, ConsentStatus.FROZEN);
+		   } else if (study.leavePolicy == ProjectLeavePolicy.REJECT) {
+			   AccessLog.log("CCCC");
+			 Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
+		   } else {
+			 Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);
+		   }
 		}
 		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
 						

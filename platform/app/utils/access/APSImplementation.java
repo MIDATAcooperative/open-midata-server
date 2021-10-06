@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
@@ -55,9 +56,8 @@ class APSImplementation extends APS {
 	public EncryptedAPS eaps;
 
 	public final static String QUERY = "_query";
-	public Random rand = new Random(System.currentTimeMillis());
 	
-	private List<DBRecord> cachedRecords;
+		
 	private final static Map<String, Object> NOTNULL = Collections.unmodifiableMap(Collections.singletonMap("$ne", null));
 
 	public APSImplementation(EncryptedAPS eaps) {
@@ -110,7 +110,7 @@ class APSImplementation extends APS {
 		} catch (LostUpdateException e) {
 			try {
 				Stats.reportConflict();
-				Thread.sleep(rand.nextInt(1000));
+				Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
 			} catch (InterruptedException e2) {
 			}
 			eaps.reload();
@@ -144,7 +144,7 @@ class APSImplementation extends APS {
 		} catch (LostUpdateException e) {
 			try {
 				Stats.reportConflict();
-				Thread.sleep(rand.nextInt(1000));
+				Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
 			} catch (InterruptedException e2) {
 			}
 			eaps.reload();
@@ -173,7 +173,7 @@ class APSImplementation extends APS {
 		} catch (LostUpdateException e) {
 			try {
 				Stats.reportConflict();
-				Thread.sleep(rand.nextInt(1000));
+				Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
 			} catch (InterruptedException e2) {
 			}
 			eaps.reload();
@@ -212,7 +212,7 @@ class APSImplementation extends APS {
 		} catch (LostUpdateException e) {
 			try {
 				Stats.reportConflict();
-				Thread.sleep(rand.nextInt(1000));
+				Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
 			} catch (InterruptedException e2) {
 			}
 			eaps.reload();
@@ -247,6 +247,7 @@ class APSImplementation extends APS {
 	}
 
 	public BasicBSONObject getMeta(String key) throws AppException {
+		merge();
 		return (BasicBSONObject) eaps.getPermissions().get(key);
 	}
 	
@@ -290,21 +291,21 @@ class APSImplementation extends APS {
 			if (!q.restrictedBy("deleted")) {
 				query.put("encryptedData", NOTNULL);
 			}
-			boolean useCache = true;
+			
 			if (q.restrictedBy("_id")) {
 				                				
 				Set<MidataId> idRestriction = q.getMidataIdRestriction("_id");
 								query.put("_id", idRestriction);
-				useCache = false;
+			
 			}
 			
-			useCache = !q.addMongoTimeRestriction(query, false) && useCache;
+			q.addMongoTimeRestriction(query, false);
 			List<DBRecord> directResult;
 			
-			if (useCache && cachedRecords != null) {
-			
-				return Collections.unmodifiableList(cachedRecords);
-			}
+			//if (useCache && cachedRecords != null) {
+			//
+			//	return Collections.unmodifiableList(cachedRecords);
+			//}
 			
 			directResult = DBRecord.getAllList(query, q.getFieldsFromDB());
 			for (DBRecord record : directResult) {
@@ -506,7 +507,7 @@ class APSImplementation extends APS {
 	private void recoverFromLostUpdate() throws InternalServerException {
 		try {
 			Stats.reportConflict();
-			Thread.sleep(rand.nextInt(1000));
+			Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
 		} catch (InterruptedException e) {
 		}
 		;
@@ -621,8 +622,10 @@ class APSImplementation extends APS {
 		} catch (LostUpdateException e) {
 			eaps.reload();
 			merge();		
-		}
+		}		
 	}
+	
+	
 
 	@Override
 	public boolean isReady() throws AppException {

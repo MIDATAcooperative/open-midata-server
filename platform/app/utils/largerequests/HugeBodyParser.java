@@ -28,10 +28,12 @@ import akka.util.ByteString;
 import models.MidataId;
 import play.core.parsers.Multipart;
 import play.http.DefaultHttpErrorHandler;
+import play.http.HttpErrorHandler;
 import play.libs.streams.Accumulator;
 import play.mvc.Http;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Http.RequestHeader;
+import play.mvc.BodyParser.DelegatingMultipartFormDataBodyParser;
 import play.mvc.Result;
 import scala.Option;
 import utils.ErrorReporter;
@@ -64,11 +66,12 @@ import static java.nio.file.attribute.PosixFilePermission.OWNER_WRITE;
 
 public class HugeBodyParser extends DelegatingMultipartFormDataBodyParser<EncryptedFileHandle> {
 
-	
+	private final UploadUndoErrorHandler errors;
 	
     @Inject
     public HugeBodyParser(Materializer materializer, play.api.http.HttpConfiguration config, UploadUndoErrorHandler errorhandler) {
-        super(materializer, config.parser().maxMemoryBuffer(), errorhandler);       
+        super(materializer, config.parser().maxMemoryBuffer(), config.parser().maxDiskBuffer(), errorhandler);
+        errors =  errorhandler;       
     }
 
     /**

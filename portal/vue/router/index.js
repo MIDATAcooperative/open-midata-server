@@ -105,7 +105,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/oauth2.vue')
   },
   {
-    base : ['public', 'oauth', "developer", "admin", "public_research", "public_developer", "public_provider"],
+    base : ['public', 'oauth', "developer", "public_research", "public_developer", "public_provider"],
     path : 'registration',
     name: 'registration',
     component: () => import(/* webpackChunkName: "oauth" */ 'views/member/public/registration.vue')
@@ -367,6 +367,14 @@ const routes = [
     }
   },
   {
+    base : ["admin"],
+    path : "registration",
+    component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),
+    meta : {
+      mode : "admin"
+    }
+  },
+  {
     base : ["provider"],
     path : "usergroups",
     component: () => import(/* webpackChunkName: "provider" */ 'views/provider/usergroups.vue')    
@@ -397,6 +405,11 @@ const routes = [
   {
     base : ["research", "developer", "admin"],
     path : "createstudy",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/createstudy.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
+    path : "description",
     component: () => import(/* webpackChunkName: "research" */ 'views/research/createstudy.vue')
   },
   {
@@ -631,6 +644,11 @@ const routes = [
     base : ["admin", "developer"],
     path : "appicon",
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/appicon.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "applogin",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/applogin.vue')
   },
   {
     base : ["admin", "developer"],

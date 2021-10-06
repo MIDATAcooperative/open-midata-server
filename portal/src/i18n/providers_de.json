@@ -63,7 +63,8 @@
     },
 
     "provider_patients" : {
-        "title" : "Patienten"
+        "title" : "Patienten",
+        "empty" : "Keine Patienten gefunden."
     },
 
     "provider_usergroups" : {

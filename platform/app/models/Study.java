@@ -28,6 +28,8 @@ import models.enums.AssistanceType;
 import models.enums.InformationType;
 import models.enums.JoinMethod;
 import models.enums.ParticipantSearchStatus;
+import models.enums.ProjectLeavePolicy;
+import models.enums.RejoinPolicy;
 import models.enums.ResearcherRole;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyType;
@@ -51,7 +53,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy");
 	
 	public @NotMaterialized static final Set<String> LINK_FIELDS = Sets.create("_id", "name", "code", "type", "joinMethods", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
 	
@@ -211,6 +213,10 @@ public class Study extends Model {
      */
     public Set<MidataId> consentObserver;
     
+    public ProjectLeavePolicy leavePolicy;
+    
+    public RejoinPolicy rejoinPolicy;
+    
     public @NotMaterialized Set<String> consentObserverNames;
     
     public static void add(Study study) throws InternalServerException {
@@ -322,6 +328,16 @@ public class Study extends Model {
     public void setJoinMethods(Set<JoinMethod> joinMethods) throws InternalServerException {
     	this.joinMethods = joinMethods;
     	Model.set(Study.class, collection, this._id, "joinMethods", joinMethods);
+    }
+    
+    public void setLeavePolicy(ProjectLeavePolicy leavePolicy) throws InternalServerException {
+    	this.leavePolicy = leavePolicy;
+    	Model.set(Study.class, collection, this._id, "leavePolicy", leavePolicy);
+    }
+    
+    public void setRejoinPolicy(RejoinPolicy rejoinPolicy) throws InternalServerException {
+    	this.rejoinPolicy = rejoinPolicy;
+    	Model.set(Study.class, collection, this._id, "rejoinPolicy", rejoinPolicy);
     }
     
     public void setconsentObserver(Set<MidataId> consentObserver) throws InternalServerException {

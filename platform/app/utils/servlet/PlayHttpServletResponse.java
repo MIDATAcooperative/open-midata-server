@@ -22,13 +22,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import play.http.HttpEntity;
 import play.mvc.Http;
+import play.mvc.Result;
+import play.mvc.StatusHeader;
 import scala.NotImplementedError;
 import utils.AccessLog;
 
@@ -39,17 +44,18 @@ import utils.AccessLog;
 public class PlayHttpServletResponse implements HttpServletResponse {
 
 	private int status = 200;	
-	private Http.Response response;
+	
 	private StringWriter responseWriter;
 	private ByteArrayOutputStream responseStream;
 	private String contentType;
+	private Map<String, String> headers = new HashMap<String, String>();
 	
 	/**
-	 * Creates HttpServletResponse from Play Http.Response
+	 * Creates HttpServletResponse
 	 * @param response the Play Http.Response
 	 */
-	public PlayHttpServletResponse(Http.Response response) {
-		this.response = response;
+	public PlayHttpServletResponse() {
+		
 	}
 	
 	@Override
@@ -162,7 +168,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 	@Override
 	public void addHeader(String arg0, String arg1) {
 		if (arg0.equals("X-Powered-By")) return;
-		response.setHeader(arg0, arg1);		
+		headers.put(arg0, arg1);		
 	}
 
 	@Override
@@ -242,7 +248,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void setHeader(String arg0, String arg1) {
-		response.setHeader(arg0, arg1);		
+		headers.put(arg0, arg1);		
 	}
 
 	@Override
@@ -261,21 +267,17 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 		 throw new NotImplementedError();
 		
 	}
-
-	/**
-	 * Returns the writer used to fill this response
-	 * @return StringWriter containing response
-	 */
-	public StringWriter getResponseWriter() {
-		return responseWriter;
-	}
-
-	/**
-	 * Returns the stream used to fill this reponse
-	 * @return ByteArrayOutputStream containing response
-	 */
-	public ByteArrayOutputStream getResponseStream() {
-		return responseStream;
+		
+	public Result asPlayResult() {
+		Result result = null;;
+		if (responseWriter != null) result = new StatusHeader(status).sendEntity(HttpEntity.fromString(responseWriter.toString(), "utf-8"));
+		else if (responseStream != null) result = new StatusHeader(status).sendBytes(responseStream.toByteArray());
+		else result = new StatusHeader(status);
+		result = result.as(contentType);
+		for (Map.Entry<String, String> header : headers.entrySet()) {
+			result = result.withHeader(header.getKey(), header.getValue());
+		}
+		return result;
 	}
 	
 	

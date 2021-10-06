@@ -591,7 +591,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		  Set<StudyAppLink> links = StudyAppLink.getByApp(plugin._id);
 		  for (StudyAppLink sal : links) {
 			  if (sal.isConfirmed() && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
-				  StudyParticipation part = StudyParticipation.getByStudyAndMember(sal.studyId, record.owner, Sets.create("_id", "ownerName"));			  
+				  StudyParticipation part = StudyParticipation.getByStudyAndMember(sal.studyId, record.owner, Sets.create("_id", "owner", "ownerName", "status", "pstatus"));			  
 				  if (part != null && part.getOwnerName() != null) {					  					  
 					 Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(info().context, part);
 					  

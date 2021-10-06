@@ -103,10 +103,9 @@ public class RecordLifecycle {
 			return;	
 		}
 		AccessLog.log("notify of change");
-		Set<MidataId> ids = new HashSet<MidataId>();
+		
 		for (Object watch : rec.watches) cache.touchConsent(MidataId.from(watch));
-		//Consent.updateTimestamp(ids, System.currentTimeMillis(), System.currentTimeMillis() + 1000l * 60l * 60l);
-		//AccessLog.logEnd("end notify of change");
+		
 	}
 		
 		

@@ -100,6 +100,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	 */
 	@Read()
 	public AuditEvent getResourceById(@IdParam IIdType theId) throws AppException {
+		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
 		MidataAuditEvent mae = MidataAuditEvent.getById(MidataId.from(theId.getIdPart()));	
 		if (mae != null) return readAuditEventFromMidataAuditEvent(mae);
 		throw new ResourceNotFoundException(theId);		
@@ -393,10 +394,10 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 
 	@Override
 	public List<MidataAuditEvent> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();			
+		if (!checkAccessible()) return Collections.emptyList();
 		
-		if (!info.context.mayAccess("AuditEvent", "fhir/AuditEvent")) return Collections.emptyList();
-					
+		ExecutionInfo info = info();			
+							
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, null);
 		

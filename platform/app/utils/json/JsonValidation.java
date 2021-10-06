@@ -34,6 +34,9 @@ import utils.exceptions.BadRequestException;
  */
 public class JsonValidation {
 
+	public final static int MAX_STRING_LENGTH = 10000;
+	private final static int MAX_EMAIL_LENGTH = 254;
+	
 	/**
 	 * checks provided json if all required fields are provided
 	 * @param json the JsonNode to check
@@ -58,9 +61,10 @@ public class JsonValidation {
 	 * @param field the name of the field to return
 	 * @return trimmed string or null if field does not exist
 	 */
-	public static String getString(JsonNode json, String field) {
+	public static String getString(JsonNode json, String field) throws JsonValidationException  {
 		String res = json.path(field).asText();
 		if (res != null) res = res.trim();
+		if (res != null && res.length() > MAX_STRING_LENGTH) throw new JsonValidationException("error.toolong.field", "Request parameter '" + field + "' is too long.");
 		return res;
 	}
 		
@@ -73,9 +77,12 @@ public class JsonValidation {
 		throw new JsonValidationException("error.missing.field", "Request parameter '" + field + "' does not contain JSON.");
 	}
 	
-	public static String getStringOrNull(JsonNode json, String field) {
+	public static String getStringOrNull(JsonNode json, String field) throws JsonValidationException {
 		String res = json.path(field).asText();
-		if (res != null) res = res.trim();
+		if (res != null) {
+			res = res.trim();
+			if (res.length() > MAX_STRING_LENGTH) throw new JsonValidationException("error.toolong.field", "Request parameter '" + field + "' is too long.");
+		}
 		if (res != null && res.length() == 0) return null;
 		return res;
 	}
@@ -114,7 +121,7 @@ public class JsonValidation {
 	public static String getPassword(JsonNode json, String field) throws JsonValidationException {
 		String pw = json.path(field).asText();
 		if (pw.length() < 8) throw new JsonValidationException("error.tooshort.password", field, "tooshort", "Password is too weak. It must be 8 characters at minimum.");
-		
+		if (pw.length() > MAX_STRING_LENGTH) throw new JsonValidationException("error.toolong.password", field, "toolong", "Password must be shorter than "+MAX_STRING_LENGTH);
 		// Do not check for hashes
 		if (pw.length() < 12) {
 			if (!NUMBER.matcher(pw).find()) throw new JsonValidationException("error.tooweak.password", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
@@ -129,6 +136,7 @@ public class JsonValidation {
 		String email = json.path(field).asText();
 		if (email != null) email = email.trim();
 		if (email == null || email.length() == 0) return null;
+		if (email.length() > MAX_EMAIL_LENGTH) throw new JsonValidationException("error.toolong.email", field, "toolong", "E-Mail address is too long.");
 		if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) throw new JsonValidationException("error.invalid.email", field, "noemail", "Please enter a valid email address.");
 		return email;
 	}

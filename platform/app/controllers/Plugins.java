@@ -46,6 +46,7 @@ import models.Space;
 import models.StudyAppLink;
 import models.StudyParticipation;
 import models.User;
+import models.enums.LoginTemplate;
 import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.UserFeature;
@@ -62,9 +63,11 @@ import play.mvc.BodyParser;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
+import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.AccessContext;
 import utils.access.Feature_QueryRedirect;
@@ -140,9 +143,9 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result get() throws JsonValidationException, InternalServerException, AuthException {
+	public Result get(Request request) throws JsonValidationException, InternalServerException, AuthException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "properties", "fields");
 
 		// get visualizations
@@ -181,9 +184,9 @@ public class Plugins extends APIController {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result getInfo() throws JsonValidationException, InternalServerException, AuthException {
+	public Result getInfo(Request request) throws JsonValidationException, InternalServerException, AuthException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "name");
 
 		String name = JsonValidation.getString(json, "name");
@@ -191,11 +194,13 @@ public class Plugins extends APIController {
 		if (type == null || !type.equals("visualization")) type = "mobile";
 
 		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "termsOfUse", "requirements",
-				"orgName", "publisher", "unlockCode", "targetUserRole", "icons", "filename");
+				"orgName", "publisher", "unlockCode", "targetUserRole", "icons", "filename", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate");
 		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", type), fields);
 		if (plugin != null && plugin.unlockCode != null)
 			plugin.unlockCode = "true";
-
+        if (plugin != null && plugin.loginTemplateApprovedDate == null && !InstanceConfig.getInstance().getInstanceType().getNoLoginScreenValidation()) {
+        	if (plugin.loginTemplate != LoginTemplate.TERMS_OF_USE_AND_GENERATED) plugin.loginTemplate = LoginTemplate.GENERATED;        	
+        }
 		return ok(JsonOutput.toJson(plugin, "Plugin", fields)).as("application/json");
 	}
 
@@ -210,10 +215,10 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result install(String visualizationIdString) throws AppException {
-		JsonNode json = request().body().asJson();
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context1 = portalContext();
+	public Result install(Request request, String visualizationIdString) throws AppException {
+		JsonNode json = request.body().asJson();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context1 = portalContext(request);
 		MidataId visualizationId = null;
 		Plugin visualization = null;
 		if (MidataId.isValid(visualizationIdString)) {
@@ -337,8 +342,8 @@ public class Plugins extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result uninstall(String visualizationIdString) throws InternalServerException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result uninstall(Request request, String visualizationIdString) throws InternalServerException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		Set<String> fields = Sets.create("visualizations", "apps");
 
 		User user = User.getByIdAlsoDeleted(userId, fields);
@@ -360,8 +365,8 @@ public class Plugins extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result isInstalled(String visualizationIdString) throws InternalServerException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+	public Result isInstalled(Request request, String visualizationIdString) throws InternalServerException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId visualizationId = new MidataId(visualizationIdString);
 		boolean isInstalled = Member.getByIdAndVisualization(userId, visualizationId, Sets.create()) != null || Member.getByIdAndApp(userId, visualizationId, Sets.create()) != null;
 
@@ -378,16 +383,16 @@ public class Plugins extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public CompletionStage<Result> isAuthorized(String spaceIdString) throws AppException {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+	public CompletionStage<Result> isAuthorized(Request request, String spaceIdString) throws AppException {
+		
+		AccessContext context = portalContext(request);
 
 		BSONObject oauthmeta = RecordManager.instance.getMeta(context, new MidataId(spaceIdString), "_oauth");
 		if (oauthmeta == null)
 			return CompletableFuture.completedFuture((Result) ok(Json.toJson(false)));
 
 		if (oauthmeta.containsField("refreshToken") && oauthmeta.get("refreshToken") != null) {
-			return requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), Json.toJson(true));
+			return requestAccessTokenOAuth2FromRefreshToken(request, spaceIdString, oauthmeta.toMap(), Json.toJson(true));
 		} else {
 			return CompletableFuture.completedFuture((Result) ok(Json.toJson(true)));
 		}
@@ -432,7 +437,7 @@ public class Plugins extends APIController {
 		// get app
 		MidataId appId = new MidataId(appIdString);
 		MidataId consentId = new MidataId(consentIdString);
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		Plugin app = Plugins.getPluginAndCheckIfInstalled(appId, userId, Sets.create("filename", "type", "url", "creator"));
 
 		// create encrypted authToken
@@ -444,19 +449,19 @@ public class Plugins extends APIController {
 		if (testing)
 			visualizationServer = app.developmentServer;
 		String url = visualizationServer + "/" + app.url;
-		url = url.replace(":authToken", appToken.encrypt(request()));
+		url = url.replace(":authToken", appToken.encrypt(request));
 
 		return ok(url);
 	}*/
 
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result getRequestTokenOAuth1(String spaceIdString) throws AppException {
+	public Result getRequestTokenOAuth1(Request request, String spaceIdString) throws AppException {
 
 		// get app details
 		final MidataId spaceId = new MidataId(spaceIdString);
-		final MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		final MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		String origin = config.getString("portal.originUrl");
 		if (origin.equals("https://demo.midata.coop:9002"))
 			origin = "https://demo.midata.coop";
@@ -479,8 +484,10 @@ public class Plugins extends APIController {
 		OAuth client = new OAuth(info);
 		RequestToken requestToken = client.retrieveRequestToken(authPage);
 
-		session("token", requestToken.token);
-		session("secret", requestToken.secret);
+		//Not compatible with play 2.8 - What does this even do? 
+		//session("token", requestToken.token);
+		//session("secret", requestToken.secret);
+		//End non compatible
 
 		Map<String, Object> tokens = CMaps.map("token", requestToken.token).map("secret", requestToken.secret);
 		RecordManager.instance.setMeta(context, space._id, "_oauth1", tokens);
@@ -491,9 +498,9 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result requestAccessTokenOAuth1(String spaceIdString) throws JsonValidationException, AppException {
+	public Result requestAccessTokenOAuth1(Request request, String spaceIdString) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "code");
 
 		Map<String, Object> additionalParams = Collections.EMPTY_MAP;
@@ -502,8 +509,8 @@ public class Plugins extends APIController {
 
 		// get app details
 		final MidataId spaceId = new MidataId(spaceIdString);
-		final MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		final MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("visualization", "type"));
 		if (space == null)
@@ -548,9 +555,9 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public CompletionStage<Result> requestAccessTokenOAuth2(String spaceIdString) throws AppException {
+	public CompletionStage<Result> requestAccessTokenOAuth2(Request request, String spaceIdString) throws AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		try {
 			JsonValidation.validate(json, "code");
 		} catch (final JsonValidationException e) {
@@ -559,8 +566,8 @@ public class Plugins extends APIController {
 
 		// get app details
 		final MidataId spaceId = new MidataId(spaceIdString);
-		final MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = portalContext();
+		final MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		final String sessionHandle = PortalSessionToken.session().handle;
 
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("visualization", "type"));
@@ -578,7 +585,7 @@ public class Plugins extends APIController {
 		if (origin.equals("https://demo.midata.coop:9002"))
 			origin = "https://demo.midata.coop";
 		String authPage = origin + "/authorized.html";
-		final Http.Request req = request();
+		final Http.Request req = request;
 		try {
 
 			String postBuilder = app.tokenExchangeParams;
@@ -660,9 +667,9 @@ public class Plugins extends APIController {
 	}
 
 	// Needs active session
-	public static CompletionStage<Result> requestAccessTokenOAuth2FromRefreshToken(String spaceIdStr, Map<String, Object> tokens1, final JsonNode result) throws AppException {
+	public static CompletionStage<Result> requestAccessTokenOAuth2FromRefreshToken(Request request, String spaceIdStr, Map<String, Object> tokens1, final JsonNode result) throws AppException {
 		final MidataId appId = new MidataId(tokens1.get("appId").toString());
-		final MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		final MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 
 		Map<String, Object> properties = new ChainedMap<String, Object>().put("_id", appId.toObjectId()).get();
 		Set<String> fields = Sets.create("name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "type");
@@ -685,8 +692,10 @@ public class Plugins extends APIController {
 		final MidataId spaceId = new MidataId(spaceIdStr);
 		// get app details
 		Object rt = tokens.get("refreshToken");
-		if (rt == null)
+		if (rt == null) {
 			AccessLog.log("tokens=" + tokens.toString());
+			return CompletableFuture.completedFuture(false);
+		}
 		String refreshToken = rt.toString();
 
 		String postBuilder = app.tokenExchangeParams;
@@ -749,9 +758,9 @@ public class Plugins extends APIController {
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result addMissingPlugins() throws AppException {
+	public Result addMissingPlugins(Request request) throws AppException {
 		
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));				
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));				
 		addMissingPlugins(userId, getRole());				
 		return ok();
 		

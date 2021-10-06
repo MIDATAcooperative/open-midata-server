@@ -139,10 +139,10 @@ public class SpaceToken {
 	
 	private static String remoteAddr(Request req) {
 		if (req.hasHeader("X-Real-IP-LB")) {
-			return req.getHeader("X-Real-IP-LB");
+			return req.header("X-Real-IP-LB").get();
 		}
 		if (req.hasHeader("X-Real-IP")) {
-			return req.getHeader("X-Real-IP");
+			return req.header("X-Real-IP").get();
 		}
 		return req.remoteAddress();
 	}

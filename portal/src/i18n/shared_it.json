@@ -142,6 +142,7 @@
             "projectconsent" : "Avete ritirato la vostra partecipazione a questo progetto di ricerca e non potete quindi più utilizzare questa applicazione.",
             "consent" : "Avete impostato nel portale @PLATFORM che questa applicazione non può più accedere ai vostri dati. Se si desidera utilizzare nuovamente questa applicazione, è necessario riautorizzarla nel portale @PLATFORM.",
             "app" : "Si è autorizzati a utilizzare questa applicazione su un numero massimo di 10 dispositivi. Eliminare i consensi non utilizzati sul portale @PLATFORM.",
+            "app_test" : "Lei è autorizzato a utilizzare questa applicazione su un massimo di 10 dispositivi. Su questa istanza TEST i consensi sono stati resettati per te. Si prega di riprovare.",
             "joinmethod" : "Non è consentito aderire al progetto con questo metodo."
         },
 
@@ -192,7 +193,6 @@
         "notrequired" : {
             "licence" : "Non è richiesta alcuna licenza per questa applicazione"
         }
-
     },
 
     "enum" : {
@@ -315,6 +315,7 @@
         },
         "consenttype" : {
             "CIRCLE" : "Altri titolari di un account",
+            "REPRESENTATIVE" : "Rappresentante",
             "EXTERNALSERVICE" : "Applicazione esterna",
             "API" : "Servizio esterno",
             "HCRELATED" : "Prestazioni sanitarie",
@@ -402,7 +403,7 @@
             "CONTENTADMIN" : "Gestione dei tipi di dati",
             "PLUGINADMIN" : "Gestione applicazioni",
             "NEWSWRITER" : "Autore notizie",
-            "SUPERADMIN" : "Super ammin.",
+            "SUPERADMIN" : "Super amministratore",
             "TRIALUSER" : "Utente di prova",
             "STUDYPARTICIPANT" : "Partecipante al progetto",
             "APPUSER" : "Utente applicazione",
@@ -464,6 +465,7 @@
             "Planning" : "Pianificazione",
             "Tools" : "Strumenti",
             "Protocol" : "Protocollo",
+            "Expert" : "Plugin esperti",
             "Available" : "Plugin disponibili"
         },
         "plugintype" : {
@@ -518,6 +520,8 @@
     },
 
     "common" : {
+        "empty" : " ",
+        "done_btn" : "OK",
         "back_btn" : "Indietro",
         "search_btn" : "Cerca",
         "add_btn" : "Aggiungi",
@@ -804,6 +808,7 @@
         "change_passphrase_btn" : "Modificare la frase segreta",
         "auditlog_btn" : "Visualizza il registro di revisione",
         "change_email_btn" : "Modifica indirizzo e-mail",
+        "expert_tools_btn" : "Mostra i plugin esperti",
         "repair_account_btn" : "Ripara account",
         "reset_spaces_btn" : "Ripristina portale",
         "export_btn" : "Esporta i tuoi dati",
@@ -860,6 +865,7 @@
         "type" : "Che tipo di consenso si desidera creare?",
         "share_with_members" : "Desidero condividere i dati con altri titolari di un account.",
         "share_with_provider" : "Desidero condividere i dati con un professionista sanitario.",
+        "share_representative" : "Desidero aggiungere un rappresentante per il mio account.",
         "select" : "Seleziona",
         "use_passcode" : "Includere un codice password?",
         "use_passcode2" : "Non so ancora con chi condividere i dati. Aggiungere un codice password a questo consenso in modo che io possa comunicarlo a un professionista sanitario.",
@@ -904,6 +910,7 @@
         "what_is_shared" : "Quali dati sono condivisi?",
         "consent_empty" : "Attualmente questo consenso non condivide alcun dato.",
         "type_circle" : "Questo consenso condivide dati con altri titolari di un account @PLATFORM.",
+        "type_representative" : "Questo consenso autorizza un'altra persona a utilizzare il vostro account. Tutti i dati del proprietario dell'account sono condivisi con il rappresentante.",
         "type_healthcare" : "Questo consenso condivide dati con professionisti sanitari.",
         "type_studyparticipation" : "Questo consenso condivide dati con un progetto di ricerca.",
         "type_studyrelated" : "Questo consenso condivide dati con un partecipante al progetto.",
@@ -1003,6 +1010,7 @@
         "type_implicit" : "Implicito",
         "type_healthcare" : "Medico / Ospedale",
         "type_studyparticipation" : "Ricerca",
+        "type_representative" : "Rappresentante",
         "show" : "Mostra:",
         "my_data" : "I miei dati",
         "all_data" : "Tutti i dati",
@@ -1015,7 +1023,7 @@
         "delete" : "elimina",
         "delete_all_btn" : "elimina tutti",
         "empty" : "Non è stato trovato alcun record disponibile.",
-        "too_many_consents" : "Impossibile creare la struttura ad albero dei record per questa selezione. Sono coinvolti troppi consensi.",
+        "too_many_consents" : "Impossibile creare l'albero dei dati per questa selezione. Sono coinvolti troppi consensi.",
         "close_btn" : "Chiudi"
     },
 
@@ -1024,17 +1032,19 @@
         "no_account" : "Non hai ancora un account?",
         "have_account" : "Hai un account @PLATFORM?",
         "have_account2" : "Perfetto, accedi.",
+        "role" : "Ruolo",
         "sign_up_btn" : "Iscriviti",
         "reshares_data" : "L'applicazione può condividere i dati a cui ha accesso con terzi.",
         "allows_user_search" : "Il tuo nome e indirizzo e-mail può essere cercato da altre persone utilizzando questa applicazione.",
         "requesting_app" : "richiede l'accesso ai tuoi dati.",
         "sign_in" : "Accesso @PLATFORM per:",
         "sign_in_btn" : "Accedi",
-        "device" : "Dispositivo: {{ device}}",
+        "device" : "Dispositivo: {{device}}",
         "please_confirm" : "Confermare l'attivazione dell'applicazione utilizzando il portale @PLATFORM, quindi riprovare. Il titolo del consenso è: {{ consent }}",
         "confirm_btn" : "Conferma l'accesso",
         "continue_btn" : "Continua",
         "requests_access" : "Accesso richiesto dall'applicazione:",
+        "requests_access_short" : "Tipo di dati",
         "requests_sharing" : "Dati condivisi con il progetto:",
         "requests_sharing_service" : "Dati condivisi con il servizio esterno:",
         "shares_group" : "Gruppo: {{ group }}",
@@ -1042,13 +1052,44 @@
         "shares_content" : "Contenuti: {{ content }}",
         "confirm_provider" : "Accetto di condividere i dati con questo fornitore esterno",
         "confirm_provider_opt" : "Accetto di condividere i dati con questo fornitore esterno (optionale)",
-        "confirm_service" : "Accetto di condividere i dati con questo servizio esterno",
+        "confirm_service" : "Accetto i termini di utilizzo dell'applicazione e di condividere i dati con il servizio collegato",
         "confirm_service_opt" : "Accetto di condividere i dati con questo servizio esterno (optionale)",
         "confirm_study" : "Accetto le condizioni d'uso della domanda e di partecipare al progetto",
         "confirm_study_opt" : "Accetto di partecipare al progetto",
         "confirm_citizen_science" : "Accetto di partecipare al progetto scienza cittadina",
         "confirm_community" : "Accetto i termini di utilizzo dell'applicazione e dei servizi della comunità",
-        "confirm_community_opt" : "Accetto di condividere i dati con il servizio alla comunità"
+        "confirm_community_opt" : "Accetto di condividere i dati con il servizio alla comunità",
+        "confirm_app" : "Accetto i termini di utilizzo e di condividere i dati con ",
+        "and" : "e",
+        "link_SERVICE_required" : "Per poter utilizzare questa applicazione è necessario un servizio aggiuntivo:",
+        "link_SERVICE_optional" : "Puoi anche abbonarti per utilizzare questo servizio:",
+        "link_ORGANIZATION_required" : "Una terza parte ha bisogno di accedere ai suoi dati per poter utilizzare questa applicazione:",
+        "link_ORGANIZATION_optional" : "Lei può condividere i dati con questa terza parte:",
+        "link_CLINICAL_required" : "Per poter utilizzare questa applicazione è necessario partecipare a uno studio clinico:",
+        "link_CLINICAL_optional" : "Inoltre puoi partecipare a uno studio clinico:",
+        "link_CITIZENSCIENCE_required" : "Per poter utilizzare questa applicazione è necessario partecipare a un progetto di citizen science:",
+        "link_CITIZENSCIENCE_optional" : "Inoltre puoi partecipare a un progetto di citizen science:",
+        "link_COMMUNITY_required" : "Per poter utilizzare questa applicazione è necessario partecipare a un progetto comunitario:",
+        "link_COMMUNITY_optional" : "Inoltre puoi partecipare a un progetto comunitario:",
+        "sharing_summary" : "Riassunto del flusso di dati",
+        "all" : "Tutti",
+        "both" : "Entrambi",
+        "only" : "Solo:",
+        "not" : "Tutti ma:",
+        "short_app" : "Applicazione",
+        "short_service" : "Servizio",
+        "short_project" : "Progetto",
+        "short_clinical" : "Studio clinico",
+        "short_citizenscience" : "Progetto di citizen science",
+        "short_community" : "Progetto comunitario",
+        "short_party" : "Terza parte",
+        "mode_pseudonymized" : "dati pseudonimizzati",
+        "mode_anonymized" : "dati anonimizzati",
+        "mode_all" : "dati grezzi",
+        "target_device" : "sul vostro dispositivo",
+        "target_operated" : "operato da",
+        "target_performed" : "eseguito da",
+        "target_community" : "per altri partecipanti"
     },
 
     "dashboard" : {
@@ -1189,6 +1230,7 @@
         "refresh_btn" : "Aggiorna",
         "via" : "via",
         "CIRCLE" : "Consenso",
+        "REPRESENTATIVE" : "Rappresentante",
         "ResearchStudy" : "Progetto di ricerca",
         "EXTERNALSERVICE" : "Applicazione",
         "API" : "Servizio",
@@ -1271,7 +1313,7 @@
     },
 
     "queryeditor" : {
-        "title" : "Editor Access Rights Editor",
+        "title" : "Editor di Data Access Filter",
         "app" : "Applicazione",
         "study" : "Progetto di ricerca",
         "summary" : "Elenco dei tipi di dati accessibili:",
@@ -1333,14 +1375,13 @@
     },
 
     "timeline" : {
-        "spaces" : "MIDATA",
-        "title" : "Timeline",
         "fitness" : "Fitness",
         "health" : "Dati medici",
         "analyze" : "Analisi dati"
     },
 
     "changelog" : {
+        "title" : "Registro delle modifiche del server",
         "F" : "Nuova funzionalità",
         "B" : "Bugfix",
         "I" : "Miglioramento",

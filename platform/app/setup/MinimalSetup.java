@@ -30,6 +30,7 @@ import models.Member;
 import models.MidataId;
 import models.Plugin;
 import models.UserGroup;
+import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
@@ -59,7 +60,12 @@ public class MinimalSetup {
 			admin._id = new MidataId("5608f881e4b0f992a4e197b3");
 			admin.email = "admin@example.com";
 			admin.emailLC = admin.email;
+			
+			// initial password for first login after a fresh installation is string "secret". 
+			// Password change is enforced on first login 
 			admin.password = "1000:baef51f211e1d5c0df67ca748933a76ce9e6bb4f1d51813f:85a273f66396793a5bcc09fe1e8d8062c25b118f65651c7e";
+			admin.flags = EnumSet.of(AccountActionFlags.CHANGE_PASSWORD);
+			
 			admin.role = UserRole.ADMIN;
 			admin.subroles = EnumSet.of(SubUserRole.SUPERADMIN, SubUserRole.CONTENTADMIN, SubUserRole.NEWSWRITER, SubUserRole.PLUGINADMIN, SubUserRole.STUDYADMIN, SubUserRole.USERADMIN);
 			admin.status = UserStatus.ACTIVE;

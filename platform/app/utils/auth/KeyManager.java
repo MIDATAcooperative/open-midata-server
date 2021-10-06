@@ -73,6 +73,8 @@ public class KeyManager implements KeySession {
 	 */
 	public final static String KEY_ALGORITHM = "RSA";
 	
+	public final static int KEY_SIZE = 4096;
+	
 	/**
 	 * cipher algorithm used
 	 */
@@ -218,7 +220,7 @@ public class KeyManager implements KeySession {
 	public byte[] generateKeypairAndReturnPublicKey(MidataId target, String passphrase) throws InternalServerException {		
 		try {
 		   KeyPairGenerator generator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
-		   
+		   generator.initialize(KEY_SIZE);
 		   KeyPair pair = generator.generateKeyPair();
 		   PublicKey pub = pair.getPublic();
 		   PrivateKey priv = pair.getPrivate();
@@ -307,7 +309,7 @@ public class KeyManager implements KeySession {
 	
 	public void continueSession(String fhandle, MidataId user) throws AppException {		
 		//AccessLog.log("Key-Ring: continue session");
-		
+		if (fhandle == null) return;
 		int p = fhandle.indexOf(";");
 		String handle = p > 0 ? fhandle.substring(0, p) : fhandle;
 		boolean inlineKey = (p>0 && fhandle.charAt(p+1) == '+');
@@ -673,7 +675,7 @@ public class KeyManager implements KeySession {
 		public byte[] generateKeypairAndReturnPublicKeyInMemory(MidataId target, String passphrase) throws InternalServerException {
 			try {
 			   KeyPairGenerator generator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
-			   
+			   generator.initialize(KEY_SIZE);
 			   KeyPair pair = generator.generateKeyPair();
 			   PublicKey pub = pair.getPublic();
 			   PrivateKey priv = pair.getPrivate();

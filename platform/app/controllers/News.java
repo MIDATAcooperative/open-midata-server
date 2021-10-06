@@ -35,6 +35,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.Request;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.collections.CMaps;
@@ -54,9 +55,9 @@ public class News extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public Result get() throws JsonValidationException, InternalServerException {
+	public Result get(Request request) throws JsonValidationException, InternalServerException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "properties", "fields");
 		
@@ -80,9 +81,9 @@ public class News extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)	
 	@VisualizationCall
-	public Result getPublic() throws JsonValidationException, InternalServerException {
+	public Result getPublic(Request request) throws JsonValidationException, InternalServerException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "properties", "fields");
 		
@@ -108,16 +109,16 @@ public class News extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result add() throws JsonValidationException, InternalServerException {
+	public Result add(Request request) throws JsonValidationException, InternalServerException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "title", "content", "date");		
 
 		// create new news item
 		NewsItem item = new NewsItem();
 		item._id = new MidataId();
-		item.creator = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		item.creator = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		item.created = new Date();
 		item.date = JsonValidation.getDate(json, "date");
 		item.expires = JsonValidation.getDate(json, "expires");
@@ -140,15 +141,15 @@ public class News extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result update() throws JsonValidationException, InternalServerException {
+	public Result update(Request request) throws JsonValidationException, InternalServerException {
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "_id", "title", "content", "date");		
 
 		// create new news item
 		NewsItem item = NewsItem.get(CMaps.map("_id", JsonValidation.getMidataId(json, "_id")), NewsItem.ALL);
-		item.creator = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		item.creator = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		item.date = JsonValidation.getDate(json, "date");
 		item.expires = JsonValidation.getDate(json, "expires");
@@ -170,7 +171,7 @@ public class News extends Controller {
 
 	/*
 	public static Result hide(String newsItemIdString) {
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId newsItemId = new MidataId(newsItemIdString);
 		try {
 			Member user = Member.get(new ChainedMap<String, MidataId>().put("_id", userId).get(), new ChainedSet<String>()

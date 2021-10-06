@@ -152,8 +152,8 @@ public class Feature_Stats extends Feature {
 			if (index != null) {
 				
 				StatsLookup lookup = new StatsLookup();			
-				if (q.restrictedBy("app")) lookup.setApp(q.getRestriction("app"));
-				if (q.restrictedBy("owner")) lookup.setOwner(q.getRestriction("owner")); 
+				if (q.restrictedBy("app")) lookup.setApp(q.getMidataIdRestriction("app"));
+				if (q.restrictedBy("owner")) lookup.setOwner(q.getMidataIdRestriction("owner")); 
 				if (q.restrictedBy("content")) lookup.setContent(q.getRestriction("content"));
 				if (q.restrictedBy("format")) lookup.setFormat(q.getRestriction("format"));
 				if (q.restrictedBy("study-group")) lookup.setStudyGroup(q.getRestriction("study-group"));	

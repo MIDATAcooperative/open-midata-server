@@ -83,7 +83,7 @@
 						</form-group>
 						<div class="dynheight">
 							<form-group name="secure" label="registration.secure">
-                                <check-box v-model="setpw.secure" name="secure">			
+                                <check-box v-model="setpw.secure" name="secure" disabled> 			
 							      <span v-t="'registration.secure2'"></span>
                                 </check-box>							    
 							</form-group>
@@ -316,7 +316,7 @@ export default {
 		registration : {},
 		user : {},
 		passphrase : {},
-		setpw : {},
+		setpw : { secure : true },
 		progress : {},
 		mailSuccess : false,
 		codeSuccess : false,
@@ -328,6 +328,8 @@ export default {
 		mode : null,
 		countries : languages.countries	
 	}),
+
+	props: ['preview'],
 
 	components: { CheckBox, RadioBox, ErrorBox, FormGroup, Panel, TermsModal, Password },
 
@@ -395,8 +397,7 @@ export default {
 	    	} else {
 				let r = me.doAction("login",session.retryLogin(params));				
 				r.then(function(result) {					
-					if (result.data.istatus === "ACTIVE") {
-						console.log("retry C-OA");
+					if (result.data.istatus === "ACTIVE") {						
 						oauth.postLogin(result);
 					}
 					else {
@@ -420,10 +421,10 @@ export default {
 				this.setError("password", $t('error.invalid.password_repetition'));
 				return;
 			}
-			let pwvalid = crypto.isValidPassword($data.setpw.password); 
+			let pwvalid = crypto.isValidPassword($data.setpw.password, $data.progress.role != "MEMBER"); 
         
         	if (!pwvalid) {
-        		this.setError("password", $t('error.tooshort.password'));
+        		this.setError("password", ($data.progress.role != "MEMBER" ? $t('error.tooshort.password2') : $t('error.tooshort.password')));
 				return;				
         	}
 				
@@ -583,14 +584,20 @@ export default {
 				for (let i in $data.progress.requirements) {
 					$data.progress[$data.progress.requirements[i]] = true;
 				}
-				$data.registration = $data.progress.user;
+				$data.registration = $data.progress.user || {};
 				this.addAddressParams();
 			}
 		},
 
 		init() {
 			const { $data, $route } = this, me = this;
-			if ($route.query.feature) {
+			if (this.preview) {
+				if (this.preview.requirement) {
+				  $data.progress = { requirements : [ this.preview.requirement ] };
+				} else {
+				  $data.progress = { requirements : this.preview.requirements };
+				}
+			} else if ($route.query.feature) {
 				$data.progress = { requirements : [ $route.query.feature ] };
 		
 				this.doBusy(session.currentUser.then(function (userId) {

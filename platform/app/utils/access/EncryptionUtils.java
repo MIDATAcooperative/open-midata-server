@@ -17,8 +17,12 @@
 
 package utils.access;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.SequenceInputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -30,6 +34,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -49,11 +54,12 @@ import utils.exceptions.InternalServerException;
  */
 public class EncryptionUtils {
 	
-	public final static byte DEFAULT_CIPHER_ALGORITHM = 0;
-	public final static byte DEFAULT_KEY_ALGORITHM = 0;
+	public final static byte DEFAULT_CIPHER_ALGORITHM = 1;
+	public final static byte DEFAULT_KEY_ALGORITHM = 1;
 	
-	public final static String[] KEY_ALG = new String[] { "AES" };
-	public final static String[] CIPHER_ALG = new String[] { "AES" };
+	public final static String[] KEY_ALG = new String[] { "AES", "ChaCha20" };
+	public final static String[] CIPHER_ALG = new String[] { "AES", "ChaCha20-Poly1305" };
+	public static final int[] NONCE_LEN = new int[] { 0, 12 }; 
 	
 	private static SecureRandom random = new SecureRandom();
 	
@@ -82,12 +88,19 @@ public class EncryptionUtils {
 		System.arraycopy(enc, 0, result, 4, enc.length);
 		return result;
 	}
+	
+	public static boolean isDeprecatedKey(byte[] key) {
+		return key[0] < DEFAULT_KEY_ALGORITHM || key[1] < DEFAULT_CIPHER_ALGORITHM;
+	}
+	
 
 	public static byte[] generateKey(byte keyAlgorithm, byte cipherAlg) {
+		
 		try {
 			KeyGenerator keygen = KeyGenerator.getInstance(KEY_ALG[keyAlgorithm]);
+			//keygen.init(256, SecureRandom.getInstanceStrong());
 		    SecretKey aesKey = keygen.generateKey();
-			
+		   
 			return getKey(cipherAlg, aesKey);
 		} catch (NoSuchAlgorithmException e) {
 			throw new NullPointerException("CRYPTO BROKEN");
@@ -99,16 +112,43 @@ public class EncryptionUtils {
 	}
 	
 	public static BSONObject decryptBSON(byte[] key, byte[] encrypted) throws InternalServerException {
-		try {
-			SecretKey keySpec = getKeySpec(key);
-			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
-			Cipher c = Cipher.getInstance(ciperAlg);
-			c.init(Cipher.DECRYPT_MODE, keySpec);
-
-			byte[] cipherText = encrypted; 
-			byte[] bson = EncryptionUtils.derandomize(c.doFinal(cipherText));
+		
+			byte[] bson = decrypt(key, encrypted);
 		   												
 	    	BSONObject obj =BSON.decode(bson);
+	    	
+	    	return obj;	    
+	}
+	
+	public static byte[] encryptBSON(byte[] key, BSONObject obj) throws InternalServerException {
+		byte[] bson = BSON.encode(obj);
+		return encrypt(key, bson);
+	}
+	
+	public static byte[] decrypt(byte[] key, byte[] encrypted) throws InternalServerException {
+		
+		try {
+			SecretKey keySpec = getKeySpec(key);
+			byte alg = getCipherAlg(key);
+			String ciperAlg = CIPHER_ALG[alg];
+			Cipher c = Cipher.getInstance(ciperAlg);
+			
+			byte[] cipherText = encrypted;
+			if (NONCE_LEN[alg]>0) {
+			  byte[] encryptedText = new byte[encrypted.length - NONCE_LEN[alg]];
+		      byte[] nonce = new byte[NONCE_LEN[alg]];
+		      System.arraycopy(encrypted, 0, nonce, 0, NONCE_LEN[alg]);
+		      System.arraycopy(encrypted, NONCE_LEN[alg], encryptedText, 0, encrypted.length - NONCE_LEN[alg]);		      
+		      IvParameterSpec iv = new IvParameterSpec(nonce);
+
+		      c.init(Cipher.DECRYPT_MODE, keySpec, iv);
+		      cipherText = encryptedText;
+			} else {			
+			  c.init(Cipher.DECRYPT_MODE, keySpec);
+			}
+			 
+			byte[] obj = EncryptionUtils.derandomize(c.doFinal(cipherText));
+		   													    	
 	    	
 	    	return obj;
 	    			    	
@@ -122,70 +162,40 @@ public class EncryptionUtils {
 			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (IllegalBlockSizeException e5) {
 			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} 
-
-	}
-	
-	public static byte[] encryptBSON(byte[] key, BSONObject obj) throws InternalServerException {
-		try {
-			SecretKey keySpec = getKeySpec(key);
-			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
-			
-			Cipher c = Cipher.getInstance(ciperAlg);
-			c.init(Cipher.ENCRYPT_MODE, keySpec);
-
-		    byte[] bson = BSON.encode(obj);
-			byte[] cipherText = c.doFinal(EncryptionUtils.randomize(bson));
-							
-	    	return cipherText;
-		} catch (InvalidKeyException e) {
+		} catch (InvalidAlgorithmParameterException e6) {
 			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} catch (NoSuchAlgorithmException e3) {
-			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} catch (BadPaddingException e4) {
-			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} catch (IllegalBlockSizeException e5) {
-			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} 
-	
-	}
-	
-	public static byte[] decrypt(byte[] key, byte[] encrypted) throws InternalServerException {
-		try {
-			SecretKey keySpec = getKeySpec(key);
-			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
-			Cipher c = Cipher.getInstance(ciperAlg);
-			c.init(Cipher.DECRYPT_MODE, keySpec);
-
-			byte[] cipherText = encrypted; 
-			return EncryptionUtils.derandomize(c.doFinal(cipherText));		   													    	
-	    			    	
-		} catch (InvalidKeyException e) {
-			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} catch (NoSuchAlgorithmException e3) {
-			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} catch (BadPaddingException e4) {
-			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} catch (IllegalBlockSizeException e5) {
-			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} 
+		}
 
 	}
 	
 	public static byte[] encrypt(byte[] key, byte[] bson) throws InternalServerException {
+	
 		try {
 			SecretKey keySpec = getKeySpec(key);
-			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
+			byte alg = getCipherAlg(key);
+			String ciperAlg = CIPHER_ALG[alg];
 			
+			byte[] newNonce = null;		
 			Cipher c = Cipher.getInstance(ciperAlg);
-			c.init(Cipher.ENCRYPT_MODE, keySpec);
+			if (NONCE_LEN[alg] > 0) {
+				newNonce = new byte[NONCE_LEN[alg]];
+		        random.nextBytes(newNonce);
+				IvParameterSpec iv = new IvParameterSpec(newNonce);
+		        c.init(Cipher.ENCRYPT_MODE, keySpec, iv);
+			} else {
+			    c.init(Cipher.ENCRYPT_MODE, keySpec);
+			}
 		    
 			byte[] cipherText = c.doFinal(EncryptionUtils.randomize(bson));
-							
+			
+			if (newNonce != null) {
+				byte[] result = new byte[cipherText.length+newNonce.length];
+				System.arraycopy(newNonce, 0, result, 0, newNonce.length);
+				System.arraycopy(cipherText, 0, result, newNonce.length, cipherText.length);				
+								
+				return result;
+			}
+			
 	    	return cipherText;
 		} catch (InvalidKeyException e) {
 			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
@@ -197,45 +207,77 @@ public class EncryptionUtils {
 			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (IllegalBlockSizeException e5) {
 			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} 
-	
-	}
-	
-	public static InputStream encryptStream(byte[] key, InputStream in) throws InternalServerException {
-		try {
-			SecretKey keySpec = getKeySpec(key);
-			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
-			
-			Cipher c = Cipher.getInstance(ciperAlg);
-			c.init(Cipher.ENCRYPT_MODE, keySpec);
-
-		    return new CipherInputStream(in, c);
-								    	
-		} catch (InvalidKeyException e) {
-			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
-		} catch (NoSuchAlgorithmException e3) {
+		} catch (InvalidAlgorithmParameterException e6) {
 			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		}
 	
 	}
 	
-	public static InputStream decryptStream(byte[] key, InputStream in) throws InternalServerException {
+	public static InputStream encryptStream(byte[] key, InputStream in) throws InternalServerException {
+		
 		try {
 			SecretKey keySpec = getKeySpec(key);
-			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
+			byte alg = getCipherAlg(key);
+			String ciperAlg = CIPHER_ALG[alg];
 			
-			Cipher c = Cipher.getInstance(ciperAlg);						
-			c.init(Cipher.DECRYPT_MODE, keySpec);
-
-		    return new CipherInputStream(in, c);
-								    	
+			byte[] newNonce = null;		
+			Cipher c = Cipher.getInstance(ciperAlg);
+			if (NONCE_LEN[alg] > 0) {
+				newNonce = new byte[NONCE_LEN[alg]];
+		        random.nextBytes(newNonce);
+				IvParameterSpec iv = new IvParameterSpec(newNonce);
+		        c.init(Cipher.ENCRYPT_MODE, keySpec, iv);
+			} else {
+			    c.init(Cipher.ENCRYPT_MODE, keySpec);
+			}
+		    					
+			if (newNonce != null) {
+				return new SequenceInputStream(new ByteArrayInputStream(newNonce), new CipherInputStream(in, c));												
+			}
+			
+			return new CipherInputStream(in, c);
 		} catch (InvalidKeyException e) {
 			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchPaddingException e2) {
 			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchAlgorithmException e3) {
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");		
+		} catch (InvalidAlgorithmParameterException e6) {
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
+		}						
+	
+	}
+	
+	public static InputStream decryptStream(byte[] key, InputStream in) throws InternalServerException {
+	
+		try {
+			SecretKey keySpec = getKeySpec(key);
+			byte alg = getCipherAlg(key);
+			String ciperAlg = CIPHER_ALG[alg];
+			Cipher c = Cipher.getInstance(ciperAlg);
+						
+			if (NONCE_LEN[alg]>0) {			  
+		       
+		       byte[] nonce = in.readNBytes(NONCE_LEN[alg]);
+		       IvParameterSpec iv = new IvParameterSpec(nonce);
+
+		       c.init(Cipher.DECRYPT_MODE, keySpec, iv);
+		       
+			} else {			
+			  c.init(Cipher.DECRYPT_MODE, keySpec);
+			}
+			 
+			return new CipherInputStream(in, c);
+	    			    	
+		} catch (InvalidKeyException e) {
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
+		} catch (IOException e) {
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
+		} catch (NoSuchPaddingException e2) {
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
+		} catch (NoSuchAlgorithmException e3) {
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");		
+		} catch (InvalidAlgorithmParameterException e6) {
 			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		}
 	

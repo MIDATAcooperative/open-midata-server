@@ -782,7 +782,7 @@ export default {
 		if (! $data.consent) return false;
 		if ($data.consent.owner !== $data.userId) return false;
 		
-		return ($data.consent.status == 'ACTIVE' || $data.consent.status == 'REJECTED') && ($data.consent.type != 'STUDYPARTICIPATION' && $data.consent.type != 'HEALTHCARE');
+		return ($data.consent.status == 'ACTIVE' || $data.consent.status == 'REJECTED' || $data.consent.status == 'EXPIRED') && ($data.consent.type != 'STUDYPARTICIPATION' && $data.consent.type != 'HEALTHCARE');
 	},
 	
 	mayChangeUsers() {

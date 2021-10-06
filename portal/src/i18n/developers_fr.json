@@ -14,6 +14,7 @@
     "developer_navbar" : {
         "yourapps" : "Vos applications",
         "sandbox" : "Sandbox",
+        "workspace" : "Workspace",
         "records" : "Enregistrements de test",
         "testusers" : "Utilisateurs de test"
     },
@@ -50,7 +51,7 @@
         "lang" : "Langue",
         "msgtitle" : "Libellé du message",
         "text" : "Texte du message",
-        "available_tags" : "Variables disponibles",
+        "available_tags" : "Catégories disponibles",
         "reasons" : {
             "REGISTRATION" : "Inscription d'un nouvel utilisateur",
             "REGISTRATION_BY_OTHER_PERSON" : "Inscription d'un nouvel utilisateur par une autre personne",
@@ -76,6 +77,8 @@
     },
 
     "manageapp" : {
+        "title_new" : "Enregistrer une nouvelle application",
+        "title_edit" : "Gérer l'application",
         "overview" : "Aperçu de l'application",
         "choose" : "Fonctions de gestion de votre application",
         "defined" : "défini",
@@ -99,7 +102,7 @@
         "repository_btn" : "Code Repository",
         "repository_help" : "Checkout de la dernière version de votre code",
         "icon_btn" : "Icônes et images de l'application",
-        "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, le Store, etc.",
+        "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, la boutique, etc.",
         "messages_btn" : "Messages e-mail de l'application",
         "messages_help" : "Fournissez vos propres textes d'e-mails envoyés aux nouveaux comptes d'utilisateurs, dès la première utilisation de votre application, pour accepter les consentements et plus encore.",
         "stats_btn" : "Statistiques sur les erreurs et les performances",
@@ -137,9 +140,9 @@
             "pseudonymize" : "Lire les données pseudonymisées. Ne met pas à jour les enregistrements des participants.",
             "resharesData" : "L'application est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
             "allowsUserSearch" : "Les utilisateurs de l'application sont autorisés à rechercher d'autres utilisateurs de la même application.",
-            "consentObserving" : "Ce service surveille-t-il les consentements des utilisateurs ? Ajoutez 'Consentements' à l'Access Filter afin de l'activer.",
+            "consentObserving" : "Ce service surveille-t-il les consentements des utilisateurs ? Ajoutez 'Consentements (Consents)' au filtre d'accès aux données (Data Access Filter) afin de l'activer.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
-            "tags" : "Catégories sous lesquelles le plugin sera listé dans le Store.",
+            "tags" : "Catégories sous lesquelles le plugin sera listé dans la boutique.",
             "url" : "URL de la page principale du plugin. Si vous utilisez le modèle @PLATFORM, c'est 'dist/index.html#!?authToken=:authToken''",
             "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
             "defaultSpaceContext" : "Choisissez 'Tableau de bord' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
@@ -161,7 +164,7 @@
         "nostudy" : "Non liée à un projet de recherche",
         "optionalParticipation" : "Participation optionnelle",
         "access_query_json" : "Data Access Filter",
-        "queryeditor_btn" : "Aller à l'éditeur du Data Access Filter",
+        "queryeditor_btn" : "Aller à l'éditeur du filtre d'accès aux données (Data Access Filter)",
         "no_update_history" : "Pas d'historique des ressources FHIR",
         "pseudonymize" : "Lire pseudonymisé",
         "usagestats_btn" : "Statistiques d'utilisation",
@@ -265,11 +268,14 @@
             "fhir_Resource" : "Modifications de ressource",
             "time" : "Quotidien",
             "time/30m" : "Toutes les 30 minutes",
-            "init" : "Lors de l'ajout"
+            "init" : "Lors de l'ajout",
+            "forwarded" : "Message FHIR (transféré)"
         },
         "actions" : {
             "rest-hook" : "Appeler un REST hook",
             "email" : "Envoyer un e-mail",
+            "sms" : "Envoyer un SMS",
+            "app" : "Transférer vers une autre application",
             "nodejs" : "Appeler un script Node.js"
         },
         "debug" : {
@@ -281,7 +287,6 @@
             "stop_btn" : "Arrêter le débogage",
             "cmd_to_run" : "Commande à exécuter sur votre ordinateur:"
         }
-
     },
 
     "appreviews" : {
@@ -294,9 +299,10 @@
         "comment" : "Commentaire",
         "status" : "État",
         "noreviews" : "Aucune revue n'a encore été faite sur cette instance.",
+        "success" : "La revue a été ajoutée.",
         "CONCEPT" : "Concept de l'application",
         "DATA_MODEL" : "Modèle de données",
-        "ACCESS_FILTER" : "Access Filter",
+        "ACCESS_FILTER" : "Data Access Filter",
         "QUERIES" : "Queries",
         "DESCRIPTION" : "Description",
         "ICONS" : "Icônes",
@@ -314,7 +320,8 @@
     "applicence" : {
         "title" : "Licence",
         "required" : "Licence requise?",
-        "allowedEntities" : "Entités admises"
+        "allowedEntities" : "Entités admises",
+        "success" : "Les exigences en matière de licence ont été mises à jour."
     },
 
     "repository" : {
@@ -339,5 +346,77 @@
         "install" : "Installation des packages",
         "audit" : "Audit de sécurité",
         "build" : "Processus de build"
+    },
+
+    "workspace" : {
+        "title" : "Workspace",
+        "add_something" : "Veuillez ajouter une application ou un projet sur lequel vous travaillez. Vous pouvez également ajouter un utilisateur de test.",
+        "browser" : "Navigateur des utilisateurs",
+        "midata" : "Back-end @PLATFORM",
+        "useraccount" : "Compte utilisateur",
+        "newapp_btn" : "Ajouter une application",
+        "newproject_btn" : "Ajouter un projet",
+        "newuser_btn" : "Ajouter un utilisateur",
+        "reset_btn" : "Réinitialiser le Workspace",
+        "issues" : "Problèmes",
+        "no_issues" : "Aucun problème trouvé.",
+        "severity" : {
+            "severity" : "Gravité",
+            "zinfo" : "Info",
+            "warning" : "Avertissement",
+            "error" : "Erreur"
+        },
+        "component" : "Composant",
+        "issue" : "Problème",
+        "param" : "Paramètre",
+        "summary" : "Résumé Data Access Filter",
+        "add_app" : "Ajouter une application au Workspace",
+        "add_user" : "Ajouter un utilisateur au Workspace",
+        "testusers_only" : "A utiliser uniquement avec des comptes de test ! Le mot de passe en texte clair sera stocké dans votre navigateur !",
+        "role" : "Rôle",
+        "add_btn" : "Ajouter",
+        "appname" : "Nom interne de l'application",
+        "projectname" : "Code du projet",
+        "add_project" : "Ajouter un projet au Workspace",
+        "warning" : {
+            "app_deprecated" : "L'application est obsolète et ne doit pas être utilisée.",
+            "no_orgname" : "Aucun nom d'organisation de développement n'est spécifié dans la définition de l'application.",
+            "no_publisher" : "Aucun éditeur n'est spécifié dans la définition de l'application.",
+            "no_app_description" : "La description de l'application manque.",
+            "not_spotlighted" : "Le plugin n'est pas disponible dans la boutique @PLATFORM. Demandez à un administrateur.",
+            "no_repository" : "Pas de repository de code spécifié pour le checkout.",
+            "no_send_reports" : "Les notifications de rapports d'erreurs (e-mails) sont désactivées pour cette application.",
+            "has_comments" : "Commentaires disponibles dans les statistiques d'erreurs et de performances.",
+            "project_not_validated" : "Le projet n'a pas encore été validé.",
+            "project_not_searching" : "Le projet ne recherche pas de participants.",
+            "no_user_for_app" : "Aucun des comptes de test n'utilise l'application.",
+            "no_user_for_project" : "Aucun des comptes de test ne participe au projet.",
+            "appinstance_status" : "L'instance d'application n'est pas active.",
+            "appinstance_outdated" : "La version de l'application est plus récente que le consentement de l'application. Il faut reconfirmer.",
+            "not_accepted" : "Participation non acceptée"
+        },
+        "error" : {
+            "no_tags" : "Aucune catégorie d'application sélectionnée. Le plugin ne peut pas être ajouté par l'utilisateur.",
+            "no_url" : "Le plugin n'a pas d'URL initiale.",
+            "never_deployed" : "Le plugin possède des informations sur le repository mais aucun checkout n'a jamais été fait.",
+            "no_access_filter" : "Aucun filtre d'accès aux données (Data Access Filter) n'est défini pour l'application.",
+            "no_join_method" : "Aucune méthode d'adhésion n'a été sélectionnée pour le projet.",
+            "project_in_validation" : "Le projet est actuellement en cours de validation par un administrateur.",
+            "project_rejected" : "Le projet a été rejeté.",
+            "project_finished" : "Le projet est déjà terminé.",
+            "project_aborted" : "Le projet a été abandonné.",
+            "project_no_groups" : "Aucun groupe de participants n'a été défini pour le projet.",
+            "app_no_exist" : "L'application n'existe pas.",
+            "project_no_exist" : "Le projet n'existe pas.",
+            "login_failed" : "La connexion au compte a échoué.",
+            "appinstance_rejected" : "Application bloquée par l'utilisateur."
+        },
+        "info" : {
+            "no_requirements" : "Aucune exigence sélectionnée pour l'application.",
+            "no_icons" : "Pas d'icônes téléchargées pour l'application.",
+            "project_not_running" : "Le projet n'a pas encore été lancé.",
+            "project_no_requirements" : "Aucune exigence sélectionnée pour le projet.",
+            "app_in_development" : "L'application est encore en développement."
+        }
     }
 }

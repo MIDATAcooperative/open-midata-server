@@ -92,6 +92,13 @@
 				<div v-t="'manageapp.query_help'"></div>																
 			  </td>
 			</tr>
+			<tr v-if="app.type=='mobile'">
+			  <td @click="go('applogin')">				    
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/editapp.jpg"></div>														   
+				<div><b v-t="'manageapp.applogin_btn'"></b> <span class="badge" :class="{ 'badge-success' : reviews.TERMS_OF_USE_MATCH_QUERY=='ACCEPTED', 'badge-danger' : reviews.TERMS_OF_USE_MATCH_QUERY=='NEEDS_FIXING', 'badge-light' : !reviews.TERMS_OF_USE_MATCH_QUERY }" style="margin-left:10px"><span v-if="reviews.TERMS_OF_USE_MATCH_QUERY">{{ $t('manageapp.'+reviews.TERMS_OF_USE_MATCH_QUERY) }}</span><span v-if="!reviews.TERMS_OF_USE_MATCH_QUERY" v-t="'manageapp.not_reviewed'"></span></span></div>
+				<div v-t="'manageapp.applogin_help'"></div>																
+			  </td>
+			</tr>
 			<tr v-if="app.type!='endpoint'">
 			  <td @click="go('appsubscriptions')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/trigger.jpg"></div>														   
@@ -251,7 +258,7 @@ export default {
 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate"])
 		    .then(function(data) { 
                 let app = data.data[0];	
 				

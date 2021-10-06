@@ -100,7 +100,7 @@ public class IndexCompare implements Condition, Serializable {
 		case EQUALS: return "/^"+val+"$/";
 		case STARTSWITH: return "/^"+val+"/";		
 		}
-		return null;
+		return "unknown op";
 	}
 	
 	

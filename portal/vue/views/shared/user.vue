@@ -75,11 +75,11 @@
 			</div>
 									
 			<div class="extraspace"></div>
-			<div v-show="msg" class="alert alert-info">{{ $t(msg) }}"></div>
+			<div v-show="msg" class="alert alert-info">{{ $t(msg) }}
 			<ul v-if="repair.length">
 			    <li v-for="msg in repair" :key="msg">{{ msg }}</li>
 			</ul>			
-			
+			</div>
 		</panel>
 
         <panel :title="$t('user.settings')" :busy="isBusy">

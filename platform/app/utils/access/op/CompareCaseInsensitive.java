@@ -103,7 +103,7 @@ public class CompareCaseInsensitive implements Condition, Serializable {
 		case ENDSWITH: return "/"+val+"$/";
 		case CONTAINS: return "/"+val+"/";
 		}
-		return null;
+		return "unknown op";
 	}
 	
 	

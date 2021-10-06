@@ -140,7 +140,7 @@ tasks/install-packages: trigger/install-packages
 	$(info ------------------------------)
 	$(info Installing Packages... )
 	$(info ------------------------------)
-	sudo apt-get install git curl openssl openjdk-8-jdk mcrypt unzip ruby-sass software-properties-common clamav-daemon firejail
+	sudo apt-get install git curl openssl openjdk-11-jdk mcrypt unzip ruby-sass software-properties-common clamav-daemon firejail
 	sudo add-apt-repository ppa:nginx/stable
 	sudo apt-get update
 	sudo apt-get install nginx
@@ -257,7 +257,7 @@ platform/conf/application.conf: platform/conf/application.conf.template conf/set
 	$(info ------------------------------)
 	cp platform/conf/application.conf.template platform/conf/application.conf
 	$(eval PORTAL_ORIGIN:=$(shell if [ -e switches/use-run ]; then echo "https://$(DOMAIN):9002";else echo "https://$(DOMAIN)";fi;))
-	$(eval CLUSTERSERVERS:=$(foreach a,$(CLUSTER),"akka.tcp://midata@$(a):9006"))
+	$(eval CLUSTERSERVERS:=$(foreach a,$(CLUSTER),"akka://midata@$(a):9006"))
 	$(eval CLUSTERX:=$(call join-with,$(komma),$(CLUSTERSERVERS))) 
 	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' platform/conf/application.conf
 	sed -i 's|PLUGINS_SERVER|$(DOMAIN)/plugin|' platform/conf/application.conf
@@ -346,6 +346,7 @@ tasks/reimport-build-mongodb: tasks/reimport-mongodb tasks/build-mongodb
 nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf/certificate.conf	
 	mkdir -p nginx/sites-available
 	cp nginx/templates/$* nginx/sites-available/$*
+	if [ $(INSTANCE_TYPE) = PROD ]; then sed -i 's|https://localhost:9004 ||' nginx/sites-available/$*; sed -i 's|https://localhost:9004 ||' nginx/sites-available/$* ; sed -i 's|https://localhost:9004 ||' nginx/sites-available/$* ; fi 
 	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
 	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
 	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*

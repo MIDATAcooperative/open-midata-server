@@ -18,7 +18,9 @@
 package utils.auth.auth2factor;
 
 import models.MidataId;
+import models.RateLimitedAction;
 import models.User;
+import models.enums.AuditEventType;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.exceptions.AppException;
@@ -40,6 +42,17 @@ public class SMSAuthenticator implements Authenticator {
 	public static final long TOKEN_EXPIRE_TIME = 1000l * 60l * 10l;
 	
 	/**
+	 * Minimum time between SMS 
+	 */
+	public static final long MIN_TIME_BETWEEN_SMS = 1000l * 60l * 1l;
+	
+	/**
+	 * Allow 5 SMS per hour
+	 */
+	public static final long SMS_TIMEFRAME = 1000l * 60l * 60l;
+	public static final int MAX_PER_TIMEFRAME = 6;
+	
+	/**
 	 * Maximum number of failed attempts before token is invalid
 	 */
 	public static final int MAX_FAILED_ATTEMPTS = 3;
@@ -52,6 +65,10 @@ public class SMSAuthenticator implements Authenticator {
 	 * @throws AppException
 	 */
 	public void startAuthentication(MidataId executor, String prompt, User user) throws AppException {
+		if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.USER_AUTHENTICATION, MIN_TIME_BETWEEN_SMS, MAX_PER_TIMEFRAME, SMS_TIMEFRAME)) {
+			throw new BadRequestException("error.ratelimit", "Rate limit reached.");
+		}
+		
 		SecurityToken token = new SecurityToken();
 		token._id = executor;
 		token.created = System.currentTimeMillis();

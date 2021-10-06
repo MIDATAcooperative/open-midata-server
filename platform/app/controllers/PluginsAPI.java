@@ -71,6 +71,7 @@ import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
 import play.mvc.BodyParser.DelegatingMultipartFormDataBodyParser;
 import play.mvc.Http.MultipartFormData;
+import play.mvc.Http.Request;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import utils.AccessLog;
@@ -155,14 +156,14 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public Result getConfig() throws JsonValidationException, AppException {
+	public Result getConfig(Request request) throws JsonValidationException, AppException {
 		
 		// validate json
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken and check whether space with corresponding owner exists
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		
 		if (inf.recordId != null)  {
 		   ObjectNode result = Json.newObject();
@@ -185,13 +186,13 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public Result getOAuthParams() throws JsonValidationException, AppException {
+	public Result getOAuthParams(Request request) throws JsonValidationException, AppException {
 		
 		// validate json
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken");
 				
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 				
 		BSONObject meta = RecordManager.instance.getMeta(inf.context, inf.targetAPS, "_oauthParams");
 		
@@ -208,15 +209,15 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public Result setConfig() throws JsonValidationException, AppException {
-		Stats.startRequest(request());
+	public Result setConfig(Request request) throws JsonValidationException, AppException {
+		Stats.startRequest(request);
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken 
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		
 		Stats.setPlugin(inf.pluginId);
 		
@@ -266,7 +267,7 @@ public class PluginsAPI extends APIController {
 			}
 		}
 				
-		Stats.finishRequest(request(), "200");
+		Stats.finishRequest(request, "200");
 		return ok();
 	}
 	
@@ -278,15 +279,15 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public Result cloneAs() throws JsonValidationException, AppException {
+	public Result cloneAs(Request request) throws JsonValidationException, AppException {
 		
 		// validate json
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "authToken", "name", "config");
 		
 		// decrypt authToken 
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		
 		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
 		String name = JsonValidation.getString(json, "name");
@@ -314,22 +315,22 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public Result getRecords() throws JsonValidationException, AppException {
-		Stats.startRequest(request());
+	public Result getRecords(Request request) throws JsonValidationException, AppException {
+		Stats.startRequest(request);
 		// validate json
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "fields");
 		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 						
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		Stats.setPlugin(inf.pluginId);
 		UsageStatsRecorder.protokoll(inf.pluginId, UsageAction.GET);
 		
 		Collection<Record> records = getRecords(inf, properties, fields);
 				
-		Stats.finishRequest(request(), "200", properties.keySet());
+		Stats.finishRequest(request, "200", properties.keySet());
 		return ok(JsonOutput.toJson(records, "Record", fields)).as("application/json");
 	}
 	
@@ -371,16 +372,16 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public Result getInfo() throws AppException, JsonValidationException {
-		Stats.startRequest(request());
+	public Result getInfo(Request request) throws AppException, JsonValidationException {
+		Stats.startRequest(request);
 		
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();				
+		JsonNode json = request.body().asJson();				
 		JsonValidation.validate(json, "authToken", "properties", "summarize");
 		
 		// decrypt authToken 
-		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
-		//SpaceToken authToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
+		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
+		//SpaceToken authToken = SpaceToken.decryptAndSession(request, json.get("authToken").asText());
 		if (authToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
@@ -406,7 +407,7 @@ public class PluginsAPI extends APIController {
 		}
 	    if (fields.contains("ownerName")) ReferenceTool.resolveOwnersForRecordsInfo(result, true);
 	    
-	    Stats.finishRequest(request(), "200", properties.keySet());
+	    Stats.finishRequest(request, "200", properties.keySet());
 		return ok(JsonOutput.toJson(result, "Record", Record.ALL_PUBLIC)).as("application/json");
 	}
 	
@@ -417,13 +418,13 @@ public class PluginsAPI extends APIController {
 	 * @throws JsonValidationException
 	 */	
 	@VisualizationCall	
-	public Result getFile() throws AppException, JsonValidationException {
-		Stats.startRequest(request());
+	public Result getFile(Request request) throws AppException, JsonValidationException {
+		Stats.startRequest(request);
 	
-		String authTokenStr = request().getQueryString("authToken");
-		String id = request().getQueryString("id");
+		String authTokenStr = request.getQueryString("authToken");
+		String id = request.getQueryString("id");
 		
-		ExecutionInfo info = ExecutionInfo.checkToken(request(), authTokenStr, false);		
+		ExecutionInfo info = ExecutionInfo.checkToken(request, authTokenStr, false);		
 		if (info == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
@@ -431,7 +432,7 @@ public class PluginsAPI extends APIController {
 		
 		MidataId recordId = new MidataId(id);	
 		
-		return MobileAPI.getFile(info, recordId, true);		
+		return MobileAPI.getFile(request, info, recordId, true);		
 	}
 	
 	/**
@@ -442,16 +443,16 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public Result createRecord() throws AppException, JsonValidationException {
-		Stats.startRequest(request());		
+	public Result createRecord(Request request) throws AppException, JsonValidationException {
+		Stats.startRequest(request);		
 		
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "name", "format");
-		if (!json.has("content") && !json.has("code")) new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
+		if (!json.has("content") && !json.has("code")) throw new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
 		
 		
-		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		Stats.setPlugin(authToken.pluginId);
 		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
 		UsageStatsRecorder.protokoll(authToken.pluginId, UsageAction.POST);	
@@ -495,7 +496,7 @@ public class PluginsAPI extends APIController {
 		
 		createRecord(authToken, record);
 		
-		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
+		Stats.finishRequest(request, "200", Collections.EMPTY_SET);
 		return ok();
 	}
 	
@@ -628,10 +629,10 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public CompletionStage<Result> oAuth1Call() throws AppException {
+	public CompletionStage<Result> oAuth1Call(Request request) throws AppException {
 	
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		try {
 			JsonValidation.validate(json, "authToken", "url");
 		} catch (JsonValidationException e) {
@@ -639,7 +640,7 @@ public class PluginsAPI extends APIController {
 		}
 
 		// decrypt authToken and check whether a user exists who has the app installed
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 				
 		BSONObject oauthMeta = RecordManager.instance.getMeta(inf.context, inf.targetAPS, "_oauth");
     	if (oauthMeta == null) throw new BadRequestException("error.notauthorized.action", "No valid oauth credentials.");
@@ -695,13 +696,13 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public Result updateRecord() throws AppException, JsonValidationException {
-        Stats.startRequest(request());				
+	public Result updateRecord(Request request) throws AppException, JsonValidationException {
+        Stats.startRequest(request);				
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();		
+		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "_id");
 		
-		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 				
 		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
 		UsageStatsRecorder.protokoll(authToken.pluginId, UsageAction.PUT);				
@@ -732,7 +733,7 @@ public class PluginsAPI extends APIController {
 				
 		updateRecord(authToken, record);
 			
-		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
+		Stats.finishRequest(request, "200", Collections.EMPTY_SET);
 		return ok();
 	}
 	
@@ -753,17 +754,17 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public CompletionStage<Result> oAuth2Call() throws AppException {
+	public CompletionStage<Result> oAuth2Call(Request request) throws AppException {
 		
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();
+		JsonNode json = request.body().asJson();
 		try {
 			JsonValidation.validate(json, "authToken", "url");
 		} catch (JsonValidationException e) {
 			return badRequestPromise(e.getMessage());
 		}
 
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		String method = json.has("method") ? json.get("method").asText() : "get";
 		JsonNode body = json.has("body") ? json.get("body") : null;
 	
@@ -821,22 +822,20 @@ public class PluginsAPI extends APIController {
 	 * Accepts and stores files up to any size
 	 */
     @BodyParser.Of(HugeBodyParser.class)
-	public Result uploadFile() throws AppException {
+	public Result uploadFile(Request request) throws AppException {
     	EncryptedFileHandle handle = null;
     	
-		Stats.startRequest(request());
+		Stats.startRequest(request);
 		System.out.println("Start handle request");
 		try {
-			
-		response().setHeader("Access-Control-Allow-Origin", "*");
-		
+							
 		// check meta data
-		MultipartFormData formData = request().body().asMultipartFormData();
-		FilePart fileData = formData.getFile("file");
+		MultipartFormData<EncryptedFileHandle> formData = request.body().asMultipartFormData();
+		FilePart<EncryptedFileHandle> fileData = formData.getFile("file");
 		if (fileData == null) {
 			throw new BadRequestException("error.internal", "No file found.");
 		}
-		handle = (EncryptedFileHandle) fileData.getFile();			
+		handle = fileData.getRef();			
 		String filename = fileData.getFilename();
 		String contentType = fileData.getContentType();
 				
@@ -850,7 +849,7 @@ public class PluginsAPI extends APIController {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 	
-		ExecutionInfo authToken = ExecutionInfo.checkToken(request(), metaData.get("authToken")[0], false);
+		ExecutionInfo authToken = ExecutionInfo.checkToken(request, metaData.get("authToken")[0], false);
 		Stats.setPlugin(authToken.pluginId);
 		
 		System.out.println("Passed 1");
@@ -911,19 +910,19 @@ public class PluginsAPI extends APIController {
 					
 			createRecord(authToken, record, handle, filename, contentType, authToken.context);
 					
-			Stats.finishRequest(request(), "200");
+			Stats.finishRequest(request, "200");
 			ObjectNode obj = Json.newObject();
 			obj.put("_id", record._id.toString());
-			return ok(obj);
+			return ok(obj).withHeader("Access-Control-Allow-Origin", "*");
 		} catch (AppException e) {
 			if (handle != null) handle.removeAfterFailure();
-			return badRequest(e.getMessage());
+			return badRequest(e.getMessage()).withHeader("Access-Control-Allow-Origin", "*");
 		} 
 			
 		} catch (Exception e2) {
 			if (handle != null) handle.removeAfterFailure();
-			ErrorReporter.report("Plugin API", ctx(), e2);
-			return internalServerError(e2.getMessage());			
+			ErrorReporter.report("Plugin API", request, e2);
+			return internalServerError(e2.getMessage()).withHeader("Access-Control-Allow-Origin", "*");			
 		} finally {
 			ServerTools.endRequest();			
 		}
@@ -933,9 +932,9 @@ public class PluginsAPI extends APIController {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public Result generateId() throws JsonValidationException, AppException {
-		JsonNode json = request().body().asJson();		
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());									
+	public Result generateId(Request request) throws JsonValidationException, AppException {
+		JsonNode json = request.body().asJson();		
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());									
 		return ok(new MidataId().toString());
 	}
 	
