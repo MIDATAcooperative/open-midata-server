@@ -582,7 +582,7 @@ public class ApplicationTools {
 	}
 
 	public static void removeAppInstance(AccessContext context, MidataId executorId, MobileAppInstance appInstance) throws AppException {
-		AccessLog.logBegin("start remove app instance: "+appInstance._id);
+		AccessLog.logBegin("start remove app instance: "+appInstance._id+" context="+context.toString());
 		// Device or password changed, regenerates consent				
 		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);
 		Plugin app = Plugin.getById(appInstance.applicationId);

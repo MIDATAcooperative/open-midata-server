@@ -335,8 +335,7 @@ export default {
 		
 		if (autoconfirm) {
 			if ($data.loginTemplatePage==0) {
-				$data.login.appAgb = true;
-				toggle(login.confirmStudy, link.studyId || link.userId || link.serviceAppId)
+				$data.login.appAgb = true;				
 			}
 			for (let link of $data.extra) {
 				let conf = link.studyId || link.userId || link.serviceAppId;
