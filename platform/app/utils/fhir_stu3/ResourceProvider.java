@@ -375,7 +375,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	
 	public boolean checkAccessible() throws AppException {
 		ExecutionInfo info = info();					
-		if (!info.context.mayAccess(getResourceType().getName(), "fhir/"+getResourceType().getName())) return false;
+		if (!info.context.mayAccess(getResourceType().getSimpleName(), "fhir/"+getResourceType().getSimpleName())) return false;
 		return true;
 	}
 		
