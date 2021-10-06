@@ -107,6 +107,11 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		return inf;
 	}
 	
+	public static boolean hasInfo() {
+		ExecutionInfo inf = tinfo.get();
+		return inf != null;
+	}
+	
 	/**
 	 * Retrives ExecutionInfo for current thread or default instance
 	 * @return ExecutionInfo
