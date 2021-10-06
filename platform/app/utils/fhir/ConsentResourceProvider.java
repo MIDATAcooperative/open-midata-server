@@ -141,6 +141,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	 */
 	@Read(version=true)	
 	public org.hl7.fhir.r4.model.Consent getResourceById(@IdParam IIdType theId) throws AppException {
+		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
 		models.Consent consent = Circles.getConsentById(info().context, MidataId.from(theId.getIdPart()), info().pluginId, Consent.FHIR);	
 		if (consent == null) return null;
 		
@@ -157,6 +158,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	
 	@History()
 	public List<org.hl7.fhir.r4.model.Consent> getHistory(@IdParam IIdType theId) throws AppException {
+	  if (!checkAccessible()) throw new ResourceNotFoundException(theId);
 	  models.Consent consent = Circles.getConsentById(info().context, MidataId.from(theId.getIdPart()), info().pluginId, Consent.FHIR);
 	  if (consent==null) throw new ResourceNotFoundException(theId);
 	  
