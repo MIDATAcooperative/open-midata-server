@@ -80,7 +80,7 @@ public class FHIRTools {
 	    if (RuntimeConstants.instance.publicUser.equals(id)) return null;
 		if (defName != null) return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());				
 		
-		User user = ResourceProvider.info().cache.getUserById(id);
+		User user = ResourceProvider.hasInfo() ? ResourceProvider.info().cache.getUserById(id) : User.getById(id, User.PUBLIC);
 		if (user == null) {
 			return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
 			//throw new InternalServerException("error.internal", "Person not found "+id.toString());
