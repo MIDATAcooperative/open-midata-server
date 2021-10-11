@@ -66,9 +66,7 @@
         "change_address_btn" : "Changer le profil",
         "make_master_btn" : "Ajouter le rôle utilisateur maître",
         "remove_master_btn" : "Révoquer le rôle utilisateur maître",
-
-        // TODO NEW: Account history
-        "history" : "Account history"
+        "history" : "Historique du compte"
     },
 
     "admin_news" : {
@@ -137,15 +135,11 @@
         "criteria" : "Critère de recherche",
         "empty" : "Aucun projet correspondant trouvé.",
         "add_definition_btn" : "Importer la définition d'un project",
-
-        // TODO NEW: Project code
-        "code" : "Project code",
+        "code" : "Code du project",
         "name" : "Nom du project",
         "type" : "Type",
         "created" : "Créé le",
-
-        // TODO NEW: All Projects
-        "ALL" : "All Projects"
+        "ALL" : "Tous les projets"
     },
 
     "admin_terms" : {
@@ -171,10 +165,6 @@
     "admin_study" : {
         "title" : "Projet de recherche",
         "name" : "Nom",
-
-        // TODO CHANGED
-        // OLD: Created on
-        // NEW: Created at
         "created_at" : "Créé le",
         "created_by" : "Créé par",
         "description" : "Description",
@@ -185,12 +175,8 @@
         "endDate" : "Date de fin",
         "dataCreatedBefore" : "Données figées dès le",
         "consent_observers" : "Observers de consentements",
-
-        // TODO NEW: Participant withdrawal policy
-        "leavePolicy" : "Participant withdrawal policy",
-
-        // TODO NEW: Participant rejoin policy
-        "rejoinPolicy" : "Participant rejoin policy",
+        "leavePolicy" : "Conditions de retrait des participants",
+        "rejoinPolicy" : "Conditions de réintégration des participants",
         "infos" : "Informations publiques",
         "infos_part" : "Informations pour les participants",
         "infos_internal" : "Informations internes",
@@ -328,75 +314,27 @@
     },
 
     "content" : {
-
-        // TODO CHANGED
-        // OLD: Search for existing codes, content-types and groups.
-        // NEW: Search for existing codes, content types and groups.
         "intro" : "Recherche de codes, types de contenu et groupes existants.",
         "createnew_btn" : "Nouveau code",
         "creategroup_btn" : "Nouveau groupe",
-
-        // TODO CHANGED
-        // OLD: Select the entity you want to edit or add a new code to
-        // NEW: Select the item you want to edit or add a new code to
         "make_selection" : "Sélectionnez l'élément que vous voulez modifier ou auquel vous voulez ajouter un nouveau code",
-
-        // TODO CHANGED
-        // OLD: New Code to be added
-        // NEW: New code to be added
         "new_code" : "Nouveau code à ajouter",
         "edit_code" : "Modifier le code existant",
-
-        // TODO CHANGED
-        // OLD: Edit existing Midata Content-Type
-        // NEW: Edit existing MIDATA content type
         "edit_content" : "Modifier le type de contenu MIDATA existant",
-
-        // TODO CHANGED
-        // OLD: New Midata Content-Type to be added
-        // NEW: New MIDATA content type to be added
         "new_content" : "Nouveau type de contenu MIDATA à ajouter",
-
-        // TODO CHANGED
-        // OLD: Edit existing Group in Record-Tree
-        // NEW: Edit existing group in record tree
         "edit_group" : "Modifier un groupe existant dans l'arborescence des données",
-
-        // TODO CHANGED
-        // OLD: New Group for Record-Tree
-        // NEW: New group in record tree
         "new_group" : "Nouveau groupe dans l'arborescence des données",
         "system" : "Système de code",
         "version" : "Version",
         "code" : "Code",
-
-        // TODO CHANGED
-        // OLD: Display
-        // NEW: Label
         "display" : "Libellé",
-
-        // TODO CHANGED
-        // OLD: Midata Content-Type
-        // NEW: MIDATA content type
         "content" : "Type de contenu MIDATA",
         "security" : "Clés d'encryption des données",
-
-        // TODO CHANGED
-        // OLD: Reuse keys for records of same type and person
-        // NEW: Reuse keys for data of same type and person
         "medium" : "Réutiliser les clés pour les données de même type de la même personne",
         "high" : "Utiliser une nouvelle clé pour chaque enregistrement",
-
-        // TODO CHANGED
-        // OLD: Group in Record-Tree
-        // NEW: Group in record tree
         "group" : "Groupe dans l'arborescence des données",
         "defaultCode" : "Code par défaut",
         "resource_type" : "Type de ressource FHIR par défaut",
-
-        // TODO CHANGED
-        // OLD: Delete Code & Content-Type
-        // NEW: Delete Code & Content type
         "delete_content_btn" : "Supprimer le code et le type de contenu",
         "delete_code_btn" : "Supprimer le code",
         "group_name" : "Nom du groupe",
@@ -404,10 +342,6 @@
         "group_system" : "Système de regroupement",
         "save_group_btn" : "Enregistrer le groupe",
         "delete_group_btn" : "Supprimer le groupe",
-
-        // TODO CHANGED
-        // OLD: Save Code & Content-Type
-        // NEW: Save Code & Content type
         "save_btn" : "Enregistrer le code et le type de contenu"
     }
 }

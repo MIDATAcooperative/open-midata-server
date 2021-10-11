@@ -42,9 +42,7 @@
         "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung der Allgemeinen Geschäftsbedingungen und senden Sie diese unterschrieben an @OPERATOR zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "mustbemember_title" : "Mitgliedschaft bei @OPERATOR erforderlich!",
         "mustbemember_detail" : "Um diese Funktion nutzen zu können, müssen Sie Mitglied der Genossenschaft sein. Klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
-
-        // TODO NEW: Rate limit for current action reached. Try again later.
-        "ratelimit" : "Rate limit for current action reached. Try again later.",
+        "ratelimit" : "Die Anrufhäufigkeitsgrenze der aktuellen Aktion wurde erreicht. Versuchen Sie es später noch einmal.",
         "notauthorized" : {
             "action" : "Sie sind nicht berechtigt diese Aktion auszuführen",
             "fields" : "Sie sind nicht berechtigt diese Felder abzufragen",
@@ -116,10 +114,6 @@
             "space" : "Der angefordete Bereich existiert nicht mehr.",
             "consent" : "Zustimmung nicht gefunden",
             "study" : "Dieses Forschungsprojekt existiert nicht.",
-
-            // TODO CHANGED
-            // OLD: Record Content-Type is not registered with the platform.
-            // NEW: Record content type is not registered on the platform.
             "content" : "Der Inhaltstyp dieses Datensatzes ist nicht auf der Plattform registriert.",
             "group" : "Unbekannter Gruppenname",
             "code" : "Unbekannter Code",
@@ -133,9 +127,7 @@
             "user" : "Eine Person mit dieser E-Mail ist bereits registriert.",
             "member" : "Eine Person mit dieser E-Mail ist bereits registriert.",
             "provider" : "Eine Gesundheitsfachperson mit diesem Namen existiert bereits.",
-
-            // TODO NEW: An organization with this name already exists.
-            "organization" : "An organization with this name already exists.",
+            "organization" : "Eine Organisation mit diesem Namen existiert bereits.",
             "passcode" : "Wählen Sie bitte einen anderen Zugangscode!",
             "plugin" : "Eine Applikation mit diesem Namen existiert bereits.",
             "study" : "Ein Forschungsprojekt mit diesem Namen existiert bereits.",
@@ -165,9 +157,7 @@
 
         "tooshort" : {
             "password" : "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Ziffer enthalten.",
-
-            // TODO NEW: The password must be at least 12 characters long and contain one letter,one digit and a special character.
-            "password2" : "The password must be at least 12 characters long and contain one letter,one digit and a special character.",
+            "password2" : "Das Passwort muss mindestens 12 Zeichen lang sein und einen Buchstaben, eine Ziffer und ein Sonderzeichen enthalten.",
             "passphrase" : "Passphrasen müssen mindestens 8 Zeichen lang sein."
         },
 
@@ -298,15 +288,9 @@
             "removed-from-team" : "Aus Team entfernt",
             "communication-rejected" : "Vom Kommunikationskanal abgemeldet",
             "communication-approved" : "Kommunikationskanal abonniert",
-
-            // TODO NEW: User searched
-            "user-searched" : "User searched",
-
-            // TODO NEW: Welcome mail sent
-            "welcome-sent" : "Welcome mail sent",
-
-            // TODO NEW: Attempted user re-registration
-            "tried-user-reregistration" : "Attempted user re-registration"
+            "user-searched" : "Suche nach Benutzer",
+            "welcome-sent" : "Willkommens-E-Mail gesendet",
+            "tried-user-reregistration" : "Versuchte Neuregistrierung des Benutzers"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "Die E-Mail-Adresse des Benutzers muss der Plattform bekannt sein",
@@ -399,23 +383,13 @@
             "VALIDATION" : "Validierung am Laufen"
         },
         "projectleavepolicy" : {
-
-            // TODO NEW: Freeze data on withdrawal
-            "FREEZE" : "Freeze data on withdrawal",
-
-            // TODO NEW: Data is no longer shared
-            "REJECT" : "Data is no longer shared",
-
-            // TODO NEW: Consent is deleted
-            "DELETE" : "Consent is deleted"
+            "FREEZE" : "Daten bei Rückzug einfrieren",
+            "REJECT" : "Daten werden nicht mehr geteilt",
+            "DELETE" : "Die Zustimmung wird gelöscht"
         },
         "rejoinpolicy" : {
-
-            // TODO NEW: Participants cannot rejoin
-            "NO_REJOIN" : "Participants cannot rejoin",
-
-            // TODO NEW: Replace previous participation
-            "DELETE_LAST" : "Replace previous participation"
+            "NO_REJOIN" : "Teilnehmer können nicht wieder beitreten",
+            "DELETE_LAST" : "Vorherige Teilnahme ersetzen"
         },
         "pcodestatus" : {
             "UNUSED" : "Nicht benutzt",
@@ -444,10 +418,6 @@
             "PLUGINADMIN" : "Verwaltung der Applikationen",
             "NEWSWRITER" : "News-Author",
             "SUPERADMIN" : "Super-Administrator",
-
-            // TODO CHANGED
-            // OLD: Trial User
-            // NEW: Trial Participant
             "TRIALUSER" : "Probebenutzer",
             "STUDYPARTICIPANT" : "Projektteilnehmer",
             "APPUSER" : "Applikationsbenutzer",
@@ -708,7 +678,7 @@
         "admin_verified" : "Ihr Konto muss durch einen Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte @SUPPORT.",
         "terms_agreed" : "Die Allgemeine Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
         "privacy_policy_agreed" : "Die Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
-        "auth2factor" : "Ein Autorisierungscode wurde an Ihr Telefon gesendet. Bitte geben Sie es ein.",
+        "auth2factor" : "Ein Autorisierungscode wurde an Ihr Telefon gesendet. Bitte geben Sie ihn ein.",
         "securityToken" : "Code",
         "securityToken_btn" : "Senden",
         "no_token" : "Bitte warten Sie bis zu einer Minute, bis der Code eintrifft.",
@@ -794,10 +764,6 @@
         "owned_by" : "Im Besitz von:",
         "created_by" : "Erstellt durch:",
         "created_with" : "Erstellt mit:",
-
-        // TODO CHANGED
-        // OLD: Created on:
-        // NEW: Created at:
         "created_on" : "Erstellt am:",
         "content" : "Inhalt:",
         "format" : "Format:",
@@ -943,10 +909,6 @@
         "title" : "Zustimmung",
         "owner" : "Besitzer der Zustimmung",
         "name" : "Name der Zustimmung",
-
-        // TODO CHANGED
-        // OLD: Consent created on
-        // NEW: Consent created at
         "date_of_creation" : "Zustimmung erstellt am",
         "type" : "Typ der Zustimmung",
         "status" : "Status der Zustimmung",
@@ -989,15 +951,7 @@
     },
 
     "editconsent2" : {
-
-        // TODO CHANGED
-        // OLD: created on
-        // NEW: created at
         "date_of_creation" : "erstellt am",
-
-        // TODO CHANGED
-        // OLD: expires on
-        // NEW: expires at
         "valid_until" : "verfällt am",
         "status_active" : "Jetzt aktiv",
         "status_expired" : "Verfallen",
@@ -1102,9 +1056,7 @@
         "device" : "Gerät: {{device}}",
         "please_confirm" : "Bestätigen Sie bitte die Aktivierung der Applikation auf dem @PLATFORM Portal, dann versuchen Sie es erneut. Zustimmungsbezeichnung: {{ consent }}",
         "confirm_btn" : "Zugriff bestätigen",
-
-        // TODO NEW: Reject
-        "reject_btn" : "Reject",
+        "reject_btn" : "Ablehnen",
         "continue_btn" : "Weiter",
         "requests_access" : "Von der Applikation angeforderter Zugang:",
         "requests_access_short" : "Datentyp",
@@ -1127,20 +1079,8 @@
         "link_SERVICE_required" : "Für die Nutzung dieser Applikation ist ein zusätzlicher Dienst erforderlich:",
         "link_SERVICE_optional" : "Sie können sich zusätzlich abonnieren, um diesen Dienst zu nutzen:",
         "link_ORGANIZATION_required" : "Für die Nutzung dieser Applikation benötigt ein Dritter Zugriff auf Ihre Daten:",
-
-        // TODO CHANGED
-        // OLD: You may share data with this 3rd party:
-        // NEW: You may share data with this third party:
         "link_ORGANIZATION_optional" : "Sie können Daten mit dieser Drittpartei teilen:",
-
-        // TODO CHANGED
-        // OLD: In order to use this application you need to participate in a clinical trial:
-        // NEW: In order to use this application you need to participate in a clinical study:
         "link_CLINICAL_required" : "Um diese Applikation nutzen zu können, müssen Sie an einer klinischen Studie teilnehmen:",
-
-        // TODO CHANGED
-        // OLD: Additionally you may participate in a clinical trial:
-        // NEW: Additionally you may participate in a clinical study:
         "link_CLINICAL_optional" : "Zusätzlich können Sie an einer klinischen Studie teilnehmen:",
         "link_CITIZENSCIENCE_required" : "Um diese Applikation nutzen zu können, müssen Sie an einem Citizen Science Projekt teilnehmen:",
         "link_CITIZENSCIENCE_optional" : "Zusätzlich können Sie an einem Citizen Science Projekt teilnehmen:",
@@ -1151,28 +1091,12 @@
         "both" : "Beide",
         "only" : "Nur:",
         "not" : "Alle ausser:",
-
-        // TODO CHANGED
-        // OLD: App
-        // NEW: Application
         "short_app" : "Applikation",
         "short_service" : "Dienst",
         "short_project" : "Projekt",
-
-        // TODO CHANGED
-        // OLD: Clinical Trial
-        // NEW: Clinical Study
         "short_clinical" : "Klinische Studie",
         "short_citizenscience" : "Citizen Science Projekt",
-
-        // TODO CHANGED
-        // OLD: Community
-        // NEW: Community Project
         "short_community" : "Gemeinschaftsprojekt",
-
-        // TODO CHANGED
-        // OLD: Party
-        // NEW: Third party
         "short_party" : "Drittpartei",
         "mode_pseudonymized" : "pseudonymisierte Daten",
         "mode_anonymized" : "anonymisierte Daten",
@@ -1416,9 +1340,7 @@
         "expert_mode_btn" : "Expert-Modus",
         "add_basic_btn" : "Basis-Ressourcen",
         "add_data_btn" : "Weitere Datentypen hinzufügen",
-
-        // TODO NEW: Remove code restriction
-        "no_code_btn" : "Remove code restriction",
+        "no_code_btn" : "Code-Einschränkung aufheben",
         "owner" : "Datenbesitzer",
         "owner_all" : "Geteilte Daten ebenfalls verwenden (von Projekten, Freunden, Patienten)",
         "owner_self" : "Nur Daten vom Benutzer der Anwendung",
@@ -1469,8 +1391,6 @@
     },
 
     "timeline" : {
-
-        // TODO NEW: Timeline
         "title" : "Timeline",
         "fitness" : "Fitness",
         "health" : "Gesundheitsdaten",

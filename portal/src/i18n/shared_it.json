@@ -42,9 +42,7 @@
         "notrialuser_detail" : "Per utilizzare questa funzionalità, è necessario completare la propria registrazione. Richiedere una copia scritta dei Condizioni generali di contratto e restituirla firmata a @OPERATOR. Si riceverà inoltre un codice di conferma per verificare il proprio indirizzo postale. Se si desidera controllare lo stato del proprio account fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "mustbemember_title" : "È richiesta l'appartenenza a @OPERATOR!",
         "mustbemember_detail" : "Per utilizzare questa funzione è necessario essere membri della cooperativa. Per ulteriori informazioni fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
-
-        // TODO NEW: Rate limit for current action reached. Try again later.
-        "ratelimit" : "Rate limit for current action reached. Try again later.",
+        "ratelimit" : "Il limite di frequenza delle chiamate dell'azione corrente è stato raggiunto. Riprova più tardi.",        
         "notauthorized" : {
             "action" : "Non si è autorizzati a eseguire questa azione",
             "fields" : "Non si è autorizzati a interrogare i campi forniti",
@@ -116,10 +114,6 @@
             "space" : "Lo spazio richiesto non esiste più.",
             "consent" : "Consenso non trovato",
             "study" : "Lo progetto di ricerca non esiste.",
-
-            // TODO CHANGED
-            // OLD: Record Content-Type is not registered with the platform.
-            // NEW: Record content type is not registered on the platform.
             "content" : "Il tipo di contenuto del record non è registrato nella piattaforma.",
             "group" : "Nome gruppo sconosciuto",
             "code" : "Codice sconosciuto",
@@ -133,9 +127,7 @@
             "user" : "Una persona è già registrata con questo indirizzo e-mail.",
             "member" : "Una persona è già registrata con questo indirizzo e-mail.",
             "provider" : "Un fornitore di prestazioni sanitarie con questo nome esiste già.",
-
-            // TODO NEW: An organization with this name already exists.
-            "organization" : "An organization with this name already exists.",
+            "organization" : "Esiste già un'organizzazione con questo nome.",
             "passcode" : "Scegliere un codice password diverso!",
             "plugin" : "Esiste già un'applicazione con lo stesso nome.",
             "study" : "Esiste già un progetto di ricerca con questo nome.",
@@ -165,9 +157,7 @@
 
         "tooshort" : {
             "password" : "La password deve essere lunga almeno 8 caratteri e contenere una lettera e una cifra.",
-
-            // TODO NEW: The password must be at least 12 characters long and contain one letter,one digit and a special character.
-            "password2" : "The password must be at least 12 characters long and contain one letter,one digit and a special character.",
+            "password2" : "La password deve essere lunga almeno 12 caratteri e contenere una lettera, una cifra e un carattere speciale.",
             "passphrase" : "Le frasi password devono essere composte da almeno 8 caratteri."
         },
 
@@ -298,15 +288,9 @@
             "removed-from-team" : "Rimosso dal team",
             "communication-rejected" : "Cancellato dal canale di comunicazione",
             "communication-approved" : "Abbonati al canale di comunicazione",
-
-            // TODO NEW: User searched
-            "user-searched" : "User searched",
-
-            // TODO NEW: Welcome mail sent
-            "welcome-sent" : "Welcome mail sent",
-
-            // TODO NEW: Attempted user re-registration
-            "tried-user-reregistration" : "Attempted user re-registration"
+            "user-searched" : "Cerca per utente",
+            "welcome-sent" : "E-mail di benvenuto inviata",
+            "tried-user-reregistration" : "Tentativo di registrazione dell'utente"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
@@ -399,23 +383,13 @@
             "VALIDATION" : "Convalida in esecuzione"
         },
         "projectleavepolicy" : {
-
-            // TODO NEW: Freeze data on withdrawal
-            "FREEZE" : "Freeze data on withdrawal",
-
-            // TODO NEW: Data is no longer shared
-            "REJECT" : "Data is no longer shared",
-
-            // TODO NEW: Consent is deleted
-            "DELETE" : "Consent is deleted"
+            "FREEZE" : "Congelare i dati al ritiro",
+            "REJECT" : "I dati non sono più condivisi",
+            "DELETE" : "Il consenso è cancellato"
         },
         "rejoinpolicy" : {
-
-            // TODO NEW: Participants cannot rejoin
-            "NO_REJOIN" : "Participants cannot rejoin",
-
-            // TODO NEW: Replace previous participation
-            "DELETE_LAST" : "Replace previous participation"
+            "NO_REJOIN" : "I partecipanti non possono reintegrarsi",
+            "DELETE_LAST" : "Sostituire la partecipazione precedente"
         },
         "pcodestatus" : {
             "UNUSED" : "Non usato",
@@ -444,10 +418,6 @@
             "PLUGINADMIN" : "Gestione applicazioni",
             "NEWSWRITER" : "Autore notizie",
             "SUPERADMIN" : "Super amministratore",
-
-            // TODO CHANGED
-            // OLD: Trial User
-            // NEW: Trial Participant
             "TRIALUSER" : "Utente di prova",
             "STUDYPARTICIPANT" : "Partecipante al progetto",
             "APPUSER" : "Utente applicazione",
@@ -794,10 +764,6 @@
         "owned_by" : "Il titolare è:",
         "created_by" : "Creato da:",
         "created_with" : "Creato con:",
-
-        // TODO CHANGED
-        // OLD: Created on:
-        // NEW: Created at:
         "created_on" : "Creato il:",
         "content" : "Contenuti:",
         "format" : "Formato:",
@@ -943,10 +909,6 @@
         "title" : "Consenso",
         "owner" : "Titolare del consenso",
         "name" : "Nome del consenso",
-
-        // TODO CHANGED
-        // OLD: Consent created on
-        // NEW: Consent created at
         "date_of_creation" : "Consenso creato il",
         "type" : "Tipo di consenso",
         "status" : "Stato del consenso",
@@ -989,15 +951,7 @@
     },
 
     "editconsent2" : {
-
-        // TODO CHANGED
-        // OLD: created on
-        // NEW: created at
         "date_of_creation" : "creato il",
-
-        // TODO CHANGED
-        // OLD: expires on
-        // NEW: expires at
         "valid_until" : "scade il",
         "status_active" : "Attivo ora",
         "status_expired" : "Scaduto",
@@ -1102,9 +1056,7 @@
         "device" : "Dispositivo: {{device}}",
         "please_confirm" : "Confermare l'attivazione dell'applicazione utilizzando il portale @PLATFORM, quindi riprovare. Il titolo del consenso è: {{ consent }}",
         "confirm_btn" : "Conferma l'accesso",
-
-        // TODO NEW: Reject
-        "reject_btn" : "Reject",
+        "reject_btn" : "Rifiuta",
         "continue_btn" : "Continua",
         "requests_access" : "Accesso richiesto dall'applicazione:",
         "requests_access_short" : "Tipo di dati",
@@ -1127,20 +1079,8 @@
         "link_SERVICE_required" : "Per poter utilizzare questa applicazione è necessario un servizio aggiuntivo:",
         "link_SERVICE_optional" : "Puoi anche abbonarti per utilizzare questo servizio:",
         "link_ORGANIZATION_required" : "Una terza parte ha bisogno di accedere ai suoi dati per poter utilizzare questa applicazione:",
-
-        // TODO CHANGED
-        // OLD: You may share data with this 3rd party:
-        // NEW: You may share data with this third party:
         "link_ORGANIZATION_optional" : "Lei può condividere i dati con questa terza parte:",
-
-        // TODO CHANGED
-        // OLD: In order to use this application you need to participate in a clinical trial:
-        // NEW: In order to use this application you need to participate in a clinical study:
         "link_CLINICAL_required" : "Per poter utilizzare questa applicazione è necessario partecipare a uno studio clinico:",
-
-        // TODO CHANGED
-        // OLD: Additionally you may participate in a clinical trial:
-        // NEW: Additionally you may participate in a clinical study:
         "link_CLINICAL_optional" : "Inoltre puoi partecipare a uno studio clinico:",
         "link_CITIZENSCIENCE_required" : "Per poter utilizzare questa applicazione è necessario partecipare a un progetto di citizen science:",
         "link_CITIZENSCIENCE_optional" : "Inoltre puoi partecipare a un progetto di citizen science:",
@@ -1151,28 +1091,12 @@
         "both" : "Entrambi",
         "only" : "Solo:",
         "not" : "Tutti ma:",
-
-        // TODO CHANGED
-        // OLD: App
-        // NEW: Application
         "short_app" : "Applicazione",
         "short_service" : "Servizio",
         "short_project" : "Progetto",
-
-        // TODO CHANGED
-        // OLD: Clinical Trial
-        // NEW: Clinical Study
         "short_clinical" : "Studio clinico",
         "short_citizenscience" : "Progetto di citizen science",
-
-        // TODO CHANGED
-        // OLD: Community
-        // NEW: Community Project
         "short_community" : "Progetto comunitario",
-
-        // TODO CHANGED
-        // OLD: Party
-        // NEW: Third party
         "short_party" : "Terza parte",
         "mode_pseudonymized" : "dati pseudonimizzati",
         "mode_anonymized" : "dati anonimizzati",
@@ -1416,9 +1340,7 @@
         "expert_mode_btn" : "Modo esperto",
         "add_basic_btn" : "Risorse di base",
         "add_data_btn" : "Aggiunta di altri tipi di dati",
-
-        // TODO NEW: Remove code restriction
-        "no_code_btn" : "Remove code restriction",
+        "no_code_btn" : "Rimuovere la restrizione per codice",
         "owner" : "Titolare dei dati",
         "owner_all" : "Utilizza anche dati condivisi (da progetti, amici, pazienti)",
         "owner_self" : "Solo dati dall'utente dell'applicazione",
@@ -1469,8 +1391,6 @@
     },
 
     "timeline" : {
-
-        // TODO NEW: Timeline
         "title" : "Timeline",
         "fitness" : "Fitness",
         "health" : "Dati medici",

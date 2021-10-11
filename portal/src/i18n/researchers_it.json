@@ -149,10 +149,6 @@
     "studyoverview" : {
         "name" : "Nome",
         "type" : "Tipo di ricerca",
-
-        // TODO CHANGED
-        // OLD: Created on
-        // NEW: Created at
         "created_at" : "Creato alle",
         "created_by" : "Creato da",
         "description" : "Descrizione",
@@ -246,12 +242,8 @@
         "dataCreatedBefore" : "Data di congelamento dei dati",
         "sharing_query" : "Data Access Filter",
         "join_methods" : "Procedure di partecipazione ammesse",
-
-        // TODO NEW: Participant withdrawal policy
-        "leavePolicy" : "Participant withdrawal policy",
-
-        // TODO NEW: Participant rejoin policy
-        "rejoinPolicy" : "Participant rejoin policy",
+        "leavePolicy" : "Condizioni di ritiro dei partecipanti",
+        "rejoinPolicy" : "Condizioni di reintegrazione dei partecipanti",
         "queryeditor_btn" : "Modifica",
         "terms_of_use" : "Condizioni generali di contratto",
         "terms_of_use_hint" : "Se i Condizioni generali di contratto del progetto devono essere letti e accettati dall'utente, si prega di inviare il testo ad un amministratore di piattaforma. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.",

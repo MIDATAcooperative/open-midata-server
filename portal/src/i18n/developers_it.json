@@ -51,10 +51,6 @@
         "lang" : "Lingua",
         "msgtitle" : "Titolo del messaggio",
         "text" : "Testo del messaggio",
-
-        // TODO CHANGED
-        // OLD: Available variables
-        // NEW: Available categories
         "available_tags" : "Categorie disponibili",
         "reasons" : {
             "REGISTRATION" : "Registrazione di un nuovo utente",
@@ -89,12 +85,8 @@
         "filename" : "Nome interno",
         "type" : "Tipo di applicazione",
         "targetUserRole" : "Ruolo di destinazione",
-
-        // TODO NEW: Login Process Texts
-        "loginTemplate" : "Login Process Texts",
-
-        // TODO NEW: Login Process Flow
-        "loginButtonsTemplate" : "Login Process Flow",
+        "loginTemplate" : "Testi del processo d'accesso",
+        "loginButtonsTemplate" : "Flusso del processo d'accesso",
         "edit_btn" : "Modifica impostazioni",
         "edit_help" : "Modifica la configurazione della tua applicazione.",
         "query_btn" : "Modifica Data Access Filter",
@@ -107,21 +99,13 @@
         "testfromlocal_help" : "Durante lo sviluppo, è possibile testare il codice del plugin memorizzato nel proprio computer locale su questa istanza.",
         "serverimport_btn" : "Testa lo script dell'importazione automatica.",
         "serverimport_help" : "Se il proprio plugin offre l'importazione automatica, è possibile testare nel proprio computer locale lo script del plugin che è normalmente eseguito sul server.",
-
-        // TODO NEW: Login Process
-        "applogin_btn" : "Login Process",
-
-        // TODO NEW: View and edit login process
-        "applogin_help" : "View and edit login process",
+        "applogin_btn" : "Processo d'accesso",
+        "applogin_help" : "Visualizzare e modificare il processo d'accesso",
         "link_btn" : "Collegamenti con progetti di ricerca o parti esterne",
         "link_help" : "Le applicazioni possono suggerire o richiedere la partecipazione a un progetto di ricerca. I progetti di ricerca possono raccomandare l'uso di applicazioni. L'uso dell'applicazione può richiedere il consenso dell'utente agli professionisti sanitari o ai team per visualizzare i loro dati.",
         "repository_btn" : "Code Repository",
         "repository_help" : "Checkout la versione più recente del vostro codice",
         "icon_btn" : "Icone e immagini dell'applicazione",
-
-        // TODO CHANGED
-        // OLD: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the store, etc.
-        // NEW: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the Store, etc.
         "icon_help" : "Caricare e gestire le icone e le immagini da utilizzare con la tua applicazione. Fornire immagini per la schermata di login, la schermata di accettazione del consenso, il Store, ecc.",
         "messages_btn" : "Messaggi e-mail dell'applicazione",
         "messages_help" : "Inserisci i tuoi testi personali per l'e-mail da inviare ai nuovi account utente, in occasione del primo utilizzo dell'applicazione, per accettare consensi e altro ancora.",
@@ -152,12 +136,8 @@
         "info" : {
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "La propria applicazione è destinata esclusivamente a un ruolo specifico? In caso contrario scegliere 'Qualsiasi ruolo'.",
-
-            // TODO NEW: How should the login process look like? Some settings need admin approval
-            "loginTemplate" : "How should the login process look like? Some settings need admin approval",
-
-            // TODO NEW: How should buttons be arranged?
-            "loginButtonsTemplate" : "How should buttons be arranged?",
+            "loginTemplate" : "Come dovrebbe essere il processo d'accesso? Alcune impostazioni hanno bisogno dell'approvazione di un amministratore",
+            "loginButtonsTemplate" : "Come devono essere disposti i pulsanti?",
             "type" : "Scegliere 'Plugin' se la propria applicazione sarà eseguita sul portale @PLATFORM. Scegliere 'Applicazione (Smartphone, Web)' per un'applicazione esterna. Scegliere 'Servizio' per uno script solo lato server. Scegliere 'OAuth 1' o 'OAuth 2' se è necessario collegarsi a un server esterno utilizzando OAuth 1 o OAuth 2.",
             "name" : "Il nome, della propria applicazione, che sarà presentato all'utente finale.",
             "description" : "La descrizione del proprio applicazione che sarà mostrata sul Marketplace.",
@@ -166,10 +146,6 @@
             "pseudonymize" : "Leggere i dati pseudonimizzati. Non aggiorna i dati dei partecipanti.",
             "resharesData" : "L'applicazione è autorizzata a ricondividere con terzi i dati a cui accede.",
             "allowsUserSearch" : "Gli utenti dell'applicazione sono autorizzati a cercare altri utenti della stessa applicazione.",
-
-            // TODO CHANGED
-            // OLD: Does this service monitor user consents? Add 'Consents' to the Access Filter in order to activate.
-            // NEW: Does this service monitor user consents? Add 'Consents' to the Data Access Filter in order to activate.
             "consentObserving" : "Questo servizio monitorizza il consenso dell'utente? Aggiungere 'Consenso (Consents)' al Data Access Filter per attivarlo.",
             "defaultSpaceName" : "Il titolo del riquadro del proprio plugin sul pannello di controllo.",
             "tags" : "Categorie sul Store per le quali il proprio plugin deve essere elencato.",
@@ -332,10 +308,6 @@
         "success" : "La recensione è stata aggiunta.",
         "CONCEPT" : "Concetto dell'applicazione",
         "DATA_MODEL" : "Data Model",
-
-        // TODO CHANGED
-        // OLD: Access Filter
-        // NEW: Data Access Filter
         "ACCESS_FILTER" : "Data Access Filter",
         "QUERIES" : "Queries",
         "DESCRIPTION" : "Descrizione",
@@ -349,9 +321,7 @@
         "ACCEPTED" : "Accettate",
         "NEEDS_FIXING" : "Correzione richiesta",
         "OBSOLETE" : "Obsolete",
-
-        // TODO NEW: Terms of use match access filter
-        "TERMS_OF_USE_MATCH_QUERY" : "Terms of use match access filter"
+        "TERMS_OF_USE_MATCH_QUERY" : "Le condizioni d'uso corrispondono al Data Access Filter"
     },
 
     "applicence" : {
@@ -387,16 +357,8 @@
 
     "workspace" : {
         "title" : "Workspace",
-
-        // TODO CHANGED
-        // OLD: Please add an app or a project you are working on. You may also add a test user.
-        // NEW: Please add an application or a project you are working on. You may also add a test user.
         "add_something" : "Aggiungi un'applicazione o un progetto a cui stai lavorando. Puoi anche aggiungere un utente di prova.",
         "browser" : "Browser degli utenti",
-
-        // TODO CHANGED
-        // OLD: Midata Backend
-        // NEW: @PLATFORM Back-end
         "midata" : "Back-end @PLATFORM",
         "useraccount" : "Account utente",
         "newapp_btn" : "Aggiungi applicazione",
@@ -413,15 +375,7 @@
         },
         "component" : "Componente",
         "issue" : "Problema",
-
-        // TODO CHANGED
-        // OLD: Param
-        // NEW: Parameter
         "param" : "Parametro",
-
-        // TODO CHANGED
-        // OLD: Access Filter Summary
-        // NEW: Data Access Filter Summary
         "summary" : "Riassunto Data Access Filter",
         "add_app" : "Aggiungere un'applicazione allo Workspace",
         "add_user" : "Aggiungere un utente allo Workspace",
@@ -432,91 +386,29 @@
         "projectname" : "Codice del progetto",
         "add_project" : "Aggiungere un progetto allo Workspace",
         "warning" : {
-
-            // TODO CHANGED
-            // OLD: App is deprecated and should not be used.
-            // NEW: Application is deprecated and should not be used.
             "app_deprecated" : "Applicazione è deprecato e non dovrebbe essere usato.",
-
-            // TODO CHANGED
-            // OLD: No developer organization name specified in app definition.
-            // NEW: No developer organization name specified in application definition.
             "no_orgname" : "Nessun nome dell'organizzazione dello sviluppatore specificato nella definizione dell'applicazione.",
-
-            // TODO CHANGED
-            // OLD: No publisher specified in app definition.
-            // NEW: No publisher specified in application definition.
             "no_publisher" : "Nessun editore specificato nella definizione dell'applicazione.",
-
-            // TODO CHANGED
-            // OLD: App description is missing
-            // NEW: Application description is missing.
             "no_app_description" : "Manca la descrizione dell'applicazione.",
-
-            // TODO CHANGED
-            // OLD: Plugin is not available in Midata store. Ask an admin.
-            // NEW: Plugin is not available in @PLATFORM Store. Ask an administrator.
             "not_spotlighted" : "Il plugin non è disponibile nel Store @PLATFORM. Chiedi a un amministratore.",
             "no_repository" : "Nessun repository per il checkout del codice fornito.",
-
-            // TODO CHANGED
-            // OLD: Error report notifications (emails) are disabled for this app.
-            // NEW: Error report notifications (emails) are disabled for this application.
             "no_send_reports" : "Le notifiche di rapporti di errore (e-mails) sono disabilitate per questa applicazione.",
             "has_comments" : "Commenti disponibili nelle statistiche degli errori e delle performance.",
             "project_not_validated" : "Il progetto non è stato ancora convalidato.",
             "project_not_searching" : "Il progetto che non cerca partecipanti.",
-
-            // TODO CHANGED
-            // OLD: None of the test accounts use the application
-            // NEW: None of the test accounts use the application.
             "no_user_for_app" : "Nessuno degli account di prova usa l'applicazione.",
-
-            // TODO CHANGED
-            // OLD: None of test accounts participate to the project
-            // NEW: None of test accounts participate to the project.
             "no_user_for_project" : "Nessuno dei conti di prova partecipa al progetto.",
-
-            // TODO CHANGED
-            // OLD: Application instance not active
-            // NEW: Application instance not active.
             "appinstance_status" : "L'istanza dell'applicazione non attiva.",
-
-            // TODO CHANGED
-            // OLD: App version is newer than app. consent. Needs reconfirm.
-            // NEW: Application version is newer than application consent. Needs reconfirm.
             "appinstance_outdated" : "La versione dell'applicazione è più recente del consenso dell'applicazione. Deve essere riconfermata.",
-
-            // TODO CHANGED
-            // OLD: Participation not accepted
-            // NEW: Participation not accepted.
             "not_accepted" : "Partecipazione non accettata",
-
-            // TODO NEW: You are no developer of this application. Some features are not available to you.
-            "no_access" : "You are no developer of this application. Some features are not available to you."
+            "no_access" : "Non sei sviluppatore di questa applicazione. Alcune caratteristiche non sono disponibili per te."
         },
         "error" : {
-
-            // TODO CHANGED
-            // OLD: No tags for app selected. Plugin cannot be added by user.
-            // NEW: No application category selected. Plugin cannot be added by user.
             "no_tags" : "Nessuna categoria di applicazione selezionata. Il plugin non può essere aggiunto dall'utente.",
-
-            // TODO CHANGED
-            // OLD: Plugin does not have initial URL
-            // NEW: Plugin does not have initial URL.
             "no_url" : "Il plugin non ha un URL iniziale.",
             "never_deployed" : "Il plugin ha informazioni sul repository ma non è mai stato checkout con successo.",
-
-            // TODO CHANGED
-            // OLD: No access filter provided for application
-            // NEW: No Data Access Filter provided for application.
             "no_access_filter" : "Nessun filtro d'accesso fornito per l'applicazione.",
             "no_join_method" : "Il progetto non ha metodi di adesione selezionati.",
-
-            // TODO CHANGED
-            // OLD: Project is currently validated by an administrator.
-            // NEW: Project is currently being validated by an administrator.
             "project_in_validation" : "Il progetto è attualmente in fase di convalida da parte di un amministratore.",
             "project_rejected" : "Il progetto è stato respinto.",
             "project_finished" : "Il progetto è già finito.",
@@ -524,15 +416,7 @@
             "project_no_groups" : "Nessun gruppo di partecipanti definito per il progetto.",
             "app_no_exist" : "L'applicazione non esiste.",
             "project_no_exist" : "Il progetto non esiste.",
-
-            // TODO CHANGED
-            // OLD: Account login failed
-            // NEW: Account login failed.
             "login_failed" : "La connessione all'account è fallita.",
-
-            // TODO CHANGED
-            // OLD: Application instance rejected
-            // NEW: Application blocked by user.
             "appinstance_rejected" : "Applicazione bloccata dall'utente."
         },
         "info" : {
@@ -540,142 +424,59 @@
             "no_icons" : "Nessuna icona scaricata per l'applicazione.",
             "project_not_running" : "Il progetto non è ancora iniziato.",
             "project_no_requirements" : "Nessun requisito selezionato per il progetto.",
-
-            // TODO CHANGED
-            // OLD: Application is still in development
-            // NEW: Application is still in development.
             "app_in_development" : "L'applicazione è ancora in sviluppo."
         }
     },
 
     "applogin" : {
-
-        // TODO NEW: Application login
-        "title" : "Application login",
-
-        // TODO NEW: View and configure app login process.
-        "description" : "View and configure app login process.",
-
-        // TODO NEW: Which process do you want to preview?
-        "preview" : "Which process do you want to preview?",
+        "title" : "Accesso dall'applicazione",
+        "description" : "Visualizza e configura il processo di accesso dall'applicazione.",
+        "preview" : "Quale processo volete visualizzare?",
         "previewtype" : {
-
-            // TODO NEW: First login. User has no account yet.
-            "NEW" : "First login. User has no account yet.",
-
-            // TODO NEW: First login. User already has an account.
-            "EXISTING" : "First login. User already has an account.",
-
-            // TODO NEW: Returning user - Relogin
-            "RELOGIN" : "Returning user - Relogin"
+            "NEW" : "Primo accesso. L'utente non ha ancora un account.",
+            "EXISTING" : "Primo accesso. L'utente ha già un account.",
+            "RELOGIN" : "Utente ricorrente - Riconnessione"
         },
-
-        // TODO NEW: always
-        "required" : "always",
-
-        // TODO NEW: if necessary
-        "optional" : "if necessary",
-
-        // TODO NEW: Setting must be approved by an administrator
-        "not_approved" : "Setting must be approved by an administrator",
-
-        // TODO NEW: Approved by
-        "approvedby" : "Approved by",
-
-        // TODO NEW: at
-        "approvedat" : "at",
-
-        // TODO NEW: View terms of use
-        "show_terms" : "View terms of use",
-
-        // TODO NEW: No terms of use
-        "no_terms" : "No terms of use",
-
-        // TODO NEW: Linked projects
-        "links" : "Linked projects",
-
-        // TODO NEW: None (yet)
-        "no_links" : "None (yet)",
+        "required" : "sempre",
+        "optional" : "se necessario",
+        "not_approved" : "Questa impostazione deve essere approvata da un amministratore",
+        "approvedby" : "Approvata da",
+        "approvedat" : "il",
+        "show_terms" : "Visualizza le condizioni d'uso",
+        "no_terms" : "Nessuna condizioni d'uso",
+        "links" : "Progetti collegati",
+        "no_links" : "Nessuno (ancora)",
         "step" : {
-
-            // TODO NEW: Login
-            "login" : "Login",
-
-            // TODO NEW: Registration
-            "registration" : "Registration",
-
-            // TODO NEW: Consent
-            "confirmation" : "Consent",
-
-            // TODO NEW: Project Consent
-            "confirmation2" : "Project Consent",
-
-            // TODO NEW: Enter password
-            "password_set" : "Enter password",
-
-            // TODO NEW: Email verification
-            "email_verified" : "Email verification",
-
-            // TODO NEW: Admin verification
-            "admin_verified" : "Admin verification",
-
-            // TODO NEW: Phone verification
-            "phone_verified" : "Phone verification",
-
-            // TODO NEW: Agree to terms
-            "newest_terms_agreed" : "Agree to terms",
-
-            // TODO NEW: Enter address
-            "address_entered" : "Enter address",
-
-            // TODO NEW: Address & Phone
-            "address_phone_entered" : "Address & Phone",
-
-            // TODO NEW: Enter phone
-            "phone_entered" : "Enter phone",
-
-            // TODO NEW: Address verification
-            "address_verified" : "Address verification",
-
-            // TODO NEW: 2FA Setup
-            "auth2factorsetup" : "2FA Setup",
-
-            // TODO NEW: 2FA
+            "login" : "Accesso",
+            "registration" : "Iscrizione",
+            "confirmation" : "Consenso",
+            "confirmation2" : "Consenso al progetto",
+            "password_set" : "Inserire la password",
+            "email_verified" : "Verifica dell'e-mail",
+            "admin_verified" : "Approvazione di un amministratore",
+            "phone_verified" : "Verifica del numero di telefono",
+            "newest_terms_agreed" : "Accettare le condizioni d'uso",
+            "address_entered" : "Inserire l'indirizzo",
+            "address_phone_entered" : "Indirizzo & Telefono",
+            "phone_entered" : "Inserire il numero di telefono",
+            "address_verified" : "Verifica dell'indirizzo",
+            "auth2factorsetup" : "Impostazione 2FA",
             "auth2factor" : "2FA",
-
-            // TODO NEW: Enter birthday
-            "birthday_set" : "Enter birthday"
+            "birthday_set" : "Inserire la data di nascita"
         }
     },
 
     "enum" : {
         "logintemplate" : {
-
-            // TODO NEW: Generate app-consent from definition
-            "GENERATED" : "Generate app-consent from definition",
-
-            // TODO NEW: Show terms of use as text page with generated consent
-            "TERMS_OF_USE_AND_GENERATED" : "Show terms of use as text page with generated consent",
-
-            // TODO NEW: Show terms of use as text page (needs admin approval)
-            "TERMS_OF_USE" : "Show terms of use as text page (needs admin approval)",
-
-            // TODO NEW: Show terms of use with variables
-            "TERMS_WITH_VARIABLES" : "Show terms of use with variables",
-
-            // TODO NEW: Give consent on registration page (needs admin approval)
-            "REDUCED" : "Give consent on registration page (needs admin approval)"
+            "GENERATED" : "Generare l'autorizzazione dell'applicazione dalla definizione",
+            "TERMS_OF_USE_AND_GENERATED" : "Mostra i condizioni d'uso come pagina di testo con il consenso generato",
+            "TERMS_OF_USE" : "Mostra i condizioni d'uso come pagina di testo (ha bisogno dell'approvazione di un amministratore)",
+            "REDUCED" : "Dare il consenso nella pagina di iscrizione (ha bisogno dell'approvazione di un amministratore)"
         },
         "loginbuttonstemplate" : {
-
-            // TODO NEW: One required confirm button and optional checkboxes
-            "ONE_CONFIRM_AND_OPTIONAL_CHECKBOXES" : "One required confirm button and optional checkboxes",
-
-            // TODO NEW: One decision per page
-            "ONE_CONFIRM_PER_PAGE" : "One decision per page",
-
-            // TODO NEW: Checkboxes with linked terms of use
-            "CHECKBOXES_WITH_LINKED_TERMS" : "Checkboxes with linked terms of use"
+            "ONE_CONFIRM_AND_OPTIONAL_CHECKBOXES" : "Un pulsante di conferma obbligatorio e caselle di controllo opzionali",
+            "ONE_CONFIRM_PER_PAGE" : "Una decisione per pagina",
+            "CHECKBOXES_WITH_LINKED_TERMS" : "Caselle di controllo con condizioni d'uso collegati"
         }
     }
 }

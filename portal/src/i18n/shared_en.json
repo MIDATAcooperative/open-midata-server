@@ -41,7 +41,7 @@
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "@OPERATOR membership required!",
      "mustbemember_detail" : "In order to use this feature you must be member of the cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
-     "ratelimit" : "Rate limit for current action reached. Try again later.",
+     "ratelimit" : "The rate limit for the current action has been reached. Try again later.",
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
        "fields" : "You are not authorized to query the provided fields",
@@ -156,7 +156,7 @@
 
      "tooshort" : {
        "password" : "The password must be at least 8 characters long and contain one letter and one digit.",
-       "password2" : "The password must be at least 12 characters long and contain one letter,one digit and a special character.",
+       "password2" : "The password must be at least 12 characters long and contain one letter, one digit and a special character.",
        "passphrase" : "Passphrases must be at least 8 characters long."
      },
 
@@ -287,8 +287,8 @@
 	   "removed-from-team" : "Removed from team",
 	   "communication-rejected" : "Unsubscribed from communication channel",
 	   "communication-approved" : "Subscribed to communication channel",
-	   "user-searched" : "User searched",
-	   "welcome-sent" : "Welcome mail sent",
+	   "user-searched" : "Search for user",
+	   "welcome-sent" : "Welcome email sent",
 	   "tried-user-reregistration" : "Attempted user re-registration"	   
 	 },
 	 "userfeature" : {
