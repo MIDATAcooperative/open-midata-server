@@ -132,14 +132,14 @@ public class OAuth2 extends Controller {
         if (!appInstance.owner.equals(ownerId)) throw new InternalServerException("error.invalid.token", "Wrong app instance owner!");
         if (!appInstance.applicationId.equals(applicationId)) throw new InternalServerException("error.invalid.token", "Wrong app for app instance!");
         
-        if (appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.REJECTED)) 
+        if (!appInstance.status.isSharingData()) 
         	throw new BadRequestException("error.blocked.consent", "Consent expired or blocked.");
         
         Plugin app = Plugin.getById(appInstance.applicationId);
         
         AccessLog.log("app-instance:"+appInstance.appVersion+" vs plugin:"+app.pluginVersion);
         if (appInstance.appVersion != app.pluginVersion) {
-        	ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
+        	if (context!=null) ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
         	return false;
         }
         
@@ -163,7 +163,7 @@ public class OAuth2 extends Controller {
       			  if (c == null) {
       				  
 	      				  AccessLog.log("remove instance due to missing linked service: "+sal.serviceAppId);
-	      				  ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
+	      				if (context != null) ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
       				  
 		                  return false;
       			  }
@@ -172,7 +172,7 @@ public class OAuth2 extends Controller {
         		   
         		   if (sp == null) {
         			    AccessLog.log("remove instance due to missing project: "+sal.studyId);
-	               		ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
+        			    if (context != null) ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
 	                   	return false;
 	               	}
 				    if ( 
@@ -268,7 +268,7 @@ public class OAuth2 extends Controller {
     		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
     		if (!app.type.equals("mobile")) throw new PluginException(app._id,"error.plugin", "Wrong application type. Only smartphone/web type applications may use the OAuth login.");
     		
-    		appInstance = MobileAppInstance.getById(tk.appInstanceId, Sets.create("owner", "applicationId", "status", "passcode"));
+    		appInstance = MobileAppInstance.getById(tk.appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
     		if (appInstance == null) throw new BadRequestException("error.internal", "invalid_grant");
     		phrase = tk.device;
     		aeskey = tk.aeskey;
@@ -329,7 +329,7 @@ public class OAuth2 extends Controller {
 		
 		MidataId appInstanceId = refreshToken.appInstanceId;
 		
-		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "appVersion", "applicationId", "status", "licence"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
 		
 		if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) {
 			// Begin: Allow expired refresh tokens for key recovery
@@ -716,7 +716,7 @@ public class OAuth2 extends Controller {
 		}
 	}
 	
-	private static final MobileAppInstance checkExistingAppInstance(ExtendedSessionToken token, JsonNode json, Set<StudyAppLink> links) throws AppException {		
+	private static final MobileAppInstance checkExistingAppInstance(ExtendedSessionToken token, AccessContext tempContext, JsonNode json, Set<StudyAppLink> links) throws AppException {		
 		long tStart = System.currentTimeMillis();
 
 		// Portal
@@ -724,12 +724,12 @@ public class OAuth2 extends Controller {
 		
 		if (token.device == null || token.appId == null || token.ownerId == null) throw new NullPointerException();
 		
-        MobileAppInstance appInstance = MobileAPI.getAppInstance(token.device, token.appId, token.ownerId, Sets.create("owner", "applicationId", "status", "passcode", "appVersion", "licence", "deviceId"));		
+        MobileAppInstance appInstance = MobileAPI.getAppInstance(tempContext, token.device, token.appId, token.ownerId, MobileAppInstance.APPINSTANCE_ALL);		
 		
 		//KeyManager.instance.login(60000l, false);		
 		
 		if (appInstance != null) {
-			if (verifyAppInstance(null, appInstance, token.ownerId, token.appId, links)) {
+			if (verifyAppInstance(tempContext, appInstance, token.ownerId, token.appId, links)) {
 				token.appInstanceId = appInstance._id;
 				token.setAppUnlockedWithCode();
 				token.setAppConfirmed();
@@ -962,9 +962,10 @@ public class OAuth2 extends Controller {
 			if (sessionToken == null && user.security.equals(AccountSecurityLevel.KEY_EXT_PASSWORD)) return Application.loginChallenge(token, user);
 			token.handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true); // TODO Check lifetime
 			keyType = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey); 
+			token.currentContext = RecordManager.instance.createContextFromAccount(user._id);
 		}		
-		
-		appInstance = checkExistingAppInstance(token, json, links);
+		AccessLog.log("Using context="+token.currentContext.toString());
+		appInstance = checkExistingAppInstance(token, token.currentContext, json, links);
 				
 	
 		UserFeature recheck = checkAppConfirmationRequired(token, json, links);

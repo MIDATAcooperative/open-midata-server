@@ -242,6 +242,8 @@
         "dataCreatedBefore" : "Données figées dès le",
         "sharing_query" : "Data Access Filter",
         "join_methods" : "Procédures de participation autorisées",
+        "leavePolicy" : "Conditions de retrait des participants",
+        "rejoinPolicy" : "Conditions de réintégration des participants",
         "queryeditor_btn" : "Modifier",
         "terms_of_use" : "Conditions générales",
         "terms_of_use_hint" : "Si les conditions générales du projet doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à un administrateur de la plateforme. Nous téléchargerons le texte au bon format et vous fournirons l'ID que vous devez saisir ici.",

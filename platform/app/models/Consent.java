@@ -51,16 +51,16 @@ public class Consent extends Model implements Comparable<Consent> {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers");
 	
-	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "writes", "dataupdate");
+	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "writes", "dataupdate", "lastUpdated");
 	
 	/**
 	 * constant for all FHIR fields of a consent
 	 */
 	public @NotMaterialized final static Set<String> FHIR = Sets.create(ALL, "fhirConsent");
 	
-	public @NotMaterialized final static Set<ConsentStatus> NOT_DELETED = Collections.unmodifiableSet(EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.DRAFT, ConsentStatus.EXPIRED, ConsentStatus.FROZEN, ConsentStatus.REJECTED, ConsentStatus.UNCONFIRMED));
+	public @NotMaterialized final static Set<ConsentStatus> NOT_DELETED = Collections.unmodifiableSet(EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.DRAFT, ConsentStatus.EXPIRED, ConsentStatus.FROZEN, ConsentStatus.REJECTED, ConsentStatus.INVALID, ConsentStatus.UNCONFIRMED));
 	/**
 	 * When this consent was created
 	 */
@@ -163,6 +163,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	public Map<String, Object> sharingQuery;
 	
 	/**
+	 * Signature for query
+	 */
+	public Signed querySignature;
+	
+	/**
 	 * Type of write permission
 	 */
 	public WritePermissionType writes;
@@ -243,6 +248,14 @@ public class Consent extends Model implements Comparable<Consent> {
 		return Model.getAll(Consent.class, collection, CMaps.map("externalOwner", emailLC).map("status", NOT_DELETED), FHIR);
 	}
 	
+	public static List<Consent> getSome(MidataId min) throws InternalServerException {
+		if (min!=null) {
+		   return Model.getAllList(Consent.class, collection, CMaps.map("_id", CMaps.map("$gt", min)), ALL, 1000, "_id", 1);
+		} else {
+			return Model.getAllList(Consent.class, collection, CMaps.map(), ALL, 1000, "_id", 1);
+		}
+	}
+	
 	public static Consent getMessagingActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.IMPLICIT), Consent.SMALL);
 	}
@@ -269,8 +282,26 @@ public class Consent extends Model implements Comparable<Consent> {
 		this.setMultiple(collection, Sets.create("status", "lastUpdated"));		
 	}
 	
+	public void updateMetadata() throws InternalServerException {
+		if (this.fhirConsent != null) {
+		  this.setMultiple(collection, Sets.create("status", "lastUpdated", "fhirConsent", "sharingQuery", "querySignature"));
+		} else {
+		  this.setMultiple(collection, Sets.create("status", "lastUpdated", "sharingQuery", "querySignature"));
+		}
+	}
+	
 	public void add() throws InternalServerException {
+		assertNonNullFields();
 		Model.insert(collection, this);	
+	}
+	
+	public void assertNonNullFields() {
+		if (dateOfCreation == null ||
+		    lastUpdated == null || 
+            status == null ||
+		    fhirConsent == null ||
+		    sharingQuery == null ||
+		    writes == null) throw new NullPointerException();
 	}
 	
 	/**

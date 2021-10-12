@@ -212,7 +212,9 @@ public enum AuditEventType {
 	
 	REMOVED_FROM_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "removed-from-team", "Removed from team"), AuditEventAction.D),
 	
-	APP_DEFINITION_CHANGED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "app-definition-changed", "App Definition Changed"), AuditEventAction.U);
+	APP_DEFINITION_CHANGED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "app-definition-changed", "App Definition Changed"), AuditEventAction.U),
+	
+	SIGNATURE_FAILURE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "signature-failure", "Signature failure"), AuditEventAction.E);
 	
 	private AuditEventAction action;
 	private Coding type;

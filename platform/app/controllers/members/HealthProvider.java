@@ -178,15 +178,8 @@ public class HealthProvider extends APIController {
 			   AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_APPROVED, context.getActor(), target);
 		}
 		
-		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
-			if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
-				ApplicationTools.linkMobileConsentWithExecutorAccount(context, context.getAccessor(), consentId);
-				
-				MobileAppInstance mai = MobileAppInstance.getById(target._id, Sets.create("applicationId"));
-				Plugin plugin = Plugin.getById(mai.applicationId);
-				SubscriptionManager.activateSubscriptions(context.getAccessor(), plugin, mai._id, true);
-				
-			}	
+		if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.INVALID)) {
+			
 			if (target.externalAuthorized != null && !target.externalAuthorized.isEmpty()) {
 				throw new BadRequestException("error.invalid.consent_members", "Consent has external persons.");
 			}
@@ -235,7 +228,7 @@ public class HealthProvider extends APIController {
 		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_REJECTED).withActorUser(context.getActor()).withModifiedUser(userId).withConsent(target));
 		}
 		
-		if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE)) {
+		if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE) || target.status.equals(ConsentStatus.INVALID)) {
 			target.setConfirmDate(new Date());			
 			Circles.consentStatusChange(context, target, ConsentStatus.REJECTED);
 			Circles.sendConsentNotifications(userId, target, ConsentStatus.REJECTED);

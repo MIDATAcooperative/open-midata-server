@@ -53,6 +53,7 @@ import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
 import models.enums.UserStatus;
+import models.enums.WritePermissionType;
 import utils.access.AccessContext;
 import utils.access.ConsentAccessContext;
 import utils.access.Feature_FormatGroups;
@@ -122,6 +123,8 @@ public class ApplicationTools {
 		// Agree to terms and co
 		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);					
 		
+		Circles.consentStatusChange(context, appInstance, null, false);
+		
 		// Send email of first use
 		sendFirstUseMessage(member, app);
 
@@ -158,7 +161,7 @@ public class ApplicationTools {
 			}
 		}
 		if (!foundValid) {
-			result = installApp(context, serviceAppId, member, null, true, studyConfirm, null);
+			result = installApp(context, serviceAppId, member, "portal", true, studyConfirm, null);
 		}
 		AccessLog.logEnd("end refresh or install service:"+serviceAppId);
 		return result;
@@ -204,7 +207,9 @@ public class ApplicationTools {
 		if (serviceInstance.endpoint != null && serviceInstance.endpoint.length()>0) {
 			targetUsers.add(RuntimeConstants.instance.publicUser);
 		}
-		RecordManager.instance.shareAPS(new ConsentAccessContext(appInstance, context), targetUsers);			
+		appInstance.authorized = targetUsers;
+		
+		//RecordManager.instance.shareAPS(new ConsentAccessContext(appInstance, context), targetUsers);			
 		
 		// Write phrase into APS *
 		Map<String, Object> meta = new HashMap<String, Object>();
@@ -221,12 +226,13 @@ public class ApplicationTools {
 		
 		if (serviceInstance.studyRelatedOnly) query.put("study-related", "true");
 
-		appInstance.set(appInstance._id, "sharingQuery", query);
-		AccessContext sharingContext = context.forServiceInstance(serviceInstance);
-		RecordManager.instance.shareByQuery(sharingContext, appInstance._id, appInstance.sharingQuery);
+		appInstance.sharingQuery = query;
 		
-		// Confirm app consent *		
-		Circles.consentStatusChange(sharingContext, appInstance, ConsentStatus.ACTIVE);
+		/*appInstance.set(appInstance._id, "sharingQuery", query);
+		
+		RecordManager.instance.shareByQuery(sharingContext, appInstance._id, appInstance.sharingQuery);
+		*/
+		// Confirm app consent *
 		
 		// Gain access to executor account
 		if (serviceInstance.executorAccount.equals(serviceInstance._id)) {
@@ -235,14 +241,18 @@ public class ApplicationTools {
 			byte[] key = (byte[]) si.get("key");
 			KeyManager.instance.unlock(serviceInstance.executorAccount, keyId, key);
 		}
+		
+		AccessContext sharingContext = context.forServiceInstance(serviceInstance);
+		Circles.consentStatusChange(sharingContext, appInstance, null);
+		
 
 		// Link with executor account
-		linkMobileConsentWithExecutorAccount(context, serviceInstance.executorAccount, appInstance._id);
+		//linkMobileConsentWithExecutorAccount(context, serviceInstance.executorAccount, appInstance._id);
 
 		//appInstance.status = ConsentStatus.ACTIVE;	
-		if (!app.type.equals("endpoint")) {
-		  SubscriptionManager.activateSubscriptions(serviceInstance.executorAccount, app, appInstance._id, true);
-		}
+		//if (!app.type.equals("endpoint")) {
+		//  SubscriptionManager.activateSubscriptions(serviceInstance.executorAccount, app, appInstance._id, true);
+		//}
 		// protokoll app installation
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.INSTALL);
 		
@@ -372,12 +382,14 @@ public class ApplicationTools {
 		appInstance.dateOfCreation = new Date();
 		appInstance.lastUpdated = appInstance.dateOfCreation;
 		appInstance.writes = app.writes;
+		appInstance.status = ConsentStatus.ACTIVE;
+		if (appInstance.writes==null) appInstance.writes = WritePermissionType.NONE;
 		
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
 		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
 		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);						   
-        }
-		MobileAppInstance.add(appInstance);
+        } else appInstance.sharingQuery = ConsentQueryTools.getEmptyQuery();
+		
 		return appInstance;
 	}
 
@@ -399,9 +411,9 @@ public class ApplicationTools {
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
 		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
 		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);						   
-		}
+		} else appInstance.sharingQuery = ConsentQueryTools.getEmptyQuery();
 		
-		Circles.addConsent(context, appInstance, true, null, false);
+		//Circles.addConsent(context, appInstance, true, null, false);
 		
 		return appInstance;
 	}
@@ -420,15 +432,16 @@ public class ApplicationTools {
 		
 		// Write access filter into APS *
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
-			AccessContext sharingContext = RecordManager.instance.createSharingContext(context, owner);
-		    RecordManager.instance.shareByQuery(sharingContext, appInstance._id, appInstance.sharingQuery);
+			appInstance.sharingQuery = app.defaultQuery;
+			//AccessContext sharingContext = RecordManager.instance.createSharingContext(context, owner);
+		    //RecordManager.instance.shareByQuery(sharingContext, appInstance._id, appInstance.sharingQuery);
 		}						
 		
 		// Confirm app consent *
-		if (autoConfirm) {
+		/*if (autoConfirm) {
 		   HealthProvider.confirmConsent(context, appInstance._id);
 		   appInstance.status = ConsentStatus.ACTIVE;
-		}
+		}*/
 	}
 
     private static void sendFirstUseMessage(User member, Plugin app) throws AppException {
@@ -561,7 +574,7 @@ public class ApplicationTools {
 		long tStart = System.currentTimeMillis();
 		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 							
-		appInstance = MobileAppInstance.getById(appInstance._id, MobileAppInstance.APPINSTANCE_ALL);
+		appInstance = MobileAppInstance.getById(appInstance._id, Sets.create(MobileAppInstance.APPINSTANCE_ALL, "fhirConsent"));
 		
 		//RecordManager.instance.unshareAPS(appInstance._id, executor, Collections.singleton(appInstance._id));
 		
@@ -573,7 +586,7 @@ public class ApplicationTools {
 		appInstance.lastUpdated = new Date();
 		
 		RecordManager.instance.shareAPS(RecordManager.instance.createContextFromApp(executor, appInstance), appInstance.publicKey);
-		MobileAppInstance.upsert(appInstance);
+		appInstance.upsert();
 					
 		AuditManager.instance.success();
 		AccessLog.logEnd("end refresh app time="+(System.currentTimeMillis()-tStart));
@@ -582,7 +595,7 @@ public class ApplicationTools {
 	}
 
 	public static void removeAppInstance(AccessContext context, MidataId executorId, MobileAppInstance appInstance) throws AppException {
-		AccessLog.logBegin("start remove app instance: "+appInstance._id);
+		AccessLog.logBegin("start remove app instance: "+appInstance._id+" context="+context.toString());
 		// Device or password changed, regenerates consent				
 		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);
 		Plugin app = Plugin.getById(appInstance.applicationId);

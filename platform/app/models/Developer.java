@@ -65,7 +65,7 @@ public class Developer extends User {
 		
 	
 	public static void add(Developer user) throws InternalServerException {
-		
+		user.updateKeywords(false);
 		Model.insert(collection, user);				
 	}
 	

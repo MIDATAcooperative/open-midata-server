@@ -93,6 +93,8 @@ import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
+import models.enums.ProjectLeavePolicy;
+import models.enums.RejoinPolicy;
 import models.enums.ResearcherRole;
 import models.enums.StudyAppLinkType;
 import models.enums.StudyExecutionStatus;
@@ -110,6 +112,7 @@ import play.mvc.Security;
 import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
+import utils.ConsentQueryTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ProjectTools;
@@ -597,7 +600,7 @@ public class Studies extends APIController {
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
 				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
-				"dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup", "type", "joinMethods", "consentObserver", "consentObserverNames");
+				"dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy");
 		Study study = Study.getById(studyid, fields);
 
 		if (study != null && study.consentObserver != null) {
@@ -635,7 +638,7 @@ public class Studies extends APIController {
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
 				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
-				"dataCreatedBefore", "type", "joinMethods", "consentObserver", "consentObserverNames");
+				"dataCreatedBefore", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy");
 		Study study = Study.getById(studyid, fields);
 
 		if (study != null && study.consentObserver != null) {
@@ -1188,9 +1191,10 @@ public class Studies extends APIController {
 			consent.lastUpdated = consent.dateOfCreation;
 			consent.status = ConsentStatus.ACTIVE;
 			consent.writes = WritePermissionType.UPDATE_EXISTING;
+			consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 
 			RecordManager.instance.createAnonymizedAPS(ownerId, context.getAccessor(), consent._id, true, true, true);
-			Circles.prepareConsent(consent, true);
+			Circles.persistConsentMetadataChange(context, consent, true);
 			Circles.addUsers(context, ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
 			reference = consent;
@@ -1211,11 +1215,12 @@ public class Studies extends APIController {
 		consent.authorized = new HashSet<MidataId>();
 		consent.dateOfCreation = new Date();
 		consent.lastUpdated = consent.dateOfCreation;
+		consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 		consent.status = ConsentStatus.ACTIVE;
 		consent.writes = WritePermissionType.NONE;
 
 		RecordManager.instance.createAnonymizedAPS(ownerId, study._id, consent._id, true, true, true);
-		Circles.prepareConsent(consent, true);
+		Circles.persistConsentMetadataChange(context, consent, true);
 
 		RecordManager.instance.copyAPS(context.getAccessor(), reference._id, consent._id, ownerId);
 		return consent;
@@ -1599,7 +1604,7 @@ public class Studies extends APIController {
 		if (study.requiredInformation != InformationType.DEMOGRAPHIC && ugm.role.pseudonymizedAccess()) {
 			return ok(JsonOutput.toJson(Collections.emptyList(), "Consent", Sets.create()));
 		}
-		Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");
+		Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "status", "partName");
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		List<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, properties, fields, 1000);
 		if (!ugm.role.pseudonymizedAccess() && study.requiredInformation != InformationType.DEMOGRAPHIC) {
@@ -2112,6 +2117,12 @@ public class Studies extends APIController {
 		}
 		if (json.has("joinMethods")) {
 			study.setJoinMethods(JsonValidation.getEnumSet(json, "joinMethods", JoinMethod.class));
+		}
+		if (json.has("leavePolicy")) {
+			study.setLeavePolicy(JsonValidation.getEnum(json,  "leavePolicy", ProjectLeavePolicy.class));
+		}
+		if (json.has("rejoinPolicy")) {
+			study.setRejoinPolicy(JsonValidation.getEnum(json,  "rejoinPolicy", RejoinPolicy.class));
 		}
 		if (json.has("consentObserverNames")) {
 			Set<String> observerNames = JsonExtraction.extractStringSet(json.get("consentObserverNames"));

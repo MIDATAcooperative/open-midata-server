@@ -74,6 +74,7 @@ import ca.uhn.fhir.rest.server.exceptions.ForbiddenOperationException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import controllers.Circles;
 import controllers.members.HealthProvider;
 import models.Consent;
@@ -115,6 +116,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	 */
 	@Read()
 	public org.hl7.fhir.dstu3.model.Consent getResourceById(@IdParam IIdType theId) throws AppException {
+		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
 		models.Consent consent = Circles.getConsentById(info().context, MidataId.from(theId.getIdPart()), Consent.ALL);	
 		if (consent == null) return null;
 		return readConsentFromMidataConsent(consent, true);
@@ -183,6 +185,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		case ACTIVE:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.ACTIVE);break;
 		case UNCONFIRMED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.PROPOSED);break;
 		case REJECTED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.REJECTED);break;
+		case INVALID:
+		case FROZEN:
 		case EXPIRED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.INACTIVE);break;
 		}
 		

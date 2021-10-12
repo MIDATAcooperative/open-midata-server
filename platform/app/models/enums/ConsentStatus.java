@@ -54,7 +54,17 @@ public enum ConsentStatus {
    FROZEN,
    
    /**
+    * consent needs revalidation
+    */
+   INVALID,
+   
+   /**
     * the consent has been deleted
     */
-   DELETED
+   DELETED;
+   
+   public boolean isSharingData() {
+	   return this == ACTIVE || this == FROZEN;
+   }
+     
 }

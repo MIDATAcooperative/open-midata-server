@@ -36,6 +36,11 @@ public interface KeySession {
 	 */
 	public byte[] decryptKey(MidataId target, byte[] keyToDecrypt) throws InternalServerException, AuthException;
 	
+	public byte[] encryptHash(MidataId target, byte[] hash) throws InternalServerException, AuthException;
+	
+	public boolean verifyHash(MidataId target, byte[] encryptedHash, byte[] msg) throws InternalServerException, AuthException;
+	
+	
 	/**
 	 * Sets a new passphrase for a private key
 	 * @param target id of key to be changed

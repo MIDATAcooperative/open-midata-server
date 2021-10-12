@@ -116,14 +116,14 @@ public class MobileAPI extends Controller {
 		return ok();
 	}
 
-	public static MobileAppInstance getAppInstance(String phrase, MidataId applicationId, MidataId owner, Set<String> fields) throws AppException {
+	public static MobileAppInstance getAppInstance(AccessContext tempContext, String phrase, MidataId applicationId, MidataId owner, Set<String> fields) throws AppException {
 		Set<MobileAppInstance> candidates = MobileAppInstance.getByApplicationAndOwner(applicationId, owner, fields);
 		AccessLog.log("getAppInstance size="+candidates.size());
 		if (candidates.isEmpty()) return null;
 		if (candidates.size() >= 10) {
 			if (InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable()) {
 				for (MobileAppInstance mai : candidates) {
-					ApplicationTools.removeAppInstance(null, owner, mai);
+					ApplicationTools.removeAppInstance(tempContext, owner, mai);
 				}
 				throw new BadRequestException("error.blocked.app_test", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
 			} else 
@@ -146,7 +146,7 @@ public class MobileAPI extends Controller {
 					AccessLog.log("getAppInstance: Set missing device id");
 					return instance;
 				} else if (cleanJunk) {
-					ApplicationTools.removeAppInstance(null, owner, instance);
+					ApplicationTools.removeAppInstance(tempContext, owner, instance);
 				}
 			}
 		}
@@ -235,7 +235,7 @@ public class MobileAPI extends Controller {
 			if (app.requirements != null) req.addAll(app.requirements);
 			if (Application.loginHelperPreconditionsFailed(user, req)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
-			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion", "deviceId"));
+			appInstance= getAppInstance(tempContext, phrase, app._id, user._id, MobileAppInstance.APPINSTANCE_ALL);
 			
 			
 			if (appInstance != null && !OAuth2.verifyAppInstance(tempContext, appInstance, user._id, app._id, null)) {
@@ -665,7 +665,7 @@ public class MobileAPI extends Controller {
 		if (authToken == null) OAuth2.invalidToken(); 
 	
 					
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
         if (appInstance == null) OAuth2.invalidToken(); 
 
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {

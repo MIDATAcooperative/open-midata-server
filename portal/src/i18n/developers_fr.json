@@ -85,6 +85,8 @@
         "filename" : "Nom interne",
         "type" : "Type d'application",
         "targetUserRole" : "Rôle cible",
+        "loginTemplate" : "Textes du processus de connexion",
+        "loginButtonsTemplate" : "Flux du processus de connexion",
         "edit_btn" : "Modifier la configuration",
         "edit_help" : "Modifiez la configuration de votre application.",
         "query_btn" : "Modifier le Data Access Filter",
@@ -97,6 +99,8 @@
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
         "serverimport_btn" : "Tester le script d'importation automatique.",
         "serverimport_help" : "Si votre plugin offre l'importation automatique, vous pouvez tester le script de votre plugin, qui est normalement exécuté sur le serveur, sur votre ordinateur local.",
+        "applogin_btn" : "Processus de connexion",
+        "applogin_help" : "Afficher et modifier le processus de connexion",
         "link_btn" : "Liens avec des projets de recherche ou des parties externes",
         "link_help" : "Les applications peuvent proposer ou nécessiter la participation à un projet de recherche. Les projets de recherche peuvent recommander l'utilisation d'applications. L'utilisation de l'application peut nécessiter le consentement de l'utilisateur à ce que des professionnels de la santé ou des teams consultent ses données.",
         "repository_btn" : "Code Repository",
@@ -132,6 +136,8 @@
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre application. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Votre application est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
+            "loginTemplate" : "À quoi doit ressembler le processus de connexion? Certaines configurations nécessitent l'approbation d'un administrateur",
+            "loginButtonsTemplate" : "Comment disposer les boutons?",
             "type" : "Choisissez 'Plugin' si votre application sera exécutée sur le portail @PLATFORM. Choisissez 'Application (Smartphone, Web)' pour une application externe. Choisissez 'Service' pour un script exécuté côté serveur uniquement. Choisissez 'OAuth 1' ou 'OAuth 2' si vous vous connectez à un serveur externe par OAuth 1 ou OAuth 2.",
             "name" : "Le nom de votre application tel qu'il est affiché pour les utilisateurs finaux.",
             "description" : "La description de votre application qui sera affichée sur la Marketplace.",
@@ -314,7 +320,8 @@
         "CONTRACT" : "Contrat",
         "ACCEPTED" : "Accepté",
         "NEEDS_FIXING" : "Correction requise",
-        "OBSOLETE" : "Obsolète"
+        "OBSOLETE" : "Obsolète",
+        "TERMS_OF_USE_MATCH_QUERY" : "Les conditions d'utilisation correspondent au filtre d'accès aux données (Data Access Filter)"
     },
 
     "applicence" : {
@@ -393,7 +400,8 @@
             "no_user_for_project" : "Aucun des comptes de test ne participe au projet.",
             "appinstance_status" : "L'instance d'application n'est pas active.",
             "appinstance_outdated" : "La version de l'application est plus récente que le consentement de l'application. Il faut reconfirmer.",
-            "not_accepted" : "Participation non acceptée"
+            "not_accepted" : "Participation non acceptée",
+            "no_access" : "Vous n'êtes pas développeur de cette application. Certaines fonctionnalités ne sont pas disponibles pour vous."
         },
         "error" : {
             "no_tags" : "Aucune catégorie d'application sélectionnée. Le plugin ne peut pas être ajouté par l'utilisateur.",
@@ -417,6 +425,58 @@
             "project_not_running" : "Le projet n'a pas encore été lancé.",
             "project_no_requirements" : "Aucune exigence sélectionnée pour le projet.",
             "app_in_development" : "L'application est encore en développement."
+        }
+    },
+
+    "applogin" : {
+        "title" : "Connexion depuis l'application",
+        "description" : "Afficher et configurer le processus de connexion depuis l'application.",
+        "preview" : "Quel processus voulez-vous afficher?",
+        "previewtype" : {
+            "NEW" : "Première connexion. L'utilisateur n'a pas encore de compte.",
+            "EXISTING" : "Première connexion. L'utilisateur a déjà un compte.",
+            "RELOGIN" : "Utilisateur récurrent - Reconnexion"
+        },
+        "required" : "toujours",
+        "optional" : "si nécessaire",
+        "not_approved" : "Cette configuration doit être approuvée par un administrateur",
+        "approvedby" : "Approuvée par",
+        "approvedat" : "le",
+        "show_terms" : "Afficher les conditions d'utilisation",
+        "no_terms" : "Aucunes de conditions d'utilisation",
+        "links" : "Projets liés",
+        "no_links" : "Aucun (pour le moment)",
+        "step" : {
+            "login" : "Connexion",
+            "registration" : "Inscription",
+            "confirmation" : "Consentement",
+            "confirmation2" : "Consentement au projet",
+            "password_set" : "Saisir le mot de passe",
+            "email_verified" : "Vérification de l'e-mail",
+            "admin_verified" : "Approbation par un administrateur",
+            "phone_verified" : "Vérification du numéro de téléphone",
+            "newest_terms_agreed" : "Acceptation des conditions d'utilisation",
+            "address_entered" : "Saisir l'adresse",
+            "address_phone_entered" : "Adresse & téléphone",
+            "phone_entered" : "Saisir le numéro de téléphone",
+            "address_verified" : "Vérification de l'adresse",
+            "auth2factorsetup" : "Configuration 2FA",
+            "auth2factor" : "2FA",
+            "birthday_set" : "Saisir la date de naissance"
+        }
+    },
+
+    "enum" : {
+        "logintemplate" : {
+            "GENERATED" : "Générer l'autorisation de l'application à partir de la définition",
+            "TERMS_OF_USE_AND_GENERATED" : "Afficher les conditions d'utilisation en tant que page de texte avec le consentement généré",
+            "TERMS_OF_USE" : "Afficher les conditions d'utilisation comme page de texte (nécessite l'approbation d'un administrateur)",
+            "REDUCED" : "Donner son consentement sur la page d'inscription (nécessite l'approbation d'un administrateur)"
+        },
+        "loginbuttonstemplate" : {
+            "ONE_CONFIRM_AND_OPTIONAL_CHECKBOXES" : "Un bouton de confirmation obligatoire et des cases à cocher facultatives",
+            "ONE_CONFIRM_PER_PAGE" : "Une décision par page",
+            "CHECKBOXES_WITH_LINKED_TERMS" : "Cases à cocher avec liens vers les conditions d'utilisation"
         }
     }
 }

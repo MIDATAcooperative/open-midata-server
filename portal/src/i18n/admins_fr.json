@@ -65,7 +65,8 @@
         "change_email_btn" : "Changer l'adresse e-mail",
         "change_address_btn" : "Changer le profil",
         "make_master_btn" : "Ajouter le rôle utilisateur maître",
-        "remove_master_btn" : "Révoquer le rôle utilisateur maître"
+        "remove_master_btn" : "Révoquer le rôle utilisateur maître",
+        "history" : "Historique du compte"
     },
 
     "admin_news" : {
@@ -134,9 +135,11 @@
         "criteria" : "Critère de recherche",
         "empty" : "Aucun projet correspondant trouvé.",
         "add_definition_btn" : "Importer la définition d'un project",
+        "code" : "Code du project",
         "name" : "Nom du project",
         "type" : "Type",
-        "created" : "Créé le"
+        "created" : "Créé le",
+        "ALL" : "Tous les projets"
     },
 
     "admin_terms" : {
@@ -172,6 +175,8 @@
         "endDate" : "Date de fin",
         "dataCreatedBefore" : "Données figées dès le",
         "consent_observers" : "Observers de consentements",
+        "leavePolicy" : "Conditions de retrait des participants",
+        "rejoinPolicy" : "Conditions de réintégration des participants",
         "infos" : "Informations publiques",
         "infos_part" : "Informations pour les participants",
         "infos_internal" : "Informations internes",

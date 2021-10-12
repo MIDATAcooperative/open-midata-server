@@ -23,6 +23,8 @@ import server from "./server";
 	service.joinmethods = ["APP", "PORTAL", "RESEARCHER", "API", "APP_CODE", "ALGORITHM", "CODE", "TRANSFER"];
 	service.linktypes = ["OFFER_P", "REQUIRE_P", "RECOMMEND_A", "AUTOADD_A"];
 	service.executionStati = ["PRE", "RUNNING", "FINISHED", "ABORTED"];
+	service.leavePolicies = [ "FREEZE", "REJECT", "DELETE" ];
+	service.rejoinPolicies = [ "NO_REJOIN", "DELETE_LAST" ];
 	
 	service.roles = [
 		{ id :"SPONSOR",
