@@ -235,7 +235,7 @@ public class MobileAPI extends Controller {
 			if (app.requirements != null) req.addAll(app.requirements);
 			if (Application.loginHelperPreconditionsFailed(user, req)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
-			appInstance= getAppInstance(tempContext, phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion", "deviceId"));
+			appInstance= getAppInstance(tempContext, phrase, app._id, user._id, MobileAppInstance.APPINSTANCE_ALL);
 			
 			
 			if (appInstance != null && !OAuth2.verifyAppInstance(tempContext, appInstance, user._id, app._id, null)) {
