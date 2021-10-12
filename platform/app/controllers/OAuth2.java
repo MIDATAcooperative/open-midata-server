@@ -132,7 +132,7 @@ public class OAuth2 extends Controller {
         if (!appInstance.owner.equals(ownerId)) throw new InternalServerException("error.invalid.token", "Wrong app instance owner!");
         if (!appInstance.applicationId.equals(applicationId)) throw new InternalServerException("error.invalid.token", "Wrong app for app instance!");
         
-        if (appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.REJECTED)) 
+        if (!appInstance.status.isSharingData()) 
         	throw new BadRequestException("error.blocked.consent", "Consent expired or blocked.");
         
         Plugin app = Plugin.getById(appInstance.applicationId);
@@ -268,7 +268,7 @@ public class OAuth2 extends Controller {
     		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
     		if (!app.type.equals("mobile")) throw new PluginException(app._id,"error.plugin", "Wrong application type. Only smartphone/web type applications may use the OAuth login.");
     		
-    		appInstance = MobileAppInstance.getById(tk.appInstanceId, Sets.create("owner", "applicationId", "status", "passcode"));
+    		appInstance = MobileAppInstance.getById(tk.appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
     		if (appInstance == null) throw new BadRequestException("error.internal", "invalid_grant");
     		phrase = tk.device;
     		aeskey = tk.aeskey;
@@ -329,7 +329,7 @@ public class OAuth2 extends Controller {
 		
 		MidataId appInstanceId = refreshToken.appInstanceId;
 		
-		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "appVersion", "applicationId", "status", "licence"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
 		
 		if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) {
 			// Begin: Allow expired refresh tokens for key recovery

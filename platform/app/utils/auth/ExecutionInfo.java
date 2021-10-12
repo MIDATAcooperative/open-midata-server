@@ -155,7 +155,7 @@ public class ExecutionInfo {
 			}
 			
 		} else if (authToken.autoimport) {
-			MobileAppInstance appInstance = MobileAppInstance.getById(authToken.spaceId, Sets.create("owner", "applicationId", "autoShare", "status", "sharingQuery", "writes"));
+			MobileAppInstance appInstance = MobileAppInstance.getById(authToken.spaceId, MobileAppInstance.APPINSTANCE_ALL);
 			if (appInstance == null) OAuth2.invalidToken(); 
 
 		    if (!appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
@@ -187,7 +187,7 @@ public class ExecutionInfo {
 		if (authToken == null) OAuth2.invalidToken();				
 		
 		AccessLog.logBegin("begin check 'mobile' type session token");
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status", "sharingQuery", "writes"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
         if (appInstance == null) OAuth2.invalidToken(); 
         if (appInstance.status.equals(ConsentStatus.REJECTED) || appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.FROZEN)) OAuth2.invalidToken();
         

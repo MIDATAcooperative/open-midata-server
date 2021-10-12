@@ -89,6 +89,7 @@ public class Circle extends Consent {
 	}
 
 	public void add() throws InternalServerException {
+		assertNonNullFields();
 		Model.insert(collection, this);
 
 		// also add this circle to the user's search index

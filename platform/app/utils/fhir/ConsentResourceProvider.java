@@ -368,6 +368,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		case REJECTED:c.setStatus(ConsentState.REJECTED);break;
 		case EXPIRED:c.setStatus(ConsentState.INACTIVE);break;
 		case FROZEN:c.setStatus(ConsentState.INACTIVE);break;
+		case INVALID:c.setStatus(ConsentState.INACTIVE);break;
 		}
 		
 		String categoryCode = consentToConvert.categoryCode;
@@ -872,6 +873,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
         
 		switch(consent.status) {
 		case UNCONFIRMED:
+		case INVALID:
 			if (theResource.getStatus()==ConsentState.ACTIVE) {
 				if (!info().executorId.equals(consent.owner)) throw new InvalidRequestException("Only consent owner may change consents to active consents");
 				mayShare(info().pluginId, consent.sharingQuery);
@@ -898,7 +900,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		SubscriptionManager.resourceChange(info().context, consent);
 		theResource.setStatus(state);
 						
-		switch(consent.status) {
+		switch(consent.status) {		
 		case UNCONFIRMED:
 			if (theResource.getStatus()==ConsentState.ACTIVE) {
 				if (consent.type == ConsentType.STUDYPARTICIPATION) {
@@ -928,7 +930,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			}
 			break;
 		case REJECTED:
-		case FROZEN:			
+		case FROZEN:	
+		case INVALID:
 			break;
 		}
 						

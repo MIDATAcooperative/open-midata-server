@@ -78,12 +78,14 @@ public class MobileAppInstance extends Consent {
 		this.authorized = new HashSet<MidataId>();
 	}
 	
-	public static void add(MobileAppInstance space) throws InternalServerException {
-		Model.insert(collection, space);		
+	public void add() throws InternalServerException {
+		assertNonNullFields();
+		Model.insert(collection, this);		
 	}
 	
-	public static void upsert(MobileAppInstance space) throws InternalServerException {
-		Model.upsert(collection, space);		
+	public void upsert() throws InternalServerException {
+		assertNonNullFields();
+		Model.upsert(collection, this);		
 	}
 	
 	public static MobileAppInstance getById(MidataId id, Set<String> fields) throws InternalServerException {

@@ -34,6 +34,7 @@ import controllers.Market;
 import controllers.Plugins;
 import controllers.PluginsAPI;
 import controllers.research.AutoJoiner;
+import models.Admin;
 import models.PersistedSession;
 import models.RecordGroup;
 import play.inject.ApplicationLifecycle;
@@ -44,9 +45,11 @@ import setup.MinimalSetup;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.collections.Sets;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.evolution.AccountPatches;
+import utils.evolution.AddConsentSignatures;
 import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
@@ -99,6 +102,16 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		System.out.println("Object Mapper");
 		// Set custom object mapper for Json
 		Json.setObjectMapper(new CustomObjectMapper());		
+		
+		// Patch: Add consent signatures
+		try {
+			if (Admin.getById(RuntimeConstants.systemSignatureUser, Sets.create("_id")) == null) {			
+				AddConsentSignatures.execute();		
+			}
+		} catch (AppException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
 		
 		// Init FHIR
 		System.out.println("FHIR Servlet");

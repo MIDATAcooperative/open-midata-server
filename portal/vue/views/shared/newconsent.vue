@@ -78,6 +78,7 @@
         				<span class="lead text-danger" v-if="consent.status == 'EXPIRED'" v-t="'editconsent2.status_expired'"></span>
         				<span class="lead text-warning" v-if="consent.status == 'UNCONFIRMED'" v-t="'editconsent2.status_unconfirmed'"></span>    
         				<span class="lead text-danger" v-if="consent.status == 'REJECTED'" v-t="'editconsent2.status_rejected'"></span>
+        				<span class="lead text-danger" v-if="consent.status == 'INVALID'" v-t="'editconsent2.status_invalid'"></span>
         			</div>
               
         			<div class="col-md-6">
@@ -767,14 +768,14 @@ export default {
         const { $data, $route, $router } = this, me = this;
 		if (! $data.consent) return false;
 		//if ($scope.consent.owner !== $scope.userId) return false;
-		return ($data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'ACTIVE') && $data.consent.type != 'STUDYPARTICIPATION';
+		return ($data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID' || $data.consent.status == 'ACTIVE') && $data.consent.type != 'STUDYPARTICIPATION';
 	},
 	
 	mayConfirm() {
 		const { $data, $route, $router } = this, me = this;
 		if (! $data.consent) return false;
 		if ($data.consent.owner !== $data.userId) return false;
-		return $data.consent.status == 'UNCONFIRMED';
+		return $data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID';
 	},
 	
 	mayDelete() {
@@ -782,7 +783,7 @@ export default {
 		if (! $data.consent) return false;
 		if ($data.consent.owner !== $data.userId) return false;
 		
-		return ($data.consent.status == 'ACTIVE' || $data.consent.status == 'REJECTED' || $data.consent.status == 'EXPIRED') && ($data.consent.type != 'STUDYPARTICIPATION' && $data.consent.type != 'HEALTHCARE');
+		return ($data.consent.status == 'ACTIVE' || $data.consent.status == 'REJECTED' || $data.consent.status == 'EXPIRED' || $data.consent.status == 'INVALID') && ($data.consent.type != 'STUDYPARTICIPATION' && $data.consent.type != 'HEALTHCARE');
 	},
 	
 	mayChangeUsers() {
