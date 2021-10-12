@@ -136,6 +136,10 @@
         "info" : {
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "La propria applicazione è destinata esclusivamente a un ruolo specifico? In caso contrario scegliere 'Qualsiasi ruolo'.",
+
+            // TODO CHANGED
+            // OLD: How should the login process look like? Some settings need admin approval
+            // NEW: How should the login process look like? Some settings need administrator's approval
             "loginTemplate" : "Come dovrebbe essere il processo d'accesso? Alcune impostazioni hanno bisogno dell'approvazione di un amministratore",
             "loginButtonsTemplate" : "Come devono essere disposti i pulsanti?",
             "type" : "Scegliere 'Plugin' se la propria applicazione sarà eseguita sul portale @PLATFORM. Scegliere 'Applicazione (Smartphone, Web)' per un'applicazione esterna. Scegliere 'Servizio' per uno script solo lato server. Scegliere 'OAuth 1' o 'OAuth 2' se è necessario collegarsi a un server esterno utilizzando OAuth 1 o OAuth 2.",
@@ -321,6 +325,10 @@
         "ACCEPTED" : "Accettate",
         "NEEDS_FIXING" : "Correzione richiesta",
         "OBSOLETE" : "Obsolete",
+
+        // TODO CHANGED
+        // OLD: Terms of use match access filter
+        // NEW: Terms of use match Data Access Filter
         "TERMS_OF_USE_MATCH_QUERY" : "Le condizioni d'uso corrispondono al Data Access Filter"
     },
 
@@ -401,6 +409,10 @@
             "appinstance_status" : "L'istanza dell'applicazione non attiva.",
             "appinstance_outdated" : "La versione dell'applicazione è più recente del consenso dell'applicazione. Deve essere riconfermata.",
             "not_accepted" : "Partecipazione non accettata",
+
+            // TODO CHANGED
+            // OLD: You are no developer of this application. Some features are not available to you.
+            // NEW: You are not developer of this application. Some features are not available to you.
             "no_access" : "Non sei sviluppatore di questa applicazione. Alcune caratteristiche non sono disponibili per te."
         },
         "error" : {
@@ -430,6 +442,10 @@
 
     "applogin" : {
         "title" : "Accesso dall'applicazione",
+
+        // TODO CHANGED
+        // OLD: View and configure app login process.
+        // NEW: View and configure the application login process.
         "description" : "Visualizza e configura il processo di accesso dall'applicazione.",
         "preview" : "Quale processo volete visualizzare?",
         "previewtype" : {
@@ -439,6 +455,10 @@
         },
         "required" : "sempre",
         "optional" : "se necessario",
+
+        // TODO CHANGED
+        // OLD: Setting must be approved by an administrator
+        // NEW: This setting must be approved by an administrator
         "not_approved" : "Questa impostazione deve essere approvata da un amministratore",
         "approvedby" : "Approvata da",
         "approvedat" : "il",
@@ -453,8 +473,20 @@
             "confirmation2" : "Consenso al progetto",
             "password_set" : "Inserire la password",
             "email_verified" : "Verifica dell'e-mail",
+
+            // TODO CHANGED
+            // OLD: Admin verification
+            // NEW: Approval by an administrator
             "admin_verified" : "Approvazione di un amministratore",
+
+            // TODO CHANGED
+            // OLD: Phone verification
+            // NEW: Phone number verification
             "phone_verified" : "Verifica del numero di telefono",
+
+            // TODO CHANGED
+            // OLD: Agree to terms
+            // NEW: Agree to terms of use
             "newest_terms_agreed" : "Accettare le condizioni d'uso",
             "address_entered" : "Inserire l'indirizzo",
             "address_phone_entered" : "Indirizzo & Telefono",
@@ -462,15 +494,31 @@
             "address_verified" : "Verifica dell'indirizzo",
             "auth2factorsetup" : "Impostazione 2FA",
             "auth2factor" : "2FA",
+
+            // TODO CHANGED
+            // OLD: Enter birthday
+            // NEW: Enter date of birth
             "birthday_set" : "Inserire la data di nascita"
         }
     },
 
     "enum" : {
         "logintemplate" : {
+
+            // TODO CHANGED
+            // OLD: Generate app-consent from definition
+            // NEW: Generate application authorization from definition
             "GENERATED" : "Generare l'autorizzazione dell'applicazione dalla definizione",
             "TERMS_OF_USE_AND_GENERATED" : "Mostra i condizioni d'uso come pagina di testo con il consenso generato",
+
+            // TODO CHANGED
+            // OLD: Show terms of use as text page (needs admin approval)
+            // NEW: Show terms of use as text page (needs approval by an administrator)
             "TERMS_OF_USE" : "Mostra i condizioni d'uso come pagina di testo (ha bisogno dell'approvazione di un amministratore)",
+
+            // TODO CHANGED
+            // OLD: Give consent on registration page (needs admin approval)
+            // NEW: Give consent on registration page (needs approval by an administrator)
             "REDUCED" : "Dare il consenso nella pagina di iscrizione (ha bisogno dell'approvazione di un amministratore)"
         },
         "loginbuttonstemplate" : {

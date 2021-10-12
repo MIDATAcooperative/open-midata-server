@@ -135,7 +135,7 @@
     "info" : {
        "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
-       "loginTemplate" : "How should the login process look like? Some settings need admin approval",
+       "loginTemplate" : "How should the login process look like? Some settings need administrator's approval",
        "loginButtonsTemplate" : "How should buttons be arranged?",
        "type" : "Choose 'Plugin' if your application will run on the @PLATFORM portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.",
        "name" : "The name of your application that will be presented to the end user.",
@@ -320,7 +320,7 @@
     "ACCEPTED" : "Accepted",
     "NEEDS_FIXING" : "Needs fixing",
     "OBSOLETE" : "Obsolete",
-    "TERMS_OF_USE_MATCH_QUERY" : "Terms of use match access filter"
+    "TERMS_OF_USE_MATCH_QUERY" : "Terms of use match Data Access Filter"
   },
   
   "applicence" : {
@@ -400,7 +400,7 @@
         "appinstance_status" : "Application instance not active.",
         "appinstance_outdated" : "Application version is newer than application consent. Needs reconfirm.",
         "not_accepted" : "Participation not accepted.",
-        "no_access" : "You are no developer of this application. Some features are not available to you."
+        "no_access" : "You are not developer of this application. Some features are not available to you."
      },
      "error" : {       
        "no_tags" : "No application category selected. Plugin cannot be added by user.",
@@ -429,7 +429,7 @@
 
     "applogin" : {
        "title" : "Application login",
-       "description" : "View and configure app login process.",
+       "description" : "View and configure the application login process.",
        "preview" : "Which process do you want to preview?",
        "previewtype" : {
           "NEW" : "First login. User has no account yet.",
@@ -438,7 +438,7 @@
        },
        "required" : "always",
        "optional" : "if necessary",
-       "not_approved" : "Setting must be approved by an administrator",
+       "not_approved" : "This setting must be approved by an administrator",
        "approvedby" : "Approved by",
        "approvedat" : "at",
        "show_terms" : "View terms of use",
@@ -452,26 +452,25 @@
          "confirmation2" : "Project Consent",
          "password_set" : "Enter password",
          "email_verified" : "Email verification",
-         "admin_verified" : "Admin verification",
-         "phone_verified" : "Phone verification",
-         "newest_terms_agreed" : "Agree to terms",
+         "admin_verified" : "Approval by an administrator",
+         "phone_verified" : "Phone number verification",
+         "newest_terms_agreed" : "Agree to terms of use",
          "address_entered" : "Enter address",
          "address_phone_entered" : "Address & Phone",
          "phone_entered" : "Enter phone",
          "address_verified" : "Address verification",
          "auth2factorsetup" : "2FA Setup",
          "auth2factor" : "2FA",
-         "birthday_set" : "Enter birthday"
+         "birthday_set" : "Enter date of birth"
        }
     },
     
     "enum" : {
         "logintemplate" : {
-            "GENERATED" : "Generate app-consent from definition",
+            "GENERATED" : "Generate application authorization from definition",
             "TERMS_OF_USE_AND_GENERATED" : "Show terms of use as text page with generated consent",
-	        "TERMS_OF_USE" : "Show terms of use as text page (needs admin approval)",
-	        "TERMS_WITH_VARIABLES" : "Show terms of use with variables",
-	        "REDUCED" : "Give consent on registration page (needs admin approval)"
+	        "TERMS_OF_USE" : "Show terms of use as text page (needs approval by an administrator)",
+	        "REDUCED" : "Give consent on registration page (needs approval by an administrator)"
         },
         "loginbuttonstemplate" : {
             "ONE_CONFIRM_AND_OPTIONAL_CHECKBOXES" : "One required confirm button and optional checkboxes",
