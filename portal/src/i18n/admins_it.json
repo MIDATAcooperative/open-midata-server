@@ -65,7 +65,8 @@
         "change_email_btn" : "Modifica indirizzo e-mail",
         "change_address_btn" : "Modifica profilo",
         "make_master_btn" : "Aggiungi ruolo utente master",
-        "remove_master_btn" : "Revoca il ruolo utente master"
+        "remove_master_btn" : "Revoca il ruolo utente master",
+        "history" : "Storia dell'account"
     },
 
     "admin_news" : {
@@ -134,9 +135,11 @@
         "criteria" : "Criteri di ricerca",
         "empty" : "Non è stato trovato alcun progetto corrispondente.",
         "add_definition_btn" : "Importare la definizione di un progetto",
+        "code" : "Codice del progetto",
         "name" : "Nome del progetto",
         "type" : "Tipo",
-        "created" : "Creato il"
+        "created" : "Creato il",
+        "ALL" : "Tutti i progetti"
     },
 
     "admin_terms" : {
@@ -172,6 +175,8 @@
         "endDate" : "Data di fine",
         "dataCreatedBefore" : "Data di congelamento dei dati",
         "consent_observers" : "Observers di consenso",
+        "leavePolicy" : "Condizioni di ritiro dei partecipanti",
+        "rejoinPolicy" : "Condizioni di reintegrazione dei partecipanti",
         "infos" : "Informazioni pubbliche",
         "infos_part" : "Informazioni per i partecipanti",
         "infos_internal" : "Informazioni interne",

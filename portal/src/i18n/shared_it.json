@@ -42,6 +42,7 @@
         "notrialuser_detail" : "Per utilizzare questa funzionalità, è necessario completare la propria registrazione. Richiedere una copia scritta dei Condizioni generali di contratto e restituirla firmata a @OPERATOR. Si riceverà inoltre un codice di conferma per verificare il proprio indirizzo postale. Se si desidera controllare lo stato del proprio account fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "mustbemember_title" : "È richiesta l'appartenenza a @OPERATOR!",
         "mustbemember_detail" : "Per utilizzare questa funzione è necessario essere membri della cooperativa. Per ulteriori informazioni fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
+        "ratelimit" : "Il limite di frequenza delle chiamate dell'azione corrente è stato raggiunto. Riprova più tardi.",        
         "notauthorized" : {
             "action" : "Non si è autorizzati a eseguire questa azione",
             "fields" : "Non si è autorizzati a interrogare i campi forniti",
@@ -126,7 +127,7 @@
             "user" : "Una persona è già registrata con questo indirizzo e-mail.",
             "member" : "Una persona è già registrata con questo indirizzo e-mail.",
             "provider" : "Un fornitore di prestazioni sanitarie con questo nome esiste già.",
-            "research" : "Un'organizzazione di ricerca con questo nome esiste già.",
+            "organization" : "Esiste già un'organizzazione con questo nome.",
             "passcode" : "Scegliere un codice password diverso!",
             "plugin" : "Esiste già un'applicazione con lo stesso nome.",
             "study" : "Esiste già un progetto di ricerca con questo nome.",
@@ -156,6 +157,7 @@
 
         "tooshort" : {
             "password" : "La password deve essere lunga almeno 8 caratteri e contenere una lettera e una cifra.",
+            "password2" : "La password deve essere lunga almeno 12 caratteri e contenere una lettera, una cifra e un carattere speciale.",
             "passphrase" : "Le frasi password devono essere composte da almeno 8 caratteri."
         },
 
@@ -285,7 +287,10 @@
             "updated-role-in-team" : "Ruolo aggiornato nel team",
             "removed-from-team" : "Rimosso dal team",
             "communication-rejected" : "Cancellato dal canale di comunicazione",
-            "communication-approved" : "Abbonati al canale di comunicazione"
+            "communication-approved" : "Abbonati al canale di comunicazione",
+            "user-searched" : "Cerca per utente",
+            "welcome-sent" : "E-mail di benvenuto inviata",
+            "tried-user-reregistration" : "Tentativo di registrazione dell'utente"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
@@ -376,6 +381,15 @@
             "REJECTED" : "Progetto rifiutato da @OPERATOR",
             "VALIDATED" : "Lo progetto è stato convalidato",
             "VALIDATION" : "Convalida in esecuzione"
+        },
+        "projectleavepolicy" : {
+            "FREEZE" : "Congelare i dati al ritiro",
+            "REJECT" : "I dati non sono più condivisi",
+            "DELETE" : "Il consenso è cancellato"
+        },
+        "rejoinpolicy" : {
+            "NO_REJOIN" : "I partecipanti non possono reintegrarsi",
+            "DELETE_LAST" : "Sostituire la partecipazione precedente"
         },
         "pcodestatus" : {
             "UNUSED" : "Non usato",
@@ -1042,6 +1056,7 @@
         "device" : "Dispositivo: {{device}}",
         "please_confirm" : "Confermare l'attivazione dell'applicazione utilizzando il portale @PLATFORM, quindi riprovare. Il titolo del consenso è: {{ consent }}",
         "confirm_btn" : "Conferma l'accesso",
+        "reject_btn" : "Rifiuta",
         "continue_btn" : "Continua",
         "requests_access" : "Accesso richiesto dall'applicazione:",
         "requests_access_short" : "Tipo di dati",
@@ -1325,6 +1340,7 @@
         "expert_mode_btn" : "Modo esperto",
         "add_basic_btn" : "Risorse di base",
         "add_data_btn" : "Aggiunta di altri tipi di dati",
+        "no_code_btn" : "Rimuovere la restrizione per codice",
         "owner" : "Titolare dei dati",
         "owner_all" : "Utilizza anche dati condivisi (da progetti, amici, pazienti)",
         "owner_self" : "Solo dati dall'utente dell'applicazione",
@@ -1375,6 +1391,7 @@
     },
 
     "timeline" : {
+        "title" : "Timeline",
         "fitness" : "Fitness",
         "health" : "Dati medici",
         "analyze" : "Analisi dati"

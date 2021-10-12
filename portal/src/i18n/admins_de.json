@@ -65,7 +65,8 @@
         "change_email_btn" : "E-Mail-Adresse ändern",
         "change_address_btn" : "Profil ändern",
         "make_master_btn" : "Rolle Master-Benutzer hinzufügen",
-        "remove_master_btn" : "Rolle Master-Benutzer zurücknehmen"
+        "remove_master_btn" : "Rolle Master-Benutzer zurücknehmen",
+        "history" : "Historie des Kontos"
     },
 
     "admin_news" : {
@@ -134,9 +135,11 @@
         "criteria" : "Suchkriterien",
         "empty" : "Kein passendes Projekt gefunden.",
         "add_definition_btn" : "Projektdefinition importieren",
+        "code" : "Projektcode",
         "name" : "Projektname",
         "type" : "Typ",
-        "created" : "Erstellt am"
+        "created" : "Erstellt am",
+        "ALL" : "Alle Projekte"
     },
 
     "admin_terms" : {
@@ -172,6 +175,8 @@
         "endDate" : "Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "consent_observers" : "Zustimmungs-Observers",
+        "leavePolicy" : "Rücktrittsrecht der Teilnehmer",
+        "rejoinPolicy" : "Wiedereinstiegsrecht der Teilnehmer",
         "infos" : "Öffentliche Informationen",
         "infos_part" : "Informationen für die Teilnehmer",
         "infos_internal" : "Interne Informationen",

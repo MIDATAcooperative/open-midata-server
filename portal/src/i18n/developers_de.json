@@ -85,6 +85,8 @@
         "filename" : "Interner Name",
         "type" : "Applikationstyp",
         "targetUserRole" : "Zielrolle",
+        "loginTemplate" : "Texte zum Anmeldevorgang",
+        "loginButtonsTemplate" : "Ablauf des Anmeldevorgangs",
         "edit_btn" : "Einstellungen ändern",
         "edit_help" : "Ändern Sie die Einstellungen für Ihre Applikation.",
         "query_btn" : "Data Access Filter ändern",
@@ -97,6 +99,8 @@
         "testfromlocal_help" : "Während der Entwicklung können Sie den Plugin-Code, der auf Ihrem lokalen Computer gespeichert ist, auf dieser Instanz testen.",
         "serverimport_btn" : "Automatisches Importskript testen.",
         "serverimport_help" : "Wenn Ihr Plugin einen automatischen Import bietet, können Sie das Skript Ihres Plugins, das normalerweise auf dem Server läuft, auf Ihrem lokalen Computer testen.",
+        "applogin_btn" : "Anmeldevorgang",
+        "applogin_help" : "Anmeldevorgang anzeigen und bearbeiten",
         "link_btn" : "Verknüpfungen mit Forschungsprojekten oder externen Parteien",
         "link_help" : "Applikationen können die Teilnahme an einem Forschungsprojekt vorschlagen oder erfordern. Forschungsprojekte können die Verwendung von Applikationen empfehlen. Die Nutzung der Applikation kann die Zustimmung zur Dateneinsicht durch Gesundheitsfachpersonen oder Teams bedingen.",
         "repository_btn" : "Code Repository",
@@ -132,6 +136,8 @@
         "info" : {
             "filename" : "Dieser Name wird intern für die Kennung Ihrer Applikation verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Ist Ihre Applikation nur für eine spezifische Rolle bestimmt? Wenn nicht, wählen Sie 'Alle Rollen'.",
+            "loginTemplate" : "Wie soll der Anmeldevorgang aussehen? Einige Einstellungen müssen von einem Administrator genehmigt werden",
+            "loginButtonsTemplate" : "Wie sollten die Schaltflächen angeordnet werden?",
             "type" : "Wählen Sie 'Plugin' wenn Ihre Applikation im @PLATFORM-Portal laufen wird. Wählen Sie 'Applikation (Smartphone, Web)' für eine externe Applikation. Wählen Sie 'Dienst' für ein serverseitiges Skript. Wählen Sie 'OAuth 1' oder 'OAuth 2' wenn Sie sich über OAuth 1 oder OAuth 2 mit einem externen Server verbinden.",
             "name" : "Der Name Ihrer Applikation, der dem Endbenutzer präsentiert wird.",
             "description" : "Die Beschreibung Ihrer Applikation, die im Marketplace erscheinen wird.",
@@ -314,7 +320,8 @@
         "CONTRACT" : "Vertrag",
         "ACCEPTED" : "Akzeptiert",
         "NEEDS_FIXING" : "Korrektur erforderlich",
-        "OBSOLETE" : "Obsolet"
+        "OBSOLETE" : "Obsolet",
+        "TERMS_OF_USE_MATCH_QUERY" : "Die Nutzungsbedingungen entsprechen dem Datenzugriffsfilter (Data Access Filter)"
     },
 
     "applicence" : {
@@ -393,7 +400,8 @@
             "no_user_for_project" : "Keines der Testkonten nimmt am Projekt teil.",
             "appinstance_status" : "Applikationsinstanz nicht aktiv.",
             "appinstance_outdated" : "Die Version der Applikation ist neuer als die Applikationszustimmung. Muss erneut bestätigt werden.",
-            "not_accepted" : "Teilnahme nicht akzeptiert"
+            "not_accepted" : "Teilnahme nicht akzeptiert",
+            "no_access" : "Sie sind kein Entwickler dieser Applikation. Einige Funktionen sind für Sie nicht verfügbar."
         },
         "error" : {
             "no_tags" : "Keine Applikations-Kategorie ausgewählt. Das Plugin kann vom Benutzer nicht hinzugefügt werden.",
@@ -417,6 +425,58 @@
             "project_not_running" : "Das Projekt wurde noch nicht gestartet.",
             "project_no_requirements" : "Keine Anforderungen für das Projekt ausgewählt.",
             "app_in_development" : "Die Applikation ist noch in Entwicklung."
+        }
+    },
+
+    "applogin" : {
+        "title" : "Anmeldung aus der Applikation",
+        "description" : "Anzeige und Konfiguration des Anmeldevorgangs aus der Applikation.",
+        "preview" : "Welchen Prozess möchten Sie anzeigen?",
+        "previewtype" : {
+            "NEW" : "Erste Anmeldung. Der Benutzer hat noch kein Konto.",
+            "EXISTING" : "Erste Anmeldung. Der Benutzer hat bereits ein Konto.",
+            "RELOGIN" : "Wiederkehrender Benutzer - Wiederanmeldung"
+        },
+        "required" : "immer",
+        "optional" : "falls nötig",
+        "not_approved" : "Diese Einstellung muss von einem Administrator genehmigt werden",
+        "approvedby" : "Genehmigt von",
+        "approvedat" : "am",
+        "show_terms" : "Nutzungsbedingungen anzeigen",
+        "no_terms" : "Keine Nutzungsbedingungen",
+        "links" : "Verknüpfte Projekte",
+        "no_links" : "(noch) keines",
+        "step" : {
+            "login" : "Anmeldung",
+            "registration" : "Registrierung",
+            "confirmation" : "Zustimmung",
+            "confirmation2" : "Projekt-Zustimmung",
+            "password_set" : "Passwort eingeben",
+            "email_verified" : "E-Mail-Überprüfung",
+            "admin_verified" : "Genehmigung durch einen Administrator",
+            "phone_verified" : "Überprüfung der Telefonnummer",
+            "newest_terms_agreed" : "Zustimmung zu den Nutzungsbedingungen",
+            "address_entered" : "Adresse erfassen",
+            "address_phone_entered" : "Adresse & Telefon",
+            "phone_entered" : "Telefonnummer erfassen",
+            "address_verified" : "Überprüfung der Adresse",
+            "auth2factorsetup" : "2FA-Einstellung",
+            "auth2factor" : "2FA",
+            "birthday_set" : "Geburtsdatum erfassen"
+        }
+    },
+
+    "enum" : {
+        "logintemplate" : {
+            "GENERATED" : "Autorisierung der Applikation aus der Definition generieren",
+            "TERMS_OF_USE_AND_GENERATED" : "Nutzungsbedingungen als Textseite mit generierter Zustimmung anzeigen",
+            "TERMS_OF_USE" : "Nutzungsbedingungen als Textseite anzeigen (muss von einem Administrator genehmigt werden)",
+            "REDUCED" : "Zustimmung auf der Registrierungsseite (muss von einem Administrator genehmigt werden)"
+        },
+        "loginbuttonstemplate" : {
+            "ONE_CONFIRM_AND_OPTIONAL_CHECKBOXES" : "Eine erforderliche Schaltfläche zum Bestätigen und optionale Checkboxen",
+            "ONE_CONFIRM_PER_PAGE" : "Eine Entscheidung pro Seite",
+            "CHECKBOXES_WITH_LINKED_TERMS" : "Checkboxen mit verlinkten Nutzungsbedingungen"
         }
     }
 }
