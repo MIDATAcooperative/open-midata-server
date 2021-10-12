@@ -42,10 +42,6 @@
         "notrialuser_detail" : "Per utilizzare questa funzionalità, è necessario completare la propria registrazione. Richiedere una copia scritta dei Condizioni generali di contratto e restituirla firmata a @OPERATOR. Si riceverà inoltre un codice di conferma per verificare il proprio indirizzo postale. Se si desidera controllare lo stato del proprio account fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "mustbemember_title" : "È richiesta l'appartenenza a @OPERATOR!",
         "mustbemember_detail" : "Per utilizzare questa funzione è necessario essere membri della cooperativa. Per ulteriori informazioni fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
-
-        // TODO CHANGED
-        // OLD: Rate limit for current action reached. Try again later.
-        // NEW: The rate limit for the current action has been reached. Try again later.
         "ratelimit" : "Il limite di frequenza delle chiamate dell'azione corrente è stato raggiunto. Riprova più tardi.",
         "notauthorized" : {
             "action" : "Non si è autorizzati a eseguire questa azione",
@@ -161,10 +157,6 @@
 
         "tooshort" : {
             "password" : "La password deve essere lunga almeno 8 caratteri e contenere una lettera e una cifra.",
-
-            // TODO CHANGED
-            // OLD: The password must be at least 12 characters long and contain one letter,one digit and a special character.
-            // NEW: The password must be at least 12 characters long and contain one letter, one digit and a special character.
             "password2" : "La password deve essere lunga almeno 12 caratteri e contenere una lettera, una cifra e un carattere speciale.",
             "passphrase" : "Le frasi password devono essere composte da almeno 8 caratteri."
         },
@@ -296,20 +288,10 @@
             "removed-from-team" : "Rimosso dal team",
             "communication-rejected" : "Cancellato dal canale di comunicazione",
             "communication-approved" : "Abbonati al canale di comunicazione",
-
-            // TODO CHANGED
-            // OLD: User searched
-            // NEW: Search for user
             "user-searched" : "Cerca per utente",
-
-            // TODO CHANGED
-            // OLD: Welcome mail sent
-            // NEW: Welcome email sent
             "welcome-sent" : "E-mail di benvenuto inviata",
             "tried-user-reregistration" : "Tentativo di registrazione dell'utente",
-
-            // TODO NEW: Consent validation failed
-            "signature-failure" : "Consent validation failed"
+            "signature-failure" : "Convalida del consenso fallita"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
@@ -952,11 +934,9 @@
         "type_implicit" : "Questo consenso creato implicitamente condivide i messaggi su se stessi.",
         "status_active" : "Questo consenso è attivo.",
         "status_expired" : "Questo è scaduto. I dati non sono più condivisi.",
-        "status_unconfirmed" : "Questo consenso richiede la conferma del rispettivo titolare.",
-        "status_rejected" : "Questo consenso è stato rifiutato dal rispettivo titolare.",
-
-        // TODO NEW: This consent needs to be reviewed by its owner.
-        "status_invalid" : "This consent needs to be reviewed by its owner.",
+        "status_unconfirmed" : "Questo consenso richiede la conferma dal suo proprietario.",
+        "status_rejected" : "Questo consenso è stato rifiutato dal suo proprietario.",
+        "status_invalid" : "Questo consenso deve essere rivisto dal suo proprietario.",
         "shares_records" : "Questo consenso condivide attualmente {{count}} record.",
         "shares_group" : "Condivide tutti i record appartenenti al gruppo: {{ group }}",
         "excludes_group" : "Sono esclusi i record appartenenti al gruppo: {{ group }}",
@@ -979,9 +959,7 @@
         "status_expired" : "Scaduto",
         "status_unconfirmed" : "Necessità di conferma",
         "status_rejected" : "Rifiutato",
-
-        // TODO NEW: Invalid
-        "status_invalid" : "Invalid",
+        "status_invalid" : "Non valido",
         "status" : "Stato",
         "duration" : "Periodo di validità",
         "external" : "Applicazione esterna",

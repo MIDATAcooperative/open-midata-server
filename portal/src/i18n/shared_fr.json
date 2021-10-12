@@ -42,10 +42,6 @@
         "notrialuser_detail" : "Pour utiliser cette fonctionnalité, vous devez compléter votre inscription. Veuillez demander une copie écrite des conditions générales et la renvoyer signée à @OPERATOR. Vous recevrez également un code d'activation permettant de vérifier votre adresse postale. Si vous désirez vérifier le status de votre compte, cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'État du compte'.",
         "mustbemember_title" : "Adhésion à @OPERATOR requise!",
         "mustbemember_detail" : "Pour utiliser cette fonctionnalité, vous devez être membre de la coopérative. Cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte' pour plus d'informations.",
-
-        // TODO CHANGED
-        // OLD: Rate limit for current action reached. Try again later.
-        // NEW: The rate limit for the current action has been reached. Try again later.
         "ratelimit" : "La limite de la fréquence d'appel de l'action en cours est atteinte. Réessayez plus tard.",
         "notauthorized" : {
             "action" : "Vous n'êtes pas autorisé à entreprendre cette action",
@@ -161,10 +157,6 @@
 
         "tooshort" : {
             "password" : "Le mot de passe doit comporter au moins 8 caractères et contenir une lettre et un chiffre.",
-
-            // TODO CHANGED
-            // OLD: The password must be at least 12 characters long and contain one letter,one digit and a special character.
-            // NEW: The password must be at least 12 characters long and contain one letter, one digit and a special character.
             "password2" : "Le mot de passe doit comporter au moins 12 caractères et contenir une lettre, un chiffre et un caractère spécial.",
             "passphrase" : "Les phrases secrètes doivent contenir au moins 8 caractères."
         },
@@ -296,20 +288,10 @@
             "removed-from-team" : "Supprimé du team",
             "communication-rejected" : "Désabonné du canal de communication",
             "communication-approved" : "Abonné au canal de communication",
-
-            // TODO CHANGED
-            // OLD: User searched
-            // NEW: Search for user
             "user-searched" : "Recherche d'utilisateur",
-
-            // TODO CHANGED
-            // OLD: Welcome mail sent
-            // NEW: Welcome email sent
             "welcome-sent" : "E-mail de bienvenue envoyé",
             "tried-user-reregistration" : "Tentative de ré-inscription de l'utilisateur",
-
-            // TODO NEW: Consent validation failed
-            "signature-failure" : "Consent validation failed"
+            "signature-failure" : "La validation du consentement a échoué"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -954,9 +936,7 @@
         "status_expired" : "Ce consentement a expiré. Les données ne sont plus partagées.",
         "status_unconfirmed" : "Ce consentement nécessite une confirmation par son propriétaire.",
         "status_rejected" : "Ce consentement a été rejeté par son propriétaire.",
-
-        // TODO NEW: This consent needs to be reviewed by its owner.
-        "status_invalid" : "This consent needs to be reviewed by its owner.",
+        "status_invalid" : "Ce consentement doit être revu par son propriétaire.",
         "shares_records" : "Ce consentement partage actuellement {{count}} enregistrements.",
         "shares_group" : "Partage tous les enregistrements appartenant au groupe : {{ group }}",
         "excludes_group" : "Les enregistrements appartenant au groupe {{ group }} sont exclus",
@@ -979,9 +959,7 @@
         "status_expired" : "Expiré",
         "status_unconfirmed" : "Besoin de confirmation",
         "status_rejected" : "Rejeté",
-
-        // TODO NEW: Invalid
-        "status_invalid" : "Invalid",
+        "status_invalid" : "Non valide",
         "status" : "État",
         "duration" : "Période de validité",
         "external" : "Application externe",
