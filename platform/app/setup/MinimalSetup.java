@@ -41,6 +41,7 @@ import models.enums.SubUserRole;
 import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
+import models.enums.WritePermissionType;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
@@ -230,6 +231,7 @@ public class MinimalSetup {
 			portal.creator = Developer.getByEmail("developers@midata.coop", Sets.create("_id"))._id;
 			portal.creatorLogin = "developers@midata.coop";
 			portal.defaultQuery=new HashMap<String, Object>();
+			portal.writes = WritePermissionType.NONE;
 			Plugin.add(portal);
 		} 
 		
@@ -245,6 +247,7 @@ public class MinimalSetup {
 			portal.creator = Developer.getByEmail("developers@midata.coop", Sets.create("_id"))._id;
 			portal.creatorLogin = "developers@midata.coop";
 			portal.defaultQuery=new HashMap<String, Object>();
+			portal.writes = WritePermissionType.NONE;
 			Plugin.add(portal);
 		}
 		
@@ -260,6 +263,7 @@ public class MinimalSetup {
 			common.creator = Developer.getByEmail("developers@midata.coop", Sets.create("_id"))._id;
 			common.creatorLogin = "developers@midata.coop";
 			common.defaultQuery=new HashMap<String, Object>();
+			common.writes = WritePermissionType.NONE;
 			Plugin.add(common);
 		}
 		
@@ -276,6 +280,7 @@ public class MinimalSetup {
 			common.creatorLogin = "developers@midata.coop";
 			common.defaultQuery=new HashMap<String, Object>();
 			common.defaultQuery.put("content", Collections.emptySet());
+			common.writes = WritePermissionType.NONE;
 			Plugin.add(common);
 		}
 	}

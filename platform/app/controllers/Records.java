@@ -61,6 +61,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import play.mvc.Http.Request;
+import utils.ConsentQueryTools;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.APS;
@@ -248,7 +249,7 @@ public class Records extends APIController {
 		if (consent != null) {
 
 			Circles.fillConsentFields(tempContext, Collections.singleton(consent), Sets.create("sharingQuery"));
-			query = consent.sharingQuery;
+			query = ConsentQueryTools.getSharingQuery(consent, true);
 			if (!consent.status.equals(ConsentStatus.ACTIVE) && !userId.equals(consent.owner))
 				readRecords = false;
 			context = tempContext.forConsent(consent);
@@ -388,8 +389,7 @@ public class Records extends APIController {
 		Set<String> recordIds = JsonExtraction.extractStringSet(json.get("records"));
 		Map<String, Object> query = json.has("query") ? JsonExtraction.extractMap(json.get("query")) : null;
 
-		if (query != null && query.isEmpty())
-			query = null;
+		if (query != null && query.isEmpty()) query = Collections.emptyMap();
 
 		Map<String, Set<String>> records = new HashMap<String, Set<String>>();
 		for (String recordId : recordIds) {
@@ -432,32 +432,22 @@ public class Records extends APIController {
 				}
 			}
 
-			if (query != null) {
+			Feature_FormatGroups.convertQueryToContents(query);
 
-				Feature_FormatGroups.convertQueryToContents(query);
-
-				if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
-					if (hasAccess) {
-						AccessContext targetContext = context.forApsReshare(start);
-						List<Record> recs = RecordManager.instance.list(UserRole.ANY, context, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
-						Set<MidataId> remove = new HashSet<MidataId>();
-						for (Record r : recs)
-							remove.add(r._id);
-						RecordManager.instance.unshare(targetContext, remove);
-					}
-
-					RecordManager.instance.shareByQuery(context, start, query);
-				} else {
-					consent.set(consent._id, "sharingQuery", query);
-					if (consent.status == ConsentStatus.ACTIVE) {
-						Circles.setQuery(context, apsOwner, start, query);
-						if (hasAccess)
-							RecordManager.instance.applyQuery(context, query, userId, consent, withMember);
-					}
+			if (consent == null) {
+				if (hasAccess) {
+					AccessContext targetContext = context.forApsReshare(start);
+					List<Record> recs = RecordManager.instance.list(UserRole.ANY, context, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
+					Set<MidataId> remove = new HashSet<MidataId>();
+					for (Record r : recs)
+						remove.add(r._id);
+					RecordManager.instance.unshare(targetContext, remove);
 				}
+				RecordManager.instance.shareByQuery(context, start, query);
+			} else {
+				ConsentQueryTools.updateSharingQuery(context, consent, query);					
 			}
-			
-			if (consent != null) Consent.set(consent._id, "lastUpdated", new Date());
+		
 		}
 
 		for (MidataId start : stopped) {
@@ -489,22 +479,15 @@ public class Records extends APIController {
 				}
 			}
 
-			if (query != null) {
-				Feature_FormatGroups.convertQueryToContents(query);
-
-				if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
-					RecordManager.instance.shareByQuery(context, start, query);
-				} else {
-					consent.set(consent._id, "sharingQuery", query);
-					if (consent.status == ConsentStatus.ACTIVE) {
-						Circles.setQuery(context, apsOwner, start, query);
-						if (hasAccess)
-							RecordManager.instance.applyQuery(context, query, userId, consent, withMember);
-					}
-				}
-			}
 			
-			if (consent != null) Consent.set(consent._id, "lastUpdated", new Date());
+			Feature_FormatGroups.convertQueryToContents(query);
+
+			if (consent == null) {
+				RecordManager.instance.shareByQuery(context, start, query);
+			} else {
+				ConsentQueryTools.updateSharingQuery(context, consent, query);	
+			}
+		
 
 		}
 

@@ -56,6 +56,7 @@ import models.enums.ConsentStatus;
 import models.enums.UserRole;
 import play.mvc.Http;
 import utils.AccessLog;
+import utils.ConsentQueryTools;
 import utils.QueryTagTools;
 import utils.RuntimeConstants;
 import utils.auth.KeyManager;
@@ -1041,8 +1042,11 @@ public class RecordManager {
 					if (QueryEngine.isInQuery(context, query, record)) {
 						try {
 						  MidataId targetAps = new MidataId(key);
-						  APS apswrapper = context.getCache().getAPS(targetAps, userId);
-						  RecordManager.instance.shareUnchecked(context.getCache(),Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						  Map<String, Object> original = ConsentQueryTools.getVerifiedSharingQuery(targetAps);
+						  if (QueryEngine.isInQuery(context, original, record)) {
+							  APS apswrapper = context.getCache().getAPS(targetAps, userId);
+							  RecordManager.instance.shareUnchecked(context.getCache(),Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						  }
 						} catch (APSNotExistingException e) {
 							
 						}
@@ -1063,8 +1067,11 @@ public class RecordManager {
 					if (QueryEngine.isInQuery(context, query, record)) {
 						try {
 						  MidataId targetAps = new MidataId(key);
-						  APS apswrapper = context.getCache().getAPS(targetAps, userId);
-						  RecordManager.instance.shareUnchecked(context.getCache(),Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						  Map<String, Object> original = ConsentQueryTools.getVerifiedSharingQuery(targetAps);
+						  if (QueryEngine.isInQuery(context, original, record)) {							  
+							  APS apswrapper = context.getCache().getAPS(targetAps, userId);
+							  RecordManager.instance.shareUnchecked(context.getCache(),Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						  }
 						} catch (APSNotExistingException e) {
 							
 						}
@@ -1586,7 +1593,8 @@ public class RecordManager {
 		throw new InternalServerException("error.internal", "Context for data sharing cannot be created");
 	}
 	
-	public AppAccessContext createContextFromApp(MidataId executorId, MobileAppInstance app) throws InternalServerException {
+	public AppAccessContext createContextFromApp(MidataId executorId, MobileAppInstance app) throws AppException {
+	    ConsentQueryTools.getSharingQuery(app, true);
 		Plugin plugin = Plugin.getById(app.applicationId);
 		return new AppAccessContext(app, plugin, getCache(executorId), null);
 	}

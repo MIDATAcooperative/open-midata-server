@@ -665,7 +665,7 @@ public class MobileAPI extends Controller {
 		if (authToken == null) OAuth2.invalidToken(); 
 	
 					
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
         if (appInstance == null) OAuth2.invalidToken(); 
 
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
