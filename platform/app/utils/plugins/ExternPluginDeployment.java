@@ -26,6 +26,7 @@ import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 
 import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
 import models.MidataId;
 import models.Plugin;
 import play.libs.ws.WSClient;
@@ -42,8 +43,13 @@ public class ExternPluginDeployment extends AbstractActor {
 	private Map<MidataId, DeployStatus> statusMap = new HashMap<MidataId, DeployStatus>();
 	//private String clusterNode;
 	
-	@Inject
+	
 	WSClient ws;	
+		
+	public ExternPluginDeployment() {
+		super();
+		this.ws = DeploymentManager.getWsClient();
+	}
 	
 	String serviceUrl;
 	
@@ -64,20 +70,25 @@ public class ExternPluginDeployment extends AbstractActor {
 	public void process(String pluginName, String command, String repo, DeployAction action, DeployPhase next) {
 		 AccessLog.log("Execute command "+command.toString());
 		 		 
-		 WSRequest holder = ws.url(serviceUrl);
+		 final ActorRef sender = getSender();
 
-	     String post ="";
+	     /*String post ="";
 		 try {
 			post = "action="+command+"&name="+URLEncoder.encode(pluginName, "UTF-8");		
-	        if (repo != null) post += "&repo="+URLEncoder.encode(repo, "UTF-8");
-		 } catch (UnsupportedEncodingException e) {}
+	        if (repo != null) post += "&repository="+repo;//URLEncoder.encode(repo, "UTF-8");
+		 } catch (UnsupportedEncodingException e) {}*/
 		 //holder = holder.setAuth(app.consumerKey, app.consumerSecret);
-			
-		CompletionStage<WSResponse> promise = holder.setContentType("application/x-www-form-urlencoded; charset=utf-8").post(post);
+		
+		WSRequest holder = ws.url(serviceUrl);
+		holder = holder.addQueryParameter("action", command).addQueryParameter("name", pluginName);
+		if (repo != null) holder = holder.addQueryParameter("repository",repo);
+		CompletionStage<WSResponse> promise = holder.get();//setContentType("application/x-www-form-urlencoded; charset=utf-8").post(post);
 		promise.thenAccept(response -> {							
 			final String body = response.getBody();
 			final int status = response.getStatus();
-			result(action, next, status == 200, body);					
+			
+			System.out.println("BODY="+body+" status="+status);
+			result(sender, action, next, status == 200, body);					
 	    });
 	}
 	
@@ -94,8 +105,8 @@ public class ExternPluginDeployment extends AbstractActor {
 	
 	
 	
-	private boolean result(DeployAction action, DeployPhase type, boolean success, String result) {
-		getSender().tell(new DeployAction(action, "all", type, result, success), getSelf());
+	private boolean result(ActorRef sender, DeployAction action, DeployPhase type, boolean success, String result) {
+		sender.tell(new DeployAction(action, "all", type, result, success), getSelf());
 		return success;
 	}
 	

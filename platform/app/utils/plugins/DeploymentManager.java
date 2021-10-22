@@ -34,9 +34,11 @@ public class DeploymentManager {
 private static ActorSystem system;
 	
 	private static ActorRef deployer;
+	private static WSClient ws;
 	
-	public static void init(ActorSystem system1) {
+	public static void init(WSClient ws1, ActorSystem system1) {
 		system = system1;	
+		ws = ws1;
 		
 		if (InstanceConfig.getInstance().getInternalBuilderUrl() != null) {
 		  deployer = system.actorOf(Props.create(ExternPluginDeployment.class).withDispatcher("pinned-dispatcher"), "pluginDeployment");
@@ -44,6 +46,10 @@ private static ActorSystem system;
 		  deployer = system.actorOf(Props.create(PluginDeployment.class).withDispatcher("pinned-dispatcher"), "pluginDeployment");
 		}
 	   			
+	}
+	
+	public static WSClient getWsClient() {
+		return ws;
 	}
 	
 	public static DeploymentReport deploy(MidataId plugin, MidataId executor, boolean doDelete) throws AppException {

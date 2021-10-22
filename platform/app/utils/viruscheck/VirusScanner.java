@@ -26,8 +26,11 @@ import java.nio.channels.SocketChannel;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.typesafe.config.Config;
+
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.InstanceConfig;
 import utils.exceptions.InternalServerException;
 
 public class VirusScanner {
@@ -55,7 +58,12 @@ public class VirusScanner {
 	}
 	
 	public VirusScanner() {
-		this.address = new InetSocketAddress(defaultHost, defaultPort);
+		Config config = InstanceConfig.getInstance().getConfig(); 
+		if (config.hasPath("virusscan.host")) {
+		  this.address = new InetSocketAddress(config.getString("virusscan.host"), config.getInt("virusscan.port"));
+		} else {
+		  this.address = new InetSocketAddress(defaultHost, defaultPort);
+		}
 		this.timeout = defaultTimeout;
 	}
 
