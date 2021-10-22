@@ -442,7 +442,9 @@ export default {
 					};	
 				}
 							
-				var data = { token : $route.query.token, mode : $data.mode };	
+				var data = {};
+				if ($route.query.token) data.token = $route.query.token;
+				if ($data.mode) data.mode = $data.mode;	
 				if ($data.setpw.secure) {
 				data.password = keys.pw_hash;
 				data.pub = keys.pub;
