@@ -37,7 +37,7 @@
             </select>
         </form-group>
 		<form-group name="birthday" label="registration.birthday" :path="errors.birthdayDate">
-            <input type="text" class="form-control" name="birthdayDate" v-model="registration.birthdayDate" v-validate>
+            <input type="text" class="form-control" name="birthdayDate" @change="birthChange()" v-model="registration.birthdayDate" v-validate>
         </form-group>		
 			   
 		<form-group name="address1" label="registration.address" :path="errors.address1">
