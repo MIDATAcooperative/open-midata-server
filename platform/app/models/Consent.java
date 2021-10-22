@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
@@ -284,9 +285,14 @@ public class Consent extends Model implements Comparable<Consent> {
 	
 	public void updateMetadata() throws InternalServerException {
 		if (this.fhirConsent != null) {
-		  this.setMultiple(collection, Sets.create("status", "lastUpdated", "fhirConsent", "sharingQuery", "querySignature"));
+		  assertNonNullFields();
+		  this.setMultiple(collection, Sets.create("status", "lastUpdated", "fhirConsent", "sharingQuery", "writes", "querySignature"));
 		} else {
-		  this.setMultiple(collection, Sets.create("status", "lastUpdated", "sharingQuery", "querySignature"));
+		  // assert except fhirConsent which is null, but not written into the DB
+		  this.fhirConsent = new BasicBSONObject();
+		  assertNonNullFields();
+		  this.fhirConsent = null;
+		  this.setMultiple(collection, Sets.create("status", "lastUpdated", "sharingQuery", "writes", "querySignature"));
 		}
 	}
 	
