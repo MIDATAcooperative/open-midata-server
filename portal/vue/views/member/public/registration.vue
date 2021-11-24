@@ -90,6 +90,7 @@
                                 
                     <form-group name="gender" label="registration.gender" :path="errors.gender">
                         <select class="form-control" id="gender" name="gender" v-model="registration.gender" required v-validate>
+                            <option value="" disabled="disabled"></option>
                             <option value="FEMALE" v-t="'enum.gender.FEMALE'">female</option>
                             <option value="MALE" v-t="'enum.gender.MALE'">male</option>
                             <option value="OTHER" v-t="'enum.gender.OTHER'">other</option>
@@ -232,7 +233,7 @@ import TermsModal from 'components/TermsModal.vue';
 
 export default {
   data: () => ({
-    registration : { language : getLocale(), confirmStudy : [], unlockCode : null, secure : true },
+    registration : { language : getLocale(), confirmStudy : [], unlockCode : null, secure : true, country : languages.countries[0] },
 	languages : languages.all,
 	countries : languages.countries,	
 	flags : { optional : false },
