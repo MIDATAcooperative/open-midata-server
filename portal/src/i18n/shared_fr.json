@@ -553,6 +553,7 @@
             "true" : "Oui",
             "false" : "Non"
         },
+        "fillout": "Veuillez choisir",
         "user" : {
             "lastname" : "Nom",
             "firstname" : "Prénom",
