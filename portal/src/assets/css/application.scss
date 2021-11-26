@@ -43,6 +43,21 @@ $fa-font-path:                "../fonts";
 @import "../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
 @import "../../../node_modules/@fortawesome/fontawesome-free/scss/solid";
 
+select,
+select option {
+  color: #000000;
+}
+
+select:invalid,
+select option[value=""] {
+  color: #aaaaaa;
+}
+
+[hidden] {
+  display: none;
+}
+
+
 .glyphicon { @extend .fas }
 .glyphicon-chevron-left { @extend .fa-chevron-left }
 .glyphicon-chevron-right { @extend .fa-chevron-right }

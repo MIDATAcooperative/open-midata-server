@@ -65,12 +65,14 @@
 
 						<FormGroup label="oauth2.role" v-if="app.targetUserRole=='ANY'">
 							<select id="account" name="account" :disabled="studies" v-model="login.role" class="form-control" required>
+							    <option value="" selected disabled hidden v-t="'common.fillout'"></option>
 								<option v-for="role in roles" :key="role.value" :value="role.value" v-t="role.name"></option>
 							</select> 
 						</FormGroup>
 
 						<FormGroup label="login.study" v-if="studies">
 							<select id="study" name="study" v-model="login.studyLink" class="form-control" required>
+							    <option value="" selected disabled hidden v-t="'common.fillout'"></option>
 								<option v-for="study in studies" :key="study._id" :value="study._id">{{ study.name }}</option>							
 							</select>
 						</FormGroup>

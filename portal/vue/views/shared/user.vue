@@ -89,6 +89,7 @@
 			
                 <form-group name="language" label="registration.language" :path="errors.language">
                     <select v-model="user.language" name="language" class="form-control" v-validate>
+                        <option value="" selected disabled hidden v-t="'common.fillout'"></option>
                         <option v-for="lang in languages" :key="lang.value" :value="lang.value">{{ $t(lang.name) }}</option>
                     </select>
                 </form-group>
