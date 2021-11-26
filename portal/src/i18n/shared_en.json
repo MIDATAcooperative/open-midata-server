@@ -289,7 +289,8 @@
 	   "communication-approved" : "Subscribed to communication channel",
 	   "user-searched" : "Search for user",
 	   "welcome-sent" : "Welcome email sent",
-	   "tried-user-reregistration" : "Attempted user re-registration"	   
+	   "tried-user-reregistration" : "Attempted user re-registration",
+	   "signature-failure" : "Consent validation failed"	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -551,6 +552,7 @@
       "true" : "Yes",
       "false" : "No"
     },
+    "fillout": "Please choose",
     "user" : {
       "lastname" : "Surname",
 	  "firstname" : "Firstname",

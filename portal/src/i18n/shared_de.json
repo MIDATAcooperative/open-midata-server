@@ -290,7 +290,8 @@
             "communication-approved" : "Kommunikationskanal abonniert",
             "user-searched" : "Suche nach Benutzer",
             "welcome-sent" : "Willkommens-E-Mail gesendet",
-            "tried-user-reregistration" : "Versuchte Neuregistrierung des Benutzers"
+            "tried-user-reregistration" : "Versuchte Neuregistrierung des Benutzers",
+            "signature-failure" : "Zustimmungsvalidierung fehlgeschlagen"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "Die E-Mail-Adresse des Benutzers muss der Plattform bekannt sein",
@@ -552,6 +553,7 @@
             "true" : "Ja",
             "false" : "Nein"
         },
+        "fillout": "Bitte wählen",
         "user" : {
             "lastname" : "Name",
             "firstname" : "Vorname",
@@ -935,6 +937,7 @@
         "status_expired" : "Diese Zustimmung ist abgelaufen. Daten werden nicht mehr geteilt.",
         "status_unconfirmed" : "Diese Zustimmung benötigt eine Bestätigung durch ihren Besitzer.",
         "status_rejected" : "Diese Zustimmung wurde durch ihren Besitzer verworfen.",
+        "status_invalid" : "Diese Zustimmung muss von ihrem Besitzer überprüft werden.",
         "shares_records" : "Diese Zustimmung teilt derzeit {{count}} Datensätze.",
         "shares_group" : "Teilt alle Einträge die dieser Gruppe gehören: {{ group }}",
         "excludes_group" : "Schliesst alle Einträge die dieser Gruppe gehören aus: {{ group }}",
@@ -957,6 +960,7 @@
         "status_expired" : "Verfallen",
         "status_unconfirmed" : "Benötigt Bestätigung",
         "status_rejected" : "Verworfen",
+        "status_invalid" : "Ungültig",
         "status" : "Status",
         "duration" : "Gültigkeitszeitraum",
         "external" : "Externe Applikation",

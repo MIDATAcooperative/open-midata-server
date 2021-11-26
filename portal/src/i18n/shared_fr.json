@@ -290,7 +290,8 @@
             "communication-approved" : "Abonné au canal de communication",
             "user-searched" : "Recherche d'utilisateur",
             "welcome-sent" : "E-mail de bienvenue envoyé",
-            "tried-user-reregistration" : "Tentative de ré-inscription de l'utilisateur"
+            "tried-user-reregistration" : "Tentative de ré-inscription de l'utilisateur",
+            "signature-failure" : "La validation du consentement a échoué"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -552,6 +553,7 @@
             "true" : "Oui",
             "false" : "Non"
         },
+        "fillout": "Veuillez choisir",
         "user" : {
             "lastname" : "Nom",
             "firstname" : "Prénom",
@@ -935,6 +937,7 @@
         "status_expired" : "Ce consentement a expiré. Les données ne sont plus partagées.",
         "status_unconfirmed" : "Ce consentement nécessite une confirmation par son propriétaire.",
         "status_rejected" : "Ce consentement a été rejeté par son propriétaire.",
+        "status_invalid" : "Ce consentement doit être revu par son propriétaire.",
         "shares_records" : "Ce consentement partage actuellement {{count}} enregistrements.",
         "shares_group" : "Partage tous les enregistrements appartenant au groupe : {{ group }}",
         "excludes_group" : "Les enregistrements appartenant au groupe {{ group }} sont exclus",
@@ -957,6 +960,7 @@
         "status_expired" : "Expiré",
         "status_unconfirmed" : "Besoin de confirmation",
         "status_rejected" : "Rejeté",
+        "status_invalid" : "Non valide",
         "status" : "État",
         "duration" : "Période de validité",
         "external" : "Application externe",
