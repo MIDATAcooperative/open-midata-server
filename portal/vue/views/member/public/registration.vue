@@ -90,7 +90,7 @@
                                 
                     <form-group name="gender" label="registration.gender" :path="errors.gender">
                         <select class="form-control" id="gender" name="gender" v-model="registration.gender" required v-validate>
-                            <option value="" disabled="disabled"></option>
+                            <option value="" selected disabled hidden v-t="'common.fillout'"></option>
                             <option value="FEMALE" v-t="'enum.gender.FEMALE'">female</option>
                             <option value="MALE" v-t="'enum.gender.MALE'">male</option>
                             <option value="OTHER" v-t="'enum.gender.OTHER'">other</option>
@@ -105,6 +105,7 @@
 				<div class="required" v-if="languageNeeded()">
                     <form-group myid="language" label="registration.language" :path="errors.language">
                         <select class="form-control" id="language" v-model="registration.language" @change="changeLanguage(registration.language);">
+                            <option value="" selected disabled hidden v-t="'common.fillout'"></option>
                             <option v-for="lang in languages" :key="lang.value" :value="lang.value">{{ $t(lang.name) }}</option>
                         </select>
                     </form-group>
@@ -127,6 +128,7 @@
                 <div v-if="countryNeeded()" class="required">
                     <form-group name="country" label="registration.country" :path="errors.country">
                         <select class="form-control" id="country" name="country" v-model="registration.country" required v-validate>
+                            <option value="" selected disabled hidden v-t="'common.fillout'"></option>
                             <option v-for="country in countries" :key="country" :value="country">{{ $t('enum.country.'+country) }}</option>
                         </select>
                     </form-group>
@@ -233,7 +235,7 @@ import TermsModal from 'components/TermsModal.vue';
 
 export default {
   data: () => ({
-    registration : { language : getLocale(), confirmStudy : [], unlockCode : null, secure : true, country : languages.countries[0] },
+    registration : { language : getLocale(), confirmStudy : [], unlockCode : null, secure : true, country : languages.countries[0], gender:"" },
 	languages : languages.all,
 	countries : languages.countries,	
 	flags : { optional : false },
