@@ -258,7 +258,7 @@
 									</div>
 									<form-group name="country" label="registration.country" :path="errors.country">
 										<select class="form-control" id="country" name="country" v-model="registration.country" :required="addressNeeded()" v-validate>
-										    <option value="" selected disabled hidden v-t="'common.fillout'"></option>
+										    <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
 											<option v-for="country in countries" :key="country" :value="country" v-t="'enum.country.'+country"></option>
 										</select>
 									</form-group>
