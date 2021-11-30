@@ -127,7 +127,7 @@ export default {
 			
 	    removePerson(person) {
             const { $data } = this, me = this;
-            me.doAction("change", server.post(jsRoutes.controllers.UserGroups.deleteUserGroupMembership().url, JSON.stringify({ member : person.member, group : $data.groupId }))
+            me.doAction("change", server.post(jsRoutes.controllers.UserGroups.deleteUserGroupMembership().url, { member : person.member, group : $data.groupId })
             .then(function() {				
                 $data.members.splice($data.members.indexOf(person), 1);
             }));
