@@ -83,7 +83,7 @@
 			
 		<div class="panel-body" v-if="tree.length === 0" v-t="'records.empty'"></div>
 
-        <modal :title="((selectedData || {}).fullLabel || {}).fullLabel" :open="selectedData && selectedData.allRecords" @close="selectedData=null" full-width="true" id="details">
+        <modal :title="((selectedData || {}).fullLabel || {}).fullLabel" :open="selectedData && selectedData.allRecords" @close="selectedData=null" :full-width="true" id="details">
 	        <div v-if="selectedData.allRecords && selectedData.allRecords.filtered">
                     <pagination v-model="selectedData.allRecords" search="search"></pagination>
                     
@@ -298,7 +298,8 @@ export default {
         sharing : null,
         gi : null,
         selectedData : null,
-        n : null
+        n : null,
+        consent : null
 	}),	
 
     computed : {

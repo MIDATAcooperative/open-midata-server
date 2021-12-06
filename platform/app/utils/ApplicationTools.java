@@ -396,6 +396,7 @@ public class ApplicationTools {
 	private static MobileAppInstance createServiceUseInstance(AccessContext context, MidataId owner, Plugin app, ServiceInstance si)
 			throws InternalServerException, BadRequestException, AppException {
 		MobileAppInstance appInstance = new MobileAppInstance();
+		appInstance._id = new MidataId();
 		appInstance.name = "External: "+ app.name;
 		appInstance.type = ConsentType.API;					
 		appInstance.applicationId = app._id;			
