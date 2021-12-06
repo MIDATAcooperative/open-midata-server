@@ -24,7 +24,7 @@
             <p class="alert alert-info" v-if="!error" v-t="'studyrules.no_change_warning'"></p>
             <error-box :error="error"></error-box>
             <form-group name="recordQuery" label="studyrules.sharing_query">
-                <access-query :query="study.recordQuery" details="true"></access-query>	  
+                <access-query :query="study.recordQuery" :details="true"></access-query>	  
                 <div class="margin-top">   
                     <router-link :to="{ path : './study.query', query : { studyId : studyid } }" class="btn btn-default" v-t="'studyrules.queryeditor_btn'"></router-link>
                 </div>

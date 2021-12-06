@@ -16,9 +16,8 @@
 -->
 <template>
 <div>
-    <panel :title="$t('consents.title')" :busy="isBusy">
-        
-		<form class="form" v-if="role!='RESEARCH'">            
+    <panel :title="$t('consents.title')" :busy="isBusy">        
+		<form class="form" v-if="role!='research'">            
 		    <div class="form-check">
 		      <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="consenttype" value="option1" checked> <span class="margin-left" v-t="'consents.where_owner'"></span> 
@@ -77,7 +76,8 @@ import ENV from 'config';
 export default {
   
     data: () => ({
-        consents : []
+        consents : [],
+        role : null
 	}),	
 		
 
@@ -117,6 +117,7 @@ export default {
     },
 
     created() {
+        this.$data.role = this.$route.meta.role;
         this.init();
     }
    
