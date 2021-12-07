@@ -542,7 +542,7 @@ public class ApplicationTools {
 		RecordManager.instance.setMeta(context, consentId, "_representative", meta);
 	}
 	
-	public static AccessContext actAsRepresentative(AccessContext context, MidataId targetUser) throws AppException {
+	public static AccessContext actAsRepresentative(AccessContext context, MidataId targetUser, boolean useOriginalContextOnFail) throws AppException {
 		
 		
 		if (context.getAccessor().equals(targetUser)) return context;
@@ -562,7 +562,8 @@ public class ApplicationTools {
 				return new RepresentativeAccessContext(context.getCache().getSubCache(targetUser), context);
 			}
 		}
-		
+
+		if (useOriginalContextOnFail) return context;
 		return null;
 	}
 									
