@@ -19,7 +19,8 @@
     <div class="container">
        <div class="row">
 		  <div class="col-sm-12">
-             <panel :busy="!allLoaded" style="padding-top:20px; margin:0 auto;"  v-if="!terms.active">  
+             <panel :busy="!allLoaded" style="padding-top:20px; margin:0 auto;"  v-if="!terms.active">
+                <form ref="myform" name="myform" @submit.prevent="" novalidate>  
 				<div id="x">
 				<div v-if="pleaseConfirm">			
 					<section>
@@ -34,13 +35,7 @@
 						<div>
 					  		<span>{{ appdescription() }}</span>
 						</div>										
-					</section>
-				
-					<section v-if="app.unlockCode">						
-						<label for="unlockCode" v-t="'registration.unlock_code'"></label> 
-                    	<input type="text" class="form-control" id="unlockCode"
-						   name="unlockCode" :placeholder="$t('registration.unlock_code')" v-model="login.unlockCode" v-validate required>									
-			    	</section>
+					</section>							
 				</div>
 				
 				<div v-if="showTermsSection()">								
@@ -107,7 +102,7 @@
 
 					<error-box :error="error" />
 												
-				    <button class="btn btn-primary" :disabled="action!=null || doneLock" type="button" @click="singleConfirm()">
+				    <button class="btn btn-primary" :disabled="action!=null || doneLock" type="submit" v-submit @click="singleConfirm()">
 						<span v-t="'oauth2.confirm_btn'"></span>					
 					</button>
 				</div>
@@ -115,10 +110,10 @@
 				<div v-if="app.loginButtonsTemplate == 'ONE_CONFIRM_PER_PAGE'">
 					<error-box :error="error" />
 
-					<button class="btn btn-primary space" :disabled="action!=null || doneLock" type="button" @click="confirm(true)">
+					<button class="btn btn-primary space" :disabled="action!=null || doneLock" type="submit" v-submit @click="confirm(true)">
 						<span v-t="'oauth2.confirm_btn'"></span>					
 					</button>
-					<button class="btn btn-default" :disabled="action!=null || doneLock" type="button" @click="reject()">
+					<button class="btn btn-default" :disabled="action!=null || doneLock" type="submit" v-submit @click="reject()">
 						<span v-t="'oauth2.reject_btn'"></span>					
 					</button>
 				</div>
@@ -148,13 +143,14 @@
 
 					<error-box :error="error" />	
 
-					<button class="btn btn-primary" :disabled="action!=null || doneLock" type="button" @click="confirm()">
+					<button class="btn btn-primary" :disabled="action!=null || doneLock" @click="confirm()" type="submit" v-submit>
 						<span v-if="showApp" v-t="'oauth2.confirm_btn'"></span>
 						<span v-if="!showApp" v-t="'oauth2.continue_btn'"></span>
 					</button>
 				</div>
 																																				
 			</div>
+			</form>
 		</panel>
 
 	<div class="mi-or-signup" v-if="terms.active">	
@@ -343,7 +339,7 @@ export default {
 			}
 		}
 
-		if ($data.login.unlockCode) oauth.setUnlockCode($data.login.unlockCode);
+		//if ($data.login.unlockCode) oauth.setUnlockCode($data.login.unlockCode);
 		
 		if (this.nextPage()) return;
 

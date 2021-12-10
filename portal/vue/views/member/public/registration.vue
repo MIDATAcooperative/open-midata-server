@@ -142,12 +142,11 @@
                         <input type="text" class="form-control" id="mobile" name="mobile" :placeholder="$t('registration.mobile_phone')" v-model="registration.mobile" required v-validate>
                     </form-group>
                 </div>
-               <!-- <div class="required" v-if="app.unlockCode">
+                <div class="required" v-if="app && app.unlockCode">
                     <form-group name="unlockCode" label="registration.unlock_code" :path="errors.unlockCode">
-                        <input type="text" class="form-control" id="unlockCode" name="unlockCode" :placeholder="$t('registration.unlock_code')" v-model="registration.unlockCode" required v-validate>
-                        <formerror myid="unlockCode" type="invalid" message="error.invalid.unlock_code"></formerror>
+                        <input type="text" class="form-control" id="unlockCode" name="unlockCode" :placeholder="$t('registration.unlock_code')" v-model="registration.unlockCode" required v-validate>                        
                     </form-group>
-                </div> -->
+                </div>
 
                 <form-group name="coach" label="registration.coach" :path="errors.coach" v-if="role=='developer'">
 					<input type="text" class="form-control" id="coach" name="coach" v-validate v-model="registration.coach">
@@ -235,7 +234,7 @@ import TermsModal from 'components/TermsModal.vue';
 
 export default {
   data: () => ({
-    registration : { language : getLocale(), confirmStudy : [], unlockCode : null, secure : true, country : languages.countries[0], gender:"" },
+    registration : { language : getLocale(), confirmStudy : [], secure : true, unlockCode : "", country : languages.countries[0], gender:"" },
 	languages : languages.all,
 	countries : languages.countries,	
 	flags : { optional : false },
@@ -248,7 +247,9 @@ export default {
     actions : null,
     login : null,
 	role : "user",
-	links : []
+	links : [],
+	app : null,
+	isNew : false
   }),
 
   props: ['preview', 'previewlinks'],
@@ -516,6 +517,9 @@ export default {
 			}));
 		}
 	    
+	 } else if ($route.query.client_id) {
+	     this.back();
+	     return;
 	 }
 	
 	
