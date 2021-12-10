@@ -303,7 +303,8 @@
 	   "PASSPORT_VERIFIED" : "ID card of users must have been verified",
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
 	   "ADMIN_VERIFIED" : "Account must have been unlocked by an administrator",
-	   "BIRTHDAY_SET" : "The date of birth of the user must be known"
+	   "BIRTHDAY_SET" : "The date of birth of the user must be known",
+	   "APP_UNLOCK_CODE" : "Application requires an unlock code to use"
 	 },
 	 "writepermissiontype" : {
 	   "NONE" : "No data may be written.",
@@ -667,6 +668,7 @@
     "code" : "Code",
     "resend_btn" : "Resend email",
     "retry_btn" : "Retry login",
+    "unlock_code" : "This application requires an unlock code to be used. Please enter the code to continue.",
     "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to @OPERATOR.",
     "pilot_phase" : "An administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
     "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",

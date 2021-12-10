@@ -118,7 +118,12 @@ public enum UserFeature {
 	/**
 	 * current app must be confirmed; projects have already been confirmed
 	 */
-	APP_NO_PROJECT_CONFIRM;
+	APP_NO_PROJECT_CONFIRM,
+	
+	/**
+	 * Application specific unlock code is required
+	 */
+	APP_UNLOCK_CODE;
 	
 	/**
 	 * Does a user satisfy this feature?
@@ -159,6 +164,8 @@ public enum UserFeature {
 			case APP_CONFIRM:
 				return true;
 			case APP_NO_PROJECT_CONFIRM:
+				return true;
+			case APP_UNLOCK_CODE:
 				return true;
 		}
 		return false;

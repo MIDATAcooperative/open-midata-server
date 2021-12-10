@@ -449,6 +449,13 @@ public class OAuth2 extends Controller {
 			}
 		}
 		
+		checkUnlockCode(token, app, json);
+						
+		token.appId = app._id;
+		return app;
+	}
+	
+	public static void checkUnlockCode(ExtendedSessionToken token, Plugin app, JsonNode json) throws JsonValidationException{
 		// Check unlock code
 		if (app.unlockCode != null) {				
 			String code = JsonValidation.getStringOrNull(json, "unlockCode");
@@ -456,10 +463,7 @@ public class OAuth2 extends Controller {
 				if (!app.unlockCode.toUpperCase().equals(code.toUpperCase())) throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
 				token.setAppUnlockedWithCode();
 			}
-		}	
-						
-		token.appId = app._id;
-		return app;
+		}
 	}
 	
 	/**
@@ -748,6 +752,7 @@ public class OAuth2 extends Controller {
 		if (token.appId == null) return null;
 		
 		if (!token.getAppConfirmed()) {
+			
 			AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
 			boolean allRequired = true;
 			for (StudyAppLink sal : links) {
@@ -966,17 +971,17 @@ public class OAuth2 extends Controller {
 		}		
 		AccessLog.log("Using context="+token.currentContext.toString());
 		appInstance = checkExistingAppInstance(token, token.currentContext, json, links);
-				
+			
+		if (app != null && app.unlockCode != null && !token.getAppUnlockedWithCode()) {
+			  if (notok == null) notok = new HashSet<UserFeature>();
+			  notok.add(UserFeature.APP_UNLOCK_CODE);
+		}
 	
 		UserFeature recheck = checkAppConfirmationRequired(token, json, links);
 		if (recheck != null) {
 			if (notok == null) notok = new HashSet<UserFeature>();
 			notok.add(recheck);			
-		}
-		
-		if (app != null && app.unlockCode != null && !token.getAppUnlockedWithCode()) {				
-		   throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
-		}
+		} 
 		
 		if (app != null && !LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
 			return Application.loginHelperResult(request, token, user, Collections.singleton(UserFeature.VALID_LICENCE));
@@ -987,7 +992,8 @@ public class OAuth2 extends Controller {
 		if (notok != null && !notok.isEmpty()) {
 		  if (token.handle != null) KeyManager.instance.persist(user._id);
 		  if (notok.contains(UserFeature.PASSWORD_SET)) notok = Collections.singleton(UserFeature.PASSWORD_SET);		  	
-		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);		  
+		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);
+		  if (notok.contains(UserFeature.APP_UNLOCK_CODE)) notok = Collections.singleton(UserFeature.APP_UNLOCK_CODE);
 		  if (notok.contains(UserFeature.BIRTHDAY_SET)) notok = Collections.singleton(UserFeature.BIRTHDAY_SET);
 		  if (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.PHONE_ENTERED)) notok.retainAll(Sets.createEnum(UserFeature.ADDRESS_ENTERED, UserFeature.PHONE_ENTERED));
 		  if (notok.contains(UserFeature.ADMIN_VERIFIED)) notok = Collections.singleton(UserFeature.ADMIN_VERIFIED);		  
