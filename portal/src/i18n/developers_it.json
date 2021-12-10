@@ -462,7 +462,10 @@
             "address_verified" : "Verifica dell'indirizzo",
             "auth2factorsetup" : "Impostazione 2FA",
             "auth2factor" : "2FA",
-            "birthday_set" : "Inserire la data di nascita"
+            "birthday_set" : "Inserire la data di nascita",
+
+            // TODO NEW: App unlock code
+            "unlock_code" : "App unlock code"
         }
     },
 

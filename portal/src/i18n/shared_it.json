@@ -304,7 +304,10 @@
             "PASSPORT_VERIFIED" : "La scheda ID degli utenti deve essere stata verificata",
             "MIDATA_COOPERATIVE_MEMBER" : "L'utente deve essere membro della cooperativa",
             "ADMIN_VERIFIED" : "L'account deve essere stato sbloccato da un amministratore",
-            "BIRTHDAY_SET" : "La data di nascita dell'utente deve essere nota"
+            "BIRTHDAY_SET" : "La data di nascita dell'utente deve essere nota",
+
+            // TODO NEW: Application requires an unlock code to use
+            "APP_UNLOCK_CODE" : "Application requires an unlock code to use"
         },
         "writepermissiontype" : {
             "NONE" : "Non è possibile scrivere alcun dato.",
@@ -553,7 +556,11 @@
             "true" : "Sì",
             "false" : "No"
         },
-        "fillout": "Seleziona",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Please choose
+        "fillout" : "Seleziona",
         "user" : {
             "lastname" : "Cognome",
             "firstname" : "Nome",
@@ -668,6 +675,9 @@
         "code" : "Codice",
         "resend_btn" : "Reinviare l'e-mail",
         "retry_btn" : "Ritentare l'accesso",
+
+        // TODO NEW: This application requires an unlock code to be used. Please enter the code to continue.
+        "unlock_code" : "This application requires an unlock code to be used. Please enter the code to continue.",
         "contract_instructions" : "Il contratto è stato inviato al tuo indirizzo postale. Ti invitiamo a restituirlo firmato a @OPERATOR.",
         "pilot_phase" : "Un amministratore verificherà e sbloccherà il tuo account. Riceverai un avviso quando l'account è stato sbloccato.",
         "code_intructions" : "Una lettera con il codice di conferma sarà inviata al tuo indirizzo postale. Inserisci questo codice di conferma per accedere alla piattaforma.",

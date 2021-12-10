@@ -304,7 +304,10 @@
             "PASSPORT_VERIFIED" : "La carte d'identité de l'utilisateur doit avoir été vérifiée.",
             "MIDATA_COOPERATIVE_MEMBER" : "L'utilisateur doit être membre de la cooperative.",
             "ADMIN_VERIFIED" : "Le compte doit avoir été validé par un administrateur",
-            "BIRTHDAY_SET" : "La date de naissance de l'utilisateur doit être connue"
+            "BIRTHDAY_SET" : "La date de naissance de l'utilisateur doit être connue",
+
+            // TODO NEW: Application requires an unlock code to use
+            "APP_UNLOCK_CODE" : "Application requires an unlock code to use"
         },
         "writepermissiontype" : {
             "NONE" : "Aucunes données ne peuvent être enregistrées.",
@@ -553,7 +556,11 @@
             "true" : "Oui",
             "false" : "Non"
         },
-        "fillout": "Veuillez choisir",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Please choose
+        "fillout" : "Veuillez choisir",
         "user" : {
             "lastname" : "Nom",
             "firstname" : "Prénom",
@@ -668,6 +675,9 @@
         "code" : "Code",
         "resend_btn" : "Renvoyer l'e-mail",
         "retry_btn" : "Veuillez vous authentifier à nouveau",
+
+        // TODO NEW: This application requires an unlock code to be used. Please enter the code to continue.
+        "unlock_code" : "This application requires an unlock code to be used. Please enter the code to continue.",
         "contract_instructions" : "Un contrat vous a été adressé par la poste. Veuillez le signer et le renvoyer à @OPERATOR.",
         "pilot_phase" : "Un administrateur vérifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
         "code_intructions" : "Une lettre contenant un code de confirmation vous a été adressée par la poste. Veuillez saisir ce code de confirmation pour pouvoir accéder à la plateforme.",
