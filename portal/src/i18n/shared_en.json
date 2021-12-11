@@ -304,7 +304,7 @@
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
 	   "ADMIN_VERIFIED" : "Account must have been unlocked by an administrator",
 	   "BIRTHDAY_SET" : "The date of birth of the user must be known",
-	   "APP_UNLOCK_CODE" : "Application requires an unlock code to use"
+	   "APP_UNLOCK_CODE" : "The application requires an unlock code"
 	 },
 	 "writepermissiontype" : {
 	   "NONE" : "No data may be written.",

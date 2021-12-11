@@ -76,7 +76,7 @@
             "passphrase" : "Mauvaise phrase secrète",
             "passcode" : "Mauvais NIP",
             "plugin" : "Cette application est prévue pour un autre rôle",
-            "unlock_code" : "Code d'activation incorrect",
+            "unlock_code" : "Code de déverrouillage incorrect",
             "access_query" : "Le filtre d'accès aux données (Data Access Filter) doit être limité par 'contenu' ou 'groupe'!",
             "sharing" : "Le filtre d'accès aux données (Data Access Filter) ne peut pas contenir la ressource Patient. La ressource Patient correcte est partagée automatiquement.",
             "anonymous" : "Un projet de recherche ne peut être anonyme que si personne n'est autorisé à accéder à des données non pseudonymisées.",
@@ -305,9 +305,7 @@
             "MIDATA_COOPERATIVE_MEMBER" : "L'utilisateur doit être membre de la cooperative.",
             "ADMIN_VERIFIED" : "Le compte doit avoir été validé par un administrateur",
             "BIRTHDAY_SET" : "La date de naissance de l'utilisateur doit être connue",
-
-            // TODO NEW: Application requires an unlock code to use
-            "APP_UNLOCK_CODE" : "Application requires an unlock code to use"
+            "APP_UNLOCK_CODE" : "L'application nécessite un code de déverrouillage"
         },
         "writepermissiontype" : {
             "NONE" : "Aucunes données ne peuvent être enregistrées.",
@@ -556,10 +554,6 @@
             "true" : "Oui",
             "false" : "Non"
         },
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Please choose
         "fillout" : "Veuillez choisir",
         "user" : {
             "lastname" : "Nom",
@@ -612,7 +606,7 @@
         "app_agb3" : "Conditions générales de l'app",
         "study_agb" : "Conditions du projet",
         "sign_up_btn" : "Créer un compte",
-        "unlock_code" : "Code d'activation",
+        "unlock_code" : "Code de déverrouillage",
         "already_have_account" : "J'ai déjà un compte",
         "more" : "Vous avez encore quelques secondes? Nous serions heureux si vous pouviez nous donner un peu plus de détails sur vous ☺️️",
         "generous" : "Je me sens généreux aujourd'hui, montrez-moi les champs!",
@@ -675,9 +669,7 @@
         "code" : "Code",
         "resend_btn" : "Renvoyer l'e-mail",
         "retry_btn" : "Veuillez vous authentifier à nouveau",
-
-        // TODO NEW: This application requires an unlock code to be used. Please enter the code to continue.
-        "unlock_code" : "This application requires an unlock code to be used. Please enter the code to continue.",
+        "unlock_code" : "Cette application nécessite un code de déverrouillage pour être utilisée. Veuillez entrer le code pour continuer.",
         "contract_instructions" : "Un contrat vous a été adressé par la poste. Veuillez le signer et le renvoyer à @OPERATOR.",
         "pilot_phase" : "Un administrateur vérifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
         "code_intructions" : "Une lettre contenant un code de confirmation vous a été adressée par la poste. Veuillez saisir ce code de confirmation pour pouvoir accéder à la plateforme.",
