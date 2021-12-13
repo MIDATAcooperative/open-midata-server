@@ -88,6 +88,9 @@ public class AddConsentSignatures {
 
 					}
 					if (consent.sharingQuery == null) consent.sharingQuery = query;
+				} else {
+					Map<String, Object> query = ConsentQueryTools.getSharingQuery(consent, false);
+					if (query == null) consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 				}
 				ConsentQueryTools.temporarySignature(consent);
 				consent.updateMetadata();
