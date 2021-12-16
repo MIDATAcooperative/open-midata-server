@@ -22,6 +22,7 @@ import SA from 'views/developer/appsubscriptions.vue';
 
 const postRegister = () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/postregister.vue');
 const PublicNav = () => import(/* webpackChunkName: "public" */ 'views/nav/public.vue');
+const domain = document.location.hostname;
 
 const baseRoutes = [  
   {
@@ -94,7 +95,7 @@ const baseRoutes = [
   },
   {
     path : '/',
-    redirect : '/public/info'
+    redirect : ((domain.indexOf("ch.midata.coop")>=0) ? '/public/login' : '/public/info')
   }
 ];
 
