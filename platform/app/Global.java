@@ -17,6 +17,7 @@
 
 
 
+import java.util.Collections;
 import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
@@ -35,8 +36,11 @@ import controllers.Plugins;
 import controllers.PluginsAPI;
 import controllers.research.AutoJoiner;
 import models.Admin;
+import models.MidataId;
 import models.PersistedSession;
 import models.RecordGroup;
+import models.User;
+import models.enums.UserStatus;
 import play.inject.ApplicationLifecycle;
 import play.libs.Json;
 import play.libs.mailer.MailerClient;
@@ -45,6 +49,9 @@ import setup.MinimalSetup;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.access.AccessContext;
+import utils.access.RecordManager;
+import utils.auth.KeyManager;
 import utils.collections.Sets;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
@@ -102,6 +109,27 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		System.out.println("Object Mapper");
 		// Set custom object mapper for Json
 		Json.setObjectMapper(new CustomObjectMapper());		
+		
+		// Patch: Fix prod instance public user
+		try {
+			if (User.getById(RuntimeConstants.publicGroup, Sets.create("_id")) != null) {
+				User.set(RuntimeConstants.publicGroup, "status", UserStatus.DELETED);
+				KeyManager.instance.login(5000, false);
+				MidataId publicUser = new MidataId("5ccab0dcaed6452048f2b010");
+				System.out.println("step 1");
+				KeyManager.instance.unlock(publicUser, null);
+				AccessContext context = RecordManager.instance.createContextFromAccount(publicUser);
+				System.out.println("step 2");
+				RecordManager.instance.unshareAPSRecursive(context, publicUser, Collections.singleton(RuntimeConstants.publicGroup));
+				System.out.println("step 3");
+				RecordManager.instance.shareAPS(context, Collections.singleton(RuntimeConstants.publicGroup));
+				System.out.println("step 4");
+			}
+		} catch (AppException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		
 		
 		// Patch: Add consent signatures
 		try {

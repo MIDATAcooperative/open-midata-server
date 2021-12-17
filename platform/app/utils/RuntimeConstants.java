@@ -46,7 +46,7 @@ public class RuntimeConstants {
 	 * this constant is only required for backward compatibility
 	 * this "user" has been used to create initial signatures when signatures were introduced 
 	 */
-	public static final MidataId systemSignatureUser = new MidataId("5ccab0dcaed6452048f2b011");
+	public static final MidataId systemSignatureUser = new MidataId("5ccab0dcaed6452048f2b01a");
 	
 	public RuntimeConstants() throws InternalServerException {		
 	}
