@@ -112,7 +112,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		
 		// Patch: Fix prod instance public user
 		try {
-			if (Admin.getById(RuntimeConstants.publicGroup, Sets.create("_id")) != null) {
+			if (User.getById(RuntimeConstants.publicGroup, Sets.create("_id")) != null) {
 				User.set(RuntimeConstants.publicGroup, "status", UserStatus.DELETED);
 				KeyManager.instance.login(5000, false);
 				MidataId publicUser = new MidataId("5ccab0dcaed6452048f2b010");
