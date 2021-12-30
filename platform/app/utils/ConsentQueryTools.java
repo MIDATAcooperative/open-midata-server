@@ -38,6 +38,7 @@ import utils.messaging.SubscriptionManager;
 public class ConsentQueryTools {
 
 	public static Map<String, Object> getSharingQuery(Consent consent, boolean verify) throws AppException {
+		if (consent==null) return getEmptyQuery();
 		
 		Map<String, Object> query = consent.sharingQuery;
 		switch(consent.type) {
