@@ -42,7 +42,7 @@
         "notrialuser_detail" : "Per utilizzare questa funzionalità, è necessario completare la propria registrazione. Richiedere una copia scritta dei Condizioni generali di contratto e restituirla firmata a @OPERATOR. Si riceverà inoltre un codice di conferma per verificare il proprio indirizzo postale. Se si desidera controllare lo stato del proprio account fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "mustbemember_title" : "È richiesta l'appartenenza a @OPERATOR!",
         "mustbemember_detail" : "Per utilizzare questa funzione è necessario essere membri della cooperativa. Per ulteriori informazioni fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
-        "ratelimit" : "Il limite di frequenza delle chiamate dell'azione corrente è stato raggiunto. Riprova più tardi.",        
+        "ratelimit" : "Il limite di frequenza delle chiamate dell'azione corrente è stato raggiunto. Riprova più tardi.",
         "notauthorized" : {
             "action" : "Non si è autorizzati a eseguire questa azione",
             "fields" : "Non si è autorizzati a interrogare i campi forniti",
@@ -290,7 +290,8 @@
             "communication-approved" : "Abbonati al canale di comunicazione",
             "user-searched" : "Cerca per utente",
             "welcome-sent" : "E-mail di benvenuto inviata",
-            "tried-user-reregistration" : "Tentativo di registrazione dell'utente"
+            "tried-user-reregistration" : "Tentativo di registrazione dell'utente",
+            "signature-failure" : "Convalida del consenso fallita"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
@@ -303,7 +304,8 @@
             "PASSPORT_VERIFIED" : "La scheda ID degli utenti deve essere stata verificata",
             "MIDATA_COOPERATIVE_MEMBER" : "L'utente deve essere membro della cooperativa",
             "ADMIN_VERIFIED" : "L'account deve essere stato sbloccato da un amministratore",
-            "BIRTHDAY_SET" : "La data di nascita dell'utente deve essere nota"
+            "BIRTHDAY_SET" : "La data di nascita dell'utente deve essere nota",
+            "APP_UNLOCK_CODE" : "L'applicazione richiede un codice di sblocco"
         },
         "writepermissiontype" : {
             "NONE" : "Non è possibile scrivere alcun dato.",
@@ -552,6 +554,7 @@
             "true" : "Sì",
             "false" : "No"
         },
+        "fillout" : "Seleziona",
         "user" : {
             "lastname" : "Cognome",
             "firstname" : "Nome",
@@ -666,6 +669,7 @@
         "code" : "Codice",
         "resend_btn" : "Reinviare l'e-mail",
         "retry_btn" : "Ritentare l'accesso",
+        "unlock_code" : "Questa applicazione richiede un codice di sblocco per essere utilizzata. Si prega di inserire il codice per continuare.",
         "contract_instructions" : "Il contratto è stato inviato al tuo indirizzo postale. Ti invitiamo a restituirlo firmato a @OPERATOR.",
         "pilot_phase" : "Un amministratore verificherà e sbloccherà il tuo account. Riceverai un avviso quando l'account è stato sbloccato.",
         "code_intructions" : "Una lettera con il codice di conferma sarà inviata al tuo indirizzo postale. Inserisci questo codice di conferma per accedere alla piattaforma.",
@@ -933,8 +937,9 @@
         "type_implicit" : "Questo consenso creato implicitamente condivide i messaggi su se stessi.",
         "status_active" : "Questo consenso è attivo.",
         "status_expired" : "Questo è scaduto. I dati non sono più condivisi.",
-        "status_unconfirmed" : "Questo consenso richiede la conferma del rispettivo titolare.",
-        "status_rejected" : "Questo consenso è stato rifiutato dal rispettivo titolare.",
+        "status_unconfirmed" : "Questo consenso richiede la conferma dal suo proprietario.",
+        "status_rejected" : "Questo consenso è stato rifiutato dal suo proprietario.",
+        "status_invalid" : "Questo consenso deve essere rivisto dal suo proprietario.",
         "shares_records" : "Questo consenso condivide attualmente {{count}} record.",
         "shares_group" : "Condivide tutti i record appartenenti al gruppo: {{ group }}",
         "excludes_group" : "Sono esclusi i record appartenenti al gruppo: {{ group }}",
@@ -957,6 +962,7 @@
         "status_expired" : "Scaduto",
         "status_unconfirmed" : "Necessità di conferma",
         "status_rejected" : "Rifiutato",
+        "status_invalid" : "Non valido",
         "status" : "Stato",
         "duration" : "Periodo di validità",
         "external" : "Applicazione esterna",

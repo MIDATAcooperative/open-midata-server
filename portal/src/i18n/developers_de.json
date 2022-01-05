@@ -462,7 +462,8 @@
             "address_verified" : "Überprüfung der Adresse",
             "auth2factorsetup" : "2FA-Einstellung",
             "auth2factor" : "2FA",
-            "birthday_set" : "Geburtsdatum erfassen"
+            "birthday_set" : "Geburtsdatum erfassen",
+            "unlock_code" : "Freischaltcode der Applikation"
         }
     },
 

@@ -84,9 +84,13 @@ public class AddConsentSignatures {
 						default:
 							System.out.println(consent.type + " " + consent._id + " QUERY NULL");
 							query = ConsentQueryTools.getEmptyQuery();
-						}
+						}						
 
 					}
+					if (consent.sharingQuery == null) consent.sharingQuery = query;
+				} else {
+					Map<String, Object> query = ConsentQueryTools.getSharingQuery(consent, false);
+					if (query == null) consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 				}
 				ConsentQueryTools.temporarySignature(consent);
 				consent.updateMetadata();

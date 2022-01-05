@@ -63,12 +63,14 @@ app.directive("pluginframe", PluginFrame);
 app.use(router);
 
 let domain = document.location.hostname;
+
 if (domain.indexOf("ch.midata.coop")>=0) {
   document.location.href="https://ch.midata.coop/#/portal/login";
 } else {
 document.addEventListener("DOMContentLoaded", function(){   
 	document.title = ENV.platform;
 	document.body.className+=" "+ENV.instanceType;   
+
     router.isReady().then(      
       () => {
         let loader = document.getElementById("loadscreen");

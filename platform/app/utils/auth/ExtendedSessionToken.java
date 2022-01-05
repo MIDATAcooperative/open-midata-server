@@ -92,6 +92,11 @@ public class ExtendedSessionToken extends PortalSessionToken {
 		return (flags & (1 << 0)) > 0;
 	}
 	
+	public ExtendedSessionToken withAppUnlockedWithCode() {
+		setAppUnlockedWithCode();
+		return this;
+	}
+	
 	public void setAppUnlockedWithCode() {
 		flags |= (1 << 1);
 	}

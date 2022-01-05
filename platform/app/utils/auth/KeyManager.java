@@ -140,7 +140,8 @@ public class KeyManager implements KeySession {
 	}
 	
 	private byte[] putPublicKey(MidataId target, byte[] key) {
-		return session.get().putPublicKey(target, key);
+		KeyManagerSession currentSession = session.get(); 
+		if (currentSession != null) return currentSession.putPublicKey(target, key); else return key;
 	}
 	
 	/**

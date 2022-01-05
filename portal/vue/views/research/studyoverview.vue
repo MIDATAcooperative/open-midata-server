@@ -115,7 +115,7 @@
         <button v-if="readyForAbort()" class="btn btn-danger space" @click="abortExecution()" v-t="'studyoverview.abort_study_btn'"></button>   
     </div>
                                 
-    <modal id ="studyinf" full-width="true" :open="confirm" @close="cancel()" :title="(study || {}).name">
+    <modal id ="studyinf" :full-width="true" :open="confirm" @close="cancel()" :title="(study || {}).name">
         <div class="body">
             <p><span v-t="'studyoverview.name'"></span>: <b>{{ study.name }}</b></p>	          
             <p>{{ $t('studyoverview.confirm.'+confirm.id) }}</p>

@@ -76,7 +76,7 @@
             "passphrase" : "Mauvaise phrase secrète",
             "passcode" : "Mauvais NIP",
             "plugin" : "Cette application est prévue pour un autre rôle",
-            "unlock_code" : "Code d'activation incorrect",
+            "unlock_code" : "Code de déverrouillage incorrect",
             "access_query" : "Le filtre d'accès aux données (Data Access Filter) doit être limité par 'contenu' ou 'groupe'!",
             "sharing" : "Le filtre d'accès aux données (Data Access Filter) ne peut pas contenir la ressource Patient. La ressource Patient correcte est partagée automatiquement.",
             "anonymous" : "Un projet de recherche ne peut être anonyme que si personne n'est autorisé à accéder à des données non pseudonymisées.",
@@ -290,7 +290,8 @@
             "communication-approved" : "Abonné au canal de communication",
             "user-searched" : "Recherche d'utilisateur",
             "welcome-sent" : "E-mail de bienvenue envoyé",
-            "tried-user-reregistration" : "Tentative de ré-inscription de l'utilisateur"
+            "tried-user-reregistration" : "Tentative de ré-inscription de l'utilisateur",
+            "signature-failure" : "La validation du consentement a échoué"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -303,7 +304,8 @@
             "PASSPORT_VERIFIED" : "La carte d'identité de l'utilisateur doit avoir été vérifiée.",
             "MIDATA_COOPERATIVE_MEMBER" : "L'utilisateur doit être membre de la cooperative.",
             "ADMIN_VERIFIED" : "Le compte doit avoir été validé par un administrateur",
-            "BIRTHDAY_SET" : "La date de naissance de l'utilisateur doit être connue"
+            "BIRTHDAY_SET" : "La date de naissance de l'utilisateur doit être connue",
+            "APP_UNLOCK_CODE" : "L'application nécessite un code de déverrouillage"
         },
         "writepermissiontype" : {
             "NONE" : "Aucunes données ne peuvent être enregistrées.",
@@ -552,6 +554,7 @@
             "true" : "Oui",
             "false" : "Non"
         },
+        "fillout" : "Veuillez choisir",
         "user" : {
             "lastname" : "Nom",
             "firstname" : "Prénom",
@@ -603,7 +606,7 @@
         "app_agb3" : "Conditions générales de l'app",
         "study_agb" : "Conditions du projet",
         "sign_up_btn" : "Créer un compte",
-        "unlock_code" : "Code d'activation",
+        "unlock_code" : "Code de déverrouillage",
         "already_have_account" : "J'ai déjà un compte",
         "more" : "Vous avez encore quelques secondes? Nous serions heureux si vous pouviez nous donner un peu plus de détails sur vous ☺️️",
         "generous" : "Je me sens généreux aujourd'hui, montrez-moi les champs!",
@@ -666,6 +669,7 @@
         "code" : "Code",
         "resend_btn" : "Renvoyer l'e-mail",
         "retry_btn" : "Veuillez vous authentifier à nouveau",
+        "unlock_code" : "Cette application nécessite un code de déverrouillage pour être utilisée. Veuillez entrer le code pour continuer.",
         "contract_instructions" : "Un contrat vous a été adressé par la poste. Veuillez le signer et le renvoyer à @OPERATOR.",
         "pilot_phase" : "Un administrateur vérifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
         "code_intructions" : "Une lettre contenant un code de confirmation vous a été adressée par la poste. Veuillez saisir ce code de confirmation pour pouvoir accéder à la plateforme.",
@@ -935,6 +939,7 @@
         "status_expired" : "Ce consentement a expiré. Les données ne sont plus partagées.",
         "status_unconfirmed" : "Ce consentement nécessite une confirmation par son propriétaire.",
         "status_rejected" : "Ce consentement a été rejeté par son propriétaire.",
+        "status_invalid" : "Ce consentement doit être revu par son propriétaire.",
         "shares_records" : "Ce consentement partage actuellement {{count}} enregistrements.",
         "shares_group" : "Partage tous les enregistrements appartenant au groupe : {{ group }}",
         "excludes_group" : "Les enregistrements appartenant au groupe {{ group }} sont exclus",
@@ -957,6 +962,7 @@
         "status_expired" : "Expiré",
         "status_unconfirmed" : "Besoin de confirmation",
         "status_rejected" : "Rejeté",
+        "status_invalid" : "Non valide",
         "status" : "État",
         "duration" : "Période de validité",
         "external" : "Application externe",

@@ -57,7 +57,7 @@
 			
     </panel>
     
-    <modal :title="$t('apikeys.title')" @close="showkey=null" :open="showkey" full-width="true" id="apikey">
+    <modal :title="$t('apikeys.title')" @close="showkey=null" :open="showkey" :full-width="true" id="apikey">
         <div class="body">
             <div v-t="'apikeys.instructions'"></div>
             <hr>

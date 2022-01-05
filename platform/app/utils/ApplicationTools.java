@@ -396,6 +396,7 @@ public class ApplicationTools {
 	private static MobileAppInstance createServiceUseInstance(AccessContext context, MidataId owner, Plugin app, ServiceInstance si)
 			throws InternalServerException, BadRequestException, AppException {
 		MobileAppInstance appInstance = new MobileAppInstance();
+		appInstance._id = new MidataId();
 		appInstance.name = "External: "+ app.name;
 		appInstance.type = ConsentType.API;					
 		appInstance.applicationId = app._id;			
@@ -541,7 +542,7 @@ public class ApplicationTools {
 		RecordManager.instance.setMeta(context, consentId, "_representative", meta);
 	}
 	
-	public static AccessContext actAsRepresentative(AccessContext context, MidataId targetUser) throws AppException {
+	public static AccessContext actAsRepresentative(AccessContext context, MidataId targetUser, boolean useOriginalContextOnFail) throws AppException {
 		
 		
 		if (context.getAccessor().equals(targetUser)) return context;
@@ -561,7 +562,8 @@ public class ApplicationTools {
 				return new RepresentativeAccessContext(context.getCache().getSubCache(targetUser), context);
 			}
 		}
-		
+
+		if (useOriginalContextOnFail) return context;
 		return null;
 	}
 									

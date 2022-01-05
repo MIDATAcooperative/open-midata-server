@@ -176,7 +176,8 @@ export default {
             { value : "RESEARCH" , name : "enum.userrole.RESEARCH"},   		
             { value : "DEVELOPER" , name : "enum.userrole.DEVELOPER"}
         ],
-        body : ""
+        body : "",
+        refreshToken : ""
     }),
 
     components: {  Panel, ErrorBox, FormGroup, ChangeLog, Password },

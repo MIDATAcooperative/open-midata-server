@@ -602,7 +602,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			Object ow = properties.get("owner");
 			if (ow instanceof Collection) ow = ((Collection) ow).iterator().next();
 			MidataId targetOwner = MidataId.from(ow);
-			context = ApplicationTools.actAsRepresentative(context, targetOwner);
+			context = ApplicationTools.actAsRepresentative(context, targetOwner, false);
 			if (context == null) {				
 				ownerQuery = false;		
 			}
@@ -784,7 +784,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		consent.sharingQuery = query;
         
 		if (theResource.getStatus() == ConsentState.ACTIVE) {			
-			if (ApplicationTools.actAsRepresentative(info().context, consent.owner)==null) throw new InvalidRequestException("Only consent owner or representative may create active consents");
+			if (ApplicationTools.actAsRepresentative(info().context, consent.owner, false)==null) throw new InvalidRequestException("Only consent owner or representative may create active consents");
 			
 			if (consent.type == ConsentType.STUDYPARTICIPATION) {
 				Study study = getStudyForConsent(theResource);
@@ -893,7 +893,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 
 	@Override
 	public void updateExecute(Consent consent, org.hl7.fhir.r4.model.Consent theResource) throws AppException {
-		AccessContext context = ApplicationTools.actAsRepresentative(info().context, consent.owner);
+		AccessContext context = ApplicationTools.actAsRepresentative(info().context, consent.owner, true);
 		ConsentState state = theResource.getStatus();
 		ConsentResourceProvider.updateMidataConsent(consent, theResource);				
 		Consent.set(consent._id, "fhirConsent", consent.fhirConsent);		

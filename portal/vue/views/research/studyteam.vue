@@ -49,8 +49,8 @@
             <form-group name="person" label="studyteam.person" :path="errors.person">
                 <typeahead class="form-control" id="person" :disabled="lockChanges" name="person" v-model="add.personemail" field="email" :suggestions="persons" required />
             </form-group>
-            <form-group name="role" label="studyteam.role">
-                <select name="role" id="role" class="form-control" :disabled="lockChanges" v-validate v-model="add.roleTemplate" @change="updateRole();" required>
+            <form-group name="_role" label="studyteam.role">
+                <select name="_role" id="_role" class="form-control" :disabled="lockChanges" v-validate v-model="add.roleTemplate" @change="updateRole();" required>
                     <option v-for="role in roles" :key="role.id" :value="role.id">{{ $t('enum.researcherrole.'+role.id) }}</option>
                 </select>			    			    
             </form-group>
@@ -127,9 +127,9 @@ export default {
 			
 	    removePerson(person) {
             const { $data } = this, me = this;
-            me.doAction("change", server.post(jsRoutes.controllers.UserGroups.deleteUserGroupMembership().url, JSON.stringify({ member : person.member, group : $data.groupId }))
+            me.doAction("change", server.post(jsRoutes.controllers.UserGroups.deleteUserGroupMembership().url, { member : person.member, group : $data.groupId })
             .then(function() {				
-                $data.members.splice($data.members.indexOf(person), 1);
+                $data.members.all.splice($data.members.all.indexOf(person), 1);
             }));
             
 	    },

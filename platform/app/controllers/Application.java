@@ -668,7 +668,7 @@ public class Application extends APIController {
 		
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION)) && !InstanceConfig.getInstance().getInstanceType().disableEMailValidation()) {
 			user.status = UserStatus.TIMEOUT;			
-			return Collections.singleton(UserFeature.EMAIL_VERIFIED);
+			return new HashSet<UserFeature>(Collections.singleton(UserFeature.EMAIL_VERIFIED));
 		}
 		
 						

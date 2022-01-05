@@ -290,7 +290,8 @@
             "communication-approved" : "Kommunikationskanal abonniert",
             "user-searched" : "Suche nach Benutzer",
             "welcome-sent" : "Willkommens-E-Mail gesendet",
-            "tried-user-reregistration" : "Versuchte Neuregistrierung des Benutzers"
+            "tried-user-reregistration" : "Versuchte Neuregistrierung des Benutzers",
+            "signature-failure" : "Zustimmungsvalidierung fehlgeschlagen"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "Die E-Mail-Adresse des Benutzers muss der Plattform bekannt sein",
@@ -303,7 +304,8 @@
             "PASSPORT_VERIFIED" : "Die ID-Karte des Benutzers muss geprüft worden sein",
             "MIDATA_COOPERATIVE_MEMBER" : "Der Benutzer muss Mitglied der Genossenschaft sein",
             "ADMIN_VERIFIED" : "Das Konto muss von einem Administrator freigeschaltet worden sein",
-            "BIRTHDAY_SET" : "Das Geburtsdatum des Benutzers muss bekannt sein"
+            "BIRTHDAY_SET" : "Das Geburtsdatum des Benutzers muss bekannt sein",
+            "APP_UNLOCK_CODE" : "Die Applikation benötigt einen Freischaltcode"
         },
         "writepermissiontype" : {
             "NONE" : "Keine Daten können geschrieben werden.",
@@ -552,6 +554,7 @@
             "true" : "Ja",
             "false" : "Nein"
         },
+        "fillout" : "Bitte wählen",
         "user" : {
             "lastname" : "Name",
             "firstname" : "Vorname",
@@ -666,6 +669,7 @@
         "code" : "Code",
         "resend_btn" : "E-Mail erneut versenden",
         "retry_btn" : "Anmeldung erneut versuchen",
+        "unlock_code" : "Diese Applikation kann nur mit einem Freischaltcode verwendet werden. Bitte geben Sie den Code ein, um fortzufahren.",
         "contract_instructions" : "Ein Vertrag wurde an Ihre Postadresse versandt. Schicken Sie ihn bitte unterschrieben an @OPERATOR zurück.",
         "pilot_phase" : "Ein Administrator wird Ihr Konto verifizieren und freischalten. Sie werden informiert, wenn Ihr Konto freigeschaltet wurde.",
         "code_intructions" : "Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse versandt. Geben Sie bitte den Bestätigungscode ein, um Zugriff auf die Plattform zu erhalten.",
@@ -935,6 +939,7 @@
         "status_expired" : "Diese Zustimmung ist abgelaufen. Daten werden nicht mehr geteilt.",
         "status_unconfirmed" : "Diese Zustimmung benötigt eine Bestätigung durch ihren Besitzer.",
         "status_rejected" : "Diese Zustimmung wurde durch ihren Besitzer verworfen.",
+        "status_invalid" : "Diese Zustimmung muss von ihrem Besitzer überprüft werden.",
         "shares_records" : "Diese Zustimmung teilt derzeit {{count}} Datensätze.",
         "shares_group" : "Teilt alle Einträge die dieser Gruppe gehören: {{ group }}",
         "excludes_group" : "Schliesst alle Einträge die dieser Gruppe gehören aus: {{ group }}",
@@ -957,6 +962,7 @@
         "status_expired" : "Verfallen",
         "status_unconfirmed" : "Benötigt Bestätigung",
         "status_rejected" : "Verworfen",
+        "status_invalid" : "Ungültig",
         "status" : "Status",
         "duration" : "Gültigkeitszeitraum",
         "external" : "Externe Applikation",

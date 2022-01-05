@@ -31,13 +31,14 @@
 			  
 		<form-group name="gender" label="registration.gender" :path="errors.gender">
             <select class="form-control" id="gender" name="gender" @change="adrChange();" v-model="registration.gender" required v-validate>
+                <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                 <option value="FEMALE" v-t="'enum.gender.FEMALE'">female</option>
                 <option value="MALE" v-t="'enum.gender.MALE'"></option>
                 <option value="OTHER" v-t="'enum.gender.OTHER'"></option>
             </select>
         </form-group>
 		<form-group name="birthday" label="registration.birthday" :path="errors.birthdayDate">
-            <input type="text" class="form-control" name="birthdayDate" v-model="registration.birthdayDate" v-validate>
+            <input type="text" class="form-control" name="birthdayDate" @change="birthChange()" v-model="registration.birthdayDate" v-validate>
         </form-group>		
 			   
 		<form-group name="address1" label="registration.address" :path="errors.address1">
@@ -54,6 +55,7 @@
         </form-group>
 		<form-group name="country" label="registration.country" :path="errors.country">
             <select class="form-control" id="country" name="country" @change="adrChange();" v-model="registration.country" required v-validate>
+                <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                 <option value="CH" v-t="'enum.country.CH'"></option>
             </select>
         </form-group>

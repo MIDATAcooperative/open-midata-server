@@ -297,7 +297,7 @@ public class Circles extends APIController {
 		if (consent.owner != null && consent.owner.equals(context.getAccessor())) return consent;
 		if (consent.authorized.contains(context.getAccessor())) return consent;
 		if (observerId != null && consent.observers != null && consent.observers.contains(observerId)) return consent;
-		if (consent.owner != null && ApplicationTools.actAsRepresentative(context, consent.owner) != null) return consent;
+		if (consent.owner != null && ApplicationTools.actAsRepresentative(context, consent.owner, false) != null) return consent;
 		
 		Set<UserGroupMember> groups = UserGroupMember.getAllActiveByMember(context.getAccessor());
 		for (UserGroupMember group : groups) if (consent.authorized.contains(group.userGroup)) return consent;
@@ -451,7 +451,7 @@ public class Circles extends APIController {
 		
 		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED && !force && consent.type != ConsentType.IMPLICIT) {
 			if (consent.owner == null || !consent.owner.equals(context.getAccessor())) {
-				if (ApplicationTools.actAsRepresentative(context, consent.owner)==null) throw new AuthException("error.invalid.consent", "You must be owner to create active consents!");
+				if (ApplicationTools.actAsRepresentative(context, consent.owner, false)==null) throw new AuthException("error.invalid.consent", "You must be owner to create active consents!");
 			}
 		}		
 		
@@ -775,7 +775,9 @@ public class Circles extends APIController {
 		boolean wasActive = oldStatus.isSharingData();
 		boolean active = (newStatus == null) ? wasActive : newStatus.isSharingData();
 		boolean isNew = (newStatus == null);
-		if (context!=null) context = ApplicationTools.actAsRepresentative(context, consent.owner);
+		if (context!=null) {
+			context = ApplicationTools.actAsRepresentative(context, consent.owner, true);
+		}
 		
 		if (isNew) {
 		  wasActive = false;

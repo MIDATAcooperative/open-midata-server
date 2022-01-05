@@ -126,6 +126,16 @@
                     <postregister :preview="{ requirement : 'EMAIL_VERIFIED' }"></postregister>
                 </div>
             </div>
+            
+             <div class="outerpreview" v-if="hasUnlockCode() && previewType == 'EXISTING'">
+                <div class="alert alert-info m-2">
+                    <strong v-t="'applogin.step.unlock_code'">Test</strong>                    
+                    <div class="preview-req" v-t="'applogin.required'">Required</div>
+                </div>
+                <div class="previewtile">
+                    <postregister :preview="{ requirement : 'APP_UNLOCK_CODE' }"></postregister>
+                </div>
+            </div>
 
             <div class="outerpreview" v-if="hasRequirement('BIRTHDAY_SET') && previewType == 'EXISTING'">
                 <div class="alert alert-info m-2">
@@ -351,6 +361,10 @@ export default {
 
         hasRequirement(req) {
             return this.$data.app.requirements.indexOf(req)>=0;
+        },
+        
+        hasUnlockCode() {
+           return this.$data.app.unlockCode;
         },
         
 	    go(where) {

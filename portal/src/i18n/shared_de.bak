@@ -41,7 +41,7 @@
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "@OPERATOR membership required!",
      "mustbemember_detail" : "In order to use this feature you must be member of the cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
-     "ratelimit" : "Rate limit for current action reached. Try again later.",
+     "ratelimit" : "The rate limit for the current action has been reached. Try again later.",
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
        "fields" : "You are not authorized to query the provided fields",
@@ -156,7 +156,7 @@
 
      "tooshort" : {
        "password" : "The password must be at least 8 characters long and contain one letter and one digit.",
-       "password2" : "The password must be at least 12 characters long and contain one letter,one digit and a special character.",
+       "password2" : "The password must be at least 12 characters long and contain one letter, one digit and a special character.",
        "passphrase" : "Passphrases must be at least 8 characters long."
      },
 
@@ -287,9 +287,10 @@
 	   "removed-from-team" : "Removed from team",
 	   "communication-rejected" : "Unsubscribed from communication channel",
 	   "communication-approved" : "Subscribed to communication channel",
-	   "user-searched" : "User searched",
-	   "welcome-sent" : "Welcome mail sent",
-	   "tried-user-reregistration" : "Attempted user re-registration"	   
+	   "user-searched" : "Search for user",
+	   "welcome-sent" : "Welcome email sent",
+	   "tried-user-reregistration" : "Attempted user re-registration",
+	   "signature-failure" : "Consent validation failed"	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -302,7 +303,8 @@
 	   "PASSPORT_VERIFIED" : "ID card of users must have been verified",
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
 	   "ADMIN_VERIFIED" : "Account must have been unlocked by an administrator",
-	   "BIRTHDAY_SET" : "The date of birth of the user must be known"
+	   "BIRTHDAY_SET" : "The date of birth of the user must be known",
+	   "APP_UNLOCK_CODE" : "Application requires an unlock code to use"
 	 },
 	 "writepermissiontype" : {
 	   "NONE" : "No data may be written.",
@@ -551,6 +553,7 @@
       "true" : "Yes",
       "false" : "No"
     },
+    "fillout": "Please choose",
     "user" : {
       "lastname" : "Surname",
 	  "firstname" : "Firstname",
@@ -665,6 +668,7 @@
     "code" : "Code",
     "resend_btn" : "Resend email",
     "retry_btn" : "Retry login",
+    "unlock_code" : "This application requires an unlock code to be used. Please enter the code to continue.",
     "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to @OPERATOR.",
     "pilot_phase" : "An administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
     "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
@@ -934,6 +938,7 @@
     "status_expired" : "This consent is expired. Data is no longer shared.",
     "status_unconfirmed" : "This consent needs confirmation by its owner.",
     "status_rejected" : "This consent has been rejected by its owner.",
+    "status_invalid" : "This consent needs to be reviewed by its owner.",
     "shares_records" : "This consent shares currently {{count}} records.",
     "shares_group" : "Shares all records belonging to group: {{ group }}",
 	"excludes_group" : "Excluded are records belonging to group: {{ group }}",
@@ -956,6 +961,7 @@
     "status_expired" : "Expired",
     "status_unconfirmed" : "Needs confirmation",
     "status_rejected" : "Rejected",
+    "status_invalid" : "Invalid",
     "status" : "Status",
     "duration" : "Validity Period",
     "external" : "External Application",

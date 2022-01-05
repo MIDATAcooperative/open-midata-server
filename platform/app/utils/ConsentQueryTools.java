@@ -38,6 +38,7 @@ import utils.messaging.SubscriptionManager;
 public class ConsentQueryTools {
 
 	public static Map<String, Object> getSharingQuery(Consent consent, boolean verify) throws AppException {
+		if (consent==null) return getEmptyQuery();
 		
 		Map<String, Object> query = consent.sharingQuery;
 		switch(consent.type) {
@@ -73,7 +74,7 @@ public class ConsentQueryTools {
 		consent.lastUpdated = new Date();
 		if (consent.status == ConsentStatus.FROZEN) throw new InternalServerException("error.internal", "Query cannot be changed for frozen consents");		
 		if (consent.status == ConsentStatus.ACTIVE) {
-			AccessContext validAccessContext = ApplicationTools.actAsRepresentative(context, consent.owner);
+			AccessContext validAccessContext = ApplicationTools.actAsRepresentative(context, consent.owner, false);
 			updateSignature(validAccessContext, consent);
 			executeDataSharing(context, consent, true);
 		} else removeSignature(consent);
@@ -82,7 +83,7 @@ public class ConsentQueryTools {
 	}
 	
 	public static void updateConsentStatusActive(AccessContext context, Consent consent) throws AppException {		
-		AccessContext validAccessContext = ApplicationTools.actAsRepresentative(context, consent.owner);
+		AccessContext validAccessContext = ApplicationTools.actAsRepresentative(context, consent.owner, false);
 		updateSignature(validAccessContext, consent);
 		executeDataSharing(context, consent, false);		
 	}

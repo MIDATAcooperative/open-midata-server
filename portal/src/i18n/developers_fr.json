@@ -462,7 +462,8 @@
             "address_verified" : "Vérification de l'adresse",
             "auth2factorsetup" : "Configuration 2FA",
             "auth2factor" : "2FA",
-            "birthday_set" : "Saisir la date de naissance"
+            "birthday_set" : "Saisir la date de naissance",
+            "unlock_code" : "Code de déverrouillage de l'application"
         }
     },
 

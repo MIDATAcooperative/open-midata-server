@@ -91,6 +91,7 @@ public class QuickRegistration extends APIController {
 			JsonValidation.validate(json, "unlockCode");
 			String code = JsonValidation.getString(json, "unlockCode");
 			if (!app.unlockCode.toUpperCase().equals(code.toUpperCase())) throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
+			
 		}
 		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(UserRole.MEMBER);
 		if (app.requirements != null) requirements.addAll(app.requirements);
@@ -232,9 +233,9 @@ public class QuickRegistration extends APIController {
 			   return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withAppInstance(appInstance), json, app, user._id);
 			}*/
 					
-			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
+			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode).withAppUnlockedWithCode(), json, app, RecordManager.instance.createContextFromAccount(user._id));
 		} else {
-			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, RecordManager.instance.createContextFromAccount(user._id));
+			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode).withAppUnlockedWithCode(), json, app, RecordManager.instance.createContextFromAccount(user._id));
 		}
 	}
 	

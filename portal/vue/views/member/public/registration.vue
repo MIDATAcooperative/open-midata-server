@@ -90,6 +90,7 @@
                                 
                     <form-group name="gender" label="registration.gender" :path="errors.gender">
                         <select class="form-control" id="gender" name="gender" v-model="registration.gender" required v-validate>
+                            <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                             <option value="FEMALE" v-t="'enum.gender.FEMALE'">female</option>
                             <option value="MALE" v-t="'enum.gender.MALE'">male</option>
                             <option value="OTHER" v-t="'enum.gender.OTHER'">other</option>
@@ -104,6 +105,7 @@
 				<div class="required" v-if="languageNeeded()">
                     <form-group myid="language" label="registration.language" :path="errors.language">
                         <select class="form-control" id="language" v-model="registration.language" @change="changeLanguage(registration.language);">
+                            <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                             <option v-for="lang in languages" :key="lang.value" :value="lang.value">{{ $t(lang.name) }}</option>
                         </select>
                     </form-group>
@@ -126,6 +128,7 @@
                 <div v-if="countryNeeded()" class="required">
                     <form-group name="country" label="registration.country" :path="errors.country">
                         <select class="form-control" id="country" name="country" v-model="registration.country" required v-validate>
+                            <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                             <option v-for="country in countries" :key="country" :value="country">{{ $t('enum.country.'+country) }}</option>
                         </select>
                     </form-group>
@@ -139,12 +142,11 @@
                         <input type="text" class="form-control" id="mobile" name="mobile" :placeholder="$t('registration.mobile_phone')" v-model="registration.mobile" required v-validate>
                     </form-group>
                 </div>
-               <!-- <div class="required" v-if="app.unlockCode">
+                <div class="required" v-if="app && app.unlockCode">
                     <form-group name="unlockCode" label="registration.unlock_code" :path="errors.unlockCode">
-                        <input type="text" class="form-control" id="unlockCode" name="unlockCode" :placeholder="$t('registration.unlock_code')" v-model="registration.unlockCode" required v-validate>
-                        <formerror myid="unlockCode" type="invalid" message="error.invalid.unlock_code"></formerror>
+                        <input type="text" class="form-control" id="unlockCode" name="unlockCode" :placeholder="$t('registration.unlock_code')" v-model="registration.unlockCode" required v-validate>                        
                     </form-group>
-                </div> -->
+                </div>
 
                 <form-group name="coach" label="registration.coach" :path="errors.coach" v-if="role=='developer'">
 					<input type="text" class="form-control" id="coach" name="coach" v-validate v-model="registration.coach">
@@ -155,7 +157,7 @@
                 </form-group>
 
                 <form-group name="agb" label="registration.agb" >
-                    <check-box v-model="registration.agb" name="agb" :path="errors.agb">                                 
+                    <check-box v-model="registration.agb" name="agb" required :path="errors.agb">                                 
                         <span v-t="'registration.agb2'"></span>&nbsp;
                         <a @click="showTerms(currentTerms.member.termsOfUse);" href="javascript:" v-t="'registration.agb3'"></a>&nbsp;
                         <span v-t="'registration.privacypolicy2'"></span>&nbsp;
@@ -165,7 +167,7 @@
 					<div v-if="app && app.loginTemplate == 'REDUCED'">					
 					<section v-if="app.termsOfUse">
 						<div class="form-check">
-							<input id="appAgb" name="appAgb" class="form-check-input" type="checkbox" v-model="login.appAgb" />
+							<input id="appAgb" name="appAgb" class="form-check-input" type="checkbox" required v-model="login.appAgb" />
 							
 							<label for="appAgb" class="form-check-label">
 						   		<span v-t="'registration.app_agb2'"></span>
@@ -232,7 +234,7 @@ import TermsModal from 'components/TermsModal.vue';
 
 export default {
   data: () => ({
-    registration : { language : getLocale(), confirmStudy : [], unlockCode : null, secure : true },
+    registration : { language : getLocale(), confirmStudy : [], secure : true, unlockCode : "", country : languages.countries[0], gender:"" },
 	languages : languages.all,
 	countries : languages.countries,	
 	flags : { optional : false },
@@ -245,7 +247,9 @@ export default {
     actions : null,
     login : null,
 	role : "user",
-	links : []
+	links : [],
+	app : null,
+	isNew : false
   }),
 
   props: ['preview', 'previewlinks'],
@@ -513,6 +517,9 @@ export default {
 			}));
 		}
 	    
+	 } else if ($route.query.client_id) {
+	     this.back();
+	     return;
 	 }
 	
 	

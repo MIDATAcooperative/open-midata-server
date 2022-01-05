@@ -82,7 +82,7 @@ public class InstanceConfig {
 	}
 	
 	public String getServiceURL() {
-		return "https://"+getPortalServerDomain()+"/#/portal/service";
+		return "https://"+getPortalServerDomain()+"/#/public/service";
 	}
 	
 	/**
