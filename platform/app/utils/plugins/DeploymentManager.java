@@ -34,12 +34,22 @@ public class DeploymentManager {
 private static ActorSystem system;
 	
 	private static ActorRef deployer;
+	private static WSClient ws;
 	
-	public static void init(ActorSystem system1) {
+	public static void init(WSClient ws1, ActorSystem system1) {
 		system = system1;	
+		ws = ws1;
 		
-		deployer = system.actorOf(Props.create(PluginDeployment.class).withDispatcher("pinned-dispatcher"), "pluginDeployment");
+		if (InstanceConfig.getInstance().getInternalBuilderUrl() != null) {
+		  deployer = system.actorOf(Props.create(ExternPluginDeployment.class).withDispatcher("pinned-dispatcher"), "pluginDeployment");
+		} else {
+		  deployer = system.actorOf(Props.create(PluginDeployment.class).withDispatcher("pinned-dispatcher"), "pluginDeployment");
+		}
 	   			
+	}
+	
+	public static WSClient getWsClient() {
+		return ws;
 	}
 	
 	public static DeploymentReport deploy(MidataId plugin, MidataId executor, boolean doDelete) throws AppException {
@@ -62,13 +72,16 @@ private static ActorSystem system;
 	public static boolean hasUserDeployment(MidataId pluginId) throws AppException {
 		Plugin plugin = Plugin.getById(pluginId, Sets.create("filename", "repositoryUrl"));
 		if (plugin == null || plugin.repositoryUrl==null) return false;
-		String deployLocation =  InstanceConfig.getInstance().getConfig().getString("visualizations.path");
+		if (plugin.repositoryDate==0) return false;
+		return true;
+		
+		/*String deployLocation =  InstanceConfig.getInstance().getConfig().getString("visualizations.path");
 		String targetDir = deployLocation+"/"+plugin.filename;
 		File test = new File(targetDir);
 		if (test.exists()) return true;
 		test = new File(deployLocation+"/../plugin_active/"+plugin.filename);
 		if (test.exists()) return true;
-		return false;
+		return false;*/
 		
 	}
 }

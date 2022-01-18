@@ -570,6 +570,7 @@
     "sign_up" : "Sign Up",
     "mandantory_fields" : "Please fill in the information below, fields marked with an asterisk (*) are mandatory.",
     "password_policy" : "The password must be at least 8 characters long and contain one letter and one digit.",
+    "password_policy2" : "The password must be at least 12 characters long and contain one letter, one digit and a special character.",
     "email" : "EMail",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
@@ -768,12 +769,14 @@
 	"created_by" : "Created by:",
     "created_with" : "Created with:",
     "created_on" : "Created at:",
-    "content" : "Content:",
+    "content" : "Midata Content-Type:",
     "format" : "Format:",
     "download_btn" : "Download",
     "content_visualization" : "Content Visualization",
     "no_visualization" : "No visualization available for this record.",
-    "raw_data" : "Raw Data"
+    "raw_data" : "Raw Data",
+    "id" : "Record ID",
+    "code" : "Code(s)"    
   },
 
   "studydetails" : {

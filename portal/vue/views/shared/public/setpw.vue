@@ -34,7 +34,9 @@
 							</div>
 							<div v-if="!success">
 								<p v-t="'setpw.enter_new'"></p>
-								<p v-t="'registration.password_policy'"></p>
+								<p v-if="advancedPassword()" v-t="'registration.password_policy2'"></p>
+								<p v-else v-t="'registration.password_policy'"></p>
+								
 								<form @submit.prevent="submit()" name="myform" ref="myform" role="form" novalidate>
 									<password class="form-control" :placeholder="$t('setpw.new_password')" v-model="setpw.password" name="password" required style="margin-bottom:5px;" autofocus />								
 									<password class="form-control" :placeholder="$t('setpw.new_password_repeat')" v-model="setpw.passwordRepeat" name="passwordRepeat" required style="margin-bottom:5px;" />
@@ -58,6 +60,7 @@ export default {
   data: () => ({
      success : false,
      secure : false,
+     role : "member",
      setpw : {
         token : "",
 		password : "",
@@ -73,12 +76,16 @@ export default {
   mixins : [ status ],
  
   methods : {
+  	 advancedPassword() {
+	    return this.$data.role != "member";
+	 },
+	 
      submit() {
                   
         const { $data } = this;
-		var pwvalid = crypto.isValidPassword($data.setpw.password, true);         
+		var pwvalid = crypto.isValidPassword($data.setpw.password, $data.role != "member");         
         if (!pwvalid) {
-        	$data.error = { code : "error.tooshort.password" };
+        	$data.error = { code : (($data.role != "member") ? "error.tooshort.password2" : "error.tooshort.password") };
         	return;
         }
 		
@@ -109,7 +116,8 @@ export default {
   created() {    
      const { $data, $route } = this;
      $data.setpw.token = $route.query.token;
-     $data.secure = $route.query.ns != 1;		
+     $data.secure = $route.query.ns != 1;	
+     $data.role = $route.query.role || "member";	
      this.loadEnd();
   }
 }

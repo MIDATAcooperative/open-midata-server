@@ -163,7 +163,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		  SubscriptionManager.init(Instances.system(), ws);
 		  
 		  System.out.println("Deployment Manager");
-		  DeploymentManager.init(Instances.system());
+		  DeploymentManager.init(ws, Instances.system());
 		  
 		  
 		  System.out.println("Minimal Setup");

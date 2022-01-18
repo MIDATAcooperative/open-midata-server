@@ -17,7 +17,7 @@
 <template>
     <div class="midata-overlay borderless">
 	  <div class="overlay-body">
-        <panel :title="$t('recorddetail.meta')" :busy="isBusy" @close="goBack()">						
+        <panel :title="$t('recorddetail.meta')" :busy="isBusy" @close="goBack()">        					
 			<div class="row">
 				<p class="col-sm-2" v-t="'recorddetail.name'"></p>
 				<p class="col-sm-10">{{record.name}}</p>
@@ -39,12 +39,26 @@
 				<p class="col-sm-10">{{ $filters.date(record.created) }}</p>
 			</div>
 			<div class="row">
-				<p class="col-sm-2" v-t="'recorddetail.content'"></p>
-				<p class="col-sm-10">{{record.content}}</p>
+				<p class="col-sm-2" v-t="'recorddetail.id'"></p>
+				<p class="col-sm-10">{{record._id}}</p>
+			</div>		
+			<div v-if="record.format && record.format.startsWith('fhir/')" class="row">
+				<p class="col-sm-2" v-t="'enum.codesystems.fhir'"></p>
+				<p class="col-sm-10">{{record.format.substr(5)}}</p>
 			</div>
-			<div class="row">
+			<div v-else class="row">
 				<p class="col-sm-2" v-t="'recorddetail.format'"></p>
 				<p class="col-sm-10">{{record.format}}</p>
+			</div>
+		    <div class="row">
+				<p class="col-sm-2" v-t="'recorddetail.code'"></p>
+				<div class="col-sm-10">
+				  <div v-for="code in record.code" :key="code">{{code}}</div>
+				</div>
+			</div>
+			<div class="row">
+				<p class="col-sm-2" v-t="'recorddetail.content'"></p>
+				<p class="col-sm-10">{{record.content}}</p>
 			</div>		
 			<button href="javascript:" @click="download()" class="btn btn-primary" v-if="isFile()" v-t="'recorddetail.download_btn'">Download</button>
         </panel>

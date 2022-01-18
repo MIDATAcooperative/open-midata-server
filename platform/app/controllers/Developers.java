@@ -187,6 +187,7 @@ public class Developers extends APIController {
 		String url = "/#/portal/setpw?token=" + encrypted;
 		
 		if (target.security != AccountSecurityLevel.KEY_EXT_PASSWORD) url+="&ns=1";
+		url+="&role="+target.role.toString().toLowerCase();
 						
 		return ok(url);		
 	}
