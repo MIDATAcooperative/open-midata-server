@@ -72,7 +72,7 @@ stop-mongo:
 	@echo 'Shutting down MongoDB...'
 	if [ -e switches/local-mongo ]; then pkill mongod; fi
 
-update: tasks/check-config tasks/install-packages tasks/install-node tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
+update: tasks/check-config tasks/install-packages tasks/install-node tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform conf/config.js tasks/setup-nginx start
 
 test: tasks/build-portal tasks/build-platform
 	
@@ -368,7 +368,10 @@ nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf
 tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages nginx/conf.d/noversion.conf $(CERTIFICATE_PEM) $(CERTIFICATE_DIR)/dhparams.pem
 	$(info ------------------------------)
 	$(info Configuring NGINX... )
-	$(info ------------------------------)	
+	$(info ------------------------------)
+	chmod 755 conf/config.js
+	chmod 755 conf/recoverykeys.json
+	chmod 755 conf	
 	sudo cp nginx/sites-available/* /etc/nginx/sites-available
 	sudo cp nginx/conf.d/* /etc/nginx/conf.d
 	sudo rm -f /etc/nginx/sites-enabled/*
