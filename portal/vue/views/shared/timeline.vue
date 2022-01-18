@@ -165,7 +165,7 @@ export default {
 						 }
 					  });
 				  } else {
-					  $router.push({ path : "./overview2" });
+					  $router.push({ path : "./dashboard" });
 				  }
 			});				
 			

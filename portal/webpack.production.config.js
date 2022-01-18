@@ -121,7 +121,9 @@ module.exports = {
                     {
                         loader: 'postcss-loader',
                         options: {
-                          plugins: () => [autoprefixer()]
+	                      postcssOptions : {
+                            plugins: () => [autoprefixer()]
+                          }
                         }
                     },
                     //'sass-loader',                   
@@ -135,7 +137,9 @@ module.exports = {
                     {
                         loader: 'postcss-loader',
                         options: {
-                          plugins: () => [autoprefixer()]
+	                      postcssOptions : {
+                            plugins: () => [autoprefixer()]
+                          }
                         }
                     },
                     'sass-loader'
@@ -181,7 +185,8 @@ module.exports = {
         fallback : { 
 	       "crypto": require.resolve("crypto-browserify"),
            "buffer": require.resolve("buffer/"),
-           "stream": require.resolve("stream-browserify") 
+           "stream": require.resolve("stream-browserify"),
+           "querystring": require.resolve("querystring-es3")  
         }
     },
 

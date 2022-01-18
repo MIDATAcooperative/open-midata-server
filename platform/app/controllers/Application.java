@@ -169,6 +169,7 @@ public class Application extends APIController {
 		  String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		  String url = site + "/#/portal/setpw?token=" + encrypted;
 		  if (user.security != AccountSecurityLevel.KEY_EXT_PASSWORD) url +="&ns=1";
+		  url += "&role="+role;
 		  
 		  Map<String,String> replacements = new HashMap<String, String>();
 		  replacements.put("site", site);
