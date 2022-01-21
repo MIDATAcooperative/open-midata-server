@@ -463,6 +463,10 @@
             "auth2factorsetup" : "2FA-Einstellung",
             "auth2factor" : "2FA",
             "birthday_set" : "Geburtsdatum erfassen",
+
+            // TODO CHANGED
+            // OLD: App unlock code
+            // NEW: Application unlock code
             "unlock_code" : "Freischaltcode der Applikation"
         }
     },

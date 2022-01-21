@@ -462,7 +462,7 @@
          "auth2factorsetup" : "2FA Setup",
          "auth2factor" : "2FA",
          "birthday_set" : "Enter date of birth",
-         "unlock_code" : "App unlock code"
+         "unlock_code" : "Application unlock code"
        }
     },
     

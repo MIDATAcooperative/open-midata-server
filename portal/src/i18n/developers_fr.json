@@ -463,6 +463,10 @@
             "auth2factorsetup" : "Configuration 2FA",
             "auth2factor" : "2FA",
             "birthday_set" : "Saisir la date de naissance",
+
+            // TODO CHANGED
+            // OLD: App unlock code
+            // NEW: Application unlock code
             "unlock_code" : "Code de déverrouillage de l'application"
         }
     },

@@ -305,6 +305,10 @@
             "MIDATA_COOPERATIVE_MEMBER" : "L'utilisateur doit être membre de la cooperative.",
             "ADMIN_VERIFIED" : "Le compte doit avoir été validé par un administrateur",
             "BIRTHDAY_SET" : "La date de naissance de l'utilisateur doit être connue",
+
+            // TODO CHANGED
+            // OLD: Application requires an unlock code to use
+            // NEW: The application requires an unlock code
             "APP_UNLOCK_CODE" : "L'application nécessite un code de déverrouillage"
         },
         "writepermissiontype" : {
@@ -571,6 +575,9 @@
         "sign_up" : "S'inscrire",
         "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires.",
         "password_policy" : "Le mot de passe doit comporter au moins 8 caractères et contenir une lettre et un chiffre.",
+
+        // TODO NEW: The password must be at least 12 characters long and contain one letter, one digit and a special character.
+        "password_policy2" : "The password must be at least 12 characters long and contain one letter, one digit and a special character.",
         "email" : "E-mail",
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
@@ -628,6 +635,13 @@
         "login_btn" : "Se connecter",
         "service_login" : "Connexion pour demande de confirmation",
         "service_login2" : "Lors votre prochaine connexion, on vous demandera de confirmer votre consentement et/ou votre participation à des projets de recherche.",
+
+        // TODO NEW: Login for Account Management
+        "account_login" : "Login for Account Management",
+
+        // TODO NEW: Please log in for access to account management functions.
+        "account_login2" : "Please log in for access to account management functions.",
+
         "no_account" : "Je n'ai pas encore de compte @PLATFORM."
     },
 
@@ -769,12 +783,22 @@
         "created_by" : "Créé par:",
         "created_with" : "Créé avec:",
         "created_on" : "Créé le:",
+
+        // TODO CHANGED
+        // OLD: Content:
+        // NEW: Midata Content-Type:
         "content" : "Contenu:",
         "format" : "Format:",
         "download_btn" : "Télécharger",
         "content_visualization" : "Visualisation du contenu",
         "no_visualization" : "Cet enregistrement ne peut pas être visualisé.",
-        "raw_data" : "Données brutes (Raw data)"
+        "raw_data" : "Données brutes (Raw data)",
+
+        // TODO NEW: Record ID
+        "id" : "Record ID",
+
+        // TODO NEW: Code(s)
+        "code" : "Code(s)"
     },
 
     "studydetails" : {
