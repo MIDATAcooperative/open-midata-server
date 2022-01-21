@@ -212,6 +212,11 @@ const routes = [
   },
   {
     base : ["member", "developer", "admin", "research", "provider"],
+    path : "user2",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/user2.vue')
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
     path : "accountwipe",
     component: () => import(/* webpackChunkName: "shared" */ 'views/shared/accountwipe.vue')
   },
@@ -269,6 +274,14 @@ const routes = [
     base : ["public"],
     path : "service",
     component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/service.vue')
+  },
+  {
+    base : ["public", "oauth"],
+    path : "account",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/service.vue'),
+    meta : {
+      account : true
+    }
   },
   {
     base : ["public"],

@@ -53,6 +53,7 @@
 import Panel from "components/Panel.vue"
 import server from "services/server.js"
 import session from "services/session.js"
+import actions from "services/actions.js"
 import crypto from "services/crypto.js"
 import { status, ErrorBox, FormGroup, CheckBox, Success, Password } from 'basic-vue3-components'
 
@@ -60,7 +61,8 @@ export default {
   
     data: () => ({
         pw : { oldPassword:"", password:"", password2:"", secure : true },
-        role : "member"
+        role : "member",
+		actions : null
 	}),	
 
     components: {  Panel, FormGroup, ErrorBox, Success, CheckBox, Password },
@@ -69,7 +71,7 @@ export default {
   
     methods : {
         changePassword() {		
-            const { $data, $t } = this, me = this;
+            const { $data, $t, $router } = this, me = this;
             let pwvalid = crypto.isValidPassword($data.pw.password, $data.role != "member"); 
             
             if ($data.pw.password != $data.pw.password2) {
@@ -99,7 +101,10 @@ export default {
 				    data.password = $data.pw.password;
 			    }
 			    return server.post(jsRoutes.controllers.PWRecovery.changePassword().url, data);			
-		    })).then(function() { session.login(); });
+		    })).then(function() { 
+				session.login(); 
+				if ($data.actions) $router.go(-1);
+			});
 						 
         },
         
@@ -113,6 +118,7 @@ export default {
     },
 
     created() {
+		this.$data.actions = this.$route.query.actions;
         this.init();
     }
    

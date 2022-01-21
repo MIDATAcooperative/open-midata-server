@@ -56,8 +56,7 @@
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span v-t="'user.action'"></span> <span class="caret"></span>
                     </button>
-                    <div class="dropdown-menu">
-                        <router-link class="dropdown-item" v-show="user.status=='ACTIVE'" :to="{ path : './changepassphrase' }" v-t="'user.change_passphrase_btn'"></router-link>
+                    <div class="dropdown-menu">                        
                         <router-link class="dropdown-item" :to="{ path : './changeemail' }" v-t="'user.change_email_btn'"></router-link>
                         <router-link class="dropdown-item" :to="{ path : './auditlog' }" v-t="'user.auditlog_btn'"></router-link>
                         <router-link class="dropdown-item" :to="{ path : './market', query : { tag : 'Expert' }}" v-t="'user.expert_tools_btn'"></router-link>

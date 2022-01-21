@@ -63,7 +63,7 @@ export default {
 	    },
 	
 	    close() {
-		    this.doAction(server.post('/api/logout')
+		    this.doAction("logout", server.post('/api/logout')
 		    .then(function() { 
 			    session.logout();
                 window.close();            
@@ -72,7 +72,7 @@ export default {
 	
 	    leave() {
             const { $data } = this;
-		    this.doAction(server.post('/api/logout')
+		    this.doAction("logout", server.post('/api/logout')
 		    .then(function() { 
 			    session.logout();
                 document.location.href = $data.callback;            
@@ -81,7 +81,7 @@ export default {
 	
 	    logout() {		
             const { $route } = this;
-		    this.doAction(server.post('/api/logout')
+		    this.doAction("logout", server.post('/api/logout')
 		    .then(function() { 
 			    session.logout();
 			    if ($route.meta.role=="provider") document.location.href="/#/provider/login";

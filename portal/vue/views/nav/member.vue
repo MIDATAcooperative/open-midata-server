@@ -22,7 +22,9 @@
 		<div id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">			
 			<div class="container">
 				<div class="navbar-header">
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
+
+					<router-link v-if="$route.query.actions" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user2', query : { userId : user._id, actions : $route.query.actions }}"><span class="fas fa-user"></span></router-link>						
+					<button v-else class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>
@@ -70,7 +72,9 @@
 								<div><b style="min-width:40px;display:inline-block;">{{circles.apps}}</b><span v-t="'navbar.app_count'"></span></div>
 								<div><b style="min-width:40px;display:inline-block;">{{circles.studies}}</b><span v-t="'navbar.study_count'"></span></div>
 								<div class="extraspace"></div>
-								<router-link data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user', query : { userId : user._id}}" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>&nbsp;
+								<router-link v-if="$route.query.actions" data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user2', query : { actions : $route.query.actions }}" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>
+								<router-link v-else data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user', query : { userId : user._id  }}" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>
+								&nbsp;
 								<a href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="logout()" class="btn btn-sm btn-default"><span class="fas fa-power-off"></span> <span v-t="'navbar.sign_out'"></span></a>
        						</div>
 						</div>

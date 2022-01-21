@@ -67,10 +67,13 @@ export default {
   
     methods : {
         changeEmail() {		
-            const { $data } = this, me = this;
+            const { $data, $router } = this, me = this;
             let data = { user : $data.userId , email : $data.pw.email };
 		
-		    me.doAction("changeEmail", server.post(jsRoutes.controllers.admin.Administration.changeUserEmail().url, data));        						 
+		    me.doAction("changeEmail", server.post(jsRoutes.controllers.admin.Administration.changeUserEmail().url, data))
+            .then(() => {
+                if ($data.actions) $router.go(-1);
+            });
         },
         
         init() {
