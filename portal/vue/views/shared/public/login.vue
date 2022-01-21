@@ -35,9 +35,13 @@
 		</div><div class="container"><div class="row">
 			<div class="col-sm-12">
                 <panel :title="$t('member_login.sign_in')+getAppName()" style="max-width:330px; padding-top:20px; margin:0 auto;">                    
-				    <div class="alert alert-info" v-if="serviceLogin && !app">
+				    <div class="alert alert-info" v-if="serviceLogin=='consent' && !app">
 		                <strong class="alert-heading" v-t="'login.service_login'"></strong>                 
                         <div v-if="!app" v-t="'login.service_login2'"></div>                                                     
+                    </div>
+					<div class="alert alert-info" v-if="serviceLogin=='account' && !app">
+		                <strong class="alert-heading" v-t="'login.account_login'"></strong>                 
+                        <div v-if="!app" v-t="'login.account_login2'"></div>                                                     
                     </div>
                             
                     <div v-if="app" class="extraspace">
@@ -70,7 +74,7 @@
 						<div class="margin-top">
 						    <router-link :to="{ path : './lostpw' }" v-t="'login.forgot_your_password'"></router-link>
 						</div>
-						<div class="margin-top" v-if="serviceLogin">
+						<div class="margin-top" v-if="serviceLogin=='consent'">
 							<hr>
 							<router-link class="btn btn-primary btn-block" :to="{ path : './registration', query : { actions : actions } }"  v-t="'login.no_account'"></router-link>
 						</div>
@@ -97,7 +101,7 @@ export default {
         actions : null,
         offline : false,
         notPublic : ENV.instanceType == "prod",
-        serviceLogin : false,
+        serviceLogin : null,
         roles : [
             { value : "MEMBER", name : "enum.userrole.MEMBER" },
 		    { value : "PROVIDER" , name : "enum.userrole.PROVIDER"},
@@ -163,7 +167,10 @@ export default {
         const { $data, $route } = this, me = this;
         $data.actions = $route.query.actions;
 	    $data.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);	
-        $data.serviceLogin = ($route.query.actions != null);	
+		if ($route.query.actions != null) {
+			$data.serviceLogin = $route.query.actions.indexOf('"account') > 0 ? "account" : "consent";
+		} else $data.serviceLogin = null;
+        
         $data.login.role = $route.meta.role.toUpperCase();
 
         if ($route.query.login) {

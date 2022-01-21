@@ -93,7 +93,8 @@ export default {
     data: () => ({
         registration : {},
         addressChanged : false,
-        birthdayChanged : false       
+        birthdayChanged : false,
+        actions : null
 	}),	
 
     components: {  Panel, FormGroup, ErrorBox, Success },
@@ -103,7 +104,7 @@ export default {
     methods : {
         changeEmail() {
             const { $router, $data } = this;
-		    $router.push({ path : "./changeemail", query : { userId : $data.registration._id } });
+		    $router.push({ path : "./changeemail", query : { userId : $data.registration._id, actions : $data.actions } });
         },
         
         adrChange() {
@@ -117,7 +118,7 @@ export default {
         },
 
         changeAddress() {		
-		    const { $data, $t } = this, me = this;
+		    const { $data, $t, $router } = this, me = this;
             let q = Promise.resolve();
 		
             let data = $data.registration;
@@ -143,13 +144,15 @@ export default {
 			    q = q.then(function() { return me.doAction("changeAddress", users.updateAddress(data)); });
 		    }
             q.then(function() {	
-        	    $data.success = true;			
+        	    $data.success = true;	
+                if ($data.actions) $router.go(-1);
 		    });
 	    },
 	
         
         init() {
             const { $data, $route, $filters } = this, me = this;
+            $data.actions = $route.query.actions;
             me.doBusy(session.currentUser.then(function(myUserId) { 
 		        let userId = $route.query.userId || myUserId;
 		        me.doBusy(users.getMembers({"_id": userId }, ["name", "email", "gender", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "birthday"]))

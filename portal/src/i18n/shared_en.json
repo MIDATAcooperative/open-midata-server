@@ -628,6 +628,9 @@
     "login_btn" : "Log in",
     "service_login" : "Login for Confirmation Request",
     "service_login2" : "At your next login, you will be asked for confirmation of consents and/or participation with research projects.",
+    "account_login" : "Login for Account Management",
+    "account_login2" : "Please log in for access to account management functions.",
+    
     "no_account" : "I do not have a @PLATFORM account yet."   
   },
 

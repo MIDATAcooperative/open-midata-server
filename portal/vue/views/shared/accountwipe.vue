@@ -52,8 +52,8 @@
 				</form-group>
                 <error-box :error="error"></error-box>
 	           	            
-				<button type="submit" v-submit :disabled="action!=null" class="btn btn-danger" v-t="'accountwipe.wipe_btn'"></button>				
-				
+				<button type="submit" v-submit :disabled="action!=null" class="btn btn-danger mt-3 btn-block" v-t="'accountwipe.wipe_btn'"></button>				
+				<button type="button" class="btn btn-default mt-3 btn-block" @click="skip()" v-t="'common.cancel_btn'"></button>
 			</form>
 							
         </panel>				   				
@@ -66,6 +66,7 @@ import server from "services/server.js"
 import crypto from "services/crypto.js"
 import session from "services/session.js"
 import users from "services/users.js"
+import actions from "services/actions.js"
 import languages from "services/languages.js"
 import ENV from "config"
 import { setLocale } from 'services/lang.js';
@@ -84,15 +85,23 @@ export default {
   
     methods : {
         accountWipe() {
-            const { $data } = this, me = this;
+            const { $data, $route } = this, me = this;
 		    if (!$data.user.password) {
 			    $data.error = { code : "accountwipe.error" };
 			    return;
 		    }
 		    $data.user.passwordHash = crypto.getHash($data.user.password);
 		    me.doAction("wipe", server.post("/api/shared/users/wipe", $data.user)).then(function() {
+				//if ($route.query.actions) window.close();
 		        document.location.href="/#/public/login"; 
 	        });
+	    },
+
+		skip() {
+        const { $data, $route, $router } = this, me = this;
+			if (!actions.showAction($router, $route)) {
+				$router.go(-1);
+			}
 	    },
 	
 	    getHello(label) {
