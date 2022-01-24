@@ -119,6 +119,7 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("Provenance", new ProvenanceResourceProvider());
       myProviders.put("Organization", new OrganizationResourceProvider());
       myProviders.put("List", new ListResourceProvider());
+      myProviders.put("RelatedPerson", new RelatedPersonResourceProvider());
       
       resourceProviders.addAll(myProviders.values());
       
