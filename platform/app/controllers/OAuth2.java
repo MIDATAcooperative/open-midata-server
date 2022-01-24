@@ -190,6 +190,34 @@ public class OAuth2 extends Controller {
         return true;
 	}
 	
+	/**
+	 * Return OpenID Connect compatible user info
+	 * @param request
+	 * @return
+	 * @throws AppException
+	 */
+	@MobileCall	
+	public Result userinfo(Request request) throws AppException {
+		Optional<String> param = request.header("Authorization");
+		if (!param.isPresent() || !param.get().startsWith("Bearer ")) OAuth2.invalidToken();
+		String token = param.get().substring("Bearer ".length());
+	    ExecutionInfo inf = ExecutionInfo.checkToken(request, token, false);
+	    User user = User.getById(inf.executorId, User.ALL_USER);
+	    ObjectNode obj = Json.newObject();	 
+	    
+	    obj.put("sub", user._id.toString());
+	    obj.put("name", user.firstname+" "+user.lastname);
+	    obj.put("family_name", user.lastname);
+	    obj.put("given_name", user.firstname);
+	    obj.put("email", user.email);
+	    obj.put("email_verified", (user.emailStatus == EMailStatus.VALIDATED || user.emailStatus == EMailStatus.EXTERN_VALIDATED));
+        if (user.gender != null) obj.put("gender", user.gender.toString().toLowerCase());
+        	    
+	    return ok(obj).withHeader("Cache-Control", "no-store").withHeader("Pragma", "no-cache");
+	}
+	
+	
+	
 	@BodyParser.Of(BodyParser.FormUrlEncoded.class)
 	@MobileCall
 	public Result authenticate(Request request) throws AppException {
@@ -318,7 +346,7 @@ public class OAuth2 extends Controller {
 		
 		obj.put("expires_in", MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME / 1000l);
 		obj.put("patient", appInstance.owner.toString());
-		obj.put("refresh_token", refresh.encrypt());
+		obj.put("refresh_token", refresh.encrypt());	
 						
 		return ok(obj).withHeader("Cache-Control", "no-store").withHeader("Pragma", "no-cache");
 	}

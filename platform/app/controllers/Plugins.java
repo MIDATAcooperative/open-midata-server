@@ -611,6 +611,17 @@ public class Plugins extends APIController {
 					AccessLog.log("OAuth2 Request: "+post);
 					AccessLog.log("OAuth2 Response: "+body);
 					JsonNode jsonNode = response.asJson();
+					
+					// Try to deal with non-standard response formats.
+					if (!jsonNode.has("access_token")) {
+						for (JsonNode child : jsonNode) {
+							if (child.has("access_token")) {
+								jsonNode = child;
+								break;
+							}
+						}						
+					}
+					
 					if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
 						String accessToken = jsonNode.get("access_token").asText();
 						String refreshToken = null;

@@ -1451,6 +1451,11 @@
     "success" : "Unsubscription successful.",
     "back_to_login" : "Go to login page"
   },
+
+  "member_login" : {  
+    "register_now" : "Register Now",
+    "sign_in" : "Login"
+  },   
    
   "-1" : "unknown"
     

@@ -1,10 +1,5 @@
 {
 
-    "member_login" : {
-        "register_now" : "Iscriviti ora",
-        "sign_in" : "Accesso"
-    },
-
     "member_quickregistration" : {
         "sign_up" : "Iscrizione",
         "study" : "Progetto di ricerca*",
