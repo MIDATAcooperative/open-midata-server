@@ -1,9 +1,5 @@
 {
 
-    "member_login" : {
-        "register_now" : "S'inscrire maintenant",
-        "sign_in" : "Connexion"
-    },
 
     "member_quickregistration" : {
         "sign_up" : "Inscription",

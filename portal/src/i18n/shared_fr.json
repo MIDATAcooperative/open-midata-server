@@ -1447,5 +1447,10 @@
         "back_to_login" : "Aller à la page d'accueil"
     },
 
+    "member_login" : {
+        "register_now" : "S'inscrire maintenant",
+        "sign_in" : "Connexion"
+    },
+
     "-1" : "inconnu"
 }

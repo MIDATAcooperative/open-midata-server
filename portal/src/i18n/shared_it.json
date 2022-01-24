@@ -1447,5 +1447,10 @@
         "back_to_login" : "Vai alla pagina di accesso"
     },
 
+    "member_login" : {
+        "register_now" : "Iscriviti ora",
+        "sign_in" : "Accesso"
+    },
+
     "-1" : "sconosciuto"
 }

@@ -1448,5 +1448,10 @@
         "back_to_login" : "Zur Anmeldeseite gehen"
     },
 
+    "member_login" : {
+        "register_now" : "Jetzt registrieren",
+        "sign_in" : "Anmeldung"
+    },
+
     "-1" : "unbekannt"
 }
