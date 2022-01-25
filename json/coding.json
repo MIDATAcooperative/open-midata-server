@@ -348,3 +348,5 @@
 {"_id":{"$oid":"5fb39ebdaed64513b2abccd7"},"system":"http://midata.coop","code":"forward-reach-test","display":"Forward Reach Test","content":"forward-reach-test"}
 {"_id":{"$oid":"5fb39f02aed64513b2abccd9"},"system":"http://midata.coop","code":"timed-up-and-go","display":"Timed up and go","content":"timed-up-and-go"}
 {"_id":{"$oid":"5fb3a144aed64513b2abccdb"},"system":"http://midata.coop","code":"walking-speed","display":"Walking Speed","content":"walking-speed"}
+{"_id":{"$oid":"61efb95cc2841c36d6227d78"},"system":"http://midata.coop","code":"app/log","display":"Application Log","content":"app/log"}
+{"_id":{"$oid":"61efb9a4c2841c36d6227d7a"},"system":"http://midata.coop","code":"app/config","display":"Application Configuration","content":"app/config"}

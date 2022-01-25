@@ -327,3 +327,5 @@
 {"_id":{"$oid":"5fb39ebcaed64513b2abccd6"},"content":"forward-reach-test","defaultCode":"http://midata.coop forward-reach-test","security":"MEDIUM","label":{"en":"Forward Reach Test"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5fb39f01aed64513b2abccd8"},"content":"timed-up-and-go","defaultCode":"http://midata.coop timed-up-and-go","security":"MEDIUM","label":{"en":"Timed up and go"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5fb3a144aed64513b2abccda"},"content":"walking-speed","defaultCode":"http://midata.coop walking-speed","security":"MEDIUM","label":{"en":"Walking Speed"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"61efb95cc2841c36d6227d79"},"content":"app/log","defaultCode":"http://midata.coop app/log","security":"MEDIUM","label":{"de":"Application Log","en":"Application Log"},"resourceType":"fhir/Basic"}
+{"_id":{"$oid":"61efb9a4c2841c36d6227d7b"},"content":"app/config","defaultCode":"http://midata.coop app/config","security":"MEDIUM","label":{"de":"Anwendungskonfiguration","en":"Application Configuration"},"resourceType":"fhir/Basic"}
