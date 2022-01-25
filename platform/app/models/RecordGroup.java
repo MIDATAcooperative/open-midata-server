@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,7 @@ public class RecordGroup extends Model {
 	private @NotMaterialized static final String collection = "formatgroups";
 	private @NotMaterialized static volatile Map<String, RecordGroup> cache;
 	private @NotMaterialized static Map<String, Map<String, String>> systemToContentToGroup;
+	public @NotMaterialized static final Set<String> ALL = Sets.create("system", "name", "label", "parent", "deleted", "lastUpdated");
 
 	/**
 	 * the name of the group system this group belongs to
@@ -67,6 +69,10 @@ public class RecordGroup extends Model {
 	 */
 	public Set<String> contents;
 	
+	public boolean deleted;
+	
+	public long lastUpdated;
+	
 	/**
 	 * list of children of this group. The list is derived from the parent field.
 	 */
@@ -80,8 +86,9 @@ public class RecordGroup extends Model {
 	    Model.upsert(collection, recordGroup);
 	}
 	  
-	public static void delete(MidataId recordGroupId) throws InternalServerException {			
-	    Model.delete(RecordGroup.class, collection, CMaps.map("_id", recordGroupId));
+	public static void delete(MidataId recordGroupId) throws InternalServerException {
+		Model.set(RecordGroup.class, collection, recordGroupId, "lastUpdated", System.currentTimeMillis());
+	    Model.set(RecordGroup.class, collection, recordGroupId, "deleted", true);
 	}
 	
 	public static RecordGroup getBySystemPlusName(String system, String name) throws AppException {		
@@ -101,6 +108,10 @@ public class RecordGroup extends Model {
 		return cache.values();
 	}
 	
+	public static Set<RecordGroup> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAll(RecordGroup.class, collection, properties, fields);
+  }
+	
 	public static void invalidate() {
 		cache = null;
 	}
@@ -109,20 +120,48 @@ public class RecordGroup extends Model {
 		
 		Map<String, Map<String, String>> newSystemToContentToGroup = new HashMap<String, Map<String, String>>();
 				
-		Set<RecordGroup> groups = Model.getAll(RecordGroup.class, collection, Collections.EMPTY_MAP, Sets.create("system", "name", "label", "contents", "parent"));
+		Set<RecordGroup> groups = Model.getAll(RecordGroup.class, collection, CMaps.map("deleted", CMaps.map("$ne", true)), Sets.create("system", "name", "label", "contents", "parent"));
 		
 		Map<String, RecordGroup> newCache = new HashMap<String, RecordGroup>();
 		for (RecordGroup group : groups) {
 			newCache.put(group.system+":"+group.name, group);
-			group.children = new ArrayList<RecordGroup>();						
+			group.children = new ArrayList<RecordGroup>();	
+			if (group.contents==null) group.contents = new HashSet<String>();
 		}
 		
 		for (RecordGroup group : groups) {
 			AccessLog.log(group.name);
 		    if (group.parent != null) newCache.get(group.system+":"+group.parent).children.add(group);
 		}
+		
+		Set<GroupContent> groupContent = GroupContent.getAll();
+		
+		// Convert
+		Set<String> existing = new HashSet<String>();
+		for (GroupContent grpContent : groupContent) {
+			existing.add(grpContent.system+":"+grpContent.name+":"+grpContent.content);
+		}
+		for (RecordGroup group : groups) {
+			for (String c : group.contents) {
+				if (!existing.contains(group.system+":"+group.name+":"+c)) {
+					GroupContent gc = new GroupContent();
+					gc._id = new MidataId();
+					gc.system = group.system;
+					gc.name = group.name;
+					gc.content = c;
+					GroupContent.add(gc);
+					existing.add(gc.system+":"+gc.name+":"+gc.content);
+				}
+			}
+		}
+		// End convert
+		
+		
+		for (GroupContent grpContent : groupContent) {
+			newCache.get(grpContent.system+":"+grpContent.name).contents.add(grpContent.content);
+		}
 				
-		Set<ContentInfo> allci = ContentInfo.getAll(new HashMap<String, Object>(), Sets.create("content", "group","label","defaultCode"));
+		Set<ContentInfo> allci = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), Sets.create("content", "group","label","defaultCode"));
 		for (ContentInfo ci : allci) {
 			if (ci.label == null) {
 			   ContentCode cc = ContentCode.getBySystemCode(ci.defaultCode);

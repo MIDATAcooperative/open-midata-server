@@ -588,6 +588,11 @@ const routes = [
   },
   {
     base : ["admin"],
+    path : "importcontent",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/importcontent.vue')
+  },
+  {
+    base : ["admin"],
     path : "newterms",
     component: () => import(/* webpackChunkName: "admin" */ 'views/admin/manageterms.vue')
   },

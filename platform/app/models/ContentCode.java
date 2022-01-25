@@ -34,6 +34,7 @@ import utils.exceptions.InternalServerException;
 public class ContentCode extends Model  {
 
 	  private static String collection = "coding";
+	  public @NotMaterialized static final Set<String> ALL = Sets.create("system", "version", "code", "display", "content", "deleted", "lastUpdated");
 	  
 	  /**
 	   * The coding system used for this entry
@@ -59,6 +60,10 @@ public class ContentCode extends Model  {
 	   * The "content" value (ContentInfo class) MIDATA uses to handle this content code
 	   */
 	  public String content;
+	  
+	  public boolean deleted;
+	  
+	  public long lastUpdated;
 	  
 	  public @NotMaterialized static Map<String, String> contentForSystemCode = new ConcurrentHashMap<String, String>();
 	  
@@ -93,7 +98,7 @@ public class ContentCode extends Model  {
 		  String resultStr = codesystems.getContentForSystemCode(system, code);
 		  if (resultStr != null) return resultStr;
 		  		  
-		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code), Sets.create("content"));
+		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code).map("deleted", CMaps.map("$ne", true)), Sets.create("content"));
 		  if (result != null) {
 			  contentForSystemCode.put(systemCode, result.content);
 			  return result.content;
@@ -113,7 +118,7 @@ public class ContentCode extends Model  {
 		  String system = systemCode.substring(0, p);
 		  String code = systemCode.substring(p+1);
 		  
-		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code), Sets.create("content"));
+		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code).map("deleted", CMaps.map("$ne", true)), Sets.create("content"));
 		  return result;
 	  }
 	  
@@ -125,7 +130,7 @@ public class ContentCode extends Model  {
 	   * @throws InternalServerException
 	   */
 	  public static ContentCode getBySystemCode(String system, String code) throws InternalServerException {
-		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code), Sets.create("content"));
+		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code).map("deleted", CMaps.map("$ne", true)), Sets.create("content"));
 		  return result;
 	  }
 	  
@@ -138,7 +143,8 @@ public class ContentCode extends Model  {
 	  }
 	  
 	  public static void delete(MidataId ccId) throws InternalServerException {			
-		  Model.delete(ContentCode.class, collection, CMaps.map("_id", ccId));
+		  Model.set(ContentCode.class, collection, ccId, "lastUpdated", System.currentTimeMillis());
+		  Model.set(ContentCode.class, collection, ccId, "deleted", true);
 	  }
 
 	  public static void reset() {
