@@ -39,7 +39,7 @@ import utils.json.JsonValidation.JsonValidationException;
 public class ContentInfo extends Model {
 
 	private @NotMaterialized static final String collection = "contentinfo";
-	private @NotMaterialized static final Set<String> ALL = Sets.create("content", "defaultCode", "security","label", "resourceType", "comment", "source");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("content", "defaultCode", "security","label", "resourceType", "comment", "source", "deleted", "lastUpdated");
 	
 	/**
 	 * the name of the content type this class describes
@@ -91,13 +91,17 @@ public class ContentInfo extends Model {
 	 */
 	public String comment;
 	
+	public boolean deleted;
+	
+	public long lastUpdated;
+	
 	
 	private @NotMaterialized static Map<String, ContentInfo> byName = new ConcurrentHashMap<String, ContentInfo>();
 	
 	public static ContentInfo getByName(String name) throws BadRequestException, InternalServerException {		
 			ContentInfo r = byName.get(name);		
 			if (r != null) return r;
-			r = Model.get(ContentInfo.class, collection, CMaps.map("content", name), ALL);
+			r = Model.get(ContentInfo.class, collection, CMaps.map("content", name).map("deleted", CMaps.map("$ne", true)), ALL);
 			if (r == null) {
 				throw new BadRequestException("error.unknown.content", "Content '"+name+"' is not registered with the platform.");
 			}
@@ -159,7 +163,8 @@ public class ContentInfo extends Model {
 	    Model.upsert(collection, cc);
 	}
 	  
-	public static void delete(MidataId ccId) throws InternalServerException {			
-	    Model.delete(ContentInfo.class, collection, CMaps.map("_id", ccId));
+	public static void delete(MidataId ccId) throws InternalServerException {
+		Model.set(ContentInfo.class, collection, ccId, "lastUpdated", System.currentTimeMillis());
+		Model.set(ContentInfo.class, collection, ccId, "deleted", true);	    
 	}
 }

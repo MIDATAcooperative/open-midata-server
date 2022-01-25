@@ -341,7 +341,14 @@
       "group_system" : "Grouping System",
       "save_group_btn" : "Save Group",
       "delete_group_btn" : "Delete Group",
-      "save_btn" : "Save Code & Content type"
+      "save_btn" : "Save Code & Content type",
+      "export_btn" : "Export Changes",
+      "import_btn" : "Import Changes"
+   },
+
+   "admin_importcontent" : {
+      "title" : "Import Codes",
+      "definition" : "Code/Content Changes (JSON)"
    }
     
 }

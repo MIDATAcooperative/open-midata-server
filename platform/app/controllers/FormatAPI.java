@@ -17,19 +17,25 @@
 
 package controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
 import actions.VisualizationCall;
 import models.ContentCode;
 import models.ContentInfo;
 import models.FormatInfo;
+import models.GroupContent;
 import models.Loinc;
 import models.MidataId;
 import models.RecordGroup;
@@ -40,12 +46,16 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import play.mvc.Http.Request;
+import utils.AccessLog;
 import utils.auth.AdminSecured;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.sync.Instances;
@@ -85,7 +95,7 @@ public class FormatAPI extends Controller {
 	 */
 	@APICall
 	public Result listContents() throws InternalServerException {
-	    Collection<ContentInfo> contents = ContentInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("content", "security", "comment", "label", "defaultCode", "resourceType", "subType", "defaultUnit", "category", "source"));
+	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), Sets.create("content", "security", "comment", "label", "defaultCode", "resourceType", "subType", "defaultUnit", "category", "source"));
 	    return ok(Json.toJson(contents));
 	}
 	
@@ -96,7 +106,7 @@ public class FormatAPI extends Controller {
 	 */
 	@APICall
 	public Result listCodes() throws InternalServerException {
-	    Collection<ContentCode> codes = ContentCode.getAll(Collections.<String, String> emptyMap(), Sets.create("system", "code", "display", "content"));
+	    Collection<ContentCode> codes = ContentCode.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), Sets.create("system", "code", "display", "content"));
 	    return ok(Json.toJson(codes));
 	}
 	
@@ -118,7 +128,7 @@ public class FormatAPI extends Controller {
 		cc.version = JsonValidation.getStringOrNull(json, "version");
 		cc.display = JsonValidation.getString(json, "display");
 		cc.system = JsonValidation.getString(json, "system");
-		
+		cc.lastUpdated = System.currentTimeMillis();
 		ContentCode.add(cc);
 		
 		return ok();
@@ -142,7 +152,7 @@ public class FormatAPI extends Controller {
 		cc.version = JsonValidation.getStringOrNull(json, "version");
 		cc.display = JsonValidation.getString(json, "display");
 		cc.system = JsonValidation.getString(json, "system");
-		
+		cc.lastUpdated = System.currentTimeMillis();
 		ContentCode.upsert(cc);
 		
 		return ok();
@@ -183,7 +193,7 @@ public class FormatAPI extends Controller {
 		cc.defaultUnit = JsonValidation.getStringOrNull(json,  "defaultUnit");
 		cc.category = JsonValidation.getStringOrNull(json,  "category");
 		cc.source = JsonValidation.getStringOrNull(json,  "source");
-		
+		cc.lastUpdated = System.currentTimeMillis();
 		ContentInfo.add(cc);
 		Instances.cacheClear("content", null);
 		
@@ -212,7 +222,7 @@ public class FormatAPI extends Controller {
 		cc.defaultUnit = JsonValidation.getStringOrNull(json,  "defaultUnit");
 		cc.category = JsonValidation.getStringOrNull(json,  "category");
 		cc.source = JsonValidation.getStringOrNull(json,  "source");
-		
+		cc.lastUpdated = System.currentTimeMillis();
 		ContentInfo.upsert(cc);
 		Instances.cacheClear("content", null);
 		
@@ -243,9 +253,9 @@ public class FormatAPI extends Controller {
 		cc.name = JsonValidation.getString(json, "name");
 		cc.system = JsonValidation.getString(json, "system");
 		cc.parent = JsonValidation.getString(json, "parent");
-		cc.contents = JsonExtraction.extractStringSet(json.get("contents"));
+		//cc.contents = JsonExtraction.extractStringSet(json.get("contents"));
 		cc.label = JsonExtraction.extractStringMap(json.get("label"));
-		
+		cc.lastUpdated = System.currentTimeMillis();
 		RecordGroup.add(cc);
 		Instances.cacheClear("content", null);
 		
@@ -262,9 +272,9 @@ public class FormatAPI extends Controller {
 		cc.name = JsonValidation.getString(json, "name");
 		cc.system = JsonValidation.getString(json, "system");
 		cc.parent = JsonValidation.getStringOrNull(json, "parent");
-		cc.contents = JsonExtraction.extractStringSet(json.get("contents"));
+		//cc.contents = JsonExtraction.extractStringSet(json.get("contents"));
 		cc.label = JsonExtraction.extractStringMap(json.get("label"));
-		
+		cc.lastUpdated = System.currentTimeMillis();
 		RecordGroup.upsert(cc);
 		Instances.cacheClear("content", null);
 		return ok();
@@ -274,6 +284,27 @@ public class FormatAPI extends Controller {
 	@Security.Authenticated(AdminSecured.class)
 	public Result deleteGroup(String id) throws AppException {
 		RecordGroup.delete(new MidataId(id));	
+		Instances.cacheClear("content", null);
+		return ok();
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	public Result updateGroupContent(Request request) throws AppException {
+		JsonNode json = request.body().asJson();
+		GroupContent cc = new GroupContent();
+				
+		cc.name = JsonValidation.getString(json, "name");
+		cc.system = JsonValidation.getString(json, "system");
+		cc.content = JsonValidation.getString(json, "content");
+		
+		GroupContent old = GroupContent.getPrevious(cc);
+		if (old != null) cc = old; else cc._id = new MidataId();		
+		cc.deleted = JsonValidation.getBoolean(json, "deleted");		
+		cc.lastUpdated = System.currentTimeMillis();
+		
+		GroupContent.upsert(cc);
 		Instances.cacheClear("content", null);
 		return ok();
 	}
@@ -317,7 +348,7 @@ public class FormatAPI extends Controller {
 		  }
 		  return ok(Json.toJson(results));
 		} else {		
-	      Collection<ContentCode> contents = ContentCode.getAll(properties, fields);
+	      Collection<ContentCode> contents = ContentCode.getAll(CMaps.map(properties).map("deleted", CMaps.map("$ne", true)), fields);
 	      
 	      
 	      return ok(Json.toJson(contents));
@@ -342,7 +373,7 @@ public class FormatAPI extends Controller {
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 				
-	    Collection<ContentInfo> contents = ContentInfo.getAll(properties, fields);
+	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map(properties).map("deleted", CMaps.map("$ne", true)), fields);
 	      	      
 	    return ok(Json.toJson(contents));		
 	}
@@ -359,8 +390,77 @@ public class FormatAPI extends Controller {
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 				
-	    Collection<ContentInfo> contents = ContentInfo.getAll(properties, fields);
+	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map(properties).map("deleted", CMaps.map("$ne", true)), fields);
 	      	      
 	    return ok(Json.toJson(contents));		
+	}
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public Result exportChanges() throws InternalServerException {
+		ObjectNode obj = Json.newObject();
+		
+		Set<ContentInfo> ci = ContentInfo.getAll(CMaps.map("lastUpdated", CMaps.map("$gt", 0)), ContentInfo.ALL);
+		Set<ContentCode> cc = ContentCode.getAll(CMaps.map("lastUpdated", CMaps.map("$gt", 0)), ContentCode.ALL);
+		Set<RecordGroup> rg = RecordGroup.getAll(CMaps.map("lastUpdated", CMaps.map("$gt", 0)), RecordGroup.ALL);
+		Set<GroupContent> gc = GroupContent.getAllChanged();
+		
+		obj.set("contentinfo", JsonOutput.toJsonNode(ci, "ContentInfo", ContentInfo.ALL));
+		obj.set("coding", JsonOutput.toJsonNode(cc, "ContentCode", ContentCode.ALL));
+		obj.set("formatgroups", JsonOutput.toJsonNode(rg, "RecordGroup", RecordGroup.ALL));
+		obj.set("groupcontent", JsonOutput.toJsonNode(gc, "GroupContent", GroupContent.ALL));
+		
+		return ok(obj);
+		
+	}
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public Result importChanges(Request request) throws AppException {
+		JsonNode json = request.body().asJson();		
+		JsonValidation.validate(json, "base64");
+		String base64 = JsonValidation.getString(json, "base64");
+		
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode contentinfo = null;
+		ArrayNode coding = null;
+		ArrayNode formatgroups = null;
+		ArrayNode groupcontent = null;
+		JsonNode allJson = null;
+		try {
+			allJson = mapper.readTree(base64);
+			contentinfo = (ArrayNode) allJson.get("contentinfo");
+			coding = (ArrayNode) allJson.get("coding");
+			formatgroups = (ArrayNode) allJson.get("formatgroups");
+			groupcontent = (ArrayNode) allJson.get("groupcontent");
+				
+			for (JsonNode c : contentinfo) {
+			   ContentInfo ci = mapper.treeToValue(c, ContentInfo.class);
+			   ContentInfo.upsert(ci);
+			}
+			for (JsonNode code : coding) {
+				ContentCode cc = mapper.treeToValue(code, ContentCode.class);
+				ContentCode.upsert(cc);
+			}
+			for (JsonNode group : formatgroups) {
+				RecordGroup fg = mapper.treeToValue(group, RecordGroup.class);
+				RecordGroup.upsert(fg);
+			}
+			for (JsonNode groupConent : groupcontent) {
+				GroupContent gc = mapper.treeToValue(groupConent, GroupContent.class);
+				GroupContent.upsert(gc);
+			}
+						
+			
+		} catch (JsonProcessingException e) {
+			AccessLog.logException("parse json", e);
+		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
+		} catch (IOException e) {
+		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
+		} finally {
+			Instances.cacheClear("content", null);
+		}
+		return ok();
 	}
 }

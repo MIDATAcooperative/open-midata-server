@@ -66,6 +66,10 @@ import server from "./server";
 	service.updateGroup = function(group) {
 		return server.post(jsRoutes.controllers.FormatAPI.updateGroup(group._id).url, group);
 	};
+
+	service.updateGroupContent = function(groupcontent) {
+		return server.post(jsRoutes.controllers.FormatAPI.updateGroupContent().url, groupcontent);
+	};
 	
 	service.deleteCode = function(code) {
 		return server.delete(jsRoutes.controllers.FormatAPI.deleteCode(code._id).url);

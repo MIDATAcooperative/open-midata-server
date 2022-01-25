@@ -651,7 +651,7 @@ public class Studies extends APIController {
 		}
 
 		ObjectNode result = Json.newObject();
-		result.put("study", JsonOutput.toJsonNode(study, "Study", fields));
+		result.set("study", JsonOutput.toJsonNode(study, "Study", fields));
 
 		return ok(result);
 	}
