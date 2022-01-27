@@ -49,6 +49,10 @@
         "title" : "Ricerca paziente",
         "email" : "e-mail",
         "or" : "o",
+
+        // TODO CHANGED
+        // OLD: MIDATA ID
+        // NEW: @PRODUCT ID
         "midataid" : "@PRODUCT ID",
         "birthday" : "Data di nascita",
         "searching" : "Ricerca...",

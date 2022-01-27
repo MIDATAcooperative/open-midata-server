@@ -48,7 +48,7 @@
      "title" : "Patient Search",
      "email" : "email",
      "or" : "or",
-     "midataid" : "MIDATA ID",
+     "midataid" : "@PRODUCT ID",
      "birthday" : "Date of birth",
      "searching" : "Searching...",
      "address" : "Address",

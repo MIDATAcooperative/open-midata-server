@@ -140,8 +140,8 @@
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
        "participation" : "You are not authorized to participate in this research project and therefore cannot use this application.",
        "projectconsent" : "You have withdrawn your participation in this research project and can therefore no longer use this application.",
-       "consent" : "You have set in the @PLATFORM portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PLATFORM portal.",
-       "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PLATFORM portal.",
+       "consent" : "You have set in the @PRODUCT portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PRODUCT portal.",
+       "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PRODUCT portal.",
        "app_test" : "You are allowed to use this application on a maximum of 10 devices. On this TEST instance consents have been reset for you. Please retry.",
        "joinmethod" : "It is not allowed to join the project by this method." 
      },
@@ -363,7 +363,7 @@
 	 },
 	 "joinmethod" : {
 	   "APP" : "Participant uses the linked application",
-	   "PORTAL" : "Participant applies on @PLATFORM portal",
+	   "PORTAL" : "Participant applies on @PRODUCT portal",
 	   "RESEARCHER" : "Participant is manually registered by research team member",
 	   "API" : "Participant is registered by external software",
 	   "ALGORITHM" : "Participant has been proposed by an algorithm (not supported)",
@@ -470,7 +470,7 @@
 	 },
 	 "codesystems" : {
 	   "loinc" : "LOINC code",
-	   "midata" : "MIDATA code",
+	   "midata" : "@PRODUCT code",
 	   "fhir" : "FHIR Resource",
 	   "snowmed" : "SNOMED CT code" 
 	 },
@@ -612,7 +612,7 @@
     "generous" : "I'm feeling generous today, show me the fields!",
     "hide_optional" : "Hide optional fields",
     "welcome_title" : "Welcome",
-    "welcome_text1" : "Your @PLATFORM account has just been created. A confirmation email has been sent to you.",
+    "welcome_text1" : "Your @PRODUCT account has just been created. A confirmation email has been sent to you.",
     "welcome_text2" : "Please click on the link in the email within 24 hours to complete your registration.",
     "welcome_text3" : "If you should not receive the email within the next 30 minutes, please check your spam filter.",
     "welcome_btn" : "Go on" 
@@ -630,8 +630,7 @@
     "service_login2" : "At your next login, you will be asked for confirmation of consents and/or participation with research projects.",
     "account_login" : "Login for Account Management",
     "account_login2" : "Please log in for access to account management functions.",
-    
-    "no_account" : "I do not have a @PLATFORM account yet."   
+    "no_account" : "I do not have a @PRODUCT account yet."   
   },
 
   "lostpw" : {
@@ -696,11 +695,11 @@
     "auth_type_none" : "I do not want to use two factor authentication.",
     "auth_type_sms" : "I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.",
     "emailnotify" : "Notifications",
-    "emailnotify2" : "Please send me an email everytime I log into the @PLATFORM portal at {{domain}}.",
+    "emailnotify2" : "Please send me an email everytime I log into the @PRODUCT portal at {{domain}}.",
     "agree_btn" : "I agree",
     "keyrecovery" : {
       "intro" : "The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:",
-      "way1" : "Do you have any application using @PLATFORM where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.",
+      "way1" : "Do you have any application using @PRODUCT where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.",
       "way2" : "Have you logged in using a browser before? If yes try to log in using the same browser and device.",
       "way3" : "Remember your old password again? If yes try to log in using your old password.",
       "way4" : "Wait for @OPERATOR employees to do a manual key recovery. @OPERATOR will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed."
@@ -772,7 +771,7 @@
 	"created_by" : "Created by:",
     "created_with" : "Created with:",
     "created_on" : "Created at:",
-    "content" : "Midata Content-Type:",
+    "content" : "@PRODUCT content type:",
     "format" : "Format:",
     "download_btn" : "Download",
     "content_visualization" : "Content Visualization",
@@ -825,7 +824,7 @@
     "name" : "Name:",
     "email" : "Email:",
     "birthday" : "Date of birth:",
-    "midataID" : "MIDATA ID:",
+    "midataID" : "@PRODUCT ID:",
     "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
@@ -922,7 +921,7 @@
     "type" : "Type of Consent",
     "status" : "Status of Consent",
     "people" : "With which persons(s) do you want to share data?",
-    "external" : "Non @PLATFORM account holder",
+    "external" : "Non @PRODUCT account holder",
     "add_people_btn" : "Add More People",
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
@@ -932,7 +931,7 @@
     "created_before" : "Does not share data created after:",
     "what_is_shared" : "What data is shared?",
     "consent_empty" : "This consent does not share any data at the moment.",
-    "type_circle" : "This consent shares data with other @PLATFORM account holders.",
+    "type_circle" : "This consent shares data with other @PRODUCT account holders.",
     "type_representative" : "This consent authorizes another person to use your account. All data of the account owner is shared with the representative.",
     "type_healthcare" : "This consent shares data with healthcare professionals.",
     "type_studyparticipation" : "This consent shares data with a research project.",
@@ -1053,19 +1052,19 @@
   },
 
   "oauth2" : {
-    "requests_permission" : "stores your personal data in your @PLATFORM account.",
+    "requests_permission" : "stores your personal data in your @PRODUCT account.",
     "no_account" : "You don't have an account?", 
-    "have_account" : "You have a @PLATFORM account?",
+    "have_account" : "You have a @PRODUCT account?",
     "have_account2" : "Perfect, log in here",
     "role" : "Role",
     "sign_up_btn" : "Sign up",
     "reshares_data" : "Application may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
     "requesting_app" : "needs access to your data.",
-    "sign_in" : "@PLATFORM login for:",
+    "sign_in" : "@PRODUCT login for:",
     "sign_in_btn" : "Log in",
     "device" : "Device: {{device}}",
-    "please_confirm" : "Please confirm the activation of the application using the @PLATFORM portal, then retry. Consent title is: {{ consent }}",
+    "please_confirm" : "Please confirm the activation of the application using the @PRODUCT portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
     "reject_btn" : "Reject",
     "continue_btn" : "Continue",
@@ -1137,7 +1136,7 @@
 	  "newrecords_teaser" : "There are no new records. Visit the records page to browser all of your records.",
 	  "myaccount" : "My Account Data",
     "newsharedrecords" : "New records shared with you",
-    "newsharedrecords_teaser" :  "Other @PLATFORM account holders may share their data with you.",
+    "newsharedrecords_teaser" :  "Other @PRODUCT account holders may share their data with you.",
     "circles" : "Member of Circles",
     "circles_teaser" : "Ask others to add you to their circles.",
 	  "circles2" : "Your Circles",
@@ -1283,7 +1282,7 @@
   
   "changeemail" : {
     "title" : "Change Account Email Address",
-    "midataId" : "MIDATA ID",
+    "midataId" : "@PRODUCT ID",
     "name" : "Name",
     "old_email" : "Current Email Address",
     "new_email" : "New Email Address",
@@ -1309,27 +1308,27 @@
   },
   
   "accountwipe" : {
-    "title" : "Close and Delete @PLATFORM Account",
+    "title" : "Close and Delete @PRODUCT Account",
     "hello" : "Dear {{name}},",
     "hello_m" : "Dear {{name}},",
     "hello_w" : "Dear {{name}},",
-    "paragraph1" : "You would like to delete your @PLATFORM account irrevocably? That is of course possible.",
+    "paragraph1" : "You would like to delete your @PRODUCT account irrevocably? That is of course possible.",
     "paragraph2" : "Please read the following information first:",
-    "point1" : "If you delete your @PLATFORM account your personal data will no longer be available.",
+    "point1" : "If you delete your @PRODUCT account your personal data will no longer be available.",
     "point2" : "Data already included in research projects will continue to be available in these projects.",
     "point3" : "@OPERATOR is not able to recover your deleted account.",    
     "warning" : "Warning",
     "final" : "This action cannot be undone.",
-    "paragraph3" : "If you really want to delete your @PLATFORM account enter your password for confirmation.",
+    "paragraph3" : "If you really want to delete your @PRODUCT account enter your password for confirmation.",
     "password" : "Password",
     "reason" : "Reason (optional)",
     "reason2" : "We would be grateful if you could tell us why you are deleting your account. We are continually trying to improve the @PLATFORM.",
-    "wipe_btn" : "Close and Delete @PLATFORM Account",
+    "wipe_btn" : "Close and Delete @PRODUCT Account",
     "error" : "Password not correct. The account has not been deleted."
   },
   
   "serviceleave" : {
-    "title" : "You finished your session?",
+    "title" : "Did you finish your session?",
     "thankyou" : "Thank you for your help!",
     "continue" : "Please use the top menu to continue your session or log out.",
     "logout_btn" : "Log out",
@@ -1440,7 +1439,7 @@
     "title" : "Login not allowed",
     "intro" : "You are not allowed to log in for the following reason:",
     "withdrawn1" : "You have withdrawn your participation in a project. The participation is mandantory in order to use this application.",
-    "withdrawn2" : "You will not be able to use the application again with your @PLATFORM account.",
+    "withdrawn2" : "You will not be able to use the application again with your @PRODUCT account.",
     "joinmethod1" : "The access to the research project is restricted.",
     "joinmethod2" : "Please contact the team responsible for the project. For more information, read the terms of use of the application.",
     "loginpage_btn" : "Return to login"
