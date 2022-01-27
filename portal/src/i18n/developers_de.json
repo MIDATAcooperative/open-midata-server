@@ -93,10 +93,6 @@
         "query_help" : "Definieren Sie, auf welche Arten von Daten Ihre Applikation zugreifen darf.",
         "write_mode" : "Schreibzugriff",
         "subscriptions_btn" : "Standardabonnements (Subscriptions) ändern",
-
-        // TODO CHANGED
-        // OLD: Define triggers that cause an action on the @PLATFORM server
-        // NEW: Define triggers that cause an action on the @PRODUCT server
         "subscriptions_help" : "Trigger definieren, die eine Aktion auf dem @PRODUCT Server auslösen",
         "tokenExchangeParams" : "OAuth 2-Parameter für den Token-Austausch",
         "testfromlocal_btn" : "Testen Sie Ihr Plugin von localhost aus",
@@ -116,10 +112,6 @@
         "stats_btn" : "Fehler- und Performance-Statistiken",
         "stats_help" : "Hier finden Sie Statistiken und Hinweise zur Verbesserung der verschiedenen Arten von API-Aufrufen, die Ihre Applikation an den Server sendet.",
         "debug_btn" : "API Tester Sandbox",
-
-        // TODO CHANGED
-        // OLD: Login as application and test queries against the @PLATFORM backend.
-        // NEW: Login as application and test queries against the @PRODUCT server.
         "debug_help" : "Melden Sie sich als Applikation an und testen Sie Abfragen gegen den @PRODUCT Server.",
         "appreviews_btn" : "Überprüfungen",
         "appreviews_help" : "Überprüfungen, die für diese Applikation durchgeführt wurden",
@@ -146,10 +138,6 @@
             "targetUserRole" : "Ist Ihre Applikation nur für eine spezifische Rolle bestimmt? Wenn nicht, wählen Sie 'Alle Rollen'.",
             "loginTemplate" : "Wie soll der Anmeldevorgang aussehen? Einige Einstellungen müssen von einem Administrator genehmigt werden",
             "loginButtonsTemplate" : "Wie sollten die Schaltflächen angeordnet werden?",
-
-            // TODO CHANGED
-            // OLD: Choose 'Plugin' if your application will run on the @PLATFORM portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.
-            // NEW: Choose 'Plugin' if your application will run on the @PRODUCT portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.
             "type" : "Wählen Sie 'Plugin' wenn Ihre Applikation im @PRODUCT-Portal laufen wird. Wählen Sie 'Applikation (Smartphone, Web)' für eine externe Applikation. Wählen Sie 'Dienst' für ein serverseitiges Skript. Wählen Sie 'OAuth 1' oder 'OAuth 2' wenn Sie sich über OAuth 1 oder OAuth 2 mit einem externen Server verbinden.",
             "name" : "Der Name Ihrer Applikation, der dem Endbenutzer präsentiert wird.",
             "description" : "Die Beschreibung Ihrer Applikation, die im Marketplace erscheinen wird.",
@@ -161,26 +149,14 @@
             "consentObserving" : "Überwacht dieser Dienst die Einwilligungen der Benutzer? Fügen Sie 'Zustimmungen (Consents)' zum Datenzugriffsfilter (Data Access Filter) hinzu, um es zu aktivieren.",
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
             "tags" : "Kategorien unter welchen das Plugin im Store erscheinen wird.",
-
-            // TODO CHANGED
-            // OLD: URL of your plugins main page. If you use the template from @PLATFORM it is 'dist/index.html#!?authToken=:authToken''
-            // NEW: URL of your plugins main page. If you use @PRODUCT's template, it is 'dist/index.html#!?authToken=:authToken''
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das @PRODUCT Template verwenden, ist es 'dist/index.html#!?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
             "defaultSpaceContext" : "Wählen Sie 'Dashboard' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
             "redirectUri" : "Sie können mehrere mögliche Redirect-URIs angeben, indem Sie die URIs durch ein Leerzeichen trennen.",
             "secret" : "Ihre Applikation braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben.",
             "mustParticipateInStudy" : "Benutzer müssen am Forschungsprojekt teilnehmen, um diese Applikation benutzen zu können.",
-
-            // TODO CHANGED
-            // OLD: If filled out, this code must be entered by the user in order to sign up or log in the first time to the @PLATFORM using the application. The code is not case sensitive.
-            // NEW: If filled out, this code must be entered by the user in order to sign up or log in the first time to @PRODUCT using the application. The code is not case sensitive.
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei @PRODUCT über die Applikation eingegeben werden. Der Code ist nicht 'case sensitiv'.",
             "send_reports" : "Den Entwickler ({{user}}) per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.",
-
-            // TODO CHANGED
-            // OLD: Enter comma separated list of email addresses of other developers on @PLATFORM that develop this application.
-            // NEW: Enter comma separated list of email addresses of other developers on that @PRODUCT instance, that develop this application.
             "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf diese @PRODUCT Instanz ein, die diese Anwendung entwickeln."
         },
         "status" : {
@@ -414,10 +390,6 @@
             "no_orgname" : "In der Applikationsdefinition ist kein Name der Entwicklerorganisation angegeben.",
             "no_publisher" : "In der Applikationsdefinition ist kein Herausgeber angegeben.",
             "no_app_description" : "Es fehlt die Applikationsbeschreibung.",
-
-            // TODO CHANGED
-            // OLD: Plugin is not available in @PLATFORM Store. Ask an administrator.
-            // NEW: The plugin is not available in the @PRODUCT Store. Ask an administrator.
             "not_spotlighted" : "Das Plugin ist nicht im @PRODUCT Store verfügbar. Fragen Sie einen Administrator.",
             "no_repository" : "Kein Repository für das Auschecken des Codes vorhanden.",
             "no_send_reports" : "Fehlerberichtsbenachrichtigungen (E-Mails) sind für diese Applikation deaktiviert.",

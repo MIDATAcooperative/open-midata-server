@@ -30,10 +30,6 @@
         "specific_user" : "Bestimmter Benutzer",
         "role" : "Rolle",
         "status" : "Status",
-
-        // TODO CHANGED
-        // OLD: MIDATA ID
-        // NEW: @PRODUCT ID
         "midata_id" : "@PRODUCT ID",
         "empty" : "Kein passender Benutzer gefunden."
     },
@@ -41,10 +37,6 @@
     "admin_address" : {
         "title" : "Benutzerprofil",
         "show_apps_created" : "Von diesem Entwickler erstellten Applikationen anzeigen",
-
-        // TODO CHANGED
-        // OLD: MIDATA ID
-        // NEW: @PRODUCT ID
         "midata_id" : "@PRODUCT ID",
         "role" : "Rolle",
         "subroles" : "Subrolle(n)",
@@ -328,15 +320,7 @@
         "make_selection" : "Wählen Sie das Element, das Sie bearbeiten oder dem Sie einen neuen Code hinzufügen möchten",
         "new_code" : "Neuer Code, der hinzugefügt werden soll",
         "edit_code" : "Vorhandenen Code bearbeiten",
-
-        // TODO CHANGED
-        // OLD: Edit existing MIDATA content type
-        // NEW: Edit existing @PRODUCT content type
         "edit_content" : "Vorhandenen @PRODUCT-Inhaltstyp bearbeiten",
-
-        // TODO CHANGED
-        // OLD: New MIDATA content type to be added
-        // NEW: New @PRODUCT content type to be added
         "new_content" : "Neuer @PRODUCT-Inhaltstyp hinzuzufügen",
         "edit_group" : "Vorhandene Gruppe im Datenbaum bearbeiten",
         "new_group" : "Neue Gruppe im Datenbaum",
@@ -344,10 +328,6 @@
         "version" : "Version",
         "code" : "Code",
         "display" : "Bezeichnung",
-
-        // TODO CHANGED
-        // OLD: MIDATA content type
-        // NEW: @PRODUCT content type
         "content" : "@PRODUCT-Inhaltstyp",
         "security" : "Verschlüsselungsschlüssel der Daten",
         "medium" : "Wiederverwendung von Schlüsseln für Daten desselben Typs und derselben Person",

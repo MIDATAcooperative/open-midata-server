@@ -46,10 +46,6 @@
     },
 
     "accountdata" : {
-
-        // TODO CHANGED
-        // OLD: MIDATA ID:
-        // NEW: @PRODUCT ID:
         "midata_id" : "@PRODUCT ID:",
         "birthday" : "Date de naissance:",
         "change_btn" : "Modifier"

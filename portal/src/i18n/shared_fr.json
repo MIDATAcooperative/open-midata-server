@@ -141,15 +141,7 @@
             "password60" : "Trop d'essais de connexion manqués. Veuillez attendre 1 heure avant la prochaine tentative.",
             "participation" : "Vous n'êtes pas autorisé à participer à ce projet de recherche et ne pouvez donc pas utiliser cette application.",
             "projectconsent" : "Vous avez retiré votre participation à ce projet de recherche et ne pouvez donc plus utiliser cette application.",
-
-            // TODO CHANGED
-            // OLD: You have set in the @PLATFORM portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PLATFORM portal.
-            // NEW: You have set in the @PRODUCT portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PRODUCT portal.
             "consent" : "Vous avez défini dans le portail @PRODUCT que cette application ne peut plus accéder à vos données. Si vous voulez utiliser à nouveau cette application, vous devez la ré-autoriser dans le portail @PRODUCT.",
-
-            // TODO CHANGED
-            // OLD: You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PLATFORM portal.
-            // NEW: You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PRODUCT portal.
             "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez supprimer les consentements non utilisés sur le portail @PRODUCT.",
             "app_test" : "Vous êtes autorisé à utiliser cette application sur un maximum de 10 appareils. Sur cette instance TEST, les autorisations ont été réinitialisées pour vous. Veuillez réessayer.",
             "joinmethod" : "Il n'est pas permis d'adhérer au projet par cette méthode."
@@ -372,10 +364,6 @@
         },
         "joinmethod" : {
             "APP" : "Le participant utilise l'application liée",
-
-            // TODO CHANGED
-            // OLD: Participant applies on @PLATFORM portal
-            // NEW: Participant applies on @PRODUCT portal
             "PORTAL" : "Le participant s'inscrit sur le portail @PRODUCT",
             "RESEARCHER" : "Le participant est enrôlé manuellement par un membre de l'équipe de recherche",
             "API" : "Le participant est enrôlé par un logiciel externe",
@@ -483,10 +471,6 @@
         },
         "codesystems" : {
             "loinc" : "Code LOINC",
-
-            // TODO CHANGED
-            // OLD: MIDATA code
-            // NEW: @PRODUCT code
             "midata" : "Code @PRODUCT",
             "fhir" : "FHIR Resource",
             "snowmed" : "Code SNOMED CT"
@@ -629,10 +613,6 @@
         "generous" : "Je me sens généreux aujourd'hui, montrez-moi les champs!",
         "hide_optional" : "Masquer les champs facultatifs",
         "welcome_title" : "Bienvenue",
-
-        // TODO CHANGED
-        // OLD: Your @PLATFORM account has just been created. A confirmation email has been sent to you.
-        // NEW: Your @PRODUCT account has just been created. A confirmation email has been sent to you.
         "welcome_text1" : "Votre compte @PRODUCT vient d'être créé. Un e-mail de confirmation vous a été envoyé.",
         "welcome_text2" : "Veuillez cliquer le lien contenu dans l'e-mail dans les 24 heures pour terminer votre inscription.",
         "welcome_text3" : "Si vous ne recevez pas l'e-mail dans les 30 prochaines minutes, veuillez vérifier votre filtre anti-spam.",
@@ -651,10 +631,6 @@
         "service_login2" : "Lors votre prochaine connexion, on vous demandera de confirmer votre consentement et/ou votre participation à des projets de recherche.",
         "account_login" : "Connexion pour la gestion des comptes",
         "account_login2" : "Veuillez vous connecter pour accéder aux fonctions de gestion du compte.",
-
-        // TODO CHANGED
-        // OLD: I do not have a @PLATFORM account yet.
-        // NEW: I do not have a @PRODUCT account yet.
         "no_account" : "Je n'ai pas encore de compte @PRODUCT."
     },
 
@@ -720,18 +696,10 @@
         "auth_type_none" : "Je ne veux pas utiliser l'authentification à deux facteurs.",
         "auth_type_sms" : "Je veux utiliser l'authentification à deux facteurs par codes SMS. Veuillez m'envoyer un code sur mon téléphone portable lorsque je me connecte.",
         "emailnotify" : "Notifications",
-
-        // TODO CHANGED
-        // OLD: Please send me an email everytime I log into the @PLATFORM portal at {{domain}}.
-        // NEW: Please send me an email everytime I log into the @PRODUCT portal at {{domain}}.
         "emailnotify2" : "Veuillez m'envoyer un e-mail chaque fois que je me connecte au portail @PRODUCT à {{domain}}.",
         "agree_btn" : "Je suis d'accord",
         "keyrecovery" : {
             "intro" : "La clé privée utilisée pour crypter vos données doit être récupérée. Pour récupérer votre clé, essayez l'une des options suivantes:",
-
-            // TODO CHANGED
-            // OLD: Do you have any application using @PLATFORM where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.
-            // NEW: Do you have any application using @PRODUCT where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.
             "way1" : "Avez-vous une application utilisant @PRODUCT où vous êtes encore connecté? Si oui, ouvrez cette application et votre clé sera récupérée. Essayez de vous connecter à nouveau par la suite.",
             "way2" : "Vous êtes-vous déjà connecté à l'aide d'un navigateur? Si oui, essayez d'ouvrir une session en utilisant le même navigateur et le même appareil.",
             "way3" : "Vous vous souvenez à nouveau de votre ancien mot de passe? Si oui, essayez de vous connecter en utilisant votre ancien mot de passe.",
@@ -804,10 +772,6 @@
         "created_by" : "Créé par:",
         "created_with" : "Créé avec:",
         "created_on" : "Créé le:",
-
-        // TODO CHANGED
-        // OLD: Midata Content-Type:
-        // NEW: @PRODUCT content type:
         "content" : "Type de contenu @PRODUCT:",
         "format" : "Format:",
         "download_btn" : "Télécharger",
@@ -861,10 +825,6 @@
         "name" : "Prénom:",
         "email" : "E-mail:",
         "birthday" : "Date de naissance:",
-
-        // TODO CHANGED
-        // OLD: MIDATA ID:
-        // NEW: @PRODUCT ID:
         "midataID" : "@PRODUCT ID:",
         "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
@@ -962,10 +922,6 @@
         "type" : "Type de consentement",
         "status" : "État du consentement",
         "people" : "Avec quelle(s) personne(s) désirez-vous partager des données?",
-
-        // TODO CHANGED
-        // OLD: Non @PLATFORM account holder
-        // NEW: Non @PRODUCT account holder
         "external" : "Personnes sans compte @PRODUCT",
         "add_people_btn" : "Ajouter d'autres personnes",
         "add_usergroup_btn" : "Ajouter une équipe",
@@ -976,10 +932,6 @@
         "created_before" : "Ne partager que les données créées avant le:",
         "what_is_shared" : "Quelles données sont-elles partagées?",
         "consent_empty" : "Ce consentement ne partage actuellement aucunes données.",
-
-        // TODO CHANGED
-        // OLD: This consent shares data with other @PLATFORM account holders.
-        // NEW: This consent shares data with other @PRODUCT account holders.
         "type_circle" : "Ce consentement partage des données avec d'autres titulaires de comptes @PRODUCT.",
         "type_representative" : "Ce consentement autorise une autre personne à utiliser votre compte. Toutes les données du propriétaire du compte sont partagées avec le représentant.",
         "type_healthcare" : "Ce consentement partage des données avec des professionnels de la santé.",
@@ -1101,16 +1053,8 @@
     },
 
     "oauth2" : {
-
-        // TODO CHANGED
-        // OLD: stores your personal data in your @PLATFORM account.
-        // NEW: stores your personal data in your @PRODUCT account.
         "requests_permission" : "enregistre vos données personnelles dans votre compte @PRODUCT.",
         "no_account" : "Vous n'avez pas encore de compte?",
-
-        // TODO CHANGED
-        // OLD: You have a @PLATFORM account?
-        // NEW: You have a @PRODUCT account?
         "have_account" : "Avez-vous un compte @PRODUCT?",
         "have_account2" : "Parfait, connectez-vous.",
         "role" : "Rôle",
@@ -1118,17 +1062,9 @@
         "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
         "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
         "requesting_app" : "désire accéder à vos données.",
-
-        // TODO CHANGED
-        // OLD: @PLATFORM login for:
-        // NEW: @PRODUCT login for:
         "sign_in" : "Connexion à @PRODUCT pour:",
         "sign_in_btn" : "Se connecter",
         "device" : "Appareil : {{device}}",
-
-        // TODO CHANGED
-        // OLD: Please confirm the activation of the application using the @PLATFORM portal, then retry. Consent title is: {{ consent }}
-        // NEW: Please confirm the activation of the application using the @PRODUCT portal, then retry. Consent title is: {{ consent }}
         "please_confirm" : "Veuillez confirmer l'activation de l'application sur le portail @PRODUCT, puis réessayez. Libellé du consentement: {{ consent }}",
         "confirm_btn" : "Confirmer l'accès",
         "reject_btn" : "Rejeter",
@@ -1201,10 +1137,6 @@
         "newrecords_teaser" : "Il n'y a pas de nouveaux enregistrements. Consultez la page 'Mes données' pour voir toutes vos données.",
         "myaccount" : "Données de mon compte",
         "newsharedrecords" : "Nouveaux enregistrement partagés avec vous",
-
-        // TODO CHANGED
-        // OLD: Other @PLATFORM account holders may share their data with you.
-        // NEW: Other @PRODUCT account holders may share their data with you.
         "newsharedrecords_teaser" : "D'autres utilisateurs @PRODUCT peuvent partager leurs données avec vous.",
         "circles" : "Membre des Cercles",
         "circles_teaser" : "Demandez à d'autres utilisateurs de vous accueillir dans leurs Cercles.",
@@ -1351,10 +1283,6 @@
 
     "changeemail" : {
         "title" : "Changer l'adresse e-mail du compte",
-
-        // TODO CHANGED
-        // OLD: MIDATA ID
-        // NEW: @PRODUCT ID
         "midataId" : "@PRODUCT ID",
         "name" : "Nom",
         "old_email" : "Adresse e-mail actuelle",
@@ -1381,50 +1309,26 @@
     },
 
     "accountwipe" : {
-
-        // TODO CHANGED
-        // OLD: Close and Delete @PLATFORM Account
-        // NEW: Close and Delete @PRODUCT Account
         "title" : "Fermer et supprimer le compte @PRODUCT",
         "hello" : "Chère/cher {{name}},",
         "hello_m" : "Cher {{name}},",
         "hello_w" : "Chère {{name}},",
-
-        // TODO CHANGED
-        // OLD: You would like to delete your @PLATFORM account irrevocably? That is of course possible.
-        // NEW: You would like to delete your @PRODUCT account irrevocably? That is of course possible.
         "paragraph1" : "Vous souhaitez supprimer votre compte @PRODUCT irrévocablement? C'est bien sûr possible.",
         "paragraph2" : "Veuillez d'abord lire les informations suivantes :",
-
-        // TODO CHANGED
-        // OLD: If you delete your @PLATFORM account your personal data will no longer be available.
-        // NEW: If you delete your @PRODUCT account your personal data will no longer be available.
         "point1" : "Si vous supprimez votre compte @PRODUCT, vos données personnelles ne seront plus disponibles.",
         "point2" : "Les données qui ont déjà été partagées avec des projets de recherche continueront d'être disponibles dans ces projets.",
         "point3" : "@OPERATOR n'est pas en mesure de récupérer votre compte supprimé.",
         "warning" : "Avertissement",
         "final" : "Cette action ne peut être annulée.",
-
-        // TODO CHANGED
-        // OLD: If you really want to delete your @PLATFORM account enter your password for confirmation.
-        // NEW: If you really want to delete your @PRODUCT account enter your password for confirmation.
         "paragraph3" : "Si vous voulez vraiment supprimer votre compte @PRODUCT, entrez votre mot de passe pour confirmation.",
         "password" : "Mot de passe",
         "reason" : "Motif (facultatif)",
         "reason2" : "Nous vous serions reconnaissants de nous indiquer le motif pour lequel vous supprimez votre compte. Nous essayons continuellement d'améliorer @PLATFORM.",
-
-        // TODO CHANGED
-        // OLD: Close and Delete @PLATFORM Account
-        // NEW: Close and Delete @PRODUCT Account
         "wipe_btn" : "Fermer et supprimer le compte @PRODUCT",
         "error" : "Mot de passe incorrect. Le compte n'a pas été supprimé."
     },
 
     "serviceleave" : {
-
-        // TODO CHANGED
-        // OLD: You finished your session?
-        // NEW: Did you finish your session?
         "title" : "Avez-vous terminé votre session?",
         "thankyou" : "Merci pour votre aide!",
         "continue" : "Veuillez utiliser le menu principal pour continuer votre session ou vous déconnecter.",
@@ -1536,10 +1440,6 @@
         "title" : "Connexion non autorisée",
         "intro" : "Vous n'êtes pas autorisé à vous connecter pour la raison suivante:",
         "withdrawn1" : "Vous avez retiré votre participation à un projet. La participation est obligatoire pour pouvoir utiliser cette application.",
-
-        // TODO CHANGED
-        // OLD: You will not be able to use the application again with your @PLATFORM account.
-        // NEW: You will not be able to use the application again with your @PRODUCT account.
         "withdrawn2" : "Vous ne pourrez plus utiliser l'application avec votre compte @PRODUCT.",
         "joinmethod1" : "L'accès au projet de recherche est restreint.",
         "joinmethod2" : "Veuillez prendre contact avec le team responsable du projet. Pour plus d'informations, lisez les conditions d'utilisation de l'application.",
