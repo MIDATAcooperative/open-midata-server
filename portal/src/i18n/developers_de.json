@@ -93,7 +93,7 @@
         "query_help" : "Definieren Sie, auf welche Arten von Daten Ihre Applikation zugreifen darf.",
         "write_mode" : "Schreibzugriff",
         "subscriptions_btn" : "Standardabonnements (Subscriptions) ändern",
-        "subscriptions_help" : "Trigger definieren, die eine Aktion auf dem @PLATFORM Server auslösen",
+        "subscriptions_help" : "Trigger definieren, die eine Aktion auf dem @PRODUCT Server auslösen",
         "tokenExchangeParams" : "OAuth 2-Parameter für den Token-Austausch",
         "testfromlocal_btn" : "Testen Sie Ihr Plugin von localhost aus",
         "testfromlocal_help" : "Während der Entwicklung können Sie den Plugin-Code, der auf Ihrem lokalen Computer gespeichert ist, auf dieser Instanz testen.",
@@ -112,7 +112,7 @@
         "stats_btn" : "Fehler- und Performance-Statistiken",
         "stats_help" : "Hier finden Sie Statistiken und Hinweise zur Verbesserung der verschiedenen Arten von API-Aufrufen, die Ihre Applikation an den Server sendet.",
         "debug_btn" : "API Tester Sandbox",
-        "debug_help" : "Melden Sie sich als Applikation an und testen Sie Abfragen gegen das @PLATFORM-Backend.",
+        "debug_help" : "Melden Sie sich als Applikation an und testen Sie Abfragen gegen den @PRODUCT Server.",
         "appreviews_btn" : "Überprüfungen",
         "appreviews_help" : "Überprüfungen, die für diese Applikation durchgeführt wurden",
         "applicence_btn" : "Lizenz",
@@ -138,7 +138,7 @@
             "targetUserRole" : "Ist Ihre Applikation nur für eine spezifische Rolle bestimmt? Wenn nicht, wählen Sie 'Alle Rollen'.",
             "loginTemplate" : "Wie soll der Anmeldevorgang aussehen? Einige Einstellungen müssen von einem Administrator genehmigt werden",
             "loginButtonsTemplate" : "Wie sollten die Schaltflächen angeordnet werden?",
-            "type" : "Wählen Sie 'Plugin' wenn Ihre Applikation im @PLATFORM-Portal laufen wird. Wählen Sie 'Applikation (Smartphone, Web)' für eine externe Applikation. Wählen Sie 'Dienst' für ein serverseitiges Skript. Wählen Sie 'OAuth 1' oder 'OAuth 2' wenn Sie sich über OAuth 1 oder OAuth 2 mit einem externen Server verbinden.",
+            "type" : "Wählen Sie 'Plugin' wenn Ihre Applikation im @PRODUCT-Portal laufen wird. Wählen Sie 'Applikation (Smartphone, Web)' für eine externe Applikation. Wählen Sie 'Dienst' für ein serverseitiges Skript. Wählen Sie 'OAuth 1' oder 'OAuth 2' wenn Sie sich über OAuth 1 oder OAuth 2 mit einem externen Server verbinden.",
             "name" : "Der Name Ihrer Applikation, der dem Endbenutzer präsentiert wird.",
             "description" : "Die Beschreibung Ihrer Applikation, die im Marketplace erscheinen wird.",
             "tokenExchangeParams" : "Der Standardwert ist client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> aber einige Dienste erfordern auch client_secret=<client_secret> oder kein client_id",
@@ -149,15 +149,15 @@
             "consentObserving" : "Überwacht dieser Dienst die Einwilligungen der Benutzer? Fügen Sie 'Zustimmungen (Consents)' zum Datenzugriffsfilter (Data Access Filter) hinzu, um es zu aktivieren.",
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
             "tags" : "Kategorien unter welchen das Plugin im Store erscheinen wird.",
-            "url" : "URL der Hauptseite des Plugins. Wenn Sie das @PLATFORM Template verwenden ist es 'dist/index.html#!?authToken=:authToken''",
+            "url" : "URL der Hauptseite des Plugins. Wenn Sie das @PRODUCT Template verwenden, ist es 'dist/index.html#!?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
             "defaultSpaceContext" : "Wählen Sie 'Dashboard' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
             "redirectUri" : "Sie können mehrere mögliche Redirect-URIs angeben, indem Sie die URIs durch ein Leerzeichen trennen.",
             "secret" : "Ihre Applikation braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben.",
             "mustParticipateInStudy" : "Benutzer müssen am Forschungsprojekt teilnehmen, um diese Applikation benutzen zu können.",
-            "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei @PLATFORM über die Applikation eingegeben werden. Der Code ist nicht 'case sensitiv'.",
+            "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei @PRODUCT über die Applikation eingegeben werden. Der Code ist nicht 'case sensitiv'.",
             "send_reports" : "Den Entwickler ({{user}}) per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.",
-            "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf @PLATFORM ein, die diese Anwendung entwickeln."
+            "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf diese @PRODUCT Instanz ein, die diese Anwendung entwickeln."
         },
         "status" : {
             "title" : "Applikations-Status",
@@ -390,7 +390,7 @@
             "no_orgname" : "In der Applikationsdefinition ist kein Name der Entwicklerorganisation angegeben.",
             "no_publisher" : "In der Applikationsdefinition ist kein Herausgeber angegeben.",
             "no_app_description" : "Es fehlt die Applikationsbeschreibung.",
-            "not_spotlighted" : "Das Plugin ist nicht im @PLATFORM Store verfügbar. Fragen Sie einen Administrator.",
+            "not_spotlighted" : "Das Plugin ist nicht im @PRODUCT Store verfügbar. Fragen Sie einen Administrator.",
             "no_repository" : "Kein Repository für das Auschecken des Codes vorhanden.",
             "no_send_reports" : "Fehlerberichtsbenachrichtigungen (E-Mails) sind für diese Applikation deaktiviert.",
             "has_comments" : "Kommentare in der Fehler- und Performance-Statistiken verfügbar.",
@@ -463,10 +463,6 @@
             "auth2factorsetup" : "2FA-Einstellung",
             "auth2factor" : "2FA",
             "birthday_set" : "Geburtsdatum erfassen",
-
-            // TODO CHANGED
-            // OLD: App unlock code
-            // NEW: Application unlock code
             "unlock_code" : "Freischaltcode der Applikation"
         }
     },

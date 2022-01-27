@@ -24,7 +24,7 @@
         "title" : "Istituto di ricerca",
         "name" : "Nome",
         "description" : "Descrizione",
-        "researchers" : "Tutti i ricercatori dell vostro istituto",
+        "researchers" : "Tutti i ricercatori dell suo istituto",
         "master_user" : "Devi essere un utente master per aggiornare la propria organizzazione o iscrivere nuovi utenti per l'organizzazione. Si prega di contattare @SUPPORT se si pensa che si dovrebbero avere le autorizzazioni di utente master."
     },
 
@@ -57,14 +57,14 @@
         "participants" : "Partecipanti",
         "execution" : "Esecuzione",
         "creation_date" : "Creato",
-        "empty" : "Non è stato ancora creato alcun progetto di ricerca per la tua organizzazione.",
+        "empty" : "Non è stato ancora creato alcun progetto di ricerca per la sua organizzazione.",
         "create_btn" : "Crea un nuovo progetto"
     },
 
     "studyactions" : {
         "related_apps" : "Applicazioni relativi al progetto",
         "empty" : "Nessuna applicazione è collegata al progetto",
-        "aggregator_apps" : "Aggiungiate un'applicazione di ricerca da utilizzare con il VOSTRO account",
+        "aggregator_apps" : "Aggiungiate un'applicazione di ricerca da utilizzare con il SUO account",
         "datalink" : "Aggregatori, applicazioni di analisi e interpretazione",
         "description" : "Dopo che il progetto di ricerca è stato convalidato, è possibile collegare ad esso applicazioni come plugin e servizi esterni di elaborazione dati. Queste applicazioni devono connettersi alla piattaforma utilizzando le credenziali di uno dei membri del team di ricerca con sufficienti diritti.",
         "select_group_btn" : "Seleziona gruppo",
@@ -204,13 +204,13 @@
         "partName" : "Con pseudonimo",
         "group" : "Gruppo",
         "status" : "Stato",
-        "total" : "Trovati {{count}} consensi corrispondenti ai vostri criteri.",
+        "total" : "Trovati {{count}} consensi corrispondenti ai suoi criteri.",
         "only_first_shown" : "Sono visualizzati solo i primi 1000 consensi corrispondenti.",
         "recruiter" : "Reclutatore",
         "accept_btn" : "Accetta",
         "reject_btn" : "Rifiuta",
         "add_participant_btn" : "Aggiungi partecipante",
-        "empty" : "Questo progetto di ricerca non ha ancora alcun partecipante che corrisponda ai vostri criteri di ricerca.",
+        "empty" : "Questo progetto di ricerca non ha ancora alcun partecipante che corrisponda ai suoi criteri di ricerca.",
         "search_type" : "Cerca",
         "all" : "Tutti i partecipanti",
         "request" : "Candidati in attesa di una decisione",
@@ -254,14 +254,14 @@
 
     "addresearcher" : {
         "sign_up" : "Registrazione ricercatore",
-        "success" : "Un nuovo ricercatore è stato aggiunto alla tua organizzazione."
+        "success" : "Un nuovo ricercatore è stato aggiunto alla sua organizzazione."
     },
 
     "addparticipant" : {
         "sign_up" : "Registrazione partecipante",
         "study" : "Progetto",
         "hasaccepted" : "Il partecipante ha accettato",
-        "success" : "Un nuovo partecipante è stato aggiunto al vostro progetto."
+        "success" : "Un nuovo partecipante è stato aggiunto al suo progetto."
     },
 
     "studyteam" : {
@@ -269,7 +269,7 @@
         "role" : "Ruolo",
         "rolehint" : "Ruolo (per i dettagli fare clic sulla riga qui sotto)",
         "roleName" : "Nome ruolo",
-        "defineself" : "Puoi modificare i vostri diritti aggiungendoti al team con diritti differenti. Puoi compiere quest'operazione fino a quando sei l'unico membro del team. Non puoi privarti dei diritti di gestione del team.",
+        "defineself" : "Puoi modificare i suoi diritti aggiungendoti al team con diritti differenti. Puoi compiere quest'operazione fino a quando sei l'unico membro del team. Non puoi privarti dei diritti di gestione del team.",
         "addperson_btn" : "Aggiungi persona",
         "rights" : "Diritti",
         "right" : {
@@ -291,12 +291,12 @@
         "name_help" : "Il nome del progetto sarà mostrato ai partecipanti. La descrizione sarà disponibile sul portale durante l'accesso all'applicazione.",
         "teamsetup" : "Configurazione del team ricercatore",
         "teamsetup_help" : "Se più persone sono coinvolte nello svolgimento del progetto, indicare tutte le persone coinvolte e il loro ruolo. Finché non si aggiungono altre persone, è possibile cambiare il proprio ruolo aggiungendo nuovamente sé stessi con un altro ruolo.",
-        "information" : "Informazioni pubbliche sulla vostra ricerca",
-        "information_help" : "Le informazioni pubbliche aiuteranno i titolari di un account a valutare se la vostra ricerca è rilevante per loro.",
+        "information" : "Informazioni pubbliche sulla sua ricerca",
+        "information_help" : "Le informazioni pubbliche aiuteranno i titolari di un account a valutare se la sua ricerca è rilevante per loro.",
         "groups" : "Gruppi di partecipanti definiti",
-        "groups_help" : "Il vostro progetto può avere uno o più gruppi di partecipanti. Definisci l'elenco dei gruppi di partecipanti.",
+        "groups_help" : "Il suo progetto può avere uno o più gruppi di partecipanti. Definisci l'elenco dei gruppi di partecipanti.",
         "sharingQuery" : "Data Access Filter definito",
-        "sharingQuery_help" : "Il vostro progetto deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati (Data Access Filter) non può essere modificato dopo la convalida del progetto.",
+        "sharingQuery_help" : "Il suo progetto deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati (Data Access Filter) non può essere modificato dopo la convalida del progetto.",
         "dates" : "Date di inizio e fine impostate",
         "dates_help" : "Le date di inizio e fine saranno mostrate ai partecipanti.  Nessun dato aggiuntivo confluirà nel progetto dal momento in cui i dati vengono congelati.",
         "terms" : "Condizioni generali di contratto forniti",
@@ -308,9 +308,9 @@
         "phase2" : "Fase 2: preparazione",
         "phase2_help" : "Preparazione",
         "applications" : "Applicazione di ricerca aggiunta",
-        "applications_help" : "Potete collegare al vostro progetto applicazioni come plugin e servizi esterni di elaborazione dati. Questi possono leggere i dati dei partecipanti e/o condividere dati aggregati con i partecipanti. Queste applicazioni devono connettersi alla piattaforma utilizzando le credenziali di uno dei membri del team di ricerca con sufficienti diritti.",
+        "applications_help" : "Potete collegare al suo progetto applicazioni come plugin e servizi esterni di elaborazione dati. Questi possono leggere i dati dei partecipanti e/o condividere dati aggregati con i partecipanti. Queste applicazioni devono connettersi alla piattaforma utilizzando le credenziali di uno dei membri del team di ricerca con sufficienti diritti.",
         "applinked" : "L'applicazione è stata collegata al progetto",
-        "applinked_help" : "Per collegare un'applicazione al vostro progetto, inviare il codice del progetto e il nome dell'applicazione che si desidera collegare a un amministratore della piattaforma.",
+        "applinked_help" : "Per collegare un'applicazione al suo progetto, inviare il codice del progetto e il nome dell'applicazione che si desidera collegare a un amministratore della piattaforma.",
         "partsearchstart" : "La ricerca dei partecipanti è iniziata",
         "partsearchstart_help" : "Fino a quando non inizia la ricerca del partecipante, non è possibile partecipare al progetto. Le applicazioni che richiedono la partecipazione al progetto non possono essere utilizzate.",
         "phase3" : "Fase 3: esecuzione",
@@ -333,7 +333,7 @@
     "studyinfo" : {
         "title" : "Informazioni",
         "introduction" : "Dare ulteriori informazioni sul progetto di ricerca. È possibile fornire informazioni pubbliche, istruzioni aggiuntive e informazioni di contatto visibili solo ai partecipanti e informazioni per altri ricercatori e per l'amministrazione. I testi sono da intendersi solo come informazioni aggiuntive e possono essere modificati in qualsiasi momento.",
-        "introduction2" : "Tutte le informazioni sono facoltative. Dovresti dare informazioni solo su argomenti che hanno senso nel vostro contesto di ricerca.",
+        "introduction2" : "Tutte le informazioni sono facoltative. Dovresti dare informazioni solo su argomenti che hanno senso nel suo contesto di ricerca.",
         "visibility" : "Informazioni visibili a",
         "visibilities" : {
             "ALL" : "tutti",
@@ -344,7 +344,7 @@
     },
 
     "researcher_sharing" : {
-        "description" : "Condividi o non condividi i record del vostro account con gruppi di partecipanti al progetto",
+        "description" : "Condividi o non condividi i record del suo account con gruppi di partecipanti al progetto",
         "source" : "Fonte",
         "me" : "Dati del mio account",
         "project" : "Dati dall'analizzatore",

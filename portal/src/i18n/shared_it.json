@@ -103,8 +103,8 @@
             "confirmation" : "Per prima cosa è richiesta la conferma dell'utente.",
             "file" : "Nessun file selezionato per il caricamento",
             "access_query" : "Nessun dati selezionato",
-            "plugin" : "Questo plugin non esiste nel vostro account.",
-            "auth_type" : "L'autenticazione a due fattori è necessaria per il vostro tipo di account.",
+            "plugin" : "Questo plugin non esiste nel suo account.",
+            "auth_type" : "L'autenticazione a due fattori è necessaria per il suo tipo di account.",
             "licence" : "Per utilizzare questa applicazione è necessaria una licenza valida."
         },
 
@@ -135,15 +135,15 @@
         },
 
         "blocked" : {
-            "user" : "Questo account è stato bloccato. Il vostro indirizzo e-mail è bloccato per un'ulteriore registrazione. Contatta @SUPPORT per ottenere assistenza.",
+            "user" : "Questo account è stato bloccato. Il suo indirizzo e-mail è bloccato per un'ulteriore registrazione. Contatta @SUPPORT per ottenere assistenza.",
             "password1" : "Troppi tentativi di mancato accesso. Attendere 1 minuto prima di tentare nuovamente.",
             "password5" : "Troppi tentativi di mancato accesso. Attendere 5 minuti prima di tentare nuovamente.",
             "password60" : "Troppi tentativi di mancato accesso. Attendere 1 ora prima di tentare nuovamente.",
-            "participation" : "Non siete autorizzati a partecipare a questo progetto di ricerca e quindi non potete utilizzare questa applicazione.",
-            "projectconsent" : "Avete ritirato la vostra partecipazione a questo progetto di ricerca e non potete quindi più utilizzare questa applicazione.",
-            "consent" : "Avete impostato nel portale @PLATFORM che questa applicazione non può più accedere ai vostri dati. Se si desidera utilizzare nuovamente questa applicazione, è necessario riautorizzarla nel portale @PLATFORM.",
-            "app" : "Si è autorizzati a utilizzare questa applicazione su un numero massimo di 10 dispositivi. Eliminare i consensi non utilizzati sul portale @PLATFORM.",
-            "app_test" : "Lei è autorizzato a utilizzare questa applicazione su un massimo di 10 dispositivi. Su questa istanza TEST i consensi sono stati resettati per te. Si prega di riprovare.",
+            "participation" : "Non sei autorizzati a partecipare a questo progetto di ricerca e quindi non può più utilizzare questa applicazione.",
+            "projectconsent" : "Ha ritirato la sua partecipazione a questo progetto di ricerca e quindi non può più utilizzare questa applicazione.",
+            "consent" : "Ha impostato nel portale @PRODUCT che questa applicazione non può più accedere ai suoi dati. Se si desidera utilizzare nuovamente questa applicazione, è necessario riautorizzarla nel portale @PRODUCT.",
+            "app" : "Si è autorizzati a utilizzare questa applicazione su un numero massimo di 10 dispositivi. Eliminare i consensi non utilizzati sul portale @PRODUCT.",
+            "app_test" : "Lei è autorizzato a utilizzare questa applicazione su un massimo di 10 dispositivi. Su questa istanza TEST i consensi sono stati resettati per lei. Si prega di riprovare.",
             "joinmethod" : "Non è consentito aderire al progetto con questo metodo."
         },
 
@@ -172,14 +172,14 @@
 
         "expired" : {
             "token" : "Questo token di attivazione è già scaduto. Richiederne uno nuovo.",
-            "tokenresent" : "Questo token di attivazione è già scaduto. Un nuovo token è stato appena inviato al tuo indirizzo e-mail. Conferma il tuo indirizzo e-mail entro 24 ore utilizzando il nuovo token.",
+            "tokenresent" : "Questo token di attivazione è già scaduto. Un nuovo token è stato appena inviato al suo indirizzo e-mail. Conferma il suo indirizzo e-mail entro 24 ore utilizzando il nuovo token.",
             "code" : "Questo codice di partecipazione è scaduto.",
             "securitytoken" : "Questo codice è scaduto."
         },
 
         "already_done" : {
             "email_verification" : "L'e-mail è già stata verificata.",
-            "unsubscribed" : "Avete già cancellato la vostra iscrizione a questo canale di comunicazione."
+            "unsubscribed" : "Si è già cancellato da questo canale di comunicazione."
         },
 
         "no_alter" : {
@@ -305,10 +305,6 @@
             "MIDATA_COOPERATIVE_MEMBER" : "L'utente deve essere membro della cooperativa",
             "ADMIN_VERIFIED" : "L'account deve essere stato sbloccato da un amministratore",
             "BIRTHDAY_SET" : "La data di nascita dell'utente deve essere nota",
-
-            // TODO CHANGED
-            // OLD: Application requires an unlock code to use
-            // NEW: The application requires an unlock code
             "APP_UNLOCK_CODE" : "L'applicazione richiede un codice di sblocco"
         },
         "writepermissiontype" : {
@@ -368,7 +364,7 @@
         },
         "joinmethod" : {
             "APP" : "Il partecipante utilizza un'applicazione collegata",
-            "PORTAL" : "Il partecipante si applica sul portale @PLATFORM",
+            "PORTAL" : "Il partecipante si applica sul portale @PRODUCT",
             "RESEARCHER" : "Il partecipante è registrato manualmente dal membro del team di ricerca",
             "API" : "Il partecipante è iscrivi da un software esterno",
             "ALGORITHM" : "Il partecipante è stato proposto da un algoritmo (non supportato)",
@@ -475,7 +471,7 @@
         },
         "codesystems" : {
             "loinc" : "Codice LOINC",
-            "midata" : "Codice MIDATA",
+            "midata" : "Codice @PRODUCT",
             "fhir" : "Risorsa FHIR",
             "snowmed" : "Codice SNOMED CT"
         },
@@ -575,9 +571,7 @@
         "sign_up" : "Registrazione",
         "mandantory_fields" : "Inserire le informazioni qui sotto, i campi contrassegnati da un asterisco * sono obbligatori.",
         "password_policy" : "La password deve essere lunga almeno 8 caratteri e contenere una lettera e una cifra.",
-
-        // TODO NEW: The password must be at least 12 characters long and contain one letter, one digit and a special character.
-        "password_policy2" : "The password must be at least 12 characters long and contain one letter, one digit and a special character.",
+        "password_policy2" : "La password deve essere lunga almeno 12 caratteri e contenere una lettera, una cifra e un carattere speciale.",
         "email" : "E-mail",
         "password" : "Password",
         "password_repetition" : "Ripetere la password",
@@ -615,11 +609,11 @@
         "sign_up_btn" : "Crea account",
         "unlock_code" : "Codice di sblocco",
         "already_have_account" : "Ho già un account",
-        "more" : "Avete ancora qualche secondo? Saremmo lieti se poteste fornirci maggiori dettagli su di voi ☺️️",
+        "more" : "Ha ancora qualche secondo? Saremmo lieti se poteste fornirci maggiori dettagli su di lei ☺️️",
         "generous" : "Mi sento generoso oggi, mi mostrano i campi!",
         "hide_optional" : "Nascondi campi opzionali",
         "welcome_title" : "Benvenuto",
-        "welcome_text1" : "Il tuo account @PLATFORM è appena stato creato. Vi è stata inviata un'e-mail di conferma.",
+        "welcome_text1" : "Il suo account @PRODUCT è stato creato. Le è stata inviato un'e-mail di conferma.",
         "welcome_text2" : "Clicca sul link nell'e-mail entro 24 ore per completare l'iscrizione.",
         "welcome_text3" : "Se non dovessi ricevere l'e-mail entro i prossimi 30 minuti, controlla il filtro antispam.",
         "welcome_btn" : "Continuare"
@@ -634,20 +628,15 @@
         "forgot_your_password" : "Dimenticata la password?",
         "login_btn" : "Accedi",
         "service_login" : "Accedi per la richiesta di conferma",
-        "service_login2" : "Al tuo prossimo accedi ti verrà richiesta la conferma dei consensi e/o la partecipazione a progetti di ricerca.",
-
-        // TODO NEW: Login for Account Management
-        "account_login" : "Login for Account Management",
-
-        // TODO NEW: Please log in for access to account management functions.
-        "account_login2" : "Please log in for access to account management functions.",
-
-        "no_account" : "Non ho ancora un account @PLATFORM."
+        "service_login2" : "Al suo prossimo accedi ti verrà richiesta la conferma dei consensi e/o la partecipazione a progetti di ricerca.",
+        "account_login" : "Accesso per la gestione dell'account",
+        "account_login2" : "Si prega di effettuare il login per accedere alle funzioni di gestione dell'account.",
+        "no_account" : "Non ho ancora un account @PRODUCT."
     },
 
     "lostpw" : {
         "title" : "Assistenza per la password - Passo 1",
-        "description" : "Inserisci l'indirizzo e-mail associato al tuo account, quindi fai clic su Continua. Ti invieremo un link alla pagina da cui potrai creare facilmente una nuova password.",
+        "description" : "Inserisci l'indirizzo e-mail associato al suo account, quindi fai clic su Continua. Ti invieremo un link alla pagina da cui potrai creare facilmente una nuova password.",
         "email" : "Indirizzo e-mail",
         "continue" : "Continua",
         "success" : "Ti abbiamo inviato un'e-mail con le istruzioni su come resettare la password."
@@ -659,16 +648,16 @@
         "new_password_repeat" : "Ripetizione password",
         "enter_new" : "Inserire una nuova password per il proprio account.",
         "set_new_btn" : "Impostare la nuova password",
-        "success" : "Hai impostato con successo una nuova password per il tuo account.",
+        "success" : "Ha impostato con successo una nuova password per il suo account.",
         "back_to_login" : "Tornare alla pagina di accesso."
     },
 
     "passphrase" : {
         "title" : "Inserire la frase segreta",
-        "description" : "Il tuo account è protetto da una frase segreta.",
+        "description" : "Il suo account è protetto da una frase segreta.",
         "passphrase" : "Frase segreta",
         "continue_btn" : "Continua",
-        "if_lost" : "Se hai perso la frase segreta, contatta @SUPPORT"
+        "if_lost" : "Se ha perso la sua frase segreta, contatti @SUPPORT"
     },
 
     "postregister" : {
@@ -678,41 +667,41 @@
         "resent_success" : "L'e-mail di benvenuto è stata reinviata.",
         "address_success" : "L'indirizzo è stato confermato.",
         "code_entered" : "Il codice di conferma è stato inserito?",
-        "email_instructions" : "Il tuo indirizzo e-mail deve essere confermato. Una e-mail di attivazione è stata inviata al tuo account. Fai clic sul link contenuto in questa e-mail per confermare l'indirizzo e-mail.",
+        "email_instructions" : "Il suo indirizzo e-mail deve essere confermato. Una e-mail di attivazione è stata inviata al suo account. Fai clic sul link contenuto in questa e-mail per confermare l'indirizzo e-mail.",
         "email_code" : "Per praticità, puoi inserire il codice dell'e-mail qui:",
         "code" : "Codice",
         "resend_btn" : "Reinviare l'e-mail",
         "retry_btn" : "Ritentare l'accesso",
         "unlock_code" : "Questa applicazione richiede un codice di sblocco per essere utilizzata. Si prega di inserire il codice per continuare.",
-        "contract_instructions" : "Il contratto è stato inviato al tuo indirizzo postale. Ti invitiamo a restituirlo firmato a @OPERATOR.",
-        "pilot_phase" : "Un amministratore verificherà e sbloccherà il tuo account. Riceverai un avviso quando l'account è stato sbloccato.",
-        "code_intructions" : "Una lettera con il codice di conferma sarà inviata al tuo indirizzo postale. Inserisci questo codice di conferma per accedere alla piattaforma.",
-        "code_done" : "Hai fornito il codice di conferma. Potrai accedere dopo che il contratto firmato sarà arrivato a @OPERATOR.",
+        "contract_instructions" : "Il contratto è stato inviato al suo indirizzo postale. Ti invitiamo a restituirlo firmato a @OPERATOR.",
+        "pilot_phase" : "Un amministratore verificherà e sbloccherà il suo account. Riceverai un avviso quando l'account è stato sbloccato.",
+        "code_intructions" : "Una lettera con il codice di conferma sarà inviata al suo indirizzo postale. Inserisci questo codice di conferma per accedere alla piattaforma.",
+        "code_done" : "Ha fornito il codice di conferma. Potrai accedere dopo che il contratto firmato sarà arrivato a @OPERATOR.",
         "enter_now_btn" : "Inserire ora",
-        "email_success" : "Grazie per aver confermato il tuo indirizzo e-mail.",
-        "address_entered" : "Per utilizzare questo servizio è richiesto il tuo indirizzo postale; ti invitiamo a inserirlo.",
+        "email_success" : "Grazie per aver confermato il suo indirizzo e-mail.",
+        "address_entered" : "Per utilizzare questo servizio è richiesto il suo indirizzo postale; ti invitiamo a inserirlo.",
         "phone_entered" : "Per utilizzare questo servizio è richiesto un numero di telefono cellulare; ti invitiamo a inserirlo.",
-        "birthday_entered" : "Per utilizzare questo servizio è necessaria una data di nascita valida. Aggiungi la tua data di nascita alle informazioni del tuo account. (Esempio di formato: 31.12.1999)",
-        "admin_verified" : "Il tuo account deve essere sbloccato da un amministratore. Riprova più tardi. Se trascorse più di 24 ore il tuo account non è stato sbloccato, contatta @SUPPORT.",
+        "birthday_entered" : "Per utilizzare questo servizio è necessaria una data di nascita valida. Aggiungi la tua data di nascita alle informazioni del suo account. (Esempio di formato: 31.12.1999)",
+        "admin_verified" : "Il suo account deve essere sbloccato da un amministratore. Riprova più tardi. Se trascorse più di 24 ore il suo account non è stato sbloccato, contatta @SUPPORT.",
         "terms_agreed" : "I Condizioni generali di contratto sono stati aggiornati. Si prega di confermare di accettare la nuova versione.",
         "privacy_policy_agreed" : "La Dichiarazione sui dati personali è stata aggiornata. Si prega di confermare di accettare la nuova versione.",
-        "auth2factor" : "Un codice di autorizzazione è stato inviato al vostro telefono. Per favore, inseriscilo.",
+        "auth2factor" : "Un codice di autorizzazione è stato inviato al suo telefono. Per favore, inseriscilo.",
         "securityToken" : "Codice",
         "securityToken_btn" : "Inviare",
         "no_token" : "Si prega di attendere fino a un minuto per l'arrivo del codice.",
         "no_token_btn" : "Non ho ricevuto il codice",
-        "auth2factorsetup" : "Configura le impostazioni di sicurezza: vuole proteggere l'accesso al vostro account con un secondo fattore oltre alla vostra password?",
-        "auth2factorsetup2" : "È possibile modificare le impostazioni in un secondo momento nel proprio profilo. Accedi {{domain}}} e clicca sul vostro nome in alto a destra.",
+        "auth2factorsetup" : "Configura le impostazioni di sicurezza: vuole proteggere l'accesso al suo account con un secondo fattore oltre alla sua password?",
+        "auth2factorsetup2" : "È possibile modificare le impostazioni in un secondo momento nel proprio profilo. Accedi {{domain}}} e clicca sul suo nome in alto a destra.",
         "auth_type" : "Autenticazione",
         "auth_type_none" : "Non voglio usare l'autenticazione a due fattori.",
         "auth_type_sms" : "Voglio usare l'autenticazione a due fattori con codici SMS. Si prega di inviare un codice al mio telefono cellulare all'accesso.",
         "emailnotify" : "Notifiche",
-        "emailnotify2" : "Inviami un'e-mail ogni volta che accedo al portale @PLATFORM all'indirizzo {{domain}}.",
+        "emailnotify2" : "Inviami un'e-mail ogni volta che accedo al portale @PRODUCT all'indirizzo {{domain}}.",
         "agree_btn" : "Sono d'accordo",
         "keyrecovery" : {
             "intro" : "La chiave privata utilizzata per crittografare i dati deve essere recuperata. Per recuperare la chiave, provare una di queste opzioni:",
-            "way1" : "Hai qualche applicazione che utilizza @PLATFORM dove sei ancora connesso? Se sì, apri l'applicazione e la tua chiave verrà recuperata. Prova ad effettuare nuovamente il login in seguito.",
-            "way2" : "Hai già effettuato l'accesso utilizzando un browser? Se sì, prova ad accedere utilizzando lo stesso browser e lo stesso dispositivo.",
+            "way1" :  "Ha qualche applicazione che utilizza @PRODUCT dove sei ancora connesso? Se sì, apri l'applicazione e la tua chiave verrà recuperata. Prova ad effettuare nuovamente il login in seguito.",
+            "way2" :  "Ha già effettuato l'accesso utilizzando un browser? Se sì, prova ad accedere utilizzando lo stesso browser e lo stesso dispositivo.",
             "way3" : "Ricordi di nuovo la tua vecchia password? Se sì, prova ad accedere utilizzando la tua vecchia password.",
             "way4" : "Attendere che i dipendenti @OPERATOR eseguano un recupero manuale della chiave. @OPERATOR vi invierà un'e-mail quando il recupero è stato fatto. Attendere fino a cinque giorni lavorativi per completare il recupero."
         },
@@ -721,10 +710,10 @@
             "text" : "Si prega di contattare @SUPPORT per ottenere una licenza valida."
         },
         "reject" : {
-            "intro1" : "Avete cliccato sul link RIFIUTO dell'account nella e-mail di conferma dell'account.",
-            "intro2" : "Si prega di confermare che NON si desidera creare un account su @PLATFORM. Il vostro indirizzo e-mail sarà bloccato per ulteriori tentativi di registrazione fino a quando non contatterai @SUPPORT.",
+            "intro1" : "Ha cliccato sul link RIFIUTO dell'account nella e-mail di conferma dell'account.",
+            "intro2" : "Si prega di confermare che NON si desidera creare un account su @PLATFORM. Il suo indirizzo e-mail sarà bloccato per ulteriori tentativi di registrazione fino a quando non contatterai @SUPPORT.",
             "reject_btn" : "Rifiuta la creazione del account",
-            "intro3" : "Se hai cliccato il link sbagliato e vuoi invece CONFERMARE il vostro indirizzo e-mail, clicca qui:",
+            "intro3" : "Se ha cliccato il link sbagliato e vuoi invece CONFERMARE il suo indirizzo e-mail, clicca qui:",
             "confirm_btn" : "Confermare la creazione del account"
         }
     },
@@ -754,7 +743,7 @@
 
     "changeaddress" : {
         "title" : "Indirizzo postale e informazioni di contatto",
-        "success" : "Il tuo profilo è stato aggiornato.",
+        "success" : "Il suo profilo è stato aggiornato.",
         "update_btn" : "Aggiornamento"
     },
 
@@ -763,7 +752,7 @@
         "plugins" : "Plugin",
         "no_spotlighted_plugins" : "Non è ancora stato evidenziato alcun plugin.",
         "plugins_you_may_like" : "Plugin che potrebbero interessarti",
-        "no_recommendations" : "Non abbiamo ancora consigli per te.",
+        "no_recommendations" : "Non abbiamo ancora consigli per lei.",
         "install_now_btn" : "Utilizzare ora"
     },
 
@@ -783,22 +772,14 @@
         "created_by" : "Creato da:",
         "created_with" : "Creato con:",
         "created_on" : "Creato il:",
-
-        // TODO CHANGED
-        // OLD: Content:
-        // NEW: Midata Content-Type:
-        "content" : "Contenuti:",
+        "content" : "Tipo di contenuto @PRODUCT:",
         "format" : "Formato:",
         "download_btn" : "Scarica",
         "content_visualization" : "Visualizzazione dei contenuti",
         "no_visualization" : "Nessuna visualizzazione disponibile per questo record.",
         "raw_data" : "Dati grezzi",
-
-        // TODO NEW: Record ID
         "id" : "Record ID",
-
-        // TODO NEW: Code(s)
-        "code" : "Code(s)"
+        "code" : "Codice(i)"
     },
 
     "studydetails" : {
@@ -818,7 +799,7 @@
         "records_with_group" : "Record appartenenti al gruppo:",
         "records_with_owner" : "Record appartenenti al titolare:",
         "records_from_app" : "Record create dall'applicazione:",
-        "owner_self" : "I tuoi record",
+        "owner_self" : "I suoi record",
         "participation_history" : "Storico della partecipazione",
         "history_event" : "Evento",
         "history_who" : "Chi",
@@ -828,7 +809,7 @@
         "request_participation_btn" : "Richiedere la partecipazione",
         "do_not_participate_help" : "Se NON vuoi partecipare puoi cliccare qui. Non ti verrà chiesto di nuovo e nessun dato verrà condiviso.",
         "do_not_participate_btn" : "Non partecipare",
-        "retreat_help" : "Attualmente stai partecipando a questa ricerca. Se non vuoi più partecipare puoi ritirarti dalla partecipazione. I vostri dati condivisi saranno congelati al momento del ritiro e non verranno condivisi nuovi dati. Una volta ritirato non sarai in grado di partecipare di nuovo.",
+        "retreat_help" : "Attualmente stai partecipando a questa ricerca. Se non vuoi più partecipare puoi ritirarti dalla partecipazione. I suoi dati condivisi saranno congelati al momento del ritiro e non verranno condivisi nuovi dati. Una volta ritirato non sarai in grado di partecipare di nuovo.",
         "retreat_btn" : "Ritiro della partecipazione",
         "status" : "Stato",
         "recommended_apps" : "Applicazioni consigliate",
@@ -844,7 +825,7 @@
         "name" : "Nome:",
         "email" : "E-mail:",
         "birthday" : "Data di nascita:",
-        "midataID" : "MIDATA ID:",
+        "midataID" : "@PRODUCT ID:",
         "action" : "Altro...",
         "change_password_btn" : "Modifica password",
         "change_passphrase_btn" : "Modificare la frase segreta",
@@ -853,24 +834,24 @@
         "expert_tools_btn" : "Mostra i plugin esperti",
         "repair_account_btn" : "Ripara account",
         "reset_spaces_btn" : "Ripristina portale",
-        "export_btn" : "Esporta i tuoi dati",
+        "export_btn" : "Esporta i suoi dati",
         "delete_records_btn" : "Elimina record",
         "wipe_account_btn" : "Cancella account",
         "metrics_btn" : "Calcolare le metriche del account",
         "servicekeys_btn" : "Gestire le chiavi API",
-        "account_repaired" : "Il tuo account è stato riparato.",
+        "account_repaired" : "Il suo account è stato riparato.",
         "spaces_resetted" : "La tua configurazione è stata ripristinata.",
         "settings" : "Impostazioni",
         "change_address_btn" : "Modifica profilo",
         "searchable_short" : "Visibilità del proprio account",
-        "searchable" : "Altri utenti possono trovare il tuo profilo durante la ricerca della tua e-mail?",
+        "searchable" : "Altri utenti possono trovare il suo profilo durante la ricerca della tua e-mail?",
         "searchable_yes" : "Sì, voglio che il mio nome ed e-mail siano visibili ad altri utenti",
         "searchable_no" : "No, non voglio che altri utenti vedano il mio profilo",
-        "searchable_info" : "Questa impostazione non ha effetto sui consensi di condivisione dei tuoi dati esistenti.",
+        "searchable_info" : "Questa impostazione non ha effetto sui consensi di condivisione dei suoi dati esistenti.",
         "auth_type" : "Autenticazione",
-        "auth_type2" : "Vuole proteggere l'accesso al tuo account con un secondo fattore oltre alla tua password?",
+        "auth_type2" : "Vuole proteggere l'accesso al suo account con un secondo fattore oltre alla tua password?",
         "notifications" : "Notifiche",
-        "notifications2" : "Vuole essere avvisato se il vostro account è utilizzato?",
+        "notifications2" : "Vuole essere avvisato se il suo account è utilizzato?",
         "change_settings_btn" : "Modifica impostazioni",
         "change_settings_success" : "Le impostazioni sono state aggiornate"
     },
@@ -915,11 +896,11 @@
         "who_is_owner" : "Chi sta condividendo i dati?",
         "which_persons" : "Con quale persona/e sono condivisi i dati?",
         "set_owner_btn" : "Selezionare la persona che condivide i propri dati",
-        "add_yourself_btn" : "Aggiungi te stesso/a",
+        "add_yourself_btn" : "Aggiungi se stesso",
         "add_person_btn" : "Aggiungi una nuova persona",
         "add_usergroup_btn" : "Aggiungi un nuovo team",
         "writes" : "Scrivi l'autorizzazione",
-        "writes2" : "Le persone autorizzate da questo consenso possono creare o aggiornare dati nel tuo account incluso nel consenso suddetto.",
+        "writes2" : "Le persone autorizzate da questo consenso possono creare o aggiornare dati nel suo account incluso nel consenso suddetto.",
         "reshare" : "Accesso di terzi?",
         "reshare2" : "Le persone autorizzate da questo consenso possono ri-condividere i dati ai quali ho consentito loro di accedere.",
         "expiration_date" : "Data di scadenza del consenso:",
@@ -941,7 +922,7 @@
         "type" : "Tipo di consenso",
         "status" : "Stato del consenso",
         "people" : "Con quale/i persona/e si desidera condividere i dati?",
-        "external" : "Titolare di un account non appartenente a @PLATFORM",
+        "external" : "Titolare di un account non appartenente a @PRODUCT",
         "add_people_btn" : "Aggiungi altre persone",
         "add_usergroup_btn" : "Aggiungi un team",
         "reshare" : "@:nuovoconsenso.ricondividi",
@@ -951,8 +932,8 @@
         "created_before" : "Non condividere i dati creati dopo:",
         "what_is_shared" : "Quali dati sono condivisi?",
         "consent_empty" : "Attualmente questo consenso non condivide alcun dato.",
-        "type_circle" : "Questo consenso condivide dati con altri titolari di un account @PLATFORM.",
-        "type_representative" : "Questo consenso autorizza un'altra persona a utilizzare il vostro account. Tutti i dati del proprietario dell'account sono condivisi con il rappresentante.",
+        "type_circle" : "Questo consenso condivide dati con altri titolari di un account @PRODUCT.",
+        "type_representative" : "Questo consenso autorizza un'altra persona a utilizzare il suo account. Tutti i dati del proprietario dell'account sono condivisi con il rappresentante.",
         "type_healthcare" : "Questo consenso condivide dati con professionisti sanitari.",
         "type_studyparticipation" : "Questo consenso condivide dati con un progetto di ricerca.",
         "type_studyrelated" : "Questo consenso condivide dati con un partecipante al progetto.",
@@ -974,7 +955,7 @@
         "please_review1" : "Consenso a rivedere",
         "please_review2a" : "Si prega di rivedere questo consenso. Clicca su 'Conferma questo consenso' se si è d'accordo. Clicca su 'Rifiuta questo consenso' se non sei d'accordo.",
         "please_review2b" : "Si prega di rivedere il consenso esistente. Clicca su 'Salta (nessuna modifica)' per lasciare questa pagina senza modifiche. Clicca su 'Rifiuta questo consenso' se non sei più d'accordo.",
-        "you" : "Voi",
+        "you" : "Lei",
         "restrictions" : "Altre restrizioni?",
         "project" : "Progetto"
     },
@@ -997,9 +978,9 @@
     "consents" : {
         "title" : "Consensi",
         "description" : "Utilizzando i consensi si può concedere ad altri (professionisti sanitari, amici, ricercatori, ...) l'accesso ad alcuni dei propri dati. Utilizzare questa pagina per gestire i propri consensi e crearne di nuovi.",
-        "count" : "Hai {{ count }} consenso(i):",
+        "count" :  "Ha {{ count }} consenso(i):",
         "where_owner" : "Mostra i consensi in cui puoi condividere i dati con altri",
-        "where_authorized" : "Mostra i consensi in cui i dati sono condivisi con te",
+        "where_authorized" : "Mostra i consensi in cui i dati sono condivisi con lei",
         "name" : "Titolo del consenso",
         "ownerName" : "Titolare",
         "type" : "Tipo",
@@ -1011,7 +992,7 @@
     },
 
     "revconsents" : {
-        "count" : "Esistono {{ count }} consensi che condividono i dati con te:",
+        "count" : "Esistono {{ count }} consensi che condividono i dati con lei:",
         "add_new_btn" : "Aggiungi richiesta per il consenso"
     },
 
@@ -1072,19 +1053,19 @@
     },
 
     "oauth2" : {
-        "requests_permission" : "memorizza i dati personali nell'account @PLATFORM.",
-        "no_account" : "Non hai ancora un account?",
-        "have_account" : "Hai un account @PLATFORM?",
+        "requests_permission" : "memorizza i dati personali nell'account @PRODUCT.",
+        "no_account" : "Non ha ancora un account?",
+        "have_account" :  "Ha un account @PRODUCT?",
         "have_account2" : "Perfetto, accedi.",
         "role" : "Ruolo",
         "sign_up_btn" : "Iscriviti",
         "reshares_data" : "L'applicazione può condividere i dati a cui ha accesso con terzi.",
-        "allows_user_search" : "Il tuo nome e indirizzo e-mail può essere cercato da altre persone utilizzando questa applicazione.",
-        "requesting_app" : "richiede l'accesso ai tuoi dati.",
-        "sign_in" : "Accesso @PLATFORM per:",
+        "allows_user_search" : "Il suo nome e indirizzo e-mail può essere cercato da altre persone utilizzando questa applicazione.",
+        "requesting_app" : "richiede l'accesso ai suoi dati.",
+        "sign_in" : "Accesso @PRODUCT per:",
         "sign_in_btn" : "Accedi",
         "device" : "Dispositivo: {{device}}",
-        "please_confirm" : "Confermare l'attivazione dell'applicazione utilizzando il portale @PLATFORM, quindi riprovare. Il titolo del consenso è: {{ consent }}",
+        "please_confirm" : "Confermare l'attivazione dell'applicazione utilizzando il portale @PRODUCT, quindi riprovare. Il titolo del consenso è: {{ consent }}",
         "confirm_btn" : "Conferma l'accesso",
         "reject_btn" : "Rifiuta",
         "continue_btn" : "Continua",
@@ -1131,7 +1112,7 @@
         "mode_pseudonymized" : "dati pseudonimizzati",
         "mode_anonymized" : "dati anonimizzati",
         "mode_all" : "dati grezzi",
-        "target_device" : "sul vostro dispositivo",
+        "target_device" : "sul suo dispositivo",
         "target_operated" : "operato da",
         "target_performed" : "eseguito da",
         "target_community" : "per altri partecipanti"
@@ -1141,32 +1122,32 @@
         "help_welcome" : "Benvenuto su @PLATFORM",
         "myviews" : "Le mie visualizzazioni",
         "mydata" : "I miei dati personali",
-        "mydata_text" : "Gestisci i tuoi dati relativi a salute e sanità. Inserisci i nuovi dati e visualizza quelli esistenti.",
+        "mydata_text" : "Gestisci i suoi dati relativi a salute e sanità. Inserisci i nuovi dati e visualizza quelli esistenti.",
         "social" : "Social",
-        "social_text" : "Condividi i tuoi dati con gli amici. Comunica con le persone con le quali condividi la tua situazione riguardante salute e sanità. Potenzia la tua motivazione nella competizione con altri.",
+        "social_text" : "Condividi i suoi dati con gli amici. Comunica con le persone con le quali condividi la tua situazione riguardante salute e sanità. Potenzia la tua motivazione nella competizione con altri.",
         "research" : "Ricerca",
         "research_text" : "Partecipa agli progetti di ricerca. Informati sulla ricerca corrente.",
         "health" : "Salute e sanità",
-        "health_text" : "Condividi i dati con il tuo medico. Cerca professionisti sanitari.",
+        "health_text" : "Condividi i dati con il suo medico. Cerca professionisti sanitari.",
         "help" : "Aiuto",
         "help_text" : "Ottieni aiuto sulla funzionalità",
         "training" : "Formazione",
-        "training_text" : "Gestisci il tuo personal training!",
+        "training_text" : "Gestisci il suo personal training!",
         "newrecords" : "Record più recenti aggiunti questo mese:",
-        "newrecords_teaser" : "Non ci sono nuovi record. Visita la pagina dei record per sfogliare tutti i tuoi record.",
+        "newrecords_teaser" : "Non ci sono nuovi record. Visita la pagina dei record per sfogliare tutti i suoi record.",
         "myaccount" : "I dati del mio account",
-        "newsharedrecords" : "Nuovi record condivisi con te",
-        "newsharedrecords_teaser" : "Altri titolari di un account @PLATFORM possono condividere i loro dati con te.",
+        "newsharedrecords" : "Nuovi record condivisi con lei",
+        "newsharedrecords_teaser" : "Altri titolari di un account @PRODUCT possono condividere i loro dati con lei.",
         "circles" : "Membro delle cerchie",
         "circles_teaser" : "Chiedi ad altri di aggiungerti alle loro cerchie.",
         "circles2" : "Le tue cerchie",
-        "circles2_teaser" : "Crea Cerchie per condividere i tuoi dati con altri. Condividi con amici, famiglia o altri.",
-        "providers" : "I tuoi consensi per salute e sanità",
-        "providers_teaser" : "Cerca altri fornitori di prestazioni sanitarie e aggiungili al tuo elenco per condividere dati con loro.",
+        "circles2_teaser" : "Crea Cerchie per condividere i suoi dati con altri. Condividi con amici, famiglia o altri.",
+        "providers" : "I suoi consensi per salute e sanità",
+        "providers_teaser" : "Cerca altri fornitori di prestazioni sanitarie e aggiungili al suo elenco per condividere dati con loro.",
         "providersearch" : "Cerca fornitori di prestazioni sanitarie",
         "providersearch_text" : "Funzione di ricerca per fornitori di prestazioni sanitarie.",
         "usergroupsearch" : "Cerca i team",
-        "hcrecords" : "I record più recenti dai tuoi fornitori di prestazioni sanitarie",
+        "hcrecords" : "I record più recenti dai suoi fornitori di prestazioni sanitarie",
         "records" : "Record",
         "share" : "Condividi",
         "details" : "Dettagli",
@@ -1293,7 +1274,7 @@
         "greeting" : "Collega le tue applicazioni per raccogliere i dati",
         "title" : "Applicazioni",
         "description" : "Applicazioni autorizzate",
-        "count" : "Hai {{count}} applicazioni autorizzate.",
+        "count" :  "Ha {{count}} applicazioni autorizzate.",
         "services" : "Servizi",
         "empty" : "Non ci sono ancora servizi disponibili.",
         "connect_btn" : "Autorizza",
@@ -1302,7 +1283,7 @@
 
     "changeemail" : {
         "title" : "Modifica l'indirizzo e-mail dell'account",
-        "midataId" : "MIDATA ID",
+        "midataId" : "@PRODUCT ID",
         "name" : "Nome",
         "old_email" : "Indirizzo e-mail corrente",
         "new_email" : "Nuovo indirizzo e-mail",
@@ -1313,43 +1294,43 @@
 
     "member_user" : {
         "account_status" : "Stato dell'account",
-        "studyparticipant" : "Il tuo account è stato configurato per la partecipazione a un progetto. Le funzionalità sono limitate. Puoi aggiornare il tuo account utente a un account completo.",
-        "appuser" : "Il tuo account è stato registrato da un'applicazione esterna. Le funzionalità sono limitate. Puoi aggiornare il tuo account utente a un account completo.",
+        "studyparticipant" : "Il suo account è stato configurato per la partecipazione a un progetto. Le funzionalità sono limitate. Puoi aggiornare il suo account utente a un account completo.",
+        "appuser" : "Il suo account è stato registrato da un'applicazione esterna. Le funzionalità sono limitate. Puoi aggiornare il suo account utente a un account completo.",
         "memberofcooperative" : "Sei membro della cooperativa.",
         "nonmemberuser" : "Possiedi un account utente completo ma non sei membro della cooperativa.",
         "agb_not_requested" : "Facendo clic sul pulsante 'Richiedi contratto', i Condizioni generali di contratto (CGC) e il contratto ti saranno inviati per lettera. Restituisci i CGC firmato per convertire questo account di prova in un account completo.",
-        "agb_requested" : "Hai richiesto i Condizioni generali di contratto e il contratto. La tua richiesta è in fase di elaborazione presso la cooperativa.",
+        "agb_requested" :  "Ha richiesto i Condizioni generali di contratto e il contratto. La tua richiesta è in fase di elaborazione presso la cooperativa.",
         "agb_printed" : "Le Condizioni generali di contratto e il contratto da lei richiesto dovrebbero arrivare nei prossimi giorni.",
-        "agb_signed" : "Hai firmato i Condizioni generali di contratto.",
-        "confirmed" : "Il tuo indirizzo postale è stato confermato.",
+        "agb_signed" :  "Ha firmato i Condizioni generali di contratto.",
+        "confirmed" : "Il suo indirizzo postale è stato confermato.",
         "entercode" : "La lettera che ti è stata inviata contiene un codice di registrazione. Una volta ricevuta la lettera, inserisci il codice qui:",
-        "email_unvalidated" : "Il tuo indirizzo e-mail non è ancora stato convalidato. Fai clic sul link nell'e-mail di convalida ricevuta!",
+        "email_unvalidated" : "Il suo indirizzo e-mail non è ancora stato convalidato. Fai clic sul link nell'e-mail di convalida ricevuta!",
         "request_membership_btn" : "Richiedi contratto"
     },
 
     "accountwipe" : {
-        "title" : "Chiudi e cancella account @PLATFORM",
+        "title" : "Chiudi e cancella account @PRODUCT",
         "hello" : "Cara/caro {{name}},",
         "hello_m" : "Caro {{name}},",
         "hello_w" : "Cara {{name}},",
-        "paragraph1" : "Desiderate cancellare il vostro account @PLATFORM in modo irrevocabile? Ciò è ovviamente possibile.",
+        "paragraph1" : "Desiderate cancellare il suo account @PRODUCT in modo irrevocabile? Ciò è ovviamente possibile.",
         "paragraph2" : "Si prega di leggere prima le seguenti informazioni:",
-        "point1" : "Se si cancella l'account @PLATFORM, i dati personali non saranno più disponibili.",
+        "point1" : "Se si cancella l'account @PRODUCT, i dati personali non saranno più disponibili.",
         "point2" : "I dati già inclusi negli progetti di ricerca continueranno ad essere disponibili nel progetto.",
         "point3" : "@OPERATOR non è in grado di recuperare l'account cancellato.",
         "warning" : "Avvertimento",
         "final" : "Questa azione non può essere annullata.",
-        "paragraph3" : "Se si desidera eliminare l'account @PLATFORM, inserire la password per la conferma.",
+        "paragraph3" : "Se si desidera eliminare l'account @PRODUCT, inserire la password per la conferma.",
         "password" : "Password",
         "reason" : "Motivo (opzionale)",
         "reason2" : "Le saremmo grati se volesse comunicarci perché sta cancellando il suo account. Siamo costantemente impegnati a migliorare @PLATFORM.",
-        "wipe_btn" : "Chiudi e cancella account @PLATFORM",
+        "wipe_btn" : "Chiudi e cancella account @PRODUCT",
         "error" : "La password non è corretta. L'account non è stato eliminato."
     },
 
     "serviceleave" : {
-        "title" : "Avete terminato la vostra sessione?",
-        "thankyou" : "Grazie per il vostro aiuto!",
+        "title" : "Ha terminato la sua sessione?",
+        "thankyou" : "Grazie per il suo aiuto!",
         "continue" : "Si prega di utilizzare il menu in alto per continuare la sessione o uscire.",
         "logout_btn" : "Disconnetti",
         "goodbye_btn" : "Termina sessione e chiudi finestra",
@@ -1458,8 +1439,8 @@
     "failure" : {
         "title" : "Accesso non consentito",
         "intro" : "Non è possibile effettuare il login per il seguente motivo:",
-        "withdrawn1" : "Avete ritirato la vostra partecipazione a un progetto. La partecipazione è obbligatorio per poter utilizzare questa applicazione.",
-        "withdrawn2" : "Non potrai riutilizzare l'applicazione con il vostro account @PLATFORM.",
+        "withdrawn1" : "Ha ritirato la sua partecipazione a un progetto. La partecipazione è obbligatorio per poter utilizzare questa applicazione.",
+        "withdrawn2" : "Non potrai riutilizzare l'applicazione con il suo account @PRODUCT.",
         "joinmethod1" : "L'accesso al progetto di ricerca è limitato.",
         "joinmethod2" : "Si prega di contattare il team responsabile del progetto. Per ulteriori informazioni, leggere le condizioni d'uso dell'applicazione.",
         "loginpage_btn" : "Torna al login"
