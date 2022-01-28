@@ -22,15 +22,15 @@
         "menu_consents" : "Condivisione",
         "menu_consents_text" : "Gestire la condivisione dei dati con altri.",
         "starts" : "Alcune idee per cominciare:",
-        "answer_questions" : "Per iniziare ti consigliamo di rispondere ad alcune domande. Preconfigureremo il tuo account sulla base delle tue risposte.",
-        "answered_questions" : "Grazie per avere risposto alle domande sulla configurazione! Visita il tuo pannello di controllo ora oppure modifica le risposte, se necessario.",
+        "answer_questions" : "Per iniziare vi consigliamo di rispondere ad alcune domande. Preconfigureremo il suo account sulla base alle sue risposte.",
+        "answered_questions" : "Grazie per aver risposto alle domande di configurazione! Ora dovresti visitare la sua dashboard o cambiare le sue risposte se ne ha bisogno.",
         "answer_btn" : "Rispondere ora alle domande sulla configurazione",
         "dashboard_btn" : "Visitare la pagina 'Pannello'",
         "answer_again_btn" : "Modificare le risposte alle domande sulla configurazione"
     },
 
     "help_setup" : {
-        "description" : "Le risposte alle seguenti domande sono utilizzate esclusivamente per configurare il tuo account secondo le tue esigenze.",
+        "description" : "Le risposte alle seguenti domande servono solo per configurare il suo account secondo le sue esigenze.",
         "question_measures" : "Quali valori misurati desideri visualizzare nel portale?",
         "question_devices" : "Utilizzi qualcuno dei seguenti dispositivi?",
         "question_devices_answer1" : "Fitbit",
@@ -41,21 +41,21 @@
     },
 
     "accountdata" : {
-        "midata_id" : "ID MIDATA:",
+        "midata_id" : "@PRODUCT ID:",
         "birthday" : "Compleanno:",
         "change_btn" : "Modifica"
     },
 
     "member_circles" : {
         "number_available" : "Cerchie disponibili:",
-        "empty" : "Non hai nessuna cerchia.",
+        "empty" : "Non ha nessuna cerchia.",
         "add_btn" : "Aggiungi",
         "manage_btn" : "Gestione"
     },
 
     "member_othercircles" : {
         "number_available" : "Cerchie disponibili:",
-        "empty" : "Nessun titolare di un account condivide dati con te."
+        "empty" : "Nessun titolare di un account condivide dati con lei."
     },
 
     "yourstudies" : {
@@ -77,11 +77,11 @@
         "confirmation_date" : "Data di conferma",
         "confirm_btn" : "conferma",
         "reject_btn" : "rifiuta",
-        "empty" : "Non hai registrato alcun contatto come professionista sanitario."
+        "empty" : "Non ha registrato alcun contatto come professionista sanitario."
     },
 
     "smallstudies" : {
-        "greeting" : "Vuoi sostenere un progetto di ricerca condividendo i tuoi dati?",
+        "greeting" : "Vuole sostenere un progetto di ricerca condividendo i suoi dati?",
         "studies" : "Progetti",
         "status" : "Iscrizione",
         "recruiting" : "Reclutamento",
