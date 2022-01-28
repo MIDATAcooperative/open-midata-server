@@ -289,6 +289,7 @@ conf/config.js: config/config-template.js conf/pathes.conf conf/setup.conf
 	sed -i 's|DOMAIN|$(DOMAIN)|' conf/config.js
 	sed -i 's|PLATFORM_NAME|$(PLATFORM_NAME)|' conf/config.js
 	sed -i 's|OPERATOR_NAME|$(OPERATOR_NAME)|' conf/config.js
+	sed -i 's|PRODUCT_NAME|$(PRODUCT_NAME)|' conf/config.js
 	sed -i 's|OFFICIAL_SUPPORT_MAIL|$(OFFICIAL_SUPPORT_MAIL)|' conf/config.js
 	sed -i 's|OFFICIAL_HOMEPAGE|$(OFFICIAL_HOMEPAGE)|' conf/config.js
 	sed -i 's|INSTANCE_TYPE|$(INSTANCE_TYPE)|' conf/config.js
