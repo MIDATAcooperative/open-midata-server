@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64InputStream;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 import org.hl7.fhir.r4.model.DomainResource;
 
@@ -548,14 +549,15 @@ public class Records extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result getFile(Request request, String id) throws AppException {
 
-		RecordToken tk = getRecordTokenFromString(request, id);
+		Pair<String, Integer> idPair = RecordManager.instance.parseFileId(id);
+		RecordToken tk = getRecordTokenFromString(request, idPair.getLeft());
 		//MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		AccessContext context = portalContext(request);
 
 		if (tk == null)
 			throw new BadRequestException("error.invalid.token", "Bad token");		
 		
-		FileData fileData = RecordManager.instance.fetchFile(context, tk);
+		FileData fileData = RecordManager.instance.fetchFile(context, tk, idPair.getRight());
 		
 		String contentType = "application/binary";
 		if (fileData.contentType != null) contentType = fileData.contentType;
@@ -650,10 +652,14 @@ public class Records extends APIController {
 						String location = FHIRServlet.getBaseUrl() + "/" + prov.getResourceType().getSimpleName() + "/" + rec._id.toString() + "/_history/" + rec.version;
 						if (r != null) {
 							String ser = prov.serialize(r);
-							int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
-							if (attpos > 0) {
-								out.append((first?"":",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(inf.context, new RecordToken(rec._id.toString(), rec.stream.toString()));
+							out.append((first?"":",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : ");
+							int attpos;
+							int idx = 0;
+							do {
+							  attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
+							  if (attpos > 0) {
+								out.append(ser.substring(0, attpos));
+								FileData fileData = RecordManager.instance.fetchFile(inf.context, new RecordToken(rec._id.toString(), rec.stream.toString()), idx);
 
 								int BUFFER_SIZE = 3 * 1024;
 
@@ -666,10 +672,12 @@ public class Records extends APIController {
 									}
 
 								}
-
-								out.append(ser.substring(attpos + FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length()) + " } ");
+                                ser = ser.substring(attpos + FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length());
+                                idx++;
 							} else
-								out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
+								out.append(ser);
+							} while (attpos>=0);
+							out.append("} ");
 						} else {
 							out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\" } ");
 						}

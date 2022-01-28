@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CanonicalType;
 import org.hl7.fhir.r4.model.Coding;
@@ -29,6 +30,7 @@ import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Questionnaire;
 import org.hl7.fhir.r4.model.QuestionnaireResponse;
+import org.hl7.fhir.r4.model.QuestionnaireResponse.QuestionnaireResponseItemComponent;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -314,5 +316,24 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 		// No action
 		
 	}
+
+	@Override
+	public List<Attachment> getAttachments(QuestionnaireResponse resource) {
+		List<Attachment> results = new ArrayList<Attachment>();
+		if (resource.hasItem()) {
+			for (QuestionnaireResponseItemComponent item : resource.getItem()) {
+				if (item.hasAnswer()) {
+					for (QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent answer : item.getAnswer()) {
+						if (answer.hasValueAttachment()) {
+							results.add(answer.getValueAttachment());
+						}				
+					}
+				}
+			}
+		}
+		return results;
+	}
+	
+	
 
 }

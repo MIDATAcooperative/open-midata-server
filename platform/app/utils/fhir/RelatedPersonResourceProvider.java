@@ -20,6 +20,7 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Patient;
@@ -269,6 +270,13 @@ public class RelatedPersonResourceProvider extends RecordBasedResourceProvider<R
 	@Override
 	protected void convertToR4(Object in) {
 				
+	}
+
+	@Override
+	public List<Attachment> getAttachments(RelatedPerson resource) {
+		return resource.getPhoto();		
 	}	
+	
+	
 
 }

@@ -448,9 +448,9 @@ public class OAuth2 extends Controller {
 		Plugin app;
 		if (token.appId == null) {
 		   String name = JsonValidation.getString(json, "appname");
-		   app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef"));
+		   app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef", "codeChallenge"));
 		} else {			
-		   app = Plugin.getById(token.appId, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef"));			
+		   app = Plugin.getById(token.appId, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef", "codeChallenge"));			
 		}
 		
 		// Check app
@@ -536,10 +536,10 @@ public class OAuth2 extends Controller {
 	 * @param token
 	 * @param json
 	 */
-	private static final void readyCodeChallenge(ExtendedSessionToken token, JsonNode json) throws JsonValidationException {
+	private static final void readyCodeChallenge(ExtendedSessionToken token, JsonNode json, Plugin app) throws JsonValidationException, BadRequestException {
 		token.codeChallenge = JsonValidation.getStringOrNull(json, "code_challenge");
 	    token.codeChallengeMethod = JsonValidation.getStringOrNull(json, "code_challenge_method");
-	    
+	    if (app.codeChallenge && token.codeChallenge==null) throw new BadRequestException("error.no_code_challenge", "Code challenge missing");
 	}
 	
 	/**
@@ -870,7 +870,7 @@ public class OAuth2 extends Controller {
 		if (token.device != null && token.device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
 	    // Validate Mobile App	
 		Plugin app = validatePlugin(token, json);		
-		readyCodeChallenge(token, json);
+		readyCodeChallenge(token, json, app);
 		
 		return loginHelper(request, token, json, app, null);
 	}

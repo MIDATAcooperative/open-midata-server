@@ -476,14 +476,15 @@ public class Studies extends APIController {
 
 						String location = FHIRServlet.getBaseUrl() + "/" + prov.getResourceType().getSimpleName() + "/" + rec._id.toString() + "/_history/" + rec.version;
 						if (r != null) {
-
 							String ser = prov.serialize(r);
-							int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
-							// System.out.println("binary pos:"+attpos);
-							// AccessLog.log("binary pos:"+attpos);
-							if (attpos > 0) {
-								out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(inf.context, new RecordToken(rec._id.toString(), rec.stream.toString()));
+							out.append((first?"":",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : ");
+							int attpos;
+							int idx = 0;
+							do {
+							  attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
+							  if (attpos > 0) {
+								out.append(ser.substring(0, attpos));
+								FileData fileData = RecordManager.instance.fetchFile(inf.context, new RecordToken(rec._id.toString(), rec.stream.toString()), idx);
 
 								int BUFFER_SIZE = 3 * 1024;
 
@@ -496,14 +497,16 @@ public class Studies extends APIController {
 									}
 
 								}
-
-								out.append(ser.substring(attpos + FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length()) + " } ");
+                                ser = ser.substring(attpos + FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length());
+                                idx++;
 							} else
-								out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
+								out.append(ser);
+							} while (attpos>=0);
+							out.append("} ");
 						} else {
 							out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\" } ");
 						}
-						first = false;
+					    first = false;
 						// System.out.println("done record");
 						// AccessLog.log("done record");
 						return ByteString.fromString(out.toString());

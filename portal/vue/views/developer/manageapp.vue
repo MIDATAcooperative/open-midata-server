@@ -187,6 +187,12 @@
 		    <input type="text" id="unlockCode" name="unlockCode" class="form-control" v-validate v-model="app.unlockCode">
 		    <p class="form-text text-muted" v-t="'manageapp.info.unlock_code'"></p>
 		  </form-group>
+		   <form-group name="codeChallenge" label="manageapp.code_challenge" :path="errors.codeChallenge">
+		      <div class="form-check">
+		         <input type="checkbox" id="codeChallenge" name="codeChallenge" class="form-check-input" v-validate v-model="app.codeChallenge">
+		         <label for="codeChallenge" class="form-check-label">{{ $t('manageapp.info.code_challenge') }}</label>
+		      </div>		    
+		  </form-group>
 		   <form-group name="sendReports" label="manageapp.send_reports" :path="errors.sendReports">
 		      <div class="form-check">
 		         <input type="checkbox" id="sendReports" name="sendReports" class="form-check-input" v-validate v-model="app.sendReports">
@@ -296,7 +302,7 @@ export default {
 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate"])
 		    .then(function(data) { 
                 let app = data.data[0];	
 				

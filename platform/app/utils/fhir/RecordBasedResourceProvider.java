@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hl7.fhir.r4.model.Attachment;
+import org.hl7.fhir.r4.model.Base64BinaryType;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DomainResource;
@@ -61,6 +62,7 @@ import models.Record;
 import models.TypedMidataId;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.InstanceConfig;
 import utils.access.AccessContext;
 import utils.access.ConsentAccessContext;
 import utils.access.EncryptedFileHandle;
@@ -136,7 +138,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@Override
 	public void createExecute(Record record, T theResource) throws AppException {
-		insertRecord(record, theResource);
+		List<Attachment> attachments = getAttachments(theResource);		
+		insertRecord(record, theResource, attachments, info().context);
 	}
 	
 	@Override
@@ -211,6 +214,22 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		return record;
 	}
 	
+	public List<Attachment> getAttachments(T resource) {
+		return Collections.emptyList();
+	}
+	
+	public void processAttachments(Record record, T resource) {
+		List<Attachment> atts = getAttachments(resource);	
+		int idx=0;
+		for (Attachment attachment : atts) { 
+		  if (attachment != null && attachment.getUrl() == null && attachment.getData() == null) {	
+			  String url = "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/records/file?_id="+record._id+"_"+idx;
+			  attachment.setUrl(url);
+			  idx++;
+		  }
+		}
+	}
+	
 	@Override
 	public Record fetchCurrent(IIdType theId)  {
 		try {
@@ -239,12 +258,16 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		}
 	}
 	
-	public void insertRecord(Record record, IBaseResource resource) throws AppException {
-		insertRecord(record, resource, info().context);
+	public void insertRecord(Record record, T resource) throws AppException {
+		insertRecord(record, resource, null, info().context);
 	}
 	
-	public static void insertRecord(Record record, IBaseResource resource, AccessContext targetConsent) throws AppException {
- 		insertRecord(info(), record, resource, targetConsent);
+	public void insertRecord(Record record, T resource, AccessContext targetContext) throws AppException {
+		insertRecord(record, resource, null, targetContext);
+	}
+	
+	public void insertRecord(Record record, T resource, List<Attachment> att) throws AppException {
+		insertRecord(record, resource, att, info().context);
 	}
 	
 	public static void insertRecord(ExecutionInfo info, Record record, IBaseResource resource, AccessContext targetConsent) throws AppException {
@@ -259,72 +282,79 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			}
 	}
 	
-	public MidataId insertMessageRecord(Record record, IBaseResource resource) throws AppException {
+	public MidataId insertMessageRecord(Record record, T resource) throws AppException {
 		ExecutionInfo inf = info();
 		MidataId shareFrom = inf.executorId;
 		MidataId owner = record.owner;
+		
+		List<Attachment> attachments = getAttachments(resource);
+				
 		if (!owner.equals(inf.executorId)) {
 			Consent consent = Circles.getOrCreateMessagingConsent(inf.context, inf.executorId, owner, owner, false);
-			insertRecord(record, resource, new ConsentAccessContext(consent, info().context));
+			insertRecord(record, resource, attachments, new ConsentAccessContext(consent, info().context));
 			shareFrom = consent._id;
 		} else {
-			insertRecord(record, resource);
+			insertRecord(record, resource, attachments, info().context);
 		}
 		return shareFrom;
 	}
 	
-	public void insertRecord(Record record, IBaseResource resource, Attachment attachment) throws AppException {
-		if (attachment == null || attachment.isEmpty()) {
-			insertRecord(record, resource);
+	public void insertRecord(Record record, T resource, List<Attachment> attachments, AccessContext targetContext) throws AppException {
+		if (attachments == null || attachments.isEmpty()) {
+			insertRecord(info(), record, (IBaseResource) resource, targetContext);
 			return;
 		} 
 		AccessLog.logBegin("begin insert FHIR record with attachment");
-							
-			InputStream data = null;
-			EncryptedFileHandle handle = null;
-			
-			String contentType = attachment.getContentType();
-			String fileName = attachment.getTitle();
-			
-			byte[] dataArray = attachment.getData();
-			if (dataArray != null)  data = new ByteArrayInputStream(dataArray);
-			else if (attachment.getUrl() != null) {
-				String url = attachment.getUrl();
+			List<EncryptedFileHandle> handles = new ArrayList<EncryptedFileHandle>();
+			for (Attachment attachment : attachments) {
+			    if (attachment==null) continue;		
+				InputStream data = null;
+				EncryptedFileHandle handle = null;
 				
-				if (url.startsWith("midata-file://")) {
-					handle = EncryptedFileHandle.fromString(info().executorId, url);
-					if (handle == null) throw new UnprocessableEntityException("Malformed midata-file URL");
+				String contentType = attachment.getContentType();
+				String fileName = attachment.getTitle();
+				
+				byte[] dataArray = attachment.getData();
+				if (dataArray != null)  data = new ByteArrayInputStream(dataArray);
+				else if (attachment.getUrl() != null) {
+					String url = attachment.getUrl();
 					
-					UnlinkedBinary file = UnlinkedBinary.getById(handle.getId());
-					if (file==null || file.isExpired()) throw new UnprocessableEntityException("Midata-file URL has already expired.");
-					
-					if (!file.owner.equals(info().executorId)) throw new UnprocessableEntityException("Midata-file URL is not owned by you.");				
-					if (fileName!=null) handle.rename(fileName);
-					file.delete();
-				} else {				
-					try {
-					  if (url.startsWith("http://") || url.startsWith("https://")) {
-						 data = new URL(url).openStream();
-					  } else throw new UnprocessableEntityException("Malformed URL");
-					} catch (MalformedURLException e) {
-						throw new UnprocessableEntityException("Malformed URL");
-					} catch (IOException e2) {
-						throw new UnprocessableEntityException("IO Exception");
-					}
-				}
-			} 
+					if (url.startsWith("midata-file://")) {
+						handle = EncryptedFileHandle.fromString(info().executorId, url);
+						if (handle == null) throw new UnprocessableEntityException("Malformed midata-file URL");
 						
-			attachment.setData(null);
-			attachment.setUrl(null);
-			
-			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-			record.data = BasicDBObject.parse(encoded);
-			
-			if (data != null) {
-			   handle = RecordManager.instance.addFile(data, fileName, contentType);
+						UnlinkedBinary file = UnlinkedBinary.getById(handle.getId());
+						if (file==null || file.isExpired()) throw new UnprocessableEntityException("Midata-file URL has already expired.");
+						
+						if (!file.owner.equals(info().executorId)) throw new UnprocessableEntityException("Midata-file URL is not owned by you.");				
+						if (fileName!=null) handle.rename(fileName);
+						file.delete();
+					} else {				
+						try {
+						  if (url.startsWith("http://") || url.startsWith("https://")) {
+							 data = new URL(url).openStream();
+						  } else throw new UnprocessableEntityException("Malformed URL");
+						} catch (MalformedURLException e) {
+							throw new UnprocessableEntityException("Malformed URL");
+						} catch (IOException e2) {
+							throw new UnprocessableEntityException("IO Exception");
+						}
+					}
+				} 
+							
+				attachment.setData(null);
+				attachment.setUrl(null);
+				
+				String encoded = ctx.newJsonParser().encodeResourceToString(resource);
+				record.data = BasicDBObject.parse(encoded);
+				
+				if (data != null) {
+				   handle = RecordManager.instance.addFile(data, fileName, contentType);
+				}
+				if (handle == null) throw new UnprocessableEntityException("Missing attachment data");
+				handles.add(handle);
 			}
-			if (handle == null) throw new UnprocessableEntityException("Missing attachment data");
-			PluginsAPI.createRecord(info(), record, handle, fileName, contentType, info().context);			
+			PluginsAPI.createRecord(info(), record, handles, targetContext);			
 		
 		AccessLog.logEnd("end insert FHIR record with attachment");
 	}
@@ -356,6 +386,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, record.creator.equals(record.owner) ? record.ownerName : null ));
 				
 		resource.getMeta().addExtension(meta);
+		processAttachments(record, resource);
 	}
 	
 	/**
@@ -426,5 +457,20 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	protected void convertToR4(Record fromDB, Object in) {
 		if (fromDB.tags == null || !fromDB.tags.contains("fhir:r4")) convertToR4(in);		
+	}
+	
+	public String serialize(T resource) {
+		serializeAttachments(resource);
+    	return ctx.newJsonParser().encodeResourceToString(resource);
+    }
+	
+	public void serializeAttachments(T resource) {
+		List<Attachment> attachments = getAttachments(resource);
+		for (Attachment att : attachments) {
+          if (att != null) {		
+			att.setUrl(null);
+			att.setDataElement(new Base64BinaryType(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING));
+		  }
+		}
 	}
 }

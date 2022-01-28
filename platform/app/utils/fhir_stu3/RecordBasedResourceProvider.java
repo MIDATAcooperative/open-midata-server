@@ -318,7 +318,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			   handle = RecordManager.instance.addFile(data, fileName, contentType);
 			}
 			if (handle == null) throw new UnprocessableEntityException("Missing attachment data");
-			PluginsAPI.createRecord(info(), record, handle, fileName, contentType, info().context);			
+			PluginsAPI.createRecord(info(), record, Collections.singletonList(handle), info().context);			
 		
 		AccessLog.logEnd("end insert FHIR record with attachment");
 	}

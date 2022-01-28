@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -421,18 +422,17 @@ public class PluginsAPI extends APIController {
 	public Result getFile(Request request) throws AppException, JsonValidationException {
 		Stats.startRequest(request);
 	
-		String authTokenStr = request.getQueryString("authToken");
-		String id = request.getQueryString("id");
+		String authTokenStr = request.queryString("authToken").orElseThrow();
+		String id = request.queryString("id").orElseThrow();
 		
 		ExecutionInfo info = ExecutionInfo.checkToken(request, authTokenStr, false);		
 		if (info == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 		Stats.setPlugin(info.pluginId);
-		
-		MidataId recordId = new MidataId(id);	
-		
-		return MobileAPI.getFile(request, info, recordId, true);		
+		Pair<String,Integer> recordId = RecordManager.instance.parseFileId(id);
+			
+		return MobileAPI.getFile(request, info, MidataId.from(recordId.getLeft()), recordId.getRight(), true);		
 	}
 	
 	/**
@@ -507,14 +507,14 @@ public class PluginsAPI extends APIController {
 	 * @throws AppException
 	 */
 	public static void createRecord(ExecutionInfo inf, Record record) throws AppException  {
-       createRecord(inf, record, null, null, null, inf.context);		
+       createRecord(inf, record, null, inf.context);		
 	}
 	
 	public static void createRecord(ExecutionInfo inf, Record record, AccessContext context) throws AppException  {
-	    createRecord(inf, record, null, null, null, context);		
+	    createRecord(inf, record, null, context);		
 	}
 	
-	public static void createRecord(ExecutionInfo inf, Record record, EncryptedFileHandle fileData, String fileName, String contentType, AccessContext context) throws AppException  {
+	public static void createRecord(ExecutionInfo inf, Record record, List<EncryptedFileHandle> fileData, AccessContext context) throws AppException  {
 		if (record.format==null) record.format = "application/json";
 		if (record.content==null) record.content = "other";
 		if (record.owner==null) record.owner = inf.ownerId;
@@ -575,7 +575,7 @@ public class PluginsAPI extends APIController {
 		//MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
 		
 		if (fileData != null) {			 
-			  RecordManager.instance.addRecord(context, record, context.getTargetAps(), fileData, fileName, contentType);
+			  RecordManager.instance.addRecord(context, record, context.getTargetAps(), fileData);
 		} else {
 			  RecordManager.instance.addRecord(context, record, context.getTargetAps());
 		}
@@ -874,7 +874,7 @@ public class PluginsAPI extends APIController {
 						
 			if (metaData.containsKey("data")) {
 				String data = metaData.get("data")[0];
-				try {
+				
 					BasicDBObject att = new BasicDBObject(CMaps							
 							.map("title", filename)
 							.map("contentType", contentType)
@@ -893,9 +893,7 @@ public class PluginsAPI extends APIController {
 						contentArray.add(attachment);
 						record.data.put("content", contentArray);
 					}
-				} catch (JSONParseException e) {
-					throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
-				}
+				
 			} else {
 			
 				record.data = new BasicDBObject(CMaps
@@ -908,7 +906,7 @@ public class PluginsAPI extends APIController {
 			 		
 			}
 					
-			createRecord(authToken, record, handle, filename, contentType, authToken.context);
+			createRecord(authToken, record, Collections.singletonList(handle), authToken.context);
 					
 			Stats.finishRequest(request, "200");
 			ObjectNode obj = Json.newObject();

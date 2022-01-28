@@ -29,6 +29,7 @@ function replaceInstr(where) {
             v = v.replace(/\}\}/,"}");
             v = v.replace(/@PLATFORM/, ENV.platform);
             v = v.replace(/@OPERATOR/, ENV.operator);
+            v = v.replace(/@PRODUCT/, ENV.product);
             v = v.replace(/@SUPPORT/, ENV.support);
             v = v.replace(/@HOMEPAGE/, ENV.homepage);
             v = v.replace(/@DOMAIN/, ENV.domain);

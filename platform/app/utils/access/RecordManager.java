@@ -587,21 +587,27 @@ public class RecordManager {
 	 * @param contentType the mime type of the attached file	
 	 * @throws AppException
 	 */
-	public void addRecord(AccessContext context, Record record, MidataId alternateAps, EncryptedFileHandle data, String fileName, String contentType) throws AppException {
+	public void addRecord(AccessContext context, Record record, MidataId alternateAps, List<EncryptedFileHandle> allData) throws AppException {
 		
-		String virus = checkVirusFree(data);
-	    if (virus != null) throw new BadRequestException("error.virus", "A virus has been detected: "+virus);
+		for (EncryptedFileHandle data : allData) {
+		  String virus = checkVirusFree(data);
+	      if (virus != null) throw new BadRequestException("error.virus", "A virus has been detected: "+virus);
+		}
 	
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		dbrecord.meta.append("file", data.getId().toObjectId());
-		dbrecord.meta.append("file-key", data.getKey());
-		byte[] kdata = addRecordIntern(context, dbrecord, false, alternateAps, false);	
-		/*
-		try {
-		FileStorage.store(EncryptionUtils.encryptStream(kdata, data), record._id, 0, fileName, contentType);
-		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal", e);
-		}*/		
+		int idx = 0;
+		for (EncryptedFileHandle data : allData) {
+			dbrecord.meta.append(getFileMetaName(idx), data.getId().toObjectId());
+			dbrecord.meta.append(getFileMetaName(idx)+"-key", data.getKey());
+			idx++;
+		}
+		
+		byte[] kdata = addRecordIntern(context, dbrecord, false, alternateAps, false);				
+	}
+	
+	private String getFileMetaName(int idx) {
+		if (idx==0) return "file";
+		return "file-"+idx;
 	}
 	
 	/**
@@ -616,7 +622,7 @@ public class RecordManager {
 	 */
 	public void addRecord(AccessContext context, Record record, MidataId alternateAps, InputStream input, String fileName, String contentType) throws AppException {
 		EncryptedFileHandle data = addFile(input, fileName, contentType);
-		addRecord(context, record, alternateAps, data, fileName, contentType);	
+		addRecord(context, record, alternateAps, Collections.singletonList(data));	
 	}
 	
 	public EncryptedFileHandle addFile(InputStream data, String fileName, String contentType) throws AppException {
@@ -1240,6 +1246,13 @@ public class RecordManager {
 		return fetch(context, role, token, RecordManager.COMPLETE_DATA);
 	}
 	
+	public Pair<String, Integer> parseFileId(String fileId) {
+		int p = fileId.indexOf("_");
+		if (p >= 0) {
+			return Pair.of(fileId.substring(0, p), Integer.parseInt(fileId.substring(p+1)));
+		}
+		return Pair.of(fileId, 0);
+	}
 	/**
 	 * Lookup a single record by providing a RecordToken and return the attachment of the record
 	 * @param who id of executing person
@@ -1247,7 +1260,7 @@ public class RecordManager {
 	 * @return the attachment content
 	 * @throws AppException
 	 */
-	public FileData fetchFile(AccessContext context, RecordToken token) throws AppException {		
+	public FileData fetchFile(AccessContext context, RecordToken token, int idx) throws AppException {		
 		List<DBRecord> result = QueryEngine.listInternal(context.getCache(), new MidataId(token.apsId), context.forAps(MidataId.from(token.apsId)), CMaps.map("_id", new MidataId(token.recordId)), Sets.create("key", "data"));
 				
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
@@ -1257,9 +1270,9 @@ public class RecordManager {
 		
 		MidataId fileId;
 		byte[] key;
-		if (rec.meta.containsField("file")) {
-			fileId = MidataId.from(rec.meta.get("file"));
-			key = (byte[]) rec.meta.get("file-key");
+		if (rec.meta.containsField("file") || idx>0) {
+			fileId = MidataId.from(rec.meta.get(getFileMetaName(idx)));
+			key = (byte[]) rec.meta.get(getFileMetaName(idx)+"-key");
 		} else {
 			fileId = rec._id;
 			key = rec.key;
