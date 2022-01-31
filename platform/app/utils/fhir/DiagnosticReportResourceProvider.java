@@ -270,17 +270,12 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 		return super.createResource(theDiagnosticReport);
 	}
 	
+			
+
 	@Override
-	public void createExecute(Record record, DiagnosticReport theDiagnosticReport) throws AppException {
-        Attachment attachment = null;
-		
-        List<Attachment> att = theDiagnosticReport.getPresentedForm();		
-		if (att != null && att.size() == 1) {
-			attachment = att.get(0);		
-		}
-		
-		insertRecord(record, theDiagnosticReport, attachment);
-	}	
+	public List<Attachment> getAttachments(DiagnosticReport resource) {
+		return resource.getPresentedForm();	
+	}
 
 	@Override
 	public String getRecordFormat() {	
@@ -343,13 +338,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 		if (p.getSubject().isEmpty()) {
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
-								
-		for (Attachment attachment : p.getPresentedForm()) {			
-			if (attachment != null && attachment.getUrl() == null && attachment.getData() == null) {	
-			  String url = "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/records/file?_id="+record._id;
-			  attachment.setUrl(url);
-			}
-		}
+										
 	}
 
 	@Override

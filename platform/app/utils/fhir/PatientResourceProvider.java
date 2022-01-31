@@ -524,7 +524,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			Record existing = allExisting.get(0);
 			patient.getMeta().setVersionId(existing.version);
 			prepare(existing, patient);
-			updateRecord(existing, patient);
+			updateRecord(existing, patient, getAttachments(patient));
 		}
 	}
 

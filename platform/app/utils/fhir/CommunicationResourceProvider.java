@@ -17,11 +17,13 @@
 
 package utils.fhir;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Communication;
 import org.hl7.fhir.r4.model.IdType;
@@ -338,6 +340,20 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		if (p.getSubject().isEmpty()) {			
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+	
+	
+
+	@Override
+	public List<Attachment> getAttachments(Communication resource) {
+		List<Attachment> result = new ArrayList<Attachment>();
+		for (Communication.CommunicationPayloadComponent payload : resource.getPayload()) {
+			if (payload.hasContentAttachment()) {
+				result.add(payload.getContentAttachment());
+			}
+			
+		}
+		return result;
 	}
 
 	@Override

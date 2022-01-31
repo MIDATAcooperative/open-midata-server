@@ -274,7 +274,6 @@
 {"_id":{"$oid":"61efd1b6b6931e20e9f5d962"},"system":"v1","name":"care","content":"ProcedureRequest"}
 {"_id":{"$oid":"61efd1b6b6931e20e9f5d963"},"system":"v1","name":"entities","content":"Practitioner"}
 {"_id":{"$oid":"61efd1b6b6931e20e9f5d964"},"system":"v1","name":"entities","content":"Group"}
-{"_id":{"$oid":"61efd1b6b6931e20e9f5d965"},"system":"v1","name":"entities","content":"Organization"}
 {"_id":{"$oid":"61efd1b6b6931e20e9f5d966"},"system":"v1","name":"entities","content":"HealthcareService"}
 {"_id":{"$oid":"61efd1b6b6931e20e9f5d967"},"system":"v1","name":"entities","content":"Contract"}
 {"_id":{"$oid":"61efd1b6b6931e20e9f5d968"},"system":"v1","name":"entities","content":"Person"}
@@ -329,3 +328,6 @@
 {"_id":{"$oid":"61efd1b6b6931e20e9f5d999"},"system":"v1","name":"publicinfo","content":"public/pollen-forecast"}
 {"_id":{"$oid":"61efd1b6b6931e20e9f5d99a"},"system":"v1","name":"publicinfo","content":"ResearchStudy"}
 {"_id":{"$oid":"61efd1b6b6931e20e9f5d99b"},"system":"v1","name":"milestones","content":"milestones"}
+{"_id":{"$oid":"61f3fb0ee8d4223bfafd55eb"},"system":"v1","name":"organization","content":"Organization"}
+{"_id":{"$oid":"61f3fbcee8d4223bfafd55ee"},"system":"v1","name":"organization","content":"Organization/HP"}
+{"_id":{"$oid":"61f3fc14e8d4223bfafd55f1"},"system":"v1","name":"organization","content":"Organization/Research"}

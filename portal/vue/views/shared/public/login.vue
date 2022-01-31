@@ -87,7 +87,7 @@
 <script>
 
 import { status, ErrorBox, Password } from 'basic-vue3-components';
-import { addBundle } from "services/lang.js";
+import { addBundle, setLocale } from "services/lang.js";
 import server from "services/server";
 import session from "services/session";
 import crypto from "services/crypto";
@@ -168,6 +168,10 @@ export default {
         const { $data, $route } = this, me = this;
 
 		addBundle("branding");
+		
+		if ($route.query.language) {		
+		   setLocale($route.query.language);
+	    }
 
         $data.actions = $route.query.actions;
 	    $data.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);	

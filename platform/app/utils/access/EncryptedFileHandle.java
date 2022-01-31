@@ -28,9 +28,10 @@ import utils.auth.TokenCrypto;
 import utils.db.FileStorage;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
-public class EncryptedFileHandle {
+public class EncryptedFileHandle implements UpdateFileHandleSupport {
 
 	private MidataId id;
 	private byte[] key;
@@ -86,6 +87,11 @@ public class EncryptedFileHandle {
 		byte[] enckey = Base64.getDecoder().decode(parts[1]);
 		byte[] key = KeyManager.instance.decryptKey(owner, enckey);
 		return new EncryptedFileHandle(id, key, Long.parseLong(parts[2]));
+	}
+
+	@Override
+	public EncryptedFileHandle toEncryptedFileHandle(DBRecord rec) throws BadRequestException {
+		return this;
 	}
 	
 }

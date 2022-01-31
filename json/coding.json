@@ -43,7 +43,7 @@
 {"_id":{"$oid":"5718ec14aed645098e8cedc9"},"system":"http://midata.coop","code":"Communication","display":"Communication","content":"Communication"}
 {"_id":{"$oid":"5718ec14aed645098e8cedca"},"system":"http://midata.coop","code":"PaymentReconciliation","display":"PaymentReconciliation","content":"PaymentReconciliation"}
 {"_id":{"$oid":"5718ec14aed645098e8cedcb"},"system":"http://midata.coop","code":"ConceptMap","display":"ConceptMap","content":"ConceptMap"}
-{"_id":{"$oid":"5718ec14aed645098e8cedcc"},"system":"http://midata.coop","code":"Organization","display":"Organization","content":"Organization"}
+{"_id":{"$oid":"5718ec14aed645098e8cedcc"},"system":"http://midata.coop","code":"Organization","display":"Organization (API)","content":"Organization"}
 {"_id":{"$oid":"5718ec14aed645098e8cedcd"},"system":"http://midata.coop","code":"ProcessResponse","display":"ProcessResponse","content":"ProcessResponse"}
 {"_id":{"$oid":"5718ec14aed645098e8cedce"},"system":"http://midata.coop","code":"Coverage","display":"Coverage","content":"Coverage"}
 {"_id":{"$oid":"5718ec14aed645098e8cedcf"},"system":"http://midata.coop","code":"AppointmentResponse","display":"AppointmentResponse","content":"AppointmentResponse"}
@@ -350,3 +350,5 @@
 {"_id":{"$oid":"5fb3a144aed64513b2abccdb"},"system":"http://midata.coop","code":"walking-speed","display":"Walking Speed","content":"walking-speed"}
 {"_id":{"$oid":"61efb95cc2841c36d6227d78"},"system":"http://midata.coop","code":"app/log","display":"Application Log","content":"app/log"}
 {"_id":{"$oid":"61efb9a4c2841c36d6227d7a"},"system":"http://midata.coop","code":"app/config","display":"Application Configuration","content":"app/config"}
+{"_id":{"$oid":"61f3fbcee8d4223bfafd55ec"},"system":"http://midata.coop","code":"Organization/HP","display":"Organization on Midata (Healthcare Provider)","content":"Organization/HP"}
+{"_id":{"$oid":"61f3fc14e8d4223bfafd55ef"},"system":"http://midata.coop","code":"Organization/Research","display":"Organization on Midata (Research)","content":"Organization/Research"}

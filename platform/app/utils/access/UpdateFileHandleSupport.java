@@ -15,20 +15,11 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var instance = require('./../../config/instance.json');
+package utils.access;
 
-export default {
-    name: process.env.NODE_ENV==='production'?'production':'development',
-    apiurl: instance.portal.backend,
-    beta : instance.portal.beta,
-    instance : instance.portal.backend.substring(8).split(/[\.\:]/)[0],
-    instanceType : instance.instanceType,
-    languages : instance.portal.languages,
-    countries : instance.portal.countries,
-    build : require('../package.json').version,
-    platform: instance.platform,
-    operator: instance.operator,
-    support: instance.support,
-    homepage: instance.homepage,
-    domain: instance.domain
-};
+import utils.exceptions.BadRequestException;
+
+public interface UpdateFileHandleSupport {
+
+	public EncryptedFileHandle toEncryptedFileHandle(DBRecord rec) throws BadRequestException;
+}

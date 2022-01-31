@@ -9,6 +9,7 @@ var config = {
     build : "1.0",
     platform: "PLATFORM_NAME",
     operator: "OPERATOR_NAME",
+    product: "PRODUCT_NAME",
     support: "OFFICIAL_SUPPORT_MAIL",
     homepage: "OFFICIAL_HOMEPAGE",
     domain: "DOMAIN"

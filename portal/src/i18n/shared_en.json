@@ -42,6 +42,7 @@
      "mustbemember_title" : "@OPERATOR membership required!",
      "mustbemember_detail" : "In order to use this feature you must be member of the cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
      "ratelimit" : "The rate limit for the current action has been reached. Try again later.",
+     "no_code_challenge" : "Authorization endpoint called with insufficient parameters. Contact application developer.",
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
        "fields" : "You are not authorized to query the provided fields",

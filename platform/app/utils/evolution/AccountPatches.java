@@ -30,8 +30,10 @@ import models.APSNotExistingException;
 import models.AccessPermissionSet;
 import models.Circle;
 import models.Consent;
+import models.HealthcareProvider;
 import models.MidataId;
 import models.Record;
+import models.Research;
 import models.ResearchUser;
 import models.Space;
 import models.Study;
@@ -46,6 +48,8 @@ import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.AccessLog;
+import utils.RuntimeConstants;
+import utils.ServerTools;
 import utils.access.AccessContext;
 import utils.access.ConsentAccessContext;
 import utils.access.RecordManager;
@@ -56,6 +60,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.ConsentResourceProvider;
 import utils.fhir.GroupResourceProvider;
+import utils.fhir.OrganizationResourceProvider;
 import utils.fhir.PatientResourceProvider;
 
 public class AccountPatches {
@@ -323,6 +328,26 @@ public class AccountPatches {
 							
 		makeCurrent(user, 20200221);
 		AccessLog.logEnd("end patch 2020 02 21");
+	}
+	
+	public static void fixOrgs() throws AppException {
+		AccessLog.logBegin("start fix organization records");
+		KeyManager.instance.login(1000l*60l*60l, false);
+		KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
+		MidataId executor = RuntimeConstants.instance.publicUser;
+		Set<Research> res = Research.getAll(CMaps.map(), Research.ALL);
+		for (Research research : res) {
+			RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", research._id).map("format","fhir/Organization"));
+			OrganizationResourceProvider.updateFromResearch(executor, research);
+		}
+		
+		Set<HealthcareProvider> hps = HealthcareProvider.getAll(CMaps.map(), HealthcareProvider.ALL);
+		for (HealthcareProvider provider : hps) {
+			RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", provider._id).map("format","fhir/Organization"));
+			OrganizationResourceProvider.updateFromHP(executor, provider);
+		}
+		AccessLog.logEnd("end fix organization records");
+		ServerTools.endRequest();
 	}
 	
 }
