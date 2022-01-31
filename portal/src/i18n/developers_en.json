@@ -121,7 +121,8 @@
     "admin_only" : "Only an administrator may change this section. Please request changes if required.",
     "terms_of_use" : "General Terms and Conditions",
     "show_terms" : "Show General Terms and Conditions",
-    "unlock_code" : "Code for registration",  
+    "unlock_code" : "Code for registration", 
+    "code_challenge" : "Require 'code_challenge'", 
     "logout" : "Disconnect All",
     "pleaseLogout1" : "Log out all users",
     "pleaseLogout2" : "Disconnect from research projects",
@@ -156,7 +157,8 @@
        "mustParticipateInStudy" : "Users must participate in research project in order to use this application.",
        "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to @PRODUCT using the application. The code is not case sensitive.",
        "send_reports" : "Notify developer ({{user}}) by email on errors caused by this application.",
-       "developerTeam" : "Enter comma separated list of email addresses of other developers on that @PRODUCT instance, that develop this application."
+       "developerTeam" : "Enter comma separated list of email addresses of other developers on that @PRODUCT instance, that develop this application.",
+       "code_challenge" : "During OAuth2 login, calling application must use PKCE (Proof Key for Code Exchange) standard"
     },
     "status" : {
       "title" : "Application Status",

@@ -328,7 +328,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = BasicDBObject.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();
-		record.version = RecordManager.instance.updateRecord(info().executorId, info().pluginId, info().context, record);
+		record.version = RecordManager.instance.updateRecord(info().executorId, info().pluginId, info().context, record, Collections.emptyList());
 	
 	}
 	

@@ -141,6 +141,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 			System.exit(-1);
 		}
 		
+				
 		// Init FHIR
 		System.out.println("FHIR Servlet");
 		FHIR.servlet_r4 = new FHIRServlet();
@@ -203,11 +204,14 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		System.out.println("Auto-Run");
 		AutoRun.init();
 		
-		/* (Not needed anymore; Done on all instances)
+		
 		try {
-		   AccountPatches.fixFhirConsents();
-		} catch (AppException e) { e.printStackTrace(); }
-		*/		
+			   AccountPatches.fixOrgs();
+		} catch (AppException e) {
+				e.printStackTrace();
+				System.exit(-1);
+		}
+		
 		lifecycle.addStopHook(() -> {
 			//AutoRun.shutdown();
 		    

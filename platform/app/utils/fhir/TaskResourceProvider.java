@@ -349,7 +349,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	
 	@Override
 	public void updateExecute(Record record, Task theTask) throws AppException {
-		updateRecord(record, theTask);
+		updateRecord(record, theTask, getAttachments(theTask));
 		shareRecord(record, theTask, info().executorId); // XXX To be checked
 	}
 

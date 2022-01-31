@@ -128,4 +128,8 @@ public class VersionedDBRecord extends DBRecord {
 	public static long vcount() throws AppException {
 		return Model.count(VersionedDBRecord.class, collection, CMaps.map());
 	}
+	
+	public static void deleteMany(Set<MidataId> recordIds) throws InternalServerException {			
+		Model.delete(VersionedDBRecord.class, collection, CMaps.map("_id._id", recordIds));
+	}
 }

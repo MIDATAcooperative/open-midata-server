@@ -67,6 +67,8 @@ import utils.access.AccessContext;
 import utils.access.ConsentAccessContext;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
+import utils.access.ReuseFileHandle;
+import utils.access.UpdateFileHandleSupport;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
@@ -162,6 +164,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 					tags.add("security:public");				
 				} else if (c.getSystem().equals("http://midata.coop/codesystems/security") && c.getCode().equals("public")) {
 					tags.add("security:public");
+				} else if (c.getSystem().equals("http://midata.coop/codesystems/security") && c.getCode().equals("generated")) {
+					tags.add("security:generated");
 				}
 			}
 		}
@@ -176,7 +180,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@Override
 	public void updateExecute(Record record, T theResource) throws AppException {
-		updateRecord(record, theResource);
+		List<Attachment> attachments = getAttachments(theResource);	
+		updateRecord(record, theResource, attachments);
 	}
 	
 	@Override
@@ -217,13 +222,16 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public List<Attachment> getAttachments(T resource) {
 		return Collections.emptyList();
 	}
-	
+
+	private String getAttachmentBaseUrl() {
+		return "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/records/file?_id=";		
+	}
 	public void processAttachments(Record record, T resource) {
 		List<Attachment> atts = getAttachments(resource);	
 		int idx=0;
 		for (Attachment attachment : atts) { 
 		  if (attachment != null && attachment.getUrl() == null && attachment.getData() == null) {	
-			  String url = "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/records/file?_id="+record._id+"_"+idx;
+			  String url = getAttachmentBaseUrl()+record._id+"_"+idx;
 			  attachment.setUrl(url);
 			  idx++;
 		  }
@@ -299,73 +307,94 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		return shareFrom;
 	}
 	
+	public List<UpdateFileHandleSupport> attachmentsToHandles(List<Attachment> attachments) throws AppException  {
+		if (attachments==null || attachments.isEmpty()) return Collections.emptyList();
+		List<UpdateFileHandleSupport> handles = new ArrayList<UpdateFileHandleSupport>();
+		for (Attachment attachment : attachments) {
+		    if (attachment==null) continue;		
+			InputStream data = null;
+			UpdateFileHandleSupport handle1 = null;
+			
+			String contentType = attachment.getContentType();
+			String fileName = attachment.getTitle();
+			
+			byte[] dataArray = attachment.getData();
+			if (dataArray != null)  data = new ByteArrayInputStream(dataArray);
+			else if (attachment.getUrl() != null) {
+				String url = attachment.getUrl();
+				
+				if (url.startsWith("midata-file://")) {
+					EncryptedFileHandle handle = EncryptedFileHandle.fromString(info().executorId, url);
+					if (handle == null) throw new UnprocessableEntityException("Malformed midata-file URL");
+					
+					UnlinkedBinary file = UnlinkedBinary.getById(handle.getId());
+					if (file==null || file.isExpired()) throw new UnprocessableEntityException("Midata-file URL has already expired.");
+					
+					if (!file.owner.equals(info().executorId)) throw new UnprocessableEntityException("Midata-file URL is not owned by you.");				
+					if (fileName!=null) handle.rename(fileName);
+					file.delete();
+					handle1 = handle;
+				} else if (url.startsWith(getAttachmentBaseUrl())) {
+					int p = url.lastIndexOf("_");
+					if (p<0) throw new UnprocessableEntityException("Illegal file url");
+					String idxPart = url.substring(p+1);
+					try {
+						int idx = Integer.parseInt(idxPart);
+						handle1 = new ReuseFileHandle(idx);
+					} catch (NumberFormatException e) {
+						throw new UnprocessableEntityException("Illegal file url");
+					}
+				} else {				
+					try {
+					  if (url.startsWith("http://") || url.startsWith("https://")) {
+						 data = new URL(url).openStream();
+					  } else throw new UnprocessableEntityException("Malformed URL");
+					} catch (MalformedURLException e) {
+						throw new UnprocessableEntityException("Malformed URL");
+					} catch (IOException e2) {
+						throw new UnprocessableEntityException("IO Exception");
+					}
+				}
+			} 
+						
+			attachment.setData(null);
+			attachment.setUrl(null);
+							
+			if (data != null) {
+			   handle1 = RecordManager.instance.addFile(data, fileName, contentType);
+			}
+			if (handle1 == null) throw new UnprocessableEntityException("Missing attachment data");
+			handles.add(handle1);
+		}
+		return handles;
+	}
+	
 	public void insertRecord(Record record, T resource, List<Attachment> attachments, AccessContext targetContext) throws AppException {
 		if (attachments == null || attachments.isEmpty()) {
 			insertRecord(info(), record, (IBaseResource) resource, targetContext);
 			return;
 		} 
 		AccessLog.logBegin("begin insert FHIR record with attachment");
-			List<EncryptedFileHandle> handles = new ArrayList<EncryptedFileHandle>();
-			for (Attachment attachment : attachments) {
-			    if (attachment==null) continue;		
-				InputStream data = null;
-				EncryptedFileHandle handle = null;
-				
-				String contentType = attachment.getContentType();
-				String fileName = attachment.getTitle();
-				
-				byte[] dataArray = attachment.getData();
-				if (dataArray != null)  data = new ByteArrayInputStream(dataArray);
-				else if (attachment.getUrl() != null) {
-					String url = attachment.getUrl();
-					
-					if (url.startsWith("midata-file://")) {
-						handle = EncryptedFileHandle.fromString(info().executorId, url);
-						if (handle == null) throw new UnprocessableEntityException("Malformed midata-file URL");
-						
-						UnlinkedBinary file = UnlinkedBinary.getById(handle.getId());
-						if (file==null || file.isExpired()) throw new UnprocessableEntityException("Midata-file URL has already expired.");
-						
-						if (!file.owner.equals(info().executorId)) throw new UnprocessableEntityException("Midata-file URL is not owned by you.");				
-						if (fileName!=null) handle.rename(fileName);
-						file.delete();
-					} else {				
-						try {
-						  if (url.startsWith("http://") || url.startsWith("https://")) {
-							 data = new URL(url).openStream();
-						  } else throw new UnprocessableEntityException("Malformed URL");
-						} catch (MalformedURLException e) {
-							throw new UnprocessableEntityException("Malformed URL");
-						} catch (IOException e2) {
-							throw new UnprocessableEntityException("IO Exception");
-						}
-					}
-				} 
-							
-				attachment.setData(null);
-				attachment.setUrl(null);
-				
-				String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-				record.data = BasicDBObject.parse(encoded);
-				
-				if (data != null) {
-				   handle = RecordManager.instance.addFile(data, fileName, contentType);
-				}
-				if (handle == null) throw new UnprocessableEntityException("Missing attachment data");
-				handles.add(handle);
-			}
-			PluginsAPI.createRecord(info(), record, handles, targetContext);			
+		List<UpdateFileHandleSupport> handles = attachmentsToHandles(attachments);	
+		List<EncryptedFileHandle> handles1 = handles.isEmpty() ? Collections.emptyList() : new ArrayList<EncryptedFileHandle>();
+		for (UpdateFileHandleSupport uf : handles) {
+			if (uf instanceof EncryptedFileHandle) handles1.add((EncryptedFileHandle) uf); else throw new UnprocessableEntityException("Illegal attachment URL");
+		}
+		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
+		record.data = BasicDBObject.parse(encoded);		
+		PluginsAPI.createRecord(info(), record, handles1, targetContext);			
 		
 		AccessLog.logEnd("end insert FHIR record with attachment");
 	}
 	
-	public void updateRecord(Record record, IBaseResource resource) throws AppException {
+	public void updateRecord(Record record, IBaseResource resource, List<Attachment> attachments) throws AppException {
 		if (resource.getMeta() != null && resource.getMeta().getVersionId() != null && !record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
+        List<UpdateFileHandleSupport> handles = attachmentsToHandles(attachments);
+		
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = BasicDBObject.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();
-		record.version = RecordManager.instance.updateRecord(info().executorId, info().pluginId, info().context, record);
-	
+		record.version = RecordManager.instance.updateRecord(info().executorId, info().pluginId, info().context, record, handles);	
 	}
 	
 	/**

@@ -745,7 +745,7 @@ public class PluginsAPI extends APIController {
 	 * @return the new version string of the record
 	 */
 	public static String updateRecord(ExecutionInfo inf, Record record) throws AppException  {
-		return RecordManager.instance.updateRecord(inf.executorId, inf.pluginId, inf.context, record);				
+		return RecordManager.instance.updateRecord(inf.executorId, inf.pluginId, inf.context, record, Collections.emptyList());				
 	}
 	
 	/**

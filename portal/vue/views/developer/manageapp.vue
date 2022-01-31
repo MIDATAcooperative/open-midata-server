@@ -187,7 +187,7 @@
 		    <input type="text" id="unlockCode" name="unlockCode" class="form-control" v-validate v-model="app.unlockCode">
 		    <p class="form-text text-muted" v-t="'manageapp.info.unlock_code'"></p>
 		  </form-group>
-		   <form-group name="codeChallenge" label="manageapp.code_challenge" :path="errors.codeChallenge">
+		   <form-group name="codeChallenge" v-if="app.type == 'mobile'" label="manageapp.code_challenge" :path="errors.codeChallenge">
 		      <div class="form-check">
 		         <input type="checkbox" id="codeChallenge" name="codeChallenge" class="form-check-input" v-validate v-model="app.codeChallenge">
 		         <label for="codeChallenge" class="form-check-label">{{ $t('manageapp.info.code_challenge') }}</label>

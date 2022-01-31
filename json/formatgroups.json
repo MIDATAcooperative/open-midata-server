@@ -55,3 +55,4 @@
 {"_id":{"$oid":"5e185815aed6450cb19b1b0a"},"system":"v1","name":"activites/speed","label":{"de":"Geschwindigkeit","en":"Speed","fr":"Vitesse"},"parent":"movement"}
 {"_id":{"$oid":"5e186ef4aed6450cb19b1b0f"},"system":"v1","name":"activities/other","label":{"de":"Andere Aktivitäten","en":"Other Activities","fr":"Autres activités"},"parent":"activities"}
 {"_id":{"$oid":"5fb39ce9aed64513b2abccce"},"system":"v1","name":"motor_assessment","label":{"en":"Results of motor exercises"},"parent":"assessment"}
+{"_id":{"$oid":"61f3facae8d4223bfafd55ea"},"system":"v1","name":"organization","label":{"de":"Organisation","en":"Organization"},"parent":"entities"}

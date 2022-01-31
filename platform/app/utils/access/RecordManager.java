@@ -605,7 +605,7 @@ public class RecordManager {
 		byte[] kdata = addRecordIntern(context, dbrecord, false, alternateAps, false);				
 	}
 	
-	private String getFileMetaName(int idx) {
+	protected String getFileMetaName(int idx) {
 		if (idx==0) return "file";
 		return "file-"+idx;
 	}
@@ -685,7 +685,7 @@ public class RecordManager {
 	 * @throws AppException
 	 * @return the new version string of the record
 	 */
-	public String updateRecord(MidataId executingPerson, MidataId pluginId, AccessContext context, Record record) throws AppException {
+	public String updateRecord(MidataId executingPerson, MidataId pluginId, AccessContext context, Record record, List<UpdateFileHandleSupport> allData) throws AppException {
 		AccessLog.logBegin("begin updateRecord executor="+executingPerson.toString()+" aps="+context.getTargetAps().toString()+" record="+record._id.toString());
 		try {
 			List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), context.getTargetAps(),context, CMaps.map("_id", record._id).map("updatable", true), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
@@ -712,11 +712,30 @@ public class RecordManager {
 			if (record.content != null && !rec.meta.getString("content").equals(record.content)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record content type during update.");
 			if (record.owner != null && !rec.owner.equals(record.owner)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record owner during update! new="+record.owner.toString()+" old="+rec.owner.toString());
 			
+			List<EncryptedFileHandle> allData2 = new ArrayList<EncryptedFileHandle>(allData.size());
+			for (UpdateFileHandleSupport data : allData) {
+				if (data != null) {
+				   EncryptedFileHandle handle = data.toEncryptedFileHandle(rec);
+				   String virus = checkVirusFree(handle);
+				   if (virus != null) throw new BadRequestException("error.virus", "A virus has been detected: "+virus);
+				   allData2.add(handle);
+				}
+			}
+						
 			VersionedDBRecord vrec = null;
 			
 			if (context.produceHistory()) {
 			  vrec = new VersionedDBRecord(rec);		
 			  RecordEncryption.encryptRecord(vrec);
+			}
+			
+			int idx = 0;
+			for (EncryptedFileHandle data : allData2) {
+				if (data != null) {
+				rec.meta.append(getFileMetaName(idx), data.getId().toObjectId());
+				rec.meta.append(getFileMetaName(idx)+"-key", data.getKey());
+				}
+				idx++;
 			}
 					
 			record.lastUpdated = new Date(); 
@@ -771,9 +790,12 @@ public class RecordManager {
 		
 		AccessLog.logEnd("end deleteRecord");
 	}
-	
+
 	protected void wipe(MidataId executingPerson, List<DBRecord> recs) throws AppException {
-		APSCache cache = getCache(executingPerson);
+	   wipe(getCache(executingPerson), executingPerson, recs);
+	}
+	
+	protected void wipe(APSCache cache, MidataId executingPerson, List<DBRecord> recs) throws AppException {	
 		if (recs.size() == 0) return;
 		
 		AccessLog.logBegin("begin wipe #records="+recs.size());
@@ -821,6 +843,7 @@ public class RecordManager {
 		for (DBRecord record : recs) { 
 			ids.add(record._id);		  
 		}
+		VersionedDBRecord.deleteMany(ids);
 		DBRecord.deleteMany(ids);
 		
 		for (MidataId streamId : streams) {
@@ -865,6 +888,21 @@ public class RecordManager {
 		
 		APSCache cache = Feature_PublicData.getPublicAPSCache(getCache(executingPerson));
 		delete(cache, RuntimeConstants.instance.publicUser, recs);				
+		
+		AccessLog.logEnd("end deleteFromPublic");
+	}
+	
+	public void wipeFromPublic(MidataId executingPerson, Map<String, Object> query) throws AppException {
+		AccessLog.logBegin("begin wipeFromPublic executor="+executingPerson.toString());
+					
+		query.put("public", "only");
+		query.put("public-strict", true);
+		query.put("deleted", true);
+		
+		List<DBRecord> recs = QueryEngine.listInternal(getCache(executingPerson), executingPerson, null, query, COMPLETE_META);
+		
+		APSCache cache = Feature_PublicData.getPublicAPSCache(getCache(executingPerson));
+		wipe(cache, RuntimeConstants.instance.publicUser, recs);				
 		
 		AccessLog.logEnd("end deleteFromPublic");
 	}
@@ -1288,6 +1326,21 @@ public class RecordManager {
 		}
 		
 		return fileData;
+	}
+	
+	public EncryptedFileHandle reUseAttachment(AccessContext context, MidataId record, int idx) throws AppException {
+		List<DBRecord> result = QueryEngine.listInternal(context.getCache(), context.getOwner() , context, CMaps.map("_id", record), Sets.create("key", "meta", "data"));
+		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
+		DBRecord rec = result.get(0);
+		if (rec.meta.containsField("file") || idx>0) {
+			MidataId fileId = MidataId.from(rec.meta.get(getFileMetaName(idx)));
+			byte[] key = (byte[]) rec.meta.get(getFileMetaName(idx)+"-key");
+			return new EncryptedFileHandle(fileId, key, 0);
+		} else {
+			MidataId fileId = rec._id;
+			byte[] key = rec.key;
+			return new EncryptedFileHandle(fileId, key, 0);
+		}
 	}
 
 	/**

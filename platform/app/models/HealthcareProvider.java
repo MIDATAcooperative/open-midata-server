@@ -19,6 +19,7 @@ package models;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import utils.collections.CMaps;
@@ -73,5 +74,9 @@ public class HealthcareProvider extends Model {
     public void setMultiple(Collection<String> fields) throws InternalServerException {
     	this.setMultiple(collection, fields);
     }
+    
+    public static Set<HealthcareProvider> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
+		 return Model.getAll(HealthcareProvider.class, collection, properties, fields);
+	 }
 
 }
