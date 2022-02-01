@@ -111,7 +111,7 @@
                 <div class="extraspace"></div>
                 <form-group name="notifications" label="user.notifications">			
 			        <div v-t="'user.notifications2'"></div>
-                    <radio-box v-for="mode in notificationTypes" :key="mode" :value="mode" v-model="user.notifications" :path="errors.notifications">				  
+                    <radio-box name="notifications" v-for="mode in notificationTypes" :key="mode" :value="mode" v-model="user.notifications" :path="errors.notifications">				  
 				    <span class="margin-left">{{ $t('enum.accountnotifications.'+mode) }}</span>
                     </radio-box>
                 </form-group>

@@ -30,9 +30,7 @@
             <error-box :error="error"></error-box>
             <p v-if="offline" class="alert alert-danger" v-t="'error.offline'"></p>
 			<form ref="myform" class="css-form form-horizontal" @submit.prevent="register()" role="form" novalidate>
-			    <span v-t="'registration.mandantory_fields'"></span>
-				<span v-if="advancedPassword()" v-t="'registration.password_policy2'"></span>
-				<span v-else v-t="'registration.password_policy'"></span>
+			    <span v-t="'registration.mandantory_fields'"></span> <span v-if="advancedPassword()" v-t="'registration.password_policy2'"></span><span v-else v-t="'registration.password_policy'"></span>
  
 				<div v-if="role=='research'">
 					<h3 v-t="'researcher_registration.research_organization'"></h3>
