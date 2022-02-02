@@ -75,8 +75,25 @@ select option[value=""] {
   @media (max-width: 767px) { margin-top:-10px; }
 }
 
+.navbar-collapse {
+	@media (max-width: 960px) { min-height: 100vh !important;background-color: white;color: black; }
+}
+.nav-language {
+   @media (max-width: 960px) { display: block; border-bottom:1px solid #e0e0e0;
+    .nav-item { 
+	  display: inline-block;
+      border-bottom:none !important;
+      padding-right: 10px;       
+    }    
+   }
+}
+
+.username {
+	color: $primary;	
+}
+
 .navbar .nav-item {
-  @media (max-width: 767px) { margin-left:10px;border-bottom:1px solid #e0e0e0; }
+  @media (max-width: 960px) { margin-left:10px;border-bottom:1px solid #e0e0e0; }
 }
 
 .img-responsive {
@@ -109,6 +126,10 @@ select option[value=""] {
 }
 
 .navbar { margin-bottom: 20px; padding:0px; }
+
+.pagination {
+	margin-left: 15px;
+}
 
 
 iframe { border:none; margin:none; padding:none }
@@ -154,8 +175,8 @@ footer {
 }
 
 #mainheader {
-		background: #32c6b6; 		
-		background: radial-gradient(circle at top right, #32c6b6, #1490d1); 
+	background: #32c6b6; 		
+	background: radial-gradient(circle at top right, #32c6b6, #1490d1); 
     opacity: 1;
     width: 100%;
     h1 {
@@ -165,6 +186,17 @@ footer {
       margin:0px;
       padding:0px;
       padding-bottom:10px;
+    }
+    .headerteaser {	
+      margin-top:70px;margin-bottom:70px;
+    }
+
+    @include media-breakpoint-down(sm) { 	
+	  margin-top:10px;  
+	  h1 { font-size: 25px; }
+      .headerteaser {
+	     margin-top:30px;margin-bottom:30px;
+      }
     }
 }
 
@@ -326,6 +358,17 @@ footerwww {
 .navbar .midata {   
 		font-family: coco_gothicheavy, Sans-serif;   
 }
+.nav-pills .nav-item .nav-link {
+	padding:10px;	
+}
+
+.main-col {
+  @include media-breakpoint-down(sm) {
+	 font-weight: bold;
+  } 
+}
+
+.searchbox { margin-bottom: 10px;}
 
 tr .sort::after {
   content: " ";
@@ -348,11 +391,20 @@ tr .asc::after {
 .consenticon {
   width:75px;
   padding-right:5px;
+  
+  @include media-breakpoint-down(xs) {
+	display:none;
+  } 
 }
 
 .iconspace {
   padding-left:80px;
   min-height:80px;
+
+  @include media-breakpoint-down(xs) {
+	padding-left:0px;
+    min-height:0px;
+  } 	
 }
 
 .extraspace { margin-bottom: 10px; }
@@ -368,7 +420,11 @@ tr .asc::after {
   height:140px;
 }
 
-.modal-lg { width:900px }
+.modal-lg {
+	@include media-breakpoint-up(lg) {
+		width:900px;
+	} 	
+}
 
 .smallpanel .autosize { 
   height:300px;
@@ -442,10 +498,25 @@ tr .asc::after {
 
 .new { display: none }
 
-.tree h1 { font-size:30px; }
+.tree h1 { 
+	font-size:30px; 
+	@include media-breakpoint-down(sm) {
+		font-size:20px;
+	}
+}
 .subtree { margin-left:22px; margin-right:20px; }
-.subtree h1 { font-size:20px; }
-.subtree .subtree h1 { font-size:20px; }
+.subtree h1 { 
+	font-size:20px;
+	@include media-breakpoint-down(sm) {
+		font-size:15px;
+	} 
+}
+.subtree .subtree h1 { 
+	font-size:20px;
+	@include media-breakpoint-down(sm) {
+		font-size:15px;
+	} 
+}
 .tree .subtree .format { font-size:12px; color:#808080; margin-left: 20px;}
 .tree .sharebox { margin-right:16px; }
 .treehandle {

@@ -19,46 +19,46 @@
 	  <div class="overlay-body">
         <panel :title="$t('recorddetail.meta')" :busy="isBusy" @close="goBack()">        					
 			<div class="row">
-				<p class="col-sm-2" v-t="'recorddetail.name'"></p>
-				<p class="col-sm-10">{{record.name}}</p>
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.name'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{record.name}}</div>
 			</div>
-			<div class="row">
-				<p class="col-sm-2" v-t="'recorddetail.owned_by'"></p>
-				<p class="col-sm-10">{{record.ownerName}}</p>
+			<div class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.owned_by'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{record.ownerName}}</div>
 			</div>
-			<div class="row">
-				<p class="col-sm-2" v-t="'recorddetail.created_by'"></p>
-				<p class="col-sm-10">{{record.creatorName}}</p>
+			<div class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.created_by'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{record.creatorName}}</div>
 			</div>
-			<div class="row">
-				<p class="col-sm-2" v-t="'recorddetail.created_with'"></p>
-				<p class="col-sm-10">{{record.app}}</p>
+			<div class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.created_with'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{record.app}}</div>
 			</div>
-			<div class="row">
-				<p class="col-sm-2" v-t="'recorddetail.created_on'"></p>
-				<p class="col-sm-10">{{ $filters.date(record.created) }}</p>
+			<div class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.created_on'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{ $filters.date(record.created) }}</div>
 			</div>
-			<div class="row">
-				<p class="col-sm-2" v-t="'recorddetail.id'"></p>
-				<p class="col-sm-10">{{record._id}}</p>
+			<div class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.id'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{record._id}}</div>
 			</div>		
-			<div v-if="record.format && record.format.startsWith('fhir/')" class="row">
-				<p class="col-sm-2" v-t="'enum.codesystems.fhir'"></p>
-				<p class="col-sm-10">{{record.format.substr(5)}}</p>
+			<div v-if="record.format && record.format.startsWith('fhir/')" class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'enum.codesystems.fhir'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{record.format.substr(5)}}</div>
 			</div>
-			<div v-else class="row">
-				<p class="col-sm-2" v-t="'recorddetail.format'"></p>
-				<p class="col-sm-10">{{record.format}}</p>
+			<div v-else class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.format'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{record.format}}</div>
 			</div>
-		    <div class="row">
-				<p class="col-sm-2" v-t="'recorddetail.code'"></p>
-				<div class="col-sm-10">
+		    <div class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.code'"></div>
+				<div class="col-md-8 col-lg-10 main-col">
 				  <div v-for="code in record.code" :key="code">{{code}}</div>
 				</div>
 			</div>
-			<div class="row">
-				<p class="col-sm-2" v-t="'recorddetail.content'"></p>
-				<p class="col-sm-10">{{record.content}}</p>
+			<div class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.content'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{record.content}}</div>
 			</div>		
 			<button href="javascript:" @click="download()" class="btn btn-primary" v-if="isFile()" v-t="'recorddetail.download_btn'">Download</button>
         </panel>

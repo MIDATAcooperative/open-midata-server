@@ -20,7 +20,8 @@
 		<div class="row">
 			<!-- Login -->
 			<div class="col-sm-12">
-				<div class="panel-container" style="max-width:600px; padding-top:120px; margin:0 auto;">
+			    <div class="d-none d-lg-block" style="padding-top:100px;"></div>
+				<div class="panel-container" style="max-width:600px; padding-top:20px; margin:0 auto;">
 					<div class="panel panel-primary">
 		            	<div class="panel-heading">
 		              		<h3 class="panel-title" v-t="'setpw.title'"></h3>

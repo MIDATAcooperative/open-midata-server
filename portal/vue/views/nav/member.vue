@@ -24,7 +24,7 @@
 				<div class="navbar-header">
 
 					<router-link v-if="$route.query.actions" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user2', query : { userId : user._id, actions : $route.query.actions }}"><span class="fas fa-user"></span></router-link>						
-					<button v-else class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
+					<button v-else class="ml-1 navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>
@@ -35,6 +35,7 @@
 				<div class="collapse navbar-collapse navbar-ex1-collapse">
 
 					<ul class="nav navbar-nav mr-auto" :class="{'vishidden d-none d-md-flex':locked()}">
+					    <li class="d-lg-none nav-item"><div class="mb-3 mt-3 username"><span class="fas fa-user"></span> {{ user.name }}</div></li>					    
 						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
 							:to="{ name : 'member.overview' }" v-t="'navbar.me'"></router-link></li>
 
@@ -50,7 +51,7 @@
 							:to="{ name : 'member.apps' }"><span v-t="'navbar.apps'"></span></router-link></li>
 						
 
-						<li class="nav-item dropdown" ui-sref-active="active"><a href="javascript:" class="dropdown-toggle nav-link"
+						<li class="nav-item dropdown d-none d-lg-block" ui-sref-active="active"><a href="javascript:" class="dropdown-toggle nav-link"
 							data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
 							<div class="dropdown-menu">
 								<a class="dropdown-item" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show"
@@ -60,9 +61,17 @@
 									@click="showSpace(entry)" v-t="entry.name"></a>
 
 							</div></li>
+							
+						<li class="nav-item d-lg-none" ui-sref-active="active"><a class="nav-link" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="showApp('fhir-observation');" v-t="'dashboard.observations'"></a></li>
+						<li class="nav-item d-lg-none" ui-sref-active="active"><a class="nav-link" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="showApp('calendar');" v-t="'dashboard.calendar'"></a></li>
+						<li class="nav-item d-lg-none" ui-sref-active="active" v-for="entry in me_menu" :key="entry._id"><a class="nav-link" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="showSpace(entry)" v-t="entry.name"></a></li>
+						<li class="nav-item d-lg-none" ui-sref-active="active"><router-link v-if="$route.query.actions" data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user2', query : { actions : $route.query.actions }}" class="nav-link"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>
+								<router-link v-else data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user', query : { userId : user._id  }}" class="nav-link"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>
+								</li>
+						<li class="nav-item d-lg-none" ui-sref-active="active"><a class="nav-link" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="logout()"><span class="fas fa-power-off"></span> {{ $t('navbar.sign_out') }}</a></li>
 					</ul>
 
-					<ul class="d-xs-none nav navbar-nav">
+					<ul class="d-none d-lg-block nav navbar-nav">
 						<li class="nav-item dropdown"><a class="nav-link" href="javascript:" tabindex="0" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.name}}</a>
 						<div class="dropdown-menu" style="right:0px;left:auto;min-width:200px;">
 							<div style="padding:10px;">

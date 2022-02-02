@@ -16,8 +16,8 @@
 -->
 <template>
     <div  class="autosize body" v-if="!isBusy">    
-        <div class="">
-            <ul class="borderless nav nav-tabs">
+        <div class="mb-2">
+            <ul class="borderless nav nav-pills flex-column flex-sm-row">
                 <li class="nav-item" role="presentation"><a :class="{'active' : tab==0 }" class="nav-link" href="javascript:" @click="setTab(0)" v-t="'smallstudies.recruiting'">Home</a></li>
                 <li class="nav-item" role="presentation"><a :class="{'active' : tab==1 }" class="nav-link" href="javascript:" @click="setTab(1)" v-t="'smallstudies.ongoing'">Profile</a></li>
                 <li class="nav-item" role="presentation"><a :class="{'active' : tab==2 }" class="nav-link" href="javascript:" @click="setTab(2)" v-t="'smallstudies.completed'">Messages</a></li>
