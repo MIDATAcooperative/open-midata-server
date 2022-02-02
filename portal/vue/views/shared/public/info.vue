@@ -19,17 +19,14 @@
     <div class="welcome">	 
 		<div id="mainheader"><div class="container"><div class="row">
 			<!-- Login -->
-			<div class="col-sm-12" style="margin-top:70px;margin-bottom:70px;font-family:Sans-serif;color:white">
-
-
-              <h1 style="color:white;" v-t="'member_login.teaser'"></h1>
-
-			
+			<div class="col-sm-12 headerteaser" style="font-family:Sans-serif;color:white">
+              <h1 style="color:white;" v-t="'member_login.teaser'"></h1>			
 			</div>
 			</div></div>
 		</div><div class="container"><div class="row">
 			<div class="col-sm-12">
-				<div class="panel-container" style=" padding-top:30px; margin:0 auto;">
+			    <div class="d-none d-sm-block" style="padding-top:20px;"></div>
+				<div class="panel-container" style="padding-top:10px;margin:0 auto;">
 					<div class="panel panel-primary">
 		            	<div class="panel-heading">
 		              		<h3 class="panel-title" translate="instance.{{ENV.instance}}.name"></h3>

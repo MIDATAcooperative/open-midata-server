@@ -34,10 +34,10 @@
 	        <form class="form-horizontal" @submit.prevent="searchUsers()">
 	            <p v-t="'addusers.search_by_email'"></p>
 		        <div class="form-group form-row">
-			        <div class="col-10">
+			        <div class="col-sm-10 mb-1">
 				        <input type="text" class="form-control" :placeholder="$t('addusers.search_user')" v-model="crit.userQuery" required v-validate>
 			        </div>
-			        <div class="col-2">
+			        <div class="col-sm-2">
 				        <button type="submit" :disabled="action!=null" class="btn btn-primary form-control" v-t="'common.search_btn'"></button>
 			        </div>
 		        </div>

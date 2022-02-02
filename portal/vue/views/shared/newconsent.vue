@@ -33,7 +33,7 @@
             <error-box :error="error"></error-box>
     
             <div class="row" v-if="!consent.type">
-                <div class="col-sm-3">
+                <div class="col-md-3 col-6 mb-3">
                     <div class="card button" @click="consent.type='CIRCLE';">
                         <img :src="getIconRole('member')" class="card-img-top">
                         <div class="card-body">                
@@ -43,7 +43,7 @@
                     </div>
                 </div>
         
-                <div class="col-sm-3">
+                <div class="col-md-3 col-6 mb-3">
                     <div class="card"  @click="consent.type='HEALTHCARE';consent.writesBool=true;">
                         <img :src="getIconRole('provider')" class="card-img-top">
                         <div class="card-body">                
@@ -53,7 +53,7 @@
                     </div>
                 </div>
 
-				<div class="col-sm-3">
+				<div class="col-md-3 col-6 mb-3">
                     <div class="card"  @click="consent.type='REPRESENTATIVE';consent.writesBool=true;consent.query={group:'all'};">
                         <img :src="getIconRole('representative')" class="card-img-top">
                         <div class="card-body">                

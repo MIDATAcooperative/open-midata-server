@@ -25,7 +25,7 @@
 				<div class="row align-items-center">
 					<div class="col">
 						<p class="cell">
-							<span v-t="'navbar.cookiebanner'">Diese Website verwendet Cookies. Weitere Informationen finden Sie unter</span> 
+							<span v-t="'navbar.cookiebanner'">Diese Website verwendet Cookies. Weitere Informationen finden Sie unter</span>&nbsp; 
 							<router-link 
 								class="ctcc-more-info-link" tabindex="0" :to="{ path : '/public/terms', query : {which : 'midata-privacy-policy'} }"
 								v-t="'navbar.privacypolicy'">Datenschutzerklärung</router-link>.
@@ -48,7 +48,7 @@
 
 					<div class="navbar-header">
 
-						<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
+						<button class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
 							aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 							<span class="fas fa-list"></span>
 						</button>
@@ -64,7 +64,8 @@
 							<li class="nav-item"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" v-if="!notPublic"
 								:to="{ path : './registration', query : {actions:actions} }" v-t="'navbar.sign_up'"></router-link></li>
 						</ul>
-						<ul class="nav navbar-nav">
+						<ul class="nav navbar-nav nav-language">
+						    <li class="nav-item d-lg-none"><div class="nav-link" v-t="'navbar.language'"></div></li>
 							<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
 								@click="changeLanguage('en')" href="javascript:">en</a></li>
 							<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
@@ -96,6 +97,7 @@
 	</div>
 </footer></div>
 </template>
+
 <script>
 import ENV from "config";
 import { setLocale, addBundle } from "services/lang.js";
