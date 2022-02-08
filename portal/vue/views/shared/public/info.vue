@@ -24,7 +24,7 @@
 			</div>
 			</div></div>
 		</div><div class="container"><div class="row">
-			<div class="col-sm-12">
+			<div class="col-12">
 			    <div class="d-none d-sm-block" style="padding-top:20px;"></div>
 				<div class="panel-container" style="padding-top:10px;margin:0 auto;">
 					<div class="panel panel-primary">
@@ -33,10 +33,10 @@
 		            	</div>
 		            	<div class="panel-body">	
 		            	<div class="row">		     
-			<router-link class="col-sm-6 col-lg-3" :to="{ name : 'public.login' }"><img class="img-responsive" src="/images/account.jpg"><span v-t="'footer.for_members'"></span></router-link>
-			<router-link class="col-sm-6 col-lg-3" :to="{ name : 'public_research.login' }"><img class="img-responsive" src="/images/research2.jpeg"><span v-t="'footer.for_researchers'"></span></router-link>
-			<router-link class="col-sm-6 col-lg-3" :to="{ name : 'public_provider.login' }"><img class="img-responsive" src="/images/doctor.jpeg"><span v-t="'footer.for_providers'"></span></router-link>
-			<router-link class="col-sm-6 col-lg-3" :to="{ name : 'public_developer.login' }"><img class="img-responsive" src="/images/developer.jpeg"><span v-t="'footer.for_developers'"></span></router-link>
+			<router-link class="col-6 col-lg-3" :to="{ name : 'public.login' }"><img class="img-responsive" src="/images/account.jpg"><span v-t="'footer.for_members'"></span></router-link>
+			<router-link class="col-6 col-lg-3" :to="{ name : 'public_research.login' }"><img class="img-responsive" src="/images/research2.jpeg"><span v-t="'footer.for_researchers'"></span></router-link>
+			<router-link class="col-6 col-lg-3" :to="{ name : 'public_provider.login' }"><img class="img-responsive" src="/images/doctor.jpeg"><span v-t="'footer.for_providers'"></span></router-link>
+			<router-link class="col-6 col-lg-3" :to="{ name : 'public_developer.login' }"><img class="img-responsive" src="/images/developer.jpeg"><span v-t="'footer.for_developers'"></span></router-link>
 			 </div>
 			 <hr>	            	    
 			            	<p v-t="'instance.'+ENV.instance+'.intro'"></p>			            				            	
