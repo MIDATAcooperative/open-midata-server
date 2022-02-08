@@ -35,25 +35,18 @@
 		</form>
 		<div v-if="providers.filtered">
 			<pagination v-model="providers"></pagination>
-
-			<table class="table" v-if="providers.filtered.length">
-				<tr>
-					<Sorter sortby="lastname" v-model="providers" v-t="'common.user.lastname'">Surname</Sorter>
-					<Sorter sortby="firstname" v-model="providers" v-t="'common.user.firstname'">Firstname</Sorter>
-					<Sorter sortby="zip" v-model="providers" v-t="'common.user.zip'">ZIP</Sorter>
-					<Sorter sortby="city" v-model="providers"  v-t="'common.user.city'">City</Sorter>
-					<Sorter sortby="address1" v-model="providers" v-t="'common.user.street'">Street</Sorter>
-					<th>-</th>
-				</tr>
-				<tr v-for="provider in providers.filtered" :key="provider._id">
-					<td>{{ provider.lastname }}</td>
-					<td>{{ provider.firstname }}</td>
-					<td>{{ provider.zip }}</td>
-					<td>{{ provider.city }}</td>
-					<td>{{ provider.address1 }}</td>
-					<td><a href="javascript:" @click="addConsent(provider)" v-t="'providersearch.add_consent_btn'"></a></td>
-				</tr>
-			</table>
+           
+			<div v-if="providers.filtered.length">
+				
+				<div v-for="provider in providers.filtered" :key="provider._id">
+				    <div class="row">
+					<div class="col-md-6 col-12 main-col">{{ provider.firstname }} {{ provider.lastname }}</div>					
+					<div class="col-lg-5 col-md-4 col-12"><span v-if="provider.address1">{{ provider.address1 }}<br/></span>{{ provider.zip }} {{ provider.city }}</div>					
+					<div class="col-lg-1 col-md-2 col-12"><a class="btn btn-primary btn-sm" href="javascript:" @click="addConsent(provider)" v-t="'common.add_btn'"></a></div>
+					</div>
+					<div style="border-bottom: 1px solid #e0e0e0; margin-top:10px; margin-bottom:5px"></div>
+				</div>
+			</div>
 			
 			<p v-if="providers.filtered.length == 0" v-t="'providersearch.empty_result'"></p>
 		</div>
@@ -91,7 +84,7 @@ export default {
 			const { $data } = this, me = this;
     		me.doBusy(hc.search(crit, ["firstname", "lastname", "city", "zip", "address1", "role"]))
     		.then(function(data) {
-    			$data.providers = me.process(data.data);
+    			$data.providers = me.process(data.data, { sort : "lastname" });
     		});
     	},
     

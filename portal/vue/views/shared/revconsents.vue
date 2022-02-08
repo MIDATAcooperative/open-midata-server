@@ -43,16 +43,16 @@
 
 			<tr>
                 <Sorter sortby="ownerName" v-model="consents" v-t="'consents.ownerName'"></Sorter>
-				<Sorter sortby="name" v-model="consents" v-t="'consents.name'"></Sorter>				
+				<Sorter class="d-none d-md-table-cell" sortby="name" v-model="consents" v-t="'consents.name'"></Sorter>				
 				<Sorter sortby="type" v-model="consents" v-t="'consents.type'"></Sorter>
-				<Sorter sortby="status" v-model="consents" v-t="'consents.status'"></Sorter>				
+				<Sorter class="d-none d-sm-table-cell" sortby="status" v-model="consents" v-t="'consents.status'"></Sorter>				
 				<th class="d-none d-lg-table-cell" v-t="'consents.number_of_records'"></th>
 			</tr>
 			<tr v-for="consent in consents.filtered" :key="consent._id" :class="{ 'table-warning' : consent.status == 'UNCONFIRMED' }">
 				<td><a @click="editConsent(consent);" href="javascript:">{{ consent.ownerName || consent.externalOwner }}</a></td>
-                <td>{{ consent.name }}</td>				
+                <td class="d-none d-md-table-cell">{{ consent.name }}</td>				
 				<td>{{ $t('enum.consenttype.'+consent.type) }}</td>
-				<td>{{ $t('enum.consentstatus.'+consent.status) }}</td>				
+				<td class="d-none d-sm-table-cell">{{ $t('enum.consentstatus.'+consent.status) }}</td>				
 				<td class="d-none d-lg-table-cell">{{ consent.records }}</td>
 			</tr>
 		</table>

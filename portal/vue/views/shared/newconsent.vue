@@ -95,7 +95,7 @@
     
 				<div class="row" >					
 					<div class="col-md-5" :class="{ 'd-none d-md-block' : (consentId && owner && owner._id == userId) }"> 
-						<p><b v-t="'newconsent.who_is_owner'"></b></p>
+						<p><b class="text-primary" v-t="'newconsent.who_is_owner'"></b></p>
 			
 						<div class="" v-if="owner && owner._id != userId">
 							<div class="card-body">
@@ -137,7 +137,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="margin-top">
+					<div class="margin-top mb-3">
 						<button v-if="!(owner || consent.externalOwner)" type="button" class="btn btn-default" @click="setOwner();" :disabled="action!=null" v-t="'newconsent.set_owner_btn'"></button>
 					</div>
 							
@@ -148,7 +148,7 @@
 					</div>
 				</div>
 				<div class="col-md-6">
-					<p><b v-t="'editconsent.people'"></b></p>
+					<p><b class="text-primary" v-t="'editconsent.people'"></b></p>
 					<div  v-if="consent.type=='EXTERNALSERVICE'">
 						<div class="card-body">
 							<img :src="getIconRole('app')" class="consenticon float-left">
@@ -237,7 +237,7 @@
 	
         <div v-if="sharing.records || sharing.query" class="margin-top">
         
-            <p><b v-t="'editconsent.what_is_shared'"></b></p>
+            <p><b class="text-primary" v-t="'editconsent.what_is_shared'"></b></p>
         <!-- <div v-if="groupLabels.length && groupLabels.length < 5">{{ groupLabels.join(", ") }}</div>  -->
 		        <p v-if="consent.type=='REPRESENTATIVE'" v-t="'editconsent.type_representative'"></p>
 				<div v-else>
@@ -252,7 +252,7 @@
                 <p v-if="sharing.records.length">{{ $t('editconsent.shares_records', { count : sharing.records.length }) }}</p>
 				
                 <div class="extraspace"></div>
-                <p><b v-t="'editconsent.restrictions'"></b></p>
+                <p><b class="text-primary" v-t="'editconsent.restrictions'"></b></p>
                 <p>{{ $t('enum.writepermissiontype.'+(consent.writes || 'NONE')) }}</p>
                 <p v-if="consent.createdBefore"><span v-t="'editconsent.created_before'"></span>:{{ $filters.date(consent.createdBefore) }} 
             </p>
@@ -314,7 +314,7 @@
         </div>
 
 		<div v-if="consentId">
-			<div v-if="mayChangeData()" class="extraspace">
+			<div v-if="mayChangeData()" class="extraspace mb-3">
 				<router-link class="btn btn-default"  :to="{ path : './records', query : { selected : consentId, selectedType : 'circles' }}" v-t="'editconsent.view_change_selection_btn'"></router-link>
 			</div>
     		<div class="d-block d-md-none">	
@@ -355,7 +355,7 @@
 	  <add-users :setup="setupAddowner" @close="setupAddowner=null" @add="setOwnerPerson"></add-users>
 	</modal>
 
-	<modal id="searchGroup" full-width="true" @close="setupSearchGroup=null" :open="setupSearchGroup!=null" :title="$t('usergroupsearch.title')">
+	<modal id="searchGroup" full-width="true" @close="setupSearchGroup=null" :open="setupSearchGroup!=null" :title="$t('dashboard.usergroupsearch')">
 	  <user-group-search :setup="setupSearchGroup" @close="setupSearchGroup=null" @add="addPerson"></user-group-search>
 	</modal>
 

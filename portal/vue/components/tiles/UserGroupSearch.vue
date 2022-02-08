@@ -17,7 +17,7 @@
 <template>
     
 	<div class="panel panel-primary">
-		<div class="panel-heading" v-t="'usergroupsearch.title'"></div>
+		<div class="panel-heading" v-t="'dashboard.usergroupsearch'"></div>
 		<div class="body">
 
 			<error-box :error="error"></error-box>
@@ -36,7 +36,8 @@
 
 				<div v-for="usergroup in usergroups.filtered" :key="usergroup._id" class="card margin-top">
 					<div class="card-header">{{ usergroup.name }}</div>
-					<div class="card-body">	         
+					<div class="card-body">	  
+					    <div class="table-responsive">       
 						<table class="table">
 							<tr v-for="member in usergroup.members" :key="member._id">
 								<td>{{ member.user.firstname }}</td>
@@ -44,7 +45,8 @@
 								<td>{{ member.user.email }}</td>
 							</tr>
 						</table>
-						<button class="btn btn-default col-5" @click="addIndividuals(usergroup)" v-t="'usergroupsearch.add_individuals_btn'"></button>
+						</div>
+						<button class="btn btn-default col-5 mr-1" @click="addIndividuals(usergroup)" v-t="'usergroupsearch.add_individuals_btn'"></button>
 						<button class="btn btn-default col-5" @click="addGroup(usergroup)" v-t="'usergroupsearch.add_group_btn'"></button>
 					</div>
 				</div>
