@@ -414,6 +414,8 @@ public class ApplicationTools {
 		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);						   
 		} else appInstance.sharingQuery = ConsentQueryTools.getEmptyQuery();
 		
+		RecordManager.instance.createAnonymizedAPS(appInstance.owner, context.getAccessor(), appInstance._id, true);
+		
 		//Circles.addConsent(context, appInstance, true, null, false);
 		
 		return appInstance;
