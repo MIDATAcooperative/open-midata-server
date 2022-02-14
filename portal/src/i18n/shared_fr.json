@@ -42,6 +42,7 @@
         "notrialuser_detail" : "Pour utiliser cette fonctionnalité, vous devez compléter votre inscription. Veuillez demander une copie écrite des conditions générales et la renvoyer signée à @OPERATOR. Vous recevrez également un code d'activation permettant de vérifier votre adresse postale. Si vous désirez vérifier le status de votre compte, cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'État du compte'.",
         "mustbemember_title" : "Adhésion à @OPERATOR requise!",
         "mustbemember_detail" : "Pour utiliser cette fonctionnalité, vous devez être membre de la coopérative. Cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte' pour plus d'informations.",
+        "ratelimit" : "La limite de la fréquence d'appel de l'action en cours est atteinte. Réessayez plus tard.",
         "notauthorized" : {
             "action" : "Vous n'êtes pas autorisé à entreprendre cette action",
             "fields" : "Vous n'êtes pas autorisé à consulter les champs demandés",
@@ -75,7 +76,7 @@
             "passphrase" : "Mauvaise phrase secrète",
             "passcode" : "Mauvais NIP",
             "plugin" : "Cette application est prévue pour un autre rôle",
-            "unlock_code" : "Code d'activation incorrect",
+            "unlock_code" : "Code de déverrouillage incorrect",
             "access_query" : "Le filtre d'accès aux données (Data Access Filter) doit être limité par 'contenu' ou 'groupe'!",
             "sharing" : "Le filtre d'accès aux données (Data Access Filter) ne peut pas contenir la ressource Patient. La ressource Patient correcte est partagée automatiquement.",
             "anonymous" : "Un projet de recherche ne peut être anonyme que si personne n'est autorisé à accéder à des données non pseudonymisées.",
@@ -126,7 +127,7 @@
             "user" : "Une personne avec cet e-mail est déjà inscrite.",
             "member" : "Une personne avec cet e-mail est déjà inscrite.",
             "provider" : "Un professionel de la santé avec ce nom existe déjà.",
-            "research" : "Une organisation de recherche portant ce nom exite déjà.",
+            "organization" : "Une organisation portant ce nom existe déjà.",
             "passcode" : "Veuillez choisir un autre NIP!",
             "plugin" : "Une application du même nom existe déjà.",
             "study" : "Un projet de recherche du même nom existe déjà.",
@@ -140,8 +141,8 @@
             "password60" : "Trop d'essais de connexion manqués. Veuillez attendre 1 heure avant la prochaine tentative.",
             "participation" : "Vous n'êtes pas autorisé à participer à ce projet de recherche et ne pouvez donc pas utiliser cette application.",
             "projectconsent" : "Vous avez retiré votre participation à ce projet de recherche et ne pouvez donc plus utiliser cette application.",
-            "consent" : "Vous avez défini dans le portail @PLATFORM que cette application ne peut plus accéder à vos données. Si vous voulez utiliser à nouveau cette application, vous devez la ré-autoriser dans le portail @PLATFORM.",
-            "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez supprimer les consentements non utilisés sur le portail @PLATFORM.",
+            "consent" : "Vous avez défini dans le portail @PRODUCT que cette application ne peut plus accéder à vos données. Si vous voulez utiliser à nouveau cette application, vous devez la ré-autoriser dans le portail @PRODUCT.",
+            "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez supprimer les consentements non utilisés sur le portail @PRODUCT.",
             "app_test" : "Vous êtes autorisé à utiliser cette application sur un maximum de 10 appareils. Sur cette instance TEST, les autorisations ont été réinitialisées pour vous. Veuillez réessayer.",
             "joinmethod" : "Il n'est pas permis d'adhérer au projet par cette méthode."
         },
@@ -156,6 +157,7 @@
 
         "tooshort" : {
             "password" : "Le mot de passe doit comporter au moins 8 caractères et contenir une lettre et un chiffre.",
+            "password2" : "Le mot de passe doit comporter au moins 12 caractères et contenir une lettre, un chiffre et un caractère spécial.",
             "passphrase" : "Les phrases secrètes doivent contenir au moins 8 caractères."
         },
 
@@ -285,7 +287,11 @@
             "updated-role-in-team" : "Rôle dans le team modifié",
             "removed-from-team" : "Supprimé du team",
             "communication-rejected" : "Désabonné du canal de communication",
-            "communication-approved" : "Abonné au canal de communication"
+            "communication-approved" : "Abonné au canal de communication",
+            "user-searched" : "Recherche d'utilisateur",
+            "welcome-sent" : "E-mail de bienvenue envoyé",
+            "tried-user-reregistration" : "Tentative de ré-inscription de l'utilisateur",
+            "signature-failure" : "La validation du consentement a échoué"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -298,7 +304,8 @@
             "PASSPORT_VERIFIED" : "La carte d'identité de l'utilisateur doit avoir été vérifiée.",
             "MIDATA_COOPERATIVE_MEMBER" : "L'utilisateur doit être membre de la cooperative.",
             "ADMIN_VERIFIED" : "Le compte doit avoir été validé par un administrateur",
-            "BIRTHDAY_SET" : "La date de naissance de l'utilisateur doit être connue"
+            "BIRTHDAY_SET" : "La date de naissance de l'utilisateur doit être connue",
+            "APP_UNLOCK_CODE" : "L'application nécessite un code de déverrouillage"
         },
         "writepermissiontype" : {
             "NONE" : "Aucunes données ne peuvent être enregistrées.",
@@ -357,7 +364,7 @@
         },
         "joinmethod" : {
             "APP" : "Le participant utilise l'application liée",
-            "PORTAL" : "Le participant s'inscrit sur le portail @PLATFORM",
+            "PORTAL" : "Le participant s'inscrit sur le portail @PRODUCT",
             "RESEARCHER" : "Le participant est enrôlé manuellement par un membre de l'équipe de recherche",
             "API" : "Le participant est enrôlé par un logiciel externe",
             "ALGORITHM" : "Le participant a été proposé par un algorithme (non supporté)",
@@ -376,6 +383,15 @@
             "REJECTED" : "Projet rejeté par @OPERATOR",
             "VALIDATED" : "Le projet a été validé",
             "VALIDATION" : "En cours de validation"
+        },
+        "projectleavepolicy" : {
+            "FREEZE" : "Geler les données lors du retrait",
+            "REJECT" : "Les données ne sont plus partagées",
+            "DELETE" : "Le consentement est supprimé"
+        },
+        "rejoinpolicy" : {
+            "NO_REJOIN" : "Les participants ne peuvent être réintégrés",
+            "DELETE_LAST" : "Remplacer la participation précédente"
         },
         "pcodestatus" : {
             "UNUSED" : "Non utilisé",
@@ -455,7 +471,7 @@
         },
         "codesystems" : {
             "loinc" : "Code LOINC",
-            "midata" : "Code MIDATA",
+            "midata" : "Code @PRODUCT",
             "fhir" : "FHIR Resource",
             "snowmed" : "Code SNOMED CT"
         },
@@ -538,6 +554,7 @@
             "true" : "Oui",
             "false" : "Non"
         },
+        "fillout" : "Veuillez choisir",
         "user" : {
             "lastname" : "Nom",
             "firstname" : "Prénom",
@@ -554,6 +571,7 @@
         "sign_up" : "S'inscrire",
         "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires.",
         "password_policy" : "Le mot de passe doit comporter au moins 8 caractères et contenir une lettre et un chiffre.",
+        "password_policy2" : "Le mot de passe doit comporter au moins 12 caractères et contenir une lettre, un chiffre et un caractère spécial.",
         "email" : "E-mail",
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
@@ -589,13 +607,13 @@
         "app_agb3" : "Conditions générales de l'app",
         "study_agb" : "Conditions du projet",
         "sign_up_btn" : "Créer un compte",
-        "unlock_code" : "Code d'activation",
+        "unlock_code" : "Code de déverrouillage",
         "already_have_account" : "J'ai déjà un compte",
         "more" : "Vous avez encore quelques secondes? Nous serions heureux si vous pouviez nous donner un peu plus de détails sur vous ☺️️",
         "generous" : "Je me sens généreux aujourd'hui, montrez-moi les champs!",
         "hide_optional" : "Masquer les champs facultatifs",
         "welcome_title" : "Bienvenue",
-        "welcome_text1" : "Votre compte @PLATFORM vient d'être créé. Un e-mail de confirmation vous a été envoyé.",
+        "welcome_text1" : "Votre compte @PRODUCT vient d'être créé. Un e-mail de confirmation vous a été envoyé.",
         "welcome_text2" : "Veuillez cliquer le lien contenu dans l'e-mail dans les 24 heures pour terminer votre inscription.",
         "welcome_text3" : "Si vous ne recevez pas l'e-mail dans les 30 prochaines minutes, veuillez vérifier votre filtre anti-spam.",
         "welcome_btn" : "Continuer"
@@ -611,7 +629,9 @@
         "login_btn" : "Se connecter",
         "service_login" : "Connexion pour demande de confirmation",
         "service_login2" : "Lors votre prochaine connexion, on vous demandera de confirmer votre consentement et/ou votre participation à des projets de recherche.",
-        "no_account" : "Je n'ai pas encore de compte @PLATFORM."
+        "account_login" : "Connexion pour la gestion des comptes",
+        "account_login2" : "Veuillez vous connecter pour accéder aux fonctions de gestion du compte.",
+        "no_account" : "Je n'ai pas encore de compte @PRODUCT."
     },
 
     "lostpw" : {
@@ -652,6 +672,7 @@
         "code" : "Code",
         "resend_btn" : "Renvoyer l'e-mail",
         "retry_btn" : "Veuillez vous authentifier à nouveau",
+        "unlock_code" : "Cette application nécessite un code de déverrouillage pour être utilisée. Veuillez entrer le code pour continuer.",
         "contract_instructions" : "Un contrat vous a été adressé par la poste. Veuillez le signer et le renvoyer à @OPERATOR.",
         "pilot_phase" : "Un administrateur vérifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
         "code_intructions" : "Une lettre contenant un code de confirmation vous a été adressée par la poste. Veuillez saisir ce code de confirmation pour pouvoir accéder à la plateforme.",
@@ -675,11 +696,11 @@
         "auth_type_none" : "Je ne veux pas utiliser l'authentification à deux facteurs.",
         "auth_type_sms" : "Je veux utiliser l'authentification à deux facteurs par codes SMS. Veuillez m'envoyer un code sur mon téléphone portable lorsque je me connecte.",
         "emailnotify" : "Notifications",
-        "emailnotify2" : "Veuillez m'envoyer un e-mail chaque fois que je me connecte au portail @PLATFORM à {{domain}}.",
+        "emailnotify2" : "Veuillez m'envoyer un e-mail chaque fois que je me connecte au portail @PRODUCT à {{domain}}.",
         "agree_btn" : "Je suis d'accord",
         "keyrecovery" : {
             "intro" : "La clé privée utilisée pour crypter vos données doit être récupérée. Pour récupérer votre clé, essayez l'une des options suivantes:",
-            "way1" : "Avez-vous une application utilisant @PLATFORM où vous êtes encore connecté? Si oui, ouvrez cette application et votre clé sera récupérée. Essayez de vous connecter à nouveau par la suite.",
+            "way1" : "Avez-vous une application utilisant @PRODUCT où vous êtes encore connecté? Si oui, ouvrez cette application et votre clé sera récupérée. Essayez de vous connecter à nouveau par la suite.",
             "way2" : "Vous êtes-vous déjà connecté à l'aide d'un navigateur? Si oui, essayez d'ouvrir une session en utilisant le même navigateur et le même appareil.",
             "way3" : "Vous vous souvenez à nouveau de votre ancien mot de passe? Si oui, essayez de vous connecter en utilisant votre ancien mot de passe.",
             "way4" : "Attendez que les employés de @OPERATOR effectuent une récupération manuelle de la clé. @OPERATOR vous enverra un e-mail lorsque la récupération sera terminée. Veuillez patienter jusqu'à cinq jours ouvrables pour que la récupération soit terminée."
@@ -751,12 +772,14 @@
         "created_by" : "Créé par:",
         "created_with" : "Créé avec:",
         "created_on" : "Créé le:",
-        "content" : "Contenu:",
+        "content" : "Type de contenu @PRODUCT:",
         "format" : "Format:",
         "download_btn" : "Télécharger",
         "content_visualization" : "Visualisation du contenu",
         "no_visualization" : "Cet enregistrement ne peut pas être visualisé.",
-        "raw_data" : "Données brutes (Raw data)"
+        "raw_data" : "Données brutes (Raw data)",
+        "id" : "Record ID",
+        "code" : "Code(s)"
     },
 
     "studydetails" : {
@@ -794,7 +817,6 @@
         "for_participants" : "Informations sur la participation",
         "please_review1" : "Décider de participer",
         "please_review2" : "Veuillez passer en revue ce projet de recherche. Voulez-vous y participer? Cliquez sur 'Ignorer (aucune modification)' si vous voulez quitter cette page sans changement."
-
     },
 
     "user" : {
@@ -803,7 +825,7 @@
         "name" : "Prénom:",
         "email" : "E-mail:",
         "birthday" : "Date de naissance:",
-        "midataID" : "MIDATA ID:",
+        "midataID" : "@PRODUCT ID:",
         "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
         "change_passphrase_btn" : "Modifier la phrase secrète",
@@ -900,7 +922,7 @@
         "type" : "Type de consentement",
         "status" : "État du consentement",
         "people" : "Avec quelle(s) personne(s) désirez-vous partager des données?",
-        "external" : "Personnes sans compte @PLATFORM",
+        "external" : "Personnes sans compte @PRODUCT",
         "add_people_btn" : "Ajouter d'autres personnes",
         "add_usergroup_btn" : "Ajouter une équipe",
         "reshare" : "@:newconsent.reshare",
@@ -910,7 +932,7 @@
         "created_before" : "Ne partager que les données créées avant le:",
         "what_is_shared" : "Quelles données sont-elles partagées?",
         "consent_empty" : "Ce consentement ne partage actuellement aucunes données.",
-        "type_circle" : "Ce consentement partage des données avec d'autres titulaires de comptes @PLATFORM.",
+        "type_circle" : "Ce consentement partage des données avec d'autres titulaires de comptes @PRODUCT.",
         "type_representative" : "Ce consentement autorise une autre personne à utiliser votre compte. Toutes les données du propriétaire du compte sont partagées avec le représentant.",
         "type_healthcare" : "Ce consentement partage des données avec des professionnels de la santé.",
         "type_studyparticipation" : "Ce consentement partage des données avec un projet de recherche.",
@@ -922,6 +944,7 @@
         "status_expired" : "Ce consentement a expiré. Les données ne sont plus partagées.",
         "status_unconfirmed" : "Ce consentement nécessite une confirmation par son propriétaire.",
         "status_rejected" : "Ce consentement a été rejeté par son propriétaire.",
+        "status_invalid" : "Ce consentement doit être revu par son propriétaire.",
         "shares_records" : "Ce consentement partage actuellement {{count}} enregistrements.",
         "shares_group" : "Partage tous les enregistrements appartenant au groupe : {{ group }}",
         "excludes_group" : "Les enregistrements appartenant au groupe {{ group }} sont exclus",
@@ -944,6 +967,7 @@
         "status_expired" : "Expiré",
         "status_unconfirmed" : "Besoin de confirmation",
         "status_rejected" : "Rejeté",
+        "status_invalid" : "Non valide",
         "status" : "État",
         "duration" : "Période de validité",
         "external" : "Application externe",
@@ -1029,20 +1053,21 @@
     },
 
     "oauth2" : {
-        "requests_permission" : "enregistre vos données personnelles dans votre compte @PLATFORM.",
+        "requests_permission" : "enregistre vos données personnelles dans votre compte @PRODUCT.",
         "no_account" : "Vous n'avez pas encore de compte?",
-        "have_account" : "Avez-vous un compte @PLATFORM?",
+        "have_account" : "Avez-vous un compte @PRODUCT?",
         "have_account2" : "Parfait, connectez-vous.",
         "role" : "Rôle",
         "sign_up_btn" : "S'inscrire",
         "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
         "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
         "requesting_app" : "désire accéder à vos données.",
-        "sign_in" : "Connexion à @PLATFORM pour:",
+        "sign_in" : "Connexion à @PRODUCT pour:",
         "sign_in_btn" : "Se connecter",
         "device" : "Appareil : {{device}}",
-        "please_confirm" : "Veuillez confirmer l'activation de l'application sur le portail @PLATFORM, puis réessayez. Libellé du consentement: {{ consent }}",
+        "please_confirm" : "Veuillez confirmer l'activation de l'application sur le portail @PRODUCT, puis réessayez. Libellé du consentement: {{ consent }}",
         "confirm_btn" : "Confirmer l'accès",
+        "reject_btn" : "Rejeter",
         "continue_btn" : "Continuer",
         "requests_access" : "Accès demandé par l'application:",
         "requests_access_short" : "Type de données",
@@ -1112,7 +1137,7 @@
         "newrecords_teaser" : "Il n'y a pas de nouveaux enregistrements. Consultez la page 'Mes données' pour voir toutes vos données.",
         "myaccount" : "Données de mon compte",
         "newsharedrecords" : "Nouveaux enregistrement partagés avec vous",
-        "newsharedrecords_teaser" : "D'autres utilisateurs @PLATFORM peuvent partager leurs données avec vous.",
+        "newsharedrecords_teaser" : "D'autres utilisateurs @PRODUCT peuvent partager leurs données avec vous.",
         "circles" : "Membre des Cercles",
         "circles_teaser" : "Demandez à d'autres utilisateurs de vous accueillir dans leurs Cercles.",
         "circles2" : "Vos Cercles",
@@ -1258,7 +1283,7 @@
 
     "changeemail" : {
         "title" : "Changer l'adresse e-mail du compte",
-        "midataId" : "MIDATA ID",
+        "midataId" : "@PRODUCT ID",
         "name" : "Nom",
         "old_email" : "Adresse e-mail actuelle",
         "new_email" : "Nouvelle adresse e-mail",
@@ -1284,27 +1309,27 @@
     },
 
     "accountwipe" : {
-        "title" : "Fermer et supprimer le compte @PLATFORM",
+        "title" : "Fermer et supprimer le compte @PRODUCT",
         "hello" : "Chère/cher {{name}},",
         "hello_m" : "Cher {{name}},",
         "hello_w" : "Chère {{name}},",
-        "paragraph1" : "Vous souhaitez supprimer votre compte @PLATFORM irrévocablement? C'est bien sûr possible.",
+        "paragraph1" : "Vous souhaitez supprimer votre compte @PRODUCT irrévocablement? C'est bien sûr possible.",
         "paragraph2" : "Veuillez d'abord lire les informations suivantes :",
-        "point1" : "Si vous supprimez votre compte @PLATFORM, vos données personnelles ne seront plus disponibles.",
+        "point1" : "Si vous supprimez votre compte @PRODUCT, vos données personnelles ne seront plus disponibles.",
         "point2" : "Les données qui ont déjà été partagées avec des projets de recherche continueront d'être disponibles dans ces projets.",
         "point3" : "@OPERATOR n'est pas en mesure de récupérer votre compte supprimé.",
         "warning" : "Avertissement",
         "final" : "Cette action ne peut être annulée.",
-        "paragraph3" : "Si vous voulez vraiment supprimer votre compte @PLATFORM, entrez votre mot de passe pour confirmation.",
+        "paragraph3" : "Si vous voulez vraiment supprimer votre compte @PRODUCT, entrez votre mot de passe pour confirmation.",
         "password" : "Mot de passe",
         "reason" : "Motif (facultatif)",
         "reason2" : "Nous vous serions reconnaissants de nous indiquer le motif pour lequel vous supprimez votre compte. Nous essayons continuellement d'améliorer @PLATFORM.",
-        "wipe_btn" : "Fermer et supprimer le compte @PLATFORM",
+        "wipe_btn" : "Fermer et supprimer le compte @PRODUCT",
         "error" : "Mot de passe incorrect. Le compte n'a pas été supprimé."
     },
 
     "serviceleave" : {
-        "title" : "Vous avez terminé votre session?",
+        "title" : "Avez-vous terminé votre session?",
         "thankyou" : "Merci pour votre aide!",
         "continue" : "Veuillez utiliser le menu principal pour continuer votre session ou vous déconnecter.",
         "logout_btn" : "Se déconnecter",
@@ -1326,6 +1351,7 @@
         "expert_mode_btn" : "Mode expert",
         "add_basic_btn" : "Ressource de base",
         "add_data_btn" : "Ajouter d'autres types de données",
+        "no_code_btn" : "Supprimer la restriction par code",
         "owner" : "Propriétaire des données",
         "owner_all" : "Utiliser également les données partagées (par des projets, amis, patients)",
         "owner_self" : "Uniquement les données de l'utilisateur de l'application",
@@ -1376,6 +1402,7 @@
     },
 
     "timeline" : {
+        "title" : "Timeline",
         "fitness" : "Fitness",
         "health" : "Données médicales",
         "analyze" : "Analyse de données"
@@ -1413,7 +1440,7 @@
         "title" : "Connexion non autorisée",
         "intro" : "Vous n'êtes pas autorisé à vous connecter pour la raison suivante:",
         "withdrawn1" : "Vous avez retiré votre participation à un projet. La participation est obligatoire pour pouvoir utiliser cette application.",
-        "withdrawn2" : "Vous ne pourrez plus utiliser l'application avec votre compte @PLATFORM.",
+        "withdrawn2" : "Vous ne pourrez plus utiliser l'application avec votre compte @PRODUCT.",
         "joinmethod1" : "L'accès au projet de recherche est restreint.",
         "joinmethod2" : "Veuillez prendre contact avec le team responsable du projet. Pour plus d'informations, lisez les conditions d'utilisation de l'application.",
         "loginpage_btn" : "Retour à la page de connexion"
@@ -1423,6 +1450,11 @@
         "title" : "Se désabonner",
         "success" : "Désabonnement réussi.",
         "back_to_login" : "Aller à la page d'accueil"
+    },
+
+    "member_login" : {
+        "register_now" : "S'inscrire maintenant",
+        "sign_in" : "Connexion"
     },
 
     "-1" : "inconnu"

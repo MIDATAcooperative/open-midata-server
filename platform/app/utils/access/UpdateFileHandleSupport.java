@@ -15,10 +15,11 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-module.exports = {
-  plugins: [
-    require('autoprefixer')({
-    	 'browsers': ['> 1%', 'last 2 versions']
-    })
-  ]
+package utils.access;
+
+import utils.exceptions.BadRequestException;
+
+public interface UpdateFileHandleSupport {
+
+	public EncryptedFileHandle toEncryptedFileHandle(DBRecord rec) throws BadRequestException;
 }

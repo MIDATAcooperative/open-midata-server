@@ -77,5 +77,11 @@ id0075	11.03.2021	a.kreutz	F	Support for document bundles	The transaction endpoi
 id0076	11.03.2021	a.kreutz	S	Corrected lifespan of API tokens
 id0077	07.07.2021	a.kreutz	F	Added experimental workspace feature for developers
 id0078	29.09.2021	a.kreutz	F	Login Templates	and Preview	A new developer function allows to choose from different login views and offers preview functionality for logins
-id0079	01.10.2021	a.kreutz	F	Project Leave Policy and Rejoin Policy defineable	Projects may now have policies for participants that withdraw from the project or want to rejoin.	
+id0079	01.10.2021	a.kreutz	F	Project Leave Policy and Rejoin Policy defineable	Projects may now have policies for participants that withdraw from the project or want to rejoin.
+id0080	12.10.2021	a.kreutz	F	Signed Consents	Data sharing queries for consents are now signed by the owner for protection against manipulation.
+id0081	24.01.2022	a.kreutz	F	Added OpenID Connect userinfo endpoint	
+id0082	24.01.2022	a.kreutz	F	New FHIR resource supported: RelatedPerson
+id0083	31.01.2022	a.kreutz	F	Multiple Attachment support	Support for multiple binaries per FHIR resource added. Also update of binary data is now possible.
+id0084	31.01.2022	a.kreutz	F	FHIR Organization resources are now writable
+id0085	14.02.2022	a.kreutz	F	New FHIR resource supported: ImmunizationRecommendation
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

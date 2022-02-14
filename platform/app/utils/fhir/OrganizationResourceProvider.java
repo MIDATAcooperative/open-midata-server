@@ -23,14 +23,21 @@ import java.util.Set;
 
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Endpoint;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Organization;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
+import ca.uhn.fhir.rest.annotation.Create;
+import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
+import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.Update;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateRangeParam;
@@ -40,6 +47,9 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
+import ca.uhn.fhir.rest.server.exceptions.ForbiddenOperationException;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.HealthcareProvider;
 import models.MidataId;
 import models.Record;
@@ -51,6 +61,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class OrganizationResourceProvider extends RecordBasedResourceProvider<Organization> implements IResourceProvider {
 
@@ -232,6 +243,26 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	public String getRecordFormat() {	
 		return "fhir/Organization";
 	}
+	
+	@Create
+	@Override
+	public MethodOutcome createResource(@ResourceParam Organization theOrganization) {
+		return super.createResource(theOrganization);
+	}
+		
+	@Update
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Organization theOrganization) {
+		return super.updateResource(theId, theOrganization);
+	}
+	
+	@Override
+	public void updatePrepare(Record record, Organization theResource) throws AppException {
+		if (record.tags != null && record.tags.contains("security:generated")) {
+			if (theResource.getUserData("source") == null) throw new ForbiddenOperationException("Update not allowed on generated resources");
+		}
+		super.updatePrepare(record, theResource);		
+	}
 			
 	// Prepare a Midata record to be written into the database. Tasks:
 	// a) Each record must have syntactical type "format" set and semantical type "content" set. 
@@ -241,11 +272,23 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	public void prepare(Record record, Organization theOrganization) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a fixed value or something else useful)
 		String display = theOrganization.getName();	
-		record.name = display;		
-	    record.content = "Organization";
-	    record.code = Collections.singleton("http://midata.coop Organization");
+		record.name = display;	
+		
+		Object source = theOrganization.getUserData("source");
+		if (source != null && source.equals("HP")) {
+		  record.content = "Organization/HP";			
+		  record.code = Collections.singleton("http://midata.coop Organization/HP");
+		  record._id = MidataId.from(theOrganization.getId());
+		} else if (source != null && source.equals("Research")) {
+		  record.content = "Organization/Research";
+		  record.code = Collections.singleton("http://midata.coop Organization/Research");
+		  record._id = MidataId.from(theOrganization.getId());
+		} else {
+		  record.content = "Organization";
+		  record.code = Collections.singleton("http://midata.coop Organization");
+		}			   
 		record.owner = RuntimeConstants.instance.publicUser;	
-		record._id = MidataId.from(theOrganization.getId());
+		
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
 		clean(theOrganization);
  
@@ -296,7 +339,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		boolean doupdate = false;
 		Record oldRecord = null;
 		
-		List<Record> records = RecordManager.instance.list(info().role, info().context, CMaps.map("_id",research._id).map("format","fhir/Organization").map("public","only").map("content","Organization"), RecordManager.COMPLETE_DATA); 
+		List<Record> records = RecordManager.instance.list(info().role, info().context, CMaps.map("_id",research._id).map("format","fhir/Organization").map("public","only").map("content","Organization/Research"), RecordManager.COMPLETE_DATA);
 		if (!records.isEmpty()) oldRecord = records.get(0);								  
 				
 		if (oldRecord != null) {
@@ -308,12 +351,17 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 		org.setId(research._id.toString());		
 		org.setName(research.name);
+		org.setUserData("source", "Research");
 		
-		if (!doupdate) org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
+		if (!doupdate) {
+			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
+			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");
+		}
 		
 		if (doupdate) {
-		  provider.updateRecord(oldRecord, org);
+		  provider.updateRecord(oldRecord, org, provider.getAttachments(org));
 		} else {
+		  //RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", research._id).map("format","fhir/Organization"));
 		  provider.createResource(org);
 		}
 		
@@ -336,7 +384,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		boolean doupdate = false;
 		Record oldRecord = null;
 		
-		List<Record> records = RecordManager.instance.list(info().role, info().context, CMaps.map("_id",healthProvider._id).map("format","fhir/Organization").map("public","only").map("content","Organization"), RecordManager.COMPLETE_DATA); 
+		List<Record> records = RecordManager.instance.list(info().role, info().context, CMaps.map("_id",healthProvider._id).map("format","fhir/Organization").map("public","only").map("content","Organization/HP"), RecordManager.COMPLETE_DATA); 
 		if (!records.isEmpty()) oldRecord = records.get(0);								  
 				
 		if (oldRecord != null) {
@@ -348,12 +396,17 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 		org.setId(healthProvider._id.toString());		
 		org.setName(healthProvider.name);
+		org.setUserData("source", "HP");
 		
-		if (!doupdate) org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
+		if (!doupdate) {
+			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
+			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");
+		}
 		
 		if (doupdate) {
-		  provider.updateRecord(oldRecord, org);
+		  provider.updateRecord(oldRecord, org, provider.getAttachments(org));
 		} else {
+ 		  //RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", healthProvider._id).map("format","fhir/Organization"));
 		  provider.createResource(org);
 		}
 		

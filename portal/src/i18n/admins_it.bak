@@ -29,14 +29,14 @@
     "specific_user" : "Specific User",
     "role" : "Role",
     "status" : "Status",
-    "midata_id" : "MIDATA ID",
+    "midata_id" : "@PRODUCT ID",
     "empty" : "No matching users found."
   },
 
   "admin_address" : {
     "title" : "User profile",
     "show_apps_created" : "Show the applications created by this developer",
-    "midata_id" : "MIDATA ID",
+    "midata_id" : "@PRODUCT ID",
     "role" : "Role",
     "subroles" : "Sub-Role(s)",
     "developer" : "Belongs to Developer:",
@@ -64,7 +64,8 @@
     "change_email_btn" : "Change Email Address",
     "change_address_btn" : "Change Profile",
     "make_master_btn" : "Add master user role",
-    "remove_master_btn" : "Revoke master user role"
+    "remove_master_btn" : "Revoke master user role",
+    "history" : "Account history"
   },
   
   "admin_news" : {
@@ -133,9 +134,11 @@
     "criteria" : "Search criteria",
     "empty" : "No matching projects found.",
     "add_definition_btn" : "Import Project Definition",
+    "code" : "Project code",
     "name" : "Project name",
     "type" : "Type",
-    "created" : "Created At"
+    "created" : "Created At",
+    "ALL" : "All Projects"
   },
   
   "admin_terms" : {
@@ -161,7 +164,7 @@
   "admin_study" : {
      "title" : "Research Project",
      "name" : "Name",
-     "created_at" : "Created on",
+     "created_at" : "Created at",
      "created_by" : "Created by",
      "description" : "Description",
      "joinmethods" : "Participation procedures",
@@ -171,6 +174,8 @@
      "endDate" : "End Date",
      "dataCreatedBefore" : "Data freeze date",
      "consent_observers" : "Consent Observers",
+     "leavePolicy" : "Participant withdrawal policy",
+     "rejoinPolicy" : "Participant rejoin policy",
      "infos" : "Public information",
      "infos_part" : "Information for participants",
      "infos_internal" : "Internal Information",     
@@ -308,36 +313,35 @@
    },
 
    "content" : {
-      "intro" : "Search for existing codes, content-types and groups.",
+      "intro" : "Search for existing codes, content types and groups.",
       "createnew_btn" : "New Code",
       "creategroup_btn" : "New Group",
-      "make_selection" : "Select the entity you want to edit or add a new code to",
-      "new_code" : "New Code to be added",
+      "make_selection" : "Select the item you want to edit or add a new code to",
+      "new_code" : "New code to be added",
       "edit_code" : "Edit existing code",
-      "edit_content" : "Edit existing Midata Content-Type",
-      "new_content" : "New Midata Content-Type to be added",
-      "edit_group" : "Edit existing Group in Record-Tree",
-      "new_group" : "New Group for Record-Tree",
-
+      "edit_content" : "Edit existing @PRODUCT content type",
+      "new_content" : "New @PRODUCT content type to be added",
+      "edit_group" : "Edit existing group in record tree",
+      "new_group" : "New group in record tree",
       "system" : "Code system",
       "version" : "Version",
       "code" : "Code",
-      "display" : "Display",
-      "content" : "Midata Content-Type",
+      "display" : "Label",
+      "content" : "@PRODUCT content type",
       "security" : "Record encryption keys",
-      "medium" : "Reuse keys for records of same type and person",
+      "medium" : "Reuse keys for data of same type and person",
       "high" : "Use a new key for each record",
-      "group" : "Group in Record-Tree",
+      "group" : "Group in record tree",
       "defaultCode" : "Default code",
       "resource_type" : "Default FHIR resource type",
-      "delete_content_btn" : "Delete Code & Content-Type",
+      "delete_content_btn" : "Delete Code & Content type",
       "delete_code_btn" : "Delete Code",
       "group_name" : "Group Name",
       "parent_group" : "Parent Group",
       "group_system" : "Grouping System",
       "save_group_btn" : "Save Group",
       "delete_group_btn" : "Delete Group",
-      "save_btn" : "Save Code & Content-Type"
+      "save_btn" : "Save Code & Content type"
    }
     
 }

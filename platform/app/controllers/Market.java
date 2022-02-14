@@ -281,6 +281,7 @@ public class Market extends APIController {
 			app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 			
 			app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
+			app.codeChallenge = JsonValidation.getBoolean(json, "codeChallenge");
 			app.sendReports = JsonValidation.getBoolean(json, "sendReports");
 			
 			app.i18n = new HashMap<String, Plugin_i18n>();
@@ -711,6 +712,7 @@ public class Market extends APIController {
 		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		plugin.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
+		plugin.codeChallenge = JsonValidation.getBoolean(json, "codeChallenge");
 		plugin.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 		plugin.predefinedMessages = parseMessages(json);
 		plugin.pluginVersion = System.currentTimeMillis();
@@ -834,6 +836,7 @@ public class Market extends APIController {
 		app.consentObserving = JsonValidation.getBoolean(json, "consentObserving");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
+		app.codeChallenge = JsonValidation.getBoolean(json, "codeChallenge");
 		app.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
 		if (app.type.equals("analyzer") || app.type.equals("endpoint")) {
 			  app.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");

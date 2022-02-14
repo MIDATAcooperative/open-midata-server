@@ -30,14 +30,14 @@
         "specific_user" : "Bestimmter Benutzer",
         "role" : "Rolle",
         "status" : "Status",
-        "midata_id" : "MIDATA ID",
+        "midata_id" : "@PRODUCT ID",
         "empty" : "Kein passender Benutzer gefunden."
     },
 
     "admin_address" : {
         "title" : "Benutzerprofil",
         "show_apps_created" : "Von diesem Entwickler erstellten Applikationen anzeigen",
-        "midata_id" : "MIDATA ID",
+        "midata_id" : "@PRODUCT ID",
         "role" : "Rolle",
         "subroles" : "Subrolle(n)",
         "developer" : "Gehört dem Entwickler:",
@@ -65,7 +65,8 @@
         "change_email_btn" : "E-Mail-Adresse ändern",
         "change_address_btn" : "Profil ändern",
         "make_master_btn" : "Rolle Master-Benutzer hinzufügen",
-        "remove_master_btn" : "Rolle Master-Benutzer zurücknehmen"
+        "remove_master_btn" : "Rolle Master-Benutzer zurücknehmen",
+        "history" : "Historie des Kontos"
     },
 
     "admin_news" : {
@@ -134,9 +135,11 @@
         "criteria" : "Suchkriterien",
         "empty" : "Kein passendes Projekt gefunden.",
         "add_definition_btn" : "Projektdefinition importieren",
+        "code" : "Projektcode",
         "name" : "Projektname",
         "type" : "Typ",
-        "created" : "Erstellt am"
+        "created" : "Erstellt am",
+        "ALL" : "Alle Projekte"
     },
 
     "admin_terms" : {
@@ -172,6 +175,8 @@
         "endDate" : "Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "consent_observers" : "Zustimmungs-Observers",
+        "leavePolicy" : "Rücktrittsrecht der Teilnehmer",
+        "rejoinPolicy" : "Wiedereinstiegsrecht der Teilnehmer",
         "infos" : "Öffentliche Informationen",
         "infos_part" : "Informationen für die Teilnehmer",
         "infos_internal" : "Interne Informationen",
@@ -315,15 +320,15 @@
         "make_selection" : "Wählen Sie das Element, das Sie bearbeiten oder dem Sie einen neuen Code hinzufügen möchten",
         "new_code" : "Neuer Code, der hinzugefügt werden soll",
         "edit_code" : "Vorhandenen Code bearbeiten",
-        "edit_content" : "Vorhandenen MIDATA-Inhaltstyp bearbeiten",
-        "new_content" : "Neuer MIDATA-Inhaltstyp hinzuzufügen",
+        "edit_content" : "Vorhandenen @PRODUCT-Inhaltstyp bearbeiten",
+        "new_content" : "Neuer @PRODUCT-Inhaltstyp hinzuzufügen",
         "edit_group" : "Vorhandene Gruppe im Datenbaum bearbeiten",
         "new_group" : "Neue Gruppe im Datenbaum",
         "system" : "Code-System",
         "version" : "Version",
         "code" : "Code",
         "display" : "Bezeichnung",
-        "content" : "MIDATA-Inhaltstyp",
+        "content" : "@PRODUCT-Inhaltstyp",
         "security" : "Verschlüsselungsschlüssel der Daten",
         "medium" : "Wiederverwendung von Schlüsseln für Daten desselben Typs und derselben Person",
         "high" : "Für jeden Datensatz einen neuen Schlüssel verwenden",

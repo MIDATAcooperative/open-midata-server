@@ -49,7 +49,7 @@
         "title" : "Rechercher un patient",
         "email" : "e-mail",
         "or" : "ou",
-        "midataid" : "MIDATA ID",
+        "midataid" : "@PRODUCT ID",
         "birthday" : "Date de naissance",
         "searching" : "Recherche...",
         "address" : "Adresse",

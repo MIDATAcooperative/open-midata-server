@@ -8,7 +8,7 @@
     },
 
     "member_login" : {
-        "teaser" : "Il vostro slogan",
+        "teaser" : "Il suo slogan",
         "info1" : "Teaser linea 1",
         "info2" : "Teaser linea 2",
         "info3" : "Teaser linea 3"
@@ -26,7 +26,7 @@
             "intro" : "Questa è un'installazione locale di @PLATFORM, disponibile solamente dal proprio PC.",
             "purpose" : "Un'installazione locale può essere utilizzata per contribuire alla piattaforma e a scopo di test.",
             "access" : "È possibile registrare gli account utente per tutti i quattro portali. Gli account non richiedono la convalida da parte di un amministratore. È possibile registrare e utilizzare i propri account ammin.",
-            "uptime" : "Ogniqualvolta lo esegui, è disponibile solo per te :-)",
+            "uptime" : "Ogniqualvolta lo esegui, è disponibile solo per lei :-)",
             "data" : "I dati memorizzati in questa istanza saranno disponibili solamente sul proprio PC locale."
         },
 

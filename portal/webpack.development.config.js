@@ -21,7 +21,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const My_Definitions = require('./webpack.definitions');
-const instance = require('./../config/instance.json');
 const autoprefixer = require('autoprefixer');
 const { VueLoaderPlugin } = require('vue-loader')
 const webpack = require('webpack');
@@ -54,20 +53,19 @@ var My_Plugins = [
     new CleanWebpackPlugin(),   
     new CopyWebpackPlugin({ patterns : [
         { from: path.resolve(CLIENT_DIR, '**/*.html'), to: DIST_DIR, globOptions: {
-            ignore: [ 'src/index_old.html', 'src/oauth_old.html' ] } , context: 'src/', transform : My_Definitions.jsonReplacer },
+            ignore: [ 'src/index_old.html', 'src/oauth_old.html' ] } , context: 'src/'},
         { from: path.resolve(CLIENT_DIR, 'auth.js'), to: path.resolve(DIST_DIR, 'auth.js') },       
         { from: CLIENT_IMAGES, to: DIST_IMAGES },      
         { from: CLIENT_IMG, to: DIST_IMG },
         { from: path.resolve(CLIENT_DIR, 'assets', 'fonts'), to:  path.resolve(DIST_DIR, 'fonts')},               
-        { from: path.resolve(CLIENT_DIR, 'i18n', '*.json'), to:  path.resolve(DIST_DIR, 'i18n'), context: 'src/i18n/',
-        	transform : My_Definitions.jsonReplacer
-        }
+        { from: path.resolve(CLIENT_DIR, 'i18n', '*.json'), to:  path.resolve(DIST_DIR, 'i18n'), context: 'src/i18n/' },
+        { from: path.resolve(__dirname, '..', 'conf', 'recoverykeys.json'), to: path.resolve(DIST_DIR, 'config')},
+		{ from: path.resolve(__dirname, '..', 'conf', 'config.js'), to: path.resolve(DIST_DIR, 'config')}
     ]}),
     new CopyWebpackPlugin({ patterns :[        
         { from: path.resolve(CLIENT_DIR, "override", "images"), to: DIST_IMAGES, force : true }, 
         { from: path.resolve(CLIENT_DIR, "override", "img"), to: DIST_IMG, force : true },    
-        { from: path.resolve(CLIENT_DIR, 'override', '*.json'), to:  path.resolve(DIST_DIR, 'i18n'), context: 'src/override/',
-        	transform : My_Definitions.jsonReplacer, force : true
+        { from: path.resolve(CLIENT_DIR, 'override', '*.json'), to:  path.resolve(DIST_DIR, 'i18n'), context: 'src/override/', force : true
         }
     ]}),
     new MiniCssExtractPlugin({
@@ -93,10 +91,7 @@ for (let i = 0; i < My_Definitions.html_files_to_add.length; i++) {
             inject: 'head',
             filename: _definition.page,
             excludeChunks: _definition.exclude,
-            BACKEND: instance.portal.backend,
-            HOMEPAGE: instance.homepage,
-            PLATFORM: instance.platform,
-            NAME: instance.portal.backend.substring(8).split(/[\.\:]/)[0]
+            BACKEND: "https://localhost"
         }))
 }
 
@@ -141,7 +136,9 @@ module.exports = {
                     {
                         loader: 'postcss-loader',
                         options: {
-                          plugins: () => [autoprefixer()]
+	                      postcssOptions : {
+                             plugins: () => [autoprefixer()]
+                          }
                         }
                     },
                     //'sass-loader',                   
@@ -155,7 +152,9 @@ module.exports = {
                     {
                         loader: 'postcss-loader',
                         options: {
-                          plugins: () => [autoprefixer()]
+	                      postcssOptions : {
+                            plugins: () => [autoprefixer()]
+                          }
                         }
                     },
                     'sass-loader'
@@ -201,7 +200,12 @@ module.exports = {
         fallback: { 
 	       "crypto": require.resolve("crypto-browserify"),
            "buffer": require.resolve("buffer/"),
-           "stream": require.resolve("stream-browserify") 
+           "stream": require.resolve("stream-browserify"),
+           "querystring": require.resolve("querystring-es3") 
         }
+    },
+
+    externals: {
+      config: "config"
     }
 };

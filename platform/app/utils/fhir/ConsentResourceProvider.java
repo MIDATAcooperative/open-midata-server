@@ -141,6 +141,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	 */
 	@Read(version=true)	
 	public org.hl7.fhir.r4.model.Consent getResourceById(@IdParam IIdType theId) throws AppException {
+		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
 		models.Consent consent = Circles.getConsentById(info().context, MidataId.from(theId.getIdPart()), info().pluginId, Consent.FHIR);	
 		if (consent == null) return null;
 		
@@ -157,6 +158,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	
 	@History()
 	public List<org.hl7.fhir.r4.model.Consent> getHistory(@IdParam IIdType theId) throws AppException {
+	  if (!checkAccessible()) throw new ResourceNotFoundException(theId);
 	  models.Consent consent = Circles.getConsentById(info().context, MidataId.from(theId.getIdPart()), info().pluginId, Consent.FHIR);
 	  if (consent==null) throw new ResourceNotFoundException(theId);
 	  
@@ -366,6 +368,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		case REJECTED:c.setStatus(ConsentState.REJECTED);break;
 		case EXPIRED:c.setStatus(ConsentState.INACTIVE);break;
 		case FROZEN:c.setStatus(ConsentState.INACTIVE);break;
+		case INVALID:c.setStatus(ConsentState.INACTIVE);break;
 		}
 		
 		String categoryCode = consentToConvert.categoryCode;
@@ -599,7 +602,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			Object ow = properties.get("owner");
 			if (ow instanceof Collection) ow = ((Collection) ow).iterator().next();
 			MidataId targetOwner = MidataId.from(ow);
-			context = ApplicationTools.actAsRepresentative(context, targetOwner);
+			context = ApplicationTools.actAsRepresentative(context, targetOwner, false);
 			if (context == null) {				
 				ownerQuery = false;		
 			}
@@ -781,7 +784,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		consent.sharingQuery = query;
         
 		if (theResource.getStatus() == ConsentState.ACTIVE) {			
-			if (ApplicationTools.actAsRepresentative(info().context, consent.owner)==null) throw new InvalidRequestException("Only consent owner or representative may create active consents");
+			if (ApplicationTools.actAsRepresentative(info().context, consent.owner, false)==null) throw new InvalidRequestException("Only consent owner or representative may create active consents");
 			
 			if (consent.type == ConsentType.STUDYPARTICIPATION) {
 				Study study = getStudyForConsent(theResource);
@@ -870,6 +873,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
         
 		switch(consent.status) {
 		case UNCONFIRMED:
+		case INVALID:
 			if (theResource.getStatus()==ConsentState.ACTIVE) {
 				if (!info().executorId.equals(consent.owner)) throw new InvalidRequestException("Only consent owner may change consents to active consents");
 				mayShare(info().pluginId, consent.sharingQuery);
@@ -889,14 +893,14 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 
 	@Override
 	public void updateExecute(Consent consent, org.hl7.fhir.r4.model.Consent theResource) throws AppException {
-		AccessContext context = ApplicationTools.actAsRepresentative(info().context, consent.owner);
+		AccessContext context = ApplicationTools.actAsRepresentative(info().context, consent.owner, true);
 		ConsentState state = theResource.getStatus();
 		ConsentResourceProvider.updateMidataConsent(consent, theResource);				
 		Consent.set(consent._id, "fhirConsent", consent.fhirConsent);		
 		SubscriptionManager.resourceChange(info().context, consent);
 		theResource.setStatus(state);
 						
-		switch(consent.status) {
+		switch(consent.status) {		
 		case UNCONFIRMED:
 			if (theResource.getStatus()==ConsentState.ACTIVE) {
 				if (consent.type == ConsentType.STUDYPARTICIPATION) {
@@ -926,7 +930,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			}
 			break;
 		case REJECTED:
-		case FROZEN:			
+		case FROZEN:	
+		case INVALID:
 			break;
 		}
 						

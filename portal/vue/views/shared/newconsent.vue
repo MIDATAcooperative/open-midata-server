@@ -33,7 +33,7 @@
             <error-box :error="error"></error-box>
     
             <div class="row" v-if="!consent.type">
-                <div class="col-sm-3">
+                <div class="col-md-3 col-6 mb-3">
                     <div class="card button" @click="consent.type='CIRCLE';">
                         <img :src="getIconRole('member')" class="card-img-top">
                         <div class="card-body">                
@@ -43,7 +43,7 @@
                     </div>
                 </div>
         
-                <div class="col-sm-3">
+                <div class="col-md-3 col-6 mb-3">
                     <div class="card"  @click="consent.type='HEALTHCARE';consent.writesBool=true;">
                         <img :src="getIconRole('provider')" class="card-img-top">
                         <div class="card-body">                
@@ -53,7 +53,7 @@
                     </div>
                 </div>
 
-				<div class="col-sm-3">
+				<div class="col-md-3 col-6 mb-3">
                     <div class="card"  @click="consent.type='REPRESENTATIVE';consent.writesBool=true;consent.query={group:'all'};">
                         <img :src="getIconRole('representative')" class="card-img-top">
                         <div class="card-body">                
@@ -78,6 +78,7 @@
         				<span class="lead text-danger" v-if="consent.status == 'EXPIRED'" v-t="'editconsent2.status_expired'"></span>
         				<span class="lead text-warning" v-if="consent.status == 'UNCONFIRMED'" v-t="'editconsent2.status_unconfirmed'"></span>    
         				<span class="lead text-danger" v-if="consent.status == 'REJECTED'" v-t="'editconsent2.status_rejected'"></span>
+        				<span class="lead text-danger" v-if="consent.status == 'INVALID'" v-t="'editconsent2.status_invalid'"></span>
         			</div>
               
         			<div class="col-md-6">
@@ -94,7 +95,7 @@
     
 				<div class="row" >					
 					<div class="col-md-5" :class="{ 'd-none d-md-block' : (consentId && owner && owner._id == userId) }"> 
-						<p><b v-t="'newconsent.who_is_owner'"></b></p>
+						<p><b class="text-primary" v-t="'newconsent.who_is_owner'"></b></p>
 			
 						<div class="" v-if="owner && owner._id != userId">
 							<div class="card-body">
@@ -136,7 +137,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="margin-top">
+					<div class="margin-top mb-3">
 						<button v-if="!(owner || consent.externalOwner)" type="button" class="btn btn-default" @click="setOwner();" :disabled="action!=null" v-t="'newconsent.set_owner_btn'"></button>
 					</div>
 							
@@ -147,7 +148,7 @@
 					</div>
 				</div>
 				<div class="col-md-6">
-					<p><b v-t="'editconsent.people'"></b></p>
+					<p><b class="text-primary" v-t="'editconsent.people'"></b></p>
 					<div  v-if="consent.type=='EXTERNALSERVICE'">
 						<div class="card-body">
 							<img :src="getIconRole('app')" class="consenticon float-left">
@@ -236,7 +237,7 @@
 	
         <div v-if="sharing.records || sharing.query" class="margin-top">
         
-            <p><b v-t="'editconsent.what_is_shared'"></b></p>
+            <p><b class="text-primary" v-t="'editconsent.what_is_shared'"></b></p>
         <!-- <div v-if="groupLabels.length && groupLabels.length < 5">{{ groupLabels.join(", ") }}</div>  -->
 		        <p v-if="consent.type=='REPRESENTATIVE'" v-t="'editconsent.type_representative'"></p>
 				<div v-else>
@@ -251,7 +252,7 @@
                 <p v-if="sharing.records.length">{{ $t('editconsent.shares_records', { count : sharing.records.length }) }}</p>
 				
                 <div class="extraspace"></div>
-                <p><b v-t="'editconsent.restrictions'"></b></p>
+                <p><b class="text-primary" v-t="'editconsent.restrictions'"></b></p>
                 <p>{{ $t('enum.writepermissiontype.'+(consent.writes || 'NONE')) }}</p>
                 <p v-if="consent.createdBefore"><span v-t="'editconsent.created_before'"></span>:{{ $filters.date(consent.createdBefore) }} 
             </p>
@@ -313,7 +314,7 @@
         </div>
 
 		<div v-if="consentId">
-			<div v-if="mayChangeData()" class="extraspace">
+			<div v-if="mayChangeData()" class="extraspace mb-3">
 				<router-link class="btn btn-default"  :to="{ path : './records', query : { selected : consentId, selectedType : 'circles' }}" v-t="'editconsent.view_change_selection_btn'"></router-link>
 			</div>
     		<div class="d-block d-md-none">	
@@ -354,7 +355,7 @@
 	  <add-users :setup="setupAddowner" @close="setupAddowner=null" @add="setOwnerPerson"></add-users>
 	</modal>
 
-	<modal id="searchGroup" full-width="true" @close="setupSearchGroup=null" :open="setupSearchGroup!=null" :title="$t('usergroupsearch.title')">
+	<modal id="searchGroup" full-width="true" @close="setupSearchGroup=null" :open="setupSearchGroup!=null" :title="$t('dashboard.usergroupsearch')">
 	  <user-group-search :setup="setupSearchGroup" @close="setupSearchGroup=null" @add="addPerson"></user-group-search>
 	</modal>
 
@@ -767,14 +768,14 @@ export default {
         const { $data, $route, $router } = this, me = this;
 		if (! $data.consent) return false;
 		//if ($scope.consent.owner !== $scope.userId) return false;
-		return ($data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'ACTIVE') && $data.consent.type != 'STUDYPARTICIPATION';
+		return ($data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID' || $data.consent.status == 'ACTIVE') && $data.consent.type != 'STUDYPARTICIPATION';
 	},
 	
 	mayConfirm() {
 		const { $data, $route, $router } = this, me = this;
 		if (! $data.consent) return false;
 		if ($data.consent.owner !== $data.userId) return false;
-		return $data.consent.status == 'UNCONFIRMED';
+		return $data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID';
 	},
 	
 	mayDelete() {
@@ -782,7 +783,7 @@ export default {
 		if (! $data.consent) return false;
 		if ($data.consent.owner !== $data.userId) return false;
 		
-		return ($data.consent.status == 'ACTIVE' || $data.consent.status == 'REJECTED' || $data.consent.status == 'EXPIRED') && ($data.consent.type != 'STUDYPARTICIPATION' && $data.consent.type != 'HEALTHCARE');
+		return ($data.consent.status == 'ACTIVE' || $data.consent.status == 'REJECTED' || $data.consent.status == 'EXPIRED' || $data.consent.status == 'INVALID') && ($data.consent.type != 'STUDYPARTICIPATION' && $data.consent.type != 'HEALTHCARE');
 	},
 	
 	mayChangeUsers() {

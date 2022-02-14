@@ -17,6 +17,7 @@
 
 
 
+import java.util.Collections;
 import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
@@ -34,8 +35,12 @@ import controllers.Market;
 import controllers.Plugins;
 import controllers.PluginsAPI;
 import controllers.research.AutoJoiner;
+import models.Admin;
+import models.MidataId;
 import models.PersistedSession;
 import models.RecordGroup;
+import models.User;
+import models.enums.UserStatus;
 import play.inject.ApplicationLifecycle;
 import play.libs.Json;
 import play.libs.mailer.MailerClient;
@@ -44,9 +49,14 @@ import setup.MinimalSetup;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.access.AccessContext;
+import utils.access.RecordManager;
+import utils.auth.KeyManager;
+import utils.collections.Sets;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.evolution.AccountPatches;
+import utils.evolution.AddConsentSignatures;
 import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
@@ -100,6 +110,38 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		// Set custom object mapper for Json
 		Json.setObjectMapper(new CustomObjectMapper());		
 		
+		// Patch: Fix prod instance public user
+		try {
+			if (User.getById(RuntimeConstants.publicGroup, Sets.create("_id")) != null) {
+				User.set(RuntimeConstants.publicGroup, "status", UserStatus.DELETED);
+				KeyManager.instance.login(5000, false);
+				MidataId publicUser = new MidataId("5ccab0dcaed6452048f2b010");
+				System.out.println("step 1");
+				KeyManager.instance.unlock(publicUser, null);
+				AccessContext context = RecordManager.instance.createContextFromAccount(publicUser);
+				System.out.println("step 2");
+				RecordManager.instance.unshareAPSRecursive(context, publicUser, Collections.singleton(RuntimeConstants.publicGroup));
+				System.out.println("step 3");
+				RecordManager.instance.shareAPS(context, Collections.singleton(RuntimeConstants.publicGroup));
+				System.out.println("step 4");
+			}
+		} catch (AppException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		
+		
+		// Patch: Add consent signatures
+		try {
+			if (Admin.getById(RuntimeConstants.systemSignatureUser, Sets.create("_id")) == null) {			
+				AddConsentSignatures.execute();		
+			}
+		} catch (AppException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		
+				
 		// Init FHIR
 		System.out.println("FHIR Servlet");
 		FHIR.servlet_r4 = new FHIRServlet();
@@ -122,7 +164,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		  SubscriptionManager.init(Instances.system(), ws);
 		  
 		  System.out.println("Deployment Manager");
-		  DeploymentManager.init(Instances.system());
+		  DeploymentManager.init(ws, Instances.system());
 		  
 		  
 		  System.out.println("Minimal Setup");
@@ -162,11 +204,14 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		System.out.println("Auto-Run");
 		AutoRun.init();
 		
-		/* (Not needed anymore; Done on all instances)
+		
 		try {
-		   AccountPatches.fixFhirConsents();
-		} catch (AppException e) { e.printStackTrace(); }
-		*/		
+			   AccountPatches.fixOrgs();
+		} catch (AppException e) {
+				e.printStackTrace();
+				System.exit(-1);
+		}
+		
 		lifecycle.addStopHook(() -> {
 			//AutoRun.shutdown();
 		    

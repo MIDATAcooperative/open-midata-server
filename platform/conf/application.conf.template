@@ -187,8 +187,8 @@ midata {
          
           artery {
              transport = tcp 
-             canonical.hostname = "PLATFORM_HOSTNAME"
-             canonical.port = 9006
+             canonical.hostname = ${clustering.ip}
+             canonical.port = ${clustering.port}
           }
 	    	      	      
 	      log-sent-messages = on
@@ -206,6 +206,13 @@ midata {
            
         }
     }
- }
+}
+
+clustering {
+   ip = "PLATFORM_HOSTNAME"
+   ip = ${?CLUSTER_IP}
+   port = 9006
+   port = ${?CLUSTER_PORT}   
+}
 
 

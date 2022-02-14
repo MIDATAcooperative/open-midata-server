@@ -17,6 +17,7 @@
 
 package utils.fhir;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -337,18 +338,17 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		return super.createResource(theDocumentReference);
 	}
 		
+			
 	@Override
-	public void createExecute(Record record, DocumentReference theDocumentReference) throws AppException {
-        Attachment attachment = null;
-		
-		List<DocumentReferenceContentComponent> contents = theDocumentReference.getContent(); 
-		if (contents != null && contents.size() == 1) {
-			attachment = theDocumentReference.getContent().get(0).getAttachment();			
+	public List<Attachment> getAttachments(DocumentReference resource) {
+		List<Attachment> results = new ArrayList<Attachment>();
+		List<DocumentReferenceContentComponent> contents = resource.getContent();
+		for (DocumentReferenceContentComponent content : contents) { 	
+			results.add(content.getAttachment());			
 		}
-		
-		insertRecord(record, theDocumentReference, attachment);
-	}	
-	
+		return results;
+	}
+
 	@Override
 	public String getRecordFormat() {	
 		return "fhir/DocumentReference";
@@ -385,14 +385,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
-		}
-		for (DocumentReferenceContentComponent component : p.getContent()) {
-			Attachment attachment = component.getAttachment();
-			if (attachment != null && attachment.getUrl() == null && attachment.getData() == null) {	
-			  String url = "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/records/file?_id="+record._id;
-			  attachment.setUrl(url);
-			}
-		}
+		}		
 	}
 
 	@Override
@@ -400,19 +393,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		
 		super.clean(theDocumentReference);
 	}
-	
-	public String serialize(DocumentReference theDocumentReference) {
-		for (DocumentReferenceContentComponent component : theDocumentReference.getContent()) {
-			Attachment attachment = component.getAttachment();
-			if (attachment != null && attachment.getUrl() != null && attachment.getUrl().startsWith("https://"+InstanceConfig.getInstance().getPlatformServer())) {	
-				attachment.setUrl(null);
-				attachment.setDataElement(new Base64BinaryType(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING));
-			}
-		}
 		
-    	return ctx.newJsonParser().encodeResourceToString(theDocumentReference);
-    }
-
 	@Override
 	protected void convertToR4(Object in) {
 		FHIRVersionConvert.rename(in, "class", "category");

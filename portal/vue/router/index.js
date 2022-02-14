@@ -22,6 +22,7 @@ import SA from 'views/developer/appsubscriptions.vue';
 
 const postRegister = () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/postregister.vue');
 const PublicNav = () => import(/* webpackChunkName: "public" */ 'views/nav/public.vue');
+const domain = document.location.hostname;
 
 const baseRoutes = [  
   {
@@ -94,7 +95,7 @@ const baseRoutes = [
   },
   {
     path : '/',
-    redirect : '/public/info'
+    redirect : ((domain.indexOf("ch.midata.coop")>=0) ? '/public/login' : '/public/info')
   }
 ];
 
@@ -211,6 +212,11 @@ const routes = [
   },
   {
     base : ["member", "developer", "admin", "research", "provider"],
+    path : "user2",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/user2.vue')
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
     path : "accountwipe",
     component: () => import(/* webpackChunkName: "shared" */ 'views/shared/accountwipe.vue')
   },
@@ -268,6 +274,14 @@ const routes = [
     base : ["public"],
     path : "service",
     component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/service.vue')
+  },
+  {
+    base : ["public", "oauth"],
+    path : "account",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/service.vue'),
+    meta : {
+      account : true
+    }
   },
   {
     base : ["public"],
@@ -571,6 +585,11 @@ const routes = [
     base : ["admin"],
     path : "content",
     component: () => import(/* webpackChunkName: "admin" */ 'views/admin/content.vue')
+  },
+  {
+    base : ["admin"],
+    path : "importcontent",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/importcontent.vue')
   },
   {
     base : ["admin"],

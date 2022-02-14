@@ -263,6 +263,7 @@ public class Studies extends APIController {
 	 */
 	
 	public static StudyParticipation createStudyParticipation(AccessContext context, Study study, Member member, ParticipationCode code, Set<MidataId> observers, JoinMethod method) throws AppException {
+		AccessLog.logBegin("start create project participation");
 		StudyParticipation part = new StudyParticipation();
 		part._id = new MidataId();
 		part.study = study._id;
@@ -310,21 +311,17 @@ public class Studies extends APIController {
 		part.entityType = EntityType.USERGROUP;
 		part.authorized = new HashSet<MidataId>();		
 		part.authorized.add(study._id);
+		part.sharingQuery = study.recordQuery;
 		
 		RecordManager.instance.createAnonymizedAPS(member._id, study._id, part._id, true);
 		
-		
-		
-		Circles.prepareConsent(context, part, true);
-		//StudyParticipation.add(part);		
-		Circles.setQuery(context, member._id, part._id, study.recordQuery);
-		Circles.consentSettingChange(context, part);
+		Circles.consentStatusChange(context, part, null);
 		
 		// Query can only be applied if patient is doing it himself
 		if (context.getAccessor().equals(member._id)) {
 		  RecordManager.instance.applyQuery(context, study.recordQuery, member._id, part, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
 		}
-		
+		AccessLog.logEnd("end create project participation");
 		return part;
 		
 	}
@@ -379,11 +376,7 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public Result requestParticipation(Request request, String id) throws AppException {
-		/*if (!InstanceConfig.getInstance().getInstanceType().equals(InstanceType.PERFTEST)) {
-		  forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
-		  forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
-		  forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);	
-		}*/
+		
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
 		MidataId studyId = new MidataId(id);	
 		
@@ -398,8 +391,8 @@ public class Studies extends APIController {
 	}
 	
 	public static StudyParticipation requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod, String joinCode) throws AppException {
-		
-		
+		AccessLog.logBegin("start request participation user="+userId+" project="+studyId);
+		try {
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA);		
 		Study study = Study.getById(studyId, Sets.create("name", "joinMethods", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup", "type", "consentObserver", "rejoinPolicy"));
@@ -447,6 +440,9 @@ public class Studies extends APIController {
 		}
 		
 		return participation;
+		} finally {
+			AccessLog.logEnd("end request participation");	
+		}
 	}
 	
 	
@@ -473,26 +469,30 @@ public class Studies extends APIController {
 	}
 	
    public static Set<UserFeature> precheckRequestParticipation(MidataId userId, MidataId studyId) throws AppException {
-				
-		Member user = userId != null ? Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country")) : null;		
-		StudyParticipation participation = userId != null ? StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA) : null;		
-		Study study = Study.getById(studyId, Sets.create("type", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "requirements", "code", "rejoinPolicy"));
-		
-		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
-		if (participation == null) {
-			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
-			return study.requirements;							
-		}
-		
-		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return study.requirements;			
-		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
-			if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
-			  return study.requirements;			  
+	    AccessLog.logBegin("start precheck for project participation");
+	    try {
+			Member user = userId != null ? Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country")) : null;		
+			StudyParticipation participation = userId != null ? StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA) : null;		
+			Study study = Study.getById(studyId, Sets.create("type", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "requirements", "code", "rejoinPolicy"));
+			
+			if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
+			if (participation == null) {
+				if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
+				return study.requirements;							
 			}
-			throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
-		}
-		
-		return study.requirements;
+			
+			if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return study.requirements;			
+			if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
+				if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
+				  return study.requirements;			  
+				}
+				throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
+			}
+			
+			return study.requirements;
+	    } finally {
+	    	AccessLog.logEnd("end precheck for project participation");
+	    }
 	}
 	
 	/**

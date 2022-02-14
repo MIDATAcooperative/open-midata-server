@@ -1,10 +1,5 @@
 {
 
-    "member_login" : {
-        "register_now" : "Jetzt registrieren",
-        "sign_in" : "Anmeldung"
-    },
-
     "member_quickregistration" : {
         "sign_up" : "Registrieren",
         "study" : "Forschungsprojekt*",
@@ -46,7 +41,7 @@
     },
 
     "accountdata" : {
-        "midata_id" : "MIDATA ID:",
+        "midata_id" : "@PRODUCT ID:",
         "birthday" : "Geburtsdatum:",
         "change_btn" : "Ändern"
     },

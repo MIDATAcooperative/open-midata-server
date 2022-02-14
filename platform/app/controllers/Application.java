@@ -169,6 +169,7 @@ public class Application extends APIController {
 		  String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		  String url = site + "/#/portal/setpw?token=" + encrypted;
 		  if (user.security != AccountSecurityLevel.KEY_EXT_PASSWORD) url +="&ns=1";
+		  url += "&role="+role;
 		  
 		  Map<String,String> replacements = new HashMap<String, String>();
 		  replacements.put("site", site);
@@ -668,7 +669,7 @@ public class Application extends APIController {
 		
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION)) && !InstanceConfig.getInstance().getInstanceType().disableEMailValidation()) {
 			user.status = UserStatus.TIMEOUT;			
-			return Collections.singleton(UserFeature.EMAIL_VERIFIED);
+			return new HashSet<UserFeature>(Collections.singleton(UserFeature.EMAIL_VERIFIED));
 		}
 		
 						
@@ -1022,6 +1023,9 @@ public class Application extends APIController {
 				controllers.routes.javascript.FormatAPI.updateGroup(),
 				controllers.routes.javascript.FormatAPI.deleteGroup(),
 				controllers.routes.javascript.FormatAPI.createGroup(),
+				controllers.routes.javascript.FormatAPI.updateGroupContent(),
+				controllers.routes.javascript.FormatAPI.exportChanges(),
+				controllers.routes.javascript.FormatAPI.importChanges(),
 				controllers.routes.javascript.FormatAPI.listFormats(),				
 				controllers.routes.javascript.FormatAPI.listContents(),
 				controllers.routes.javascript.FormatAPI.searchContents(),

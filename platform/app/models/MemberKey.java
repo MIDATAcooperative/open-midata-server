@@ -77,6 +77,7 @@ public class MemberKey extends Consent {
 	}
 	
 	public void add() throws InternalServerException {
+		assertNonNullFields();
 		Model.insert(collection, this);
 	}
 		

@@ -39,6 +39,7 @@
 		        
 		    <auditlog api="auditlog" :from="criteria.from" :to="criteria.to"></auditlog>		                
       
+            <button type="button" @click="$router.go(-1);" class="btn btn-default" v-t="'common.back_btn'"></button>
     </panel>
 </div>
 </template>
@@ -52,7 +53,8 @@ import { status, ErrorBox } from 'basic-vue3-components'
 export default {
   
     data: () => ({
-        criteria : { from: null, to : null, days:2 }
+        criteria : { from: null, to : null, days:2 },
+        actions : null
 	}),	
 		
 
@@ -73,6 +75,7 @@ export default {
     },
 
     created() {
+        this.$data.actions = this.$route.query.actions;
         let today = new Date();
         today.setDate(today.getDate() + 1);
         this.$data.criteria.to = this.$filters.usDate(today);

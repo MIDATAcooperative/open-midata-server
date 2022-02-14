@@ -21,21 +21,21 @@
 			<address>     
      		    <strong>{{ user.firstname }} {{ user.lastname }}</strong><br/>
      		    {{ user.address1 }}<br/>
-     		    {{ user.address2 }}<br/>
+     		    <span v-if="user.address2">{{ user.address2 }}<br/></span>
      		    {{ user.zip }} {{ user.city }}
      		</address>  
      					
 			<div class="row">
-				<p class="col-sm-2" v-t="'user.email'"></p>
-				<p class="col-sm-10">{{user.email}}</p>
+				<span class="col-md-2 col-sm-5 col-12" v-t="'user.email'"></span>
+				<span class="col-md-10 col-sm-7 col-12">{{user.email}}</span>
 			</div> 
-			<div class="row" v-if="user.birthday">
-				<p class="col-sm-2" v-t="'user.birthday'"></p>
-				<p class="col-sm-10">{{ $filters.date(user.birthday) }}</p>
+			<div class="row mt-3" v-if="user.birthday">
+				<span class="col-md-2 col-sm-5 col-12" v-t="'user.birthday'"></span>
+				<span class="col-md-10 col-sm-7 col-12">{{ $filters.date(user.birthday) }}</span>
 			</div>
-			<div class="row" v-if="user.midataID">
-				<p class="col-sm-2" v-t="'user.midataID'"></p>
-				<p class="col-sm-10">{{user.midataID }}</p>
+			<div class="row mt-3" v-if="user.midataID">
+				<span class="col-md-2 col-sm-5 col-12" v-t="'user.midataID'"></span>
+				<span class="col-md-10 col-sm-7 col-12">{{user.midataID }}</span>
 			</div>
 			
 			<div class="row" v-if="stats">
@@ -46,18 +46,17 @@
 			  <p class="col-2 text-muted">Groups</p><p class="col-10 text-muted">{{ stats.numUserGroups }}</p>
 			</div>
 						
-			<div class="row" v-if="true">
+			<div class="row mt-3" v-if="true">
 			  <div class="col-sm-12">
 			  
-		   	    <router-link class="btn btn-default" :to="{ path : './changeaddress' }" v-t="'user.change_address_btn'"></router-link>&nbsp;
-			    <router-link class="btn btn-default" :to="{ path : './changepassword' }" v-t="'user.change_password_btn'"></router-link>&nbsp;
+		   	    <router-link class="btn btn-default mt-1" :to="{ path : './changeaddress' }" v-t="'user.change_address_btn'"></router-link>&nbsp;
+			    <router-link class="btn btn-default mt-1" :to="{ path : './changepassword' }" v-t="'user.change_password_btn'"></router-link>&nbsp;
 			    
-			    <div class="btn-group">
+			    <div class="btn-group mt-1">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span v-t="'user.action'"></span> <span class="caret"></span>
                     </button>
-                    <div class="dropdown-menu">
-                        <router-link class="dropdown-item" v-show="user.status=='ACTIVE'" :to="{ path : './changepassphrase' }" v-t="'user.change_passphrase_btn'"></router-link>
+                    <div class="dropdown-menu">                        
                         <router-link class="dropdown-item" :to="{ path : './changeemail' }" v-t="'user.change_email_btn'"></router-link>
                         <router-link class="dropdown-item" :to="{ path : './auditlog' }" v-t="'user.auditlog_btn'"></router-link>
                         <router-link class="dropdown-item" :to="{ path : './market', query : { tag : 'Expert' }}" v-t="'user.expert_tools_btn'"></router-link>
@@ -89,6 +88,7 @@
 			
                 <form-group name="language" label="registration.language" :path="errors.language">
                     <select v-model="user.language" name="language" class="form-control" v-validate>
+                        <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                         <option v-for="lang in languages" :key="lang.value" :value="lang.value">{{ $t(lang.name) }}</option>
                     </select>
                 </form-group>
@@ -111,7 +111,7 @@
                 <div class="extraspace"></div>
                 <form-group name="notifications" label="user.notifications">			
 			        <div v-t="'user.notifications2'"></div>
-                    <radio-box v-for="mode in notificationTypes" :key="mode" :value="mode" v-model="user.notifications" :path="errors.notifications">				  
+                    <radio-box name="notifications" v-for="mode in notificationTypes" :key="mode" :value="mode" v-model="user.notifications" :path="errors.notifications">				  
 				    <span class="margin-left">{{ $t('enum.accountnotifications.'+mode) }}</span>
                     </radio-box>
                 </form-group>

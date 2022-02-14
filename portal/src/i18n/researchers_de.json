@@ -242,6 +242,8 @@
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "sharing_query" : "Data Access Filter",
         "join_methods" : "Erlaubte Teilnahmeverfahren",
+        "leavePolicy" : "Rücktrittsrecht der Teilnehmer",
+        "rejoinPolicy" : "Wiedereinstiegsrecht der Teilnehmer",
         "queryeditor_btn" : "Ändern",
         "terms_of_use" : "Allgemeine Geschäftsbedingungen",
         "terms_of_use_hint" : "Wenn die Allgemeine Geschäftsbedingungen des Projektes vom Benutzer gelesen und akzeptiert werden müssen, bitte senden Sie den Text an einen Plattformadministrator. Wir werden den Text im richtigen Format hochladen und Ihnen die ID mitteilen, die Sie hier eingeben müssen.",

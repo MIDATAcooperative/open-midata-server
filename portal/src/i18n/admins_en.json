@@ -29,14 +29,14 @@
     "specific_user" : "Specific User",
     "role" : "Role",
     "status" : "Status",
-    "midata_id" : "MIDATA ID",
+    "midata_id" : "@PRODUCT ID",
     "empty" : "No matching users found."
   },
 
   "admin_address" : {
     "title" : "User profile",
     "show_apps_created" : "Show the applications created by this developer",
-    "midata_id" : "MIDATA ID",
+    "midata_id" : "@PRODUCT ID",
     "role" : "Role",
     "subroles" : "Sub-Role(s)",
     "developer" : "Belongs to Developer:",
@@ -319,15 +319,15 @@
       "make_selection" : "Select the item you want to edit or add a new code to",
       "new_code" : "New code to be added",
       "edit_code" : "Edit existing code",
-      "edit_content" : "Edit existing MIDATA content type",
-      "new_content" : "New MIDATA content type to be added",
+      "edit_content" : "Edit existing @PRODUCT content type",
+      "new_content" : "New @PRODUCT content type to be added",
       "edit_group" : "Edit existing group in record tree",
       "new_group" : "New group in record tree",
       "system" : "Code system",
       "version" : "Version",
       "code" : "Code",
       "display" : "Label",
-      "content" : "MIDATA content type",
+      "content" : "@PRODUCT content type",
       "security" : "Record encryption keys",
       "medium" : "Reuse keys for data of same type and person",
       "high" : "Use a new key for each record",
@@ -341,7 +341,14 @@
       "group_system" : "Grouping System",
       "save_group_btn" : "Save Group",
       "delete_group_btn" : "Delete Group",
-      "save_btn" : "Save Code & Content type"
+      "save_btn" : "Save Code & Content type",
+      "export_btn" : "Export Changes",
+      "import_btn" : "Import Changes"
+   },
+
+   "admin_importcontent" : {
+      "title" : "Import Codes",
+      "definition" : "Code/Content Changes (JSON)"
    }
     
 }

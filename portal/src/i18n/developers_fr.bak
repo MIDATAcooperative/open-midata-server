@@ -12,10 +12,10 @@
   
   "developer_navbar" : {
     "yourapps" : "Your Applications",
-	  "sandbox" : "Sandbox",
+    "sandbox" : "Sandbox",
     "workspace" : "Workspace",
-	  "records" : "Test Records",
-	  "testusers" : "Test User"
+    "records" : "Test Records",
+    "testusers" : "Test User"
   },
   
   "developer_testusers" : {
@@ -44,13 +44,13 @@
   "appmessages" : {
     "title" : "Predefined Messages for Application:",
     "reason" : "Event (Trigger)",
-  	"code" : "Code",
+    "code" : "Code",
     "languages" : "Languages",
     "empty" : "There are no application specfic messages defined yet.",
     "lang" : "Language",
     "msgtitle" : "Message Title",
     "text" : "Message Text",
-    "available_tags" : "Available variables",
+    "available_tags" : "Available categories",
     "reasons" : {
        "REGISTRATION" : "Registration of new user",
        "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
@@ -84,30 +84,34 @@
     "filename" : "Internal Name",
     "type" : "Application Type",
     "targetUserRole" : "Target Role",  
+    "loginTemplate" : "Login Process Texts",
+    "loginButtonsTemplate": "Login Process Flow",
     "edit_btn" : "Change Settings",
     "edit_help" : "Change the setup for your application.",
     "query_btn" : "Change Data Access Filter",
     "query_help" : "Define which types of data your application may access.",
     "write_mode" : "Write Access",
     "subscriptions_btn" : "Change Default Subscriptions",
-    "subscriptions_help" : "Define triggers that cause an action on the @PLATFORM server",
+    "subscriptions_help" : "Define triggers that cause an action on the @PRODUCT server",
     "tokenExchangeParams" : "OAuth 2 Parameters for the Token Exchange", 
     "testfromlocal_btn" : "Test your plugin from localhost",
     "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
     "serverimport_btn" : "Test automatic import script.",
     "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
+    "applogin_btn" : "Login Process",
+    "applogin_help" : "View and edit login process",
     "link_btn" : "Links with research projects or external parties",
     "link_help" : "Applications may suggest or require participation in a research project. Research projects may recommend the use of applications. Use of the application may require a user's consent to healthcare professionals or teams to view their data.",
     "repository_btn" : "Code Repository",
     "repository_help" : "Checkout the newest version of your code",
     "icon_btn" : "Application Icons and Images",
-    "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the store, etc.",
+    "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the Store, etc.",
     "messages_btn" : "Application email Messages",
     "messages_help" : "Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.",
     "stats_btn" : "Error and Performance Statistics",
     "stats_help" : "View statistics and hints for improvements about the various types of API calls your application sends to the server.",    
     "debug_btn" : "API Tester Sandbox",
-    "debug_help" : "Login as application and test queries against the @PLATFORM backend.",
+    "debug_help" : "Login as application and test queries against the @PRODUCT server.",
     "appreviews_btn" : "Reviews",
     "appreviews_help" : "Reviews conducted for this application",
     "applicence_btn" : "License",
@@ -131,7 +135,9 @@
     "info" : {
        "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
-       "type" : "Choose 'Plugin' if your application will run on the @PLATFORM portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.",
+       "loginTemplate" : "How should the login process look like? Some settings need administrator's approval",
+       "loginButtonsTemplate" : "How should buttons be arranged?",
+       "type" : "Choose 'Plugin' if your application will run on the @PRODUCT portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.",
        "name" : "The name of your application that will be presented to the end user.",
        "description" : "The description of your application that will be shown on the Marketplace.",
        "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
@@ -139,18 +145,18 @@
        "pseudonymize" : "Read pseudonymized data. Does not update records from participants.",
        "resharesData" : "Application is allowed to reshare data it has access to to 3rd party.",
        "allowsUserSearch" : "Users of the application are allowed to search for other users of the same application.",
-       "consentObserving" : "Does this service monitor user consents? Add 'Consents' to the Access Filter in order to activate.",
+       "consentObserving" : "Does this service monitor user consents? Add 'Consents' to the Data Access Filter in order to activate.",
        "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
        "tags" : "Categories on the Store for which your plugin should be listed.",
-       "url" : "URL of your plugins main page. If you use the template from @PLATFORM it is 'dist/index.html#!?authToken=:authToken''",
+       "url" : "URL of your plugins main page. If you use @PRODUCT's template, it is 'dist/index.html#!?authToken=:authToken''",
        "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
        "defaultSpaceContext" : "Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.",
        "redirectUri" : "You may specifiy multiple possible redirect URIs by separating the URIs with a space.",
        "secret" : "Your application will need this 'secret' during login. Choose whatever you like.",
        "mustParticipateInStudy" : "Users must participate in research project in order to use this application.",
-       "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to the @PLATFORM using the application. The code is not case sensitive.",
+       "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to @PRODUCT using the application. The code is not case sensitive.",
        "send_reports" : "Notify developer ({{user}}) by email on errors caused by this application.",
-       "developerTeam" : "Enter comma separated list of email addresses of other developers on @PLATFORM that develop this application."        
+       "developerTeam" : "Enter comma separated list of email addresses of other developers on that @PRODUCT instance, that develop this application."
     },
     "status" : {
       "title" : "Application Status",
@@ -286,7 +292,6 @@
       "stop_btn" : "Stop debugging",
       "cmd_to_run" : "Command to run on your computer:"
     }
-	
   },
   
   "appreviews" : {
@@ -302,7 +307,7 @@
     "success" : "Review has been added.",
     "CONCEPT" : "Application Concept",
     "DATA_MODEL" : "Data Model",
-    "ACCESS_FILTER" : "Access Filter",
+    "ACCESS_FILTER" : "Data Access Filter",
     "QUERIES" : "Queries",
     "DESCRIPTION" : "Description",
     "ICONS" : "Icons",
@@ -314,7 +319,8 @@
     "CONTRACT" : "Contract",
     "ACCEPTED" : "Accepted",
     "NEEDS_FIXING" : "Needs fixing",
-    "OBSOLETE" : "Obsolete"
+    "OBSOLETE" : "Obsolete",
+    "TERMS_OF_USE_MATCH_QUERY" : "Terms of use match Data Access Filter"
   },
   
   "applicence" : {
@@ -349,11 +355,10 @@
   },
 
   "workspace" : {
-     
      "title" : "Workspace",
-     "add_something" : "Please add an app or a project you are working on. You may also add a test user.",
+     "add_something" : "Please add an application or a project you are working on. You may also add a test user.",
      "browser" : "Users Browser",
-     "midata" : "Midata Backend",
+     "midata" : "@PLATFORM Back-end",
      "useraccount" : "User Account",
      "newapp_btn" : "Add Application",
      "newproject_btn" : "Add Project",
@@ -369,8 +374,8 @@
      },
      "component" : "Component",
      "issue" : "Issue",
-     "param" : "Param",
-     "summary" : "Access Filter Summary",
+     "param" : "Parameter",
+     "summary" : "Data Access Filter Summary",
      "add_app" : "Add Application to Workspace",
      "add_user" : "Add User Account to Workspace",
      "testusers_only" : "Use only with test accounts! Plain text password will be stored in your browser!",
@@ -380,44 +385,98 @@
      "projectname" : "Project Code",
      "add_project" : "Add Project to Workspace",
      "warning" : {
-        "app_deprecated" : "App is deprecated and should not be used.",
-        "no_orgname" : "No developer organization name specified in app definition.",
-        "no_publisher" : "No publisher specified in app definition.",
-        "no_app_description" : "App description is missing",
-        "not_spotlighted" : "Plugin is not available in Midata store. Ask an admin.",
+        "app_deprecated" : "Application is deprecated and should not be used.",
+        "no_orgname" : "No developer organization name specified in application definition.",
+        "no_publisher" : "No publisher specified in application definition.",
+        "no_app_description" : "Application description is missing.",
+        "not_spotlighted" : "The plugin is not available in the @PRODUCT Store. Ask an administrator.",
         "no_repository" : "No repository for code checkout-provided.",
-        "no_send_reports" : "Error report notifications (emails) are disabled for this app.",
+        "no_send_reports" : "Error report notifications (emails) are disabled for this application.",
         "has_comments" : "Comments available in the error and performance statistics.",
         "project_not_validated" : "Project has not been validated yet.",
         "project_not_searching" : "Project not searching for participants.",
-        "no_user_for_app" : "None of the test accounts use the application",
-        "no_user_for_project" : "None of test accounts participate to the project",
-        "appinstance_status" : "Application instance not active",
-        "appinstance_outdated" : "App version is newer than app. consent. Needs reconfirm.",
-        "not_accepted" : "Participation not accepted"
+        "no_user_for_app" : "None of the test accounts use the application.",
+        "no_user_for_project" : "None of test accounts participate to the project.",
+        "appinstance_status" : "Application instance not active.",
+        "appinstance_outdated" : "Application version is newer than application consent. Needs reconfirm.",
+        "not_accepted" : "Participation not accepted.",
+        "no_access" : "You are not developer of this application. Some features are not available to you."
      },
      "error" : {       
-       "no_tags" : "No tags for app selected. Plugin cannot be added by user.",
-       "no_url" : "Plugin does not have initial URL",
+       "no_tags" : "No application category selected. Plugin cannot be added by user.",
+       "no_url" : "Plugin does not have initial URL.",
        "never_deployed" : "Plugin has repository information but had never been checked out successful.",
-       "no_access_filter" : "No access filter provided for application",
+       "no_access_filter" : "No Data Access Filter provided for application.",
        "no_join_method" : "Project has no join methods selected.",
-       "project_in_validation" : "Project is currently validated by an administrator.",
+       "project_in_validation" : "Project is currently being validated by an administrator.",
        "project_rejected" : "Project has been rejected.",
        "project_finished" : "Project is already finished.",
        "project_aborted" : "Project has been aborted.",
        "project_no_groups" : "No participant groups defined for project.",
        "app_no_exist" : "Application does not exist.",
        "project_no_exist" : "Project does not exist.",
-       "login_failed" : "Account login failed",
-       "appinstance_rejected" : "Application instance rejected"
+       "login_failed" : "Account login failed.",
+       "appinstance_rejected" : "Application blocked by user."
      },
      "info" : {
         "no_requirements" : "No requirements selected for application.",
         "no_icons" : "No icons uploaded for application.",
         "project_not_running" : "Project has not been started yet.",
         "project_no_requirements" : "No requirements selected for project.",
-        "app_in_development" : "Application is still in development"
+        "app_in_development" : "Application is still in development."
      }
+    },
+
+    "applogin" : {
+       "title" : "Application login",
+       "description" : "View and configure the application login process.",
+       "preview" : "Which process do you want to preview?",
+       "previewtype" : {
+          "NEW" : "First login. User has no account yet.",
+          "EXISTING" : "First login. User already has an account.",
+          "RELOGIN" : "Returning user - Relogin"
+       },
+       "required" : "always",
+       "optional" : "if necessary",
+       "not_approved" : "This setting must be approved by an administrator",
+       "approvedby" : "Approved by",
+       "approvedat" : "at",
+       "show_terms" : "View terms of use",
+       "no_terms" : "No terms of use",
+       "links" : "Linked projects",
+       "no_links" : "None (yet)",
+       "step" : {
+         "login" : "Login",
+         "registration" : "Registration",
+         "confirmation" : "Consent",
+         "confirmation2" : "Project Consent",
+         "password_set" : "Enter password",
+         "email_verified" : "Email verification",
+         "admin_verified" : "Approval by an administrator",
+         "phone_verified" : "Phone number verification",
+         "newest_terms_agreed" : "Agree to terms of use",
+         "address_entered" : "Enter address",
+         "address_phone_entered" : "Address & Phone",
+         "phone_entered" : "Enter phone",
+         "address_verified" : "Address verification",
+         "auth2factorsetup" : "2FA Setup",
+         "auth2factor" : "2FA",
+         "birthday_set" : "Enter date of birth",
+         "unlock_code" : "Application unlock code"
+       }
+    },
+    
+    "enum" : {
+        "logintemplate" : {
+            "GENERATED" : "Generate application authorization from definition",
+            "TERMS_OF_USE_AND_GENERATED" : "Show terms of use as text page with generated consent",
+	        "TERMS_OF_USE" : "Show terms of use as text page (needs approval by an administrator)",
+	        "REDUCED" : "Give consent on registration page (needs approval by an administrator)"
+        },
+        "loginbuttonstemplate" : {
+            "ONE_CONFIRM_AND_OPTIONAL_CHECKBOXES" : "One required confirm button and optional checkboxes",
+            "ONE_CONFIRM_PER_PAGE" : "One decision per page",
+            "CHECKBOXES_WITH_LINKED_TERMS" : "Checkboxes with linked terms of use"
+        }
     }
 }

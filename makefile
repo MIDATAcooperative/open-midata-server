@@ -72,7 +72,7 @@ stop-mongo:
 	@echo 'Shutting down MongoDB...'
 	if [ -e switches/local-mongo ]; then pkill mongod; fi
 
-update: tasks/check-config tasks/install-packages tasks/install-node tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
+update: tasks/check-config tasks/install-packages tasks/install-node tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform conf/config.js tasks/setup-nginx start
 
 test: tasks/build-portal tasks/build-platform
 	
@@ -279,24 +279,25 @@ platform/conf/application.conf: platform/conf/application.conf.template conf/set
 	sed -i 's|SMS_PROVIDER|$(SMS_PROVIDER)|' platform/conf/application.conf
 	sed -i 's|SMS_OAUTH_TOKEN|$(SMS_OAUTH_TOKEN)|' platform/conf/application.conf	
 	
-config/instance.json: config/instance-template.json conf/pathes.conf conf/setup.conf
+conf/config.js: config/config-template.js conf/pathes.conf conf/setup.conf
 	$(info ------------------------------)
 	$(info Configuring Portal.... )
 	$(info ------------------------------)
 	$(eval PORTAL_ORIGIN:=$(shell if [ -e switches/use-run ]; then echo "https://$(DOMAIN):9002";else echo "https://$(DOMAIN)";fi;))
-	cp config/instance-template.json config/instance.json
-	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' config/instance.json
-	sed -i 's|DOMAIN|$(DOMAIN)|' config/instance.json
-	sed -i 's|PLATFORM_NAME|$(PLATFORM_NAME)|' config/instance.json
-	sed -i 's|OPERATOR_NAME|$(OPERATOR_NAME)|' config/instance.json
-	sed -i 's|OFFICIAL_SUPPORT_MAIL|$(OFFICIAL_SUPPORT_MAIL)|' config/instance.json
-	sed -i 's|OFFICIAL_HOMEPAGE|$(OFFICIAL_HOMEPAGE)|' config/instance.json
-	sed -i 's|INSTANCE_TYPE|$(INSTANCE_TYPE)|' config/instance.json
-	sed -i 's|INSTANCE|$(INSTANCE)|' config/instance.json
-	sed -i 's|LANGUAGES|$(LANGUAGES)|' config/instance.json
-	sed -i 's|DEFAULT_LANGUAGE|$(DEFAULT_LANGUAGE)|' config/instance.json
-	sed -i 's|COUNTRIES|$(COUNTRIES)|' config/instance.json
-	sed -i 's|BETA_FEATURES|$(BETA_FEATURES)|' config/instance.json		
+	cp config/config-template.js conf/config.js
+	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' conf/config.js
+	sed -i 's|DOMAIN|$(DOMAIN)|' conf/config.js
+	sed -i 's|PLATFORM_NAME|$(PLATFORM_NAME)|' conf/config.js
+	sed -i 's|OPERATOR_NAME|$(OPERATOR_NAME)|' conf/config.js
+	sed -i 's|PRODUCT_NAME|$(PRODUCT_NAME)|' conf/config.js
+	sed -i 's|OFFICIAL_SUPPORT_MAIL|$(OFFICIAL_SUPPORT_MAIL)|' conf/config.js
+	sed -i 's|OFFICIAL_HOMEPAGE|$(OFFICIAL_HOMEPAGE)|' conf/config.js
+	sed -i 's|INSTANCE_TYPE|$(INSTANCE_TYPE)|' conf/config.js
+	sed -i 's|INSTANCE|$(INSTANCE)|' conf/config.js
+	sed -i 's|LANGUAGES|$(LANGUAGES)|' conf/config.js
+	sed -i 's|DEFAULT_LANGUAGE|$(DEFAULT_LANGUAGE)|' conf/config.js
+	sed -i 's|COUNTRIES|$(COUNTRIES)|' conf/config.js
+	sed -i 's|BETA_FEATURES|$(BETA_FEATURES)|' conf/config.js		
 	
 tasks/reimport-mongodb: trigger/reimport-mongodb $(wildcard json/*.json)
 	$(info ------------------------------)
@@ -326,7 +327,7 @@ tasks/build-mongodb: trigger/build-mongodb tasks/changelog tasks/reimport-mongod
 	cd json;make build	
 	touch tasks/build-mongodb
 	
-tasks/build-portal: trigger/build-portal conf/recoverykeys.json $(shell find portal -type f | sed 's/ /\\ /g') config/instance.json
+tasks/build-portal: trigger/build-portal conf/recoverykeys.json $(shell find portal -type f | sed 's/ /\\ /g')
 	$(info ------------------------------)
 	$(info Building Portal... )
 	$(info ------------------------------)
@@ -368,7 +369,10 @@ nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf
 tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages nginx/conf.d/noversion.conf $(CERTIFICATE_PEM) $(CERTIFICATE_DIR)/dhparams.pem
 	$(info ------------------------------)
 	$(info Configuring NGINX... )
-	$(info ------------------------------)	
+	$(info ------------------------------)
+	chmod 755 conf/config.js
+	chmod 755 conf/recoverykeys.json
+	chmod 755 conf	
 	sudo cp nginx/sites-available/* /etc/nginx/sites-available
 	sudo cp nginx/conf.d/* /etc/nginx/conf.d
 	sudo rm -f /etc/nginx/sites-enabled/*
@@ -474,7 +478,7 @@ clean:
 	@rm -f tasks/build-mongodb
 	@rm -f tasks/build-portal
 	@rm -f tasks/setup-nginx
-	@rm -f config/instance.json
+	@rm -f conf/instance.js
 	@rm -f platform/conf/application.conf
 	@rm -f nginx/sites-available/*
 	@rm -f platform/target

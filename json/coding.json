@@ -19,7 +19,7 @@
 {"_id":{"$oid":"5666a53faa4c3cbdf82292cf"},"system":"http://midata.coop","display":"BMI","code":"body/bmi","content":"body/bmi"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292d0"},"system":"http://midata.coop","display":"Fat","code":"body/fat","content":"body/fat"}
 {"_id":{"$oid":"56fb890b1911127c0c2cc641"},"system":"http://loinc.org","code":"3141-9","display":"Body Weight","content":"body/weight"}
-{"_id":{"$oid":"56fb890b1911127c0c2cc643"},"system":"http://loinc.org","code":"61150-9","comment":"Patient Diary","display":"Patient Diary","content":"diary"}
+{"_id":{"$oid":"56fb890b1911127c0c2cc643"},"system":"http://loinc.org","code":"61150-9","display":"Patient Diary","content":"diary"}
 {"_id":{"$oid":"56fba579116010661a49ad2c"},"system":"http://midata.coop","display":"Subjective Condition","code":"subjective-condition","content":"subjective-condition"}
 {"_id":{"$oid":"56fba579116010661a49ad2d"},"system":"http://midata.coop","display":"Height","code":"body/height","content":"body/height"}
 {"_id":{"$oid":"56fba579116010661a49ad2e"},"system":"http://midata.coop","display":"Diary","code":"diary","content":"diary"}
@@ -43,7 +43,7 @@
 {"_id":{"$oid":"5718ec14aed645098e8cedc9"},"system":"http://midata.coop","code":"Communication","display":"Communication","content":"Communication"}
 {"_id":{"$oid":"5718ec14aed645098e8cedca"},"system":"http://midata.coop","code":"PaymentReconciliation","display":"PaymentReconciliation","content":"PaymentReconciliation"}
 {"_id":{"$oid":"5718ec14aed645098e8cedcb"},"system":"http://midata.coop","code":"ConceptMap","display":"ConceptMap","content":"ConceptMap"}
-{"_id":{"$oid":"5718ec14aed645098e8cedcc"},"system":"http://midata.coop","code":"Organization","display":"Organization","content":"Organization"}
+{"_id":{"$oid":"5718ec14aed645098e8cedcc"},"system":"http://midata.coop","code":"Organization","display":"Organization (API)","content":"Organization"}
 {"_id":{"$oid":"5718ec14aed645098e8cedcd"},"system":"http://midata.coop","code":"ProcessResponse","display":"ProcessResponse","content":"ProcessResponse"}
 {"_id":{"$oid":"5718ec14aed645098e8cedce"},"system":"http://midata.coop","code":"Coverage","display":"Coverage","content":"Coverage"}
 {"_id":{"$oid":"5718ec14aed645098e8cedcf"},"system":"http://midata.coop","code":"AppointmentResponse","display":"AppointmentResponse","content":"AppointmentResponse"}
@@ -222,13 +222,13 @@
 {"_id":{"$oid":"59802514aed6450a5c70f844"},"system":"http://midata.coop","code":"MiSensTasteIntensity","display":"Taste intensity on a GLMS (General Labeled Magnitude Scale) of a specific substance","content":"MiSensTasteIntensity"}
 {"_id":{"$oid":"59802674aed6450a5c70f848"},"system":"http://loinc.org","code":"63582-1","display":"Do you now smoke cigarettes every day, some days, or not at all","content":"loinc/63582-1"}
 {"_id":{"$oid":"59a3fa4eaed645237854253e"},"system":"http://midata.coop","code":"profile/picture","display":"Profile Picture","content":"profile/picture"}
-{"_id":{"$oid":"5a0047ddaed64509266edf20"},"system":"http://midata.coop","code":"PseudonymizedPatient","display":"Patient (Pseudonymized)","content":"PseudonymizedPatient","contentForSystemCode":{}}
-{"_id":{"$oid":"5a3ce1a7aed64508a1f074ba"},"system":"http://midata.coop","code":"SPScoreOneLeg","display":"SensoPro Score One Leg Exercise","content":"SPScoreOneLeg","contentForSystemCode":{}}
-{"_id":{"$oid":"5a3ce1a7aed64508a1f074bb"},"system":"http://midata.coop","code":"SPScoreStep","display":"SensoPro Score Step Exercise","content":"SPScoreStep","contentForSystemCode":{}}
-{"_id":{"$oid":"5a3ce220aed64508a1f074bd"},"system":"http://midata.coop","code":"SPScoreWave","display":"SensoPro Score Wave Exercise","content":"SPScoreWave","contentForSystemCode":{}}
-{"_id":{"$oid":"5a3ce220aed64508a1f074bf"},"system":"http://midata.coop","code":"SPScoreSprint","display":"SensoPro Score Sprint Exercise","content":"SPScoreSprint","contentForSystemCode":{}}
-{"_id":{"$oid":"5a4c9ad8aed6450fbff7d2b7"},"system":"http://loinc.org","code":"85658-3","display":"Occupation","content":"work/occupation","contentForSystemCode":{}}
-{"_id":{"$oid":"5a4c9b44aed6450fbff7d2b8"},"system":"http://loinc.org","code":"85078-4","display":"Occupation industry","content":"work/field-of-occupation","contentForSystemCode":{}}
+{"_id":{"$oid":"5a0047ddaed64509266edf20"},"system":"http://midata.coop","code":"PseudonymizedPatient","display":"Patient (Pseudonymized)","content":"PseudonymizedPatient"}
+{"_id":{"$oid":"5a3ce1a7aed64508a1f074ba"},"system":"http://midata.coop","code":"SPScoreOneLeg","display":"SensoPro Score One Leg Exercise","content":"SPScoreOneLeg"}
+{"_id":{"$oid":"5a3ce1a7aed64508a1f074bb"},"system":"http://midata.coop","code":"SPScoreStep","display":"SensoPro Score Step Exercise","content":"SPScoreStep"}
+{"_id":{"$oid":"5a3ce220aed64508a1f074bd"},"system":"http://midata.coop","code":"SPScoreWave","display":"SensoPro Score Wave Exercise","content":"SPScoreWave"}
+{"_id":{"$oid":"5a3ce220aed64508a1f074bf"},"system":"http://midata.coop","code":"SPScoreSprint","display":"SensoPro Score Sprint Exercise","content":"SPScoreSprint"}
+{"_id":{"$oid":"5a4c9ad8aed6450fbff7d2b7"},"system":"http://loinc.org","code":"85658-3","display":"Occupation","content":"work/occupation"}
+{"_id":{"$oid":"5a4c9b44aed6450fbff7d2b8"},"system":"http://loinc.org","code":"85078-4","display":"Occupation industry","content":"work/field-of-occupation"}
 {"_id":{"$oid":"5a9e713679c721f679467c70"},"system":"http://midata.coop/codesystems/specific","code":"air-purifier","display":"Person owns air purifier","content":"specific/air-purificator"}
 {"_id":{"$oid":"5a9e7d9f79c721f679467c98"},"system":"http://midata.coop","code":"main-occupation-location","display":"Main Occupation Location","content":"main-occupation-location"}
 {"_id":{"$oid":"5a9e7fab79c721f679467ca0"},"system":"http://midata.coop","code":"pollen-forecast","display":"Pollen forecast","content":"public/pollen-forecast"}
@@ -348,3 +348,7 @@
 {"_id":{"$oid":"5fb39ebdaed64513b2abccd7"},"system":"http://midata.coop","code":"forward-reach-test","display":"Forward Reach Test","content":"forward-reach-test"}
 {"_id":{"$oid":"5fb39f02aed64513b2abccd9"},"system":"http://midata.coop","code":"timed-up-and-go","display":"Timed up and go","content":"timed-up-and-go"}
 {"_id":{"$oid":"5fb3a144aed64513b2abccdb"},"system":"http://midata.coop","code":"walking-speed","display":"Walking Speed","content":"walking-speed"}
+{"_id":{"$oid":"61efb95cc2841c36d6227d78"},"system":"http://midata.coop","code":"app/log","display":"Application Log","content":"app/log"}
+{"_id":{"$oid":"61efb9a4c2841c36d6227d7a"},"system":"http://midata.coop","code":"app/config","display":"Application Configuration","content":"app/config"}
+{"_id":{"$oid":"61f3fbcee8d4223bfafd55ec"},"system":"http://midata.coop","code":"Organization/HP","display":"Organization on Midata (Healthcare Provider)","content":"Organization/HP"}
+{"_id":{"$oid":"61f3fc14e8d4223bfafd55ef"},"system":"http://midata.coop","code":"Organization/Research","display":"Organization on Midata (Research)","content":"Organization/Research"}

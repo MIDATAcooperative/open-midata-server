@@ -31,13 +31,14 @@
 			  
 		<form-group name="gender" label="registration.gender" :path="errors.gender">
             <select class="form-control" id="gender" name="gender" @change="adrChange();" v-model="registration.gender" required v-validate>
+                <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                 <option value="FEMALE" v-t="'enum.gender.FEMALE'">female</option>
                 <option value="MALE" v-t="'enum.gender.MALE'"></option>
                 <option value="OTHER" v-t="'enum.gender.OTHER'"></option>
             </select>
         </form-group>
 		<form-group name="birthday" label="registration.birthday" :path="errors.birthdayDate">
-            <input type="text" class="form-control" name="birthdayDate" v-model="registration.birthdayDate" v-validate>
+            <input type="text" class="form-control" name="birthdayDate" @change="birthChange()" v-model="registration.birthdayDate" v-validate>
         </form-group>		
 			   
 		<form-group name="address1" label="registration.address" :path="errors.address1">
@@ -54,6 +55,7 @@
         </form-group>
 		<form-group name="country" label="registration.country" :path="errors.country">
             <select class="form-control" id="country" name="country" @change="adrChange();" v-model="registration.country" required v-validate>
+                <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                 <option value="CH" v-t="'enum.country.CH'"></option>
             </select>
         </form-group>
@@ -91,7 +93,8 @@ export default {
     data: () => ({
         registration : {},
         addressChanged : false,
-        birthdayChanged : false       
+        birthdayChanged : false,
+        actions : null
 	}),	
 
     components: {  Panel, FormGroup, ErrorBox, Success },
@@ -101,7 +104,7 @@ export default {
     methods : {
         changeEmail() {
             const { $router, $data } = this;
-		    $router.push({ path : "./changeemail", query : { userId : $data.registration._id } });
+		    $router.push({ path : "./changeemail", query : { userId : $data.registration._id, actions : $data.actions } });
         },
         
         adrChange() {
@@ -115,7 +118,7 @@ export default {
         },
 
         changeAddress() {		
-		    const { $data, $t } = this, me = this;
+		    const { $data, $t, $router } = this, me = this;
             let q = Promise.resolve();
 		
             let data = $data.registration;
@@ -141,13 +144,15 @@ export default {
 			    q = q.then(function() { return me.doAction("changeAddress", users.updateAddress(data)); });
 		    }
             q.then(function() {	
-        	    $data.success = true;			
+        	    $data.success = true;	
+                if ($data.actions) $router.go(-1);
 		    });
 	    },
 	
         
         init() {
             const { $data, $route, $filters } = this, me = this;
+            $data.actions = $route.query.actions;
             me.doBusy(session.currentUser.then(function(myUserId) { 
 		        let userId = $route.query.userId || myUserId;
 		        me.doBusy(users.getMembers({"_id": userId }, ["name", "email", "gender", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "birthday"]))

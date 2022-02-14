@@ -25,9 +25,11 @@
 		<div class="col-sm-8 mt-1">
 		<input type="text" id="queryadd" name="queryadd" class="form-control" v-validate v-model="newentry.search">
 		</div><div class="col-sm-4 mt-1">
-		<button class="btn btn-default space" :disabled="action!=null" @click="search()" v-t="'common.search_btn'"></button>
-		<button class="btn btn-default space" :disabled="action!=null" @click="createNew()" v-t="'content.createnew_btn'"></button>
-		<button class="btn btn-default space" :disabled="action!=null" @click="createGroup()" v-t="'content.creategroup_btn'"></button>
+		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="search()" v-t="'common.search_btn'"></button>
+		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="createNew()" v-t="'content.createnew_btn'"></button>
+		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="createGroup()" v-t="'content.creategroup_btn'"></button>
+		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="exporter()" v-t="'content.export_btn'"></button>
+		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="importer()" v-t="'content.import_btn'"></button>
 		</div>
 		</div>
 		<div class="extraspace"></div>
@@ -144,6 +146,7 @@ import server from 'services/server.js';
 import apps from 'services/apps.js';
 import session from 'services/session.js';
 import formats from 'services/formats.js';
+import ENV from 'config';
 import labels from 'services/labels.js';
 import _ from 'lodash';
 import { status, ErrorBox, FormGroup, Typeahead } from 'basic-vue3-components';
@@ -287,7 +290,7 @@ export default {
 			}
 
 			function updateCode() {
-				if ($data.currentCode) {
+				if ($data.currentCode && $data.currentCode.code) {
 					if ($data.currentCode.isNew) {
 						return me.doAction("save", formats.createCode($data.currentCode));
 					} else {
@@ -312,23 +315,25 @@ export default {
 						let oldGroup = null;
 						let newGroup = null;
 						if ($data.currentContent.oldGroup) {
-							oldGroup = me.getGroupByGroupname($data.groupSystem, $data.currentContent.oldGroup);
-							if (oldGroup) {
-								oldGroup.contents.splice(oldGroup.contents.indexOf($data.currentContent.oldName), 1);
-							}
+							oldGroup = {
+								system : $data.groupSystem,
+								name : $data.currentContent.oldGroup,
+								content : $data.currentContent.content,
+								deleted : true
+							};							
 						}
-						newGroup = me.getGroupByGroupname($data.groupSystem, $data.currentContent.currentGroup);
-						if (newGroup) {
-							if (!newGroup.contents) newGroup.contents = [];
-							newGroup.contents.push($data.currentContent.content);
-						}
-
+						newGroup = {
+							system : $data.groupSystem,
+							name : $data.currentContent.currentGroup,
+							content : $data.currentContent.content,								
+						};
+							
 						function saveOld() {
-							if (oldGroup) return formats.updateGroup(oldGroup); else return Promise.resolve();
+							if (oldGroup) return formats.updateGroupContent(oldGroup); else return Promise.resolve();
 						}
 
 						function saveNew() {
-							if (newGroup) return formats.updateGroup(newGroup); else return Promise.resolve();
+							if (newGroup) return formats.updateGroupContent(newGroup); else return Promise.resolve();
 						}
 						
 						return me.doAction("save", saveOld().then(saveNew));
@@ -508,6 +513,17 @@ export default {
 			//$data.newentry.choices = [];
 			var what = $data.newentry.search.toLowerCase();
 			me.doBusy(me.fullTextSearch(what).then((result) => $data.newentry.choices=result));
+		},
+
+        exporter() {
+            this.doAction("download", server.token())
+		    .then(function(response) {
+		        document.location.href = ENV.apiurl + jsRoutes.controllers.FormatAPI.exportChanges().url + "?token=" + encodeURIComponent(response.data.token);
+		    });
+		},
+
+		importer() {
+			this.$router.push({ path : './importcontent'});
 		}
 	
 		

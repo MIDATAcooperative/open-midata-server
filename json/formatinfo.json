@@ -43,3 +43,5 @@
 {"_id":{"$oid":"5efdbaba5a67eaa8db3982b6"},"format":"fhir/Provenance","comment":"FHIR Provenance Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5f1e7b63415c4c23ca5e45a6"},"format":"fhir/Organization","comment":"FHIR Organization Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5fa291a7250485e3e8ab709e"},"format":"fhir/List","comment":"FHIR List Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"61eec6201ca1c61b9fa69b3a"},"format":"fhir/RelatedPerson","comment":"FHIR RelatedPerson Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"620a7744f14c3090276bd72f"},"format":"fhir/ImmunizationRecommendation","comment":"FHIR ImmunizationRecommendation Resource","visName":"Data Viewer","visualization":"fhir-viewer"}

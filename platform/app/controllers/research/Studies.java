@@ -112,6 +112,7 @@ import play.mvc.Security;
 import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
+import utils.ConsentQueryTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ProjectTools;
@@ -475,14 +476,15 @@ public class Studies extends APIController {
 
 						String location = FHIRServlet.getBaseUrl() + "/" + prov.getResourceType().getSimpleName() + "/" + rec._id.toString() + "/_history/" + rec.version;
 						if (r != null) {
-
 							String ser = prov.serialize(r);
-							int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
-							// System.out.println("binary pos:"+attpos);
-							// AccessLog.log("binary pos:"+attpos);
-							if (attpos > 0) {
-								out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(inf.context, new RecordToken(rec._id.toString(), rec.stream.toString()));
+							out.append((first?"":",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : ");
+							int attpos;
+							int idx = 0;
+							do {
+							  attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
+							  if (attpos > 0) {
+								out.append(ser.substring(0, attpos));
+								FileData fileData = RecordManager.instance.fetchFile(inf.context, new RecordToken(rec._id.toString(), rec.stream.toString()), idx);
 
 								int BUFFER_SIZE = 3 * 1024;
 
@@ -495,14 +497,16 @@ public class Studies extends APIController {
 									}
 
 								}
-
-								out.append(ser.substring(attpos + FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length()) + " } ");
+                                ser = ser.substring(attpos + FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length());
+                                idx++;
 							} else
-								out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
+								out.append(ser);
+							} while (attpos>=0);
+							out.append("} ");
 						} else {
 							out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\" } ");
 						}
-						first = false;
+					    first = false;
 						// System.out.println("done record");
 						// AccessLog.log("done record");
 						return ByteString.fromString(out.toString());
@@ -650,7 +654,7 @@ public class Studies extends APIController {
 		}
 
 		ObjectNode result = Json.newObject();
-		result.put("study", JsonOutput.toJsonNode(study, "Study", fields));
+		result.set("study", JsonOutput.toJsonNode(study, "Study", fields));
 
 		return ok(result);
 	}
@@ -1190,9 +1194,10 @@ public class Studies extends APIController {
 			consent.lastUpdated = consent.dateOfCreation;
 			consent.status = ConsentStatus.ACTIVE;
 			consent.writes = WritePermissionType.UPDATE_EXISTING;
+			consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 
 			RecordManager.instance.createAnonymizedAPS(ownerId, context.getAccessor(), consent._id, true, true, true);
-			Circles.prepareConsent(context, consent, true);
+			Circles.persistConsentMetadataChange(context, consent, true);
 			Circles.addUsers(context, ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
 			reference = consent;
@@ -1213,11 +1218,12 @@ public class Studies extends APIController {
 		consent.authorized = new HashSet<MidataId>();
 		consent.dateOfCreation = new Date();
 		consent.lastUpdated = consent.dateOfCreation;
+		consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 		consent.status = ConsentStatus.ACTIVE;
 		consent.writes = WritePermissionType.NONE;
 
 		RecordManager.instance.createAnonymizedAPS(ownerId, study._id, consent._id, true, true, true);
-		Circles.prepareConsent(context, consent, true);
+		Circles.persistConsentMetadataChange(context, consent, true);
 
 		RecordManager.instance.copyAPS(context.getAccessor(), reference._id, consent._id, ownerId);
 		return consent;

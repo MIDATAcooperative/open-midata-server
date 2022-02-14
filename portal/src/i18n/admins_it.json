@@ -30,14 +30,14 @@
         "specific_user" : "Utente specifico",
         "role" : "Ruolo",
         "status" : "Stato",
-        "midata_id" : "MIDATA ID",
+        "midata_id" : "@PRODUCT ID",
         "empty" : "Non è stato trovato alcun utente corrispondente."
     },
 
     "admin_address" : {
         "title" : "Profilo utente",
         "show_apps_created" : "Mostra le applicazioni create da questo sviluppatore",
-        "midata_id" : "MIDATA ID",
+        "midata_id" : "@PRODUCT ID",
         "role" : "Ruolo",
         "subroles" : "Sotto-ruolo/i",
         "developer" : "Appartiene allo sviluppatore:",
@@ -65,7 +65,8 @@
         "change_email_btn" : "Modifica indirizzo e-mail",
         "change_address_btn" : "Modifica profilo",
         "make_master_btn" : "Aggiungi ruolo utente master",
-        "remove_master_btn" : "Revoca il ruolo utente master"
+        "remove_master_btn" : "Revoca il ruolo utente master",
+        "history" : "Storia dell'account"
     },
 
     "admin_news" : {
@@ -134,9 +135,11 @@
         "criteria" : "Criteri di ricerca",
         "empty" : "Non è stato trovato alcun progetto corrispondente.",
         "add_definition_btn" : "Importare la definizione di un progetto",
+        "code" : "Codice del progetto",
         "name" : "Nome del progetto",
         "type" : "Tipo",
-        "created" : "Creato il"
+        "created" : "Creato il",
+        "ALL" : "Tutti i progetti"
     },
 
     "admin_terms" : {
@@ -172,6 +175,8 @@
         "endDate" : "Data di fine",
         "dataCreatedBefore" : "Data di congelamento dei dati",
         "consent_observers" : "Observers di consenso",
+        "leavePolicy" : "Condizioni di ritiro dei partecipanti",
+        "rejoinPolicy" : "Condizioni di reintegrazione dei partecipanti",
         "infos" : "Informazioni pubbliche",
         "infos_part" : "Informazioni per i partecipanti",
         "infos_internal" : "Informazioni interne",
@@ -303,7 +308,7 @@
         "lang" : "Lingua",
         "title" : "Titolo e-mail",
         "content" : "Contenuto e-mail",
-        "test_btn" : "Prova: invia a te stesso",
+        "test_btn" : "Prova: invia a se stesso",
         "save_btn" : "Memorizza l'e-mail",
         "send_btn" : "Spedire"
     },
@@ -315,15 +320,15 @@
         "make_selection" : "Seleziona l'elemento che vuoi modificare o aggiungere un nuovo codice",
         "new_code" : "Nuovo codice da aggiungere",
         "edit_code" : "Modifica il codice esistente",
-        "edit_content" : "Modifica il tipo di contenuto MIDATA esistente",
-        "new_content" : "Nuovo tipo di contenuto MIDATA da aggiungere",
+        "edit_content" : "Modifica il tipo di contenuto @PRODUCT esistente",
+        "new_content" : "Nuovo tipo di contenuto @PRODUCT da aggiungere",
         "edit_group" : "Modifica il gruppo esistente nell'albero dei dati",
         "new_group" : "Nuovo gruppo nell'albero dei dati",
         "system" : "Sistema di codice",
         "version" : "Versione",
         "code" : "Codice",
         "display" : "Denominazione",
-        "content" : "Tipo di contenuto MIDATA",
+        "content" : "Tipo di contenuto @PRODUCT",
         "security" : "Chiavi di crittografia dei dati",
         "medium" : "Riutilizzare le chiavi per dati dello stesso tipo e persona",
         "high" : "Utilizzare una nuova chiave per ogni record",

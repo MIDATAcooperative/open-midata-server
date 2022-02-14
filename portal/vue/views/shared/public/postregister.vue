@@ -52,6 +52,17 @@
 					<p>&nbsp;</p>
 					<p v-t="'postregister.licence.text'"></p>						  
 				</div>
+				
+				<div v-if="progress.APP_UNLOCK_CODE">
+				  <form ref="myform" name="myform" @submit.prevent="setUnlockCode()" role="form" class="form form-horizontal" novalidate>
+				    <p v-t="'postregister.unlock_code'"></p>
+					<form-group name="unlockCode" label="registration.unlock_code" :path="errors.unlockCode">									
+                    	  <input type="text" class="form-control" id="unlockCode"
+						   name="unlockCode" :placeholder="$t('registration.unlock_code')" v-model="unlockCode" v-validate required>
+					</form-group>									
+			    	<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'common.submit_btn'"></button>
+			      </form>
+				</div>
 						
 				<div v-if="progress.AUTH2FACTOR || progress.PHONE_VERIFIED">
 					<p v-t="'postregister.auth2factor'"></p>					
@@ -258,6 +269,7 @@
 									</div>
 									<form-group name="country" label="registration.country" :path="errors.country">
 										<select class="form-control" id="country" name="country" v-model="registration.country" :required="addressNeeded()" v-validate>
+										    <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
 											<option v-for="country in countries" :key="country" :value="country" v-t="'enum.country.'+country"></option>
 										</select>
 									</form-group>
@@ -326,7 +338,8 @@ export default {
 		ENV : ENV,
 		tokenIncluded : false,
 		mode : null,
-		countries : languages.countries	
+		countries : languages.countries,
+		unlockCode : ""	
 	}),
 
 	props: ['preview'],
@@ -412,6 +425,11 @@ export default {
 				});				
 			}			
 		},
+		
+		setUnlockCode() {
+		   oauth.setUnlockCode(this.$data.unlockCode);
+		   this.retry(null, { unlockCode : this.$data.unlockCode });
+		},
 
 		
 		pwsubmit() {
@@ -442,7 +460,9 @@ export default {
 					};	
 				}
 							
-				var data = { token : $route.query.token, mode : $data.mode };	
+				var data = {};
+				if ($route.query.token) data.token = $route.query.token;
+				if ($data.mode) data.mode = $data.mode;	
 				if ($data.setpw.secure) {
 				data.password = keys.pw_hash;
 				data.pub = keys.pub;

@@ -132,7 +132,7 @@ public class OAuth2 extends Controller {
         if (!appInstance.owner.equals(ownerId)) throw new InternalServerException("error.invalid.token", "Wrong app instance owner!");
         if (!appInstance.applicationId.equals(applicationId)) throw new InternalServerException("error.invalid.token", "Wrong app for app instance!");
         
-        if (appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.REJECTED)) 
+        if (!appInstance.status.isSharingData()) 
         	throw new BadRequestException("error.blocked.consent", "Consent expired or blocked.");
         
         Plugin app = Plugin.getById(appInstance.applicationId);
@@ -189,6 +189,34 @@ public class OAuth2 extends Controller {
         }        
         return true;
 	}
+	
+	/**
+	 * Return OpenID Connect compatible user info
+	 * @param request
+	 * @return
+	 * @throws AppException
+	 */
+	@MobileCall	
+	public Result userinfo(Request request) throws AppException {
+		Optional<String> param = request.header("Authorization");
+		if (!param.isPresent() || !param.get().startsWith("Bearer ")) OAuth2.invalidToken();
+		String token = param.get().substring("Bearer ".length());
+	    ExecutionInfo inf = ExecutionInfo.checkToken(request, token, false);
+	    User user = User.getById(inf.executorId, User.ALL_USER);
+	    ObjectNode obj = Json.newObject();	 
+	    
+	    obj.put("sub", user._id.toString());
+	    obj.put("name", user.firstname+" "+user.lastname);
+	    obj.put("family_name", user.lastname);
+	    obj.put("given_name", user.firstname);
+	    obj.put("email", user.email);
+	    obj.put("email_verified", (user.emailStatus == EMailStatus.VALIDATED || user.emailStatus == EMailStatus.EXTERN_VALIDATED));
+        if (user.gender != null) obj.put("gender", user.gender.toString().toLowerCase());
+        	    
+	    return ok(obj).withHeader("Cache-Control", "no-store").withHeader("Pragma", "no-cache");
+	}
+	
+	
 	
 	@BodyParser.Of(BodyParser.FormUrlEncoded.class)
 	@MobileCall
@@ -268,7 +296,7 @@ public class OAuth2 extends Controller {
     		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
     		if (!app.type.equals("mobile")) throw new PluginException(app._id,"error.plugin", "Wrong application type. Only smartphone/web type applications may use the OAuth login.");
     		
-    		appInstance = MobileAppInstance.getById(tk.appInstanceId, Sets.create("owner", "applicationId", "status", "passcode"));
+    		appInstance = MobileAppInstance.getById(tk.appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
     		if (appInstance == null) throw new BadRequestException("error.internal", "invalid_grant");
     		phrase = tk.device;
     		aeskey = tk.aeskey;
@@ -318,7 +346,7 @@ public class OAuth2 extends Controller {
 		
 		obj.put("expires_in", MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME / 1000l);
 		obj.put("patient", appInstance.owner.toString());
-		obj.put("refresh_token", refresh.encrypt());
+		obj.put("refresh_token", refresh.encrypt());	
 						
 		return ok(obj).withHeader("Cache-Control", "no-store").withHeader("Pragma", "no-cache");
 	}
@@ -329,7 +357,7 @@ public class OAuth2 extends Controller {
 		
 		MidataId appInstanceId = refreshToken.appInstanceId;
 		
-		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "appVersion", "applicationId", "status", "licence"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
 		
 		if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) {
 			// Begin: Allow expired refresh tokens for key recovery
@@ -420,9 +448,9 @@ public class OAuth2 extends Controller {
 		Plugin app;
 		if (token.appId == null) {
 		   String name = JsonValidation.getString(json, "appname");
-		   app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef"));
+		   app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef", "codeChallenge"));
 		} else {			
-		   app = Plugin.getById(token.appId, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef"));			
+		   app = Plugin.getById(token.appId, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef", "codeChallenge"));			
 		}
 		
 		// Check app
@@ -449,6 +477,13 @@ public class OAuth2 extends Controller {
 			}
 		}
 		
+		checkUnlockCode(token, app, json);
+						
+		token.appId = app._id;
+		return app;
+	}
+	
+	public static void checkUnlockCode(ExtendedSessionToken token, Plugin app, JsonNode json) throws JsonValidationException{
 		// Check unlock code
 		if (app.unlockCode != null) {				
 			String code = JsonValidation.getStringOrNull(json, "unlockCode");
@@ -456,10 +491,7 @@ public class OAuth2 extends Controller {
 				if (!app.unlockCode.toUpperCase().equals(code.toUpperCase())) throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
 				token.setAppUnlockedWithCode();
 			}
-		}	
-						
-		token.appId = app._id;
-		return app;
+		}
 	}
 	
 	/**
@@ -504,10 +536,10 @@ public class OAuth2 extends Controller {
 	 * @param token
 	 * @param json
 	 */
-	private static final void readyCodeChallenge(ExtendedSessionToken token, JsonNode json) throws JsonValidationException {
+	private static final void readyCodeChallenge(ExtendedSessionToken token, JsonNode json, Plugin app) throws JsonValidationException, BadRequestException {
 		token.codeChallenge = JsonValidation.getStringOrNull(json, "code_challenge");
 	    token.codeChallengeMethod = JsonValidation.getStringOrNull(json, "code_challenge_method");
-	    
+	    if (app.codeChallenge && token.codeChallenge==null) throw new BadRequestException("error.no_code_challenge", "Code challenge missing");
 	}
 	
 	/**
@@ -724,7 +756,7 @@ public class OAuth2 extends Controller {
 		
 		if (token.device == null || token.appId == null || token.ownerId == null) throw new NullPointerException();
 		
-        MobileAppInstance appInstance = MobileAPI.getAppInstance(tempContext, token.device, token.appId, token.ownerId, Sets.create("owner", "applicationId", "status", "passcode", "appVersion", "licence", "deviceId"));		
+        MobileAppInstance appInstance = MobileAPI.getAppInstance(tempContext, token.device, token.appId, token.ownerId, MobileAppInstance.APPINSTANCE_ALL);		
 		
 		//KeyManager.instance.login(60000l, false);		
 		
@@ -748,6 +780,7 @@ public class OAuth2 extends Controller {
 		if (token.appId == null) return null;
 		
 		if (!token.getAppConfirmed()) {
+			
 			AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
 			boolean allRequired = true;
 			for (StudyAppLink sal : links) {
@@ -837,7 +870,7 @@ public class OAuth2 extends Controller {
 		if (token.device != null && token.device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
 	    // Validate Mobile App	
 		Plugin app = validatePlugin(token, json);		
-		readyCodeChallenge(token, json);
+		readyCodeChallenge(token, json, app);
 		
 		return loginHelper(request, token, json, app, null);
 	}
@@ -966,17 +999,17 @@ public class OAuth2 extends Controller {
 		}		
 		AccessLog.log("Using context="+token.currentContext.toString());
 		appInstance = checkExistingAppInstance(token, token.currentContext, json, links);
-				
+			
+		if (app != null && app.unlockCode != null && !token.getAppUnlockedWithCode()) {
+			  if (notok == null) notok = new HashSet<UserFeature>();
+			  notok.add(UserFeature.APP_UNLOCK_CODE);
+		}
 	
 		UserFeature recheck = checkAppConfirmationRequired(token, json, links);
 		if (recheck != null) {
 			if (notok == null) notok = new HashSet<UserFeature>();
 			notok.add(recheck);			
-		}
-		
-		if (app != null && app.unlockCode != null && !token.getAppUnlockedWithCode()) {				
-		   throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
-		}
+		} 
 		
 		if (app != null && !LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
 			return Application.loginHelperResult(request, token, user, Collections.singleton(UserFeature.VALID_LICENCE));
@@ -987,7 +1020,8 @@ public class OAuth2 extends Controller {
 		if (notok != null && !notok.isEmpty()) {
 		  if (token.handle != null) KeyManager.instance.persist(user._id);
 		  if (notok.contains(UserFeature.PASSWORD_SET)) notok = Collections.singleton(UserFeature.PASSWORD_SET);		  	
-		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);		  
+		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);
+		  if (notok.contains(UserFeature.APP_UNLOCK_CODE)) notok = Collections.singleton(UserFeature.APP_UNLOCK_CODE);
 		  if (notok.contains(UserFeature.BIRTHDAY_SET)) notok = Collections.singleton(UserFeature.BIRTHDAY_SET);
 		  if (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.PHONE_ENTERED)) notok.retainAll(Sets.createEnum(UserFeature.ADDRESS_ENTERED, UserFeature.PHONE_ENTERED));
 		  if (notok.contains(UserFeature.ADMIN_VERIFIED)) notok = Collections.singleton(UserFeature.ADMIN_VERIFIED);		  

@@ -18,6 +18,7 @@
 package models;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -73,6 +74,10 @@ public class Research extends Model {
 	 
 	 public void set(String field, Object value) throws InternalServerException {
 			Model.set(this.getClass(), collection, this._id, field, value);
+	 }
+	 
+	 public static Set<Research> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
+		 return Model.getAll(Research.class, collection, properties, fields);
 	 }
 	 
 }

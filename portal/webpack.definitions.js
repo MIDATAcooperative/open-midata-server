@@ -16,19 +16,9 @@
  */
 
 const glob = require('glob');
-const instance = require('./../config/instance.json');
 
 var my_exports = {};
 
-my_exports.jsonReplacer = function(buffer) {
-   var str = buffer.toString();	
-   
-        str = str.replace(/@PLATFORM/ig,instance.platform);
-        str = str.replace(/@SUPPORT/ig,instance.support);
-        str = str.replace(/@OPERATOR/ig,instance.operator);
-        str = str.replace(/@HOMEPAGE/ig,instance.homepage);		
-		return Buffer.from(str);	
-}; 
 
 my_exports.entry = {
     

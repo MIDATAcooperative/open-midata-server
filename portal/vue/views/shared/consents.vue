@@ -16,9 +16,8 @@
 -->
 <template>
 <div>
-    <panel :title="$t('consents.title')" :busy="isBusy">
-        
-		<form class="form" v-if="role!='RESEARCH'">            
+    <panel :title="$t('consents.title')" :busy="isBusy">        
+		<form class="form" v-if="role!='research'">            
 		    <div class="form-check">
 		      <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="consenttype" value="option1" checked> <span class="margin-left" v-t="'consents.where_owner'"></span> 
@@ -39,23 +38,23 @@
         
         <pagination v-model="consents" search="name"></pagination>
 
-		<table class="table table-striped" v-if="consents.filtered && consents.filtered.length">
+		<table class="table table-striped mt-1" v-if="consents.filtered && consents.filtered.length">
 
 			<tr>
 				<Sorter sortby="name" v-model="consents" v-t="'consents.name'"></Sorter>
-				<Sorter sortby="dateOfCreation" v-model="consents" v-t="'consents.date_of_creation'"></Sorter>
+				<Sorter class="d-none d-sm-table-cell" sortby="dateOfCreation" v-model="consents" v-t="'consents.date_of_creation'"></Sorter>
 				<Sorter sortby="type" v-model="consents" v-t="'consents.type'"></Sorter>
-				<Sorter sortby="status" v-model="consents" v-t="'consents.status'"></Sorter>
-				<th v-t="'consents.number_of_people'"></th>
-				<th v-t="'consents.number_of_records'"></th>
+				<Sorter class="d-none d-sm-table-cell" sortby="status" v-model="consents" v-t="'consents.status'"></Sorter>
+				<th class="d-none d-lg-table-cell" v-t="'consents.number_of_people'"></th>
+				<th class="d-none d-lg-table-cell" v-t="'consents.number_of_records'"></th>
 			</tr>
 			<tr v-for="consent in consents.filtered" :key="consent._id" :class="{ 'table-warning' : consent.status == 'UNCONFIRMED' }">
 				<td><a @click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>
-				<td>{{ $filters.date(consent.dateOfCreation) }}</td> 
+				<td class="d-none d-sm-table-cell">{{ $filters.date(consent.dateOfCreation) }}</td> 
 				<td>{{ $t('enum.consenttype.'+consent.type) }}</td>
-				<td>{{ $t('enum.consentstatus.'+consent.status) }}</td>
-				<td>{{ consent.authorized.length }}</td>
-				<td>{{ consent.records }}</td>
+				<td class="d-none d-sm-table-cell">{{ $t('enum.consentstatus.'+consent.status) }}</td>
+				<td class="d-none d-lg-table-cell">{{ consent.authorized.length }}</td>
+				<td class="d-none d-lg-table-cell">{{ consent.records }}</td>
 			</tr>
 		</table>
 
@@ -77,7 +76,8 @@ import ENV from 'config';
 export default {
   
     data: () => ({
-        consents : []
+        consents : [],
+        role : null
 	}),	
 		
 
@@ -117,6 +117,7 @@ export default {
     },
 
     created() {
+        this.$data.role = this.$route.meta.role;
         this.init();
     }
    

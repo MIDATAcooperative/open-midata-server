@@ -17,7 +17,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ecde2"},"content":"ConceptMap","defaultCode":"http://midata.coop ConceptMap","security":"MEDIUM","label":{"en":"ConceptMap"},"resourceType":"fhir/ConceptMap"}
 {"_id":{"$oid":"569915fc6281a61a232ecde3"},"content":"Condition","defaultCode":"http://midata.coop Condition","security":"MEDIUM","label":{"en":"Condition"},"resourceType":"fhir/Condition"}
 {"_id":{"$oid":"569915fc6281a61a232ecde4"},"content":"Conformance","defaultCode":"http://midata.coop Conformance","security":"MEDIUM","label":{"en":"Conformance"},"resourceType":"fhir/Conformance"}
-{"_id":{"$oid":"569915fc6281a61a232ecde5"},"content":"Contract","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop Contract","label":{"en":"Contract"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde5"},"content":"Contract","security":"MEDIUM","defaultCode":"http://midata.coop Contract","label":{"en":"Contract"}}
 {"_id":{"$oid":"569915fc6281a61a232ecde6"},"content":"DetectedIssue","defaultCode":"http://midata.coop DetectedIssue","security":"MEDIUM","label":{"en":"DetectedIssue"},"resourceType":"fhir/DetectedIssue"}
 {"_id":{"$oid":"569915fc6281a61a232ecde7"},"content":"Coverage","defaultCode":"http://midata.coop Coverage","security":"MEDIUM","label":{"en":"Coverage"},"resourceType":"fhir/Coverage"}
 {"_id":{"$oid":"569915fc6281a61a232ecde8"},"content":"DataElement","defaultCode":"http://midata.coop DataElement","security":"MEDIUM","label":{"en":"DataElement"},"resourceType":"fhir/DataElement"}
@@ -40,7 +40,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ecdfa"},"content":"Flag","defaultCode":"http://midata.coop Flag","security":"MEDIUM","label":{"en":"Flag"},"resourceType":"fhir/Flag"}
 {"_id":{"$oid":"569915fc6281a61a232ecdfb"},"content":"Goal","defaultCode":"http://midata.coop Goal","security":"MEDIUM","label":{"de":"Ziel","en":"Goal","fr":"Objectif"},"resourceType":"fhir/Goal"}
 {"_id":{"$oid":"569915fc6281a61a232ecdfc"},"content":"Group","defaultCode":"http://midata.coop Group","security":"MEDIUM","label":{"de":"Gruppe","en":"Group","it":"Gruppo","fr":"Groupe"},"resourceType":"fhir/Group"}
-{"_id":{"$oid":"569915fc6281a61a232ecdfd"},"content":"HealthcareService","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop HealthcareService","label":{"en":"HealthcareService"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdfd"},"content":"HealthcareService","security":"MEDIUM","defaultCode":"http://midata.coop HealthcareService","label":{"en":"HealthcareService"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdfe"},"content":"ImagingObjectSelection","defaultCode":"http://midata.coop ImagingObjectSelection","security":"MEDIUM","label":{"en":"ImagingObjectSelection"},"resourceType":"fhir/ImagingObjectSelection"}
 {"_id":{"$oid":"569915fc6281a61a232ecdff"},"content":"ImagingStudy","defaultCode":"http://midata.coop ImagingStudy","security":"MEDIUM","label":{"en":"ImagingStudy"},"resourceType":"fhir/ImagingStudy"}
 {"_id":{"$oid":"569915fc6281a61a232ece00"},"content":"Immunization","defaultCode":"http://midata.coop Immunization","security":"MEDIUM","label":{"de":"Impfung","en":"Immunization","fr":"Vaccination"},"resourceType":"fhir/Immunization"}
@@ -54,13 +54,13 @@
 {"_id":{"$oid":"569915fc6281a61a232ece08"},"content":"MedicationDispense","defaultCode":"http://midata.coop MedicationDispense","security":"MEDIUM","label":{"en":"Medication Dispense"},"resourceType":"fhir/MedicationDispense"}
 {"_id":{"$oid":"569915fc6281a61a232ece09"},"content":"MedicationOrder","defaultCode":"http://midata.coop MedicationOrder","security":"MEDIUM","label":{"en":"Medication Order"},"resourceType":"fhir/MedicationOrder"}
 {"_id":{"$oid":"569915fc6281a61a232ece0a"},"content":"MedicationStatement","defaultCode":"http://midata.coop MedicationStatement","security":"MEDIUM","label":{"en":"Medication Statement"},"resourceType":"fhir/MedicationStatement"}
-{"_id":{"$oid":"569915fc6281a61a232ece0b"},"content":"MessageHeader","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop MessageHeader","label":{"en":"MessageHeader"}}
+{"_id":{"$oid":"569915fc6281a61a232ece0b"},"content":"MessageHeader","security":"MEDIUM","defaultCode":"http://midata.coop MessageHeader","label":{"en":"MessageHeader"}}
 {"_id":{"$oid":"569915fc6281a61a232ece0c"},"content":"NamingSystem","defaultCode":"http://midata.coop NamingSystem","security":"MEDIUM","label":{"en":"NamingSystem"},"resourceType":"fhir/NamingSystem"}
 {"_id":{"$oid":"569915fc6281a61a232ece0d"},"content":"NutritionOrder","defaultCode":"http://midata.coop NutritionOrder","security":"MEDIUM","label":{"en":"NutritionOrder"},"resourceType":"fhir/NutritionOrder"}
 {"_id":{"$oid":"569915fc6281a61a232ece0f"},"content":"OperationDefinition","defaultCode":"http://midata.coop OperationDefinition","security":"MEDIUM","label":{"en":"OperationDefinition"},"resourceType":"fhir/OperationDefinition"}
 {"_id":{"$oid":"569915fc6281a61a232ece10"},"content":"OperationOutcome","defaultCode":"http://midata.coop OperationOutcome","security":"MEDIUM","label":{"en":"OperationOutcome"},"resourceType":"fhir/OperationOutcome"}
-{"_id":{"$oid":"569915fc6281a61a232ece11"},"content":"Order","security":"MEDIUM","group":"healthworkflow","defaultCode":"http://midata.coop Order","label":{"en":"Order"}}
-{"_id":{"$oid":"569915fc6281a61a232ece12"},"content":"OrderResponse","security":"MEDIUM","group":"healthworkflow","defaultCode":"http://midata.coop OrderResponse","label":{"en":"OrderResponse"}}
+{"_id":{"$oid":"569915fc6281a61a232ece11"},"content":"Order","security":"MEDIUM","defaultCode":"http://midata.coop Order","label":{"en":"Order"}}
+{"_id":{"$oid":"569915fc6281a61a232ece12"},"content":"OrderResponse","security":"MEDIUM","defaultCode":"http://midata.coop OrderResponse","label":{"en":"OrderResponse"}}
 {"_id":{"$oid":"569915fc6281a61a232ece13"},"content":"Organization","defaultCode":"http://midata.coop Organization","security":"MEDIUM","label":{"de":"Organisation","en":"Organization","fr":"Organisation"},"resourceType":"fhir/Organization"}
 {"_id":{"$oid":"569915fc6281a61a232ece14"},"content":"Parameters","defaultCode":"http://midata.coop Parameters","security":"MEDIUM","label":{"en":"Parameters","fr":"Paramètres"},"resourceType":"fhir/Parameters"}
 {"_id":{"$oid":"569915fc6281a61a232ece15"},"content":"Patient","defaultCode":"http://midata.coop Patient","security":"HIGH","label":{"de":"Patient","en":"Patient","it":"Paziente","fr":"Patient"},"resourceType":"fhir/Patient"}
@@ -76,7 +76,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ece1f"},"content":"Questionnaire","defaultCode":"http://midata.coop Questionnaire","security":"HIGH","label":{"de":"Fragebogen","en":"Questionnaire","fr":"Questionnaire"},"resourceType":"fhir/Questionnaire"}
 {"_id":{"$oid":"569915fc6281a61a232ece20"},"content":"QuestionnaireResponse","defaultCode":"http://midata.coop QuestionnaireResponse","security":"HIGH","label":{"de":"Fragebogenantworten","en":"Questionnaire responses","fr":"Réponses de questionnaire"},"resourceType":"fhir/QuestionnaireResponse"}
 {"_id":{"$oid":"569915fc6281a61a232ece21"},"content":"ReferralRequest","defaultCode":"http://midata.coop ReferralRequest","security":"HIGH","label":{"en":"ReferralRequest"},"resourceType":"fhir/ReferralRequest"}
-{"_id":{"$oid":"569915fc6281a61a232ece22"},"content":"RelatedPerson","defaultCode":"http://midata.coop RelatedPerson","security":"HIGH","label":{"en":"RelatedPerson"},"resourceType":"fhir/RelatedPerson"}
+{"_id":{"$oid":"569915fc6281a61a232ece22"},"content":"RelatedPerson","defaultCode":"http://midata.coop RelatedPerson","security":"HIGH","label":{"en":"Related Person"},"resourceType":"fhir/RelatedPerson"}
 {"_id":{"$oid":"569915fc6281a61a232ece23"},"content":"RiskAssessment","defaultCode":"http://midata.coop RiskAssessment","security":"HIGH","label":{"en":"RiskAssessment"},"resourceType":"fhir/RiskAssessment"}
 {"_id":{"$oid":"569915fc6281a61a232ece24"},"content":"Schedule","defaultCode":"http://midata.coop Schedule","security":"MEDIUM","label":{"de":"Zeitplan","en":"Schedule"},"resourceType":"fhir/Schedule"}
 {"_id":{"$oid":"569915fc6281a61a232ece25"},"content":"SearchParameter","defaultCode":"http://midata.coop SearchParameter","security":"HIGH","label":{"de":"Suchparameter","en":"SearchParameter","fr":"Paramètres de recherche"}}
@@ -113,7 +113,7 @@
 {"_id":{"$oid":"5703b84caed6451f597570ee"},"content":"food/calories-in","defaultCode":"http://midata.coop food/calories-in","security":"MEDIUM","label":{"de":"Kalorieneinnahme","en":"Calories Intake"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"kcal","category":"fitness"}
 {"_id":{"$oid":"5703b84caed6451f597570ef"},"content":"activities/minutes-very-active","defaultCode":"http://midata.coop activities/minutes-very-active","security":"MEDIUM","label":{"de":"Minuten Sehr Aktiv","en":"Minutes Very Active"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"min","category":"fitness"}
 {"_id":{"$oid":"5703b84caed6451f597570f0"},"content":"activities/minutes-sedentary","defaultCode":"http://midata.coop activities/minutes-sedentary","security":"MEDIUM","label":{"de":"Minuten Ruhig","en":"Minutes Sedentary"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"min","category":"fitness"}
-{"_id":{"$oid":"57052bfb270f4e53a042b66d"},"content":"observation/cardio","security":"HIGH","group":"otherhealth","defaultCode":"http://midata.coop observation/cardio","label":{"en":"Demo: Cardio Observation"}}
+{"_id":{"$oid":"57052bfb270f4e53a042b66d"},"content":"observation/cardio","security":"HIGH","defaultCode":"http://midata.coop observation/cardio","label":{"en":"Demo: Cardio Observation"}}
 {"_id":{"$oid":"57052bfb270f4e53a042b66e"},"content":"account/credentials","defaultCode":"http://midata.coop account/credentials","security":"HIGH","label":{"de":"Anmeldedaten","en":"Credentials","fr":"Identifiants"}}
 {"_id":{"$oid":"57052bfb270f4e53a042b66f"},"content":"unknown","defaultCode":"http://midata.coop unknown","security":"HIGH","label":{"de":"Unbekannter Inhalt","en":"Unknown Content","fr":"Contenu inconnu"}}
 {"_id":{"$oid":"57052bfb270f4e53a042b670"},"content":"activities/heartrate","defaultCode":"http://loinc.org 8867-4","security":"MEDIUM","label":{"de":"Herzfrequenz","en":"Heart Rate","fr":"Fréquence cardiaque"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"{beats}/min","category":"vital-signs"}
@@ -327,3 +327,7 @@
 {"_id":{"$oid":"5fb39ebcaed64513b2abccd6"},"content":"forward-reach-test","defaultCode":"http://midata.coop forward-reach-test","security":"MEDIUM","label":{"en":"Forward Reach Test"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5fb39f01aed64513b2abccd8"},"content":"timed-up-and-go","defaultCode":"http://midata.coop timed-up-and-go","security":"MEDIUM","label":{"en":"Timed up and go"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5fb3a144aed64513b2abccda"},"content":"walking-speed","defaultCode":"http://midata.coop walking-speed","security":"MEDIUM","label":{"en":"Walking Speed"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"61efb95cc2841c36d6227d79"},"content":"app/log","defaultCode":"http://midata.coop app/log","security":"MEDIUM","label":{"de":"Application Log","en":"Application Log"},"resourceType":"fhir/Basic"}
+{"_id":{"$oid":"61efb9a4c2841c36d6227d7b"},"content":"app/config","defaultCode":"http://midata.coop app/config","security":"MEDIUM","label":{"de":"Anwendungskonfiguration","en":"Application Configuration"},"resourceType":"fhir/Basic"}
+{"_id":{"$oid":"61f3fbcee8d4223bfafd55ed"},"content":"Organization/HP","defaultCode":"http://midata.coop Organization/HP","security":"MEDIUM","label":{"de":"Organisation auf Midata (Ärzte)","en":"Organization on Midata (HP)"},"resourceType":"fhir/Organization"}
+{"_id":{"$oid":"61f3fc14e8d4223bfafd55f0"},"content":"Organization/Research","defaultCode":"http://midata.coop Organization/Research","security":"MEDIUM","label":{"de":"Organisation auf Midata (Forschung)","en":"Organization on Midata (Research)"},"resourceType":"fhir/Organization"}

@@ -29,7 +29,7 @@
         "name" : "Nome",
         "description" : "Descrizione",
         "url" : "URL della homepage",
-        "members" : "Tutti i membri della vostra organizzazione",
+        "members" : "Tutti i membri della sua organizzazione",
         "addprovider" : "Iscrivere nuovo membro",
         "master_user" : "Devi essere un utente master per aggiornare la propria organizzazione o iscrivere nuovi utenti per l'organizzazione. Si prega di contattare @SUPPORT se si pensa che si dovrebbero avere le autorizzazioni di utente master."
     },
@@ -49,7 +49,7 @@
         "title" : "Ricerca paziente",
         "email" : "e-mail",
         "or" : "o",
-        "midataid" : "MIDATA ID",
+        "midataid" : "@PRODUCT ID",
         "birthday" : "Data di nascita",
         "searching" : "Ricerca...",
         "address" : "Indirizzo",

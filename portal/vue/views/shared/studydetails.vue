@@ -269,7 +269,7 @@ export default {
 	
 	    mayRequestParticipation() {
             const { $data, $route, $router } = this, me = this;
-		    return ($data.participation != null && ( $data.participation.pstatus == "MATCH" || $data.participation.pstatus == "CODE" )) ||
+		    return ($data.participation != null && ( $data.participation.pstatus == "MATCH" || $data.participation.pstatus == "CODE" || $data.participation.status == "INVALID" )) ||
 			       ($data.participation != null && ( $data.participation.pstatus == "MEMBER_RETREATED" || $data.participation.pstatus == "MEMBER_REJECTED" ) && $data.study.rejoinPolicy == "DELETE_LAST" && $data.study.participantSearchStatus == 'SEARCHING' && $route.meta.role.toUpperCase() == 'MEMBER' && (!$data.study.joinMethods || $data.study.joinMethods.indexOf("PORTAL")>=0 )) ||
 		           ($data.participation == null && $data.study.participantSearchStatus == 'SEARCHING' && $route.meta.role.toUpperCase() == 'MEMBER' && (!$data.study.joinMethods || $data.study.joinMethods.indexOf("PORTAL")>=0 ));
 	    },

@@ -45,6 +45,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Http.Request;
 import utils.AccessLog;
+import utils.ConsentQueryTools;
 import utils.RuntimeConstants;
 import utils.access.AccessContext;
 import utils.access.EncryptedFileHandle;
@@ -301,9 +302,10 @@ public class FHIR extends Controller {
 		info.role = UserRole.ANY;
 		info.overrideBaseUrl = baseURL;
         
-		if (instance.sharingQuery == null) {
+		ConsentQueryTools.getSharingQuery(instance, true);
+		/*if (instance.sharingQuery == null) {
 			instance.sharingQuery = RecordManager.instance.getMeta(tempContext, instance._id, "_query").toMap();
-		}
+		}*/
 		
 		Map<String, Object> appobj = RecordManager.instance.getMeta(tempContext, instance._id, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {

@@ -18,7 +18,7 @@
 <html lang="en">
 <head>
   <head>
-		<title><%= htmlWebpackPlugin.options.PLATFORM %></title>
+		<title>Open Midata Platform</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 		<meta name="description" content="MIDATA">		
@@ -38,8 +38,9 @@
    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
    <link rel="manifest" href="/images/manifest.json">
    <script type="text/javascript" src="<%= htmlWebpackPlugin.options.BACKEND %>/api/assets/javascripts/routes" ></script>
+   <script type="text/javascript" src="<%= htmlWebpackPlugin.options.BACKEND %>/config/config.js" ></script>
 	</head>
-	<body class="<%= htmlWebpackPlugin.options.NAME %>">    
+	<body>    
     <div id="app"></div>  
 	</body>
 

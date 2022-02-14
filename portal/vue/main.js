@@ -23,6 +23,7 @@ import { setupI18n, loadLocaleMessages } from "services/lang.js";
 import Vue3Components, { Filters } from 'basic-vue3-components';
 import VueCookies from 'vue3-cookies';
 import PluginFrame from "directives/pluginframe.js";
+import ENV from 'config';
 
 require('bootstrap/dist/js/bootstrap.bundle');
 
@@ -62,10 +63,14 @@ app.directive("pluginframe", PluginFrame);
 app.use(router);
 
 let domain = document.location.hostname;
+
 if (domain.indexOf("ch.midata.coop")>=0) {
   document.location.href="https://ch.midata.coop/#/portal/login";
 } else {
-document.addEventListener("DOMContentLoaded", function(){      
+document.addEventListener("DOMContentLoaded", function(){   
+	document.title = ENV.platform;
+	document.body.className+=" "+ENV.instanceType;   
+
     router.isReady().then(      
       () => {
         let loader = document.getElementById("loadscreen");

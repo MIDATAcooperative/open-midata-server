@@ -26,11 +26,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -80,7 +83,11 @@ public class KeyManager implements KeySession {
 	 */
 	public final static String CIPHERS[] = new String[] { "RSA/ECB/PKCS1Padding", "RSA/ECB/OAEPWithSHA-256AndMGF1Padding" };
 	
+	public final static String SIGNATURE_ALG[] = new String[] { "SHA256withRSA" };
+	
 	public final static byte DEFAULT_CIPHER_ALG = 1;
+	
+	public final static byte DEFAULT_SIGNATURE_ALG = 0;
 	
 	/**
 	 * private key is not protected
@@ -125,32 +132,16 @@ public class KeyManager implements KeySession {
 	 * @throws InternalServerException
 	 */
 	public byte[] encryptKey(MidataId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, InternalServerException {
-				    		
-			User user = User.getById(target, Sets.create("publicKey"));
-			if (user != null) {			
-				if (user.publicKey == null) throw new EncryptionNotSupportedException("User has no public key");			
-				return encryptKey(user.publicKey , keyToEncrypt);
-			}
-			
-			MobileAppInstance mai = MobileAppInstance.getById(target, Sets.create("publicKey"));
-			if (mai != null) {
-				if (mai.publicKey == null) throw new EncryptionNotSupportedException("No public key");			
-				return encryptKey(mai.publicKey , keyToEncrypt);
-			}
-			
-			UserGroup ug = UserGroup.getById(target, Sets.create("publicKey"));
-			if (ug != null) {
-				if (ug.publicKey == null) throw new EncryptionNotSupportedException("No public key");			
-				return encryptKey(ug.publicKey , keyToEncrypt);
-			}
-
-			ServiceInstance si = ServiceInstance.getById(target, Sets.create("publicKey"));
-			if (si != null) {
-				if (si.publicKey == null) throw new EncryptionNotSupportedException("No public key");			
-				return encryptKey(si.publicKey , keyToEncrypt);
-			}
-			
-			throw new EncryptionNotSupportedException("No public key");	
+		return encryptKey(getPublicKey(target) , keyToEncrypt);	
+	}
+	
+	private byte[] getPublicKey(MidataId target) throws EncryptionNotSupportedException, InternalServerException {
+		return session.get().getPublicKey(target);
+	}
+	
+	private byte[] putPublicKey(MidataId target, byte[] key) {
+		KeyManagerSession currentSession = session.get(); 
+		if (currentSession != null) return currentSession.putPublicKey(target, key); else return key;
 	}
 	
 	/**
@@ -238,7 +229,7 @@ public class KeyManager implements KeySession {
 		   KeyInfo.add(keyinfo);
 		   
 		   
-		   return pub.getEncoded();
+		   return putPublicKey(target, pub.getEncoded());
 		} catch (NoSuchAlgorithmException e) {
 			throw new InternalServerException("error.internal", "Cryptography error");
 		}
@@ -425,7 +416,8 @@ public class KeyManager implements KeySession {
 	class KeyManagerSession implements KeySession {
 		
 		private KeyRing pks;				
-		public String handle;		
+		public String handle;	
+		private Map<MidataId, byte[]> publicKeyCache = new HashMap<MidataId, byte[]>();
 		
 		KeyManagerSession(String handle, KeyRing pks) {
 			this.handle = handle;		
@@ -468,7 +460,7 @@ public class KeyManager implements KeySession {
 				c.init(Cipher.DECRYPT_MODE, privKey);
 			    
 				byte[] cipherText = c.doFinal(keyToDecrypt, offset, keyToDecrypt.length - offset);
-							
+										
 				return EncryptionUtils.derandomize(cipherText);
 			} catch (NoSuchAlgorithmException e) {
 				AccessLog.log("decrypt key error: key user="+target);
@@ -490,6 +482,119 @@ public class KeyManager implements KeySession {
 				throw new InternalServerException("error.internal", "Cryptography error");
 			} 
 		}
+		
+		private byte[] putPublicKey(MidataId target, byte[] key) {
+			publicKeyCache.put(target, key);
+			return key;
+		}
+		
+		private byte[] getPublicKey(MidataId target) throws EncryptionNotSupportedException, InternalServerException {
+			byte[] fromCache = publicKeyCache.get(target);
+			if (fromCache != null) return fromCache;
+			
+			User user = User.getById(target, Sets.create("publicKey"));
+			if (user != null) {			
+				if (user.publicKey == null) throw new EncryptionNotSupportedException("User has no public key");
+				publicKeyCache.put(target, user.publicKey);
+				return user.publicKey;
+			}
+			
+			MobileAppInstance mai = MobileAppInstance.getById(target, Sets.create("publicKey"));
+			if (mai != null) {
+				if (mai.publicKey == null) throw new EncryptionNotSupportedException("No public key");	
+				publicKeyCache.put(target, mai.publicKey);
+				return mai.publicKey;
+			}
+			
+			UserGroup ug = UserGroup.getById(target, Sets.create("publicKey"));
+			if (ug != null) {
+				if (ug.publicKey == null) throw new EncryptionNotSupportedException("No public key");
+				publicKeyCache.put(target, ug.publicKey);
+				return ug.publicKey;
+			}
+
+			ServiceInstance si = ServiceInstance.getById(target, Sets.create("publicKey"));
+			if (si != null) {
+				if (si.publicKey == null) throw new EncryptionNotSupportedException("No public key");	
+				publicKeyCache.put(target, si.publicKey);
+				return si.publicKey;
+			}
+			
+			throw new EncryptionNotSupportedException("No public key");	
+
+		}
+		
+		public boolean verifyHash(MidataId target, byte[] encryptedHash, byte[] message) throws InternalServerException {
+			byte[] publicKey = getPublicKey(target);
+			try {						
+				X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKey);
+				
+				KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+				PublicKey pubKey = keyFactory.generatePublic(spec);
+				 
+				byte algorithm = encryptedHash[0];
+				int offset = 1;
+				byte[] withoutAlg = new byte[encryptedHash.length-1];						
+				System.arraycopy(encryptedHash, 1, withoutAlg, 0, withoutAlg.length);
+				
+				
+				Signature signature = Signature.getInstance(SIGNATURE_ALG[algorithm]);
+				signature.initVerify(pubKey);
+				signature.update(message);
+				
+				return signature.verify(withoutAlg);
+			} catch (NoSuchAlgorithmException e) {
+				throw new InternalServerException("error.internal", "Cryptography error");		
+			} catch (SignatureException e2) {
+				throw new InternalServerException("error.internal", "Cryptography error");
+			} catch (InvalidKeyException e3) {
+				throw new InternalServerException("error.internal", "Cryptography error");
+			} catch (InvalidKeySpecException e4) {
+				throw new InternalServerException("error.internal", "Cryptography error");			
+			} 
+		}
+		
+		public byte[] encryptHash(MidataId target, byte[] hash) throws InternalServerException, AuthException {
+			try {
+				
+				byte key[] = pks.getKey(target.toString());
+							
+				if (key == null) {
+					AccessLog.log("no key in memory for user="+target);
+					throw new AuthException("error.relogin", "Authorization Failure");
+				}
+				
+				PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
+				
+				KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+				PrivateKey privKey = keyFactory.generatePrivate(spec);
+				
+				Signature signature = Signature.getInstance(SIGNATURE_ALG[DEFAULT_SIGNATURE_ALG]);
+				signature.initSign(privKey);
+								
+				signature.update(hash);
+				byte[] cipherText = signature.sign();
+														
+				byte[] result = new byte[cipherText.length+1];
+				result[0] = DEFAULT_SIGNATURE_ALG;				
+				System.arraycopy(cipherText, 0, result, 1, cipherText.length);
+				
+				return result;
+			} catch (NoSuchAlgorithmException e) {
+				AccessLog.log("encryptHash error: key user="+target);
+				throw new InternalServerException("error.internal", "Cryptography error");		
+			} catch (SignatureException e2) {
+				AccessLog.log("encryptHash error: key user="+target);
+				throw new InternalServerException("error.internal", "Cryptography error");
+			} catch (InvalidKeyException e3) {
+				AccessLog.log("encryptHash error: key user="+target);
+				throw new InternalServerException("error.internal", "Cryptography error");
+			} catch (InvalidKeySpecException e4) {
+				AccessLog.log("encryptHash error: key user="+target);
+				throw new InternalServerException("error.internal", "Cryptography error");
+			}		
+		}
+		
 		
 		/**
 		 * Sets a new passphrase for a private key
@@ -692,7 +797,7 @@ public class KeyManager implements KeySession {
 			   
 			   pks.addKey(target.toString(), keyinfo.privateKey); 			   
 			   
-			   return pub.getEncoded();
+			   return putPublicKey(target, pub.getEncoded());
 			} catch (NoSuchAlgorithmException e) {
 				throw new InternalServerException("error.internal", "Cryptography error");
 			}
@@ -781,6 +886,15 @@ public class KeyManager implements KeySession {
 	public byte[] decryptKey(MidataId target, byte[] keyToDecrypt) throws InternalServerException, AuthException {
 		return session.get().decryptKey(target, keyToDecrypt);
 	}
+	
+    public byte[] encryptHash(MidataId target, byte[] hash) throws InternalServerException, AuthException {
+    	return session.get().encryptHash(target, hash);
+    }
+	
+	public boolean verifyHash(MidataId target, byte[] encryptedHash, byte[] msg) throws InternalServerException {
+		return session.get().verifyHash(target, encryptedHash, msg);
+	}
+	
 
 	@Override
 	public void changePassphrase(MidataId target, String newPassphrase) throws InternalServerException, AuthException {

@@ -19,27 +19,24 @@
     <div class="welcome">	 
 		<div id="mainheader"><div class="container"><div class="row">
 			<!-- Login -->
-			<div class="col-sm-12" style="margin-top:70px;margin-bottom:70px;font-family:Sans-serif;color:white">
-
-
-              <h1 style="color:white;" v-t="'member_login.teaser'"></h1>
-
-			
+			<div class="col-sm-12 headerteaser" style="font-family:Sans-serif;color:white">
+              <h1 style="color:white;" v-t="'member_login.teaser'"></h1>			
 			</div>
 			</div></div>
 		</div><div class="container"><div class="row">
-			<div class="col-sm-12">
-				<div class="panel-container" style=" padding-top:30px; margin:0 auto;">
+			<div class="col-12">
+			    <div class="d-none d-sm-block" style="padding-top:20px;"></div>
+				<div class="panel-container" style="padding-top:10px;margin:0 auto;">
 					<div class="panel panel-primary">
 		            	<div class="panel-heading">
 		              		<h3 class="panel-title" translate="instance.{{ENV.instance}}.name"></h3>
 		            	</div>
 		            	<div class="panel-body">	
 		            	<div class="row">		     
-			<router-link class="col-sm-6 col-lg-3" :to="{ name : 'public.login' }"><img class="img-responsive" src="/images/account.jpg"><span v-t="'footer.for_members'"></span></router-link>
-			<router-link class="col-sm-6 col-lg-3" :to="{ name : 'public_research.login' }"><img class="img-responsive" src="/images/research2.jpeg"><span v-t="'footer.for_researchers'"></span></router-link>
-			<router-link class="col-sm-6 col-lg-3" :to="{ name : 'public_provider.login' }"><img class="img-responsive" src="/images/doctor.jpeg"><span v-t="'footer.for_providers'"></span></router-link>
-			<router-link class="col-sm-6 col-lg-3" :to="{ name : 'public_developer.login' }"><img class="img-responsive" src="/images/developer.jpeg"><span v-t="'footer.for_developers'"></span></router-link>
+			<router-link class="col-6 col-lg-3" :to="{ name : 'public.login' }"><img class="img-responsive" src="/images/account.jpg"><span v-t="'footer.for_members'"></span></router-link>
+			<router-link class="col-6 col-lg-3" :to="{ name : 'public_research.login' }"><img class="img-responsive" src="/images/research2.jpeg"><span v-t="'footer.for_researchers'"></span></router-link>
+			<router-link class="col-6 col-lg-3" :to="{ name : 'public_provider.login' }"><img class="img-responsive" src="/images/doctor.jpeg"><span v-t="'footer.for_providers'"></span></router-link>
+			<router-link class="col-6 col-lg-3" :to="{ name : 'public_developer.login' }"><img class="img-responsive" src="/images/developer.jpeg"><span v-t="'footer.for_developers'"></span></router-link>
 			 </div>
 			 <hr>	            	    
 			            	<p v-t="'instance.'+ENV.instance+'.intro'"></p>			            				            	

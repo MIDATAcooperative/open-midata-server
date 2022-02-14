@@ -92,7 +92,7 @@
     "query_help" : "Define which types of data your application may access.",
     "write_mode" : "Write Access",
     "subscriptions_btn" : "Change Default Subscriptions",
-    "subscriptions_help" : "Define triggers that cause an action on the @PLATFORM server",
+    "subscriptions_help" : "Define triggers that cause an action on the @PRODUCT server",
     "tokenExchangeParams" : "OAuth 2 Parameters for the Token Exchange", 
     "testfromlocal_btn" : "Test your plugin from localhost",
     "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
@@ -111,7 +111,7 @@
     "stats_btn" : "Error and Performance Statistics",
     "stats_help" : "View statistics and hints for improvements about the various types of API calls your application sends to the server.",    
     "debug_btn" : "API Tester Sandbox",
-    "debug_help" : "Login as application and test queries against the @PLATFORM backend.",
+    "debug_help" : "Login as application and test queries against the @PRODUCT server.",
     "appreviews_btn" : "Reviews",
     "appreviews_help" : "Reviews conducted for this application",
     "applicence_btn" : "License",
@@ -121,7 +121,8 @@
     "admin_only" : "Only an administrator may change this section. Please request changes if required.",
     "terms_of_use" : "General Terms and Conditions",
     "show_terms" : "Show General Terms and Conditions",
-    "unlock_code" : "Code for registration",  
+    "unlock_code" : "Code for registration", 
+    "code_challenge" : "Require 'code_challenge'", 
     "logout" : "Disconnect All",
     "pleaseLogout1" : "Log out all users",
     "pleaseLogout2" : "Disconnect from research projects",
@@ -135,9 +136,9 @@
     "info" : {
        "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
-       "loginTemplate" : "How should the login process look like? Some settings need admin approval",
+       "loginTemplate" : "How should the login process look like? Some settings need administrator's approval",
        "loginButtonsTemplate" : "How should buttons be arranged?",
-       "type" : "Choose 'Plugin' if your application will run on the @PLATFORM portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.",
+       "type" : "Choose 'Plugin' if your application will run on the @PRODUCT portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.",
        "name" : "The name of your application that will be presented to the end user.",
        "description" : "The description of your application that will be shown on the Marketplace.",
        "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
@@ -148,15 +149,16 @@
        "consentObserving" : "Does this service monitor user consents? Add 'Consents' to the Data Access Filter in order to activate.",
        "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
        "tags" : "Categories on the Store for which your plugin should be listed.",
-       "url" : "URL of your plugins main page. If you use the template from @PLATFORM it is 'dist/index.html#!?authToken=:authToken''",
+       "url" : "URL of your plugins main page. If you use @PRODUCT's template, it is 'dist/index.html#!?authToken=:authToken''",
        "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
        "defaultSpaceContext" : "Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.",
        "redirectUri" : "You may specifiy multiple possible redirect URIs by separating the URIs with a space.",
        "secret" : "Your application will need this 'secret' during login. Choose whatever you like.",
        "mustParticipateInStudy" : "Users must participate in research project in order to use this application.",
-       "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to the @PLATFORM using the application. The code is not case sensitive.",
+       "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to @PRODUCT using the application. The code is not case sensitive.",
        "send_reports" : "Notify developer ({{user}}) by email on errors caused by this application.",
-       "developerTeam" : "Enter comma separated list of email addresses of other developers on @PLATFORM that develop this application."        
+       "developerTeam" : "Enter comma separated list of email addresses of other developers on that @PRODUCT instance, that develop this application.",
+       "code_challenge" : "During OAuth2 login, calling application must use PKCE (Proof Key for Code Exchange) standard"
     },
     "status" : {
       "title" : "Application Status",
@@ -320,7 +322,7 @@
     "ACCEPTED" : "Accepted",
     "NEEDS_FIXING" : "Needs fixing",
     "OBSOLETE" : "Obsolete",
-    "TERMS_OF_USE_MATCH_QUERY" : "Terms of use match access filter"
+    "TERMS_OF_USE_MATCH_QUERY" : "Terms of use match Data Access Filter"
   },
   
   "applicence" : {
@@ -389,7 +391,7 @@
         "no_orgname" : "No developer organization name specified in application definition.",
         "no_publisher" : "No publisher specified in application definition.",
         "no_app_description" : "Application description is missing.",
-        "not_spotlighted" : "Plugin is not available in @PLATFORM Store. Ask an administrator.",
+        "not_spotlighted" : "The plugin is not available in the @PRODUCT Store. Ask an administrator.",
         "no_repository" : "No repository for code checkout-provided.",
         "no_send_reports" : "Error report notifications (emails) are disabled for this application.",
         "has_comments" : "Comments available in the error and performance statistics.",
@@ -400,7 +402,7 @@
         "appinstance_status" : "Application instance not active.",
         "appinstance_outdated" : "Application version is newer than application consent. Needs reconfirm.",
         "not_accepted" : "Participation not accepted.",
-        "no_access" : "You are no developer of this application. Some features are not available to you."
+        "no_access" : "You are not developer of this application. Some features are not available to you."
      },
      "error" : {       
        "no_tags" : "No application category selected. Plugin cannot be added by user.",
@@ -429,7 +431,7 @@
 
     "applogin" : {
        "title" : "Application login",
-       "description" : "View and configure app login process.",
+       "description" : "View and configure the application login process.",
        "preview" : "Which process do you want to preview?",
        "previewtype" : {
           "NEW" : "First login. User has no account yet.",
@@ -438,7 +440,7 @@
        },
        "required" : "always",
        "optional" : "if necessary",
-       "not_approved" : "Setting must be approved by an administrator",
+       "not_approved" : "This setting must be approved by an administrator",
        "approvedby" : "Approved by",
        "approvedat" : "at",
        "show_terms" : "View terms of use",
@@ -452,26 +454,26 @@
          "confirmation2" : "Project Consent",
          "password_set" : "Enter password",
          "email_verified" : "Email verification",
-         "admin_verified" : "Admin verification",
-         "phone_verified" : "Phone verification",
-         "newest_terms_agreed" : "Agree to terms",
+         "admin_verified" : "Approval by an administrator",
+         "phone_verified" : "Phone number verification",
+         "newest_terms_agreed" : "Agree to terms of use",
          "address_entered" : "Enter address",
          "address_phone_entered" : "Address & Phone",
          "phone_entered" : "Enter phone",
          "address_verified" : "Address verification",
          "auth2factorsetup" : "2FA Setup",
          "auth2factor" : "2FA",
-         "birthday_set" : "Enter birthday"
+         "birthday_set" : "Enter date of birth",
+         "unlock_code" : "Application unlock code"
        }
     },
     
     "enum" : {
         "logintemplate" : {
-            "GENERATED" : "Generate app-consent from definition",
+            "GENERATED" : "Generate application authorization from definition",
             "TERMS_OF_USE_AND_GENERATED" : "Show terms of use as text page with generated consent",
-	        "TERMS_OF_USE" : "Show terms of use as text page (needs admin approval)",
-	        "TERMS_WITH_VARIABLES" : "Show terms of use with variables",
-	        "REDUCED" : "Give consent on registration page (needs admin approval)"
+	        "TERMS_OF_USE" : "Show terms of use as text page (needs approval by an administrator)",
+	        "REDUCED" : "Give consent on registration page (needs approval by an administrator)"
         },
         "loginbuttonstemplate" : {
             "ONE_CONFIRM_AND_OPTIONAL_CHECKBOXES" : "One required confirm button and optional checkboxes",

@@ -235,7 +235,7 @@ public class MobileAPI extends Controller {
 			if (app.requirements != null) req.addAll(app.requirements);
 			if (Application.loginHelperPreconditionsFailed(user, req)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
-			appInstance= getAppInstance(tempContext, phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion", "deviceId"));
+			appInstance= getAppInstance(tempContext, phrase, app._id, user._id, MobileAppInstance.APPINSTANCE_ALL);
 			
 			
 			if (appInstance != null && !OAuth2.verifyAppInstance(tempContext, appInstance, user._id, app._id, null)) {
@@ -393,13 +393,14 @@ public class MobileAPI extends Controller {
 		  info = ExecutionInfo.checkToken(request, param2, false);
 		} else throw new BadRequestException("error.auth", "Please provide authorization token as 'Authorization' header or 'authToken' request parameter.");
 					
-		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request.queryString("_id").orElseThrow());
-		
-		return getFile(request, info, recordId, false);
+		String id =json != null ? JsonValidation.getString(json, "_id") : request.queryString("_id").orElseThrow();
+		Pair<String, Integer> rec = RecordManager.instance.parseFileId(id);
+				
+		return getFile(request, info, MidataId.from(rec.getLeft()), rec.getRight(), false);
 	}
 	
-	public static Result getFile(Request request, ExecutionInfo info, MidataId recordId, boolean asAttachment) throws AppException {					
-		FileData fileData = RecordManager.instance.fetchFile(info.context, new RecordToken(recordId.toString(), info.targetAPS.toString()));
+	public static Result getFile(Request request, ExecutionInfo info, MidataId recordId, int idx, boolean asAttachment) throws AppException {					
+		FileData fileData = RecordManager.instance.fetchFile(info.context, new RecordToken(recordId.toString(), info.targetAPS.toString()), idx);
 		if (fileData == null) return badRequest();
 		String contentType = "application/binary";
 		if (fileData.contentType != null) contentType = fileData.contentType;
@@ -471,7 +472,7 @@ public class MobileAPI extends Controller {
 		record.name = name;
 		record.description = description;
 								
-		PluginsAPI.createRecord(inf, record, null, null,null, inf.context);
+		PluginsAPI.createRecord(inf, record, inf.context);
 		
 		Stats.finishRequest(request, "200", Collections.EMPTY_SET);
 		ObjectNode obj = Json.newObject();		
@@ -665,7 +666,7 @@ public class MobileAPI extends Controller {
 		if (authToken == null) OAuth2.invalidToken(); 
 	
 					
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
         if (appInstance == null) OAuth2.invalidToken(); 
 
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {

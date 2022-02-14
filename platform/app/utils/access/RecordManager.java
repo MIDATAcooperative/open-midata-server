@@ -56,6 +56,7 @@ import models.enums.ConsentStatus;
 import models.enums.UserRole;
 import play.mvc.Http;
 import utils.AccessLog;
+import utils.ConsentQueryTools;
 import utils.QueryTagTools;
 import utils.RuntimeConstants;
 import utils.auth.KeyManager;
@@ -586,21 +587,27 @@ public class RecordManager {
 	 * @param contentType the mime type of the attached file	
 	 * @throws AppException
 	 */
-	public void addRecord(AccessContext context, Record record, MidataId alternateAps, EncryptedFileHandle data, String fileName, String contentType) throws AppException {
+	public void addRecord(AccessContext context, Record record, MidataId alternateAps, List<EncryptedFileHandle> allData) throws AppException {
 		
-		String virus = checkVirusFree(data);
-	    if (virus != null) throw new BadRequestException("error.virus", "A virus has been detected: "+virus);
+		for (EncryptedFileHandle data : allData) {
+		  String virus = checkVirusFree(data);
+	      if (virus != null) throw new BadRequestException("error.virus", "A virus has been detected: "+virus);
+		}
 	
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		dbrecord.meta.append("file", data.getId().toObjectId());
-		dbrecord.meta.append("file-key", data.getKey());
-		byte[] kdata = addRecordIntern(context, dbrecord, false, alternateAps, false);	
-		/*
-		try {
-		FileStorage.store(EncryptionUtils.encryptStream(kdata, data), record._id, 0, fileName, contentType);
-		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal", e);
-		}*/		
+		int idx = 0;
+		for (EncryptedFileHandle data : allData) {
+			dbrecord.meta.append(getFileMetaName(idx), data.getId().toObjectId());
+			dbrecord.meta.append(getFileMetaName(idx)+"-key", data.getKey());
+			idx++;
+		}
+		
+		byte[] kdata = addRecordIntern(context, dbrecord, false, alternateAps, false);				
+	}
+	
+	protected String getFileMetaName(int idx) {
+		if (idx==0) return "file";
+		return "file-"+idx;
 	}
 	
 	/**
@@ -615,7 +622,7 @@ public class RecordManager {
 	 */
 	public void addRecord(AccessContext context, Record record, MidataId alternateAps, InputStream input, String fileName, String contentType) throws AppException {
 		EncryptedFileHandle data = addFile(input, fileName, contentType);
-		addRecord(context, record, alternateAps, data, fileName, contentType);	
+		addRecord(context, record, alternateAps, Collections.singletonList(data));	
 	}
 	
 	public EncryptedFileHandle addFile(InputStream data, String fileName, String contentType) throws AppException {
@@ -678,7 +685,7 @@ public class RecordManager {
 	 * @throws AppException
 	 * @return the new version string of the record
 	 */
-	public String updateRecord(MidataId executingPerson, MidataId pluginId, AccessContext context, Record record) throws AppException {
+	public String updateRecord(MidataId executingPerson, MidataId pluginId, AccessContext context, Record record, List<UpdateFileHandleSupport> allData) throws AppException {
 		AccessLog.logBegin("begin updateRecord executor="+executingPerson.toString()+" aps="+context.getTargetAps().toString()+" record="+record._id.toString());
 		try {
 			List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), context.getTargetAps(),context, CMaps.map("_id", record._id).map("updatable", true), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
@@ -705,11 +712,30 @@ public class RecordManager {
 			if (record.content != null && !rec.meta.getString("content").equals(record.content)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record content type during update.");
 			if (record.owner != null && !rec.owner.equals(record.owner)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record owner during update! new="+record.owner.toString()+" old="+rec.owner.toString());
 			
+			List<EncryptedFileHandle> allData2 = new ArrayList<EncryptedFileHandle>(allData.size());
+			for (UpdateFileHandleSupport data : allData) {
+				if (data != null) {
+				   EncryptedFileHandle handle = data.toEncryptedFileHandle(rec);
+				   String virus = checkVirusFree(handle);
+				   if (virus != null) throw new BadRequestException("error.virus", "A virus has been detected: "+virus);
+				   allData2.add(handle);
+				}
+			}
+						
 			VersionedDBRecord vrec = null;
 			
 			if (context.produceHistory()) {
 			  vrec = new VersionedDBRecord(rec);		
 			  RecordEncryption.encryptRecord(vrec);
+			}
+			
+			int idx = 0;
+			for (EncryptedFileHandle data : allData2) {
+				if (data != null) {
+				rec.meta.append(getFileMetaName(idx), data.getId().toObjectId());
+				rec.meta.append(getFileMetaName(idx)+"-key", data.getKey());
+				}
+				idx++;
 			}
 					
 			record.lastUpdated = new Date(); 
@@ -764,9 +790,12 @@ public class RecordManager {
 		
 		AccessLog.logEnd("end deleteRecord");
 	}
-	
+
 	protected void wipe(MidataId executingPerson, List<DBRecord> recs) throws AppException {
-		APSCache cache = getCache(executingPerson);
+	   wipe(getCache(executingPerson), executingPerson, recs);
+	}
+	
+	protected void wipe(APSCache cache, MidataId executingPerson, List<DBRecord> recs) throws AppException {	
 		if (recs.size() == 0) return;
 		
 		AccessLog.logBegin("begin wipe #records="+recs.size());
@@ -814,6 +843,7 @@ public class RecordManager {
 		for (DBRecord record : recs) { 
 			ids.add(record._id);		  
 		}
+		VersionedDBRecord.deleteMany(ids);
 		DBRecord.deleteMany(ids);
 		
 		for (MidataId streamId : streams) {
@@ -858,6 +888,21 @@ public class RecordManager {
 		
 		APSCache cache = Feature_PublicData.getPublicAPSCache(getCache(executingPerson));
 		delete(cache, RuntimeConstants.instance.publicUser, recs);				
+		
+		AccessLog.logEnd("end deleteFromPublic");
+	}
+	
+	public void wipeFromPublic(MidataId executingPerson, Map<String, Object> query) throws AppException {
+		AccessLog.logBegin("begin wipeFromPublic executor="+executingPerson.toString());
+					
+		query.put("public", "only");
+		query.put("public-strict", true);
+		query.put("deleted", true);
+		
+		List<DBRecord> recs = QueryEngine.listInternal(getCache(executingPerson), executingPerson, null, query, COMPLETE_META);
+		
+		APSCache cache = Feature_PublicData.getPublicAPSCache(getCache(executingPerson));
+		wipe(cache, RuntimeConstants.instance.publicUser, recs);				
 		
 		AccessLog.logEnd("end deleteFromPublic");
 	}
@@ -1041,8 +1086,11 @@ public class RecordManager {
 					if (QueryEngine.isInQuery(context, query, record)) {
 						try {
 						  MidataId targetAps = new MidataId(key);
-						  APS apswrapper = context.getCache().getAPS(targetAps, userId);
-						  RecordManager.instance.shareUnchecked(context.getCache(),Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						  Map<String, Object> original = ConsentQueryTools.getVerifiedSharingQuery(targetAps);
+						  if (QueryEngine.isInQuery(context, original, record)) {
+							  APS apswrapper = context.getCache().getAPS(targetAps, userId);
+							  RecordManager.instance.shareUnchecked(context.getCache(),Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						  }
 						} catch (APSNotExistingException e) {
 							
 						}
@@ -1063,8 +1111,11 @@ public class RecordManager {
 					if (QueryEngine.isInQuery(context, query, record)) {
 						try {
 						  MidataId targetAps = new MidataId(key);
-						  APS apswrapper = context.getCache().getAPS(targetAps, userId);
-						  RecordManager.instance.shareUnchecked(context.getCache(),Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						  Map<String, Object> original = ConsentQueryTools.getVerifiedSharingQuery(targetAps);
+						  if (QueryEngine.isInQuery(context, original, record)) {							  
+							  APS apswrapper = context.getCache().getAPS(targetAps, userId);
+							  RecordManager.instance.shareUnchecked(context.getCache(),Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						  }
 						} catch (APSNotExistingException e) {
 							
 						}
@@ -1233,6 +1284,13 @@ public class RecordManager {
 		return fetch(context, role, token, RecordManager.COMPLETE_DATA);
 	}
 	
+	public Pair<String, Integer> parseFileId(String fileId) {
+		int p = fileId.indexOf("_");
+		if (p >= 0) {
+			return Pair.of(fileId.substring(0, p), Integer.parseInt(fileId.substring(p+1)));
+		}
+		return Pair.of(fileId, 0);
+	}
 	/**
 	 * Lookup a single record by providing a RecordToken and return the attachment of the record
 	 * @param who id of executing person
@@ -1240,7 +1298,7 @@ public class RecordManager {
 	 * @return the attachment content
 	 * @throws AppException
 	 */
-	public FileData fetchFile(AccessContext context, RecordToken token) throws AppException {		
+	public FileData fetchFile(AccessContext context, RecordToken token, int idx) throws AppException {		
 		List<DBRecord> result = QueryEngine.listInternal(context.getCache(), new MidataId(token.apsId), context.forAps(MidataId.from(token.apsId)), CMaps.map("_id", new MidataId(token.recordId)), Sets.create("key", "data"));
 				
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
@@ -1250,9 +1308,9 @@ public class RecordManager {
 		
 		MidataId fileId;
 		byte[] key;
-		if (rec.meta.containsField("file")) {
-			fileId = MidataId.from(rec.meta.get("file"));
-			key = (byte[]) rec.meta.get("file-key");
+		if (rec.meta.containsField("file") || idx>0) {
+			fileId = MidataId.from(rec.meta.get(getFileMetaName(idx)));
+			key = (byte[]) rec.meta.get(getFileMetaName(idx)+"-key");
 		} else {
 			fileId = rec._id;
 			key = rec.key;
@@ -1268,6 +1326,21 @@ public class RecordManager {
 		}
 		
 		return fileData;
+	}
+	
+	public EncryptedFileHandle reUseAttachment(AccessContext context, MidataId record, int idx) throws AppException {
+		List<DBRecord> result = QueryEngine.listInternal(context.getCache(), context.getOwner() , context, CMaps.map("_id", record), Sets.create("key", "meta", "data"));
+		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
+		DBRecord rec = result.get(0);
+		if (rec.meta.containsField("file") || idx>0) {
+			MidataId fileId = MidataId.from(rec.meta.get(getFileMetaName(idx)));
+			byte[] key = (byte[]) rec.meta.get(getFileMetaName(idx)+"-key");
+			return new EncryptedFileHandle(fileId, key, 0);
+		} else {
+			MidataId fileId = rec._id;
+			byte[] key = rec.key;
+			return new EncryptedFileHandle(fileId, key, 0);
+		}
 	}
 
 	/**
@@ -1586,7 +1659,8 @@ public class RecordManager {
 		throw new InternalServerException("error.internal", "Context for data sharing cannot be created");
 	}
 	
-	public AppAccessContext createContextFromApp(MidataId executorId, MobileAppInstance app) throws InternalServerException {
+	public AppAccessContext createContextFromApp(MidataId executorId, MobileAppInstance app) throws AppException {
+	    ConsentQueryTools.getSharingQuery(app, true);
 		Plugin plugin = Plugin.getById(app.applicationId);
 		return new AppAccessContext(app, plugin, getCache(executorId), null);
 	}

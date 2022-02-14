@@ -101,10 +101,11 @@ sharding:
 	@$(client) $(record.pw) --host $(record.db) $(mongo.record.database) init-sharding-record.js
 
 export:
-	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c formatgroups -o formatgroups.json
-	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c contentinfo -o contentinfo.json
-	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c formatinfo -o formatinfo.json
-	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c coding -o coding.json	
+	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c formatgroups -o formatgroups.json -q '{ "deleted" : { "$$ne" : true } }' --fields=_id,system,name,label,parent
+	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c groupcontent -o groupcontent.json -q '{ "deleted" : { "$$ne" : true } }' --fields=_id,system,name,content	
+	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c contentinfo -o contentinfo.json -q '{ "deleted" : { "$$ne" : true } }' --fields=_id,content,defaultCode,security,label,resourceType,subType,defaultUnit,category,source,comment	
+	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c formatinfo -o formatinfo.json	
+	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c coding -o coding.json -q '{ "deleted" : { "$$ne" : true } }' --fields=_id,system,version,code,display,content	
 	@rm /dev/shm/db.conf
 
 exportplugins:
@@ -116,6 +117,7 @@ exportplugins:
 	
 reimport:
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c formatgroups --file formatgroups.json --drop --upsertFields _id
+	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c groupcontent --file groupcontent.json --drop --upsertFields _id
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c contentinfo --file contentinfo.json --drop --upsertFields _id
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c formatinfo --file formatinfo.json --drop --upsertFields _id
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c coding --file coding.json --drop --upsertFields _id	 

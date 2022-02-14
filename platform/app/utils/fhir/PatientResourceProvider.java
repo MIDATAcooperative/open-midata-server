@@ -524,7 +524,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			Record existing = allExisting.get(0);
 			patient.getMeta().setVersionId(existing.version);
 			prepare(existing, patient);
-			updateRecord(existing, patient);
+			updateRecord(existing, patient, getAttachments(patient));
 		}
 	}
 
@@ -636,7 +636,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	
 	@Override
 	public void updatePrepare(Record record, Patient theResource) throws AppException {	
-		AccessContext context = ApplicationTools.actAsRepresentative(info().context, record.owner);
+		AccessContext context = ApplicationTools.actAsRepresentative(info().context, record.owner, false);
 		if (context == null) throw new NotImplementedOperationException("update on Patient not implemented.");
 	}
 	

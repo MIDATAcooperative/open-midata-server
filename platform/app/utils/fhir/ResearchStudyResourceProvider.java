@@ -413,7 +413,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		if (!doupdate) researchStudy.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
 		
 		if (doupdate) {
-		  provider.updateRecord(oldRecord, researchStudy);
+		  provider.updateRecord(oldRecord, researchStudy, provider.getAttachments(researchStudy));
 		} else {
 		  provider.createResource(researchStudy);
 		}

@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64InputStream;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 import org.hl7.fhir.r4.model.DomainResource;
 
@@ -61,6 +62,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import play.mvc.Http.Request;
+import utils.ConsentQueryTools;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.APS;
@@ -248,7 +250,7 @@ public class Records extends APIController {
 		if (consent != null) {
 
 			Circles.fillConsentFields(tempContext, Collections.singleton(consent), Sets.create("sharingQuery"));
-			query = consent.sharingQuery;
+			query = ConsentQueryTools.getSharingQuery(consent, true);
 			if (!consent.status.equals(ConsentStatus.ACTIVE) && !userId.equals(consent.owner))
 				readRecords = false;
 			context = tempContext.forConsent(consent);
@@ -388,8 +390,7 @@ public class Records extends APIController {
 		Set<String> recordIds = JsonExtraction.extractStringSet(json.get("records"));
 		Map<String, Object> query = json.has("query") ? JsonExtraction.extractMap(json.get("query")) : null;
 
-		if (query != null && query.isEmpty())
-			query = null;
+		if (query != null && query.isEmpty()) query = Collections.emptyMap();
 
 		Map<String, Set<String>> records = new HashMap<String, Set<String>>();
 		for (String recordId : recordIds) {
@@ -432,32 +433,22 @@ public class Records extends APIController {
 				}
 			}
 
-			if (query != null) {
+			Feature_FormatGroups.convertQueryToContents(query);
 
-				Feature_FormatGroups.convertQueryToContents(query);
-
-				if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
-					if (hasAccess) {
-						AccessContext targetContext = context.forApsReshare(start);
-						List<Record> recs = RecordManager.instance.list(UserRole.ANY, context, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
-						Set<MidataId> remove = new HashSet<MidataId>();
-						for (Record r : recs)
-							remove.add(r._id);
-						RecordManager.instance.unshare(targetContext, remove);
-					}
-
-					RecordManager.instance.shareByQuery(context, start, query);
-				} else {
-					consent.set(consent._id, "sharingQuery", query);
-					if (consent.status == ConsentStatus.ACTIVE) {
-						Circles.setQuery(context, apsOwner, start, query);
-						if (hasAccess)
-							RecordManager.instance.applyQuery(context, query, userId, consent, withMember);
-					}
+			if (consent == null) {
+				if (hasAccess) {
+					AccessContext targetContext = context.forApsReshare(start);
+					List<Record> recs = RecordManager.instance.list(UserRole.ANY, context, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
+					Set<MidataId> remove = new HashSet<MidataId>();
+					for (Record r : recs)
+						remove.add(r._id);
+					RecordManager.instance.unshare(targetContext, remove);
 				}
+				RecordManager.instance.shareByQuery(context, start, query);
+			} else {
+				ConsentQueryTools.updateSharingQuery(context, consent, query);					
 			}
-			
-			if (consent != null) Consent.set(consent._id, "lastUpdated", new Date());
+		
 		}
 
 		for (MidataId start : stopped) {
@@ -489,22 +480,15 @@ public class Records extends APIController {
 				}
 			}
 
-			if (query != null) {
-				Feature_FormatGroups.convertQueryToContents(query);
-
-				if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
-					RecordManager.instance.shareByQuery(context, start, query);
-				} else {
-					consent.set(consent._id, "sharingQuery", query);
-					if (consent.status == ConsentStatus.ACTIVE) {
-						Circles.setQuery(context, apsOwner, start, query);
-						if (hasAccess)
-							RecordManager.instance.applyQuery(context, query, userId, consent, withMember);
-					}
-				}
-			}
 			
-			if (consent != null) Consent.set(consent._id, "lastUpdated", new Date());
+			Feature_FormatGroups.convertQueryToContents(query);
+
+			if (consent == null) {
+				RecordManager.instance.shareByQuery(context, start, query);
+			} else {
+				ConsentQueryTools.updateSharingQuery(context, consent, query);	
+			}
+		
 
 		}
 
@@ -565,14 +549,15 @@ public class Records extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result getFile(Request request, String id) throws AppException {
 
-		RecordToken tk = getRecordTokenFromString(request, id);
+		Pair<String, Integer> idPair = RecordManager.instance.parseFileId(id);
+		RecordToken tk = getRecordTokenFromString(request, idPair.getLeft());
 		//MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		AccessContext context = portalContext(request);
 
 		if (tk == null)
 			throw new BadRequestException("error.invalid.token", "Bad token");		
 		
-		FileData fileData = RecordManager.instance.fetchFile(context, tk);
+		FileData fileData = RecordManager.instance.fetchFile(context, tk, idPair.getRight());
 		
 		String contentType = "application/binary";
 		if (fileData.contentType != null) contentType = fileData.contentType;
@@ -667,10 +652,14 @@ public class Records extends APIController {
 						String location = FHIRServlet.getBaseUrl() + "/" + prov.getResourceType().getSimpleName() + "/" + rec._id.toString() + "/_history/" + rec.version;
 						if (r != null) {
 							String ser = prov.serialize(r);
-							int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
-							if (attpos > 0) {
-								out.append((first?"":",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(inf.context, new RecordToken(rec._id.toString(), rec.stream.toString()));
+							out.append((first?"":",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : ");
+							int attpos;
+							int idx = 0;
+							do {
+							  attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
+							  if (attpos > 0) {
+								out.append(ser.substring(0, attpos));
+								FileData fileData = RecordManager.instance.fetchFile(inf.context, new RecordToken(rec._id.toString(), rec.stream.toString()), idx);
 
 								int BUFFER_SIZE = 3 * 1024;
 
@@ -683,10 +672,12 @@ public class Records extends APIController {
 									}
 
 								}
-
-								out.append(ser.substring(attpos + FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length()) + " } ");
+                                ser = ser.substring(attpos + FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length());
+                                idx++;
 							} else
-								out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
+								out.append(ser);
+							} while (attpos>=0);
+							out.append("} ");
 						} else {
 							out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\" } ");
 						}

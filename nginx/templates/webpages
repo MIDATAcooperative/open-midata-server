@@ -40,6 +40,14 @@ server {
           add_header 'X-WebKit-CSP' "default-src 'none'; base-uri 'self'; upgrade-insecure-requests; form-action 'self'; script-src https://DOMAIN/components/ https://DOMAIN/api/ https://DOMAIN/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src https://DOMAIN/plugin/ https://localhost:9004 https://DOMAIN/v1/plugin_api/records/file; font-src 'self'; connect-src 'self'";            
         }
         
+        location /config/config.js { 
+          alias ROOTDIR/conf/config.js; 
+        }
+        
+        location /config/recoverykeys.json { 
+          alias ROOTDIR/conf/recoverykeys.json; 
+        }
+        
         location /authservice {
           return 301 "https://DOMAIN/oauth.html#/portal/oauth2$is_args$args";
         }

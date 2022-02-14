@@ -45,10 +45,19 @@ export default {
     components : {
        Terms
     },
+    
+    watch:{
+		$route (to, from ){
+			const { $data, $route } = this;
+			if (to.path.indexOf("terms")>=0) {
+				$data.which = $route.query.which;//.split("--");
+        	}
+		}
+	},
 
     created() {
         const { $data, $methods, $route } = this, me = this;
-        $data.which = $route.query.which.split("--");	    
+        $data.which = $route.query.which;//.split("--");	    
   	}
 }
 </script>

@@ -17,6 +17,7 @@
 
 package utils.fhir;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -243,14 +244,7 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 	public MethodOutcome createResource(@ResourceParam Media theMedia) {
 		return super.createResource(theMedia);
 	}
-	
-	@Override
-	public void createExecute(Record record, Media theMedia) throws AppException {
-		Attachment attachment = null; 		
-		attachment = theMedia.getContent();						
-		insertRecord(record, theMedia, attachment);		
-	}	
-	
+			
 	@Override
 	public String getRecordFormat() {	
 		return "fhir/Media";
@@ -283,31 +277,20 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
-		}
-		
-		Attachment attachment = p.getContent();
-		if (attachment != null && attachment.getUrl() == null && attachment.getData() == null) {	
-		  String url = "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/records/file?_id="+record._id;
-		  attachment.setUrl(url);
-		}
-		
+		}							
+	}
+	
+	
+	@Override
+	public List<Attachment> getAttachments(Media resource) {	
+		return Collections.singletonList(resource.getContent());
 	}
 
 	@Override
 	public void clean(Media theMedia) {		
 		super.clean(theMedia);
 	}
-	
-	public String serialize(Media theMedia) {
-		Attachment att = theMedia.getContent();
-		if (att != null) {
-			
-			att.setUrl(null);
-			att.setDataElement(new Base64BinaryType(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING));
-		}
-    	return ctx.newJsonParser().encodeResourceToString(theMedia);
-    }
-
+		
 	@Override
 	protected void convertToR4(Object in) {
 		FHIRVersionConvert.rename(in, "subtype", "modality");
