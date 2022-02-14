@@ -64,7 +64,7 @@
 						<div class="form-group">
 							<input type="email" class="form-control" :placeholder="$t('login.email_address')" required v-validate v-model="login.email" style="margin-bottom:5px;" autofocus>
 							<password class="form-control" :placeholder="$t('login.password')" required v-model="login.password" style="margin-bottom:5px;"></password>
-							<select class="form-control" v-model="login.role" v-validate required>
+							<select class="form-control" v-if="!fixedRole" v-model="login.role" v-validate required>
 							    <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                                 <option v-for="role in roles" :key="role.value" :value="role.value">{{ $t(role.name) }}</option>
                             </select>
@@ -109,6 +109,7 @@ export default {
 		    { value : "RESEARCH" , name : "enum.userrole.RESEARCH"},
 		    { value : "DEVELOPER" , name : "enum.userrole.DEVELOPER"},
         ],
+        fixedRole : null,
         app : null			
     }),
 
@@ -184,8 +185,13 @@ export default {
         if ($route.query.login) {
 		    $data.login.email = $route.query.login;
 	    }
-	    if ($route.query.role) {
-		    $data.login.role = $route.query.role;
+	            
+        if ($route.query.role) {
+           let r = $route.query.role.toUpperCase();
+           if (r=="ACCOUNT-HOLDER") r = "MEMBER";
+           else if (r=="RESEARCHER") r = "RESEARCH";
+           $data.fixedRole = r;
+           $data.login.role = r;
         }
         
         let appName = actions.getAppName($route);

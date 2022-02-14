@@ -25,7 +25,7 @@ export default {
 		let actions = [];
 		let params = {};
 		
-		let copy = ["login","family","given","country","language","birthdate"];
+		let copy = ["login","family","given","country","language","birthdate", "role"];
 		for (let i=0;i<copy.length;i++)
 		if ($route.query[copy[i]]) {
 			params[copy[i]] = $route.query[copy[i]];
