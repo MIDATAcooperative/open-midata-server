@@ -83,4 +83,5 @@ id0081	24.01.2022	a.kreutz	F	Added OpenID Connect userinfo endpoint
 id0082	24.01.2022	a.kreutz	F	New FHIR resource supported: RelatedPerson
 id0083	31.01.2022	a.kreutz	F	Multiple Attachment support	Support for multiple binaries per FHIR resource added. Also update of binary data is now possible.
 id0084	31.01.2022	a.kreutz	F	FHIR Organization resources are now writable
+id0085	14.02.2022	a.kreutz	F	New FHIR resource supported: ImmunizationRecommendation
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
