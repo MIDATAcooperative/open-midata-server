@@ -286,7 +286,7 @@ public class AutoRun extends APIController {
 		    		AccessLog.logStart("jobs", request.toString());
 			    	KeyManager.instance.continueSession(request.handle);
 			    	MidataId autorunner = request.autorunner;
-			    	AccessContext context = RecordManager.instance.createContextFromAccount(autorunner);
+			    	AccessContext context = RecordManager.instance.createSessionForDownloadStream(autorunner, UserRole.ANY);
 			    	Space space = request.space;
 			        
 			    	final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");

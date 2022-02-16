@@ -118,7 +118,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 				MidataId publicUser = new MidataId("5ccab0dcaed6452048f2b010");
 				System.out.println("step 1");
 				KeyManager.instance.unlock(publicUser, null);
-				AccessContext context = RecordManager.instance.createContextFromAccount(publicUser);
+				AccessContext context = RecordManager.instance.createRootPublicUserContext();
 				System.out.println("step 2");
 				RecordManager.instance.unshareAPSRecursive(context, publicUser, Collections.singleton(RuntimeConstants.publicGroup));
 				System.out.println("step 3");

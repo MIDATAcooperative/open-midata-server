@@ -202,7 +202,7 @@ public class Spaces extends APIController {
 		// validate request
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId spaceId = new MidataId(spaceIdString);
-		
+		AccessContext context = portalContext(request);
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
 		
 		if (space == null) {
@@ -211,7 +211,7 @@ public class Spaces extends APIController {
 		
 		Circles.removeQueries(userId, spaceId);
 		//SubscriptionManager.deactivateSubscriptions(userId, spaceId);
-		RecordManager.instance.deleteAPS(space._id, userId);
+		RecordManager.instance.deleteAPS(context, space._id);
 		
 		// delete space		
 		Space.delete(userId, spaceId);
@@ -223,12 +223,12 @@ public class Spaces extends APIController {
 	public Result reset(Request request) throws AppException {
 		// validate request
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		
+		AccessContext context = portalContext(request);
 		Set<Space> spaces = Space.getAllByOwner(userId, Sets.create("_id"));
 		
 		for (Space space : spaces) {		
 		  Circles.removeQueries(userId, space._id);
-		  RecordManager.instance.deleteAPS(space._id, userId);		
+		  RecordManager.instance.deleteAPS(context, space._id);		
 		  Space.delete(userId, space._id);
 		}
 		

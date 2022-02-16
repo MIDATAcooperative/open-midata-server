@@ -47,7 +47,7 @@ import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.ContentInfo;
 import models.Record;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -193,7 +193,7 @@ public class LocationResourceProvider extends RecordBasedResourceProvider<Locati
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Location");
@@ -246,7 +246,7 @@ public class LocationResourceProvider extends RecordBasedResourceProvider<Locati
 	public void prepare(Record record, Location theLocation) throws AppException {
 		// Set Record code and content
 				
-		ContentInfo.setRecordCodeAndContent(info().pluginId, record, null, "Location");			
+		ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, null, "Location");			
 		record.name = "Location";
 						
 		clean(theLocation);

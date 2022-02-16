@@ -135,19 +135,19 @@ public class FHIR extends Controller {
 		//Stats.startRequest(request);
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request);
 		//PlayHttpServletResponse res = new PlayHttpServletResponse(response());				
-		ExecutionInfo info = getExecutionInfo(request, req);
-        if (info != null && info.pluginId != null) {
+		AccessContext info = getExecutionInfo(request, req);
+        if (info != null && info.getUsedPlugin() != null) {
 		
-        BSONObject query = RecordManager.instance.getMeta(info.context, info.targetAPS, "_query");
+        BSONObject query = RecordManager.instance.getMeta(info, info.getTargetAps(), "_query");
         if (query != null) {        	
         	Object st = query.get("study");
         	if (st instanceof Collection) st = ((Collection) st).iterator().next(); 
         	MidataId studyId = MidataId.from(st);        	
         	String studyGroup = (String) query.get("study-group");
-        	Plugin plug = Plugin.getById(info.pluginId);
+        	Plugin plug = Plugin.getById(info.getUsedPlugin());
         	if (plug == null || (!plug.type.equals("analyzer") && !plug.type.equals("endpoint"))) throw new BadRequestException("error.invalid.plugin", "Wrong plugin type");
         	String mode = plug.pseudonymize ? "pseudonymized" : "original";
-        	String handle = KeyManager.instance.currentHandle(info.executorId);
+        	String handle = KeyManager.instance.currentHandle(info.getAccessor());
         	
         	Date from = null;
         	Date to = null;
@@ -167,7 +167,7 @@ public class FHIR extends Controller {
         	} catch (ca.uhn.fhir.parser.DataFormatException e) {
         		throw new BadRequestException("error.invalid", e.getMessage());
         	}
-        	return controllers.research.Studies.downloadFHIR(info, handle, studyId, info.role, from, to, studyGroup, mode);
+        	return controllers.research.Studies.downloadFHIR(info, handle, studyId, info.getAccessorRole(), from, to, studyGroup, mode);
         }
 		
 		//Stats.finishRequest(request, String.valueOf(res.getStatus()));
@@ -180,7 +180,7 @@ public class FHIR extends Controller {
 	}
 	
 	
-	private ExecutionInfo getExecutionInfo(Request request, PlayHttpServletRequest req) throws AppException {
+	private AccessContext getExecutionInfo(Request request, PlayHttpServletRequest req) throws AppException {
 		
 		boolean cert_direct = false;
 		String valid = req.getHeader("X-Client-Valid-LB");
@@ -201,9 +201,9 @@ public class FHIR extends Controller {
 				   if (instance == null) break;
 				   String key = k.substring(p+1);
 				   MobileAppSessionToken tk = new MobileAppSessionToken(instance, key, System.currentTimeMillis()+60000, UserRole.ANY);
-				   ExecutionInfo inf = ExecutionInfo.checkMobileToken(tk, false);
-				   Stats.setPlugin(inf.pluginId);
-			       ResourceProvider.setExecutionInfo(inf);
+				   AccessContext inf = ExecutionInfo.checkMobileToken(tk, false);
+				   Stats.setPlugin(inf.getUsedPlugin());
+			       ResourceProvider.setAccessContext(inf);
 			       return inf;
 			   }
 		   }
@@ -212,9 +212,9 @@ public class FHIR extends Controller {
 		String param = req.getHeader("Authorization");
 		
 		if (param != null && param.startsWith("Bearer ")) {
-	          ExecutionInfo info = ExecutionInfo.checkToken(request, param.substring("Bearer ".length()), false);
-	          Stats.setPlugin(info.pluginId);
-	          ResourceProvider.setExecutionInfo(info);
+	          AccessContext info = ExecutionInfo.checkToken(request, param.substring("Bearer ".length()), false);
+	          Stats.setPlugin(info.getUsedPlugin());
+	          ResourceProvider.setAccessContext(info);
 	          return info;
 		} else {
 		 	 String portal = req.getHeader("X-Session-Token");
@@ -224,8 +224,8 @@ public class FHIR extends Controller {
 			    try {
 				      KeyManager.instance.continueSession(tk.getHandle(), tk.ownerId);
 			    } catch (AuthException e) { return null; }
-			    ExecutionInfo info = new ExecutionInfo(tk.getOwnerId(), tk.getRole());
-			    ResourceProvider.setExecutionInfo(info);
+			    AccessContext info = RecordManager.instance.createSession(tk).forAccount();
+			    ResourceProvider.setAccessContext(info);
 			    return info;
 			 }
 		}
@@ -253,8 +253,8 @@ public class FHIR extends Controller {
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request);
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
-		ExecutionInfo info = getExecutionInfo(request, req);
-        if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.GET);		        
+		AccessContext info = getExecutionInfo(request, req);
+        if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.GET);		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		switch(getFhirVersion(request)) {
 		  case 4:servlet_r4.doGet(req, res);break;
@@ -293,40 +293,18 @@ public class FHIR extends Controller {
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request, baseURL);
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
-		ExecutionInfo info = new ExecutionInfo();
+		//ExecutionInfo info = new ExecutionInfo();
 				        
         KeyManager.instance.login(60000l, false);
         KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
-        AccessContext tempContext = RecordManager.instance.createLoginOnlyContext(RuntimeConstants.instance.publicUser);
-		info.executorId = instance._id;
-		info.role = UserRole.ANY;
-		info.overrideBaseUrl = baseURL;
-        
+        AccessContext tempContext = RecordManager.instance.createRootPublicUserContext();
+			       
 		ConsentQueryTools.getSharingQuery(instance, true);
-		/*if (instance.sharingQuery == null) {
-			instance.sharingQuery = RecordManager.instance.getMeta(tempContext, instance._id, "_query").toMap();
-		}*/
-		
-		Map<String, Object> appobj = RecordManager.instance.getMeta(tempContext, instance._id, "_app").toMap();
-		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
-			MidataId alias = new MidataId(appobj.get("alias").toString());
-			byte[] key = (byte[]) appobj.get("aliaskey");
-			if (appobj.containsKey("targetAccount")) {
-				info.executorId = MidataId.from(appobj.get("targetAccount").toString());
-			} else info.executorId = instance.owner;
-			KeyManager.instance.unlock(info.executorId, alias, key);			
-			RecordManager.instance.clearCache();			
-		} else {
-			RecordManager.instance.setAccountOwner(instance._id, instance.owner);
-		}
-		                                                
-		info.ownerId = instance.owner;
-		info.pluginId = instance.applicationId;
-		info.targetAPS = instance._id;
-		info.context = RecordManager.instance.createContextFromApp(info.executorId, instance);
-		ResourceProvider.setExecutionInfo(info);
+	         				
+		AccessContext session = RecordManager.instance.upgradeSessionForApp(tempContext, instance, baseURL);	
+		ResourceProvider.setAccessContext(session);
 										
-        if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.GET);		        
+        if (session.getUsedPlugin() != null) UsageStatsRecorder.protokoll(session.getUsedPlugin(), UsageAction.GET);		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		switch(getFhirVersion(request)) {
 		  case 3:servlet_stu3.doGet(req, res);break;
@@ -387,8 +365,8 @@ public class FHIR extends Controller {
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request);
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
-		ExecutionInfo info = getExecutionInfo(request, req);
-		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.POST);   
+		AccessContext info = getExecutionInfo(request, req);
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.POST);   
 		
 		AccessLog.logBegin("begin FHIR post request: "+req.getRequestURI());
 		switch(getFhirVersion(request)) {
@@ -432,8 +410,8 @@ public class FHIR extends Controller {
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request);
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 			
-		ExecutionInfo info = getExecutionInfo(request, req);
-		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.PUT);        
+		AccessContext info = getExecutionInfo(request, req);
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.PUT);        
 		
 		AccessLog.log(req.getRequestURI());
 		switch(getFhirVersion(request)) {
@@ -476,8 +454,8 @@ public class FHIR extends Controller {
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request);
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
-		ExecutionInfo info = getExecutionInfo(request, req);		
-		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.DELETE);
+		AccessContext info = getExecutionInfo(request, req);		
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.DELETE);
 		
 		AccessLog.log(req.getRequestURI());
 		switch(getFhirVersion(request)) {
@@ -506,7 +484,7 @@ public class FHIR extends Controller {
 			AccessLog.log("No file handle present");
 		}
 		
-		ExecutionInfo info = null;
+		AccessContext info = null;
 		try {
 			AccessLog.log("Validating session...");
 		    info = getExecutionInfo(request, req);
@@ -521,11 +499,11 @@ public class FHIR extends Controller {
 		if (info == null) return unauthorized();
 		
 		AccessLog.logBegin("begin FHIR binary post request: "+req.getRequestURI());	
-		String url = handle.serializeAsURL(info.executorId);
+		String url = handle.serializeAsURL(info.getAccessor());
 		UnlinkedBinary file = new UnlinkedBinary();
 		file._id = handle.getId();
 		file.created = System.currentTimeMillis();
-		file.owner = info.executorId;
+		file.owner = info.getAccessor();
 		file.add();
 		
 		AccessLog.logEnd("end FHIR binary post request");

@@ -52,7 +52,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -194,7 +194,7 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Molecu
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
 
 		// get execution context (which user, which app)
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();

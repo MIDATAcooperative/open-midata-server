@@ -70,13 +70,13 @@ public class AccountPatches {
 	public static boolean check(AccessContext context, User user) throws AppException {
 		boolean isold = user.accountVersion < currentAccountVersion;
 		
-		if (user.accountVersion < 20160324) { formatPatch20160324(user); }	
-		if (user.accountVersion < 20160407) { formatPatch20160407(user); }
-		if (user.accountVersion < 20160902) { formatPatch20160902(user); }
-		if (user.accountVersion < 20161205) { formatPatch20161205(user); }
+		if (user.accountVersion < 20160324) { formatPatch20160324(context,user); }	
+		if (user.accountVersion < 20160407) { formatPatch20160407(context,user); }
+		if (user.accountVersion < 20160902) { formatPatch20160902(context,user); }
+		if (user.accountVersion < 20161205) { formatPatch20161205(context,user); }
 		if (user.accountVersion < 20171206) { formatPatch20171206(context, user); }
 		if (user.accountVersion < 20190206) { formatPatch20190206(context, user); }
-		if (user.accountVersion < 20200221) { formatPatch20200221(user); }
+		if (user.accountVersion < 20200221) { formatPatch20200221(context,user); }
 		//if (user.accountVersion < 20180130) { formatPatch20180130(user); }
 		//if (user.accountVersion < 20170206) { formatPatch20170206(user); }
 		
@@ -90,47 +90,47 @@ public class AccountPatches {
 		}
 	}
 	
-	public static void formatPatch20160324(User user) throws AppException {
+	public static void formatPatch20160324(AccessContext context, User user) throws AppException {
 		AccessLog.logBegin("start patch 2016 03 24");
 	   Set<String> formats = Sets.create("fhir/Observation/String", "fhir/Observation/Quantity", "fhir/Observation/CodeableConcept");
-	   List<Record> recs = RecordManager.instance.list(UserRole.ANY, RecordManager.instance.createContextFromAccount(user._id), CMaps.map("format", formats).map("owner", "self"), RecordManager.COMPLETE_DATA);
+	   List<Record> recs = RecordManager.instance.list(UserRole.ANY, context, CMaps.map("format", formats).map("owner", "self"), RecordManager.COMPLETE_DATA);
 	   for (Record r : recs) {
 		   MidataId oldId = r._id;
 		   r._id = new MidataId();
 		   
 		   r.format = "fhir/Observation";
 		   try {
-		     RecordManager.instance.addRecord(RecordManager.instance.createContextFromAccount(user._id),  r, null);
+		     RecordManager.instance.addRecord(context,  r, null);
 		   } catch (AppException e) {}
 		   
 	   }
-	   RecordManager.instance.wipe(user._id, CMaps.map("format", formats).map("owner", "self"));
+	   RecordManager.instance.wipe(context, CMaps.map("format", formats).map("owner", "self"));
 	   Set<Space> spaces = Space.getAllByOwner(user._id, Sets.create("_id", "type"));
 	   for (Space space : spaces) {	   					
 		   if (space.type != null && space.type.equals("visualization")) {
-			  RecordManager.instance.deleteAPS(space._id, user._id);
+			  RecordManager.instance.deleteAPS(context, space._id);
 			  Space.delete(user._id, space._id);
 		   }
 	   }	   
-	   RecordManager.instance.fixAccount(user._id);
+	   RecordManager.instance.fixAccount(context);
 	   makeCurrent(user, 20160324);
 	   AccessLog.logEnd("end patch 2016 03 24");
 	}
 	
-	public static void formatPatch20160407(User user) throws AppException {
+	public static void formatPatch20160407(AccessContext context, User user) throws AppException {
 		AccessLog.logBegin("start patch 2016 04 07");
-		RecordManager.instance.patch20160407(user._id); 		      
-		RecordManager.instance.fixAccount(user._id);
+		RecordManager.instance.patch20160407(context); 		      
+		RecordManager.instance.fixAccount(context);
 		makeCurrent(user, 20160407);
 		AccessLog.logEnd("end patch 2016 04 07");
 	}
 	
-	public static void formatPatch20160902(User user) throws AppException {
+	public static void formatPatch20160902(AccessContext context, User user) throws AppException {
 		AccessLog.logBegin("start patch 2016 09 02");
 		
-		RecordManager.instance.fixAccount(user._id);
+		RecordManager.instance.fixAccount(context);
 		if (user.role.equals(UserRole.MEMBER)) {
-		  PatientResourceProvider.updatePatientForAccount(user._id);
+		  PatientResourceProvider.updatePatientForAccount(context, user._id);
 		}
 		
 		/*Set<Consent> consents = Consent.getAllByOwner(user._id, CMaps.map("type", ), Consent.ALL);
@@ -142,7 +142,7 @@ public class AccountPatches {
 		AccessLog.logEnd("end patch 2016 09 02");
 	}
 	
-	public static void formatPatch20161205(User user) throws AppException {
+	public static void formatPatch20161205(AccessContext context, User user) throws AppException {
 		AccessLog.logBegin("start patch 2016 12 05");
 		
 		Set<Consent> consents = Consent.getAllByAuthorized(user._id);
@@ -160,18 +160,18 @@ public class AccountPatches {
 		AccessLog.logEnd("end patch 2016 12 05");
 	}
 	
-	public static void formatPatch20170206(User user) throws AppException {
+	public static void formatPatch20170206(AccessContext context, User user) throws AppException {
 		AccessLog.logBegin("start patch 2017 02 06");
 		
-		accountReset(user);
+		accountReset(context, user);
 		try {
-		  RecordManager.instance.wipe(user._id, CMaps.map("owner", "self").map("app", "fitbit"));
+		  RecordManager.instance.wipe(context, CMaps.map("owner", "self").map("app", "fitbit"));
 		} catch (AppException e) {};
 		try {
-		  RecordManager.instance.wipe(user._id, CMaps.map("owner", "self").map("app", "57a476e679c72190248a135d"));
+		  RecordManager.instance.wipe(context, CMaps.map("owner", "self").map("app", "57a476e679c72190248a135d"));
 		} catch (AppException e) {};
 		try {
-		  RecordManager.instance.wipe(user._id, CMaps.map("owner", "self").map("app", "withings"));
+		  RecordManager.instance.wipe(context, CMaps.map("owner", "self").map("app", "withings"));
 		} catch (AppException e) {};
 		
 				
@@ -256,7 +256,7 @@ public class AccountPatches {
 		      RecordManager.instance.getMeta(context, user._id, "test");
 			} catch (APSNotExistingException e) {
 			  RecordManager.instance.createPrivateAPS(context.getCache(), user._id, user._id);
-			  PatientResourceProvider.updatePatientForAccount(user._id);
+			  PatientResourceProvider.updatePatientForAccount(context, user._id);
 			}
 			makeCurrent(user, 20190206);
 		}
@@ -291,18 +291,18 @@ public class AccountPatches {
 		AccessLog.logEnd("end patch 2018 01 30");
 	}*/
 	
-	public static void accountReset(User user) throws AppException {
+	public static void accountReset(AccessContext context, User user) throws AppException {
 		MidataId userId = user._id;
 		
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {
-			RecordManager.instance.deleteAPS(space._id, userId);			
+			RecordManager.instance.deleteAPS(context, space._id);			
 			Space.delete(userId, space._id);
 		}
 		
 		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", ConsentType.EXTERNALSERVICE), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : consents) {
-			RecordManager.instance.deleteAPS(consent._id, userId);
+			RecordManager.instance.deleteAPS(context, consent._id);
 			Circle.delete(userId, consent._id);
 		}
 	}
@@ -319,11 +319,11 @@ public class AccountPatches {
 		}
 	}
 	
-	public static void formatPatch20200221(User user) throws AppException {
+	public static void formatPatch20200221(AccessContext context, User user) throws AppException {
 		AccessLog.logBegin("start patch 2020 02 21");
 		
 		if (user.role.equals(UserRole.MEMBER)) {
-		  PatientResourceProvider.updatePatientForAccount(user._id);
+		  PatientResourceProvider.updatePatientForAccount(context, user._id);
 		}
 							
 		makeCurrent(user, 20200221);
@@ -335,16 +335,17 @@ public class AccountPatches {
 		KeyManager.instance.login(1000l*60l*60l, false);
 		KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
 		MidataId executor = RuntimeConstants.instance.publicUser;
+		AccessContext session = RecordManager.instance.createRootPublicUserContext();
 		Set<Research> res = Research.getAll(CMaps.map(), Research.ALL);
 		for (Research research : res) {
-			RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", research._id).map("format","fhir/Organization"));
-			OrganizationResourceProvider.updateFromResearch(executor, research);
+			RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", research._id).map("format","fhir/Organization"));
+			OrganizationResourceProvider.updateFromResearch(session, research);
 		}
 		
 		Set<HealthcareProvider> hps = HealthcareProvider.getAll(CMaps.map(), HealthcareProvider.ALL);
 		for (HealthcareProvider provider : hps) {
-			RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", provider._id).map("format","fhir/Organization"));
-			OrganizationResourceProvider.updateFromHP(executor, provider);
+			RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", provider._id).map("format","fhir/Organization"));
+			OrganizationResourceProvider.updateFromHP(session, provider);
 		}
 		AccessLog.logEnd("end fix organization records");
 		ServerTools.endRequest();

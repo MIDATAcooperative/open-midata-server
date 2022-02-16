@@ -435,7 +435,7 @@ public class Feature_Streams extends Feature {
 					DBRecord.set(record._id, "stream", record.stream);
 				}
 				
-				RecordManager.instance.wipe(context.getOwner(), streamrecs);
+				RecordManager.instance.wipe(context, streamrecs);
 				AccessLog.logEnd("end optimize streams :"+key);
 			}
 		}

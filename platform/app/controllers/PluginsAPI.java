@@ -164,15 +164,15 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken and check whether space with corresponding owner exists
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
+		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		
-		if (inf.recordId != null)  {
+		if (inf.getSingleReadableRecord() != null)  {
 		   ObjectNode result = Json.newObject();
 		   result.put("readonly", true);
 		   return ok(result);
 		}
 				
-		BSONObject meta = RecordManager.instance.getMeta(inf.context, inf.targetAPS, "_config");
+		BSONObject meta = RecordManager.instance.getMeta(inf, inf.getTargetAps(), "_config");
 		
 		if (meta != null) return ok(Json.toJson(meta.toMap()));
 		
@@ -193,9 +193,9 @@ public class PluginsAPI extends APIController {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken");
 				
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
+		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 				
-		BSONObject meta = RecordManager.instance.getMeta(inf.context, inf.targetAPS, "_oauthParams");
+		BSONObject meta = RecordManager.instance.getMeta(inf, inf.getTargetAps(), "_oauthParams");
 		
 		if (meta != null) return ok(Json.toJson(meta.toMap()));
 		
@@ -218,17 +218,17 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken 
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
+		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		
-		Stats.setPlugin(inf.pluginId);
+		Stats.setPlugin(inf.getUsedPlugin());
 		
 		if (json.has("config")) {
 		   Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));		
-		   RecordManager.instance.setMeta(inf.context, inf.targetAPS, "_config", config);
+		   RecordManager.instance.setMeta(inf, inf.getTargetAps(), "_config", config);
 		}
 		if (json.has("autoimport")) {
 			boolean auto = JsonValidation.getBoolean(json, "autoimport");
-			Space space = Space.getByIdAndOwner(inf.targetAPS, inf.ownerId, Sets.create("autoImport", "owner", "visualization"));
+			Space space = Space.getByIdAndOwner(inf.getTargetAps(), inf.getLegacyOwner(), Sets.create("autoImport", "owner", "visualization"));
 			if (space==null) throw new InternalServerException("error.internal", "Space not found.");
 			
 			// Disable old style import
@@ -288,22 +288,22 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken", "name", "config");
 		
 		// decrypt authToken 
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
+		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		
 		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
 		String name = JsonValidation.getString(json, "name");
-		Space current = Space.getByIdAndOwner(inf.targetAPS, inf.ownerId, Sets.create("context", "visualization", "app", "licence"));
+		Space current = Space.getByIdAndOwner(inf.getTargetAps(), inf.getLegacyOwner(), Sets.create("context", "visualization", "app", "licence"));
 		if (current == null) throw new BadRequestException("error.unknown.space", "The current space does no longer exist.");
 		
-		Space space = Spaces.add(inf.ownerId, name, current.visualization, current.type, current.context, current.licence);		
-		BSONObject bquery = RecordManager.instance.getMeta(inf.context, inf.targetAPS, "_query");		
+		Space space = Spaces.add(inf.getLegacyOwner(), name, current.visualization, current.type, current.context, current.licence);		
+		BSONObject bquery = RecordManager.instance.getMeta(inf, inf.getTargetAps(), "_query");		
 		Map<String, Object> query;
 		if (bquery != null) {
 			query = bquery.toMap();
 						
-			RecordManager.instance.shareByQuery(RecordManager.instance.createSharingContext(inf.context, inf.context.getCache().getAccountOwner()), space._id, query);
+			RecordManager.instance.shareByQuery(RecordManager.instance.createSharingContext(inf, inf.getCache().getAccountOwner()), space._id, query);
 		}		
-		RecordManager.instance.setMeta(inf.context, space._id, "_config", config);
+		RecordManager.instance.setMeta(inf, space._id, "_config", config);
 						
 		return ok();
 	}
@@ -325,9 +325,9 @@ public class PluginsAPI extends APIController {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 						
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
-		Stats.setPlugin(inf.pluginId);
-		UsageStatsRecorder.protokoll(inf.pluginId, UsageAction.GET);
+		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
+		Stats.setPlugin(inf.getUsedPlugin());
+		UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.GET);
 		
 		Collection<Record> records = getRecords(inf, properties, fields);
 				
@@ -343,7 +343,7 @@ public class PluginsAPI extends APIController {
 	 * @return collection of records matching given criteria where executor has access to 
 	 * @throws AppException
 	 */
-	public static Collection<Record> getRecords(ExecutionInfo inf, Map<String,Object> properties, Set<String> fields) throws AppException {
+	public static Collection<Record> getRecords(AccessContext inf, Map<String,Object> properties, Set<String> fields) throws AppException {
 		// Do not check for fields that query for parts of the data.
 		Set<String> chkFields = new HashSet<String>();
 		for (String f : fields) {
@@ -352,13 +352,13 @@ public class PluginsAPI extends APIController {
 						
 		Rights.chk("getRecords", UserRole.ANY, chkFields);
 					
-		if (inf.recordId != null) properties.put("_id", inf.recordId);
+		if (inf.getSingleReadableRecord() != null) properties.put("_id", inf.getSingleReadableRecord());
 
 		// get record data
 		Collection<Record> records = null;
 				
 		AccessLog.log("NEW QUERY");		
-		records = RecordManager.instance.list(inf.role, inf.context, properties, fields);		  
+		records = RecordManager.instance.list(inf.getAccessorRole(), inf, properties, fields);		  
 						
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
@@ -381,27 +381,27 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken", "properties", "summarize");
 		
 		// decrypt authToken 
-		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
+		AccessContext authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		//SpaceToken authToken = SpaceToken.decryptAndSession(request, json.get("authToken").asText());
 		if (authToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
-		Stats.setPlugin(authToken.pluginId);		
-		MidataId targetAps = authToken.targetAPS;
+		Stats.setPlugin(authToken.getUsedPlugin());		
+		MidataId targetAps = authToken.getTargetAps();
 		
 		Collection<RecordsInfo> result;
 
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = json.has("fields") ? JsonExtraction.extractStringSet(json.get("fields")) : Sets.create();
 		
-		if (authToken.recordId != null) {
-			Collection<Record> record = RecordManager.instance.list(authToken.role, authToken.context, CMaps.map("_id", authToken.recordId), Sets.create("owner", "content", "format", "group"));
+		if (authToken.getSingleReadableRecord() != null) {
+			Collection<Record> record = RecordManager.instance.list(authToken.getAccessorRole(), authToken, CMaps.map("_id", authToken.getSingleReadableRecord()), Sets.create("owner", "content", "format", "group"));
 			result = new ArrayList<RecordsInfo>();
 			for (Record r : record) result.add(new RecordsInfo(r));			
 		} else {
 							
 			AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);		
-		    result = RecordManager.instance.info(authToken.role, targetAps, authToken.context, properties, aggrType);
+		    result = RecordManager.instance.info(authToken.getAccessorRole(), targetAps, authToken, properties, aggrType);
 
 		    
 
@@ -425,11 +425,11 @@ public class PluginsAPI extends APIController {
 		String authTokenStr = request.queryString("authToken").orElseThrow();
 		String id = request.queryString("id").orElseThrow();
 		
-		ExecutionInfo info = ExecutionInfo.checkToken(request, authTokenStr, false);		
+		AccessContext info = ExecutionInfo.checkToken(request, authTokenStr, false);		
 		if (info == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
-		Stats.setPlugin(info.pluginId);
+		Stats.setPlugin(info.getUsedPlugin());
 		Pair<String,Integer> recordId = RecordManager.instance.parseFileId(id);
 			
 		return MobileAPI.getFile(request, info, MidataId.from(recordId.getLeft()), recordId.getRight(), true);		
@@ -452,10 +452,10 @@ public class PluginsAPI extends APIController {
 		if (!json.has("content") && !json.has("code")) throw new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
 		
 		
-		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
-		Stats.setPlugin(authToken.pluginId);
-		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
-		UsageStatsRecorder.protokoll(authToken.pluginId, UsageAction.POST);	
+		AccessContext authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
+		Stats.setPlugin(authToken.getUsedPlugin());
+		if (authToken.getSingleReadableRecord() != null) throw new BadRequestException("error.internal", "This view is readonly.");
+		UsageStatsRecorder.protokoll(authToken.getUsedPlugin(), UsageAction.POST);	
 		
 		String data = JsonValidation.getJsonString(json, "data");
 		String name = JsonValidation.getString(json, "name");
@@ -472,9 +472,9 @@ public class PluginsAPI extends APIController {
 		} else {
 		    record._id = new MidataId();
 		}
-		record.app = authToken.pluginId;
-		record.owner = authToken.ownerId;
-		record.creator = authToken.context.getActor();
+		record.app = authToken.getUsedPlugin();
+		record.owner = authToken.getLegacyOwner();
+		record.creator = authToken.getActor();
 		record.created = record._id.getCreationDate();
 		
 		/*if (json.has("created-override")) {
@@ -484,7 +484,7 @@ public class PluginsAPI extends APIController {
 		record.format = format;
 		
 		
-		ContentInfo.setRecordCodeAndContent(authToken.pluginId, record, code, content);		
+		ContentInfo.setRecordCodeAndContent(authToken.getUsedPlugin(), record, code, content);		
 					
 		try {
 			record.data = BasicDBObject.parse(data);
@@ -506,18 +506,15 @@ public class PluginsAPI extends APIController {
 	 * @param record record to add to the database
 	 * @throws AppException
 	 */
-	public static void createRecord(ExecutionInfo inf, Record record) throws AppException  {
-       createRecord(inf, record, null, inf.context);		
+	public static void createRecord(AccessContext inf, Record record) throws AppException  {
+       createRecord(inf, record, null);		
 	}
-	
-	public static void createRecord(ExecutionInfo inf, Record record, AccessContext context) throws AppException  {
-	    createRecord(inf, record, null, context);		
-	}
-	
-	public static void createRecord(ExecutionInfo inf, Record record, List<EncryptedFileHandle> fileData, AccessContext context) throws AppException  {
+			
+	public static void createRecord(AccessContext inf, Record record, List<EncryptedFileHandle> fileData) throws AppException  {
+		AccessContext context = inf;
 		if (record.format==null) record.format = "application/json";
 		if (record.content==null) record.content = "other";
-		if (record.owner==null) record.owner = inf.ownerId;
+		if (record.owner==null) record.owner = inf.getLegacyOwner();
 		if (record.name==null) record.name="unnamed";
 		
 		if (record.tags != null && record.tags.contains("security:public")) {
@@ -527,24 +524,24 @@ public class PluginsAPI extends APIController {
 		
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
         				
-		if (!record.owner.equals(inf.executorId) && !inf.executorId.equals(RuntimeConstants.instance.autorunService) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext) && !(context instanceof PublicAccessContext)) {
-			BSONObject query = RecordManager.instance.getMeta(inf.context, inf.targetAPS, "_query");
+		if (!record.owner.equals(inf.getAccessor()) && !inf.getAccessor().equals(RuntimeConstants.instance.autorunService) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext) && !(context instanceof PublicAccessContext)) {
+			BSONObject query = RecordManager.instance.getMeta(inf, inf.getTargetAps(), "_query");
 			Set<Consent> consent = null;
 			if (query != null && query.containsField("link-study")) {
 				
 				MidataId groupId = MidataId.from(query.get("link-study"));
-                UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(groupId, inf.executorId);
+                UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(groupId, inf.getAccessor());
                 if (ugm != null) context = context.forUserGroup(ugm);
 				consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(groupId, record.owner);
 				
 			} else {
 				
-			    consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(inf.executorId, record.owner);
+			    consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(inf.getAccessor(), record.owner);
 			}
 									
 			if (consent == null || consent.isEmpty()) {
 				if (InstanceConfig.getInstance().getInstanceType().doExtendedDeveloperReports()) {
-				   throw new PluginException(inf.pluginId, "error.noconsent", "No active consent that allows to add data for target person.");					
+				   throw new PluginException(inf.getUsedPlugin(), "error.noconsent", "No active consent that allows to add data for target person.");					
 				} else {
 				   throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");
 				}
@@ -561,16 +558,16 @@ public class PluginsAPI extends APIController {
 			}
 			if (contextWithConsent == null) {
 				if (InstanceConfig.getInstance().getInstanceType().doExtendedDeveloperReports()) {
-				   throw new PluginException(inf.pluginId, "error.noconsent", "None of the "+consent.size()+" possible consents allow to write "+dbrecord.getErrorInfo()+" for target person.\n\nLast tried create permission chain:\n"+lastTried.getMayCreateRecordReport(dbrecord));
+				   throw new PluginException(inf.getUsedPlugin(), "error.noconsent", "None of the "+consent.size()+" possible consents allow to write "+dbrecord.getErrorInfo()+" for target person.\n\nLast tried create permission chain:\n"+lastTried.getMayCreateRecordReport(dbrecord));
 				} else {
 				   throw new InternalServerException("error.internal", "Record may not be created!");
 				}
 			}
 			context = contextWithConsent;
 		} else if (!context.mayCreateRecord(dbrecord)) {
-			throw new PluginException(inf.pluginId, "error.plugin", dbrecord.getErrorInfo()+" may not be created. Please check access filter and permissions in developer portal.\n\nCreate permission chain:\n"+context.getMayCreateRecordReport(dbrecord));					
+			throw new PluginException(inf.getUsedPlugin(), "error.plugin", dbrecord.getErrorInfo()+" may not be created. Please check access filter and permissions in developer portal.\n\nCreate permission chain:\n"+context.getMayCreateRecordReport(dbrecord));					
 		}
-		if (context.mustPseudonymize()) throw new PluginException(inf.pluginId, "error.plugin", dbrecord.getErrorInfo()+" may not be created. Access is pseudonymized! \n\nCreate permisssion chain:\n"+context.getMayCreateRecordReport(dbrecord));
+		if (context.mustPseudonymize()) throw new PluginException(inf.getUsedPlugin(), "error.plugin", dbrecord.getErrorInfo()+" may not be created. Access is pseudonymized! \n\nCreate permisssion chain:\n"+context.getMayCreateRecordReport(dbrecord));
 		
 		//MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
 		
@@ -584,10 +581,10 @@ public class PluginsAPI extends APIController {
 								    				
 		AccessContext myContext = context;		
 		
-		if (inf.executorId.equals(inf.ownerId)) {
+		if (inf.getAccessor().equals(inf.getLegacyOwner())) {
 			while (myContext != null) {
 				if (!myContext.isIncluded(dbrecord)) {
-					RecordManager.instance.share(inf.context, inf.ownerId, myContext.getTargetAps(), records, !myContext.getOwner().equals(dbrecord.owner));
+					RecordManager.instance.share(inf, inf.getLegacyOwner(), myContext.getTargetAps(), records, !myContext.getOwner().equals(dbrecord.owner));
 				}
 				myContext = myContext.getParent();
 			}									
@@ -596,7 +593,7 @@ public class PluginsAPI extends APIController {
 			myContext = myContext.getParent();			
 			while (myContext != null) {
 				if (!myContext.isIncluded(dbrecord)) {
-					RecordManager.instance.share(inf.context, context.getTargetAps(), myContext.getTargetAps(), records, !myContext.getOwner().equals(dbrecord.owner));
+					RecordManager.instance.share(inf, context.getTargetAps(), myContext.getTargetAps(), records, !myContext.getOwner().equals(dbrecord.owner));
 				}
 				myContext = myContext.getParent();
 			}					
@@ -614,10 +611,10 @@ public class PluginsAPI extends APIController {
 		*/
 		
 		/* Publication of study results */ 
-		if (record.owner.equals(inf.executorId)) {
-			BSONObject query = RecordManager.instance.getMeta(inf.context, inf.targetAPS, "_query");
+		if (record.owner.equals(inf.getAccessor())) {
+			BSONObject query = RecordManager.instance.getMeta(inf, inf.getTargetAps(), "_query");
 			if (query != null && query.containsField("target-study")) {				
-				inf.cache.getStudyPublishBuffer().add(inf, record);						
+				inf.getRequestCache().getStudyPublishBuffer().add(inf, record);						
 			}
 		}
 		
@@ -640,9 +637,9 @@ public class PluginsAPI extends APIController {
 		}
 
 		// decrypt authToken and check whether a user exists who has the app installed
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
+		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 				
-		BSONObject oauthMeta = RecordManager.instance.getMeta(inf.context, inf.targetAPS, "_oauth");
+		BSONObject oauthMeta = RecordManager.instance.getMeta(inf, inf.getTargetAps(), "_oauth");
     	if (oauthMeta == null) throw new BadRequestException("error.notauthorized.action", "No valid oauth credentials.");
 		Map<String, Object> tokens = oauthMeta.toMap();	
 						
@@ -702,10 +699,10 @@ public class PluginsAPI extends APIController {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "_id");
 		
-		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
+		AccessContext authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 				
-		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
-		UsageStatsRecorder.protokoll(authToken.pluginId, UsageAction.PUT);				
+		if (authToken.getSingleReadableRecord() != null) throw new BadRequestException("error.internal", "This view is readonly.");
+		UsageStatsRecorder.protokoll(authToken.getUsedPlugin(), UsageAction.PUT);				
 		
 		String data = JsonValidation.getJsonString(json, "data");
 		
@@ -722,7 +719,7 @@ public class PluginsAPI extends APIController {
 		 		
 		//record.app = authToken.pluginId;
 		//record.owner = authToken.ownerId;
-		record.creator = authToken.context.getActor();
+		record.creator = authToken.getActor();
 		record.lastUpdated = new Date();		
 							
 		try {
@@ -744,8 +741,8 @@ public class PluginsAPI extends APIController {
 	 * @throws AppException
 	 * @return the new version string of the record
 	 */
-	public static String updateRecord(ExecutionInfo inf, Record record) throws AppException  {
-		return RecordManager.instance.updateRecord(inf.executorId, inf.pluginId, inf.context, record, Collections.emptyList());				
+	public static String updateRecord(AccessContext inf, Record record) throws AppException  {
+		return RecordManager.instance.updateRecord(inf.getAccessor(), inf.getUsedPlugin(), inf, record, Collections.emptyList());				
 	}
 	
 	/**
@@ -764,12 +761,12 @@ public class PluginsAPI extends APIController {
 			return badRequestPromise(e.getMessage());
 		}
 
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
+		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		String method = json.has("method") ? json.get("method").asText() : "get";
 		JsonNode body = json.has("body") ? json.get("body") : null;
 	
 		String url = json.get("url").asText();
-		Plugin app = Plugin.getById(inf.pluginId);
+		Plugin app = Plugin.getById(inf.getUsedPlugin());
 		if (app.apiUrl == null || !url.startsWith(app.apiUrl)) throw new BadRequestException("error.invalid.url", "API URL does not match URL in app definition.");
 		
 		CompletionStage<WSResponse> response = oAuth2Call(inf, url, method, body);	
@@ -789,9 +786,9 @@ public class PluginsAPI extends APIController {
 	 * @return result of oauth request
 	 * @throws AppException
 	 */
-    public static CompletionStage<WSResponse> oAuth2Call(ExecutionInfo inf, String url, String method, JsonNode body) throws AppException {
+    public static CompletionStage<WSResponse> oAuth2Call(AccessContext inf, String url, String method, JsonNode body) throws AppException {
 				
-    	BSONObject oauthMeta = RecordManager.instance.getMeta(inf.context, inf.targetAPS, "_oauth");
+    	BSONObject oauthMeta = RecordManager.instance.getMeta(inf, inf.getTargetAps(), "_oauth");
     	if (oauthMeta == null) throw new BadRequestException("error.notauthorized.action", "No valid oauth credentials.");
 		Map<String, String> tokens = oauthMeta.toMap();				
 		String accessToken;
@@ -849,19 +846,19 @@ public class PluginsAPI extends APIController {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 	
-		ExecutionInfo authToken = ExecutionInfo.checkToken(request, metaData.get("authToken")[0], false);
-		Stats.setPlugin(authToken.pluginId);
+		AccessContext authToken = ExecutionInfo.checkToken(request, metaData.get("authToken")[0], false);
+		Stats.setPlugin(authToken.getUsedPlugin());
 		
 		System.out.println("Passed 1");
-		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
+		if (authToken.getSingleReadableRecord() != null) throw new BadRequestException("error.internal", "This view is readonly.");
 			try {
 																			
 			// create record
 			Record record = new Record();
 			record._id = new MidataId();
-			record.app = authToken.pluginId;
-			record.owner = authToken.ownerId;
-			record.creator = authToken.context.getActor();
+			record.app = authToken.getUsedPlugin();
+			record.owner = authToken.getLegacyOwner();
+			record.creator = authToken.getActor();
 			record.created = record._id.getCreationDate();
 			record.name = metaData.get("name")[0];
 			record.description = metaData.containsKey("description") ? metaData.get("description")[0] : null;
@@ -870,7 +867,7 @@ public class PluginsAPI extends APIController {
 			String[] contents = metaData.get("content");
 			String[] codes = metaData.get("code");
 			
-			ContentInfo.setRecordCodeAndContent(authToken.pluginId, record, codes != null ? new HashSet<String>(Arrays.asList(codes)) : null, contents != null ? contents[0] : null);					
+			ContentInfo.setRecordCodeAndContent(authToken.getUsedPlugin(), record, codes != null ? new HashSet<String>(Arrays.asList(codes)) : null, contents != null ? contents[0] : null);					
 						
 			if (metaData.containsKey("data")) {
 				String data = metaData.get("data")[0];
@@ -906,7 +903,7 @@ public class PluginsAPI extends APIController {
 			 		
 			}
 					
-			createRecord(authToken, record, Collections.singletonList(handle), authToken.context);
+			createRecord(authToken, record, Collections.singletonList(handle));
 					
 			Stats.finishRequest(request, "200");
 			ObjectNode obj = Json.newObject();
@@ -932,7 +929,7 @@ public class PluginsAPI extends APIController {
 	@VisualizationCall
 	public Result generateId(Request request) throws JsonValidationException, AppException {
 		JsonNode json = request.body().asJson();		
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());									
+		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());									
 		return ok(new MidataId().toString());
 	}
 	

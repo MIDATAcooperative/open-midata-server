@@ -57,7 +57,7 @@ import models.Research;
 import models.enums.UserRole;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -199,7 +199,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
 		
 		// get execution context (which user, which app)
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		
@@ -308,28 +308,26 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 	}
 	
-	public static void updateFromResearch(MidataId executor, MidataId researchId) throws AppException {
+	public static void updateFromResearch(AccessContext context, MidataId researchId) throws AppException {
 		Research research = Research.getById(researchId, Research.ALL);
-		updateFromResearch(executor, research);
+		updateFromResearch(context, research);
 	}
 	
-	public static void updateFromHP(MidataId executor, MidataId orgId) throws AppException {
+	public static void updateFromHP(AccessContext context, MidataId orgId) throws AppException {
 		HealthcareProvider provider = HealthcareProvider.getById(orgId, HealthcareProvider.ALL);
-		updateFromHP(executor, provider);
+		updateFromHP(context, provider);
 	}
 	
-	public static void deleteOrganization(MidataId executor, MidataId orgId) throws AppException {        
-		RecordManager.instance.deleteFromPublic(executor, CMaps.map("_id",orgId).map("format","fhir/Organization").map("public","only").map("content","Organization"));		
+	public static void deleteOrganization(AccessContext context, MidataId orgId) throws AppException {        
+		RecordManager.instance.deleteFromPublic(context, CMaps.map("_id",orgId).map("format","fhir/Organization").map("public","only").map("content","Organization"));		
 	}
 	
-	public static void updateFromResearch(MidataId executor, Research research) throws AppException {
+	public static void updateFromResearch(AccessContext context, Research research) throws AppException {
 		
 		try {
 			info();
-		} catch (AuthenticationException e) {
-			ExecutionInfo inf = new ExecutionInfo(executor, UserRole.RESEARCH);
-			
-			OrganizationResourceProvider.setExecutionInfo(inf);
+		} catch (AuthenticationException e) {						
+			OrganizationResourceProvider.setAccessContext(context);
 		}
 				
 		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.myProviders.get("Organization")); 
@@ -339,7 +337,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		boolean doupdate = false;
 		Record oldRecord = null;
 		
-		List<Record> records = RecordManager.instance.list(info().role, info().context, CMaps.map("_id",research._id).map("format","fhir/Organization").map("public","only").map("content","Organization/Research"), RecordManager.COMPLETE_DATA);
+		List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id",research._id).map("format","fhir/Organization").map("public","only").map("content","Organization/Research"), RecordManager.COMPLETE_DATA);
 		if (!records.isEmpty()) oldRecord = records.get(0);								  
 				
 		if (oldRecord != null) {
@@ -367,14 +365,12 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 	}
 	
-   public static void updateFromHP(MidataId executor, HealthcareProvider healthProvider) throws AppException {
+   public static void updateFromHP(AccessContext context, HealthcareProvider healthProvider) throws AppException {
 		
 		try {
 			info();
-		} catch (AuthenticationException e) {
-			ExecutionInfo inf = new ExecutionInfo(executor, UserRole.RESEARCH);
-			
-			OrganizationResourceProvider.setExecutionInfo(inf);
+		} catch (AuthenticationException e) {					
+			OrganizationResourceProvider.setAccessContext(context);
 		}
 				
 		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.myProviders.get("Organization")); 
@@ -384,7 +380,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		boolean doupdate = false;
 		Record oldRecord = null;
 		
-		List<Record> records = RecordManager.instance.list(info().role, info().context, CMaps.map("_id",healthProvider._id).map("format","fhir/Organization").map("public","only").map("content","Organization/HP"), RecordManager.COMPLETE_DATA); 
+		List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id",healthProvider._id).map("format","fhir/Organization").map("public","only").map("content","Organization/HP"), RecordManager.COMPLETE_DATA); 
 		if (!records.isEmpty()) oldRecord = records.get(0);								  
 				
 		if (oldRecord != null) {

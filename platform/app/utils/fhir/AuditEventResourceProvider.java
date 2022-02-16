@@ -75,7 +75,7 @@ import models.enums.ConsentType;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.access.op.AndCondition;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.CMaps;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -402,20 +402,20 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	@Override
 	public List<MidataAuditEvent> searchRaw(SearchParameterMap params) throws AppException {
 		if (!checkAccessible()) return Collections.emptyList();
-		ExecutionInfo info = info();
+		AccessContext info = info();
 		
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, null);
 		
-		User current = info().cache.getUserById(info().ownerId);
+		User current = info().getRequestCache().getUserById(info().getLegacyOwner());
 		boolean authrestricted = false;
 		if (!current.role.equals(UserRole.ADMIN)) {
-		  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(info().executorId);
+		  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(info().getAccessor());
 		  if (ugms.isEmpty()) {
-		    query.putDataCondition(new AndCondition(CMaps.map("authorized", info.executorId)).optimize());
+		    query.putDataCondition(new AndCondition(CMaps.map("authorized", info.getAccessor())).optimize());
 		  } else {
 			Set<MidataId> allowedIds = new HashSet<MidataId>();
-			allowedIds.add(info.executorId);
+			allowedIds.add(info.getAccessor());
 			for (UserGroupMember ugm : ugms) if (ugm.getRole().auditLogAccess()) allowedIds.add(ugm.userGroup);
 			query.putDataCondition(new AndCondition(CMaps.map("authorized", CMaps.map("$in", allowedIds))).optimize());
 			//query.putAccount("authorized", allowedIds);

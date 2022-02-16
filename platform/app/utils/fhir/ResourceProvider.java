@@ -61,8 +61,9 @@ import models.Record;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.access.AccessContext;
 import utils.access.VersionedDBRecord;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -86,43 +87,32 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	}
 	
 	
-	private static ThreadLocal<ExecutionInfo> tinfo = new ThreadLocal<ExecutionInfo>();
+	private static ThreadLocal<AccessContext> tinfo = new ThreadLocal<AccessContext>();
 	
 	
 	/**
-	 * Set ExecutionInfo (Session information) for current Thread to be used by FHIR classes
-	 * @param info ExecutionInfo to be used
+	 * Set AccessContext (Session information) for current Thread to be used by FHIR classes
+	 * @param info AccessContext to be used
 	 */
-	public static void setExecutionInfo(ExecutionInfo info) {
+	public static void setAccessContext(AccessContext info) {
 		tinfo.set(info);
 	}
 	
 	/**
-	 * Retrives ExecutionInfo for current thread
-	 * @return ExecutionInfo
+	 * Retrives AccessContext for current thread
+	 * @return AccessContext
 	 */
-	public static ExecutionInfo info() {
-		ExecutionInfo inf = tinfo.get();
+	public static AccessContext info() {
+		AccessContext inf = tinfo.get();
 		if (inf == null) throw new AuthenticationException();
 		return inf;
 	}
 	
 	public static boolean hasInfo() {
-		ExecutionInfo inf = tinfo.get();
+		AccessContext inf = tinfo.get();
 		return inf != null;
 	}
-	
-	/**
-	 * Retrives ExecutionInfo for current thread or default instance
-	 * @return ExecutionInfo
-	 */
-	/*
-	public static ExecutionInfo info(MidataId executor, UserRole role) throws InternalServerException {
-		ExecutionInfo inf = tinfo.get();
-		if (inf == null) return new ExecutionInfo(executor, role);
-		return inf;
-	}*/
-	
+		
 	/**
 	 * Returns the class of FHIR resources provided by this resource provider
 	 * @return Subclass of BaseResource 
@@ -380,7 +370,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 																													
 				if (rt != null && rt.equals("Patient")) {
 					String tId = target.getIdPart();
-					if (tId.equals(info().ownerId.toString())) {
+					if (tId.equals(info().getLegacyOwner().toString())) {
 						
 					} else {
 						//cleanSubject = false;
@@ -401,8 +391,8 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	protected abstract void convertToR4(Object in);
 	
 	public boolean checkAccessible() throws AppException {
-		ExecutionInfo info = info();						
-		if (!info.context.mayAccess(getResourceType().getSimpleName(), "fhir/"+getResourceType().getSimpleName())) return false;
+		AccessContext info = info();						
+		if (!info.mayAccess(getResourceType().getSimpleName(), "fhir/"+getResourceType().getSimpleName())) return false;
 		return true;
 	}
 

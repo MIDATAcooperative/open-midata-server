@@ -629,12 +629,12 @@ public class Circles extends APIController {
 		// delete circle		
 		switch (consent.type) {
 		case CIRCLE:
-			RecordManager.instance.deleteAPS(consent._id, userId);
+			RecordManager.instance.deleteAPS(context, consent._id);
 			Circle.delete(userId, circleId);
 			break;
 		case API:
 		case EXTERNALSERVICE: 
-			RecordManager.instance.deleteAPS(consent._id, userId);
+			RecordManager.instance.deleteAPS(context, consent._id);
 			Consent.delete(userId, circleId);break;
 		case IMPLICIT: consent.setStatus(ConsentStatus.DELETED);break;
 		//case STUDYRELATED : StudyRelated.delete(userId, circleId);break;

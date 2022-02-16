@@ -336,13 +336,13 @@ public class Records extends APIController {
 	public Result delete(Request request) throws JsonValidationException, AppException {
 		JsonNode json = request.body().asJson();
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-
+        AccessContext context = portalContext(request);
 		if (json.has("_id")) {
 			String id = JsonValidation.getString(json, "_id");
 			RecordToken tk = getRecordTokenFromString(request, id);
 			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, "id=" + tk.recordId);
-			RecordManager.instance.delete(userId, CMaps.map("_id", tk.recordId));
-			if (getRole().equals(UserRole.ADMIN)) RecordManager.instance.deleteFromPublic(userId, CMaps.map("_id", tk.recordId));
+			RecordManager.instance.delete(context, CMaps.map("_id", tk.recordId));
+			if (getRole().equals(UserRole.ADMIN)) RecordManager.instance.deleteFromPublic(context, CMaps.map("_id", tk.recordId));
 		} else if (json.has("group") || json.has("content") || json.has("app")) {
 
 			Map<String, Object> properties = new HashMap<String, Object>();
@@ -358,8 +358,8 @@ public class Records extends APIController {
 			}
 
 			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, message);
-			RecordManager.instance.delete(userId, properties);
-			if (getRole().equals(UserRole.ADMIN)) RecordManager.instance.deleteFromPublic(userId, properties);
+			RecordManager.instance.delete(context, properties);
+			if (getRole().equals(UserRole.ADMIN)) RecordManager.instance.deleteFromPublic(context, properties);
 		}
 		AuditManager.instance.success();
 
@@ -579,7 +579,7 @@ public class Records extends APIController {
 	public Result fixAccount(Request request) throws AppException {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 
-		List<String> messages = RecordManager.instance.fixAccount(userId);
+		List<String> messages = RecordManager.instance.fixAccount(portalContext(request));
 
 		ArrayNode result = Json.newArray();
 		for (String msg : messages) result.add(msg);
@@ -597,7 +597,8 @@ public class Records extends APIController {
 		final String handle = PortalSessionToken.session().handle;
 
 		KeyManager.instance.continueSession(handle);
-		ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
+		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session()).forAccount();
+		ResourceProvider.setAccessContext(context);
 		String headerStr = "{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ";
 
 		boolean first = true;
@@ -610,9 +611,10 @@ public class Records extends APIController {
 			public Iterator<ByteString> create() throws Exception {
 				try {
 					KeyManager.instance.continueSession(handle);
-					ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
+					AccessContext context = RecordManager.instance.createSessionForDownloadStream(executorId, role);
+					ResourceProvider.setAccessContext(context);
 	
-					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, RecordManager.instance.createContextFromAccount(executorId), CMaps.map("owner", "self"), RecordManager.COMPLETE_DATA);
+					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, context, CMaps.map("owner", "self"), RecordManager.COMPLETE_DATA);
 					return new RecIterator(allRecords);
 				} finally {
 				  ServerTools.endRequest();
@@ -642,8 +644,8 @@ public class Records extends APIController {
 					try {
 						StringBuffer out = new StringBuffer();
 						KeyManager.instance.continueSession(handle);
-						ExecutionInfo inf = new ExecutionInfo(executorId, role);
-						ResourceProvider.setExecutionInfo(inf);
+						AccessContext context = RecordManager.instance.createSessionForDownloadStream(executorId, role);
+						ResourceProvider.setAccessContext(context);
 						Record rec = it.next();
 						String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 
@@ -659,7 +661,7 @@ public class Records extends APIController {
 							  attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
 							  if (attpos > 0) {
 								out.append(ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(inf.context, new RecordToken(rec._id.toString(), rec.stream.toString()), idx);
+								FileData fileData = RecordManager.instance.fetchFile(context, new RecordToken(rec._id.toString(), rec.stream.toString()), idx);
 
 								int BUFFER_SIZE = 3 * 1024;
 
@@ -716,11 +718,8 @@ public class Records extends APIController {
 		// check whether the request is complete
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "properties", "target-study", "target-study-group");
-		
-		final MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-        final UserRole role = getRole();
-        
-		ExecutionInfo inf = new ExecutionInfo(executorId, role);		
+				
+		AccessContext inf = RecordManager.instance.createSession(PortalSessionToken.session());		
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 													
@@ -739,11 +738,8 @@ public class Records extends APIController {
 		// check whether the request is complete
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "properties", "target-study", "target-study-group");
-		
-		final MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-        final UserRole role = getRole();
-        
-		ExecutionInfo inf = new ExecutionInfo(executorId, role);		
+				        
+        AccessContext inf = RecordManager.instance.createSession(PortalSessionToken.session());		
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 													

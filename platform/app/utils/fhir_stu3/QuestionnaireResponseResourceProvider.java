@@ -53,7 +53,7 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import models.Record;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -203,7 +203,7 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/QuestionnaireResponse");
@@ -279,7 +279,7 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 	/*
 	 * @Delete() public void deleteObservation(@IdParam IdType theId) { Record
 	 * record = fetchCurrent(theId);
-	 * RecordManager.instance.deleteRecord(info().executorId, info().targetAPS,
+	 * RecordManager.instance.deleteRecord(info().getAccessor(), info().getTargetAps(),
 	 * record); }
 	 */
  

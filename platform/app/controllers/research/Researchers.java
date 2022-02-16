@@ -49,6 +49,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import play.mvc.Http.Request;
 import utils.InstanceConfig;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -151,7 +152,7 @@ public class Researchers extends APIController {
 			  user.organization = research._id;
 		}
 		ResearchUser.add(user);
-		  
+		AccessContext context = RecordManager.instance.createInitialSession(user._id, UserRole.RESEARCH, null);
 		KeyManager.instance.newFutureLogin(user);	
 		PWRecovery.storeRecoveryData(user._id, recover);
 			
@@ -160,7 +161,7 @@ public class Researchers extends APIController {
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 			
-		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));
+		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, context);
 			
 	}
 	
@@ -174,7 +175,7 @@ public class Researchers extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result registerOther(Request request) throws AppException {
 		requireSubUserRole(request, SubUserRole.MASTER);
-		
+		AccessContext context = portalContext(request);
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language");
 							
@@ -203,14 +204,14 @@ public class Researchers extends APIController {
 		//user.authType = SecondaryAuthType.SMS;
 						
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request.attrs().get(play.mvc.Security.USERNAME)), user);
-		register(user ,null, executingUser);
+		register(context, user ,null, executingUser);
 			
 		AuditManager.instance.success();
 		return ok();		
 	}
 	
 	
-	public static void register(ResearchUser user, Research research, User executingUser) throws AppException {
+	public static void register(AccessContext context, ResearchUser user, Research research, User executingUser) throws AppException {
 					
 		if (research != null && Research.existsByName(research.name)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A research organization with this name already exists.");			
 		if (ResearchUser.existsByEMail(user.email)) throw new JsonValidationException("error.exists.user", "email", "exists", "A user with this email address already exists.");
@@ -236,7 +237,7 @@ public class Researchers extends APIController {
 		if (research != null) {
 		  Research.add(research);
 		  user.organization = research._id;
-		  OrganizationResourceProvider.updateFromResearch(executingUser._id, research);
+		  OrganizationResourceProvider.updateFromResearch(context, research);
 		}
 		ResearchUser.add(user);
 					
@@ -289,7 +290,7 @@ public class Researchers extends APIController {
 	public Result updateOrganization(Request request, String id) throws AppException {
 		requireSubUserRole(request, SubUserRole.MASTER);
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		
+		AccessContext context = portalContext(request);
 		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "_id", "name", "description");
@@ -312,7 +313,7 @@ public class Researchers extends APIController {
 		research.set("name", research.name);
 		research.set("description", research.description);						
 		
-		OrganizationResourceProvider.updateFromResearch(executorId, research);
+		OrganizationResourceProvider.updateFromResearch(context, research);
 		return ok();		
 	}
 		

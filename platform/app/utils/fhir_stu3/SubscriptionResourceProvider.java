@@ -66,7 +66,7 @@ import models.SubscriptionData;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.db.ObjectIdConversion;
@@ -96,8 +96,8 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	 */
 	@Read()
 	public Subscription getResourceById(@IdParam IIdType theId) throws AppException {
-		if (!info().context.mayAccess("Subscription", "fhir/Subscription")) return null;
-		SubscriptionData subscription = SubscriptionData.getByIdAndOwner(MidataId.from(theId.getIdPart()), info().ownerId, SubscriptionData.ALL);	
+		if (!info().mayAccess("Subscription", "fhir/Subscription")) return null;
+		SubscriptionData subscription = SubscriptionData.getByIdAndOwner(MidataId.from(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
 		if (subscription == null) return null;
 		return readSubscriptionFromMidataSubscription(subscription);
 	}
@@ -118,13 +118,13 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	
 	public static Subscription subscription(SubscriptionData data) throws AppException {
 	  SubscriptionResourceProvider subscriptionProvider = (SubscriptionResourceProvider) FHIRServlet.myProviders.get("Subscription");
-	  //SubscriptionResourceProvider.setExecutionInfo(inf);
+	  //SubscriptionResourceProvider.setAccessContext(inf);
 	  return subscriptionProvider.readSubscriptionFromMidataSubscription(data);
 	}
 	
 	public static void update(Subscription subscription) throws AppException {
 		  SubscriptionResourceProvider subscriptionProvider = (SubscriptionResourceProvider) FHIRServlet.myProviders.get("Subscription");
-		  //SubscriptionResourceProvider.setExecutionInfo(inf);
+		  //SubscriptionResourceProvider.setAccessContext(inf);
 		  subscriptionProvider.update(subscription.getIdElement(), subscription);
 		}
 	
@@ -251,8 +251,8 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	
 	@Override
 	public List<SubscriptionData> searchRaw(SearchParameterMap params) throws AppException {		
-		ExecutionInfo info = info();
-		if (!info().context.mayAccess("Subscription", "fhir/Subscription")) return Collections.emptyList();
+		AccessContext info = info();
+		if (!info().mayAccess("Subscription", "fhir/Subscription")) return Collections.emptyList();
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, null);
 			
@@ -271,11 +271,11 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 												
 		Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
 					
-		//if (!info.context.mayAccess("Subscription", "fhir/Subscription")) properties.put("_id", info.context.getTargetAps());
+		//if (!info.mayAccess("Subscription", "fhir/Subscription")) properties.put("_id", info.getTargetAps());
 		
 		ObjectIdConversion.convertMidataIds(properties, "_id", "owner");
 		
-		return SubscriptionData.getByOwner(info.ownerId, properties, SubscriptionData.ALL);				
+		return SubscriptionData.getByOwner(info.getLegacyOwner(), properties, SubscriptionData.ALL);				
 	} 	
 	
 	@Create
@@ -343,12 +343,12 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 
 	@Override
 	public void createPrepare(SubscriptionData subscriptionData, Subscription theResource) throws AppException {
-		if (!info().context.mayAccess("Subscription", "fhir/Subscription")) throw new ForbiddenOperationException("Plugin is not allowed to create subscriptions (Access Query)."); 
+		if (!info().mayAccess("Subscription", "fhir/Subscription")) throw new ForbiddenOperationException("Plugin is not allowed to create subscriptions (Access Query)."); 
 		
         String crit = theResource.getCriteria();
         populateSubscriptionCriteria(subscriptionData, crit);
         
-        if (theResource.getStatus().equals(SubscriptionStatus.ACTIVE) || theResource.getStatus().equals(SubscriptionStatus.REQUESTED)) mayShare(info().pluginId, subscriptionData.format, subscriptionData.content);
+        if (theResource.getStatus().equals(SubscriptionStatus.ACTIVE) || theResource.getStatus().equals(SubscriptionStatus.REQUESTED)) mayShare(info().getUsedPlugin(), subscriptionData.format, subscriptionData.content);
 		if (theResource.getStatus().equals(SubscriptionStatus.REQUESTED)) theResource.setStatus(SubscriptionStatus.ACTIVE);
         subscriptionData.active = theResource.getStatus().equals(SubscriptionStatus.ACTIVE);
         
@@ -410,11 +410,11 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	public SubscriptionData init() {
 		SubscriptionData subscriptionData = new SubscriptionData();
 		subscriptionData._id = new MidataId();
-		subscriptionData.owner = info().ownerId;
-		subscriptionData.app = info().pluginId;
-		subscriptionData.instance = info().targetAPS;
+		subscriptionData.owner = info().getLegacyOwner();
+		subscriptionData.app = info().getUsedPlugin();
+		subscriptionData.instance = info().getTargetAps();
 		try {
-		  subscriptionData.session = ServiceHandler.encrypt(KeyManager.instance.currentHandle(info().ownerId));
+		  subscriptionData.session = ServiceHandler.encrypt(KeyManager.instance.currentHandle(info().getLegacyOwner()));
 		} catch (AuthException e) {
 			throw new InvalidRequestException("Authorization problem.");
 		} catch (InternalServerException e2) {
@@ -436,7 +436,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 
 	@Override
 	public SubscriptionData fetchCurrent(IIdType theId) throws AppException {
-		return SubscriptionData.getByIdAndOwner(MidataId.from(theId.getIdPart()), info().ownerId, SubscriptionData.ALL);	
+		return SubscriptionData.getByIdAndOwner(MidataId.from(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
 	}
 
 	@Override

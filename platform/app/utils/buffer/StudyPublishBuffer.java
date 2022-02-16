@@ -27,8 +27,8 @@ import models.MidataId;
 import models.Record;
 import models.StudyRelated;
 import utils.AccessLog;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -40,7 +40,7 @@ import utils.exceptions.InternalServerException;
 public class StudyPublishBuffer {
 
 	private Set<MidataId> records_to_publish;
-	private ExecutionInfo inf;
+	private AccessContext context;
 	private boolean lazy;
 		
 	/**
@@ -57,9 +57,9 @@ public class StudyPublishBuffer {
 	 * @param record
 	 * @throws AppException
 	 */
-	public void add(ExecutionInfo inf, Record record) throws AppException {
-		if (this.inf == null) this.inf = inf;
-		if (inf != this.inf) throw new InternalServerException("error.internal", "Execution context changed.");
+	public void add(AccessContext context, Record record) throws AppException {
+		if (this.context == null) this.context = context;
+		if (context != this.context) throw new InternalServerException("error.internal", "Execution context changed.");
 		if (records_to_publish == null) records_to_publish = new HashSet<MidataId>();
 		records_to_publish.add(record._id);
 		if (!lazy) save();
@@ -72,22 +72,22 @@ public class StudyPublishBuffer {
 	public void save() throws AppException {
 		if (records_to_publish == null || records_to_publish.isEmpty()) return;
 						
-		BSONObject query = RecordManager.instance.getMeta(inf.context, inf.targetAPS, "_query");
+		BSONObject query = RecordManager.instance.getMeta(context, context.getTargetAps(), "_query");
 		if (query != null && query.containsField("target-study")) {
 			Map<String, Object> q = query.toMap(); 
 			MidataId studyId = MidataId.from(q.get("target-study"));
 			AccessLog.log("publishing #recs="+records_to_publish.size()+" to study "+studyId);
 			Object groupObj = q.get("target-study-group");
 			String group = groupObj != null ? groupObj.toString() : null;
-			Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));
+			Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(context.getAccessor(), group, studyId, Sets.create("_id"));
 			if (!srs.isEmpty()) {
 				for (StudyRelated sr : srs ) {
-				  RecordManager.instance.share(inf.context, inf.ownerId, sr._id, records_to_publish, false);
+				  RecordManager.instance.share(context, context.getLegacyOwner(), sr._id, records_to_publish, false);
 				}
 			}
 		}
 		
 		records_to_publish.clear();
-		this.inf = null;
+		this.context = null;
 	}
 }

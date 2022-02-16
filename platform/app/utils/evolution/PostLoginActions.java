@@ -39,7 +39,7 @@ public class PostLoginActions {
 		if (user.flags != null) {
 			if (user.flags.contains(AccountActionFlags.UPDATE_FHIR) && user.role.equals(UserRole.MEMBER)) {
 				AccessLog.log("Update of patient record required.");
-				PatientResourceProvider.updatePatientForAccount(user._id);
+				PatientResourceProvider.updatePatientForAccount(context, user._id);
 				user.flags.remove(AccountActionFlags.UPDATE_FHIR);
 			}
 			

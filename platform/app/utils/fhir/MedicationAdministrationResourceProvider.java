@@ -50,7 +50,7 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -210,7 +210,7 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/MedicationAdministration");

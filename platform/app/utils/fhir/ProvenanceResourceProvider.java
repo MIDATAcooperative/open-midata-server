@@ -83,7 +83,7 @@ import models.enums.AggregationType;
 import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -243,7 +243,7 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
 		
 		// get execution context (which user, which app)
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		
@@ -290,7 +290,7 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 		
 		
 	public void prepare(Record record, Provenance theProvenance) throws AppException {
-		ContentInfo.setRecordCodeAndContent(info().pluginId, record, null, "Provenance");			
+		ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, null, "Provenance");			
 		record.name = "Provenance";
 		
 		theProvenance.setRecorded(new Date());

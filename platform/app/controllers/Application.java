@@ -843,6 +843,8 @@ public class Application extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		//handlePreCreated(user);
+		AccessContext context = RecordManager.instance.createInitialSession(user._id, UserRole.MEMBER, null);
+		
 		String handle;
 		if (json.has("priv_pw")) {
 		  String pub = JsonValidation.getString(json, "pub");
@@ -863,20 +865,20 @@ public class Application extends APIController {
 		  PWRecovery.storeRecoveryData(user._id, recover);
 			
 		  user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
-		  Member.set(user._id, "myaps", user.myaps);
+		  Member.set(user._id, "myaps", user.myaps);		  
 			
-		  PatientResourceProvider.updatePatientForAccount(user._id);
+		  PatientResourceProvider.updatePatientForAccount(context, user._id);
 		  		  		  		  
 		} else {
-		  handle = registerCreateUser(user);		
+		  handle = registerCreateUser(context, user);		
 		}
-		Circles.fetchExistingConsents(RecordManager.instance.createContextFromAccount(user._id), user.emailLC);
+		Circles.fetchExistingConsents(context, user.emailLC);
 		
 		sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);
 		UsageStatsRecorder.protokoll(RuntimeConstants.instance.portalPlugin, "portal", UsageAction.REGISTRATION);
 		
-		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));				
+		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, context);				
 	}
 	
 	/*public static void handlePreCreated(Member user) throws AppException {
@@ -925,7 +927,7 @@ public class Application extends APIController {
 	 * @param user the new user
 	 * @throws AppException
 	 */
-	public static String registerCreateUser(Member user) throws AppException {
+	public static String registerCreateUser(AccessContext context, Member user) throws AppException {
 		user.security = AccountSecurityLevel.KEY;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);								
 		Member.add(user);
@@ -935,7 +937,7 @@ public class Application extends APIController {
 		user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
 		
-		PatientResourceProvider.updatePatientForAccount(user._id);
+		PatientResourceProvider.updatePatientForAccount(context, user._id);
 		
 		return handle;
 	}

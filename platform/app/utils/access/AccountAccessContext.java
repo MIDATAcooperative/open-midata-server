@@ -18,7 +18,9 @@
 package utils.access;
 
 import models.MidataId;
+import models.MobileAppInstance;
 import models.Record;
+import models.Space;
 import utils.exceptions.AppException;
 
 public class AccountAccessContext extends AccessContext {
@@ -104,6 +106,11 @@ public class AccountAccessContext extends AccessContext {
 	@Override
 	public String getContextName() {
 		return "User account";
+	}
+
+	@Override
+	public AccessContext forAccount() {
+		return this;
 	}
 	
 	

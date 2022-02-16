@@ -250,7 +250,7 @@ public class Studies extends APIController {
 
 		Study.add(study);
 
-		ResearchStudyResourceProvider.updateFromStudy(userId, study);
+		ResearchStudyResourceProvider.updateFromStudy(context, study);
 
 		AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, userId, userId, null, study._id);
 		AuditManager.instance.success();
@@ -314,7 +314,7 @@ public class Studies extends APIController {
 			output = new OutputStreamWriter(zos);
 
 			Set<String> fields = Sets.create("owner", "ownerName", "app", "creator", "created", "name", "format", "content", "description", "data");
-			List<Record> allRecords = RecordManager.instance.list(UserRole.RESEARCH, RecordManager.instance.createContextFromAccount(executorId),
+			List<Record> allRecords = RecordManager.instance.list(UserRole.RESEARCH, context,
 					CMaps.map("study", study._id).map("study-group", group.name), fields);
 
 			output.append(JsonOutput.toJson(allRecords, "Record", fields));
@@ -361,13 +361,14 @@ public class Studies extends APIController {
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to export data.");
 
 		final String handle = PortalSessionToken.session().handle;
+		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session()).forAccount();
 
-		return downloadFHIR(new ExecutionInfo(executorId, role), handle, studyid, role, startDate, endDate, studyGroup, mode);
+		return downloadFHIR(context, handle, studyid, role, startDate, endDate, studyGroup, mode);
 	}
 
-	public static Result downloadFHIR(ExecutionInfo initialInf, final String handle, final MidataId studyid, final UserRole role, final Date startDate, final Date endDate, final String studyGroup,
+	public static Result downloadFHIR(AccessContext initialInf, final String handle, final MidataId studyid, final UserRole role, final Date startDate, final Date endDate, final String studyGroup,
 			final String mode) throws AppException, IOException {
-		final MidataId executorId = initialInf.executorId;
+		final MidataId executorId = initialInf.getAccessor();
 		final Study study = Study.getById(studyid, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "validationStatus", "owner", "groups", "createdBy", "code"));
 
 		if (study == null)
@@ -379,12 +380,12 @@ public class Studies extends APIController {
 
 		AccessLog.log("exeId=" + executorId);
 		KeyManager.instance.continueSession(handle, executorId);
-		ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
+		ResourceProvider.setAccessContext(initialInf);
 		out.append("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
 
 		boolean first = true;
 
-		if (initialInf.context.mayAccess("Practitioner", "fhir/Practitioner")) {
+		if (initialInf.mayAccess("Practitioner", "fhir/Practitioner")) {
 			Set<UserGroupMember> ugms = UserGroupMember.getAllByGroup(study._id);
 			Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
 			for (UserGroupMember member : ugms)
@@ -410,8 +411,9 @@ public class Studies extends APIController {
 			public Iterator<ByteString> create() throws Exception {
 				try {
 					KeyManager.instance.continueSession(handle, executorId);
-					ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
-					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, initialInf.context,
+					AccessContext context = RecordManager.instance.createSessionForDownloadStream(executorId, role);
+					ResourceProvider.setAccessContext(context);
+					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, initialInf,
 							CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after", startDate).mapNotEmpty("updated-before", endDate),
 							RecordManager.COMPLETE_DATA);
 					System.out.println("study export start!");
@@ -451,8 +453,8 @@ public class Studies extends APIController {
 						StringBuffer out = new StringBuffer();
 						KeyManager.instance.continueSession(handle, executorId);
 						// System.out.println("set exe");
-						ExecutionInfo inf = new ExecutionInfo(executorId, role);
-						ResourceProvider.setExecutionInfo(inf);
+						AccessContext context = RecordManager.instance.createSessionForDownloadStream(executorId, role);
+						ResourceProvider.setAccessContext(context);
 						// System.out.println("call next");
 						long start = System.currentTimeMillis();
 						Record rec = it.next();
@@ -484,7 +486,7 @@ public class Studies extends APIController {
 							  attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
 							  if (attpos > 0) {
 								out.append(ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(inf.context, new RecordToken(rec._id.toString(), rec.stream.toString()), idx);
+								FileData fileData = RecordManager.instance.fetchFile(context, new RecordToken(rec._id.toString(), rec.stream.toString()), idx);
 
 								int BUFFER_SIZE = 3 * 1024;
 
@@ -788,6 +790,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
+		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid,
@@ -830,7 +833,7 @@ public class Studies extends APIController {
 		// null));
 		study.setValidationStatus(StudyValidationStatus.VALIDATION);
 
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		AuditManager.instance.success();
 
@@ -878,7 +881,8 @@ public class Studies extends APIController {
 	public Result endValidation(Request request, String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId studyid = new MidataId(id);
-
+        AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		
 		User user = Admin.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "groups", "recordQuery", "createdBy", "code"));
 
@@ -891,7 +895,7 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_VALIDATED, user, null));
 		study.setValidationStatus(StudyValidationStatus.VALIDATED);
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		AuditManager.instance.success();
 
 		return ok();
@@ -911,7 +915,8 @@ public class Studies extends APIController {
 	public Result backToDraft(Request request, String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId studyid = new MidataId(id);
-
+		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+				
 		Study study = Study.getById(studyid, Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "groups", "recordQuery", "createdBy", "code"));
 
 		if (study == null)
@@ -924,7 +929,7 @@ public class Studies extends APIController {
 		// study.addHistory(new History(EventType.STUDY_REJECTED, user, "Reset
 		// to draft mode"));
 		study.setValidationStatus(StudyValidationStatus.DRAFT);
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		AuditManager.instance.success();
 
@@ -946,7 +951,8 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
-
+		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "code"));
 
@@ -970,7 +976,7 @@ public class Studies extends APIController {
 		// study.addHistory(new History(EventType.PARTICIPANT_SEARCH_STARTED,
 		// user, null));
 		study.setParticipantSearchStatus(ParticipantSearchStatus.SEARCHING);
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		AuditManager.instance.success();
 
@@ -992,6 +998,8 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
+		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "createdBy", "code"));
@@ -1014,7 +1022,7 @@ public class Studies extends APIController {
 		// study.addHistory(new History(EventType.PARTICIPANT_SEARCH_CLOSED,
 		// user, null));
 		study.setParticipantSearchStatus(ParticipantSearchStatus.CLOSED);
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		AuditManager.instance.success();
 
@@ -1036,7 +1044,8 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
-
+		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "code"));
 
@@ -1059,7 +1068,7 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_STARTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.RUNNING);
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		Market.updateActiveStatus(study);
 		AuditManager.instance.success();
 
@@ -1104,7 +1113,7 @@ public class Studies extends APIController {
 		closeStudy(context, study);
 		// study.addHistory(new History(EventType.STUDY_FINISHED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.FINISHED);
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		Market.updateActiveStatus(study);
 
 		AuditManager.instance.success();
@@ -1144,7 +1153,7 @@ public class Studies extends APIController {
 		AccessContext context = portalContext(request);
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
-
+			
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create("name", "type", "code", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "createdBy"));
 
@@ -1166,7 +1175,7 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_ABORTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.ABORTED);
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		Market.updateActiveStatus(study);
 
 		AuditManager.instance.success();
@@ -1225,7 +1234,7 @@ public class Studies extends APIController {
 		RecordManager.instance.createAnonymizedAPS(ownerId, study._id, consent._id, true, true, true);
 		Circles.persistConsentMetadataChange(context, consent, true);
 
-		RecordManager.instance.copyAPS(context.getAccessor(), reference._id, consent._id, ownerId);
+		RecordManager.instance.copyAPS(context, reference._id, consent._id, ownerId);
 		return consent;
 	}
 
@@ -1767,19 +1776,20 @@ public class Studies extends APIController {
 		if (!self.role.manageParticipants())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 
-		autoApprove(null, study, userId, participation.group, Collections.singletonList(participation));
+		autoApprove(null, study, portalContext(request), participation.group, Collections.singletonList(participation));
 
 		return ok();
 	}
 
-	public static void autoApprove(MidataId app, Study study, MidataId userId, String group) throws AppException {
+	public static void autoApprove(MidataId app, Study study, AccessContext context, String group) throws AppException {
 		Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");
 		List<StudyParticipation> participants1 = StudyParticipation.getParticipantsByStudy(study._id, CMaps.map("pstatus", ParticipationStatus.REQUEST), fields, 0);
 
-		autoApprove(app, study, userId, group, participants1);
+		autoApprove(app, study, context, group, participants1);
 	}
 
-	public static void autoApprove(MidataId app, Study study, MidataId userId, String group, List<StudyParticipation> participants1) throws AppException {
+	public static void autoApprove(MidataId app, Study study, AccessContext context, String group, List<StudyParticipation> participants1) throws AppException {
+		MidataId userId = context.getAccessor();
 		if (study == null)
 			throw new BadRequestException("error.unknown.study", "Unknown Study");
 	
@@ -1797,7 +1807,7 @@ public class Studies extends APIController {
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 		} else auditUser = RuntimeConstants.instance.backendService;
 		Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByGroup(study._id);
-		AccessContext context = RecordManager.instance.createContextFromAccount(userId);
+		
 		List<List<StudyParticipation>> parts = Lists.partition(participants1, 1000);
 		for (List<StudyParticipation> participants : parts) {
 
@@ -1838,13 +1848,13 @@ public class Studies extends APIController {
 
 	}
 
-	public static void autoApproveCheck(MidataId app, MidataId studyid, MidataId owner) throws AppException {
+	public static void autoApproveCheck(MidataId app, MidataId studyid, AccessContext context) throws AppException {
 		Study study = Study.getById(studyid, Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "name", "code", "type"));
 		if (study != null && study.autoJoinGroup != null) {
 			if (study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)
 					&& (study.executionStatus.equals(StudyExecutionStatus.PRE) || study.executionStatus.equals(StudyExecutionStatus.RUNNING))) {
 				try {
-					autoApprove(app, study, owner, study.autoJoinGroup);
+					autoApprove(app, study, context, study.autoJoinGroup);
 				} catch (BadRequestException e) {
 				} // We are not interested if the researcher is not allowed to
 					// do it.
@@ -1994,6 +2004,8 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
+		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		
 
 		Study study = Study.getById(studyid,
 				Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "createdBy", "code"));
@@ -2025,7 +2037,7 @@ public class Studies extends APIController {
 		study.setRequiredInformation(inf);
 		study.setAnonymous(anonymous);
 		study.setAssistance(assist);
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		AuditManager.instance.success();
 		return ok();
 	}
@@ -2041,7 +2053,8 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
-
+		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create("name", "owner", "type", "joinMethods", "infos", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation",
 				"anonymous", "code", "startDate", "endDate", "dataCreatedBefore"));
@@ -2139,7 +2152,7 @@ public class Studies extends APIController {
 			study.setconsentObserver(study.consentObserver);
 		}
 
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		AuditManager.instance.success();
 		return ok();
 	}
@@ -2199,7 +2212,7 @@ public class Studies extends APIController {
 				study.setAutoJoinGroup(null, null, null);
 			}
 			if (grp != null) {
-				autoApprove(null, study, userId, grp);
+				autoApprove(null, study, portalContext(request), grp);
 			}
 		}
 		if (json.has("infos")) {
@@ -2247,7 +2260,7 @@ public class Studies extends APIController {
 
 			study.setInfosInternal(result);
 		}
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		return ok();
 	}
@@ -2264,6 +2277,7 @@ public class Studies extends APIController {
 	public Result delete(Request request, String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
+		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -2284,22 +2298,22 @@ public class Studies extends APIController {
 		if (!self.role.maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
-		deleteStudy(userId, study._id, false);
+		deleteStudy(context, study._id, false);
 
 		return ok();
 	}
 
-	public static void deleteStudy(MidataId userId, MidataId studyId, boolean force) throws AppException {
+	public static void deleteStudy(AccessContext context, MidataId studyId, boolean force) throws AppException {
 		Study study = Study.getById(studyId, Study.ALL);
 
-		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_DELETED, userId, null, study);
+		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_DELETED, context.getActor(), null, study);
 
 		Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyId, Sets.create("_id", "owner"));
 		for (StudyParticipation part : participants) {
 			if (force) {
 				AccessPermissionSet.delete(part._id);
 			} else {
-				RecordManager.instance.deleteAPS(part._id, userId);
+				RecordManager.instance.deleteAPS(context, part._id);
 			}
 			StudyParticipation.delete(studyId, part._id);
 		}
@@ -2309,7 +2323,7 @@ public class Studies extends APIController {
 			if (force) {
 				AccessPermissionSet.delete(studyRelated._id);
 			} else {
-				RecordManager.instance.deleteAPS(studyRelated._id, userId);
+				RecordManager.instance.deleteAPS(context, studyRelated._id);
 			}
 			StudyRelated.deleteByStudyAndParticipant(studyId, studyRelated._id);
 		}
@@ -2317,7 +2331,7 @@ public class Studies extends APIController {
 		Set<StudyAppLink> links = StudyAppLink.getByStudy(studyId);
 		for (StudyAppLink link : links)
 			link.delete();
-		ResearchStudyResourceProvider.deleteStudy(userId, study._id);
+		ResearchStudyResourceProvider.deleteStudy(context, study._id);
 		Study.delete(studyId);
 
 		AuditManager.instance.success();
@@ -2382,7 +2396,7 @@ public class Studies extends APIController {
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 
 		Study.add(study);
-		ResearchStudyResourceProvider.updateFromStudy(userId, study);
+		ResearchStudyResourceProvider.updateFromStudy(context, study);
 
 		Set<StudyAppLink> sals = StudyAppLink.getByStudy(oldGroup);
 		for (StudyAppLink sal : sals) {
@@ -2609,7 +2623,7 @@ public class Studies extends APIController {
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 
 		Study.add(study);
-		ResearchStudyResourceProvider.updateFromStudy(userId, study);
+		ResearchStudyResourceProvider.updateFromStudy(context, study);
 
 		for (int i = 1; i < allJson.size(); i++) {
 			JsonNode sal = allJson.get(i);

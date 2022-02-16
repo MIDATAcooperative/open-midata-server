@@ -45,7 +45,7 @@ import models.MidataId;
 import models.Model;
 import utils.AccessLog;
 import utils.ErrorReporter;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.PluginException;
@@ -120,8 +120,8 @@ public class Transactions {
 		   
 	   }
 	   	  
-	   ExecutionInfo inf = ResourceProvider.info();
-	   inf.cache.getStudyPublishBuffer().setLazy(true);
+	   AccessContext inf = ResourceProvider.info();
+	   inf.getRequestCache().getStudyPublishBuffer().setLazy(true);
 	   
 	   try {
 		   if (isDocument || type.equals(BundleType.TRANSACTION)) {
@@ -184,7 +184,7 @@ public class Transactions {
 			   }
 		   }
 	   } finally {
-		   inf.cache.getStudyPublishBuffer().save();
+		   inf.getRequestCache().getStudyPublishBuffer().save();
 	   }
 	   	   
 	   Bundle retVal = new Bundle();		 

@@ -68,7 +68,7 @@ import models.enums.StudyValidationStatus;
 import models.enums.UserRole;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -234,7 +234,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
 		
 		// get execution context (which user, which app)
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		
@@ -311,23 +311,22 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		
 	}
 	
-	public static void updateFromStudy(MidataId executor, MidataId studyId) throws AppException {
+	public static void updateFromStudy(AccessContext context, MidataId studyId) throws AppException {
 		Study study = Study.getById(studyId, Study.ALL);
-		updateFromStudy(executor, study);
+		updateFromStudy(context, study);
 	}
 	
-	public static void deleteStudy(MidataId executor, MidataId studyId) throws AppException {        
-		RecordManager.instance.deleteFromPublic(executor, CMaps.map("_id",studyId).map("format","fhir/ResearchStudy").map("public","only").map("content","ResearchStudy"));		
+	public static void deleteStudy(AccessContext context, MidataId studyId) throws AppException {        
+		RecordManager.instance.deleteFromPublic(context, CMaps.map("_id",studyId).map("format","fhir/ResearchStudy").map("public","only").map("content","ResearchStudy"));		
 	}
 	
-	public static void updateFromStudy(MidataId executor, Study study) throws AppException {
+	public static void updateFromStudy(AccessContext context, Study study) throws AppException {
 		if (study.validationStatus == StudyValidationStatus.DRAFT) return;
 		try {
 			info();
 		} catch (AuthenticationException e) {
-			ExecutionInfo inf = new ExecutionInfo(executor, UserRole.RESEARCH);
-			
-			ResearchStudyResourceProvider.setExecutionInfo(inf);
+						
+			ResearchStudyResourceProvider.setAccessContext(context);
 		}
 				
 		ResearchStudyResourceProvider provider = ((ResearchStudyResourceProvider) FHIRServlet.myProviders.get("ResearchStudy")); 
@@ -337,7 +336,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		boolean doupdate = false;
 		Record oldRecord = null;
 		
-		List<Record> records = RecordManager.instance.list(info().role, info().context, CMaps.map("_id",study._id).map("format","fhir/ResearchStudy").map("public","only").map("content","ResearchStudy"), RecordManager.COMPLETE_DATA); 
+		List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id",study._id).map("format","fhir/ResearchStudy").map("public","only").map("content","ResearchStudy"), RecordManager.COMPLETE_DATA); 
 		if (!records.isEmpty()) oldRecord = records.get(0);								  
 				
 		if (oldRecord != null) {

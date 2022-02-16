@@ -386,11 +386,11 @@ public class Studies extends APIController {
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		if (notok != null && !notok.isEmpty()) requireUserFeature(request, notok.iterator().next());
 		
-		requestParticipation(new ExecutionInfo(userId, getRole()), userId, studyId, null, JoinMethod.PORTAL, null);		
+		requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.PORTAL, null);		
 		return ok();
 	}
 	
-	public static StudyParticipation requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod, String joinCode) throws AppException {
+	public static StudyParticipation requestParticipation(AccessContext context, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod, String joinCode) throws AppException {
 		AccessLog.logBegin("start request participation user="+userId+" project="+studyId);
 		try {
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
@@ -404,7 +404,7 @@ public class Studies extends APIController {
 			if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.blocked.joinmethod", "code", "joinmethod", "Study is not searching for participants using this channel.");
 			code = checkCode(study, joinMethod, joinCode);
 			Set<MidataId> observers = ApplicationTools.getObserversForApp(usingApp);
-			participation = createStudyParticipation(inf.context, study, user, code, observers, joinMethod);
+			participation = createStudyParticipation(context, study, user, code, observers, joinMethod);
 		}
 				
 		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;
@@ -414,9 +414,9 @@ public class Studies extends APIController {
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
 			if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
 				if (participation.status != ConsentStatus.DELETED) {
-					Circles.consentStatusChange(inf.context, participation, ConsentStatus.DELETED);	
+					Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);	
 				}
-				return requestParticipation(inf, userId, studyId, usingApp, joinMethod, joinCode);
+				return requestParticipation(context, userId, studyId, usingApp, joinMethod, joinCode);
 			} else throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		}
 		
@@ -425,13 +425,13 @@ public class Studies extends APIController {
 		//participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
 		if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp);		
 		if (study.requiredInformation.equals(InformationType.RESTRICTED) || study.requiredInformation.equals(InformationType.NONE)) {						
-			PatientResourceProvider.createPatientForStudyParticipation(inf, study, participation, user);
-			Circles.autosharePatientRecord(inf.context, participation);
+			PatientResourceProvider.createPatientForStudyParticipation(context, study, participation, user);
+			Circles.autosharePatientRecord(context, participation);
 		} else {
-			Circles.autosharePatientRecord(inf.context, participation);
+			Circles.autosharePatientRecord(context, participation);
 		}
 		
-		Circles.consentStatusChange(inf.context, participation, ConsentStatus.ACTIVE);				
+		Circles.consentStatusChange(context, participation, ConsentStatus.ACTIVE);				
 
 		AuditManager.instance.success();
 		

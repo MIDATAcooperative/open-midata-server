@@ -76,7 +76,7 @@ import models.Record;
 import models.RecordsInfo;
 import models.enums.AggregationType;
 import utils.access.RecordManager;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -239,7 +239,7 @@ public class ValueSetResourceProvider extends RecordBasedResourceProvider<ValueS
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
 		
 		// get execution context (which user, which app)
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		

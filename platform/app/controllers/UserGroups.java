@@ -211,6 +211,7 @@ public class UserGroups extends APIController {
 	public Result deleteUserGroup(Request request, String groupIdStr) throws AppException {       
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId groupId = MidataId.from(groupIdStr);
+		AccessContext context = portalContext(request);
 		
 		UserGroupMember execMember = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
 		if (execMember == null) throw new BadRequestException("error.invalid.usergroup", "Only members may delete a group");
@@ -222,11 +223,11 @@ public class UserGroups extends APIController {
 		if (consents.isEmpty()) {		
 			Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		
 			for (UserGroupMember member : allMembers) {
-				RecordManager.instance.deleteAPS(member._id, executorId);
+				RecordManager.instance.deleteAPS(context, member._id);
 				member.delete();
 			}
 			
-			RecordManager.instance.deleteAPS(groupId, executorId);
+			RecordManager.instance.deleteAPS(context, groupId);
 			UserGroup.delete(groupId);
 		} else {
 			Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		

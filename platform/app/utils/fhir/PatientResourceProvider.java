@@ -123,7 +123,7 @@ import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.CodeGenerator;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -153,8 +153,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		String id = theId.getIdPart();
 		MidataId targetId = new MidataId(id);
 
-		ExecutionInfo info = info();
-		List<Record> allRecs = RecordManager.instance.list(info.role, info.context, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
+		AccessContext info = info();
+		List<Record> allRecs = RecordManager.instance.list(info.getAccessorRole(), info, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
 				RecordManager.COMPLETE_DATA);
 
 		if (allRecs == null || allRecs.size() == 0)
@@ -176,9 +176,9 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
 			if (!isLocalId(theId)) throw new UnprocessableEntityException("id is not local resource");
 			
-			ExecutionInfo info = info();
+			AccessContext info = info();
 			MidataId targetId = MidataId.from(theId.getIdPart());
-			List<Record> allRecs = RecordManager.instance.list(info.role, info.context, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
+			List<Record> allRecs = RecordManager.instance.list(info.getAccessorRole(), info, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
 					RecordManager.COMPLETE_DATA);
 
 			if (allRecs == null || allRecs.size() == 0)
@@ -213,7 +213,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		String id = theId.getIdPart();
 		MidataId targetId = new MidataId(id);
 
-		List<Record> records = RecordManager.instance.list(info().role, info().context,
+		List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(),
 				CMaps.map("owner", targetId).map("format", "fhir/Patient").map("history", true).map("sort", "lastUpdated desc"), RecordManager.COMPLETE_DATA);
 		if (records.isEmpty())
 			throw new ResourceNotFoundException(theId);
@@ -413,7 +413,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	@Override
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Patient");
@@ -509,8 +509,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	public void updatePatientForAccount(Member member) throws AppException {
 		if (!member.role.equals(UserRole.MEMBER)) return;
-		AccessContext context = RecordManager.instance.createSharingContext(info().context, member._id);
-		List<Record> allExisting = RecordManager.instance.list(info().role, context,
+		AccessContext context = RecordManager.instance.createSharingContext(info(), member._id);
+		List<Record> allExisting = RecordManager.instance.list(info().getAccessorRole(), context,
 				CMaps.map("format", "fhir/Patient").map("owner", member._id).map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
 
 		if (allExisting.isEmpty()) {
@@ -528,14 +528,13 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 	}
 
-	public static void updatePatientForAccount(MidataId who) throws AppException {
+	public static void updatePatientForAccount(AccessContext context, MidataId who) throws AppException {
 		PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
 
 		try {
 			info();
-		} catch (AuthenticationException e) {
-			ExecutionInfo inf = new ExecutionInfo(who, UserRole.MEMBER);
-			patientProvider.setExecutionInfo(inf);
+		} catch (AuthenticationException e) {	
+			patientProvider.setAccessContext(context);
 		}
 
 		Member member = Member.getById(who, Sets.create(User.ALL_USER, "firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC", "language", "role"));
@@ -571,11 +570,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		return p;
 	}
 
-	public static void createPatientForStudyParticipation(ExecutionInfo inf, Study study, StudyParticipation part, Member member) throws AppException {
+	public static void createPatientForStudyParticipation(AccessContext inf, Study study, StudyParticipation part, Member member) throws AppException {
 
-		AccessContext context = RecordManager.instance.createSharingContext(inf.context, part.owner);
+		AccessContext context = RecordManager.instance.createSharingContext(inf, part.owner);
 		PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
-		PatientResourceProvider.setExecutionInfo(inf);
+		PatientResourceProvider.setAccessContext(inf);
 		String userName = "P-" + CodeGenerator.nextUniqueCode();			
 		Record record = PatientResourceProvider.newRecord("fhir/Patient");
 		record.owner = context.getOwner();
@@ -607,11 +606,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			resource.addIdentifier(new Identifier().setValue(record.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
 		}
 				
-		if (info().ownerId.equals(record.owner) && info().pluginId != null) {
+		if (info().getLegacyOwner().equals(record.owner) && info().getUsedPlugin() != null) {
 		  List<Study> studies = determineStudyIdentifiers();
 		  populateIdentifiers(record.owner, resource, studies);
 		  
-		  /*Plugin plugin = Plugin.getById(info().pluginId);	
+		  /*Plugin plugin = Plugin.getById(info().getUsedPlugin());	
 		  Set<StudyAppLink> links = StudyAppLink.getByApp(plugin._id);
 		  for (StudyAppLink sal : links) {
 			  if (sal.isConfirmed() && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
@@ -636,7 +635,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	
 	@Override
 	public void updatePrepare(Record record, Patient theResource) throws AppException {	
-		AccessContext context = ApplicationTools.actAsRepresentative(info().context, record.owner, false);
+		AccessContext context = ApplicationTools.actAsRepresentative(info(), record.owner, false);
 		if (context == null) throw new NotImplementedOperationException("update on Patient not implemented.");
 	}
 	
@@ -682,9 +681,9 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		   AuditManager.instance.addAuditEvent(
 				   AuditEventBuilder
 				     .withType(AuditEventType.USER_EMAIL_CHANGE)
-				     .withActorUser(info().cache.getUserById(info().executorId))
+				     .withActorUser(info().getRequestCache().getUserById(info().getAccessor()))
 				     .withModifiedUser(user)
-				     .withApp(info().pluginId)
+				     .withApp(info().getUsedPlugin())
 		   );
 		}
 		
@@ -698,10 +697,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 		
 		if (changes) {
-			updatePatientForAccount(user._id);
+			updatePatientForAccount(info(), user._id);
 		}
 		if (welcome) {
-			Application.sendWelcomeMail(info().pluginId, user, info().cache.getUserById(info().executorId));
+			Application.sendWelcomeMail(info().getUsedPlugin(), user, info().getRequestCache().getUserById(info().getAccessor()));
 		}
 		AuditManager.instance.success();
 	}
@@ -810,7 +809,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 				user.language = comm.getLanguage().getCodingFirstRep().getCode();
 			}
 		}
-		user.initialApp = info().pluginId;
+		user.initialApp = info().getUsedPlugin();
 
 		if (user.firstname == null)
 			throw new UnprocessableEntityException("Patient 'given' name not given.");
@@ -859,14 +858,14 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		thePatient.getExtension().clear();
 
 		Member existing = user.email != null ? Member.getByEmail(user.email, Member.ALL_USER) : null;
-		MidataId executorId = info().executorId;
-		ExecutionInfo info = info();
+		MidataId executorId = info().getAccessor();
+		AccessContext info = info();
 
 		BSONObject query = null;
-		Plugin plugin = Plugin.getById(info().pluginId);
+		Plugin plugin = Plugin.getById(info().getUsedPlugin());
 		if (plugin.targetUserRole.equals(UserRole.RESEARCH)) {
 			AccessLog.log("is researcher app");
-			query = RecordManager.instance.getMeta(info().context, info().context.getTargetAps(), "_query");
+			query = RecordManager.instance.getMeta(info(), info().getTargetAps(), "_query");
 			AccessLog.log("q=" + query.toString());
 		}
 
@@ -889,7 +888,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			user.flags = EnumSet.of(AccountActionFlags.CHANGE_PASSWORD);
 			
 			thePatient.setId(user._id.toString());
-			AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, info().pluginId, info().ownerId, user);
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, info().getUsedPlugin(), info().getLegacyOwner(), user);
 
 			user.security = AccountSecurityLevel.KEY;
 			user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
@@ -897,12 +896,12 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			
 			for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/terms-agreed")) {
 				String agreed = ext.getValue().primitiveValue();
-				user.agreedToTerms(agreed, info.pluginId);
+				user.agreedToTerms(agreed, info.getUsedPlugin());
 			}
 						
 			KeyManager.instance.unlock(user._id, null);
 
-			tempContext = new AccountCreationAccessContext(info().context, user._id);
+			tempContext = new AccountCreationAccessContext(info(), user._id);
 			
 			/*RecordManager.instance.clearCache();
 			executorId = user._id;
@@ -914,22 +913,21 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 			//Record record = newRecord("fhir/Patient");
 			record.owner = user._id;
-			prepare(record, thePatient);
-			info = new ExecutionInfo(user._id, UserRole.MEMBER, tempContext);
-			insertRecord(info, record, thePatient, tempContext);
+			prepare(record, thePatient);			
+			insertRecord(tempContext, record, thePatient);
 
 			// if (user.emailLC!=null) Circles.fetchExistingConsents(user._id,
 			// user.emailLC);
 		} else {
 			user = existing;
 
-			Set<Consent> exist = Consent.getAllActiveByAuthorizedAndOwners(info().ownerId, Collections.singleton(user._id));
+			Set<Consent> exist = Consent.getAllActiveByAuthorizedAndOwners(info().getLegacyOwner(), Collections.singleton(user._id));
 			if (!exist.isEmpty())
 				throw new UnprocessableEntityException("Already exists.");
 		}
 
 		String consentName = plugin.name;
-		HPUser hpuser = HPUser.getById(info().ownerId, Sets.create("provider", "firstname", "lastname"));
+		HPUser hpuser = HPUser.getById(info().getLegacyOwner(), Sets.create("provider", "firstname", "lastname"));
 		if (hpuser != null) {
 			consentName = hpuser.firstname + " " + hpuser.lastname;
 			if (hpuser.provider != null) {
@@ -944,15 +942,15 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			consent.writes = WritePermissionType.WRITE_ANY;
 			consent.owner = user._id;
 			consent.name = consentName;
-			consent.creatorApp = info.pluginId;
+			consent.creatorApp = info.getUsedPlugin();
 			consent.authorized = new HashSet<MidataId>();
 			consent.status = existing == null ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
-			consent.authorized.add(info().ownerId);
+			consent.authorized.add(info().getLegacyOwner());
 			consent.sharingQuery = new HashMap<String, Object>();
 			consent.sharingQuery.put("owner", "self");
 			consent.sharingQuery.put("app", plugin.filename);
 
-			Circles.addConsent(tempContext != null ? tempContext : info.context, consent, false, null, true);
+			Circles.addConsent(tempContext != null ? tempContext : info, consent, false, null, true);
 			
 			if (consent.status == ConsentStatus.UNCONFIRMED) {
 				try {
@@ -961,24 +959,24 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 				} catch (UnsupportedEncodingException e) {}
 			}
 		} else {
-			User executorUser = info().cache.getUserById(info().ownerId);
+			User executorUser = info().getRequestCache().getUserById(info().getLegacyOwner());
 			if (executorUser.getRole()==UserRole.MEMBER) {
 				Consent consent = new Circle();
 				consent.type = ConsentType.REPRESENTATIVE;
 				consent.owner = user._id;
 				consent.name = executorUser.getPublicIdentifier();
-				consent.creatorApp = info.pluginId;
+				consent.creatorApp = info.getUsedPlugin();
 				consent.authorized = new HashSet<MidataId>();
 				consent.status = existing == null ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
-				consent.authorized.add(info().ownerId);
+				consent.authorized.add(info().getLegacyOwner());
 				consent.writes=WritePermissionType.UPDATE_AND_CREATE;
 				consent.sharingQuery = new HashMap<String, Object>();
 				consent.sharingQuery.put("group", "all");
 				consent.sharingQuery.put("group-system", "v1");
-				Set<MidataId> observers = ApplicationTools.getObserversForApp(info().pluginId);
+				Set<MidataId> observers = ApplicationTools.getObserversForApp(info().getUsedPlugin());
 				consent.observers = observers;
 			
-				Circles.addConsent(tempContext != null ? tempContext : info.context, consent, false, null, true);
+				Circles.addConsent(tempContext != null ? tempContext : info, consent, false, null, true);
 				if (consent.status == ConsentStatus.UNCONFIRMED) {
 					try {
 				      String serviceUrl = InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+"&login="+URLEncoder.encode(user.email, "UTF-8");
@@ -997,17 +995,17 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, studyId);
 			AccessLog.log("request part");
 			if (existing == null) {
-				part = controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id, info().pluginId.equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP, null);
+				part = controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id, info().getUsedPlugin().equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP, null);
 			} else {
-				part = controllers.members.Studies.match(info.context, user._id, studyId, plugin._id, info().pluginId.equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP);
+				part = controllers.members.Studies.match(info, user._id, studyId, plugin._id, info().getUsedPlugin().equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP);
 			}
 			AccessLog.log("end request part");
 		}
 
 		if (existing == null) {
-			User executorUser = info().cache.getUserById(info().ownerId);
+			User executorUser = info().getRequestCache().getUserById(info().getLegacyOwner());
 			RecordManager.instance.clearCache();
-			if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(info().pluginId, user, executorUser);
+			if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(info().getUsedPlugin(), user, executorUser);
 			// if
 			// (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister()
 			// && user.developer == null)
@@ -1018,7 +1016,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		
 		if (part != null) {
 			if (part.ownerName != null) {
-				Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(info().context, part);
+				Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(info(), part);
 				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(pseudo.getRight());
 				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(pseudo.getLeft().toString());				
 			}
@@ -1034,7 +1032,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		for (Study study : studies) {
 			StudyParticipation sp = StudyParticipation.getByStudyAndMember(study._id, owner, Sets.create("status", "pstatus", "ownerName"));
 			if (sp != null) {
-				Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(info().context, sp);
+				Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(info(), sp);
 				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(pseudo.getRight()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
 				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(pseudo.getLeft().toString()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
 			}
@@ -1042,7 +1040,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	}
 	
 	protected List<Study> determineStudyIdentifiers() throws AppException {
-		MidataId pluginId = info().pluginId;
+		MidataId pluginId = info().getUsedPlugin();
 		if (pluginId == null) return null;
 		Set<StudyAppLink> sals = StudyAppLink.getByApp(pluginId);
 		if (sals.isEmpty()) return null;

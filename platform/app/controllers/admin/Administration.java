@@ -422,7 +422,7 @@ public class Administration extends APIController {
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");			
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		
+		AccessContext context = RecordManager.instance.createLoginOnlyContext(userId, getRole());
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
 		  requireSubUserRole(request, SubUserRole.USERADMIN);
@@ -445,7 +445,7 @@ public class Administration extends APIController {
 			if (!executorId.equals(userId)) {
 			   user.addFlag(AccountActionFlags.UPDATE_FHIR);
 			} else {
-		       PatientResourceProvider.updatePatientForAccount(user._id);
+		       PatientResourceProvider.updatePatientForAccount(context, user._id);
 			}
 		    AuditManager.instance.success();
 		
@@ -516,6 +516,7 @@ public class Administration extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
+		AccessContext context = portalContext(request);
 		
 		
 		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "createdBy", "code"));
@@ -523,7 +524,7 @@ public class Administration extends APIController {
 		if (study == null) throw new BadRequestException("error.missing.study", "Study not found.");
 		if (study.executionStatus != StudyExecutionStatus.PRE && study.executionStatus != StudyExecutionStatus.ABORTED) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 	
-		controllers.research.Studies.deleteStudy(userId, study._id, false);
+		controllers.research.Studies.deleteStudy(context, study._id, false);
 		
 		return ok();
 	}

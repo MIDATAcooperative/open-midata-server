@@ -40,7 +40,7 @@ import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.UnclassifiedServerFailureException;
 import ca.uhn.fhir.util.OperationOutcomeUtil;
 import utils.AccessLog;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.messaging.SubscriptionManager;
 
 public class MessageProcessor {
@@ -78,8 +78,8 @@ public class MessageProcessor {
 			}
 			
 			boolean doasync = async != null && async.getValue() != null && async.getValue().equals("true");
-			ExecutionInfo inf = ResourceProvider.info();
-			String result = SubscriptionManager.messageToProcess(inf.executorId, inf.pluginId, eventCode, destination, "4.0", inputBundle, params, doasync);
+			AccessContext inf = ResourceProvider.info();
+			String result = SubscriptionManager.messageToProcess(inf.getAccessor(), inf.getUsedPlugin(), eventCode, destination, "4.0", inputBundle, params, doasync);
 			
 			if (doasync) {			
 				Bundle resultBundle = new Bundle();				

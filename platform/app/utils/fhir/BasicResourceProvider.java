@@ -65,7 +65,7 @@ import models.MidataId;
 import models.Record;
 import utils.access.RecordManager;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -103,10 +103,10 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     public Basic getResourceById(@IdParam IIdType theId) throws AppException {    	
     	Record record;
 		if (theId.hasVersionIdPart()) {
-			List<Record> result = RecordManager.instance.list(info().role, info().context, CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
+			List<Record> result = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
 			record = result.isEmpty() ? null : result.get(0);
 		} else {
-		    record = RecordManager.instance.fetch(info().role, info().context, new MidataId(theId.getIdPart()), null);
+		    record = RecordManager.instance.fetch(info().getAccessorRole(), info(), new MidataId(theId.getIdPart()), null);
 		}
 		if (record == null) throw new ResourceNotFoundException(theId);		
     	    	
@@ -117,7 +117,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     
     @History()
 	public List<Basic> getHistory(@IdParam IIdType theId) throws AppException {
-	   List<Record> records = RecordManager.instance.list(info().role, info().context, CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
 	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
 	   
 	   return parse(records, Basic.class);	   	  
@@ -276,7 +276,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
            
     @Override
     public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 		
 		List<List<? extends IQueryParameterType>> ids = params.get("identifier");
 		

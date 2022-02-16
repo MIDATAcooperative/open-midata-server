@@ -29,6 +29,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.AccessContext;
 import utils.access.RecordManager;
+import utils.access.SessionAccessContext;
 import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
 import utils.exceptions.AuthException;
@@ -67,7 +68,8 @@ public abstract class APIController extends Controller {
 	
 	public static AccessContext portalContext(Request request) throws InternalServerException {
 		MidataId userId = new MidataId(request.attrs().get(Security.USERNAME));
-		return RecordManager.instance.createContextFromAccount(userId);
+		SessionAccessContext session = RecordManager.instance.createSession(userId, getRole(), null, userId, null);
+		return session.forAccount();
 	}
 	
 	/**

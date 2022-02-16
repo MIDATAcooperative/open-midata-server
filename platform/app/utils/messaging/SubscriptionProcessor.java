@@ -295,7 +295,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			System.out.println("NEW OAUTH2 - 1");
 			try {
 				KeyManager.instance.continueSession(handle, subscription.owner);
-               	AccessContext context = RecordManager.instance.createContextFromAccount(subscription.owner);	
+               	AccessContext context = RecordManager.instance.createSessionForDownloadStream(subscription.owner, UserRole.MEMBER);	
 				BSONObject oauthmeta = RecordManager.instance.getMeta(context, subscription.instance, "_oauth");
 				if (oauthmeta != null) {
 					System.out.println("NEW OAUTH2 - 2");

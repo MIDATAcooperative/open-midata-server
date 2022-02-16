@@ -30,7 +30,7 @@ public class ServerTools {
 		} finally {
 		   AuditManager.instance.clear();
 		   AccessLog.newRequest();	
-		   ResourceProvider.setExecutionInfo(null);
+		   ResourceProvider.setAccessContext(null);
 		   PortalSessionToken.clear();
 		}
 	}

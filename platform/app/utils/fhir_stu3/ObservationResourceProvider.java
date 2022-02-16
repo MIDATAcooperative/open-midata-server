@@ -74,7 +74,7 @@ import models.RecordsInfo;
 import models.enums.AggregationType;
 import utils.access.RecordManager;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -390,7 +390,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
 		
 		// get execution context (which user, which app)
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		
@@ -551,7 +551,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		int count = theMax != null ? theMax.getValue() : 1;		
 		paramMap.setSort(new SortSpec("date", SortOrderEnum.DESC));
 		long now = System.currentTimeMillis();
-		ExecutionInfo inf = info();
+		AccessContext inf = info();
 		
 		// Prepare search parameters
 		paramMap.add("subject", theSubject);
@@ -574,7 +574,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		if (content != null) properties.put("code", content);
 		
 		
-		Collection<RecordsInfo> groups = RecordManager.instance.info(inf.role, inf.targetAPS, inf.context, properties, AggregationType.CONTENT);
+		Collection<RecordsInfo> groups = RecordManager.instance.info(inf.getAccessorRole(), inf.getTargetAps(), inf, properties, AggregationType.CONTENT);
 		
         // For each found content type...						
 		for (RecordsInfo code : groups) {

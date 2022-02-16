@@ -48,7 +48,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -235,7 +235,7 @@ public class ConditionResourceProvider extends RecordBasedResourceProvider<Condi
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Condition");

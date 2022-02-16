@@ -61,7 +61,7 @@ import models.Record;
 import models.enums.UserRole;
 import utils.ErrorReporter;
 import utils.access.VersionedDBRecord;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.RequestTooLargeException;
@@ -88,29 +88,29 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	
 	
 	/**
-	 * Set ExecutionInfo (Session information) for current Thread to be used by FHIR classes
-	 * @param info ExecutionInfo to be used
+	 * Set AccessContext (Session information) for current Thread to be used by FHIR classes
+	 * @param info AccessContext to be used
 	 */
-	public static void setExecutionInfo(ExecutionInfo info) {
-		utils.fhir.ResourceProvider.setExecutionInfo(info);
+	public static void setAccessContext(AccessContext info) {
+		utils.fhir.ResourceProvider.setAccessContext(info);
 	}
 	
 	/**
-	 * Retrives ExecutionInfo for current thread
-	 * @return ExecutionInfo
+	 * Retrives AccessContext for current thread
+	 * @return AccessContext
 	 */
-	public static ExecutionInfo info() {
+	public static AccessContext info() {
 		return utils.fhir.ResourceProvider.info();
 	}
 	
 	/**
-	 * Retrives ExecutionInfo for current thread or default instance
-	 * @return ExecutionInfo
+	 * Retrives AccessContext for current thread or default instance
+	 * @return AccessContext
 	 */
 	/*
-	public static ExecutionInfo info(MidataId executor, UserRole role) throws InternalServerException {
-		ExecutionInfo inf = tinfo.get();
-		if (inf == null) return new ExecutionInfo(executor, role);
+	public static AccessContext info(MidataId executor, UserRole role) throws InternalServerException {
+		AccessContext inf = tinfo.get();
+		if (inf == null) return new AccessContext(executor, role);
 		return inf;
 	}*/
 	
@@ -359,7 +359,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 																													
 				if (rt != null && rt.equals("Patient")) {
 					String tId = target.getIdPart();
-					if (tId.equals(info().ownerId.toString())) {
+					if (tId.equals(info().getLegacyOwner().toString())) {
 						
 					} else {
 						//cleanSubject = false;
@@ -374,8 +374,8 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	}
 	
 	public boolean checkAccessible() throws AppException {
-		ExecutionInfo info = info();					
-		if (!info.context.mayAccess(getResourceType().getSimpleName(), "fhir/"+getResourceType().getSimpleName())) return false;
+		AccessContext info = info();					
+		if (!info.mayAccess(getResourceType().getSimpleName(), "fhir/"+getResourceType().getSimpleName())) return false;
 		return true;
 	}
 		

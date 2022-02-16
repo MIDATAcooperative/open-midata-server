@@ -44,6 +44,7 @@ import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.MessageReason;
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import utils.InstanceConfig;
@@ -147,8 +148,8 @@ public class PWRecovery extends APIController {
 		if (sessionToken != null) KeyManager.instance.unlock(user._id, sessionToken, proc.nextPublicExtKey);		
 		
 		if (user.email.equals(RuntimeConstants.BACKEND_SERVICE)) {
-			
-			provideServiceKey(user);
+			AccessContext context = RecordManager.instance.createLoginOnlyContext(user._id, user.role);
+			provideServiceKey(context, user);
 			proc.nextPassword = null;
 		}
 		
@@ -164,8 +165,7 @@ public class PWRecovery extends APIController {
 		KeyRecoveryProcess.delete(user._id);
 	}
 	
-	private static void provideServiceKey(User user) throws AppException {
-		AccessContext context = RecordManager.instance.createContextFromAccount(user._id);
+	private static void provideServiceKey(AccessContext context, User user) throws AppException {		
 		BSONObject obj = RecordManager.instance.getMeta(context, user._id, "_aeskey");
 		if (obj == null) {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -355,7 +355,7 @@ public class PWRecovery extends APIController {
   	      }
   	      autorun.password = null;
   	      User.set(autorun._id, "password", null);
-		  provideServiceKey(autorun);
+		  provideServiceKey(RecordManager.instance.createLoginOnlyContext(autorun._id, UserRole.ANY), autorun);
   	    }
       	
       	return ok();

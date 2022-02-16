@@ -70,7 +70,7 @@ import utils.access.RecordManager;
 import utils.access.ReuseFileHandle;
 import utils.access.UpdateFileHandleSupport;
 import utils.access.VersionedDBRecord;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.CMaps;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -98,10 +98,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public T getResourceById(@IdParam IIdType theId) throws AppException {
 		Record record;
 		if (theId.hasVersionIdPart()) {
-			List<Record> result = RecordManager.instance.list(info().role, info().context, CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
+			List<Record> result = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
 			record = result.isEmpty() ? null : result.get(0);
 		} else {
-		    record = RecordManager.instance.fetch(info().role, info().context, new MidataId(theId.getIdPart()), getRecordFormat());
+		    record = RecordManager.instance.fetch(info().getAccessorRole(), info(), new MidataId(theId.getIdPart()), getRecordFormat());
 		}
 		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);
 		
@@ -115,7 +115,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@History()
 	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
-	   List<Record> records = RecordManager.instance.list(info().role, info().context, CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
 	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
 	   
 	   List<T> result = new ArrayList<T>(records.size());
@@ -141,12 +141,12 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public void createExecute(Record record, T theResource) throws AppException {
 		List<Attachment> attachments = getAttachments(theResource);		
-		insertRecord(record, theResource, attachments, info().context);
+		insertRecord(record, theResource, attachments, info());
 	}
 	
 	@Override
 	public void updatePrepare(Record record, T theResource) throws AppException {
-		record.creator = info().context.getActor();
+		record.creator = info().getActor();
 		prepare(record, theResource);	
 		prepareTags(record, theResource);
 	}
@@ -209,12 +209,12 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public static Record newRecord(String format) {
 		Record record = new Record();
 		record._id = new MidataId();
-		record.creator = info().context.getActor();
+		record.creator = info().getActor();
 		record.format = format;
-		record.app = info().pluginId;
+		record.app = info().getUsedPlugin();
 		record.created = record._id.getCreationDate();
 		record.code = new HashSet<String>();
-		record.owner = info().ownerId;
+		record.owner = info().getLegacyOwner();
 		record.version = VersionedDBRecord.INITIAL_VERSION;
 		return record;
 	}
@@ -245,7 +245,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
 			if (!isLocalId(theId)) throw new UnprocessableEntityException("id is not local resource");
 			
-			Record record = RecordManager.instance.fetch(info().role, info().context, new MidataId(theId.getIdPart()), getRecordFormat());
+			Record record = RecordManager.instance.fetch(info().getAccessorRole(), info(), new MidataId(theId.getIdPart()), getRecordFormat());
 			
 			if (record == null) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" not found."); 
 			if (!record.format.equals("fhir/"+theId.getResourceType())) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" has wrong resource type."); 
@@ -267,7 +267,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	public void insertRecord(Record record, T resource) throws AppException {
-		insertRecord(record, resource, null, info().context);
+		insertRecord(record, resource, null, info());
 	}
 	
 	public void insertRecord(Record record, T resource, AccessContext targetContext) throws AppException {
@@ -275,34 +275,34 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	public void insertRecord(Record record, T resource, List<Attachment> att) throws AppException {
-		insertRecord(record, resource, att, info().context);
+		insertRecord(record, resource, att, info());
 	}
 	
-	public static void insertRecord(ExecutionInfo info, Record record, IBaseResource resource, AccessContext targetConsent) throws AppException {
+	public static void insertRecord(AccessContext targetConsent, Record record, IBaseResource resource) throws AppException {
 		AccessLog.logBegin("begin insert FHIR record");		    
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);			
 			record.data = BasicDBObject.parse(encoded);	
 			record.addTag("fhir:r4");
 			try {
-			  PluginsAPI.createRecord(info, record, targetConsent);			
+			  PluginsAPI.createRecord(targetConsent, record);			
 			} finally {
 		      AccessLog.logEnd("end insert FHIR record");
 			}
 	}
 	
 	public MidataId insertMessageRecord(Record record, T resource) throws AppException {
-		ExecutionInfo inf = info();
-		MidataId shareFrom = inf.executorId;
+		AccessContext inf = info();
+		MidataId shareFrom = inf.getAccessor();
 		MidataId owner = record.owner;
 		
 		List<Attachment> attachments = getAttachments(resource);
 				
-		if (!owner.equals(inf.executorId)) {
-			Consent consent = Circles.getOrCreateMessagingConsent(inf.context, inf.executorId, owner, owner, false);
-			insertRecord(record, resource, attachments, new ConsentAccessContext(consent, info().context));
+		if (!owner.equals(inf.getAccessor())) {
+			Consent consent = Circles.getOrCreateMessagingConsent(inf, inf.getAccessor(), owner, owner, false);
+			insertRecord(record, resource, attachments, new ConsentAccessContext(consent, info()));
 			shareFrom = consent._id;
 		} else {
-			insertRecord(record, resource, attachments, info().context);
+			insertRecord(record, resource, attachments, info());
 		}
 		return shareFrom;
 	}
@@ -324,13 +324,13 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 				String url = attachment.getUrl();
 				
 				if (url.startsWith("midata-file://")) {
-					EncryptedFileHandle handle = EncryptedFileHandle.fromString(info().executorId, url);
+					EncryptedFileHandle handle = EncryptedFileHandle.fromString(info().getAccessor(), url);
 					if (handle == null) throw new UnprocessableEntityException("Malformed midata-file URL");
 					
 					UnlinkedBinary file = UnlinkedBinary.getById(handle.getId());
 					if (file==null || file.isExpired()) throw new UnprocessableEntityException("Midata-file URL has already expired.");
 					
-					if (!file.owner.equals(info().executorId)) throw new UnprocessableEntityException("Midata-file URL is not owned by you.");				
+					if (!file.owner.equals(info().getAccessor())) throw new UnprocessableEntityException("Midata-file URL is not owned by you.");				
 					if (fileName!=null) handle.rename(fileName);
 					file.delete();
 					handle1 = handle;
@@ -371,7 +371,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	public void insertRecord(Record record, T resource, List<Attachment> attachments, AccessContext targetContext) throws AppException {
 		if (attachments == null || attachments.isEmpty()) {
-			insertRecord(info(), record, (IBaseResource) resource, targetContext);
+			insertRecord(targetContext, record, (IBaseResource) resource);
 			return;
 		} 
 		AccessLog.logBegin("begin insert FHIR record with attachment");
@@ -382,7 +382,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		}
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = BasicDBObject.parse(encoded);		
-		PluginsAPI.createRecord(info(), record, handles1, targetContext);			
+		PluginsAPI.createRecord(targetContext, record, handles1);			
 		
 		AccessLog.logEnd("end insert FHIR record with attachment");
 	}
@@ -394,7 +394,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = BasicDBObject.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();
-		record.version = RecordManager.instance.updateRecord(info().executorId, info().pluginId, info().context, record, handles);	
+		record.version = RecordManager.instance.updateRecord(info().getAccessor(), info().getUsedPlugin(), info(), record, handles);	
 	}
 	
 	/**
@@ -440,10 +440,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 				}
 			  }	  
 			  
-				ContentInfo.setRecordCodeAndContent(info().pluginId, record, record.code, null);
+				ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, record.code, null);
 			  
 			  } else {
-				  ContentInfo.setRecordCodeAndContent(info().pluginId, record, null, defaultContent);
+				  ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, null, defaultContent);
 			  }
 		  } catch (PluginException e) {
 			    ErrorReporter.reportPluginProblem("FHIR (set record code)", null, e);	
@@ -459,7 +459,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	 * @throws AppException
 	 */
 	protected void shareWithPersons(Record record, Collection<IIdType> personRefs, MidataId shareFrom) throws AppException {
-	       ExecutionInfo inf = info();
+	       AccessContext inf = info();
 			
 			MidataId owner = record.owner;
 			
@@ -467,8 +467,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 				if (FHIRTools.isUserFromMidata(ref)) { 
 					   TypedMidataId target = FHIRTools.getMidataIdFromReference(ref);
 					   if (!target.getMidataId().equals(owner)) {
-					     Consent consent = Circles.getOrCreateMessagingConsent(inf.context, owner, target.getMidataId(), owner, target.getType().equals("Group"));
-					     RecordManager.instance.share(inf.context, shareFrom, consent._id, consent.owner, Collections.singleton(record._id), false);
+					     Consent consent = Circles.getOrCreateMessagingConsent(inf, owner, target.getMidataId(), owner, target.getType().equals("Group"));
+					     RecordManager.instance.share(inf, shareFrom, consent._id, consent.owner, Collections.singleton(record._id), false);
 					   }
 				}
 			}

@@ -76,7 +76,7 @@ import models.enums.AggregationType;
 import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.fhir_stu3.RecordBasedResourceProvider;
@@ -166,7 +166,7 @@ public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> impl
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Flag");

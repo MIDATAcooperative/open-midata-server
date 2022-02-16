@@ -53,7 +53,7 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.ContentInfo;
 import models.Record;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
+import utils.access.AccessContext;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -227,7 +227,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
         
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Appointment");
@@ -286,7 +286,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 		for (AppointmentParticipantComponent participant :participants) { 
 			persons.add(participant.getActor().getReferenceElement()); 
 		}		
-		shareWithPersons(record, persons, info().executorId);				
+		shareWithPersons(record, persons, info().getAccessor());				
 				
 	}
 	
@@ -299,7 +299,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	public void prepare(Record record, Appointment theAppointment) throws AppException {
 		// Set Record code and content
 		
-		ContentInfo.setRecordCodeAndContent(info().pluginId, record, null, "Appointment");								
+		ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, null, "Appointment");								
 		
 		String display = theAppointment.getDescription();
 		record.name = display != null ? display : "Appointment";

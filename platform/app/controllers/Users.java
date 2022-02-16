@@ -403,13 +403,13 @@ public class Users extends APIController {
 		User.set(user._id, "notifications", user.notifications);
 		
 		user.updateKeywords(true);
-		
+		AccessContext context = RecordManager.instance.createLoginOnlyContext(user._id, user.role);
 		if (user.role.equals(UserRole.MEMBER)) {	
 			
 			if (!executorId.equals(userId)) {
 			   user.addFlag(AccountActionFlags.UPDATE_FHIR);
 			} else {
-			   PatientResourceProvider.updatePatientForAccount(user._id);
+			   PatientResourceProvider.updatePatientForAccount(context, user._id);
 			}
 					  
 		}
@@ -459,8 +459,9 @@ public class Users extends APIController {
 		User.set(user._id, "language", language);
 		User.set(user._id, "authType", authType);
 		User.set(user._id, "notifications", sendMail);
-						
-		PatientResourceProvider.updatePatientForAccount(userId);
+					
+		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		PatientResourceProvider.updatePatientForAccount(context, userId);
 		
 		if (authType.equals(SecondaryAuthType.SMS)) {
 			requireUserFeature(request, UserFeature.PHONE_ENTERED);
@@ -568,7 +569,7 @@ public class Users extends APIController {
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {
 			if (executorId.equals(userId)) {
-			  RecordManager.instance.deleteAPS(space._id, userId);
+			  RecordManager.instance.deleteAPS(context, space._id);
 			} else AccessPermissionSet.delete(space._id);		
 			
 			Space.delete(userId, space._id);
@@ -577,7 +578,7 @@ public class Users extends APIController {
 		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE, ConsentType.API, ConsentType.REPRESENTATIVE)), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			if (executorId.equals(userId)) {
-			RecordManager.instance.deleteAPS(consent._id, userId);
+			RecordManager.instance.deleteAPS(context, consent._id);
 			} else AccessPermissionSet.delete(consent._id);
 			Circle.delete(userId, consent._id);
 		}
@@ -605,7 +606,7 @@ public class Users extends APIController {
 		}
 		
 		if (executorId.equals(userId)) {
-		  RecordManager.instance.clearIndexes(userId);
+		  RecordManager.instance.clearIndexes(context, userId);
 		}
 				
         KeyRecoveryProcess.delete(userId);
@@ -621,7 +622,7 @@ public class Users extends APIController {
 				HPUser hp = HPUser.getById(userId, Sets.create("provider"));
 				user.delete();
 				if (!User.exists(CMaps.map("provider", hp.provider).map("status", User.NON_DELETED))) {
-					OrganizationResourceProvider.deleteOrganization(executorId, hp.provider);
+					OrganizationResourceProvider.deleteOrganization(context, hp.provider);
 					HealthcareProvider.delete(hp.provider);
 				}			
 			} else
@@ -629,7 +630,7 @@ public class Users extends APIController {
 				ResearchUser ru = ResearchUser.getById(userId, Sets.create("organization"));
 				user.delete();
 				if (!User.exists(CMaps.map("organization", ru.organization).map("status", User.NON_DELETED))) {
-				  OrganizationResourceProvider.deleteOrganization(executorId, ru.organization);
+				  OrganizationResourceProvider.deleteOrganization(context, ru.organization);
 				  Research.delete(ru.organization);	
 				}
 			} else {
@@ -643,7 +644,8 @@ public class Users extends APIController {
 	public Result getAccountStats() throws AppException {
 								
 		PortalSessionToken session = PortalSessionToken.session();
-		AccountStats stats = RecordManager.instance.getStats(session.ownerId);
+		AccessContext context =RecordManager.instance.createSession(session);
+		AccountStats stats = RecordManager.instance.getStats(context);
 																	
 		return ok(JsonOutput.toJson(stats, "AccountStats", AccountStats.ALL));
 	}

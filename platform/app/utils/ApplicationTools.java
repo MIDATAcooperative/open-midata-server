@@ -52,6 +52,7 @@ import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
+import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import utils.access.AccessContext;
@@ -63,7 +64,6 @@ import utils.access.RecordManager;
 import utils.access.RepresentativeAccessContext;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
-import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -430,7 +430,7 @@ public class ApplicationTools {
 		// Write phrase into APS *
 		Map<String, Object> meta = new HashMap<String, Object>();
 		meta.put("phrase", phrase);
-		if (context == null) context = RecordManager.instance.createLoginOnlyContext(appInstance._id);
+		if (context == null) context = RecordManager.instance.createLoginOnlyContext(appInstance._id, UserRole.ANY, appInstance);
 		RecordManager.instance.setMeta(context, appInstance._id, "_app", meta);
 		
 		// Write access filter into APS *
@@ -478,7 +478,7 @@ public class ApplicationTools {
 				} else
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
 					RecordManager.instance.clearCache();
-			        controllers.members.Studies.requestParticipation(new ExecutionInfo(context.getAccessor(), member.getRole()), member._id, sal.studyId, app._id, sal.dynamic ? JoinMethod.API : JoinMethod.APP, null);
+			        controllers.members.Studies.requestParticipation(context.forAccountReshare(), member._id, sal.studyId, app._id, sal.dynamic ? JoinMethod.API : JoinMethod.APP, null);
 				}
 			}
 		}
@@ -588,8 +588,8 @@ public class ApplicationTools {
 		  appInstance.passcode = MobileAppInstance.hashDeviceId(phrase);     	
 	    }
 		appInstance.lastUpdated = new Date();
-		
-		RecordManager.instance.shareAPS(RecordManager.instance.createContextFromApp(executor, appInstance), appInstance.publicKey);
+		AccessContext context = RecordManager.instance.createLoginOnlyContext(executor, member.role, appInstance);
+		RecordManager.instance.shareAPS(context, appInstance.publicKey);
 		appInstance.upsert();
 					
 		AuditManager.instance.success();
@@ -604,7 +604,7 @@ public class ApplicationTools {
 		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);
 		Plugin app = Plugin.getById(appInstance.applicationId);
 		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
-		RecordManager.instance.deleteAPS(appInstance._id, executorId);									
+		RecordManager.instance.deleteAPS(context, appInstance._id);									
 		//Removing queries from user account should not be necessary
 		if (appInstance.serviceId == null) Circles.removeQueries(appInstance.owner, appInstance._id);										
 		

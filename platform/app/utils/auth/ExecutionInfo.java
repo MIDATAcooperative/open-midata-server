@@ -37,6 +37,7 @@ import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.access.AccessContext;
 import utils.access.RecordManager;
+import utils.access.SessionAccessContext;
 import utils.access.SpaceAccessContext;
 import utils.collections.CMaps;
 import utils.collections.RequestCache;
@@ -70,7 +71,7 @@ public class ExecutionInfo {
 	
 	public ExecutionInfo() {}
 	
-	public ExecutionInfo(MidataId executor, UserRole role) throws InternalServerException {
+	/*public ExecutionInfo(MidataId executor, UserRole role) throws InternalServerException {
 		this.executorId = executor;
 		this.ownerId = executor;
 		this.targetAPS = executor;
@@ -86,9 +87,9 @@ public class ExecutionInfo {
 		this.pluginId = RuntimeConstants.instance.portalPlugin;
 		this.context = context;
 		this.role = role;
-	}
+	}*/
 	
-	public static ExecutionInfo checkToken(Request request, String token, boolean allowInactive) throws AppException {
+	public static AccessContext checkToken(Request request, String token, boolean allowInactive) throws AppException {
 		String plaintext = TokenCrypto.decryptToken(token);
 		if (plaintext == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");	
 		JsonNode json = Json.parse(plaintext);
@@ -101,7 +102,7 @@ public class ExecutionInfo {
 		}
 	}
 	
-	public static ExecutionInfo checkSpaceToken(Request request, String token) throws AppException {
+	public static AccessContext checkSpaceToken(Request request, String token) throws AppException {
 		// decrypt authToken 
 		SpaceToken authToken = SpaceToken.decrypt(request, token);
 		if (authToken == null) {
@@ -112,46 +113,48 @@ public class ExecutionInfo {
 		
 	}
 	
-	public static ExecutionInfo checkSpaceToken(SpaceToken authToken) throws AppException {	
+	public static AccessContext checkSpaceToken(SpaceToken authToken) throws AppException {	
 		if (authToken == null) throw new BadRequestException("error.notauthorized.account", "You are not authorized.");
 		AccessLog.logBegin("begin check 'space' type session token");
 		KeyManager.instance.continueSession(authToken.handle, authToken.executorId);
-		ExecutionInfo result = new ExecutionInfo();
-		result.executorId = authToken.executorId;
-		result.role = authToken.role;	
-		if (authToken.recordId != null) {
-			result.targetAPS = authToken.spaceId;
-			result.recordId = authToken.recordId;			
-			result.ownerId = authToken.userId;
+		
+		AccessContext session;
 			
-			Consent consent = Circles.getConsentById(RecordManager.instance.createLoginOnlyContext(authToken.userId), authToken.spaceId, Consent.ALL);
+		if (authToken.recordId != null) {
+						
+			session = RecordManager.instance.createSession(authToken.executorId, authToken.role, null, authToken.userId, null);
+			 		
+			Consent consent = Circles.getConsentById(session, authToken.spaceId, Consent.ALL);
 			if (consent != null) {
-			  result.context = RecordManager.instance.createRootContextFromConsent(authToken.executorId, consent);
+			  session = session.forConsent(consent); 
 			} else {
-			  result.context = RecordManager.instance.createContextFromAccount(authToken.executorId);
+			  session = session.forAccount();
 			}
+						
+			session = session.forSingleRecord(authToken.recordId);
 			
 		} else if (authToken.pluginId == null) {							
 			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.autoimport ? authToken.userId : authToken.executorId, Sets.create("visualization", "app", "aps", "autoShare", "sharingQuery", "writes", "owner"));
 			if (space == null) throw new BadRequestException("error.unknown.space", "The current space does no longer exist.");
-				
-			result.pluginId = space.visualization;
-			result.targetAPS = space._id;
-			result.ownerId = authToken.userId;
-			result.space = space;
+							
+			MidataId ownerId = authToken.userId;
+			
+			
+			session = RecordManager.instance.createSession(authToken.executorId, authToken.role, space.visualization, ownerId, null);
 					
 			User targetUser = Member.getById(authToken.userId,Sets.create("myaps", "tokens"));
 			if (targetUser == null) {
-				Consent c = Circles.getConsentById(RecordManager.instance.createLoginOnlyContext(authToken.executorId), authToken.userId, Sets.create("owner", "authorized"));
+				Consent c = Circles.getConsentById(session, authToken.userId, Sets.create("owner", "authorized"));
 				if (c != null) {
-					result.ownerId = c.owner;
+					ownerId = c.owner;
 				} else throw new BadRequestException("error.internal", "Invalid authToken.");
 			}
 			
-			result.context = RecordManager.instance.createRootContextFromSpace(result.executorId, space, result.ownerId);
+			session = RecordManager.instance.createSession(authToken.executorId, authToken.role, space.visualization, ownerId, null);
+			session = session.forSpace(space, ownerId);			
 			
-			if (result.role.equals(UserRole.PROVIDER) && !result.ownerId.equals(result.executorId)) {
-				result.context = ((SpaceAccessContext) result.context).withRestrictions(CMaps.map("consent-type-exclude", "HEALTHCARE"));
+			if (session.getAccessorRole().equals(UserRole.PROVIDER) && !ownerId.equals(authToken.executorId)) {
+				session = ((SpaceAccessContext) session).withRestrictions(CMaps.map("consent-type-exclude", "HEALTHCARE"));
 			}
 			
 		} else if (authToken.autoimport) {
@@ -159,31 +162,32 @@ public class ExecutionInfo {
 			if (appInstance == null) OAuth2.invalidToken(); 
 
 		    if (!appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
-		        		        												                                              
-			result.ownerId = appInstance.owner;
-			result.pluginId = appInstance.applicationId;
-			result.targetAPS = appInstance._id;
-			result.context = RecordManager.instance.createContextFromApp(result.executorId, appInstance);
+		        		        												                                              			
+			session = RecordManager.instance.createSession(authToken.executorId, authToken.role, appInstance.applicationId, appInstance.owner, null);
+			session = session.forApp(appInstance);
 			
 			if (appInstance.sharingQuery == null) {
-				appInstance.sharingQuery = RecordManager.instance.getMeta(result.context, authToken.spaceId, "_query").toMap();
+				appInstance.sharingQuery = RecordManager.instance.getMeta(session, authToken.spaceId, "_query").toMap();
 			}
 			
-		} 
-	   AccessLog.log("using as context:"+result.context.toString());
+		} else {
+			// Unhandeled case. How can this happen?
+			throw new NullPointerException();
+		}
+	   AccessLog.log("using as context:"+session.toString());
 	   AccessLog.logEnd("end check 'space' type session token");
-	   return result;	
+	   return session;	
 		
 	}
 	
-	public static ExecutionInfo checkMobileToken(String token, boolean allowInactive) throws AppException {		
+	public static AccessContext checkMobileToken(String token, boolean allowInactive) throws AppException {		
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
 		if (authToken == null) OAuth2.invalidToken(); 
 				
 		return checkMobileToken(authToken, allowInactive);		
 	}
 	
-	public static ExecutionInfo checkMobileToken(MobileAppSessionToken authToken, boolean allowInactive) throws AppException {		
+	public static AccessContext checkMobileToken(MobileAppSessionToken authToken, boolean allowInactive) throws AppException {		
 		if (authToken == null) OAuth2.invalidToken();				
 		
 		AccessLog.logBegin("begin check 'mobile' type session token");
@@ -198,38 +202,18 @@ public class ExecutionInfo {
         if (KeyManager.instance.unlock(appInstance._id, authToken.aeskey) == KeyManager.KEYPROTECTION_FAIL) {
         	OAuth2.invalidToken(); 
         }
-        
-        ExecutionInfo result = new ExecutionInfo();
-		result.executorId = appInstance._id;
-		result.role = authToken.role;
-        
-		AccessContext tempContext = RecordManager.instance.createLoginOnlyContext(authToken.appInstanceId);
+                        				       
+		AccessContext tempContext = RecordManager.instance.createLoginOnlyContext(authToken.appInstanceId, authToken.role, appInstance);
 		
 		if (appInstance.sharingQuery == null) {
 			appInstance.sharingQuery = RecordManager.instance.getMeta(tempContext, authToken.appInstanceId, "_query").toMap();
 		}
+				
+		AccessContext session = RecordManager.instance.upgradeSessionForApp(tempContext, appInstance);
 		
-		Map<String, Object> appobj = RecordManager.instance.getMeta(tempContext, authToken.appInstanceId, "_app").toMap();
-		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
-			MidataId alias = new MidataId(appobj.get("alias").toString());
-			byte[] key = (byte[]) appobj.get("aliaskey");
-			if (appobj.containsKey("targetAccount")) {
-				result.executorId = MidataId.from(appobj.get("targetAccount").toString());
-			} else result.executorId = appInstance.owner;
-			KeyManager.instance.unlock(result.executorId, alias, key);			
-			RecordManager.instance.clearCache();			
-		} else {
-			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);
-		}
-		
-                                                
-		result.ownerId = appInstance.owner;
-		result.pluginId = appInstance.applicationId;
-		result.targetAPS = appInstance._id;
-		result.context = RecordManager.instance.createContextFromApp(result.executorId, appInstance);
 		AccessLog.logEnd("end check 'mobile' type session token");
 		
-        return result;						
+        return session;						
 		
 	}
 }
