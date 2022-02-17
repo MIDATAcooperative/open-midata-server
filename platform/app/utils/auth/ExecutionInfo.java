@@ -129,7 +129,7 @@ public class ExecutionInfo {
 			session = session.forSingleRecord(authToken.recordId);
 			
 		} else if (authToken.pluginId == null) {							
-			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.autoimport ? authToken.userId : authToken.executorId, Sets.create("visualization", "app", "aps", "autoShare", "sharingQuery", "writes", "owner"));
+			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.autoimport ? authToken.userId : authToken.executorId, Sets.create("visualization", "app", "aps", "autoShare", "sharingQuery", "writes", "owner", "name"));
 			if (space == null) throw new BadRequestException("error.unknown.space", "The current space does no longer exist.");
 							
 			MidataId ownerId = authToken.userId;
