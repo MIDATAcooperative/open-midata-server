@@ -162,6 +162,12 @@ public class SessionAccessContext extends AccessContext {
 	public String toString() {
 		return "session("+cache.getAccessor()+")";
 	}
+		
+
+	@Override
+	public MidataId getUsedPlugin() {
+		return pluginId;
+	}
 
 	@Override
 	public void cleanup() {
