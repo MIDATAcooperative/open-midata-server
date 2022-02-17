@@ -26,6 +26,7 @@ import models.enums.UserRole;
 import utils.AccessLog;
 import utils.ConsentQueryTools;
 import utils.ErrorReporter;
+import utils.RuntimeConstants;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.collections.RequestCache;
@@ -166,7 +167,7 @@ public class SessionAccessContext extends AccessContext {
 
 	@Override
 	public MidataId getUsedPlugin() {
-		return pluginId;
+		return pluginId == null ? RuntimeConstants.instance.portalPlugin : pluginId;
 	}
 
 	@Override

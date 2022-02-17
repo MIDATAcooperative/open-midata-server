@@ -435,7 +435,7 @@ public abstract class AccessContext {
 	 */
 	public MidataId getUsedPlugin() {
 		if (parent != null) return parent.getUsedPlugin();
-		return null; 
+		return RuntimeConstants.instance.portalPlugin; 
 	}
 	
 	/**
