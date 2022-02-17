@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
 import models.Admin;
-import models.KeyInfoExtern;
 import models.KeyRecoveryData;
 import models.KeyRecoveryProcess;
 import models.Member;
@@ -47,18 +46,23 @@ import models.enums.MessageReason;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
+import play.mvc.Result;
+import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
-import utils.access.AccessContext;
 import utils.access.EncryptionUtils;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
+import utils.auth.ExtendedSessionToken;
 import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -68,9 +72,6 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
 import utils.messaging.ServiceHandler;
-import play.mvc.Result;
-import play.mvc.Security;
-import play.mvc.Http.Request;
 
 // read -p "Enter Share:" x;printf $x| base64 -d |openssl rsautl -decrypt -inkey key.pem;echo
 
@@ -148,7 +149,7 @@ public class PWRecovery extends APIController {
 		if (sessionToken != null) KeyManager.instance.unlock(user._id, sessionToken, proc.nextPublicExtKey);		
 		
 		if (user.email.equals(RuntimeConstants.BACKEND_SERVICE)) {
-			AccessContext context = RecordManager.instance.createLoginOnlyContext(user._id, user.role);
+			AccessContext context = ContextManager.instance.createLoginOnlyContext(user._id, user.role);
 			provideServiceKey(context, user);
 			proc.nextPassword = null;
 		}
@@ -327,6 +328,9 @@ public class PWRecovery extends APIController {
 	    		}
 	    			    		
 	    	} else {
+	    		// Skip password check if this is the second half of the login challenge. Answering correctly to the challenge also proves possession of password and password check is real slow
+	    		if (token instanceof ExtendedSessionToken && ((ExtendedSessionToken) token).getIsChallengeResponse() && sessionToken != null && token.handle==null) return null;
+	    		
 	    		if (user.authenticationValid(password)) {
 	    			return null;
 	    		} else throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
@@ -355,7 +359,7 @@ public class PWRecovery extends APIController {
   	      }
   	      autorun.password = null;
   	      User.set(autorun._id, "password", null);
-		  provideServiceKey(RecordManager.instance.createLoginOnlyContext(autorun._id, UserRole.ANY), autorun);
+		  provideServiceKey(ContextManager.instance.createLoginOnlyContext(autorun._id, UserRole.ANY), autorun);
   	    }
       	
       	return ok();

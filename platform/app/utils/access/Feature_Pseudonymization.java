@@ -30,17 +30,15 @@ import org.bson.types.BasicBSONList;
 
 import models.Consent;
 import models.MidataId;
-import models.StudyParticipation;
 import models.enums.ConsentStatus;
 import utils.AccessLog;
-import utils.access.ProcessingTools.BlockwiseLoad;
 import utils.access.op.CompareCaseInsensitive;
-import utils.access.op.CompareCondition;
 import utils.access.op.Condition;
 import utils.access.op.FieldAccess;
 import utils.access.pseudo.FhirPseudonymizer;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 

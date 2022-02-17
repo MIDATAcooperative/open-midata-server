@@ -24,10 +24,10 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
-import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
+import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.DomainResource;
 
 import ca.uhn.fhir.rest.api.server.IBundleProvider;
 import models.Model;

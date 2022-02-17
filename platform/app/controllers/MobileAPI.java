@@ -45,9 +45,7 @@ import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.ResearchUser;
-import models.Space;
 import models.Study;
-import models.StudyAppLink;
 import models.StudyParticipation;
 import models.StudyRelated;
 import models.User;
@@ -55,25 +53,18 @@ import models.UserGroupMember;
 import models.enums.AggregationType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
-import models.enums.LinkTargetType;
-import models.enums.ParticipationStatus;
-import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
-import play.mvc.Result;
 import play.mvc.Http.Request;
+import play.mvc.Result;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.InstanceConfig;
-import utils.LinkTools;
-import utils.QueryTagTools;
-import utils.access.AccessContext;
-import utils.access.AppAccessContext;
-import utils.access.EncryptionUtils;
+import utils.PluginLoginCache;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
@@ -85,8 +76,10 @@ import utils.auth.Rights;
 import utils.auth.TokenCrypto;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.AppAccessContext;
+import utils.context.ContextManager;
 import utils.db.FileStorage.FileData;
-import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -130,11 +123,16 @@ public class MobileAPI extends Controller {
 			throw new BadRequestException("error.blocked.app", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
 		}
 		String deviceId = phrase.substring(0,3);
+		
 		for (MobileAppInstance instance : candidates) {
 			if (deviceId.equals(instance.deviceId)) {
-		      if (User.phraseValid(phrase, instance.passcode)) return instance;		      
+				try {
+					Map<String, Object> meta = RecordManager.instance.getMeta(tempContext, instance._id, "_app").toMap();				
+					if (phrase.equals(meta.get("phrase"))) return instance; 
+				} catch (AppException e) {}						
 			}
 		}
+						
 		boolean cleanJunk = candidates.size() > 2;
 		
 		// Upgrade old entries
@@ -191,14 +189,14 @@ public class MobileAPI extends Controller {
 
 			            
             phrase = KeyManager.instance.newAESKey(appInstance._id);
-            tempContext = RecordManager.instance.createLoginOnlyContext(appInstance._id, user.role, appInstance);
+            tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role, appInstance);
             
 		} else {
 			deprecated = true;
 			String name = JsonValidation.getString(json, "appname");
 			String secret = JsonValidation.getString(json,"secret");
 				
-			app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
+			app = PluginLoginCache.getByFilename(name);
 			if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
 			
 			if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
@@ -234,7 +232,7 @@ public class MobileAPI extends Controller {
 			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
 			if (app.requirements != null) req.addAll(app.requirements);
 			if (Application.loginHelperPreconditionsFailed(user, req)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
-			tempContext = RecordManager.instance.createLoginOnlyContext(appInstance._id, user.role);
+			tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role);
 			
 			appInstance= getAppInstance(tempContext, phrase, app._id, user._id, MobileAppInstance.APPINSTANCE_ALL);
 			
@@ -242,25 +240,25 @@ public class MobileAPI extends Controller {
 			if (appInstance != null && !OAuth2.verifyAppInstance(tempContext, appInstance, user._id, app._id, null)) {
 				AccessLog.log("CSCLEAR");
 				appInstance = null;
-				RecordManager.instance.clearCache();
+				ContextManager.instance.clearCache();
 			}
 						
 			if (appInstance == null) {									
 				boolean autoConfirm = InstanceConfig.getInstance().getInstanceType().autoconfirmConsentsMidataApi() && KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
-				tempContext = autoConfirm ? RecordManager.instance.createLoginOnlyContext(user._id, user.role) : null;
+				tempContext = autoConfirm ? ContextManager.instance.createLoginOnlyContext(user._id, user.role) : null;
 				AccessLog.log("REINSTALL");
 				if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
 				appInstance = ApplicationTools.installApp(tempContext, app._id, user, phrase, autoConfirm, Collections.emptySet(), null);
 				KeyManager.instance.changePassphrase(appInstance._id, phrase);
-				if (tempContext != null) RecordManager.instance.clearCache();
+				if (tempContext != null) ContextManager.instance.clearCache();
 				
-				tempContext = RecordManager.instance.createLoginOnlyContext(appInstance._id, user.role);
+				tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role);
 	   		    meta = RecordManager.instance.getMeta(tempContext, appInstance._id, "_app").toMap();
 			} else {
 				
 				if (KeyManager.instance.unlock(appInstance._id, phrase) == KeyManager.KEYPROTECTION_FAIL) return status(UNAUTHORIZED);		
 								
-				tempContext = RecordManager.instance.createLoginOnlyContext(appInstance._id, user.role);
+				tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role);
 				meta = RecordManager.instance.getMeta(tempContext, appInstance._id, "_app").toMap();			
             }
 			UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.LOGIN);							
@@ -312,9 +310,9 @@ public class MobileAPI extends Controller {
 	protected static AccessContext prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
 		KeyManager.instance.login(1000l*60l, false);
 		if (KeyManager.instance.unlock(tk.appInstanceId, tk.aeskey) == KeyManager.KEYPROTECTION_FAIL) { OAuth2.invalidToken(); }
-		AccessContext tempContext = RecordManager.instance.createLoginOnlyContext(tk.appInstanceId, tk.role, appInstance);
+		AccessContext tempContext = ContextManager.instance.createLoginOnlyContext(tk.appInstanceId, tk.role, appInstance);
 		
-		return RecordManager.instance.upgradeSessionForApp(tempContext, appInstance);				
+		return ContextManager.instance.upgradeSessionForApp(tempContext, appInstance);				
 	}
 	
 	/**
@@ -626,7 +624,7 @@ public class MobileAPI extends Controller {
 				srs = StudyRelated.getActiveByOwnerGroupAndStudy(sharer, group, studyId, Sets.create("_id"));
 			}
 			
-			AccessContext context = RecordManager.instance.createSharingContext(inf, sharer);
+			AccessContext context = ContextManager.instance.createSharingContext(inf, sharer);
 			for (StudyRelated sr : srs ) {
 			  count = RecordManager.instance.share(context, sr._id, sr.owner, properties, false);
 			}

@@ -17,52 +17,26 @@
 
 package utils.largerequests;
 
-import akka.stream.IOResult;
-import akka.stream.Materializer;
-import akka.stream.javadsl.FileIO;
-import akka.stream.javadsl.Flow;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
-import akka.stream.javadsl.StreamConverters;
-import akka.util.ByteString;
-import models.MidataId;
-import play.core.parsers.Multipart;
-import play.http.DefaultHttpErrorHandler;
-import play.http.HttpErrorHandler;
-import play.libs.streams.Accumulator;
-import play.mvc.Http;
-import play.mvc.Http.MultipartFormData.FilePart;
-import play.mvc.Http.RequestHeader;
-import play.mvc.BodyParser.DelegatingMultipartFormDataBodyParser;
-import play.mvc.Result;
-import scala.Option;
-import utils.ErrorReporter;
-import utils.access.EncryptedFileHandle;
-import utils.access.RecordManager;
-import utils.exceptions.AppException;
-
-import javax.inject.Inject;
-
-import org.apache.commons.io.input.CountingInputStream;
-import org.apache.commons.lang3.tuple.Pair;
-
-
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.EnumSet;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
-import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
-import static java.nio.file.attribute.PosixFilePermission.OWNER_WRITE;
+import javax.inject.Inject;
+
+import akka.stream.Materializer;
+import akka.stream.javadsl.Sink;
+import akka.stream.javadsl.StreamConverters;
+import akka.util.ByteString;
+import play.core.parsers.Multipart;
+import play.libs.streams.Accumulator;
+import play.mvc.BodyParser.DelegatingMultipartFormDataBodyParser;
+import play.mvc.Http;
+import play.mvc.Http.MultipartFormData.FilePart;
+import utils.ErrorReporter;
+import utils.access.EncryptedFileHandle;
+import utils.access.RecordManager;
+import utils.exceptions.AppException;
 
 public class HugeBodyParser extends DelegatingMultipartFormDataBodyParser<EncryptedFileHandle> {
 

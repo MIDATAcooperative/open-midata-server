@@ -20,7 +20,6 @@ package utils.access;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,13 +28,13 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
 import models.MidataId;
-import models.StudyParticipation;
 import models.UserGroupMember;
 import models.enums.ResearcherRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.auth.KeyManager;
-import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.UserGroupAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
@@ -201,7 +200,7 @@ public class Feature_UserGroups extends Feature {
 		return findApsCacheToUse(cache, ugm);			
 	}
 	
-	protected static APSCache findApsCacheToUse(APSCache cache, UserGroupMember ugm) throws AppException {		
+	public static APSCache findApsCacheToUse(APSCache cache, UserGroupMember ugm) throws AppException {		
 		if (ugm == null) return cache;		
 		
 		BasicBSONObject obj = cache.getAPS(ugm._id, ugm.member).getMeta("_usergroup");

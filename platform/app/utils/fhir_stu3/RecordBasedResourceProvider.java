@@ -40,8 +40,6 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
@@ -62,13 +60,12 @@ import models.Record;
 import models.TypedMidataId;
 import utils.AccessLog;
 import utils.ErrorReporter;
-import utils.access.AccessContext;
-import utils.access.ConsentAccessContext;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
-import utils.access.AccessContext;
 import utils.collections.CMaps;
+import utils.context.AccessContext;
+import utils.context.ConsentAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;

@@ -20,7 +20,6 @@ package controllers;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,7 +28,6 @@ import javax.servlet.ServletException;
 import org.bson.BSONObject;
 
 import actions.MobileCall;
-import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.ParamPrefixEnum;
 import models.MidataId;
@@ -42,23 +40,22 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
-import play.mvc.Result;
 import play.mvc.Http.Request;
+import play.mvc.Result;
 import utils.AccessLog;
 import utils.ConsentQueryTools;
 import utils.RuntimeConstants;
-import utils.access.AccessContext;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
 import utils.auth.PortalSessionToken;
-import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 import utils.largerequests.BinaryFileBodyParser;
@@ -224,7 +221,7 @@ public class FHIR extends Controller {
 			    try {
 				      KeyManager.instance.continueSession(tk.getHandle(), tk.ownerId);
 			    } catch (AuthException e) { return null; }
-			    AccessContext info = RecordManager.instance.createSession(tk).forAccount();
+			    AccessContext info = ContextManager.instance.createSession(tk).forAccount();
 			    ResourceProvider.setAccessContext(info);
 			    return info;
 			 }
@@ -297,11 +294,11 @@ public class FHIR extends Controller {
 				        
         KeyManager.instance.login(60000l, false);
         KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
-        AccessContext tempContext = RecordManager.instance.createRootPublicUserContext();
+        AccessContext tempContext = ContextManager.instance.createRootPublicUserContext();
 			       
 		ConsentQueryTools.getSharingQuery(instance, true);
 	         				
-		AccessContext session = RecordManager.instance.upgradeSessionForApp(tempContext, instance, baseURL);	
+		AccessContext session = ContextManager.instance.upgradeSessionForApp(tempContext, instance, baseURL);	
 		ResourceProvider.setAccessContext(session);
 										
         if (session.getUsedPlugin() != null) UsageStatsRecorder.protokoll(session.getUsedPlugin(), UsageAction.GET);		        

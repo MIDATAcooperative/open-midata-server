@@ -15,68 +15,69 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package utils.access;
+package utils.context;
 
 import models.MidataId;
 import models.Record;
+import utils.RuntimeConstants;
+import utils.access.APSCache;
+import utils.access.DBRecord;
 import utils.exceptions.AppException;
 
-public class AccountCreationAccessContext extends AccessContext {
-		
-	public AccountCreationAccessContext(AccessContext parent, MidataId newAccountId) throws AppException {
-	    super(new APSCache(newAccountId, newAccountId), parent);
+public class PublicAccessContext extends AccessContext {
+	
+	public PublicAccessContext(APSCache cache, AccessContext parent) {
+		super(cache, parent);	    
 	}
 	
 	@Override
-	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		return true;
-	}
-
-	@Override
-	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {		
-		return true;
-	}
-
-	@Override
-	public boolean mustPseudonymize() {
-		return false;		
-	}
-	
-	@Override
-	public boolean mustRename() {
-		return false;		
-	}
-
-	@Override
-	public MidataId getTargetAps() {
-		return getCache().getAccountOwner();
+	public boolean mayCreateRecord(DBRecord record) throws AppException {		
+		return parent.mayCreateRecord(record) && record.owner.equals(RuntimeConstants.instance.publicUser);
 	}
 
 	@Override
 	public boolean isIncluded(DBRecord record) throws AppException {
 		return true;
 	}
-		
 
-	public String getOwnerName() {
-		return null;
+	@Override
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {		
+		return newVersion.tags != null && newVersion.tags.contains("security:public") &&
+			   (newVersion.creator != null && newVersion.creator.toString().equals(stored.meta.getString("creator"))
+			   || (newVersion.app != null && newVersion.app.toString().equals(stored.meta.getString("app"))));
 	}
 
+	@Override
+	public boolean mustPseudonymize() {
+		return false;
+	}
+	
+	@Override
+	public boolean mustRename() {
+		return false;
+	}
+
+	@Override
+	public MidataId getTargetAps() {
+		return RuntimeConstants.instance.publicUser;
+	}
+	
+	@Override
+	public String getOwnerName() {		
+		return "Public";
+	}
 	@Override
 	public MidataId getOwner() {
-		return getCache().getAccountOwner();
+		return RuntimeConstants.instance.publicUser;
 	}
-
 	@Override
-	public MidataId getOwnerPseudonymized() throws AppException  {		
-		return getCache().getAccountOwner();
+	public MidataId getOwnerPseudonymized() {
+		return RuntimeConstants.instance.publicUser;
 	}
-
 	@Override
 	public MidataId getSelf() {
-		return getCache().getAccountOwner();
+		return RuntimeConstants.instance.publicUser;
 	}
-
 	@Override
 	public boolean mayAccess(String content, String format) throws AppException {
 		return true;
@@ -86,6 +87,11 @@ public class AccountCreationAccessContext extends AccessContext {
 	public boolean mayContainRecordsFromMultipleOwners() {		
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return "public("+parentString()+")";
+	}
 
 	@Override
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
@@ -94,26 +100,7 @@ public class AccountCreationAccessContext extends AccessContext {
 
 	@Override
 	public String getContextName() {
-		return "New account";
-	}
-
-	@Override
-	public MidataId getActor() {
-		return parent != null ? parent.getActor() : getCache().getAccountOwner();
-	}
-
-	@Override
-	public MidataId getAccessor() {
-		return getCache().getAccessor();
-	}
-	
-	public void close() throws AppException {
-		getCache().finishTouch();
-	}
-	
-	@Override
-	public String toString() {
-		return "account-create("+cache.getAccessor()+","+parentString()+")";
+		return "Public Data Access";
 	}
 
 }

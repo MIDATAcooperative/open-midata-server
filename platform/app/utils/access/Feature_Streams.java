@@ -41,6 +41,9 @@ import utils.auth.EncryptionNotSupportedException;
 import utils.collections.CMaps;
 import utils.collections.NChainedMap;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
+import utils.context.DummyAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -339,7 +342,7 @@ public class Feature_Streams extends Feature {
 
 	private static MidataId getStreamByProperties(AccessContext context, MidataId apsId, Map<String, Object> properties, boolean writeableOnly, boolean doNotify)
 			throws AppException {
-		List<DBRecord> result = QueryEngine.listInternal(context.getCache(), apsId, null,
+		List<DBRecord> result = QueryEngine.listInternal(context.getCache(), apsId, context.internal(),
 				CMaps.map(properties)				     
 					 .map("streams", "only")
 					 .map("owner", "self")

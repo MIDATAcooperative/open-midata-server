@@ -25,20 +25,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.AuditEvent;
-import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAgentComponent;
-import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventOutcome;
 import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.CodeType;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Identifier;
-import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.instance.model.api.IIdType;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -63,20 +53,15 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
-import models.Consent;
 import models.MidataAuditEvent;
 import models.MidataId;
-import models.Plugin;
-import models.Study;
 import models.User;
 import models.UserGroupMember;
-import models.enums.AuditEventType;
-import models.enums.ConsentType;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.access.op.AndCondition;
-import utils.access.AccessContext;
 import utils.collections.CMaps;
+import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 

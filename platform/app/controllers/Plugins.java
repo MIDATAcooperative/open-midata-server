@@ -37,10 +37,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
 
 import actions.APICall;
-import models.Developer;
 import models.Member;
 import models.MidataId;
-import models.MobileAppInstance;
 import models.Plugin;
 import models.Space;
 import models.StudyAppLink;
@@ -61,15 +59,14 @@ import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
 import play.mvc.Http;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
-import utils.access.AccessContext;
 import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
@@ -77,11 +74,12 @@ import utils.auth.KeyManager;
 import utils.auth.LicenceChecker;
 import utils.auth.PortalSessionToken;
 import utils.auth.Rights;
-import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
@@ -737,7 +735,7 @@ public class Plugins extends APIController {
 				}
 				try {
 					tokens.put("accessToken", accessToken);
-					RecordManager.instance.setMeta(RecordManager.instance.createSessionForDownloadStream(userId, UserRole.MEMBER), spaceId, "_oauth", tokens);
+					RecordManager.instance.setMeta(ContextManager.instance.createSessionForDownloadStream(userId, UserRole.MEMBER), spaceId, "_oauth", tokens);
 				} catch (InternalServerException e) {
 					return false;
 				} finally {

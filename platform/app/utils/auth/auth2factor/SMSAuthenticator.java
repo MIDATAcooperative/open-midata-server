@@ -24,7 +24,6 @@ import models.enums.AuditEventType;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.exceptions.AppException;
-import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.messaging.Messager;
 import utils.messaging.SMSUtils;

@@ -27,7 +27,6 @@ import utils.auth.KeyManager;
 import utils.auth.TokenCrypto;
 import utils.db.FileStorage;
 import utils.exceptions.AppException;
-import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 

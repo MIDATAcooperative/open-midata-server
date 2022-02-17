@@ -15,22 +15,25 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package utils.access;
+package utils.context;
 
 import java.util.Map;
 
 import models.Consent;
 import models.MidataId;
 import models.MobileAppInstance;
-import models.Plugin;
 import models.Record;
 import models.ServiceInstance;
 import models.Space;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.UserRole;
-import utils.ConsentQueryTools;
+import utils.AccessLog;
 import utils.RuntimeConstants;
+import utils.access.APSCache;
+import utils.access.DBRecord;
+import utils.access.Feature_PublicData;
+import utils.access.Feature_UserGroups;
 import utils.collections.RequestCache;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -318,7 +321,10 @@ public abstract class AccessContext {
 		return this;
 	}
 	
-	
+	/**
+	 * create child context for user account with full access for resharing records to another consent
+	 * @return
+	 */
 	public AccessContext forAccountReshare() {
 		return new AccountAccessContext(getRootCache(), getRootContext());		
 	}
@@ -396,6 +402,11 @@ public abstract class AccessContext {
 		return forAps(aps);
 	}
 	
+	/**
+	 * create child context that can only access one record
+	 * @param recordId
+	 * @return
+	 */
 	public AccessContext forSingleRecord(MidataId recordId) {
 		return new SingleRecordAccessContext(this, recordId);
 	}
@@ -434,6 +445,33 @@ public abstract class AccessContext {
 	public MidataId getLegacyOwner() {
 		if (parent != null) return parent.getLegacyOwner();
 		return getOwner();
+	}
+	
+	/**
+	 * clear current cache
+	 */
+	public void clearCache() {
+		try {
+			getCache().finishTouch();
+		} catch (AppException e) {
+			AccessLog.logException("clearCache", e);
+		}
+		getCache().clear();
+	}
+	
+	/**
+	 * return context used for query engine internal queries without the user requests context
+	 * @return
+	 */
+	public AccessContext internal() {
+		return new DummyAccessContext(getCache());
+	}
+	
+	/**
+	 * cleanup context after use
+	 */
+	public void cleanup() {
+		if (parent != null) parent.cleanup();
 	}
 	
 }

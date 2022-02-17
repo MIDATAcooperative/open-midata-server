@@ -25,35 +25,29 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import models.Member;
-import models.MidataId;
-import models.MobileAppInstance;
 import models.Plugin;
 import models.Study;
-import models.StudyAppLink;
 import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.Gender;
 import models.enums.JoinMethod;
-import models.enums.SecondaryAuthType;
-import models.enums.StudyAppLinkType;
 import models.enums.SubUserRole;
 import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
-import play.mvc.Result;
 import play.mvc.Http.Request;
+import play.mvc.Result;
 import utils.InstanceConfig;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
-import utils.auth.ExecutionInfo;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
-import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.fhir.PatientResourceProvider;
@@ -190,7 +184,7 @@ public class QuickRegistration extends APIController {
 		//user.agreedToTerms(app.termsOfUse, user.initialApp);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user, app._id);
-		AccessContext context = RecordManager.instance.createInitialSession(user._id, UserRole.MEMBER, null);
+		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.MEMBER, null);
 		//Application.handlePreCreated(user);
 		String handle;
 		if (json.has("priv_pw")) {

@@ -15,10 +15,11 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package utils.access;
+package utils.context;
 
 import models.MidataId;
 import models.Record;
+import utils.access.DBRecord;
 import utils.exceptions.AppException;
 
 /**

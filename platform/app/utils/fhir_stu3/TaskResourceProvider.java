@@ -51,8 +51,8 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.MidataId;
 import models.Record;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.access.AccessContext;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 public class TaskResourceProvider extends RecordBasedResourceProvider<Task> implements IResourceProvider {

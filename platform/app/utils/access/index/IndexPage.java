@@ -24,16 +24,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import models.MidataId;
 import utils.AccessLog;
 import utils.access.EncryptionUtils;
-import utils.access.op.Condition;
 import utils.db.LostUpdateException;
 import utils.exceptions.InternalServerException;
 

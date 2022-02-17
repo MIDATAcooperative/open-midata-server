@@ -19,17 +19,14 @@ package utils.plugins;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringJoiner;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import akka.actor.AbstractActor;
-import akka.actor.AbstractActor.Receive;
 import models.MidataId;
 import models.Plugin;
 import utils.AccessLog;
@@ -38,9 +35,7 @@ import utils.ServerTools;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.messaging.InputStreamCollector;
-import utils.messaging.SubscriptionTriggered;
 import utils.sync.Instances;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class PluginDeployment extends AbstractActor {
 

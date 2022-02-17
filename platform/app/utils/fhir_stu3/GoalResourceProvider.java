@@ -47,8 +47,8 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.access.AccessContext;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> implements IResourceProvider {

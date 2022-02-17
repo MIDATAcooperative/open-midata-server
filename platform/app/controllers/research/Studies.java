@@ -65,7 +65,6 @@ import models.MobileAppInstance;
 import models.Model;
 import models.ParticipationCode;
 import models.Plugin;
-import models.PluginIcon;
 import models.Record;
 import models.RecordsInfo;
 import models.Research;
@@ -77,7 +76,6 @@ import models.StudyAppLink;
 import models.StudyGroup;
 import models.StudyParticipation;
 import models.StudyRelated;
-import models.SubscriptionData;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -107,9 +105,9 @@ import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ConsentQueryTools;
@@ -118,7 +116,6 @@ import utils.InstanceConfig;
 import utils.ProjectTools;
 import utils.RuntimeConstants;
 import utils.ServerTools;
-import utils.access.AccessContext;
 import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
 import utils.access.Feature_Pseudonymization;
@@ -127,9 +124,7 @@ import utils.access.Query;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
-import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
-import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.LicenceChecker;
 import utils.auth.PortalSessionToken;
@@ -139,6 +134,8 @@ import utils.auth.ResearchSecured;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
@@ -361,7 +358,7 @@ public class Studies extends APIController {
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to export data.");
 
 		final String handle = PortalSessionToken.session().handle;
-		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session()).forAccount();
+		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session()).forAccount();
 
 		return downloadFHIR(context, handle, studyid, role, startDate, endDate, studyGroup, mode);
 	}
@@ -411,7 +408,7 @@ public class Studies extends APIController {
 			public Iterator<ByteString> create() throws Exception {
 				try {
 					KeyManager.instance.continueSession(handle, executorId);
-					AccessContext context = RecordManager.instance.createSessionForDownloadStream(executorId, role);
+					AccessContext context = ContextManager.instance.createSessionForDownloadStream(executorId, role);
 					ResourceProvider.setAccessContext(context);
 					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, initialInf,
 							CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after", startDate).mapNotEmpty("updated-before", endDate),
@@ -453,7 +450,7 @@ public class Studies extends APIController {
 						StringBuffer out = new StringBuffer();
 						KeyManager.instance.continueSession(handle, executorId);
 						// System.out.println("set exe");
-						AccessContext context = RecordManager.instance.createSessionForDownloadStream(executorId, role);
+						AccessContext context = ContextManager.instance.createSessionForDownloadStream(executorId, role);
 						ResourceProvider.setAccessContext(context);
 						// System.out.println("call next");
 						long start = System.currentTimeMillis();
@@ -790,7 +787,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
-		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session());
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid,
@@ -881,7 +878,7 @@ public class Studies extends APIController {
 	public Result endValidation(Request request, String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId studyid = new MidataId(id);
-        AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+        AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session());
 		
 		User user = Admin.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "groups", "recordQuery", "createdBy", "code"));
@@ -915,7 +912,7 @@ public class Studies extends APIController {
 	public Result backToDraft(Request request, String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId studyid = new MidataId(id);
-		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session());
 				
 		Study study = Study.getById(studyid, Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "groups", "recordQuery", "createdBy", "code"));
 
@@ -951,7 +948,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
-		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session());
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "code"));
@@ -998,7 +995,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
-		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session());
 		
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -1044,7 +1041,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
-		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session());
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "code"));
@@ -2004,7 +2001,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
-		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session());
 		
 
 		Study study = Study.getById(studyid,
@@ -2053,7 +2050,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
-		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session());
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create("name", "owner", "type", "joinMethods", "infos", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation",
@@ -2277,7 +2274,7 @@ public class Studies extends APIController {
 	public Result delete(Request request, String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
-		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session());
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));

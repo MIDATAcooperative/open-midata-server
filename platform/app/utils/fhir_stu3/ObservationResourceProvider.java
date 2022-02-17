@@ -74,8 +74,8 @@ import models.RecordsInfo;
 import models.enums.AggregationType;
 import utils.access.RecordManager;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.access.AccessContext;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 // Guide for implementing a FHIR resource:

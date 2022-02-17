@@ -20,13 +20,14 @@ package utils;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.PortalSessionToken;
+import utils.context.ContextManager;
 import utils.fhir.ResourceProvider;
 
 public class ServerTools {
 
 	public static void endRequest() {
 		try {
-		   RecordManager.instance.clear();		   
+		   ContextManager.instance.clear();		   
 		} finally {
 		   AuditManager.instance.clear();
 		   AccessLog.newRequest();	

@@ -17,10 +17,8 @@
 
 package utils.auth;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -31,9 +29,7 @@ import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
 import utils.exceptions.InternalServerException;
-import utils.json.JsonExtraction;
 
 public class PortalSessionToken {
 

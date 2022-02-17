@@ -23,8 +23,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.BSONObject;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
@@ -41,11 +39,10 @@ import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.ProjectTools;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -53,6 +50,7 @@ import utils.auth.KeyManager;
 import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;

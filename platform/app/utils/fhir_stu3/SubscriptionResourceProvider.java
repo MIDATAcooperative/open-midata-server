@@ -30,7 +30,6 @@ import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Subscription;
 import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelComponent;
 import org.hl7.fhir.dstu3.model.Subscription.SubscriptionStatus;
-import org.hl7.fhir.dstu3.model.codesystems.SubscriptionChannelType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -66,9 +65,9 @@ import models.SubscriptionData;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
-import utils.access.AccessContext;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
+import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;

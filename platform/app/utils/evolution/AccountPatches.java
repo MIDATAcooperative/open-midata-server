@@ -50,14 +50,14 @@ import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.ServerTools;
-import utils.access.AccessContext;
-import utils.access.ConsentAccessContext;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ConsentAccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 import utils.fhir.ConsentResourceProvider;
 import utils.fhir.GroupResourceProvider;
 import utils.fhir.OrganizationResourceProvider;
@@ -335,7 +335,7 @@ public class AccountPatches {
 		KeyManager.instance.login(1000l*60l*60l, false);
 		KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
 		MidataId executor = RuntimeConstants.instance.publicUser;
-		AccessContext session = RecordManager.instance.createRootPublicUserContext();
+		AccessContext session = ContextManager.instance.createRootPublicUserContext();
 		Set<Research> res = Research.getAll(CMaps.map(), Research.ALL);
 		for (Research research : res) {
 			RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", research._id).map("format","fhir/Organization"));

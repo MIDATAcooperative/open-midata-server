@@ -17,7 +17,6 @@
 
 package controllers.members;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,7 +30,6 @@ import controllers.APIController;
 import controllers.Application;
 import controllers.Circles;
 import controllers.research.AutoJoiner;
-import models.Consent;
 import models.Member;
 import models.MidataId;
 import models.ParticipationCode;
@@ -53,20 +51,18 @@ import models.enums.UserFeature;
 import models.enums.WritePermissionType;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
-import utils.auth.CodeGenerator;
-import utils.auth.ExecutionInfo;
 import utils.auth.MemberSecured;
 import utils.auth.Rights;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;

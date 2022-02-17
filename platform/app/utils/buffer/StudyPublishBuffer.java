@@ -27,9 +27,9 @@ import models.MidataId;
 import models.Record;
 import models.StudyRelated;
 import utils.AccessLog;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 

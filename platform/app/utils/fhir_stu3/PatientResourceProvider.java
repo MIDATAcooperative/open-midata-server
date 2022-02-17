@@ -48,8 +48,6 @@ import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.UriType;
 import org.hl7.fhir.instance.model.api.IIdType;
 
-import com.typesafe.config.Config;
-
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.IParser;
@@ -110,16 +108,16 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
-import utils.access.AccessContext;
-import utils.access.AccountCreationAccessContext;
 import utils.access.DBIterator;
 import utils.access.Feature_Pseudonymization;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
-import utils.access.AccessContext;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.AccountCreationAccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonOutput;
@@ -502,7 +500,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	public void updatePatientForAccount(Member member) throws AppException {
 		if (!member.role.equals(UserRole.MEMBER)) return;
-		AccessContext context = RecordManager.instance.createSharingContext(info(), member._id);
+		AccessContext context = ContextManager.instance.createSharingContext(info(), member._id);
 		List<Record> allExisting = RecordManager.instance.list(info().getAccessorRole(), context,
 				CMaps.map("format", "fhir/Patient").map("owner", member._id).map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
 
@@ -842,7 +840,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 						
 			KeyManager.instance.unlock(user._id, null);
 
-			RecordManager.instance.clearCache();
+			ContextManager.instance.clearCache();
 			executorId = user._id;
 			AccessContext tempContext = new AccountCreationAccessContext(info(), user._id);
 			
@@ -916,7 +914,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		if (existing == null) {
 			User executorUser = info().getRequestCache().getUserById(info().getLegacyOwner());
-			RecordManager.instance.clearCache();
+			ContextManager.instance.clearCache();
 			if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(info().getUsedPlugin(), user, executorUser);
 			// if
 			// (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister()

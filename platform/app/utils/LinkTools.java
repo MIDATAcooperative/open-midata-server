@@ -18,7 +18,6 @@
 package utils;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,16 +34,13 @@ import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.LinkTargetType;
 import models.enums.WritePermissionType;
-import utils.access.AccessContext;
 import utils.access.Feature_FormatGroups;
 import utils.access.Query;
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.db.ObjectIdConversion;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-import utils.json.JsonExtraction;
-import utils.json.JsonValidation;
 
 public class LinkTools {
 

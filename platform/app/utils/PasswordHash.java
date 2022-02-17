@@ -71,6 +71,7 @@ public class PasswordHash {
 	}
 	
 	public static String createHash(char[] password, int hashAlgorithm, int saltByteSize, int pbkdf2Iterations, int hashByteSize) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		AccessLog.log("SLOW create password hash");
 		// Generate a random salt		
 		byte[] salt = new byte[saltByteSize];
 		random.nextBytes(salt);
@@ -122,7 +123,7 @@ public class PasswordHash {
 		// Compare the hashes in constant time. The password is correct if
 		// both hashes match.
 		boolean result = slowEquals(hash, testHash);
-		AccessLog.log("password validation result="+result);
+		AccessLog.log("SLOW password validation result="+result);
 		return result;
 	}
 	

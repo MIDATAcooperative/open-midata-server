@@ -15,19 +15,25 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package utils.access;
+package utils.context;
 
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
 import models.enums.UserRole;
+import utils.AccessLog;
 import utils.ConsentQueryTools;
+import utils.ErrorReporter;
+import utils.access.APSCache;
+import utils.access.DBRecord;
+import utils.collections.RequestCache;
 import utils.exceptions.AppException;
 
 public class PreLoginAccessContext extends AccessContext {
 
 	private UserRole role;
+	private RequestCache requestCache = new RequestCache();
 	
 	public PreLoginAccessContext(APSCache cache, UserRole role) {
 	  	super(cache, null);
@@ -36,7 +42,7 @@ public class PreLoginAccessContext extends AccessContext {
 	
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		return false;
+		return record.meta.getString("format").equals("fhir/Patient");
 	}
 
 	@Override
@@ -46,7 +52,7 @@ public class PreLoginAccessContext extends AccessContext {
 
 	@Override
 	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {		
-		return false;
+		return stored.meta.getString("format").equals("fhir/Patient");
 	}
 
 	@Override
@@ -73,12 +79,7 @@ public class PreLoginAccessContext extends AccessContext {
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
 		return null;
 	}
-
-	@Override
-	public MidataId getSelf() {
-		throw new NullPointerException();
-	}
-
+	
 	@Override
 	public MidataId getTargetAps() {
 		throw new NullPointerException();
@@ -86,17 +87,22 @@ public class PreLoginAccessContext extends AccessContext {
 
 	@Override
 	public MidataId getOwner() {
-		throw new NullPointerException();
+		return cache.getAccountOwner();
 	}
 
 	@Override
-	public MidataId getOwnerPseudonymized() throws AppException {
-		throw new NullPointerException();
+	public MidataId getOwnerPseudonymized() {
+		return cache.getAccountOwner();
 	}
 
+	@Override
+	public MidataId getSelf() {
+		return cache.getAccountOwner();
+	}
+	
 	@Override
 	public String getOwnerName() throws AppException {
-		throw new NullPointerException();
+		return null;
 	}
 
 	@Override
@@ -121,9 +127,31 @@ public class PreLoginAccessContext extends AccessContext {
 	 * @throws AppException
 	 */
 	public AccessContext forApp(MobileAppInstance app) throws AppException {	
-		ConsentQueryTools.getSharingQuery(app, true);
+		ConsentQueryTools.getSharingQuery(app, false);
 		Plugin plugin = Plugin.getById(app.applicationId);
 		return new AppAccessContext(app, plugin, getCache(), null);		
+	}
+	
+	@Override
+	public RequestCache getRequestCache() {
+		return requestCache;
+	}
+	
+	@Override
+	public void cleanup() {
+		AccessLog.log("[pre-login session] close");
+		try {
+			getCache().finishTouch();
+		} catch (AppException e) {
+		 	AccessLog.logException("clearCache", e);
+		 	ErrorReporter.report("context clean up", null, e);
+		}
+		try {
+		   requestCache.save();
+		} catch (AppException e) {
+		   AccessLog.logException("requestCache", e);
+		   ErrorReporter.report("context clean up", null, e);
+		}
 	}
 			
 }

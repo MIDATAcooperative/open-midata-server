@@ -26,11 +26,9 @@ import models.enums.APSSecurityLevel;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
-import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
-import utils.json.JsonValidation.JsonValidationException;
 
 /**
  * data model for data content types.

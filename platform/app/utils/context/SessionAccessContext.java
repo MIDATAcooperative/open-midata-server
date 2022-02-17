@@ -15,7 +15,7 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package utils.access;
+package utils.context;
 
 import models.MidataId;
 import models.MobileAppInstance;
@@ -23,7 +23,11 @@ import models.Plugin;
 import models.Record;
 import models.Space;
 import models.enums.UserRole;
+import utils.AccessLog;
 import utils.ConsentQueryTools;
+import utils.ErrorReporter;
+import utils.access.APSCache;
+import utils.access.DBRecord;
 import utils.collections.RequestCache;
 import utils.exceptions.AppException;
 
@@ -139,7 +143,7 @@ public class SessionAccessContext extends AccessContext {
 	 * @throws AppException
 	 */
 	public AccessContext forApp(MobileAppInstance app) throws AppException {	
-		ConsentQueryTools.getSharingQuery(app, true);
+		ConsentQueryTools.getSharingQuery(app, false);
 		Plugin plugin = Plugin.getById(app.applicationId);
 		return new AppAccessContext(app, plugin, getCache(), null);		
 	}
@@ -158,6 +162,25 @@ public class SessionAccessContext extends AccessContext {
 	public String toString() {
 		return "session("+cache.getAccessor()+")";
 	}
+
+	@Override
+	public void cleanup() {
+		AccessLog.log("[session] close");
+		try {
+			getCache().finishTouch();
+		} catch (AppException e) {
+		 	AccessLog.logException("clearCache", e);
+		 	ErrorReporter.report("context clean up", null, e);
+		}
+		try {
+		   requestCache.save();
+		} catch (AppException e) {
+		   AccessLog.logException("requestCache", e);
+		   ErrorReporter.report("context clean up", null, e);
+		}
+	}
+	
+	
 	
 	
 }

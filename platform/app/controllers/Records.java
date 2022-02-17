@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,36 +58,34 @@ import models.enums.ConsentType;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.ConsentQueryTools;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.APS;
-import utils.access.AccessContext;
 import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
-import utils.access.SpaceAccessContext;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
-import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
 import utils.auth.RecordToken;
 import utils.auth.ResearchOrDeveloperSecured;
-import utils.auth.ResearchSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
+import utils.context.SpaceAccessContext;
 import utils.db.FileStorage.FileData;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
 import utils.exceptions.RequestTooLargeException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.FHIRTools;
@@ -97,7 +94,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.stats.Stats;
 
 /**
  * functions for handling the records
@@ -597,7 +593,7 @@ public class Records extends APIController {
 		final String handle = PortalSessionToken.session().handle;
 
 		KeyManager.instance.continueSession(handle);
-		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session()).forAccount();
+		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session()).forAccount();
 		ResourceProvider.setAccessContext(context);
 		String headerStr = "{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ";
 
@@ -611,7 +607,7 @@ public class Records extends APIController {
 			public Iterator<ByteString> create() throws Exception {
 				try {
 					KeyManager.instance.continueSession(handle);
-					AccessContext context = RecordManager.instance.createSessionForDownloadStream(executorId, role);
+					AccessContext context = ContextManager.instance.createSessionForDownloadStream(executorId, role);
 					ResourceProvider.setAccessContext(context);
 	
 					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, context, CMaps.map("owner", "self"), RecordManager.COMPLETE_DATA);
@@ -644,7 +640,7 @@ public class Records extends APIController {
 					try {
 						StringBuffer out = new StringBuffer();
 						KeyManager.instance.continueSession(handle);
-						AccessContext context = RecordManager.instance.createSessionForDownloadStream(executorId, role);
+						AccessContext context = ContextManager.instance.createSessionForDownloadStream(executorId, role);
 						ResourceProvider.setAccessContext(context);
 						Record rec = it.next();
 						String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
@@ -719,7 +715,7 @@ public class Records extends APIController {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "properties", "target-study", "target-study-group");
 				
-		AccessContext inf = RecordManager.instance.createSession(PortalSessionToken.session());		
+		AccessContext inf = ContextManager.instance.createSession(PortalSessionToken.session());		
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 													
@@ -739,7 +735,7 @@ public class Records extends APIController {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "properties", "target-study", "target-study-group");
 				        
-        AccessContext inf = RecordManager.instance.createSession(PortalSessionToken.session());		
+        AccessContext inf = ContextManager.instance.createSession(PortalSessionToken.session());		
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 													

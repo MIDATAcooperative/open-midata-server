@@ -77,6 +77,18 @@ public class APSCache {
 		this.consentLimit = -1;
 	}
 	
+	public void clear() {
+		cache.clear();
+		consentCache.clear();
+		if (newRecordCache != null) newRecordCache.clear();
+		if (ownerToConsent != null) ownerToConsent.clear();
+		if (touchedConsents != null) touchedConsents.clear();
+		if (touchedAPS != null) touchedAPS.clear();
+		streamIndexRoot = null;
+		consentKeysRoot = null;
+		if (userGroupMember != null) userGroupMember.clear();
+	}
+	
 	/**
 	 * entity (user / group) that accesses APS in cache
 	 * @return
@@ -93,7 +105,7 @@ public class APSCache {
 		return accountOwner;
 	}
 	
-	protected void setAccountOwner(MidataId accountOwner) {
+	public void setAccountOwner(MidataId accountOwner) {
 		this.accountOwner = accountOwner;
 	}
 	

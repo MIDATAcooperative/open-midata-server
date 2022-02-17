@@ -23,12 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.r4.model.codesystems.ResearchStudyStatus;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeType;
 import org.hl7.fhir.r4.model.Extension;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Period;
@@ -56,7 +53,6 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
-import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.Info;
 import models.MidataId;
 import models.Record;
@@ -65,12 +61,11 @@ import models.Study;
 import models.StudyGroup;
 import models.enums.InfoType;
 import models.enums.StudyValidationStatus;
-import models.enums.UserRole;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
-import utils.access.AccessContext;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<ResearchStudy> implements IResourceProvider {

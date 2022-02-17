@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
+import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeableConcept;
@@ -46,9 +47,6 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.UriType;
-import org.hl7.fhir.instance.model.api.IIdType;
-
-import com.typesafe.config.Config;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -115,18 +113,18 @@ import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
-import utils.access.AccessContext;
-import utils.access.AccountCreationAccessContext;
 import utils.access.DBIterator;
 import utils.access.Feature_Pseudonymization;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.CodeGenerator;
-import utils.access.AccessContext;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.AccountCreationAccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonOutput;
@@ -509,7 +507,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	public void updatePatientForAccount(Member member) throws AppException {
 		if (!member.role.equals(UserRole.MEMBER)) return;
-		AccessContext context = RecordManager.instance.createSharingContext(info(), member._id);
+		AccessContext context = ContextManager.instance.createSharingContext(info(), member._id);
 		List<Record> allExisting = RecordManager.instance.list(info().getAccessorRole(), context,
 				CMaps.map("format", "fhir/Patient").map("owner", member._id).map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
 
@@ -572,7 +570,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	public static void createPatientForStudyParticipation(AccessContext inf, Study study, StudyParticipation part, Member member) throws AppException {
 
-		AccessContext context = RecordManager.instance.createSharingContext(inf, part.owner);
+		AccessContext context = ContextManager.instance.createSharingContext(inf, part.owner);
 		PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
 		PatientResourceProvider.setAccessContext(inf);
 		String userName = "P-" + CodeGenerator.nextUniqueCode();			
@@ -903,7 +901,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 			tempContext = new AccountCreationAccessContext(info(), user._id);
 			
-			/*RecordManager.instance.clearCache();
+			/*ContextManager.instance.clearCache();
 			executorId = user._id;
 			RecordManager.instance.setAccountOwner(user._id, user._id);
 			*/
@@ -1004,7 +1002,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		if (existing == null) {
 			User executorUser = info().getRequestCache().getUserById(info().getLegacyOwner());
-			RecordManager.instance.clearCache();
+			ContextManager.instance.clearCache();
 			if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(info().getUsedPlugin(), user, executorUser);
 			// if
 			// (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister()

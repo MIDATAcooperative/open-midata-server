@@ -39,7 +39,6 @@ import models.HPUser;
 import models.KeyInfoExtern;
 import models.Member;
 import models.MidataId;
-import models.Plugin;
 import models.RateLimitedAction;
 import models.ResearchUser;
 import models.User;
@@ -59,14 +58,13 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import play.routing.JavaScriptReverseRouter;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
-import utils.access.AccessContext;
 import utils.access.DBRecord;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
@@ -81,6 +79,8 @@ import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.evolution.PostLoginActions;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
@@ -737,7 +737,12 @@ public class Application extends APIController {
 		obj.put("pub", user.publicExtKey);
 		obj.put("recoverKey", user.recoverKey);
 		obj.put("userid", user._id.toString());
-		if (token != null) obj.put("sessionToken", token.encrypt());
+		if (token != null) {
+			if (token instanceof ExtendedSessionToken) {
+				((ExtendedSessionToken) token).setIsChallengeResponse();
+			}
+			obj.put("sessionToken", token.encrypt());
+		}
 		
 		return ok(obj).as("application/json");
 	}
@@ -843,7 +848,7 @@ public class Application extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		//handlePreCreated(user);
-		AccessContext context = RecordManager.instance.createInitialSession(user._id, UserRole.MEMBER, null);
+		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.MEMBER, null);
 		
 		String handle;
 		if (json.has("priv_pw")) {

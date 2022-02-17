@@ -30,6 +30,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bson.BSONObject;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Base64BinaryType;
 import org.hl7.fhir.r4.model.CodeableConcept;
@@ -37,9 +40,6 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IdType;
-import org.bson.BSONObject;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.instance.model.api.IIdType;
 
 import com.mongodb.BasicDBObject;
 
@@ -63,15 +63,14 @@ import models.TypedMidataId;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
-import utils.access.AccessContext;
-import utils.access.ConsentAccessContext;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.access.ReuseFileHandle;
 import utils.access.UpdateFileHandleSupport;
 import utils.access.VersionedDBRecord;
-import utils.access.AccessContext;
 import utils.collections.CMaps;
+import utils.context.AccessContext;
+import utils.context.ConsentAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;

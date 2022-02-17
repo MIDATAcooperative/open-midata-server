@@ -56,9 +56,9 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.MidataId;
 import models.Record;
 import utils.access.RecordManager;
-import utils.access.AccessContext;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.json.JsonOutput;
 

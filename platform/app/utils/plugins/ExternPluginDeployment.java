@@ -17,13 +17,9 @@
 
 package utils.plugins;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;

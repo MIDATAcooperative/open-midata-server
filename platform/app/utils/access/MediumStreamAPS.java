@@ -17,34 +17,23 @@
 
 package utils.access;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import org.bson.BasicBSONObject;
-import org.bson.types.BasicBSONList;
 
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-
-import models.APSNotExistingException;
 import models.MidataId;
 import models.enums.APSSecurityLevel;
 import utils.AccessLog;
-import utils.access.APSImplementation.APSIterator;
 import utils.auth.EncryptionNotSupportedException;
-import utils.auth.KeyManager;
-import utils.db.LostUpdateException;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-import utils.stats.Stats;
 
 public class MediumStreamAPS extends APS {
 	

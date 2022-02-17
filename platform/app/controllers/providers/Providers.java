@@ -58,7 +58,6 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -70,6 +69,8 @@ import utils.auth.ProviderSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -145,7 +146,7 @@ public class Providers extends APIController {
 		Terms.addAgreedToDefaultTerms(user);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
-		AccessContext context = RecordManager.instance.createInitialSession(user._id, UserRole.PROVIDER, null);
+		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.PROVIDER, null);
 		
 		String pub = JsonValidation.getString(json, "pub");
 		String pk = JsonValidation.getString(json, "priv_pw");

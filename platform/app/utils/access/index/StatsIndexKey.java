@@ -20,14 +20,8 @@ package utils.access.index;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Date;
-import java.util.Set;
-
 
 import models.MidataId;
-import models.Record;
-import models.RecordsInfo;
-import utils.access.DBRecord;
 
 public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> implements Comparable<StatsIndexKey> {
 

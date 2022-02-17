@@ -20,11 +20,8 @@ package actions;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import play.libs.Json;
 import play.mvc.Action;
-import play.mvc.Http;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;

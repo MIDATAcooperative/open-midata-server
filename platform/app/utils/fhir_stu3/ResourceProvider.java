@@ -49,21 +49,17 @@ import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.util.FhirTerser;
 import ca.uhn.fhir.util.UrlUtil;
-import models.MidataId;
 import models.Model;
 import models.Record;
-import models.enums.UserRole;
 import utils.ErrorReporter;
 import utils.access.VersionedDBRecord;
-import utils.access.AccessContext;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 import utils.exceptions.RequestTooLargeException;
 
 /**

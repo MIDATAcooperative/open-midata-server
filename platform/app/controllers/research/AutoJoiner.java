@@ -27,7 +27,6 @@ import akka.actor.Props;
 import models.MidataId;
 import models.Study;
 import models.StudyParticipation;
-import models.UserGroupMember;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
 import models.enums.StudyExecutionStatus;
@@ -35,14 +34,14 @@ import models.enums.UserRole;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.ServerTools;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-import utils.messaging.MailUtils;
 import utils.messaging.ServiceHandler;
 
 public class AutoJoiner {
@@ -109,8 +108,8 @@ class AutoJoinerActor extends AbstractActor {
 							}
 							
 							KeyManager.instance.continueSession(handle, theStudy.autoJoinExecutor);	
-							AccessContext context = RecordManager.instance.createSessionForDownloadStream(theStudy.autoJoinExecutor, UserRole.ANY);
-							RecordManager.instance.setAccountOwner(theStudy.autoJoinExecutor, theStudy.autoJoinExecutor);							
+							AccessContext context = ContextManager.instance.createSessionForDownloadStream(theStudy.autoJoinExecutor, UserRole.ANY);
+							ContextManager.instance.setAccountOwner(theStudy.autoJoinExecutor, theStudy.autoJoinExecutor);							
 							AutoJoiner.approve(context, theStudy, message.getUser(), message.getApp(), theStudy.autoJoinGroup);
 							
 							AccessLog.log("END AUTOJOIN");

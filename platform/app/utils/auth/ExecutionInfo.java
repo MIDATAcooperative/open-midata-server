@@ -17,8 +17,6 @@
 
 package utils.auth;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.Circles;
@@ -34,18 +32,15 @@ import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
-import utils.RuntimeConstants;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
-import utils.access.SessionAccessContext;
-import utils.access.SpaceAccessContext;
 import utils.collections.CMaps;
 import utils.collections.RequestCache;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
+import utils.context.SpaceAccessContext;
 import utils.exceptions.AppException;
-import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
 
 public class ExecutionInfo {
 
@@ -76,7 +71,7 @@ public class ExecutionInfo {
 		this.ownerId = executor;
 		this.targetAPS = executor;
 		this.pluginId = RuntimeConstants.instance.portalPlugin;
-		this.context = RecordManager.instance.createContextFromAccount(executor);
+		this.context = ContextManager.instance.createContextFromAccount(executor);
 		this.role = role;
 	}
 	
@@ -122,7 +117,7 @@ public class ExecutionInfo {
 			
 		if (authToken.recordId != null) {
 						
-			session = RecordManager.instance.createSession(authToken.executorId, authToken.role, null, authToken.userId, null);
+			session = ContextManager.instance.createSession(authToken.executorId, authToken.role, null, authToken.userId, null);
 			 		
 			Consent consent = Circles.getConsentById(session, authToken.spaceId, Consent.ALL);
 			if (consent != null) {
@@ -140,7 +135,7 @@ public class ExecutionInfo {
 			MidataId ownerId = authToken.userId;
 			
 			
-			session = RecordManager.instance.createSession(authToken.executorId, authToken.role, space.visualization, ownerId, null);
+			session = ContextManager.instance.createSession(authToken.executorId, authToken.role, space.visualization, ownerId, null);
 					
 			User targetUser = Member.getById(authToken.userId,Sets.create("myaps", "tokens"));
 			if (targetUser == null) {
@@ -150,7 +145,7 @@ public class ExecutionInfo {
 				} else throw new BadRequestException("error.internal", "Invalid authToken.");
 			}
 			
-			session = RecordManager.instance.createSession(authToken.executorId, authToken.role, space.visualization, ownerId, null);
+			session = ContextManager.instance.createSession(authToken.executorId, authToken.role, space.visualization, ownerId, null);
 			session = session.forSpace(space, ownerId);			
 			
 			if (session.getAccessorRole().equals(UserRole.PROVIDER) && !ownerId.equals(authToken.executorId)) {
@@ -163,7 +158,7 @@ public class ExecutionInfo {
 
 		    if (!appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
 		        		        												                                              			
-			session = RecordManager.instance.createSession(authToken.executorId, authToken.role, appInstance.applicationId, appInstance.owner, null);
+			session = ContextManager.instance.createSession(authToken.executorId, authToken.role, appInstance.applicationId, appInstance.owner, null);
 			session = session.forApp(appInstance);
 			
 			if (appInstance.sharingQuery == null) {
@@ -203,13 +198,13 @@ public class ExecutionInfo {
         	OAuth2.invalidToken(); 
         }
                         				       
-		AccessContext tempContext = RecordManager.instance.createLoginOnlyContext(authToken.appInstanceId, authToken.role, appInstance);
+		AccessContext tempContext = ContextManager.instance.createLoginOnlyContext(authToken.appInstanceId, authToken.role, appInstance);
 		
 		if (appInstance.sharingQuery == null) {
 			appInstance.sharingQuery = RecordManager.instance.getMeta(tempContext, authToken.appInstanceId, "_query").toMap();
 		}
 				
-		AccessContext session = RecordManager.instance.upgradeSessionForApp(tempContext, appInstance);
+		AccessContext session = ContextManager.instance.upgradeSessionForApp(tempContext, appInstance);
 		
 		AccessLog.logEnd("end check 'mobile' type session token");
 		

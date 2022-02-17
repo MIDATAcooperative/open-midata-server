@@ -22,7 +22,7 @@ import models.User;
 import models.enums.AccountActionFlags;
 import models.enums.UserRole;
 import utils.AccessLog;
-import utils.access.AccessContext;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.fhir.PatientResourceProvider;
 

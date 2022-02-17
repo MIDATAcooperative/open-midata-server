@@ -24,7 +24,6 @@ import java.util.Set;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Endpoint;
 import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Organization;
 
 import ca.uhn.fhir.model.api.Include;
@@ -48,20 +47,16 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.exceptions.ForbiddenOperationException;
-import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
-import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.HealthcareProvider;
 import models.MidataId;
 import models.Record;
 import models.Research;
-import models.enums.UserRole;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
-import utils.access.AccessContext;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 
 public class OrganizationResourceProvider extends RecordBasedResourceProvider<Organization> implements IResourceProvider {
 

@@ -15,10 +15,12 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package utils.access;
+package utils.context;
 
 import models.MidataId;
 import models.Record;
+import utils.access.APSCache;
+import utils.access.DBRecord;
 import utils.exceptions.AppException;
 
 public class IndexAccessContext extends AccessContext {
@@ -27,7 +29,7 @@ public class IndexAccessContext extends AccessContext {
 	private boolean pseudonymize;
 	
 	
-	IndexAccessContext(APSCache cache, boolean pseudonymize) {
+	public IndexAccessContext(APSCache cache, boolean pseudonymize) {
 		super(cache, null);
 		selfUser = cache.getAccountOwner();
 		this.pseudonymize = pseudonymize;

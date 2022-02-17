@@ -17,9 +17,6 @@
 
 package controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -42,12 +39,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
 
 import actions.VisualizationCall;
-import models.Admin;
 import models.Consent;
 import models.ContentInfo;
 import models.MidataId;
@@ -55,9 +49,7 @@ import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.Space;
-import models.StudyRelated;
 import models.SubscriptionData;
-import models.User;
 import models.UserGroupMember;
 import models.enums.AggregationType;
 import models.enums.UsageAction;
@@ -70,35 +62,30 @@ import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
-import play.mvc.BodyParser.DelegatingMultipartFormDataBodyParser;
 import play.mvc.Http.MultipartFormData;
-import play.mvc.Http.Request;
 import play.mvc.Http.MultipartFormData.FilePart;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
-import utils.QueryTagTools;
 import utils.RuntimeConstants;
 import utils.ServerTools;
-import utils.access.AccessContext;
-import utils.access.AccountCreationAccessContext;
-import utils.access.ConsentAccessContext;
 import utils.access.DBRecord;
 import utils.access.EncryptedFileHandle;
-import utils.access.PublicAccessContext;
 import utils.access.RecordConversion;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
-import utils.auth.RecordToken;
 import utils.auth.Rights;
-import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
-import utils.db.FileStorage.FileData;
-import utils.db.ObjectIdConversion;
+import utils.context.AccessContext;
+import utils.context.AccountCreationAccessContext;
+import utils.context.ConsentAccessContext;
+import utils.context.ContextManager;
+import utils.context.PublicAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -301,7 +288,7 @@ public class PluginsAPI extends APIController {
 		if (bquery != null) {
 			query = bquery.toMap();
 						
-			RecordManager.instance.shareByQuery(RecordManager.instance.createSharingContext(inf, inf.getCache().getAccountOwner()), space._id, query);
+			RecordManager.instance.shareByQuery(ContextManager.instance.createSharingContext(inf, inf.getCache().getAccountOwner()), space._id, query);
 		}		
 		RecordManager.instance.setMeta(inf, space._id, "_config", config);
 						

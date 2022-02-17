@@ -66,24 +66,23 @@ import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.InstanceConfig;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
-import utils.auth.ExtendedSessionToken;
 import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
-import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
@@ -403,7 +402,7 @@ public class Users extends APIController {
 		User.set(user._id, "notifications", user.notifications);
 		
 		user.updateKeywords(true);
-		AccessContext context = RecordManager.instance.createLoginOnlyContext(user._id, user.role);
+		AccessContext context = ContextManager.instance.createLoginOnlyContext(user._id, user.role);
 		if (user.role.equals(UserRole.MEMBER)) {	
 			
 			if (!executorId.equals(userId)) {
@@ -460,7 +459,7 @@ public class Users extends APIController {
 		User.set(user._id, "authType", authType);
 		User.set(user._id, "notifications", sendMail);
 					
-		AccessContext context = RecordManager.instance.createSession(PortalSessionToken.session());
+		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session());
 		PatientResourceProvider.updatePatientForAccount(context, userId);
 		
 		if (authType.equals(SecondaryAuthType.SMS)) {
@@ -644,7 +643,7 @@ public class Users extends APIController {
 	public Result getAccountStats() throws AppException {
 								
 		PortalSessionToken session = PortalSessionToken.session();
-		AccessContext context =RecordManager.instance.createSession(session);
+		AccessContext context =ContextManager.instance.createSession(session);
 		AccountStats stats = RecordManager.instance.getStats(context);
 																	
 		return ok(JsonOutput.toJson(stats, "AccountStats", AccountStats.ALL));

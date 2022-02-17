@@ -20,7 +20,6 @@ package models;
 import java.util.Map;
 
 import models.enums.InfoType;
-import models.enums.Visibility;
 
 /**
  * Stores a piece of information about a study 
