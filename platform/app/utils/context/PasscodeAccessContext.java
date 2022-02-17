@@ -1,9 +1,10 @@
-package utils.access;
+package utils.context;
 
 import java.util.Collections;
 
 import models.Consent;
 import models.MidataId;
+import utils.access.APSCache;
 import utils.exceptions.AppException;
 
 public class PasscodeAccessContext extends ConsentAccessContext {

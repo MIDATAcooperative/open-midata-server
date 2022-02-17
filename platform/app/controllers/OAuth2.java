@@ -19,7 +19,6 @@ package controllers;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -53,18 +52,14 @@ import models.enums.AccountActionFlags;
 import models.enums.AccountNotifications;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
-import models.enums.ConsentStatus;
 import models.enums.EMailStatus;
 import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
-import models.enums.PluginStatus;
 import models.enums.SecondaryAuthType;
 import models.enums.StudyAppLinkType;
-import models.enums.StudyExecutionStatus;
-import models.enums.StudyValidationStatus;
 import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -74,34 +69,32 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Http.Request;
-import play.mvc.Http.Status;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.InstanceConfig;
 import utils.LinkTools;
+import utils.PluginLoginCache;
 import utils.RuntimeConstants;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
+import utils.auth.ExecutionInfo;
+import utils.auth.ExtendedSessionToken;
 import utils.auth.KeyManager;
 import utils.auth.LicenceChecker;
 import utils.auth.MobileAppSessionToken;
 import utils.auth.OAuthRefreshToken;
 import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
-import utils.auth.OAuthCodeToken;
-import utils.auth.ExecutionInfo;
-import utils.auth.ExtendedSessionToken;
 import utils.auth.TokenCrypto;
-import utils.auth.auth2factor.Authenticator;
 import utils.auth.auth2factor.Authenticators;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.evolution.PostLoginActions;
 import utils.exceptions.AppException;
-import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
@@ -110,7 +103,6 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
-import utils.messaging.SMSUtils;
 import utils.stats.UsageStatsRecorder;
 
 public class OAuth2 extends Controller {
@@ -201,8 +193,8 @@ public class OAuth2 extends Controller {
 		Optional<String> param = request.header("Authorization");
 		if (!param.isPresent() || !param.get().startsWith("Bearer ")) OAuth2.invalidToken();
 		String token = param.get().substring("Bearer ".length());
-	    ExecutionInfo inf = ExecutionInfo.checkToken(request, token, false);
-	    User user = User.getById(inf.executorId, User.ALL_USER);
+	    AccessContext inf = ExecutionInfo.checkToken(request, token, false);
+	    User user = User.getById(inf.getAccessor(), User.ALL_USER);
 	    ObjectNode obj = Json.newObject();	 
 	    
 	    obj.put("sub", user._id.toString());
@@ -246,7 +238,7 @@ public class OAuth2 extends Controller {
 			appInstance = pair.getRight();
             
 			aeskey = KeyManager.instance.newAESKey(appInstance._id);
-			tempContext = RecordManager.instance.createLoginOnlyContext(appInstance._id);
+			tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role, appInstance);
 			meta = RecordManager.instance.getMeta(tempContext, appInstance._id, "_app").toMap();
     		                        
         } else if (grant_type.equals("authorization_code")) {
@@ -292,7 +284,7 @@ public class OAuth2 extends Controller {
     		}
     				
     	    // Validate Mobile App	
-    		Plugin app = Plugin.getByFilename(client_id, Sets.create("type", "name", "secret"));
+    		Plugin app = PluginLoginCache.getByFilename(client_id);
     		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
     		if (!app.type.equals("mobile")) throw new PluginException(app._id,"error.plugin", "Wrong application type. Only smartphone/web type applications may use the OAuth login.");
     		
@@ -305,11 +297,12 @@ public class OAuth2 extends Controller {
     		user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
     		if (user == null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) throw new BadRequestException("error.internal", "invalid_grant");
     		
-    													
-    		if (appInstance.passcode != null && !User.phraseValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");			
+    		//This check can be disabled: both phrase and appInstance._id come from authorization "code" which has been validated										
+    		//if (appInstance.passcode != null && !User.phraseValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");
+    		
     		if (KeyManager.instance.unlock(appInstance._id, aeskey != null ? aeskey : phrase) == KeyManager.KEYPROTECTION_FAIL) throw new BadRequestException("error.internal", "invalid_grant");
     	
-    		tempContext = RecordManager.instance.createLoginOnlyContext(appInstance._id);
+    		tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role);
     		meta = RecordManager.instance.getMeta(tempContext, appInstance._id, "_app").toMap();							
     		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
     		
@@ -320,24 +313,19 @@ public class OAuth2 extends Controller {
         OAuthRefreshToken refresh = createRefreshToken(tempContext, appInstance, aeskey);
         
         BSONObject q = RecordManager.instance.getMeta(tempContext, appInstance._id, "_query");
-        if (q.containsField("link-study")) {
-        	MidataId studyId = MidataId.from(q.get("link-study"));
-        	MobileAPI.prepareMobileExecutor(appInstance, session);
-        	controllers.research.Studies.autoApproveCheck(appInstance.applicationId, studyId, appInstance.owner);
-        }
-            	
-        if (meta.containsKey("aliaskey") && meta.containsKey("alias")) {
-			MidataId alias = new MidataId(meta.get("alias").toString());
-			byte[] key = (byte[]) meta.get("aliaskey");
-			KeyManager.instance.unlock(appInstance.owner, alias, key);			
-			RecordManager.instance.clearCache();
-			if (user != null) {
-				AccessContext context = RecordManager.instance.createContextFromApp(appInstance.owner, appInstance);
-				PostLoginActions.check(context, user);												
-			}
-        } else {
-			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);			
-		}                
+        
+        tempContext = ContextManager.instance.upgradeSessionForApp(tempContext, appInstance);	
+        
+		if (user != null) {		
+				PostLoginActions.check(tempContext, user);	
+				
+				if (q.containsField("link-study")) {
+		        	MidataId studyId = MidataId.from(q.get("link-study"));
+		        	//context = MobileAPI.prepareMobileExecutor(appInstance, session);
+		        	controllers.research.Studies.autoApproveCheck(appInstance.applicationId, studyId, tempContext);
+		        }
+		}
+               
 		// create encrypted authToken		
 											
 		obj.put("access_token", session.encrypt());
@@ -397,7 +385,7 @@ public class OAuth2 extends Controller {
 		
 		if (KeyManager.instance.unlock(appInstance._id, refreshToken.phrase) == KeyManager.KEYPROTECTION_FAIL) invalidToken();
 		
-		AccessContext temp = RecordManager.instance.createLoginOnlyContext(appInstance._id);
+		AccessContext temp = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role, appInstance);
 		Map<String, Object> meta = RecordManager.instance.getMeta(temp, appInstance._id, "_app").toMap();
 					
 		if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
@@ -448,9 +436,9 @@ public class OAuth2 extends Controller {
 		Plugin app;
 		if (token.appId == null) {
 		   String name = JsonValidation.getString(json, "appname");
-		   app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef", "codeChallenge"));
+		   app = PluginLoginCache.getByFilename(name);
 		} else {			
-		   app = Plugin.getById(token.appId, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef", "codeChallenge"));			
+		   app = PluginLoginCache.getById(token.appId);			
 		}
 		
 		// Check app
@@ -656,7 +644,8 @@ public class OAuth2 extends Controller {
 	}
 	
 	private static final void checkTwoFactorRequired(ExtendedSessionToken token, JsonNode json, User user, Set<UserFeature> notok) throws AppException {
-				
+		if (user == null) throw new NullPointerException();
+		
 		String securityToken = JsonValidation.getStringOrNull(json, "securityToken");
 				
 		// If 2FA is already done we do not need to check again
@@ -716,7 +705,7 @@ public class OAuth2 extends Controller {
 					notok.add(UserFeature.AUTH2FACTORSETUP);
 				} else {
 				
-					Authenticators.getInstance(user.authType).checkAuthentication(user._id, user, securityToken);
+					Authenticators.getInstance(SecondaryAuthType.SMS).checkAuthentication(user._id, user, securityToken);
 					token.securityToken = securityToken;
 					notok.remove(UserFeature.AUTH2FACTOR);
 					notok.remove(UserFeature.PHONE_VERIFIED);
@@ -814,9 +803,10 @@ public class OAuth2 extends Controller {
 							
 				Study study = sal.getStudy();							
 				if (study.joinMethods.contains(JoinMethod.APP_CODE)) {	
-					RecordManager.instance.clearCache();
-				    controllers.members.Studies.requestParticipation(new ExecutionInfo(token.ownerId, token.userRole), token.ownerId, sal.studyId, token.appId, JoinMethod.APP_CODE, token.joinCode);
-				    RecordManager.instance.clearCache();
+					ContextManager.instance.clearCache();
+					AccessContext context = ContextManager.instance.createSession(token);
+				    controllers.members.Studies.requestParticipation(context, token.ownerId, sal.studyId, token.appId, JoinMethod.APP_CODE, token.joinCode);
+				    ContextManager.instance.clearCache();
 				}
 			}
 		}
@@ -828,7 +818,7 @@ public class OAuth2 extends Controller {
 		} else {				  
 			  appInstance = ApplicationTools.installApp(token.currentContext, token.appId, user, token.device, autoConfirm, token.confirmations, links);
 		}
-		if (token.currentContext == null) token.currentContext = RecordManager.instance.createLoginOnlyContext(appInstance._id);
+		if (token.currentContext == null) token.currentContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role, appInstance);
 		Map<String, Object> meta = RecordManager.instance.getMeta(token.currentContext, appInstance._id, "_app").toMap();
 											
 		if (!token.device.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
@@ -861,12 +851,16 @@ public class OAuth2 extends Controller {
         JsonValidation.validate(json, "appname", "username", "password", "device", "state", "redirectUri");
 
         ExtendedSessionToken token = new ExtendedSessionToken();
-        token.created = System.currentTimeMillis();                               
-        token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
-		token.state = JsonValidation.getString(json, "state");
-		token.device = JsonValidation.getString(json, "device");
-		token.joinCode = JsonValidation.getStringOrNull(json, "joinCode");
-			
+        if (json.has("loginToken")) {
+        	ExtendedSessionToken token1 = ExtendedSessionToken.decrypt(JsonValidation.getString(json, "loginToken"));
+        	if (token1.getIsChallengeResponse()) token = token1;
+        } else {
+	        token.created = System.currentTimeMillis();                               
+	        token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
+			token.state = JsonValidation.getString(json, "state");
+			token.device = JsonValidation.getString(json, "device");
+			token.joinCode = JsonValidation.getStringOrNull(json, "joinCode");
+        }
 		if (token.device != null && token.device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
 	    // Validate Mobile App	
 		Plugin app = validatePlugin(token, json);		
@@ -915,7 +909,7 @@ public class OAuth2 extends Controller {
 		PortalSessionToken tk = PortalSessionToken.session();
 		if (tk instanceof ExtendedSessionToken) {
 			ExtendedSessionToken token = (ExtendedSessionToken) tk;
-			token.currentContext = RecordManager.instance.createContextFromAccount(tk.ownerId);
+			token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, tk.userRole);
 			JsonNode json = Json.newObject();
 			Plugin app = token.appId != null ? validatePlugin(token, json) : null;
 			return loginHelper(request, token, json, app, token.currentContext);
@@ -928,7 +922,7 @@ public class OAuth2 extends Controller {
             token.handle = tk.handle;			
 			token.created = tk.created;
             token.remoteAddress = tk.remoteAddress;
-            token.currentContext = RecordManager.instance.createContextFromAccount(tk.ownerId);
+            token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, tk.userRole);
             token.setPortal();
             JsonNode json = Json.newObject();
             return loginHelper(request, token, json, null, token.currentContext);
@@ -938,6 +932,7 @@ public class OAuth2 extends Controller {
 	
 	public static Result loginHelper(Request request, ExtendedSessionToken token, JsonNode json, Plugin app, AccessContext currentContext) throws AppException {
 
+		AccessLog.log("[login] gather information");
 		token.currentContext = currentContext;		
 		
 		if (app != null) {
@@ -974,6 +969,8 @@ public class OAuth2 extends Controller {
 		    return Application.loginHelperResult(request, token, user, Collections.singleton(UserFeature.EMAIL_VERIFIED));
 		}
 		
+		AccessLog.log("[login] check preconditions");
+		
 		Result pw = checkPasswordAuthentication(token, json, user);
 		if (pw != null) return pw;
 						    		
@@ -981,21 +978,25 @@ public class OAuth2 extends Controller {
 		if (studySelectionRequired != null) return studySelectionRequired;
 		
 		notok = Application.loginHelperPreconditionsFailed(user, requirements);
-	
+	    
+		AccessLog.log("[login] preparing session");
 	 
 		int keyType;
 		if (token.handle != null) {			
 			if (token.currentContext == null) {
 				KeyManager.instance.continueSession(token.handle);
-				token.currentContext = RecordManager.instance.createContextFromAccount(token.ownerId);
+				token.currentContext = ContextManager.instance.createLoginOnlyContext(token.ownerId, user.role);
 			}
 			keyType = KeyManager.KEYPROTECTION_NONE;
 		} else {
 			String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken");
-			if (sessionToken == null && user.security.equals(AccountSecurityLevel.KEY_EXT_PASSWORD)) return Application.loginChallenge(token, user);
+			if (sessionToken == null && user.security.equals(AccountSecurityLevel.KEY_EXT_PASSWORD)) {
+				AccessLog.log("[login] returning login challenge");
+				return Application.loginChallenge(token, user);
+			}
 			token.handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true); // TODO Check lifetime
 			keyType = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey); 
-			token.currentContext = RecordManager.instance.createContextFromAccount(user._id);
+			token.currentContext = ContextManager.instance.createLoginOnlyContext(user._id, user.role);
 		}		
 		AccessLog.log("Using context="+token.currentContext.toString());
 		appInstance = checkExistingAppInstance(token, token.currentContext, json, links);
@@ -1035,9 +1036,10 @@ public class OAuth2 extends Controller {
 			
 		checkJoinWithCode(token, links);
 				
+		AccessLog.log("[login] do");
 		
 		if (app != null) {
-			token.currentContext = keyType == KeyManager.KEYPROTECTION_NONE ? RecordManager.instance.createContextFromAccount(user._id) : null;
+			token.currentContext = keyType == KeyManager.KEYPROTECTION_NONE ? ContextManager.instance.createLoginOnlyContext(user._id, user.role) : null;
 				
 			appInstance = loginAppInstance(token, appInstance, user, keyType == KeyManager.KEYPROTECTION_NONE, links);
 			

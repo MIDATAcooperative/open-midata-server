@@ -17,25 +17,15 @@
 
 package utils.access;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.bson.BasicBSONObject;
-
-import models.MidataId;
 import utils.AccessLog;
-import utils.RuntimeConstants;
 import utils.access.Feature_Indexes.IndexUse;
 import utils.collections.CMaps;
-import utils.collections.NChainedMap;
 import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 
 public class Feature_Consents extends Feature {
 

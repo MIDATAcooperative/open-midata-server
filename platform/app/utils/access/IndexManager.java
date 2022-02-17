@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,6 +60,8 @@ import utils.access.op.Condition;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.DummyAccessContext;
+import utils.context.IndexAccessContext;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -509,7 +510,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 					restrictions.put("group-system", "v1");
 					//if (aps.equals(executor)) restrictions.put("owner", "self");
 									
-					Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new DummyAccessContext(cache), false);
+					Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new IndexAccessContext(cache, index.getModel().pseudonymize), false);
 					
 					Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
 					for (StatsIndexKey k : keys) {
@@ -537,7 +538,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 			restrictions.put("group-system", "v1");
 			//if (aps.equals(executor)) restrictions.put("owner", "self");
 								
-			Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new DummyAccessContext(cache), false);
+			Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new IndexAccessContext(cache, index.getModel().pseudonymize), false);
 				
 			Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
 			for (StatsIndexKey k : keys) {

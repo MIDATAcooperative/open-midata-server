@@ -24,7 +24,6 @@ import java.util.Set;
 import models.enums.CommunicationChannelUseStatus;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
-import models.enums.Gender;
 import models.enums.JoinMethod;
 import models.enums.ParticipationStatus;
 import utils.collections.CMaps;

@@ -76,8 +76,8 @@ import models.enums.ConsentStatus;
 import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.stats.Stats;
 
@@ -252,7 +252,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	@Override
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {	
 		if (!checkAccessible()) return Collections.emptyList();
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Group");
@@ -278,7 +278,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	public List<IBaseResource> search(SearchParameterMap params) {
 		try {
 					
-			//ExecutionInfo info = info();
+			//AccessContext info = info();
 	
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);

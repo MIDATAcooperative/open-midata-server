@@ -15,119 +15,104 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package utils.access;
+package utils.context;
 
-import java.util.Map;
-
-import org.bson.BSONObject;
-
-import controllers.Circles;
 import models.MidataId;
 import models.Record;
-import models.Space;
+import utils.access.APSCache;
+import utils.access.DBRecord;
 import utils.exceptions.AppException;
 
-public class SpaceAccessContext extends AccessContext {
+public class AccountAccessContext extends AccessContext {
 
-	private Space space;
-	private MidataId self;
-	private boolean sharingQuery;
-	private Map<String, Object> restrictions;
-		
-	
-	public SpaceAccessContext(Space space, APSCache cache, AccessContext parent, MidataId self) {
+	public AccountAccessContext(APSCache cache, AccessContext parent) {
 		super(cache, parent);
-		this.space = space;
-		this.self = self;
-	}
-	
-	public SpaceAccessContext withRestrictions(Map<String, Object> restrictions) {
-		this.restrictions = restrictions;
-		return this;
 	}
 	
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		return parent==null || parent.mayCreateRecord(record);
+		if (parent != null) return parent.mayCreateRecord(record);
+		return true;
 	}
 
 	@Override
 	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
+		if (parent != null) return parent.mayUpdateRecord(stored, newVersion);
 		return true;
 	}
 
 	@Override
-	public boolean mustPseudonymize() {	
+	public boolean mustPseudonymize() {
+		if (parent != null) return parent.mustPseudonymize();
 		return false;
 	}
 	
 	@Override
-	public boolean mustRename() {	
+	public boolean mustRename() {
+		if (parent != null) return parent.mustRename();
 		return false;
 	}
-	
+
 	@Override
-	public MidataId getTargetAps() {
-		return space._id;
+	public MidataId getTargetAps() {		
+		return cache.getAccountOwner();
 	}
+
 	@Override
 	public boolean isIncluded(DBRecord record) throws AppException {
-		return record.owner.equals(space.owner);
+		return true;
 	}
+
 	@Override
 	public String getOwnerName() {		
 		return null;
 	}
+
 	@Override
 	public MidataId getOwner() {
-		return space.owner; //cache.getAccountOwner();
-	}
-	@Override
-	public MidataId getOwnerPseudonymized() {
-		return space.owner;
-	}
-	@Override
-	public MidataId getSelf() {
-		return self;
-	}
-	
-	@Override
-	public boolean mayAccess(String content, String format) throws AppException {
-		if (!sharingQuery && space.query == null) {
-			  BSONObject q = RecordManager.instance.getMeta(this, space._id, "_query");
-			  if (q != null) space.query = q.toMap();			  
-			  sharingQuery = true;
-		}
-		
-		return Feature_FormatGroups.mayAccess(space.query, content, format);	
-	}
-	
-	public Space getInstance() {
-		return space;
-	}
-	
-	public Map<String, Object> getQueryRestrictions() {
-		return restrictions;
-	}
-	
-	@Override
-	public boolean mayContainRecordsFromMultipleOwners() {		
-		return true;
-	}
-	
-	@Override
-	public String toString() {
-		return "space("+space._id+" "+parentString()+")";
+		return cache.getAccountOwner();
 	}
 
 	@Override
-	public Object getAccessRestriction(String content, String format, String field) throws AppException {
-		return Feature_FormatGroups.getAccessRestriction(space.query, content, format, field);
+	public MidataId getOwnerPseudonymized() {
+		return cache.getAccountOwner();
+	}
+
+	@Override
+	public MidataId getSelf() {
+		return parent != null ? parent.getSelf() : cache.getAccountOwner();
+	}
+
+	@Override
+	public boolean mayAccess(String content, String format) throws AppException {
+		return true;
+	}
+
+	@Override
+	public boolean mayContainRecordsFromMultipleOwners() {		
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "account("+getOwner()+" "+parentString()+")";
+	}
+
+	@Override
+	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
+		return null;
 	}
 
 	@Override
 	public String getContextName() {
-		return "Plugin-Space '"+space.name+"'";
+		return "User account";
 	}
+
+	@Override
+	public AccessContext forAccount() {
+		return this;
+	}
+	
+	
 
 }

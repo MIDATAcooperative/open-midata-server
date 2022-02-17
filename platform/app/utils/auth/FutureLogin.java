@@ -19,7 +19,6 @@ package utils.auth;
 
 import java.util.Set;
 
-import models.JsonSerializable;
 import models.MidataId;
 import models.Model;
 import models.PersistedSession;

@@ -20,7 +20,6 @@ package utils.access;
 import java.util.Set;
 
 import utils.AccessLog;
-import utils.access.Feature_Pseudonymization.PseudonymIterator;
 import utils.exceptions.AppException;
 
 public class Feature_ProcessFilters extends Feature {

@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r4.model.Person;
 import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.rest.annotation.IdParam;
@@ -48,7 +48,6 @@ import models.User;
 import models.enums.AuditEventType;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
-import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -250,12 +249,12 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 		if (users.size() > 5) throw new InvalidRequestException("Person search must be more specific!");
 		
 		for (User result : users) {
-			if (!result._id.equals(info().context.getActor())) {
+			if (!result._id.equals(info().getActor())) {
 				AuditManager.instance.addAuditEvent(
 						AuditEventBuilder
 						.withType(AuditEventType.USER_SEARCHED)
-						.withActorUser(info().context.getActor())
-						.withApp(info().pluginId)
+						.withActorUser(info().getActor())
+						.withApp(info().getUsedPlugin())
 				        .withModifiedUser(result));
 			}
 		}

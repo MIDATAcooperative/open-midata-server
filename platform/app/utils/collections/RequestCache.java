@@ -22,7 +22,6 @@ import java.util.Map;
 
 import models.MidataId;
 import models.User;
-import utils.auth.ExecutionInfo;
 import utils.buffer.StudyPublishBuffer;
 import utils.exceptions.AppException;
 

@@ -31,11 +31,11 @@ import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
 import utils.access.Feature_AccountQuery.IdAndConsentFieldIterator;
-import utils.access.index.StreamIndexKey;
 import utils.access.index.StreamIndexLookup;
 import utils.access.index.StreamIndexRoot;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 public class Feature_StreamIndex extends Feature {

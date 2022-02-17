@@ -18,22 +18,18 @@
 package utils.largerequests;
 
 import java.io.InputStream;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
-import akka.stream.Materializer;
 import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.StreamConverters;
 import akka.util.ByteString;
 import play.libs.F.Either;
 import play.libs.streams.Accumulator;
 import play.mvc.BodyParser;
-import play.mvc.Http;
 import play.mvc.Http.RequestHeader;
-import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import utils.ErrorReporter;
 import utils.access.EncryptedFileHandle;

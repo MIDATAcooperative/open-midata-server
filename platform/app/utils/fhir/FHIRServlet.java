@@ -19,7 +19,6 @@ package utils.fhir;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,11 +28,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
 import utils.InstanceConfig;
-import utils.auth.ExecutionInfo;
+import utils.context.AccessContext;
 
 // https://demo.careevolution.com/PDemo/PDemo.html?iss=https://localhost:9000/fhir
 // https://demo.careevolution.com/PDemo/PDemo.html?iss=https://test.midata.coop:9000/fhir
@@ -49,8 +47,8 @@ public class FHIRServlet extends RestfulServer {
     public static Map<String, ResourceProvider> myProviders;
    
     public static String getBaseUrl() {
-    	ExecutionInfo inf = ResourceProvider.info();
-    	if (inf!=null && inf.overrideBaseUrl!=null) return "https://"+InstanceConfig.getInstance().getPlatformServer()+inf.overrideBaseUrl;
+    	AccessContext inf = ResourceProvider.info();
+    	if (inf!=null && inf.getOverrideBaseUrl()!=null) return "https://"+InstanceConfig.getInstance().getPlatformServer()+inf.getOverrideBaseUrl();
     	
     	return "https://"+InstanceConfig.getInstance().getPlatformServer()+"/fhir";
     }

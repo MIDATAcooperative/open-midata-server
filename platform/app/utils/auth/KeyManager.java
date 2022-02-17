@@ -532,8 +532,7 @@ public class KeyManager implements KeySession {
 				KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
 				PublicKey pubKey = keyFactory.generatePublic(spec);
 				 
-				byte algorithm = encryptedHash[0];
-				int offset = 1;
+				byte algorithm = encryptedHash[0];				
 				byte[] withoutAlg = new byte[encryptedHash.length-1];						
 				System.arraycopy(encryptedHash, 1, withoutAlg, 0, withoutAlg.length);
 				

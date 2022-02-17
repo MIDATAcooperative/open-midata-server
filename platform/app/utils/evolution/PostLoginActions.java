@@ -22,7 +22,7 @@ import models.User;
 import models.enums.AccountActionFlags;
 import models.enums.UserRole;
 import utils.AccessLog;
-import utils.access.AccessContext;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.fhir.PatientResourceProvider;
 
@@ -39,7 +39,7 @@ public class PostLoginActions {
 		if (user.flags != null) {
 			if (user.flags.contains(AccountActionFlags.UPDATE_FHIR) && user.role.equals(UserRole.MEMBER)) {
 				AccessLog.log("Update of patient record required.");
-				PatientResourceProvider.updatePatientForAccount(user._id);
+				PatientResourceProvider.updatePatientForAccount(context, user._id);
 				user.flags.remove(AccountActionFlags.UPDATE_FHIR);
 			}
 			

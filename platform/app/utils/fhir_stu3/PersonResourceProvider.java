@@ -249,12 +249,12 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 		if (users.size() > 5) throw new InvalidRequestException("Person search must be more specific!");
 		
 		for (User result : users) {
-			if (!result._id.equals(info().context.getActor())) {
+			if (!result._id.equals(info().getActor())) {
 				AuditManager.instance.addAuditEvent(
 						AuditEventBuilder
 						.withType(AuditEventType.USER_SEARCHED)
-						.withActorUser(info().context.getActor())
-						.withApp(info().pluginId)
+						.withActorUser(info().getActor())
+						.withApp(info().getUsedPlugin())
 				        .withModifiedUser(result));
 			}
 		}

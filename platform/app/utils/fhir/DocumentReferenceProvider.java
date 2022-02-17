@@ -22,12 +22,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.hl7.fhir.r4.model.Attachment;
-import org.hl7.fhir.r4.model.Base64BinaryType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContentComponent;
 import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
@@ -55,10 +53,9 @@ import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
-import utils.InstanceConfig;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 public class DocumentReferenceProvider extends RecordBasedResourceProvider<DocumentReference> implements IResourceProvider {
@@ -279,7 +276,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/DocumentReference");
@@ -376,7 +373,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 	/*
 	 * @Delete() public void deleteObservation(@IdParam IdType theId) { Record
 	 * record = fetchCurrent(theId);
-	 * RecordManager.instance.deleteRecord(info().executorId, info().targetAPS,
+	 * RecordManager.instance.deleteRecord(info().getAccessor(), info().getTargetAps(),
 	 * record); }
 	 */
  

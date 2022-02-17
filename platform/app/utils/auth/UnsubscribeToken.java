@@ -23,10 +23,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import models.MidataId;
 import play.libs.Json;
-import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
 import utils.exceptions.InternalServerException;
 
 public class UnsubscribeToken {

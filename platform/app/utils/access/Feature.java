@@ -20,7 +20,6 @@ package utils.access;
 import java.util.Iterator;
 import java.util.List;
 
-import utils.AccessLog;
 import utils.exceptions.AppException;
 
 /**

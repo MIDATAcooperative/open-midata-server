@@ -24,6 +24,7 @@ import akka.actor.Props;
 import akka.actor.ReceiveTimeout;
 import akka.japi.Creator;
 import models.MidataId;
+import models.enums.UserRole;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.ServerTools;
@@ -37,6 +38,7 @@ import utils.access.index.StatsIndexRoot;
 import utils.access.index.StreamIndexRoot;
 import utils.access.index.TerminateMsg;
 import utils.auth.KeyManager;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -97,7 +99,9 @@ public class IndexWorker extends AbstractActor {
 			
 				if (!((IndexMsg) message).getExecutor().equals(executor)) throw new InternalServerException("error.internal", "Wrong executor for index update:"+executor.toString()+" vs "+((IndexMsg) message).getExecutor());
 				KeyManager.instance.continueSession(handle, executor);
-				if (cache == null) cache = RecordManager.instance.getCache(executor);			
+				if (cache == null) {
+					cache = ContextManager.instance.createSessionForDownloadStream(executor, UserRole.ANY).getCache();			
+				}
 				if (idx == null) idx = IndexManager.instance.findIndex(pseudo, indexId);
 				if (root == null) {
 					if (idx.formats.contains("_streamIndex")) {
@@ -133,7 +137,9 @@ public class IndexWorker extends AbstractActor {
 			
 				if (!((IndexMsg) message).getExecutor().equals(executor)) throw new InternalServerException("error.internal", "Wrong executor for index update:"+executor.toString()+" vs "+((IndexMsg) message).getExecutor());
 				KeyManager.instance.continueSession(handle, executor);
-				if (cache == null) cache = RecordManager.instance.getCache(executor);			
+				if (cache == null) {
+					cache = ContextManager.instance.createSessionForDownloadStream(executor, UserRole.ANY).getCache();								
+				}
 				if (idx == null) idx = IndexManager.instance.findIndex(pseudo, indexId);
 				if (root == null) root = new IndexRoot(pseudo.getKey(), idx, false);	
 			

@@ -30,7 +30,6 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Cancellable;
 import akka.actor.Props;
-import controllers.AutoRun;
 import models.MidataId;
 import models.Plugin;
 import models.enums.UsageAction;

@@ -31,7 +31,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import play.http.HttpEntity;
-import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.StatusHeader;
 import scala.NotImplementedError;

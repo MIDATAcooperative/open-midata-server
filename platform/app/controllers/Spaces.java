@@ -39,19 +39,18 @@ import models.SubscriptionData;
 import models.enums.UserFeature;
 import play.libs.Json;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.InstanceConfig;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.LicenceChecker;
 import utils.auth.PortalSessionToken;
 import utils.auth.SpaceToken;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
@@ -61,7 +60,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.messaging.SubscriptionManager;
 
 /**
  * functions for managing spaces (instances of plugins)
@@ -202,7 +200,7 @@ public class Spaces extends APIController {
 		// validate request
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId spaceId = new MidataId(spaceIdString);
-		
+		AccessContext context = portalContext(request);
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
 		
 		if (space == null) {
@@ -211,7 +209,7 @@ public class Spaces extends APIController {
 		
 		Circles.removeQueries(userId, spaceId);
 		//SubscriptionManager.deactivateSubscriptions(userId, spaceId);
-		RecordManager.instance.deleteAPS(space._id, userId);
+		RecordManager.instance.deleteAPS(context, space._id);
 		
 		// delete space		
 		Space.delete(userId, spaceId);
@@ -223,12 +221,12 @@ public class Spaces extends APIController {
 	public Result reset(Request request) throws AppException {
 		// validate request
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		
+		AccessContext context = portalContext(request);
 		Set<Space> spaces = Space.getAllByOwner(userId, Sets.create("_id"));
 		
 		for (Space space : spaces) {		
 		  Circles.removeQueries(userId, space._id);
-		  RecordManager.instance.deleteAPS(space._id, userId);		
+		  RecordManager.instance.deleteAPS(context, space._id);		
 		  Space.delete(userId, space._id);
 		}
 		

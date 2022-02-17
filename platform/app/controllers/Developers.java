@@ -25,7 +25,6 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
-import models.Admin;
 import models.Developer;
 import models.MidataId;
 import models.User;
@@ -34,14 +33,13 @@ import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
-import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -52,6 +50,8 @@ import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonExtraction;
@@ -125,7 +125,7 @@ public class Developers extends APIController {
 		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
 		Developer.add(user);
-			  
+		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.DEVELOPER, null);
 	    KeyManager.instance.newFutureLogin(user);	
 		PWRecovery.storeRecoveryData(user._id, recover);
 				
@@ -134,10 +134,9 @@ public class Developers extends APIController {
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		
-		Market.correctOwners();
+		Market.correctOwners();		
 		
-		
-		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));
+		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, context);
 			
 	}
 	

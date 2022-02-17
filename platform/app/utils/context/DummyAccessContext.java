@@ -15,10 +15,12 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package utils.access;
+package utils.context;
 
 import models.MidataId;
 import models.Record;
+import utils.access.APSCache;
+import utils.access.DBRecord;
 import utils.exceptions.AppException;
 
 public class DummyAccessContext extends AccessContext {
@@ -26,12 +28,12 @@ public class DummyAccessContext extends AccessContext {
 	private MidataId selfUser;
 	
 	
-	DummyAccessContext(APSCache cache) {
+	public DummyAccessContext(APSCache cache) {
 		super(cache, null);
 		selfUser = cache.getAccountOwner();
 	}
 	
-	DummyAccessContext(APSCache cache, MidataId selfUser) {
+	public DummyAccessContext(APSCache cache, MidataId selfUser) {
 		super(cache, null);
 		this.selfUser = selfUser;
 	}

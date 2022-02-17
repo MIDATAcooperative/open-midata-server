@@ -19,13 +19,11 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
-import models.Circle;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
@@ -35,25 +33,21 @@ import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.UserRole;
 import play.libs.Json;
-import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
-import utils.access.AccessContext;
-import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
 import utils.auth.OAuthRefreshToken;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
-import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonOutput;
-import utils.json.JsonValidation;
 
 /**
  * Services

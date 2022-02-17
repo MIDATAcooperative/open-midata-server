@@ -1,7 +1,6 @@
 package utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,13 +20,12 @@ import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.UserRole;
 import play.libs.Json;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
-import utils.access.RepresentativeAccessContext;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;

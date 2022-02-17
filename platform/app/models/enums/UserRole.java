@@ -17,8 +17,6 @@
 
 package models.enums;
 
-import utils.AccessLog;
-
 /**
  * The role of a user of the platform.
  *

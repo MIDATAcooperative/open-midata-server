@@ -45,9 +45,7 @@ import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.ResearchUser;
-import models.Space;
 import models.Study;
-import models.StudyAppLink;
 import models.StudyParticipation;
 import models.StudyRelated;
 import models.User;
@@ -55,25 +53,18 @@ import models.UserGroupMember;
 import models.enums.AggregationType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
-import models.enums.LinkTargetType;
-import models.enums.ParticipationStatus;
-import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
-import play.mvc.Result;
 import play.mvc.Http.Request;
+import play.mvc.Result;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.InstanceConfig;
-import utils.LinkTools;
-import utils.QueryTagTools;
-import utils.access.AccessContext;
-import utils.access.AppAccessContext;
-import utils.access.EncryptionUtils;
+import utils.PluginLoginCache;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
@@ -85,8 +76,10 @@ import utils.auth.Rights;
 import utils.auth.TokenCrypto;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.AppAccessContext;
+import utils.context.ContextManager;
 import utils.db.FileStorage.FileData;
-import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -130,11 +123,16 @@ public class MobileAPI extends Controller {
 			throw new BadRequestException("error.blocked.app", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
 		}
 		String deviceId = phrase.substring(0,3);
+		
 		for (MobileAppInstance instance : candidates) {
 			if (deviceId.equals(instance.deviceId)) {
-		      if (User.phraseValid(phrase, instance.passcode)) return instance;		      
+				try {
+					Map<String, Object> meta = RecordManager.instance.getMeta(tempContext, instance._id, "_app").toMap();				
+					if (phrase.equals(meta.get("phrase"))) return instance; 
+				} catch (AppException e) {}						
 			}
 		}
+						
 		boolean cleanJunk = candidates.size() > 2;
 		
 		// Upgrade old entries
@@ -191,14 +189,14 @@ public class MobileAPI extends Controller {
 
 			            
             phrase = KeyManager.instance.newAESKey(appInstance._id);
-            tempContext = RecordManager.instance.createLoginOnlyContext(appInstance._id);
+            tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role, appInstance);
             
 		} else {
 			deprecated = true;
 			String name = JsonValidation.getString(json, "appname");
 			String secret = JsonValidation.getString(json,"secret");
 				
-			app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
+			app = PluginLoginCache.getByFilename(name);
 			if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
 			
 			if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
@@ -234,6 +232,7 @@ public class MobileAPI extends Controller {
 			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
 			if (app.requirements != null) req.addAll(app.requirements);
 			if (Application.loginHelperPreconditionsFailed(user, req)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
+			tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role);
 			
 			appInstance= getAppInstance(tempContext, phrase, app._id, user._id, MobileAppInstance.APPINSTANCE_ALL);
 			
@@ -241,25 +240,25 @@ public class MobileAPI extends Controller {
 			if (appInstance != null && !OAuth2.verifyAppInstance(tempContext, appInstance, user._id, app._id, null)) {
 				AccessLog.log("CSCLEAR");
 				appInstance = null;
-				RecordManager.instance.clearCache();
+				ContextManager.instance.clearCache();
 			}
 						
 			if (appInstance == null) {									
 				boolean autoConfirm = InstanceConfig.getInstance().getInstanceType().autoconfirmConsentsMidataApi() && KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
-				tempContext = autoConfirm ? RecordManager.instance.createLoginOnlyContext(user._id) : null;
+				tempContext = autoConfirm ? ContextManager.instance.createLoginOnlyContext(user._id, user.role) : null;
 				AccessLog.log("REINSTALL");
 				if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
 				appInstance = ApplicationTools.installApp(tempContext, app._id, user, phrase, autoConfirm, Collections.emptySet(), null);
 				KeyManager.instance.changePassphrase(appInstance._id, phrase);
-				if (tempContext != null) RecordManager.instance.clearCache();
+				if (tempContext != null) ContextManager.instance.clearCache();
 				
-				tempContext = RecordManager.instance.createLoginOnlyContext(appInstance._id);
+				tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role);
 	   		    meta = RecordManager.instance.getMeta(tempContext, appInstance._id, "_app").toMap();
 			} else {
 				
 				if (KeyManager.instance.unlock(appInstance._id, phrase) == KeyManager.KEYPROTECTION_FAIL) return status(UNAUTHORIZED);		
 								
-				tempContext = RecordManager.instance.createLoginOnlyContext(appInstance._id);
+				tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role);
 				meta = RecordManager.instance.getMeta(tempContext, appInstance._id, "_app").toMap();			
             }
 			UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.LOGIN);							
@@ -274,7 +273,7 @@ public class MobileAPI extends Controller {
 											
 		AuditManager.instance.success();
 		
-		return authResult(tempContext.getAccessor(), role, appInstance, phrase, deprecated);
+		return authResult(tempContext, role, appInstance, phrase, deprecated);
 	}
 	
 	/**
@@ -285,8 +284,8 @@ public class MobileAPI extends Controller {
 	 * @return
 	 * @throws AppException
 	 */
-	public static Result authResult(MidataId executor, UserRole role, MobileAppInstance appInstance, String phrase, boolean deprecated) throws AppException {
-		AccessContext context = RecordManager.instance.createContextFromApp(executor, appInstance);
+	public static Result authResult(AccessContext context1, UserRole role, MobileAppInstance appInstance, String phrase, boolean deprecated) throws AppException {
+		AccessContext context = context1;
 		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, role); 
         OAuthRefreshToken refresh = OAuth2.createRefreshToken(context, appInstance, phrase);
 		        
@@ -294,7 +293,7 @@ public class MobileAPI extends Controller {
         if (q.containsField("link-study")) {
         	MidataId studyId = MidataId.from(q.get("link-study"));
         	MobileAPI.prepareMobileExecutor(appInstance, session);
-        	controllers.research.Studies.autoApproveCheck(appInstance.applicationId, studyId, appInstance.owner);
+        	controllers.research.Studies.autoApproveCheck(appInstance.applicationId, studyId, context1);
         }
         
 		// create encrypted authToken		
@@ -308,21 +307,12 @@ public class MobileAPI extends Controller {
 		return ok(obj);
 	}
 
-	protected static MidataId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
+	protected static AccessContext prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
 		KeyManager.instance.login(1000l*60l, false);
 		if (KeyManager.instance.unlock(tk.appInstanceId, tk.aeskey) == KeyManager.KEYPROTECTION_FAIL) { OAuth2.invalidToken(); }
-		AccessContext tempContext = RecordManager.instance.createLoginOnlyContext(tk.appInstanceId);
-		Map<String, Object> appobj = RecordManager.instance.getMeta(tempContext, tk.appInstanceId, "_app").toMap();
-		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
-			MidataId alias = new MidataId(appobj.get("alias").toString());
-			byte[] key = (byte[]) appobj.get("aliaskey");
-			KeyManager.instance.unlock(appInstance.owner, alias, key);		
-			RecordManager.instance.clearCache();
-			return appInstance.owner;
-		} else {
-			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);
-		}
-		return tk.appInstanceId;
+		AccessContext tempContext = ContextManager.instance.createLoginOnlyContext(tk.appInstanceId, tk.role, appInstance);
+		
+		return ContextManager.instance.upgradeSessionForApp(tempContext, appInstance);				
 	}
 	
 	/**
@@ -346,13 +336,13 @@ public class MobileAPI extends Controller {
 		Rights.chk("getRecords", UserRole.ANY, fields);
 
 		// decrypt authToken
-		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), true);		
+		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), true);		
 		if (inf == null) OAuth2.invalidToken(); 
 							
-        Stats.setPlugin(inf.pluginId);
-        UsageStatsRecorder.protokoll(inf.pluginId, UsageAction.GET);
+        Stats.setPlugin(inf.getUsedPlugin());
+        UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.GET);
         
-        if (!((AppAccessContext) inf.context).getAppInstance().status.equals(ConsentStatus.ACTIVE)) {
+        if (!((AppAccessContext) inf).getAppInstance().status.equals(ConsentStatus.ACTIVE)) {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields)).as("application/json");
         }
                 
@@ -360,7 +350,7 @@ public class MobileAPI extends Controller {
 		Collection<Record> records = null;
 		
 		AccessLog.log("NEW QUERY");		
-		records = RecordManager.instance.list(inf.role, inf.context, properties, fields);		  
+		records = RecordManager.instance.list(inf.getAccessorRole(), inf, properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
@@ -380,7 +370,7 @@ public class MobileAPI extends Controller {
 		// validate json
 		JsonNode json = request.body().asJson();				
 						
-		ExecutionInfo info = null;
+		AccessContext info = null;
 		
 		Optional<String> param = request.header("Authorization");
 		String param2 = request.queryString("access_token").orElse(null);
@@ -399,8 +389,8 @@ public class MobileAPI extends Controller {
 		return getFile(request, info, MidataId.from(rec.getLeft()), rec.getRight(), false);
 	}
 	
-	public static Result getFile(Request request, ExecutionInfo info, MidataId recordId, int idx, boolean asAttachment) throws AppException {					
-		FileData fileData = RecordManager.instance.fetchFile(info.context, new RecordToken(recordId.toString(), info.targetAPS.toString()), idx);
+	public static Result getFile(Request request, AccessContext info, MidataId recordId, int idx, boolean asAttachment) throws AppException {					
+		FileData fileData = RecordManager.instance.fetchFile(info, new RecordToken(recordId.toString(), info.getTargetAps().toString()), idx);
 		if (fileData == null) return badRequest();
 		String contentType = "application/binary";
 		if (fileData.contentType != null) contentType = fileData.contentType;
@@ -428,9 +418,9 @@ public class MobileAPI extends Controller {
 		JsonValidation.validate(json, "authToken", "data", "name", "format");
 		if (!json.has("content") && !json.has("code")) throw new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
 		
-		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
-		Stats.setPlugin(inf.pluginId);	
-		UsageStatsRecorder.protokoll(inf.pluginId, UsageAction.POST);	
+		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		Stats.setPlugin(inf.getUsedPlugin());	
+		UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.POST);	
 		
 		String data = JsonValidation.getJsonString(json, "data");
 		String name = JsonValidation.getString(json, "name");
@@ -440,7 +430,7 @@ public class MobileAPI extends Controller {
 		String content = JsonValidation.getStringOrNull(json, "content");
 		Set<String> code = JsonExtraction.extractStringSet(json.get("code"));
 		
-		MidataId owner = inf.ownerId;
+		MidataId owner = inf.getLegacyOwner();
 		MidataId ownerOverride = JsonValidation.getMidataId(json, "owner");
 		if (ownerOverride != null && !ownerOverride.equals(owner)) {			
 			owner = ownerOverride;
@@ -448,9 +438,9 @@ public class MobileAPI extends Controller {
 				
 		Record record = new Record();
 		record._id = new MidataId();
-		record.app = inf.pluginId;
+		record.app = inf.getUsedPlugin();
 		record.owner = owner;
-		record.creator = inf.context.getActor();
+		record.creator = inf.getActor();
 		record.created = record._id.getCreationDate();
 		
 		/*if (json.has("created-override")) {
@@ -460,19 +450,17 @@ public class MobileAPI extends Controller {
 		record.format = format;
 		
 			
-		ContentInfo.setRecordCodeAndContent(inf.pluginId, record, code, content);
+		ContentInfo.setRecordCodeAndContent(inf.getUsedPlugin(), record, code, content);
 				
 		try {
-			record.data = BasicDBObject.parse(data);
-		} catch (JSONParseException e) {
-			throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
+			record.data = BasicDBObject.parse(data);	
 		} catch (ClassCastException e2) {
 			throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
 		}
 		record.name = name;
 		record.description = description;
 								
-		PluginsAPI.createRecord(inf, record, inf.context);
+		PluginsAPI.createRecord(inf, record);
 		
 		Stats.finishRequest(request, "200", Collections.EMPTY_SET);
 		ObjectNode obj = Json.newObject();		
@@ -495,9 +483,9 @@ public class MobileAPI extends Controller {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "_id", "version");
 		
-		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
-		Stats.setPlugin(inf.pluginId);	
-		UsageStatsRecorder.protokoll(inf.pluginId, UsageAction.PUT);
+		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		Stats.setPlugin(inf.getUsedPlugin());	
+		UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.PUT);
 		
         String data = JsonValidation.getJsonString(json, "data");
 						
@@ -506,7 +494,7 @@ public class MobileAPI extends Controller {
 		record._id = JsonValidation.getMidataId(json, "_id");	
 		record.version = JsonValidation.getStringOrNull(json, "version");
 		 				
-		record.creator = inf.context.getActor();
+		record.creator = inf.getActor();
 		record.lastUpdated = new Date();		
 							
 		try {
@@ -562,8 +550,8 @@ public class MobileAPI extends Controller {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "target-study", "target-study-group");
 		
-		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
-		Stats.setPlugin(inf.pluginId);	
+		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		Stats.setPlugin(inf.getUsedPlugin());	
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 													
@@ -575,20 +563,20 @@ public class MobileAPI extends Controller {
 		return ok();
 	}
     
-    public static int unshareRecord(ExecutionInfo inf, MidataId studyId, String group, Map<String, Object> properties) throws AppException, JsonValidationException {
+    public static int unshareRecord(AccessContext inf, MidataId studyId, String group, Map<String, Object> properties) throws AppException, JsonValidationException {
 		
-    	UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyId, inf.executorId);
+    	UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyId, inf.getAccessor());
     	if (ugm == null) throw new BadRequestException("error.invalid.study", "You are now allowed to do that");
     	
 		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");		
-		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));		
+		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.getAccessor(), group, studyId, Sets.create("_id"));		
 		srs.addAll(StudyRelated.getActiveByOwnerGroupAndStudy(studyId, group, studyId, Sets.create("_id")));
 		properties.put("force-local", true);
-		List<Record> recs = RecordManager.instance.list(inf.role, inf.context, properties, Sets.create("_id"));
+		List<Record> recs = RecordManager.instance.list(inf.getAccessorRole(), inf, properties, Sets.create("_id"));
 		AccessLog.log("unshareRecord: srs="+srs.size()+" recs="+recs.size());
 		if (!srs.isEmpty()) {
 			for (StudyRelated sr : srs ) {
-			  RecordManager.instance.unshare(inf.context.forConsentReshare(sr), recs);
+			  RecordManager.instance.unshare(inf.forConsentReshare(sr), recs);
 			}
 		}																		
 		
@@ -604,8 +592,8 @@ public class MobileAPI extends Controller {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "target-study", "target-study-group");
 		
-		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
-		Stats.setPlugin(inf.pluginId);	
+		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		Stats.setPlugin(inf.getUsedPlugin());	
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 												
@@ -617,10 +605,10 @@ public class MobileAPI extends Controller {
 		return ok();
 	}
 	
-    public static int shareRecord(ExecutionInfo inf, MidataId studyId, String group, Map<String, Object> properties) throws AppException, JsonValidationException {
+    public static int shareRecord(AccessContext inf, MidataId studyId, String group, Map<String, Object> properties) throws AppException, JsonValidationException {
 										
 		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");
-		MidataId sharer = properties.get("usergroup") != null ? studyId : inf.executorId; 	
+		MidataId sharer = properties.get("usergroup") != null ? studyId : inf.getAccessor(); 	
 		//properties.remove("usergroup");
 		
 		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(sharer, group, studyId, Sets.create("_id"));
@@ -632,11 +620,11 @@ public class MobileAPI extends Controller {
 			if (srs.isEmpty()) {				
 				Study study = Study.getById(studyId, Study.ALL);
 				Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
-				controllers.research.Studies.joinSharing(inf.context, sharer, study, group, false, new ArrayList<StudyParticipation>(parts));
+				controllers.research.Studies.joinSharing(inf, sharer, study, group, false, new ArrayList<StudyParticipation>(parts));
 				srs = StudyRelated.getActiveByOwnerGroupAndStudy(sharer, group, studyId, Sets.create("_id"));
 			}
 			
-			AccessContext context = RecordManager.instance.createSharingContext(inf.context, sharer);
+			AccessContext context = ContextManager.instance.createSharingContext(inf, sharer);
 			for (StudyRelated sr : srs ) {
 			  count = RecordManager.instance.share(context, sr._id, sr.owner, properties, false);
 			}
@@ -673,14 +661,14 @@ public class MobileAPI extends Controller {
         	return ok(Json.toJson(Collections.EMPTY_LIST));
         }
         
-        MidataId executor = prepareMobileExecutor(appInstance, authToken);
+        AccessContext context = prepareMobileExecutor(appInstance, authToken);
         		
 		MidataId targetAps = appInstance._id;
 				
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);
 		
-	    Collection<RecordsInfo> result = RecordManager.instance.info(authToken.role, targetAps, RecordManager.instance.createContextFromApp(executor, appInstance), properties, aggrType);
+	    Collection<RecordsInfo> result = RecordManager.instance.info(authToken.role, targetAps, context, properties, aggrType);
 						
 		return ok(Json.toJson(result));
 	}
@@ -709,9 +697,9 @@ public class MobileAPI extends Controller {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Consent", fields)).as("application/json");
         }
         
-        MidataId executor = prepareMobileExecutor(appInstance, authToken);
+        AccessContext context = prepareMobileExecutor(appInstance, authToken);
 		// get record data
-		Collection<Consent> consents = Consent.getAllActiveByAuthorized(executor);
+		Collection<Consent> consents = Consent.getAllActiveByAuthorized(context.getLegacyOwner());
 		
 		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
 		

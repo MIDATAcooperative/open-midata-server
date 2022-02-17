@@ -34,6 +34,7 @@ import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
 import utils.AccessLog;
+import utils.PluginLoginCache;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -53,7 +54,8 @@ import utils.sync.Instances;
 public class Plugin extends Model implements Comparable<Plugin> {
 
 	private static final String collection = "plugins";
-	private static Map<MidataId, Plugin> cache = new ConcurrentHashMap<MidataId, Plugin>();
+	private static Map<MidataId, Plugin> cache = new ConcurrentHashMap<MidataId, Plugin>();	
+	
 	public @NotMaterialized static final Set<PluginStatus> NOT_DELETED = EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT);
 	
 	/**
@@ -76,6 +78,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "pluginVersion",
 	                     "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "licenceDef", "pseudonymize", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail");
+	
+	public @NotMaterialized final static Set<String> FOR_LOGIN =
+			Sets.create("_id", "filename", "type", "name", "secret", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef", "codeChallenge",
+					"pluginVersion", "defaultQuery", "predefinedMessages", "writes", "defaultSubscriptions","targetUserRole"
+					);
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -407,7 +414,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		
 		result = getById(id, ALL_PUBLIC);
 		if (result == null) return null;
-		cache.put(id, result);
+		cache.put(id, result);	
 		return result;		
 	}
 
@@ -419,9 +426,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		Model.set(Plugin.class, collection, pluginId, field, value);
 	}
 	
-	public static Plugin getByFilename(String name, Set<String> fields) throws InternalServerException {
-		return Model.get(Plugin.class, collection, CMaps.map("filename", name).map("status", Plugin.NOT_DELETED), fields);
+	public static Plugin getByFilename(String name, Set<String> fields) throws InternalServerException {	
+		return Model.get(Plugin.class, collection, CMaps.map("filename", name).map("status", Plugin.NOT_DELETED), fields);		
 	}
+	
+	
 	
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
@@ -471,6 +480,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public static void cacheRemove(MidataId pluginId) {
 		AccessLog.log("cache remove");
 		cache.remove(pluginId);
+		PluginLoginCache.clear();
 	}
 	
 	public void setLanguage(String lang) {

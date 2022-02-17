@@ -60,9 +60,9 @@ import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ConsentQueryTools;
@@ -71,21 +71,21 @@ import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
 import utils.access.APS;
-import utils.access.AccessContext;
-import utils.access.ConsentAccessContext;
 import utils.access.Feature_Streams;
-import utils.access.PasscodeAccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
-import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ConsentAccessContext;
+import utils.context.ContextManager;
+import utils.context.PasscodeAccessContext;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
@@ -530,12 +530,12 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	//public static void autosharePatientRecord(AccessContext context1, Consent consent) throws AppException {
-	//	AccessContext context = RecordManager.instance.createSharingContext(context1, consent.owner);
+	//	AccessContext context = ContextManager.instance.createSharingContext(context1, consent.owner);
 	//	autosharePatientRecord(context, consent);		
 	//}
 	
 	public static void autosharePatientRecord(AccessContext executorContext, Consent consent) throws AppException {
-		AccessContext context = RecordManager.instance.createSharingContext(executorContext, consent.owner);
+		AccessContext context = ContextManager.instance.createSharingContext(executorContext, consent.owner);
 		int recs = RecordManager.instance.share(context, consent._id, consent.owner, CMaps.map("owner", consent.owner).map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), true);
 		if (recs == 0) throw new InternalServerException("error.internal", "Patient Record not found!");
 	}
@@ -575,7 +575,7 @@ public class Circles extends APIController {
 		   
 		   KeyManager.instance.unlock(consent._id, passcode);
 		   		   		   
-		   // Maybe executor problem consent._id vs executor RecordManager.instance.shareAPS(consent._id, RecordManager.instance.createContextFromConsent(executorId, consent),consent._id, Collections.singleton(groupExecutorId));		   
+		   // Maybe executor problem consent._id vs executor RecordManager.instance.shareAPS(consent._id, ContextManager.instance.createContextFromConsent(executorId, consent),consent._id, Collections.singleton(groupExecutorId));		   
 		   AccessContext passcodeContext = new PasscodeAccessContext(context, consent, consent._id);
 		   RecordManager.instance.shareAPS(passcodeContext, Collections.singleton(groupExecutorId));
 		   
@@ -629,12 +629,12 @@ public class Circles extends APIController {
 		// delete circle		
 		switch (consent.type) {
 		case CIRCLE:
-			RecordManager.instance.deleteAPS(consent._id, userId);
+			RecordManager.instance.deleteAPS(context, consent._id);
 			Circle.delete(userId, circleId);
 			break;
 		case API:
 		case EXTERNALSERVICE: 
-			RecordManager.instance.deleteAPS(consent._id, userId);
+			RecordManager.instance.deleteAPS(context, consent._id);
 			Consent.delete(userId, circleId);break;
 		case IMPLICIT: consent.setStatus(ConsentStatus.DELETED);break;
 		//case STUDYRELATED : StudyRelated.delete(userId, circleId);break;

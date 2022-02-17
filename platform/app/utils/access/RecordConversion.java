@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.bson.BSONObject;
 import org.bson.types.BasicBSONList;

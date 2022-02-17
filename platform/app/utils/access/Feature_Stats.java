@@ -17,16 +17,12 @@
 
 package utils.access;
 
-import java.util.ArrayList;
 import java.util.Collection;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.bson.BasicBSONObject;
 
@@ -35,15 +31,11 @@ import models.MidataId;
 import models.RecordGroup;
 import models.RecordsInfo;
 import utils.AccessLog;
-import utils.RuntimeConstants;
-import utils.access.Feature_AccountQuery.IdAndConsentFieldIterator;
 import utils.access.index.StatsIndexKey;
 import utils.access.index.StatsIndexRoot;
 import utils.access.index.StatsLookup;
-
 import utils.collections.CMaps;
-import utils.collections.Sets;
-import utils.db.LostUpdateException;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.RequestTooLargeException;
 

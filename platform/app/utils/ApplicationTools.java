@@ -28,10 +28,7 @@ import org.bson.BSONObject;
 
 import controllers.Circles;
 import controllers.OAuth2;
-import controllers.members.HealthProvider;
-import controllers.members.Studies;
 import models.Consent;
-import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
@@ -52,20 +49,20 @@ import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
+import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
-import utils.access.AccessContext;
-import utils.access.ConsentAccessContext;
 import utils.access.Feature_FormatGroups;
 import utils.access.Feature_QueryRedirect;
 import utils.access.Feature_UserGroups;
 import utils.access.RecordManager;
-import utils.access.RepresentativeAccessContext;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
-import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
+import utils.context.RepresentativeAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -81,7 +78,7 @@ public class ApplicationTools {
 
 	public static MobileAppInstance installApp(AccessContext context, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm, Set<StudyAppLink> links) throws AppException {
 		AccessLog.logBegin("beginn install app id="+appId+" context="+(context != null ? context.toString() : "null"));
-		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
+		Plugin app = PluginLoginCache.getById(appId);
 		if (app == null) throw new InternalServerException("error.internal", "App not found");
 
 		// Get project links
@@ -430,13 +427,13 @@ public class ApplicationTools {
 		// Write phrase into APS *
 		Map<String, Object> meta = new HashMap<String, Object>();
 		meta.put("phrase", phrase);
-		if (context == null) context = RecordManager.instance.createLoginOnlyContext(appInstance._id);
+		if (context == null) context = ContextManager.instance.createLoginOnlyContext(appInstance._id, UserRole.ANY, appInstance);
 		RecordManager.instance.setMeta(context, appInstance._id, "_app", meta);
 		
 		// Write access filter into APS *
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
 			appInstance.sharingQuery = app.defaultQuery;
-			//AccessContext sharingContext = RecordManager.instance.createSharingContext(context, owner);
+			//AccessContext sharingContext = ContextManager.instance.createSharingContext(context, owner);
 		    //RecordManager.instance.shareByQuery(sharingContext, appInstance._id, appInstance.sharingQuery);
 		}						
 		
@@ -465,20 +462,20 @@ public class ApplicationTools {
 					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {
 						
 						if (LinkTools.findConsentForAppLink(context.getAccessor(),sal)==null) {
-							RecordManager.instance.clearCache();
+							ContextManager.instance.clearCache();
 							Set<MidataId> observers = ApplicationTools.getObserversForApp(links);
 							LinkTools.createConsentForAppLink(context, sal, observers);
 						}
 					}
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
 					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.serviceAppId))) {					
-						RecordManager.instance.clearCache();
+						ContextManager.instance.clearCache();
 						refreshOrInstallService(context, sal.serviceAppId, member, studyConfirm);											
 					}
 				} else
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
-					RecordManager.instance.clearCache();
-			        controllers.members.Studies.requestParticipation(new ExecutionInfo(context.getAccessor(), member.getRole()), member._id, sal.studyId, app._id, sal.dynamic ? JoinMethod.API : JoinMethod.APP, null);
+					ContextManager.instance.clearCache();
+			        controllers.members.Studies.requestParticipation(context.forAccountReshare(), member._id, sal.studyId, app._id, sal.dynamic ? JoinMethod.API : JoinMethod.APP, null);
 				}
 			}
 		}
@@ -559,7 +556,7 @@ public class ApplicationTools {
 				MidataId alias = new MidataId(meta.get("alias").toString());
 				byte[] key = (byte[]) meta.get("aliaskey");
 				KeyManager.instance.unlock(targetUser, alias, key);			
-				//RecordManager.instance.clearCache();
+				//ContextManager.instance.clearCache();
 				
 				return new RepresentativeAccessContext(context.getCache().getSubCache(targetUser), context);
 			}
@@ -576,9 +573,9 @@ public class ApplicationTools {
 	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
 		AccessLog.logBegin("start refresh app id="+appInstance._id);
 		long tStart = System.currentTimeMillis();
-		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
+		Plugin app = PluginLoginCache.getById(appId); 
 							
-		appInstance = MobileAppInstance.getById(appInstance._id, Sets.create(MobileAppInstance.APPINSTANCE_ALL, "fhirConsent"));
+		//appInstance = MobileAppInstance.getById(appInstance._id, Sets.create(MobileAppInstance.APPINSTANCE_ALL, "fhirConsent"));
 		
 		//RecordManager.instance.unshareAPS(appInstance._id, executor, Collections.singleton(appInstance._id));
 		
@@ -588,9 +585,9 @@ public class ApplicationTools {
 		  appInstance.passcode = MobileAppInstance.hashDeviceId(phrase);     	
 	    }
 		appInstance.lastUpdated = new Date();
-		
-		RecordManager.instance.shareAPS(RecordManager.instance.createContextFromApp(executor, appInstance), appInstance.publicKey);
-		appInstance.upsert();
+		AccessContext context = ContextManager.instance.createLoginOnlyContext(executor, member.role, appInstance);
+		RecordManager.instance.shareAPS(context, appInstance.publicKey);
+		appInstance.updateLoginInfo();
 					
 		AuditManager.instance.success();
 		AccessLog.logEnd("end refresh app time="+(System.currentTimeMillis()-tStart));
@@ -604,7 +601,7 @@ public class ApplicationTools {
 		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);
 		Plugin app = Plugin.getById(appInstance.applicationId);
 		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
-		RecordManager.instance.deleteAPS(appInstance._id, executorId);									
+		RecordManager.instance.deleteAPS(context, appInstance._id);									
 		//Removing queries from user account should not be necessary
 		if (appInstance.serviceId == null) Circles.removeQueries(appInstance.owner, appInstance._id);										
 		

@@ -19,10 +19,7 @@ package utils.auth.auth2factor;
 
 import models.MidataId;
 import models.User;
-import utils.auth.CodeGenerator;
 import utils.exceptions.AppException;
-import utils.exceptions.BadRequestException;
-import utils.messaging.Messager;
 
 /**
  * 2-factor Authentication interface

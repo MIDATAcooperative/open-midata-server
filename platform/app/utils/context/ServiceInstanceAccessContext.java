@@ -1,19 +1,24 @@
-package utils.access;
+package utils.context;
 
 import models.MidataId;
 import models.Record;
+import models.ServiceInstance;
+import utils.access.APSCache;
+import utils.access.DBRecord;
 import utils.exceptions.AppException;
 
-public class RepresentativeAccessContext extends AccessContext {
+public class ServiceInstanceAccessContext extends AccessContext {
 
-		
-	public RepresentativeAccessContext(APSCache cache, AccessContext parent) {
-		super(cache, parent);	   
+	private ServiceInstance serviceInstance;
+	
+	public ServiceInstanceAccessContext(APSCache cache, ServiceInstance serviceInstance) {
+		super(cache, null);	 
+		this.serviceInstance = serviceInstance;
 	}
 	
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		return parent.mayCreateRecord(record);
+		return true;
 	}
 
 	@Override
@@ -23,13 +28,13 @@ public class RepresentativeAccessContext extends AccessContext {
 
 	@Override
 	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
-		return parent.mayUpdateRecord(stored, newVersion);
+		return true;
 	}
 	
 		
 	@Override
 	public boolean mustPseudonymize() {
-		return parent.mustPseudonymize();
+		return false;
 	}
 	
 	@Override
@@ -39,9 +44,16 @@ public class RepresentativeAccessContext extends AccessContext {
 
 	@Override
 	public MidataId getTargetAps() {
-		return cache.getAccountOwner();
+		return serviceInstance.executorAccount;
 	}
 	
+	
+	
+	@Override
+	public MidataId getAccessor() {		
+		return serviceInstance.executorAccount;
+	}
+
 	@Override
 	public String getOwnerName() throws AppException {		
 		return null;
@@ -56,11 +68,10 @@ public class RepresentativeAccessContext extends AccessContext {
 		return cache.getAccountOwner();
 	}
 	
-	
-	
+		
 	@Override
 	public MidataId getSelf() {
-		return parent.getSelf();
+		return serviceInstance.executorAccount;
 	}
 	
 	@Override
@@ -75,15 +86,16 @@ public class RepresentativeAccessContext extends AccessContext {
 	
 	@Override
 	public String toString() {
-		return "representative("+cache.getAccountOwner()+", "+parentString()+")";
+		return "si("+serviceInstance+")";
 	}
 	@Override
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
 		return null;
 	}
+	
 	@Override
 	public String getContextName() {
-		return "Representative Access";
+		return "Service Instance";
 	}
 
 }

@@ -27,20 +27,19 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bson.BSONObject;
-import org.bson.BasicBSONObject;
 
 import models.MidataId;
 import models.Record;
-import models.RecordGroup;
 import models.RecordsInfo;
 import models.enums.AggregationType;
 import utils.AccessLog;
-import utils.RuntimeConstants;
 import utils.access.index.StatsIndexKey;
 import utils.access.op.AndCondition;
 import utils.access.op.Condition;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.DummyAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -48,7 +47,7 @@ import utils.exceptions.InternalServerException;
  * query engine for records. Is called by RecordManager.
  *
  */
-class QueryEngine {
+public class QueryEngine {
 
 	public final static Map<String, Object> NOTNULL = Collections.unmodifiableMap(Collections.singletonMap("$ne", null));
 
@@ -74,7 +73,7 @@ class QueryEngine {
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, MidataId aps, List<DBRecord> candidates) throws AppException {
-		
+		if (candidates.isEmpty()) return candidates;
 		if (!cache.getAPS(aps).isAccessible()) return new ArrayList<DBRecord>();
 
 		if (AccessLog.detailedLog) AccessLog.logBeginPath("contained-in-aps(recs="+candidates.size()+")",null);
@@ -266,7 +265,7 @@ class QueryEngine {
 	
     public static DBIterator<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId aps, AccessContext context, APSCache cache) throws AppException {    	
     	long queryStart = System.currentTimeMillis();
-    	if (context == null) context = new DummyAccessContext(cache);
+    	if (context == null) throw new NullPointerException(); // context = new DummyAccessContext(cache);
     	AccessLog.logBeginPath("full-query(aps="+aps.toString()+")"," context="+context.toString());
     	Feature qm = null;
     	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, aps);

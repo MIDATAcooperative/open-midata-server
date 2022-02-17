@@ -19,6 +19,7 @@ package models;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ import utils.exceptions.InternalServerException;
 @JsonFilter("MobileAppInstance")
 public class MobileAppInstance extends Consent {
 
-	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.ALL, "applicationId", "appVersion", "licence", "serviceId", "deviceId", "passcode");
+	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.ALL, "applicationId", "appVersion", "licence", "serviceId", "deviceId", "passcode", "sharingQuery");
 	
 	/**
 	 * public key of the application instance
@@ -83,9 +84,8 @@ public class MobileAppInstance extends Consent {
 		Model.insert(collection, this);		
 	}
 	
-	public void upsert() throws InternalServerException {
-		assertNonNullFields();
-		Model.upsert(collection, this);		
+	public void updateLoginInfo() throws InternalServerException {		
+		this.setMultiple(collection, Sets.create("publicKey", "passcode", "lastUpdated"));		
 	}
 	
 	public static MobileAppInstance getById(MidataId id, Set<String> fields) throws InternalServerException {

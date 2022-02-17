@@ -22,10 +22,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.hl7.fhir.r4.model.Attachment;
-import org.hl7.fhir.r4.model.Base64BinaryType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Media;
-import org.hl7.fhir.r4.model.Patient;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -46,10 +44,9 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
-import utils.InstanceConfig;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 public class MediaResourceProvider extends RecordBasedResourceProvider<Media> implements IResourceProvider {
@@ -214,7 +211,7 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Media");

@@ -15,7 +15,7 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package utils.access;
+package utils.context;
 
 import java.util.Collections;
 
@@ -24,6 +24,10 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
 import models.enums.WritePermissionType;
+import utils.access.APSCache;
+import utils.access.DBRecord;
+import utils.access.Feature_FormatGroups;
+import utils.access.QueryEngine;
 import utils.exceptions.AppException;
 
 public class AppAccessContext extends AccessContext {

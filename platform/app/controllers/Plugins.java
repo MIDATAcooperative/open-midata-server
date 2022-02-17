@@ -37,10 +37,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
 
 import actions.APICall;
-import models.Developer;
 import models.Member;
 import models.MidataId;
-import models.MobileAppInstance;
 import models.Plugin;
 import models.Space;
 import models.StudyAppLink;
@@ -61,15 +59,14 @@ import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
 import play.mvc.Http;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
-import utils.access.AccessContext;
 import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
@@ -77,11 +74,12 @@ import utils.auth.KeyManager;
 import utils.auth.LicenceChecker;
 import utils.auth.PortalSessionToken;
 import utils.auth.Rights;
-import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
@@ -249,7 +247,7 @@ public class Plugins extends APIController {
 			String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
 			MidataId study = json.has("study") ? JsonValidation.getMidataId(json, "study") : null;
 			
-	        Space space = install(userId, visualization, context, spaceName, study);
+	        Space space = install(context1, userId, visualization, context, spaceName, study);
 	        
 	        if (space != null) {
 			   return ok(JsonOutput.toJson(space, "Space", Space.ALL)).as("application/json");
@@ -259,9 +257,8 @@ public class Plugins extends APIController {
 		return ok();
 	}
 	
-	public static Space install(MidataId userId, Plugin visualization, String context, String spaceName, MidataId study) throws AppException {
-		AccessLog.log("install userId="+userId.toString()+" context="+context+" study="+study);
-		AccessContext context1 = RecordManager.instance.createContextFromAccount(userId);			
+	public static Space install(AccessContext context1, MidataId userId, Plugin visualization, String context, String spaceName, MidataId study) throws AppException {
+		AccessLog.log("install userId="+userId.toString()+" context="+context+" study="+study);					
 		if (visualization == null)
 			throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
 		if (visualization.status == PluginStatus.DELETED)
@@ -318,7 +315,7 @@ public class Plugins extends APIController {
 					query.put("study", study.toString());
 					AccessLog.log("set link");					
 				} 
-				RecordManager.instance.shareByQuery(context1, space._id, query);
+				RecordManager.instance.shareByQuery(context1.forAccountReshare(), space._id, query);
 				
 			}
 
@@ -738,7 +735,7 @@ public class Plugins extends APIController {
 				}
 				try {
 					tokens.put("accessToken", accessToken);
-					RecordManager.instance.setMeta(RecordManager.instance.createContextFromAccount(userId), spaceId, "_oauth", tokens);
+					RecordManager.instance.setMeta(ContextManager.instance.createSessionForDownloadStream(userId, UserRole.MEMBER), spaceId, "_oauth", tokens);
 				} catch (InternalServerException e) {
 					return false;
 				} finally {
@@ -772,12 +769,12 @@ public class Plugins extends APIController {
 	public Result addMissingPlugins(Request request) throws AppException {
 		
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));				
-		addMissingPlugins(userId, getRole());				
+		addMissingPlugins(portalContext(request), userId, getRole());				
 		return ok();
 		
 	}
 		
-	public static void addMissingPlugins(MidataId userId, UserRole role) throws AppException {
+	public static void addMissingPlugins(AccessContext context, MidataId userId, UserRole role) throws AppException {
 							
 		if (role.equals(UserRole.MEMBER)) {
 			AccessLog.log("Looking for plugins to add...");
@@ -806,7 +803,7 @@ public class Plugins extends APIController {
 					  if (spaces.isEmpty()) {
 						  Plugin visualization = Plugin.getById(appId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions","licenceDef"));
 						  AccessLog.log("add plugins: "+appId.toString());
-						  install(userId, visualization, null, null, null);
+						  install(context, userId, visualization, null, null, null);
 					  }
 					} 
 					 

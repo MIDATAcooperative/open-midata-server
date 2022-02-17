@@ -17,12 +17,10 @@
 
 package utils.messaging;
 
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.ProcessBuilder.Redirect;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
 
 import org.bson.BSONObject;
 import org.hl7.fhir.r4.model.StringType;
@@ -40,9 +37,8 @@ import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelComponent;
 import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelType;
 
 import akka.actor.AbstractActor;
-import akka.actor.AbstractActor.Receive;
-import controllers.Plugins;
 import akka.actor.ActorRef;
+import controllers.Plugins;
 import models.APSNotExistingException;
 import models.MidataId;
 import models.MobileAppInstance;
@@ -62,12 +58,12 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
-import utils.auth.PortalSessionToken;
 import utils.auth.SpaceToken;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.SubscriptionResourceProvider;
@@ -295,7 +291,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			System.out.println("NEW OAUTH2 - 1");
 			try {
 				KeyManager.instance.continueSession(handle, subscription.owner);
-               	AccessContext context = RecordManager.instance.createContextFromAccount(subscription.owner);	
+               	AccessContext context = ContextManager.instance.createSessionForDownloadStream(subscription.owner, UserRole.MEMBER);	
 				BSONObject oauthmeta = RecordManager.instance.getMeta(context, subscription.instance, "_oauth");
 				if (oauthmeta != null) {
 					System.out.println("NEW OAUTH2 - 2");
