@@ -83,6 +83,7 @@ import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -202,6 +203,12 @@ public class MobileAPI extends Controller {
 			if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
 			if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
 			
+			Stats.startRequest(request);
+			Stats.setPlugin(app._id);
+			Stats.addComment("Old authentication API no longer supported!");
+			throw new PluginException(app._id, "error.unsupported", "Old authentication API no longer supported!");
+			
+			/*
 			String username = JsonValidation.getEMail(json, "username");
 			String password = JsonValidation.getString(json, "password");
 			String device = JsonValidation.getStringOrNull(json, "device");
@@ -232,7 +239,7 @@ public class MobileAPI extends Controller {
 			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
 			if (app.requirements != null) req.addAll(app.requirements);
 			if (Application.loginHelperPreconditionsFailed(user, req)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
-			tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role);
+			tempContext = ContextManager.instance.createLoginOnlyContext(user._id, role);
 			
 			appInstance= getAppInstance(tempContext, phrase, app._id, user._id, MobileAppInstance.APPINSTANCE_ALL);
 			
@@ -268,7 +275,7 @@ public class MobileAPI extends Controller {
 				BSONObject q = RecordManager.instance.getMeta(tempContext, appInstance._id, "_query");
 				if (!q.containsField("link-study")) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
 			}
-			
+			*/
 		}
 											
 		AuditManager.instance.success();
