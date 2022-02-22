@@ -15,7 +15,7 @@
  along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-    <panel :title="$t('manageapp.overview')" :busy="isBusy">		  	
+    <panel :title="getTitle()" :busy="isBusy">		  	
 		<error-box :error="error"></error-box>
 		<div v-if="app">
 	      <div class="float-left" v-if="hasIcon()" style="margin-right:10px">
@@ -255,6 +255,11 @@ export default {
     mixins : [ status, rl ],
 
     methods : {
+        getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.overview");                       
+        },
 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;

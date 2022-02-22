@@ -1,5 +1,5 @@
 <template>
-    <panel :title="$t('repository.title')" :busy="isBusy">
+    <panel :title="getTitle1()" :busy="isBusy">
 				
 		<form name="myform" ref="myform" novalidate role="form" class="form-horizontal" :class="{ 'mark-danger' : app._id }" @submit.prevent="submit()">
             <error-box :error="error"></error-box>
@@ -99,6 +99,13 @@ export default {
     mixins : [ status ],
 
     methods : {
+    
+        getTitle1() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.repository_btn");                       
+        },
+    
         getTitle() {
             const { $t, $filters, $data } = this;
             if (!$data.report) return $t('repository.log');

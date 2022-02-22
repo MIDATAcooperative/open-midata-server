@@ -295,11 +295,12 @@ export default {
 
     methods : {
         getTitle() {
-            const { $route, $t } = this;
-            if ($route.query.appId) return $t("manageapp.title_edit");
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            if ($route.query.appId) return p+$t("manageapp.edit_btn");
             else return $t("manageapp.title_new");            
         },
-
+                
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
 		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate"])

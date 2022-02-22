@@ -329,9 +329,11 @@ export default {
     mixins : [ status ],
 
     methods : {
-        getTitle() {
-            const { $route, $t } = this;
-            if ($route.query.appId) return $t("applogin.title");             
+             
+         getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.applogin_btn");                       
         },
 
         loadApp(appId) {

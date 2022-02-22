@@ -107,10 +107,10 @@ export default {
     mixins : [ status ],
 
     methods : {
-        getTitle() {
-            const { $data, $t } = this, me = this;
-            if (!$data.app) return $t('appstats.title');
-            return $t('appstats.title')+": "+$data.app.name+" "+$data.app.filename;
+          getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.stats_btn");                       
         },
 
         init(userId, appId) {

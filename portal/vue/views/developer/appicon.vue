@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-     <panel :title="$t('appicon.title')" :busy="isBusy">		  
+     <panel :title="getTitle()" :busy="isBusy">		  
 	
         <error-box :error="error"></error-box>
 
@@ -81,6 +81,12 @@ export default {
     mixins : [ status ],
 
     methods : {
+        getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.icon_btn");                       
+        },
+    
         loadApp(appId) {
             const { $data } = this, me = this;
             $data.appId=appId;

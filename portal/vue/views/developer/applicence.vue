@@ -73,9 +73,9 @@ export default {
 
     methods : {
          getTitle() {
-            const { $data, $t } = this, me = this;
-            if (!$data.app) return $t('applicence.title');
-            return $t('applicence.title')+": "+$data.app.name+" "+$data.app.filename;
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.applicence_btn");                       
         },
 
         loadApp(appId) {

@@ -280,6 +280,7 @@ public class MinimalSetup {
 			common.defaultQuery=new HashMap<String, Object>();
 			common.defaultQuery.put("content", Collections.emptySet());
 			common.writes = WritePermissionType.NONE;
+			common.pseudonymize = true;
 			Plugin.add(common);
 		}
 	}

@@ -150,10 +150,10 @@ export default {
     mixins : [ status ],
 
     methods : {
-        getTitle() {
-            const { $t, $data } = this;
-            if (!$data.app) return $t('appmessages.title');
-            return $t('appmessages.title')+" "+$data.app.filename;		  	
+          getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.messages_btn");                       
         },
 
         loadApp(appId) {

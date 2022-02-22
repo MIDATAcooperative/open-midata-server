@@ -15,7 +15,7 @@
  along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-    <panel :title="$t('appsubscriptions.title')" :busy="isBusy">		  	
+    <panel :title="getTitle()" :busy="isBusy">		  	
         <error-box :error="error"></error-box>
 			
 		<form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="submit()">		    
@@ -96,6 +96,12 @@ export default {
     mixins : [ status ],
 
     methods : {
+    
+        getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.subscriptions_btn");                       
+        },
         loadApp(appId) {
             const { $data } = this, me = this;
             $data.appId=appId;

@@ -185,10 +185,10 @@ export default {
     mixins : [ status, rl ],
 
     methods : {
-        getTitle() {
-            const { $data, $t } = this, me = this;
-            if (!$data.app) return $t('appdebug.title');
-            return $t('appdebug.title')+": "+$data.app.name+" "+$data.app.filename;
+         getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.debug_btn");                       
         },
         dosubmit() {
           const { $data, $route } = this, me = this;

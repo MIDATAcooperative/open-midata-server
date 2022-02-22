@@ -18,7 +18,10 @@
 			
 	<panel :title="getTitle()" :busy="isBusy">
 		<error-box :error="error"></error-box>
-	
+	    <div class="alert alert-warning" v-if="role!='research'">
+	      <strong>{{ $t('createstudy.developer_nostart') }}</strong>
+	      <div>{{ $t('createstudy.developer_nostart2') }}</div>
+	    </div>	    
 	    <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="createstudy()" role="form">
 	        <form-group name="name" label="createstudy.study_name" :path="errors.name"> 
 		        <input type="text" class="form-control" id="name" name="name" v-validate v-model="study.name" required>		
@@ -48,7 +51,8 @@ import Panel from 'components/Panel.vue';
 export default {
   data: () => ({
       studytypes : studies.studytypes,
-      study : {}
+      study : {},
+      role : null
   }),
 
   components : {
@@ -100,6 +104,7 @@ export default {
   },
 
   created() {    
+      this.$data.role = this.$route.meta.role;
       this.reload();   
   }
 }

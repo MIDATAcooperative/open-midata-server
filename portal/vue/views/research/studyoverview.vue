@@ -21,6 +21,11 @@
 	
         <error-box :error="error"></error-box>
 
+        <div class="alert alert-warning" v-if="role!='research'">
+	      <strong>{{ $t('createstudy.developer_nostart') }}</strong>
+	      <div>{{ $t('createstudy.developer_nostart2') }}</div>
+	    </div>	  
+	    
         <div class="alert alert-info">
             <p><strong v-t="'studyoverview.workflow'"></strong></p>
             <div v-if="lastCheck"> 	  
@@ -107,7 +112,7 @@
         <router-link class="btn btn-default space" :to="{ path : './studies' }" v-t="'common.back_btn'"></router-link>
         <button class="btn btn-default space" @click="clone(false)" v-t="'studyoverview.clone_study_btn'"></button>
         <button v-if="readyForValidation()" class="btn btn-primary space" @click="startValidation()" v-t="'studyoverview.start_validation_btn'"></button>
-        <button v-if="readyForParticipantSearch()" class="btn btn-primary space" @click="startParticipantSearch()" v-t="'studyoverview.start_participant_search_btn'"></button>
+        <button v-if="readyForParticipantSearch()" class="btn btn-primary space" :disabled="role!='research'" @click="startParticipantSearch()" v-t="'studyoverview.start_participant_search_btn'"></button>
         <button v-if="readyForEndParticipantSearch()" class="btn btn-primary space" @click="endParticipantSearch()" v-t="'studyoverview.end_participant_search_btn'"></button>
         <button v-if="readyForStartExecution()" class="btn btn-primary space" @click="startExecution()" v-t="'studyoverview.start_study_execution_btn'"></button>
         <button v-if="readyForFinishExecution()" class="btn btn-primary space" @click="finishExecution()" v-t="'studyoverview.finish_study_btn'"></button>
@@ -154,7 +159,8 @@ export default {
         tests : {},
         checklist: [],
         lastCheck : null,
-        primaryCheck : null
+        primaryCheck : null,
+        role : null
     }),
 
     components: {  TabPanel, Panel, ErrorBox, Modal, Auditlog, StudyNav },
@@ -223,7 +229,7 @@ export default {
 	
 	    startParticipantSearch() {
             const { $data } = this, me = this;
-                        
+            if ($data.role != 'research') return;        
             me.doAction("startParticipantSearch", server.post(jsRoutes.controllers.research.Studies.startParticipantSearch($data.studyid).url).
             then(function(data) { 				
                 me.reload();                
@@ -430,6 +436,7 @@ export default {
 
     created() {
         const { $data, $route } = this;
+        this.$data.role = this.$route.meta.role;
         $data.studyid = $route.query.studyId;
         this.reload();
     }
