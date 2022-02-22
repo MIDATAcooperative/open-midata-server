@@ -33,6 +33,12 @@
 								<form-group name="email" label="lostpw.email" :path="errors.email">
 								  <input type="text" class="form-control" name="email" v-model="lostpw.email" style="margin-bottom:5px;" autofocus required v-validate>
 								</form-group>
+								<form-group name="role" label="oauth2.role" :path="errors.role">
+									<select class="form-control" v-model="lostpw.role" v-validate required>
+								      <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
+	                                  <option v-for="role in roles" :key="role.value" :value="role.value">{{ $t(role.name) }}</option>
+	                                </select>
+                                </form-group>
                                 <error-box :error="error"></error-box>								
 								<button type="submit" v-submit class="btn btn-primary btn-block" :disabled="action!=null" v-t="'lostpw.continue'"></button>
 							</form>							
@@ -56,7 +62,13 @@ import { status, FormGroup, ErrorBox } from 'basic-vue3-components';
 export default {
   data: () => ({
      success : false,
-     lostpw : { email : "" }    
+     lostpw : { email : "", role : null },
+     roles : [
+            { value : "member", name : "enum.userrole.MEMBER" },
+		    { value : "provider" , name : "enum.userrole.PROVIDER"},
+		    { value : "research" , name : "enum.userrole.RESEARCH"},
+		    { value : "developer" , name : "enum.userrole.DEVELOPER"},
+     ],    
   }),
 
   components : {
@@ -76,7 +88,7 @@ export default {
         const { $data, $route }	= this;
        
 		// send the request
-		var data = { "email": $data.lostpw.email, "role" : $route.meta.role };
+		var data = { "email": $data.lostpw.email, "role" : $data.lostpw.role };
 		this.doAction("pw",server.post(jsRoutes.controllers.Application.requestPasswordResetToken().url, data)).
 		then(function() { 
 			$data.success = true; 
@@ -84,7 +96,8 @@ export default {
 	}
   },
 
-  created() {    
+  created() {  
+     this.$data.lostpw.role = this.$route.meta.role;  
      this.loadEnd();
   }
 }

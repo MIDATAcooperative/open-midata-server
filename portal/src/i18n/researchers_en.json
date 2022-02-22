@@ -32,7 +32,9 @@
     "title2" : "Change project description",
     "study_name" : "Project name",
     "study_type" : "Type of research",
-    "study_description" : "Project description"    
+    "study_description" : "Project description",
+    "developer_nostart" : "Attention!",
+    "developer_nostart2" : "As developer you can only setup a project but not conduct it. As developer it is not possible to start the participant search."    
   },
   
   "studynav" : {

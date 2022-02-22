@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-     <panel :title="$t('appreviews.title')" :busy="isBusy">		  
+     <panel :title="getTitle()" :busy="isBusy">		  
 	
         <error-box :error="error"></error-box>
           
@@ -98,6 +98,12 @@ export default {
     mixins : [ status, rl ],
 
     methods : {
+        getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.appreviews_btn");                       
+        },
+    
         loadApp(appId) {
 			const { $data } = this, me = this;
 			$data.appId=appId;

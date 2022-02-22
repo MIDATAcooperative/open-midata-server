@@ -2208,7 +2208,7 @@ public class Studies extends APIController {
 					ApplicationTools.deleteServiceInstance(context, instance);
 				study.setAutoJoinGroup(null, null, null);
 			}
-			if (grp != null) {
+			if (grp != null && study.participantSearchStatus == ParticipantSearchStatus.SEARCHING) {
 				autoApprove(null, study, portalContext(request), grp);
 			}
 		}

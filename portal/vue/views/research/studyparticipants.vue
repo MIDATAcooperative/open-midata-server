@@ -72,6 +72,7 @@
 	    <form class="form form-horizontal" novalidate name="myform" ref="myform" @submit.prevent="acceptAll()">	 
 	        <form-group name="autoJoinGroup" label="studyparticipants.group" :path="errors.autoJoinGroup">
 	            <select v-validate v-model="acceptall.autoJoinGroup" class="form-control">
+	                <option :value="null">&nbsp;</option>
                     <option v-for="group in study.groups" :key="group.name" :value="group.name">{{ group.name }}</option>
                 </select>
 	        </form-group>
