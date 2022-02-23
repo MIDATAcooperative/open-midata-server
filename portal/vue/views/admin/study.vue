@@ -95,7 +95,7 @@
     <panel v-if="study && study.infosInternal && study.infosInternal.length" :title="$t('admin_study.infos_internal')" :busy="isBusy">
 
 		<div v-for="(info,idx) in study.infosInternal" :key="idx">
-		    <h4>{{ $t('enum.infos.'+info.type) }}"></h4>
+		    <h4>{{ $t('enum.infos.'+info.type) }}</h4>
 		    <div v-for="(v,k) in info.value" :key="k">
 		      <p><b>{{k}}:</b><br>{{v}}</p>
 		    </div>
@@ -104,7 +104,7 @@
 	     
 	<panel v-if="study && study.infosPart && study.infosPart.length" :title="$t('admin_study.infos_part')" :busy="isBusy">
 		  <div v-for="(info,idx) in study.infosPart" :key="idx">
-		    <h4>{{ $t('enum.infos.'+info.type) }}"></h4>
+		    <h4>{{ $t('enum.infos.'+info.type) }}</h4>
 		    <div v-for="(v,k) in info.value" :key="k">
 		      <p><b>{{k}}:</b><br>{{v}}</p>
 		    </div>

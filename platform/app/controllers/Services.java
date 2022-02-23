@@ -38,7 +38,9 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
+import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
+import utils.auth.DeveloperSecured;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
 import utils.auth.OAuthRefreshToken;
@@ -85,6 +87,20 @@ public class Services extends APIController {
         for (UserGroupMember ugm : ugms) managers.add(ugm.userGroup);
         Set<ServiceInstance> instances = ServiceInstance.getByManager(managers, ServiceInstance.ALL);
         return ok(JsonOutput.toJson(instances, "ServiceInstance", ServiceInstance.ALL)).as("application/json");
+    }
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+    public Result listServiceInstancesApp(Request request, String appId) throws AppException {       
+        Set<ServiceInstance> instances = ServiceInstance.getByApp(MidataId.from(appId), ServiceInstance.LIMITED);
+        return ok(JsonOutput.toJson(instances, "ServiceInstance", ServiceInstance.LIMITED)).as("application/json");
+    }
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+    public Result listEndpoints(Request request) throws AppException {       
+        Set<ServiceInstance> instances = ServiceInstance.getWithEndpoint(ServiceInstance.LIMITED);
+        return ok(JsonOutput.toJson(instances, "ServiceInstance", ServiceInstance.LIMITED)).as("application/json");
     }
     
 	@APICall

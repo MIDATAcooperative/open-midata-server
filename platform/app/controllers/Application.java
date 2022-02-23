@@ -1199,6 +1199,8 @@ public class Application extends APIController {
 				// Services
 				controllers.routes.javascript.Services.listServiceInstancesStudy(),
 				controllers.routes.javascript.Services.listServiceInstances(),
+				controllers.routes.javascript.Services.listServiceInstancesApp(),
+				controllers.routes.javascript.Services.listEndpoints(),
 				controllers.routes.javascript.Services.removeServiceInstance(),
 				controllers.routes.javascript.Services.listApiKeys(),
 				controllers.routes.javascript.Services.addApiKey(),

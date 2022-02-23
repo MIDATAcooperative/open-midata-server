@@ -535,7 +535,7 @@ public class Market extends APIController {
 	public Result importPlugin(Request request) throws JsonValidationException, AppException {
         JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "base64");
-		String base64 = JsonValidation.getString(json, "base64");
+		String base64 = JsonValidation.getJsonString(json, "base64");
 		
 		//byte[] decoded = Base64.getDecoder().decode(base64);
 		ObjectMapper mapper = new ObjectMapper();

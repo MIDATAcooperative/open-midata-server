@@ -164,6 +164,13 @@
 				<div><b v-t="'manageapp.usagestats_btn'"></b></div>
 				<div v-t="'manageapp.usagestats_help'"></div>																
 			  </td>
+			</tr>	
+			<tr v-if="allowExport && (app.type=='analyzer' || app.type=='external' || app.type=='endpoint')">
+			  <td @click="go('services')">				    
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
+				<div><b v-t="'manageapp.services_btn'"></b></div>
+				<div v-t="'manageapp.services_help'"></div>																
+			  </td>
 			</tr>			
 			<tr>
 			  <td @click="go('appdebug')">				    

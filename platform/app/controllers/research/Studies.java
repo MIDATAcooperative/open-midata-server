@@ -2472,7 +2472,7 @@ public class Studies extends APIController {
 		AccessContext context = portalContext(request);
 		JsonNode json = request.body().asJson();
 		JsonValidation.validate(json, "base64");
-		String base64 = JsonValidation.getString(json, "base64");
+		String base64 = JsonValidation.getJsonString(json, "base64");
         String researcher = JsonValidation.getString(json, "researcher");
 		
 		ObjectMapper mapper = new ObjectMapper();
