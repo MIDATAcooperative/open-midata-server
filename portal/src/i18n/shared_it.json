@@ -27,6 +27,9 @@
         "research" : "Ricerca",
         "apps" : "Applicazioni",
         "config" : "Configurazione",
+
+        // TODO NEW: Language
+        "language" : "Language",
         "help" : "Aiuto"
     },
 
@@ -43,6 +46,9 @@
         "mustbemember_title" : "È richiesta l'appartenenza a @OPERATOR!",
         "mustbemember_detail" : "Per utilizzare questa funzione è necessario essere membri della cooperativa. Per ulteriori informazioni fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "ratelimit" : "Il limite di frequenza delle chiamate dell'azione corrente è stato raggiunto. Riprova più tardi.",
+
+        // TODO NEW: Authorization endpoint called with insufficient parameters. Contact application developer.
+        "no_code_challenge" : "Authorization endpoint called with insufficient parameters. Contact application developer.",
         "notauthorized" : {
             "action" : "Non si è autorizzati a eseguire questa azione",
             "fields" : "Non si è autorizzati a interrogare i campi forniti",
@@ -1453,7 +1459,15 @@
     },
 
     "member_login" : {
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Register Now
         "register_now" : "Iscriviti ora",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Login
         "sign_in" : "Accesso"
     },
 

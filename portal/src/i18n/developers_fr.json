@@ -117,12 +117,21 @@
         "appreviews_help" : "Revues effectuées pour cette application",
         "applicence_btn" : "Licence",
         "applicence_help" : "L'utilisateur a-t-il besoin d'une licence pour utiliser cette application?",
+
+        // TODO NEW: Service Instances
+        "services_btn" : "Service Instances",
+
+        // TODO NEW: Show all instances of this service or analyzer.
+        "services_help" : "Show all instances of this service or analyzer.",
         "linkedStudy" : "Projet lié à l'application (code)",
         "mustParticipateInStudy" : "Participation au projet de recherche requise",
         "admin_only" : "Seul un administrateur peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
         "terms_of_use" : "Conditions Générales",
         "show_terms" : "Afficher les Conditions Générales",
         "unlock_code" : "Code d'activation",
+
+        // TODO NEW: Require 'code_challenge'
+        "code_challenge" : "Require 'code_challenge'",
         "logout" : "Déconnecter tout le monde",
         "pleaseLogout1" : "Déconnexion de tous les utilisateurs",
         "pleaseLogout2" : "Déconnecter des projets de recherche",
@@ -157,7 +166,10 @@
             "mustParticipateInStudy" : "Les utilisateurs doivent participer au projet de recherche afin de pouvoir utiliser l'application.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à @PRODUCT par cette app. Le code n'est pas sensible à la casse.",
             "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application.",
-            "developerTeam" : "Entrez la liste, séparée par des virgules, des adresses e-mail d'autres développeurs sur cette instance @PRODUCT, qui développent cette application."
+            "developerTeam" : "Entrez la liste, séparée par des virgules, des adresses e-mail d'autres développeurs sur cette instance @PRODUCT, qui développent cette application.",
+
+            // TODO NEW: During OAuth2 login, calling application must use PKCE (Proof Key for Code Exchange) standard
+            "code_challenge" : "During OAuth2 login, calling application must use PKCE (Proof Key for Code Exchange) standard"
         },
         "status" : {
             "title" : "État de l'application",

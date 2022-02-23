@@ -117,12 +117,21 @@
         "appreviews_help" : "Überprüfungen, die für diese Applikation durchgeführt wurden",
         "applicence_btn" : "Lizenz",
         "applicence_help" : "Benötigt der Nutzer eine Lizenz zur Nutzung dieser Applikation?",
+
+        // TODO NEW: Service Instances
+        "services_btn" : "Service Instances",
+
+        // TODO NEW: Show all instances of this service or analyzer.
+        "services_help" : "Show all instances of this service or analyzer.",
         "linkedStudy" : "Mit der Applikation verknüpftes Projekt (Code)",
         "mustParticipateInStudy" : "Teilnahme am Forschungsprojekt erforderlich",
         "admin_only" : "Nur ein Administrator darf diesen Abschnitt ändern. Bitte fordern Sie bei Bedarf Änderungen an.",
         "terms_of_use" : "Allgemeine Geschäftsbedingungen",
         "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",
         "unlock_code" : "Freischaltcode",
+
+        // TODO NEW: Require 'code_challenge'
+        "code_challenge" : "Require 'code_challenge'",
         "logout" : "Alle trennen",
         "pleaseLogout1" : "Alle Benutzer abmelden",
         "pleaseLogout2" : "Von den Forschungsprojekten trennen",
@@ -157,7 +166,10 @@
             "mustParticipateInStudy" : "Benutzer müssen am Forschungsprojekt teilnehmen, um diese Applikation benutzen zu können.",
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei @PRODUCT über die Applikation eingegeben werden. Der Code ist nicht 'case sensitiv'.",
             "send_reports" : "Den Entwickler ({{user}}) per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.",
-            "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf diese @PRODUCT Instanz ein, die diese Anwendung entwickeln."
+            "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf diese @PRODUCT Instanz ein, die diese Anwendung entwickeln.",
+
+            // TODO NEW: During OAuth2 login, calling application must use PKCE (Proof Key for Code Exchange) standard
+            "code_challenge" : "During OAuth2 login, calling application must use PKCE (Proof Key for Code Exchange) standard"
         },
         "status" : {
             "title" : "Applikations-Status",

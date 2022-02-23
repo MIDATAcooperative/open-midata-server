@@ -27,6 +27,9 @@
         "research" : "Forschung",
         "apps" : "Applikationen",
         "config" : "Konfiguration",
+
+        // TODO NEW: Language
+        "language" : "Language",
         "help" : "Hilfe"
     },
 
@@ -43,6 +46,9 @@
         "mustbemember_title" : "Mitgliedschaft bei @OPERATOR erforderlich!",
         "mustbemember_detail" : "Um diese Funktion nutzen zu können, müssen Sie Mitglied der Genossenschaft sein. Klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "ratelimit" : "Die Anrufhäufigkeitsgrenze der aktuellen Aktion wurde erreicht. Versuchen Sie es später noch einmal.",
+
+        // TODO NEW: Authorization endpoint called with insufficient parameters. Contact application developer.
+        "no_code_challenge" : "Authorization endpoint called with insufficient parameters. Contact application developer.",
         "notauthorized" : {
             "action" : "Sie sind nicht berechtigt diese Aktion auszuführen",
             "fields" : "Sie sind nicht berechtigt diese Felder abzufragen",
@@ -1453,7 +1459,15 @@
     },
 
     "member_login" : {
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Register Now
         "register_now" : "Jetzt registrieren",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Login
         "sign_in" : "Anmeldung"
     },
 
