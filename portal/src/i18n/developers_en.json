@@ -116,6 +116,8 @@
     "appreviews_help" : "Reviews conducted for this application",
     "applicence_btn" : "License",
     "applicence_help" : "Does the user require a license to use this application?",
+    "services_btn" : "Service Instances",
+    "services_help" : "Show all instances of this service or analyzer.",
     "linkedStudy" : "Project linked to the application (code)",
     "mustParticipateInStudy" : "Research Project Participation Required",
     "admin_only" : "Only an administrator may change this section. Please request changes if required.",

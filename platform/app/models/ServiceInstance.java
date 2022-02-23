@@ -36,7 +36,7 @@ public class ServiceInstance extends Model {
 			 Sets.create("_id", "name", "endpoint", "appId", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey", "studyRelatedOnly", "status");
    
 	public @NotMaterialized final static Set<String> LIMITED = 
-			 Sets.create("_id", "name", "endpoint", "appId", "linkedStudy", "status");
+			 Sets.create("_id", "name", "endpoint", "appId", "linkedStudy", "managerAccount","status");
   
     /** 
      * name of service
@@ -111,6 +111,10 @@ public class ServiceInstance extends Model {
   public static Set<ServiceInstance> getByApp(MidataId appId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(ServiceInstance.class, collection, CMaps.map("appId", appId), fields);
 	}
+  
+  public static Set<ServiceInstance> getWithEndpoint(Set<String> fields) throws InternalServerException {
+		return Model.getAll(ServiceInstance.class, collection, CMaps.map("endpoint", CMaps.map("$exists", true)), fields);
+   }
 		
 	public void add() throws InternalServerException {
 		Model.insert(collection, this);	

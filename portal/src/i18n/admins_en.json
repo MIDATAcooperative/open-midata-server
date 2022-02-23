@@ -9,6 +9,7 @@
     "usagestats" : "Application usage statistics",
 	"content" : "Content Types",
 	"studies" : "Projects",
+	"endpoints" : "FHIR Endpoints",
 	"terms" : "General Terms and Conditions",
 	"licenses" : "Licenses",
 	"registration" : "Register an Administrator",
@@ -349,6 +350,16 @@
    "admin_importcontent" : {
       "title" : "Import Codes",
       "definition" : "Code/Content Changes (JSON)"
+   },
+   
+   "admin_services" : {
+      "endpoints" : "Endpoints",
+      "name" : "Service Instance",
+      "endpoint" : "FHIR Endpoint",
+      "status" : "Status",
+      "empty" : "No service instances found.",
+      "manager" : "Show manager",
+      "study" : "Show project"
    }
     
 }

@@ -696,6 +696,11 @@ const routes = [
   },
   {
     base : ["admin", "developer"],
+    path : "services",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/services.vue')
+  },
+  {
+    base : ["admin", "developer"],
     path : "autoimport",
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/autoimport.vue')
   },

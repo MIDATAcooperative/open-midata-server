@@ -43,7 +43,7 @@
 									class="dropdown-item" v-if="hasSubRole('SUPERADMIN')" :to="{ path : './registration' }" v-t="'admin_navbar.registration'"></router-link>
 								<div role="separator" class="dropdown-divider" v-if="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN')"></div>
 								<div class="dropdown-header" v-if="hasSubRole('PLUGINADMIN') || hasSubRole('CONTENTADMIN')" v-t="'admin_navbar.plugin_admin'"></div>
-								<router-link class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './yourapps' }" v-t="'admin_navbar.plugins'"></router-link> <router-link
+								<router-link class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './yourapps' }" v-t="'admin_navbar.plugins'"></router-link> <router-link class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './services' }" v-t="'admin_navbar.endpoints'"></router-link> <router-link
 									class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './usagestats' }" v-t="'admin_navbar.usagestats'"></router-link> <router-link
 									class="dropdown-item" v-if="hasSubRole('CONTENTADMIN')" :to="{ path : './content' }" v-t="'admin_navbar.content'"></router-link> <router-link
 									class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './viewterms' }" v-t="'admin_navbar.terms'"></router-link> <router-link
