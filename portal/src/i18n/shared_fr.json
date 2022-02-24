@@ -1068,10 +1068,6 @@
         "sign_in_btn" : "Se connecter",
         "device" : "Appareil : {{device}}",
         "please_confirm" : "Veuillez confirmer l'activation de l'application sur le portail @PRODUCT, puis réessayez. Libellé du consentement: {{ consent }}",
-
-        // TODO CHANGED
-        // OLD: Confirm Access
-        // NEW: I agree
         "confirm_btn" : "J'accepte",
         "reject_btn" : "Rejeter",
         "continue_btn" : "Continuer",
