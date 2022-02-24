@@ -1067,7 +1067,7 @@
     "sign_in_btn" : "Log in",
     "device" : "Device: {{device}}",
     "please_confirm" : "Please confirm the activation of the application using the @PRODUCT portal, then retry. Consent title is: {{ consent }}",
-    "confirm_btn" : "Confirm Access",
+    "confirm_btn" : "I agree",
     "reject_btn" : "Reject",
     "continue_btn" : "Continue",
     "requests_access" : "Access requested by the application:",

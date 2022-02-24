@@ -10,8 +10,6 @@
         "usagestats" : "Statistik der Applikationsnutzung",
         "content" : "Inhaltstypen",
         "studies" : "Projekte",
-
-        // TODO NEW: FHIR Endpoints
         "endpoints" : "FHIR Endpoints",
         "terms" : "Allgemeine Geschäftsbedingungen",
         "licenses" : "Lizenzen",
@@ -346,44 +344,22 @@
         "save_group_btn" : "Gruppe speichern",
         "delete_group_btn" : "Gruppe löschen",
         "save_btn" : "Code & Inhaltstyp speichern",
-
-        // TODO NEW: Export Changes
-        "export_btn" : "Export Changes",
-
-        // TODO NEW: Import Changes
-        "import_btn" : "Import Changes"
+        "export_btn" : "Änderungen exportieren",
+        "import_btn" : "Änderungen importieren"
     },
 
     "admin_importcontent" : {
-
-        // TODO NEW: Import Codes
-        "title" : "Import Codes",
-
-        // TODO NEW: Code/Content Changes (JSON)
-        "definition" : "Code/Content Changes (JSON)"
+        "title" : "Codes importieren",
+        "definition" : "Änderungen der Codes/Inhaltstypen (JSON)"
     },
 
     "admin_services" : {
-
-        // TODO NEW: Endpoints
         "endpoints" : "Endpoints",
-
-        // TODO NEW: Service Instance
-        "name" : "Service Instance",
-
-        // TODO NEW: FHIR Endpoint
+        "name" : "Service-Instanz",
         "endpoint" : "FHIR Endpoint",
-
-        // TODO NEW: Status
         "status" : "Status",
-
-        // TODO NEW: No service instances found.
-        "empty" : "No service instances found.",
-
-        // TODO NEW: Show manager
-        "manager" : "Show manager",
-
-        // TODO NEW: Show project
-        "study" : "Show project"
+        "empty" : "Keine Service-Instanz gefunden.",
+        "manager" : "Manager anzeigen",
+        "study" : "Projekt anzeigen"
     }
 }

@@ -349,7 +349,7 @@
 
    "admin_importcontent" : {
       "title" : "Import Codes",
-      "definition" : "Code/Content Changes (JSON)"
+      "definition" : "Code/Content Type Changes (JSON)"
    },
    
    "admin_services" : {

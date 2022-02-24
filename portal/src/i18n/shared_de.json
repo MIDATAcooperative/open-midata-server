@@ -27,9 +27,7 @@
         "research" : "Forschung",
         "apps" : "Applikationen",
         "config" : "Konfiguration",
-
-        // TODO NEW: Language
-        "language" : "Language",
+        "language" : "Sprache",
         "help" : "Hilfe"
     },
 
@@ -46,9 +44,7 @@
         "mustbemember_title" : "Mitgliedschaft bei @OPERATOR erforderlich!",
         "mustbemember_detail" : "Um diese Funktion nutzen zu können, müssen Sie Mitglied der Genossenschaft sein. Klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "ratelimit" : "Die Anrufhäufigkeitsgrenze der aktuellen Aktion wurde erreicht. Versuchen Sie es später noch einmal.",
-
-        // TODO NEW: Authorization endpoint called with insufficient parameters. Contact application developer.
-        "no_code_challenge" : "Authorization endpoint called with insufficient parameters. Contact application developer.",
+        "no_code_challenge" : "Autorisierungsendpunkt mit unzureichenden Parametern aufgerufen. Wenden Sie sich an den Applikationsentwickler.",
         "notauthorized" : {
             "action" : "Sie sind nicht berechtigt diese Aktion auszuführen",
             "fields" : "Sie sind nicht berechtigt diese Felder abzufragen",
@@ -1072,7 +1068,7 @@
         "sign_in_btn" : "Anmelden",
         "device" : "Gerät: {{device}}",
         "please_confirm" : "Bestätigen Sie bitte die Aktivierung der Applikation auf dem @PRODUCT Portal, dann versuchen Sie es erneut. Zustimmungsbezeichnung: {{ consent }}",
-        "confirm_btn" : "Zugriff bestätigen",
+        "confirm_btn" : "Ich stimme zu",
         "reject_btn" : "Ablehnen",
         "continue_btn" : "Weiter",
         "requests_access" : "Von der Applikation angeforderter Zugang:",
@@ -1459,15 +1455,7 @@
     },
 
     "member_login" : {
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Register Now
         "register_now" : "Jetzt registrieren",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Login
         "sign_in" : "Anmeldung"
     },
 

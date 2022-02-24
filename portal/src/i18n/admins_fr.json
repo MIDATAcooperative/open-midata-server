@@ -10,9 +10,7 @@
         "usagestats" : "Statistiques d'utilisation des applications",
         "content" : "Types de contenu",
         "studies" : "Projets",
-
-        // TODO NEW: FHIR Endpoints
-        "endpoints" : "FHIR Endpoints",
+        "endpoints" : "FHIR endpoints",
         "terms" : "Conditions générales",
         "licenses" : "Licences",
         "registration" : "Inscrire un administrateur",
@@ -346,44 +344,22 @@
         "save_group_btn" : "Enregistrer le groupe",
         "delete_group_btn" : "Supprimer le groupe",
         "save_btn" : "Enregistrer le code et le type de contenu",
-
-        // TODO NEW: Export Changes
-        "export_btn" : "Export Changes",
-
-        // TODO NEW: Import Changes
-        "import_btn" : "Import Changes"
+        "export_btn" : "Exporter les modifications",
+        "import_btn" : "Importer les modifications"
     },
 
     "admin_importcontent" : {
-
-        // TODO NEW: Import Codes
-        "title" : "Import Codes",
-
-        // TODO NEW: Code/Content Changes (JSON)
-        "definition" : "Code/Content Changes (JSON)"
+        "title" : "Importer les codes",
+        "definition" : "Modifications des codes/types de contenu (JSON)"
     },
 
     "admin_services" : {
-
-        // TODO NEW: Endpoints
         "endpoints" : "Endpoints",
-
-        // TODO NEW: Service Instance
-        "name" : "Service Instance",
-
-        // TODO NEW: FHIR Endpoint
-        "endpoint" : "FHIR Endpoint",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: No service instances found.
-        "empty" : "No service instances found.",
-
-        // TODO NEW: Show manager
-        "manager" : "Show manager",
-
-        // TODO NEW: Show project
-        "study" : "Show project"
+        "name" : "Instance de service",
+        "endpoint" : "FHIR endpoint",
+        "status" : "État",
+        "empty" : "Aucune instance de service n'a été trouvée.",
+        "manager" : "Afficher le manager",
+        "study" : "Afficher le projet"
     }
 }

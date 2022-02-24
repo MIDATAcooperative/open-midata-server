@@ -34,12 +34,8 @@
         "study_name" : "Nome progetto",
         "study_type" : "Tipo di ricerca",
         "study_description" : "Descrizione progetto",
-
-        // TODO NEW: Attention!
-        "developer_nostart" : "Attention!",
-
-        // TODO NEW: As developer you can only setup a project but not conduct it. As developer it is not possible to start the participant search.
-        "developer_nostart2" : "As developer you can only setup a project but not conduct it. As developer it is not possible to start the participant search."
+        "developer_nostart" : "Attenzione!",
+        "developer_nostart2" : "Come sviluppatore puoi solo impostare un progetto ma non condurlo. Come sviluppatore non è possibile avviare la ricerca dei partecipanti."
     },
 
     "studynav" : {
