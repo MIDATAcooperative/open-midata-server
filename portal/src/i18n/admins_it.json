@@ -350,6 +350,10 @@
 
     "admin_importcontent" : {
         "title" : "Importare i codici",
+
+        // TODO CHANGED
+        // OLD: Code/Content Changes (JSON)
+        // NEW: Code/Content Type Changes (JSON)
         "definition" : "Modifiche ai codici/tipi di contenuto (JSON)"
     },
 

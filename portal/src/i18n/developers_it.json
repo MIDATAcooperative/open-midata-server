@@ -122,7 +122,15 @@
         "linkedStudy" : "Progetto collegato con link all'applicazione (codice)",
         "mustParticipateInStudy" : "Richiesta la partecipazione al progetto di ricerca",
         "admin_only" : "Solo un amministratore può modificare questa sezione. Richiedere le modifiche se necessarie.",
+
+        // TODO CHANGED
+        // OLD: General Terms and Conditions
+        // NEW: Terms of Use
         "terms_of_use" : "Condizioni d'uso",
+
+        // TODO CHANGED
+        // OLD: Show General Terms and Conditions
+        // NEW: Show Terms of Use
         "show_terms" : "Mostra condizioni d'uso",
         "unlock_code" : "Codice di registrazione",
         "code_challenge" : "Richiede 'code_challenge'",
@@ -156,11 +164,19 @@
             "previewUrl" : "Sezione del pannello di controllo con l'URL dei propri plugin. Lasciare vuoto se non si include questo riquadro.",
             "defaultSpaceContext" : "Scegliere 'Pannello' per il pannello di controllo predefinito. Scegliere 'Configurazione' se si scrive un plugin importato.",
             "redirectUri" : "È possibile specificare più URI possibili per il reindirizzamento separandoli con uno spazio.",
+
+            // TODO CHANGED
+            // OLD: Your application will need this 'secret' during login. Choose whatever you like.
+            // NEW: Application Secret was required by the old API; it stands for backward compatibility.
             "secret" : "Application Secret era richiesto dalla vecchia API; sta per compatibilità all'indietro.",
             "mustParticipateInStudy" : "Gli utenti devono partecipare al progetto di ricerca per utilizzare l'applicazione.",
             "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a @PRODUCT tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli.",
             "send_reports" : "Notificare lo sviluppatore ({{utente}}}) via e-mail sulle cause di errore di questa applicazione.",
             "developerTeam" : "Inserire una lista separata da virgole di indirizzi e-mail di altri sviluppatori su quell'istanza @PRODUCT, che sviluppano questa applicazione.",
+
+            // TODO CHANGED
+            // OLD: During OAuth2 login, calling application must use PKCE (Proof Key for Code Exchange) standard
+            // NEW: During OAuth2 login, the calling application must use PKCE (Proof Key for Code Exchange) standard
             "code_challenge" : "Durante il login OAuth2, l'applicazione chiamante deve usare lo standard PKCE (Proof Key for Code Exchange)"
         },
         "status" : {
