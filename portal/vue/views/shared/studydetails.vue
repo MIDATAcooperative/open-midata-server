@@ -31,12 +31,10 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading" v-t="'studydetails.information_that_needs_sharing'"></div>
 					<div class="panel-body">
-                    	<span v-for="label in labels" :key="label">
-					   		{{ label }}, 
-						</span>
-						<span v-if="needs('RESTRICTED')" v-t="'studydetails.information_restricted'"></span>
-						<span v-if="needs('DEMOGRAPHIC')" v-t="'studydetails.information_demographic'"></span>
-						<span v-if="needs('NONE')" v-t="'studydetails.information_none'"></span>
+                    	<span v-for="(label,idx) in labels" :key="label">
+                    	    <span v-if="idx>0">, </span>
+					   		{{ label }}
+						</span>						
 					</div>
 				</div>
 
@@ -145,7 +143,7 @@
 		<records :setup="recordsSetup"></records>
 	</panel>
 
-	<modal id="providerSearch" @close="providerSearchSetup=null" :open="providerSearchSetup" :title="$t('providersearch.title')" full-width="true">
+	<modal id="providerSearch" @close="providerSearchSetup=null" :open="providerSearchSetup" :title="$t('providersearch.title')" :full-width="true">
 	   <provider-search :setup="providerSearchSetup" @add="addPerson"></provider-search>
 	</modal>
 
@@ -153,6 +151,7 @@
 <script>
 import Auditlog from "components/AuditLog.vue"
 import Panel from 'components/Panel.vue';
+import ProviderSearch from 'components/tiles/ProviderSearch.vue';
 import Records from 'components/tiles/Records.vue';
 import { getLocale } from 'services/lang.js';
 import server from 'services/server.js';
@@ -161,7 +160,7 @@ import actions from 'services/actions.js';
 import studies from 'services/studies.js';
 import labels from 'services/labels.js';
 import session from 'services/session.js';
-import { status, ErrorBox } from 'basic-vue3-components';
+import { status, ErrorBox, Modal } from 'basic-vue3-components';
 import _ from 'lodash';
 
 export default {
@@ -180,7 +179,7 @@ export default {
 		providerSearchSetup : null
 	}),				
 
-	components : { ErrorBox, Panel, Auditlog, Records },
+	components : { ErrorBox, Panel, Auditlog, Records, Modal, ProviderSearch },
 
     mixins : [ status ],
 
@@ -232,8 +231,8 @@ export default {
 				}
                 
                 let genLabels = [];
-                labels.prepareQuery($t, data.study.recordQuery, null, genLabels, data.study.requiredInformation);
-                $data.labels = genLabels;
+                labels.prepareQuery($t, data.study.recordQuery, null, genLabels, data.study.requiredInformation)
+                .then(() => { $data.labels = genLabels; });
 				
 			}));
 	    },

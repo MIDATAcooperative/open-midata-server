@@ -219,7 +219,7 @@ import { getLocale } from './lang';
 			}
 			if (sq.group) {
 				for (let r of sq.group) {
-					  result.push(service.getGroupLabel(getLocale(), sq["group-system"], r).then(function(lab) {
+					  result.push(service.getGroupLabel(getLocale(), sq["group-system"] || "v1", r).then(function(lab) {						 
 						  if (genLabels.indexOf(lab)<0) genLabels.push(lab); 
 					  }));
 				}

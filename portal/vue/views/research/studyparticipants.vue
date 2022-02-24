@@ -105,7 +105,7 @@ export default {
         studyid : null,
         results : null,
         total : 0,
-        acceptall : { autoJoin:"", autoJoinGroup:"" },
+        acceptall : { autoJoin:false, autoJoinGroup:null },
         searches : [ 
             { 
                 name : "studyparticipants.all",
