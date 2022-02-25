@@ -28,8 +28,8 @@ import ENV from 'config';
 require('bootstrap/dist/js/bootstrap.bundle');
 
 const i18n = setupI18n({
-    locale: "en",
-    fallback: "en",
+    locale: "en",    
+    fallbackLocale: 'en',
     messages : { en : { dummy : "test" } } 
 });
 
@@ -62,11 +62,8 @@ app.directive("pluginframe", PluginFrame);
 
 app.use(router);
 
-let domain = document.location.hostname;
+// let domain = document.location.hostname;
 
-if (domain.indexOf("ch.midata.coop")>=0) {
-  document.location.href="https://ch.midata.coop/#/portal/login";
-} else {
 document.addEventListener("DOMContentLoaded", function(){   
 	document.title = ENV.platform;
 	document.body.className+=" "+ENV.instanceType;   
@@ -79,5 +76,5 @@ document.addEventListener("DOMContentLoaded", function(){
       }
     );
 });
-}
+
 
