@@ -573,6 +573,7 @@ public class Market extends APIController {
 		app.name = JsonValidation.getStringOrNull(pluginJson, "name");
 		parsePlugin(app, pluginJson);
 		app.repositoryUrl = JsonValidation.getStringOrNull(pluginJson, "repositoryUrl");
+		app.repositoryDirectory = JsonValidation.getStringOrNull(pluginJson, "repositoryDirectory");
 		app.repositoryToken = JsonValidation.getStringOrNull(pluginJson, "repositoryToken");
 		app.repositoryDate = 0;
 		
@@ -1652,6 +1653,7 @@ public class Market extends APIController {
 		JsonValidation.validate(json, "_id", "repositoryUrl");
 		
 		String repo = JsonValidation.getString(json, "repositoryUrl");
+		String directory = JsonValidation.getString(json, "repositoryDirectory");
 		String token = JsonValidation.getStringOrNull(json, "repositoryToken");
 		
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
@@ -1669,6 +1671,7 @@ public class Market extends APIController {
 		if (!doDelete) {
 			app.repositoryUrl = repo;
 		    if (token != null) app.repositoryToken = token;
+		    app.repositoryDirectory = directory;
 		    app.updateRepo();
 		}
 	    	 
@@ -1684,7 +1687,7 @@ public class Market extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl"));
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "repositoryDirectory"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
 		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");

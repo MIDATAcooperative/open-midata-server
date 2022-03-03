@@ -14,6 +14,10 @@
 	  	    <form-group name="repository_token" label="repository.repository_token" :path="errors.repository_token">
 		        <input type="text" id="repository_token" name="repository_token" class="form-control" v-validate v-model="app.repositoryToken">		    
 		    </form-group>
+		    
+		    <form-group name="repository_dir" label="repository.repository_dir" :path="errors.repository_dir">
+		        <input type="text" id="repository_dir" name="repository_dir" class="form-control" v-validate v-model="app.repositoryDirectory" required>		    
+		    </form-group>
 
 		    <form-group label="repository.repository_date">
 		        <p v-if="app.repositoryDate" class="form-control-plaintext">{{ $filters.dateTime(app.repositoryDate) }}</p>		    		   
@@ -115,7 +119,7 @@ export default {
         loadApp(appId) {
             const { $data } = this, me = this;
             $data.appId=appId;
-            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "repositoryUrl", "repositoryDate" ])
+            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "repositoryUrl", "repositoryDirectory", "repositoryDate" ])
             .then(function(data) { 
                 $data.app = data.data[0];			
             }));
