@@ -119,7 +119,7 @@ public class QueryEngine {
 	
 	public static Collection<RecordsInfo> infoQuery(Query q, MidataId aps, boolean cached, AggregationType aggrType, MidataId owner) throws AppException {
 		long t = System.currentTimeMillis();
-		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
+		AccessLog.logBegin("begin infoQuery aps=",aps.toString()," cached=",Boolean.toString(cached));
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
 		//APS myaps = q.getCache().getAPS(aps);
@@ -378,7 +378,7 @@ public class QueryEngine {
       		query = new Query(path,properties.toString(),comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext(), query).setFromRecord(query.getFromRecord());
     	
       	    Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
-      	    AccessLog.log("$or: #pathes="+col.size());
+      	    AccessLog.log("$or: #pathes=", Integer.toString(col.size()));
       	    return ProcessingTools.multiQuery(qm, query, ProcessingTools.dbiterator("", col.iterator()));
       	  } else return ProcessingTools.empty();
       	        	
@@ -632,7 +632,7 @@ public class QueryEngine {
     }*/
     
     protected static List<DBRecord> filterByMetaSet(List<DBRecord> input, String property, Set values) {
-    	AccessLog.log("filter by meta-set: "+property);
+    	AccessLog.log("filter by meta-set: ", property);
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord record : input) {
     		if (!values.contains(record.meta.get(property))) {    			
@@ -644,7 +644,7 @@ public class QueryEngine {
     }
     
     protected static List<DBRecord> filterByMetaSet(List<DBRecord> input, String property, Set values, boolean noPostfilterStreams) {
-    	AccessLog.log("filter by meta-set: "+property);
+    	AccessLog.log("filter by meta-set: ", property);
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord record : input) {
     		if (!noPostfilterStreams || record.isStream==null) {
@@ -658,7 +658,7 @@ public class QueryEngine {
     }
     
     protected static List<DBRecord> filterSetByMetaSet(List<DBRecord> input, String property, Set values) {
-    	AccessLog.log("filter set by meta-set: "+property);
+    	AccessLog.log("filter set by meta-set: ", property);
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord record : input) {
     		Object v = record.meta.get(property);
@@ -686,7 +686,7 @@ public class QueryEngine {
     	if (query instanceof Map<?, ?>) condition = new AndCondition((Map<String, Object>) query).optimize();
     	else if (query instanceof Condition) condition = ((Condition) query).optimize();
     	else throw new InternalServerException("error.internal", "Query type not implemented");
-    	AccessLog.log("validate condition:"+condition.toString());
+    	AccessLog.log("validate condition:", condition.toString());
     	for (DBRecord record : input) {
             Object accessVal = record.data;                        
             if (condition.satisfiedBy(accessVal)) {
@@ -711,7 +711,7 @@ public class QueryEngine {
     		Date cmp = (Date) record.meta.get(property);
     		if (cmp == null) cmp = record._id.getCreationDate(); //Fallback for lastUpdated
     		if (cmp == null) {
-    			AccessLog.log("Record with _id "+record._id.toString()+" has not created date!");
+    			AccessLog.log("Record with _id ", record._id.toString(), " has not created date!");
     			continue;
     		}
     		if (minDate != null && cmp.before(minDate)) continue;

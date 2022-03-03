@@ -163,7 +163,7 @@ public class MediumStreamAPS extends APS {
 			record.security = APSSecurityLevel.MEDIUM;
 			if (withOwner) record.owner = owner;
 		}
-		AccessLog.log("direct query stream=" + apsId+" #size="+directResult.size());
+		AccessLog.log("direct query stream=", apsId.toString(), " #size=", Integer.toString(directResult.size()));
 			
 		// Disabled: Produces wrong results first call to Observation/$lastn after first record inserted
 		// if (useCache && withOwner) cachedRecords = directResult;

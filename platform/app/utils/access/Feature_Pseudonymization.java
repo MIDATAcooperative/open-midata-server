@@ -86,7 +86,7 @@ public class Feature_Pseudonymization extends Feature {
 			for (MidataId id : ids) {
 				MidataId targetId = Feature_Pseudonymization.unpseudonymizeUser(q, next, id);
 				if (targetId!=null) {
-					AccessLog.log("UNPSEUDONYMIZE "+id+" to "+targetId);
+					AccessLog.log("UNPSEUDONYMIZE ", id.toString(), " to ", targetId.toString());
 					owners.add(targetId.toString());
 				}
 			}			  
@@ -193,7 +193,7 @@ public class Feature_Pseudonymization extends Feature {
 			String pseudoName = patient.getString("name");
 			return Pair.of(pseudoId, pseudoName);
 		}
-		AccessLog.log(consent._id+" ow="+consent.owner+" executor="+cache.getAccessor()+" acowner="+cache.getAccountOwner());
+		AccessLog.log(consent._id.toString()," ow=",consent.owner.toString()," executor=",cache.getAccessor().toString()," acowner=",cache.getAccountOwner().toString());
 		throw new InternalServerException("error.internal", "Cannot pseudonymize");
 	}
 	
@@ -208,7 +208,7 @@ public class Feature_Pseudonymization extends Feature {
 			return rec.get(0).context.getOwner();
 		}
 		if (rec.size()==0) return null;		
-		AccessLog.log("FOUND USER RECORDS="+rec.size());		
+		AccessLog.log("FOUND USER RECORDS=", Integer.toString(rec.size()));		
 		throw new InternalServerException("error.internal", "Cannot unpseudonymize");
 	}
 	

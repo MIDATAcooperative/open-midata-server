@@ -82,7 +82,7 @@ public class Query {
 		this.apsId = apsId;
 		this.context = context;
 		if (extra != null) {
-		  AccessLog.log(path+" : "+extra);
+		  AccessLog.log(path," : ",extra);
 		} else {
 		  AccessLog.log(path);
 		}

@@ -123,7 +123,7 @@ public class PasswordHash {
 		// Compare the hashes in constant time. The password is correct if
 		// both hashes match.
 		boolean result = slowEquals(hash, testHash);
-		AccessLog.log("SLOW password validation result="+result);
+		AccessLog.log("SLOW password validation result=", Boolean.toString(result));
 		return result;
 	}
 	

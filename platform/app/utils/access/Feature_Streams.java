@@ -282,7 +282,7 @@ public class Feature_Streams extends Feature {
 	
 	private static DBRecord createStream(AccessContext context, MidataId owner, MidataId targetAPS, Map<String, Object> properties,
 			boolean direct) throws AppException {
-		AccessLog.logBegin("begin create Stream: who="+context.getCache().getAccessor().toString()+" direct="+direct+" into="+targetAPS);
+		AccessLog.logBegin("begin create Stream: who=",context.getCache().getAccessor().toString()," direct=",Boolean.toString(direct)," into=",targetAPS.toString());
 		DBRecord result = new DBRecord();
 		result._id = new MidataId();
 		result.owner = owner;
@@ -306,7 +306,7 @@ public class Feature_Streams extends Feature {
 
 		boolean apsDirect = direct;
 		
-		AccessLog.log("provide key by "+apswrapper.getId().toString());
+		AccessLog.log("provide key by ", apswrapper.getId().toString());
 		
 		apswrapper.provideRecordKey(result);
 						
@@ -385,7 +385,7 @@ public class Feature_Streams extends Feature {
 		AccessLog.logBegin("start streams optimization");
 		List<DBRecord> streams = QueryEngine.listInternal(context.getCache(), context.getTargetAps(), context, CMaps.map("owner", "self").map("streams","only"), Sets.create(streamFields));
 		Map<String, List<DBRecord>> ordered = new HashMap<String, List<DBRecord>>();
-		AccessLog.log("found streams: "+streams.size());
+		AccessLog.log("found streams: ", Integer.toString(streams.size()));
 		// Sort streams
 		for (DBRecord stream : streams) {
 			String key = "";
@@ -409,15 +409,15 @@ public class Feature_Streams extends Feature {
 			AccessLog.log(key);
 			List<DBRecord> streamrecs = ordered.get(key);
 			if (streamrecs.size() > 2) {
-				AccessLog.logBegin("start optimize streams :"+key);
+				AccessLog.logBegin("start optimize streams :",key);
 				Map<String, Object> props = CMaps.map("owner","self");
 				for (String field : streamFields) props.put(field, streamrecs.get(0).meta.get(field));
 				List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), context.getTargetAps(), context, props, Sets.create(streamFields,"_id","owner"));
-				AccessLog.log("Number of streams in group="+streamrecs.size());
-				AccessLog.log("Number of records="+recs.size());
+				AccessLog.log("Number of streams in group=", Integer.toString(streamrecs.size()));
+				AccessLog.log("Number of records=", Integer.toString(recs.size()));
 				// Do not optimize for full streams
 				if (recs.size() > 1000) {
-					AccessLog.logEnd("end optimize streams :"+key+" (too many entries)");
+					AccessLog.logEnd("end optimize streams :", key, " (too many entries)");
 					continue;
 				}
 				results.add("stream optimization for "+key);

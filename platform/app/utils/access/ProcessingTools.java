@@ -125,7 +125,7 @@ public class ProcessingTools {
 			result.add(input.next());
 			
 		}		
-		AccessLog.log("collected "+result.size()+" records from "+input.toString());
+		AccessLog.log("collected ", Integer.toString(result.size()), " records from ", input.toString());
 		return result;
 	}
 
@@ -269,7 +269,7 @@ public class ProcessingTools {
 				return true;
 			if (obj._id.equals(fromRecord._id)) {
 				found = true;
-				AccessLog.log("found record "+fromRecord._id.toString());
+				AccessLog.log("found record ", fromRecord._id.toString());
 				return true;
 			}
 			return false;
@@ -481,7 +481,7 @@ public class ProcessingTools {
 			Date cmp = (Date) record.meta.get(property);
     		if (cmp == null) cmp = record._id.getCreationDate(); //Fallback for lastUpdated
     		if (cmp == null) {
-    			AccessLog.log("Record with _id "+record._id.toString()+" has not created date!");
+    			AccessLog.log("Record with _id ", record._id.toString(), " has not created date!");
     			return false;
     		}
     		if (minDate != null && cmp.before(minDate)) return false;
@@ -515,7 +515,7 @@ public class ProcessingTools {
 			Date cmp = (Date) record.meta.get("lastUpdated");
     		if (cmp == null) cmp = record._id.getCreationDate(); //Fallback for lastUpdated
     		if (cmp == null) {
-    			AccessLog.log("Record with _id "+record._id.toString()+" has not created date!");
+    			AccessLog.log("Record with _id ", record._id.toString(), " has not created date!");
     			return false;
     		}
     		if (record.sharedAt != null && record.sharedAt.after(cmp)) {

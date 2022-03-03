@@ -299,7 +299,7 @@ public class DatabaseConversion {
 	private Map<Class, Converter[]> transformations = new HashMap<Class, Converter[]>();
 	
 	private Converter[] build(Class modelClass) {
-		AccessLog.log("build: "+modelClass.getName());
+		AccessLog.log("build: ", modelClass.getName());
 		Converter[] c = new Converter[0];
 		ArrayList<Converter> allConv = new ArrayList<Converter>();
 		for (Field field : modelClass.getFields()) {

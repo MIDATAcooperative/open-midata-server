@@ -114,7 +114,7 @@ public class ContextManager {
 	 * @throws InternalServerException
 	 */
 	public AccessContext createSession(MidataId accessorId, UserRole accessorRole, MidataId pluginId, MidataId legacyOwner, String overrideBaseUrl) throws InternalServerException {
-		AccessLog.log("[session] new context for "+accessorId);
+		AccessLog.log("[session] new context for ", accessorId.toString());
 		return use(new SessionAccessContext(getCache(accessorId), accessorRole, pluginId, overrideBaseUrl, legacyOwner));
 	}
 	
@@ -125,7 +125,7 @@ public class ContextManager {
 	 * @throws InternalServerException
 	 */
 	public AccessContext createSession(PortalSessionToken token) throws InternalServerException {
-		AccessLog.log("[session] portal context for "+token.getOwnerId());
+		AccessLog.log("[session] portal context for ", token.getOwnerId().toString());
 		return use(new SessionAccessContext(getCache(token.getOwnerId()), token.getRole(), null, null, token.getOwnerId()));
 	}
 	
@@ -138,7 +138,7 @@ public class ContextManager {
 	 * @throws InternalServerException
 	 */
 	public AccessContext createInitialSession(MidataId accessorId, UserRole accessorRole, MidataId pluginId) throws InternalServerException {
-		AccessLog.log("[session] Initial context for "+accessorId);
+		AccessLog.log("[session] Initial context for ", accessorId.toString());
 		return use(new SessionAccessContext(getCache(accessorId), accessorRole, pluginId, null, accessorId));
 	}
 	
@@ -161,7 +161,7 @@ public class ContextManager {
 	 * @throws InternalServerException
 	 */
 	public AccessContext createLoginOnlyContext(MidataId executorId, UserRole role) throws InternalServerException {
-		AccessLog.log("[session] Login-context for "+executorId);
+		AccessLog.log("[session] Login-context for ", executorId.toString());
 		return use(new PreLoginAccessContext(getCache(executorId), role).forAccount());
 	}
 	
@@ -174,13 +174,13 @@ public class ContextManager {
 	 * @throws AppException
 	 */
 	public AccessContext createLoginOnlyContext(MidataId executorId, UserRole role, MobileAppInstance appInstance) throws AppException {
-		AccessLog.log("[session] Login-context for "+executorId);
+		AccessLog.log("[session] Login-context for ", executorId.toString());
 		return use(new PreLoginAccessContext(getCache(executorId), role).forApp(appInstance));
 	}
 			
 	
 	public AccessContext createSharingContext(AccessContext context1, MidataId aps) throws AppException {
-		AccessLog.log("create sharing context user="+context1.getAccessor()+" source aps="+aps);
+		AccessLog.log("create sharing context user=", context1.getAccessor().toString(), " source aps=", aps.toString());
 		APSCache cache = context1.getCache();
 		AccessContext context = new AccountAccessContext(cache, null);
 		if (context1.getAccessor().equals(aps)) return context;
@@ -199,7 +199,7 @@ public class ContextManager {
 		if (consent != null) {				
 			Map<String, Object> meta = RecordManager.instance.getMeta(context, consent._id, "_representative").toMap();
 			if (meta.containsKey("aliaskey") && meta.containsKey("alias")) {
-				AccessLog.log("Act as representative: unlock "+aps);
+				AccessLog.log("Act as representative: unlock ", aps.toString());
 				MidataId alias = new MidataId(meta.get("alias").toString());
 				byte[] key = (byte[]) meta.get("aliaskey");
 				KeyManager.instance.unlock(aps, alias, key);			

@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.bson.conversions.Bson;
@@ -141,7 +142,7 @@ public class MongoDatabase extends Database {
 		DBObject dbObject;
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
-			if (logQueries) AccessLog.logDB("insert into "+collection);
+			if (logQueries) AccessLog.logDB("insert into ",collection);
 			dbObject = conversion.toDBObject(modelObject);
 			getCollection(collection).insertOne(dbObject);	
 			return;
@@ -161,7 +162,7 @@ public class MongoDatabase extends Database {
 		BasicDBObject dbObject;
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
-			if (logQueries) AccessLog.logDB("upsert "+collection+ " "+modelObject.to_db_id().toString());
+			if (logQueries) AccessLog.logDB("upsert ",collection, " ",modelObject.to_db_id().toString());
 			dbObject = conversion.toDBObject(modelObject);
 			BasicDBObject query = new BasicDBObject();
 			query.put("_id", modelObject.to_db_id());
@@ -182,7 +183,7 @@ public class MongoDatabase extends Database {
 	public void delete(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
-			if (logQueries) AccessLog.logDB("delete "+collection+ " "+properties.toString());
+			if (logQueries) AccessLog.logDB("delete ",collection," ",properties.toString());
 			Bson query = toDBObject(model, properties);
 			getCollection(collection).deleteMany(query);
 			return;
@@ -203,7 +204,7 @@ public class MongoDatabase extends Database {
 		try {
 			Bson query = toDBObject(model, properties);
 			Bson projection = new BasicDBObject("_id", 1);
-			if (logQueries) AccessLog.logDB("exists "+collection+" "+query.toString());
+			if (logQueries) AccessLog.logDB("exists ",collection," ",query.toString());
 			return getCollection(collection).find(query).projection(projection).first() != null;
 		} catch (MongoException e) {
 			if (tries==MAX_TRIES) throw new DatabaseException(e);
@@ -225,7 +226,7 @@ public class MongoDatabase extends Database {
 			Bson query = toDBObject(modelClass, properties);
 			Bson projection = toDBObject(fields);
 			DBObject dbObject = getCollection(collection).find(query).limit(1).projection(projection).first();
-			if (logQueries) AccessLog.logDB("single "+collection+" "+query.toString());
+			if (logQueries) AccessLog.logDB("single ",collection," ",query.toString());
 			if (dbObject == null) return null;
 			return conversion.toModel(modelClass, dbObject);
 		} catch (MongoException e) {
@@ -254,7 +255,7 @@ public class MongoDatabase extends Database {
 			try {
 				Bson query = toDBObject(modelClass, properties);
 				Bson projection = toDBObject(fields);
-				if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
+				if (logQueries) AccessLog.logDB("all ",collection," ",query.toString());
 				FindIterable<DBObject> cursor = getCollection(collection).find(query).projection(projection);
 				if (limit!=0) cursor = cursor.limit(limit);			
 				return conversion.toModel(modelClass, cursor.iterator());
@@ -274,7 +275,7 @@ public class MongoDatabase extends Database {
 		try {
 			Bson query = toDBObject(modelClass, properties);
 			Bson projection = toDBObject(fields);
-			if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
+			if (logQueries) AccessLog.logDB("all ",collection," ",query.toString());
 			FindIterable<DBObject> cursor = getCollection(collection).find(query).projection(projection);
 			if (sortField != null) cursor = cursor.sort(new BasicDBObject(sortField, order));
 			if (limit!=0) cursor = cursor.limit(limit);			
@@ -307,7 +308,7 @@ public class MongoDatabase extends Database {
 		try {
 			Bson query = new BasicDBObject("_id", modelId);
 			Bson update = new BasicDBObject("$set", conversion.toDBObject(field, value));
-			if (logQueries) AccessLog.logDB("set field "+collection+" field="+field+" value="+value);
+			if (logQueries) AccessLog.logDB("set field ",collection," field=",field," value=",Objects.toString(value));
 			getCollection(collection).updateOne(query, update);
 			return;
 		} catch (MongoException e) {
@@ -324,7 +325,7 @@ public class MongoDatabase extends Database {
 		try {
 			Bson query = toDBObject(model, properties);
 			Bson update = new BasicDBObject("$set", conversion.toDBObject(field, value));
-			if (logQueries) AccessLog.logDB("set all "+collection+" query="+query.toString()+" field="+field+" to="+value);
+			if (logQueries) AccessLog.logDB("set all ",collection," query=",query.toString()," field=",field," to=", Objects.toString(value));
 			getCollection(collection).updateMany(query, update);
 			return;
 		} catch (MongoException e) {
@@ -342,7 +343,7 @@ public class MongoDatabase extends Database {
 	public <T extends Model> void update(T model, String collection, Collection<String> fields) throws DatabaseException {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
-			if (logQueries) AccessLog.logDB("update "+collection+ " "+model.to_db_id().toString());
+			if (logQueries) AccessLog.logDB("update ",collection, " ",model.to_db_id().toString());
 			BasicDBObject query = new BasicDBObject();
 			query.put("_id", model.to_db_id());
 			
@@ -377,7 +378,7 @@ public class MongoDatabase extends Database {
 	public <T extends Model> void secureUpdate(T model, String collection, String timestampField, String[] fields) throws LostUpdateException, DatabaseException {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
-			if (logQueries) AccessLog.logDB("secure update "+collection+ " "+model.to_db_id().toString());
+			if (logQueries) AccessLog.logDB("secure update ",collection," ",model.to_db_id().toString());
 			BasicDBObject query = new BasicDBObject();
 			query.put("_id", model.to_db_id());
 			
@@ -394,12 +395,12 @@ public class MongoDatabase extends Database {
 		
 			DBObject result = getCollection(collection).findOneAndUpdate(query, update);
 			if (result == null) {
-				if (logQueries) AccessLog.log("failed secure update version: "+oldTimeStamp); 
+				if (logQueries) AccessLog.log("failed secure update version: ", Objects.toString(oldTimeStamp)); 
 				throw new LostUpdateException();
 			}
 			
 			model.getClass().getField(timestampField).set(model, ts);
-			if (logQueries) AccessLog.log("secure updated: "+oldTimeStamp+" -> "+ts);
+			if (logQueries) AccessLog.log("secure updated: ", Objects.toString(oldTimeStamp), " -> ", Long.toString(ts));
 		    return;									
 		} catch (MongoException e) {
 			if (tries==MAX_TRIES) throw new DatabaseException(e);

@@ -188,7 +188,7 @@ public class Feature_UserGroups extends Feature {
 			}				
 		}
 		
-		AccessLog.log("no suitable cache: targetAps="+targetAps+" executor="+cache.getAccessor());
+		AccessLog.log("no suitable cache: targetAps=", targetAps.toString(), " executor=", cache.getAccessor().toString());
 		return null;
 	}
 	

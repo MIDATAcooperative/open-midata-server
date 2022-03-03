@@ -46,7 +46,7 @@ public class Feature_Consents extends Feature {
 			if (iuse != null) {
 				long v = iuse.version(q.getApsId());
 				if (v<=0) {
-					AccessLog.log("shared-after: new aps: "+q.getApsId());
+					AccessLog.log("shared-after: new aps: ", q.getApsId().toString());
 					return new SetSharedDateIterator(new Date(q.getCache().getAPS(q.getApsId()).getLastChanged()), next.iterator(q.withoutTime()));
 				}
 			} 

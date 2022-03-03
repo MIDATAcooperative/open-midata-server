@@ -138,7 +138,7 @@ public class APSCache {
 		if (result == null) { 
 			result = new APSImplementation(new EncryptedAPS(apsId, accessorId, unlockKey, owner));
 			if (!result.isAccessible()) {
-				AccessLog.log("Adding missing access for "+accessorId.toString()+" APS:"+apsId.toString());
+				AccessLog.log("Adding missing access for ",accessorId.toString()," APS:",apsId.toString());
 				result.addAccess(Collections.<MidataId>singleton(accessorId));
 			}
 			cache.put(apsId.toString(), result);
@@ -352,18 +352,18 @@ public class APSCache {
 		}
 		
 		if (touchedAPS != null) {
-			AccessLog.log("touching aps #aps="+touchedAPS.size());
+			AccessLog.log("touching aps #aps=", Integer.toString(touchedAPS.size()));
 			for (MidataId id : touchedAPS) {
 			   getAPS(id).touch();
 			}
 		}
 		
 		if (touchedConsents != null) {
-			AccessLog.log("touching consents #consents="+touchedConsents.size());
+			AccessLog.log("touching consents #consents=", Integer.toString(touchedConsents.size()));
 			Consent.updateTimestamp(touchedConsents, System.currentTimeMillis(), System.currentTimeMillis() + 1000l * 60l);
 		}
 		if (subcache != null) {
-			AccessLog.log("flushing subcaches #caches="+subcache.size());
+			AccessLog.log("flushing subcaches #caches=", Integer.toString(subcache.size()));
 			for (APSCache sub : subcache.values()) {
 				sub.finishTouch();
 			}

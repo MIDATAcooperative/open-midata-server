@@ -369,14 +369,14 @@ public class IndexManager {
 		    		modCount += index.getModCount();
 		    	}		    			    				
 		    } else {		    
-			    AccessLog.log("number of aps to update = "+targetAps.size());				
+			    AccessLog.log("number of aps to update = ", Integer.toString(targetAps.size()));				
 				for (MidataId aps : targetAps) {				
 					indexUpdatePart(index,executor,aps,cache);				
 					modCount += index.getModCount();								
 				}
 		    }
 			
-			AccessLog.log("updateAllTs="+updateAllTs+" modCount="+modCount+" ts="+(targetAps!=null?targetAps.size():"all"));
+			AccessLog.log("updateAllTs=", Long.toString(updateAllTs), " modCount=", Integer.toString(modCount), " ts=", (targetAps!=null?Integer.toString(targetAps.size()):"all"));
 			if (updateAllTs != 0 && (modCount>0 || targetAps==null || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {
@@ -387,7 +387,7 @@ public class IndexManager {
 			index.reload(); //XXXX
 			indexUpdate(cache, index, executor, targetAps);
 		}
-		AccessLog.logEnd("end index update time= "+(System.currentTimeMillis() - startUpdate)+" ms");
+		AccessLog.logEnd("end index update time= ", Long.toString(System.currentTimeMillis() - startUpdate), " ms");
 	}
 	
 	private void indexUpdatePart(IndexRoot index, MidataId executor, MidataId aps, APSCache cache) throws AppException, LostUpdateException {
@@ -397,7 +397,7 @@ public class IndexManager {
 		restrictions.put("format", index.getFormats());				
 		if (aps.equals(executor)) restrictions.put("owner", "self");
 		
-	    AccessLog.log("Checking aps:"+aps.toString());
+	    AccessLog.log("Checking aps:", aps.toString());
 		// Records that have been updated or created
 	    long v = index.getVersion(aps);
 	    //AccessLog.log("v="+v);
@@ -411,7 +411,7 @@ public class IndexManager {
 		// Records that have been freshly shared				
 		
 		if (updateTs) index.setVersion(aps, now);
-		AccessLog.log("Add index: from updated="+recs.size());
+		AccessLog.log("Add index: from updated=", Integer.toString(recs.size()));
 		
 	}
 	
@@ -430,7 +430,7 @@ public class IndexManager {
 			for (Consent consent : consents) targetAps.add(consent._id);				
 	    
 		    
-		    AccessLog.log("number of aps to update = "+targetAps.size());
+		    AccessLog.log("number of aps to update = ", Integer.toString(targetAps.size()));
 			int modCount = 0;
 			for (MidataId aps : targetAps) {
 				if (index.getModCount() > 5000) index.flush();
@@ -440,7 +440,7 @@ public class IndexManager {
 				restrictions.put("flat", "true");
 				if (aps.equals(executor)) restrictions.put("owner", "self");
 				
-			    AccessLog.log("Checking aps:"+aps.toString());
+			    AccessLog.log("Checking aps:", aps.toString());
 				// Records that have been updated or created
 			    long v = index.getVersion(aps);
 			    //AccessLog.log("v="+v);
@@ -456,14 +456,14 @@ public class IndexManager {
 				// Records that have been freshly shared				
 				
 				if (updateTs) index.setVersion(aps, now);
-				AccessLog.log("Add index: from updated="+recs.size());
+				AccessLog.log("Add index: from updated=", Integer.toString(recs.size()));
 				
 				modCount += index.getModCount();
 				
 				
 			}
 			
-			AccessLog.log("updateAllTs="+updateAllTs+" modCount="+modCount+" ts="+targetAps.size());
+			AccessLog.log("updateAllTs=", Long.toString(updateAllTs), " modCount=", Integer.toString(modCount), " ts=", Integer.toString(targetAps.size()));
 			if (updateAllTs != 0 && (modCount>0 || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {
@@ -601,7 +601,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 	
 	public void triggerUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {
 		if (targetAps != null && targetAps.size() > 10) targetAps = null;
-		AccessLog.log("TRIGGER UPDATE "+user+" aps="+(targetAps!=null?targetAps.toString():"null"));		
+		AccessLog.log("TRIGGER UPDATE ", user.toString(), " aps=", (targetAps!=null?targetAps.toString():"null"));		
 		indexSupervisor.tell(new IndexUpdateMsg(idx._id, user, pseudo, KeyManager.instance.currentHandle(user), targetAps), null);		
 	}
 	
@@ -655,9 +655,9 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		List<DBRecord> notValid = new ArrayList<DBRecord>();
 		stillValid = QueryEngine.filterByDataQuery(validatedResult, indexQuery, notValid);
 				
-		AccessLog.log("Index found records:"+validatedResult.size()+" still valid:"+stillValid.size());
+		AccessLog.log("Index found records:", Integer.toString(validatedResult.size())+" still valid:", Integer.toString(stillValid.size()));
 		if (validatedResult.size() > stillValid.size()) {
-			AccessLog.log("Removing "+notValid.size()+" records from index.");
+			AccessLog.log("Removing ", Integer.toString(notValid.size()), " records from index.");
 			// You must remove the record IDS from the match not using the records data!!
 			List<IndexMatch> matches = new ArrayList<IndexMatch>(notValid.size());
 			for (DBRecord r : notValid) matches.add(new IndexMatch(r._id, r.consentAps));
@@ -677,7 +677,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		}
 	}*/
 	public void removeRecords(APSCache cache, MidataId user, List<IndexMatch> records, MidataId indexId, Condition[] cond, IndexPseudonym pseudo) throws AppException {		
-		AccessLog.logBegin("start removing outdated entries from indexes #recs="+records.size());
+		AccessLog.logBegin("start removing outdated entries from indexes #recs=", Integer.toString(records.size()));
 	
 		IndexDefinition def = IndexDefinition.getById(indexId);		
 		IndexRoot root = new IndexRoot(pseudo.getKey(), def, false);
@@ -701,7 +701,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 	public void removeRecords(APSCache cache, MidataId user, List<DBRecord> records) throws AppException {
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);
 		if (pseudo == null) return;
-		AccessLog.logBegin("start removing records from indexes #recs="+records.size());
+		AccessLog.logBegin("start removing records from indexes #recs=",Integer.toString(records.size()));
 		Map<String, List<DBRecord>> hashMap = new HashMap<String, List<DBRecord>>();
 		for (DBRecord rec : records) {			
 		   String format = rec.meta.getString("format");

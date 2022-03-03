@@ -62,7 +62,7 @@ public abstract class TsBaseIndexRoot<A extends BaseIndexKey<A,B>,B> extends Bas
 	}
 	
 	public void setAllVersion(long now) throws LostUpdateException, InternalServerException {
-		AccessLog.log("setAllVersion="+now);
+		AccessLog.log("setAllVersion=", Long.toString(now));
 		rootPage.changed = true;
 		ts.setValue("all", now);					
 	}

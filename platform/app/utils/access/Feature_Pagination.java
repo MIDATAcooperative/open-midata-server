@@ -57,7 +57,7 @@ public class Feature_Pagination extends Feature {
 			
 			while (!foundFrom && result.hasNext()) { DBRecord rec = result.next();if (rec._id.equals(from)) foundFrom = true; }
 			
-			AccessLog.log("foundFrom="+foundFrom);
+			AccessLog.log("foundFrom=", Boolean.toString(foundFrom));
 			if (!foundFrom) return ProcessingTools.empty();
 			if (!result.hasNext()) return ProcessingTools.dbiterator("singleton()", Collections.singletonList(fromRecord).iterator());
 			

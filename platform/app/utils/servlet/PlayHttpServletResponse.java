@@ -120,7 +120,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void setCharacterEncoding(String arg0) {
-		AccessLog.log("character-encoding:"+arg0);
+		AccessLog.log("character-encoding:", arg0);
 		//this.characterEncoding = arg0;		
 	}
 
@@ -138,7 +138,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void setContentType(String arg0) {
-		AccessLog.log("content-type:"+arg0);
+		AccessLog.log("content-type:", arg0);
 		if (arg0 == null) {
 			return;		
 		}

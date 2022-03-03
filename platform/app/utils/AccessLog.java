@@ -21,8 +21,11 @@ package utils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import models.MidataId;
 import models.enums.APSSecurityLevel;
@@ -62,8 +65,81 @@ public class AccessLog {
 	 * @param txt the line to be logged
 	 */
 	public static void log(String txt) {
-		String msg = "                                            ".substring(0,ident.get())+txt;	
-		if (logForMail) msgs.get().println(msg);
+		String msg = "                                            ".substring(0,ident.get());	
+		if (logForMail) {
+			LogContext c = msgs.get();
+			c.print(msg);
+			c.println(txt);
+		}
+	}
+	
+	public static void log(String txt, String txt2) {
+		String msg = "                                            ".substring(0,ident.get());	
+		if (logForMail) {
+			LogContext c = msgs.get();
+			c.print(msg);
+			c.print(txt);
+			c.println(txt2);
+		}
+	}
+	
+	public static void log(String txt, String txt2, String txt3) {
+		String msg = "                                            ".substring(0,ident.get());	
+		if (logForMail) {
+			LogContext c = msgs.get();
+			c.print(msg);
+			c.print(txt);
+			c.print(txt2);
+			c.println(txt3);
+		}
+	}
+	
+	public static void log(String txt, String txt2, String txt3, String txt4) {
+		String msg = "                                            ".substring(0,ident.get());	
+		if (logForMail) {
+			LogContext c = msgs.get();
+			c.print(msg);
+			c.print(txt);
+			c.print(txt2);
+			c.print(txt3);
+			c.println(txt4);
+		}
+	}
+	
+	public static void log(String txt, String txt2, String txt3, String txt4, String txt5) {
+		String msg = "                                            ".substring(0,ident.get());	
+		if (logForMail) {
+			LogContext c = msgs.get();
+			c.print(msg);
+			c.print(txt);
+			c.print(txt2);
+			c.print(txt3);
+			c.print(txt4);
+			c.println(txt5);
+		}
+	}
+	
+	public static void log(String txt, String txt2, String txt3, String txt4, String txt5, String txt6) {
+		String msg = "                                            ".substring(0,ident.get());	
+		if (logForMail) {
+			LogContext c = msgs.get();
+			c.print(msg);
+			c.print(txt);
+			c.print(txt2);
+			c.print(txt3);
+			c.print(txt4);
+			c.print(txt5);
+			c.println(txt6);
+		}
+	}
+	public static void log(String... txt) {
+		String msg = "                                            ".substring(0,ident.get());	
+		if (logForMail) {
+			LogContext c = msgs.get();
+			c.print(msg);
+			for (int i=0;i<txt.length-1;i++) c.print(txt[i]);			
+			c.println(txt[txt.length-1]);
+		}
 	}
 		
 	
@@ -75,7 +151,7 @@ public class AccessLog {
 	 */
 	public static void apsAccess(MidataId aps, MidataId who, APSSecurityLevel lvl) {
 		String msg = "Access APS:"+(aps != null ? aps.toString() : "null")+" from user:"+(who!=null?who.toString():"null")+" security:"+lvl.toString();
-		log(msg);		
+		log("Access APS:",(aps != null ? aps.toString() : "null")," from user:",(who!=null?who.toString():"null")," security:",lvl.toString());		
 	}
 	
 	
@@ -86,7 +162,7 @@ public class AccessLog {
 	 */
 	public static void logQuery(MidataId aps, Map<String,Object> properties, Set<String> fields) {	 
 		
-	   StringBuilder s = new StringBuilder();
+	   StringBuilder s = new StringBuilder(500);
 	   
 	   s.append("aps="+aps.toString());
 	   for (Map.Entry<String,Object> entry : properties.entrySet()) {
@@ -102,7 +178,7 @@ public class AccessLog {
 		   s.append(" ");
 	   }
 	   s.append(")");	  	   
-	   log("Query:"+s.toString());
+	   log("Query:",s.toString());
 	}
 	
 	/**
@@ -110,8 +186,27 @@ public class AccessLog {
 	 * @param msg the message to be logged
 	 */
 	public static void logDB(String msg) { 	   
-	   log("DB:"+msg);
+	   log("DB:",msg);
 	}
+	public static void logDB(String msg, String p1) { 	   
+	   log("DB:",msg, p1);
+	}
+	public static void logDB(String msg, String p1, String p2) { 	   
+	   log("DB:",msg, p1, p2);
+	}
+	public static void logDB(String msg, String p1, String p2, String p3) { 	   
+	   log("DB:",msg, p1, p2, p3);
+	}
+	public static void logDB(String msg, String p1, String p2, String p3, String p4) { 	   
+	   log("DB:",msg, p1, p2, p3, p4);
+	}
+	public static void logDB(String msg, String p1, String p2, String p3, String p4, String p5) { 	   
+	   log("DB:",msg, p1, p2, p3, p4, p5);
+	}
+	public static void logDB(String msg, String p1, String p2, String p3, String p4, String p5, String p6, String p7) { 	   
+		   log("DB:",msg, p1, p2, p3, p4, p5, p6, p7);
+	}
+	
 	
 	private static ThreadLocal<Integer> ident = new ThreadLocal<Integer>() {
         @Override protected Integer initialValue() {
@@ -119,9 +214,11 @@ public class AccessLog {
         }
 	};
 	
-	private static ThreadLocal<String> logpath = new ThreadLocal<String>() {
-        @Override protected String initialValue() {
-            return "";
+	private static ThreadLocal<Stack<String>> logpath = new ThreadLocal<Stack<String>>() {
+        @Override protected Stack<String> initialValue() {
+        	Stack<String> result = new Stack<String>();
+        	result.add("");
+            return result;
         }
 	};
 	
@@ -172,26 +269,54 @@ public class AccessLog {
 		log(txt);		
 		ident.set(ident.get() + 2);
 	}
-	
-	public static void logBeginPath(String path, String extra) {				
-		logBegin("start "+path.toUpperCase()+" on "+logpath.get()+(extra!=null?(": "+extra):""));
-		logpath.set(logpath.get()+"/"+path);		
+	public static void logBegin(String txt, String txt2) {
+		log(txt, txt2);		
+		ident.set(ident.get() + 2);
+	}
+	public static void logBegin(String txt, String txt2, String txt3) {
+		log(txt, txt2, txt3);		
+		ident.set(ident.get() + 2);
+	}
+	public static void logBegin(String txt, String txt2, String txt3, String txt4) {
+		log(txt, txt2, txt3, txt4);		
+		ident.set(ident.get() + 2);
+	}
+	public static void logBegin(String txt, String txt2, String txt3, String txt4, String txt5) {
+		log(txt, txt2, txt3, txt4, txt5);		
+		ident.set(ident.get() + 2);
+	}
+	public static void logBegin(String txt, String txt2, String txt3, String txt4, String txt5, String txt6) {
+		log(txt, txt2, txt3, txt4, txt5, txt6);		
+		ident.set(ident.get() + 2);
+	}
+	public static void logBegin(String... txt) {
+		log(txt);		
+		ident.set(ident.get() + 2);
 	}
 	
-	public static void logEndPath(String result) {		
-		String lp = logpath.get();
+	private static String path() {
+		Stack<String> path = logpath.get();
+		return path.peek();
+	}
+	
+	public static void logBeginPath(String path, String extra) {				
+		logBegin("start ",path.toUpperCase()," on ",path(),(extra!=null?(": "+extra):""));
+		logpath.get().add(path()+"/"+path);		
+	}
+	
+	public static void logEndPath(String result) {				 		
+		String lp = logpath.get().pop();
 		int i = lp.lastIndexOf('/');
-		logpath.set(lp.substring(0, i));
-		logEnd("end "+lp.substring(i+1).toUpperCase()+" on "+lp+(result!=null?(" with "+result):""));
+		logEnd("end ",lp.substring(i+1).toUpperCase()," on ",lp,(result!=null?(" with "+result):""));
 	}
 	
 	public static void logPath(String result) {		
-		String lp = logpath.get();		
-		log(lp+": "+result);
+		String lp = path();		
+		log(lp,": ",result);
 	}
 	
 	public static String lp() {
-		return logpath.get();
+		return path();
 	}
 	
 	/**
@@ -202,6 +327,26 @@ public class AccessLog {
 		ident.set(ident.get() - 2);
 		if (ident.get() < 0) ident.set(0);		
 		log(txt);			
+	}
+	public static void logEnd(String txt, String txt2) {
+		ident.set(ident.get() - 2);
+		if (ident.get() < 0) ident.set(0);		
+		log(txt, txt2);			
+	}
+	public static void logEnd(String txt, String txt2, String txt3) {
+		ident.set(ident.get() - 2);
+		if (ident.get() < 0) ident.set(0);		
+		log(txt, txt2, txt3);			
+	}
+	public static void logEnd(String txt, String txt2, String txt3, String txt4) {
+		ident.set(ident.get() - 2);
+		if (ident.get() < 0) ident.set(0);		
+		log(txt, txt2, txt3, txt4);			
+	}
+	public static void logEnd(String txt, String txt2, String txt3, String txt4, String txt5) {
+		ident.set(ident.get() - 2);
+		if (ident.get() < 0) ident.set(0);		
+		log(txt, txt2, txt3, txt4, txt5);			
 	}
 	
 	/**
@@ -222,7 +367,7 @@ public class AccessLog {
      * @param record the record that could not be decrypted
      */
 	public static void decryptFailure(MidataId record) {
-		 log("Decrypt Failure Record="+record.toString());
+		 log("Decrypt Failure Record=", record.toString());
 	}
 	
 	/**
@@ -244,8 +389,13 @@ public class AccessLog {
 		ALogger context = jobs;
 		
 		LogContext() {
-			head = new StringWriter();		
+			head = new StringWriter(500);		
 			writer = new PrintWriter(head);
+		}
+		
+		void print(String part) {
+		   len += part.length();
+		   writer.print(part);
 		}
 		
 		void println(String line) {
@@ -253,12 +403,12 @@ public class AccessLog {
 			if (len > LOGSIZELIMIT) {
 				writer.close();				
 				if (tail == null) {
-					tail = new StringWriter();					
+					tail = new StringWriter(1024);					
 					writer = new PrintWriter(tail);
 					len = 0;
 				} else {
 					cleared++;					
-					tail = new StringWriter();					
+					tail = new StringWriter(1024);					
 					writer = new PrintWriter(tail);
 					len = 0;
 					writer.println("...(skipping "+cleared+" blocks)...");

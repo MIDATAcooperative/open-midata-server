@@ -241,7 +241,7 @@ public class Application extends APIController {
 			   replacements.put("executor-email", executingUser.email);
 		   }
 		   
-		   AccessLog.log("send welcome mail: "+user.email);
+		   AccessLog.log("send welcome mail: ", user.email);
 		   if (executingUser == null) {
 			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(user._id));
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
@@ -274,7 +274,7 @@ public class Application extends APIController {
 		   String email = user.getPublicIdentifier();
 		   String role = user.role.toString();
 		   
-		   AccessLog.log("send admin notification mail: "+user.getPublicIdentifier());	   
+		   AccessLog.log("send admin notification mail: ", user.getPublicIdentifier());	   
 	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "New MIDATA User", adminnotify.render(site, email, role).toString());
 	   }
 	}

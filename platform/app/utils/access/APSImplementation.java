@@ -314,7 +314,7 @@ class APSImplementation extends APS {
 				if (withOwner)
 					record.owner = eaps.getOwner();
 			}
-			AccessLog.log("direct query stream=" + eaps.getId()+" #size="+directResult.size());
+			AccessLog.log("direct query stream=",eaps.getId().toString()," #size=", Integer.toString(directResult.size()));
 			
 			// Disabled: Produces wrong results first call to Observation/$lastn after first record inserted
 			// if (useCache && withOwner) cachedRecords = directResult;
@@ -449,7 +449,7 @@ class APSImplementation extends APS {
 			if (record.isStream == APSSecurityLevel.MEDIUM) {
 				if (existing.getBoolean("s")) {
 					existing.put("sm", true);
-					AccessLog.log("changed APS entry for stream="+record._id+" in aps "+getId());
+					AccessLog.log("changed APS entry for stream=",record._id.toString()," in aps ",getId().toString());
 				}
 			}
 			return;
@@ -579,7 +579,7 @@ class APSImplementation extends APS {
 	protected void forceAccessibleSubset() throws AppException {
 		if (eaps.findAndselectAccessibleSubset()) return; 
 
-		AccessLog.logBegin("start creating accessible subset for user: "+eaps.getAccessor().toString()+" aps: "+eaps.getId().toString());		
+		AccessLog.logBegin("start creating accessible subset for user: ",eaps.getAccessor().toString()," aps: ",eaps.getId().toString());		
 		
 		EncryptedAPS wrapper = eaps.createChild();		
 	   for (String ckey : eaps.keyNames()) {
@@ -608,7 +608,7 @@ class APSImplementation extends APS {
 	protected void merge() throws AppException {
 		try {
 		if (eaps.needsMerge()) {
-			AccessLog.logBegin("begin merge:" + eaps.getId().toString());
+			AccessLog.logBegin("begin merge:",eaps.getId().toString());
 			
 			for (EncryptedAPS encsubaps : eaps.getAllUnmerged()) {													
 				APSEntry.mergeAllInto(encsubaps.getPermissions(), eaps.getPermissions());

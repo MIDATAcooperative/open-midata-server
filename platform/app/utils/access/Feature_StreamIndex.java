@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import models.Consent;
@@ -143,7 +144,7 @@ public class Feature_StreamIndex extends Feature {
 					add = nextWithProcessing.query(new Query(q, "streamindex-shared-after", CMaps.mapPositive("shared-after", v).map("consent-limit",1000).map("streams","true").map("flat","true")));
 					//AccessLog.log("found new updated entries: " + add.size());
 					for (DBRecord r : add) {
-						AccessLog.log(" id="+r._id+" aps="+r.consentAps+" ow="+r.owner+" str="+r.isStream);
+						AccessLog.log(" id=", r._id.toString(), " aps=", r.consentAps.toString(), " ow=", r.owner.toString(), " str=", Objects.toString(r.isStream));
 						AccessLog.log(r.context.toString());
 					}
 					if (add.size()>0) {
@@ -239,7 +240,7 @@ public class Feature_StreamIndex extends Feature {
 			List<DBRecord> result = newRecords.get(aps);
 			if (result == null)
 				result = new ArrayList<DBRecord>();
-			AccessLog.log("now "+path+": aps=" + aps.toString());
+			AccessLog.log("now ", path, ": aps=", aps.toString());
 
 			Set<DBRecord> ids = matches.get(aps);
 			if (ids != null) result.addAll(ids);            							           

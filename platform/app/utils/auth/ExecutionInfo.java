@@ -169,7 +169,7 @@ public class ExecutionInfo {
 			// Unhandeled case. How can this happen?
 			throw new NullPointerException();
 		}
-	   AccessLog.log("using as context:"+session.toString());
+	   AccessLog.log("using as context:", session.toString());
 	   AccessLog.logEnd("end check 'space' type session token");
 	   return session;	
 		
