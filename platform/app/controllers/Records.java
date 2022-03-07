@@ -577,6 +577,10 @@ public class Records extends APIController {
 
 		List<String> messages = RecordManager.instance.fixAccount(portalContext(request));
 
+		if (getRole().equals(UserRole.ADMIN)) {
+			messages.addAll(RecordManager.instance.fixAccount(portalContext(request).forPublic()));
+		}
+		
 		ArrayNode result = Json.newArray();
 		for (String msg : messages) result.add(msg);
 		return ok(result).as("application/json");
