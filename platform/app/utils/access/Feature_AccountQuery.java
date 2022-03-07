@@ -189,7 +189,12 @@ public class Feature_AccountQuery extends Feature {
 			cache = sublist.iterator();			         
 			return cache.next();
 
-		}				
+		}			
+		
+		@Override
+		public void close() {
+		   // Close Consent iteration?			
+		}
 
 	}
 	
@@ -278,6 +283,11 @@ public class Feature_AccountQuery extends Feature {
 		@Override
 		public String toString() {
 			return "set-context("+chain.toString()+")";
+		}
+		
+		@Override
+		public void close() {
+			chain.close();			
 		}
 		
 		

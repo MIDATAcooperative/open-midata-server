@@ -19,10 +19,14 @@ package utils.access;
 
 import utils.exceptions.AppException;
 
-public interface DBIterator<A> {
+public interface DBIterator<A> extends AutoCloseable {
 
 	public A next() throws AppException;
 	
 	public boolean hasNext() throws AppException;
+	
+	@Override
+	public void close();
+		
 	
 }

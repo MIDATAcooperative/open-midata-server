@@ -116,6 +116,7 @@ public class IndexManager {
 			
 			aps.removeMeta("_streamindex");
 			aps.removeMeta("_statsindex");
+			aps.removeMeta("_statsindex_p");
 			aps.removeMeta("_consents");
 		} 
 		
@@ -194,10 +195,11 @@ public class IndexManager {
 		}
 	}
 	
-	public StatsIndexRoot getStatsIndex(APSCache cache, MidataId user, boolean create) throws AppException {
+	public StatsIndexRoot getStatsIndex(APSCache cache, MidataId user, boolean pseudonymized, boolean create) throws AppException {
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, true);
+		String name = pseudonymized ? "_statsindex_p" : "_statsindex";
 		APS aps = cache.getAPS(user);
-		BSONObject obj = aps.getMeta("_statsindex");
+		BSONObject obj = aps.getMeta(name);
 		
 		MidataId id = null;
 							
@@ -206,7 +208,7 @@ public class IndexManager {
 			id = new MidataId();
 		    obj = new BasicBSONObject();
 		    obj.put("index", id.toString());
-		    aps.setMeta("_statsindex", obj.toMap());			
+		    aps.setMeta(name, obj.toMap());			
 		} else {
 			id = MidataId.from(obj.get("index"));
 		}
@@ -220,7 +222,8 @@ public class IndexManager {
 			def.formats = Collections.singletonList("_statsIndex");
 			def.lockTime = System.currentTimeMillis();
 			def.rev = 1;
-			def.creation = currentCreationTime();	
+			def.creation = currentCreationTime();
+			def.pseudonymize = pseudonymized;
 			
 			StatsIndexRoot root = new StatsIndexRoot(pseudo.getKey(), def, true);
 			
@@ -363,11 +366,12 @@ public class IndexManager {
 		    	indexUpdatePart(index, executor, executor, cache);
 		    	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor, limit);	
 		    	
-		    	DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200);
-		    	while (consentIt.hasNext()) {
-		    		indexUpdatePart(index, executor, consentIt.next()._id, cache);
-		    		modCount += index.getModCount();
-		    	}		    			    				
+		    	try (DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200)) {
+			    	while (consentIt.hasNext()) {
+			    		indexUpdatePart(index, executor, consentIt.next()._id, cache);
+			    		modCount += index.getModCount();
+			    	}
+		    	}
 		    } else {		    
 			    AccessLog.log("number of aps to update = ", Integer.toString(targetAps.size()));				
 				for (MidataId aps : targetAps) {				
@@ -492,36 +496,37 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 	    	int modCount = 0;
 	    	List<Consent> consents = new ArrayList<Consent>(StudyParticipation.getAllAuthorizedWithGroup(executor, limit));	
 	    	
-	    	DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200);
-	    	while (consentIt.hasNext()) {
-	    			    		
-                if (index.getModCount() > 5000) index.flush();
-				StudyParticipation consent = (StudyParticipation) consentIt.next();
-				MidataId aps = consent._id;
-				StatsLookup lookup = new StatsLookup();
-				lookup.setAps(aps);
-				
-				Collection<StatsIndexKey> old = index.lookup(lookup);
-				for (StatsIndexKey k : old) index.removeEntry(k);
-				
-				if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) {
-					Map<String, Object> restrictions = new HashMap<String, Object>();				
-					restrictions.put("no-postfilter-steams", "true");
-					restrictions.put("group-system", "v1");
-					//if (aps.equals(executor)) restrictions.put("owner", "self");
-									
-					Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new IndexAccessContext(cache, index.getModel().pseudonymize), false);
+	    	try (DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200)) {
+		    	while (consentIt.hasNext()) {
+		    			    		
+	                if (index.getModCount() > 5000) index.flush();
+					StudyParticipation consent = (StudyParticipation) consentIt.next();
+					MidataId aps = consent._id;
+					StatsLookup lookup = new StatsLookup();
+					lookup.setAps(aps);
 					
-					Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
-					for (StatsIndexKey k : keys) {
-						k.studyGroup = consent.group;
-						index.addEntry(k);
+					Collection<StatsIndexKey> old = index.lookup(lookup);
+					for (StatsIndexKey k : old) index.removeEntry(k);
+					
+					if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) {
+						Map<String, Object> restrictions = new HashMap<String, Object>();				
+						restrictions.put("no-postfilter-steams", "true");
+						restrictions.put("group-system", "v1");
+						//if (aps.equals(executor)) restrictions.put("owner", "self");
+										
+						Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new IndexAccessContext(cache, index.getModel().pseudonymize), false);
+						
+						Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
+						for (StatsIndexKey k : keys) {
+							k.studyGroup = consent.group;
+							index.addEntry(k);
+						}
 					}
-				}
-	    			    			    			    		
-	    		modCount += index.getModCount();
-	    			    			    		
-	    	}	
+		    			    			    			    		
+		    		modCount += index.getModCount();
+		    			    			    		
+		    	}
+	    	}
 	    		    		    		    			    	
             if (index.getModCount() > 5000) index.flush();
 			
@@ -626,9 +631,10 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		return res;
 	}
 	
-	public String clearIndexes(APSCache cache, MidataId user) throws AppException {
+	public String clearIndexes(APSCache cache, MidataId targetAps) throws AppException {
 		AccessLog.logBegin("start clear indexes");
-		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);
+		MidataId user = cache.getAccessor();
+		IndexPseudonym pseudo = getIndexPseudonym(cache, user, targetAps, false);
 		int removeIdx = 0;
 		if (pseudo != null) {
 			Set<IndexDefinition> defs = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()), Sets.create("_id"));
@@ -640,6 +646,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		}
 				
 		cache.getAPS(user).removeMeta("_statsindex");
+		cache.getAPS(user).removeMeta("_statsindex_p");
 		cache.getAPS(user).removeMeta("_streamindex");
 		cache.getAPS(user).removeMeta("_consents");
 		cache.getAPS(user).removeMeta("_pseudo");

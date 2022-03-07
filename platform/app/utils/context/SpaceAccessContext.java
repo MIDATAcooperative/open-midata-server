@@ -17,6 +17,7 @@
 
 package utils.context;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.bson.BSONObject;
@@ -24,9 +25,11 @@ import org.bson.BSONObject;
 import models.MidataId;
 import models.Record;
 import models.Space;
+import utils.RuntimeConstants;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.access.Feature_FormatGroups;
+import utils.access.QueryEngine;
 import utils.access.RecordManager;
 import utils.exceptions.AppException;
 
@@ -75,7 +78,8 @@ public class SpaceAccessContext extends AccessContext {
 	}
 	@Override
 	public boolean isIncluded(DBRecord record) throws AppException {
-		return record.owner.equals(space.owner);
+		if(space.query != null && !QueryEngine.listFromMemory(this, space.query, Collections.singletonList(record)).isEmpty()) return true;
+		return record.owner.equals(space.owner) || record.owner.equals(RuntimeConstants.instance.publicUser);
 	}
 	@Override
 	public String getOwnerName() {		

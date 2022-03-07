@@ -30,6 +30,7 @@ import com.mongodb.client.MongoCollection;
 import com.typesafe.config.Config;
 
 import models.Model;
+import utils.access.DBIterator;
 import utils.stats.Stats;
 
 /**
@@ -217,6 +218,12 @@ public class DBLayer {
 			Set<String> fields, int limit, String sortField, int order) throws DatabaseException {
 		Stats.reportDb("read N", collection);
 		return getDatabaseForCollection(collection).getAllList(modelClass, collection, properties, fields, limit, sortField, order);
+	}
+	
+	public static <T extends Model> DBIterator<T> getAllCursor(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
+			Set<String> fields, int limit, String sortField, int order) throws DatabaseException {
+		Stats.reportDb("read N", collection);
+		return getDatabaseForCollection(collection).getAllCursor(modelClass, collection, properties, fields, limit, sortField, order);
 	}
 	
 	/**

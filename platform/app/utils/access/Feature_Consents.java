@@ -163,6 +163,11 @@ public class Feature_Consents extends Feature {
 			return it.hasNext();
 		}
 		
+		@Override
+		public void close() {
+			it.close();			
+		}
+		
 		
 	}
 	

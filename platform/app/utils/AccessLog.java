@@ -65,7 +65,11 @@ public class AccessLog {
 	 * @param txt the line to be logged
 	 */
 	public static void log(String txt) {
-		String msg = "                                            ".substring(0,ident.get());	
+		int id = ident.get();
+		if (id > "                                            ".length()) {
+			System.out.println(getReport());			
+		}
+		String msg = "                                            ".substring(0,id);	
 		if (logForMail) {
 			LogContext c = msgs.get();
 			c.print(msg);
@@ -74,6 +78,10 @@ public class AccessLog {
 	}
 	
 	public static void log(String txt, String txt2) {
+		int id = ident.get();
+		if (id > "                                            ".length()) {
+			System.out.println(getReport());			
+		}
 		String msg = "                                            ".substring(0,ident.get());	
 		if (logForMail) {
 			LogContext c = msgs.get();
@@ -84,6 +92,10 @@ public class AccessLog {
 	}
 	
 	public static void log(String txt, String txt2, String txt3) {
+		int id = ident.get();
+		if (id > "                                            ".length()) {
+			System.out.println(getReport());			
+		}
 		String msg = "                                            ".substring(0,ident.get());	
 		if (logForMail) {
 			LogContext c = msgs.get();

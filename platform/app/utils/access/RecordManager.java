@@ -174,8 +174,9 @@ public class RecordManager {
 		AccessLog.logBegin("begin shareAPS aps=",context.getTargetAps().toString()," executor=",context.getAccessor().toString()," #targetUsers=",Integer.toString(targetUsers.size()));
 		APSCache cache = context.getCache();
 		//if (context != null) {
-		  DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, context.getTargetAps(), context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()).map("ignore-redirect","true"),SHARING_FIELDS);
-		  shareRecursive(cache, it, targetUsers);
+		  try (DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, context.getTargetAps(), context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()).map("ignore-redirect","true"),SHARING_FIELDS)) {
+			  shareRecursive(cache, it, targetUsers);
+		  }
 		//}
 		cache.getAPS(context.getTargetAps()).addAccess(targetUsers);
 		AccessLog.logEnd("end shareAPS");
@@ -188,8 +189,9 @@ public class RecordManager {
 		} else {
 			AccessLog.logBegin("begin reshareAPS aps=",context.getTargetAps().toString()," executor=",context.getAccessor().toString()," #targetUsers=",Integer.toString(targetUsers.size()));
 			APSCache cache = context.getCache();
-			DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, context.getTargetAps(), context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()), SHARING_FIELDS);
-			shareRecursive(cache, it, targetUsers);
+			try (DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, context.getTargetAps(), context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()), SHARING_FIELDS)) {
+			  shareRecursive(cache, it, targetUsers);
+			}
 			Feature_UserGroups.findApsCacheToUse(cache, context.getTargetAps()).getAPS(context.getTargetAps()).addAccess(targetUsers);
 			AccessLog.logEnd("end shareAPS");
 		}
@@ -1394,7 +1396,7 @@ public class RecordManager {
 	public List<String> fixAccount(AccessContext context) throws AppException {
 		MidataId userId = context.getAccessor();
 		List<String> msgs = new ArrayList<String>();
-		msgs.add(IndexManager.instance.clearIndexes(context.getCache(), userId));
+		msgs.add(IndexManager.instance.clearIndexes(context.getCache(), context.getAccessor()));
 		
 		APSCache cache = context.getCache();
 				
@@ -1408,6 +1410,8 @@ public class RecordManager {
 		for (UserGroupMember ugm : ugms) {
 			try {
 			  Feature_UserGroups.loadKey(context, ugm);
+			  APSCache sub = Feature_UserGroups.findApsCacheToUse(cache, ugm);
+			  msgs.add("ug: "+IndexManager.instance.clearIndexes(sub, ugm.userGroup));
 			} catch (Exception e) {
 				msgs.add("disabled usergroup "+ugm.userGroup.toString());
 				ugm.status = ConsentStatus.EXPIRED;
@@ -1552,16 +1556,18 @@ public class RecordManager {
 			result.numUserGroups++;
 		}
 		result.numConsentsAuth = Consent.countAuth(auth);
-		DBIterator<DBRecord> it = QueryEngine.listInternalIterator(context.getCache(), userId, context.forAccountReshare(), CMaps.map("streams","only").map("owner","self").map("flat",true), Sets.create("_id"));
-		while (it.hasNext()) { it.next();result.numOwnStreams++;result.numOtherStreams--; }
-		it = QueryEngine.listInternalIterator(context.getCache(), userId, context.forAccountReshare(), CMaps.map("streams","only").map("flat",true), Sets.create("_id"));
-		while (it.hasNext()) { it.next();result.numOtherStreams++; }
+		try (DBIterator<DBRecord> it = QueryEngine.listInternalIterator(context.getCache(), userId, context.forAccountReshare(), CMaps.map("streams","only").map("owner","self").map("flat",true), Sets.create("_id"))) {
+		  while (it.hasNext()) { it.next();result.numOwnStreams++;result.numOtherStreams--; }
+		}
+		try (DBIterator<DBRecord> it = QueryEngine.listInternalIterator(context.getCache(), userId, context.forAccountReshare(), CMaps.map("streams","only").map("flat",true), Sets.create("_id"))) {
+		  while (it.hasNext()) { it.next();result.numOtherStreams++; }
+		}
 		
 		return result;
 	}
 	
 	public void clearIndexes(AccessContext context, MidataId userId) throws AppException {
-		IndexManager.instance.clearIndexes(context.getCache(), userId);		
+		IndexManager.instance.clearIndexes(context.getCache(), context.getAccessor());		
 	}
 	
 

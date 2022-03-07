@@ -273,10 +273,10 @@ public class QueryEngine {
     		AccessLog.log("with usergroup");
     		properties = new HashMap<String, Object>(properties);
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(false, new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))));
+    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(false, new Feature_ManyUserNoRestriction(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))));
     	} else {    	
     	   APS target = cache.getAPS(aps);    	
-    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_PublicData(new Feature_UserGroups(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))))));
+    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_PublicData(new Feature_UserGroups(new Feature_ManyUserNoRestriction(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))))))))));
     	}
     	Query q = new Query("full-query",properties, fields, cache, aps, context, null);
     	AccessLog.logQuery(q.getApsId(), q.getProperties(), q.getFields());

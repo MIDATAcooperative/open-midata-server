@@ -277,7 +277,10 @@ public class Feature_FormatGroups extends Feature {
 			return "set-group("+chain.toString()+")";
 		}
 		
-		
+		@Override
+		public void close() {
+			chain.close();			
+		}
 		
 	}
 	

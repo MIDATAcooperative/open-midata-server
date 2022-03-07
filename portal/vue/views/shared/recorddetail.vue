@@ -97,17 +97,22 @@ export default {
         init() {
             const { $data, $route } = this, me = this;
             let recordId = $route.query.recordId;
-        	me.doBusy(records.getUrl(recordId)).
-	        then(function(results) {
-		        if (results.data) {
-                    var url = spaces.mainUrl(results.data, getLocale());          
-		            $data.url = url;
-		        }
-	        });
+        	
 		
 	        me.doBusy(server.post(jsRoutes.controllers.Records.get().url, {"_id": recordId }))
-	        .then(function(records) {
-			    let record = records.data;
+	        .then(function(records1) {
+			    let record = records1.data;
+			    
+			    me.doBusy(records.getUrl(recordId)).
+	               then(function(results) {
+		           if (results.data) {
+		           console.log(results.data);
+		               if (record.content=="PseudonymizedPatient") results.data.id = record.data.id;
+                       var url = spaces.mainUrl(results.data, getLocale());          
+		               $data.url = url;
+		           }
+	            });
+			    
 			    let data = {"properties": {"_id": record.app}, "fields": ["name"]};
 		        me.doBusy(server.post(jsRoutes.controllers.Plugins.get().url, data).
 			    then(function(apps) { 

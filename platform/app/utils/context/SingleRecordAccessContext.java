@@ -68,7 +68,7 @@ public class SingleRecordAccessContext extends AccessContext {
 
 	@Override
 	public boolean mayAccess(String content, String format) throws AppException {
-		return false;
+		return parent.mayAccess(content, format);
 	}
 
 	@Override

@@ -42,6 +42,7 @@ import com.mongodb.client.model.UpdateOptions;
 
 import models.Model;
 import utils.AccessLog;
+import utils.access.DBIterator;
 
 /**
  * Connection to a mongoDB database
@@ -280,6 +281,27 @@ public class MongoDatabase extends Database {
 			if (sortField != null) cursor = cursor.sort(new BasicDBObject(sortField, order));
 			if (limit!=0) cursor = cursor.limit(limit);			
 			return conversion.toModelList(modelClass, cursor.iterator());
+		} catch (MongoException e) {
+			if (tries==MAX_TRIES) throw new DatabaseException(e);
+			delay();
+		} catch (DatabaseConversionException e) {
+			throw new DatabaseException(e);
+		}
+		}
+		throw new DatabaseException();
+	}
+	
+	public <T extends Model> DBIterator<T> getAllCursor(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
+			Set<String> fields, int limit, String sortField, int order) throws DatabaseException {
+		for (int tries=0;tries<=MAX_TRIES;tries++) {
+		try {
+			Bson query = toDBObject(modelClass, properties);
+			Bson projection = toDBObject(fields);
+			if (logQueries) AccessLog.logDB("all ",collection," ",query.toString());
+			FindIterable<DBObject> cursor = getCollection(collection).find(query).projection(projection);
+			if (sortField != null) cursor = cursor.sort(new BasicDBObject(sortField, order));
+			if (limit!=0) cursor = cursor.limit(limit);			
+			return conversion.toModelIterator(modelClass, cursor.iterator());
 		} catch (MongoException e) {
 			if (tries==MAX_TRIES) throw new DatabaseException(e);
 			delay();

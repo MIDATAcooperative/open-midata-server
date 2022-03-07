@@ -60,11 +60,12 @@ public class Feature_Pseudonymization extends Feature {
 			q.getProperties().put("usergroup", study);
 			
 			if (q.getContext().mustPseudonymize() || q.getContext().mustRename()) {
+				AccessLog.log("must pseudonymize");
 				Map<String, Object> newprops = new HashMap<String, Object>();
 				newprops.putAll(q.getProperties());
 				if (!pseudonymizedIdRestrictions(q, next, q.getCache().getAccountOwner(), newprops)) return ProcessingTools.empty();
 				q = new Query(q, "pseudonym", newprops).setFromRecord(q.getFromRecord());
-			}
+			} 
 
 		}				
 
@@ -88,6 +89,8 @@ public class Feature_Pseudonymization extends Feature {
 				if (targetId!=null) {
 					AccessLog.log("UNPSEUDONYMIZE ", id.toString(), " to ", targetId.toString());
 					owners.add(targetId.toString());
+				} else {
+					AccessLog.log("CANNOT UNPSEUDONYMIZE ", id.toString());
 				}
 			}			  
 			newprops.put("owner", owners);
@@ -165,6 +168,11 @@ public class Feature_Pseudonymization extends Feature {
 		@Override
 		public String toString() {		
 			return "pseudonymize("+chain.toString()+")";
+		}
+		
+		@Override
+		public void close() {
+			chain.close();			
 		}
 		
 	}	

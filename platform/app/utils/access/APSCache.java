@@ -62,6 +62,7 @@ public class APSCache {
 	private WatchesChangeBuffer changedPermissions = null;
 	private StreamIndexRoot streamIndexRoot = null;
 	private StatsIndexRoot statsIndexRoot = null;
+	private StatsIndexRoot statsIndexRootPseudo = null;
 	private ConsentToKeyIndexRoot consentKeysRoot = null;
 	
 	private long consentLimit;
@@ -397,10 +398,16 @@ public class APSCache {
 		return streamIndexRoot;
 	}
 	
-	public StatsIndexRoot getStatsIndexRoot() throws AppException {
-		if (statsIndexRoot != null) return statsIndexRoot;
-		statsIndexRoot = IndexManager.instance.getStatsIndex(this, getAccountOwner(), false);
-		return statsIndexRoot;
+	public StatsIndexRoot getStatsIndexRoot(boolean pseudonymized) throws AppException {
+		if (pseudonymized) {
+			if (statsIndexRootPseudo != null) return statsIndexRootPseudo;
+			statsIndexRootPseudo = IndexManager.instance.getStatsIndex(this, getAccountOwner(), true, false);
+			return statsIndexRootPseudo;
+		} else {
+			if (statsIndexRoot != null) return statsIndexRoot;
+			statsIndexRoot = IndexManager.instance.getStatsIndex(this, getAccountOwner(), false, false);
+			return statsIndexRoot;
+		}
 	}
 	
 	public ConsentToKeyIndexRoot getConsentKeyIndexRoot(MidataId id) throws AppException {

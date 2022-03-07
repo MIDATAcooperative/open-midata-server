@@ -112,6 +112,11 @@ public class Feature_Pagination extends Feature {
 			return "paginate("+chain.toString()+")";
 		}
 		
+		@Override
+		public void close() {
+			chain.close();			
+		}
+		
 		
 		
 	}

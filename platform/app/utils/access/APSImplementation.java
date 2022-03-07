@@ -258,14 +258,11 @@ class APSImplementation extends APS {
 
 	@Override
 	public List<DBRecord> query(Query q) throws AppException {
-		List<DBRecord> recs = queryInternal(q);
-		AccessContext c = q.getContext();
-		for (DBRecord r : recs) r.context = c;
-		return recs;
+		return ProcessingTools.collect(queryInternal(q));		
 	}
 	
 	
-	private List<DBRecord> queryInternal(Query q) throws AppException {		
+	private DBIterator<DBRecord> queryInternal(Query q) throws AppException {		
 		merge();		 
 		// AccessLog.logLocalQuery(eaps.getId(), q.getProperties(),
 		// q.getFields() );
@@ -273,17 +270,19 @@ class APSImplementation extends APS {
 		boolean withOwner = q.returns("owner");
 
 		if (eaps.isDirect()) {
+			
 			if (q.isStreamOnlyQuery())
-				return Collections.emptyList();
+				return ProcessingTools.empty();
 			
 			if (q.restrictedBy("quick")) {					
 				DBRecord record = (DBRecord) q.getProperties().get("quick");															
 				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
 				record.security = eaps.getSecurityLevel();
+				record.context = q.getContext();
 				if (withOwner)
 					record.owner = eaps.getOwner(); 
-							
-				return Collections.singletonList(record);
+						
+				return ProcessingTools.singleton(record);
 			}
 			
 			Map<String, Object> query = new HashMap<String, Object>();
@@ -300,32 +299,26 @@ class APSImplementation extends APS {
 			}
 			
 			q.addMongoTimeRestriction(query, false);
-			List<DBRecord> directResult;
+			
 			
 			//if (useCache && cachedRecords != null) {
 			//
 			//	return Collections.unmodifiableList(cachedRecords);
 			//}
 			
-			directResult = DBRecord.getAllList(query, q.getFieldsFromDB());
-			for (DBRecord record : directResult) {
-				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
-				record.security = eaps.getSecurityLevel();
-				if (withOwner)
-					record.owner = eaps.getOwner();
-			}
-			AccessLog.log("direct query stream=",eaps.getId().toString()," #size=", Integer.toString(directResult.size()));
+			DBIterator<DBRecord> directResult = DBRecord.getAllCursor(query, q.getFieldsFromDB());
+			AccessLog.log("direct query stream=",eaps.getId().toString());//," #size=", Integer.toString(directResult.size()));
 			
 			// Disabled: Produces wrong results first call to Observation/$lastn after first record inserted
 			// if (useCache && withOwner) cachedRecords = directResult;
 			
-			return Collections.unmodifiableList(directResult);
+			return new MediumStreamIterator(directResult, this, withOwner, q.getContext());
 		}
 
 		
 		Map<String, Object> permissions = eaps.getPermissions();
 		List<BasicBSONObject> rows = APSEntry.findMatchingRowsForQuery(permissions, q);
-        if (rows == null) return Collections.emptyList();
+        if (rows == null) return ProcessingTools.empty();
         result = new ArrayList<DBRecord>();
 		
 		boolean restrictedById = q.restrictedBy("_id");
@@ -333,6 +326,7 @@ class APSImplementation extends APS {
 			for (MidataId id : q.getMidataIdRestriction("_id")) {
 				for (BasicBSONObject row : rows) {
 					BasicBSONObject map = APSEntry.getEntries(row);
+					//AccessLog.log("map map="+map.toString());
 					BasicBSONObject target = (BasicBSONObject) map.get(id.toString());
 					if (target != null && satisfies(target, q)) {
 						result.add(createRecordFromAPSEntry(id.toString(), row, target, withOwner));
@@ -351,16 +345,16 @@ class APSImplementation extends APS {
 				}
 			}
 		}
-		//AccessLog.log("query APS=" + eaps.getId()+" #size="+result.size());
-		return result;
+		for (DBRecord r : result) r.context = q.getContext();
+		AccessLog.log("query APS=" + eaps.getId()+" #size="+result.size());
+		return new APSIterator(result.iterator(), result.size(), getId());
 	}
 	
 	
 	
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
-		List<DBRecord> result = query(q);
-		return new APSIterator(result.iterator(), result.size(), getId());
+		return queryInternal(q);		
 	}
 
 	static class APSIterator implements DBIterator<DBRecord> {
@@ -388,8 +382,61 @@ class APSImplementation extends APS {
 		public String toString() {
 			return "aps({ id: "+aps.toString()+", size: "+size+"})";
 		}
+
+		@Override
+		public void close() {
+			// TODO Auto-generated method stub
+			
+		}
+								
+		
+	}
+	
+	static class MediumStreamIterator implements DBIterator<DBRecord> {
+		private DBIterator<DBRecord> input;
+		private APSImplementation aps;		
+		private int count;
+		private AccessContext context;
+		private boolean withOwner;
 		
 		
+		public MediumStreamIterator(DBIterator input, APSImplementation aps, boolean withOwner, AccessContext context) {
+			this.input = input;
+			this.aps = aps;
+			this.withOwner = withOwner;
+			this.context = context;
+			count = 0;
+		}
+
+		@Override
+		public DBRecord next() throws AppException {
+			DBRecord record = input.next();
+			
+			record.key = aps.eaps.getAPSKey() != null ? aps.eaps.getAPSKey() : null;
+			record.security = aps.eaps.getSecurityLevel();
+			if (withOwner)
+				record.owner = aps.eaps.getOwner();
+						
+			record.context = context;
+			
+			count++;
+			return record;
+		}
+
+		@Override
+		public boolean hasNext() throws AppException {
+			return input.hasNext();
+		}
+		
+		@Override
+		public void close() {
+			input.close();			
+		}
+		
+		@Override
+		public String toString() {
+			return "medium-stream({ aps:"+aps.getId().toString()+", read:"+count+" })";
+		}
 		
 	}
 

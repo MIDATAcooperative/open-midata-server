@@ -52,6 +52,10 @@ public class ProcessingTools {
 		return EMPTY;
 	}
 	
+	public static <A> DBIterator<A> singleton(A in) {
+		return new IteratorWrapper("singleton", Collections.singletonList(in).iterator());
+	}
+	
 	public static class IteratorWrapper<A> implements DBIterator<A> {
 
 		private Iterator<A> iterator;
@@ -75,7 +79,12 @@ public class ProcessingTools {
 		@Override
 		public String toString() {
 			return title;
-		}						
+		}	
+		
+		@Override
+		public void close() {
+						
+		}
 	}
 	
 	public static DBIterator<DBRecord> sort(Map<String, Object> properties, DBIterator<DBRecord> input) throws AppException {
@@ -120,11 +129,11 @@ public class ProcessingTools {
 
 	public static List<DBRecord> collect(DBIterator<DBRecord> input) throws AppException {
 		List<DBRecord> result = new ArrayList<DBRecord>();
-				
-		while (input.hasNext()) {
-			result.add(input.next());
-			
-		}		
+	    try {	
+			while (input.hasNext()) {
+				result.add(input.next());			
+			}
+	    } finally { input.close(); }
 		AccessLog.log("collected ", Integer.toString(result.size()), " records from ", input.toString());
 		return result;
 	}
@@ -192,6 +201,11 @@ public class ProcessingTools {
 			if (condition) next = candidate; else next = null;
 			return result;
 		}
+		
+		@Override
+		public void close() {
+			chain.close();			
+		}
 
 	}
 
@@ -247,6 +261,11 @@ public class ProcessingTools {
 		@Override
 		public String toString() {
 			return "limit("+max+","+chain.toString()+")";
+		}
+		
+		@Override
+		public void close() {
+			chain.close();			
 		}
 
 	}
@@ -360,6 +379,27 @@ public class ProcessingTools {
 		@Override
 		public String toString() {
 			return "no-hidden(["+passed+"/"+filtered+"] "+chain.toString()+")";
+		}
+
+	}
+	
+   static class FilterStreams extends FilterIterator<DBRecord> {
+		
+
+		public FilterStreams(DBIterator<DBRecord> chain) throws AppException {
+			super(chain);					
+			if (chain.hasNext())
+				next();
+		}
+
+		@Override
+		public boolean contained(DBRecord record) {
+			return record.isStream==null;			
+		}
+		
+		@Override
+		public String toString() {
+			return "no-streams(["+passed+"/"+filtered+"] "+chain.toString()+")";
 		}
 
 	}
@@ -556,7 +596,7 @@ public class ProcessingTools {
 		@Override
 		public boolean contained(DBRecord record) {
 			Object accessVal = record.data;
-			//AccessLog.log("chk: "+accessVal.toString());
+			AccessLog.log("chk: "+accessVal.toString());
 			if (condition.satisfiedBy(accessVal)) {
 				return true;
 			} else if (nomatch != null)
@@ -674,6 +714,11 @@ public class ProcessingTools {
 		public String toString() {
 			return "load([L:"+loaded+",S:"+notloaded+"] "+chain.toString()+")";
 		}
+		
+		@Override
+		public void close() {
+			chain.close();			
+		}
 
 	}
 
@@ -696,6 +741,11 @@ public class ProcessingTools {
 		@Override
 		public boolean hasNext() throws AppException {
 			return input.hasNext();
+		}
+		
+		@Override
+		public void close() {
+			input.close();			
 		}
 		
 		

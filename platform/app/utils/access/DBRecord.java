@@ -203,6 +203,10 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		return Model.getAllList(DBRecord.class, collection, properties, fields, 0);
 	}
 	
+	public static DBIterator<DBRecord> getAllCursor(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAllCursor(DBRecord.class, collection, properties, fields, 0);
+	}
+	
 	/*
 	public static Set<DBRecord> getAllByIds(Set<MidataId> ids, Set<String> fields) throws InternalServerException {
 		return Model.getAll(DBRecord.class, collection, CMaps.map("_id", ids), fields);
