@@ -103,7 +103,7 @@ public class Instances {
 	 * send a clear cache message to all application servers
 	 */
 	public static void cacheClear(String collection, MidataId entry) {	
-		AccessLog.log("broadcast reload collection="+collection);
+		AccessLog.log("broadcast reload collection=", collection);
 		getBroadcast().tell(new ReloadMessage(collection, entry), ActorRef.noSender());
 	}
 	
@@ -173,7 +173,7 @@ class InstanceSync extends AbstractActor {
 
 	public void reload(ReloadMessage msg) throws Exception {
 		try {		
-		   AccessLog.log("Received Reload Message: "+msg.toString());		  
+		   AccessLog.log("Received Reload Message: ", msg.toString());		  
 		   if (msg.collection.equals("plugin")) {
 			   Plugin.cacheRemove(msg.entry);
 		   } else if (msg.collection.equals("content")) {

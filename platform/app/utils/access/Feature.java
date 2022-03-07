@@ -100,6 +100,11 @@ public abstract class Feature {
 		
 		public abstract DBIterator<A> advance(B next) throws AppException;
 		
+		@Override
+		public void close() {
+			chain.close();
+			current.close();
+		}
 		
 		
 	}

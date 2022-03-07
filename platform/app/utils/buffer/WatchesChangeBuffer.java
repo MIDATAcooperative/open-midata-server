@@ -42,7 +42,7 @@ public class WatchesChangeBuffer {
 	 */
 	public void save() {
 		if (addWatchingAps != null) {
-			AccessLog.log("Adding watches for records #recs="+addWatchingAps.size());
+			AccessLog.log("Adding watches for records #recs=", Integer.toString(addWatchingAps.size()));
 			for (Map.Entry<DBRecord, Set<MidataId>> entry : addWatchingAps.entrySet()) {
 				try {
 				  RecordLifecycle.addWatchingAps(entry.getKey(), entry.getValue());
@@ -53,7 +53,7 @@ public class WatchesChangeBuffer {
 			addWatchingAps = null;
 		}
 		if (removeWatchingAps != null) {
-			AccessLog.log("Removing watches for records #recs="+removeWatchingAps.size());
+			AccessLog.log("Removing watches for records #recs=", Integer.toString(removeWatchingAps.size()));
 			for (Map.Entry<DBRecord, Set<MidataId>> entry : removeWatchingAps.entrySet()) {
 				try {
 				   RecordLifecycle.removeWatchingAps(entry.getKey(), entry.getValue());

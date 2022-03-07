@@ -281,7 +281,7 @@ public class KeyManager implements KeySession {
 	}
 	
 	public String login(long expire, boolean persistable) {
-		AccessLog.log("Key-Ring: new session with duration="+expire);
+		AccessLog.log("Key-Ring: new session with duration=", Long.toString(expire));
 		String handle;
 		String passkey;
 		do {
@@ -318,7 +318,7 @@ public class KeyManager implements KeySession {
 					keySessions.put(handle, keyring);
 					session.set(new KeyManagerSession(handle, keyring));
 					keyring.addKey(user.toString(), key);
-					AccessLog.log("Key-Ring: Adding key for executor:"+user.toString());
+					AccessLog.log("Key-Ring: Adding key for executor:", user.toString());
 					return;
 				} else {
 					AccessLog.log("Key-Ring: Internal Sessiontoken used but no user given.");
@@ -332,8 +332,8 @@ public class KeyManager implements KeySession {
 					session.set(new KeyManagerSession(handle, keyring));
 					if (psession.splitkey != null) {
 					  keyring.addKey(psession.user.toString(), EncryptionUtils.applyKey(psession.splitkey, passkey));
-					  AccessLog.log("Key-Ring: Persisted session for executor:"+psession.user.toString());
-					} else AccessLog.log("Key-Ring: Keyless session for executor:"+psession.user.toString());
+					  AccessLog.log("Key-Ring: Persisted session for executor:", psession.user.toString());
+					} else AccessLog.log("Key-Ring: Keyless session for executor:", psession.user.toString());
 					return;
 				}
 			}
@@ -441,7 +441,7 @@ public class KeyManager implements KeySession {
 				byte key[] = pks.getKey(target.toString());
 							
 				if (key == null) {
-					AccessLog.log("no key in memory for user="+target);
+					AccessLog.log("no key in memory for user=", target.toString());
 					throw new AuthException("error.relogin", "Authorization Failure");
 				}
 				

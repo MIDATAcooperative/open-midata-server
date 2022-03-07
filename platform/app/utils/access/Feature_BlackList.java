@@ -88,6 +88,11 @@ public class Feature_BlackList extends Feature {
 			return "blacklist("+chain.toString()+")";
 		}
 		
+		@Override
+		public void close() {
+			chain.close();			
+		}
+		
 	}
 		
 }

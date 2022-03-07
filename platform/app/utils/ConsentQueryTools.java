@@ -66,7 +66,7 @@ public class ConsentQueryTools {
 	}
 	
 	public static void updateSharingQuery(AccessContext context, Consent consent, Map<String, Object> query) throws AppException {
-		AccessLog.logBegin("start update sharing query consent="+consent._id);
+		AccessLog.logBegin("start update sharing query consent=",consent._id.toString());
 		
 		consent.sharingQuery = query;
 		consent.lastUpdated = new Date();

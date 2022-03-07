@@ -77,7 +77,7 @@ import utils.stats.UsageStatsRecorder;
 public class ApplicationTools {
 
 	public static MobileAppInstance installApp(AccessContext context, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm, Set<StudyAppLink> links) throws AppException {
-		AccessLog.logBegin("beginn install app id="+appId+" context="+(context != null ? context.toString() : "null"));
+		AccessLog.logBegin("beginn install app id=",appId.toString()," context=",(context != null ? context.toString() : "null"));
 		Plugin app = PluginLoginCache.getById(appId);
 		if (app == null) throw new InternalServerException("error.internal", "App not found");
 
@@ -145,7 +145,7 @@ public class ApplicationTools {
 	 * @throws AppException
 	 */
 	public static MobileAppInstance refreshOrInstallService(AccessContext context, MidataId serviceAppId, User member,  Set<MidataId> studyConfirm) throws AppException {
-		AccessLog.logBegin("begin refresh or install service:"+serviceAppId);
+		AccessLog.logBegin("begin refresh or install service:", serviceAppId.toString());
 		Set<MobileAppInstance> insts = MobileAppInstance.getActiveByApplicationAndOwner(serviceAppId, member._id, MobileAppInstance.APPINSTANCE_ALL);
 		MobileAppInstance result = null;
 		boolean foundValid = false;
@@ -571,7 +571,7 @@ public class ApplicationTools {
 	
 
 	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
-		AccessLog.logBegin("start refresh app id="+appInstance._id);
+		AccessLog.logBegin("start refresh app id=",appInstance._id.toString());
 		long tStart = System.currentTimeMillis();
 		Plugin app = PluginLoginCache.getById(appId); 
 							
@@ -596,7 +596,7 @@ public class ApplicationTools {
 	}
 
 	public static void removeAppInstance(AccessContext context, MidataId executorId, MobileAppInstance appInstance) throws AppException {
-		AccessLog.logBegin("start remove app instance: "+appInstance._id+" context="+context.toString());
+		AccessLog.logBegin("start remove app instance: ",appInstance._id.toString()," context="+context.toString());
 		// Device or password changed, regenerates consent				
 		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);
 		Plugin app = Plugin.getById(appInstance.applicationId);

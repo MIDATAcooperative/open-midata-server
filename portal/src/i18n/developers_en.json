@@ -337,6 +337,7 @@
   "repository" : {
     "title" : "Code Repository",
     "repository_url" : "Repository URL",
+    "repository_dir" : "(Optional) Subdirectory in repo",
     "repository_token" : "Access Token",
     "repository_date" : "Last deployed at",
     "never" : "Never",

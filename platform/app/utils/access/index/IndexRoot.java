@@ -144,7 +144,7 @@ public class IndexRoot extends TsBaseIndexRoot<IndexKey,IndexMatch> {
 					  else inf.key[keyIdx] = (Comparable) obj;
 					  extract(keyIdx+1, inf, null, null, null, 0, remove);
 					} else {
-					  AccessLog.log("Cannot extract path:"+path);
+					  AccessLog.log("Cannot extract path:", path);
 					}					
 				}				
 			} else if (res != null) {

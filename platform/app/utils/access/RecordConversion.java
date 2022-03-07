@@ -83,7 +83,7 @@ public class RecordConversion {
 		AccessLog.log("start convert");
 		List<Record> result = new ArrayList<Record>(dbrecords.size());
 		for (DBRecord dbrecord : dbrecords) result.add(currentVersionFromDB(dbrecord));
-		AccessLog.log("end convert time="+(System.currentTimeMillis() - now));
+		AccessLog.log("end convert time=", Long.toString(System.currentTimeMillis() - now));
 		return result;
 	}
 	

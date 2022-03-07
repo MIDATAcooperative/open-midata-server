@@ -28,6 +28,7 @@ import java.util.Set;
 import org.bson.BasicBSONObject;
 
 import models.MidataId;
+import models.Record;
 import models.enums.APSSecurityLevel;
 import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
@@ -114,27 +115,25 @@ public class MediumStreamAPS extends APS {
 	}
 
 	@Override
-	public List<DBRecord> query(Query q) throws AppException {
-		List<DBRecord> recs = queryInternal(q);
-		AccessContext c = q.getContext();
-		for (DBRecord r : recs) r.context = c;
-		return recs;
+	public List<DBRecord> query(Query q) throws AppException {	
+		return ProcessingTools.collect(queryInternal(q));
 	}
 	
-	private List<DBRecord> queryInternal(Query q) throws AppException {		
+	private DBIterator<DBRecord> queryInternal(Query q) throws AppException {		
 		
 		List<DBRecord> result = null;
 		boolean withOwner = q.returns("owner");
 		
-		if (q.isStreamOnlyQuery()) return Collections.emptyList();
+		if (q.isStreamOnlyQuery()) return ProcessingTools.empty();
 			
 		if (q.restrictedBy("quick")) {					
 			DBRecord record = (DBRecord) q.getProperties().get("quick");															
 			record.key = encryptionKey;
 			record.security = APSSecurityLevel.MEDIUM;
+			record.context = q.getContext();
 			if (withOwner) record.owner = owner; 
 							
-			return Collections.singletonList(record);
+			return ProcessingTools.singleton(record);
 		}
 			
 		Map<String, Object> query = new HashMap<String, Object>();
@@ -157,26 +156,64 @@ public class MediumStreamAPS extends APS {
 		//		return Collections.unmodifiableList(cachedRecords);
 		//}
 			
-		directResult = DBRecord.getAllList(query, q.getFieldsFromDB());
-		for (DBRecord record : directResult) {
-			record.key = encryptionKey;
-			record.security = APSSecurityLevel.MEDIUM;
-			if (withOwner) record.owner = owner;
-		}
-		AccessLog.log("direct query stream=" + apsId+" #size="+directResult.size());
+		DBIterator<DBRecord> fromDB = DBRecord.getAllCursor(query, q.getFieldsFromDB());		
+		AccessLog.log("direct query stream=", apsId.toString());
 			
 		// Disabled: Produces wrong results first call to Observation/$lastn after first record inserted
 		// if (useCache && withOwner) cachedRecords = directResult;
 			
-		return Collections.unmodifiableList(directResult);
-				//AccessLog.log("query APS=" + eaps.getId()+" #size="+result.size());		
+		return new MediumStreamIterator(fromDB, apsId, q.getContext(), encryptionKey, withOwner ? owner : null);				
+	}
+	
+	static class MediumStreamIterator implements DBIterator<DBRecord> {
+		private DBIterator<DBRecord> input;
+		private MidataId owner;
+		private MidataId apsId;
+		private byte[] encryptionKey;
+		private int count;
+		private AccessContext context;
+		
+		public MediumStreamIterator(DBIterator input, MidataId apsId, AccessContext context, byte[] encryptionKey, MidataId owner) {
+			this.input = input;
+			this.encryptionKey = encryptionKey;
+			this.owner = owner;
+			this.apsId = apsId;
+			this.context = context;
+			count = 0;
+		}
+
+		@Override
+		public DBRecord next() throws AppException {
+			DBRecord record = input.next();
+			record.key = encryptionKey;
+			record.security = APSSecurityLevel.MEDIUM;
+			record.context = context;
+			if (owner != null) record.owner = owner;
+			count++;
+			return record;
+		}
+
+		@Override
+		public boolean hasNext() throws AppException {
+			return input.hasNext();
+		}
+		
+		@Override
+		public void close() {
+			input.close();			
+		}
+		
+		@Override
+		public String toString() {
+			return "medium-stream({ aps:"+apsId.toString()+", read:"+count+" })";
+		}
+		
 	}
 	
 		
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
-		List<DBRecord> result = query(q);
-		return ProcessingTools.dbiterator("aps({id:"+getId()+", size:"+result.size()+"})", result.iterator());
+		return queryInternal(q);		
 	}
 	
 	protected boolean satisfies(BasicBSONObject entry, Query q) {

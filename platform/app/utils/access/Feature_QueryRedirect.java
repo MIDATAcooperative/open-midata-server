@@ -199,14 +199,14 @@ public class Feature_QueryRedirect extends Feature {
 					}
 					combined.put(key, comb);
 					if (comb.isEmpty()) {		
-						AccessLog.log("empty (col/col): "+key);
+						AccessLog.log("empty (col/col): ", key);
 						return null;
 					}
 				 } else {
 					 if ( ((Collection<?>) val1).contains(val2) || ((Collection<?>) val1).contains(val2.toString())) {
 						 combined.put(key, val2);
 					 } else {						 
-						 AccessLog.log("empty (col/val): "+key);
+						 AccessLog.log("empty (col/val): ", key);
 						 return null;
 					 }
 				 }
@@ -214,11 +214,11 @@ public class Feature_QueryRedirect extends Feature {
 					if (val2 instanceof Collection<?>) {
 						if ( ((Collection<?>) val2).contains(val1) || ((Collection<?>) val2).contains(val1.toString())) continue;
 						else {						
-							AccessLog.log("empty (val/col): "+key+" val1="+val1.toString()+" val2="+val2.toString());
+							AccessLog.log("empty (val/col): ", key, " val1=", val1.toString()," val2=", val2.toString());
 							return null;
 						}
 					} else {					
-						AccessLog.log("empty (val/val): "+key);
+						AccessLog.log("empty (val/val): ", key);
 						return null;
 					}
 				}

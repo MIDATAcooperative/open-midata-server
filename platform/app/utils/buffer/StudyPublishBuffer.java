@@ -76,7 +76,7 @@ public class StudyPublishBuffer {
 		if (query != null && query.containsField("target-study")) {
 			Map<String, Object> q = query.toMap(); 
 			MidataId studyId = MidataId.from(q.get("target-study"));
-			AccessLog.log("publishing #recs="+records_to_publish.size()+" to study "+studyId);
+			AccessLog.log("publishing #recs=", Integer.toString(records_to_publish.size()), " to study ", studyId.toString());
 			Object groupObj = q.get("target-study-group");
 			String group = groupObj != null ? groupObj.toString() : null;
 			Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(context.getAccessor(), group, studyId, Sets.create("_id"));

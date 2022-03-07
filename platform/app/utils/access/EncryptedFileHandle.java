@@ -62,7 +62,7 @@ public class EncryptedFileHandle implements UpdateFileHandleSupport {
 	}
 	
 	public void rename(String filename) {
-		AccessLog.log("Rename to: "+filename);
+		AccessLog.log("Rename to: ",filename);
 		try {
 			FileStorage.rename(id.toObjectId(), filename);
 		} catch (MongoGridFSException e) {}

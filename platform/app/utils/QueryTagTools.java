@@ -29,10 +29,10 @@ public class QueryTagTools {
 		if (role.equals(UserRole.MEMBER)) {
 			if (properties.containsKey("data") || properties.containsKey("filter") || fields.contains("data")) {
 				if (properties.containsKey("_id")) {
-				  AccessLog.log("handleSecurityTags role="+role+" clear-hidden");
+				  AccessLog.log("handleSecurityTags role=",role.toString()," clear-hidden");
 				  properties.put("clear-hidden", true);
 				} else {
-				  AccessLog.log("handleSecurityTags role="+role+" remove-hidden");					
+				  AccessLog.log("handleSecurityTags role=",role.toString()," remove-hidden");					
 				  properties.put("remove-hidden", true);
 				}
 			} 

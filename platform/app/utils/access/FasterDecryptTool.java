@@ -76,7 +76,7 @@ public class FasterDecryptTool {
 		
 		AccessLog.logEnd("end accelerate consent access");
 		if (missing.isEmpty()) return;
-		AccessLog.logBegin("start add missing acceleration keys size="+missing.size());
+		AccessLog.logBegin("start add missing acceleration keys size=",Integer.toString(missing.size()));
 		try {
 			for (Consent c : missing) {
 			  APS targetAPS = cache.getAPS(c._id);

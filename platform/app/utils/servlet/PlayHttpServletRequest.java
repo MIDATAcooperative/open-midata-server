@@ -330,7 +330,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 	public Enumeration<String> getHeaders(String arg0) {
 		List<String> headers = request.getHeaders().getAll(arg0);
 		if (headers == null || headers.isEmpty()) {
-			AccessLog.log("header not found:"+arg0);
+			AccessLog.log("header not found:", arg0);
 			if (arg0.toLowerCase().equals("content-type")) return Collections.enumeration(Collections.singleton("application/json+fhir"));
 			return Collections.emptyEnumeration();
 		}

@@ -254,7 +254,7 @@ public class EncryptedAPS {
 		if (aps.unmerged == null) return false;
 		for (AccessPermissionSet a : aps.unmerged) {
 			if (a.keys.get(who.toString()) != null) {
-				AccessLog.log("using accessible subset for user: "+who.toString()+" aps: "+apsId.toString());
+				AccessLog.log("using accessible subset for user: ",who.toString()," aps: ",apsId.toString());
 				EncryptedAPS wrapper = new EncryptedAPS(a, who);
 				wrapper.validate();
 				useAccessibleSubset(wrapper);
@@ -326,7 +326,7 @@ public class EncryptedAPS {
 	private void load() throws InternalServerException {
 		this.aps = AccessPermissionSet.getById(this.apsId);		
 		if (this.aps == null) {
-			AccessLog.log("APS does not exist: aps="+this.apsId.toString());
+			AccessLog.log("APS does not exist: aps=",this.apsId.toString());
 			throw new APSNotExistingException(this.apsId, "APS does not exist:"+this.apsId.toString());						
 		}
 		this.acc_aps = this.aps;
@@ -410,7 +410,7 @@ public class EncryptedAPS {
 	
 	protected void doKeyUpgrade() throws AppException  {
 		
-		AccessLog.logBegin("begin key upgrade:" + getId().toString());
+		AccessLog.logBegin("begin key upgrade:",getId().toString());
 		if (!isValidated) validate();
 		try {
 			byte[] newKey = EncryptionUtils.generateKey();
@@ -449,7 +449,7 @@ public class EncryptedAPS {
 		    	if (aps.permissions == null) throw new NullPointerException();
 		    	aps.encrypted = null;
 			} catch (InternalServerException e) {
-				AccessLog.log("Error decoding APS="+apsId.toString()+" user="+who.toString());
+				AccessLog.log("Error decoding APS=",apsId.toString()," user=",who.toString());
 				throw e;
 			}
 	    }		

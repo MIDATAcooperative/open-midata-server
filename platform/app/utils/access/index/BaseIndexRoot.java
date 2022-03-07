@@ -71,7 +71,7 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 		for (IndexPage<A,B> page : loadedPages.values()) if (page.changed) modified++;
 		if (rootPage.changed) modified += 1;
 		
-		AccessLog.log("Flushing index root, modifiedPages="+modified+" modCount="+modCount);
+		AccessLog.log("Flushing index root, modifiedPages=", Integer.toString(modified), " modCount=", Integer.toString(modCount));
 		
 		if (modified > 1) lockIndex();
 		
@@ -136,7 +136,7 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 	}
 	
 	public Collection<B> lookup(BaseLookup<A> key) throws InternalServerException {
-		AccessLog.log("index lookup: "+key.toString());
+		AccessLog.log("index lookup: ", key.toString());
 		try {
 		  return rootPage.lookup(key);
 		} catch (LostUpdateException e) {

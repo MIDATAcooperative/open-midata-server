@@ -59,7 +59,7 @@ public class PluginDeployment extends AbstractActor {
 	
 	public Pair<Boolean, String> process(File targetDir, List<String> command) {
 		 AccessLog.log("Execute command "+command.toString());
-		 
+		 System.out.println(command.toString());
 		 try {
 			  Process p = new ProcessBuilder(command).directory(targetDir).redirectErrorStream(true).start();
 			  //System.out.println("Output...");
@@ -79,6 +79,7 @@ public class PluginDeployment extends AbstractActor {
 			  AccessLog.log("EXIT VALUE = "+exit);
 			  return Pair.of(exit==0, result.getResult());
 		 } catch (IOException e) {
+			 e.printStackTrace();
 			 return Pair.of(false, "IO Exception");
 		 } catch (InterruptedException e2) {
 			 return Pair.of(false, "Interrupted Exception");
@@ -142,16 +143,18 @@ public class PluginDeployment extends AbstractActor {
 		return process(baseDir, cmd);
 	}
 	
-	public Pair<Boolean, String> doActivate(File baseDir, String filename) {
+	public Pair<Boolean, String> doActivate(File baseDir, File compileDir, String filename) {
 		File dest = new File(baseDir+"/../plugin_active/"+filename);
 		if (!dest.exists()) dest.mkdir();
+		// Keep dist directory deployment
 		File dist = new File(baseDir+"/../plugin_active/"+filename+"/dist");
 		if (!dist.exists()) dist.mkdir();
+				
 		List<String> cmd = new ArrayList<String>();
 		cmd.add("/bin/cp");
 		cmd.add("-r");
-		cmd.add(filename+"/dist");
-		cmd.add("../plugin_active/"+filename);
+		cmd.add(compileDir.getAbsolutePath()+"/dist/.");
+		cmd.add("../plugin_active/"+filename+"/dist");
 		process(baseDir, cmd);
 		cmd.clear();
 		cmd.add("/bin/chmod");
@@ -203,13 +206,18 @@ public class PluginDeployment extends AbstractActor {
 		try {
 		AccessLog.logStart("jobs", "DEPLOY "+action.status+" "+pluginId);
 		
-		Plugin plugin = Plugin.getById(pluginId, Sets.create("filename", "repositoryUrl","repositoryToken"));		
+		Plugin plugin = Plugin.getById(pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken"));		
 		if (plugin.filename.indexOf(".")>=0 || plugin.filename.indexOf("/") >=0 || plugin.filename.indexOf("\\")>=0) return;
 			
 		String deployLocation =  InstanceConfig.getInstance().getConfig().getString("visualizations.path");
-		String targetDir = deployLocation+"/"+plugin.filename;
+		String targetDir1 = deployLocation+"/"+plugin.filename;
+		File targetRepo = new File(targetDir1);
+		if (plugin.repositoryDirectory != null && plugin.repositoryDirectory.trim().length()>0) {
+			if (!plugin.repositoryDirectory.startsWith("/")) targetDir1 += "/";
+			targetDir1 += plugin.repositoryDirectory;
+		}
 		File baseDir = new File(deployLocation);
-		File target = new File(targetDir);
+		File targetCompile = new File(targetDir1);
 		String repo = plugin.repositoryUrl;
 	
 		if (plugin.repositoryToken != null) {
@@ -246,24 +254,24 @@ public class PluginDeployment extends AbstractActor {
 		case CHECKOUT:
 			result(action, DeployPhase.STARTED, Pair.of(true, null));			
 			boolean cont = true;
-			if (target.exists() && target.isDirectory()) {
-				cont = result(action, DeployPhase.REPORT_CHECKOUT, doGitPull(target));
+			if (targetRepo.exists() && targetRepo.isDirectory()) {
+				cont = result(action, DeployPhase.REPORT_CHECKOUT, doGitPull(targetRepo));
 			} else {
 				cont = result(action, DeployPhase.REPORT_CHECKOUT, doGitClone(baseDir, repo, plugin.filename));
 			}
 			if (cont) toSelf(action, DeployPhase.INSTALL);					
 			break;
 		case INSTALL:
-			if (result(action, DeployPhase.REPORT_INSTALL, doInstall(target))) toSelf(action, DeployPhase.AUDIT); 
+			if (result(action, DeployPhase.REPORT_INSTALL, doInstall(targetCompile))) toSelf(action, DeployPhase.AUDIT); 
 			break;
 		case AUDIT:
-			if (result(action, DeployPhase.REPORT_AUDIT, doAudit(target))) toSelf(action, DeployPhase.COMPILE);
+			if (result(action, DeployPhase.REPORT_AUDIT, doAudit(targetCompile))) toSelf(action, DeployPhase.COMPILE);
 			break;
 		case COMPILE:
-			result(action, DeployPhase.REPORT_COMPILE, doBuild(target));
+			result(action, DeployPhase.REPORT_COMPILE, doBuild(targetCompile));
 			break;
 		case PUBLISH:
-			result(action, DeployPhase.FINISHED, doActivate(baseDir, plugin.filename));			
+			result(action, DeployPhase.FINISHED, doActivate(baseDir, targetCompile, plugin.filename));			
 			break;
 		case STARTED:
 			status = getDeployStatus(pluginId, false);

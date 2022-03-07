@@ -183,15 +183,18 @@ public class Feature_AccountQuery extends Feature {
 			while (all.hasNext() && end<blocksize) { sublist.add(all.next());end++; }
 			
 			FasterDecryptTool.accelerate(apscache, sublist);
-			// REMOVE REMOVE
-			//if (pos > 100) throw new NullPointerException();
-			// END
-			AccessLog.log("get consent "+pos+" - "+(pos+end));
+			
+			//AccessLog.log("get consent "+pos+" - "+(pos+end));
 			pos = pos+end;
 			cache = sublist.iterator();			         
 			return cache.next();
 
-		}				
+		}			
+		
+		@Override
+		public void close() {
+		   // Close Consent iteration?			
+		}
 
 	}
 	
@@ -203,9 +206,9 @@ public class Feature_AccountQuery extends Feature {
 		ConsentIterator(Feature next, Query q, List<Consent> consents) throws AppException {	
 			this.next = next;
 			this.query = q;					
-			AccessLog.log("CONSENT ITERATOR from="+q.getFromRecord());
+			
 			if (q.getFromRecord() != null) {
-				
+				AccessLog.log("CONSENT ITERATOR from=",q.getFromRecord().toString());
 				DBRecord r = q.getFromRecord();
 				if (r.context.getOwner() != null) {
 				  MidataId targetOwner = r.context.getOwner();
@@ -215,7 +218,7 @@ public class Feature_AccountQuery extends Feature {
 				  while (it.hasNext()) {					  
 					  Consent c = it.next();
 					  if (c.owner.equals(targetOwner)) {						  
-						  AccessLog.log("ConsentIterator: skipping "+pos+" consents");
+						  AccessLog.log("ConsentIterator: skipping ",Integer.toString(pos)," consents");
 						  init(new BlockwiseConsentPrefetch(q, consents, 105, pos));
 						  return;
 					  }
@@ -280,6 +283,11 @@ public class Feature_AccountQuery extends Feature {
 		@Override
 		public String toString() {
 			return "set-context("+chain.toString()+")";
+		}
+		
+		@Override
+		public void close() {
+			chain.close();			
 		}
 		
 		
@@ -431,12 +439,12 @@ public class Feature_AccountQuery extends Feature {
 				consents =  new ArrayList<Consent>(StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit, withLimit ? (10+MAX_CONSENTS_IN_QUERY) : Integer.MAX_VALUE));		    	
 			} else {
 		    	consents =  new ArrayList<Consent>(StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit, withLimit ? (10+MAX_CONSENTS_IN_QUERY) : Integer.MAX_VALUE));
-		    	AccessLog.log("found consents (participants): "+consents.size());
+		    	AccessLog.log("found consents (participants): ", Integer.toString(consents.size()));
 		    	consents.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, sets.contains("all") ? null : owners, Consent.SMALL, limit));
 			}
 	    	// consents = applyLimit(consents, limit); Alread done by read query
             q.getCache().cache(consents);	    		    
-	    	AccessLog.log("found consents (total): "+consents.size());
+	    	AccessLog.log("found consents (total): ", Integer.toString(consents.size()));
 	    } else if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {			
 			if (sets.contains("shared"))
 				consents = new ArrayList<Consent>(Circle.getAllActiveByMember(q.getCache().getAccountOwner()));

@@ -67,7 +67,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports", "licenceDef", "pseudonymize", "consentObserving", "repositoryUrl", "repositoryDate", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports", "licenceDef", "pseudonymize", "consentObserving", "repositoryUrl", "repositoryDirectory", "repositoryDate", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -354,6 +354,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public String repositoryToken;
 	
 	/**
+	 * Subdirectory in Repository
+	 */
+	public String repositoryDirectory;
+	
+	/**
 	 * Last update from repository
 	 */
 	public long repositoryDate;
@@ -442,7 +447,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	}
 	
 	public void updateRepo() throws InternalServerException {				
-	   setMultiple(collection, Sets.create("repositoryUrl", "repositoryToken"));
+	   setMultiple(collection, Sets.create("repositoryUrl", "repositoryDirectory", "repositoryToken"));
 	   Instances.cacheClear("plugin",  _id);		
 	}
 	

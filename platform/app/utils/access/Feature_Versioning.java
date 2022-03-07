@@ -142,6 +142,13 @@ public class Feature_Versioning extends Feature {
 		public String toString() {
 			return "version("+chain.toString()+")";
 		}
+
+		@Override
+		public void close() {
+			chain.close();			
+		}
+		
+		
     	
     }
 
@@ -330,6 +337,11 @@ public class Feature_Versioning extends Feature {
 		@Override
 		public String toString() {
 			return "history-date([L:"+loaded+",S:"+notloaded+"] "+chain.toString()+")";
+		}
+		
+		@Override
+		public void close() {
+			chain.close();			
 		}
 
 	}

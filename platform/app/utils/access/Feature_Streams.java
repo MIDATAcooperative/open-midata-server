@@ -85,7 +85,7 @@ public class Feature_Streams extends Feature {
 		private int size;
 		private long limit;
 		private boolean noStreamOptimize = false;
-		private List<DBRecord> direct;
+		//private List<DBRecord> direct;
 		
 		StreamCombineIterator(APS next, Query query, DBIterator<DBRecord> streams, List<DBRecord> direct) throws AppException {
 		  	this.next = next;		  			  
@@ -125,17 +125,11 @@ public class Feature_Streams extends Feature {
 					  owner = thisrecord.getStoredOwner();
 					  boolean medium = streamaps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM);
 					  if (limit <= streamaps.getLastChanged()) {
-//						AccessLog.logBegin("start query on stream APS:"+streamaps.getId());
-						 List<DBRecord> rs = streamaps.query(query);
-						 
-					    for (DBRecord r2 : rs) {
-					    	 r2.owner = r.owner;
-					    	fromStream(r, r2, medium);				    	
-					    	//filtered.add(r2);
-					    }
-					    size = rs.size();					   
-
-					    return ProcessingTools.dbiterator("",  rs.iterator());
+						AccessLog.log("start query on stream APS:"+streamaps.getId());
+						DBIterator<DBRecord> rs = streamaps.iterator(query);
+						
+						return new SetOwnerIterator(r, rs, medium);
+					    
 					  }
 					} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }					 	
 				  catch (APSNotExistingException e2) {
@@ -155,6 +149,38 @@ public class Feature_Streams extends Feature {
 		
 		
 	}
+	
+	static class SetOwnerIterator implements DBIterator<DBRecord> {
+		DBIterator<DBRecord> in;
+		DBRecord stream;
+		boolean medium;
+		
+		SetOwnerIterator(DBRecord stream, DBIterator in, boolean medium) {
+			this.in = in;
+			this.stream = stream;
+			this.medium = medium;
+		}
+
+		@Override
+		public DBRecord next() throws AppException {
+			DBRecord result = in.next();
+			result.owner = stream.owner;
+			fromStream(stream, result, medium);
+			
+			return result;
+		}
+
+		@Override
+		public boolean hasNext() throws AppException {
+			return in.hasNext();
+		}
+
+		@Override
+		public void close() {
+			in.close();			
+		}		
+		
+	}
 		
 	
 	@Override
@@ -168,10 +194,11 @@ public class Feature_Streams extends Feature {
 			  // optimization for record lookup queries 
 			  if (q.restrictedBy("quick")) {				  				  				  
 			      DBIterator<DBRecord> records = next.iterator(q);			    
-			      if (records.hasNext()) return records; 
+			      if (records.hasNext()) return records;
+			      AccessLog.log("quick, but not found");
 			  }
 			  
-			  //AccessLog.logBegin("begin single stream query");
+			  AccessLog.log("begin single stream query");
 			  
 			  DBIterator<DBRecord> streams = next.iterator(new Query("single-stream", q.getProperties().get("stream").toString(), CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext(),q ));				
 			  return new StreamCombineIterator(next, q, streams, null);
@@ -179,15 +206,15 @@ public class Feature_Streams extends Feature {
 		}
         		
 		//AccessLog.logBegin("start query on target APS");
-		List<DBRecord> recs = next.query(q);
+		DBIterator<DBRecord> recsIt = next.iterator(q);
 		
 		//AccessLog.log("query on target APS #res="+recs.size());
-		if (recs.isEmpty()) return ProcessingTools.empty();
+		if (!recsIt.hasNext()) return recsIt;
 		
 		boolean includeStreams = q.includeStreams();
 		boolean streamsOnly = q.isStreamOnlyQuery();
 		if (streamsOnly) {
-			
+		    List<DBRecord> recs = ProcessingTools.collect(recsIt);
 			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
 			if (q.restrictedBy("writeable") && q.getProperties().get("writeable").equals("true")) {
 				for (DBRecord r : recs) {
@@ -201,7 +228,7 @@ public class Feature_Streams extends Feature {
 			return ProcessingTools.dbiterator("", filtered.iterator());
 		} else
 		if (q.deepQuery()) {
-			//records = recs;
+			List<DBRecord> recs = ProcessingTools.collect(recsIt);
 			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
 			List<DBRecord> streams = new ArrayList<DBRecord>();
 			Map<MidataId, DBRecord> streamsToFetch = new HashMap<MidataId, DBRecord>();
@@ -233,14 +260,9 @@ public class Feature_Streams extends Feature {
 			
 			return new StreamCombineIterator(next, q, ProcessingTools.dbiterator("", streams.iterator()), filtered);
 			
-		} else if (!includeStreams) {
-			
-			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
-			for (DBRecord record : recs) {
-				if (record.isStream==null) filtered.add(record);
-			}
-			return ProcessingTools.dbiterator("", filtered.iterator());
-		} else return ProcessingTools.dbiterator("", recs.iterator());
+		} else if (!includeStreams) {						
+			return new ProcessingTools.FilterStreams(recsIt);
+		} else return recsIt;
 							
 		
 	}
@@ -282,7 +304,7 @@ public class Feature_Streams extends Feature {
 	
 	private static DBRecord createStream(AccessContext context, MidataId owner, MidataId targetAPS, Map<String, Object> properties,
 			boolean direct) throws AppException {
-		AccessLog.logBegin("begin create Stream: who="+context.getCache().getAccessor().toString()+" direct="+direct+" into="+targetAPS);
+		AccessLog.logBegin("begin create Stream: who=",context.getCache().getAccessor().toString()," direct=",Boolean.toString(direct)," into=",targetAPS.toString());
 		DBRecord result = new DBRecord();
 		result._id = new MidataId();
 		result.owner = owner;
@@ -306,7 +328,7 @@ public class Feature_Streams extends Feature {
 
 		boolean apsDirect = direct;
 		
-		AccessLog.log("provide key by "+apswrapper.getId().toString());
+		AccessLog.log("provide key by ", apswrapper.getId().toString());
 		
 		apswrapper.provideRecordKey(result);
 						
@@ -385,7 +407,7 @@ public class Feature_Streams extends Feature {
 		AccessLog.logBegin("start streams optimization");
 		List<DBRecord> streams = QueryEngine.listInternal(context.getCache(), context.getTargetAps(), context, CMaps.map("owner", "self").map("streams","only"), Sets.create(streamFields));
 		Map<String, List<DBRecord>> ordered = new HashMap<String, List<DBRecord>>();
-		AccessLog.log("found streams: "+streams.size());
+		AccessLog.log("found streams: ", Integer.toString(streams.size()));
 		// Sort streams
 		for (DBRecord stream : streams) {
 			String key = "";
@@ -409,15 +431,15 @@ public class Feature_Streams extends Feature {
 			AccessLog.log(key);
 			List<DBRecord> streamrecs = ordered.get(key);
 			if (streamrecs.size() > 2) {
-				AccessLog.logBegin("start optimize streams :"+key);
+				AccessLog.logBegin("start optimize streams :",key);
 				Map<String, Object> props = CMaps.map("owner","self");
 				for (String field : streamFields) props.put(field, streamrecs.get(0).meta.get(field));
 				List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), context.getTargetAps(), context, props, Sets.create(streamFields,"_id","owner"));
-				AccessLog.log("Number of streams in group="+streamrecs.size());
-				AccessLog.log("Number of records="+recs.size());
+				AccessLog.log("Number of streams in group=", Integer.toString(streamrecs.size()));
+				AccessLog.log("Number of records=", Integer.toString(recs.size()));
 				// Do not optimize for full streams
 				if (recs.size() > 1000) {
-					AccessLog.logEnd("end optimize streams :"+key+" (too many entries)");
+					AccessLog.logEnd("end optimize streams :", key, " (too many entries)");
 					continue;
 				}
 				results.add("stream optimization for "+key);

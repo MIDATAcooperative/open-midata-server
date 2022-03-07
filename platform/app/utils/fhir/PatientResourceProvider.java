@@ -446,26 +446,27 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		builder.restriction("telecom", true, QueryBuilder.TYPE_CODE, "telecom.value");
 		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
 
-		DBIterator<Record> recs = query.executeIterator(info);
-		List<Record> result = new ArrayList<Record>();
-		int limit = params.getCount() != null ? params.getCount() : Integer.MAX_VALUE;
-		while (recs.hasNext() && result.size() <= limit) {
-		    Record record = recs.next();
-			if (record.data == null)
-				continue;
-			Object id = record.data.get("id");
-			// 
-			if (id.equals(record.owner.toString())) {
-				if (record.creator != null && record.creator.equals(record.owner)) record.creator = null; 
-				result.add(record);
-			//AccessLog.log("taken:"+record.content+" / "+record.name);
-			} else {
-				//AccessLog.log(id.toString()+" vs "+record.owner.toString());
-				//AccessLog.log(record.content+" / "+record.name);
+		try (DBIterator<Record> recs = query.executeIterator(info)) {
+			List<Record> result = new ArrayList<Record>();
+			int limit = params.getCount() != null ? params.getCount() : Integer.MAX_VALUE;
+			while (recs.hasNext() && result.size() <= limit) {
+			    Record record = recs.next();
+				if (record.data == null)
+					continue;
+				Object id = record.data.get("id");
+				// 
+				if (id.equals(record.owner.toString())) {
+					if (record.creator != null && record.creator.equals(record.owner)) record.creator = null; 
+					result.add(record);
+				//AccessLog.log("taken:"+record.content+" / "+record.name);
+				} else {
+					//AccessLog.log(id.toString()+" vs "+record.owner.toString());
+					//AccessLog.log(record.content+" / "+record.name);
+				}
 			}
+			AccessLog.log("RESULT AFTER FILTER="+result.size());
+			return result;
 		}
-		AccessLog.log("RESULT AFTER FILTER="+result.size());
-		return result;
 	}
 	
 	@Create

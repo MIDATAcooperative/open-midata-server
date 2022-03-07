@@ -146,7 +146,7 @@ public class FileTypeScanner {
 	public boolean isValidFile(String filename, String mimeType) throws AppException {		
 		if (filename.length() > 255) throw new BadRequestException("error.invalid.filename", "Filename too long.");
 		
-		AccessLog.log("check "+filename+" mimeType="+mimeType);
+		AccessLog.log("check ", filename, " mimeType=", mimeType);
 		int p = filename.lastIndexOf('.');
 		
 		if (p>=0) {

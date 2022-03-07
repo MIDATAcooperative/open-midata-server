@@ -132,11 +132,12 @@ public class ExternPluginDeployment extends AbstractActor {
 		try {
 		AccessLog.logStart("jobs", "DEPLOY "+action.status+" "+pluginId);
 		
-		Plugin plugin = Plugin.getById(pluginId, Sets.create("filename", "repositoryUrl","repositoryToken"));		
+		Plugin plugin = Plugin.getById(pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken"));		
 		if (plugin.filename.indexOf(".")>=0 || plugin.filename.indexOf("/") >=0 || plugin.filename.indexOf("\\")>=0) return;
 					
 		String repo = plugin.repositoryUrl;
 		String filename = plugin.filename;
+		String subdir = plugin.repositoryDirectory;
 	
 		if (plugin.repositoryToken != null) {
 			if (repo.startsWith("https://")) repo = "https://"+plugin.repositoryToken+"@"+repo.substring("https://".length());
