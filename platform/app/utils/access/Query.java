@@ -120,6 +120,24 @@ public class Query {
 		sb.append(properties.toString());
 		AccessLog.log(sb.toString());
 		//AccessLog.logQuery(apsId, properties, fields);
+	}
+	
+	public Query(Query q, String path, Map<String, Object> properties, Set<String> fields) throws AppException {
+		this.properties = new HashMap<String, Object>(q.getProperties());
+		this.properties.putAll(properties);
+		this.fields = fields;
+		this.cache = q.getCache();
+		this.apsId = q.getApsId();			
+		this.context = q.getContext();
+		this.prev = q;
+		this.path = path;
+		process();
+		StringBuilder sb = new StringBuilder();
+		getPath(sb);
+		sb.append(" : ");
+		sb.append(properties.toString());
+		AccessLog.log(sb.toString());
+		//AccessLog.logQuery(apsId, properties, fields);
 	}	
 	
 	public Query withoutTime() throws AppException {
@@ -527,6 +545,7 @@ public class Query {
 		 resolveConstants(properties, context);		 	
 		 
 		 if (fetchFromDB) fieldsFromDB.add("encrypted");
+		 //AccessLog.log("query fetch="+fetchFromDB+" fields="+fields.toString()+" fdb="+fieldsFromDB.toString()+" props="+properties.toString());
 	}
 	
 	public static void resolveConstants(Map<String, Object> properties, AccessContext context) throws AppException {

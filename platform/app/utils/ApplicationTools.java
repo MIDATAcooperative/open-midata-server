@@ -375,7 +375,8 @@ public class ApplicationTools {
 		appInstance.appVersion = app.pluginVersion;
 		appInstance.observers = observers;
 		appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    			
-		appInstance.passcode = MobileAppInstance.hashDeviceId(phrase); 
+		// Not needed anymore. Check deviceId field or read phrase directly from APS
+		// appInstance.passcode = MobileAppInstance.hashDeviceId(phrase); 
 		appInstance.dateOfCreation = new Date();
 		appInstance.lastUpdated = appInstance.dateOfCreation;
 		appInstance.writes = app.writes;
@@ -580,10 +581,14 @@ public class ApplicationTools {
 		//RecordManager.instance.unshareAPS(appInstance._id, executor, Collections.singleton(appInstance._id));
 		
 	    appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);
+	    
+	    // Not needed anymore
+	    /*
 	    if (appInstance.deviceId == null || !appInstance.deviceId.equals(phrase.substring(0,3))) {
 	      AccessLog.log("create passcode");
 		  appInstance.passcode = MobileAppInstance.hashDeviceId(phrase);     	
 	    }
+	    */
 		appInstance.lastUpdated = new Date();
 		AccessContext context = ContextManager.instance.createLoginOnlyContext(executor, member.role, appInstance);
 		RecordManager.instance.shareAPS(context, appInstance.publicKey);
