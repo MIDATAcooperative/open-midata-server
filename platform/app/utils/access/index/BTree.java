@@ -171,6 +171,7 @@ public class BTree<A extends BaseIndexKey<A,B>,B>
                   if (key.compareTo(rootNode.mKeys[i]) == 0) {
                       // Find existing key, overwrite its value only
                       rootNode.mKeys[i] = key;
+                      rootNode.changed = true;
                       --mSize;
                       return;
                   }

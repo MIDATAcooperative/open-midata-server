@@ -30,11 +30,13 @@ import models.Consent;
 import models.MidataId;
 import models.RecordGroup;
 import models.RecordsInfo;
+import models.enums.ConsentType;
 import utils.AccessLog;
 import utils.access.index.StatsIndexKey;
 import utils.access.index.StatsIndexRoot;
 import utils.access.index.StatsLookup;
 import utils.collections.CMaps;
+import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.RequestTooLargeException;
@@ -102,6 +104,7 @@ public class Feature_Stats extends Feature {
 			
 			//try {	
 			Query qnew = q;
+			Query qloc = new Query(q, "info-local", CMaps.map("force-local", true).map("owner", "self"), Sets.create("group", "content", "format", "owner", "app"));
 			 
 			StatsIndexRoot index = q.getCache().getStatsIndexRoot(q.getContext().mustPseudonymize());
 			HashMap<String, StatsIndexKey> map = new HashMap<String, StatsIndexKey>();
@@ -111,14 +114,23 @@ public class Feature_Stats extends Feature {
 				if (oldest > 0) qnew = new Query(q, "info-shared-after", CMaps.map("shared-after", oldest));
 			}
 			
-			for (StatsIndexKey inf : countConsent(q, next, Feature_Indexes.getContextForAps(q, q.getApsId()))) {
+			AccessLog.logBegin("stats count local");
+			for (StatsIndexKey inf : countConsent(qloc, next, Feature_Indexes.getContextForAps(q, q.getApsId()))) {
 				map.put(getKey(inf), inf);
 			}
+			AccessLog.logEnd("stats count local");
 						
 			if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
 				List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(qnew, true, true);
+				AccessLog.log("stats query #consentsToUpdate="+consents.size());
+				boolean forceIndex = false;
 				
-				if (consents.size() > 100) {
+				// Optimizations: Project backchannels share many single records and may be real slow to read
+				if (index==null) {
+					for (Consent c : consents) if (c.type==ConsentType.STUDYRELATED) forceIndex = true;
+				}
+				
+				if (consents.size() > 100 || forceIndex) {
 					if (index==null) {
 						index = IndexManager.instance.getStatsIndex(q.getCache(), q.getCache().getAccountOwner(), q.getContext().mustPseudonymize() ,true);
 					}
@@ -134,7 +146,7 @@ public class Feature_Stats extends Feature {
 				}
 				
 				for (Consent consent : consents) {
-					for (StatsIndexKey inf : countConsent(q, next, Feature_Indexes.getContextForAps(q, consent._id))) {
+					for (StatsIndexKey inf : countConsent(qloc, next, Feature_Indexes.getContextForAps(q, consent._id))) {
 					  map.put(getKey(inf), inf);
 					}
 				}
@@ -239,7 +251,7 @@ public class Feature_Stats extends Feature {
 			}			 													
 		}		
 		
-		if (cached && recs.size()>0 && inf.app!=null) {			
+		if (cached && recs.size()>0 && inf.app!=null && !q.restrictedBy("deleted")) {			
 			BasicBSONObject r = new BasicBSONObject();			
 			r.put("formats", inf.format);
 			r.put("contents", inf.content);

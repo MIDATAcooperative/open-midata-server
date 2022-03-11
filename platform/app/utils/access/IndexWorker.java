@@ -103,6 +103,7 @@ public class IndexWorker extends AbstractActor {
 					cache = ContextManager.instance.createSessionForDownloadStream(executor, UserRole.ANY).getCache();			
 				}
 				if (idx == null) idx = IndexManager.instance.findIndex(pseudo, indexId);
+				if (idx == null) return;
 				if (root == null) {
 					if (idx.formats.contains("_streamIndex")) {
 					   root = new StreamIndexRoot(pseudo.getKey(), idx, false);

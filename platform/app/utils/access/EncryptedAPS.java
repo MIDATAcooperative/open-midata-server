@@ -54,6 +54,7 @@ public class EncryptedAPS {
 	private boolean isValidated = false;
 	private boolean keyProvided = false;
 	private boolean notStored = false;
+	private boolean unmergedSubAPS = false;
 	private List<EncryptedAPS> sublists;
 	private AccessPermissionSet acc_aps;		
 		
@@ -242,6 +243,7 @@ public class EncryptedAPS {
 	
 	protected void useAccessibleSubset(EncryptedAPS subeaps) {
 		if (sublists == null) sublists = new ArrayList<EncryptedAPS>();
+		subeaps.unmergedSubAPS = true;
 		sublists.add(subeaps);
 		acc_aps = subeaps.aps;
 	}
@@ -268,6 +270,7 @@ public class EncryptedAPS {
 		List<EncryptedAPS> result = new ArrayList<EncryptedAPS>();
 		for (AccessPermissionSet subaps : aps.unmerged) {				
 		   EncryptedAPS encsubaps = new EncryptedAPS(subaps, who);
+		   encsubaps.unmergedSubAPS = true;
 		   encsubaps.validate();
 		   result.add(encsubaps);
 		}	
@@ -295,6 +298,7 @@ public class EncryptedAPS {
 		if (!aps.security.equals(APSSecurityLevel.NONE)) {
 			if (sublists != null) {
 				for (EncryptedAPS subeaps : sublists) {
+					subeaps.unmergedSubAPS = true;
 					subeaps.encodeAPS();
 					subeaps.aps.permissions = null;
 				}		
@@ -403,7 +407,7 @@ public class EncryptedAPS {
 	
 	public boolean needsKeyUpgrade() throws InternalServerException {
 		if (isLoaded() && isAccessable() && aps.security == APSSecurityLevel.HIGH && owner != null &&
-				(apsId.equals(owner) || aps.consent)) {			
+				(apsId.equals(owner) || aps.consent) && !unmergedSubAPS) {			
 			return EncryptionUtils.isDeprecatedKey(encryptionKey);
 		} else return false;
 	}

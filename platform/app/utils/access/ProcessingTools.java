@@ -596,7 +596,7 @@ public class ProcessingTools {
 		@Override
 		public boolean contained(DBRecord record) {
 			Object accessVal = record.data;
-			AccessLog.log("chk: "+accessVal.toString());
+			//AccessLog.log("chk: "+accessVal.toString());
 			if (condition.satisfiedBy(accessVal)) {
 				return true;
 			} else if (nomatch != null)

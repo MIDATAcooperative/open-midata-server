@@ -28,7 +28,7 @@ public class Feature_ManyUserNoRestriction extends Feature {
 		if (q.getApsId().equals(q.getCache().getAccountOwner()) &&
 		    !q.restrictedBy("index") &&
 			!q.restrictedBy("_id") &&
-			(q.restrictedBy("format") || q.restrictedBy("content")) &&
+			(q.restrictedBy("format") || q.restrictedBy("content") || q.restrictedBy("app")) &&
 		    !q.restrictedBy("created-after") &&
 			!q.restrictedBy("updated-after") &&
 			!q.restrictedBy("shared-after") &&
@@ -43,7 +43,7 @@ public class Feature_ManyUserNoRestriction extends Feature {
 					if (index2!=null) AccessLog.log("INDEX 2 = "+index2.getModel().getId().toString()+" "+index2.getModel().pseudonymize);
 					if (index != null || index2 != null) {*/						
 						Feature calcStats = new Feature_Stats(new Feature_ProcessFilters(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))));
-						Query q2 = new Query(q, "find-many", CMaps.map(), q.getApsId(), new IndexAccessContext(q.getCache(), false));
+						Query q2 = new Query(q, "find-many", CMaps.map("deleted", true).map("no-postfilter-streams", true), q.getApsId(), new IndexAccessContext(q.getCache(), false));
 						DBIterator<DBRecord> recs = calcStats.iterator(q2);		
 						Set<String> owner = new HashSet<String>();
 						int count = 0;
