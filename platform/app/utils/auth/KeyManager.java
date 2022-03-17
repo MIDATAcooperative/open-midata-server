@@ -44,6 +44,8 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import org.bson.BSONObject;
+
 import akka.japi.Pair;
 import models.KeyInfo;
 import models.KeyInfoExtern;
@@ -55,7 +57,10 @@ import models.User;
 import models.UserGroup;
 import utils.AccessLog;
 import utils.access.EncryptionUtils;
+import utils.access.RecordManager;
+import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
@@ -196,6 +201,16 @@ public class KeyManager implements KeySession {
 	 */
 	public byte[] generateKeypairAndReturnPublicKey(MidataId target) throws InternalServerException {
 		return generateKeypairAndReturnPublicKey(target, null);
+	}
+	
+	public void backupKeyInAps(AccessContext context, MidataId target) throws AppException {
+		KeyManagerSession current = session.get();
+		current.backupKeyInAps(context, target);
+	}
+	
+	public boolean recoverKeyFromAps(AccessContext context, MidataId target) throws AppException {
+		KeyManagerSession current = session.get();
+		return current.recoverKeyFromAps(context, target);
 	}
 	
 	/**
@@ -733,6 +748,20 @@ public class KeyManager implements KeySession {
 			
 			return split.first();
 			
+		}
+		
+		public void backupKeyInAps(AccessContext context, MidataId target) throws AppException {
+			RecordManager.instance.setMeta(context, target, "_pk", CMaps.map("key", pks.getKey(target.toString())));
+		}
+		
+		public boolean recoverKeyFromAps(AccessContext context, MidataId target) throws AppException {
+			BSONObject o = RecordManager.instance.getMeta(context, target, "_pk");
+			if (o != null) {
+				byte[] key = (byte[]) o.get("key");
+				pks.addKey(target.toString(), key);
+				return true;
+			}
+			return false;
 		}
 		
 		public void newFutureLogin(MidataId user, byte[] pubkey) throws AuthException, InternalServerException {

@@ -186,7 +186,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			convertToR4(consentToConvert, consentToConvert.fhirConsent);
 		}
 		IParser parser = ctx().newJsonParser();
-		AccessLog.log(consentToConvert.fhirConsent.toString());
+		//AccessLog.log(consentToConvert.fhirConsent.toString());
 		org.hl7.fhir.r4.model.Consent p = parser.parseResource(getResourceType(), consentToConvert.fhirConsent.toString());		
 		
 		if (consentToConvert.sharingQuery == null) Circles.fillConsentFields(context, Collections.singleton(consentToConvert), Sets.create("sharingQuery"));

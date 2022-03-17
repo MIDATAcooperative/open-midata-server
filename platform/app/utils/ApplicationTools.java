@@ -430,7 +430,7 @@ public class ApplicationTools {
 		meta.put("phrase", phrase);
 		if (context == null) context = ContextManager.instance.createLoginOnlyContext(appInstance._id, UserRole.ANY, appInstance);
 		RecordManager.instance.setMeta(context, appInstance._id, "_app", meta);
-		
+		KeyManager.instance.backupKeyInAps(context, appInstance._id);
 		// Write access filter into APS *
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
 			appInstance.sharingQuery = app.defaultQuery;
@@ -574,26 +574,20 @@ public class ApplicationTools {
 	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
 		AccessLog.logBegin("start refresh app id=",appInstance._id.toString());
 		long tStart = System.currentTimeMillis();
-		Plugin app = PluginLoginCache.getById(appId); 
-							
-		//appInstance = MobileAppInstance.getById(appInstance._id, Sets.create(MobileAppInstance.APPINSTANCE_ALL, "fhirConsent"));
-		
-		//RecordManager.instance.unshareAPS(appInstance._id, executor, Collections.singleton(appInstance._id));
-		
-	    appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);
-	    
-	    // Not needed anymore
-	    /*
-	    if (appInstance.deviceId == null || !appInstance.deviceId.equals(phrase.substring(0,3))) {
-	      AccessLog.log("create passcode");
-		  appInstance.passcode = MobileAppInstance.hashDeviceId(phrase);     	
-	    }
-	    */
-		appInstance.lastUpdated = new Date();
 		AccessContext context = ContextManager.instance.createLoginOnlyContext(executor, member.role, appInstance);
-		RecordManager.instance.shareAPS(context, appInstance.publicKey);
-		appInstance.updateLoginInfo();
-					
+		
+		Plugin app = PluginLoginCache.getById(appId); 
+		
+		if (!KeyManager.instance.recoverKeyFromAps(context, appInstance._id)) {
+	      appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);
+	      KeyManager.instance.backupKeyInAps(context, appInstance._id);
+		  appInstance.lastUpdated = new Date();		
+		  RecordManager.instance.shareAPS(context, appInstance.publicKey);
+		  appInstance.updateLoginInfo();
+		} else {
+		  appInstance.lastUpdated = new Date();
+		  appInstance.set(appInstance._id, "lastUpdated", appInstance.lastUpdated);
+		}
 		AuditManager.instance.success();
 		AccessLog.logEnd("end refresh app time="+(System.currentTimeMillis()-tStart));
 		return appInstance;
