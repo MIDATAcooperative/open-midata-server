@@ -937,7 +937,7 @@ public class OAuth2 extends Controller {
 	}
 	
 	public static Result loginHelper(Request request, ExtendedSessionToken token, JsonNode json, Plugin app, AccessContext currentContext) throws AppException {
-
+        long ts1 = System.currentTimeMillis();
 		AccessLog.log("[login] gather information");
 		token.currentContext = currentContext;		
 		
@@ -974,8 +974,8 @@ public class OAuth2 extends Controller {
 			AccessLog.log("is fake login");			
 		    return Application.loginHelperResult(request, token, user, Collections.singleton(UserFeature.EMAIL_VERIFIED));
 		}
-		
-		AccessLog.log("[login] check preconditions");
+		long ts2 = System.currentTimeMillis();
+		AccessLog.log("[login] check preconditions, time=",Long.toString(ts2-ts1));
 		
 		Result pw = checkPasswordAuthentication(token, json, user);
 		if (pw != null) return pw;
@@ -985,7 +985,8 @@ public class OAuth2 extends Controller {
 		
 		notok = Application.loginHelperPreconditionsFailed(user, requirements);
 	    
-		AccessLog.log("[login] preparing session");
+		long ts3 = System.currentTimeMillis();
+		AccessLog.log("[login] preparing session, time=", Long.toString(ts3-ts2));
 	 
 		int keyType;
 		if (token.handle != null) {			
@@ -1042,7 +1043,8 @@ public class OAuth2 extends Controller {
 			
 		checkJoinWithCode(token, links);
 				
-		AccessLog.log("[login] do");
+		long ts4 = System.currentTimeMillis();
+		AccessLog.log("[login] do, time=", Long.toString(ts4-ts3));
 		
 		if (app != null) {
 			token.currentContext = keyType == KeyManager.KEYPROTECTION_NONE ? ContextManager.instance.createLoginOnlyContext(user._id, user.role) : null;
@@ -1061,6 +1063,8 @@ public class OAuth2 extends Controller {
 			
 			AuditManager.instance.success();
 					
+			long ts5 = System.currentTimeMillis();
+			AccessLog.log("[login] done app, time=", Long.toString(ts5-ts4));
 			return ok(obj);
 		} else {
 			AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
@@ -1087,6 +1091,8 @@ public class OAuth2 extends Controller {
 			User.set(user._id, "login", new Date());			    
 			AuditManager.instance.success();
 			
+			long ts5 = System.currentTimeMillis();
+			AccessLog.log("[login] done, time=", Long.toString(ts5-ts4));
 			return ok(obj).as("application/json");
 		}
 	}

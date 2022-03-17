@@ -273,7 +273,11 @@ public class Feature_Stats extends Feature {
 		
 		Query q2 = hasFilter 
 				   ? new Query(q, "info-streams", CMaps.map("owner","self"))
-				   : new Query(q, "info-streams", CMaps.map("flat",true).map("streams","true").map("owner","self"));
+				   : (
+					  q.restrictedBy("fast-stats") ?
+						new Query(q, "info-streams", CMaps.map("deleted", true).map("flat",true).map("streams","true").map("owner","self"))
+					 :  new Query(q, "info-streams", CMaps.map("flat",true).map("streams","true").map("owner","self"))
+					);
 		
 		HashMap<String, StatsIndexKey> map = new HashMap<String, StatsIndexKey>();		
 		List<DBRecord> toupdate = qm.query(q2);

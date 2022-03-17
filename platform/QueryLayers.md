@@ -18,6 +18,7 @@
 - from : id of first record to return
 - format : restrict by FHIR resource type
 - fast-index : do not update index if index query result is not empty
+- fast-stats : may also count deleted records which is faster
 - force-local : process only APS of current user
 - group : content groups to include
 - group-system : grouping system to use. (only 'v1' supported at the moment)
@@ -151,6 +152,7 @@ handled query predicates:
 
 added query predicates:
 - (statistics query)
+- fast-stats
 
 ## Layer: Indexes
 
