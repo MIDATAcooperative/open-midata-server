@@ -106,9 +106,10 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	 */
 	@Read()
 	public Group getResourceById(@IdParam IIdType theId) throws AppException {
-		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
-		UserGroup group = UserGroup.getById(MidataId.from(theId.getIdPart()), UserGroup.FHIR);	
-		if (group != null) return readGroupFromMidataUserGroup(group, true);
+		if (checkAccessible()) {
+			UserGroup group = UserGroup.getById(MidataId.from(theId.getIdPart()), UserGroup.FHIR);	
+			if (group != null) return readGroupFromMidataUserGroup(group, true);
+		}
 		return super.getResourceById(theId);		
 	}
 	

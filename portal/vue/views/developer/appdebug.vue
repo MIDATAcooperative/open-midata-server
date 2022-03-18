@@ -146,6 +146,7 @@ import ChangeLog from "components/tiles/ChangeLog.vue"
 import Panel from "components/Panel.vue"
 import session from "services/session.js"
 import server from "services/server.js"
+import crypto from "services/crypto.js"
 import apps from "services/apps.js"
 import { rl, status, ErrorBox, FormGroup, Password } from 'basic-vue3-components'
 import ENV from "config";
