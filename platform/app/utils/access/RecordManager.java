@@ -1400,6 +1400,9 @@ public class RecordManager {
 		
 		APSCache cache = context.getCache();
 				
+		if (context.getOwner().equals(RuntimeConstants.instance.publicUser)) {					
+			RecordManager.instance.shareAPS(context, Collections.singleton(RuntimeConstants.publicGroup));	
+		}
 		
 		AccessLog.logBegin("start search for missing records");
 		checkRecordsInAPS(context, userId, true, "account:", msgs);		
@@ -1453,11 +1456,11 @@ public class RecordManager {
 		fields.add("owner");
 		fields.addAll(APSEntry.groupingFields);
 		fields.add("consentAps");
-		List<DBRecord> streams = QueryEngine.listInternal(cache, userId, context.internal(), CMaps.map("owner", "self").map("streams", "only").map("flat", "true"), fields);
+		List<DBRecord> streams = QueryEngine.listInternal(cache, userId, context, CMaps.map("owner", "self").map("streams", "only").map("flat", "true"), fields);
 		
 		List<DBRecord> emptyStreams = new ArrayList<DBRecord>();
 		for (DBRecord str : streams) {
-			List<DBRecord> testRec = QueryEngine.listInternal(cache, str._id, context.internal(), CMaps.map("limit", 1), Sets.create("_id"));
+			List<DBRecord> testRec = QueryEngine.listInternal(cache, str._id, context, CMaps.map("limit", 1), Sets.create("_id"));
 			if (testRec.size() == 0) {
 				emptyStreams.add(str);
 			}
@@ -1482,7 +1485,7 @@ public class RecordManager {
 	public void checkRecordsInAPS(AccessContext context, MidataId apsId, boolean instreams, String prefix, List<String> results) throws AppException {		
 		APSCache cache = context.getCache();
 		AccessLog.logBegin("check records in APS:",apsId.toString());
-		List<DBRecord> recs = QueryEngine.listInternal(cache, apsId, context.internal(), CMaps.map("owner", "self").map("streams", "only").map("flat", "true"), Sets.create("_id"));
+		List<DBRecord> recs = QueryEngine.listInternal(cache, apsId, context, CMaps.map("owner", "self").map("streams", "only").map("flat", "true"), Sets.create("_id"));
 		Set<String> idOnly = Sets.create("_id");
 		for (DBRecord rec : recs) {
 			if (DBRecord.getById(rec._id, idOnly) == null) {				
@@ -1498,7 +1501,7 @@ public class RecordManager {
 			}			
 		}
 		
-		recs = QueryEngine.listInternal(cache, apsId, context.internal(), CMaps.map("owner", "self"), Sets.create("_id"));		
+		recs = QueryEngine.listInternal(cache, apsId, context, CMaps.map("owner", "self"), Sets.create("_id"));		
 		for (DBRecord rec : recs) {
 			if (DBRecord.getById(rec._id, idOnly) == null) {
 				if (instreams && rec.stream != null) cache.getAPS(rec.stream, rec.owner).removePermission(rec);

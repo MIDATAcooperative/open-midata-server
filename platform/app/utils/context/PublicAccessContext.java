@@ -103,4 +103,11 @@ public class PublicAccessContext extends AccessContext {
 		return "Public Data Access";
 	}
 
+	@Override
+	public AccessContext forPublic() throws AppException {
+		return this;
+	}
+		
+	
+
 }
