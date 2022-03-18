@@ -143,18 +143,19 @@ public class Researchers extends APIController {
 		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 		  
 		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
-		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
+		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);
+		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.RESEARCH, null);
 		if (research != null) {
 			  Research.add(research);
-			  user.organization = research._id;
+			  user.organization = research._id;			 
 		}
 		ResearchUser.add(user);
-		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.RESEARCH, null);
+		
 		KeyManager.instance.newFutureLogin(user);	
 		PWRecovery.storeRecoveryData(user._id, recover);
 			
-		RecordManager.instance.createPrivateAPS(null, user._id, user._id);
-						
+		RecordManager.instance.createPrivateAPS(context.getCache(), user._id, user._id);
+		OrganizationResourceProvider.updateFromResearch(context, research);		
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 			

@@ -297,7 +297,7 @@ public class MongoDatabase extends Database {
 		try {
 			Bson query = toDBObject(modelClass, properties);
 			Bson projection = toDBObject(fields);
-			if (logQueries) AccessLog.logDB("all ",collection," ",query.toString());
+			if (logQueries) AccessLog.logDB("iter ",collection," ",query.toString());
 			FindIterable<DBObject> cursor = getCollection(collection).find(query).projection(projection);
 			if (sortField != null) cursor = cursor.sort(new BasicDBObject(sortField, order));
 			if (limit!=0) cursor = cursor.limit(limit);			

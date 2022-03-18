@@ -335,7 +335,7 @@ public class AccountPatches {
 		KeyManager.instance.login(1000l*60l*60l, false);
 		KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
 		MidataId executor = RuntimeConstants.instance.publicUser;
-		AccessContext session = ContextManager.instance.createRootPublicUserContext();
+		AccessContext session = ContextManager.instance.createRootPublicGroupContext();
 		Set<Research> res = Research.getAll(CMaps.map(), Research.ALL);
 		for (Research research : res) {
 			RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", research._id).map("format","fhir/Organization"));
