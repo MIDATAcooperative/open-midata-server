@@ -17,9 +17,12 @@
 
 package utils.context;
 
+import java.util.Map;
+
 import models.MidataId;
 import models.Record;
 import utils.access.DBRecord;
+import utils.collections.CMaps;
 import utils.exceptions.AppException;
 
 /**
@@ -109,6 +112,18 @@ public class SingleRecordAccessContext extends AccessContext {
 	public MidataId getSingleReadableRecord() {
 		return recordId;
 	}
+	
+	@Override
+	public String toString() {
+		return "single-record("+recordId+" "+parentString()+")";
+	}
+
+	@Override
+	public Map<String, Object> getQueryRestrictions() {
+		return CMaps.map("force-local", true);
+	}
+	
+	
 	
 	
 }

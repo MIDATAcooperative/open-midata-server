@@ -107,7 +107,7 @@ export default {
 	               then(function(results) {
 		           if (results.data) {
 		           console.log(results.data);
-		               if (record.content=="PseudonymizedPatient") results.data.id = record.data.id;
+		               if (record.content=="PseudonymizedPatient" || record.content=="Patient" ) results.data.id = record.data.id;
                        var url = spaces.mainUrl(results.data, getLocale());          
 		               $data.url = url;
 		           }
