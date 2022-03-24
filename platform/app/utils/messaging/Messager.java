@@ -37,6 +37,7 @@ import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.stats.ActionRecorder;
 
 
 public class Messager {
@@ -201,6 +202,8 @@ class MailSender extends AbstractActor {
 	}
 		
 	public void receiveMessage(Message msg) throws Exception {
+		String path = "MailSender/receiveMessage";
+		long st = ActionRecorder.start(path);
 		try {		
 		    AccessLog.logStart("jobs", "send email");
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
@@ -211,6 +214,7 @@ class MailSender extends AbstractActor {
 			throw e;
 		} finally {
 			ServerTools.endRequest();			
+			ActionRecorder.end(path, st);
 		}
 	}
 	
@@ -229,6 +233,8 @@ class SMSSender extends AbstractActor {
 	}
 		
 	public void sendSMS(SMS msg) throws Exception {
+		String path = "SMSSender/sendSMS";
+		long st = ActionRecorder.start(path);
 		try {	
 			AccessLog.logStart("jobs", "send SMS");
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
@@ -238,7 +244,8 @@ class SMSSender extends AbstractActor {
 			ErrorReporter.report("Messager (SMS)", null, e);	
 			throw e;
 		} finally {
-			ServerTools.endRequest();			
+			ServerTools.endRequest();	
+			ActionRecorder.end(path, st);
 		}
 	}
 	

@@ -33,6 +33,7 @@ import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.stats.ActionRecorder;
 
 public class ExternPluginDeployment extends AbstractActor {
 
@@ -126,7 +127,10 @@ public class ExternPluginDeployment extends AbstractActor {
 		System.out.println("failed");
 	}
 	
-	public void deploy(DeployAction action) throws AppException {		
+	public void deploy(DeployAction action) throws AppException {
+		String path = "ExternPluginDeployment/deploy";
+		long st = ActionRecorder.start(path);
+		
 		MidataId pluginId = action.pluginId;
 		System.out.println("DEPLOY START: "+action.status);
 		try {
@@ -238,6 +242,7 @@ public class ExternPluginDeployment extends AbstractActor {
 		}
 		} finally {
 			ServerTools.endRequest();
+			ActionRecorder.end(path, st);
 		}
 	}
 }

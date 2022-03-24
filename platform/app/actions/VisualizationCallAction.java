@@ -34,6 +34,7 @@ import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 import utils.exceptions.RequestTooLargeException;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.ActionRecorder;
 import utils.stats.Stats;
 
 
@@ -63,6 +64,8 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
 	@Override
     public CompletionStage<Result> call(Request request) { 
     	long startTime = System.currentTimeMillis();
+    	String path = "(Plugin) ["+request.method()+"] "+request.path();
+    	long st = ActionRecorder.start(path);
     	String origin = null;
     	try {    	  
     		
@@ -76,7 +79,7 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     	  if (host==null) return withHeaders(origin, CompletableFuture.completedFuture((Result) badRequest("missing http host header")));
     	      	  
     	  try {
-    		  AccessLog.logStart("api", "(Plugin) ["+request.method()+"] "+request.path());
+    		  AccessLog.logStart("api", path);
               return withHeaders(origin, delegate.call(request));
       	  } catch (RuntimeException ex) {
       		  if (ex.getCause() != null) throw (Exception) ex.getCause(); else throw ex;
@@ -121,7 +124,7 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
 			}	
 			
 			ServerTools.endRequest();
-			
+			ActionRecorder.end(path, st);
 					
 		}
     }

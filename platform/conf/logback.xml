@@ -23,6 +23,13 @@
       <pattern>%date [%level/%thread]: %message%n%xException</pattern>
     </encoder>
   </appender>
+  
+  <appender name="FILE_ACTIONS" class="ch.qos.logback.core.FileAppender">
+    <file>/var/log/midata/actions.log</file>
+    <encoder>
+      <pattern>%message%n%xException</pattern>
+    </encoder>
+  </appender>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
@@ -42,12 +49,17 @@
     <appender-ref ref="FILE_JOBS" />
   </appender>
   
+  <appender name="ASYNCFILE_ACTIONS" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="FILE_ACTIONS" />
+  </appender>
+  
   <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
     <appender-ref ref="STDOUT" />
   </appender>
 
   <logger name="play" level="INFO" />
   <logger name="application" level="DEBUG" />
+  <logger name="akka" level="INFO" />
   
   <logger name="index" level="DEBUG" additivity="false">
     <appender-ref ref="ASYNCFILE_INDEX" />
@@ -55,6 +67,10 @@
   
   <logger name="jobs" level="DEBUG" additivity="false">
     <appender-ref ref="ASYNCFILE_JOBS" />
+  </logger>
+  
+  <logger name="actions" level="DEBUG" additivity="false">
+    <appender-ref ref="ASYNCFILE_ACTIONS" />
   </logger>
 
   <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->

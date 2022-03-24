@@ -37,6 +37,7 @@ import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.ActionRecorder;
 
 /**
  * Default wrapper for requests done by the portal
@@ -63,12 +64,14 @@ public class APICallAction extends Action<APICall> {
 	@Override
     public CompletionStage<Result> call(Request request) {
     	long startTime = System.currentTimeMillis();
+    	final String path = "(Portal) ["+request.method()+"] "+request.path();
+    	long st = ActionRecorder.start(path);
     	try {    		    	
     	  //JsonNode json = request.body().asJson();
     	  //request.args.put("json", json);
     	      	  
     	  String host = request.header("Host").orElse(null);   
-    	  System.out.println("host="+host);
+    	  //System.out.println("host="+host);
     	  //System.out.println("B:"+InstanceConfig.getInstance().getDefaultHost());
     	  if (host==null) return CompletableFuture.completedFuture((Result) badRequest("missing http host header"));
     	  /*if (!(
@@ -76,9 +79,10 @@ public class APICallAction extends Action<APICall> {
     	  )) {    		  
     		  return withHeaders(CompletableFuture.completedFuture((Result) badRequest("http host header error")));
     	  }*/
-    	      	  
-    	  try {
-    		AccessLog.logStart("api", "(Portal) ["+request.method()+"] "+request.path());    	
+    	    	  
+    	  try {    		
+    		
+    		AccessLog.logStart("api", path);    	
             return withHeaders(delegate.call(request));
     	  } catch (RuntimeException ex) {
     		  if (ex.getCause() != null) throw (Exception) ex.getCause(); else throw ex;
@@ -138,8 +142,9 @@ public class APICallAction extends Action<APICall> {
 			if (endTime - startTime > 1000l * 4l) {
 				 ErrorReporter.reportPerformance("Portal", request, endTime - startTime);
 			}	
+			
 			ServerTools.endRequest();
-					
+			ActionRecorder.end(path, st);		
 		}
     	
     	

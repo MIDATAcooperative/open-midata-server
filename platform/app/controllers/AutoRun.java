@@ -74,6 +74,7 @@ import utils.messaging.MailUtils;
 import utils.messaging.MessageResponse;
 import utils.messaging.SubscriptionProcessor;
 import utils.messaging.SubscriptionTriggered;
+import utils.stats.ActionRecorder;
 import utils.sync.Instances;
 
 /**
@@ -278,7 +279,8 @@ public class AutoRun extends APIController {
 		      .build();
 		}
 				
-		public void doImport(ImportRequest request) throws Exception {		    
+		public void doImport(ImportRequest request) throws Exception {	
+			    long st = ActionRecorder.start("AutoRun/import");
 		    	try {	
 		    		AccessLog.logStart("jobs", request.toString());
 			    	KeyManager.instance.continueSession(request.handle);
@@ -369,7 +371,8 @@ public class AutoRun extends APIController {
 		    		ErrorReporter.report("Autorun-Service", null, e);	
 		    		throw e;
 		    	} finally {
-		    		ServerTools.endRequest();		    		
+		    		ServerTools.endRequest();	
+		    		ActionRecorder.end("AutoRun/import", st);
 		    	}		    
 		}
 		
@@ -478,6 +481,8 @@ public class AutoRun extends APIController {
 		}
 		
 		public void startImport(StartImport message) throws Exception {
+			String path = "AutoRun/startImport";
+			long st = ActionRecorder.start(path);
 			
 			if (!reportSend) reportEnd();
 			
@@ -581,13 +586,16 @@ public class AutoRun extends APIController {
 				ErrorReporter.report("Autorun-Service", null, e);	
 				throw e;
 			} finally {
-				ServerTools.endRequest();				
+				ServerTools.endRequest();	
+				ActionRecorder.end(path, st);
 			}
 
 		}
 		
 public void startIntradayImport(StartIntradayImport message) throws Exception {
 			if (autoImportsIt != null || datasIt != null) return;
+			String path = "AutoRun/startIntradayImport";
+			long st = ActionRecorder.start(path);
 				
 			if (speedControl != null) {
 				speedControl.cancel();
@@ -646,15 +654,15 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				ErrorReporter.report("Autorun-Service", null, e);	
 				throw e;
 			} finally {
-				ServerTools.endRequest();				
+				ServerTools.endRequest();		
+				ActionRecorder.end(path, st);
 			}
 
 		}
 		
-		public void importTick(ImportTick msg) {
-						
-			if (isSlow<2) { isSlow++;return; }				
-									
+		public void importTick(ImportTick msg) {			
+			if (isSlow<2) { isSlow++;return; }	
+														
 			boolean startedSome = false;
 			for (int i=0;i<PARALLEL;i++) {
 				if (importTick()) startedSome = true;
@@ -665,34 +673,42 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				countSlow++;
 				ServerTools.endRequest();
 			}
+						
 		}
 		
 		public boolean importTick() {
-			AccessLog.logStart("jobs", "import tick");
-			//boolean foundone = false;
-			if (autoImportsIt != null && autoImportsIt.hasNext()) {
-				Space space = autoImportsIt.next();
-				MidataId autorunner = RuntimeConstants.instance.autorunService;
+			String path = "AutoRun/importTick";
+			long st = ActionRecorder.start(path);
+			try {
+				AccessLog.logStart("jobs", "import tick");
+				//boolean foundone = false;
+				if (autoImportsIt != null && autoImportsIt.hasNext()) {
+					Space space = autoImportsIt.next();
+					MidataId autorunner = RuntimeConstants.instance.autorunService;
+					
+					isSlow = 0;
+					workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
+					
+					return true;
+				} else while (datasIt!=null && datasIt.hasNext()) {
+					SubscriptionData data = datasIt.next();
+					//if (!done.contains(data.owner)) {
+					//	  done.add(data.owner);
+						  //foundone = true;
+						  isSlow = 0;
+						  processor.tell(new SubscriptionTriggered(data._id, data.owner, data.app, data.format, null, null, null, null, null), getSelf());
+						  return true;
+					//}
+				}		
+				autoImportsIt = null;
+				datasIt = null;
+				AccessLog.log("autoimport nothing to start left slow="+countSlow);						
 				
-				isSlow = 0;
-				workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
-				
-				return true;
-			} else while (datasIt!=null && datasIt.hasNext()) {
-				SubscriptionData data = datasIt.next();
-				//if (!done.contains(data.owner)) {
-				//	  done.add(data.owner);
-					  //foundone = true;
-					  isSlow = 0;
-					  processor.tell(new SubscriptionTriggered(data._id, data.owner, data.app, data.format, null, null, null, null, null), getSelf());
-					  return true;
-				//}
-			}		
-			autoImportsIt = null;
-			datasIt = null;
-			AccessLog.log("autoimport nothing to start left slow="+countSlow);						
+				ServerTools.endRequest();
 			
-			ServerTools.endRequest();
+			} finally {
+			  ActionRecorder.end(path, st);
+			}
 			return false;
 		}
 		
@@ -701,59 +717,67 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 		}
 		
 		public void reportEnd() {			
-			
-			AccessLog.logStart("jobs", "report auto-import end");
-			
-			if (speedControl != null) {
-				speedControl.cancel();
-				speedControl = null;
+			String path = "AutoRun/reportEnd";
+			long st = ActionRecorder.start(path);
+			try {
+				AccessLog.logStart("jobs", "report auto-import end");
+				
+				if (speedControl != null) {
+					speedControl.cancel();
+					speedControl = null;
+				}
+				
+				if (reportSend) {
+					ServerTools.endRequest();		
+					return;
+				}
+				
+				reportSend = true;
+				long end = System.currentTimeMillis();
+				String report = "Cleaning up sessions :"+(startRemoveUnlinkedFiles-startTime)+" ms\n";
+				report += "Cleaning up unused file uploads: "+(startCreateDatabaseStats-startRemoveUnlinkedFiles)+" ms\n";
+				report += "Create database statistics: "+(startAutoimport-startCreateDatabaseStats)+" ms\n";
+				report += "Schedule auto-imports: "+(endScheduling-startAutoimport)+" ms\n";
+				report += "Execute auto-import: "+(end-endScheduling)+" ms\n";
+				report += "--------------------\n";
+				report += "Total time for service: "+(end-startTime)+" ms\n";
+				report += "\n\n";
+				report += "# Old style auto-imports: "+countOldImports+" \n";
+				report += "# New style auto-imports: "+countNewImports+" \n";			
+				report += "# Errors during scheduling: "+errorCount+" \n";
+				report += "# Errors during import: "+numberFailure+" \n";
+				report += "# Success messages: "+numberSuccess+" \n";
+				report += "# Slow imports: "+countSlow+" \n\n";
+				report += "# Open Recovery Processes: "+openRecoveries+" \n\n";
+				report += errors.toString();
+							
+				handle = null;
+				datas = null;
+				datasIt = null;
+				autoImports = null;
+				autoImportsIt = null;
+			    //done = null;
+				
+				String email = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
+				String fullname = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
+				String server = InstanceConfig.getInstance().getPlatformServer();
+				MailUtils.sendTextMail(MailSenderType.STATUS, email, fullname, "Autoimport "+server, report);									
+				
+				if (endReport != null) {
+					endReport.cancel();
+					endReport = null;				
+				}
+				
+				ServerTools.endRequest();
+			} finally {
+			  ActionRecorder.end(path, st);
 			}
-			
-			if (reportSend) {
-				ServerTools.endRequest();		
-				return;
-			}
-			
-			reportSend = true;
-			long end = System.currentTimeMillis();
-			String report = "Cleaning up sessions :"+(startRemoveUnlinkedFiles-startTime)+" ms\n";
-			report += "Cleaning up unused file uploads: "+(startCreateDatabaseStats-startRemoveUnlinkedFiles)+" ms\n";
-			report += "Create database statistics: "+(startAutoimport-startCreateDatabaseStats)+" ms\n";
-			report += "Schedule auto-imports: "+(endScheduling-startAutoimport)+" ms\n";
-			report += "Execute auto-import: "+(end-endScheduling)+" ms\n";
-			report += "--------------------\n";
-			report += "Total time for service: "+(end-startTime)+" ms\n";
-			report += "\n\n";
-			report += "# Old style auto-imports: "+countOldImports+" \n";
-			report += "# New style auto-imports: "+countNewImports+" \n";			
-			report += "# Errors during scheduling: "+errorCount+" \n";
-			report += "# Errors during import: "+numberFailure+" \n";
-			report += "# Success messages: "+numberSuccess+" \n";
-			report += "# Slow imports: "+countSlow+" \n\n";
-			report += "# Open Recovery Processes: "+openRecoveries+" \n\n";
-			report += errors.toString();
-						
-			handle = null;
-			datas = null;
-			datasIt = null;
-			autoImports = null;
-			autoImportsIt = null;
-		    //done = null;
-			
-			String email = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
-			String fullname = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
-			String server = InstanceConfig.getInstance().getPlatformServer();
-			MailUtils.sendTextMail(MailSenderType.STATUS, email, fullname, "Autoimport "+server, report);									
-			
-			if (endReport != null) {
-				endReport.cancel();
-				endReport = null;				
-			}
-			
-			ServerTools.endRequest();		
 		}
 		
 		public void processResult(ImportResult result) throws Exception {	
+				String path = "AutoRun/processResult";
+				long st = ActionRecorder.start(path);
+			
 			    AccessLog.logStart("jobs", "received auto import result (old)");
 				if (result.exitCode == 0) numberSuccess++; else {
 					numberFailure++;
@@ -764,9 +788,14 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				
 				if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
 				else importTick();
+				
+				ActionRecorder.end(path, st);
 		}
 		
 		public void processResultNew(MessageResponse result) throws Exception {
+			String path = "AutoRun/processResultNew";
+			long st = ActionRecorder.start(path);
+			
 			AccessLog.logStart("jobs", "received auto import result");
 			if (result.getErrorcode() == 0) numberSuccess++; else {
 				numberFailure++;
@@ -776,6 +805,8 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
 			if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
 			else importTick();
+			
+            ActionRecorder.end(path, st);
 	    }
 		
 	}

@@ -775,9 +775,9 @@ const routes = [
     },
     admin : {
       meta : {
-        allowDelete : true,
-        allowStudyConfig : true,
-        allowExport : true
+        allowDelete : false,
+        allowStudyConfig : false,
+        allowExport : false
       }
     }
   }

@@ -43,6 +43,7 @@ import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.messaging.ServiceHandler;
+import utils.stats.ActionRecorder;
 
 public class AutoJoiner {
 
@@ -84,6 +85,7 @@ class AutoJoinerActor extends AbstractActor {
 	
 		
 	public void join(JoinMessage message) throws Exception {
+	    long st = ActionRecorder.start("AutoJoiner/join");
 		try {
 		    AccessLog.logStart("jobs", message.toString());
 			
@@ -128,7 +130,8 @@ class AutoJoinerActor extends AbstractActor {
 			ErrorReporter.report("AutoJoiner", null, e);	
 			throw e;
 		} finally {
-			ServerTools.endRequest();			
+			ServerTools.endRequest();
+			ActionRecorder.end("AutoJoiner/join", st);
 		}
 	}
 	
