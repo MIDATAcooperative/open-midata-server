@@ -33,6 +33,7 @@ import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 import utils.exceptions.RequestTooLargeException;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.ActionRecorder;
 import utils.stats.Stats;
 
 /**
@@ -57,12 +58,14 @@ public class MobileCallAction extends Action<MobileCall> {
 	
     public CompletionStage<Result> call(Request request)  { 
     	long startTime = System.currentTimeMillis();
+    	String path = "(Mobile) ["+request.method()+"] "+request.path();
+    	long st = ActionRecorder.start(path);
     	try {    	  
     	  //JsonNode json = ctx.request().body().asJson();
     	  //ctx.args.put("json", json);
     	  
     	  try {
-    		  AccessLog.logStart("api", "(Mobile) ["+request.method()+"] "+request.path());
+    		  AccessLog.logStart("api", path);
               return withHeaders(delegate.call(request));
       	  } catch (RuntimeException ex) {
       		  if (ex.getCause() != null) throw (Exception) ex.getCause(); else throw ex;
@@ -106,7 +109,9 @@ public class MobileCallAction extends Action<MobileCall> {
 				   ErrorReporter.reportPerformance("Mobile API", request, endTime - startTime);
 				}	
 			} finally {
+				
 			    ServerTools.endRequest();
+			    ActionRecorder.end(path, st);
 			}											 							 
 		}
     }

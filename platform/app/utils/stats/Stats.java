@@ -184,6 +184,8 @@ class StatsRecorder extends AbstractActor {
 	}
 		
 	public void updateStats(StatsMessage msg) throws Exception {
+		String path = "StatsRecorder/updateStats";
+		long st = ActionRecorder.start(path);
 		try {
 			AccessLog.logStart("jobs", "update stats");		
 			PluginDevStats stats = PluginDevStats.getByRequest(MidataId.from(msg.plugin), msg.action, msg.params);
@@ -224,7 +226,8 @@ class StatsRecorder extends AbstractActor {
 			ErrorReporter.report("Messager", null, e);	
 			throw e;
 		} finally {
-			ServerTools.endRequest();			
+			ServerTools.endRequest();	
+			ActionRecorder.end(path, st);
 		}
 	}
 	

@@ -66,6 +66,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.MailSenderType;
 import utils.messaging.MailUtils;
+import utils.stats.ActionRecorder;
 
 public class BulkMails extends Controller {
 
@@ -212,12 +213,14 @@ public class BulkMails extends Controller {
 		Runnable mySender =
 			    new Runnable(){
 			        public void run(){
+			        	long st = ActionRecorder.start("BulkMails/send");
 			        	try {
 			                sendMails(mailCampaign);
 			        	} catch (Exception e) {
 			        		ErrorReporter.report("bulk mail sender", null, e);			        		
 			        	} finally {
 			        		ServerTools.endRequest();
+			        		ActionRecorder.end("BulkMails/send", st);
 			        	}
 			        }
 			    };

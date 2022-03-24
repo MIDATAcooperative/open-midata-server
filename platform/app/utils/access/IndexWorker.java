@@ -41,6 +41,7 @@ import utils.auth.KeyManager;
 import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.stats.ActionRecorder;
 
 public class IndexWorker extends AbstractActor {
 	
@@ -91,6 +92,8 @@ public class IndexWorker extends AbstractActor {
 	
 		
 	public void indexUpdate(IndexUpdateMsg message) throws Exception {
+		String path = "IndexWorker/indexUpdate "+indexId;
+		long st = ActionRecorder.start(path);
 		try {
 			AccessLog.logStart("index", message.toString());
 			AccessLog.logBegin("START INDEX UPDATE:");			
@@ -125,11 +128,14 @@ public class IndexWorker extends AbstractActor {
 			throw e;
 		} finally {
 			AccessLog.logEnd("END INDEX UPDATE");
-			ServerTools.endRequest();			
+			ServerTools.endRequest();
+			ActionRecorder.end(path, st);
 		}
 	}
 		
 	public void indexRemove(IndexRemoveMsg message) throws Exception {
+		String path = "IndexWorker/indexRemove "+indexId;
+		long st = ActionRecorder.start(path);
 		try {
 			AccessLog.logStart("index", message.toString());
 			AccessLog.logBegin("START INDEX UPDATE:");			
@@ -153,12 +159,16 @@ public class IndexWorker extends AbstractActor {
 			throw e;
 		} finally {
 			AccessLog.logEnd("END INDEX UPDATE");
-			ServerTools.endRequest();			
+			ServerTools.endRequest();		
+			ActionRecorder.end(path, st);
 		}
 	}
 	
 
-	public void receiveTimeout(ReceiveTimeout message) throws Exception {	
-		getContext().parent().tell(new TerminateMsg(indexId.toString()), getSelf());	
+	public void receiveTimeout(ReceiveTimeout message) throws Exception {
+		String path = "IndexWorker/receiveTimeout "+indexId;
+		long st = ActionRecorder.start(path);
+		getContext().parent().tell(new TerminateMsg(indexId.toString()), getSelf());
+		ActionRecorder.end(path, st);
 	}
 }

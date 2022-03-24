@@ -15,7 +15,7 @@
  along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-    <panel :title="getTitle()" :busy="isBusy">
+    <panel :title="getTitle()">
 		 		  
 		<p v-if="app" class="lead">{{ app.name }}</p>
 		  
@@ -38,7 +38,7 @@
         </form>           
 		  
 		  
-		<table class="table table-striped table-sm">
+		<table class="table table-striped table-sm" v-if="!isBusy">
 		    <tr>
 		        <Sorter sortby="date" v-model="result" v-t="'usagestats.date'"></Sorter>
 		        <Sorter sortby="objectName" v-model="result" v-t="'usagestats.object'"></Sorter>

@@ -44,6 +44,7 @@ import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
 import utils.plugins.DeployAction;
 import utils.plugins.DeploymentManager;
+import utils.stats.ActionRecorder;
 
 /**
  * Synchronization between multiple application servers for changes on cached data like plugins or content type definitions
@@ -172,6 +173,8 @@ class InstanceSync extends AbstractActor {
 	
 
 	public void reload(ReloadMessage msg) throws Exception {
+		String path = "InstanceSync/reload";
+		long st = ActionRecorder.start(path);
 		try {		
 		   AccessLog.log("Received Reload Message: ", msg.toString());		  
 		   if (msg.collection.equals("plugin")) {
@@ -189,15 +192,22 @@ class InstanceSync extends AbstractActor {
 			throw e;
 		} finally {			
 			AccessLog.newRequest();	
+			ActionRecorder.end(path, st);
 		}
 	}
 	
 	public void setKey(KeyMessage msg) {
+		String path = "InstanceSync/setKey";
+		long st = ActionRecorder.start(path);
 		ServiceHandler.setKey(msg.aeskey);
+		ActionRecorder.end(path, st);
 	}
 	
 	public void deploy(DeployAction deploy) {
+		String path = "InstanceSync/deploy";
+		long st = ActionRecorder.start(path);
 		DeploymentManager.deploy(deploy, getSender());
+		ActionRecorder.end(path, st);
 	}
 	
 }

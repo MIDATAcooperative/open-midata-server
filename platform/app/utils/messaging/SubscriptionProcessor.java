@@ -67,6 +67,7 @@ import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.SubscriptionResourceProvider;
+import utils.stats.ActionRecorder;
 import utils.stats.Stats;
 import utils.sync.Instances;
 
@@ -86,6 +87,8 @@ public class SubscriptionProcessor extends AbstractActor {
 	}
 	
 	void processSubscription(SubscriptionTriggered triggered) {
+		String path = "SubscriptionProcessor/processSubscription";
+		long st = ActionRecorder.start(path);
 		try {		
 			AccessLog.logStart("jobs", triggered.toString());
 			List<SubscriptionData> allMatching = null;
@@ -151,6 +154,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			
 		} finally {
 			ServerTools.endRequest();
+			ActionRecorder.end(path, st);
 		}
 	}
 	
@@ -399,6 +403,8 @@ public class SubscriptionProcessor extends AbstractActor {
 	}
 	
 	void answerDebugCall(RecheckMessage msg) {
+		String path = "SubscriptionProcessor/answerDebugCall";
+		long st = ActionRecorder.start(path);
 		AccessLog.logStart("jobs", "debug recheck");
 		try {
 			TestPluginCall call = TestPluginCall.getById(msg.id);
@@ -418,6 +424,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		} catch (Exception e) {}
 		finally {
 			ServerTools.endRequest();
+			ActionRecorder.end(path, st);
 		}
 	}
 }

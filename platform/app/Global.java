@@ -67,6 +67,7 @@ import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
 import utils.plugins.DeploymentManager;
 import utils.servlet.PlayHttpServletConfig;
+import utils.stats.ActionRecorder;
 import utils.stats.Stats;
 import utils.stats.UsageStatsRecorder;
 import utils.sync.Instances;
@@ -85,6 +86,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		// Connect to production database
 	    InstanceConfig.setInstance(new InstanceConfig(config));
 	    
+	    ActionRecorder.init(system);
 	    System.out.println("EMails");
 	    MailUtils.setInstance(new MailUtils(config));
 	    

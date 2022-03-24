@@ -62,6 +62,7 @@ import utils.exceptions.InternalServerException;
 import utils.fhir.ConsentResourceProvider;
 import utils.fhir.FHIRServlet;
 import utils.fhir.SubscriptionResourceProvider;
+import utils.stats.ActionRecorder;
 import utils.sync.Instances;
 
 /**
@@ -370,6 +371,9 @@ class SubscriptionChecker extends AbstractActor {
 	}
 
 	void resourceChange(ResourceChange change) {	
+		String path = "SubscriptionChecker/resourceChange";
+		long st = ActionRecorder.start(path);
+		
 		AccessLog.logStart("jobs", "resource change: "+change);
 		try {
 		Set<MidataId> affected = new HashSet<MidataId>();
@@ -436,11 +440,14 @@ class SubscriptionChecker extends AbstractActor {
 		}
 		} finally {
 			ServerTools.endRequest();
+			ActionRecorder.end(path, st);
 		}
 	}
 	
 	void processMessage(ProcessMessage message) {
-				
+		String path = "SubscriptionChecker/processMessage";
+		long st = ActionRecorder.start(path);
+		
 		if (message.getDestination() != null) {		
 			AccessLog.logStart("jobs", "message with destination: "+message);
 			try {
@@ -468,6 +475,8 @@ class SubscriptionChecker extends AbstractActor {
 		  SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getFhirVersion(), message.getMessage(), null, message.getParams());
 		  processor.forward(trigger, getContext());
 		}
+		
+		ActionRecorder.end(path, st);
 	}
 	
 	private User getTargetUser(ProcessMessage message) throws AppException {
@@ -510,6 +519,9 @@ class SubscriptionChecker extends AbstractActor {
 	}
 	
 	void subscriptionChange(SubscriptionChange change) {
+		String path = "SubscriptionChecker/subscriptionChange";
+		long st = ActionRecorder.start(path);
+		
 		AccessLog.logStart("jobs", "subscription change: "+change);
 		try {
 			MidataId owner = change.getOwner();
@@ -522,6 +534,7 @@ class SubscriptionChecker extends AbstractActor {
 			ErrorReporter.report("SubscriptionChecker", null, e);
 		} finally {
 			ServerTools.endRequest();
+			ActionRecorder.end(path, st);
 		}
 	}
 	

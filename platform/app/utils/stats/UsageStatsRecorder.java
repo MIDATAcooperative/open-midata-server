@@ -107,6 +107,8 @@ class UsageStatsActor extends AbstractActor {
 	}
 
 	public void updateStats(UsageStatsMessage msg) throws Exception {
+		String path = "UsageStatsRecorder/updateStats";
+		long st = ActionRecorder.start(path);
 		String key = msg.getObject() + "/" + msg.getAction().toString();
 		UsageStats stats = cache.get(key);
 		if (stats == null) {
@@ -127,6 +129,7 @@ class UsageStatsActor extends AbstractActor {
 			modcount = 0;
 			flush();
 		}
+		ActionRecorder.end(key, st);
 	}
 
 	public void flush(FlushMessage msg) {

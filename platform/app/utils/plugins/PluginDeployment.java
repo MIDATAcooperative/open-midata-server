@@ -35,6 +35,7 @@ import utils.ServerTools;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.messaging.InputStreamCollector;
+import utils.stats.ActionRecorder;
 import utils.sync.Instances;
 
 public class PluginDeployment extends AbstractActor {
@@ -201,7 +202,10 @@ public class PluginDeployment extends AbstractActor {
 		System.out.println("failed");
 	}
 	
-	public void deploy(DeployAction action) throws AppException {		
+	public void deploy(DeployAction action) throws AppException {	
+		String path = "PluginDeployment/deploy";
+		long st = ActionRecorder.start(path);
+		
 		MidataId pluginId = action.pluginId;
 		try {
 		AccessLog.logStart("jobs", "DEPLOY "+action.status+" "+pluginId);
@@ -337,6 +341,7 @@ public class PluginDeployment extends AbstractActor {
 		}
 		} finally {
 			ServerTools.endRequest();
+			ActionRecorder.end(path, st);
 		}
 	}
 }
