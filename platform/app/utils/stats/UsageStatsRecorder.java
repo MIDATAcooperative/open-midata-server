@@ -129,7 +129,7 @@ class UsageStatsActor extends AbstractActor {
 			modcount = 0;
 			flush();
 		}
-		ActionRecorder.end(key, st);
+		ActionRecorder.end(path, st);
 	}
 
 	public void flush(FlushMessage msg) {
