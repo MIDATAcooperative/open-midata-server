@@ -162,15 +162,9 @@
             "send_reports" : "Den Entwickler ({{user}}) per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.",
             "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf diese @PRODUCT Instanz ein, die diese Anwendung entwickeln.",
             "code_challenge" : "Beim OAuth2-Login muss die aufrufende Applikation den PKCE-Standard (Proof Key for Code Exchange) verwenden",
-
-            // TODO NEW: Create non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.
-            "createendpoint" : "Create non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.",
-
-            // TODO NEW: The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir
-            "endpoint" : "The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir",
-
-            // TODO NEW: Do not forget: To activate the endpoint you need to add an API-Key afterwards.
-            "endpoint2" : "Do not forget: To activate the endpoint you need to add an API-Key afterwards."
+            "createendpoint" : "Nicht projektbezogener Endpoint erstellen. Nur ankreuzen, wenn Sie diesen Endpoint NICHT mit einem Projekt verwenden wollen.",
+            "endpoint" : "Der Pfad dieses nicht projektbezogenen FHIR-Endpoint lautet /opendata/endpointname/fhir",
+            "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen."
         },
         "status" : {
             "title" : "Applikationsstatus",
@@ -186,11 +180,7 @@
         "queryeditor_btn" : "Zum Editor des Datenzugriffsfilters (Data Access Filter) wechseln",
         "no_update_history" : "Keine FHIR Ressourcenhistorie",
         "pseudonymize" : "Pseudonymisiert lesen",
-
-        // TODO NEW: Create Instance
-        "createendpoint" : "Create Instance",
-
-        // TODO NEW: Endpoint Name
+        "createendpoint" : "Endpoint erstellen",
         "endpoint" : "Endpoint Name",
         "usagestats_btn" : "Nutzungsstatistiken",
         "usagestats_help" : "Nutzungshäufigkeit der Applikation analysieren.",
@@ -353,9 +343,7 @@
     "repository" : {
         "title" : "Code Repository",
         "repository_url" : "Repository URL",
-
-        // TODO NEW: (Optional) Subdirectory in repo
-        "repository_dir" : "(Optional) Subdirectory in repo",
+        "repository_dir" : "(Optional) Unterverzeichnis im Repository",
         "repository_token" : "Access Token",
         "repository_date" : "Zuletzt bereitgestellt am",
         "never" : "Nie",

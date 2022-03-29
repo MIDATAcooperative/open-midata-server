@@ -1038,9 +1038,7 @@
         "type_healthcare" : "Arzt / Spital",
         "type_studyparticipation" : "Forschung",
         "type_representative" : "Vertreter",
-
-        // TODO NEW: Service (external)
-        "type_externalservice" : "Service (external)",
+        "type_externalservice" : "Dienst (extern)",
         "show" : "Ansehen:",
         "my_data" : "Meine Daten",
         "all_data" : "Alle Daten",
@@ -1396,7 +1394,7 @@
         "cancel_btn" : "Abbrechen",
         "check_okay" : "Ist die Liste der benötigten Daten nun vollständig und korrekt?",
         "ask" : {
-            "AuditEvent" : "Zugriff auf das Audit-Ereignisprotokoll",
+            "AuditEvent" : "Zugriff auf das Audit Log",
             "Consent" : "Zugriff auf Einwilligungen des Anwenders mit anderen Nutzern oder Anwendungen",
             "Group" : "Zugriff auf Gruppendefinitionen (Teams von Gesundheitsfachpersonen oder Forschern sowie projektspezifische Gruppen)",
             "Patient" : "Patienten-Datensätze: Name, E-Mail, Adresse der Kontoinhabenden",
@@ -1426,9 +1424,7 @@
         "empty" : "Dieses Konto verwaltet keine Dienste mit API-Schlüsseln.",
         "add_btn" : "Schlüssel hinzufügen",
         "delete_btn" : "Analysator entfernen",
-
-        // TODO NEW: Remove Endpoint
-        "delete_endpoint_btn" : "Remove Endpoint",
+        "delete_endpoint_btn" : "Endpoint entfernen",
         "show_btn" : "Schlüssel anzeigen",
         "revoke_btn" : "Diesen Schlüssel widerrufen",
         "instructions" : "Bitte kopieren Sie diese Schlüssel an einen sicheren Ort. Sie werden nur einmal angezeigt.",
@@ -1442,9 +1438,7 @@
         "status" : "Status",
         "ACTIVE" : "Aktiv",
         "FROZEN" : "Alte Version",
-
-        // TODO NEW: Invalid
-        "INVALID" : "Invalid"
+        "INVALID" : "Ungültig"
     },
 
     "failure" : {

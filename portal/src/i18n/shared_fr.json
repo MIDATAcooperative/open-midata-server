@@ -284,7 +284,7 @@
             "contract-send" : "Contrat envoyé à l'utilisateur",
             "internal-comment" : "Commentaire administrateur",
             "user-terms-of-use-agreed" : "Conditions générales acceptées",
-            "audit-log-used" : "Audit Log consulté",
+            "audit-log-used" : "Audit log consulté",
             "added-as-team-member" : "Ajouté comme membre d'un team",
             "updated-role-in-team" : "Rôle dans le team modifié",
             "removed-from-team" : "Supprimé du team",
@@ -831,7 +831,7 @@
         "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
         "change_passphrase_btn" : "Modifier la phrase secrète",
-        "auditlog_btn" : "Consulter l'Audit Log",
+        "auditlog_btn" : "Afficher l'audit log",
         "change_email_btn" : "Changer l'adresse e-mail",
         "expert_tools_btn" : "Afficher les plugins experts",
         "repair_account_btn" : "Réparer le compte",
@@ -1038,9 +1038,7 @@
         "type_healthcare" : "Médecin / Hôpital",
         "type_studyparticipation" : "Recherche",
         "type_representative" : "Représentant",
-
-        // TODO NEW: Service (external)
-        "type_externalservice" : "Service (external)",
+        "type_externalservice" : "Service (externe)",
         "show" : "Afficher:",
         "my_data" : "Mes données",
         "all_data" : "Toutes les données",
@@ -1257,7 +1255,7 @@
         "outcome" : "Résultat",
         "empty" : "Aucun enregistrement.",
         "anonymous" : "Utilisateur pseudonymisé",
-        "title" : "Audit Log",
+        "title" : "Audit log",
         "refresh_btn" : "Actualiser",
         "via" : "par",
         "CIRCLE" : "Consentement",
@@ -1396,7 +1394,7 @@
         "cancel_btn" : "Annuler",
         "check_okay" : "La liste des données requises est-elle maintenant complète et correcte?",
         "ask" : {
-            "AuditEvent" : "Accès au journal des événements d'audit",
+            "AuditEvent" : "Accès à l'aidit log",
             "Consent" : "Accès aux consentements de l'utilisateur de l'application avec d'autres utilisateurs ou applications",
             "Group" : "Accès aux définitions des groupes (équipes de professionnels de la santé ou de chercheurs ainsi que groupes propres aux projets)",
             "Patient" : "Données patients: nom, courriel, adresse électronique, adresse des titulaires de comptes",
@@ -1426,9 +1424,7 @@
         "empty" : "Ce compte ne gère aucun service avec des clés API.",
         "add_btn" : "Ajouter une clé",
         "delete_btn" : "Supprimer l'analyseur",
-
-        // TODO NEW: Remove Endpoint
-        "delete_endpoint_btn" : "Remove Endpoint",
+        "delete_endpoint_btn" : "Supprimer l'endpoint",
         "show_btn" : "Afficher les clés",
         "revoke_btn" : "Révoquer cette clé",
         "instructions" : "Veuillez copier ces clés dans un endroit sûr. Elles ne sont affichées qu'une seule fois.",
@@ -1442,9 +1438,7 @@
         "status" : "État",
         "ACTIVE" : "Active",
         "FROZEN" : "Ancienne version",
-
-        // TODO NEW: Invalid
-        "INVALID" : "Invalid"
+        "INVALID" : "Non valide"
     },
 
     "failure" : {
