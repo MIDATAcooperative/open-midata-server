@@ -32,7 +32,7 @@
 		    <tr>
 		      <td v-t="'manageapp.type'"></td>
 			  <td><b>{{ $t('enum.plugintype.' + app.type) }}</b>
-			  <span v-if="app.type=='external'"> - 
+			  <span v-if="app.type=='external' || app.type=='endpoint'"> - 
 			  <router-link :to="{ path : './servicekeys' }" v-t="'manageapp.manageyourkeys'"></router-link>
 			  </span>
 			  </td>

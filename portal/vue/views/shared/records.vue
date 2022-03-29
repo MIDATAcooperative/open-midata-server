@@ -437,7 +437,7 @@ export default {
                 .then(function(results) {
                     
                     for (let circle of results.data) { 
-                        $data.availableAps.push({ i18n:"records.shared", name:circle.ownerName, aps:circle._id, type : circle.type.toLowerCase() });
+                        $data.availableAps.push({ i18n:"records.shared", name:(circle.ownerName || '-'), aps:circle._id, type : circle.type.toLowerCase() });
                     }
                 });
             }

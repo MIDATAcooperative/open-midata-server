@@ -218,6 +218,11 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	public List<User> searchRaw(SearchParameterMap params) throws AppException {	
 		if (!checkAccessible()) return Collections.emptyList();
 		
+		// For security reasons access to Person endpoint cannot be exposed as public endpoint
+		User current = info().getRequestCache().getUserById(info().getLegacyOwner());		
+		if (current == null) return Collections.emptyList();
+		//
+				
 		if (
 			 !params.containsKey("email") &&
 		    (!params.containsKey("name") || !params.containsKey("birthdate")) &&
@@ -228,7 +233,7 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 		
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, null);
-		
+						
 		builder.handleIdRestriction();
 		builder.restriction("name", true, QueryBuilder.TYPE_STRING, "firstname", QueryBuilder.TYPE_STRING, "lastname");
 		builder.restriction("email", true, QueryBuilder.TYPE_STRING, "emailLC");

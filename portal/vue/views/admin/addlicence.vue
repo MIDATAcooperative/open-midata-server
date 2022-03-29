@@ -26,7 +26,7 @@
 		    </form-group>
 
 		    <form-group name="si" label="admin_addlicence.service" :path="errors.si">			  
-			    <check-box :disabled="!app || app.type!='external'" v-model="licence.service" name="si">
+			    <check-box :disabled="!app || (app.type!='external' && app.type!='endpoint')" v-model="licence.service" name="si">
 		            <span v-t="'admin_addlicence.service2'"></span>
                 </check-box>
 		    </form-group>
