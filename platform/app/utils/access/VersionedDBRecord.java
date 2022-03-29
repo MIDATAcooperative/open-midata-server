@@ -111,6 +111,10 @@ public class VersionedDBRecord extends DBRecord {
 	}
 	
 	public void merge(DBRecord record) {
+		if (record.context==null) {
+			System.out.println("NO CONTEXT: "+record._id);
+			throw new NullPointerException();
+		}
 		this.stream = record.stream; 
 		this.time = record.time;		
 		this.consentAps = record.consentAps;

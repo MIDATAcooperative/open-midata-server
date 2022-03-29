@@ -20,14 +20,8 @@ package utils.access.index;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Date;
-import java.util.Set;
-
 
 import models.MidataId;
-import models.Record;
-import models.RecordsInfo;
-import utils.access.DBRecord;
 
 public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> implements Comparable<StatsIndexKey> {
 
@@ -60,7 +54,7 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 		if (b!=0) return b;
 		b = format.compareTo(other.format);
 		if (b!=0) return b;
-		b = app.compareTo(other.app);
+		b = (app==null) ? (other.app==null? 0 : 1) : (other.app==null ? -1 : app.compareTo(other.app));
 		if (b!=0) return b;
 		b = owner.compareTo(other.owner);
 		if (b!=0) return b;
@@ -138,7 +132,7 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 		s.writeObject(format);		
 		s.writeObject(content);
 		s.writeObject(group);
-		s.writeObject(app.toString());		
+		s.writeObject(app!=null ? app.toString() : null);		
 		s.writeObject(owner.toString());
 		s.writeObject(ownerName);
 		s.writeObject(newestRecord.toString());	

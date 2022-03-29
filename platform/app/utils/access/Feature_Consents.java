@@ -17,25 +17,15 @@
 
 package utils.access;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.bson.BasicBSONObject;
-
-import models.MidataId;
 import utils.AccessLog;
-import utils.RuntimeConstants;
 import utils.access.Feature_Indexes.IndexUse;
 import utils.collections.CMaps;
-import utils.collections.NChainedMap;
 import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 
 public class Feature_Consents extends Feature {
 
@@ -56,7 +46,7 @@ public class Feature_Consents extends Feature {
 			if (iuse != null) {
 				long v = iuse.version(q.getApsId());
 				if (v<=0) {
-					AccessLog.log("shared-after: new aps: "+q.getApsId());
+					AccessLog.log("shared-after: new aps: ", q.getApsId().toString());
 					return new SetSharedDateIterator(new Date(q.getCache().getAPS(q.getApsId()).getLastChanged()), next.iterator(q.withoutTime()));
 				}
 			} 
@@ -171,6 +161,11 @@ public class Feature_Consents extends Feature {
 		@Override
 		public boolean hasNext() throws AppException {
 			return it.hasNext();
+		}
+		
+		@Override
+		public void close() {
+			it.close();			
 		}
 		
 		

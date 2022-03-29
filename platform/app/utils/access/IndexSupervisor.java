@@ -26,6 +26,7 @@ import utils.ErrorReporter;
 import utils.ServerTools;
 import utils.access.index.IndexMsg;
 import utils.access.index.TerminateMsg;
+import utils.stats.ActionRecorder;
 
 public class IndexSupervisor extends AbstractActor {
 	
@@ -38,6 +39,9 @@ public class IndexSupervisor extends AbstractActor {
 	}
 	
 	public void indexMessage(IndexMsg msg) throws Exception {
+		String path = "IndexSupervisor/indexMessage";
+		long st = ActionRecorder.start(path);
+		
 		try {						
 			
 			  Optional<ActorRef> ref = getContext().findChild(msg.getIndexId().toString());
@@ -51,7 +55,8 @@ public class IndexSupervisor extends AbstractActor {
 			ErrorReporter.report("Messager", null, e);	
 			throw e;
 		} finally {
-			ServerTools.endRequest();			
+			ServerTools.endRequest();
+			ActionRecorder.end(path, st);
 		}
 	}
 	

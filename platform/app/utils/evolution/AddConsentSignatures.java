@@ -22,7 +22,6 @@ import utils.ConsentQueryTools;
 import utils.RuntimeConstants;
 import utils.auth.KeyManager;
 import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 
 public class AddConsentSignatures {
 

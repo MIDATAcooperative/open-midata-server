@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,6 +60,8 @@ import utils.access.op.Condition;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.DummyAccessContext;
+import utils.context.IndexAccessContext;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -115,6 +116,7 @@ public class IndexManager {
 			
 			aps.removeMeta("_streamindex");
 			aps.removeMeta("_statsindex");
+			aps.removeMeta("_statsindex_p");
 			aps.removeMeta("_consents");
 		} 
 		
@@ -193,10 +195,11 @@ public class IndexManager {
 		}
 	}
 	
-	public StatsIndexRoot getStatsIndex(APSCache cache, MidataId user, boolean create) throws AppException {
+	public StatsIndexRoot getStatsIndex(APSCache cache, MidataId user, boolean pseudonymized, boolean create) throws AppException {
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, true);
+		String name = pseudonymized ? "_statsindex_p" : "_statsindex";
 		APS aps = cache.getAPS(user);
-		BSONObject obj = aps.getMeta("_statsindex");
+		BSONObject obj = aps.getMeta(name);
 		
 		MidataId id = null;
 							
@@ -205,7 +208,7 @@ public class IndexManager {
 			id = new MidataId();
 		    obj = new BasicBSONObject();
 		    obj.put("index", id.toString());
-		    aps.setMeta("_statsindex", obj.toMap());			
+		    aps.setMeta(name, obj.toMap());			
 		} else {
 			id = MidataId.from(obj.get("index"));
 		}
@@ -219,7 +222,8 @@ public class IndexManager {
 			def.formats = Collections.singletonList("_statsIndex");
 			def.lockTime = System.currentTimeMillis();
 			def.rev = 1;
-			def.creation = currentCreationTime();	
+			def.creation = currentCreationTime();
+			def.pseudonymize = pseudonymized;
 			
 			StatsIndexRoot root = new StatsIndexRoot(pseudo.getKey(), def, true);
 			
@@ -362,20 +366,21 @@ public class IndexManager {
 		    	indexUpdatePart(index, executor, executor, cache);
 		    	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor, limit);	
 		    	
-		    	DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200);
-		    	while (consentIt.hasNext()) {
-		    		indexUpdatePart(index, executor, consentIt.next()._id, cache);
-		    		modCount += index.getModCount();
-		    	}		    			    				
+		    	try (DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200)) {
+			    	while (consentIt.hasNext()) {
+			    		indexUpdatePart(index, executor, consentIt.next()._id, cache);
+			    		modCount += index.getModCount();
+			    	}
+		    	}
 		    } else {		    
-			    AccessLog.log("number of aps to update = "+targetAps.size());				
+			    AccessLog.log("number of aps to update = ", Integer.toString(targetAps.size()));				
 				for (MidataId aps : targetAps) {				
 					indexUpdatePart(index,executor,aps,cache);				
 					modCount += index.getModCount();								
 				}
 		    }
 			
-			AccessLog.log("updateAllTs="+updateAllTs+" modCount="+modCount+" ts="+(targetAps!=null?targetAps.size():"all"));
+			AccessLog.log("updateAllTs=", Long.toString(updateAllTs), " modCount=", Integer.toString(modCount), " ts=", (targetAps!=null?Integer.toString(targetAps.size()):"all"));
 			if (updateAllTs != 0 && (modCount>0 || targetAps==null || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {
@@ -386,7 +391,7 @@ public class IndexManager {
 			index.reload(); //XXXX
 			indexUpdate(cache, index, executor, targetAps);
 		}
-		AccessLog.logEnd("end index update time= "+(System.currentTimeMillis() - startUpdate)+" ms");
+		AccessLog.logEnd("end index update time= ", Long.toString(System.currentTimeMillis() - startUpdate), " ms");
 	}
 	
 	private void indexUpdatePart(IndexRoot index, MidataId executor, MidataId aps, APSCache cache) throws AppException, LostUpdateException {
@@ -396,7 +401,7 @@ public class IndexManager {
 		restrictions.put("format", index.getFormats());				
 		if (aps.equals(executor)) restrictions.put("owner", "self");
 		
-	    AccessLog.log("Checking aps:"+aps.toString());
+	    AccessLog.log("Checking aps:", aps.toString());
 		// Records that have been updated or created
 	    long v = index.getVersion(aps);
 	    //AccessLog.log("v="+v);
@@ -410,7 +415,7 @@ public class IndexManager {
 		// Records that have been freshly shared				
 		
 		if (updateTs) index.setVersion(aps, now);
-		AccessLog.log("Add index: from updated="+recs.size());
+		AccessLog.log("Add index: from updated=", Integer.toString(recs.size()));
 		
 	}
 	
@@ -429,7 +434,7 @@ public class IndexManager {
 			for (Consent consent : consents) targetAps.add(consent._id);				
 	    
 		    
-		    AccessLog.log("number of aps to update = "+targetAps.size());
+		    AccessLog.log("number of aps to update = ", Integer.toString(targetAps.size()));
 			int modCount = 0;
 			for (MidataId aps : targetAps) {
 				if (index.getModCount() > 5000) index.flush();
@@ -439,7 +444,7 @@ public class IndexManager {
 				restrictions.put("flat", "true");
 				if (aps.equals(executor)) restrictions.put("owner", "self");
 				
-			    AccessLog.log("Checking aps:"+aps.toString());
+			    AccessLog.log("Checking aps:", aps.toString());
 				// Records that have been updated or created
 			    long v = index.getVersion(aps);
 			    //AccessLog.log("v="+v);
@@ -455,14 +460,14 @@ public class IndexManager {
 				// Records that have been freshly shared				
 				
 				if (updateTs) index.setVersion(aps, now);
-				AccessLog.log("Add index: from updated="+recs.size());
+				AccessLog.log("Add index: from updated=", Integer.toString(recs.size()));
 				
 				modCount += index.getModCount();
 				
 				
 			}
 			
-			AccessLog.log("updateAllTs="+updateAllTs+" modCount="+modCount+" ts="+targetAps.size());
+			AccessLog.log("updateAllTs=", Long.toString(updateAllTs), " modCount=", Integer.toString(modCount), " ts=", Integer.toString(targetAps.size()));
 			if (updateAllTs != 0 && (modCount>0 || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {
@@ -491,36 +496,37 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 	    	int modCount = 0;
 	    	List<Consent> consents = new ArrayList<Consent>(StudyParticipation.getAllAuthorizedWithGroup(executor, limit));	
 	    	
-	    	DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200);
-	    	while (consentIt.hasNext()) {
-	    			    		
-                if (index.getModCount() > 5000) index.flush();
-				StudyParticipation consent = (StudyParticipation) consentIt.next();
-				MidataId aps = consent._id;
-				StatsLookup lookup = new StatsLookup();
-				lookup.setAps(aps);
-				
-				Collection<StatsIndexKey> old = index.lookup(lookup);
-				for (StatsIndexKey k : old) index.removeEntry(k);
-				
-				if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) {
-					Map<String, Object> restrictions = new HashMap<String, Object>();				
-					restrictions.put("no-postfilter-steams", "true");
-					restrictions.put("group-system", "v1");
-					//if (aps.equals(executor)) restrictions.put("owner", "self");
-									
-					Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new DummyAccessContext(cache), false);
+	    	try (DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200)) {
+		    	while (consentIt.hasNext()) {
+		    			    		
+	                if (index.getModCount() > 5000) index.flush();
+					StudyParticipation consent = (StudyParticipation) consentIt.next();
+					MidataId aps = consent._id;
+					StatsLookup lookup = new StatsLookup();
+					lookup.setAps(aps);
 					
-					Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
-					for (StatsIndexKey k : keys) {
-						k.studyGroup = consent.group;
-						index.addEntry(k);
+					Collection<StatsIndexKey> old = index.lookup(lookup);
+					for (StatsIndexKey k : old) index.removeEntry(k);
+					
+					if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) {
+						Map<String, Object> restrictions = new HashMap<String, Object>();				
+						restrictions.put("no-postfilter-steams", "true");
+						restrictions.put("group-system", "v1");
+						//if (aps.equals(executor)) restrictions.put("owner", "self");
+										
+						Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new IndexAccessContext(cache, index.getModel().pseudonymize), false);
+						
+						Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
+						for (StatsIndexKey k : keys) {
+							k.studyGroup = consent.group;
+							index.addEntry(k);
+						}
 					}
-				}
-	    			    			    			    		
-	    		modCount += index.getModCount();
-	    			    			    		
-	    	}	
+		    			    			    			    		
+		    		modCount += index.getModCount();
+		    			    			    		
+		    	}
+	    	}
 	    		    		    		    			    	
             if (index.getModCount() > 5000) index.flush();
 			
@@ -537,7 +543,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 			restrictions.put("group-system", "v1");
 			//if (aps.equals(executor)) restrictions.put("owner", "self");
 								
-			Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new DummyAccessContext(cache), false);
+			Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new IndexAccessContext(cache, index.getModel().pseudonymize), false);
 				
 			Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
 			for (StatsIndexKey k : keys) {
@@ -600,7 +606,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 	
 	public void triggerUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {
 		if (targetAps != null && targetAps.size() > 10) targetAps = null;
-		AccessLog.log("TRIGGER UPDATE "+user+" aps="+(targetAps!=null?targetAps.toString():"null"));		
+		AccessLog.log("TRIGGER UPDATE ", user.toString(), " aps=", (targetAps!=null?targetAps.toString():"null"));		
 		indexSupervisor.tell(new IndexUpdateMsg(idx._id, user, pseudo, KeyManager.instance.currentHandle(user), targetAps), null);		
 	}
 	
@@ -625,9 +631,10 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		return res;
 	}
 	
-	public String clearIndexes(APSCache cache, MidataId user) throws AppException {
+	public String clearIndexes(APSCache cache, MidataId targetAps) throws AppException {
 		AccessLog.logBegin("start clear indexes");
-		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);
+		MidataId user = cache.getAccessor();
+		IndexPseudonym pseudo = getIndexPseudonym(cache, user, targetAps, false);
 		int removeIdx = 0;
 		if (pseudo != null) {
 			Set<IndexDefinition> defs = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()), Sets.create("_id"));
@@ -639,6 +646,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		}
 				
 		cache.getAPS(user).removeMeta("_statsindex");
+		cache.getAPS(user).removeMeta("_statsindex_p");
 		cache.getAPS(user).removeMeta("_streamindex");
 		cache.getAPS(user).removeMeta("_consents");
 		cache.getAPS(user).removeMeta("_pseudo");
@@ -654,9 +662,9 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		List<DBRecord> notValid = new ArrayList<DBRecord>();
 		stillValid = QueryEngine.filterByDataQuery(validatedResult, indexQuery, notValid);
 				
-		AccessLog.log("Index found records:"+validatedResult.size()+" still valid:"+stillValid.size());
+		AccessLog.log("Index found records:", Integer.toString(validatedResult.size())+" still valid:", Integer.toString(stillValid.size()));
 		if (validatedResult.size() > stillValid.size()) {
-			AccessLog.log("Removing "+notValid.size()+" records from index.");
+			AccessLog.log("Removing ", Integer.toString(notValid.size()), " records from index.");
 			// You must remove the record IDS from the match not using the records data!!
 			List<IndexMatch> matches = new ArrayList<IndexMatch>(notValid.size());
 			for (DBRecord r : notValid) matches.add(new IndexMatch(r._id, r.consentAps));
@@ -676,7 +684,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		}
 	}*/
 	public void removeRecords(APSCache cache, MidataId user, List<IndexMatch> records, MidataId indexId, Condition[] cond, IndexPseudonym pseudo) throws AppException {		
-		AccessLog.logBegin("start removing outdated entries from indexes #recs="+records.size());
+		AccessLog.logBegin("start removing outdated entries from indexes #recs=", Integer.toString(records.size()));
 	
 		IndexDefinition def = IndexDefinition.getById(indexId);		
 		IndexRoot root = new IndexRoot(pseudo.getKey(), def, false);
@@ -700,7 +708,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 	public void removeRecords(APSCache cache, MidataId user, List<DBRecord> records) throws AppException {
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);
 		if (pseudo == null) return;
-		AccessLog.logBegin("start removing records from indexes #recs="+records.size());
+		AccessLog.logBegin("start removing records from indexes #recs=",Integer.toString(records.size()));
 		Map<String, List<DBRecord>> hashMap = new HashMap<String, List<DBRecord>>();
 		for (DBRecord rec : records) {			
 		   String format = rec.meta.getString("format");

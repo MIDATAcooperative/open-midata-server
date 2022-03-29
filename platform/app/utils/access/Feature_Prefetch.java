@@ -159,7 +159,10 @@ public class Feature_Prefetch extends Feature {
 			return "lookup({ size: "+size+"})";
 		}
 		
-		
+		@Override
+		public void close() {
+				
+		}
 		
 	}
 

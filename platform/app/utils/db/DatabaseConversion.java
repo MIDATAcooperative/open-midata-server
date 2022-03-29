@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
@@ -36,11 +35,17 @@ import org.bson.types.ObjectId;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCursor;
 
 import models.JsonSerializable;
 import models.MidataId;
 import models.Model;
 import utils.AccessLog;
+import utils.access.DBIterator;
+import utils.access.ProcessingTools;
+import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 /**
  * Converter between data model classes and BSON objects
@@ -212,6 +217,50 @@ public class DatabaseConversion {
 		} while (dbObjects.hasNext());
 		return models;
 	}
+	
+	public <T extends Model> DBIterator<T> toModelIterator(Class<T> modelClass, MongoCursor<DBObject> dbObjects)
+			throws DatabaseConversionException {
+		Converter[] conv = transformations.get(modelClass);
+		if (conv == null) conv = build(modelClass);
+		if (!dbObjects.hasNext()) return ProcessingTools.empty();
+		return new ConvertIterator(this, dbObjects, modelClass, conv);		
+	}
+	
+	public static class ConvertIterator<T extends Model> implements DBIterator<T> {
+		MongoCursor<DBObject> source;
+		Class<T> modelClass;
+		Converter[] conv;
+		DatabaseConversion me;
+		
+		ConvertIterator(DatabaseConversion me, MongoCursor<DBObject> source, Class<T> modelClass, Converter[] conv) {
+			this.me = me;
+			this.source = source;
+			this.modelClass = modelClass;
+			this.conv = conv;					
+		}
+
+		@Override
+		public T next() throws AppException {
+			try {
+				return me.toModel(modelClass, conv, source.next());
+			} catch (DatabaseConversionException e) {
+				throw new InternalServerException("error.internal", e);
+			}
+		}
+
+		@Override
+		public boolean hasNext() throws AppException {
+			return source.hasNext();
+		}
+
+		@Override
+		public void close() {
+			source.close();			
+		}
+		
+		
+		
+	}
 
 	/**
 	 * Converts an object retrieved from the database to the corresponding type.
@@ -300,7 +349,7 @@ public class DatabaseConversion {
 	private Map<Class, Converter[]> transformations = new HashMap<Class, Converter[]>();
 	
 	private Converter[] build(Class modelClass) {
-		AccessLog.log("build: "+modelClass.getName());
+		AccessLog.log("build: ", modelClass.getName());
 		Converter[] c = new Converter[0];
 		ArrayList<Converter> allConv = new ArrayList<Converter>();
 		for (Field field : modelClass.getFields()) {

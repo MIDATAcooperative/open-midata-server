@@ -30,6 +30,7 @@ import models.MidataId;
 import models.Model;
 import models.enums.APSSecurityLevel;
 import utils.collections.CMaps;
+import utils.context.AccessContext;
 import utils.db.IncludeNullValues;
 import utils.db.NotMaterialized;
 import utils.exceptions.AppException;
@@ -200,6 +201,10 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 
 	public static List<DBRecord> getAllList(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAllList(DBRecord.class, collection, properties, fields, 0);
+	}
+	
+	public static DBIterator<DBRecord> getAllCursor(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAllCursor(DBRecord.class, collection, properties, fields, 0);
 	}
 	
 	/*

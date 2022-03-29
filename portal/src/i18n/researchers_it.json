@@ -33,7 +33,9 @@
         "title2" : "Modifica la descrizione del progetto",
         "study_name" : "Nome progetto",
         "study_type" : "Tipo di ricerca",
-        "study_description" : "Descrizione progetto"
+        "study_description" : "Descrizione progetto",
+        "developer_nostart" : "Attenzione!",
+        "developer_nostart2" : "Come sviluppatore puoi solo impostare un progetto ma non condurlo. Come sviluppatore non è possibile avviare la ricerca dei partecipanti."
     },
 
     "studynav" : {

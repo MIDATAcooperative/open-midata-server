@@ -126,11 +126,21 @@
 		            <span v-t="'manageapp.info.no_update_history'"></span>
                </check-box>		    
 		  </form-group>
-		   <form-group name="pseudonymize" label="manageapp.pseudonymize" v-if="app.type=='analyzer' || app.type=='endpoint'">
+		  <form-group name="pseudonymize" label="manageapp.pseudonymize" v-if="app.type=='analyzer' || app.type=='endpoint'">
                <check-box name="pseudonymize" v-model="app.pseudonymize" :path="errors.pseudonymize">		    
 		            <span v-t="'manageapp.info.pseudonymize'"></span>
                </check-box>		    
-		  </form-group>		
+		  </form-group>
+		  <form-group name="createendpoint" label="manageapp.createendpoint" v-if="app.type=='endpoint'">
+               <check-box name="createendpoint" v-model="app.createendpoint" :path="errors.createendpoint">		    
+		            <span v-t="'manageapp.info.createendpoint'"></span>
+               </check-box>		    
+		  </form-group>
+		  <form-group name="endpoint" label="manageapp.endpoint" v-if="app.type == 'endpoint' && app.createendpoint" :path="errors.endpoint">
+		    <input type="text" id="endpoint" name="endpoint" class="form-control" v-validate v-model="app.endpoint">		    
+		    <p class="form-text text-muted" v-t="'manageapp.info.endpoint'"></p>
+		    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle mr-1"></i>{{ $t('manageapp.info.endpoint2') }}</div>
+		  </form-group>	
 		  <form-group name="resharesData" label="Resharing" class="danger-change" v-if="app.type!='endpoint'">
                 <check-box name="resharesData" v-model="app.resharesData" :path="errors.resharesData" @change="requireLogout();">		    
 		            <span v-t="'manageapp.info.resharesData'"></span>
@@ -295,11 +305,12 @@ export default {
 
     methods : {
         getTitle() {
-            const { $route, $t } = this;
-            if ($route.query.appId) return $t("manageapp.title_edit");
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            if ($route.query.appId) return p+$t("manageapp.edit_btn");
             else return $t("manageapp.title_new");            
         },
-
+                
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
 		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate"])
@@ -437,7 +448,7 @@ export default {
 			if ($data.app.developerTeamLoginsStr) {
 				$data.app.developerTeamLogins = $data.app.developerTeamLoginsStr.split(/[ ,]+/);
 			} else $data.app.developerTeamLogins = [];
-			
+			if (!$data.app.createendpoint) $data.app.endpoint = undefined;
 			
 			if ($data.app._id == null) {
 				me.doAction('submit', apps.registerPlugin($data.app))

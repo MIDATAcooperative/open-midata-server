@@ -20,8 +20,6 @@ package utils.access.index;
 import java.util.HashMap;
 
 import models.MidataId;
-import models.RecordsInfo;
-import utils.AccessLog;
 import utils.db.LostUpdateException;
 import utils.exceptions.InternalServerException;
 

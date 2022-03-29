@@ -696,6 +696,11 @@ const routes = [
   },
   {
     base : ["admin", "developer"],
+    path : "services",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/services.vue')
+  },
+  {
+    base : ["admin", "developer"],
     path : "autoimport",
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/autoimport.vue')
   },
@@ -770,9 +775,9 @@ const routes = [
     },
     admin : {
       meta : {
-        allowDelete : true,
-        allowStudyConfig : true,
-        allowExport : true
+        allowDelete : false,
+        allowStudyConfig : false,
+        allowExport : false
       }
     }
   }

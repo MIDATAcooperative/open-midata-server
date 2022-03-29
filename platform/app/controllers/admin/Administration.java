@@ -35,26 +35,16 @@ import akka.cluster.ClusterEvent.CurrentClusterState;
 import controllers.APIController;
 import controllers.Application;
 import controllers.Users;
-import models.AccessPermissionSet;
 import models.Admin;
-import models.Circle;
 import models.Consent;
 import models.Developer;
-import models.HealthcareProvider;
-import models.KeyInfoExtern;
-import models.KeyRecoveryData;
-import models.KeyRecoveryProcess;
 import models.Member;
 import models.MidataAuditEvent;
 import models.MidataId;
 import models.Plugin;
-import models.Space;
 import models.Study;
-import models.StudyParticipation;
-import models.SubscriptionData;
 import models.User;
 import models.UserGroup;
-import models.UserGroupMember;
 import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
@@ -63,7 +53,6 @@ import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.MessageReason;
-import models.enums.ParticipationStatus;
 import models.enums.SecondaryAuthType;
 import models.enums.StudyExecutionStatus;
 import models.enums.SubUserRole;
@@ -73,12 +62,11 @@ import models.stats.InstanceStats;
 import models.stats.UsageStats;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
-import utils.access.AccessContext;
 import utils.access.DBRecord;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
@@ -88,7 +76,6 @@ import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
-import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
@@ -96,6 +83,8 @@ import utils.auth.PreLoginSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -422,7 +411,7 @@ public class Administration extends APIController {
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");			
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		
+		AccessContext context = ContextManager.instance.createLoginOnlyContext(userId, getRole());
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
 		  requireSubUserRole(request, SubUserRole.USERADMIN);
@@ -445,7 +434,7 @@ public class Administration extends APIController {
 			if (!executorId.equals(userId)) {
 			   user.addFlag(AccountActionFlags.UPDATE_FHIR);
 			} else {
-		       PatientResourceProvider.updatePatientForAccount(user._id);
+		       PatientResourceProvider.updatePatientForAccount(context, user._id);
 			}
 		    AuditManager.instance.success();
 		
@@ -516,6 +505,7 @@ public class Administration extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
+		AccessContext context = portalContext(request);
 		
 		
 		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "createdBy", "code"));
@@ -523,7 +513,7 @@ public class Administration extends APIController {
 		if (study == null) throw new BadRequestException("error.missing.study", "Study not found.");
 		if (study.executionStatus != StudyExecutionStatus.PRE && study.executionStatus != StudyExecutionStatus.ABORTED) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 	
-		controllers.research.Studies.deleteStudy(userId, study._id, false);
+		controllers.research.Studies.deleteStudy(context, study._id, false);
 		
 		return ok();
 	}

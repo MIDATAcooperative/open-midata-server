@@ -44,6 +44,8 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import org.bson.BSONObject;
+
 import akka.japi.Pair;
 import models.KeyInfo;
 import models.KeyInfoExtern;
@@ -55,7 +57,10 @@ import models.User;
 import models.UserGroup;
 import utils.AccessLog;
 import utils.access.EncryptionUtils;
+import utils.access.RecordManager;
+import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
@@ -198,6 +203,16 @@ public class KeyManager implements KeySession {
 		return generateKeypairAndReturnPublicKey(target, null);
 	}
 	
+	public void backupKeyInAps(AccessContext context, MidataId target) throws AppException {
+		KeyManagerSession current = session.get();
+		current.backupKeyInAps(context, target);
+	}
+	
+	public boolean recoverKeyFromAps(AccessContext context, MidataId target) throws AppException {
+		KeyManagerSession current = session.get();
+		return current.recoverKeyFromAps(context, target);
+	}
+	
 	/**
 	 * Generate a new public/private key pair, protect the private key with a passphrase, store it in db and return the public key.
 	 * 
@@ -281,7 +296,7 @@ public class KeyManager implements KeySession {
 	}
 	
 	public String login(long expire, boolean persistable) {
-		AccessLog.log("Key-Ring: new session with duration="+expire);
+		AccessLog.log("Key-Ring: new session with duration=", Long.toString(expire));
 		String handle;
 		String passkey;
 		do {
@@ -318,7 +333,7 @@ public class KeyManager implements KeySession {
 					keySessions.put(handle, keyring);
 					session.set(new KeyManagerSession(handle, keyring));
 					keyring.addKey(user.toString(), key);
-					AccessLog.log("Key-Ring: Adding key for executor:"+user.toString());
+					AccessLog.log("Key-Ring: Adding key for executor:", user.toString());
 					return;
 				} else {
 					AccessLog.log("Key-Ring: Internal Sessiontoken used but no user given.");
@@ -332,8 +347,8 @@ public class KeyManager implements KeySession {
 					session.set(new KeyManagerSession(handle, keyring));
 					if (psession.splitkey != null) {
 					  keyring.addKey(psession.user.toString(), EncryptionUtils.applyKey(psession.splitkey, passkey));
-					  AccessLog.log("Key-Ring: Persisted session for executor:"+psession.user.toString());
-					} else AccessLog.log("Key-Ring: Keyless session for executor:"+psession.user.toString());
+					  AccessLog.log("Key-Ring: Persisted session for executor:", psession.user.toString());
+					} else AccessLog.log("Key-Ring: Keyless session for executor:", psession.user.toString());
 					return;
 				}
 			}
@@ -441,7 +456,7 @@ public class KeyManager implements KeySession {
 				byte key[] = pks.getKey(target.toString());
 							
 				if (key == null) {
-					AccessLog.log("no key in memory for user="+target);
+					AccessLog.log("no key in memory for user=", target.toString());
 					throw new AuthException("error.relogin", "Authorization Failure");
 				}
 				
@@ -532,8 +547,7 @@ public class KeyManager implements KeySession {
 				KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
 				PublicKey pubKey = keyFactory.generatePublic(spec);
 				 
-				byte algorithm = encryptedHash[0];
-				int offset = 1;
+				byte algorithm = encryptedHash[0];				
 				byte[] withoutAlg = new byte[encryptedHash.length-1];						
 				System.arraycopy(encryptedHash, 1, withoutAlg, 0, withoutAlg.length);
 				
@@ -734,6 +748,20 @@ public class KeyManager implements KeySession {
 			
 			return split.first();
 			
+		}
+		
+		public void backupKeyInAps(AccessContext context, MidataId target) throws AppException {
+			RecordManager.instance.setMeta(context, target, "_pk", CMaps.map("key", pks.getKey(target.toString())));
+		}
+		
+		public boolean recoverKeyFromAps(AccessContext context, MidataId target) throws AppException {
+			BSONObject o = RecordManager.instance.getMeta(context, target, "_pk");
+			if (o != null) {
+				byte[] key = (byte[]) o.get("key");
+				pks.addKey(target.toString(), key);
+				return true;
+			}
+			return false;
 		}
 		
 		public void newFutureLogin(MidataId user, byte[] pubkey) throws AuthException, InternalServerException {

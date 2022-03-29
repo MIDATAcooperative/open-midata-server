@@ -33,7 +33,9 @@
         "title2" : "Beschreibung des Forschungsprojektes ändern",
         "study_name" : "Name des Forschungsprojektes",
         "study_type" : "Forschungsart",
-        "study_description" : "Projektbeschreibung"
+        "study_description" : "Projektbeschreibung",
+        "developer_nostart" : "Achtung!",
+        "developer_nostart2" : "Als Entwickler können Sie ein Projekt nur einrichten, aber nicht durchführen. Als Entwickler ist es nicht möglich, die Teilnehmersuche zu starten."
     },
 
     "studynav" : {

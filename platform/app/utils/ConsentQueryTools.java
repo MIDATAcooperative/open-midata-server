@@ -1,13 +1,17 @@
 package utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import controllers.Circles;
 import models.Consent;
@@ -21,13 +25,12 @@ import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.UserRole;
 import play.libs.Json;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
-import utils.access.RepresentativeAccessContext;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
@@ -37,6 +40,17 @@ import utils.messaging.SubscriptionManager;
 
 public class ConsentQueryTools {
 
+	private static ObjectMapper mapper;
+	
+	private static ObjectMapper getMapper() {
+		if (mapper == null) {
+			mapper = Json.mapper().copy()
+			.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
+            .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
+		}
+		return mapper;
+	}
+	
 	public static Map<String, Object> getSharingQuery(Consent consent, boolean verify) throws AppException {
 		if (consent==null) return getEmptyQuery();
 		
@@ -68,7 +82,7 @@ public class ConsentQueryTools {
 	}
 	
 	public static void updateSharingQuery(AccessContext context, Consent consent, Map<String, Object> query) throws AppException {
-		AccessLog.logBegin("start update sharing query consent="+consent._id);
+		AccessLog.logBegin("start update sharing query consent=",consent._id.toString());
 		
 		consent.sharingQuery = query;
 		consent.lastUpdated = new Date();
@@ -137,6 +151,7 @@ public class ConsentQueryTools {
 	private static boolean verifyIntegrity(Consent consent) throws InternalServerException {
 		String query = getSharingQueryString(consent);
 		AccessLog.log("consent="+consent._id+" signature="+consent.querySignature+" doc="+consent.dateOfCreation+" lu="+consent.lastUpdated);
+		//AccessLog.log("CHECK Sign ow="+consent.owner.toString()+" lu="+consent.lastUpdated.getTime()+" qu="+query);
 		if (!consent.querySignature.check(consent._id, query, consent.owner, consent.dateOfCreation.getTime(), consent.lastUpdated.getTime())) {
 			AccessLog.log("failed signature check for consent="+consent._id+" owner="+consent.owner.toString());
 			return false;			
@@ -148,6 +163,7 @@ public class ConsentQueryTools {
 		AccessLog.log("update consent signature consent="+consent._id);
 		if (!validAccessContext.getAccessor().equals(consent.owner)) throw new InternalServerException("error.internal", "Accessor is not consent owner");
 		String query = getSharingQueryString(consent);
+		//AccessLog.log("CREATE Sign ow="+consent.owner.toString()+" lu="+consent.lastUpdated.getTime()+" qu="+query);
 		consent.querySignature = new Signed(consent._id, query, consent.owner, validAccessContext.getActor(), consent.lastUpdated.getTime());
 	}
 	
@@ -162,11 +178,16 @@ public class ConsentQueryTools {
 	}
 	
 	private static String getSharingQueryString(Consent consent) {
-		String query = Json.stringify(Json.toJson(consent.sharingQuery));
-		String writeMode = consent.writes.toString();
-		String validUntil = consent.validUntil != null ? Long.toHexString(consent.validUntil.getTime()) : "null";
-		String createdBefore = consent.createdBefore != null ? Long.toHexString(consent.createdBefore.getTime()) : "null";
-		return query+"|"+writeMode+"|"+validUntil+"|"+createdBefore;		
+		ObjectMapper map = getMapper();
+		try {
+			String query = map.writer().writeValueAsString(map.valueToTree(consent.sharingQuery));			
+			String writeMode = consent.writes.toString();
+			String validUntil = consent.validUntil != null ? Long.toHexString(consent.validUntil.getTime()) : "null";
+			String createdBefore = consent.createdBefore != null ? Long.toHexString(consent.createdBefore.getTime()) : "null";
+			return query+"|"+writeMode+"|"+validUntil+"|"+createdBefore;
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public static Map<String, Object> getVerifiedSharingQuery(MidataId consentId) throws AppException {

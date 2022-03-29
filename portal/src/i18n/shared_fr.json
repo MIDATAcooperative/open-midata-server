@@ -27,6 +27,7 @@
         "research" : "Recherche",
         "apps" : "Applications",
         "config" : "Configuration",
+        "language" : "Langue",
         "help" : "Aide"
     },
 
@@ -43,6 +44,7 @@
         "mustbemember_title" : "Adhésion à @OPERATOR requise!",
         "mustbemember_detail" : "Pour utiliser cette fonctionnalité, vous devez être membre de la coopérative. Cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte' pour plus d'informations.",
         "ratelimit" : "La limite de la fréquence d'appel de l'action en cours est atteinte. Réessayez plus tard.",
+        "no_code_challenge" : "L'endpoint d'autorisation a été appelé avec des paramètres insuffisants. Contactez le développeur de l'application.",
         "notauthorized" : {
             "action" : "Vous n'êtes pas autorisé à entreprendre cette action",
             "fields" : "Vous n'êtes pas autorisé à consulter les champs demandés",
@@ -629,7 +631,7 @@
         "login_btn" : "Se connecter",
         "service_login" : "Connexion pour demande de confirmation",
         "service_login2" : "Lors votre prochaine connexion, on vous demandera de confirmer votre consentement et/ou votre participation à des projets de recherche.",
-        "account_login" : "Connexion pour la gestion des comptes",
+        "account_login" : "Connexion pour la gestion du compte",
         "account_login2" : "Veuillez vous connecter pour accéder aux fonctions de gestion du compte.",
         "no_account" : "Je n'ai pas encore de compte @PRODUCT."
     },
@@ -1066,7 +1068,7 @@
         "sign_in_btn" : "Se connecter",
         "device" : "Appareil : {{device}}",
         "please_confirm" : "Veuillez confirmer l'activation de l'application sur le portail @PRODUCT, puis réessayez. Libellé du consentement: {{ consent }}",
-        "confirm_btn" : "Confirmer l'accès",
+        "confirm_btn" : "J'accepte",
         "reject_btn" : "Rejeter",
         "continue_btn" : "Continuer",
         "requests_access" : "Accès demandé par l'application:",

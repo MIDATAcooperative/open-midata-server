@@ -28,6 +28,7 @@
                     <div class="col-4">
                         <button type="button" class="btn btn-default space" v-t="'apikeys.add_btn'" :disabled="action!=null" @click="addKey(service)"></button>                            
                         <button type="button" class="btn btn-danger space" v-t="'apikeys.delete_btn'" v-if="service.linkedStudy" :disabled="action!=null" @click="deleteService(service);"></button>
+                        <button type="button" class="btn btn-danger space" v-t="'apikeys.delete_endpoint_btn'" v-else-if="service.endpoint" :disabled="action!=null" @click="deleteService(service);"></button>
                     </div>
                 </div>
                 <div v-if="service.keys.length" class="row">

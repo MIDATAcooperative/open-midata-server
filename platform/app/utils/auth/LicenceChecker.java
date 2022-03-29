@@ -64,7 +64,7 @@ public class LicenceChecker {
 	}
 	
 	public static boolean licenceRequired(Plugin plugin) {
-		AccessLog.log("licence required: "+(plugin.licenceDef != null));
+		AccessLog.log("licence required: ", Boolean.toString(plugin.licenceDef != null));
 		return plugin.licenceDef != null;
 	}
 	
@@ -76,7 +76,7 @@ public class LicenceChecker {
 		}
 				
 		if (licenceId != null) {
-		  AccessLog.log("check stored licence id="+licenceId);
+		  AccessLog.log("check stored licence id=", licenceId.toString());
 		  Licence lic = Licence.getById(licenceId);
 		  if (isValid(userId, lic)) return lic._id;
 		}
@@ -102,7 +102,7 @@ public class LicenceChecker {
 				if (isValid(userId, lic)) return lic._id;
 			}			
 		}
-		AccessLog.log("no valid licence found user="+userId+" plugin="+plugin._id);
+		AccessLog.log("no valid licence found user=", userId.toString(), " plugin=", plugin._id.toString());
 		ErrorReporter.report("licence check", null, null);
 		return null;
 	}

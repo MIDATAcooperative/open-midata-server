@@ -20,7 +20,6 @@ package utils.access;
 import java.util.Iterator;
 import java.util.List;
 
-import utils.AccessLog;
 import utils.exceptions.AppException;
 
 /**
@@ -101,6 +100,11 @@ public abstract class Feature {
 		
 		public abstract DBIterator<A> advance(B next) throws AppException;
 		
+		@Override
+		public void close() {
+			chain.close();
+			current.close();
+		}
 		
 		
 	}

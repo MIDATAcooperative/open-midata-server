@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import models.MidataId;
-
 public class TimestampIndexKey extends BaseIndexKey<TimestampIndexKey,TimestampIndexKey> implements Comparable<TimestampIndexKey> {
 
     public String what;	

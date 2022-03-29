@@ -34,6 +34,7 @@ import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
 import utils.AccessLog;
+import utils.PluginLoginCache;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -53,7 +54,8 @@ import utils.sync.Instances;
 public class Plugin extends Model implements Comparable<Plugin> {
 
 	private static final String collection = "plugins";
-	private static Map<MidataId, Plugin> cache = new ConcurrentHashMap<MidataId, Plugin>();
+	private static Map<MidataId, Plugin> cache = new ConcurrentHashMap<MidataId, Plugin>();	
+	
 	public @NotMaterialized static final Set<PluginStatus> NOT_DELETED = EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT);
 	
 	/**
@@ -65,7 +67,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports", "licenceDef", "pseudonymize", "consentObserving", "repositoryUrl", "repositoryDate", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports", "licenceDef", "pseudonymize", "consentObserving", "repositoryUrl", "repositoryDirectory", "repositoryDate", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -76,6 +78,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "pluginVersion",
 	                     "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "licenceDef", "pseudonymize", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail");
+	
+	public @NotMaterialized final static Set<String> FOR_LOGIN =
+			Sets.create("_id", "filename", "type", "name", "secret", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef", "codeChallenge",
+					"pluginVersion", "defaultQuery", "predefinedMessages", "writes", "defaultSubscriptions","targetUserRole"
+					);
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -347,6 +354,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public String repositoryToken;
 	
 	/**
+	 * Subdirectory in Repository
+	 */
+	public String repositoryDirectory;
+	
+	/**
 	 * Last update from repository
 	 */
 	public long repositoryDate;
@@ -376,6 +388,9 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 */
 	public String loginTemplateApprovedByEmail;
 	
+	/**
+	 * Require login with code_challenge and code_verifier
+	 */
 	public boolean codeChallenge;
 
 	@Override
@@ -407,7 +422,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		
 		result = getById(id, ALL_PUBLIC);
 		if (result == null) return null;
-		cache.put(id, result);
+		cache.put(id, result);	
 		return result;		
 	}
 
@@ -419,9 +434,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		Model.set(Plugin.class, collection, pluginId, field, value);
 	}
 	
-	public static Plugin getByFilename(String name, Set<String> fields) throws InternalServerException {
-		return Model.get(Plugin.class, collection, CMaps.map("filename", name).map("status", Plugin.NOT_DELETED), fields);
+	public static Plugin getByFilename(String name, Set<String> fields) throws InternalServerException {	
+		return Model.get(Plugin.class, collection, CMaps.map("filename", name).map("status", Plugin.NOT_DELETED), fields);		
 	}
+	
+	
 	
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
@@ -433,7 +450,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	}
 	
 	public void updateRepo() throws InternalServerException {				
-	   setMultiple(collection, Sets.create("repositoryUrl", "repositoryToken"));
+	   setMultiple(collection, Sets.create("repositoryUrl", "repositoryDirectory", "repositoryToken"));
 	   Instances.cacheClear("plugin",  _id);		
 	}
 	
@@ -471,6 +488,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public static void cacheRemove(MidataId pluginId) {
 		AccessLog.log("cache remove");
 		cache.remove(pluginId);
+		PluginLoginCache.clear();
 	}
 	
 	public void setLanguage(String lang) {

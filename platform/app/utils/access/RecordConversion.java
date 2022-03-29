@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.bson.BSONObject;
 import org.bson.types.BasicBSONList;
@@ -84,7 +83,7 @@ public class RecordConversion {
 		AccessLog.log("start convert");
 		List<Record> result = new ArrayList<Record>(dbrecords.size());
 		for (DBRecord dbrecord : dbrecords) result.add(currentVersionFromDB(dbrecord));
-		AccessLog.log("end convert time="+(System.currentTimeMillis() - now));
+		AccessLog.log("end convert time=", Long.toString(System.currentTimeMillis() - now));
 		return result;
 	}
 	

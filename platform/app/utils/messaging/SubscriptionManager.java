@@ -17,35 +17,23 @@
 
 package utils.messaging;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.lang.ProcessBuilder.Redirect;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
+import static akka.pattern.PatternsCS.ask;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.CompletionStage;
 
 import org.hl7.fhir.r4.model.Subscription;
 import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelType;
 
 import akka.actor.AbstractActor;
-import akka.actor.ActorPath;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.routing.RoundRobinPool;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
-
-import static akka.pattern.PatternsCS.ask;
-import controllers.AutoRun.ImportResult;
 import models.Consent;
 import models.HPUser;
 import models.Member;
@@ -58,33 +46,23 @@ import models.ServiceInstance;
 import models.Space;
 import models.SubscriptionData;
 import models.User;
-import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
-import models.enums.EntityType;
-import models.enums.MessageReason;
-import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.libs.ws.WSClient;
-import play.libs.ws.WSRequest;
-import play.libs.ws.WSResponse;
 import utils.AccessLog;
 import utils.ErrorReporter;
-import utils.InstanceConfig;
 import utils.ServerTools;
-import utils.access.AccessContext;
-import utils.access.RecordManager;
-import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
-import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.ConsentResourceProvider;
 import utils.fhir.FHIRServlet;
-import utils.fhir.FHIRTools;
 import utils.fhir.SubscriptionResourceProvider;
+import utils.stats.ActionRecorder;
 import utils.sync.Instances;
 
 /**
@@ -393,6 +371,9 @@ class SubscriptionChecker extends AbstractActor {
 	}
 
 	void resourceChange(ResourceChange change) {	
+		String path = "SubscriptionChecker/resourceChange";
+		long st = ActionRecorder.start(path);
+		
 		AccessLog.logStart("jobs", "resource change: "+change);
 		try {
 		Set<MidataId> affected = new HashSet<MidataId>();
@@ -459,11 +440,14 @@ class SubscriptionChecker extends AbstractActor {
 		}
 		} finally {
 			ServerTools.endRequest();
+			ActionRecorder.end(path, st);
 		}
 	}
 	
 	void processMessage(ProcessMessage message) {
-				
+		String path = "SubscriptionChecker/processMessage";
+		long st = ActionRecorder.start(path);
+		
 		if (message.getDestination() != null) {		
 			AccessLog.logStart("jobs", "message with destination: "+message);
 			try {
@@ -491,6 +475,8 @@ class SubscriptionChecker extends AbstractActor {
 		  SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getFhirVersion(), message.getMessage(), null, message.getParams());
 		  processor.forward(trigger, getContext());
 		}
+		
+		ActionRecorder.end(path, st);
 	}
 	
 	private User getTargetUser(ProcessMessage message) throws AppException {
@@ -533,6 +519,9 @@ class SubscriptionChecker extends AbstractActor {
 	}
 	
 	void subscriptionChange(SubscriptionChange change) {
+		String path = "SubscriptionChecker/subscriptionChange";
+		long st = ActionRecorder.start(path);
+		
 		AccessLog.logStart("jobs", "subscription change: "+change);
 		try {
 			MidataId owner = change.getOwner();
@@ -545,6 +534,7 @@ class SubscriptionChecker extends AbstractActor {
 			ErrorReporter.report("SubscriptionChecker", null, e);
 		} finally {
 			ServerTools.endRequest();
+			ActionRecorder.end(path, st);
 		}
 	}
 	

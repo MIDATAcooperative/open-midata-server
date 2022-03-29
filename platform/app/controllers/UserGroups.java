@@ -23,8 +23,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.BSONObject;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
@@ -41,11 +39,10 @@ import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.ProjectTools;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -53,6 +50,7 @@ import utils.auth.KeyManager;
 import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
@@ -211,6 +209,7 @@ public class UserGroups extends APIController {
 	public Result deleteUserGroup(Request request, String groupIdStr) throws AppException {       
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId groupId = MidataId.from(groupIdStr);
+		AccessContext context = portalContext(request);
 		
 		UserGroupMember execMember = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
 		if (execMember == null) throw new BadRequestException("error.invalid.usergroup", "Only members may delete a group");
@@ -222,11 +221,11 @@ public class UserGroups extends APIController {
 		if (consents.isEmpty()) {		
 			Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		
 			for (UserGroupMember member : allMembers) {
-				RecordManager.instance.deleteAPS(member._id, executorId);
+				RecordManager.instance.deleteAPS(context, member._id);
 				member.delete();
 			}
 			
-			RecordManager.instance.deleteAPS(groupId, executorId);
+			RecordManager.instance.deleteAPS(context, groupId);
 			UserGroup.delete(groupId);
 		} else {
 			Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		

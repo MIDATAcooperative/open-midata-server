@@ -24,7 +24,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -331,7 +330,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 	public Enumeration<String> getHeaders(String arg0) {
 		List<String> headers = request.getHeaders().getAll(arg0);
 		if (headers == null || headers.isEmpty()) {
-			AccessLog.log("header not found:"+arg0);
+			AccessLog.log("header not found:", arg0);
 			if (arg0.toLowerCase().equals("content-type")) return Collections.enumeration(Collections.singleton("application/json+fhir"));
 			return Collections.emptyEnumeration();
 		}

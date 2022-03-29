@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-     <panel :title="$t('applink.title')" :busy="isBusy">		  
+     <panel :title="getTitle()" :busy="isBusy">		  
 	
         <error-box :error="error"></error-box>
 
@@ -200,6 +200,12 @@ export default {
     mixins : [ status ],
 
     methods : {
+         getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.link_btn");                       
+        },
+    
         reload() {
             const { $data } = this, me = this;
             $data.selection = null;

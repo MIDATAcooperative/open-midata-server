@@ -75,7 +75,7 @@ class RecordEncryption {
 			try {
 		       record.meta = (BasicBSONObject) EncryptionUtils.decryptBSON(record.key, record.encrypted);		    		    
 			} catch (InternalServerException e) {
-				AccessLog.log("Error decrypting record: id="+record._id.toString());
+				AccessLog.log("Error decrypting record: id=", record._id.toString());
 				//throw e;
 			}
 		}
@@ -85,7 +85,7 @@ class RecordEncryption {
 			record.data = EncryptionUtils.decryptBSON(record.key, record.encryptedData);
 			Feature_Pseudonymization.pseudonymize(record);
 			} catch (InternalServerException e) {
-				AccessLog.log("Error decrypting data of record: id="+record._id.toString());
+				AccessLog.log("Error decrypting data of record: id=", record._id.toString());
 				//throw e;
 			}
 		}
@@ -96,7 +96,7 @@ class RecordEncryption {
 			   record.watches = new BasicBSONList();
 			   record.watches.putAll(r);
 			} catch (InternalServerException e) {
-				AccessLog.log("Error decrypting watches of record: id="+record._id.toString());
+				AccessLog.log("Error decrypting watches of record: id=", record._id.toString());
 					//throw e;
 			}
 		}

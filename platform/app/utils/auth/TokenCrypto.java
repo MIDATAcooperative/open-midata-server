@@ -36,7 +36,6 @@ import org.apache.commons.codec.binary.Base64;
 
 import com.google.common.io.BaseEncoding;
 
-import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;

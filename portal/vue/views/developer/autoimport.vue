@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-    <panel :title="'Auto Import Test'" :busy="isBusy">		  
+    <panel :title="getTitle()" :busy="isBusy">		  
 	
         <error-box :error="error"></error-box>
     
@@ -70,6 +70,13 @@ export default {
     mixins : [ status ],
 
     methods : {
+    
+        getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.serverimport_btn");                       
+        },
+        
         loadSpace(space) {
             const { $data } = this, me = this;
             me.doBusy(spaces.getUrl(space._id)
@@ -84,6 +91,11 @@ export default {
             $data.userId = userId;
             var properties = {"owner": userId, "visualization" : appId, "context" : "sandbox" };
             var fields = ["name", "type", "order", "autoImport", "context", "visualization"];
+            
+            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "icons" ])
+			.then(function(data) { 
+				$data.app = data.data[0];			
+			}));
             
             me.doBusy(spaces.get(properties, fields)
             .then(function(results) {	    	

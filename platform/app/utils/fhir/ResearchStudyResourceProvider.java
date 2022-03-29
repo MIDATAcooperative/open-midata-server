@@ -23,12 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.r4.model.codesystems.ResearchStudyStatus;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeType;
 import org.hl7.fhir.r4.model.Extension;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Period;
@@ -56,7 +53,6 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
-import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.Info;
 import models.MidataId;
 import models.Record;
@@ -65,12 +61,11 @@ import models.Study;
 import models.StudyGroup;
 import models.enums.InfoType;
 import models.enums.StudyValidationStatus;
-import models.enums.UserRole;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
-import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<ResearchStudy> implements IResourceProvider {
@@ -234,7 +229,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
 		
 		// get execution context (which user, which app)
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		
@@ -311,23 +306,22 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		
 	}
 	
-	public static void updateFromStudy(MidataId executor, MidataId studyId) throws AppException {
+	public static void updateFromStudy(AccessContext context, MidataId studyId) throws AppException {
 		Study study = Study.getById(studyId, Study.ALL);
-		updateFromStudy(executor, study);
+		updateFromStudy(context, study);
 	}
 	
-	public static void deleteStudy(MidataId executor, MidataId studyId) throws AppException {        
-		RecordManager.instance.deleteFromPublic(executor, CMaps.map("_id",studyId).map("format","fhir/ResearchStudy").map("public","only").map("content","ResearchStudy"));		
+	public static void deleteStudy(AccessContext context, MidataId studyId) throws AppException {        
+		RecordManager.instance.deleteFromPublic(context, CMaps.map("_id",studyId).map("format","fhir/ResearchStudy").map("public","only").map("content","ResearchStudy"));		
 	}
 	
-	public static void updateFromStudy(MidataId executor, Study study) throws AppException {
+	public static void updateFromStudy(AccessContext context, Study study) throws AppException {
 		if (study.validationStatus == StudyValidationStatus.DRAFT) return;
 		try {
 			info();
 		} catch (AuthenticationException e) {
-			ExecutionInfo inf = new ExecutionInfo(executor, UserRole.RESEARCH);
-			
-			ResearchStudyResourceProvider.setExecutionInfo(inf);
+						
+			ResearchStudyResourceProvider.setAccessContext(context);
 		}
 				
 		ResearchStudyResourceProvider provider = ((ResearchStudyResourceProvider) FHIRServlet.myProviders.get("ResearchStudy")); 
@@ -337,7 +331,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		boolean doupdate = false;
 		Record oldRecord = null;
 		
-		List<Record> records = RecordManager.instance.list(info().role, info().context, CMaps.map("_id",study._id).map("format","fhir/ResearchStudy").map("public","only").map("content","ResearchStudy"), RecordManager.COMPLETE_DATA); 
+		List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id",study._id).map("format","fhir/ResearchStudy").map("public","only").map("content","ResearchStudy"), RecordManager.COMPLETE_DATA); 
 		if (!records.isEmpty()) oldRecord = records.get(0);								  
 				
 		if (oldRecord != null) {

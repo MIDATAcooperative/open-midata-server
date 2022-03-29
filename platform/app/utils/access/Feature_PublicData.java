@@ -25,6 +25,7 @@ import java.util.Set;
 import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.auth.KeyManager;
+import utils.context.PublicAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -114,7 +115,7 @@ public class Feature_PublicData extends Feature {
 		return result;	
 	}
 	
-	protected static APSCache getPublicAPSCache(APSCache cache) throws InternalServerException {
+	public static APSCache getPublicAPSCache(APSCache cache) throws InternalServerException {
 		if (cache.getAccountOwner().equals(RuntimeConstants.instance.publicUser)) return cache;
 		if (!cache.hasSubCache(RuntimeConstants.instance.publicGroup)) KeyManager.instance.unlock(RuntimeConstants.instance.publicGroup, null);
 		APSCache subcache = cache.getSubCache(RuntimeConstants.instance.publicGroup);

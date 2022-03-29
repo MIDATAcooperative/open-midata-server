@@ -146,6 +146,7 @@ import ChangeLog from "components/tiles/ChangeLog.vue"
 import Panel from "components/Panel.vue"
 import session from "services/session.js"
 import server from "services/server.js"
+import crypto from "services/crypto.js"
 import apps from "services/apps.js"
 import { rl, status, ErrorBox, FormGroup, Password } from 'basic-vue3-components'
 import ENV from "config";
@@ -185,10 +186,10 @@ export default {
     mixins : [ status, rl ],
 
     methods : {
-        getTitle() {
-            const { $data, $t } = this, me = this;
-            if (!$data.app) return $t('appdebug.title');
-            return $t('appdebug.title')+": "+$data.app.name+" "+$data.app.filename;
+         getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.debug_btn");                       
         },
         dosubmit() {
           const { $data, $route } = this, me = this;

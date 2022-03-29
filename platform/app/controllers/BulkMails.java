@@ -29,10 +29,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import models.BulkMail;
-import models.Consent;
 import models.MidataId;
 import models.MobileAppInstance;
-import models.NewsItem;
 import models.Plugin;
 import models.Study;
 import models.StudyParticipation;
@@ -47,16 +45,15 @@ import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
-import utils.auth.AnyRoleSecured;
 import utils.auth.UnsubscribeToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -69,6 +66,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.MailSenderType;
 import utils.messaging.MailUtils;
+import utils.stats.ActionRecorder;
 
 public class BulkMails extends Controller {
 
@@ -215,12 +213,14 @@ public class BulkMails extends Controller {
 		Runnable mySender =
 			    new Runnable(){
 			        public void run(){
+			        	long st = ActionRecorder.start("BulkMails/send");
 			        	try {
 			                sendMails(mailCampaign);
 			        	} catch (Exception e) {
 			        		ErrorReporter.report("bulk mail sender", null, e);			        		
 			        	} finally {
 			        		ServerTools.endRequest();
+			        		ActionRecorder.end("BulkMails/send", st);
 			        	}
 			        }
 			    };

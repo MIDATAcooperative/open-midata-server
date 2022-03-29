@@ -20,7 +20,6 @@ package utils.access.index;
 import java.util.Set;
 
 import models.MidataId;
-import utils.AccessLog;
 
 public class StreamIndexLookup extends BaseLookup<StreamIndexKey>{
 

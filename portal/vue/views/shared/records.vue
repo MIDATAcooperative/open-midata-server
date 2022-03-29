@@ -150,6 +150,7 @@ let doLoadPlugins = false;
 	   	newgroup.infoCount = 0;
 	   	newgroup.countShared = 0;
 	   	newgroup.group = newgroup.name;
+	   	newgroup.loaded = false;
 	   	newgroup.id = newgroup.name.replace(/[/\-]/g,'_');
 	   	
 	   	if (newgroup.parent == null || newgroup.parent === "") {
@@ -176,7 +177,8 @@ let doLoadPlugins = false;
 	   	newplugin.contents = {};
 	   	newplugin.records = [];
 	   	newplugin.infoCount = 0;
-	   	newplugin.countShared = 0;	   	
+	   	newplugin.countShared = 0;	 
+	   	newplugin.loaded = false;  	
 	   		   	
 	   	newplugin.fullLabel = { fullLabel : "Label "+newplugin.id };
 	   	if (contentLabels[plugin]) {
@@ -435,7 +437,7 @@ export default {
                 .then(function(results) {
                     
                     for (let circle of results.data) { 
-                        $data.availableAps.push({ i18n:"records.shared", name:circle.ownerName, aps:circle._id, type : circle.type.toLowerCase() });
+                        $data.availableAps.push({ i18n:"records.shared", name:(circle.ownerName || '-'), aps:circle._id, type : circle.type.toLowerCase() });
                     }
                 });
             }

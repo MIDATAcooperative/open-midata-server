@@ -25,20 +25,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.AuditEvent;
-import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAgentComponent;
-import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventOutcome;
 import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.CodeType;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Identifier;
-import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.instance.model.api.IIdType;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -63,20 +53,15 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
-import models.Consent;
 import models.MidataAuditEvent;
 import models.MidataId;
-import models.Plugin;
-import models.Study;
 import models.User;
 import models.UserGroupMember;
-import models.enums.AuditEventType;
-import models.enums.ConsentType;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.access.op.AndCondition;
-import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
+import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 
@@ -396,20 +381,23 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	public List<MidataAuditEvent> searchRaw(SearchParameterMap params) throws AppException {
 		if (!checkAccessible()) return Collections.emptyList();
 		
-		ExecutionInfo info = info();			
+		AccessContext info = info();			
 							
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, null);
 		
-		User current = info().cache.getUserById(info().ownerId);
+		User current = info().getRequestCache().getUserById(info().getLegacyOwner());
 		boolean authrestricted = false;
-		if (!current.role.equals(UserRole.ADMIN)) {
-		  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(info().executorId);
+		if (current == null) {
+		  query.putDataCondition(new AndCondition(CMaps.map("authorized", info.getAccessor())).optimize());
+		  authrestricted = true;
+		} else if (!current.role.equals(UserRole.ADMIN)) {
+		  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(info().getAccessor());
 		  if (ugms.isEmpty()) {
-		    query.putDataCondition(new AndCondition(CMaps.map("authorized", info.executorId)).optimize());
+		    query.putDataCondition(new AndCondition(CMaps.map("authorized", info.getAccessor())).optimize());
 		  } else {
 			Set<MidataId> allowedIds = new HashSet<MidataId>();
-			allowedIds.add(info.executorId);
+			allowedIds.add(info.getAccessor());
 			for (UserGroupMember ugm : ugms) if (ugm.getRole().auditLogAccess()) allowedIds.add(ugm.userGroup);
 			query.putDataCondition(new AndCondition(CMaps.map("authorized", CMaps.map("$in", allowedIds))).optimize());
 			//query.putAccount("authorized", allowedIds);
@@ -438,9 +426,9 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			List<ReferenceParam> entities = builder.resolveReferences("entity", null);
 			if (entities != null) {
 				query.putAccount("about", ObjectIdConversion.toMidataIds(FHIRTools.referencesToIds(entities)));
-			}
+			} else builder.restriction("entity", false, null, "fhirAuditEvent.entity.what"); 
 		}
-		builder.restriction("entity", false, null, "fhirAuditEvent.entity.reference");
+		//
 			
 		builder.restriction("entity-id", false, QueryBuilder.TYPE_IDENTIFIER, "fhirAuditEvent.entity.identifier");
 		builder.restriction("entity-name", false, QueryBuilder.TYPE_STRING, "fhirAuditEvent.entity.name");	

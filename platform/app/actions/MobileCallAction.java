@@ -20,16 +20,12 @@ package actions;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import play.libs.Json;
 import play.mvc.Action;
-import play.mvc.Http;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
-import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.audit.AuditManager;
 import utils.exceptions.BadRequestException;
@@ -37,6 +33,7 @@ import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 import utils.exceptions.RequestTooLargeException;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.ActionRecorder;
 import utils.stats.Stats;
 
 /**
@@ -61,12 +58,14 @@ public class MobileCallAction extends Action<MobileCall> {
 	
     public CompletionStage<Result> call(Request request)  { 
     	long startTime = System.currentTimeMillis();
+    	String path = "(Mobile) ["+request.method()+"] "+request.path();
+    	long st = ActionRecorder.start(path);
     	try {    	  
     	  //JsonNode json = ctx.request().body().asJson();
     	  //ctx.args.put("json", json);
     	  
     	  try {
-    		  AccessLog.logStart("api", "(Mobile) ["+request.method()+"] "+request.path());
+    		  AccessLog.logStart("api", path);
               return withHeaders(delegate.call(request));
       	  } catch (RuntimeException ex) {
       		  if (ex.getCause() != null) throw (Exception) ex.getCause(); else throw ex;
@@ -110,7 +109,9 @@ public class MobileCallAction extends Action<MobileCall> {
 				   ErrorReporter.reportPerformance("Mobile API", request, endTime - startTime);
 				}	
 			} finally {
+				
 			    ServerTools.endRequest();
+			    ActionRecorder.end(path, st);
 			}											 							 
 		}
     }

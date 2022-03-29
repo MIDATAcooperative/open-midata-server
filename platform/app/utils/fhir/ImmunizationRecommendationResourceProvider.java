@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.ImmunizationRecommendation;
 import org.hl7.fhir.r4.model.Reference;
 
@@ -32,8 +31,8 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 public class ImmunizationRecommendationResourceProvider extends RecordBasedResourceProvider<ImmunizationRecommendation> implements IResourceProvider {
@@ -137,7 +136,7 @@ public class ImmunizationRecommendationResourceProvider extends RecordBasedResou
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/ImmunizationRecommendation");

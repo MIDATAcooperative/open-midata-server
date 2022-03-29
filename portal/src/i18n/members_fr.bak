@@ -1,9 +1,5 @@
 {
-  "member_login" : {  
-    "register_now" : "Register Now",
-    "sign_in" : "Login"
-  },   
-  
+   
   "member_quickregistration" : {
     "sign_up" : "Sign up",
     "study" : "Research project*",

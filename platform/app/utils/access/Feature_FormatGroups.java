@@ -150,7 +150,7 @@ public class Feature_FormatGroups extends Feature {
     		}
     		
     		for (String grp : include) {
-    			AccessLog.log("included group:"+grp);
+    			AccessLog.log("included group:",grp);
     			RecordGroup group = RecordGroup.getBySystemPlusName(groupSystem, grp);
     			if (group.parent != null) {
     				if (counts.containsKey(group.parent)) {
@@ -166,13 +166,13 @@ public class Feature_FormatGroups extends Feature {
     			int grpChildren = group.children != null ? group.children.size() : 0;
     			int grpContents = group.contents != null ? group.contents.size() : 0;
     			if (grpChildren + grpContents == counts.get(grp)) {
-    				AccessLog.log("add group:"+grp);
+    				AccessLog.log("add group:",grp);
     				
     				include.add(grp);
     				if (group.contents != null) contents.removeAll(group.contents);
     				if (group.children != null) {
 	    				for (RecordGroup g : group.children) {
-	    					AccessLog.log("remove:"+g.name);
+	    					AccessLog.log("remove:",g.name);
 	    					include.remove(g.name);
 	    				}
     				}
@@ -277,7 +277,10 @@ public class Feature_FormatGroups extends Feature {
 			return "set-group("+chain.toString()+")";
 		}
 		
-		
+		@Override
+		public void close() {
+			chain.close();			
+		}
 		
 	}
 	

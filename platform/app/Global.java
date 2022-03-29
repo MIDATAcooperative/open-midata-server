@@ -28,7 +28,6 @@ import com.typesafe.config.Config;
 
 import akka.Done;
 import akka.actor.ActorSystem;
-import akka.actor.Terminated;
 import controllers.AutoRun;
 import controllers.FHIR;
 import controllers.Market;
@@ -43,16 +42,16 @@ import models.User;
 import models.enums.UserStatus;
 import play.inject.ApplicationLifecycle;
 import play.libs.Json;
-import play.libs.mailer.MailerClient;
 import play.libs.ws.WSClient;
 import setup.MinimalSetup;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
-import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.evolution.AccountPatches;
@@ -63,12 +62,12 @@ import utils.fhir.ResourceProvider;
 import utils.json.CustomObjectMapper;
 import utils.messaging.MailUtils;
 import utils.messaging.Messager;
-import utils.messaging.SMSAPIProvider;
 import utils.messaging.SMSUtils;
 import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
 import utils.plugins.DeploymentManager;
 import utils.servlet.PlayHttpServletConfig;
+import utils.stats.ActionRecorder;
 import utils.stats.Stats;
 import utils.stats.UsageStatsRecorder;
 import utils.sync.Instances;
@@ -87,6 +86,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		// Connect to production database
 	    InstanceConfig.setInstance(new InstanceConfig(config));
 	    
+	    ActionRecorder.init(system);
 	    System.out.println("EMails");
 	    MailUtils.setInstance(new MailUtils(config));
 	    
@@ -118,7 +118,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 				MidataId publicUser = new MidataId("5ccab0dcaed6452048f2b010");
 				System.out.println("step 1");
 				KeyManager.instance.unlock(publicUser, null);
-				AccessContext context = RecordManager.instance.createContextFromAccount(publicUser);
+				AccessContext context = ContextManager.instance.createRootPublicUserContext();
 				System.out.println("step 2");
 				RecordManager.instance.unshareAPSRecursive(context, publicUser, Collections.singleton(RuntimeConstants.publicGroup));
 				System.out.println("step 3");

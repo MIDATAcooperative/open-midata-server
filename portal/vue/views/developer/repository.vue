@@ -1,5 +1,5 @@
 <template>
-    <panel :title="$t('repository.title')" :busy="isBusy">
+    <panel :title="getTitle1()" :busy="isBusy">
 				
 		<form name="myform" ref="myform" novalidate role="form" class="form-horizontal" :class="{ 'mark-danger' : app._id }" @submit.prevent="submit()">
             <error-box :error="error"></error-box>
@@ -13,6 +13,10 @@
 	  
 	  	    <form-group name="repository_token" label="repository.repository_token" :path="errors.repository_token">
 		        <input type="text" id="repository_token" name="repository_token" class="form-control" v-validate v-model="app.repositoryToken">		    
+		    </form-group>
+		    
+		    <form-group name="repository_dir" label="repository.repository_dir" :path="errors.repository_dir">
+		        <input type="text" id="repository_dir" name="repository_dir" class="form-control" v-validate v-model="app.repositoryDirectory" required>		    
 		    </form-group>
 
 		    <form-group label="repository.repository_date">
@@ -99,6 +103,13 @@ export default {
     mixins : [ status ],
 
     methods : {
+    
+        getTitle1() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.repository_btn");                       
+        },
+    
         getTitle() {
             const { $t, $filters, $data } = this;
             if (!$data.report) return $t('repository.log');
@@ -108,7 +119,7 @@ export default {
         loadApp(appId) {
             const { $data } = this, me = this;
             $data.appId=appId;
-            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "repositoryUrl", "repositoryDate" ])
+            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "repositoryUrl", "repositoryDirectory", "repositoryDate" ])
             .then(function(data) { 
                 $data.app = data.data[0];			
             }));

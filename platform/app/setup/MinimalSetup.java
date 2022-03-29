@@ -38,7 +38,6 @@ import models.enums.Gender;
 import models.enums.PluginStatus;
 import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
-import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
@@ -281,6 +280,7 @@ public class MinimalSetup {
 			common.defaultQuery=new HashMap<String, Object>();
 			common.defaultQuery.put("content", Collections.emptySet());
 			common.writes = WritePermissionType.NONE;
+			common.pseudonymize = true;
 			Plugin.add(common);
 		}
 	}

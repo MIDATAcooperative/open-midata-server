@@ -18,12 +18,9 @@
 package utils.access.index;
 
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import models.MidataId;
-import utils.RuntimeConstants;
 import utils.access.DBRecord;
 
 public class StatsLookup extends BaseLookup<StatsIndexKey>{

@@ -51,10 +51,11 @@ function mergeLocales(t, s) {
 async function loadLocaleMessages(file, locale) {
  
   let msgs = undefined;
+  let fallback = undefined;
   if (file=="branding") {
     try {
     msgs = await import(
-      /* webpackChunkName: "locale-[request]" */ `override/branding_${locale}.json`
+      /* webpackChunkName: "locale-[request]" */ `override/branding_${locale}.json`    
     )    
     } catch (e) {}
   }
@@ -62,9 +63,14 @@ async function loadLocaleMessages(file, locale) {
     msgs = await import(
       /* webpackChunkName: "locale-[request]" */ `i18n/${file}_${locale}.json`
     )  
+    if (locale!='en') fallback = await import(
+      /* webpackChunkName: "locale-[request]" */ `i18n/${file}_en.json`
+    )
   }
   replaceInstr(msgs.default);
+  if (fallback) replaceInstr(fallback.default);
   if (!messages[locale]) messages[locale] = { "common" : { "empty" : " " }};
+  if (fallback) mergeLocales(messages[locale], fallback.default);
   mergeLocales(messages[locale], msgs.default);
     
 } 
@@ -81,7 +87,7 @@ async function setLocaleMessages(locale) {
 export const SUPPORT_LOCALES = ['en', 'de', 'fr', 'it']
 
 export function setupI18n(options = { locale: 'en', messages:{} }) {
-  i18n = setI18n({ locale: 'ch', messages:{} });
+  i18n = setI18n({ locale: 'ch', fallbackLocale: 'en', messages:{} });
   let lang = localStorage.language || navigator.language || navigator.userLanguage;
   let startWith = "en";
   for (let l of SUPPORT_LOCALES) if (lang.indexOf(l)>=0) startWith = l;
@@ -103,7 +109,7 @@ export async function setLocale(locale) {
   myLocale.value = locale;
   localStorage.language = locale;
   //i18n.locale.value = locale;
-  
+   
   for (let bundle of bundles) await loadLocaleMessages(bundle, locale);
   await setLocaleMessages(locale);
   console.log("changed to:"+locale);  

@@ -17,13 +17,9 @@
 
 package utils.plugins;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
@@ -37,6 +33,7 @@ import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.stats.ActionRecorder;
 
 public class ExternPluginDeployment extends AbstractActor {
 
@@ -130,17 +127,21 @@ public class ExternPluginDeployment extends AbstractActor {
 		System.out.println("failed");
 	}
 	
-	public void deploy(DeployAction action) throws AppException {		
+	public void deploy(DeployAction action) throws AppException {
+		String path = "ExternPluginDeployment/deploy";
+		long st = ActionRecorder.start(path);
+		
 		MidataId pluginId = action.pluginId;
 		System.out.println("DEPLOY START: "+action.status);
 		try {
 		AccessLog.logStart("jobs", "DEPLOY "+action.status+" "+pluginId);
 		
-		Plugin plugin = Plugin.getById(pluginId, Sets.create("filename", "repositoryUrl","repositoryToken"));		
+		Plugin plugin = Plugin.getById(pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken"));		
 		if (plugin.filename.indexOf(".")>=0 || plugin.filename.indexOf("/") >=0 || plugin.filename.indexOf("\\")>=0) return;
 					
 		String repo = plugin.repositoryUrl;
 		String filename = plugin.filename;
+		String subdir = plugin.repositoryDirectory;
 	
 		if (plugin.repositoryToken != null) {
 			if (repo.startsWith("https://")) repo = "https://"+plugin.repositoryToken+"@"+repo.substring("https://".length());
@@ -241,6 +242,7 @@ public class ExternPluginDeployment extends AbstractActor {
 		}
 		} finally {
 			ServerTools.endRequest();
+			ActionRecorder.end(path, st);
 		}
 	}
 }

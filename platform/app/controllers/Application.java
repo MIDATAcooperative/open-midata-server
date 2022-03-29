@@ -39,7 +39,6 @@ import models.HPUser;
 import models.KeyInfoExtern;
 import models.Member;
 import models.MidataId;
-import models.Plugin;
 import models.RateLimitedAction;
 import models.ResearchUser;
 import models.User;
@@ -59,14 +58,13 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Request;
 import play.routing.JavaScriptReverseRouter;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
-import utils.access.AccessContext;
 import utils.access.DBRecord;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
@@ -81,6 +79,8 @@ import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.evolution.PostLoginActions;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
@@ -241,7 +241,7 @@ public class Application extends APIController {
 			   replacements.put("executor-email", executingUser.email);
 		   }
 		   
-		   AccessLog.log("send welcome mail: "+user.email);
+		   AccessLog.log("send welcome mail: ", user.email);
 		   if (executingUser == null) {
 			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(user._id));
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
@@ -274,7 +274,7 @@ public class Application extends APIController {
 		   String email = user.getPublicIdentifier();
 		   String role = user.role.toString();
 		   
-		   AccessLog.log("send admin notification mail: "+user.getPublicIdentifier());	   
+		   AccessLog.log("send admin notification mail: ", user.getPublicIdentifier());	   
 	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "New MIDATA User", adminnotify.render(site, email, role).toString());
 	   }
 	}
@@ -737,7 +737,12 @@ public class Application extends APIController {
 		obj.put("pub", user.publicExtKey);
 		obj.put("recoverKey", user.recoverKey);
 		obj.put("userid", user._id.toString());
-		if (token != null) obj.put("sessionToken", token.encrypt());
+		if (token != null) {
+			if (token instanceof ExtendedSessionToken) {
+				((ExtendedSessionToken) token).setIsChallengeResponse();
+			}
+			obj.put("sessionToken", token.encrypt());
+		}
 		
 		return ok(obj).as("application/json");
 	}
@@ -843,6 +848,8 @@ public class Application extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		//handlePreCreated(user);
+		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.MEMBER, null);
+		
 		String handle;
 		if (json.has("priv_pw")) {
 		  String pub = JsonValidation.getString(json, "pub");
@@ -863,20 +870,20 @@ public class Application extends APIController {
 		  PWRecovery.storeRecoveryData(user._id, recover);
 			
 		  user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
-		  Member.set(user._id, "myaps", user.myaps);
+		  Member.set(user._id, "myaps", user.myaps);		  
 			
-		  PatientResourceProvider.updatePatientForAccount(user._id);
+		  PatientResourceProvider.updatePatientForAccount(context, user._id);
 		  		  		  		  
 		} else {
-		  handle = registerCreateUser(user);		
+		  handle = registerCreateUser(context, user);		
 		}
-		Circles.fetchExistingConsents(RecordManager.instance.createContextFromAccount(user._id), user.emailLC);
+		Circles.fetchExistingConsents(context, user.emailLC);
 		
 		sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);
 		UsageStatsRecorder.protokoll(RuntimeConstants.instance.portalPlugin, "portal", UsageAction.REGISTRATION);
 		
-		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));				
+		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, context);				
 	}
 	
 	/*public static void handlePreCreated(Member user) throws AppException {
@@ -925,7 +932,7 @@ public class Application extends APIController {
 	 * @param user the new user
 	 * @throws AppException
 	 */
-	public static String registerCreateUser(Member user) throws AppException {
+	public static String registerCreateUser(AccessContext context, Member user) throws AppException {
 		user.security = AccountSecurityLevel.KEY;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);								
 		Member.add(user);
@@ -935,7 +942,7 @@ public class Application extends APIController {
 		user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
 		
-		PatientResourceProvider.updatePatientForAccount(user._id);
+		PatientResourceProvider.updatePatientForAccount(context, user._id);
 		
 		return handle;
 	}
@@ -1192,6 +1199,8 @@ public class Application extends APIController {
 				// Services
 				controllers.routes.javascript.Services.listServiceInstancesStudy(),
 				controllers.routes.javascript.Services.listServiceInstances(),
+				controllers.routes.javascript.Services.listServiceInstancesApp(),
+				controllers.routes.javascript.Services.listEndpoints(),
 				controllers.routes.javascript.Services.removeServiceInstance(),
 				controllers.routes.javascript.Services.listApiKeys(),
 				controllers.routes.javascript.Services.addApiKey(),

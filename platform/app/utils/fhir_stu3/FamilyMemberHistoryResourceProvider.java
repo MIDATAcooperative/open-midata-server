@@ -48,8 +48,8 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 // TODO: Choose the correct super class and register in utils.fhir.FHIRServlet
@@ -136,7 +136,7 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/FamilyMemberHistory");

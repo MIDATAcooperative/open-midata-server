@@ -76,8 +76,8 @@ import models.enums.ConsentStatus;
 import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.stats.Stats;
 
@@ -100,9 +100,10 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	 */
 	@Read()
 	public Group getResourceById(@IdParam IIdType theId) throws AppException {
-		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
-		UserGroup group = UserGroup.getById(MidataId.from(theId.getIdPart()), UserGroup.FHIR);	
-		if (group != null) return readGroupFromMidataUserGroup(group, true);
+		if (checkAccessible()) {
+			UserGroup group = UserGroup.getById(MidataId.from(theId.getIdPart()), UserGroup.FHIR);	
+			if (group != null) return readGroupFromMidataUserGroup(group, true);
+		}
 		return super.getResourceById(theId);		
 	}
 	
@@ -252,7 +253,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	@Override
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {	
 		if (!checkAccessible()) return Collections.emptyList();
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Group");
@@ -278,7 +279,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	public List<IBaseResource> search(SearchParameterMap params) {
 		try {
 					
-			//ExecutionInfo info = info();
+			//AccessContext info = info();
 	
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);

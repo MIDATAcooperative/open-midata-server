@@ -28,10 +28,7 @@ import org.bson.BSONObject;
 
 import controllers.Circles;
 import controllers.OAuth2;
-import controllers.members.HealthProvider;
-import controllers.members.Studies;
 import models.Consent;
-import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
@@ -52,20 +49,20 @@ import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
+import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
-import utils.access.AccessContext;
-import utils.access.ConsentAccessContext;
 import utils.access.Feature_FormatGroups;
 import utils.access.Feature_QueryRedirect;
 import utils.access.Feature_UserGroups;
 import utils.access.RecordManager;
-import utils.access.RepresentativeAccessContext;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
-import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
+import utils.context.RepresentativeAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -80,8 +77,8 @@ import utils.stats.UsageStatsRecorder;
 public class ApplicationTools {
 
 	public static MobileAppInstance installApp(AccessContext context, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm, Set<StudyAppLink> links) throws AppException {
-		AccessLog.logBegin("beginn install app id="+appId+" context="+(context != null ? context.toString() : "null"));
-		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
+		AccessLog.logBegin("beginn install app id=",appId.toString()," context=",(context != null ? context.toString() : "null"));
+		Plugin app = PluginLoginCache.getById(appId);
 		if (app == null) throw new InternalServerException("error.internal", "App not found");
 
 		// Get project links
@@ -148,7 +145,7 @@ public class ApplicationTools {
 	 * @throws AppException
 	 */
 	public static MobileAppInstance refreshOrInstallService(AccessContext context, MidataId serviceAppId, User member,  Set<MidataId> studyConfirm) throws AppException {
-		AccessLog.logBegin("begin refresh or install service:"+serviceAppId);
+		AccessLog.logBegin("begin refresh or install service:", serviceAppId.toString());
 		Set<MobileAppInstance> insts = MobileAppInstance.getActiveByApplicationAndOwner(serviceAppId, member._id, MobileAppInstance.APPINSTANCE_ALL);
 		MobileAppInstance result = null;
 		boolean foundValid = false;
@@ -314,7 +311,18 @@ public class ApplicationTools {
 	}
 
 	public static ServiceInstance createServiceInstance(AccessContext context, Plugin app, MidataId managerId) throws AppException {
+	  return createServiceInstance(context, app, managerId, null);
+	}
+	
+	public static ServiceInstance createServiceInstance(AccessContext context, Plugin app, MidataId managerId, String endpoint) throws AppException {
 		AccessLog.log("create service instance");
+		
+		if (app.type.equals("endpoint")) {
+        	if (endpoint == null || endpoint.trim().length()==0) throw new BadRequestException("error.missing.endpoint", "Endpoint missing");
+        	ServiceInstance old = ServiceInstance.getByEndpoint(endpoint, ServiceInstance.ALL);
+        	if (old != null) throw new BadRequestException("error.exists.endpoint", "Endpoint already exists.");
+        }
+		
 		ServiceInstance si = new ServiceInstance();
 		si._id = new MidataId();
 		si.appId = app._id;
@@ -323,7 +331,12 @@ public class ApplicationTools {
 		si.managerAccount = managerId;
 		si.status = UserStatus.ACTIVE;
 		si.executorAccount = si._id;
+		si.endpoint = endpoint;
 		si.name = app.name;
+		
+		if (app.type.equals("endpoint")) {
+			si.name = app.name + " -> /opendata/"+endpoint+"/fhir";
+		}
 		si.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(si._id, null);
 		si.add();
 		RecordManager.instance.getMeta(context, context.getAccessor(), "_");
@@ -378,7 +391,8 @@ public class ApplicationTools {
 		appInstance.appVersion = app.pluginVersion;
 		appInstance.observers = observers;
 		appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    			
-		appInstance.passcode = MobileAppInstance.hashDeviceId(phrase); 
+		// Not needed anymore. Check deviceId field or read phrase directly from APS
+		// appInstance.passcode = MobileAppInstance.hashDeviceId(phrase); 
 		appInstance.dateOfCreation = new Date();
 		appInstance.lastUpdated = appInstance.dateOfCreation;
 		appInstance.writes = app.writes;
@@ -430,13 +444,13 @@ public class ApplicationTools {
 		// Write phrase into APS *
 		Map<String, Object> meta = new HashMap<String, Object>();
 		meta.put("phrase", phrase);
-		if (context == null) context = RecordManager.instance.createLoginOnlyContext(appInstance._id);
+		if (context == null) context = ContextManager.instance.createLoginOnlyContext(appInstance._id, UserRole.ANY, appInstance);
 		RecordManager.instance.setMeta(context, appInstance._id, "_app", meta);
-		
+		KeyManager.instance.backupKeyInAps(context, appInstance._id);
 		// Write access filter into APS *
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
 			appInstance.sharingQuery = app.defaultQuery;
-			//AccessContext sharingContext = RecordManager.instance.createSharingContext(context, owner);
+			//AccessContext sharingContext = ContextManager.instance.createSharingContext(context, owner);
 		    //RecordManager.instance.shareByQuery(sharingContext, appInstance._id, appInstance.sharingQuery);
 		}						
 		
@@ -465,20 +479,20 @@ public class ApplicationTools {
 					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {
 						
 						if (LinkTools.findConsentForAppLink(context.getAccessor(),sal)==null) {
-							RecordManager.instance.clearCache();
+							ContextManager.instance.clearCache();
 							Set<MidataId> observers = ApplicationTools.getObserversForApp(links);
 							LinkTools.createConsentForAppLink(context, sal, observers);
 						}
 					}
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
 					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.serviceAppId))) {					
-						RecordManager.instance.clearCache();
+						ContextManager.instance.clearCache();
 						refreshOrInstallService(context, sal.serviceAppId, member, studyConfirm);											
 					}
 				} else
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
-					RecordManager.instance.clearCache();
-			        controllers.members.Studies.requestParticipation(new ExecutionInfo(context.getAccessor(), member.getRole()), member._id, sal.studyId, app._id, sal.dynamic ? JoinMethod.API : JoinMethod.APP, null);
+					ContextManager.instance.clearCache();
+			        controllers.members.Studies.requestParticipation(context.forAccountReshare(), member._id, sal.studyId, app._id, sal.dynamic ? JoinMethod.API : JoinMethod.APP, null);
 				}
 			}
 		}
@@ -559,7 +573,7 @@ public class ApplicationTools {
 				MidataId alias = new MidataId(meta.get("alias").toString());
 				byte[] key = (byte[]) meta.get("aliaskey");
 				KeyManager.instance.unlock(targetUser, alias, key);			
-				//RecordManager.instance.clearCache();
+				//ContextManager.instance.clearCache();
 				
 				return new RepresentativeAccessContext(context.getCache().getSubCache(targetUser), context);
 			}
@@ -574,24 +588,22 @@ public class ApplicationTools {
 	
 
 	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
-		AccessLog.logBegin("start refresh app id="+appInstance._id);
+		AccessLog.logBegin("start refresh app id=",appInstance._id.toString());
 		long tStart = System.currentTimeMillis();
-		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
-							
-		appInstance = MobileAppInstance.getById(appInstance._id, Sets.create(MobileAppInstance.APPINSTANCE_ALL, "fhirConsent"));
+		AccessContext context = ContextManager.instance.createLoginOnlyContext(executor, member.role, appInstance);
 		
-		//RecordManager.instance.unshareAPS(appInstance._id, executor, Collections.singleton(appInstance._id));
+		Plugin app = PluginLoginCache.getById(appId); 
 		
-	    appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);
-	    if (appInstance.deviceId == null || !appInstance.deviceId.equals(phrase.substring(0,3))) {
-	      AccessLog.log("create passcode");
-		  appInstance.passcode = MobileAppInstance.hashDeviceId(phrase);     	
-	    }
-		appInstance.lastUpdated = new Date();
-		
-		RecordManager.instance.shareAPS(RecordManager.instance.createContextFromApp(executor, appInstance), appInstance.publicKey);
-		appInstance.upsert();
-					
+		if (!KeyManager.instance.recoverKeyFromAps(context, appInstance._id)) {
+	      appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);
+	      KeyManager.instance.backupKeyInAps(context, appInstance._id);
+		  appInstance.lastUpdated = new Date();		
+		  RecordManager.instance.shareAPS(context, appInstance.publicKey);
+		  appInstance.updateLoginInfo();
+		} else {
+		  appInstance.lastUpdated = new Date();
+		  appInstance.set(appInstance._id, "lastUpdated", appInstance.lastUpdated);
+		}
 		AuditManager.instance.success();
 		AccessLog.logEnd("end refresh app time="+(System.currentTimeMillis()-tStart));
 		return appInstance;
@@ -599,12 +611,12 @@ public class ApplicationTools {
 	}
 
 	public static void removeAppInstance(AccessContext context, MidataId executorId, MobileAppInstance appInstance) throws AppException {
-		AccessLog.logBegin("start remove app instance: "+appInstance._id+" context="+context.toString());
+		AccessLog.logBegin("start remove app instance: ",appInstance._id.toString()," context="+context.toString());
 		// Device or password changed, regenerates consent				
 		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);
 		Plugin app = Plugin.getById(appInstance.applicationId);
 		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
-		RecordManager.instance.deleteAPS(appInstance._id, executorId);									
+		RecordManager.instance.deleteAPS(context, appInstance._id);									
 		//Removing queries from user account should not be necessary
 		if (appInstance.serviceId == null) Circles.removeQueries(appInstance.owner, appInstance._id);										
 		

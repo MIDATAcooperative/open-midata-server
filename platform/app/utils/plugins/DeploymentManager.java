@@ -17,8 +17,6 @@
 
 package utils.plugins;
 
-import java.io.File;
-
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;

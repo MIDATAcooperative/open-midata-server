@@ -21,7 +21,6 @@ import models.Admin;
 import models.Member;
 import models.MidataId;
 import models.Plugin;
-import models.UserGroup;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;
 

@@ -33,8 +33,8 @@ import utils.access.op.Condition;
 import utils.access.op.EqualsSingleValueCondition;
 import utils.access.op.FieldAccess;
 import utils.access.op.OrCondition;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -101,7 +101,7 @@ public class Query {
 		}
 	}
 	
-	public List<Record> execute(ExecutionInfo info) throws AppException {
+	public List<Record> execute(AccessContext info) throws AppException {
 		if (indexCriteria!=null) {
 			accountCriteria.put("index", indexCriteria);
 		}
@@ -112,12 +112,12 @@ public class Query {
 			accountCriteria.put("sort", String.join(",", sorts));
 		}
 				
-		List<Record> result = RecordManager.instance.list(info.role, info.context, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
+		List<Record> result = RecordManager.instance.list(info.getAccessorRole(), info, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
 		
 		return result;
 	}
 	
-	public DBIterator<Record> executeIterator(ExecutionInfo info) throws AppException {
+	public DBIterator<Record> executeIterator(AccessContext info) throws AppException {
 		if (indexCriteria!=null) {
 			accountCriteria.put("index", indexCriteria);
 		}
@@ -128,7 +128,7 @@ public class Query {
 			accountCriteria.put("sort", String.join(",", sorts));
 		}
 				
-		return RecordManager.instance.listIterator(info.executorId, info.role, info.context, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
+		return RecordManager.instance.listIterator(info.getAccessor(), info.getAccessorRole(), info, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
 				
 	}
 	

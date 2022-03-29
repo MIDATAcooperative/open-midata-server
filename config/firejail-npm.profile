@@ -3,7 +3,6 @@
 # Persistent global definitions
 
 include /etc/firejail/disable-common.inc
-include /etc/firejail/disable-passwdmgr.inc
 
 caps.drop all
 ipc-namespace

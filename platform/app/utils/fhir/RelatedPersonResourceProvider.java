@@ -45,13 +45,12 @@ import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
-import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.ContentInfo;
 import models.Record;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 public class RelatedPersonResourceProvider extends RecordBasedResourceProvider<RelatedPerson> implements IResourceProvider {
@@ -191,7 +190,7 @@ public class RelatedPersonResourceProvider extends RecordBasedResourceProvider<R
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/RelatedPerson");
@@ -245,7 +244,7 @@ public class RelatedPersonResourceProvider extends RecordBasedResourceProvider<R
 	public void prepare(Record record, RelatedPerson theRelatedPerson) throws AppException {
 		// Set Record code and content
 				
-		ContentInfo.setRecordCodeAndContent(info().pluginId, record, null, "RelatedPerson");			
+		ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, null, "RelatedPerson");			
 		record.name = theRelatedPerson.hasName() ? theRelatedPerson.getName().get(0).getNameAsSingleString() : "Related Person";
 				
 		if (cleanAndSetRecordOwner(record, theRelatedPerson.getPatient())) theRelatedPerson.setPatient(null);

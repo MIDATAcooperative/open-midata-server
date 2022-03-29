@@ -17,16 +17,12 @@
 
 package utils.access;
 
-import java.util.ArrayList;
 import java.util.Collection;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.bson.BasicBSONObject;
 
@@ -34,16 +30,14 @@ import models.Consent;
 import models.MidataId;
 import models.RecordGroup;
 import models.RecordsInfo;
+import models.enums.ConsentType;
 import utils.AccessLog;
-import utils.RuntimeConstants;
-import utils.access.Feature_AccountQuery.IdAndConsentFieldIterator;
 import utils.access.index.StatsIndexKey;
 import utils.access.index.StatsIndexRoot;
 import utils.access.index.StatsLookup;
-
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.db.LostUpdateException;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.RequestTooLargeException;
 
@@ -72,7 +66,7 @@ public class Feature_Stats extends Feature {
 		result.content=r.meta.getString("content");
 		result.group=r.group;
 		result.app=MidataId.from(r.meta.getString("app"));	
-		result.owner=r.context.getOwner();
+		result.owner=r.context.mustPseudonymize() ? r.context.getOwnerPseudonymized() : r.context.getOwner();
 		result.ownerName=r.context.getOwnerName();
 		if (result.ownerName == null) result.ownerName = "?";
 				
@@ -110,26 +104,35 @@ public class Feature_Stats extends Feature {
 			
 			//try {	
 			Query qnew = q;
-			       
-			StatsIndexRoot index = q.getCache().getStatsIndexRoot();
+			Query qloc = new Query(q, "info-local", CMaps.map("force-local", true).map("owner", "self"), Sets.create("group", "content", "format", "owner", "app"));
+			 
+			StatsIndexRoot index = q.getCache().getStatsIndexRoot(q.getContext().mustPseudonymize());
 			HashMap<String, StatsIndexKey> map = new HashMap<String, StatsIndexKey>();
-			//IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
-			//IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index.getModel(), null);
+			
 			if (index != null) {
 				long oldest = index.getAllVersion();								
 				if (oldest > 0) qnew = new Query(q, "info-shared-after", CMaps.map("shared-after", oldest));
 			}
 			
-			for (StatsIndexKey inf : countConsent(q, next, Feature_Indexes.getContextForAps(q, q.getApsId()))) {
+			AccessLog.logBegin("stats count local");
+			for (StatsIndexKey inf : countConsent(qloc, next, Feature_Indexes.getContextForAps(q, q.getApsId()))) {
 				map.put(getKey(inf), inf);
 			}
+			AccessLog.logEnd("stats count local");
 						
 			if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
 				List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(qnew, true, true);
+				AccessLog.log("stats query #consentsToUpdate="+consents.size());
+				boolean forceIndex = false;
 				
-				if (consents.size() > 100) {
+				// Optimizations: Project backchannels share many single records and may be real slow to read
+				if (index==null) {
+					for (Consent c : consents) if (c.type==ConsentType.STUDYRELATED) forceIndex = true;
+				}
+				
+				if (consents.size() > 100 || forceIndex) {
 					if (index==null) {
-						index = IndexManager.instance.getStatsIndex(q.getCache(), q.getCache().getAccountOwner(), true);
+						index = IndexManager.instance.getStatsIndex(q.getCache(), q.getCache().getAccountOwner(), q.getContext().mustPseudonymize() ,true);
 					}
 					
 				}
@@ -143,7 +146,7 @@ public class Feature_Stats extends Feature {
 				}
 				
 				for (Consent consent : consents) {
-					for (StatsIndexKey inf : countConsent(q, next, Feature_Indexes.getContextForAps(q, consent._id))) {
+					for (StatsIndexKey inf : countConsent(qloc, next, Feature_Indexes.getContextForAps(q, consent._id))) {
 					  map.put(getKey(inf), inf);
 					}
 				}
@@ -168,7 +171,7 @@ public class Feature_Stats extends Feature {
 				IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getAccessor(), index.getModel(), null);
 								
 			}
-				
+			
 			AccessLog.logEndPath("# matches="+map.size());
 			return new StatsIterator(map.values().iterator());
 	
@@ -199,7 +202,12 @@ public class Feature_Stats extends Feature {
 		@Override
 		public String toString() {
 			return "stats-iterator";
-		}						
+		}	
+		
+		@Override
+		public void close() {
+						
+		}
 	}
 	
 	public static StatsIndexKey countStream(Query q, MidataId stream, MidataId owner, Feature qm, StatsIndexKey inf, boolean cached) throws AppException {
@@ -243,7 +251,7 @@ public class Feature_Stats extends Feature {
 			}			 													
 		}		
 		
-		if (cached && recs.size()>0 && inf.app!=null) {			
+		if (cached && recs.size()>0 && inf.app!=null && !q.restrictedBy("deleted")) {			
 			BasicBSONObject r = new BasicBSONObject();			
 			r.put("formats", inf.format);
 			r.put("contents", inf.content);
@@ -265,7 +273,11 @@ public class Feature_Stats extends Feature {
 		
 		Query q2 = hasFilter 
 				   ? new Query(q, "info-streams", CMaps.map("owner","self"))
-				   : new Query(q, "info-streams", CMaps.map("flat",true).map("streams","true").map("owner","self"));
+				   : (
+					  q.restrictedBy("fast-stats") ?
+						new Query(q, "info-streams", CMaps.map("deleted", true).map("flat",true).map("streams","true").map("owner","self"))
+					 :  new Query(q, "info-streams", CMaps.map("flat",true).map("streams","true").map("owner","self"))
+					);
 		
 		HashMap<String, StatsIndexKey> map = new HashMap<String, StatsIndexKey>();		
 		List<DBRecord> toupdate = qm.query(q2);

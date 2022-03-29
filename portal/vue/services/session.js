@@ -36,7 +36,7 @@ import oauth from './oauth';
 					params.nonHashed = pw;
 					return func(params);
 				} else if (result.data.challenge) {
-					
+					params.loginToken = result.data.sessionToken;
 					if (result.data.tryrecover) {
 						params.sessionToken = crypto.keyChallengeLocal(result.data.userid, result.data.recoverKey, result.data.challenge);
 						if (!params.sessionToken) return { data : { requirements : ["KEYRECOVERY"] , status : "BLOCKED" } };

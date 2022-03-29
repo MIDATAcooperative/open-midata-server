@@ -42,8 +42,6 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -90,8 +88,8 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
 import utils.audit.AuditManager;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -117,7 +115,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	@Read()
 	public org.hl7.fhir.dstu3.model.Consent getResourceById(@IdParam IIdType theId) throws AppException {
 		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
-		models.Consent consent = Circles.getConsentById(info().context, MidataId.from(theId.getIdPart()), Consent.ALL);	
+		models.Consent consent = Circles.getConsentById(info(), MidataId.from(theId.getIdPart()), Consent.ALL);	
 		if (consent == null) return null;
 		return readConsentFromMidataConsent(consent, true);
 	}
@@ -131,14 +129,14 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	 */
 	public org.hl7.fhir.dstu3.model.Consent readConsentFromMidataConsent(models.Consent consentToConvert, boolean addMembers) throws AppException {
 		if (consentToConvert.fhirConsent==null) {
-			Circles.fillConsentFields(info().context, Collections.singleton(consentToConvert), models.Consent.FHIR);
+			Circles.fillConsentFields(info(), Collections.singleton(consentToConvert), models.Consent.FHIR);
 			updateMidataConsent(consentToConvert);
 		}
 		IParser parser = ctx().newJsonParser();
 		AccessLog.log(consentToConvert.fhirConsent.toString());
 		org.hl7.fhir.dstu3.model.Consent p = parser.parseResource(getResourceType(), consentToConvert.fhirConsent.toString());
 		
-		if (consentToConvert.sharingQuery == null) Circles.fillConsentFields(info().context, Collections.singleton(consentToConvert), Sets.create("sharingQuery"));
+		if (consentToConvert.sharingQuery == null) Circles.fillConsentFields(info(), Collections.singleton(consentToConvert), Sets.create("sharingQuery"));
 		
 		Map<String, Object> query = consentToConvert.sharingQuery;
 		if (query != null) buildQuery(query, p);
@@ -352,7 +350,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	
 	@Override
 	public List<Consent> searchRaw(SearchParameterMap params) throws AppException {		
-		ExecutionInfo info = info();
+		AccessContext info = info();
 		
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, null);
@@ -380,14 +378,14 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			properties.put("authorized", authorized);
 		}
 		
-		if (!info.context.mayAccess("Consent", "fhir/Consent")) properties.put("_id", info.context.getTargetAps());
+		if (!info.mayAccess("Consent", "fhir/Consent")) properties.put("_id", info.getTargetAps());
 		
 		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized");
 		
 		Set<models.Consent> consents = new HashSet<models.Consent>();						
-		if (authorized == null || authorized.contains(info().ownerId.toString())) consents.addAll(Consent.getAllByAuthorized(info().ownerId, properties, Consent.FHIR));
-		if (!properties.containsKey("owner") || utils.access.Query.getRestriction(properties.get("owner"), "owner").contains(info().ownerId.toString())) {
-			consents.addAll(Consent.getAllByOwner(info().ownerId, properties, Consent.FHIR, Circles.RETURNED_CONSENT_LIMIT));
+		if (authorized == null || authorized.contains(info().getLegacyOwner().toString())) consents.addAll(Consent.getAllByAuthorized(info().getLegacyOwner(), properties, Consent.FHIR));
+		if (!properties.containsKey("owner") || utils.access.Query.getRestriction(properties.get("owner"), "owner").contains(info().getLegacyOwner().toString())) {
+			consents.addAll(Consent.getAllByOwner(info().getLegacyOwner(), properties, Consent.FHIR, Circles.RETURNED_CONSENT_LIMIT));
 		}
 		return new ArrayList<Consent>(consents);
 	} 	
@@ -473,7 +471,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		}
 			
         consent.type = ConsentType.valueOf(theResource.getPurposeFirstRep().getCode());
-		consent.owner = info().ownerId;
+		consent.owner = info().getLegacyOwner();
 		consent.writes = WritePermissionType.UPDATE_AND_CREATE;
 		
 		for (ConsentActorComponent cac : theResource.getActor()) {
@@ -530,8 +528,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		consent.sharingQuery = query;
         
 		if (theResource.getStatus() == ConsentState.ACTIVE) {
-			mayShare(info().pluginId, consent.sharingQuery);
-			if (!info().executorId.equals(consent.owner)) throw new InvalidRequestException("Only consent owner may create active consents");
+			mayShare(info().getUsedPlugin(), consent.sharingQuery);
+			if (!info().getAccessor().equals(consent.owner)) throw new InvalidRequestException("Only consent owner may create active consents");
 			consent.status = ConsentStatus.ACTIVE;
 		} else if (theResource.getStatus() != ConsentState.PROPOSED) {
 			throw new ForbiddenOperationException("consent status not supported for creation.");
@@ -543,7 +541,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 
 	@Override
 	public void createExecute(Consent consent, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
-        Circles.addConsent(info().context, consent, true, null, false);        
+        Circles.addConsent(info(), consent, true, null, false);        
 		theResource.setDateTime(consent.dateOfCreation);		
 	}
 
@@ -551,7 +549,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	public Consent init() {
 		Consent consent = new Consent();
 		
-		consent.creatorApp = info().pluginId;
+		consent.creatorApp = info().getUsedPlugin();
 		consent.status = ConsentStatus.UNCONFIRMED;
 		consent.authorized = new HashSet<MidataId>();
 		
@@ -562,8 +560,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	public void updatePrepare(Consent consent, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
         		
 		if ((theResource.getStatus() == ConsentState.ACTIVE || theResource.getStatus() == ConsentState.REJECTED) && consent.status == ConsentStatus.UNCONFIRMED) {
-			mayShare(info().pluginId, consent.sharingQuery);  
-			if (theResource.getStatus() == ConsentState.ACTIVE && !info().executorId.equals(consent.owner)) throw new InvalidRequestException("Only consent owner may change consents to active consents");
+			mayShare(info().getUsedPlugin(), consent.sharingQuery);  
+			if (theResource.getStatus() == ConsentState.ACTIVE && !info().getAccessor().equals(consent.owner)) throw new InvalidRequestException("Only consent owner may change consents to active consents");
 		}
 		
 	}
@@ -573,9 +571,9 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		if ((theResource.getStatus() == ConsentState.ACTIVE || theResource.getStatus() == ConsentState.REJECTED) && consent.status == ConsentStatus.UNCONFIRMED) {
 		        					
 			if (theResource.getStatus() == ConsentState.ACTIVE) {
-				HealthProvider.confirmConsent(info().context, consent._id);
+				HealthProvider.confirmConsent(info(), consent._id);
 			} else {
-				HealthProvider.rejectConsent(info().context, info().executorId, consent._id);
+				HealthProvider.rejectConsent(info(), info().getAccessor(), consent._id);
 			}
 			
 			AuditManager.instance.success();
@@ -585,7 +583,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 
 	@Override
 	public Consent fetchCurrent(IIdType theId) throws AppException {
-		return Circles.getConsentById(info().context, MidataId.from(theId.getIdPart()), Consent.ALL);	
+		return Circles.getConsentById(info(), MidataId.from(theId.getIdPart()), Consent.ALL);	
 	}
 
 	@Override

@@ -27,7 +27,6 @@ import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Communication;
 import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
@@ -60,8 +59,8 @@ import models.Record;
 import models.TypedMidataId;
 import utils.access.RecordManager;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 public class CommunicationResourceProvider extends RecordBasedResourceProvider<Communication> implements IResourceProvider {
@@ -226,7 +225,7 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
         
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Communication");
@@ -271,7 +270,7 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 	
 	public void prepareForSharing(Communication theCommunication) throws AppException {
 		if (theCommunication.getSender().isEmpty()) {
-			theCommunication.setSender(FHIRTools.getReferenceToUser(info().executorId, null));
+			theCommunication.setSender(FHIRTools.getReferenceToUser(info().getAccessor(), null));
 		}
 		if (theCommunication.getSent() == null) theCommunication.setSent(new Date());
 		if (theCommunication.getRecipient().isEmpty()) throw new UnprocessableEntityException("Recipient is missing");
@@ -281,9 +280,9 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 	}
 	
 	public void shareRecord(Record record, Communication theCommunication) throws AppException {		
-		ExecutionInfo inf = info();
+		AccessContext inf = info();
 		
-		MidataId subject = record.owner;//theCommunication.getSubject().isEmpty() ? inf.executorId : FHIRTools.getUserIdFromReference(theCommunication.getSubject().getReferenceElement());
+		MidataId subject = record.owner;//theCommunication.getSubject().isEmpty() ? inf.getAccessor() : FHIRTools.getUserIdFromReference(theCommunication.getSubject().getReferenceElement());
 		MidataId sender = FHIRTools.getUserIdFromReference(theCommunication.getSender().getReferenceElement());
 		MidataId shareFrom = insertMessageRecord(record, theCommunication);
 						
@@ -291,8 +290,8 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		for (Reference recipient :recipients) {
 						
 			TypedMidataId target = FHIRTools.getMidataIdFromReference(recipient.getReferenceElement());
-			Consent consent = Circles.getOrCreateMessagingConsent(inf.context, sender, target.getMidataId(), subject, target.getType().equals("Group"));
-			RecordManager.instance.share(inf.context, shareFrom, consent._id, consent.owner, Collections.singleton(record._id), false);
+			Consent consent = Circles.getOrCreateMessagingConsent(inf, sender, target.getMidataId(), subject, target.getType().equals("Group"));
+			RecordManager.instance.share(inf, shareFrom, consent._id, consent.owner, Collections.singleton(record._id), false);
 			
 		}
 	}
@@ -313,7 +312,7 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		// Set Record code and content
 		
 		
-		ContentInfo.setRecordCodeAndContent(info().pluginId, record, null, "Communication");
+		ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, null, "Communication");
 		
 		String date = theCommunication.hasSentElement() ? theCommunication.getSentElement().toHumanDisplay() : "Not sent";			
 		record.name = date;

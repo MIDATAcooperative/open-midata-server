@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r4.model.CanonicalType;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
@@ -32,9 +34,6 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Type;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
@@ -80,7 +79,7 @@ public class FHIRTools {
 	    if (RuntimeConstants.instance.publicUser.equals(id)) return null;
 		if (defName != null) return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());				
 		
-		User user = ResourceProvider.hasInfo() ? ResourceProvider.info().cache.getUserById(id) : User.getById(id, User.PUBLIC);
+		User user = ResourceProvider.hasInfo() ? ResourceProvider.info().getRequestCache().getUserById(id) : User.getById(id, User.PUBLIC);
 		if (user == null) {
 			return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
 			//throw new InternalServerException("error.internal", "Person not found "+id.toString());

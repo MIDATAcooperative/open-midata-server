@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -90,20 +89,18 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import models.stats.PluginDevStats;
-import play.api.libs.Files.TemporaryFile;
+import play.libs.Files.TemporaryFile;
 import play.mvc.BodyParser;
 import play.mvc.Http.MultipartFormData;
-import play.mvc.Http.Request;
 import play.mvc.Http.MultipartFormData.FilePart;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.InstanceConfig;
-import utils.access.AccessContext;
 import utils.access.Feature_FormatGroups;
 import utils.access.Query;
-import utils.access.RecordManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
@@ -111,6 +108,7 @@ import utils.auth.DeveloperSecured;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.LostUpdateException;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -125,7 +123,6 @@ import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
 import utils.plugins.DeploymentManager;
 import utils.plugins.DeploymentReport;
-import utils.plugins.PluginDeployment;
 
 /**
  * functions for controlling the "market" of plugins
@@ -357,6 +354,11 @@ public class Market extends APIController {
 			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 		}
 		
+		String endpoint = JsonValidation.getStringOrNull(json, "endpoint");
+		if (app.type.equals("endpoint") && endpoint != null) {
+			ApplicationTools.createServiceInstance(context, app, userId, endpoint);
+		}
+		
 		return ok();
 	}
 	
@@ -538,7 +540,7 @@ public class Market extends APIController {
 	public Result importPlugin(Request request) throws JsonValidationException, AppException {
         JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "base64");
-		String base64 = JsonValidation.getString(json, "base64");
+		String base64 = JsonValidation.getJsonString(json, "base64");
 		
 		//byte[] decoded = Base64.getDecoder().decode(base64);
 		ObjectMapper mapper = new ObjectMapper();
@@ -576,6 +578,7 @@ public class Market extends APIController {
 		app.name = JsonValidation.getStringOrNull(pluginJson, "name");
 		parsePlugin(app, pluginJson);
 		app.repositoryUrl = JsonValidation.getStringOrNull(pluginJson, "repositoryUrl");
+		app.repositoryDirectory = JsonValidation.getStringOrNull(pluginJson, "repositoryDirectory");
 		app.repositoryToken = JsonValidation.getStringOrNull(pluginJson, "repositoryToken");
 		app.repositoryDate = 0;
 		
@@ -780,6 +783,10 @@ public class Market extends APIController {
 
 		if (plugin.type.equals("service")) {
 			ApplicationTools.createServiceInstance(context, plugin, userId);
+		}
+		String endpoint = JsonValidation.getStringOrNull(json, "endpoint");
+		if (plugin.type.equals("endpoint") && endpoint != null) {
+			ApplicationTools.createServiceInstance(context, plugin, userId, endpoint);
 		}
 		
 		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
@@ -1616,12 +1623,14 @@ public class Market extends APIController {
 		licence.grantedByLogin = me.email;
 		licence.creationDate = new Date(System.currentTimeMillis());
 
+		String endpoint = null;
 		if (service) {
 			for (ServiceInstance inst :  ServiceInstance.getByApp(plugin._id, ServiceInstance.ALL)) {
+				if (endpoint==null && inst.endpoint!=null) endpoint = inst.endpoint;
 				ApplicationTools.deleteServiceInstance(context, inst);
 			}
 			
-			ApplicationTools.createServiceInstance(context, plugin, licence.licenseeId);
+			ApplicationTools.createServiceInstance(context, plugin, licence.licenseeId, endpoint);
 			
 		} else licence.add();
 		
@@ -1655,6 +1664,7 @@ public class Market extends APIController {
 		JsonValidation.validate(json, "_id", "repositoryUrl");
 		
 		String repo = JsonValidation.getString(json, "repositoryUrl");
+		String directory = JsonValidation.getString(json, "repositoryDirectory");
 		String token = JsonValidation.getStringOrNull(json, "repositoryToken");
 		
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
@@ -1672,6 +1682,7 @@ public class Market extends APIController {
 		if (!doDelete) {
 			app.repositoryUrl = repo;
 		    if (token != null) app.repositoryToken = token;
+		    app.repositoryDirectory = directory;
 		    app.updateRepo();
 		}
 	    	 
@@ -1687,7 +1698,7 @@ public class Market extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl"));
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "repositoryDirectory"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
 		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");

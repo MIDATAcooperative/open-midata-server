@@ -30,7 +30,6 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Cancellable;
 import akka.actor.Props;
-import controllers.AutoRun;
 import models.MidataId;
 import models.Plugin;
 import models.enums.UsageAction;
@@ -108,6 +107,8 @@ class UsageStatsActor extends AbstractActor {
 	}
 
 	public void updateStats(UsageStatsMessage msg) throws Exception {
+		String path = "UsageStatsRecorder/updateStats";
+		long st = ActionRecorder.start(path);
 		String key = msg.getObject() + "/" + msg.getAction().toString();
 		UsageStats stats = cache.get(key);
 		if (stats == null) {
@@ -128,6 +129,7 @@ class UsageStatsActor extends AbstractActor {
 			modcount = 0;
 			flush();
 		}
+		ActionRecorder.end(path, st);
 	}
 
 	public void flush(FlushMessage msg) {

@@ -59,6 +59,7 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 			ErrorReporter.report("FHIR (create resource)", null, e3);
 			throw new InternalErrorException(e3.getMessage());
 		} catch (Exception e4) {
+			e4.printStackTrace();
 			ErrorReporter.report("FHIR (create resource)", null, e4);
 			throw new InternalErrorException("internal error during create resource");
 		}		

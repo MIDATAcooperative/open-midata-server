@@ -15,91 +15,104 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package utils.access;
+package utils.context;
 
 import models.MidataId;
 import models.Record;
-import utils.AccessLog;
-import utils.RuntimeConstants;
+import utils.access.APSCache;
+import utils.access.DBRecord;
 import utils.exceptions.AppException;
 
-public class PublicAccessContext extends AccessContext {
+public class DummyAccessContext extends AccessContext {
+
+	private MidataId selfUser;
 	
-	public PublicAccessContext(APSCache cache, AccessContext parent) {
-		super(cache, parent);	    
+	
+	public DummyAccessContext(APSCache cache) {
+		super(cache, null);
+		selfUser = cache.getAccountOwner();
+	}
+	
+	public DummyAccessContext(APSCache cache, MidataId selfUser) {
+		super(cache, null);
+		this.selfUser = selfUser;
 	}
 	
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {		
-		return parent.mayCreateRecord(record) && record.owner.equals(RuntimeConstants.instance.publicUser);
+		return false;
 	}
 
 	@Override
-	public boolean isIncluded(DBRecord record) throws AppException {
-		return true;
+	public boolean isIncluded(DBRecord record) throws AppException {		
+		return false;
 	}
 
 	@Override
 	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {		
-		return newVersion.tags != null && newVersion.tags.contains("security:public") &&
-			   (newVersion.creator != null && newVersion.creator.toString().equals(stored.meta.getString("creator"))
-			   || (newVersion.app != null && newVersion.app.toString().equals(stored.meta.getString("app"))));
+		return false;
 	}
 
 	@Override
-	public boolean mustPseudonymize() {
+	public boolean mustPseudonymize() {		
 		return false;
 	}
 	
 	@Override
-	public boolean mustRename() {
+	public boolean mustRename() {		
 		return false;
 	}
 
 	@Override
 	public MidataId getTargetAps() {
-		return RuntimeConstants.instance.publicUser;
+		return cache.getAccessor();
 	}
-	
+
 	@Override
 	public String getOwnerName() {		
-		return "Public";
+		return null;
 	}
+
 	@Override
 	public MidataId getOwner() {
-		return RuntimeConstants.instance.publicUser;
+		return cache.getAccountOwner();
 	}
+
 	@Override
 	public MidataId getOwnerPseudonymized() {
-		return RuntimeConstants.instance.publicUser;
+		return cache.getAccountOwner();
 	}
+
 	@Override
 	public MidataId getSelf() {
-		return RuntimeConstants.instance.publicUser;
+		return selfUser;
 	}
+
 	@Override
-	public boolean mayAccess(String content, String format) throws AppException {
-		return true;
+	public boolean mayAccess(String content, String format) throws AppException {		
+		return false;
 	}
 	
 	@Override
 	public boolean mayContainRecordsFromMultipleOwners() {		
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "public("+parentString()+")";
+		return "dummy("+selfUser+")";
 	}
 
 	@Override
-	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
+	public Object getAccessRestriction(String content, String format, String field) throws AppException {	
 		return null;
 	}
 
 	@Override
 	public String getContextName() {
-		return "Public Data Access";
+		return "Undefined Context";
 	}
+	
+	
 
 }

@@ -132,7 +132,7 @@ public class VirusScanner {
 		socketChannel.read(data);
 		String status = new String(data.array());
 		status = status.substring(0, status.indexOf(0));
-		AccessLog.log("Virus Scanner status="+status);
+		AccessLog.log("Virus Scanner status=", status);
 		Matcher matcher = FOUND.matcher(status);
 		if (matcher.matches()) {
 			return matcher.group(1);

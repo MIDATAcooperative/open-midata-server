@@ -51,8 +51,8 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.MidataId;
 import models.Record;
 import utils.access.pseudo.FhirPseudonymizer;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
 public class TaskResourceProvider extends RecordBasedResourceProvider<Task> implements IResourceProvider {
@@ -274,7 +274,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		ExecutionInfo info = info();
+		AccessContext info = info();
         
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Task");
@@ -327,7 +327,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	
 			
 	public void shareRecord(Record record, Task theTask, MidataId consent) throws AppException {		
-		ExecutionInfo inf = info();
+		AccessContext inf = info();
 		List<IIdType> personRefs = new ArrayList<IIdType>();
 		
 		if (theTask.getOwner() != null && !theTask.getOwner().isEmpty()) {
@@ -361,7 +361,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	@Override
 	public void updateExecute(Record record, Task theTask) throws AppException {
 		updateRecord(record, theTask);
-		shareRecord(record, theTask, info().executorId); // XXX To be checked
+		shareRecord(record, theTask, info().getAccessor()); // XXX To be checked
 	}
 
 	public void prepare(Record record, Task theTask) throws AppException {

@@ -69,6 +69,8 @@ import utils.auth.ProviderSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -144,7 +146,7 @@ public class Providers extends APIController {
 		Terms.addAgreedToDefaultTerms(user);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
-		
+		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.PROVIDER, null);
 		
 		String pub = JsonValidation.getString(json, "pub");
 		String pk = JsonValidation.getString(json, "priv_pw");
@@ -166,16 +168,16 @@ public class Providers extends APIController {
 				
 		RecordManager.instance.createPrivateAPS(null, user._id, user._id);		
 		
-		OrganizationResourceProvider.updateFromHP(user._id, provider);
+		OrganizationResourceProvider.updateFromHP(context, provider);
 		
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		
-		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, RecordManager.instance.createContextFromAccount(user._id));
+		return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle), json, null, context);
 		
 	}
 	
-	public static void register(HPUser user, HealthcareProvider provider, User executingUser) throws AppException {
+	public static void register(AccessContext context, HPUser user, HealthcareProvider provider, User executingUser) throws AppException {
 		
 		if (provider != null && HealthcareProvider.existsByName(provider.name)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider with this name already exists.");			
 		if (HPUser.existsByEMail(user.email)) {
@@ -204,7 +206,7 @@ public class Providers extends APIController {
 		if (provider != null) {
 			HealthcareProvider.add(provider);
 		    user.provider = provider._id;
-		    OrganizationResourceProvider.updateFromHP(user._id, provider);
+		    OrganizationResourceProvider.updateFromHP(context, provider);
 		}
 		HPUser.add(user);
 					
@@ -256,7 +258,8 @@ public class Providers extends APIController {
 		//user.authType = SecondaryAuthType.SMS;
 						
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request.attrs().get(play.mvc.Security.USERNAME)), user);
-		register(user ,null, executingUser);
+		AccessContext context = portalContext(request);
+		register(context, user ,null, executingUser);
 			
 		AuditManager.instance.success();
 		return ok();		
@@ -436,7 +439,7 @@ public class Providers extends APIController {
 	public Result updateOrganization(Request request, String id) throws AppException {
 		requireSubUserRole(request, SubUserRole.MASTER);
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		
+		AccessContext context = portalContext(request);
 		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "_id", "name");
@@ -458,7 +461,7 @@ public class Providers extends APIController {
 		provider.description = JsonValidation.getStringOrNull(json, "description");
 		provider.url = JsonValidation.getStringOrNull(json, "url");
 		provider.setMultiple(Sets.create("name", "description", "url"));
-		OrganizationResourceProvider.updateFromHP(userId, provider);		
+		OrganizationResourceProvider.updateFromHP(context, provider);		
 		
 		return ok();		
 	}

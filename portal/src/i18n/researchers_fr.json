@@ -33,7 +33,9 @@
         "title2" : "Modifier la description du projet",
         "study_name" : "Nom du projet",
         "study_type" : "Type de recherche",
-        "study_description" : "Description du projet"
+        "study_description" : "Description du projet",
+        "developer_nostart" : "Attention!",
+        "developer_nostart2" : "En tant que développeur, vous pouvez seulement mettre en place un projet mais pas le mener. En tant que développeur, il n'est pas possible de lancer la recherche de participants."
     },
 
     "studynav" : {

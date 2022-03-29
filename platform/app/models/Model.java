@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import utils.access.DBIterator;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
@@ -141,6 +142,15 @@ public abstract class Model implements JsonSerializable {
 			Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {
 		try {
 			return DBLayer.getAllList(modelClass, collection, properties, fields, limit, null, 1);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
+	protected static <T extends Model> DBIterator<T> getAllCursor(Class<T> modelClass, String collection,
+			Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {
+		try {
+			return DBLayer.getAllCursor(modelClass, collection, properties, fields, limit, null, 1);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}

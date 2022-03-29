@@ -20,7 +20,6 @@ package utils.sync;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
 import akka.Done;
@@ -29,7 +28,6 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.CoordinatedShutdown;
 import akka.actor.Props;
-import akka.actor.Terminated;
 import akka.cluster.Cluster;
 import akka.cluster.routing.ClusterRouterGroup;
 import akka.cluster.routing.ClusterRouterGroupSettings;
@@ -46,6 +44,7 @@ import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
 import utils.plugins.DeployAction;
 import utils.plugins.DeploymentManager;
+import utils.stats.ActionRecorder;
 
 /**
  * Synchronization between multiple application servers for changes on cached data like plugins or content type definitions
@@ -105,7 +104,7 @@ public class Instances {
 	 * send a clear cache message to all application servers
 	 */
 	public static void cacheClear(String collection, MidataId entry) {	
-		AccessLog.log("broadcast reload collection="+collection);
+		AccessLog.log("broadcast reload collection=", collection);
 		getBroadcast().tell(new ReloadMessage(collection, entry), ActorRef.noSender());
 	}
 	
@@ -174,8 +173,10 @@ class InstanceSync extends AbstractActor {
 	
 
 	public void reload(ReloadMessage msg) throws Exception {
+		String path = "InstanceSync/reload";
+		long st = ActionRecorder.start(path);
 		try {		
-		   AccessLog.log("Received Reload Message: "+msg.toString());		  
+		   AccessLog.log("Received Reload Message: ", msg.toString());		  
 		   if (msg.collection.equals("plugin")) {
 			   Plugin.cacheRemove(msg.entry);
 		   } else if (msg.collection.equals("content")) {
@@ -191,15 +192,22 @@ class InstanceSync extends AbstractActor {
 			throw e;
 		} finally {			
 			AccessLog.newRequest();	
+			ActionRecorder.end(path, st);
 		}
 	}
 	
 	public void setKey(KeyMessage msg) {
+		String path = "InstanceSync/setKey";
+		long st = ActionRecorder.start(path);
 		ServiceHandler.setKey(msg.aeskey);
+		ActionRecorder.end(path, st);
 	}
 	
 	public void deploy(DeployAction deploy) {
+		String path = "InstanceSync/deploy";
+		long st = ActionRecorder.start(path);
 		DeploymentManager.deploy(deploy, getSender());
+		ActionRecorder.end(path, st);
 	}
 	
 }

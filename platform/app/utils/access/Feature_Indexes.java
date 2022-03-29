@@ -43,6 +43,9 @@ import utils.access.op.FieldAccess;
 import utils.access.op.OrCondition;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.AccountAccessContext;
+import utils.context.ConsentAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -102,11 +105,11 @@ public class Feature_Indexes extends Feature {
 				indexQueryParsed = (Condition) indexQueryUnparsed;
 			} else {
 				indexQueryParsed = AndCondition.parseRemaining(indexQueryUnparsed).optimize();
-				AccessLog.log("Optimized query: " + indexQueryParsed.toString());
+				AccessLog.log("Optimized query: ", indexQueryParsed.toString());
 				indexQueryParsed = indexQueryParsed.indexExpression();
 			}
 
-			AccessLog.log("Index query: " + indexQueryParsed.toString());
+			AccessLog.log("Index query: ", indexQueryParsed.toString());
 
 			Set<MidataId> targetAps = determineTargetAps(q);
 
@@ -120,7 +123,7 @@ public class Feature_Indexes extends Feature {
 			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed, q.getContext().mustPseudonymize());
 
 			Collection<IndexMatch> matches = myAccess.query(q, targetAps);		
-            AccessLog.log("index matches: "+matches.size());
+            AccessLog.log("index matches: ", Integer.toString(matches.size()));
 			Set<MidataId> allAps = new HashSet<MidataId>();
 
 			Map<MidataId, Set<MidataId>> filterMatches = new HashMap<MidataId, Set<MidataId>>();
@@ -155,7 +158,7 @@ public class Feature_Indexes extends Feature {
 							List<DBRecord> add;
 							Query updQuery = new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context);
 							add = QueryEngine.filterByDataQuery(nextWithProcessing.query(updQuery), indexQueryParsed, null);
-							AccessLog.log("found new updated entries aps=" + id + ": " + add.size());
+							AccessLog.log("found new updated entries aps=", id.toString(), ": ", Integer.toString(add.size()));
 							result = QueryEngine.combine(result, add);						
 							if (result != null) {
 								newRecords.put(id, result);
@@ -168,7 +171,7 @@ public class Feature_Indexes extends Feature {
 					// AccessLog.log("vx="+v);
 					List<DBRecord> add;
 					add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("consent-limit",1000).map("index-ts-provider", myAccess))), indexQueryParsed, null);
-					AccessLog.log("found new updated entries: " + add.size());
+					AccessLog.log("found new updated entries: ", Integer.toString(add.size()));
 					result = QueryEngine.combine(result, add);				
 					if (result != null && !result.isEmpty()) {
 						for (DBRecord record : result) {
@@ -277,7 +280,7 @@ public class Feature_Indexes extends Feature {
 			List<DBRecord> result = newRecords.get(aps);
 			if (result == null)
 				result = new ArrayList<DBRecord>();
-			AccessLog.log("Now processing aps:" + aps.toString());
+			AccessLog.log("Now processing aps:", aps.toString());
 
 			Set<MidataId> ids = matches.get(aps);
             if (ids != null && !ids.isEmpty()) {
@@ -341,9 +344,9 @@ public class Feature_Indexes extends Feature {
 					for (DBRecord record : additional)
 						record.consentAps = aps;
 					result = QueryEngine.combine(result, additional);
-					AccessLog.log("looked up directly=" + directSize + " additionally=" + additional.size());
+					AccessLog.log("looked up directly=", Integer.toString(directSize), " additionally=", Integer.toString(additional.size()));
 				} else {
-					AccessLog.log("looked up directly=" + directSize);
+					AccessLog.log("looked up directly=", Integer.toString(directSize));
 				}
 
 			}
@@ -483,7 +486,7 @@ public class Feature_Indexes extends Feature {
 			}
 			if (doupdate)
 				IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getAccessor(), index, targetAps);
-			AccessLog.log("Index use: prep=" + (t2 - t1) + " query=" + (System.currentTimeMillis() - t2));
+			AccessLog.log("Index use: prep=", Long.toString(t2 - t1)," query=", Long.toString(System.currentTimeMillis() - t2));
 			return matches;
 
 		}

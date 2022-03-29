@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hl7.fhir.instance.model.api.IBaseReference;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryRequestComponent;
@@ -30,9 +33,6 @@ import org.hl7.fhir.r4.model.Bundle.HTTPVerb;
 import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.instance.model.api.IBaseReference;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.rest.annotation.Transaction;
 import ca.uhn.fhir.rest.annotation.TransactionParam;
@@ -45,7 +45,7 @@ import models.MidataId;
 import models.Model;
 import utils.AccessLog;
 import utils.ErrorReporter;
-import utils.auth.ExecutionInfo;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.PluginException;
@@ -120,8 +120,8 @@ public class Transactions {
 		   
 	   }
 	   	  
-	   ExecutionInfo inf = ResourceProvider.info();
-	   inf.cache.getStudyPublishBuffer().setLazy(true);
+	   AccessContext inf = ResourceProvider.info();
+	   inf.getRequestCache().getStudyPublishBuffer().setLazy(true);
 	   
 	   try {
 		   if (isDocument || type.equals(BundleType.TRANSACTION)) {
@@ -184,7 +184,7 @@ public class Transactions {
 			   }
 		   }
 	   } finally {
-		   inf.cache.getStudyPublishBuffer().save();
+		   inf.getRequestCache().getStudyPublishBuffer().save();
 	   }
 	   	   
 	   Bundle retVal = new Bundle();		 

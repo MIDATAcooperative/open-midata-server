@@ -25,34 +25,29 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import models.Member;
-import models.MidataId;
-import models.MobileAppInstance;
 import models.Plugin;
 import models.Study;
-import models.StudyAppLink;
 import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.Gender;
 import models.enums.JoinMethod;
-import models.enums.SecondaryAuthType;
-import models.enums.StudyAppLinkType;
 import models.enums.SubUserRole;
 import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
-import play.mvc.Result;
 import play.mvc.Http.Request;
+import play.mvc.Result;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
-import utils.auth.ExecutionInfo;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
-import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.fhir.PatientResourceProvider;
@@ -189,6 +184,7 @@ public class QuickRegistration extends APIController {
 		//user.agreedToTerms(app.termsOfUse, user.initialApp);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user, app._id);
+		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.MEMBER, null);
 		//Application.handlePreCreated(user);
 		String handle;
 		if (json.has("priv_pw")) {
@@ -212,30 +208,24 @@ public class QuickRegistration extends APIController {
 			  user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 			  Member.set(user._id, "myaps", user.myaps);
 				
-			  PatientResourceProvider.updatePatientForAccount(user._id);
+			  PatientResourceProvider.updatePatientForAccount(context, user._id);
 		} else {
-		      handle = Application.registerCreateUser(user);
+		      handle = Application.registerCreateUser(context, user);
 		}
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
-		Circles.fetchExistingConsents(RecordManager.instance.createContextFromAccount(user._id), user.emailLC);
+		Circles.fetchExistingConsents(context, user.emailLC);
 		Application.sendWelcomeMail(app._id, user, null);
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REGISTRATION);
 	
 		String joinCode = JsonValidation.getStringOrNull(json, "joinCode");
 					
-		if (notok == null || notok.isEmpty()) {
-		
-			if (study != null) controllers.members.Studies.requestParticipation(new ExecutionInfo(user._id, user.role), user._id, study._id, user.initialApp, JoinMethod.RESEARCHER, null);
-			
-			/*if (device != null) {
-			   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
-			   return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withAppInstance(appInstance), json, app, user._id);
-			}*/
-					
-			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode).withAppUnlockedWithCode(), json, app, RecordManager.instance.createContextFromAccount(user._id));
+		if (notok == null || notok.isEmpty()) {		 
+			if (study != null) controllers.members.Studies.requestParticipation(context, user._id, study._id, user.initialApp, JoinMethod.RESEARCHER, null);
+										
+			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode).withAppUnlockedWithCode(), json, app, context);
 		} else {
-			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode).withAppUnlockedWithCode(), json, app, RecordManager.instance.createContextFromAccount(user._id));
+			return OAuth2.loginHelper(request, new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode).withAppUnlockedWithCode(), json, app, context);
 		}
 	}
 	

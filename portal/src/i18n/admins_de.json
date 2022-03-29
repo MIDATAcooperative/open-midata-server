@@ -10,6 +10,7 @@
         "usagestats" : "Statistik der Applikationsnutzung",
         "content" : "Inhaltstypen",
         "studies" : "Projekte",
+        "endpoints" : "FHIR Endpoints",
         "terms" : "Allgemeine Geschäftsbedingungen",
         "licenses" : "Lizenzen",
         "registration" : "Administrator registrieren",
@@ -342,6 +343,23 @@
         "group_system" : "Gruppierungssystem",
         "save_group_btn" : "Gruppe speichern",
         "delete_group_btn" : "Gruppe löschen",
-        "save_btn" : "Code & Inhaltstyp speichern"
+        "save_btn" : "Code & Inhaltstyp speichern",
+        "export_btn" : "Änderungen exportieren",
+        "import_btn" : "Änderungen importieren"
+    },
+
+    "admin_importcontent" : {
+        "title" : "Codes importieren",
+        "definition" : "Änderungen der Codes/Inhaltstypen (JSON)"
+    },
+
+    "admin_services" : {
+        "endpoints" : "Endpoints",
+        "name" : "Service-Instanz",
+        "endpoint" : "FHIR Endpoint",
+        "status" : "Status",
+        "empty" : "Keine Service-Instanz gefunden.",
+        "manager" : "Manager anzeigen",
+        "study" : "Projekt anzeigen"
     }
 }

@@ -54,6 +54,7 @@ public class EncryptedAPS {
 	private boolean isValidated = false;
 	private boolean keyProvided = false;
 	private boolean notStored = false;
+	private boolean unmergedSubAPS = false;
 	private List<EncryptedAPS> sublists;
 	private AccessPermissionSet acc_aps;		
 		
@@ -242,6 +243,7 @@ public class EncryptedAPS {
 	
 	protected void useAccessibleSubset(EncryptedAPS subeaps) {
 		if (sublists == null) sublists = new ArrayList<EncryptedAPS>();
+		subeaps.unmergedSubAPS = true;
 		sublists.add(subeaps);
 		acc_aps = subeaps.aps;
 	}
@@ -254,7 +256,7 @@ public class EncryptedAPS {
 		if (aps.unmerged == null) return false;
 		for (AccessPermissionSet a : aps.unmerged) {
 			if (a.keys.get(who.toString()) != null) {
-				AccessLog.log("using accessible subset for user: "+who.toString()+" aps: "+apsId.toString());
+				AccessLog.log("using accessible subset for user: ",who.toString()," aps: ",apsId.toString());
 				EncryptedAPS wrapper = new EncryptedAPS(a, who);
 				wrapper.validate();
 				useAccessibleSubset(wrapper);
@@ -268,6 +270,7 @@ public class EncryptedAPS {
 		List<EncryptedAPS> result = new ArrayList<EncryptedAPS>();
 		for (AccessPermissionSet subaps : aps.unmerged) {				
 		   EncryptedAPS encsubaps = new EncryptedAPS(subaps, who);
+		   encsubaps.unmergedSubAPS = true;
 		   encsubaps.validate();
 		   result.add(encsubaps);
 		}	
@@ -295,6 +298,7 @@ public class EncryptedAPS {
 		if (!aps.security.equals(APSSecurityLevel.NONE)) {
 			if (sublists != null) {
 				for (EncryptedAPS subeaps : sublists) {
+					subeaps.unmergedSubAPS = true;
 					subeaps.encodeAPS();
 					subeaps.aps.permissions = null;
 				}		
@@ -326,7 +330,7 @@ public class EncryptedAPS {
 	private void load() throws InternalServerException {
 		this.aps = AccessPermissionSet.getById(this.apsId);		
 		if (this.aps == null) {
-			AccessLog.log("APS does not exist: aps="+this.apsId.toString());
+			AccessLog.log("APS does not exist: aps=",this.apsId.toString());
 			throw new APSNotExistingException(this.apsId, "APS does not exist:"+this.apsId.toString());						
 		}
 		this.acc_aps = this.aps;
@@ -403,14 +407,14 @@ public class EncryptedAPS {
 	
 	public boolean needsKeyUpgrade() throws InternalServerException {
 		if (isLoaded() && isAccessable() && aps.security == APSSecurityLevel.HIGH && owner != null &&
-				(apsId.equals(owner) || aps.consent)) {			
+				(apsId.equals(owner) || aps.consent) && !unmergedSubAPS) {			
 			return EncryptionUtils.isDeprecatedKey(encryptionKey);
 		} else return false;
 	}
 	
 	protected void doKeyUpgrade() throws AppException  {
 		
-		AccessLog.logBegin("begin key upgrade:" + getId().toString());
+		AccessLog.logBegin("begin key upgrade:",getId().toString());
 		if (!isValidated) validate();
 		try {
 			byte[] newKey = EncryptionUtils.generateKey();
@@ -449,7 +453,7 @@ public class EncryptedAPS {
 		    	if (aps.permissions == null) throw new NullPointerException();
 		    	aps.encrypted = null;
 			} catch (InternalServerException e) {
-				AccessLog.log("Error decoding APS="+apsId.toString()+" user="+who.toString());
+				AccessLog.log("Error decoding APS=",apsId.toString()," user=",who.toString());
 				throw e;
 			}
 	    }		

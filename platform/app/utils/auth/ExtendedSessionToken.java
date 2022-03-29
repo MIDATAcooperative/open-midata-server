@@ -30,9 +30,8 @@ import models.enums.EMailStatus;
 import models.enums.SecondaryAuthType;
 import models.enums.UserRole;
 import play.libs.Json;
-import play.mvc.Http.Request;
-import utils.access.AccessContext;
 import utils.collections.CMaps;
+import utils.context.AccessContext;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 
@@ -119,6 +118,14 @@ public class ExtendedSessionToken extends PortalSessionToken {
 	
 	public boolean getFake() {
 		return (flags & (1 << 3)) > 0;
+	}
+	
+	public void setIsChallengeResponse() {
+		flags |= (1 << 4);
+	}
+	
+	public boolean getIsChallengeResponse() {
+		return (flags & (1 << 4)) > 0;
 	}
 	
 	protected void populate(Map<String, Object> map) {

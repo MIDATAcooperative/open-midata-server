@@ -39,6 +39,7 @@ import models.Study;
 import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -81,7 +82,7 @@ public class Query {
 		this.apsId = apsId;
 		this.context = context;
 		if (extra != null) {
-		  AccessLog.log(path+" : "+extra);
+		  AccessLog.log(path," : ",extra);
 		} else {
 		  AccessLog.log(path);
 		}
@@ -110,6 +111,24 @@ public class Query {
 		this.cache = q.getCache();
 		this.apsId = aps;			
 		this.context = context;
+		this.prev = q;
+		this.path = path;
+		process();
+		StringBuilder sb = new StringBuilder();
+		getPath(sb);
+		sb.append(" : ");
+		sb.append(properties.toString());
+		AccessLog.log(sb.toString());
+		//AccessLog.logQuery(apsId, properties, fields);
+	}
+	
+	public Query(Query q, String path, Map<String, Object> properties, Set<String> fields) throws AppException {
+		this.properties = new HashMap<String, Object>(q.getProperties());
+		this.properties.putAll(properties);
+		this.fields = fields;
+		this.cache = q.getCache();
+		this.apsId = q.getApsId();			
+		this.context = q.getContext();
 		this.prev = q;
 		this.path = path;
 		process();
@@ -526,6 +545,7 @@ public class Query {
 		 resolveConstants(properties, context);		 	
 		 
 		 if (fetchFromDB) fieldsFromDB.add("encrypted");
+		 //AccessLog.log("query fetch="+fetchFromDB+" fields="+fields.toString()+" fdb="+fieldsFromDB.toString()+" props="+properties.toString());
 	}
 	
 	public static void resolveConstants(Map<String, Object> properties, AccessContext context) throws AppException {

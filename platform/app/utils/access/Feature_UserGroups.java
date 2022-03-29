@@ -20,7 +20,6 @@ package utils.access;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,13 +28,13 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
 import models.MidataId;
-import models.StudyParticipation;
 import models.UserGroupMember;
 import models.enums.ResearcherRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.auth.KeyManager;
-import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.UserGroupAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
@@ -148,21 +147,22 @@ public class Feature_UserGroups extends Feature {
 			}
 		}
 		
-		if (!ugm.role.mayReadData()) return ProcessingTools.empty();
-		
-		
-		
+		if (!ugm.role.mayReadData()) return ProcessingTools.empty();		
+				
 		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal		 
 		MidataId aps = (q.getApsId().equals(ugm.member) /*|| q.getContext() instanceof DummyAccessContext */) ? group : q.getApsId();
 		
 		AccessLog.logBeginPath("ug("+ugm.userGroup+")", null);
 		Query qnew = new Query("ug","ug="+ugm.userGroup,newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext()),q).setFromRecord(q.getFromRecord());
 		if (ugm.role.pseudonymizedAccess()) {
+			 AccessLog.log("do pseudonymized");
 			 if (!Feature_Pseudonymization.pseudonymizedIdRestrictions(qnew, next, group, newprops)) {
 				 AccessLog.logEndPath("cannot unpseudonymize");
 				 return ProcessingTools.empty();
 			 }
 			 qnew = new Query(qnew, "unpseudonymized", newprops);
+		} else {
+			AccessLog.log("is not pseudonymized");
 		}
 		
 		DBIterator<DBRecord> result = next.iterator(qnew);
@@ -189,7 +189,7 @@ public class Feature_UserGroups extends Feature {
 			}				
 		}
 		
-		AccessLog.log("no suitable cache: targetAps="+targetAps+" executor="+cache.getAccessor());
+		AccessLog.log("no suitable cache: targetAps=", targetAps.toString(), " executor=", cache.getAccessor().toString());
 		return null;
 	}
 	
@@ -201,7 +201,7 @@ public class Feature_UserGroups extends Feature {
 		return findApsCacheToUse(cache, ugm);			
 	}
 	
-	protected static APSCache findApsCacheToUse(APSCache cache, UserGroupMember ugm) throws AppException {		
+	public static APSCache findApsCacheToUse(APSCache cache, UserGroupMember ugm) throws AppException {		
 		if (ugm == null) return cache;		
 		
 		BasicBSONObject obj = cache.getAPS(ugm._id, ugm.member).getMeta("_usergroup");

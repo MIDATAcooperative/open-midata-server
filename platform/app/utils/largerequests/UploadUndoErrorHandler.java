@@ -21,24 +21,16 @@ import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.inject.Singleton;
 
-import com.mongodb.MongoGridFSException;
 import com.typesafe.config.Config;
 
 import play.Environment;
-import play.api.Configuration;
 import play.api.OptionalSourceMapper;
-import play.http.DefaultHttpErrorHandler;
 import play.api.routing.Router;
-import play.core.SourceMapper;
-import play.http.HttpErrorHandler;
-import play.mvc.Result;
-import scala.Function0;
-import scala.Option;
-import scala.concurrent.Future;
-import utils.access.EncryptedFileHandle;
+import play.http.DefaultHttpErrorHandler;
 import play.mvc.Http.RequestHeader;
+import play.mvc.Result;
+import utils.access.EncryptedFileHandle;
 
 public class UploadUndoErrorHandler extends DefaultHttpErrorHandler  {
 

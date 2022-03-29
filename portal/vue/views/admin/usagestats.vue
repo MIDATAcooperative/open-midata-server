@@ -15,7 +15,7 @@
  along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-    <panel :title="$t('usagestats.title')" :busy="isBusy">
+    <panel :title="getTitle()">
 		 		  
 		<p v-if="app" class="lead">{{ app.name }}</p>
 		  
@@ -38,7 +38,7 @@
         </form>           
 		  
 		  
-		<table class="table table-striped table-sm">
+		<table class="table table-striped table-sm" v-if="!isBusy">
 		    <tr>
 		        <Sorter sortby="date" v-model="result" v-t="'usagestats.date'"></Sorter>
 		        <Sorter sortby="objectName" v-model="result" v-t="'usagestats.object'"></Sorter>
@@ -82,6 +82,14 @@ export default {
     mixins : [ status, rl ],
 
     methods : {
+    
+        getTitle() {        
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            if (this.$data.app) return p+$t("manageapp.usagestats_btn");
+            return $t('usagestats.title');  
+        },
+        
         recalc() {
             const { $data } = this, me = this;
              
@@ -121,7 +129,7 @@ export default {
                     grp.actions[r.action] = r;
                 }
                 
-                $data.result = me.process(list);
+                $data.result = me.process(list, { sort : "-date", pagesize : 1000 } );
             }));				
 	    }
 	       

@@ -15,7 +15,7 @@
  along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-    <panel :title="$t('manageapp.overview')" :busy="isBusy">		  	
+    <panel :title="getTitle()" :busy="isBusy">		  	
 		<error-box :error="error"></error-box>
 		<div v-if="app">
 	      <div class="float-left" v-if="hasIcon()" style="margin-right:10px">
@@ -32,7 +32,7 @@
 		    <tr>
 		      <td v-t="'manageapp.type'"></td>
 			  <td><b>{{ $t('enum.plugintype.' + app.type) }}</b>
-			  <span v-if="app.type=='external'"> - 
+			  <span v-if="app.type=='external' || app.type=='endpoint'"> - 
 			  <router-link :to="{ path : './servicekeys' }" v-t="'manageapp.manageyourkeys'"></router-link>
 			  </span>
 			  </td>
@@ -164,6 +164,13 @@
 				<div><b v-t="'manageapp.usagestats_btn'"></b></div>
 				<div v-t="'manageapp.usagestats_help'"></div>																
 			  </td>
+			</tr>	
+			<tr v-if="allowExport && (app.type=='analyzer' || app.type=='external' || app.type=='endpoint')">
+			  <td @click="go('services')">				    
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
+				<div><b v-t="'manageapp.services_btn'"></b></div>
+				<div v-t="'manageapp.services_help'"></div>																
+			  </td>
 			</tr>			
 			<tr>
 			  <td @click="go('appdebug')">				    
@@ -255,6 +262,11 @@ export default {
     mixins : [ status, rl ],
 
     methods : {
+        getTitle() {
+            const { $route, $t, $data } = this;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            return p+$t("manageapp.overview");                       
+        },
 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;

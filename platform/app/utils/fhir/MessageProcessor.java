@@ -17,30 +17,23 @@
 
 package utils.fhir;
 
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.r4.model.Enumerations.ResourceType;
-import org.hl7.fhir.r4.model.MessageHeader;
-import org.hl7.fhir.r4.model.OperationOutcome;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.MessageHeader;
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent;
+import org.hl7.fhir.r4.model.Resource;
 
 import ca.uhn.fhir.rest.annotation.Operation;
 import ca.uhn.fhir.rest.annotation.OperationParam;
-import ca.uhn.fhir.rest.annotation.OptionalParam;
-import ca.uhn.fhir.rest.client.exceptions.NonFhirResponseException;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
-import ca.uhn.fhir.rest.server.exceptions.UnclassifiedServerFailureException;
-import ca.uhn.fhir.util.OperationOutcomeUtil;
 import utils.AccessLog;
-import utils.auth.ExecutionInfo;
+import utils.context.AccessContext;
 import utils.messaging.SubscriptionManager;
 
 public class MessageProcessor {
@@ -78,8 +71,8 @@ public class MessageProcessor {
 			}
 			
 			boolean doasync = async != null && async.getValue() != null && async.getValue().equals("true");
-			ExecutionInfo inf = ResourceProvider.info();
-			String result = SubscriptionManager.messageToProcess(inf.executorId, inf.pluginId, eventCode, destination, "4.0", inputBundle, params, doasync);
+			AccessContext inf = ResourceProvider.info();
+			String result = SubscriptionManager.messageToProcess(inf.getAccessor(), inf.getUsedPlugin(), eventCode, destination, "4.0", inputBundle, params, doasync);
 			
 			if (doasync) {			
 				Bundle resultBundle = new Bundle();				

@@ -17,37 +17,6 @@
 
 package controllers;
 
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import actions.APICall;
-import models.MidataId;
-import models.Plugin;
-import models.RecordsInfo;
-import models.Space;
-import models.enums.AggregationType;
-import models.enums.UserRole;
-import play.libs.Json;
-import play.mvc.BodyParser;
-import play.mvc.Result;
-import play.mvc.Security;
-import utils.access.RecordManager;
-import utils.auth.AnyRoleSecured;
-import utils.collections.CMaps;
-import utils.collections.Sets;
-import utils.exceptions.AppException;
-import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
-import utils.json.JsonExtraction;
-import utils.json.JsonOutput;
-import utils.json.JsonValidation;
-import utils.json.JsonValidation.JsonValidationException;
-
 /**
  * This feature is no longer used
  *

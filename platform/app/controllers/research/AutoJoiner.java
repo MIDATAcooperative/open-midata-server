@@ -27,10 +27,10 @@ import akka.actor.Props;
 import models.MidataId;
 import models.Study;
 import models.StudyParticipation;
-import models.UserGroupMember;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
 import models.enums.StudyExecutionStatus;
+import models.enums.UserRole;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.ServerTools;
@@ -38,10 +38,12 @@ import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-import utils.messaging.MailUtils;
 import utils.messaging.ServiceHandler;
+import utils.stats.ActionRecorder;
 
 public class AutoJoiner {
 
@@ -60,11 +62,11 @@ private static ActorSystem system;
 	       
   
     
-    public static void approve(MidataId executor, Study theStudy, MidataId participant, MidataId app, String group) throws AppException {    	
+    public static void approve(AccessContext context, Study theStudy, MidataId participant, MidataId app, String group) throws AppException {    	
 	    Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");	    
 		List<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(theStudy._id, CMaps.map("pstatus", ParticipationStatus.REQUEST).map("owner", participant), fields, 0);
 		
-		Studies.autoApprove(app, theStudy, executor, theStudy.autoJoinGroup, participants);			
+		Studies.autoApprove(app, theStudy, context, theStudy.autoJoinGroup, participants);			
     }
 	
 }
@@ -83,6 +85,7 @@ class AutoJoinerActor extends AbstractActor {
 	
 		
 	public void join(JoinMessage message) throws Exception {
+	    long st = ActionRecorder.start("AutoJoiner/join");
 		try {
 		    AccessLog.logStart("jobs", message.toString());
 			
@@ -106,9 +109,10 @@ class AutoJoinerActor extends AbstractActor {
 								return;
 							}
 							
-							KeyManager.instance.continueSession(handle, theStudy.autoJoinExecutor);							
-							RecordManager.instance.setAccountOwner(theStudy.autoJoinExecutor, theStudy.autoJoinExecutor);							
-							AutoJoiner.approve(theStudy.autoJoinExecutor, theStudy, message.getUser(), message.getApp(), theStudy.autoJoinGroup);
+							KeyManager.instance.continueSession(handle, theStudy.autoJoinExecutor);	
+							AccessContext context = ContextManager.instance.createSessionForDownloadStream(theStudy.autoJoinExecutor, UserRole.ANY);
+							ContextManager.instance.setAccountOwner(theStudy.autoJoinExecutor, theStudy.autoJoinExecutor);							
+							AutoJoiner.approve(context, theStudy, message.getUser(), message.getApp(), theStudy.autoJoinGroup);
 							
 							AccessLog.log("END AUTOJOIN");
 						} finally {
@@ -126,7 +130,8 @@ class AutoJoinerActor extends AbstractActor {
 			ErrorReporter.report("AutoJoiner", null, e);	
 			throw e;
 		} finally {
-			ServerTools.endRequest();			
+			ServerTools.endRequest();
+			ActionRecorder.end("AutoJoiner/join", st);
 		}
 	}
 	

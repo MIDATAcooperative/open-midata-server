@@ -320,7 +320,8 @@ export default {
     methods : {
         getTitle() {
             const { $data, $t } = this;
-            if ($data.app) return $t('queryeditor.app')+": "+$data.app.name;
+            let p = this.$data.app ? this.$data.app.name+" - " : "";
+            if ($data.app) return p + $t('manageapp.query_btn');
             if ($data.study) return $t('queryeditor.study')+": "+$data.study.name;
             return " ";
         },
