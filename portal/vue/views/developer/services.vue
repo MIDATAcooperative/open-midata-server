@@ -41,7 +41,7 @@
                 </tr>
             </table>
                             
-            <p v-if="!services.filtered.length" v-t="'services.empty'"></p>
+            <p v-if="!services.filtered.length" v-t="'admin_services.empty'"></p>
                         
             
 		</div>

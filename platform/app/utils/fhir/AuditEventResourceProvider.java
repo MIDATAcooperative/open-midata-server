@@ -406,7 +406,10 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		
 		User current = info().getRequestCache().getUserById(info().getLegacyOwner());
 		boolean authrestricted = false;
-		if (!current.role.equals(UserRole.ADMIN)) {
+		if (current == null) {
+		  query.putDataCondition(new AndCondition(CMaps.map("authorized", info.getAccessor())).optimize());
+		  authrestricted = true;
+		} else if (!current.role.equals(UserRole.ADMIN)) {
 		  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(info().getAccessor());
 		  if (ugms.isEmpty()) {
 		    query.putDataCondition(new AndCondition(CMaps.map("authorized", info.getAccessor())).optimize());

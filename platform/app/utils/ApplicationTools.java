@@ -311,7 +311,18 @@ public class ApplicationTools {
 	}
 
 	public static ServiceInstance createServiceInstance(AccessContext context, Plugin app, MidataId managerId) throws AppException {
+	  return createServiceInstance(context, app, managerId, null);
+	}
+	
+	public static ServiceInstance createServiceInstance(AccessContext context, Plugin app, MidataId managerId, String endpoint) throws AppException {
 		AccessLog.log("create service instance");
+		
+		if (app.type.equals("endpoint")) {
+        	if (endpoint == null || endpoint.trim().length()==0) throw new BadRequestException("error.missing.endpoint", "Endpoint missing");
+        	ServiceInstance old = ServiceInstance.getByEndpoint(endpoint, ServiceInstance.ALL);
+        	if (old != null) throw new BadRequestException("error.exists.endpoint", "Endpoint already exists.");
+        }
+		
 		ServiceInstance si = new ServiceInstance();
 		si._id = new MidataId();
 		si.appId = app._id;
@@ -320,7 +331,12 @@ public class ApplicationTools {
 		si.managerAccount = managerId;
 		si.status = UserStatus.ACTIVE;
 		si.executorAccount = si._id;
+		si.endpoint = endpoint;
 		si.name = app.name;
+		
+		if (app.type.equals("endpoint")) {
+			si.name = app.name + " -> /opendata/"+endpoint+"/fhir";
+		}
 		si.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(si._id, null);
 		si.add();
 		RecordManager.instance.getMeta(context, context.getAccessor(), "_");

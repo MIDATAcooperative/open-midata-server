@@ -388,6 +388,9 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 */
 	public String loginTemplateApprovedByEmail;
 	
+	/**
+	 * Require login with code_challenge and code_verifier
+	 */
 	public boolean codeChallenge;
 
 	@Override

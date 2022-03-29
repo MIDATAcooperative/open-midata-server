@@ -354,6 +354,11 @@ public class Market extends APIController {
 			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 		}
 		
+		String endpoint = JsonValidation.getStringOrNull(json, "endpoint");
+		if (app.type.equals("endpoint") && endpoint != null) {
+			ApplicationTools.createServiceInstance(context, app, userId, endpoint);
+		}
+		
 		return ok();
 	}
 	
@@ -778,6 +783,10 @@ public class Market extends APIController {
 
 		if (plugin.type.equals("service")) {
 			ApplicationTools.createServiceInstance(context, plugin, userId);
+		}
+		String endpoint = JsonValidation.getStringOrNull(json, "endpoint");
+		if (plugin.type.equals("endpoint") && endpoint != null) {
+			ApplicationTools.createServiceInstance(context, plugin, userId, endpoint);
 		}
 		
 		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
@@ -1614,12 +1623,14 @@ public class Market extends APIController {
 		licence.grantedByLogin = me.email;
 		licence.creationDate = new Date(System.currentTimeMillis());
 
+		String endpoint = null;
 		if (service) {
 			for (ServiceInstance inst :  ServiceInstance.getByApp(plugin._id, ServiceInstance.ALL)) {
+				if (endpoint==null && inst.endpoint!=null) endpoint = inst.endpoint;
 				ApplicationTools.deleteServiceInstance(context, inst);
 			}
 			
-			ApplicationTools.createServiceInstance(context, plugin, licence.licenseeId);
+			ApplicationTools.createServiceInstance(context, plugin, licence.licenseeId, endpoint);
 			
 		} else licence.add();
 		

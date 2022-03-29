@@ -28,15 +28,16 @@
 			    <div v-if="entry.extension && entry.extension.length && entry.extension[0].valueString">{{ $t(entry.extension[0].valueString) }}</div>	      			    			   
                 <div v-else>{{ entry.outcomeDesc }}</div>		
 			</div>
-			<div class="col-sm-6 col-md-4">
+			<div class="col-sm-6 col-md-4" v-if="entry.agent">
 			    <div>
                     <span v-if="entry.agent[0].name!='?'">{{ entry.agent[0].name }}</span>
-                    <span v-else v-t="'auditlog.anonymous'"></span> 
-                    <span v-if="entry.agent[0].role[0].coding[0].code != 'MEMBER'" class="badge badge-info">{{ $t('enum.userrole.'+entry.agent[0].role[0].coding[0].code) }}</span>
+                    <span v-else v-t="'auditlog.anonymous'"></span>
+                    <span v-if="entry.agent[0].role[0].coding[0].code == '110150'" class="badge badge-info ml-1">{{ $t('enum.plugintype.external') }}</span> 
+                    <span v-else-if="entry.agent[0].role[0].coding[0].code != 'MEMBER' && entry.agent[0].role[0].coding[0].code != '110150'" class="badge badge-info ml-1">{{ $t('enum.userrole.'+entry.agent[0].role[0].coding[0].code) }}</span>
                 </div>
 			    <div class="text-primary">{{ entry.agent[0].altId }}</div>
 			    <div v-if="entry.agent.length>1"><i><span v-t="'auditlog.via'"></span> {{ entry.agent[1].name }}</i></div>  
-			</div>			  
+			</div><div v-else class="col-sm-6 col-md-4"></div>		  
 			  
 			<div class="col-sm-6 col-md-3">
 			    <div v-for="entity in entry.entity" :key="entity._id">
