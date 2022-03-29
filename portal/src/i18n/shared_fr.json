@@ -1038,6 +1038,9 @@
         "type_healthcare" : "Médecin / Hôpital",
         "type_studyparticipation" : "Recherche",
         "type_representative" : "Représentant",
+
+        // TODO NEW: Service (external)
+        "type_externalservice" : "Service (external)",
         "show" : "Afficher:",
         "my_data" : "Mes données",
         "all_data" : "Toutes les données",
@@ -1423,6 +1426,9 @@
         "empty" : "Ce compte ne gère aucun service avec des clés API.",
         "add_btn" : "Ajouter une clé",
         "delete_btn" : "Supprimer l'analyseur",
+
+        // TODO NEW: Remove Endpoint
+        "delete_endpoint_btn" : "Remove Endpoint",
         "show_btn" : "Afficher les clés",
         "revoke_btn" : "Révoquer cette clé",
         "instructions" : "Veuillez copier ces clés dans un endroit sûr. Elles ne sont affichées qu'une seule fois.",
@@ -1435,7 +1441,10 @@
         "date" : "Date de création",
         "status" : "État",
         "ACTIVE" : "Active",
-        "FROZEN" : "Ancienne version"
+        "FROZEN" : "Ancienne version",
+
+        // TODO NEW: Invalid
+        "INVALID" : "Invalid"
     },
 
     "failure" : {

@@ -160,7 +160,10 @@
        "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to @PRODUCT using the application. The code is not case sensitive.",
        "send_reports" : "Notify developer ({{user}}) by email on errors caused by this application.",
        "developerTeam" : "Enter comma separated list of email addresses of other developers on that @PRODUCT instance, that develop this application.",
-       "code_challenge" : "During OAuth2 login, the calling application must use PKCE (Proof Key for Code Exchange) standard"
+       "code_challenge" : "During OAuth2 login, the calling application must use PKCE (Proof Key for Code Exchange) standard",
+       "createendpoint" : "Create non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.",
+       "endpoint" : "The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir",
+       "endpoint2" : "Do not forget: To activate the endpoint you need to add an API-Key afterwards."
     },
     "status" : {
       "title" : "Application Status",
@@ -176,6 +179,8 @@
     "queryeditor_btn" : "Go to the Data Access Filter editor",
     "no_update_history" : "No FHIR Resource History",
     "pseudonymize" : "Read Pseudonymized",
+    "createendpoint" : "Create Instance",
+    "endpoint" : "Endpoint Name",
     "usagestats_btn" : "Usage Statistics",
     "usagestats_help" : "Analyze the usage frequency of the application.",
     "export_btn" : "Export Application Definition",
@@ -337,6 +342,7 @@
   "repository" : {
     "title" : "Code Repository",
     "repository_url" : "Repository URL",
+    "repository_dir" : "(Optional) Subdirectory in repo",
     "repository_token" : "Access Token",
     "repository_date" : "Last deployed at",
     "never" : "Never",

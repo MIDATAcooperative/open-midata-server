@@ -161,7 +161,16 @@
             "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a @PRODUCT tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli.",
             "send_reports" : "Notificare lo sviluppatore ({{utente}}}) via e-mail sulle cause di errore di questa applicazione.",
             "developerTeam" : "Inserire una lista separata da virgole di indirizzi e-mail di altri sviluppatori su quell'istanza @PRODUCT, che sviluppano questa applicazione.",
-            "code_challenge" : "Durante il login OAuth2, l'applicazione chiamante deve usare lo standard PKCE (Proof Key for Code Exchange)"
+            "code_challenge" : "Durante il login OAuth2, l'applicazione chiamante deve usare lo standard PKCE (Proof Key for Code Exchange)",
+
+            // TODO NEW: Create non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.
+            "createendpoint" : "Create non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.",
+
+            // TODO NEW: The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir
+            "endpoint" : "The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir",
+
+            // TODO NEW: Do not forget: To activate the endpoint you need to add an API-Key afterwards.
+            "endpoint2" : "Do not forget: To activate the endpoint you need to add an API-Key afterwards."
         },
         "status" : {
             "title" : "Stato dell'applicazione",
@@ -177,6 +186,12 @@
         "queryeditor_btn" : "Va all'editor Data Access Filter",
         "no_update_history" : "No storia risorse FHIR",
         "pseudonymize" : "Leggere pseudonimizzato",
+
+        // TODO NEW: Create Instance
+        "createendpoint" : "Create Instance",
+
+        // TODO NEW: Endpoint Name
+        "endpoint" : "Endpoint Name",
         "usagestats_btn" : "Statistiche d'uso",
         "usagestats_help" : "Analizzare la frequenza di utilizzo dell'applicazione.",
         "export_btn" : "Esporta la definizione applicazione",
@@ -338,6 +353,9 @@
     "repository" : {
         "title" : "Code Repository",
         "repository_url" : "URL del repository",
+
+        // TODO NEW: (Optional) Subdirectory in repo
+        "repository_dir" : "(Optional) Subdirectory in repo",
         "repository_token" : "Access Token",
         "repository_date" : "Ultimo dispiegato al",
         "never" : "Mai",

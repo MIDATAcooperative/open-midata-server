@@ -1038,6 +1038,9 @@
         "type_healthcare" : "Arzt / Spital",
         "type_studyparticipation" : "Forschung",
         "type_representative" : "Vertreter",
+
+        // TODO NEW: Service (external)
+        "type_externalservice" : "Service (external)",
         "show" : "Ansehen:",
         "my_data" : "Meine Daten",
         "all_data" : "Alle Daten",
@@ -1423,6 +1426,9 @@
         "empty" : "Dieses Konto verwaltet keine Dienste mit API-Schlüsseln.",
         "add_btn" : "Schlüssel hinzufügen",
         "delete_btn" : "Analysator entfernen",
+
+        // TODO NEW: Remove Endpoint
+        "delete_endpoint_btn" : "Remove Endpoint",
         "show_btn" : "Schlüssel anzeigen",
         "revoke_btn" : "Diesen Schlüssel widerrufen",
         "instructions" : "Bitte kopieren Sie diese Schlüssel an einen sicheren Ort. Sie werden nur einmal angezeigt.",
@@ -1435,7 +1441,10 @@
         "date" : "Erstellungsdatum",
         "status" : "Status",
         "ACTIVE" : "Aktiv",
-        "FROZEN" : "Alte Version"
+        "FROZEN" : "Alte Version",
+
+        // TODO NEW: Invalid
+        "INVALID" : "Invalid"
     },
 
     "failure" : {
