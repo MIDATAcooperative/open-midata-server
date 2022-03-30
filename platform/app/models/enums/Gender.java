@@ -36,5 +36,10 @@ public enum Gender {
   /**
    * neither male nor female
    */
-  OTHER
+  OTHER,
+  
+  /**
+   * not known
+   */
+  UNKNOWN
 }

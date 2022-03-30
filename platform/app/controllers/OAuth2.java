@@ -656,7 +656,7 @@ public class OAuth2 extends Controller {
 		}
 		
 		// If 2FA is enabled (for other apps) and address or birthday must be changed do 2FA 
-		if (notok!=null && (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.BIRTHDAY_SET) || notok.contains(UserFeature.NEWEST_PRIVACY_POLICY_AGREED) || notok.contains(UserFeature.NEWEST_TERMS_AGREED))) {			
+		if (notok!=null && (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.BIRTHDAY_SET) || notok.contains(UserFeature.GENDER_SET) || notok.contains(UserFeature.NEWEST_PRIVACY_POLICY_AGREED) || notok.contains(UserFeature.NEWEST_TERMS_AGREED))) {			
 			if (user.authType != null && user.authType != SecondaryAuthType.NONE) {
 				notok.add(UserFeature.AUTH2FACTOR);
 			}
@@ -1031,6 +1031,7 @@ public class OAuth2 extends Controller {
 		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);
 		  if (notok.contains(UserFeature.APP_UNLOCK_CODE)) notok = Collections.singleton(UserFeature.APP_UNLOCK_CODE);
 		  if (notok.contains(UserFeature.BIRTHDAY_SET)) notok = Collections.singleton(UserFeature.BIRTHDAY_SET);
+		  if (notok.contains(UserFeature.GENDER_SET)) notok = Collections.singleton(UserFeature.GENDER_SET);
 		  if (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.PHONE_ENTERED)) notok.retainAll(Sets.createEnum(UserFeature.ADDRESS_ENTERED, UserFeature.PHONE_ENTERED));
 		  if (notok.contains(UserFeature.ADMIN_VERIFIED)) notok = Collections.singleton(UserFeature.ADMIN_VERIFIED);		  
 		  if (notok.contains(UserFeature.ADDRESS_VERIFIED)) notok = Collections.singleton(UserFeature.ADDRESS_VERIFIED);

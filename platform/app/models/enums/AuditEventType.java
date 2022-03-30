@@ -46,6 +46,8 @@ public enum AuditEventType {
 	
 	USER_BIRTHDAY_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-birthday-change", "Birthday changed"), AuditEventAction.U),
 	
+	USER_GENDER_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-gender-change", "Gender updated"), AuditEventAction.U),
+	
 	// Not done
 	USER_STATUS_CHANGE_ACTIVE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-status-change-active", "User status changed to active"), AuditEventAction.U),
 	

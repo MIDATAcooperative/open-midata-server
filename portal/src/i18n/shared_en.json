@@ -202,7 +202,8 @@
      "gender" : {
        "MALE" : "male",
        "FEMALE" : "female",
-       "OTHER" : "other"
+       "OTHER" : "other",
+       "UNKNOWN" : "not provided"
      },
      "country" : {
        "CH" : "Switzerland",
@@ -245,6 +246,7 @@
 	   "user-settings-change" :"User's settings changed",
 	   "user-email-change" :"User's email changed",
 	   "user-birthday-change" : "User's date of birth changed",
+	   "user-gender-change" : "User's gender information updated",
 	   "user-status-change-active" : "User account unlocked",
 	   "user-status-change-blocked" : "User account blocked",
 	   "user-email-confirmed" : "Email confirmed by user",
@@ -306,6 +308,7 @@
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
 	   "ADMIN_VERIFIED" : "Account must have been unlocked by an administrator",
 	   "BIRTHDAY_SET" : "The date of birth of the user must be known",
+	   "GENDER_SET" : "The gender of the user must be known",
 	   "APP_UNLOCK_CODE" : "The application requires an unlock code"
 	 },
 	 "writepermissiontype" : {
@@ -683,6 +686,7 @@
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
     "birthday_entered" : "A valid date of birth is required to use this service. Please add your date of birth to your account information. (Format example: 31.12.1999)",
+    "gender_entered" : "Information about your gender is required to use this service. Please provide your gender.",
     "admin_verified" : "Your account must be unlocked by an administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact @SUPPORT.",
     "terms_agreed" : "The General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
     "privacy_policy_agreed" : "The Privacy Policy has been updated. Please confirm that you agree to the new version.",

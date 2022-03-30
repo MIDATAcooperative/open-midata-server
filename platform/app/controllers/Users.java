@@ -360,6 +360,15 @@ public class Users extends APIController {
 		  }
 		  
 		}
+		boolean genderChange = false;
+		if (json.has("gender")) {
+			Gender g = JsonValidation.getEnum(json, "gender", Gender.class);
+			if (g!=user.gender) {
+			  user.gender = g;
+			  genderChange = true;
+			}
+		}
+		
 		if (json.has("authType")) {
 			
 			user.authType = JsonValidation.getEnum(json, "authType", SecondaryAuthType.class);
@@ -379,13 +388,17 @@ public class Users extends APIController {
 		if (json.has("country")) {
 		  AuditManager.instance.addAuditEvent(AuditEventType.USER_ADDRESS_CHANGE, user);
 		} else if (json.has("phone")) {
-		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PHONE_CHANGE, user);
+		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PHONE_CHANGE, user);		
 		} else {
 		  AuditManager.instance.addAuditEvent(AuditEventType.USER_SETTINGS_CHANGE, user);
+		}
+		if (genderChange) {
+		   AuditManager.instance.addAuditEvent(AuditEventType.USER_GENDER_CHANGE, user);
 		}
 		
 		//User.set(user._id, "email", user.email);
 		//User.set(user._id, "emailLC", user.emailLC);
+		
 		User.set(user._id, "name", user.name);
 		User.set(user._id, "address1", user.address1);
 		User.set(user._id, "address2", user.address2);

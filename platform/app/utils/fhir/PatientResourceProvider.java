@@ -492,9 +492,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			p.setActive(false);
 		}
 		p.addIdentifier().setSystem("http://midata.coop/identifier/midata-id").setValue(member.midataID);
+		String gender = member.gender != null ? member.gender.toString() : null;
+		if (gender != null) p.setGender(AdministrativeGender.valueOf(gender));
 		if (member.email != null)
-			p.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(member.emailLC);
-		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
+			p.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(member.emailLC);					  
 		if (member.email != null)
 			p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(member.email);
 		if (member.phone != null && member.phone.length() > 0) {
@@ -560,7 +561,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 				
 				p.setBirthDate(cal.getTime());
 			}
-			if (member.gender != null) p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
+			if (member.gender != null && member.gender != Gender.UNKNOWN) p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
 		}
 
 		p.addIdentifier(new Identifier().setValue(ownerName).setSystem("http://midata.coop/identifier/participant-name"));
@@ -789,18 +790,22 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		user.name = user.firstname + " " + user.lastname;
 		user.subroles = EnumSet.noneOf(SubUserRole.class);
-		switch (thePatient.getGender()) {
-		case FEMALE:
-			user.gender = Gender.FEMALE;
-			break;
-		case MALE:
-			user.gender = Gender.MALE;
-			break;
-		case OTHER:
-			user.gender = Gender.OTHER;
-			break;
-		default:
-		}
+		if (thePatient.hasGender()) {
+			switch (thePatient.getGender()) {		
+				case FEMALE:
+					user.gender = Gender.FEMALE;
+					break;
+				case MALE:
+					user.gender = Gender.MALE;
+					break;
+				case OTHER:
+					user.gender = Gender.OTHER;
+					break;
+				default:
+					user.gender = Gender.UNKNOWN;
+					break;
+			}
+		} else user.gender = Gender.UNKNOWN;
 		user.birthday = thePatient.getBirthDate();
 		user.language = InstanceConfig.getInstance().getDefaultLanguage();
 		for (PatientCommunicationComponent comm : thePatient.getCommunication()) {
