@@ -243,6 +243,28 @@
 								<error-box :error="error"></error-box>						   
 							</form>
 	                    </div>
+	                    
+	                    <div v-if="progress.GENDER_SET">
+	                    	<div v-t="'postregister.gender_entered'"></div>
+	                    	<div style="margin-top:20px"></div>
+	                      
+	                    	<form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="changeGender()" role="form">
+	         
+	                      		 <form-group name="gender" label="registration.gender" :path="errors.gender">
+			                        <select class="form-control" id="gender" name="gender" v-model="registration.gender" required v-validate>
+			                            <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
+			                            <option value="FEMALE" v-t="'enum.gender.FEMALE'">female</option>
+			                            <option value="MALE" v-t="'enum.gender.MALE'">male</option>
+			                            <option value="OTHER" v-t="'enum.gender.OTHER'">other</option>
+			                        </select>
+                    			</form-group>				
+									   
+						   		<div style="margin-top:30px"></div>
+						   		<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'changeaddress.update_btn'"></button>
+								<div class="extraspace"></div>
+								<error-box :error="error"></error-box>						   
+							</form>
+	                    </div>
 
 						<div v-if="progress.ADDRESS_ENTERED || progress.PHONE_ENTERED">
 							<div v-show="progress.ADDRESS_ENTERED" v-t="'postregister.address_entered'"></div>
@@ -550,6 +572,18 @@ export default {
 			let upd = { user : $data.registration._id, birthday : $data.registration.birthday};
 											
 			me.doAction("changeAddress", server.post(jsRoutes.controllers.admin.Administration.changeBirthday().url, upd)).
+			then(function(data) { 
+				me.retry();
+			});
+		},
+		
+		changeGender() {		
+			const { $data, $t } = this, me = this;
+						
+			let upd = { user : $data.registration._id, gender : $data.registration.gender };
+																	
+			$data.registration.user = $data.registration._id;									
+			me.doAction("changeAddress", users.updateAddress($data.registration)).
 			then(function(data) { 
 				me.retry();
 			});

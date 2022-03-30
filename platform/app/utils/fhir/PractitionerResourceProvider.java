@@ -45,6 +45,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.HPUser;
 import models.MidataId;
 import models.User;
+import models.enums.Gender;
 import models.enums.UserRole;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -89,7 +90,8 @@ public class PractitionerResourceProvider extends ResourceProvider<Practitioner,
 	
 		//p.setBirthDate(member.birthday);
 		//p.addIdentifier().setSystem("http://midata.coop/midataID").setValue(member.midataID);
-		p.setGender(AdministrativeGender.valueOf(userToConvert.gender.toString()));
+		String gender = userToConvert.gender != null ? userToConvert.gender.toString() : Gender.UNKNOWN.toString();
+		p.setGender(AdministrativeGender.valueOf(gender));
 		if (userToConvert.email != null) p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(userToConvert.email);
 		if (userToConvert.phone != null && userToConvert.phone.length()>0) {
 			p.addTelecom().setSystem(ContactPointSystem.PHONE).setValue(userToConvert.phone);

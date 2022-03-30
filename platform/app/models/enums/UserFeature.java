@@ -84,6 +84,11 @@ public enum UserFeature {
 	 * the user account has a birthday
 	 */
 	BIRTHDAY_SET,
+	
+	/**
+	 * the user account has the gender set
+	 */
+	GENDER_SET,
 			
 	/**
 	 * the user has agreed to the newest version of terms 
@@ -146,6 +151,8 @@ public enum UserFeature {
 				if (!(user instanceof Member)) return true;
 				Member member = (Member) user;
 				return member.birthday != null && member.birthday.before(new Date(System.currentTimeMillis()-60l*60l*24l*365l*3l));
+			case GENDER_SET:
+				return user.gender != null && user.gender != Gender.UNKNOWN;
 			case NEWEST_TERMS_AGREED:
 				InstanceConfig ic = InstanceConfig.getInstance();
 				return user.termsAgreed != null && user.termsAgreed.contains(ic.getTermsOfUse(user.role));
