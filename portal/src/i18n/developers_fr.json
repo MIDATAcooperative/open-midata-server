@@ -161,7 +161,10 @@
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à @PRODUCT par cette app. Le code n'est pas sensible à la casse.",
             "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application.",
             "developerTeam" : "Entrez la liste, séparée par des virgules, des adresses e-mail d'autres développeurs sur cette instance @PRODUCT, qui développent cette application.",
-            "code_challenge" : "Lors de la connexion OAuth2, l'application appelante doit utiliser la norme PKCE (Proof Key for Code Exchange)"
+            "code_challenge" : "Lors de la connexion OAuth2, l'application appelante doit utiliser la norme PKCE (Proof Key for Code Exchange)",
+            "createendpoint" : "Créer un endpoint non lié à un projet. Cochez uniquement si vous ne prévoyez PAS d'utiliser cet endpoint avec un projet.",
+            "endpoint" : "Le chemin d'accès de cet endpoint FHIR non lié à un projet sera /opendata/endpointname/fhir",
+            "endpoint2" : "N'oubliez pas: pour activer l'endpoint, vous devez ensuite ajouter une clé API."
         },
         "status" : {
             "title" : "État de l'application",
@@ -177,6 +180,8 @@
         "queryeditor_btn" : "Aller à l'éditeur du filtre d'accès aux données (Data Access Filter)",
         "no_update_history" : "Pas d'historique des ressources FHIR",
         "pseudonymize" : "Lire pseudonymisé",
+        "createendpoint" : "Créer l'endpoint",
+        "endpoint" : "Nom de l'endpoint",
         "usagestats_btn" : "Statistiques d'utilisation",
         "usagestats_help" : "Analyser la fréquence d'utilisation de l'application.",
         "export_btn" : "Exporter la définition de l'application",
@@ -338,6 +343,7 @@
     "repository" : {
         "title" : "Code Repository",
         "repository_url" : "URL du repository",
+        "repository_dir" : "( Optionnel) Sous-répertoire dans le repository",
         "repository_token" : "Access Token",
         "repository_date" : "Dernier déploiement le",
         "never" : "Jamais",

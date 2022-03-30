@@ -161,7 +161,10 @@
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei @PRODUCT über die Applikation eingegeben werden. Der Code ist nicht 'case sensitiv'.",
             "send_reports" : "Den Entwickler ({{user}}) per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.",
             "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf diese @PRODUCT Instanz ein, die diese Anwendung entwickeln.",
-            "code_challenge" : "Beim OAuth2-Login muss die aufrufende Applikation den PKCE-Standard (Proof Key for Code Exchange) verwenden"
+            "code_challenge" : "Beim OAuth2-Login muss die aufrufende Applikation den PKCE-Standard (Proof Key for Code Exchange) verwenden",
+            "createendpoint" : "Nicht projektbezogener Endpoint erstellen. Nur ankreuzen, wenn Sie diesen Endpoint NICHT mit einem Projekt verwenden wollen.",
+            "endpoint" : "Der Pfad dieses nicht projektbezogenen FHIR-Endpoint lautet /opendata/endpointname/fhir",
+            "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen."
         },
         "status" : {
             "title" : "Applikationsstatus",
@@ -177,6 +180,8 @@
         "queryeditor_btn" : "Zum Editor des Datenzugriffsfilters (Data Access Filter) wechseln",
         "no_update_history" : "Keine FHIR Ressourcenhistorie",
         "pseudonymize" : "Pseudonymisiert lesen",
+        "createendpoint" : "Endpoint erstellen",
+        "endpoint" : "Endpoint Name",
         "usagestats_btn" : "Nutzungsstatistiken",
         "usagestats_help" : "Nutzungshäufigkeit der Applikation analysieren.",
         "export_btn" : "Applikationsdefinition exportieren",
@@ -338,6 +343,7 @@
     "repository" : {
         "title" : "Code Repository",
         "repository_url" : "Repository URL",
+        "repository_dir" : "(Optional) Unterverzeichnis im Repository",
         "repository_token" : "Access Token",
         "repository_date" : "Zuletzt bereitgestellt am",
         "never" : "Nie",

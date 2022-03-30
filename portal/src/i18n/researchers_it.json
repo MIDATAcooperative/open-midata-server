@@ -280,7 +280,7 @@
             "unpseudo" : "Partecipanti senza pseudonimo",
             "export" : "Esporta i dati",
             "changeTeam" : "Modifica il team",
-            "auditLog" : "Visualizza il registro di revisione",
+            "auditLog" : "Mostra il audit log",
             "participants" : "Gestisci i partecipanti",
             "setup" : "Configura progetto"
         }
