@@ -39,24 +39,30 @@ function replaceInstr(where) {
 }
 
 let i18n;
-let myLocale = ref("en");
+let myLocale = ref("ch");
 let bundles = new Set();
 let messages = {}; // lang to bundle
 
 function mergeLocales(t, s) {
   for (let k in s) 
-    if (t[k] && typeof t[k] == "object") mergeLocales(t[k], s[k]); else t[k] = s[k];
+    if (typeof s[k] == "object") {
+	  if (!t[k]) t[k] = {};
+	  mergeLocales(t[k], s[k]); 
+    } else t[k] = s[k];
 }
 
-async function loadLocaleMessages(file, locale) {
- 
+async function loadLocaleMessages(file, locale) {  
   let msgs = undefined;
   let fallback = undefined;
+  let fblocale = "en";
   if (file=="branding") {
     try {
     msgs = await import(
-      /* webpackChunkName: "locale-[request]" */ `override/branding_${locale}.json`    
+       /* webpackChunkName: "locale-[request]" */ `override/branding_${locale}.json`    
     )    
+    if (locale!='en') fallback = await import(
+       /* webpackChunkName: "locale-[request]" */ `override/branding_${fblocale}.json`
+    )
     } catch (e) {}
   }
   if (!msgs) {  
@@ -66,13 +72,14 @@ async function loadLocaleMessages(file, locale) {
     if (locale!='en') fallback = await import(
       /* webpackChunkName: "locale-[request]" */ `i18n/${file}_en.json`
     )
-  }
+   
+  }  
   replaceInstr(msgs.default);
   if (fallback) replaceInstr(fallback.default);
   if (!messages[locale]) messages[locale] = { "common" : { "empty" : " " }};
   if (fallback) mergeLocales(messages[locale], fallback.default);
   mergeLocales(messages[locale], msgs.default);
-    
+  
 } 
 
 async function setLocaleMessages(locale) {
@@ -86,8 +93,8 @@ async function setLocaleMessages(locale) {
 
 export const SUPPORT_LOCALES = ['en', 'de', 'fr', 'it']
 
-export function setupI18n(options = { locale: 'en', messages:{} }) {
-  i18n = setI18n({ locale: 'ch', fallbackLocale: 'en', messages:{} });
+export function setupI18n() {
+  i18n = setI18n({ locale: 'ch', messages:{} });
   let lang = localStorage.language || navigator.language || navigator.userLanguage;
   let startWith = "en";
   for (let l of SUPPORT_LOCALES) if (lang.indexOf(l)>=0) startWith = l;
@@ -112,7 +119,7 @@ export async function setLocale(locale) {
    
   for (let bundle of bundles) await loadLocaleMessages(bundle, locale);
   await setLocaleMessages(locale);
-  console.log("changed to:"+locale);  
+  console.log("changed locale to:"+locale);    
 }
 
 export function getLocale() {
