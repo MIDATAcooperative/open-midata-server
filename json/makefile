@@ -19,10 +19,16 @@ include /dev/shm/db.conf
 
 info:
 	$(info test)
-	
+
+ifneq ("$(wildcard ../mongodb/bin/mongo)","")	
 client=../mongodb/bin/mongo
 mongoexport=../mongodb/bin/mongoexport
 mongoimport=../mongodb/bin/mongoimport
+else
+client=mongo
+mongoexport=mongoexport
+mongoimport=mongoimport
+endif
 
 ifndef mongo.user.port
 user.db=$(patsubst "%",%,$(mongo.user.host))
