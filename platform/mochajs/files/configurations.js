@@ -1,6 +1,6 @@
 var configs = {
     "configs": {
-      "environment": "https://test.midata.coop",
+      "environment": "https://midata-frontend",
       "appName": "MidataTestRecords",
       "secret": "123456abcABC",
       "device": "1MochaTest",
