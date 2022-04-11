@@ -86,4 +86,5 @@ id0084	31.01.2022	a.kreutz	F	FHIR Organization resources are now writable
 id0085	14.02.2022	a.kreutz	F	New FHIR resource supported: ImmunizationRecommendation
 id0086	24.03.2022	a.kreutz	F	Added internal action log	Every event is now logged for performance optimizations.
 id0087	29.03.2022	a.kreutz	F	Non-project FHIR endpoints	It is now possible to create a public FHIR endpoint without a project context.
+id0088	11.04.2022	a.kreutz	F	Added FHIR RiskAssessment Resource
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
