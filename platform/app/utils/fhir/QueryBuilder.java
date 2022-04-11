@@ -94,6 +94,7 @@ public class QueryBuilder {
 	public final static String TYPE_QUANTITY = "Quantity";
 	public final static String TYPE_RANGE = "Range";
 	public final static String TYPE_QUANTITY_OR_RANGE = "Quantity|Range";
+	public final static String TYPE_DECIMAL_OR_RANGE = "Decimal|Range";
 	public final static String TYPE_AGE_OR_RANGE = "Age|Range";
 	
 	private SearchParameterMap params;
@@ -284,6 +285,8 @@ public class QueryBuilder {
 			return p+".code";
 		} else if (t.equals(TYPE_AGE_OR_RANGE)) {
 			return p+"Age.value|"+p+"Range.low.value";
+		} else if (t.equals(TYPE_DECIMAL_OR_RANGE)) {
+			return p+"Decimal|"+p+"Range.low.value";
 		} else if (t.equals(TYPE_CONTACT_POINT)) {
 			return p+".value";
 		} else if (t.equals(TYPE_DATE)) {
@@ -384,6 +387,9 @@ public class QueryBuilder {
 			}  else if (type.equals(TYPE_AGE_OR_RANGE)) {
 				if (exist) bld.add(OrCondition.or(FieldAccess.path(path+"Age", new ExistsCondition(true)), FieldAccess.path(path+"Range", new ExistsCondition(true))));
 				else bld.add(AndCondition.and(FieldAccess.path(path+"Age", new ExistsCondition(false)), FieldAccess.path(path+"Range", new ExistsCondition(false))));
+			}  else if (type.equals(TYPE_DECIMAL_OR_RANGE)) {
+				if (exist) bld.add(OrCondition.or(FieldAccess.path(path+"Decimal", new ExistsCondition(true)), FieldAccess.path(path+"Range", new ExistsCondition(true))));
+				else bld.add(AndCondition.and(FieldAccess.path(path+"Decimal", new ExistsCondition(false)), FieldAccess.path(path+"Range", new ExistsCondition(false))));
 			} else {
 			   bld.addExists(path, exist);
 			}
@@ -675,6 +681,12 @@ public class QueryBuilder {
                 String lPath = path;
 				String hPath = path;
 				boolean simple = true;
+				
+				if (type.equals(TYPE_DECIMAL_OR_RANGE)) {
+					  lPath = path+"Decimal|"+path+"Range.low.value|null";
+					  hPath = path+"Decimal|"+path+"Range.high.value|null";
+					  simple = false;	
+				}
 				
 			    switch (prefix) {
 				case GREATERTHAN: bld.addComp(hPath, CompareOperator.GT, val.doubleValue(), true);break;
