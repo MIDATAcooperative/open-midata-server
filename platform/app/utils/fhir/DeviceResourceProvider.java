@@ -184,8 +184,8 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Device");
@@ -205,7 +205,7 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 		builder.restriction("udi-di", true, QueryBuilder.TYPE_STRING, "udiCarrier.deviceIdentifier");
 		builder.restriction("url", true, QueryBuilder.TYPE_URI, "url");
 														
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

@@ -79,7 +79,7 @@ public class Feature_Indexes extends Feature {
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.restrictedBy("index") && !q.restrictedBy("_id")) {
-
+            long start = System.currentTimeMillis();
 			if (!q.restrictedBy("format"))
 				throw new BadRequestException("error.invalid.query", "Queries using an index must be restricted by format!");
 		
@@ -206,7 +206,7 @@ public class Feature_Indexes extends Feature {
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct", "encryptedData");
 			queryFields.addAll(q.getFieldsFromDB());
 
-			AccessLog.logEndPath("index matches "+contexts.size()+" contexts");
+			AccessLog.logEndPath("index matches "+contexts.size()+" contexts; prepare time="+(System.currentTimeMillis()-start));
 			if (contexts.isEmpty()) return ProcessingTools.empty();
 			return ProcessingTools.noDuplicates(new IndexIterator(q, myAccess, contexts, newRecords, filterMatches));				
 

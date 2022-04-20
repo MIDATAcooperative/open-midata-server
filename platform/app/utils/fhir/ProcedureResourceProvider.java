@@ -229,8 +229,8 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Procedure");
@@ -261,7 +261,7 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 		builder.restriction("reason-reference", true, null, "reasonReference");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");	
 					
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

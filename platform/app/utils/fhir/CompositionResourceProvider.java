@@ -257,10 +257,10 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 
 	// The actual search method implementation.
 	// Basically this "maps" the FHIR query to a MIDATA query and executes it
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+	public Query buildQuery(SearchParameterMap params) throws AppException {
 		
 		// get execution context (which user, which app)
-		AccessContext info = info();
+		info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		
@@ -300,10 +300,8 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
         builder.restriction("related-ref", true, null, "relatesTo.targetReference");
         builder.restriction("section", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "section.code");	
         builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
-        
-        
-		// At last execute the constructed query
-		return query.execute(info);
+                	
+		return query;
 	}
 
 	// This method is required if it is allowed to create the resource.

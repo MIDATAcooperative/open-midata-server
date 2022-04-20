@@ -410,8 +410,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	 */
 
 	@Override
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Patient");
@@ -446,6 +446,13 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		builder.restriction("telecom", true, QueryBuilder.TYPE_CODE, "telecom.value");
 		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
 
+		return query;
+	}
+	
+	@Override
+	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+		Query query = buildQuery(params);
+		AccessContext info = info();
 		try (DBIterator<Record> recs = query.executeIterator(info)) {
 			List<Record> result = new ArrayList<Record>();
 			int limit = params.getCount() != null ? params.getCount() : Integer.MAX_VALUE;

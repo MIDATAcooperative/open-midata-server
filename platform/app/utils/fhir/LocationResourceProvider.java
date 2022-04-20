@@ -193,8 +193,8 @@ public class LocationResourceProvider extends RecordBasedResourceProvider<Locati
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Location");
@@ -221,7 +221,7 @@ public class LocationResourceProvider extends RecordBasedResourceProvider<Locati
 		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
 		builder.restriction("type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "type");																														
 		
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

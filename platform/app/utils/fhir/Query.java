@@ -17,6 +17,7 @@
 
 package utils.fhir;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,9 @@ import java.util.Set;
 
 import ca.uhn.fhir.rest.api.SortOrderEnum;
 import models.Record;
+import models.RecordsInfo;
+import models.enums.AggregationType;
+import utils.AccessLog;
 import utils.access.DBIterator;
 import utils.access.RecordManager;
 import utils.access.op.AndCondition;
@@ -129,6 +133,29 @@ public class Query {
 		}
 				
 		return RecordManager.instance.listIterator(info.getAccessor(), info.getAccessorRole(), info, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
+				
+	}
+	
+	public int executeCount(AccessContext info) throws AppException {
+		if (indexCriteria != null || dataCriteria != null || accountCriteria.containsKey("updated-after") || accountCriteria.containsKey("updated-before")) {
+			if (indexCriteria!=null) {
+				accountCriteria.put("index", indexCriteria);
+			}
+			if (dataCriteria!=null) {
+				accountCriteria.put("data", dataCriteria);
+			}
+			DBIterator<Record> it = RecordManager.instance.listIterator(info.getAccessor(), info.getAccessorRole(), info, accountCriteria, Sets.create("_id"));
+			int result = 0;
+			while (it.hasNext()) { result++; it.next(); }
+			AccessLog.log("count result (iterator counting):"+result);
+			return result;
+		} else {				
+			Collection<RecordsInfo> result = RecordManager.instance.info(info.getAccessorRole(), info.getTargetAps(), info, accountCriteria, AggregationType.ALL);
+			if (result.size() != 1) throw new InternalServerException("error.internal", "Wrong result size in info query");
+			RecordsInfo inf = result.iterator().next();
+			AccessLog.log("count result (info query):"+inf.count);
+			return inf.count;
+		}
 				
 	}
 	

@@ -206,12 +206,10 @@ public class ValueSetResourceProvider extends RecordBasedResourceProvider<ValueS
 		
 	}
 
-	// The actual search method implementation.
-	// Basically this "maps" the FHIR query to a MIDATA query and executes it
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+	
+	public Query buildQuery(SearchParameterMap params) throws AppException {
 		
-		// get execution context (which user, which app)
-		AccessContext info = info();
+		info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		
@@ -244,8 +242,8 @@ public class ValueSetResourceProvider extends RecordBasedResourceProvider<ValueS
         builder.restriction("reference", true, QueryBuilder.TYPE_URI, "compose.include.system");
         builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
         //query.putAccount("public", "only");        		
-		// At last execute the constructed query
-		return query.execute(info);
+		
+		return query;
 	}
 
 	// This method is required if it is allowed to create the resource.

@@ -215,8 +215,8 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Immunization");
@@ -246,7 +246,7 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 		builder.restriction("target-disease", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "protocolApplied.targetDisease");
 		builder.restriction("vaccine-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "vaccineCode");
 
-		return query.execute(info);
+		return query;
 	}
 
 	// This method is required if it is allowed to create the resource.

@@ -208,13 +208,11 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 		return searchBundle(paramMap, theDetails);
 		
 	}
-
-	// The actual search method implementation.
-	// Basically this "maps" the FHIR query to a MIDATA query and executes it
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+	
+	public Query buildQuery(SearchParameterMap params) throws AppException {
 		
 		// get execution context (which user, which app)
-		AccessContext info = info();
+		info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		
@@ -241,9 +239,8 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 		builder.restriction("agent-type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "agent.type");		
 		builder.restriction("location", true, "Location", "location");						
 		builder.restriction("signature-type", true, QueryBuilder.TYPE_CODING, "signature.type");
-												
-		// At last execute the constructed query
-		return query.execute(info);
+														
+		return query;
 	}
 
 	// This method is required if it is allowed to create the resource.

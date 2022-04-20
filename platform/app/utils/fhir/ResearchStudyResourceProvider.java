@@ -226,10 +226,10 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 
 	// The actual search method implementation.
 	// Basically this "maps" the FHIR query to a MIDATA query and executes it
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+	public Query buildQuery(SearchParameterMap params) throws AppException {
 		
 		// get execution context (which user, which app)
-		AccessContext info = info();
+		info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		
@@ -262,10 +262,8 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 								
 		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
 		builder.restriction("title", true, QueryBuilder.TYPE_STRING, "title");								
-	
-		//query.putAccount("public", "only");
-		// At last execute the constructed query
-		return query.execute(info);
+			
+		return query;
 	}
 	
 		

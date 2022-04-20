@@ -391,11 +391,9 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 
 	// The actual search method implementation.
 	// Basically this "maps" the FHIR query to a MIDATA query and executes it
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 		
-		// get execution context (which user, which app)
-		AccessContext info = info();
-
 		// construct empty query and a builder for that query
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Observation");
@@ -480,8 +478,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		// Example for a "reference" type search where the target type is known:
 		builder.restriction("specimen", true, "Specimen", "specimen");
 		
-		// At last execute the constructed query
-		return query.execute(info);
+		return query;
 	}
 
 	// This method is required if it is allowed to create the resource.
