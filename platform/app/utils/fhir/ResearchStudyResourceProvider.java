@@ -340,7 +340,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		}
 		
 		researchStudy.setId(study._id.toString());
-		if (!doupdate) researchStudy.addIdentifier().setSystem("http://midata.coop/codesystems/study-code").setValue(study.code);
+		if (!doupdate) researchStudy.addIdentifier().setSystem("http://midata.coop/codesystems/project-code").setValue(study.code);
 		researchStudy.setTitle(study.name);
 		researchStudy.setDescription(study.description);
 		

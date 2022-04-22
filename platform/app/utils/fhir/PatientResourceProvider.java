@@ -1044,8 +1044,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			StudyParticipation sp = StudyParticipation.getByStudyAndMember(study._id, owner, Sets.create("status", "pstatus", "ownerName"));
 			if (sp != null) {
 				Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(info(), sp);
-				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(pseudo.getRight()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
-				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(pseudo.getLeft().toString()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
+				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(pseudo.getRight()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/project-code",study.code, study.name)));
+				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(pseudo.getLeft().toString()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/project-code",study.code, study.name)));
 			}
 		}
 	}

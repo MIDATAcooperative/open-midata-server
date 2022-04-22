@@ -76,6 +76,7 @@ public class FHIRTools {
 	 * @throws InternalServerException
 	 */
 	public static Reference getReferenceToUser(MidataId id, String defName) throws AppException {
+		if (id == null) return null;
 	    if (RuntimeConstants.instance.publicUser.equals(id)) return null;
 		if (defName != null) return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());				
 		
@@ -203,7 +204,7 @@ public class FHIRTools {
 			}
 			if (type == null) return ref;
 			
-			if (target == null) throw new UnprocessableEntityException("References Patient not found");
+			if (target == null) throw new UnprocessableEntityException("References: Referenced person not found");
 			ref.setReference(type+"/"+target._id.toString());
 			ref.setIdentifier(null);
 			ref.setDisplay(target.firstname+" "+target.lastname);
