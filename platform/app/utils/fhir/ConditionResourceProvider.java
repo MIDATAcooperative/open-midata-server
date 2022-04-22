@@ -234,8 +234,8 @@ public class ConditionResourceProvider extends RecordBasedResourceProvider<Condi
 
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Condition");
@@ -274,7 +274,7 @@ public class ConditionResourceProvider extends RecordBasedResourceProvider<Condi
 		
 		builder.restriction("verification-status", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "verificationStatus");
 		
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

@@ -189,8 +189,8 @@ public class RelatedPersonResourceProvider extends RecordBasedResourceProvider<R
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/RelatedPerson");
@@ -219,7 +219,7 @@ public class RelatedPersonResourceProvider extends RecordBasedResourceProvider<R
 		builder.restriction("gender", false, QueryBuilder.TYPE_CODE, "gender");
 		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
 																					
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

@@ -207,7 +207,7 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+	public Query buildQuery(SearchParameterMap params) throws AppException {
 		AccessContext info = info();
 
 		Query query = new Query();		
@@ -233,7 +233,7 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 		builder.restriction("clinical-status", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "clinicalStatus");			
 		builder.restriction("verification-status", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "verificationStatus");	
 								
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

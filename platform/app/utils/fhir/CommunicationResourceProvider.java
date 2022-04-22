@@ -224,9 +224,9 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
-        
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
+		
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Communication");
 
@@ -250,7 +250,7 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		builder.restriction("sender", true, null, "sender");
 		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");	
 						
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

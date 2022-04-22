@@ -221,8 +221,8 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/DiagnosticReport");
@@ -254,7 +254,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 		builder.restriction("specimen", true, "Specimen", "specimen");
 		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
 
-		return query.execute(info);
+		return query;
 	}
 
 	// This method is required if it is allowed to create the resource.

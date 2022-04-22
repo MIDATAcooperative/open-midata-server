@@ -128,7 +128,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	public Group readGroupFromMidataUserGroup(UserGroup groupToConvert, boolean addMembers) throws AppException {
 		
 		IParser parser = ctx().newJsonParser();
-		AccessLog.log(groupToConvert.fhirGroup.toString());
+		//AccessLog.log(groupToConvert.fhirGroup.toString());
 		Group p = parser.parseResource(getResourceType(), groupToConvert.fhirGroup.toString());
 				
 		if (addMembers) {
@@ -266,8 +266,11 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	@Override
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
 		if (!checkAccessible()) return Collections.emptyList();
-		
-		AccessContext info = info();
+		return super.searchRaw(params);
+	}
+	
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Group");
@@ -287,15 +290,22 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 		builder.restriction("exclude", false, QueryBuilder.TYPE_BOOLEAN, "characteristic.exclude");						
 		builder.restriction("actual", false, QueryBuilder.TYPE_BOOLEAN, "actual");								
 		
-		return query.execute(info);
+		return query;
 	}
  
 	@Override
-	public List<IBaseResource> search(SearchParameterMap params) {
-		try {
-					
-			//AccessContext info = info();
+	public int countResources(SearchParameterMap params) {
+		int result = super.countResources(params);		
+		Set<UserGroup> groups = searchNonResources(params);
+		for (UserGroup group : groups) {
+			if (group.fhirGroup != null) result++;
+		}		
+		return result;
+	}
 	
+	public Set<UserGroup> searchNonResources(SearchParameterMap params) {
+		try {
+							
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);
 			builder.handleIdRestriction();		
@@ -325,27 +335,10 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 			
 			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
 			builder.restriction("identifier", true, "string", "nameLC");
-			
-			/*Object keywords = query.retrieveIndexValues();
-			if (keywords != null) properties.put("keywordsLC", keywords);
-			properties.put("searchable", true);
-			properties.put("status", User.NON_DELETED);
-			*/
-			boolean addMembers = params.hasElement("member") && params.getSummary().equals(SummaryEnum.FALSE);			
-			
-			if (Stats.enabled && addMembers && !params.containsKey("identifier") && !params.containsKey("_id")) Stats.addComment("Use _summary or _elements parameter if list of members is not needed.");
-			
-			Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, UserGroup.FHIR);
-			List<IBaseResource> result = new ArrayList<IBaseResource>();
-			for (UserGroup group : groups) {
-				if (group.fhirGroup != null) result.add(readGroupFromMidataUserGroup(group, addMembers));
-			}
-			
-			List<IBaseResource> normal = super.search(params);
-			result.addAll(normal);
-			
+								
+			Set<UserGroup> result = UserGroup.getAllUserGroup(properties, UserGroup.FHIR);
+			//AccessLog.log("non resource size="+result.size());
 			return result;
-			
 		 } catch (AppException e) {
 		       ErrorReporter.report("FHIR (search)", null, e);	       
 			   return null;
@@ -353,6 +346,33 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 		   	    ErrorReporter.report("FHIR (search)", null, e2);	 
 				throw new InternalErrorException("internal error during FHIR search");
 		}
+	}
+	
+	@Override
+	public List<IBaseResource> search(SearchParameterMap params) {
+	
+						
+			Set<UserGroup> groups = searchNonResources(params);
+						
+            boolean addMembers = params.hasElement("member") && params.getSummary().equals(SummaryEnum.FALSE);						
+			if (Stats.enabled && addMembers && !params.containsKey("identifier") && !params.containsKey("_id")) Stats.addComment("Use _summary or _elements parameter if list of members is not needed.");
+									
+			List<IBaseResource> result = new ArrayList<IBaseResource>();
+			
+			try {
+				for (UserGroup group : groups) {
+					if (group.fhirGroup != null) result.add(readGroupFromMidataUserGroup(group, addMembers));
+				}
+			} catch (AppException e) {
+			    ErrorReporter.report("FHIR (search)", null, e);	       
+			    return null;
+			}
+			
+			List<IBaseResource> normal = super.search(params);			
+			result.addAll(normal);
+			
+			return result;
+				
 		
 	}
 	

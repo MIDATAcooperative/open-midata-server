@@ -223,7 +223,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+	public Query buildQuery(SearchParameterMap params) throws AppException {
 		AccessContext info = info();
         
 		Query query = new Query();		
@@ -247,7 +247,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 		builder.restriction("slot", true, "Slot", "slot");
 		builder.restriction("specialty", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "specialty");
 		builder.restriction("supporting-info", true, null, "supportingInformation");
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

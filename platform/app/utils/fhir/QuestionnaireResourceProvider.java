@@ -211,8 +211,8 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Questionnaire");
@@ -241,7 +241,7 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 	    builder.restriction("url", true, QueryBuilder.TYPE_URI, "url");
 		builder.restriction("version", true, QueryBuilder.TYPE_STRING, "version");						
 				
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

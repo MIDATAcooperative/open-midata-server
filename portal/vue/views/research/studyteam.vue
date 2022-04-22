@@ -119,10 +119,14 @@ export default {
                 $data.members = me.process(data.data, { filter : { status : 'ACTIVE' }, sort : "user.lastname" });                
             }));
             
-            me.doBusy(users.getMembers({ role : "RESEARCH", organization : session.org, status : ["ACTIVE", "NEW", "BLOCKED"] }, users.MINIMAL )
-            .then(function(data) {
-                $data.persons = data.data;
-            }));                                				
+            if (session.org) {
+	            me.doBusy(users.getMembers({ role : "RESEARCH", organization : session.org, status : ["ACTIVE", "NEW", "BLOCKED"] }, users.MINIMAL )
+	            .then(function(data) {
+	                $data.persons = data.data;
+	            }));
+            } else {
+              $data.persons = [];
+            }                                				
 	    },
 			
 	    removePerson(person) {

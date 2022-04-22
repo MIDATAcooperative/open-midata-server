@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import models.MidataId;
 import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.auth.KeyManager;
@@ -49,7 +50,15 @@ public class Feature_PublicData extends Feature {
 			// TODO Please remove once ally science is setup correctly
 			if (mode.equals("only")&& !q.restrictedBy("public-strict")) {
 				Set<String> format = q.getRestrictionOrNull("format");
-				if (format != null && format.contains("fhir/Group")) mode = "also";
+				if (format != null && format.contains("fhir/Group")) {
+					MidataId pluginId = q.getContext().getUsedPlugin();
+					// These pluginIds are for AllyScience, AllyScience Aggregator and AllyScience Export Tool on Prod Instance
+					if (pluginId != null && (							
+					  "5a84513579c721ab0eecf1c1".equals(pluginId.toString()) ||
+					  "5a86ff3179c721ab0eecf713".equals(pluginId.toString()) ||
+					  "5d15ef6ccf569327b1330c7b".equals(pluginId.toString())))
+					mode = "also";
+				}
 			}
 			// END Remove
 			

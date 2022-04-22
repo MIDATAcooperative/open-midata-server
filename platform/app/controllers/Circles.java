@@ -384,7 +384,8 @@ public class Circles extends APIController {
 				throw new InternalServerException("error.internal", "Cryptography error");
 			}
 		}
-		consent.sharingQuery = ConsentQueryTools.getEmptyQuery();		
+		consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
+		consent.creator = context.getActor();
 		consent.owner = userId;
 		consent.externalOwner = externalOwner;
 		consent.name = name;		

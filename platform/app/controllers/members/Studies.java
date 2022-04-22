@@ -268,6 +268,7 @@ public class Studies extends APIController {
 		part.owner = member._id;
 		part.dateOfCreation = new Date();
 		part.lastUpdated = part.dateOfCreation;
+		part.creator = context.getActor();
 		part.dataupdate = System.currentTimeMillis();
 		part.observers = observers;
 		if (study.consentObserver != null) {

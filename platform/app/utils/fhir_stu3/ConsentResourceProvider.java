@@ -550,6 +550,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		Consent consent = new Consent();
 		
 		consent.creatorApp = info().getUsedPlugin();
+		consent.creator = info().getActor();
 		consent.status = ConsentStatus.UNCONFIRMED;
 		consent.authorized = new HashSet<MidataId>();
 		

@@ -275,8 +275,8 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/DocumentReference");
@@ -326,7 +326,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		
 		//builder.restriction("type", "CodeableConcept", true, "type");
 		
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

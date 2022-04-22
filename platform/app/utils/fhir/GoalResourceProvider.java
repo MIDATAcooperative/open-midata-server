@@ -162,8 +162,8 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Goal");
@@ -181,7 +181,7 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 		builder.restriction("start-date", true, QueryBuilder.TYPE_DATETIME, "startDate");
 		builder.restriction("target-date", true, QueryBuilder.TYPE_DATETIME, "target.dueDate");
 		
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

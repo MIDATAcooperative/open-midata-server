@@ -120,7 +120,7 @@ public class QueryBuilder {
 				throw new InvalidRequestException("Invalid _lastUpdated parameter!");
 			}			
 		}
-		if (params.getCount() != null) {
+		if (params.getCount() != null && params.getCount() != 0) {
 			query.putAccount("limit", params.getCount() + 1); // We add 1 to see if there are more results available
 		}
 		if (params.getSkip() != null) {

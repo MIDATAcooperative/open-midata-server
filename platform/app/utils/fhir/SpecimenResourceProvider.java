@@ -213,12 +213,10 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 		
 	}
 
-	// The actual search method implementation.
-	// Basically this "maps" the FHIR query to a MIDATA query and executes it
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+	
+	public Query buildQuery(SearchParameterMap params) throws AppException {
 		
-		// get execution context (which user, which app)
-		AccessContext info = info();
+		info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		
@@ -256,9 +254,8 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 		builder.restriction("container-id", true, QueryBuilder.TYPE_IDENTIFIER, "container.identifier");	
 		builder.restriction("parent", true, "Specimen", "parent");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");									
-		
-		// At last execute the constructed query
-		return query.execute(info);
+				// 
+		return query;
 	}
 
 	// This method is required if it is allowed to create the resource.

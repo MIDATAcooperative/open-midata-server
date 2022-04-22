@@ -274,8 +274,8 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     }
            
     @Override
-    public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+    public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 		
 		List<List<? extends IQueryParameterType>> ids = params.get("identifier");
 		
@@ -294,7 +294,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 		
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 			
-		return query.execute(info);
+		return query;
 	}
     
             

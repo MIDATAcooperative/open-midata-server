@@ -210,8 +210,8 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Media");
@@ -233,7 +233,7 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 		builder.restriction("operator", true, null, "operator");				
 		builder.restriction("type", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "type");		
 		
-		return query.execute(info);
+		return query;
 	}
 
 	@Create
