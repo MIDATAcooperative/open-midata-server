@@ -186,7 +186,7 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
  			@OptionalParam(name="replaces", targetTypes={  } )
  			ReferenceAndListParam theReplaces, 
    
- 			@Description(shortDefinition="draft | active | suspended | completed | entered-in-error | cancelled | unknown")
+ 			@Description(shortDefinition="draft | active | on-hold | revoked | completed | entered-in-error | unknown")
  			@OptionalParam(name="status")
  			TokenAndListParam theStatus,
    
@@ -336,8 +336,14 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 	public void prepare(Record record, CarePlan theCarePlan) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a
 		// fixed value or something else useful)
-		String display = setRecordCodeByCodeableConcept(record, null, "CarePlan");  
+		setRecordCodeByCodeableConcept(record, null, "CarePlan");  
 
+		String display = theCarePlan.getTitle();
+		if (display == null) {
+			display = theCarePlan.getDescription();
+			if (display !=null && display.length()>60) display = display.substring(0, 30)+"...";
+		}
+		
 		// Task b : Create record name
 		String date = "No time";
 		if (theCarePlan.hasPeriod()) {
