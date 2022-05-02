@@ -405,13 +405,20 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		    if (!consentToConvert.dateOfCreation.equals(consentToConvert.lastUpdated)) storeVersion(consentToConvert, version);
 		    if (c == null) c = parsed;
 		} else if (c==null) {
-			c = new org.hl7.fhir.r4.model.Consent();
+			c = new org.hl7.fhir.r4.model.Consent();			
+			
+		}
+		if (!c.hasExtension("http://midata.coop/extensions/consent-name")) {
 			c.addExtension().setUrl("http://midata.coop/extensions/consent-name").setValue(new StringType(consentToConvert.name));
-			if (part != null) {
-				c.addExtension().setUrl("http://midata.coop/extensions/project-join-method").setValue(new StringType(part.joinMethod.toString()));
-				if (part.projectEmails != null) {
-				  c.addExtension().setUrl("http://midata.coop/extensions/communication-channel-use").setValue(new StringType(part.projectEmails.toString()));
-				}
+		}
+		if (part != null) {
+			if (!c.hasExtension("http://midata.coop/extensions/project-join-method")) c.addExtension().setUrl("http://midata.coop/extensions/project-join-method").setValue(new StringType(part.joinMethod.toString()));
+			if (part.projectEmails != null) {
+			  if (c.hasExtension("http://midata.coop/extensions/communication-channel-use")) {
+			    c.getExtensionByUrl("http://midata.coop/extensions/communication-channel-use").setValue(new StringType(part.projectEmails.toString()));
+			  } else {
+			    c.addExtension().setUrl("http://midata.coop/extensions/communication-channel-use").setValue(new StringType(part.projectEmails.toString()));
+			  }
 			}
 		}
 		 
@@ -897,23 +904,28 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	}
 
 	@Override
-	public void createExecute(Consent consent, org.hl7.fhir.r4.model.Consent theResource) throws AppException {
+	public org.hl7.fhir.r4.model.Consent createExecute(Consent consent, org.hl7.fhir.r4.model.Consent theResource) throws AppException {
 		if (consent.type == ConsentType.STUDYPARTICIPATION) {
 			Study study = getStudyForConsent(theResource);
 			MidataId studyId = study._id;
 			String joinCode = null;
 			StudyParticipation part;
-			if (consent.status == ConsentStatus.ACTIVE) {
+			/*if (consent.status == ConsentStatus.ACTIVE) {
 			   part = controllers.members.Studies.requestParticipation(info(), consent.owner, studyId, info().getUsedPlugin(), JoinMethod.API, joinCode);
-			} else {
+			} else {*/
 			   part = controllers.members.Studies.match(info(), consent.owner, studyId, info().getUsedPlugin(), JoinMethod.API);				
-			}
+			//}
+			theResource.setId(part._id.toString());
 			ConsentResourceProvider.updateMidataConsent(part, theResource);
 			Consent.set(part._id, "fhirConsent", part.fhirConsent);
-			SubscriptionManager.resourceChange(info(), part);
+			if (consent.status == ConsentStatus.ACTIVE) {
+			   part = controllers.members.Studies.requestParticipation(part, info(), consent.owner, studyId, info().getUsedPlugin(), JoinMethod.API, joinCode);
+			   theResource.setStatus(ConsentState.ACTIVE);
+			} else {						
+			   SubscriptionManager.resourceChange(info(), part);
+			}
 			processDataSharing(part, theResource);
-			addQueryToConsent(part, theResource);			
-			addActorsToConsent(part, theResource);
+			return readConsentFromMidataConsent(info(), part, true);			
 		} else {		    		   
 			String encoded = ctx.newJsonParser().encodeResourceToString(theResource);		
 			consent.fhirConsent = BasicDBObject.parse(encoded);		 
@@ -923,6 +935,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			processDataSharing(consent, theResource);
 			addQueryToConsent(consent, theResource);			
 			addActorsToConsent(consent, theResource);
+			return theResource;
 		}
 		
 		
@@ -1034,15 +1047,21 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	public void processResource(Consent record, org.hl7.fhir.r4.model.Consent resource) throws AppException {		
 		// Leave empty. Think about history consents (ConsentVersion)
 		
-        Extension meta = new Extension("http://midata.coop/extensions/metadata");
+        Extension meta = null;
+        if (resource.getMeta().hasExtension("http://midata.coop/extensions/metadata")) {
+        	meta = resource.getMeta().getExtensionByUrl("http://midata.coop/extensions/metadata");
+        } else {
+        	meta = new Extension("http://midata.coop/extensions/metadata"); 
+        	resource.getMeta().addExtension(meta);	
+        }
 		
 		if (record.creatorApp != null) {
 		  Plugin creatorApp = Plugin.getById(record.creatorApp);		
-		  if (creatorApp != null) meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
+		  if (creatorApp != null && !meta.hasExtension("app")) meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
-		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, null));
+		if (record.creator != null && !meta.hasExtension("creator")) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, null));
 				
-		resource.getMeta().addExtension(meta);
+		
 	}
 
 	@Override

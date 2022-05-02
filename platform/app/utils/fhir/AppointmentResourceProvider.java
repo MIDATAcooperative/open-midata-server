@@ -258,9 +258,10 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	
 
 	@Override
-	public void createExecute(Record record, Appointment theAppointment) throws AppException {
+	public Appointment createExecute(Record record, Appointment theAppointment) throws AppException {
 		insertRecord(record, theAppointment);
 		shareRecord(record, theAppointment);
+		return theAppointment;
 	}		
 	
 	@Update

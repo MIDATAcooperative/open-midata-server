@@ -90,6 +90,8 @@ public class SubscriptionManager {
 		ConsentResourceProvider prov = (ConsentResourceProvider) FHIRServlet.myProviders.get("Consent"); 
 		try {
 		    String resource = prov.serialize(prov.readConsentFromMidataConsent(context, consent, consent.type != ConsentType.STUDYRELATED));
+		    
+		    AccessLog.log("CONSENT RES CHANGE: "+resource);
 		    subscriptionChecker.tell(new ResourceChange("fhir/Consent", consent, resource), ActorRef.noSender());
 		} catch (AppException e) {
 			ErrorReporter.report("Subscripion processing", null, e);

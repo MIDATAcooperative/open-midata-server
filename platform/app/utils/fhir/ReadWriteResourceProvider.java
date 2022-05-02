@@ -104,14 +104,14 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 	protected MethodOutcome create(T theResource) throws AppException {
 		M record = init();			
 		createPrepare(record, theResource);
-		createExecute(record, theResource);		
+		theResource = createExecute(record, theResource);		
 		processResource(record, theResource);						
 		return outcome(theResource.getResourceType().name(), theResource);				
 	}
 	
 	public abstract void createPrepare(M record, T theResource) throws AppException;
 	
-	public abstract void createExecute(M record, T theResource) throws AppException;
+	public abstract T createExecute(M record, T theResource) throws AppException;
 	
 	public abstract M init();
 	

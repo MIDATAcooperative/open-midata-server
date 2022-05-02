@@ -742,7 +742,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	}
 
 	@Override
-	public void createExecute(Record record, Patient thePatient) throws AppException {
+	public Patient createExecute(Record record, Patient thePatient) throws AppException {
 
 		
 		// create the user
@@ -1036,6 +1036,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (tempContext != null) tempContext.close();
 		
 		AuditManager.instance.success();
+		
+		return thePatient;
 	}
 	
 	protected void populateIdentifiers(MidataId owner, Patient thePatient, List<Study> studies) throws AppException {

@@ -269,6 +269,7 @@ public class Studies extends APIController {
 		part.dateOfCreation = new Date();
 		part.lastUpdated = part.dateOfCreation;
 		part.creator = context.getActor();
+		part.creatorApp = context.getUsedPlugin();
 		part.dataupdate = System.currentTimeMillis();
 		part.observers = observers;
 		if (study.consentObserver != null) {
@@ -386,12 +387,15 @@ public class Studies extends APIController {
 		requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.PORTAL, null);		
 		return ok();
 	}
-	
+
 	public static StudyParticipation requestParticipation(AccessContext context, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod, String joinCode) throws AppException {
+	   return requestParticipation(null, context, userId, studyId, usingApp, joinMethod, joinCode);
+	}
+	public static StudyParticipation requestParticipation(StudyParticipation participation, AccessContext context, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod, String joinCode) throws AppException {
 		AccessLog.logBegin("start request participation user="+userId+" project="+studyId);
 		try {
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA);		
+		if (participation == null) participation = StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA);		
 		Study study = Study.getById(studyId, Sets.create("name", "joinMethods", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup", "type", "consentObserver", "rejoinPolicy"));
 		ParticipationCode code = null;
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
@@ -448,7 +452,7 @@ public class Studies extends APIController {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA);
 		Study study = Study.getById(studyId, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "termsOfUse", "code"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
