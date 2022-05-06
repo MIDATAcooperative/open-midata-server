@@ -18,7 +18,11 @@
 package utils.access.op;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 public class CompareCaseInsensitive implements Condition, Serializable {
 
@@ -84,7 +88,12 @@ public class CompareCaseInsensitive implements Condition, Serializable {
 	}
 
 	@Override
-	public Object asMongoQuery() {
+    public Map<String, Object> asMongoQuery() {
+		return null;
+	}
+	
+	@Override
+	public Object asMongoValue() {
 		//Map<String, Object> result = new HashMap();
 		switch (op) {
 		case EQUALS: return Pattern.compile("^"+val+"$", Pattern.CASE_INSENSITIVE);
@@ -94,7 +103,12 @@ public class CompareCaseInsensitive implements Condition, Serializable {
 		}
 		return null;
 	}
-	
+			
+	@Override
+	public Condition mongoCompatible() {
+		return this;
+	}
+
 	@Override
 	public String toString() {		
 		switch (op) {

@@ -19,8 +19,10 @@ package utils.access.op;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 import org.bson.types.BasicBSONList;
 
@@ -154,17 +156,32 @@ public class FieldAccess implements Condition, Serializable {
 	public Map<String, Object> asMongoQuery() {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		String fieldName = field;
+		/*String fieldName = field;
 		Condition c = cond;
 		
 		while (c instanceof FieldAccess) {
 			fieldName += "."+((FieldAccess) c).field;
 			c = ((FieldAccess) c).cond;
-		}
+		}*/
 		
-		result.put(fieldName, c.asMongoQuery());
+		result.put(field, cond.asMongoValue());
 		return result;
 	}
+
+	@Override
+	public Condition mongoCompatible() {
+		Condition c = cond.mongoCompatible();
+		if (c instanceof ComplexMongoCondition) {
+			return ((ComplexMongoCondition) c).prependFieldName(field);
+		}
+		if (c instanceof FieldAccess) {
+			FieldAccess sub = (FieldAccess) c;
+			return new FieldAccess(field+"."+sub.getField(), sub.getCondition());
+		}
+		return new FieldAccess(getField(), c);
+	}
+	
+	
 
 	
 }

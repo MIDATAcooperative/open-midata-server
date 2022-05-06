@@ -17,6 +17,11 @@
 
 package utils.access.op;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 /**
  * Condition in a mongo query
  *
@@ -53,7 +58,22 @@ public interface Condition {
 	 * Converts the condition to a mongo query that works on a standard collection
 	 * @return object to be passed as properties to the mongo query
 	 */
-	public Object asMongoQuery();
+	public Map<String, Object> asMongoQuery();
+	
+	/**
+	 * Convert this partial condition to a mongo query value 
+	 * @return
+	 */
+	default Object asMongoValue() {
+		return asMongoQuery();
+	}
+	
+	/**
+	 * Convert this condition to a mongodb compatible form
+	 * @return
+	 */
+	public Condition mongoCompatible();
+		
 	
 	/**
 	 * Returns if this condition may be true when applied to values in the given range. This is used by the index engine.

@@ -18,6 +18,10 @@
 package utils.access.op;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
 
@@ -72,8 +76,17 @@ public class EqualsSingleValueCondition implements Condition, Serializable {
 	}
 
 	@Override
-	public Object asMongoQuery() {
+    public Map<String, Object> asMongoQuery() {
+		return null;
+	}
+	
+	@Override
+	public Object asMongoValue() {
 		return val;
+	}
+	
+	public Condition mongoCompatible() {
+		return this;
 	}
 	
 	@Override
