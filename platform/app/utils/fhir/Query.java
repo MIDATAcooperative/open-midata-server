@@ -166,7 +166,10 @@ public class Query {
 		result.remove("from");
 		result.remove("updated-after");
 		result.remove("updated-before");
-		if (dataCriteria != null) result.putAll((Map<String,Object>) dataCriteria.asMongoQuery());
+		if (dataCriteria != null) {
+			result = AndCondition.and(new AndCondition(result), dataCriteria).mongoCompatible().asMongoQuery();
+			AccessLog.log("normal mongo query: "+result.toString());
+		}
 		ObjectIdConversion.convertMidataIds(result, "_id");
 		return result;
 	}

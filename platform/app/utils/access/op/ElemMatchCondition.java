@@ -37,7 +37,7 @@ public class ElemMatchCondition extends AndCondition {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Map<String, Object> parts = new HashMap<String, Object>();
 		for (Condition check : checks) {
-			parts.putAll((Map<String, Object>) check.asMongoQuery());
+			parts.putAll(check.asMongoQuery());
 		}
 		result.put("$elemMatch", parts);
 		return result;

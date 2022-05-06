@@ -18,6 +18,7 @@
 package utils.fhir_stu3;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -91,6 +92,7 @@ public class QueryBuilder {
 	
 	private SearchParameterMap params;
 	private Query query;
+	private boolean dateToString;
 	
 	public QueryBuilder(SearchParameterMap params, Query query, String format) throws AppException {
 		this.params = params;
@@ -101,6 +103,20 @@ public class QueryBuilder {
 		handleCommon();
 	}
 	
+	
+	
+	public boolean isDateToString() {
+		return dateToString;
+	}
+
+
+
+	public void setDateToString(boolean dateToString) {
+		this.dateToString = dateToString;
+	}
+
+
+
 	public void handleCommon() throws AppException {
 		if (params.getLastUpdated() != null) {
 			try {
@@ -528,37 +544,48 @@ public class QueryBuilder {
 				
 				if (prefix==null) prefix = ParamPrefixEnum.EQUAL;
 				AccessLog.log("prefix="+prefix);
+				Object lDate1 = lDate;
+				Object hDate1 = hDate;
+				
+				if (isDateToString()) {
+					SimpleDateFormat sdf;
+					sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+					//sdf.setTimeZone(TimeZone.getTimeZone("CET"));					
+					lDate1 = sdf.format(lDate);
+					hDate1 = sdf.format(hDate);
+				}
+				
 			    switch (prefix) {
-				case GREATERTHAN: bld.addComp(hPath, CompareOperator.GE, hDate, true);break;
-				case LESSTHAN: bld.addComp(lPath,CompareOperator.LT, lDate, true);break;
+				case GREATERTHAN: bld.addComp(hPath, CompareOperator.GE, hDate1, true);break;
+				case LESSTHAN: bld.addComp(lPath,CompareOperator.LT, lDate1, true);break;
 				case GREATERTHAN_OR_EQUALS:														
-					bld.addCompOr(lPath, CompareOperator.GE, lDate, true);
-					bld.addCompOr(hPath, CompareOperator.GE, hDate, true);					
+					bld.addCompOr(lPath, CompareOperator.GE, lDate1, true);
+					bld.addCompOr(hPath, CompareOperator.GE, hDate1, true);					
 					break;
 				case LESSTHAN_OR_EQUALS:
 										
-					bld.addCompOr(lPath, CompareOperator.LE, lDate, true);
-					bld.addCompOr(hPath, CompareOperator.LT, hDate, true);										
+					bld.addCompOr(lPath, CompareOperator.LE, lDate1, true);
+					bld.addCompOr(hPath, CompareOperator.LT, hDate1, true);										
 					break;
 				case STARTS_AFTER:					
-					bld.addComp(lPath, CompareOperator.GE, hDate, false);
+					bld.addComp(lPath, CompareOperator.GE, hDate1, false);
 					break;
 				case ENDS_BEFORE:
-					bld.addComp(hPath, CompareOperator.LT, lDate, false);
+					bld.addComp(hPath, CompareOperator.LT, lDate1, false);
 					break;
 				case EQUAL:					
-					bld.addComp(lPath, CompareOperator.GE, lDate, false, CompareOperator.LT, hDate, false);
+					bld.addComp(lPath, CompareOperator.GE, lDate1, false, CompareOperator.LT, hDate1, false);
 					if (!lPath.equals(hPath)) {
-                      bld.addComp(hPath, CompareOperator.LT, hDate, false, CompareOperator.GE, lDate, false);
+                      bld.addComp(hPath, CompareOperator.LT, hDate1, false, CompareOperator.GE, lDate1, false);
 					}
 					break;
 				case NOT_EQUAL:
-					bld.addCompOr(hPath, CompareOperator.GE, hDate, true);
-					bld.addCompOr(lPath, CompareOperator.LT, lDate, true);					
+					bld.addCompOr(hPath, CompareOperator.GE, hDate1, true);
+					bld.addCompOr(lPath, CompareOperator.LT, lDate1, true);					
 					break;
 				case APPROXIMATE:						
-					bld.addComp(hPath, CompareOperator.GE, lDate, true);
-					bld.addComp(lPath, CompareOperator.LT, hDate, true);
+					bld.addComp(hPath, CompareOperator.GE, lDate1, true);
+					bld.addComp(lPath, CompareOperator.LT, hDate1, true);
 					break;
 				default:throw new NullPointerException();
 				}

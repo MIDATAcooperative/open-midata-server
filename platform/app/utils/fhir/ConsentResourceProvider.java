@@ -65,6 +65,7 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -513,7 +514,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	    		  
 	    		@Description(shortDefinition="When this Consent was created or indexed")
 	    		@OptionalParam(name="date")
-	    		DateRangeParam theDate, 
+	    		DateAndListParam theDate, 
 	    		    
 	    		@Description(shortDefinition="Identifier for this record (external references)")
 	    		@OptionalParam(name="identifier")
@@ -622,18 +623,18 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient", null);
+		builder.restriction("_lastUpdated", false, QueryBuilder.TYPE_DATETIME, "lastUpdated");
 		builder.restriction("identifier", false, QueryBuilder.TYPE_IDENTIFIER, "fhirConsent.identifier");
 		builder.restriction("action", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.provision.action");
 		builder.restriction("consentor", false, null, "fhirConsent.performer");
 		builder.restriction("organization", false, "Organization", "fhirConsent.organization");
-		builder.restriction("category", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.category");		
+		builder.restriction("category", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.category");
+		builder.setDateToString(true);
 		builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.dateTime");
-		builder.restriction("period", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.period");
+		builder.restriction("period", false, QueryBuilder.TYPE_PERIOD, "fhirConsent.provision.period");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "fhirConsent.status");
 		builder.restriction("purpose", false, QueryBuilder.TYPE_CODING, "fhirConsent.provision.purpose");
-				
-		builder.restriction("_lastUpdated", false, QueryBuilder.TYPE_DATETIME, "lastUpdated");
-		
+								
 		Set<String> authorized = null;
 		if (params.containsKey("actor")) {
 			List<ReferenceParam> actors = builder.resolveReferences("actor", null);

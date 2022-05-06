@@ -357,12 +357,14 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient", null);
+		builder.restriction("_lastUpdated", false, QueryBuilder.TYPE_DATETIME, "lastUpdated");
 		builder.restriction("category", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.category");
+		builder.setDateToString(true);
 		builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.dateTime");
-		builder.restriction("period", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.period");
+		builder.restriction("period", false, QueryBuilder.TYPE_PERIOD, "fhirConsent.period");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "fhirConsent.status");
 				
-		builder.restriction("_lastUpdated", false, QueryBuilder.TYPE_DATETIME, "lastUpdated");
+		
 		
 		Set<String> authorized = null;
 		if (params.containsKey("actor")) {

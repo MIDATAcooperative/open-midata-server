@@ -20,9 +20,13 @@ package utils.access.op;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.format.ISODateTimeFormat;
+
+import utils.collections.CMaps;
 
 /**
  * A comparison operator for mongo expressions
@@ -121,7 +125,7 @@ public class CompareCondition implements Condition, Serializable {
 	}
 
 	@Override
-	public Object asMongoQuery() {
+	public Object asMongoValue() {
 		Map<String, Object> result = new HashMap<String, Object>();
 		switch (op) {
 		case EQ:return val;
@@ -132,6 +136,17 @@ public class CompareCondition implements Condition, Serializable {
 		case LT:result.put("$lt", val);break;
 		}
 		return result;
+	}
+
+	@Override
+	public Map<String, Object> asMongoQuery() {
+		if (op==CompareOperator.EQ) return null;
+		return (Map<String, Object>) asMongoValue();		
+	}
+
+	@Override
+	public Condition mongoCompatible() {
+		return this;
 	}
 	
 	
