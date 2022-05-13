@@ -1,10 +1,13 @@
-var chai = require('chai'),
+var
+  chai = require('chai'),
   chaiHttp = require('chai-http'),
+  basic = require('../managers/basic');
   _data = require('../files/configurations'),
-  base_manager = require('../managers/base_manager');
+  observation = require('../models/observation');
 
 chai.use(chaiHttp);
 var expect = chai.expect;
+
 
 describe('Scenario 3', function () {
   // researcher wants to share study with researcher 2
@@ -14,52 +17,26 @@ describe('Scenario 3', function () {
   // researcher dont have permission to see the study
   var researcher3 = _data.researchers[2];
 
-  before('Authentication', function () {
-    return base_manager.authenticate(researcher1, function (err, res, body) {
-          researcher1.authAPI = body;
-        },
-        function (err, res, body) {
-          researcher1.authPortal = body;
-        })
-      .then(function () {
-        if (researcher1.authAPI.status == "UNCONFIRMED") {
-          return base_manager.confirm_consents(researcher1.authPortal.sessionToken);
-        }
-      })
-      .then(function () {
-        return base_manager.authenticate(researcher2, function (err, res, body) {
-          researcher2.authAPI = body;
-            },
-            function (err, res, body) {
-              researcher2.authPortal = body;
-            })
-          .then(function () {
-            if (researcher2.authAPI.status == "UNCONFIRMED") {
-              return base_manager.confirm_consents(researcher2.authPortal.sessionToken);
-            }
-          })
-      }).then(function () {
-        return base_manager.authenticate(researcher3, function (err, res, body) {
-          researcher3.authAPI = body;
-            },
-            function (err, res, body) {
-              researcher3.authPortal = body;
-            })
-          .then(function () {
-            if (researcher3.authAPI.status == "UNCONFIRMED") {
-              return base_manager.confirm_consents(researcher3.authPortal.sessionToken);
-            }
-          });
-      });
+  before('Auth Researcher 1', async function () {
+	await basic.login(researcher1);
+	await basic.oauth2(_data.configs, researcher1); 	
+  });
+
+  before('Auth Researcher 2', async function () {	
+	await basic.login(researcher2);
+	await basic.oauth2(_data.configs, researcher2);	
+  });
+
+  before('Auth Researcher 3', async function () {	
+	await basic.login(researcher3);
+	await basic.oauth2(_data.configs, researcher3);	
   });
 
   describe('create and remove study', function () {
     var study = {name:"test study " + new Date().toISOString(),description:"test study"};
     it('create study', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .post('/api/research/studies')
-        .set('X-Session-Token', researcher1.authPortal.sessionToken)
+      basic.post('/api/research/studies')
+        .portal(researcher1)
         .send(study)
         .end(function (err, res) {
           expect(err).to.be.null;
@@ -77,10 +54,8 @@ describe('Scenario 3', function () {
     });
 
     it('get information from researcher1', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/api/shared/users/current')
-        .set('X-Session-Token', researcher1.authPortal.sessionToken)
+      basic.get('/api/shared/users/current')
+        .portal(researcher1)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.statusCode).to.have.greaterThan(199);
@@ -94,10 +69,8 @@ describe('Scenario 3', function () {
     });
 
     it('get information from researcher2', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/api/shared/users/current')
-        .set('X-Session-Token', researcher2.authPortal.sessionToken)
+      basic.get('/api/shared/users/current')
+        .portal(researcher2)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.statusCode).to.have.greaterThan(199);
@@ -111,10 +84,8 @@ describe('Scenario 3', function () {
     });
 
     it('get information from researcher3', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/api/shared/users/current')
-        .set('X-Session-Token', researcher3.authPortal.sessionToken)
+      basic.get('/api/shared/users/current')
+        .portal(researcher3)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.statusCode).to.have.greaterThan(199);
@@ -145,10 +116,8 @@ describe('Scenario 3', function () {
         unpseudo:false
       };
 
-      chai
-        .request(_data.configs.environment)
-        .post('/api/shared/usergroups/adduser')
-        .set('X-Session-Token', researcher1.authPortal.sessionToken)
+      basic.post('/api/shared/usergroups/adduser')
+        .portal(researcher1)
         .send(add_forscher_information)
         .end(function (err, res) {
           expect(err).to.be.null;
@@ -161,10 +130,8 @@ describe('Scenario 3', function () {
     it('get researchers in study', function (done) {
       var group_information = { usergroup: study.id };
 
-      chai
-        .request(_data.configs.environment)
-        .post('/api/shared/usergroups/members')
-        .set('X-Session-Token', researcher1.authPortal.sessionToken)
+      basic.post('/api/shared/usergroups/members')
+        .portal(researcher1)
         .send(group_information)
         .end(function (err, res) {
           expect(err).to.be.null;
@@ -197,10 +164,8 @@ describe('Scenario 3', function () {
     });
     
     it('remove study', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .post('/api/research/studies/' + study.id + '/status/delete')
-        .set('X-Session-Token', researcher1.authPortal.sessionToken)
+      basic.post('/api/research/studies/' + study.id + '/status/delete')
+        .portal(researcher1)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.statusCode).to.have.greaterThan(199);
