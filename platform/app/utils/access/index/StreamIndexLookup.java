@@ -24,11 +24,13 @@ import models.MidataId;
 public class StreamIndexLookup extends BaseLookup<StreamIndexKey>{
 
 	private MidataId id;
-	private Set<String> format;
+	private String format;
 	private Set<String> content;
 	private Set<MidataId> owner;
 	private Set<MidataId> app;
 	private boolean onlyStreams;
+	private long minCreated;
+	private long maxCreated;
 	
 	public StreamIndexLookup() {	
 	}
@@ -44,12 +46,12 @@ public class StreamIndexLookup extends BaseLookup<StreamIndexKey>{
 	}
 
 
-	public Set<String> getFormat() {
+	public String getFormat() {
 		return format;
 	}
 
 
-	public void setFormat(Set<String> format) {
+	public void setFormat(String format) {
 		this.format = format;
 	}
 
@@ -92,12 +94,34 @@ public class StreamIndexLookup extends BaseLookup<StreamIndexKey>{
 	public void setOnlyStreams(boolean onlyStreams) {
 		this.onlyStreams = onlyStreams;
 	}
+	
+	
+	public long getMinCreated() {
+		return minCreated;
+	}
+
+
+	public void setMinCreated(long minCreated) {
+		this.minCreated = minCreated;
+	}
+
+
+	public long getMaxCreated() {
+		return maxCreated;
+	}
+
+
+	public void setMaxCreated(long maxCreated) {
+		this.maxCreated = maxCreated;
+	}
 
 
 	@Override
 	public boolean conditionCompare(StreamIndexKey inkey) {		
          if (id != null && !id.equals(inkey.getId())) return false;
-         if (format != null && !format.contains(inkey.getFormat())) return false;
+         if (minCreated != 0 && inkey.getCreated() < minCreated) return false;
+         if (maxCreated != 0 && inkey.getCreated() > maxCreated) return false;
+         if (format != null && !format.equals(inkey.getFormat())) return false;
          if (content != null && !content.contains(inkey.getContent())) return false;
          if (app != null && inkey.getApp() !=null && !app.contains(inkey.getApp())) return false;
          if (owner != null && !owner.contains(inkey.getOwner())) return false;
@@ -107,8 +131,14 @@ public class StreamIndexLookup extends BaseLookup<StreamIndexKey>{
 
 	@Override
 	public boolean conditionCompare(StreamIndexKey lk, StreamIndexKey hk) {
-		if (id != null) {
-			if ((lk==null || id.compareTo(lk.getId()) >= 0) && (hk==null || id.compareTo(hk.getId())<=0)) return true;
+		if (format != null) {
+			if ((lk==null || format.compareTo(lk.getFormat()) >= 0) && (hk==null || format.compareTo(hk.getFormat())<=0)) {
+				if (id != null) {
+					if ((lk==null || id.compareTo(lk.getId()) >= 0) && (hk==null || id.compareTo(hk.getId())<=0)) return true;
+					else return false;
+				} 
+				return true;
+			} else return false;
 		}
 		return true;
 	}

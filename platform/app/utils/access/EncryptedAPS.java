@@ -101,7 +101,7 @@ public class EncryptedAPS {
 		aps.security = lvl;
 		aps.consent = consent;
 		aps.permissions = new HashMap<String, Object>();
-		aps.permissions.put("p", new BasicBSONList());
+		//aps.permissions.put("p", new BasicBSONList());
 		aps.permissions.put("owner", owner.toString());
 		aps.keys = new HashMap<String, byte[]>();		
 		

@@ -30,6 +30,7 @@ import java.util.Set;
 
 import models.MidataId;
 import scala.NotImplementedError;
+import utils.AccessLog;
 
 /**
  * "And" operator for mongo expressions
@@ -153,12 +154,16 @@ public class AndCondition implements Condition, Serializable {
 		if (fragment instanceof String) {	    	   
 	       return new EqualsSingleValueCondition((Comparable) fragment);
 	    } else if (fragment instanceof Map) {
-	       return new AndCondition((Map<String,Object>) fragment); 
+	       return new AndCondition((Map<String,Object>) fragment);
+	    } else if (fragment instanceof Set) {
+		    return new InCondition((Set) fragment); 
 	    } else if (fragment instanceof Condition) {
 	    	return (Condition) fragment;
 	    } else if (fragment instanceof MidataId) {
 	    	return new EqualsSingleValueCondition((Comparable) fragment);
 	    } else {
+	    	AccessLog.log("NOT IMPL:"+fragment.getClass().getName());
+	    	AccessLog.log("NOT IMPL:"+fragment.toString());
 	       throw new NotImplementedError();
 	    }
 	}

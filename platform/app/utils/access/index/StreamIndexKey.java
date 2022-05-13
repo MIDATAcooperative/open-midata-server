@@ -20,6 +20,7 @@ package utils.access.index;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Date;
 
 import org.bson.types.ObjectId;
 
@@ -35,7 +36,8 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 	private MidataId app;
 	private MidataId aps;
 	private MidataId owner;
-	
+	private long created;
+	private boolean readonly;
 	private byte[] key;
 	private byte isstream;	
 	
@@ -62,6 +64,15 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 	public byte[] getKey() {
 		return key;
 	}
+	
+	
+	public long getCreated() {
+		return created;
+	}
+
+	public boolean isReadonly() {
+		return readonly;
+	}
 
 	public APSSecurityLevel getIsstream() {
 		switch(isstream) {
@@ -80,6 +91,8 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 		return owner;
 	}
 	
+	
+	
 
 	public StreamIndexKey() {		
 	}
@@ -93,6 +106,10 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 		this.app = MidataId.from(r.meta.get("app"));
 		setIsstream(r.isStream);
 		this.key = r.key;
+		this.readonly = r.isReadOnly;		
+		if (r.isStream==null) {
+			this.created = ((Date) r.meta.get("created")).getTime();
+		}
 	}
 	
 	public DBRecord toDBRecord() {
@@ -100,29 +117,26 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 		result._id = this.id;
 		result.consentAps = this.aps;
 		result.isStream = getIsstream();
+		result.isReadOnly = readonly;
 		result.key = this.key;
 		result.owner = this.owner;
 		result.meta.put("format", this.format);
 		result.meta.put("content", this.content);
+		result.security = APSSecurityLevel.HIGH;
+		if (this.created != 0) result.meta.put("created", new Date(this.created));
 		if (this.app != null) result.meta.put("app", new ObjectId(app.toString()));
 		return result;
 	}
 	
 	@Override
 	public int compareTo(StreamIndexKey o) {
-		int b = id.compareTo(o.id);
+		int b = format.compareTo(o.format);
+		if (b!=0) return b;
+		b = id.compareTo(o.id);
 		if (b!=0) return b;
 		b = aps.compareTo(o.aps);
 		return b;
-		
-		/*if (b!=0) return b;
-		b = format.compareTo(o.format);
-		if (b!=0) return b;
-		b = content.compareTo(o.content);
-		if (b!=0) return b;
-		b = app.compareTo(o.app);
-		if (b!=0) return b;*/
-		//return 0;
+				
 	}
 	
 	@Override
@@ -157,13 +171,17 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 		result.key = this.key;
 		result.owner = this.owner;
 		result.isstream = this.isstream;
+		result.created = this.created;
+		result.readonly = this.readonly;		
 		return result;
 	}
 	
 	@Override
 	public void fetchValue(StreamIndexKey otherKey) {
 		this.key = otherKey.key;
-		this.isstream = otherKey.isstream;		
+		this.isstream = otherKey.isstream;
+		this.readonly = otherKey.readonly;
+		this.created = otherKey.created;
 	}
 	
 	@Override
@@ -190,7 +208,9 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 		if ((flags & 2<<5)>0) s.writeUTF(owner.toString());
 		s.writeInt(key.length);
 		s.write(key);
-		s.writeByte(this.isstream);				
+		s.writeByte(this.isstream);	
+		s.writeBoolean(this.readonly);
+		s.writeLong(this.created);
 	}
 	
 	@Override
@@ -209,6 +229,8 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 		key = new byte[l];
 		s.read(key);
 		isstream = s.readByte();
+		readonly = s.readBoolean();
+		created = s.readLong();
 	}
 		
 	

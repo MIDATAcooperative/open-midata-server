@@ -116,10 +116,14 @@ public class APSCache {
 		return result.isReady();
 	}
 	
+	public APS aps(EncryptedAPS eaps) {
+		return new APSTreeImplementation(eaps);
+	}
+	
 	public APS getAPS(MidataId apsId) throws InternalServerException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) {
-			result = new APSImplementation(new EncryptedAPS(apsId, accessorId));
+			result = aps(new EncryptedAPS(apsId, accessorId));
 			cache.put(apsId.toString(), result);
 		}
 		return result;
@@ -128,7 +132,7 @@ public class APSCache {
 	public APS getAPS(MidataId apsId, MidataId owner) throws InternalServerException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) {
-			result = new APSImplementation(new EncryptedAPS(apsId, accessorId, owner));
+			result = aps(new EncryptedAPS(apsId, accessorId, owner));
 			cache.put(apsId.toString(), result);
 		}	
 		return result;
@@ -137,7 +141,7 @@ public class APSCache {
 	public APS getAPS(MidataId apsId, byte[] unlockKey, MidataId owner) throws AppException, EncryptionNotSupportedException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
-			result = new APSImplementation(new EncryptedAPS(apsId, accessorId, unlockKey, owner));
+			result = aps(new EncryptedAPS(apsId, accessorId, unlockKey, owner));
 			if (!result.isAccessible()) {
 				AccessLog.log("Adding missing access for ",accessorId.toString()," APS:",apsId.toString());
 				result.addAccess(Collections.<MidataId>singleton(accessorId));
@@ -152,7 +156,7 @@ public class APSCache {
 	public APS getAPS(MidataId apsId, byte[] unlockKey, MidataId owner, AccessPermissionSet set, boolean addIfMissing) throws AppException, EncryptionNotSupportedException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
-			result = new APSImplementation(new EncryptedAPS(apsId, accessorId, unlockKey, owner, set));
+			result = aps(new EncryptedAPS(apsId, accessorId, unlockKey, owner, set));
 			if (!result.isAccessible() && addIfMissing) result.addAccess(Collections.<MidataId>singleton(accessorId));
 			cache.put(apsId.toString(), result);
 		}
@@ -392,11 +396,11 @@ public class APSCache {
 		return newRecordCache.get(id);
 	}
 	
-	public StreamIndexRoot getStreamIndexRoot() throws AppException {
+	/*public StreamIndexRoot getStreamIndexRoot() throws AppException {
 		if (streamIndexRoot != null) return streamIndexRoot;
 		streamIndexRoot = IndexManager.instance.getStreamIndex(this, getAccountOwner());
 		return streamIndexRoot;
-	}
+	}*/
 	
 	public StatsIndexRoot getStatsIndexRoot(boolean pseudonymized) throws AppException {
 		if (pseudonymized) {

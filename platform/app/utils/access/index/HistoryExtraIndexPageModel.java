@@ -30,14 +30,10 @@ import utils.db.NotMaterialized;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
-/**
- * Data model for an index page
- *
- */
-public class IndexPageModel extends Model implements BaseIndexPageModel {
+public class HistoryExtraIndexPageModel extends Model implements BaseIndexPageModel {
 
-	protected @NotMaterialized static final String collection = "indexes";
-	private final static Set<String> ALL_PAGE = Sets.create("version", "enc", "lockTime", "creation", "rev");
+	protected @NotMaterialized static final String collection = "apshistory";
+	protected @NotMaterialized final static Set<String> ALL_PAGE = Sets.create("version", "enc", "lockTime", "creation", "rev");
 	
 	/**
 	 * Last updated version number to prevent lost updates
@@ -74,10 +70,6 @@ public class IndexPageModel extends Model implements BaseIndexPageModel {
 		Model.insert(collection, def);				
 	}
 	
-	public void add() throws InternalServerException {
-		Model.insert(collection, this);				
-	}
-	
 	public MidataId getId() {
 		return _id;
 	}
@@ -105,18 +97,21 @@ public class IndexPageModel extends Model implements BaseIndexPageModel {
 	public void setEnc(byte[] enc) {
 		this.enc = enc;
 	}
-		
-	public static IndexPageModel getById(MidataId pageId) throws InternalServerException {
-		return Model.get(IndexPageModel.class, collection, CMaps.map("_id", pageId), ALL_PAGE);
+
+	public static ApsExtraIndexPageModel getById(MidataId pageId) throws InternalServerException {
+		return Model.get(ApsExtraIndexPageModel.class, collection, CMaps.map("_id", pageId), ALL_PAGE);
 	}
 	
-	public Set<IndexPageModel> getMultipleById(Set<MidataId> pageIds) throws InternalServerException {
-		return Model.getAll(IndexPageModel.class, collection, CMaps.map("_id", pageIds), ALL_PAGE);
+	@Override
+	public Set<? extends BaseIndexPageModel> getMultipleById(Set<MidataId> pageIds) throws InternalServerException {
+		return Model.getAll(ApsExtraIndexPageModel.class, collection, CMaps.map("_id", pageIds), ALL_PAGE);
 	}
 	
-	public static Set<IndexPageModel> getMultipleByIdS(Set<MidataId> pageIds) throws InternalServerException {
-		return Model.getAll(IndexPageModel.class, collection, CMaps.map("_id", pageIds), ALL_PAGE);
+	public static Set<? extends BaseIndexPageModel> getMultipleByIdS(Set<MidataId> pageIds) throws InternalServerException {
+		return Model.getAll(ApsExtraIndexPageModel.class, collection, CMaps.map("_id", pageIds), ALL_PAGE);
 	}
+	
+	
 	
 	public void update() throws InternalServerException, LostUpdateException {
 		try {
@@ -135,19 +130,22 @@ public class IndexPageModel extends Model implements BaseIndexPageModel {
 	}
 	
 	public static long count() throws AppException {
-		return Model.count(IndexPageModel.class, collection, CMaps.map());
+		return Model.count(ApsExtraIndexPageModel.class, collection, CMaps.map());
 	}
 	
 	public BaseIndexPageModel reload() throws InternalServerException {
 		return getById(_id);
 	}
-
+	
 	@Override
 	public BaseIndexPageModel loadChildById(MidataId id) throws InternalServerException {
-		return getById(id);
+		return ApsExtraIndexPageModel.getById(id);
 	}
-	
-	
+
+	@Override
+	public void add() throws InternalServerException {
+		Model.insert(collection, this);		
+	}
 	
 	// array of { key : array , entries : [ { rec :   , consent :  } ] or page : IndexPageId } 
 }

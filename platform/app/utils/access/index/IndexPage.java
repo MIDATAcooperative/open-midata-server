@@ -79,7 +79,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		init();				
 		encrypt();
 		
-		IndexPageModel.add((IndexPageModel) this.model);
+		this.model.add();
 	}
 	
 	public void copyFrom(IndexPage<A,B> other) {
@@ -98,7 +98,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		IndexPage<A,B> loaded = root.loadedPages.get(child);
 		if (loaded != null) return loaded;
 				
-		loaded = new IndexPage(this.key, IndexPageModel.getById(child), root, this.depth + 1);
+		loaded = new IndexPage(this.key, model.loadChildById(child), root, this.depth + 1);
 		if (loaded.model.getLockTime() > root.getVersion()) throw new LostUpdateException();
 		root.loadedPages.put(child, loaded);
 		
@@ -114,11 +114,11 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 			if (!root.loadedPages.containsKey(child)) toload.add(child);
 		}
 		if (toload.isEmpty()) return;
-		Set<IndexPageModel> result = IndexPageModel.getMultipleById(toload);
-		for (IndexPageModel r : result) {
+		Set<? extends BaseIndexPageModel> result = model.getMultipleById(toload);
+		for (BaseIndexPageModel r : result) {
 			IndexPage<A,B> loaded = new IndexPage<A,B>(this.key, r, root, this.depth + 1);
 			if (loaded.model.getLockTime() > root.getVersion()) throw new LostUpdateException();
-			root.loadedPages.put(r._id, loaded);		
+			root.loadedPages.put(r.getId(), loaded);		
 		}
 	}
 	
@@ -177,7 +177,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 	}
 	
 	public void reload() throws InternalServerException {
-		model = IndexPageModel.getById(model.getId());
+		model = model.reload();
 		decrypt();
 		
 	}
@@ -227,11 +227,11 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		} catch (IOException e) {
 			
 		}
-		model.setEnc(EncryptionUtils.encrypt(key, bos.toByteArray()));
+		model.setEnc(model.encrypt(key, bos.toByteArray()));
 	}
 	
 	protected void decrypt() throws InternalServerException {
-		byte[] data = EncryptionUtils.decrypt(key, model.getEnc());
+		byte[] data = model.decrypt(key, model.getEnc());
 		try {
 			ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data));
 			mIsLeaf = in.readBoolean();

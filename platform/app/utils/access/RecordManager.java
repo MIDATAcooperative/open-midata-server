@@ -100,7 +100,7 @@ public class RecordManager {
 		EncryptionUtils.addKey(who, eaps);		
 		eaps.create();
 		APSCache current = cache != null ? cache : ContextManager.instance.currentCacheUsed();
-		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getAccessor(), eaps.getAPSKey(), eaps.getOwner())));
+		if (current != null) current.addAPS(new APSTreeImplementation(new EncryptedAPS(eaps.getId(), current.getAccessor(), eaps.getAPSKey(), eaps.getOwner())));
         AccessLog.logEnd("end createPrivateAPS");
 		return eaps.getId();
 	}
@@ -128,7 +128,7 @@ public class RecordManager {
 		if (history) eaps.getPermissions().put("_history", new BasicBSONList()); // Init with history
 		eaps.create();
 		APSCache current = ContextManager.instance.currentCacheUsed();
-		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getAccessor(), eaps.getAPSKey(), eaps.getOwner())));
+		if (current != null) current.addAPS(new APSTreeImplementation(new EncryptedAPS(eaps.getId(), current.getAccessor(), eaps.getAPSKey(), eaps.getOwner())));
        
 		AccessLog.logEnd("end createAnonymizedAPS");
 		return eaps.getId();
