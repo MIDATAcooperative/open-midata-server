@@ -415,7 +415,7 @@ public class EncryptedAPS {
 	
 	public boolean needsKeyUpgrade() throws InternalServerException {
 		if (isLoaded() && isAccessable() && aps.security == APSSecurityLevel.HIGH && owner != null &&
-				(apsId.equals(owner) || aps.consent) && !unmergedSubAPS) {			
+				(apsId.equals(owner) || aps.consent) && !unmergedSubAPS && (acc_aps.permissions != null && !acc_aps.permissions.containsKey("idxEnc"))) {			
 			return EncryptionUtils.isDeprecatedKey(encryptionKey);
 		} else return false;
 	}

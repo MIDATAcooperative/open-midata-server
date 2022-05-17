@@ -636,7 +636,7 @@ public class RecordManager {
 	public String updateRecord(MidataId executingPerson, MidataId pluginId, AccessContext context, Record record, List<UpdateFileHandleSupport> allData) throws AppException {
 		AccessLog.logBegin("begin updateRecord executor=",executingPerson.toString()," aps=",context.getTargetAps().toString()," record=",record._id.toString());
 		try {
-			List<DBRecord> result = QueryEngine.listInternal(context.getCache(), context.getTargetAps(),context, CMaps.map("_id", record._id).map("updatable", true), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
+			List<DBRecord> result = QueryEngine.listInternal(context.getCache(), context.getTargetAps(),context, CMaps.map("_id", record._id).mapNotEmpty("format", record.format).map("updatable", true), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
 			if (result.size() != 1) {
 				List<DBRecord> resultx = QueryEngine.listInternal(context.getCache(), context.getTargetAps(),context, CMaps.map("_id", record._id), RecordManager.INTERNALIDONLY);
 				if (resultx.isEmpty()) {
@@ -703,7 +703,13 @@ public class RecordManager {
 		    
 			RecordEncryption.encryptRecord(rec);	
 			
-			if (vrec!=null) VersionedDBRecord.add(vrec);
+			if (vrec!=null) {
+				try {
+ 				    VersionedDBRecord.add(vrec);
+				} catch (InternalServerException e) {
+					throw new PluginException(pluginId, "error.concurrent.update", "Please check your application so that it does not try concurrent updates on the same resource. Record has id '"+rec._id.toString()+" with record format '"+rec.getFormatOrNull()+"'.");
+				}
+			}
 		    DBRecord.upsert(rec); 	  	
 		    
 		    RecordLifecycle.notifyOfChange(clone, context.getCache());

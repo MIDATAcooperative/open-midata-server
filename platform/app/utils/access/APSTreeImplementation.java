@@ -45,9 +45,15 @@ public class APSTreeImplementation extends APSImplementation {
 	private StreamIndexRoot streamIndexRoot;
 	private HistoryIndexRoot historyIndexRoot;
 	private boolean oldStyle;
+	private boolean noupdateToNewVersion;
 	
 	public APSTreeImplementation(EncryptedAPS eaps) {
 		super(eaps);		
+	}
+	
+	public APSTreeImplementation(EncryptedAPS eaps, boolean noupdate) {
+		super(eaps);		
+		this.noupdateToNewVersion = noupdate;
 	}
 	
 	private void ready() throws AppException {
@@ -59,6 +65,10 @@ public class APSTreeImplementation extends APSImplementation {
 			} else {
 				oldStyle = true;
 				AccessLog.log("OLD FORMAT");
+				if (!noupdateToNewVersion) {
+					noupdateToNewVersion = true;
+					upgrade();
+				}
 			}
 		}
 	}
@@ -232,7 +242,7 @@ public class APSTreeImplementation extends APSImplementation {
 				
 				for (EncryptedAPS encsubaps : eaps.getAllUnmerged()) {	
 					
-					APSTreeImplementation temp = new APSTreeImplementation(encsubaps);
+					APSTreeImplementation temp = new APSTreeImplementation(encsubaps, true);
 					
 					Collection<DBRecord> recs = temp.query(new Query());
 					for (DBRecord record : recs) streamIndexRoot.addEntry(record);	
@@ -296,7 +306,12 @@ public class APSTreeImplementation extends APSImplementation {
 	}
 	
 	public void upgrade() throws AppException {
-		try {
+		AccessLog.logBegin("upgrade APS to new version");
+		try {	
+			if (!eaps.getPermissions().containsKey("p")) {
+				ready();
+				return;
+			}
 			try (DBSession session = DBLayer.startTransaction("aps")) {
 				
 				streamIndexRoot = new StreamIndexRoot(eaps.getLocalAPSKey(), eaps);				
@@ -313,7 +328,8 @@ public class APSTreeImplementation extends APSImplementation {
 			
 			    Map<String, Object> p = eaps.getPermissions();
 			    p.remove("p");
-			    p.put("_history", new BasicBSONList());
+			    
+			    if (historyIndexRoot != null) p.put("_history", new BasicBSONList());
 			    
 			    eaps.savePermissions();				
 			    session.commit();
@@ -322,6 +338,8 @@ public class APSTreeImplementation extends APSImplementation {
 		} catch (LostUpdateException e) {
 		   recoverFromLostUpdate();
 		   upgrade();
+		} finally {
+		  AccessLog.logEnd("end upgrade APS to new version");
 		}
 	}
 
