@@ -26,6 +26,7 @@ import org.bson.types.ObjectId;
 
 import models.MidataId;
 import models.enums.APSSecurityLevel;
+import utils.AccessLog;
 import utils.access.DBRecord;
 
 public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implements Comparable<StreamIndexKey> {
@@ -34,7 +35,6 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 	private String format;
 	private String content;
 	private MidataId app;
-	private MidataId aps;
 	private MidataId owner;
 	private long created;
 	private boolean readonly;
@@ -56,11 +56,7 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 	public MidataId getApp() {
 		return app;
 	}
-
-	public MidataId getAps() {
-		return aps;
-	}
-
+	
 	public byte[] getKey() {
 		return key;
 	}
@@ -97,9 +93,8 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 	public StreamIndexKey() {		
 	}
 	
-	public StreamIndexKey(MidataId aps, DBRecord r) {
-		this.id = r._id;
-		this.aps = aps;
+	public StreamIndexKey(DBRecord r) {
+		this.id = r._id;	
 		this.owner = r.owner;
 		this.format = r.meta.getString("format");
 		this.content = r.meta.getString("content");
@@ -114,8 +109,7 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 	
 	public DBRecord toDBRecord() {
 		DBRecord result = new DBRecord();
-		result._id = this.id;
-		result.consentAps = this.aps;
+		result._id = this.id;		
 		result.isStream = getIsstream();
 		result.isReadOnly = readonly;
 		result.key = this.key;
@@ -132,9 +126,7 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 	public int compareTo(StreamIndexKey o) {
 		int b = format.compareTo(o.format);
 		if (b!=0) return b;
-		b = id.compareTo(o.id);
-		if (b!=0) return b;
-		b = aps.compareTo(o.aps);
+		b = id.compareTo(o.id);		
 		return b;
 				
 	}
@@ -143,7 +135,7 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 	public boolean equals(Object arg0) {
 		if (arg0 instanceof StreamIndexKey) {
 			StreamIndexKey other = (StreamIndexKey) arg0;			
-			return id.equals(other.id) && aps.equals(other.aps) && format.equals(other.format) && content.equals(other.content) && app.equals(other.app);
+			return id.equals(other.id) &&  format.equals(other.format) && content.equals(other.content) && app.equals(other.app);
 		}
 		return false;
 	}
@@ -152,7 +144,7 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 	
 	@Override
 	public int hashCode() {
-		return id.hashCode() + format.hashCode() + content.hashCode() + owner.hashCode() + aps.hashCode() + owner.hashCode() + (app != null ? app.hashCode() : 0);
+		return id.hashCode() + format.hashCode();
 	}
 
 	@Override
@@ -166,8 +158,7 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 		result.id = this.id;
 		result.format = this.format;
 		result.content = this.content;
-		result.app = this.app;
-		result.aps = this.aps;
+		result.app = this.app;		
 		result.key = this.key;
 		result.owner = this.owner;
 		result.isstream = this.isstream;
@@ -186,28 +177,28 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 	
 	@Override
 	public boolean matches(DBRecord match) {
-		return this.id.equals(match._id) && this.aps.equals(match.consentAps);
+		return this.id.equals(match._id);
 	}
 	
 	@Override
 	public void writeObject(ObjectOutputStream s, StreamIndexKey last) throws IOException {
-		int flags = 0;
+		byte flags = 0;
 		if (last!=null) {
 			if (!format.equals(last.format)) flags |= 2 << 1;
 			if (!content.equals(last.content)) flags |= 2 << 2;
-			if (app==null || !app.equals(last.app)) flags |= 2 << 3;
-			if (!aps.equals(last.aps)) flags |= 2 << 4;
-			if (!owner.equals(last.owner)) flags |= 2 << 5;
-		} else flags = 255;
+			if (app==null || !app.equals(last.app)) flags |= 2 << 3;			
+			if (owner==null || !owner.equals(last.owner)) flags |= 2 << 5;
+		} else flags = (byte) 255;
 		s.writeByte(flags);
+		
+		if (id==null || id.toString().length()==0) throw new NullPointerException();
 		s.writeUTF(id.toString());
-		if ((flags & 2<<1)>0) s.writeUTF(format);
-		if ((flags & 2<<2)>0) s.writeUTF(content);
-		if ((flags & 2<<3)>0) s.writeUTF(app==null?"":app.toString());
-		if ((flags & 2<<4)>0) s.writeUTF(aps.toString());
-		if ((flags & 2<<5)>0) s.writeUTF(owner.toString());
+		if ((flags & (2<<1))>0) { s.writeUTF(format); }
+		if ((flags & (2<<2))>0) { s.writeUTF(content);}
+		if ((flags & (2<<3))>0) { s.writeUTF(app==null?"":app.toString());	}
+		if ((flags & (2<<5))>0) { s.writeUTF(owner==null?"":owner.toString()); }
 		s.writeInt(key.length);
-		s.write(key);
+		s.write(key,0,key.length);
 		s.writeByte(this.isstream);	
 		s.writeBoolean(this.readonly);
 		s.writeLong(this.created);
@@ -215,19 +206,27 @@ public class StreamIndexKey extends BaseIndexKey<StreamIndexKey,DBRecord> implem
 	
 	@Override
 	public void readObject(ObjectInputStream s, StreamIndexKey last) throws IOException, ClassNotFoundException {
-		int flags = s.readByte();
-		id = new MidataId(s.readUTF());
-		if ((flags & 2<<1)>0) format = s.readUTF(); else format = last.format;
-		if ((flags & 2<<2)>0) content = s.readUTF(); else content = last.content;
-		if ((flags & 2<<3)>0) {
+		byte flags = s.readByte();
+		//AccessLog.log("read flags="+flags);
+		id = MidataId.from(s.readUTF());		
+		//AccessLog.log("id="+id.toString());
+		if (id==null) throw new NullPointerException();
+		if ((flags & (2<<1))>0) { format = s.readUTF(); } else format = last.format;
+		if ((flags & (2<<2))>0) { content = s.readUTF(); } else content = last.content;
+		if ((flags & (2<<3))>0) {
 			String appstr = s.readUTF();
-			app = appstr.length() > 0 ? new MidataId(appstr) : null; 
-		} else app = last.app;
-		if ((flags & 2<<4)>0) aps = new MidataId(s.readUTF()); else aps = last.aps;
-		if ((flags & 2<<5)>0) owner = new MidataId(s.readUTF()); else owner = last.owner;
+			app = appstr.length() > 0 ? new MidataId(appstr) : null;
+			
+		} else app = last.app;		
+		if ((flags & (2<<5))>0) {
+			String ownerStr = s.readUTF();
+			owner = ownerStr.length() > 0 ? new MidataId(ownerStr) : null;
+			
+		} else owner = last.owner;
 		int l = s.readInt();
+		
 		key = new byte[l];
-		s.read(key);
+		s.readFully(key,0,l);
 		isstream = s.readByte();
 		readonly = s.readBoolean();
 		created = s.readLong();

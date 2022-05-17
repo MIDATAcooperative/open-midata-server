@@ -136,9 +136,11 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 	}
 	
 	public Collection<B> lookup(BaseLookup<A> key) throws InternalServerException {
-		AccessLog.log("index lookup: ", key.toString());
+		
 		try {
-		  return rootPage.lookup(key);
+			Collection<B> result = rootPage.lookup(key);
+			AccessLog.log("index-lookup: ", key.toString()+" #="+result.size());
+		    return result;
 		} catch (LostUpdateException e) {
 			try {
 			   Thread.sleep(20);
@@ -205,4 +207,6 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 	}
 	
 	public abstract A createKey();
+	
+	public abstract BaseIndexPageModel createPage();
 }

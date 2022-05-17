@@ -61,20 +61,21 @@ public class StreamIndexRoot extends BaseIndexRoot<StreamIndexKey,DBRecord> {
 	*/
 		
 
-	public void addEntry(MidataId aps, DBRecord record) throws InternalServerException, LostUpdateException {
+	public void addEntry(DBRecord record) throws InternalServerException, LostUpdateException {
 		modCount++;
 		//if (modCount > 100) lockIndex();
-				
-		StreamIndexKey key = new StreamIndexKey(aps, record);
+		if (record._id==null) throw new NullPointerException();
+		
+		StreamIndexKey key = new StreamIndexKey(record);
 		btree.insert(key);						
 	}
 	
-	public boolean removeEntry(MidataId aps, DBRecord record) throws InternalServerException, LostUpdateException {
+	public boolean removeEntry(DBRecord record) throws InternalServerException, LostUpdateException {
 		modCount++;
 		//if (modCount > 100) lockIndex();
-		if (record.data == null) throw new NullPointerException();
+		//if (record.data == null) throw new NullPointerException();
 		
-		StreamIndexKey key = new StreamIndexKey(aps, record);
+		StreamIndexKey key = new StreamIndexKey(record);
 		return btree.delete(key) != null;
 	}
 	
@@ -83,6 +84,14 @@ public class StreamIndexRoot extends BaseIndexRoot<StreamIndexKey,DBRecord> {
 	@Override
 	public StreamIndexKey createKey() {
 		return new StreamIndexKey();
+	}
+	
+	@Override
+	public BaseIndexPageModel createPage() {
+		ApsExtraIndexPageModel page = new ApsExtraIndexPageModel();
+		page._id = new MidataId();
+		page.rev = getRev();		
+		return page;
 	}
 	
 	

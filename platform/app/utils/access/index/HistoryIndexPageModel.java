@@ -93,7 +93,7 @@ public class HistoryIndexPageModel implements BaseIndexPageModel {
 			data.put("historyLockTime", lockTime);
 			data.put("historyEnc", enc);
 			data.put("historyRev", rev);
-			aps.savePermissions();
+			//aps.savePermissions();
 		} catch (AppException e) {
 			throw new InternalServerException("error.internal", e);
 		}

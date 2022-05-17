@@ -56,7 +56,10 @@ public class HistoryIndexKey extends BaseIndexKey<HistoryIndexKey,HistoryIndexKe
 	@Override
 	public int compareTo(HistoryIndexKey other) {
 		int b = Long.compare(ts, other.ts);
-		if (b==0) return recordId.compareTo(other.recordId);
+		if (b!=0) return b;
+		b = recordId.compareTo(other.recordId);
+		if (b!=0) return b;
+		b = Boolean.compare(isDelete, other.isDelete);
 		return b;
 	}
 
@@ -87,7 +90,16 @@ public class HistoryIndexKey extends BaseIndexKey<HistoryIndexKey,HistoryIndexKe
 	public boolean matches(HistoryIndexKey match) {
 		return this.equals(match);
 	}
+	
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof HistoryIndexKey) {
+			HistoryIndexKey other = (HistoryIndexKey) obj;			
+			return ts == other.ts && recordId.equals(other.recordId) && isDelete == other.isDelete;
+		}
+		return false;
+	}
 
 	@Override
 	public void writeObject(ObjectOutputStream s, HistoryIndexKey last) throws IOException {		
@@ -120,6 +132,13 @@ public class HistoryIndexKey extends BaseIndexKey<HistoryIndexKey,HistoryIndexKe
 	public MidataId getRecordId() {
 		return recordId;
 	}
+
+	@Override
+	public String toString() {
+		return "{ ts="+ts+", rec="+recordId.toString()+", del="+isDelete+" }";
+	}
+	
+	
 	
 	
 	

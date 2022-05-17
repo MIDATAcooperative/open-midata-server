@@ -22,6 +22,7 @@ import java.util.Set;
 
 import models.MidataId;
 import scala.NotImplementedError;
+import utils.AccessLog;
 import utils.access.EncryptedAPS;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
@@ -55,6 +56,7 @@ public class ApsIndexPageModel implements BaseIndexPageModel {
 		if (data.containsKey("idxEnc")) {
 			lockTime = (long) data.get("idxLockTime");
 			enc = (byte[]) data.get("idxEnc");
+			//AccessLog.log("READ ENV SIZE="+enc.length);
 			rev = (int) data.get("idxRev");	
 		}
 	}
@@ -93,7 +95,7 @@ public class ApsIndexPageModel implements BaseIndexPageModel {
 			data.put("idxLockTime", lockTime);
 			data.put("idxEnc", enc);
 			data.put("idxRev", rev);
-			aps.savePermissions();
+			//AccessLog.log("WRITE ENV SIZE="+enc.length);			
 		} catch (AppException e) {
 			throw new InternalServerException("error.internal", e);
 		}

@@ -165,6 +165,15 @@ public class IndexRoot extends TsBaseIndexRoot<IndexKey,IndexMatch> {
 	public IndexKey createKey() {
 		return new IndexKey();
 	}
+
+	@Override
+	public BaseIndexPageModel createPage() {
+		IndexPageModel page = new IndexPageModel();
+		page._id = new MidataId();
+		page.rev = getRev();
+		page.creation = getCreated();
+		return page;
+	}
 	
 	
 	

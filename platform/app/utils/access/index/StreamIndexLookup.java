@@ -119,8 +119,8 @@ public class StreamIndexLookup extends BaseLookup<StreamIndexKey>{
 	@Override
 	public boolean conditionCompare(StreamIndexKey inkey) {		
          if (id != null && !id.equals(inkey.getId())) return false;
-         if (minCreated != 0 && inkey.getCreated() < minCreated) return false;
-         if (maxCreated != 0 && inkey.getCreated() > maxCreated) return false;
+         if (minCreated != 0 && inkey.getCreated() < minCreated && inkey.getIsstream()==null) return false;
+         if (maxCreated != 0 && inkey.getCreated() > maxCreated && inkey.getIsstream()==null) return false;
          if (format != null && !format.equals(inkey.getFormat())) return false;
          if (content != null && !content.contains(inkey.getContent())) return false;
          if (app != null && inkey.getApp() !=null && !app.contains(inkey.getApp())) return false;
@@ -139,6 +139,9 @@ public class StreamIndexLookup extends BaseLookup<StreamIndexKey>{
 				} 
 				return true;
 			} else return false;
+		} else if (id != null && lk!=null && hk!=null && lk.getFormat().equals(hk.getFormat())) {			
+			if (id.compareTo(lk.getId()) >= 0 && id.compareTo(hk.getId())<=0) return true;
+			else return false;			
 		}
 		return true;
 	}
@@ -146,12 +149,14 @@ public class StreamIndexLookup extends BaseLookup<StreamIndexKey>{
 
 	@Override
 	public String toString() {
-		return "stream-lookup({"
+		return "aps-lookup({"
 	           +(id!=null?(" id:"+id):"")
 	           +(format!=null?(" format:"+format.toString()):"")
 	           +(content!=null?(" content:"+content.toString()):"")
 	           +(owner!=null?(" owner:"+owner.toString()):"")
 	           +(app!=null?(" app:"+app.toString()):"")
+	           +(minCreated!=0?(" min:"+minCreated):"")
+	           +(maxCreated!=0?(" max:"+maxCreated):"")
 	           +(onlyStreams?" streams":"")	           
 	           +"})";		
 	}

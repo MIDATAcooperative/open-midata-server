@@ -49,12 +49,7 @@ public class ApsExtraIndexPageModel extends Model implements BaseIndexPageModel 
 	 * software revision number
 	 */
 	public int rev;
-	
-	/**
-	 * time of creation of index (rounded)
-	 */
-	public long creation;
-	
+			
 	/**
 	 * encrypted data
 	 */

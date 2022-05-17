@@ -20,6 +20,7 @@ package utils.access.index;
 import java.util.HashMap;
 
 import models.MidataId;
+import utils.AccessLog;
 import utils.access.EncryptedAPS;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
@@ -61,6 +62,7 @@ public class HistoryIndexRoot extends BaseIndexRoot<HistoryIndexKey, HistoryInde
 
 	public void addEntry(HistoryIndexKey history) throws InternalServerException, LostUpdateException {
 		modCount++;
+		AccessLog.log("history-add: "+history.toString());
 		//if (modCount > 100) lockIndex();						
 		btree.insert(history);						
 	}
@@ -76,6 +78,14 @@ public class HistoryIndexRoot extends BaseIndexRoot<HistoryIndexKey, HistoryInde
 	@Override
 	public HistoryIndexKey createKey() {
 		return new HistoryIndexKey();
+	}
+	
+	@Override
+	public BaseIndexPageModel createPage() {
+		HistoryExtraIndexPageModel page = new HistoryExtraIndexPageModel();
+		page._id = new MidataId();
+		page.rev = getRev();		
+		return page;
 	}
 	
 	

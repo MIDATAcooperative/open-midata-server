@@ -68,11 +68,8 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 	
 	public IndexPage(byte[] key, BaseIndexRoot<A,B> root) throws InternalServerException {
 		this.key = key;
-		IndexPageModel page = new IndexPageModel();
-		page._id = new MidataId();
-		page.rev = root.getRev();
-		page.creation = root.getCreated();
-		this.model = page;		
+		
+		this.model = root.createPage();		
 		this.root = root;
 		this.depth = 1;
 		if (root.maxDepth < depth) root.maxDepth = depth;
@@ -117,7 +114,10 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		Set<? extends BaseIndexPageModel> result = model.getMultipleById(toload);
 		for (BaseIndexPageModel r : result) {
 			IndexPage<A,B> loaded = new IndexPage<A,B>(this.key, r, root, this.depth + 1);
-			if (loaded.model.getLockTime() > root.getVersion()) throw new LostUpdateException();
+			if (loaded.model.getLockTime() > root.getVersion() && loaded.model.getLockTime() > System.currentTimeMillis() - 1000l * 60l * 5l ) {
+				AccessLog.log("LOST UPDATE: "+loaded.model.getLockTime()+" vs "+root.getVersion());
+				throw new LostUpdateException();
+			}
 			root.loadedPages.put(r.getId(), loaded);		
 		}
 	}
@@ -125,13 +125,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 	public MidataId getId() {
 		return model.getId();
 	}
-		
-	/*
-	public void setRange(BasicBSONList lk, BasicBSONList hk) {
-		this.model.unencrypted.put("lk", lk);
-		this.model.unencrypted.put("hk", hk);
-	}
-	*/
+			
 	
 	public long getVersion() {
 		return model.getVersion();
@@ -146,8 +140,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		Collection<B> results = new ArrayList<B>(entries.size());
 		for (A o : entries) {
 			results.add(o.toMatch());			
-		}
-		//AccessLog.log("lookup:"+(System.currentTimeMillis() - t));
+		}		
 		return results;
 	}
 	
@@ -159,8 +152,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		Collection<B> results = new ArrayList<B>(entries.size());
 		for (A o : entries) {
 			if (((IndexKey) o).value.equals(targetAps)) results.add(o.toMatch());			
-		}
-		//AccessLog.log("lookup:"+(System.currentTimeMillis() - t));
+		}		
 		return results;
 	}
 
@@ -193,8 +185,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 	}
 	
 	public void initAsRootPage() {
-		init();
-		//this.ts = new HashMap<String, Long>();
+		init();	
 	}
 	
 	public void initNonLeaf() {		
@@ -207,10 +198,9 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 	
 	protected void encrypt() throws InternalServerException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		try {
-			//AccessLog.log("encrypt:"+mIsLeaf+" "+mCurrentKeyNum);// +" ts="+ts);
+		try {			
 			ObjectOutputStream oos = new ObjectOutputStream(bos);
-			oos.writeBoolean(mIsLeaf);
+			oos.writeBoolean(mIsLeaf);			
 			oos.writeInt(mCurrentKeyNum);
 			A last = null;
 			for (int i=0;i<mCurrentKeyNum;i++) {
@@ -221,13 +211,14 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 				for (int i=0;i<=mCurrentKeyNum;i++) {
 					oos.writeUTF(mChildren[i].toString());
 				}
-			}			
-			//oos.writeObject(ts);
+			}						
 			oos.close();
+			bos.close();
+			model.setEnc(model.encrypt(key, bos.toByteArray()));
 		} catch (IOException e) {
-			
+			throw new InternalServerException("error.internal", e);
 		}
-		model.setEnc(model.encrypt(key, bos.toByteArray()));
+		
 	}
 	
 	protected void decrypt() throws InternalServerException {
@@ -235,7 +226,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		try {
 			ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data));
 			mIsLeaf = in.readBoolean();
-			mCurrentKeyNum = in.readInt();
+			mCurrentKeyNum = in.readInt();		
 			mKeys = (A[]) new BaseIndexKey[root.UPPER_BOUND_KEYNUM()];
 	        mChildren = new MidataId[root.UPPER_BOUND_KEYNUM() + 1];       
 			A last = null;
@@ -250,10 +241,8 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 					mChildren[i] = MidataId.from(in.readUTF());
 				}
 			}
+			in.close();
 			
-			//this.ts = (Map<String, Long>) in.readObject();
-			
-			//AccessLog.log("decrypt:"+mIsLeaf+" "+mCurrentKeyNum);//+" ts="+ts);
 		} catch (IOException e) {
 			AccessLog.logException("IOException", e);
 			throw new InternalServerException("error.internal", "IOException"); }
@@ -273,26 +262,24 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		Collection<A> result = new ArrayList<A>();
 		
 		
-		//if (mIsLeaf) {
-			//AccessLog.log("IS LEAF KEYS="+mCurrentKeyNum);
+	
 			
 			for (int i=0;i<mCurrentKeyNum;i++)  {			
 				boolean match = key.conditionCompare(mKeys[i]);						
-				if (match) {
-					//AccessLog.log("MATCH ID ("+i+")="+mKeys[i].getId().toString()+" VAL="+mKeys[i].getKey()[0].toString());
+				if (match) {					
 					result.add(mKeys[i]);
 				} 
 			}
-		//} else {
+		
 		  if (!mIsLeaf) {
 			List<Integer> ids = null;
 			int matchId = -1;
-			//AccessLog.log("NON LEAF KEYS="+mCurrentKeyNum);
+			
 			for (int i=0;i<=mCurrentKeyNum;i++) {	
 			  	
 				boolean match = key.conditionCompare(i==0 ? null : mKeys[i-1], i == mCurrentKeyNum ? null : mKeys[i]);						
 				if (match) {
-					//AccessLog.log("match="+match);
+			
 					if (matchId == -1) matchId = i;
 					else {
 						if (ids == null) {
@@ -310,16 +297,5 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		}
 		return result;
 	}
-		
-	/*
-	private boolean keyCompare(Object[] key, Comparable[] idxKey) {
-		for (int i=0;i<key.length;i++) {
-			if ((key[i] != null) ? (!key[i].equals(idxKey[i])) : (idxKey[i] != null)) return false;
-		}		
-		return true;
-	}
-		*/
-	
-	
-		
+							
 }

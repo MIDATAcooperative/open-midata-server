@@ -17,6 +17,8 @@
 
 package utils.access.index;
 
+import utils.AccessLog;
+
 public class HistoryLookup extends BaseLookup<HistoryIndexKey>{
 
 	private long minTs;
@@ -28,7 +30,7 @@ public class HistoryLookup extends BaseLookup<HistoryIndexKey>{
 	}
 	
 	@Override
-	public boolean conditionCompare(HistoryIndexKey inKey) {
+	public boolean conditionCompare(HistoryIndexKey inKey) {		
 		return inKey.getTs() >= minTs && inKey.isDelete() == deletes;		
 	}
 
@@ -36,5 +38,10 @@ public class HistoryLookup extends BaseLookup<HistoryIndexKey>{
 	public boolean conditionCompare(HistoryIndexKey lk, HistoryIndexKey hk) {
 		return hk == null || hk.getTs() >= minTs;		
 	} 
+	
+	@Override
+	public String toString() {
+		return "aps-history({ minTs="+minTs+" del="+deletes+" })";	    		
+	}
 
 }

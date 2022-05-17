@@ -49,12 +49,7 @@ public class HistoryExtraIndexPageModel extends Model implements BaseIndexPageMo
 	 * software revision number
 	 */
 	public int rev;
-	
-	/**
-	 * time of creation of index (rounded)
-	 */
-	public long creation;
-	
+			
 	/**
 	 * encrypted data
 	 */
@@ -98,17 +93,17 @@ public class HistoryExtraIndexPageModel extends Model implements BaseIndexPageMo
 		this.enc = enc;
 	}
 
-	public static ApsExtraIndexPageModel getById(MidataId pageId) throws InternalServerException {
-		return Model.get(ApsExtraIndexPageModel.class, collection, CMaps.map("_id", pageId), ALL_PAGE);
+	public static HistoryExtraIndexPageModel getById(MidataId pageId) throws InternalServerException {
+		return Model.get(HistoryExtraIndexPageModel.class, collection, CMaps.map("_id", pageId), ALL_PAGE);
 	}
 	
 	@Override
 	public Set<? extends BaseIndexPageModel> getMultipleById(Set<MidataId> pageIds) throws InternalServerException {
-		return Model.getAll(ApsExtraIndexPageModel.class, collection, CMaps.map("_id", pageIds), ALL_PAGE);
+		return Model.getAll(HistoryExtraIndexPageModel.class, collection, CMaps.map("_id", pageIds), ALL_PAGE);
 	}
 	
 	public static Set<? extends BaseIndexPageModel> getMultipleByIdS(Set<MidataId> pageIds) throws InternalServerException {
-		return Model.getAll(ApsExtraIndexPageModel.class, collection, CMaps.map("_id", pageIds), ALL_PAGE);
+		return Model.getAll(HistoryExtraIndexPageModel.class, collection, CMaps.map("_id", pageIds), ALL_PAGE);
 	}
 	
 	
@@ -130,7 +125,7 @@ public class HistoryExtraIndexPageModel extends Model implements BaseIndexPageMo
 	}
 	
 	public static long count() throws AppException {
-		return Model.count(ApsExtraIndexPageModel.class, collection, CMaps.map());
+		return Model.count(HistoryExtraIndexPageModel.class, collection, CMaps.map());
 	}
 	
 	public BaseIndexPageModel reload() throws InternalServerException {
@@ -139,7 +134,7 @@ public class HistoryExtraIndexPageModel extends Model implements BaseIndexPageMo
 	
 	@Override
 	public BaseIndexPageModel loadChildById(MidataId id) throws InternalServerException {
-		return ApsExtraIndexPageModel.getById(id);
+		return HistoryExtraIndexPageModel.getById(id);
 	}
 
 	@Override

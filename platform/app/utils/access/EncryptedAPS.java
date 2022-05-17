@@ -50,13 +50,14 @@ public class EncryptedAPS {
 	private MidataId apsId;
 	private MidataId who;
 	private MidataId owner;
-	private byte[] encryptionKey;	
+	private byte[] encryptionKey;		
 	private boolean isValidated = false;
 	private boolean keyProvided = false;
 	private boolean notStored = false;
 	private boolean unmergedSubAPS = false;
 	private List<EncryptedAPS> sublists;
-	private AccessPermissionSet acc_aps;		
+	private AccessPermissionSet acc_aps;
+	private byte[] subEncryptionKey; //To be used with acc_aps
 		
 	public EncryptedAPS(MidataId apsId, MidataId who) throws InternalServerException {
 		this(apsId, who, null);
@@ -180,6 +181,11 @@ public class EncryptedAPS {
 		return encryptionKey;
 	}
 	
+	protected byte[] getLocalAPSKey() {		
+		if (acc_aps != aps) return subEncryptionKey;
+		return encryptionKey;
+	}
+	
 	protected byte[] exportAPSKey() throws AppException {
 		if (!keyProvided && !isValidated) validate();
 		if (encryptionKey != null && !keyProvided && needsKeyUpgrade()) doKeyUpgrade();
@@ -246,6 +252,7 @@ public class EncryptedAPS {
 		subeaps.unmergedSubAPS = true;
 		sublists.add(subeaps);
 		acc_aps = subeaps.aps;
+		subEncryptionKey = subeaps.getLocalAPSKey();
 	}
 	
 	protected boolean findAndselectAccessibleSubset() throws AppException {
@@ -334,6 +341,7 @@ public class EncryptedAPS {
 			throw new APSNotExistingException(this.apsId, "APS does not exist:"+this.apsId.toString());						
 		}
 		this.acc_aps = this.aps;
+		this.subEncryptionKey = null;
 		isValidated = false;
 	}
 				

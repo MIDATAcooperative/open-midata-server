@@ -52,8 +52,9 @@ public class APSTreeImplementation extends APSImplementation {
 	
 	private void ready() throws AppException {
 		if (streamIndexRoot==null) {
-			if (!eaps.getPermissions().containsKey("p")) {
-			   streamIndexRoot = new StreamIndexRoot(eaps.getAPSKey(), eaps);
+			if (eaps.isDirect()) oldStyle = true;
+			else if (!eaps.getPermissions().containsKey("p")) {
+			   streamIndexRoot = new StreamIndexRoot(eaps.getLocalAPSKey(), eaps);
 			   AccessLog.log("NEW FORMAT");
 			} else {
 				oldStyle = true;
@@ -64,8 +65,9 @@ public class APSTreeImplementation extends APSImplementation {
 	
 	private void readyHistory() throws AppException {
 		if (historyIndexRoot==null) {
-			if (!eaps.getPermissions().containsKey("p")) {
-				historyIndexRoot = new HistoryIndexRoot(eaps.getAPSKey(), eaps);
+			if (eaps.isDirect()) oldStyle = true;
+			else if (!eaps.getPermissions().containsKey("p")) {
+				historyIndexRoot = new HistoryIndexRoot(eaps.getLocalAPSKey(), eaps);
 			   AccessLog.log("NEW FORMAT");
 			} else {
 				oldStyle = true;
@@ -116,11 +118,12 @@ public class APSTreeImplementation extends APSImplementation {
 	
 	public void addPermission(DBRecord record, boolean withOwner) throws AppException {				
 		try {
-			ready();	
 			forceAccessibleSubset();
+			ready();				
 			try (DBSession session = DBLayer.startTransaction("aps")) {
 				addPermissionInternal(record, withOwner);
 				if (streamIndexRoot!=null) streamIndexRoot.flush();
+				if (historyIndexRoot !=null) historyIndexRoot.flush();
 				eaps.savePermissions();
 				session.commit();
 			}
@@ -132,12 +135,13 @@ public class APSTreeImplementation extends APSImplementation {
 
 	public void addPermission(Collection<DBRecord> records, boolean withOwner) throws AppException {
 		try  {
-			ready();
 			forceAccessibleSubset();
+			ready();			
 			try (DBSession session = DBLayer.startTransaction("aps")) {
 				for (DBRecord record : records)
 					addPermissionInternal(record, withOwner);
 				if (streamIndexRoot!=null)  streamIndexRoot.flush();
+				if (historyIndexRoot !=null) historyIndexRoot.flush();
 				eaps.savePermissions();
 				session.commit();
 			}
@@ -150,7 +154,7 @@ public class APSTreeImplementation extends APSImplementation {
 	protected void addPermissionInternal(DBRecord record, boolean withOwner) throws AppException, LostUpdateException {
 		if (oldStyle) super.addPermissionInternal(record, withOwner);
 		else {
-			streamIndexRoot.addEntry(getId(), record);		
+			streamIndexRoot.addEntry(record);		
 			addHistory(record._id, record.isStream, false);
 		}
 	}	
@@ -158,7 +162,7 @@ public class APSTreeImplementation extends APSImplementation {
 	protected boolean removePermissionInternal(DBRecord record) throws AppException, LostUpdateException {
         if (oldStyle) return super.removePermissionInternal(record);
         
-		if (streamIndexRoot.removeEntry(getId(), record)) {
+		if (streamIndexRoot.removeEntry(record)) {
 			addHistory(record._id, record.isStream, true);
 			return true;
 		}
@@ -175,6 +179,7 @@ public class APSTreeImplementation extends APSImplementation {
 				// Store
 				if (success) {
 					if (streamIndexRoot!=null) streamIndexRoot.flush();
+					if (historyIndexRoot !=null) historyIndexRoot.flush();
 					eaps.savePermissions();
 				}
 				session.commit();
@@ -188,6 +193,7 @@ public class APSTreeImplementation extends APSImplementation {
 
 	public void removePermission(Collection<DBRecord> records) throws AppException {
 		try {
+			ready();
 			try (DBSession session = DBLayer.startTransaction("aps")) {
 				boolean updated = false;
 				for (DBRecord record : records)
@@ -196,6 +202,7 @@ public class APSTreeImplementation extends APSImplementation {
 				// Store
 				if (updated) {
 					if (streamIndexRoot!=null)  streamIndexRoot.flush();
+					if (historyIndexRoot !=null) historyIndexRoot.flush();
 					eaps.savePermissions();
 				}
 				
@@ -228,7 +235,7 @@ public class APSTreeImplementation extends APSImplementation {
 					APSTreeImplementation temp = new APSTreeImplementation(encsubaps);
 					
 					Collection<DBRecord> recs = temp.query(new Query());
-					for (DBRecord record : recs) streamIndexRoot.addEntry(getId(), record);	
+					for (DBRecord record : recs) streamIndexRoot.addEntry(record);	
 					
 					Collection<DBRecord> histRecs = temp.historyQuery(0, false);
 					for (DBRecord histRec : histRecs) historyIndexRoot.addEntry(new HistoryIndexKey(histRec.sharedAt.getTime(), false, histRec.isStream, histRec._id));
@@ -265,26 +272,11 @@ public class APSTreeImplementation extends APSImplementation {
 		readyHistory();
 		if (oldStyle) super.addHistory(recordId, isStream, isRemove);		
 		else {		   			
-		   HistoryIndexKey hi = new HistoryIndexKey(System.currentTimeMillis(), false, isStream, recordId);
-		   if (isRemove) {
-			   boolean removed = historyIndexRoot.removeEntry(hi);
-			   if (!removed) {
-				   hi = new HistoryIndexKey(System.currentTimeMillis(), true, isStream, recordId);
-				   historyIndexRoot.addEntry(hi);				   
-			   }
-		   } else historyIndexRoot.addEntry(hi);						
+		   HistoryIndexKey hi = new HistoryIndexKey(System.currentTimeMillis(), isRemove, isStream, recordId);
+		   historyIndexRoot.addEntry(hi);						
 		}
 	}
-	
-	protected void mergeHistory(EncryptedAPS subaps) throws AppException {
 		
-		
-		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
-		BasicBSONList history2 = (BasicBSONList) subaps.getPermissions().get("_history");
-		if (history != null && history2 != null) {
-			history.addAll(history2);
-		}
-	}
     
 	public List<DBRecord> historyQuery(long minUpd, boolean removes) throws AppException {
 		readyHistory();
@@ -307,11 +299,11 @@ public class APSTreeImplementation extends APSImplementation {
 		try {
 			try (DBSession session = DBLayer.startTransaction("aps")) {
 				
-				streamIndexRoot = new StreamIndexRoot(eaps.getAPSKey(), eaps);				
-				if (eaps.getPermissions().containsKey("_history")) historyIndexRoot = new HistoryIndexRoot(eaps.getAPSKey(), eaps);
+				streamIndexRoot = new StreamIndexRoot(eaps.getLocalAPSKey(), eaps);				
+				if (eaps.getPermissions().containsKey("_history")) historyIndexRoot = new HistoryIndexRoot(eaps.getLocalAPSKey(), eaps);
 				
 				Collection<DBRecord> recs = super.query(new Query());
-				for (DBRecord record : recs) streamIndexRoot.addEntry(getId(), record);	
+				for (DBRecord record : recs) streamIndexRoot.addEntry(record);	
 				
 				Collection<DBRecord> histRecs = super.historyQuery(0, false);
 				for (DBRecord histRec : histRecs) historyIndexRoot.addEntry(new HistoryIndexKey(histRec.sharedAt.getTime(), false, histRec.isStream, histRec._id));
