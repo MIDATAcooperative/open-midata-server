@@ -59,6 +59,11 @@ public class AndCondition implements Condition, Serializable {
     		return result;
     	}
     }
+    
+    public AndCondition(List<Condition> checks) {
+    	this.checks = checks;
+    }
+    
     /**
      * Constructor
      * @param restrictions map with remainder of "and" expression
@@ -220,25 +225,41 @@ public class AndCondition implements Condition, Serializable {
 	
 	@Override
 	public Map<String, Object> asMongoQuery() {
-		Map<String, Object> result = new HashMap<String, Object>();
-		boolean complex = false;
+		Map<String, Object> result = new HashMap<String, Object>();		
 		List<Object> parts = new ArrayList<Object>();
 		for (Condition check : checks) {
 			Map<String, Object> part = (Map<String, Object>) check.asMongoQuery(); 
-			parts.add(part); 
-			for (Map.Entry<String, Object> entry : part.entrySet()) {
-				if (result.containsKey(entry.getKey())) {
-					complex = true;
-				} else result.put(entry.getKey(), entry.getValue());
-			}			
-		}
-		if (complex) {
-			result.clear();
-			result.put("$and", parts);
-		} 		
+			result.putAll(part); 						
+		}		 	
 		return result;
 	}
 	
+	
+	
+	@Override
+	public Condition mongoCompatible() {
+		List<Condition> parts = new ArrayList<Condition>(checks.size());
+		boolean mustConvert = false;
+		Set<String> keys = new HashSet<String>();
+		for (Condition c : checks) {
+			c = c.mongoCompatible();
+			if (c instanceof ComplexMongoCondition) mustConvert = true;
+			else {
+				Map<String, Object> conv = c.asMongoQuery();
+				if (conv == null) mustConvert = true;
+				else {
+					for (String k : conv.keySet()) {
+						if (keys.contains(k)) mustConvert = true;
+						else keys.add(k);
+					}	
+				}				
+			}
+			parts.add(c);
+		}
+        if (mustConvert) return new ComplexMongoCondition(ComplexMongoCondition.MODE_AND, parts).mongoCompatible();
+		return new AndCondition(parts);
+	}
+
 	public List<Condition> getParts() {
 		return checks;
 	}

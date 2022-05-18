@@ -18,6 +18,9 @@
 package utils.access.op;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.bson.BSONObject;
 
@@ -121,10 +124,31 @@ public class AlternativeFieldAccess implements Condition, Serializable {
 
 
 
+
+
 	@Override
-	public Object asMongoQuery() {		
+	public Map<String, Object> asMongoQuery() {
 		return null;
 	}
+
+
+	@Override
+	public Condition mongoCompatible() {
+		List<Condition> parts = new ArrayList<Condition>();
+		
+		for (String[] f : field) {
+			Condition s = cond;
+			for (int i = f.length-1;i>=0;i--) {
+				s = new FieldAccess(f[i], s);
+			}
+			parts.add(s);
+		}
+		
+		return new ComplexMongoCondition(ComplexMongoCondition.MODE_OR, parts).mongoCompatible();		
+	}
+
+
+	
 
 	
 	

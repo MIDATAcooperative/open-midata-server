@@ -453,6 +453,7 @@ public class Studies extends APIController {
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA);
+
 		Study study = Study.getById(studyId, Sets.create("name", "joinMethods", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup", "type", "consentObserver", "rejoinPolicy"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");

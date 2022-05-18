@@ -789,6 +789,14 @@ body.demo {
 
 .terms {
    h1,h2,h3,h4 { text-align:center; }
+
+   @media (max-width: 767px) { 
+	 h1 { font-size: 1.5rem }
+     h2 { font-size: 1.2rem }
+     h3 { font-size: 1.1rem } 
+   }
+
+
    li { margin-bottom:10pt; }
    address { margin-top:10pt;margin-bottom:10pt; }
    ol {

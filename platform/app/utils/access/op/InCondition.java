@@ -18,7 +18,13 @@
 package utils.access.op;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import utils.collections.CMaps;
 
 /**
  * check if object is in a list of objects
@@ -66,9 +72,19 @@ public class InCondition implements Condition, Serializable {
 	}
 
 	@Override
-	public Object asMongoQuery() {		
-		return val;
+    public Map<String, Object> asMongoQuery() {
+		return null;
 	}
 	
+	@Override
+	public Object asMongoValue() {		
+		return val;
+	}
+
+	@Override
+	public Condition mongoCompatible() {
+		return this;
+	}
+		
 	
 }
