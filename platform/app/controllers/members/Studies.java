@@ -448,23 +448,24 @@ public class Studies extends APIController {
 	
 	
 	
-    public static StudyParticipation match(AccessContext context, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod method) throws AppException {
+    public static StudyParticipation match(AccessContext context, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod) throws AppException {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA);
-		Study study = Study.getById(studyId, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "termsOfUse", "code"));
+
+		Study study = Study.getById(studyId, Sets.create("name", "joinMethods", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup", "type", "consentObserver", "rejoinPolicy"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
-		
-		
-		if (participation == null) {
-			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
 			
-			participation = createStudyParticipation(context, study, user, null, null, method);
-										
-		}		
-		
+		if (participation == null) {
+			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");			
+			if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.blocked.joinmethod", "code", "joinmethod", "Study is not searching for participants using this channel.");
+			//code = checkCode(study, joinMethod, joinCode);
+			Set<MidataId> observers = ApplicationTools.getObserversForApp(usingApp);
+			participation = createStudyParticipation(context, study, user, null, observers, joinMethod);
+		}
+							
 		return participation;
 		
 	}
