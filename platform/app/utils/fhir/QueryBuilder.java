@@ -18,6 +18,7 @@
 package utils.fhir;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -71,6 +72,7 @@ public class QueryBuilder {
 	public final static String TYPE_DATE = "date";
 	public final static String TYPE_INSTANT = "Instant";
 	public final static String TYPE_DATETIME = "DateTime";
+	
 	public final static String TYPE_PERIOD = "Period";
 	public final static String TYPE_DATETIME_OR_PERIOD = "DateTime|Period";
 	public final static String TYPE_DATETIME_OR_PERIOD_OR_INSTANT = "DateTime|Period|Instant";
@@ -99,6 +101,7 @@ public class QueryBuilder {
 	
 	private SearchParameterMap params;
 	private Query query;
+	private boolean dateToString;
 	
 	public QueryBuilder(SearchParameterMap params, Query query, String format) throws AppException {
 		this.params = params;
@@ -109,6 +112,20 @@ public class QueryBuilder {
 		handleCommon();
 	}
 	
+	
+	
+	public boolean isDateToString() {
+		return dateToString;
+	}
+
+
+
+	public void setDateToString(boolean dateToString) {
+		this.dateToString = dateToString;
+	}
+
+
+
 	public void handleCommon() throws AppException {
 		if (params.getLastUpdated() != null) {
 			try {
@@ -234,8 +251,7 @@ public class QueryBuilder {
 		PredicateBuilder bld = new PredicateBuilder();
 		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {
 						
-			for (IQueryParameterType param : paramsOr) {
-								
+			for (IQueryParameterType param : paramsOr) {						
 				handleRestriction(param, p1, t1, bld);								
 			    if (p2 != null) {
 			    	bld.or();
@@ -375,7 +391,7 @@ public class QueryBuilder {
 				
 	}
 	
-	private void handleRestriction(IQueryParameterType param, String path, String type, PredicateBuilder bld) {
+	private void handleRestriction(IQueryParameterType param, String path, String type, PredicateBuilder bld) {		
 		if (param.getMissing() != null) {
 			boolean exist = !param.getMissing().booleanValue();
 			if (type.equals(TYPE_DATETIME_OR_PERIOD)) {
@@ -500,6 +516,7 @@ public class QueryBuilder {
 				Date hDate = null;
 				
 				
+				
 				if (dateParam.getValue() == null) throw new UnprocessableEntityException("Invalid date in date restriction");
 				
 				Calendar cal = Calendar.getInstance();
@@ -566,37 +583,48 @@ public class QueryBuilder {
 				
 				if (prefix==null) prefix = ParamPrefixEnum.EQUAL;
 				AccessLog.log("prefix="+prefix);
+				Object lDate1 = lDate;
+				Object hDate1 = hDate;
+				
+				if (isDateToString()) {
+					SimpleDateFormat sdf;
+					sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+					//sdf.setTimeZone(TimeZone.getTimeZone("CET"));					
+					lDate1 = sdf.format(lDate);
+					hDate1 = sdf.format(hDate);
+				}
+				
 			    switch (prefix) {
-				case GREATERTHAN: bld.addComp(hPath, CompareOperator.GE, hDate, true);break;
-				case LESSTHAN: bld.addComp(lPath,CompareOperator.LT, lDate, true);break;
+				case GREATERTHAN: bld.addComp(hPath, CompareOperator.GE, hDate1, true);break;
+				case LESSTHAN: bld.addComp(lPath,CompareOperator.LT, lDate1, true);break;
 				case GREATERTHAN_OR_EQUALS:														
-					bld.addCompOr(lPath, CompareOperator.GE, lDate, true);
-					bld.addCompOr(hPath, CompareOperator.GE, hDate, true);					
+					bld.addCompOr(lPath, CompareOperator.GE, lDate1, true);
+					bld.addCompOr(hPath, CompareOperator.GE, hDate1, true);					
 					break;
 				case LESSTHAN_OR_EQUALS:
 										
-					bld.addCompOr(lPath, CompareOperator.LE, lDate, true);
-					bld.addCompOr(hPath, CompareOperator.LT, hDate, true);										
+					bld.addCompOr(lPath, CompareOperator.LE, lDate1, true);
+					bld.addCompOr(hPath, CompareOperator.LT, hDate1, true);										
 					break;
 				case STARTS_AFTER:					
-					bld.addComp(lPath, CompareOperator.GE, hDate, false);
+					bld.addComp(lPath, CompareOperator.GE, hDate1, false);
 					break;
 				case ENDS_BEFORE:
-					bld.addComp(hPath, CompareOperator.LT, lDate, false);
+					bld.addComp(hPath, CompareOperator.LT, lDate1, false);
 					break;
 				case EQUAL:					
-					bld.addComp(lPath, CompareOperator.GE, lDate, false, CompareOperator.LT, hDate, false);
-					if (!lPath.equals(hPath)) {
-                      bld.addComp(hPath, CompareOperator.LT, hDate, false, CompareOperator.GE, lDate, false);
+					bld.addComp(lPath, CompareOperator.GE, lDate1, false, CompareOperator.LT, hDate1, false);					
+					if (!lPath.equals(hPath)) {						
+                      bld.addComp(hPath, CompareOperator.LT, hDate1, false, CompareOperator.GE, lDate1, false);
 					}
 					break;
 				case NOT_EQUAL:
-					bld.addCompOr(hPath, CompareOperator.GE, hDate, true);
-					bld.addCompOr(lPath, CompareOperator.LT, lDate, true);					
+					bld.addCompOr(hPath, CompareOperator.GE, hDate1, true);
+					bld.addCompOr(lPath, CompareOperator.LT, lDate1, true);					
 					break;
 				case APPROXIMATE:						
-					bld.addComp(hPath, CompareOperator.GE, lDate, true);
-					bld.addComp(lPath, CompareOperator.LT, hDate, true);
+					bld.addComp(hPath, CompareOperator.GE, lDate1, true);
+					bld.addComp(lPath, CompareOperator.LT, hDate1, true);
 					break;
 				default:throw new NullPointerException();
 				}

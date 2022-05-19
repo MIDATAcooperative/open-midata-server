@@ -175,9 +175,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	@Override
-	public void createExecute(Record record, T theResource) throws AppException {
+	public T createExecute(Record record, T theResource) throws AppException {
 		List<Attachment> attachments = getAttachments(theResource);		
 		insertRecord(record, theResource, attachments, info());
+		return theResource;
 	}
 	
 	@Override

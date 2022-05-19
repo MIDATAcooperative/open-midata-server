@@ -18,6 +18,7 @@
 package utils.access.op;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
@@ -85,7 +86,7 @@ public class IndexCompare implements Condition, Serializable {
 	}
 
 	@Override
-	public Object asMongoQuery() {
+	public Object asMongoValue() {
 		//Map<String, Object> result = new HashMap();
 		switch (op) {
 		case EQUALS: return Pattern.compile("^"+val+"$", Pattern.CASE_INSENSITIVE);
@@ -94,6 +95,18 @@ public class IndexCompare implements Condition, Serializable {
 		return null;
 	}
 	
+	
+	
+	@Override
+	public Map<String, Object> asMongoQuery() {
+		return null;
+	}
+
+	@Override
+	public Condition mongoCompatible() {
+		return this;
+	}
+
 	@Override
 	public String toString() {		
 		switch (op) {

@@ -308,9 +308,10 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	}
 	
 	@Override
-	public void createExecute(Record record, Task theTask) throws AppException {
+	public Task createExecute(Record record, Task theTask) throws AppException {
 		MidataId consent = insertMessageRecord(record, theTask);
         shareRecord(record, theTask, consent);
+        return theTask;
 	}	
 	
 			

@@ -264,8 +264,9 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		prepare(record, theCommunication);		
 	}
 	
-	public void createExecute(Record record, Communication theCommunication) throws AppException {
+	public Communication createExecute(Record record, Communication theCommunication) throws AppException {
 		shareRecord(record, theCommunication);
+		return theCommunication;
 	}	
 	
 	public void prepareForSharing(Communication theCommunication) throws AppException {

@@ -156,15 +156,15 @@ public class OrCondition implements Condition, Serializable {
 
 	@Override
 	public Map<String, Object> asMongoQuery() {
-		Map<String, Object> result = new HashMap<String, Object>();
-		List<Object> parts = new ArrayList<Object>();
-		for (Condition check : checks) {
-			parts.add(check.asMongoQuery());
-		}
-		result.put("$or", parts);
-		return result;
+		return null;
 	}
 	
+		
+	@Override
+	public Condition mongoCompatible() {		
+		return new ComplexMongoCondition(ComplexMongoCondition.MODE_OR, checks).mongoCompatible();
+	}
+
 	public List<Condition> getParts() {
 		return checks;
 	}
