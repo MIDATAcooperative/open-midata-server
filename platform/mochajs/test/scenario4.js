@@ -1,10 +1,13 @@
-var chai = require('chai'),
+var
+  chai = require('chai'),
   chaiHttp = require('chai-http'),
+  basic = require('../managers/basic');
   _data = require('../files/configurations'),
-  base_manager = require('../managers/base_manager');
+  observation = require('../models/observation');
 
 chai.use(chaiHttp);
 var expect = chai.expect;
+
 
 describe.skip('Scenario 4', function () {
   // researcher wants to share study with researcher 2
@@ -21,88 +24,27 @@ describe.skip('Scenario 4', function () {
   // user3 don't have permission to see the shared data
   var user3 = _data.users[2];
 
-  before('Authentication', function () {
-    return base_manager.authenticate(researcher1, function (err, res, body) {
-          researcher1.authAPI = body;
-        },
-        function (err, res, body) {
-          researcher1.authPortal = body;
-        })
-      .then(function () {
-        if (researcher1.authAPI.status == "UNCONFIRMED") {
-          return base_manager.confirm_consents(researcher1.authPortal.sessionToken);
-        }
-      })
-      .then(function () {
-        return base_manager.authenticate(researcher2, function (err, res, body) {
-              researcher2.authAPI = body;
-            },
-            function (err, res, body) {
-              researcher2.authPortal = body;
-            })
-          .then(function () {
-            if (researcher2.authAPI.status == "UNCONFIRMED") {
-              return base_manager.confirm_consents(researcher2.authPortal.sessionToken);
-            }
-          });
-      }).then(function () {
-        return base_manager.authenticate(researcher3, function (err, res, body) {
-              researcher3.authAPI = body;
-            },
-            function (err, res, body) {
-              researcher3.authPortal = body;
-            })
-          .then(function () {
-            if (researcher3.authAPI.status == "UNCONFIRMED") {
-              return base_manager.confirm_consents(researcher3.authPortal.sessionToken);
-            }
-          });
-      }).then(function () {
-        return base_manager.authenticate(user1, function (err, res, body) {
-              user1.authAPI = body;
-            },
-            function (err, res, body) {
-              user1.authPortal = body;
-            })
-          .then(function () {
-            if (user1.authAPI.status == "UNCONFIRMED") {
-              return base_manager.confirm_consents(user1.authPortal.sessionToken);
-            }
-          });
-      }).then(function () {
-        return base_manager.authenticate(user2, function (err, res, body) {
-              user2.authAPI = body;
-            },
-            function (err, res, body) {
-              user2.authPortal = body;
-            })
-          .then(function () {
-            if (user2.authAPI.status == "UNCONFIRMED") {
-              return base_manager.confirm_consents(user2.authPortal.sessionToken);
-            }
-          })
-      }).then(function () {
-        return base_manager.authenticate(user3, function (err, res, body) {
-              user3.authAPI = body;
-            },
-            function (err, res, body) {
-              user3.authPortal = body;
-            })
-          .then(function () {
-            if (user3.authAPI.status == "UNCONFIRMED") {
-              return base_manager.confirm_consents(user3.authPortal.sessionToken);
-            }
-          });
-      });;
+  before('Authentication', async function () {
+	await basic.login(researcher1);
+	await basic.oauth2(_data.configs, researcher1); 
+	await basic.login(researcher2);
+	await basic.oauth2(_data.configs, researcher2);
+	await basic.login(researcher3);
+	await basic.oauth2(_data.configs, researcher3);	
+	
+    await basic.login(user1);
+	await basic.oauth2(_data.configs, user1); 
+	await basic.login(user2);
+	await basic.oauth2(_data.configs, user2);
+	await basic.login(user3);
+	await basic.oauth2(_data.configs, user3);	 
   });
 
   describe('Records in study', function () {
     var study;
     it('Precondition: validated study exist', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/api/research/studies/' + _data.configs.study_accepted_id)
-        .set('X-Session-Token', researcher1.authPortal.sessionToken)
+      basic.get('/api/research/studies/' + _data.configs.study_accepted_id)
+        .portal(researcher1)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.statusCode).to.have.greaterThan(199);
@@ -118,10 +60,8 @@ describe.skip('Scenario 4', function () {
     });
     
     it('get information from researcher1', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/api/shared/users/current')
-        .set('X-Session-Token', researcher1.authPortal.sessionToken)
+      basic.get('/api/shared/users/current')
+        .portal(researcher1)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.statusCode).to.have.greaterThan(199);
@@ -135,10 +75,8 @@ describe.skip('Scenario 4', function () {
     });
 
     it('get information from researcher2', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/api/shared/users/current')
-        .set('X-Session-Token', researcher2.authPortal.sessionToken)
+      basic.get('/api/shared/users/current')
+        .portal(researcher2)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.statusCode).to.have.greaterThan(199);
@@ -152,10 +90,8 @@ describe.skip('Scenario 4', function () {
     });
 
     it('get information from researcher3', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/api/shared/users/current')
-        .set('X-Session-Token', researcher3.authPortal.sessionToken)
+      basic.get('/api/shared/users/current')
+        .portal(researcher3)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.statusCode).to.have.greaterThan(199);
@@ -169,10 +105,8 @@ describe.skip('Scenario 4', function () {
     });
 
     it('get information from researcher4', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/api/shared/users/current')
-        .set('X-Session-Token', researcher4.authPortal.sessionToken)
+      basic.get('/api/shared/users/current')
+        .portal(researcher4)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.statusCode).to.have.greaterThan(199);
