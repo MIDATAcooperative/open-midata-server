@@ -61,6 +61,7 @@ public class APSTreeImplementation extends APSImplementation {
 			if (eaps.isDirect()) oldStyle = true;
 			else if (!eaps.getPermissions().containsKey("p")) {
 			   streamIndexRoot = new StreamIndexRoot(eaps.getLocalAPSKey(), eaps);
+			   oldStyle = false;
 			   AccessLog.log("NEW FORMAT");
 			} else {
 				oldStyle = true;
@@ -77,7 +78,7 @@ public class APSTreeImplementation extends APSImplementation {
 		if (historyIndexRoot==null) {
 			if (eaps.isDirect()) oldStyle = true;
 			else if (!eaps.getPermissions().containsKey("p")) {
-				historyIndexRoot = new HistoryIndexRoot(eaps.getLocalAPSKey(), eaps);
+				historyIndexRoot = new HistoryIndexRoot(eaps.getLocalAPSKey(), eaps);				
 			   AccessLog.log("NEW FORMAT");
 			} else {
 				oldStyle = true;
