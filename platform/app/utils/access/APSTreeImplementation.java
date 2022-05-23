@@ -121,7 +121,8 @@ public class APSTreeImplementation extends APSImplementation {
 				if (result==null) result = r;
 				else result.addAll(r);
 			}
-		} else result = streamIndexRoot.lookup(lookup);			
+		} else result = streamIndexRoot.lookup(lookup);	
+		for (DBRecord r : result) r.context = q.getContext();
 		return new APSIterator(result.iterator(), result.size(), getId());	
 	}
 	
