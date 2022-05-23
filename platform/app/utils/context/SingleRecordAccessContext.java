@@ -106,7 +106,7 @@ public class SingleRecordAccessContext extends AccessContext {
 
 	@Override
 	public String getContextName() {
-		return "single-record";
+		return "Single record access only for record id '"+recordId.toString()+"'";
 	}
 	
 	public MidataId getSingleReadableRecord() {

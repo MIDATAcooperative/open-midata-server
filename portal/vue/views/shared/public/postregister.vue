@@ -68,7 +68,7 @@
 					<p v-t="'postregister.auth2factor'"></p>					
 					<form ref="myform" name="myform" @submit.prevent="setSecurityToken()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
-							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate autofocus>
+							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
 						</form-group>							  
 						<div class="extraspace"></div>
 						<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'postregister.securityToken_btn'"></button>
@@ -700,6 +700,12 @@ export default {
 		}
 	},
 
+    mounted() {
+       if (this.$data.progress && (this.$data.progress.AUTH2FACTOR || this.$data.progress.PHONE_VERIFIED)) {                
+         this.$refs.tokenInput.focus();
+       }
+    },
+    
 	created() {
 		this.prepare();
 	}

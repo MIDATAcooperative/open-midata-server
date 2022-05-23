@@ -96,7 +96,7 @@ public class AccountCreationAccessContext extends AccessContext {
 
 	@Override
 	public String getContextName() {
-		return "New account";
+		return "New user account";
 	}
 
 	@Override

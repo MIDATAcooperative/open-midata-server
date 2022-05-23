@@ -72,7 +72,7 @@
 			   <form-group v-if="currentContent.isNew" label="common.empty"><strong v-t="'content.new_content'">Edit Midata Content-Type</strong></form-group>
 			   <form-group v-else label="common.empty"><strong v-t="'content.edit_content'">Edit Midata Content-Type</strong></form-group>
                <form-group name="content" label="content.content">
-	             <input class="form-control" type="text" v-validate v-model="currentContent.content">
+	             <input class="form-control" name="content" type="text" v-validate v-model="currentContent.content">
 	           </form-group>
                <div v-for="lang in langs" :key="lang">
 	           <form-group name="label" :label="'Label '+lang">                   
@@ -80,27 +80,27 @@
 	           </form-group>
                </div>
 	           <form-group name="security" label="content.security">
-	             <select class="form-control" type="text" v-validate v-model="currentContent.security">
+	             <select class="form-control" name="security" v-validate v-model="currentContent.security">
                      <option value="MEDIUM" v-t="'content.medium'">MEDIUM</option>
                      <option value="HIGH" v-t="'content.high'">HIGH</option>
                  </select>
 	           </form-group>
               <form-group name="group" label="content.group">
 	             <select class="form-control" v-validate v-model="currentContent.currentGroup">
-                     <option v-for="group in groups" :key="group._id" :value="group.name">{{ group.name }}</option>
+                     <option v-for="group in orderedGroups" :key="group._id" :value="group.name">{{ group.label[lang] }}</option>
                   </select>
 	           </form-group>
 			   <form-group name="defaultCode" label="content.defaultCode">
-	              <input class="form-control" type="text" v-validate v-model="currentContent.defaultCode">
+	              <input class="form-control" name="defaultCode" type="text" v-validate v-model="currentContent.defaultCode">
 				  <button class="btn btn-sm btn-primary" type="button" @click="makeDefault()">Make current code default</button>
 	           </form-group>
 	           <form-group name="resourceType" label="content.resource_type">
-	             <typeahead class="form-control" v-model="currentContent.resourceType" :suggestions="formats" field="format"></typeahead>
+	             <typeahead class="form-control" name="resourceType" v-model="currentContent.resourceType" :suggestions="formats" field="format"></typeahead>
 	           </form-group>
 	          
 	          
 	          <form-group name="source" label="Source">
-	             <input type="text" class="form-control" v-validate v-model="currentContent.source">
+	             <input type="text" class="form-control" name="source" v-validate v-model="currentContent.source">
 	           </form-group>
 
 			   <form-group label="common.empty">
@@ -114,20 +114,20 @@
 			<form-group label="common.empty" v-if="currentGroup.isNew"><strong v-t="'content.new_group'">Edit Group</strong></form-group>	 
 			<form-group label="common.empty" v-else><strong v-t="'content.edit_group'">Edit Group</strong></form-group>	 
                 <form-group name="name" label="content.group_name">
-	             <input class="form-control" type="text" v-validate v-model="currentGroup.name">
+	             <input class="form-control" name="name" type="text" v-validate v-model="currentGroup.name">
 	           </form-group>
 	           <div v-for="lang in langs" :key="lang">
 	           <form-group name="label" :label="'Label '+lang">                   
-	               <input class="form-control" type="text" v-validate v-model="currentGroup.label[lang]">                   
+	               <input class="form-control" type="text" name="label" v-validate v-model="currentGroup.label[lang]">                   
 	           </form-group>
                </div>
 	           <form-group name="parent" label="content.parent_group">
-	             <select class="form-control" type="text" v-validate v-model="currentGroup.parent">
-				   <option v-for="grp in groups" :key="grp.name" :value="grp.name">{{ grp.label[lang] }}</option>
+	             <select class="form-control" v-validate v-model="currentGroup.parent">
+				   <option v-for="grp in orderedGroups" :key="grp.name" :value="grp.name">{{ grp.label[lang] }}</option>
 				 </select>
 	           </form-group>
 	           <form-group name="system" label="content.group_system">
-	             <input class="form-control" type="text" v-validate v-model="currentGroup.system">
+	             <input class="form-control" type="text" name="system" v-validate v-model="currentGroup.system">
 	           </form-group>
 			   <form-group label="common.empty">
 				  <button class="btn btn-primary mr-1" type="submit" v-submit :disabled="action!=null" v-t="'content.save_group_btn'">Save Group</button>
@@ -187,7 +187,13 @@ export default {
        groups : [],
        formats : [],
        systems : ["http://loinc.org","http://snomed.info/sct","http://hl7.org/fhir/sid/icd-10","http://midata.coop"]
-	}),				
+	}),		
+	
+	computed: {
+       orderedGroups: function () {
+         return _.orderBy(this.$data.groups, (x) => x.label[this.$data.lang]);
+       }
+    },		
 
 	components : { ErrorBox, Panel, FormGroup, Typeahead },
 
@@ -249,7 +255,8 @@ export default {
         createNew() {
             const { $data } = this;
             $data.currentContent = { content : "", defaultCode : "", security : "MEDIUM", label : {}, "resourceType" : "", isNew : true };
-            $data.currentCode = { system : "", version : "", code:"", display : "", content:"", isNew : true };                        
+            $data.currentCode = { system : "", version : "", code:"", display : "", content:"", isNew : true };
+            $data.currentGroup = null;                        
         },
 
 		createGroup() {

@@ -120,6 +120,7 @@ public class FormatAPI extends Controller {
 	@Security.Authenticated(AdminSecured.class)
 	public Result createCode(Request request) throws AppException {
 		JsonNode json = request.body().asJson();
+		JsonValidation.validate(json, "code", "content", "system", "display");
 		ContentCode cc = new ContentCode();
 		MidataId id = JsonValidation.getMidataId(json, "_id");
 		cc._id = id != null ? id : new MidataId();		
@@ -181,6 +182,7 @@ public class FormatAPI extends Controller {
 	@Security.Authenticated(AdminSecured.class)
 	public Result createContent(Request request) throws AppException {
 		JsonNode json = request.body().asJson();
+		JsonValidation.validate(json, "content", "security");
 		ContentInfo cc = new ContentInfo();
 		MidataId id = JsonValidation.getMidataId(json, "_id");
 		cc._id = id != null ? id : new MidataId();
@@ -249,6 +251,7 @@ public class FormatAPI extends Controller {
 		JsonNode json = request.body().asJson();
 		RecordGroup cc = new RecordGroup();
 		MidataId id = JsonValidation.getMidataId(json, "_id");
+		JsonValidation.validate(json, "name", "parent", "system");
 		cc._id = id != null ? id : new MidataId();		
 		cc.name = JsonValidation.getString(json, "name");
 		cc.system = JsonValidation.getString(json, "system");
@@ -256,6 +259,7 @@ public class FormatAPI extends Controller {
 		//cc.contents = JsonExtraction.extractStringSet(json.get("contents"));
 		cc.label = JsonExtraction.extractStringMap(json.get("label"));
 		cc.lastUpdated = System.currentTimeMillis();
+		if (cc.name.equals(cc.parent)) throw new JsonValidationException("error.internal", "Groups may not be circular");
 		RecordGroup.add(cc);
 		Instances.cacheClear("content", null);
 		
@@ -269,6 +273,7 @@ public class FormatAPI extends Controller {
 		JsonNode json = request.body().asJson();
 		RecordGroup cc = new RecordGroup();
 		cc._id = new MidataId(id);
+		JsonValidation.validate(json, "name", "parent", "system");
 		cc.name = JsonValidation.getString(json, "name");
 		cc.system = JsonValidation.getString(json, "system");
 		cc.parent = JsonValidation.getStringOrNull(json, "parent");

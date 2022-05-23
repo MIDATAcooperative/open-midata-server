@@ -262,6 +262,10 @@ public class AndCondition implements Condition, Serializable {
 			parts.add(c);
 		}
         if (mustConvert) return new ComplexMongoCondition(ComplexMongoCondition.MODE_AND, parts).mongoCompatible();
+		return createAndOfThisType(parts);
+	}
+	
+	public AndCondition createAndOfThisType(List<Condition> parts) {
 		return new AndCondition(parts);
 	}
 

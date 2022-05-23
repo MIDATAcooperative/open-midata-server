@@ -648,8 +648,8 @@ public class RecordManager {
 			if (record.data == null) throw new BadRequestException("error.internal", "Missing data");		
 			
 			DBRecord rec = result.get(0);
-			if (!rec.context.mayUpdateRecord(rec, record)) throw new PluginException(pluginId, "error.plugin", record.getErrorInfo()+" may not be updated!\n\nUpdate permission chain:\n"+rec.context.getMayUpdateReport(rec, record));
-			if (rec.context.mustPseudonymize())  throw new PluginException(pluginId, "error.plugin", "Pseudonymized record may not be updated!\n\nUpdate permission chain:\\n"+rec.context.getMayUpdateReport(rec, record));
+			if (!rec.context.mayUpdateRecord(rec, record)) throw new PluginException(pluginId, "error.plugin", record.getErrorInfo()+" may not be updated!\n\nUpdate permission chain:\n========================\n"+rec.context.getMayUpdateReport(rec, record));
+			if (rec.context.mustPseudonymize())  throw new PluginException(pluginId, "error.plugin", "Pseudonymized record may not be updated!\n\nUpdate permission chain:\n========================\n"+rec.context.getMayUpdateReport(rec, record));
 			
 			String storedVersion = rec.meta.getString("version");
 			if (storedVersion == null) storedVersion = VersionedDBRecord.INITIAL_VERSION;
