@@ -425,7 +425,7 @@ public class FormatAPI extends Controller {
 	public Result importChanges(Request request) throws AppException {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "base64");
-		String base64 = JsonValidation.getString(json, "base64");
+		String base64 = JsonValidation.getJsonString(json, "base64");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayNode contentinfo = null;

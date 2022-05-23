@@ -1,4 +1,4 @@
-{"_id":{"$oid":"5666a53faa4c3cbdf82292bd"},"system":"http://midata.coop","display":"Calories Intake","code":"food/calories-in","content":"food/calories-in"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292bd"},"system":"http://midata.coop","code":"food/calories-in","display":"Calories intake","content":"food/calories-in"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292be"},"system":"http://midata.coop","display":"Water Consumption","code":"food/water","content":"food/water"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292bf"},"system":"http://midata.coop","display":"Calories Burned","code":"activities/calories","content":"activities/calories"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c0"},"system":"http://midata.coop","display":"Steps","code":"activities/steps","content":"activities/steps"}
@@ -352,3 +352,26 @@
 {"_id":{"$oid":"61efb9a4c2841c36d6227d7a"},"system":"http://midata.coop","code":"app/config","display":"Application Configuration","content":"app/config"}
 {"_id":{"$oid":"61f3fbcee8d4223bfafd55ec"},"system":"http://midata.coop","code":"Organization/HP","display":"Organization on Midata (Healthcare Provider)","content":"Organization/HP"}
 {"_id":{"$oid":"61f3fc14e8d4223bfafd55ef"},"system":"http://midata.coop","code":"Organization/Research","display":"Organization on Midata (Research)","content":"Organization/Research"}
+{"_id":{"$oid":"628957096020a06279c0ce54"},"system":"http://snomed.info/sct","code":"230112002","display":"Fast food intake (observable entity)","content":"snomed/230112002"}
+{"_id":{"$oid":"6288d29802da8556e91f79e4"},"system":"http://snomed.info/sct","code":"224363007","display":"Employed (finding)","content":"snomed/224363007"}
+{"_id":{"$oid":"628958da02da8556e91f7a15"},"system":"http://snomed.info/sct","code":"1208604004","display":"Caffeine intake (observable entity)","content":"snomed/1208604004"}
+{"_id":{"$oid":"628a532f6020a06279c0cf5f"},"system":"http://snomed.info/sct","code":"75367002","display":"Blood pressure (observable entity)","content":"body/bloodpressure"}
+{"_id":{"$oid":"6288e52f02da8556e91f79ec"},"system":"http://snomed.info/sct","code":"226456006","display":"Nuts and seeds intake (observable entity)","content":"snomed/226456006"}
+{"_id":{"$oid":"628954b46020a06279c0ce49"},"system":"http://snomed.info/sct","code":"226443004","display":"Fatty fish intake (observable entity)","content":"snomed/226443004"}
+{"_id":{"$oid":"628a53d16020a06279c0cf66"},"system":"http://snomed.info/sct","code":"271650006","display":"Diastolic blood pressure (observable entity)","content":"body/blood/diastolic"}
+{"_id":{"$oid":"628a55806020a06279c0cf69"},"system":"http://snomed.info/sct","code":"103228002","display":"Hemoglobin saturation with oxygen (observable entity)","content":"body/oxygen-saturation"}
+{"_id":{"$oid":"628958006020a06279c0ce56"},"system":"http://snomed.info/sct","code":"226448008","display":"Vegetable intake (observable entity)","content":"snomed/226448008"}
+{"_id":{"$oid":"628a52186020a06279c0cf5e"},"system":"http://snomed.info/sct","code":"364075005","display":"Heart rate (observable entity)","content":"activities/heartrate"}
+{"_id":{"$oid":"6288e46902da8556e91f79ea"},"system":"http://snomed.info/sct","code":"226452008","display":"Fruit intake (observable entity)","content":"snomed/226452008"}
+{"_id":{"$oid":"628a54ab6020a06279c0cf68"},"system":"http://snomed.info/sct","code":"386725007","display":"Body temperature (observable entity)","content":"body/temperature"}
+{"_id":{"$oid":"6289553602da8556e91f7a0d"},"system":"http://snomed.info/sct","code":"226427006","display":"Red meat intake (observable entity)","content":"snomed/226427006"}
+{"_id":{"$oid":"628955f202da8556e91f7a0f"},"system":"http://snomed.info/sct","code":"226461008","display":"Confectionery intake (observable entity)","content":"snomed/226461008"}
+{"_id":{"$oid":"6289627d02da8556e91f7a19"},"system":"http://snomed.info/sct","code":"897148007","display":"Alcoholic beverage intake (observable entity)","content":"snomed/897148007"}
+{"_id":{"$oid":"628965ed6020a06279c0ce70"},"system":"http://snomed.info/sct","code":"1137437005","display":"Adequate sleep (finding)","content":"snomed/1137437005"}
+{"_id":{"$oid":"628959bd6020a06279c0ce59"},"system":"http://snomed.info/sct","code":"226458007","display":"Sugary food intake (observable entity)","content":"snomed/226458007"}
+{"_id":{"$oid":"628961106020a06279c0ce62"},"system":"http://snomed.info/sct","code":"1144674006","display":"Adequately hydrated (finding)","content":"snomed/1144674006"}
+{"_id":{"$oid":"6288e3126020a06279c0cdd2"},"system":"http://snomed.info/sct","code":"876831004","display":"Plant fiber intake (observable entity)","content":"snomed/876831004"}
+{"_id":{"$oid":"62895feb6020a06279c0ce61"},"system":"http://snomed.info/sct","code":"226354008","display":"Water intake (observable entity)","content":"food/water"}
+{"_id":{"$oid":"6289540b6020a06279c0ce47"},"system":"http://snomed.info/sct","code":"874875003","display":"Protein and/or protein derivative intake (observable entity)","content":"snomed/874875003"}
+{"_id":{"$oid":"6289566102da8556e91f7a11"},"system":"http://snomed.info/sct","code":"230094004","display":"Spicy food intake (observable entity)","content":"snomed/230094004"}
+{"_id":{"$oid":"628a543c6020a06279c0cf67"},"system":"http://snomed.info/sct","code":"271649006","display":"Systolic blood pressure (observable entity)","content":"body/blood/systolic"}
