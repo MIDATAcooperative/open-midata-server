@@ -74,6 +74,7 @@ public class QueryBuilder {
 	public final static String TYPE_DATETIME = "DateTime";
 	
 	public final static String TYPE_PERIOD = "Period";
+	public final static String TYPE_PERIOD_ENDONLY = "PeriodEnd";
 	public final static String TYPE_DATETIME_OR_PERIOD = "DateTime|Period";
 	public final static String TYPE_DATETIME_OR_PERIOD_OR_INSTANT = "DateTime|Period|Instant";
 
@@ -573,6 +574,9 @@ public class QueryBuilder {
 				} else if (type.equals(TYPE_PERIOD)) {
 					lPath = path+".start|null";
 					hPath = path+".end|null";
+				} else if (type.equals(TYPE_PERIOD_ENDONLY)) {
+					lPath = "null";
+					hPath = path;
 				} else if (type.equals(TYPE_DATETIME_OR_PERIOD)) {
 					lPath = path+"DateTime|"+path+"Period.start|null";
 					hPath = path+"DateTime|"+path+"Period.end|null";

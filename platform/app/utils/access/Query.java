@@ -140,6 +140,17 @@ public class Query {
 		//AccessLog.logQuery(apsId, properties, fields);
 	}	
 	
+	public Query() throws AppException {
+		this.properties = new HashMap<String, Object>();		
+		this.fields = Sets.create(APSEntry.groupingFields,"_id","created","owner");
+		this.cache = null;
+		this.apsId = null;			
+		this.context = null;
+		this.prev = null;
+		this.path = null;
+		process();		
+	}
+	
 	public Query withoutTime() throws AppException {
 		Query r = new Query(properties, fields, cache, apsId, context, true);
 		r.path = this.path;
@@ -342,6 +353,11 @@ public class Query {
 	
 	public long getMinCreatedTimestamp() {
 		if (minDateCreated != null) return minDateCreated.getTime();
+		return 0;
+	}
+	
+	public long getMaxCreatedTimestamp() {
+		if (maxDateCreated != null) return maxDateCreated.getTime();
 		return 0;
 	}
 	

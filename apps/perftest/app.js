@@ -278,6 +278,40 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		}));
 	};
 	
+	service.createRecord2 = function(session, recordId) {
+		var effDate = (rand(2000,2015) +"-" + twodigit(rand(1,12)) + "-" + twodigit(rand(1,28)));
+		var t = new Date();	
+		var payload = {
+				"resourceType" : "Observation",
+				"status": "preliminary", 				
+				"code": { 
+					"coding": [ 
+						{ 
+						  "system": "http://midata.coop", 						
+						  "code": "genome-data", 
+						  "display": "Genome Data Test" 
+						} 
+					] 
+	            }, 
+	            "effectiveDateTime": effDate, 
+	            "valueQuantity": { 
+	            	"value": recordId, 
+	            	"unit": "kg", 
+	            	"system": "http://unitsofmeasure.org", 
+	            	"code": "kg" 
+	            }	           
+		};
+		
+		return wrap($http({
+			  "method" : "POST",
+			  "url" : service.baseurl+"/fhir/Observation",
+			  "headers" : {
+				  "Authorization" : "Bearer "+session
+			  },
+			  "data" : payload
+		}));		
+	};
+	
 	service.wipeUser = function(session, userId) {
 		var data = {
 			"email" : "user"+userId+"@instant-mail.de", 			
@@ -368,7 +402,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		
 		server.baseurl = "https://localhost:9000";
 		
-		$scope.setup = { usersCreate : 1, numCreate : 1, numSync : 1, numBulk : 100, study : "", studyGroup: "all" };
+		$scope.setup = { usersCreate : 1, numCreate : 1, numSync : 1, numBulk : 100, study : "", studyGroup: "all", apiKey : "" };
 				
 		$scope.success = false;		
 					
@@ -530,6 +564,29 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 				});
 			});
 									
+		};
+		
+		 $scope.executeCreateRecordsParallel = function() {
+			
+			server.out = "";
+			server.time = server.requests = 0;
+			
+			server.out = "";
+			server.time = server.requests = 0;
+			
+			var f = function(i) { 
+				return function() { 
+					return server.createRecord2($scope.setup.apiKey, i);//.then(function() {																		
+						//return scedule(0, $scope.setup.numCreate, f2);						
+					//}); 
+				} 
+			};
+		
+			var part = Math.floor($scope.setup.usersCreate / $scope.setup.numSync); 
+			for (var x=0;x<$scope.setup.numSync;x++) {
+				scedule(part * x, part, f)
+				.then(function() { server.out += "ok"; $scope.success = true; });	
+			}		
 		};
 	}
 ]);

@@ -115,7 +115,7 @@ public class SessionAccessContext extends AccessContext {
 
 	@Override
 	public String getContextName() {		
-		return "session";
+		return "Session for "+accessorRole.toString();
 	}
 
 	@Override
@@ -135,6 +135,11 @@ public class SessionAccessContext extends AccessContext {
 	@Override
 	public MidataId getTargetAps() {
 		return cache.getAccountOwner();
+	}
+	
+	@Override
+	public UserRole getAccessorRole() {		
+		return accessorRole;
 	}
 	
 	/**

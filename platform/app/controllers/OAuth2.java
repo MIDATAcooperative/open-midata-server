@@ -265,7 +265,8 @@ public class OAuth2 extends Controller {
     		
             if (client_id == null) throw new BadRequestException("error.internal", "Missing client_id");
             
-    		ExtendedSessionToken tk = ExtendedSessionToken.decrypt(code);
+    		ExtendedSessionToken tk = ExtendedSessionToken.decrypt(code);    		
+    		
     		if (tk == null || tk.ownerId != null) throw new BadRequestException("error.internal", "invalid_grant");
     		if (tk.created + OAUTH_CODE_LIFETIME < System.currentTimeMillis()) throw new BadRequestException("error.internal", "invalid_grant");
     		//AccessLog.log("cs:"+tk.codeChallenge);
@@ -309,7 +310,8 @@ public class OAuth2 extends Controller {
     		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.LOGIN);
         } else throw new BadRequestException("error.internal", "Unknown grant_type");
                											
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user != null ? user.role : UserRole.ANY); 
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user != null ? user.role : UserRole.ANY);
+		
         OAuthRefreshToken refresh = createRefreshToken(tempContext, appInstance, aeskey);
         
         BSONObject q = RecordManager.instance.getMeta(tempContext, appInstance._id, "_query");
@@ -1041,7 +1043,7 @@ public class OAuth2 extends Controller {
 		  
 		  return Application.loginHelperResult(request, token, user, notok);
 		}
-			
+		
 		checkJoinWithCode(token, links);
 				
 		long ts4 = System.currentTimeMillis();

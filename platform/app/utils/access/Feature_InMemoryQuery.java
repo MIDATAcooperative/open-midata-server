@@ -190,6 +190,11 @@ public class Feature_InMemoryQuery extends APS {
 	public Set<MidataId> getAccess() throws AppException {		
 		return null;
 	}
+
+	@Override
+	public void reload() throws InternalServerException {
+        // No operation				
+	}
 	
 	
 

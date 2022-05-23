@@ -17,7 +17,10 @@
 
 package utils.access.index;
 
+import java.util.Set;
+
 import models.MidataId;
+import models.Model;
 import utils.db.LostUpdateException;
 import utils.exceptions.InternalServerException;
 
@@ -74,4 +77,20 @@ public class TimestampIndexPageModel implements BaseIndexPageModel {
 		return new TimestampIndexPageModel(IndexDefinition.getById(def._id));
 	}
 
+	@Override
+	public BaseIndexPageModel loadChildById(MidataId id) throws InternalServerException {
+		return IndexPageModel.getById(id);
+	}
+
+	@Override
+	public Set<? extends BaseIndexPageModel> getMultipleById(Set<MidataId> pageIds) throws InternalServerException {
+		return IndexPageModel.getMultipleByIdS(pageIds);
+	}
+
+	@Override
+	public void add() throws InternalServerException {
+		def.add();			
+	}
+
+	
 }

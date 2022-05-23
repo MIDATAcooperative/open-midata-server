@@ -68,5 +68,14 @@ public class ConsentToKeyIndexRoot extends BaseIndexRoot<ConsentToKeyIndexKey,Co
 		return new ConsentToKeyIndexKey();
 	}
 	
+	@Override
+	public BaseIndexPageModel createPage() {
+		IndexPageModel page = new IndexPageModel();
+		page._id = new MidataId();
+		page.rev = getRev();
+		page.creation = getCreated();
+		return page;
+	}
+	
 	
 }

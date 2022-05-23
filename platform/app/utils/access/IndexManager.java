@@ -123,7 +123,7 @@ public class IndexManager {
 		return new IndexPseudonym(obj.get("name").toString(), key);
 	}
 	
-	public StreamIndexRoot getStreamIndex(APSCache cache, MidataId user) throws AppException {
+	/*public StreamIndexRoot getStreamIndex(APSCache cache, MidataId user) throws AppException {
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, true);
 		APS aps = cache.getAPS(user);
 		BSONObject obj = aps.getMeta("_streamindex");
@@ -164,7 +164,7 @@ public class IndexManager {
 		} else {
 			return new StreamIndexRoot(pseudo.getKey(), def,false);
 		}
-	}
+	}*/
 	
 	public ConsentToKeyIndexRoot getConsentToKey(APSCache cache, MidataId user, MidataId id) throws AppException {
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, true);
@@ -344,8 +344,8 @@ public class IndexManager {
 	public void indexUpdate(APSCache cache, BaseIndexRoot index, MidataId executor, Set<MidataId> targetAps) throws AppException {
 		if (index instanceof IndexRoot) {
 			indexUpdate(cache, (IndexRoot) index, executor, targetAps);
-		} else if (index instanceof StreamIndexRoot) {
-			indexUpdate(cache, (StreamIndexRoot) index, executor);
+		//} else if (index instanceof StreamIndexRoot) {
+		//	indexUpdate(cache, (StreamIndexRoot) index, executor);
 		} else if (index instanceof StatsIndexRoot) {
 			indexUpdate(cache, (StatsIndexRoot) index, executor);
 		}
@@ -419,7 +419,7 @@ public class IndexManager {
 		
 	}
 	
-	public void indexUpdate(APSCache cache, StreamIndexRoot index, MidataId executor) throws AppException {
+	/*public void indexUpdate(APSCache cache, StreamIndexRoot index, MidataId executor) throws AppException {
 		
 		AccessLog.logBegin("start index update");
 		long startUpdate = System.currentTimeMillis();
@@ -479,7 +479,7 @@ public class IndexManager {
 			indexUpdate(cache, index, executor);
 		}
 		AccessLog.logEnd("end index update time= "+(System.currentTimeMillis() - startUpdate)+" ms");
-	}
+	}*/
 	
 public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor) throws AppException {
 		

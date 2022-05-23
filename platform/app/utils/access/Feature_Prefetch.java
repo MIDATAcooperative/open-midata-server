@@ -77,13 +77,13 @@ public class Feature_Prefetch extends Feature {
 		    APS stream = q.getCache().getAPS(record.stream);
 		    if (stream.hasAccess(RuntimeConstants.instance.publicGroup)) {
 		    	//AccessLog.log("public");
-		    	NChainedMap<String, Object> props = CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("owner", RuntimeConstants.instance.publicUser).map("quick",  record);
+		    	NChainedMap<String, Object> props = CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("owner", RuntimeConstants.instance.publicUser).mapNotEmpty("format", record.getFormatOrNull()).map("quick",  record);
 		    	if (!q.restrictedBy("public")) props = props.map("public","only");
 		    	partResult = QueryEngine.combine(q, "lookup-public", props, next);
 		    } else if (stream.isAccessible()) {	
 		    	//AccessLog.log("direct");		
 		    	MidataId owner = stream.getStoredOwner();
-		    	partResult = QueryEngine.combine(q, "lookup-direct", CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("owner", owner).map("quick",  record), next);
+		    	partResult = QueryEngine.combine(q, "lookup-direct", CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("owner", owner).mapNotEmpty("format", record.getFormatOrNull()).map("quick",  record), next);
 		    } else {
 		    	if (withUserGroup) {
 		    	  APSCache c2 = Feature_UserGroups.findApsCacheToUse(q.getCache(), record.stream);		    	
@@ -92,7 +92,7 @@ public class Feature_Prefetch extends Feature {
 		    		APS streamUG = c2.getAPS(record.stream);		    				    		
 		    		MidataId owner = streamUG.getStoredOwner();
 		    		if (nextWithUserGroup == null) nextWithUserGroup = new Feature_UserGroups(next);
-	    		    partResult = QueryEngine.combine(q, "lookup-ug", CMaps.map("_id", record._id).map("flat", "true").map("usergroup", c2.getAccountOwner()).map("owner", owner).map("stream", record.stream).map("quick",  record), nextWithUserGroup);
+	    		    partResult = QueryEngine.combine(q, "lookup-ug", CMaps.map("_id", record._id).map("flat", "true").map("usergroup", c2.getAccountOwner()).map("owner", owner).map("stream", record.stream).mapNotEmpty("format", record.getFormatOrNull()).map("quick",  record), nextWithUserGroup);
 	    		    if (partResult.isEmpty()) partResult = null;	    		   
 		    	  }
 		    	}
@@ -100,14 +100,14 @@ public class Feature_Prefetch extends Feature {
 		    	// This "study" section is just a hack to fetch researcher shared data faster until a general solution is found
 		    	if (partResult == null && q.restrictedBy("study") && !q.restrictedBy("owner"))	{
 		    		//AccessLog.log("study related variant");
-		    		partResult = QueryEngine.combine(q, "lookup-studyrelated", CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("study-related", true).map("quick",  record), next);
+		    		partResult = QueryEngine.combine(q, "lookup-studyrelated", CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("study-related", true).mapNotEmpty("format", record.getFormatOrNull()).map("quick",  record), next);
 		    		if (partResult.isEmpty()) partResult = null;
 		    	}
 		    	
 		    	if (partResult == null) {	
 		    		//AccessLog.log("last");		    		
 		    		//if (true) throw new NullPointerException();
-		    		partResult = QueryEngine.combine(q, "lookup-bad", CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("load-medium-streams", "true").map("quick",  record), next);
+		    		partResult = QueryEngine.combine(q, "lookup-bad", CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("load-medium-streams", "true").mapNotEmpty("format", record.getFormatOrNull()).map("quick",  record), next);
 		    	}
 		    	
 		    }		 

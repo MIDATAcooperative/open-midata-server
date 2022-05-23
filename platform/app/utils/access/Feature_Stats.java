@@ -215,6 +215,8 @@ public class Feature_Stats extends Feature {
 		String groupSystem = q.getStringRestriction("group-system");
 		APS myaps = q.getCache().getAPS(stream, owner);
 		if (!myaps.isAccessible()) return null;
+		Date calculated = new Date();
+		
 		BasicBSONObject obj = myaps.getMeta("_info");		
 		if (cached && obj != null && obj.containsField("apps")) { // Check for apps for compatibility with old versions 						
 			inf.count = obj.getInt("count");				
@@ -251,17 +253,19 @@ public class Feature_Stats extends Feature {
 			}			 													
 		}		
 		
-		if (cached && recs.size()>0 && inf.app!=null && !q.restrictedBy("deleted")) {			
-			BasicBSONObject r = new BasicBSONObject();			
-			r.put("formats", inf.format);
-			r.put("contents", inf.content);
-			r.put("apps", inf.app.toString());
-			r.put("count", inf.count);
-			r.put("newest", new Date(inf.newest));
-			r.put("oldest", new Date(inf.oldest));
-			r.put("newestRecord", inf.newestRecord.toString());
-			r.put("calculated", new Date());
-			myaps.setMeta("_info", r);			
+		if (cached && recs.size()>0 && inf.app!=null && !q.restrictedBy("deleted")) {	
+			if (myaps.getLastChanged() < calculated.getTime() - 1000) {
+				BasicBSONObject r = new BasicBSONObject();			
+				r.put("formats", inf.format);
+				r.put("contents", inf.content);
+				r.put("apps", inf.app.toString());
+				r.put("count", inf.count);
+				r.put("newest", new Date(inf.newest));
+				r.put("oldest", new Date(inf.oldest));
+				r.put("newestRecord", inf.newestRecord.toString());
+				r.put("calculated", calculated);
+				myaps.setMeta("_info", r);			
+			}
 		}
 		return inf;
 	}

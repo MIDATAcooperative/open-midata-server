@@ -18,33 +18,32 @@
 package utils.access.index;
 
 import java.util.HashMap;
-import java.util.List;
 
 import models.MidataId;
-import utils.access.DBRecord;
+import utils.AccessLog;
 import utils.access.EncryptedAPS;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
-public class StreamIndexRoot extends BaseIndexRoot<StreamIndexKey,DBRecord> {
+public class HistoryIndexRoot extends BaseIndexRoot<HistoryIndexKey, HistoryIndexKey> {
 
 	private EncryptedAPS model;
 	private byte[] key; 
 	
-	public int MIN_DEGREE() { return 200; };
+	public int MIN_DEGREE() { return 2000; };
 		
-	public StreamIndexRoot(byte[] key, EncryptedAPS model) throws AppException {
+	public HistoryIndexRoot(byte[] key, EncryptedAPS model) throws AppException {
 	    this.key = key;
 		this.model = model;
-		ApsIndexPageModel ai = new ApsIndexPageModel(model);
+		HistoryIndexPageModel ai = new HistoryIndexPageModel(model);
 		this.rootPage = new IndexPage(this.key, ai, this, 1);		
 		if (ai.getEnc()==null) {
 			locked = true;
 			this.rootPage.initAsRootPage();
 		}
 		this.btree = new BTree(this, this.rootPage);
-		this.loadedPages = new HashMap<MidataId, IndexPage<StreamIndexKey,DBRecord>>();
+		this.loadedPages = new HashMap<MidataId, IndexPage<HistoryIndexKey,HistoryIndexKey>>();
 		
 	}
 		
@@ -61,34 +60,29 @@ public class StreamIndexRoot extends BaseIndexRoot<StreamIndexKey,DBRecord> {
 	*/
 		
 
-	public void addEntry(DBRecord record) throws InternalServerException, LostUpdateException {
+	public void addEntry(HistoryIndexKey history) throws InternalServerException, LostUpdateException {
 		modCount++;
-		//if (modCount > 100) lockIndex();
-		if (record._id==null) throw new NullPointerException();
-		
-		StreamIndexKey key = new StreamIndexKey(record);
-		btree.insert(key);						
+		AccessLog.log("history-add: "+history.toString());
+		//if (modCount > 100) lockIndex();						
+		btree.insert(history);						
 	}
 	
-	public boolean removeEntry(DBRecord record) throws InternalServerException, LostUpdateException {
+	public boolean removeEntry(HistoryIndexKey history) throws InternalServerException, LostUpdateException {
 		modCount++;
-		//if (modCount > 100) lockIndex();
-		//if (record.data == null) throw new NullPointerException();
-		
-		StreamIndexKey key = new StreamIndexKey(record);
-		return btree.delete(key) != null;
+		//if (modCount > 100) lockIndex();		
+		return btree.delete(history) != null;
 	}
 	
 
 
 	@Override
-	public StreamIndexKey createKey() {
-		return new StreamIndexKey();
+	public HistoryIndexKey createKey() {
+		return new HistoryIndexKey();
 	}
 	
 	@Override
 	public BaseIndexPageModel createPage() {
-		ApsExtraIndexPageModel page = new ApsExtraIndexPageModel();
+		HistoryExtraIndexPageModel page = new HistoryExtraIndexPageModel();
 		page._id = new MidataId();
 		page.rev = getRev();		
 		return page;

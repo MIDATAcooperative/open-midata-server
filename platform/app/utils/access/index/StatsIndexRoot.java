@@ -75,5 +75,14 @@ public class StatsIndexRoot extends TsBaseIndexRoot<StatsIndexKey,StatsIndexKey>
 		return new StatsIndexKey();
 	}
 	
+	@Override
+	public BaseIndexPageModel createPage() {
+		IndexPageModel page = new IndexPageModel();
+		page._id = new MidataId();
+		page.rev = getRev();
+		page.creation = getCreated();
+		return page;
+	}
+	
 	
 }

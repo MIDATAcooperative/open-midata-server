@@ -628,10 +628,9 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		builder.restriction("action", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.provision.action");
 		builder.restriction("consentor", false, null, "fhirConsent.performer");
 		builder.restriction("organization", false, "Organization", "fhirConsent.organization");
-		builder.restriction("category", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.category");
-		builder.setDateToString(true);
-		builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.dateTime");
-		builder.restriction("period", false, QueryBuilder.TYPE_PERIOD, "fhirConsent.provision.period");
+		builder.restriction("category", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.category");		
+		builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "dateOfCreation");
+		builder.restriction("period", false, QueryBuilder.TYPE_PERIOD_ENDONLY, "validUntil");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "fhirConsent.status");
 		builder.restriction("purpose", false, QueryBuilder.TYPE_CODING, "fhirConsent.provision.purpose");
 								

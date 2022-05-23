@@ -79,7 +79,7 @@ export default {
 	    },
 	
 	    showDetails(record) {
-            this.$router.push({ path : "./recorddetail", query : { recordId : record._id } });
+            this.$router.push({ path : "./recorddetail", query : { recordId : record._id+'.'+this.setup.aps } });
 	    },
 	
 	    removeRecord(record) {

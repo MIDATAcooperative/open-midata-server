@@ -231,7 +231,7 @@ export default {
         unshare() {         
             const { $data } = this, me = this;
             var data = {
-                    "properties" : sharingQuery(), 
+                    "properties" : me.sharingQuery(), 
                     "target-study" : $data.studyid, 
                     "target-study-group" : $data.crit.studyGroup
                 };

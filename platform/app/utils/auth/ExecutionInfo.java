@@ -197,7 +197,7 @@ public class ExecutionInfo {
         if (KeyManager.instance.unlock(appInstance._id, authToken.aeskey) == KeyManager.KEYPROTECTION_FAIL) {
         	OAuth2.invalidToken(); 
         }
-                        				       
+               				       
 		AccessContext tempContext = ContextManager.instance.createLoginOnlyContext(authToken.appInstanceId, authToken.role, appInstance);
 		
 		if (appInstance.sharingQuery == null) {

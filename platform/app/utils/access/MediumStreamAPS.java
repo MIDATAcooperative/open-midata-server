@@ -271,5 +271,10 @@ public class MediumStreamAPS extends APS {
 		throw new NullPointerException();
 	}
 
+	@Override
+	public void reload() throws InternalServerException {
+				
+	}
+
 
 }

@@ -209,7 +209,7 @@ public class ExtendedSessionToken extends PortalSessionToken {
 		result.codeChallengeMethod = this.codeChallengeMethod;
 		result.created = System.currentTimeMillis();
 		result.device = this.device;
-		result.state = this.state;
+		result.state = this.state;		
 		
 		return result;
 	}

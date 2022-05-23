@@ -17,7 +17,12 @@
 
 package utils.access.index;
 
+import java.util.Set;
+
 import models.MidataId;
+import models.Model;
+import utils.access.EncryptionUtils;
+import utils.collections.CMaps;
 import utils.db.LostUpdateException;
 import utils.exceptions.InternalServerException;
 
@@ -40,4 +45,18 @@ public interface BaseIndexPageModel {
 	public MidataId getId();
 	
 	public BaseIndexPageModel reload() throws InternalServerException;
+	
+	public BaseIndexPageModel loadChildById(MidataId id) throws InternalServerException;
+	
+	public Set<? extends BaseIndexPageModel> getMultipleById(Set<MidataId> pageIds) throws InternalServerException;
+	
+	public default byte[] encrypt(byte[] key, byte[] data) throws InternalServerException {
+		return EncryptionUtils.encrypt(key, data);
+	}
+	
+	public default byte[] decrypt(byte[] key, byte[] data) throws InternalServerException {
+		return EncryptionUtils.decrypt(key, data);
+	}
+	
+	public void add() throws InternalServerException;
 }
