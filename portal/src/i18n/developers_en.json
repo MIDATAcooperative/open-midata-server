@@ -158,7 +158,7 @@
        "secret" : "Application Secret was required by the old API; it stands for backward compatibility.",
        "mustParticipateInStudy" : "Users must participate in research project in order to use this application.",
        "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to @PRODUCT using the application. The code is not case sensitive.",
-       "send_reports" : "Notify developer ({{user}}) by email on errors caused by this application.",
+       "send_reports" : "Notify app creator and developer team by email on errors caused by this application.",
        "developerTeam" : "Enter comma separated list of email addresses of other developers on that @PRODUCT instance, that develop this application.",
        "code_challenge" : "During OAuth2 login, the calling application must use PKCE (Proof Key for Code Exchange) standard",
        "createendpoint" : "Create non-project related endpoint. Check only if you do NOT plan to use this endpoint with a project.",
@@ -472,6 +472,7 @@
          "auth2factorsetup" : "2FA Setup",
          "auth2factor" : "2FA",
          "birthday_set" : "Enter date of birth",
+         "gender_set" : "Enter gender",
          "unlock_code" : "Application unlock code"
        }
     },

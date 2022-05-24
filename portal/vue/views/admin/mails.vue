@@ -69,7 +69,7 @@ export default {
         const { $data } = this, me = this;
         me.doBusy(server.post(jsRoutes.controllers.BulkMails.get().url, { properties:{}, fields:["creator", "creatorName", "developerTeam", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "progressId", "progressCount"] })
     	.then(function(results) {
-		    $data.mails = me.process(results.data);
+		    $data.mails = me.process(results.data, { sort : "-created" });
     	}));
     }
 }

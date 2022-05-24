@@ -20,8 +20,10 @@ package utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import models.Developer;
 import models.MidataId;
 import models.Plugin;
+import models.enums.UserStatus;
 import play.mvc.Http.Request;
 import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
@@ -75,7 +77,7 @@ public class ErrorReporter {
 				return;
 			}
 			
-			Plugin plg = Plugin.getById(pluginId, Sets.create("creatorLogin", "name", "filename", "sendReports"));
+			Plugin plg = Plugin.getById(pluginId, Sets.create("creatorLogin", "name", "filename", "sendReports", "developerTeam"));
 			if (plg==null || plg.creatorLogin==null) {
 				report(fromWhere, request, e);
 				return;
@@ -86,8 +88,17 @@ public class ErrorReporter {
 			
 			if (plg.sendReports) {						
 				MailUtils.sendTextMail(MailSenderType.STATUS, plg.creatorLogin, plg.creatorLogin, "Error Report: ["+plg.name+"] "+InstanceConfig.getInstance().getPortalServerDomain(), txt);
+				
+				if (plg.developerTeam != null) {
+					for (MidataId teamMember : plg.developerTeam) {
+						Developer dev = Developer.getById(teamMember, Developer.ALL_USER);
+						if (dev != null && (dev.status == UserStatus.ACTIVE || dev.status == UserStatus.NEW)) {
+							MailUtils.sendTextMail(MailSenderType.STATUS, dev.email, dev.email, "Error Report: ["+plg.name+"] "+InstanceConfig.getInstance().getPortalServerDomain(), txt);
+						}
+					}
+				}
 			} 
-			
+									
 			MailUtils.sendTextMail(MailSenderType.STATUS, bugReportEmail, bugReportName, "Error Report: ["+plg.name+"] "+InstanceConfig.getInstance().getPortalServerDomain(), txt);
 			Stats.addComment("Error: "+e.getClass().getName()+": "+e.getMessage());
 		} catch (InternalServerException e2) {

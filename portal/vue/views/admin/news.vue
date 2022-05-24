@@ -74,7 +74,7 @@ export default {
             const { $data } = this, me = this;
             me.doBusy(news.get({ }, ["content", "created", "title", "studyId", "url", "expires", "language"])
             .then(function(results) {
-                $data.news = me.process(results.data);
+                $data.news = me.process(results.data, { sort : "-created" });
             }));
         }
     },

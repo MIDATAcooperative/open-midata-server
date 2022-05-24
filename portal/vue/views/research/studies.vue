@@ -62,7 +62,7 @@ export default {
 			const { $data } = this, me = this;
 		    me.doBusy(server.get(jsRoutes.controllers.research.Studies.list().url)
 		    .then(function(data) { 				
-				$data.results = me.process(data.data, { filter : { name : "" }});	
+				$data.results = me.process(data.data, { filter : { name : "" }, ignoreCase : true, sort : "-createdAt" });	
 		    }));
 	    }
     },
