@@ -44,7 +44,7 @@ public class FileStorage {
 	 * Stores an input file with GridFS, which automatically divides a file into chunks of 265 kB.
 	 */
 	public static MidataId store(InputStream file, MidataId id, int index, String filename, String contentType) throws DatabaseException {
-		AccessLog.log("store id = ", id.toString(), " filename=", filename);
+		//AccessLog.log("store id = ", id.toString(), " filename=", filename);
 		GridFSBucket fileSystem = GridFSBuckets.create(DBLayer.getFSDB(), FILE_STORAGE);		
 		
 		GridFSUploadOptions options = new GridFSUploadOptions()
