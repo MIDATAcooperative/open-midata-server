@@ -99,7 +99,7 @@ export default {
 	        me.doBusy(apps.getApps( $data.search.criteria, [ "creator", "creatorLogin", "developerTeam", "filename", "version", "name", "description", "tags", "targetUserRole", "spotlighted", "type", "status", "orgName", "publisher"])
 	        .then(function(data) {                
                 for (let app of data.data) { app.search = app.name.toLowerCase()+" "+app.filename.toLowerCase() }
-                $data.apps = me.process(data.data, { filter : { search:"", orgName:"" }}); 
+                $data.apps = me.process(data.data, { filter : { search:"", orgName:"" }, ignoreCase : true, sort : "name" }); 
             }));
 	    },
 	

@@ -582,7 +582,9 @@ public class RecordManager {
 		  FileStorage.store(EncryptionUtils.encryptStream(kdata, countInput), id, 0, fileName, contentType);
 		} catch (Exception e) {
 		  System.out.println("FAIL UPLOAD");
-		  FileStorage.delete(id.toObjectId());
+		  try {
+		    FileStorage.delete(id.toObjectId());
+		  } catch (Exception e2) { }
 		  throw new InternalServerException("error.internal", e);
 		}
 		System.out.println("EXIT UPLOAD");
