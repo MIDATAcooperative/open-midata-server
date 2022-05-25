@@ -478,7 +478,7 @@ export default {
 							}
 						}
 					};
-					if (dat.contents && dat.contents.length == 1) return;
+					if (dat.contents && dat.contents.length == 1 && (!dat.children || dat.children.length==0)) return;
 					if (add(grp)) {
 						recproc(dat);
 					}

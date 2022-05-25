@@ -132,7 +132,10 @@
        "passcode" : "Please choose a different passcode!",
        "plugin" : "An application with the same name already exists.",
        "study" : "A research project with this name already exists.",
-       "endpoint" : "An endpoint with this URL already exists"
+       "endpoint" : "An endpoint with this URL already exists",
+       "content" : "A content type with this name already exists.",
+       "group" : "A content group with this name already exists.",
+       "code" : "A code with this code and codesystem already exists."
      },
 
      "blocked" : {

@@ -47,8 +47,17 @@ public class GroupContent extends Model {
 		return Model.getAll(GroupContent.class, GroupContent.collection, CMaps.map("deleted", CMaps.map("$ne", true)), GroupContent.ALL);
 	}
 	
+	public static Set<GroupContent> getByContent(String content) throws InternalServerException {
+		return Model.getAll(GroupContent.class, GroupContent.collection, CMaps.map("content", content).map("deleted", CMaps.map("$ne", true)), GroupContent.ALL);
+	}
+	
 	public static Set<GroupContent> getAllChanged() throws InternalServerException {
 		return Model.getAll(GroupContent.class, GroupContent.collection, CMaps.map("lastUpdated", CMaps.map("$gt", 0)), GroupContent.ALL);
+	}
+	
+	public void delete() throws InternalServerException {
+		Model.set(GroupContent.class, collection, _id, "lastUpdated", System.currentTimeMillis());
+		Model.set(GroupContent.class, collection, _id, "deleted", true);	    
 	}
 	
 }
