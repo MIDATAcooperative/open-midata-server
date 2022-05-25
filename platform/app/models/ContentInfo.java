@@ -26,6 +26,7 @@ import models.enums.APSSecurityLevel;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
+import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
@@ -153,12 +154,20 @@ public class ContentInfo extends Model {
 		return Model.getAll(ContentInfo.class, collection, properties, fields);
 	}
 	
+	public boolean exists() throws InternalServerException {
+		return Model.exists(ContentInfo.class, collection, CMaps.map("content", content).map("_id", CMaps.map("$ne", _id)).map("deleted", CMaps.map("$ne", true)));
+	}
+	
 	public static void add(ContentInfo ci) throws InternalServerException {
 		Model.insert(collection, ci);				
 	}
 	
 	public static void upsert(ContentInfo cc) throws InternalServerException {
 	    Model.upsert(collection, cc);
+	}
+	
+	public static ContentInfo getById(MidataId id) throws AppException {
+		return Model.get(ContentInfo.class, collection, CMaps.map("_id", id), ALL);
 	}
 	  
 	public static void delete(MidataId ccId) throws InternalServerException {

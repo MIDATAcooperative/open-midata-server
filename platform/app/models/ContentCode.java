@@ -134,6 +134,10 @@ public class ContentCode extends Model  {
 		  return result;
 	  }
 	  
+	  public boolean exists() throws InternalServerException {
+		  return Model.exists(ContentCode.class, collection, CMaps.map("system", system).map("code", code).map("_id", CMaps.map("$ne", _id)).map("deleted", CMaps.map("$ne", true)));
+	  }
+	  
 	  public static void add(ContentCode cc) throws InternalServerException {
 		  Model.insert(collection, cc);
 	  }

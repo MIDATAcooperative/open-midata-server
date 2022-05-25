@@ -18,7 +18,7 @@
 <template>
     <div  class="midata-overlay borderless">
         <panel :title="getTitle()" :busy="isBusy">
-        <error-box :error="error"></error-box>
+        
 				
 		<p v-t="'content.intro'"></p>
 		<div class="row">
@@ -87,7 +87,7 @@
 	           </form-group>
               <form-group name="group" label="content.group">
 	             <select class="form-control" v-validate v-model="currentContent.currentGroup">
-                     <option v-for="group in orderedGroups" :key="group._id" :value="group.name">{{ group.label[lang] }}</option>
+                     <option v-for="group in orderedGroups" :key="group.name" :value="group.name">{{ group.label[lang] }}</option>
                   </select>
 	           </form-group>
 			   <form-group name="defaultCode" label="content.defaultCode">
@@ -135,6 +135,8 @@
 			   </form-group>
 		</div>
 		</form>
+		
+		<error-box :error="error"></error-box>
  		     
         </panel>	    
     </div>
@@ -155,8 +157,8 @@ var lookupCodes = function(entry) {
 		entry.codes = [];
 		return formats.searchCodes({ content : entry.content },["_id", "code","system","version","display","content"])
 		.then(function(result) {			
-		    entry.codes = [];
-			for (var i=0;i<result.data.length;i++) {
+		    entry.codes = [];		    
+			for (var i=0;i<result.data.length;i++) {			    
 				entry.codes.push(result.data[i]);
 			}
 			return entry;
@@ -396,8 +398,7 @@ export default {
 
 			function deleteContent() {
 				if (withContent && $data.currentContent && !$data.currentContent.isNew) {
-					return me.removeFromGroups($data.currentContent.oldName)
-					.then(() => { formats.deleteContent($data.currentContent)});
+					return formats.deleteContent($data.currentContent);
 				} else return Promise.resolve();
 			}
 
@@ -418,38 +419,39 @@ export default {
 			return new Promise((resolve, reject) => {
 				let waitFor = [];
 				let waitFor2 = [];
-				var searchresult = [];
-				var already = {};
+				let searchresult = [];
+				let already = {};
 				
-				var add = function(entry) {
+				let add = function(entry) {				    				    
 					if (!already[entry.key]) { searchresult.push(entry); already[entry.key] = entry; return true; }
 					return false;
 				};
 				
-				var lookup = function(content) {
+				let lookup = function(content) {
 					return lookupCodes(content);		      
 				};
 				
-				var addgroup = function(dat) {
-					var grp = { key : "grp "+dat.name, group : dat.name, system : dat.system, display : dat.label[getLocale()] || dat.label.en || dat.name, contents:[] };
-					var addgrp = function(what) {				
+				let addgroup = function(dat) {
+					let grp = { key : "grp_"+dat.name, group : dat.name, system : dat.system, display : dat.label[getLocale()] || dat.label.en || dat.name, contents:[] };
+					let addgrp = function(what) {				
 						grp.contents.push(what); 
 					};
-					var recproc = function(dat) {
-						if (dat.contents && dat.contents.length > 1) {
-							for (var i2=0;i2<dat.contents.length;i2++) {
+					let recproc = function(dat) {
+						if (dat.contents && dat.contents.length > 0) {
+							for (let i2=0;i2<dat.contents.length;i2++) {
 								waitFor2.push(lookupContent(dat.contents[i2]).then(addgrp));
 							}
 						}
 						if (dat.children) {
-							for (var i3=0;i3<dat.children.length;i3++) {
+							for (let i3=0;i3<dat.children.length;i3++) {
 								
 								let grp = me.getGroupByGroupname(dat.children[i3].system, dat.children[i3].name);
-								addgrp({ key : "grp "+grp.name, group : grp.name, system : grp.system, display : grp.label[getLocale()] || grp.label.en || grp.name, contents:[] });					    
+								addgrp({ key : "grp_"+grp.name, group : grp.name, system : grp.system, display : grp.label[getLocale()] || grp.label.en || grp.name, contents:[] });					    
 							}
 						}
 					};
-					if (dat.contents && dat.contents.length == 1) return;
+					
+					// Makes no sense anymore // if (dat.contents && dat.contents.length == 1) return;
 					if (add(grp)) {
 						recproc(dat);
 					}
@@ -457,41 +459,39 @@ export default {
 			
 				waitFor.push(formats.listCodes()
 				.then(function(result) {
-					var l = result.data.length;		
-					for (var i=0;i<l;i++) {
-						var dat = result.data[i];
-						//console.log(dat.code);
+					let l = result.data.length;		
+					for (let i=0;i<l;i++) {
+						let dat = result.data[i];						
 						if (dat.code.toLowerCase() == what) {
 							waitFor2.push(lookupContent(dat.content)
 							.then(lookup).then(add));
 						}
-					}
-					//console.log(searchresult);
+					}					
 				}));
 			
 				waitFor.push(formats.listContents()
 				.then(function(result) {
-					var l = result.data.length;		
-					for (var i=0;i<l;i++) {
-						var dat = result.data[i];
-						for (var lang in dat.label) {
+					let l = result.data.length;		
+					for (let i=0;i<l;i++) {
+						let dat = result.data[i];
+						for (let lang in dat.label) {
 						if (dat.label[lang].toLowerCase().indexOf(what) >= 0) {					 
 							waitFor2.push(lookupCodes({ key : dat.content, content : dat.content, display : dat.label[getLocale()] || dat.label.en || dat.content, format : dat.resourceType })
 							.then(add));					
 						}
 						}
 					}
-					//console.log(searchresult);
+				
 				}));	
 			
 			
 				waitFor.push(formats.listGroups()
 				.then(function(result) {
-					var l = result.data.length; 		
-					for (var i2=0;i2<l;i2++) { 
-						var dat = result.data[i2];
-						for (var lang in dat.label) {					
-						if (dat.label[lang].toLowerCase().indexOf(what) >= 0 || dat.name.toLowerCase().indexOf(what) >= 0) {					 
+					let l = result.data.length; 		
+					for (let i2=0;i2<l;i2++) { 
+						let dat = result.data[i2];
+						for (let lang in dat.label) {					
+						if (dat.label[lang].toLowerCase().indexOf(what) >= 0 || dat.name.toLowerCase().indexOf(what) >= 0) {						    					
 							addgroup(dat);
 							
 						}
@@ -502,7 +502,7 @@ export default {
 				waitFor.push(apps.getApps({ filename : what}, ["defaultQuery"])
 				.then(function(r) {
 					if (r.data && r.data.length == 1) {
-						var q = r.data[0].defaultQuery;
+						let q = r.data[0].defaultQuery;
 						if (q.content) {
 							
 						}
@@ -518,7 +518,7 @@ export default {
 		search() {
 			const { $data, $route, $router } = this, me = this;
 			//$data.newentry.choices = [];
-			var what = $data.newentry.search.toLowerCase();
+			let what = $data.newentry.search.toLowerCase();
 			me.doBusy(me.fullTextSearch(what).then((result) => $data.newentry.choices=result));
 		},
 

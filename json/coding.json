@@ -18,7 +18,7 @@
 {"_id":{"$oid":"5666a53faa4c3cbdf82292ce"},"system":"http://midata.coop","display":"Weight","code":"body/weight","content":"body/weight"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292cf"},"system":"http://midata.coop","display":"BMI","code":"body/bmi","content":"body/bmi"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292d0"},"system":"http://midata.coop","display":"Fat","code":"body/fat","content":"body/fat"}
-{"_id":{"$oid":"56fb890b1911127c0c2cc641"},"system":"http://loinc.org","code":"3141-9","display":"Body Weight","content":"body/weight"}
+{"_id":{"$oid":"56fb890b1911127c0c2cc641"},"system":"http://loinc.org","code":"3141-9","display":"Body weight Measured","content":"body/weight"}
 {"_id":{"$oid":"56fb890b1911127c0c2cc643"},"system":"http://loinc.org","code":"61150-9","display":"Patient Diary","content":"diary"}
 {"_id":{"$oid":"56fba579116010661a49ad2c"},"system":"http://midata.coop","display":"Subjective Condition","code":"subjective-condition","content":"subjective-condition"}
 {"_id":{"$oid":"56fba579116010661a49ad2d"},"system":"http://midata.coop","display":"Height","code":"body/height","content":"body/height"}
@@ -124,7 +124,7 @@
 {"_id":{"$oid":"5718ec14aed645098e8cee1b"},"system":"http://midata.coop","code":"DataElement","display":"DataElement","content":"DataElement"}
 {"_id":{"$oid":"5718ec14aed645098e8cee1c"},"system":"http://midata.coop","code":"Conformance","display":"Conformance","content":"Conformance"}
 {"_id":{"$oid":"5718ec14aed645098e8cee1d"},"system":"http://midata.coop","code":"Device","display":"Device","content":"Device"}
-{"_id":{"$oid":"57837400aed6450bf92d095e"},"system":"http://loinc.org","code":"55417-0","display":"Blood Pressure","content":"body/bloodpressure"}
+{"_id":{"$oid":"57837400aed6450bf92d095e"},"system":"http://loinc.org","code":"55417-0","display":"Short blood pressure panel","content":"body/bloodpressure"}
 {"_id":{"$oid":"57ac268caed645128457f61f"},"system":"http://loinc.org","code":"8302-2","display":"Body Height","content":"body/height"}
 {"_id":{"$oid":"57c55b8baed6450e7affb2d9"},"system":"http://loinc.org","code":"11502-2","display":"Laboratory Report","content":"health/laboratory"}
 {"_id":{"$oid":"57ce804aaed6451b4abd172a"},"system":"http://loinc.org","code":"41982-0","display":"Percentage of body fat measured","content":"body/fat"}
@@ -191,7 +191,7 @@
 {"_id":{"$oid":"5877408faed645135829ffbf"},"system":"http://snomed.info/sct","code":"160786009","display":"Personal Milestones","content":"milestones"}
 {"_id":{"$oid":"587e0783aed6452205545ffc"},"system":"http://loinc.org","code":"72514-3","display":"Pain severity - 0-10 verbal numeric rating","content":"survey/pain-severity"}
 {"_id":{"$oid":"587f4ed4aed645217a8c1a33"},"system":"http://loinc.org","code":"41950-7","display":"Steps [24 hour]","content":"activities/steps"}
-{"_id":{"$oid":"587f4ed4aed645217a8c1a34"},"system":"http://loinc.org","code":"29463-7","display":"Body Weight","content":"body/weight"}
+{"_id":{"$oid":"587f4ed4aed645217a8c1a34"},"system":"http://loinc.org","code":"29463-7","display":"Body weight","content":"body/weight"}
 {"_id":{"$oid":"587f507daed645217a8c1a35"},"system":"http://hl7.org/fhir/sid/icd-10","code":"C91.0","display":"Acute lymphocytic leukemia","content":"condition/icd-10-c9x"}
 {"_id":{"$oid":"587f507daed645217a8c1a36"},"system":"http://hl7.org/fhir/sid/icd-10","code":"C92.0","display":"Acute myelogenous leukemia","content":"condition/icd-10-c9x"}
 {"_id":{"$oid":"587f53fdaed645217a8c1a39"},"system":"http://midata.coop","code":"FieldOfOccupation","display":"Field Of Occupation","content":"work/field-of-occupation"}
@@ -365,7 +365,6 @@
 {"_id":{"$oid":"6288e46902da8556e91f79ea"},"system":"http://snomed.info/sct","code":"226452008","display":"Fruit intake (observable entity)","content":"snomed/226452008"}
 {"_id":{"$oid":"628a54ab6020a06279c0cf68"},"system":"http://snomed.info/sct","code":"386725007","display":"Body temperature (observable entity)","content":"body/temperature"}
 {"_id":{"$oid":"6289553602da8556e91f7a0d"},"system":"http://snomed.info/sct","code":"226427006","display":"Red meat intake (observable entity)","content":"snomed/226427006"}
-{"_id":{"$oid":"628955f202da8556e91f7a0f"},"system":"http://snomed.info/sct","code":"226461008","display":"Confectionery intake (observable entity)","content":"snomed/226461008"}
 {"_id":{"$oid":"6289627d02da8556e91f7a19"},"system":"http://snomed.info/sct","code":"897148007","display":"Alcoholic beverage intake (observable entity)","content":"snomed/897148007"}
 {"_id":{"$oid":"628965ed6020a06279c0ce70"},"system":"http://snomed.info/sct","code":"1137437005","display":"Adequate sleep (finding)","content":"snomed/1137437005"}
 {"_id":{"$oid":"628959bd6020a06279c0ce59"},"system":"http://snomed.info/sct","code":"226458007","display":"Sugary food intake (observable entity)","content":"snomed/226458007"}
@@ -375,3 +374,27 @@
 {"_id":{"$oid":"6289540b6020a06279c0ce47"},"system":"http://snomed.info/sct","code":"874875003","display":"Protein and/or protein derivative intake (observable entity)","content":"snomed/874875003"}
 {"_id":{"$oid":"6289566102da8556e91f7a11"},"system":"http://snomed.info/sct","code":"230094004","display":"Spicy food intake (observable entity)","content":"snomed/230094004"}
 {"_id":{"$oid":"628a543c6020a06279c0cf67"},"system":"http://snomed.info/sct","code":"271649006","display":"Systolic blood pressure (observable entity)","content":"body/blood/systolic"}
+{"_id":{"$oid":"628dcb71c343d84593f56864"},"system":"http://snomed.info/sct","code":"408864009","display":"Vaccination status (observable entity)","content":"snomed/408864009"}
+{"_id":{"$oid":"628d45bbc343d84593f567d9"},"system":"http://snomed.info/sct","code":"27113001","display":"Body weight (observable entity)","content":"body/weight"}
+{"_id":{"$oid":"628dce8ec343d84593f5686f"},"system":"http://snomed.info/sct","code":"11609002","display":"Relaxation exercise (regime/therapy)","content":"snomed/11609002"}
+{"_id":{"$oid":"628d160ec343d84593f567a7"},"system":"http://snomed.info/sct","code":"170833002","display":"Blood disorder treatment started (situation)","content":"snomed/170833002"}
+{"_id":{"$oid":"628d3d7fcf4e953049df44b7"},"system":"http://loinc.org","code":"59408-5","display":"Oxygen saturation in Arterial blood by Pulse oximetry","content":"body/oxygen-saturation"}
+{"_id":{"$oid":"628cfa31c343d84593f56746"},"system":"http://midata.coop/prisms","code":"selfAssessment","display":"Self-assessment of the suicidal urge and the personal meaning of this urge by the affected person using the PRISM-S method","content":"prisms/selfAssessment"}
+{"_id":{"$oid":"628bb80489a676219ac40350"},"system":"http://snomed.info/sct","code":"444107005","display":"Exposure to communicable disease (event)","content":"snomed/444107005"}
+{"_id":{"$oid":"628beedd89a676219ac40360"},"system":"http://snomed.info/sct","code":"39104002","display":"Illness (finding)","content":"snomed/39104002"}
+{"_id":{"$oid":"628d44eacf4e953049df44b9"},"system":"http://snomed.info/sct","code":"50373000","display":"Body height measure (observable entity)","content":"body/height"}
+{"_id":{"$oid":"628bf60289a676219ac40366"},"system":"http://snomed.info/sct","code":"248536006","display":"Finding of functional performance and activity (finding)","content":"snomed/248536006"}
+{"_id":{"$oid":"628d18b8cf4e953049df44b3"},"system":"http://snomed.info/sct","code":"764444002","display":"Erythrocyte alloimmunization (disorder)","content":"snomed/764444002"}
+{"_id":{"$oid":"628dc96fc343d84593f56862"},"system":"http://snomed.info/sct","code":"105421008","display":"Educational achievement (observable entity)","content":"snomed/105421008"}
+{"_id":{"$oid":"628d17aecf4e953049df44b1"},"system":"http://snomed.info/sct","code":"82423001","display":"Chronic pain (finding)","content":"snomed/82423001"}
+{"_id":{"$oid":"628befd089a676219ac40362"},"system":"http://snomed.info/sct","code":"769167005","display":"Vaso-occlusive pain co-occurrent and due to sickle cell disease (disorder)","content":"snomed/769167005"}
+{"_id":{"$oid":"628bba212db7632e9c1d331c"},"system":"http://snomed.info/sct","code":"12994004","display":"Asphyxiation by environmental oxygen lack","content":"snomed/12994004"}
+{"_id":{"$oid":"628bf2bb2db7632e9c1d3357"},"system":"http://snomed.info/sct","code":"365092005","display":"Finding related to ability to mobilize (finding)","content":"snomed/365092005"}
+{"_id":{"$oid":"628bf4572db7632e9c1d3359"},"system":"http://snomed.info/sct","code":"365178001","display":"Finding related to ability to perform personal care activity (finding)","content":"snomed/365178001"}
+{"_id":{"$oid":"628d3d51c343d84593f567d2"},"system":"http://loinc.org","code":"2708-6","display":"Oxygen saturation in Arterial blood","content":"body/oxygen-saturation"}
+{"_id":{"$oid":"628bb8e92db7632e9c1d3312"},"system":"http://snomed.info/sct","code":"1004049005","display":"Exposure to extreme temperature (event)","content":"snomed/1004049005"}
+{"_id":{"$oid":"628d46b9c343d84593f567da"},"system":"http://loinc.org","code":"85354-9","display":"Blood pressure panel with all children optional","content":"body/bloodpressure"}
+{"_id":{"$oid":"628bb95f2db7632e9c1d3314"},"system":"http://snomed.info/sct","code":"102420004","display":"Exposure to pollution","content":"snomed/102420004"}
+{"_id":{"$oid":"628ddd22cf4e953049df4520"},"system":"http://snomed.info/sct","code":"226463006","display":"Sweets intake (observable entity)","content":"snomed/226463006"}
+{"_id":{"$oid":"628ddc02c343d84593f56899"},"system":"http://snomed.info/sct","code":"226382001","display":"Coffee intake (observable entity)","content":"snomed/226382001"}
+{"_id":{"$oid":"628d1957c343d84593f567ac"},"system":"http://snomed.info/sct","code":"124134002","display":"Deficiency of glucose-6-phosphate dehydrogenase (disorder)","content":"snomed/124134002"}
