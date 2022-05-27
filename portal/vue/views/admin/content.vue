@@ -45,7 +45,7 @@
 		    </td>
 		    <td>
 		      <div v-for="code in choice.codes" :key="JSON.stringify(code)"><a href="javascript:" @click="addContent(choice, code)">{{ code.system }} {{ code.code }}</a></div>
-		      <div v-for="content in choice.contents" :key="JSON.stringify(content)"><a href="javascript:" @click="addContent(content);">{{ content.display }}</a><span v-if="content.content" class="text-muted">(Content)</span></div>
+		      <div v-for="content in orderDisplay(choice.contents)" :key="JSON.stringify(content)"><a href="javascript:" @click="addContent(content);">{{ content.display }}</a><span v-if="content.content" class="text-muted">(Content)</span></div>
 		    </td> 
 		  </tr>
 		</table>
@@ -157,10 +157,11 @@ var lookupCodes = function(entry) {
 		entry.codes = [];
 		return formats.searchCodes({ content : entry.content },["_id", "code","system","version","display","content"])
 		.then(function(result) {			
-		    entry.codes = [];		    
+		    let codes = [];		    
 			for (var i=0;i<result.data.length;i++) {			    
-				entry.codes.push(result.data[i]);
+				codes.push(result.data[i]);
 			}
+			entry.codes = _.orderBy(codes, ["system", "code"], ["asc", "asc"]);
 			return entry;
 		});
 	};
@@ -192,7 +193,7 @@ export default {
 	}),		
 	
 	computed: {
-       orderedGroups: function () {
+       orderedGroups: function () {         
          return _.orderBy(this.$data.groups, (x) => x.label[this.$data.lang]);
        }
     },		
@@ -202,10 +203,19 @@ export default {
     mixins : [ status ],
 
     methods : {
+    
+        orderDisplay(inp) {
+          return _.orderBy(inp, ["display"],["asc"]);
+        },
+        
         getTitle() {
             const { $data, $t } = this;
             return "Content Editor";
             
+        },
+        
+        reloadDelayed() {
+           setTimeout(() => this.reload(), 1000);
         },
 
 		reload() {
@@ -215,8 +225,8 @@ export default {
 			$data.currentCode = null;
 			$data.currentContent = null;
 			$data.currentGroup = null;
-            me.doBusy(formats.listGroups().then((result) => $data.groups = _.orderBy(result.data, ["name"], ["asc"])));
-            me.doBusy(formats.listFormats().then((result) => $data.formats = _.orderBy(result.data, ["format"], ["asc"])));
+            me.doBusy(formats.listGroups().then((result) => { $data.groups = result.data; } ));
+            me.doBusy(formats.listFormats().then((result) => { $data.formats = _.orderBy(result.data, ["format"], ["asc"]) }));
 		},
 	
 			
@@ -271,7 +281,9 @@ export default {
 		getGroup(system, contentName) {
 			const { $data } = this;
 			for (let grp of $data.groups) {
-				if (grp.system == system && grp.contents && grp.contents.indexOf(contentName)>=0) return grp;
+				if (grp.system == system && grp.contents && grp.contents.indexOf(contentName)>=0) {				  
+				  return grp;
+				}
 			}
 			return null;
 		},
@@ -368,9 +380,9 @@ export default {
 			}
 
 			if ($data.currentGroup) {
-				me.doAction("save", saveGroup().then(done).then(me.reload));
+				me.doAction("save", saveGroup().then(done).then(me.reloadDelayed));
 			} else {
-				me.doAction("save", updateCode().then(updateContent).then(updateGroup).then(done));
+				me.doAction("save", updateCode().then(updateContent).then(updateGroup).then(done).then(me.reloadDelayed));
 			}
 			
 		},
@@ -402,14 +414,14 @@ export default {
 				} else return Promise.resolve();
 			}
 
-			me.doAction("delete", deleteCode().then(deleteContent).then(me.reload));			
+			me.doAction("delete", deleteCode().then(deleteContent).then(me.reloadDelayed));			
 		},
 
 		deleteGroup() {
 			const { $data } = this, me = this;
 			
 			if ($data.currentGroup && !$data.currentGroup.isNew) {
-				me.doAction("delete", formats.deleteGroup($data.currentGroup).then(me.reload));				
+				me.doAction("delete", formats.deleteGroup($data.currentGroup).then(me.reloadDelayed));				
 			}	
 			
 		},
@@ -450,8 +462,7 @@ export default {
 							}
 						}
 					};
-					
-					// Makes no sense anymore // if (dat.contents && dat.contents.length == 1) return;
+					if (dat.contents && dat.contents.length == 1 && (!dat.children || dat.children.length==0)) return;
 					if (add(grp)) {
 						recproc(dat);
 					}
@@ -519,7 +530,7 @@ export default {
 			const { $data, $route, $router } = this, me = this;
 			//$data.newentry.choices = [];
 			let what = $data.newentry.search.toLowerCase();
-			me.doBusy(me.fullTextSearch(what).then((result) => $data.newentry.choices=result));
+			me.doBusy(me.fullTextSearch(what).then((result) => $data.newentry.choices=_.orderBy(result, ["display"],["asc"])));
 		},
 
         exporter() {
