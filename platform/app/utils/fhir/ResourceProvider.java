@@ -121,8 +121,35 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	public abstract M fetchCurrent(IIdType theId) throws AppException;
 	
 	public abstract void processResource(M record, T resource) throws AppException;
+			
+	protected int simpleCountResources(SearchParameterMap params) {
+		try {
+			int count = 0;
+			params.setCount(2000);
+			params.setFrom(null);
+			do {
+			  List<M> recs = searchRaw(params);
+			  count += recs.size();			  						
+			  if (recs.size() == 2001) {			   
+				 params.setFrom(getFromId(recs.get(recs.size() - 1)));				   
+			  } else params.setFrom(null);
+			} while (params.getFrom() != null);
+			return count;
+	 	} catch (InternalServerException e3) {
+		   ErrorReporter.report("FHIR (count)", null, e3);
+		   throw new InternalErrorException("Internal error during search (count)");
+	    } catch (AppException e) {
+	       ErrorReporter.report("FHIR (count)", null, e);	      
+		   throw new InvalidRequestException(e.getMessage());
+	    } catch (NullPointerException e2) {
+			ErrorReporter.report("FHIR (count)", null, e2);	 
+			throw new InternalErrorException("internal error during FHIR search (count)");
+		}
+	}
 	
-	
+	public int countResources(SearchParameterMap params) {
+		return simpleCountResources(params);
+	}
 	
 	public abstract List<M> searchRaw(SearchParameterMap params) throws AppException;
 	
@@ -135,7 +162,16 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	
 	public Bundle searchBundle(SearchParameterMap params, RequestDetails theDetails) {
 		Bundle result = new Bundle();
+		
+				
 		try {
+			
+			if (params.getCount() != null && params.getCount() == 0) {
+				int total = countResources(params);
+				result.setTotal(total);
+				return result;
+			}
+			
 			List<IBaseResource> res = search(params);
 			for (IBaseResource r : res) {					
 				result.addEntry().setResource((Resource) r).setFullUrl(getResourceUrl(theDetails.getFhirServerBase(), r));				

@@ -139,7 +139,7 @@ public class Query {
 		result.remove("from");
 		result.remove("updated-after");
 		result.remove("updated-before");
-		if (dataCriteria != null) result.putAll((Map<String,Object>) dataCriteria.asMongoQuery());
+		result = AndCondition.and(new AndCondition(result), dataCriteria).mongoCompatible().asMongoQuery();
 		ObjectIdConversion.convertMidataIds(result, "_id");
 		return result;
 	}

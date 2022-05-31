@@ -49,7 +49,7 @@ public class UserGroupAccessContext extends AccessContext {
 	
 	@Override
 	public String getAccessInfo(DBRecord rec) throws AppException {
-		return "[ allowWrite="+ugm.getRole().mayWriteData()+" ]";
+		return "\n -Is current user role allowed to write data? ["+ugm.getRole().mayWriteData()+"]";
 	}
 	
 	@Override
@@ -103,7 +103,7 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 	@Override
 	public String getContextName() {
-		return "User Group/Project";
+		return "User Group/Project access with role '"+ugm.getRole().roleName+"'";
 	}
 
 }

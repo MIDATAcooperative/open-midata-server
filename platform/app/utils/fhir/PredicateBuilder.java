@@ -17,6 +17,7 @@
 
 package utils.fhir;
 
+import utils.AccessLog;
 import utils.access.op.AndCondition;
 import utils.access.op.CompareCaseInsensitive;
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
@@ -86,7 +87,7 @@ public class PredicateBuilder {
 		current = null;
 	}
 	
-	public void add(Condition cond) {
+	public void add(Condition cond) {		
 		if (current == null) current = cond; 
 		else current = AndCondition.and(current, cond);
 	}

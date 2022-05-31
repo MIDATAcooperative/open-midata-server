@@ -147,6 +147,17 @@
                     <postregister :preview="{ requirement : 'BIRTHDAY_SET' }"></postregister>
                 </div>
             </div>
+            
+             <div class="outerpreview" v-if="hasRequirement('GENDER_SET') && previewType == 'EXISTING'">
+                <div class="alert alert-info m-2">
+                    <strong v-t="'applogin.step.gender_set'">Test</strong>
+                    <div class="preview-req" v-t="'applogin.optional'">Required</div>
+                </div>
+            
+                <div class="previewtile" >
+                    <postregister :preview="{ requirement : 'GENDER_SET' }"></postregister>
+                </div>
+            </div>
 
             <div class="outerpreview" v-if="hasRequirement('ADDRESS_ENTERED') && hasRequirement('PHONE_ENTERED') && previewType == 'EXISTING'">
                 <div class="alert alert-info m-2">

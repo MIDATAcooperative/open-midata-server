@@ -410,8 +410,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	 */
 
 	@Override
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Patient");
@@ -446,6 +446,13 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		builder.restriction("telecom", true, QueryBuilder.TYPE_CODE, "telecom.value");
 		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
 
+		return query;
+	}
+	
+	@Override
+	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+		Query query = buildQuery(params);
+		AccessContext info = info();
 		try (DBIterator<Record> recs = query.executeIterator(info)) {
 			List<Record> result = new ArrayList<Record>();
 			int limit = params.getCount() != null ? params.getCount() : Integer.MAX_VALUE;
@@ -492,9 +499,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			p.setActive(false);
 		}
 		p.addIdentifier().setSystem("http://midata.coop/identifier/midata-id").setValue(member.midataID);
+		String gender = member.gender != null ? member.gender.toString() : null;
+		if (gender != null) p.setGender(AdministrativeGender.valueOf(gender));
 		if (member.email != null)
-			p.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(member.emailLC);
-		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
+			p.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(member.emailLC);					  
 		if (member.email != null)
 			p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(member.email);
 		if (member.phone != null && member.phone.length() > 0) {
@@ -560,7 +568,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 				
 				p.setBirthDate(cal.getTime());
 			}
-			if (member.gender != null) p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
+			if (member.gender != null && member.gender != Gender.UNKNOWN) p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
 		}
 
 		p.addIdentifier(new Identifier().setValue(ownerName).setSystem("http://midata.coop/identifier/participant-name"));
@@ -734,7 +742,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	}
 
 	@Override
-	public void createExecute(Record record, Patient thePatient) throws AppException {
+	public Patient createExecute(Record record, Patient thePatient) throws AppException {
 
 		
 		// create the user
@@ -789,18 +797,22 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		user.name = user.firstname + " " + user.lastname;
 		user.subroles = EnumSet.noneOf(SubUserRole.class);
-		switch (thePatient.getGender()) {
-		case FEMALE:
-			user.gender = Gender.FEMALE;
-			break;
-		case MALE:
-			user.gender = Gender.MALE;
-			break;
-		case OTHER:
-			user.gender = Gender.OTHER;
-			break;
-		default:
-		}
+		if (thePatient.hasGender()) {
+			switch (thePatient.getGender()) {		
+				case FEMALE:
+					user.gender = Gender.FEMALE;
+					break;
+				case MALE:
+					user.gender = Gender.MALE;
+					break;
+				case OTHER:
+					user.gender = Gender.OTHER;
+					break;
+				default:
+					user.gender = Gender.UNKNOWN;
+					break;
+			}
+		} else user.gender = Gender.UNKNOWN;
 		user.birthday = thePatient.getBirthDate();
 		user.language = InstanceConfig.getInstance().getDefaultLanguage();
 		for (PatientCommunicationComponent comm : thePatient.getCommunication()) {
@@ -1024,6 +1036,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (tempContext != null) tempContext.close();
 		
 		AuditManager.instance.success();
+		
+		return thePatient;
 	}
 	
 	protected void populateIdentifiers(MidataId owner, Patient thePatient, List<Study> studies) throws AppException {
@@ -1032,8 +1046,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			StudyParticipation sp = StudyParticipation.getByStudyAndMember(study._id, owner, Sets.create("status", "pstatus", "ownerName"));
 			if (sp != null) {
 				Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(info(), sp);
-				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(pseudo.getRight()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
-				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(pseudo.getLeft().toString()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
+				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(pseudo.getRight()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/project-code",study.code, study.name)));
+				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(pseudo.getLeft().toString()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/project-code",study.code, study.name)));
 			}
 		}
 	}

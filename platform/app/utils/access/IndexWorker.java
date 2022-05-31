@@ -108,9 +108,7 @@ public class IndexWorker extends AbstractActor {
 				if (idx == null) idx = IndexManager.instance.findIndex(pseudo, indexId);
 				if (idx == null) return;
 				if (root == null) {
-					if (idx.formats.contains("_streamIndex")) {
-					   root = new StreamIndexRoot(pseudo.getKey(), idx, false);
-					} else if (idx.formats.contains("_statsIndex")) {
+					if (idx.formats.contains("_statsIndex")) {
 					   root = new StatsIndexRoot(pseudo.getKey(), idx, false);
 					} else {
 					   root = new IndexRoot(pseudo.getKey(), idx, false);

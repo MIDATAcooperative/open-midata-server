@@ -85,7 +85,7 @@ public class RepresentativeAccessContext extends AccessContext {
 	}
 	@Override
 	public String getContextName() {
-		return "Representative Access";
+		return "Representative Access for other person";
 	}
 
 }

@@ -49,6 +49,7 @@ import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
@@ -131,6 +132,42 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	   return result;
 	}
 	
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		return null;
+	}
+	
+	public int countResources(SearchParameterMap params) {
+		try {
+			Query query = buildQuery(params);
+			if (query == null) {
+				params.setCount(10000);
+				List<Record> recs = searchRaw(params);
+				return recs.size();
+			}			
+			AccessContext info = info();
+			return query.executeCount(info);
+		} catch (InternalServerException e3) {
+		   ErrorReporter.report("FHIR (count)", null, e3);
+		   throw new InternalErrorException("Internal error during search (count)");
+	    } catch (AppException e) {
+	       ErrorReporter.report("FHIR (count)", null, e);	      
+		   throw new InvalidRequestException(e.getMessage());
+	    } catch (NullPointerException e2) {
+			ErrorReporter.report("FHIR (count)", null, e2);	 
+			throw new InternalErrorException("internal error during FHIR search (count)");
+		}
+	}
+	
+	@Override
+	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+		Query query = buildQuery(params);
+		if (query == null) {			
+			throw new InternalServerException("error.internal", "neither searchRaw nor buildQuery implemented");
+		}
+		AccessContext info = info();
+		return query.execute(info);
+	}
+	
 	@Override
 	public void createPrepare(Record record, T theResource) throws AppException {		
 		prepare(record, theResource);
@@ -138,9 +175,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	@Override
-	public void createExecute(Record record, T theResource) throws AppException {
+	public T createExecute(Record record, T theResource) throws AppException {
 		List<Attachment> attachments = getAttachments(theResource);		
 		insertRecord(record, theResource, attachments, info());
+		return theResource;
 	}
 	
 	@Override

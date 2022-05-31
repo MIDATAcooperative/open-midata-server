@@ -74,6 +74,10 @@ public class IndexPageModel extends Model implements BaseIndexPageModel {
 		Model.insert(collection, def);				
 	}
 	
+	public void add() throws InternalServerException {
+		Model.insert(collection, this);				
+	}
+	
 	public MidataId getId() {
 		return _id;
 	}
@@ -101,12 +105,16 @@ public class IndexPageModel extends Model implements BaseIndexPageModel {
 	public void setEnc(byte[] enc) {
 		this.enc = enc;
 	}
-
+		
 	public static IndexPageModel getById(MidataId pageId) throws InternalServerException {
 		return Model.get(IndexPageModel.class, collection, CMaps.map("_id", pageId), ALL_PAGE);
 	}
 	
-	public static Set<IndexPageModel> getMultipleById(Set<MidataId> pageIds) throws InternalServerException {
+	public Set<IndexPageModel> getMultipleById(Set<MidataId> pageIds) throws InternalServerException {
+		return Model.getAll(IndexPageModel.class, collection, CMaps.map("_id", pageIds), ALL_PAGE);
+	}
+	
+	public static Set<IndexPageModel> getMultipleByIdS(Set<MidataId> pageIds) throws InternalServerException {
 		return Model.getAll(IndexPageModel.class, collection, CMaps.map("_id", pageIds), ALL_PAGE);
 	}
 	
@@ -133,6 +141,13 @@ public class IndexPageModel extends Model implements BaseIndexPageModel {
 	public BaseIndexPageModel reload() throws InternalServerException {
 		return getById(_id);
 	}
+
+	@Override
+	public BaseIndexPageModel loadChildById(MidataId id) throws InternalServerException {
+		return getById(id);
+	}
+	
+	
 	
 	// array of { key : array , entries : [ { rec :   , consent :  } ] or page : IndexPageId } 
 }

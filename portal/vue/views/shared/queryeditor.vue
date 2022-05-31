@@ -99,7 +99,7 @@
 		  
 		    <div class="form-check">
 		      <label class="form-check-label">
-		        <input class="form-check-input" type="checkbox" id="withLogout" name="withLogout" v-validate v-model="app.withLogout" value="true" :required="logoutRequired">
+		        <input class="form-check-input" type="checkbox" id="withLogout" name="withLogout" v-validate v-model="app.withLogout" value="true" :required="true">
 		        <span v-t="'manageapp.pleaseLogout1'"></span>
 		        <span v-if="app.targetUserRole=='RESEARCH'"> / </span>
 		        <span v-if="app.targetUserRole=='RESEARCH'" v-t="'manageapp.pleaseLogout2'"></span>		        
@@ -236,7 +236,7 @@
 		    </td>
 		    <td>
 		      <div v-for="code in choice.codes" :key="JSON.stringify(code)"><a href="javascript:" @click="addContent(choice, code)">{{ code.system }} {{ code.code }}</a></div>
-		      <div v-for="content in choice.contents" :key="JSON.stringify(content)"><a href="javascript:" @click="addContent(content);">{{ content.display }}</a><span v-if="content.content" class="text-muted">(Content)</span></div>
+		      <div v-for="content in orderDisplay(choice.contents)" :key="JSON.stringify(content)"><a href="javascript:" @click="addContent(content);">{{ content.display }}</a><span v-if="content.content" class="text-muted">(Content)</span></div>
 		    </td> 
 		  </tr>
 		</table>
@@ -261,12 +261,13 @@ import { status, ErrorBox, FormGroup } from 'basic-vue3-components';
 
 var lookupCodes = function(entry) {
 		entry.codes = [];
-		return formats.searchCodes({ content : entry.content },["code","system","version","display"])
+		return formats.searchCodes({ content : entry.content },["code","system","version","display","content"])
 		.then(function(result) {			
-		    entry.codes = [];
-			for (var i=0;i<result.data.length;i++) {
-				entry.codes.push(result.data[i]);
+		    let codes = [];		    
+			for (var i=0;i<result.data.length;i++) {			    
+				codes.push(result.data[i]);
 			}
+			entry.codes = _.orderBy(codes, ["system", "code"], ["asc", "asc"]);
 			return entry;
 		});
 	};
@@ -318,6 +319,11 @@ export default {
     mixins : [ status ],
 
     methods : {
+    
+        orderDisplay(inp) {
+          return _.orderBy(inp, ["display"],["asc"]);
+        },
+        
         getTitle() {
             const { $data, $t } = this;
             let p = this.$data.app ? this.$data.app.name+" - " : "";
@@ -478,7 +484,7 @@ export default {
 							}
 						}
 					};
-					if (dat.contents && dat.contents.length == 1) return;
+					if (dat.contents && dat.contents.length == 1 && (!dat.children || dat.children.length==0)) return;
 					if (add(grp)) {
 						recproc(dat);
 					}
@@ -547,8 +553,8 @@ export default {
 		search() {
 			const { $data, $route, $router } = this, me = this;
 			//$data.newentry.choices = [];
-			var what = $data.newentry.search.toLowerCase();
-			me.doBusy(me.fullTextSearch(what).then((result) => $data.newentry.choices=result));
+			let what = $data.newentry.search.toLowerCase();
+			me.doBusy(me.fullTextSearch(what).then((result) => $data.newentry.choices=_.orderBy(result, ["display"],["asc"])));
 		},
 	
 		addNew() {

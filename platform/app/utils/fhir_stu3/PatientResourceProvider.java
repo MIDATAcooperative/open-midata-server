@@ -487,7 +487,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		p.addIdentifier().setSystem("http://midata.coop/identifier/midata-id").setValue(member.midataID);
 		if (member.email != null)
 			p.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(member.emailLC);
-		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
+			String gender = member.gender != null ? member.gender.toString() : Gender.UNKNOWN.toString();
+			p.setGender(AdministrativeGender.valueOf(gender));		   
 		if (member.email != null)
 			p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(member.email);
 		if (member.phone != null && member.phone.length() > 0) {
@@ -548,7 +549,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		p.setId(part._id.toString());
 		p.addName().setText(part.ownerName);
 		p.setBirthDate(cal.getTime());
-		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
+		if (member.gender != null) p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
 
 		p.addIdentifier(new Identifier().setValue(part.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
 		p.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
@@ -743,6 +744,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			user.gender = Gender.OTHER;
 			break;
 		default:
+			user.gender = Gender.UNKNOWN;
+			break;
 		}
 		user.birthday = thePatient.getBirthDate();
 		user.language = InstanceConfig.getInstance().getDefaultLanguage();

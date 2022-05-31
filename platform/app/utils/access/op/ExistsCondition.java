@@ -19,7 +19,12 @@ package utils.access.op;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import utils.collections.CMaps;
 
 public class ExistsCondition implements Condition, Serializable {
 
@@ -63,12 +68,17 @@ public class ExistsCondition implements Condition, Serializable {
 	}
 
 	@Override
-	public Object asMongoQuery() {
+	public Map<String, Object> asMongoQuery() {
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("$exists", shouldExist);
 		return result;
 	}
-	
+			
+	@Override
+	public Condition mongoCompatible() {
+		return this;
+	}
+
 	@Override
 	public String toString() {		
 		return "{ $exists : "+shouldExist+" }";

@@ -3,7 +3,7 @@
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Utilisateurs",
-        "auditlog" : "Audit",
+        "auditlog" : "Audit log",
         "news" : "News",
         "mails" : "E-Mails",
         "plugins" : "Applications",
@@ -213,7 +213,7 @@
         "languages" : "Langues utilisateur",
         "runningStudyCount" : "Projets en cours d'exécution",
         "groupCount" : "Teams (Système de santé et recherche)",
-        "auditEventCount" : "Événements d'audit",
+        "auditEventCount" : "Audit events",
         "users" : "Comptes d'utilisateurs actifs",
         "consents" : "Consentements",
         "health" : {

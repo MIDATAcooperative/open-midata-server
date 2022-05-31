@@ -124,7 +124,7 @@
         <div class="body">
             <p><span v-t="'studyoverview.name'"></span>: <b>{{ study.name }}</b></p>	          
             <p>{{ $t('studyoverview.confirm.'+confirm.id) }}</p>
-            <p v-t="'studyoverview.confirm.are_you_sure'"></p>
+            <p v-if="confirm.id!='clone'" v-t="'studyoverview.confirm.are_you_sure'"></p>
             <div class="extraspace"></div>
         </div>
         <template v-slot:footer>      
@@ -299,7 +299,7 @@ export default {
             //$timeout(1000).then(function() {
             me.doAction("clone", server.post(jsRoutes.controllers.research.Studies.cloneToNew($data.studyid).url).
             then(function(data) { 				
-                $router.push({ path : "./study.description" , query : { studyId : data.data._id }});
+                $router.push({ path : "./description" , query : { studyId : data.data._id }});
             }));            
 	    },
 	

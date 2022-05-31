@@ -95,7 +95,7 @@ public class ServiceInstanceAccessContext extends AccessContext {
 	
 	@Override
 	public String getContextName() {
-		return "Service Instance";
+		return "Service Instance '"+serviceInstance.name+"'";
 	}
 
 }

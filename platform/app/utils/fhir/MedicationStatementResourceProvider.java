@@ -187,8 +187,8 @@ public class MedicationStatementResourceProvider extends RecordBasedResourceProv
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/MedicationStatement");
@@ -209,7 +209,7 @@ public class MedicationStatementResourceProvider extends RecordBasedResourceProv
 		builder.restriction("source", true, null, "informationSource");
 		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");	
 				
-		return query.execute(info);
+		return query;
 	}
 
 	@Create

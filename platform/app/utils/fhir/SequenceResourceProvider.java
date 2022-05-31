@@ -188,13 +188,10 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Molecu
 		return searchBundle(paramMap, theDetails);
 
 	}
+	
+	public Query buildQuery(SearchParameterMap params) throws AppException {
 
-	// The actual search method implementation.
-	// Basically this "maps" the FHIR query to a MIDATA query and executes it
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-
-		// get execution context (which user, which app)
-		AccessContext info = info();
+		info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();
@@ -222,10 +219,8 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Molecu
 		builder.restriction("end", true, QueryBuilder.TYPE_INTEGER, "referenceSeq.windowEnd	"); 		
 		builder.restriction("start", true, QueryBuilder.TYPE_INTEGER, "referenceSeq.windowStart"); 
 		builder.restriction("type", true, QueryBuilder.TYPE_CODE, "type"); 
-		
-		
-		// At last execute the constructed query
-		return query.execute(info);
+					
+		return query;
 	}
 
 	// This method is required if it is allowed to create the resource.

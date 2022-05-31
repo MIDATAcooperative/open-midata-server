@@ -32,9 +32,9 @@
 {"_id":{"$oid":"5718f577aed645098e8cee2b"},"system":"v1","name":"body/weight","label":{"de":"Gewicht","en":"Body Weight","fr":"Poids corporel"},"parent":"qself"}
 {"_id":{"$oid":"5718f577aed645098e8cee2c"},"system":"v1","name":"user-observation","label":{"de":"Benutzer Beobachtungen","en":"User Observations","fr":"Divers"},"parent":"qself"}
 {"_id":{"$oid":"5719d3d0aed64509b3d0930b"},"system":"v1","name":"body/bmi","label":{"de":"Körperzusammensetzung","en":"Body Composition","fr":"Composition corporelle"},"parent":"qself"}
-{"_id":{"$oid":"5719d3d0aed64509b3d0930c"},"system":"v1","name":"activities/heartrate","label":{"de":"Herzfrequenz","en":"Heart Rate","fr":"Fréquence cardiaque"},"parent":"qself"}
+{"_id":{"$oid":"5719d3d0aed64509b3d0930c"},"system":"v1","name":"activities/heartrate","label":{"de":"Herzfrequenz","en":"Heart rate","it":"Frequenza cardiaca","fr":"Fréquence cardiaque"},"parent":"qself"}
 {"_id":{"$oid":"5719d46aaed64509b3d0930d"},"system":"v1","name":"body/temperature","label":{"de":"Temperatur","en":"Body Temperature","fr":"Température corporelle"},"parent":"qself"}
-{"_id":{"$oid":"5719d46aaed64509b3d0930e"},"system":"v1","name":"body/bloodpressure","label":{"de":"Blutdruck","en":"Blood Pressure","fr":"Pression artérielle"},"parent":"qself"}
+{"_id":{"$oid":"5719d46aaed64509b3d0930e"},"system":"v1","name":"body/bloodpressure","label":{"de":"Blutdruck","en":"Blood pressure","it":"Pressione arteriosa","fr":"Pression artérielle"},"parent":"qself"}
 {"_id":{"$oid":"57285570aed6450be5bfeb5d"},"system":"v1","name":"activities/steps","label":{"de":"Schritte","en":"Steps","fr":"Pas"},"parent":"movement"}
 {"_id":{"$oid":"57285570aed6450be5bfeb5e"},"system":"v1","name":"activities/distance","label":{"de":"Distanz","en":"Distance","fr":"Distance"},"parent":"movement"}
 {"_id":{"$oid":"57c55b8baed6450e7affb2da"},"system":"v1","name":"health/laboratory","label":{"de":"Labor","en":"Laboratory","fr":"Laboratoire"},"parent":"health"}
@@ -56,3 +56,5 @@
 {"_id":{"$oid":"5e186ef4aed6450cb19b1b0f"},"system":"v1","name":"activities/other","label":{"de":"Andere Aktivitäten","en":"Other Activities","fr":"Autres activités"},"parent":"activities"}
 {"_id":{"$oid":"5fb39ce9aed64513b2abccce"},"system":"v1","name":"motor_assessment","label":{"en":"Results of motor exercises"},"parent":"assessment"}
 {"_id":{"$oid":"61f3facae8d4223bfafd55ea"},"system":"v1","name":"organization","label":{"de":"Organisation","en":"Organization"},"parent":"entities"}
+{"_id":{"$oid":"6288d83102da8556e91f79e6"},"system":"v1","name":"vaccination","label":{"de":"Impfung","en":"Vaccination","it":"Vaccinazione","fr":"Vaccination"},"parent":"health"}
+{"_id":{"$oid":"628b54466020a06279c0d0be"},"system":"v1","name":"risks","label":{"de":"Risiken","en":"Risks","it":"Rischi","fr":"Risques"},"parent":"health"}

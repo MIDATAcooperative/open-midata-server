@@ -100,7 +100,7 @@ public class RecordManager {
 		EncryptionUtils.addKey(who, eaps);		
 		eaps.create();
 		APSCache current = cache != null ? cache : ContextManager.instance.currentCacheUsed();
-		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getAccessor(), eaps.getAPSKey(), eaps.getOwner())));
+		if (current != null) current.addAPS(new APSTreeImplementation(new EncryptedAPS(eaps.getId(), current.getAccessor(), eaps.getAPSKey(), eaps.getOwner())));
         AccessLog.logEnd("end createPrivateAPS");
 		return eaps.getId();
 	}
@@ -128,7 +128,7 @@ public class RecordManager {
 		if (history) eaps.getPermissions().put("_history", new BasicBSONList()); // Init with history
 		eaps.create();
 		APSCache current = ContextManager.instance.currentCacheUsed();
-		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getAccessor(), eaps.getAPSKey(), eaps.getOwner())));
+		if (current != null) current.addAPS(new APSTreeImplementation(new EncryptedAPS(eaps.getId(), current.getAccessor(), eaps.getAPSKey(), eaps.getOwner())));
        
 		AccessLog.logEnd("end createAnonymizedAPS");
 		return eaps.getId();
@@ -582,7 +582,9 @@ public class RecordManager {
 		  FileStorage.store(EncryptionUtils.encryptStream(kdata, countInput), id, 0, fileName, contentType);
 		} catch (Exception e) {
 		  System.out.println("FAIL UPLOAD");
-		  FileStorage.delete(id.toObjectId());
+		  try {
+		    FileStorage.delete(id.toObjectId());
+		  } catch (Exception e2) { }
 		  throw new InternalServerException("error.internal", e);
 		}
 		System.out.println("EXIT UPLOAD");
@@ -636,7 +638,7 @@ public class RecordManager {
 	public String updateRecord(MidataId executingPerson, MidataId pluginId, AccessContext context, Record record, List<UpdateFileHandleSupport> allData) throws AppException {
 		AccessLog.logBegin("begin updateRecord executor=",executingPerson.toString()," aps=",context.getTargetAps().toString()," record=",record._id.toString());
 		try {
-			List<DBRecord> result = QueryEngine.listInternal(context.getCache(), context.getTargetAps(),context, CMaps.map("_id", record._id).map("updatable", true), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
+			List<DBRecord> result = QueryEngine.listInternal(context.getCache(), context.getTargetAps(),context, CMaps.map("_id", record._id).mapNotEmpty("format", record.format).map("updatable", true), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
 			if (result.size() != 1) {
 				List<DBRecord> resultx = QueryEngine.listInternal(context.getCache(), context.getTargetAps(),context, CMaps.map("_id", record._id), RecordManager.INTERNALIDONLY);
 				if (resultx.isEmpty()) {
@@ -648,8 +650,8 @@ public class RecordManager {
 			if (record.data == null) throw new BadRequestException("error.internal", "Missing data");		
 			
 			DBRecord rec = result.get(0);
-			if (!rec.context.mayUpdateRecord(rec, record)) throw new PluginException(pluginId, "error.plugin", record.getErrorInfo()+" may not be updated!\n\nUpdate permission chain:\n"+rec.context.getMayUpdateReport(rec, record));
-			if (rec.context.mustPseudonymize())  throw new PluginException(pluginId, "error.plugin", "Pseudonymized record may not be updated!\n\nUpdate permission chain:\\n"+rec.context.getMayUpdateReport(rec, record));
+			if (!rec.context.mayUpdateRecord(rec, record)) throw new PluginException(pluginId, "error.plugin", record.getErrorInfo()+" may not be updated!\n\nUpdate permission chain:\n========================\n"+rec.context.getMayUpdateReport(rec, record));
+			if (rec.context.mustPseudonymize())  throw new PluginException(pluginId, "error.plugin", "Pseudonymized record may not be updated!\n\nUpdate permission chain:\n========================\n"+rec.context.getMayUpdateReport(rec, record));
 			
 			String storedVersion = rec.meta.getString("version");
 			if (storedVersion == null) storedVersion = VersionedDBRecord.INITIAL_VERSION;
@@ -703,7 +705,13 @@ public class RecordManager {
 		    
 			RecordEncryption.encryptRecord(rec);	
 			
-			if (vrec!=null) VersionedDBRecord.add(vrec);
+			if (vrec!=null) {
+				try {
+ 				    VersionedDBRecord.add(vrec);
+				} catch (InternalServerException e) {
+					throw new PluginException(pluginId, "error.concurrent.update", "Please check your application so that it does not try concurrent updates on the same resource. Record has id '"+rec._id.toString()+" with record format '"+rec.getFormatOrNull()+"'.");
+				}
+			}
 		    DBRecord.upsert(rec); 	  	
 		    
 		    RecordLifecycle.notifyOfChange(clone, context.getCache());

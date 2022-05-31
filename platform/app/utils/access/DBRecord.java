@@ -268,5 +268,10 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		String content = meta.getString("content");
 		return "Record('"+format+"','"+content+"')";
 	}
+	
+	public String getFormatOrNull() {
+		if (meta == null) return null;
+		return meta.getString("format");
+	}
 
 }

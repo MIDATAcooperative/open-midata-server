@@ -107,7 +107,7 @@ public class PreLoginAccessContext extends AccessContext {
 
 	@Override
 	public String getContextName() {
-		return "pre-login";
+		return "Pre-Login access";
 	}
 	
 	@Override
@@ -129,7 +129,7 @@ public class PreLoginAccessContext extends AccessContext {
 	public AccessContext forApp(MobileAppInstance app) throws AppException {	
 		ConsentQueryTools.getSharingQuery(app, false);
 		Plugin plugin = Plugin.getById(app.applicationId);
-		return new AppAccessContext(app, plugin, getCache(), null);		
+		return new AppAccessContext(app, plugin, getCache(), this);		
 	}
 	
 	@Override

@@ -33,9 +33,12 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoException;
+import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
+import com.mongodb.TransactionOptions;
 import com.mongodb.WriteConcern;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
@@ -394,10 +397,42 @@ public class MongoDatabase extends Database {
 		}
 	}
 	
+	public ClientSession startSession() {
+		ClientSession session = mongoClient.startSession();
+		
+		 TransactionOptions txnOptions = TransactionOptions.builder()
+		            .readPreference(ReadPreference.primary())
+		            .readConcern(ReadConcern.MAJORITY)
+		            .writeConcern(WriteConcern.MAJORITY)
+		            .build();
+		 session.startTransaction(txnOptions);
+		 
+		 return session;
+	}
+	
+	void commitWithRetry(ClientSession clientSession) {
+	    while (true) {
+	        try {
+	            clientSession.commitTransaction();
+	            AccessLog.logDB("commit");
+	            break;
+	        } catch (MongoException e) {
+	            // can retry commit
+	            if (e.hasErrorLabel(MongoException.UNKNOWN_TRANSACTION_COMMIT_RESULT_LABEL)) {
+	                AccessLog.logDB("UnknownTransactionCommitResult, retrying commit operation ...");
+	                continue;
+	            } else {
+	                AccessLog.logDB("Exception during commit ...");
+	                throw e;
+	            }
+	        }
+	    }
+	}
+	
 	/**
 	 * Set the given field of the object with the given id.
 	 */
-	public <T extends Model> void secureUpdate(T model, String collection, String timestampField, String[] fields) throws LostUpdateException, DatabaseException {
+	public <T extends Model> void secureUpdate(ClientSession clientSession, T model, String collection, String timestampField, String[] fields) throws LostUpdateException, DatabaseException {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			if (logQueries) AccessLog.logDB("secure update ",collection," ",model.to_db_id().toString());
@@ -415,7 +450,12 @@ public class MongoDatabase extends Database {
 			updateContent.put(timestampField, ts);
 			BasicDBObject update = new BasicDBObject("$set", updateContent);
 		
-			DBObject result = getCollection(collection).findOneAndUpdate(query, update);
+			DBObject result;
+			if (clientSession != null) {
+				result = getCollection(collection).findOneAndUpdate(clientSession, query, update);
+			} else {
+				result = getCollection(collection).findOneAndUpdate(query, update);
+			}
 			if (result == null) {
 				if (logQueries) AccessLog.log("failed secure update version: ", Objects.toString(oldTimeStamp)); 
 				throw new LostUpdateException();
@@ -425,6 +465,10 @@ public class MongoDatabase extends Database {
 			if (logQueries) AccessLog.log("secure updated: ", Objects.toString(oldTimeStamp), " -> ", Long.toString(ts));
 		    return;									
 		} catch (MongoException e) {
+			if (e.hasErrorLabel(MongoException.TRANSIENT_TRANSACTION_ERROR_LABEL)) {
+				AccessLog.log("failed secure update with mongo exception");
+				throw new LostUpdateException();
+			}
 			if (tries==MAX_TRIES) throw new DatabaseException(e);
 			delay();
 		} catch (DatabaseConversionException e2) {

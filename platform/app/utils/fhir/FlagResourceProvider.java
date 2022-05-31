@@ -136,8 +136,8 @@ public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> impl
 
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
 
 		Query query = new Query();
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Flag");
@@ -154,7 +154,7 @@ public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> impl
 		builder.restriction("encounter", true, "Encounter", "encounter");
 		builder.restriction("author", true, null, "author");
 
-		return query.execute(info);
+		return query;
 	}
 
 	// This method is required if it is allowed to create the resource.

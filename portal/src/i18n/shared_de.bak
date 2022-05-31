@@ -407,7 +407,7 @@
 	   "DEVELOPER" : "Developer",
 	   "MEMBER" : "Account Holder",
 	   "PROVIDER" : "Healthcare provider",
-	   "RESEARCH" : "Researcher"
+	   "RESEARCH" : "Researcher"	  
 	 },
 	 "subuserrole" : {
 	   "DOCTOR" : "Doctor",
@@ -1037,6 +1037,7 @@
 	"type_healthcare" : "Doctor / Hospital",
 	"type_studyparticipation" : "Research",
  	"type_representative" : "Representative",
+ 	"type_externalservice" : "Service (external)",
 	"show" : "Show:",
 	"my_data" : "My Data",
 	"all_data" : "All Data",
@@ -1422,6 +1423,7 @@
     "empty" : "This account does not manage any services with API keys.",
     "add_btn" : "Add Key",
     "delete_btn" : "Remove Analyzer",
+    "delete_endpoint_btn" : "Remove Endpoint",
     "show_btn" : "Show Keys",  
     "revoke_btn" : "Revoke this key",
     "instructions" : "Please copy these keys somewhere safe. They are displayed only once.",
@@ -1434,7 +1436,8 @@
     "date" : "Date of creation",
     "status" : "Status",
     "ACTIVE" : "Active",
-    "FROZEN" : "Old version"
+    "FROZEN" : "Old version",
+    "INVALID" : "Invalid"
   },
   
   "failure" : {

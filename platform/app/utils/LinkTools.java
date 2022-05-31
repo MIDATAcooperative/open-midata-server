@@ -68,6 +68,7 @@ public class LinkTools {
 	   consent.entityType = EntityType.USER;
 	   consent.writes =WritePermissionType.UPDATE_AND_CREATE;	
 	   consent.creatorApp = link.appId;
+	   consent.creator = context.getActor();
 	   consent.organization =link.providerId;
 	   consent.observers = observers;
 	   if (link.what != null) {

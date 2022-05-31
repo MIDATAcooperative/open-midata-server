@@ -25,7 +25,7 @@
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>
-					<a class="navbar-brand" @click="home('stats');" href="javascript:"> <span class="midata" id="logotype"><img
+					<a class="navbar-brand" @click="home('yourapps');" href="javascript:"> <span class="midata" id="logotype"><img
 							src="/images/logo.png" style="height: 36px;"></span>
 					</a>
 				</div>

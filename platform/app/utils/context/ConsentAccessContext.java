@@ -96,8 +96,8 @@ public class ConsentAccessContext extends AccessContext{
 	public String getAccessInfo(DBRecord rec) throws AppException {
 		WritePermissionType wt = consent.writes;
 		if (wt==null) wt = WritePermissionType.NONE;
-		boolean inFilter = consent.sharingQuery != null && !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(rec)).isEmpty();
-		return "[ recordPassesFilter="+inFilter+" allowCreate="+wt.isCreateAllowed()+" allowUpdate="+wt.isUpdateAllowed()+" ]";
+		boolean inFilter = consent.sharingQuery != null && !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(rec)).isEmpty();		
+		return "\n- Does the record pass the access filter? ["+inFilter+"]\n- Is record creation allowed in general? ["+wt.isCreateAllowed()+"]\n- Is update of records allowed in general? ["+wt.isUpdateAllowed()+"]";
 	}
 
 	@Override
@@ -197,9 +197,11 @@ public class ConsentAccessContext extends AccessContext{
 		switch (consent.type) {
 		case STUDYRELATED : result = "Project backchannel";break;
 		case HCRELATED : result = "Healthcare provider backchannel";break;
-		case API: result = "External service use";break;		
+		case API: result = "External service use (Patient side)";break;		
 		}
-		return "Consent of type '"+result+"'";
+		String r = "Consent of type '"+result+"'";
+		if (consent.dateOfCreation!=null) r+=", created at "+consent.dateOfCreation.toGMTString();
+		return r;
 	}
 	
 	public AccessContext forConsent(Consent consent) throws AppException {

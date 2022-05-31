@@ -48,7 +48,7 @@ export default {
         me.doBusy(server.get(jsRoutes.controllers.Market.getSoftwareChangeLog().url)
 	    .then(function(data) { 
             for (let l of data.data) l.search = l.title+" "+l.description+$filters.dateTime(l.published)
-		    $data.changelog = me.process(data.data, { filter : { search : "" }});				
+		    $data.changelog = me.process(data.data, { filter : { search : "" }, ignoreCase : true });				
 	    }));
 	}
     

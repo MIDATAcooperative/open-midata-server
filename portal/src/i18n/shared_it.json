@@ -284,7 +284,7 @@
             "contract-send" : "Contratto inviato all'utente",
             "internal-comment" : "Commento dell'amministratore",
             "user-terms-of-use-agreed" : "Accettati i Condizioni generali di contratto",
-            "audit-log-used" : "Consultato il registro di revisione",
+            "audit-log-used" : "Consultato il audit log",
             "added-as-team-member" : "Aggiunto come membro del team",
             "updated-role-in-team" : "Ruolo aggiornato nel team",
             "removed-from-team" : "Rimosso dal team",
@@ -831,7 +831,7 @@
         "action" : "Altro...",
         "change_password_btn" : "Modifica password",
         "change_passphrase_btn" : "Modificare la frase segreta",
-        "auditlog_btn" : "Visualizza il registro di revisione",
+        "auditlog_btn" : "Mostra il audit log",
         "change_email_btn" : "Modifica indirizzo e-mail",
         "expert_tools_btn" : "Mostra i plugin esperti",
         "repair_account_btn" : "Ripara account",
@@ -1038,6 +1038,7 @@
         "type_healthcare" : "Medico / Ospedale",
         "type_studyparticipation" : "Ricerca",
         "type_representative" : "Rappresentante",
+        "type_externalservice" : "Servizio (esterno)",
         "show" : "Mostra:",
         "my_data" : "I miei dati",
         "all_data" : "Tutti i dati",
@@ -1254,7 +1255,7 @@
         "outcome" : "Esito",
         "empty" : "Non è stato ancora immesso alcun dato.",
         "anonymous" : "Utente pseudonimizzato",
-        "title" : "Registro di revisione",
+        "title" : "Audit log",
         "refresh_btn" : "Aggiorna",
         "via" : "via",
         "CIRCLE" : "Consenso",
@@ -1393,7 +1394,7 @@
         "cancel_btn" : "Annulla",
         "check_okay" : "L'elenco dei dati richiesti è completo e corretto?",
         "ask" : {
-            "AuditEvent" : "Accesso al registro eventi di verifica",
+            "AuditEvent" : "Accesso al audit log",
             "Consent" : "Accesso ai consensi dell'utente dell'applicazione con altri utenti o applicazioni",
             "Group" : "Accesso alle definizioni dei gruppi (teams di professionisti sanitari or ricercatori e gruppi specifici di progetto)",
             "Patient" : "Dati paziente: nome, e-mail, indirizzo dei titolari di un account",
@@ -1423,6 +1424,7 @@
         "empty" : "Questo account non gestisce alcun servizio con chiavi API.",
         "add_btn" : "Aggiungi chiave",
         "delete_btn" : "Rimuovere l'analizzatore",
+        "delete_endpoint_btn" : "Rimuovere l'endpoint",
         "show_btn" : "Mostra i chiavi",
         "revoke_btn" : "Revocare questa chiave",
         "instructions" : "Si prega di copiare queste chiavi in un luogo sicuro. Vengono visualizzate una sola volta.",
@@ -1435,7 +1437,8 @@
         "date" : "Data di creazione",
         "status" : "Stato",
         "ACTIVE" : "Attiva",
-        "FROZEN" : "Vecchia versione"
+        "FROZEN" : "Vecchia versione",
+        "INVALID" : "Invalido"
     },
 
     "failure" : {

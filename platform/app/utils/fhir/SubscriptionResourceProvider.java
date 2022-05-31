@@ -405,9 +405,10 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	}
 
 	@Override
-	public void createExecute(SubscriptionData subscriptionData, Subscription theResource) throws AppException {
+	public Subscription createExecute(SubscriptionData subscriptionData, Subscription theResource) throws AppException {
         subscriptionData.add();	
         SubscriptionManager.subscriptionChange(subscriptionData);
+        return theResource;
 	}
 
 	@Override

@@ -62,14 +62,16 @@ public class Feature_Consents extends Feature {
 			
 				boolean onlyStreams = qnt.isStreamOnlyQuery();
 				for (DBRecord r : recs) {
-					if (r.isStream!=null) {
+					if (r.isStream!=null) {						
 						Query q2 = new Query(q, "history-after", CMaps.map("stream", r._id));
 						List<DBRecord> subresult = QueryEngine.onlyWithKey(next.query(q2));
 						for (DBRecord r2 : subresult) {
 							r2.sharedAt = r.sharedAt; 							
 						}
 	                    result = QueryEngine.combine(result, subresult);
-					} else if (!onlyStreams) QueryEngine.combine(result, Collections.singletonList(r));
+					} else if (!onlyStreams) {						
+						result = QueryEngine.combine(result, Collections.singletonList(r));
+					} 
 				}
 			}
 			

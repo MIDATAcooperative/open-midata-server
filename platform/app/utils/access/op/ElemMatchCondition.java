@@ -19,6 +19,7 @@ package utils.access.op;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ElemMatchCondition extends AndCondition {
@@ -32,12 +33,16 @@ public class ElemMatchCondition extends AndCondition {
 		super(restrictions);
 	}
 	
+	public ElemMatchCondition(List<Condition> parts) {
+		super(parts);
+	}
+	
 	@Override
 	public Map<String, Object> asMongoQuery() {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Map<String, Object> parts = new HashMap<String, Object>();
 		for (Condition check : checks) {
-			parts.putAll((Map<String, Object>) check.asMongoQuery());
+			parts.putAll(check.asMongoQuery());
 		}
 		result.put("$elemMatch", parts);
 		return result;
@@ -59,4 +64,23 @@ public class ElemMatchCondition extends AndCondition {
     		return result;
     	}
     }
+
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder("{ $elemMatch : { ");
+		boolean first = true;
+		for (Condition check : checks) {
+			if (first) first=false; else result.append(", ");
+			result.append(check.toString());
+		}
+		result.append("} }");
+		return result.toString();
+	}
+	
+	@Override
+	public AndCondition createAndOfThisType(List<Condition> parts) {
+		return new ElemMatchCondition(parts);
+	}
+	
+	
 }

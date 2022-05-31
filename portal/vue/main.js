@@ -27,6 +27,26 @@ import ENV from 'config';
 
 require('bootstrap/dist/js/bootstrap.bundle');
 
+
+const addMaximumScaleToMetaViewport = () => {
+  const el = document.querySelector('meta[name=viewport]');
+
+  if (el !== null) {
+    let content = el.getAttribute('content');    
+    content = [content, 'maximum-scale=1.0'].join(', ')    
+    el.setAttribute('content', content);
+  }
+};
+
+// https://stackoverflow.com/questions/9038625/detect-if-device-is-ios/9039885#9039885
+const checkIsIOS = () =>
+  /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+if (checkIsIOS()) {
+  addMaximumScaleToMetaViewport();
+}
+
+
 const i18n = setupI18n({
     locale: "en",    
     fallbackLocale: 'en',

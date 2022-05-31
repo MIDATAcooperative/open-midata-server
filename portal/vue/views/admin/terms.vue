@@ -79,7 +79,7 @@ export default {
             const { $data } = this, me = this;
             me.doBusy(terms.search({ }, ["name", "version", "language", "title", "createdAt"])
             .then(function(results) {
-                $data.terms = me.process(results.data, { filter : { name : "" }});
+                $data.terms = me.process(results.data, { filter : { name : "" }, ignoreCase : true, sort : "name" });
                        
             }));
 	    },

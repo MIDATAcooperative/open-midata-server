@@ -262,8 +262,8 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 		
 	}
 
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
-		AccessContext info = info();
+	public Query buildQuery(SearchParameterMap params) throws AppException {
+		info();
         
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Task");
@@ -297,9 +297,8 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 		builder.restriction("priority", false, QueryBuilder.TYPE_CODE, "priority");	
 		builder.restriction("requester", true, null, "requester");	
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
-							
-							   
-		return query.execute(info);
+														  
+		return query;
 	}
 
 	@Create
@@ -309,9 +308,10 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	}
 	
 	@Override
-	public void createExecute(Record record, Task theTask) throws AppException {
+	public Task createExecute(Record record, Task theTask) throws AppException {
 		MidataId consent = insertMessageRecord(record, theTask);
         shareRecord(record, theTask, consent);
+        return theTask;
 	}	
 	
 			

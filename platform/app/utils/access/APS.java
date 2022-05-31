@@ -89,5 +89,7 @@ public abstract class APS extends Feature {
 	public abstract boolean hasNoDirectEntries() throws AppException;
 	
 	public abstract void provideAPSKeyAndOwner(byte[] unlock, MidataId owner);
+	
+	public abstract void reload() throws InternalServerException;
 					
 }

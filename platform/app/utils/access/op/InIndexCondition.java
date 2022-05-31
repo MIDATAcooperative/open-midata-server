@@ -19,6 +19,7 @@ package utils.access.op;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -77,10 +78,22 @@ public class InIndexCondition implements Condition, Serializable {
 	}
 
 	@Override
-	public Object asMongoQuery() {
+	public Object asMongoValue() {
 		return val;		
 	}
 	
+	
+	
+	@Override
+	public Map<String, Object> asMongoQuery() {
+		return null;
+	}
+
+	@Override
+	public Condition mongoCompatible() {
+		return this;
+	}
+
 	@Override
 	public String toString() {		
 		return "in "+val.toString();		

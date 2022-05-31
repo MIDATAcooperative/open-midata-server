@@ -54,7 +54,7 @@ public class Feature_ManyUserNoRestriction extends Feature {
 							// cancel on too many
 							if (count > 100) return next.iterator(q);
 						}
-						AccessLog.log("use many user index");	
+						AccessLog.log("use many user index; users="+owner.size());	
 						if (owner.isEmpty()) return ProcessingTools.empty();						
 						return next.iterator(new Query(q,"many-users",CMaps.map("owner", owner)));						
 					//}														

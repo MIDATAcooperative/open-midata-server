@@ -69,6 +69,7 @@ public class Rights {
 		action("Users.getRESEARCH");
 		role(UserRole.MEMBER, "_id", "role", "firstname", "lastname", "name", "status", "email", "searchable");
 		role(UserRole.RESEARCH, "_id", "role", "firstname", "lastname", "name", "status", "email", "organization", "searchable");
+		role(UserRole.DEVELOPER, "_id", "role", "firstname", "lastname", "name", "status", "email", "searchable", "developer");		
 		
 		action("Users.getSelf");
 		role(UserRole.MEMBER, "_id", "address1", "address2", "apps", "city", "emailStatus", "mobileStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "birthday", "midataID", "news", "partInterest", "ssn", "language", "searchable", "confirmedAt", "developer", "authType", "notifications", "marketingEmail", "flags", "termsAgreed");

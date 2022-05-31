@@ -80,6 +80,10 @@ public class RecordGroup extends Model {
 	public static void add(RecordGroup recordGroup) throws InternalServerException {
 		Model.insert(collection, recordGroup);
 	}
+	
+	public boolean exists() throws InternalServerException {
+		return Model.exists(RecordGroup.class, collection, CMaps.map("system", system).map("name", name).map("_id", CMaps.map("$ne", _id)).map("deleted", CMaps.map("$ne", true)));
+	}
 			
 	public static void upsert(RecordGroup recordGroup) throws InternalServerException {
 	    Model.upsert(collection, recordGroup);

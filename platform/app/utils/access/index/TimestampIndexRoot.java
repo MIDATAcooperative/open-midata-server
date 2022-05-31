@@ -77,7 +77,18 @@ public class TimestampIndexRoot extends BaseIndexRoot<TimestampIndexKey,Timestam
 	@Override
 	public TimestampIndexKey createKey() {
 		return new TimestampIndexKey();
-	}		
+	}	
+	
+	@Override
+	public BaseIndexPageModel createPage() {
+		IndexPageModel page = new IndexPageModel();
+		page._id = new MidataId();
+		page.rev = getRev();
+		page.creation = getCreated();
+		return page;
+	}
+	
+	
 	
 	
 }

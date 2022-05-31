@@ -34,7 +34,7 @@
                 <td>{{ $t('enum.plugintype.'+app.type) }}</td>
                 <td>{{ $t('enum.userrole.'+app.targetUserRole) }}</td>
                 <td>
-                    <router-link class="btn btn-default btn-sm" :to="{ path : './manageapp', query : { appId : app._id }}" v-t="'developer_yourapps.manage_btn'">manage</router-link> 
+                    <router-link class="btn btn-default btn-sm mr-1" :to="{ path : './manageapp', query : { appId : app._id }}" v-t="'developer_yourapps.manage_btn'">manage</router-link> 
                     <router-link class="btn btn-default btn-sm" :to="{ path : './appstats' ,query :  { appId : app._id }}" v-t="'developer_yourapps.debug_info_btn'">debug info</router-link></td>
             </tr>
         </table>
@@ -69,7 +69,7 @@ export default {
 		    me.doBusy(apps.getApps({ developerTeam : userId }, [ "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type"])
 		    .then(function(data) { 
                 for (let app of data.data) { app.search = app.name.toLowerCase()+" "+app.filename.toLowerCase(); }
-                $data.apps = me.process(data.data, { filter : { search : "" }}); 
+                $data.apps = me.process(data.data, { filter : { search : "" }, ignoreCase : true, sort : "name" }); 
             }));		  		  
 	    }
     },

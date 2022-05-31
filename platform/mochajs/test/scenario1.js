@@ -1,9 +1,9 @@
 var
   chai = require('chai'),
   chaiHttp = require('chai-http'),
+  basic = require('../managers/basic');
   _data = require('../files/configurations'),
-  observation = require('../models/observation'),
-  base_manager = require('../managers/base_manager');
+  observation = require('../models/observation');
 
 chai.use(chaiHttp);
 var expect = chai.expect;
@@ -12,47 +12,34 @@ describe('Scenario 1', function () {
   // use promises because done() function can only be called one time. And it is necessary to make two requests
   // one to authenticate in the api
   // an the other one to authenticate in the portal
-  var user_position = 0;
+  var user = _data.users[0];
 
-  before('Authentication', function () {
-    return base_manager.authenticate(_data.users[user_position], function (err, res, body) {
-          _data.users[user_position].authAPI = body;
-        },
-        function (err, res, body) {
-          _data.users[user_position].authPortal = body;
-        })
-      .then(function () {
-        if (_data.users[user_position].authAPI.status == "UNCONFIRMED") {
-          return base_manager.confirm_consents(_data.users[user_position].authPortal.sessionToken);
-        }
-      });
+  before('Authentication', async function () {	
+	await basic.login(user);
+	await basic.oauth2(_data.configs, user); 
   });
 
   describe('create and read an observation', function () {
     var objObservation = new observation();
     it('insert new observation', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .post('/fhir/Observation')
-        .set('Authorization', 'Bearer ' + _data.users[user_position].authAPI.authToken)
+      basic.post('/fhir/Observation')
+        .user(user)                  
         .send(objObservation)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.header.location).to.be.not.null;
-
+        
           var startAt = res.header.location.indexOf('/fhir/Observation/') + '/fhir/Observation/'.length;
           var endedAt = res.header.location.indexOf('/_history');
           objObservation.id = res.header.location.substring(startAt, endedAt);
-          done();
-        });
+          done();       
+      });
     });
 
     it('read inserted observation', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/fhir/Observation/' + objObservation.id)
-        //.query({date: objObservation.effectiveDateTime})
-        .set('Authorization', 'Bearer ' + _data.users[user_position].authAPI.authToken)
+      basic.get('/fhir/Observation/' + objObservation.id)
+           .user(user)
+        //.query({date: objObservation.effectiveDateTime})        
         .end(function (err, res) {
           var response_observation = res.body;//.entry[0].resource;
           expect(err).to.be.null;
@@ -73,10 +60,9 @@ describe('Scenario 1', function () {
       updated_observation,
       ETag;
     it('insert new observation', function (done) {
-      chai
-        .request(_data.configs.environment)
+      basic
         .post('/fhir/Observation')
-        .set('Authorization', 'Bearer ' + _data.users[user_position].authAPI.authToken)
+        .user(user)        
         .send(objObservation)
         .end(function (err, res) {
           expect(err).to.be.null;
@@ -91,10 +77,8 @@ describe('Scenario 1', function () {
     });
 
     it('get inserted observation', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/fhir/Observation/' + id_observation)
-        .set('Authorization', 'Bearer ' + _data.users[user_position].authAPI.authToken)
+      basic.get('/fhir/Observation/' + id_observation)
+        .user(user)        
         .end(function (err, res) {
           var versionId = res.body.meta.versionId;
           updated_observation = new observation({
@@ -106,11 +90,9 @@ describe('Scenario 1', function () {
     });
 
     it('update inserted observation', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .put('/fhir/Observation/' + id_observation)
-        .set({
-          'Authorization': 'Bearer ' + _data.users[user_position].authAPI.authToken,
+      basic.put('/fhir/Observation/' + id_observation)
+        .user(user)
+        .set({        
           'If-Match': ETag
         })
         .send(updated_observation)
@@ -123,10 +105,8 @@ describe('Scenario 1', function () {
     });
 
     it('get updated observation', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/fhir/Observation/' + id_observation)
-        .set('Authorization', 'Bearer ' + _data.users[user_position].authAPI.authToken)
+      basic.get('/fhir/Observation/' + id_observation)
+        .user(user)        
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
@@ -145,10 +125,8 @@ describe('Scenario 1', function () {
     objObservation.v_value = 100;
     var id_observation;
     it('insert new observation', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .post('/fhir/Observation')
-        .set('Authorization', 'Bearer ' + _data.users[user_position].authAPI.authToken)
+      basic.post('/fhir/Observation')
+        .user(user)
         .send(objObservation)
         .end(function (err, res) {
           expect(err).to.be.null;
@@ -162,12 +140,10 @@ describe('Scenario 1', function () {
     });
 
     it('delete inserted observation', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .post(_data.configs.url_records_delete)
-        .set('X-Session-Token', _data.users[user_position].authPortal.sessionToken)
+      basic.post(_data.configs.url_records_delete)      
+        .portal(user)
         .send({
-          _id: id_observation + '.' + _data.users[user_position].authAPI.owner
+          _id: id_observation + '.' + user.owner
         })
         .end(function (err, res) {
           expect(err).to.be.null;
@@ -178,10 +154,8 @@ describe('Scenario 1', function () {
     });
 
     it('should not get removed observation', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/fhir/Observation/' + id_observation)
-        .set('Authorization', 'Bearer ' + _data.users[user_position].authAPI.authToken)
+      basic.get('/fhir/Observation/' + id_observation)
+        .user(user)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.statusCode).to.have.greaterThan(399);
@@ -191,10 +165,8 @@ describe('Scenario 1', function () {
     });
 
     it('should get history of removed observation', function (done) {
-      chai
-        .request(_data.configs.environment)
-        .get('/fhir/Observation/' + id_observation + '/_history/0')
-        .set('Authorization', 'Bearer ' + _data.users[user_position].authAPI.authToken)
+      basic.get('/fhir/Observation/' + id_observation + '/_history/0')
+        .user(user)
         .end(function (err, res) {
           expect(err).to.be.null;
           expect(res.statusCode).to.have.greaterThan(199);

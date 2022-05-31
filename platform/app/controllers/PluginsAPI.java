@@ -545,16 +545,16 @@ public class PluginsAPI extends APIController {
 			}
 			if (contextWithConsent == null) {
 				if (InstanceConfig.getInstance().getInstanceType().doExtendedDeveloperReports()) {
-				   throw new PluginException(inf.getUsedPlugin(), "error.noconsent", "None of the "+consent.size()+" possible consents allow to write "+dbrecord.getErrorInfo()+" for target person.\n\nLast tried create permission chain:\n"+lastTried.getMayCreateRecordReport(dbrecord));
+				   throw new PluginException(inf.getUsedPlugin(), "error.noconsent", "None of the "+consent.size()+" possible consents allow to write "+dbrecord.getErrorInfo()+" for target person.\n\nLast tried create permission chain:\n==================================\n"+lastTried.getMayCreateRecordReport(dbrecord));
 				} else {
 				   throw new InternalServerException("error.internal", "Record may not be created!");
 				}
 			}
 			context = contextWithConsent;
 		} else if (!context.mayCreateRecord(dbrecord)) {
-			throw new PluginException(inf.getUsedPlugin(), "error.plugin", dbrecord.getErrorInfo()+" may not be created. Please check access filter and permissions in developer portal.\n\nCreate permission chain:\n"+context.getMayCreateRecordReport(dbrecord));					
+			throw new PluginException(inf.getUsedPlugin(), "error.plugin", dbrecord.getErrorInfo()+" may not be created. Please check access filter and permissions in developer portal.\n\nCreate permission chain:\n========================\n"+context.getMayCreateRecordReport(dbrecord));					
 		}
-		if (context.mustPseudonymize()) throw new PluginException(inf.getUsedPlugin(), "error.plugin", dbrecord.getErrorInfo()+" may not be created. Access is pseudonymized! \n\nCreate permisssion chain:\n"+context.getMayCreateRecordReport(dbrecord));
+		if (context.mustPseudonymize()) throw new PluginException(inf.getUsedPlugin(), "error.plugin", dbrecord.getErrorInfo()+" may not be created. Access is pseudonymized! \n\nCreate permisssion chain:\n========================\n"+context.getMayCreateRecordReport(dbrecord));
 		
 		//MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
 		

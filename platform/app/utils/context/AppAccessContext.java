@@ -66,7 +66,7 @@ public class AppAccessContext extends AccessContext {
 		WritePermissionType wt = instance.writes;
 		if (wt==null) wt = WritePermissionType.WRITE_ANY;
 		boolean inFilter = !QueryEngine.listFromMemory(this, instance.sharingQuery, Collections.singletonList(rec)).isEmpty();
-		return "[ recordPassesFilter="+inFilter+" allowCreate="+wt.isCreateAllowed()+" allowUpdate="+wt.isUpdateAllowed()+" ]";
+		return "\n- Does the record pass the access filter? ["+inFilter+"]\n- Is record creation allowed in general? ["+wt.isCreateAllowed()+"]\n- Is update of records allowed in general? ["+wt.isUpdateAllowed()+"]";
 	}
 
 	@Override
@@ -154,10 +154,14 @@ public class AppAccessContext extends AccessContext {
 		case "oauth1" : result="Importer (OAuth 1)";break;
 		case "oauth2" : result="Importer";break;
 		case "mobile" : result="Application";break;
-		case "external" : result="External Service";break;
+		case "external" : result="External Service (API-Side)";break;
 		case "analyzer" : result="Project Aggregator";break;
 		}
 		result += " '"+plugin.name+"'";
+		if (instance.dateOfCreation != null) result += ", created at "+instance.dateOfCreation.toGMTString();
+		if (instance.appVersion != plugin.pluginVersion) {
+			result += "\n- Outdated version, access filter may not be up to date.";
+		}
 		return result;
 	}
 

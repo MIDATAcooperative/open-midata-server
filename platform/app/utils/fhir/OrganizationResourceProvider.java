@@ -189,12 +189,10 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 	}
 
-	// The actual search method implementation.
-	// Basically this "maps" the FHIR query to a MIDATA query and executes it
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+	public Query buildQuery(SearchParameterMap params) throws AppException {
 		
 		// get execution context (which user, which app)
-		AccessContext info = info();
+		info();
 
 		// construct empty query and a builder for that query
 		Query query = new Query();		
@@ -230,7 +228,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
 		//query.putAccount("public", "only");
 		// At last execute the constructed query
-		return query.execute(info);
+		return query;
 	}
 	
 		

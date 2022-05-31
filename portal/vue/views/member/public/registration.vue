@@ -87,7 +87,7 @@
                         <input type="text" class="form-control" id="lastname" name="lastname" :placeholder="$t('registration.lastname')" v-model="registration.lastname" required v-validate>
                     </form-group>
                                 
-                    <form-group name="gender" label="registration.gender" :path="errors.gender">
+                    <form-group name="gender" label="registration.gender" :path="errors.gender" v-if="genderNeeded()">
                         <select class="form-control" id="gender" name="gender" v-model="registration.gender" required v-validate>
                             <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                             <option value="FEMALE" v-t="'enum.gender.FEMALE'">female</option>
@@ -295,6 +295,12 @@ export default {
 		if ($route.query.birthdate) return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('BIRTHDAY_SET') >= 0);
 	},
+	
+	genderNeeded() {
+		const { $data, $route } = this;
+		if ($route.query.gender) return true;
+		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('GENDER_SET') >= 0);
+	},
 
 	countryNeeded() {
 		const { $data, $route } = this;
@@ -398,6 +404,7 @@ export default {
 		};
 		
 		var d = $data.registration.birthdayDate;
+				
 		
 		if (d) {
 			var dparts = d.split("\.");
@@ -415,7 +422,8 @@ export default {
 										pad($data.registration.birthdayDay);
 		} else $data.registration.birthday = undefined;
 		// send the request
-		var data = $data.registration;	
+		var data = $data.registration;
+		if (!data.gender) data.gender = "UNKNOWN";	
 		
 		if ($route.query.developer) {
 			data.developer = $route.query.developer;

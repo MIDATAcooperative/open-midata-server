@@ -47,6 +47,7 @@ import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.RecordsInfo;
+import models.StudyParticipation;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -56,6 +57,7 @@ import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EntityType;
 import models.enums.MessageReason;
+import models.enums.ParticipationStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
@@ -384,7 +386,8 @@ public class Circles extends APIController {
 				throw new InternalServerException("error.internal", "Cryptography error");
 			}
 		}
-		consent.sharingQuery = ConsentQueryTools.getEmptyQuery();		
+		consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
+		consent.creator = context.getActor();
 		consent.owner = userId;
 		consent.externalOwner = externalOwner;
 		consent.name = name;		
@@ -887,6 +890,10 @@ public class Circles extends APIController {
 		} else {
 			consent.assertNonNullFields();
 			consent.updateMetadata();
+		}
+		if (consent instanceof StudyParticipation) {
+			// Do not trigger resource change for "MATCH" only
+			if (((StudyParticipation) consent).pstatus == ParticipationStatus.MATCH) return;
 		}
 		SubscriptionManager.resourceChange(context, consent);
 	}

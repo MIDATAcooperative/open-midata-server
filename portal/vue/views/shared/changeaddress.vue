@@ -30,7 +30,7 @@
         </form-group>
 			  
 		<form-group name="gender" label="registration.gender" :path="errors.gender">
-            <select class="form-control" id="gender" name="gender" @change="adrChange();" v-model="registration.gender" required v-validate>
+            <select class="form-control" id="gender" name="gender" @change="adrChange();" v-model="registration.gender" v-validate>
                 <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                 <option value="FEMALE" v-t="'enum.gender.FEMALE'">female</option>
                 <option value="MALE" v-t="'enum.gender.MALE'"></option>

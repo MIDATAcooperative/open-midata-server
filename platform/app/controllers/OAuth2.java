@@ -265,7 +265,8 @@ public class OAuth2 extends Controller {
     		
             if (client_id == null) throw new BadRequestException("error.internal", "Missing client_id");
             
-    		ExtendedSessionToken tk = ExtendedSessionToken.decrypt(code);
+    		ExtendedSessionToken tk = ExtendedSessionToken.decrypt(code);    		
+    		
     		if (tk == null || tk.ownerId != null) throw new BadRequestException("error.internal", "invalid_grant");
     		if (tk.created + OAUTH_CODE_LIFETIME < System.currentTimeMillis()) throw new BadRequestException("error.internal", "invalid_grant");
     		//AccessLog.log("cs:"+tk.codeChallenge);
@@ -309,7 +310,8 @@ public class OAuth2 extends Controller {
     		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.LOGIN);
         } else throw new BadRequestException("error.internal", "Unknown grant_type");
                											
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user != null ? user.role : UserRole.ANY); 
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user != null ? user.role : UserRole.ANY);
+		
         OAuthRefreshToken refresh = createRefreshToken(tempContext, appInstance, aeskey);
         
         BSONObject q = RecordManager.instance.getMeta(tempContext, appInstance._id, "_query");
@@ -656,7 +658,7 @@ public class OAuth2 extends Controller {
 		}
 		
 		// If 2FA is enabled (for other apps) and address or birthday must be changed do 2FA 
-		if (notok!=null && (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.BIRTHDAY_SET) || notok.contains(UserFeature.NEWEST_PRIVACY_POLICY_AGREED) || notok.contains(UserFeature.NEWEST_TERMS_AGREED))) {			
+		if (notok!=null && (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.BIRTHDAY_SET) || notok.contains(UserFeature.GENDER_SET) || notok.contains(UserFeature.NEWEST_PRIVACY_POLICY_AGREED) || notok.contains(UserFeature.NEWEST_TERMS_AGREED))) {			
 			if (user.authType != null && user.authType != SecondaryAuthType.NONE) {
 				notok.add(UserFeature.AUTH2FACTOR);
 			}
@@ -1031,6 +1033,7 @@ public class OAuth2 extends Controller {
 		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);
 		  if (notok.contains(UserFeature.APP_UNLOCK_CODE)) notok = Collections.singleton(UserFeature.APP_UNLOCK_CODE);
 		  if (notok.contains(UserFeature.BIRTHDAY_SET)) notok = Collections.singleton(UserFeature.BIRTHDAY_SET);
+		  if (notok.contains(UserFeature.GENDER_SET)) notok = Collections.singleton(UserFeature.GENDER_SET);
 		  if (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.PHONE_ENTERED)) notok.retainAll(Sets.createEnum(UserFeature.ADDRESS_ENTERED, UserFeature.PHONE_ENTERED));
 		  if (notok.contains(UserFeature.ADMIN_VERIFIED)) notok = Collections.singleton(UserFeature.ADMIN_VERIFIED);		  
 		  if (notok.contains(UserFeature.ADDRESS_VERIFIED)) notok = Collections.singleton(UserFeature.ADDRESS_VERIFIED);
@@ -1040,7 +1043,7 @@ public class OAuth2 extends Controller {
 		  
 		  return Application.loginHelperResult(request, token, user, notok);
 		}
-			
+		
 		checkJoinWithCode(token, links);
 				
 		long ts4 = System.currentTimeMillis();
