@@ -56,9 +56,8 @@
 				<td class="d-none d-lg-table-cell">{{ consent.authorized.length }}</td>
 				<td class="d-none d-lg-table-cell">{{ consent.records }}</td>
 			</tr>
-		</table>
-
-		<button class="btn btn-primary" @click="addConsent();" v-if="role!='RESEARCH'" v-t="'consents.add_new_btn'"></button>
+		</table>  
+		<button class="btn btn-primary" @click="addConsent();" v-if="role!='research' && role!='provider'" v-t="'consents.add_new_btn'"></button>
 		
     </panel>	
 </div>
