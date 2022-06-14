@@ -55,7 +55,7 @@
                 </form-group>
             </div>
                        
-            <button type="submit" v-submit class="btn btn-default" :disabled="action!=null || (crit.pluginType=='mobile' || crit.pluginType=='service' || crit.pluginType=='analyzer') && group == null" v-t="'studyactions.add_application_btn'"></button>          
+            <button type="submit" v-submit class="btn btn-default" :disabled="action!=null || (crit.pluginType=='mobile' || crit.pluginType=='service' || crit.pluginType=='analyzer') && crit.group == ''" v-t="'studyactions.add_application_btn'"></button>          
      
         </form>                   
            

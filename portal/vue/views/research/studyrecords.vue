@@ -83,9 +83,9 @@ export default {
                     $data.lockChanges = !$data.study.myRole.export;
                     $data.infos = [];
                     for (let group of $data.study.groups) {
-                        var inf = { group : group.name, count:"-1" };
+                        let inf = { group : group.name, count:"-1" };
                         $data.infos.push(inf);
-                        var properties = { study : $data.studyid, "study-group" : group.name };
+                        let properties = { study : $data.studyid, "study-group" : group.name };
                         me.doBusy(records.getInfos(userId, properties, "ALL")
                         .then(function(results) {						
                             if (results.data && results.data.length == 1) {	inf.count = results.data[0].count; }

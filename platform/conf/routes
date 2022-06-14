@@ -163,6 +163,7 @@ POST    /api/admin/studies                               controllers.research.St
 GET     /api/research/studies/:study                     controllers.research.Studies.get(request: Request, study: String)
 GET     /api/admin/studies/:study                        controllers.research.Studies.getAdmin(study: String)
 PUT     /api/research/studies/:study                     controllers.research.Studies.update(request: Request, study: String)
+POST    /api/research/studies/:study/addgroup            controllers.research.Studies.addGroup(request: Request, study: String)
 POST    /api/research/studies/:study/change              controllers.research.Studies.updateNonSetup(request: Request,study: String)
 POST    /api/research/studies/:study/clone               controllers.research.Studies.cloneToNew(request: Request,study: String)
 GET     /api/research/studies/:study/download            controllers.research.Studies.download(request: Request, study: String)

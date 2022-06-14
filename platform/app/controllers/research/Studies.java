@@ -812,6 +812,10 @@ public class Studies extends APIController {
 			return badRequest("Please define record sharing query before validation!");
 
 		// Checks
+		Set<String> grpNames = new HashSet<String>();
+		for (StudyGroup grp : study.groups) {
+			if (!grpNames.add(grp.name)) throw new BadRequestException("error.exists.projectgroup", "Group '"+grp.name+"' already exists.");
+		}
 
 		Map<String, Object> properties = new HashMap<String, Object>(study.recordQuery);
 		Feature_FormatGroups.convertQueryToContents(properties);
@@ -2654,6 +2658,51 @@ public class Studies extends APIController {
 		AuditManager.instance.success();
 
 		return ok(JsonOutput.toJson(study, "Study", Study.ALL)).as("application/json");
+	}
+	
+	@Security.Authenticated(ResearchSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public Result addGroup(Request request, String id) throws AppException, JsonValidationException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
+		MidataId studyId = new MidataId(id);
+		JsonNode json = request.body().asJson();
+		JsonValidation.validate(json, "name", "description");
+			
+		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
+		Study study = Study.getById(studyId, Sets.create("groups", "name", "owner", "type", "joinMethods", "infos", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation",
+				"anonymous", "code", "startDate", "endDate", "dataCreatedBefore"));
+
+		if (study == null)
+			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+
+		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_SETUP_CHANGED, userId, null, study);
+
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
+		if (self == null)
+			throw new AuthException("error.notauthorized.action", "User not member of study group");
+		if (!self.role.maySetup())
+			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+		if (study.executionStatus != StudyExecutionStatus.PRE && study.executionStatus != StudyExecutionStatus.RUNNING) {
+			throw new BadRequestException("error.notauthorized.action", "Groups can only be added as long as project is running.");
+		}
+		
+		StudyGroup newGroup = new StudyGroup();
+		newGroup.name = JsonValidation.getString(json, "name");
+		newGroup.description = JsonValidation.getString(json, "description");
+		
+		for (StudyGroup existing : study.groups) {
+			if (existing.name.toLowerCase().equals(newGroup.name.toLowerCase())) throw new BadRequestException("error.exists.projectgroup", "Project group already exists.");
+		}
+		
+		study.groups.add(newGroup);
+		study.setGroups(study.groups);
+		
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		AuditManager.instance.success();
+				
+		return ok();
 	}
 
 }
