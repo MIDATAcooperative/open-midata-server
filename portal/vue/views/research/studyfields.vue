@@ -18,8 +18,7 @@
 <div>
     <study-nav page="study.fields"></study-nav>
     <tab-panel :busy="isBusy">
-
-        <error-box :error="error"></error-box>
+       
 
         <h2 v-t="'studyfields.required_data'"></h2>
         <p class="alert alert-info" v-t="'studyfields.no_change_warning'"></p>
@@ -64,26 +63,34 @@
                 <button type="submit" v-submit class="btn btn-primary" :disabled="studyLocked()" v-t="'common.change_btn'"></button>
                 <success :finished="finished" action="change" msg="common.save_ok"></success>                
             </form-group>
-        </form>
+       
         
-        <h2 v-t="'studyfields.groups'"></h2>
-        <p v-if="!study.groups.length" v-t="'studyfields.groups_empty'"></p>
-        <table v-else class="table table-striped">
-            <tr>
-                <th v-t="'studyfields.group_name'"></th>
-                <th v-t="'studyfields.group_description'"></th>
-                <th>&nbsp;</th>
-            </tr>
-            <tr v-for="(group,idx) in study.groups" :key="idx">
-                <td><input class="form-control" type="text"  :disabled="studyLocked()" v-validate v-model="group.name"></td>
-                <td><input class="form-control" type="text"  :disabled="studyLocked()" v-validate v-model="group.description"></td>
-                <td><button class="btn btn-danger btn-sm" @click="deleteGroup(group);" v-t="'common.delete_btn'" :disabled="studyLocked()">Delete</button></td>
-            </tr>
-        </table>
-        <button class="btn btn-default space" @click="addGroup();" v-t="'studyfields.add_group_btn'" :disabled="studyLocked()"></button>
-        <button class="btn btn-primary space" @click="saveGroups()" :disabled="action != null || studyLocked()" v-t="'studyfields.save_changes_btn'"></button>
+	        <h2 v-t="'studyfields.groups'"></h2>
+	        <p v-if="!study.groups.length" v-t="'studyfields.groups_empty'"></p>
+	        <table v-else class="table table-striped">
+	            <tr>
+	                <th v-t="'studyfields.group_name'"></th>
+	                <th v-t="'studyfields.group_description'"></th>
+	                <th>&nbsp;</th>
+	            </tr>
+	            <tr v-for="(group,idx) in study.groups" :key="idx">
+	                <td><input class="form-control" type="text"  :disabled="studyLocked()" v-validate v-model="group.name"></td>
+	                <td><input class="form-control" type="text"  :disabled="studyLocked()" v-validate v-model="group.description"></td>
+	                <td><button type="button" class="btn btn-danger btn-sm" @click="deleteGroup(group);" v-t="'common.delete_btn'" :disabled="studyLocked()">Delete</button></td>
+	            </tr>
+	            <tr v-if="studyLocked()">
+	                <td><input name="name" class="form-control" type="text" v-validate v-model="newGroup.name"></td>
+	                <td><input name="description" class="form-control" type="text" v-validate v-model="newGroup.description"></td>
+	                <td><button type="button" class="btn btn-secondary btn-sm" @click="addNewGroup()" v-t="'common.add_btn'">Add</button></td>
+	            </tr>
+	        </table>
+        
+         </form>
+        
+        <button class="btn btn-default space" @click="addGroup();" v-t="'studyfields.add_group_btn'" v-if="!studyLocked()" :disabled="studyLocked()"></button>
+        <button class="btn btn-primary space" @click="saveGroups()" :disabled="action != null || studyLocked()" v-if="!studyLocked()" v-t="'studyfields.save_changes_btn'"></button>       
         <success :finished="finished" action="groups" msg="common.save_ok"></success>
-                                
+        <error-box :error="error"></error-box>                   
     </tab-panel>
    
 </div>
@@ -103,7 +110,8 @@ export default {
     data: () => ({	
         studyid : null,
         information : {},
-        study : null
+        study : null,
+        newGroup : { name : "", description: "" }
     }),
 
     components: {  Panel, TabPanel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, RadioBox },
@@ -125,6 +133,8 @@ export default {
 			    $data.study = study;
 			    $data.study.recordQuery = undefined;
 		    }));
+		    
+		    $data.newGroup = { name : "", description: "" };
         },
    
         setRequiredInformation() {
@@ -157,6 +167,11 @@ export default {
         saveGroups() {	 
             const { $data } = this, me = this;
 	        me.doAction("groups", server.put(jsRoutes.controllers.research.Studies.update($data.studyid).url, { "groups" : $data.study.groups }))	 
+        },
+        
+        addNewGroup() {	 
+            const { $data } = this, me = this;
+	        me.doAction("groups", server.post(jsRoutes.controllers.research.Studies.addGroup($data.studyid).url, $data.newGroup ).then(function() { me.reload() }));
         },
    
         studyLocked() {

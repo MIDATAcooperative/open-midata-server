@@ -134,7 +134,10 @@ public class FHIRServlet extends RestfulServer {
       
       setPlainProviders(plainProviders);
       //setPagingProvider(new VirtualPaging());
-      ResourceProvider.addPathWithVersion("Bundle.entry.fullUrl");
+      
+      //Against FHIR spec:
+      //ResourceProvider.addPathWithVersion("Bundle.entry.fullUrl");
+      
       ResourceProvider.addPathWithVersion("Bundle.entry.response.location");
       getFhirContext().getParserOptions().setDontStripVersionsFromReferencesAtPaths(ResourceProvider.pathesWithVersion);
       

@@ -135,6 +135,7 @@
        "endpoint" : "An endpoint with this URL already exists",
        "content" : "A content type with this name already exists.",
        "group" : "A content group with this name already exists.",
+       "projectgroup" : "A project group with this name already exists.",
        "code" : "A code with this code and codesystem already exists."
      },
 

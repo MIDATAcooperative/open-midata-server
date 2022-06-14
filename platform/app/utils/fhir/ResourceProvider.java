@@ -156,7 +156,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	public abstract T getResourceById(@IdParam IIdType theId) throws AppException;
 	
 	public String getResourceUrl(String baseUrl, IBaseResource r) {
-		String res = baseUrl+"/"+r.getIdElement().toString();//+"/_history/"+r.getMeta().getVersionId();		
+		String res = baseUrl+"/"+r.getIdElement().toVersionless().toString();		
 		return res;
 	}
 	
