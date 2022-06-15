@@ -27,6 +27,7 @@ import utils.access.op.ElemMatchCondition;
 import utils.access.op.EqualsSingleValueCondition;
 import utils.access.op.ExistsCondition;
 import utils.access.op.FieldAccess;
+import utils.access.op.NotCondition;
 import utils.access.op.OrCondition;
 
 public class PredicateBuilder {
@@ -34,8 +35,8 @@ public class PredicateBuilder {
 	private Condition result = null;
 	private Condition block = null;
 	private Condition current = null;
-	
-	private boolean indexable = true;
+		
+	private boolean negateBlock = false;
 	
 	public void addComp(String path, CompareOperator op, Object value, boolean nullTrue) {		
 		Condition cond = new CompareCondition((Comparable<Object>) value, op, nullTrue);
@@ -77,8 +78,16 @@ public class PredicateBuilder {
 	}
 	
 	public void and() {
+		if (negateBlock) {
+			if (block != null) block = new NotCondition(block);
+			negateBlock = false;
+		}
 		result = AndCondition.and(result, block);
 		block = null;
+	}
+	
+	public void notBlock() {
+		negateBlock = true;
 	}
 	
 	public void or() {
