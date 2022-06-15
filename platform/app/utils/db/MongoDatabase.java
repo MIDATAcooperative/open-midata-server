@@ -486,7 +486,7 @@ public class MongoDatabase extends Database {
 	 */
 	private BasicDBObject toDBObject(Class model, Map<String, ? extends Object> properties) throws DatabaseConversionException {
 		BasicDBObject dbObject = new BasicDBObject();
-		for (String key : properties.keySet()) {
+		for (String key : properties.keySet()) {			
 			Object property = properties.get(key);
 			if (property instanceof Collection<?> && !key.startsWith("$")) {
 				if (((Collection<?>) property).size() == 1) {
@@ -504,7 +504,11 @@ public class MongoDatabase extends Database {
 				BasicDBObject dbo = new BasicDBObject();
 				Map propertyMap = (Map<?,?>) property;
 				for (Object k : propertyMap.keySet()) {
-					dbo.put(k.toString(), conversion.toDBObjectValue(propertyMap.get(k)));
+					if (k.toString().equals("$not")) {
+					  dbo.put("$not", toDBObject(model, (Map<String, Object>) propertyMap.get(k)));
+					} else {
+					  dbo.put(k.toString(), conversion.toDBObjectValue(propertyMap.get(k)));
+					}
 				}
 				dbObject.put(key,  dbo);
 			} else {

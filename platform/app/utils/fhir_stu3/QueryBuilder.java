@@ -41,6 +41,7 @@ import ca.uhn.fhir.rest.param.QuantityParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.param.TokenParamModifier;
 import ca.uhn.fhir.rest.param.UriParam;
 import ca.uhn.fhir.rest.param.UriParamQualifierEnum;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
@@ -128,7 +129,7 @@ public class QueryBuilder {
 				throw new InvalidRequestException("Invalid _lastUpdated parameter!");
 			}			
 		}
-		if (params.getCount() != null) {
+		if (params.getCount() != null && params.getCount() != 0) {
 			query.putAccount("limit", params.getCount() + 1); // We add 1 to see if there are more results available
 		}
 		if (params.getSkip() != null) {
@@ -237,13 +238,12 @@ public class QueryBuilder {
 		if (sortOrder != null) addSort(name, sortOrder, t1, p1, t2, p2, t3, p3);
 		
 		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
-		if (paramsAnd == null) return;
+		if (paramsAnd == null || paramsAnd.isEmpty()) return;
 		
 		PredicateBuilder bld = new PredicateBuilder();
 		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {
 						
-			for (IQueryParameterType param : paramsOr) {
-								
+			for (IQueryParameterType param : paramsOr) {						
 				handleRestriction(param, p1, t1, bld);								
 			    if (p2 != null) {
 			    	bld.or();
@@ -280,7 +280,7 @@ public class QueryBuilder {
 		
 	public String sortPath(String t, String p) {
 		if (t.equals(TYPE_DATETIME_OR_PERIOD)) {
-			return p+"DateTime|"+p+"Period.start";
+			return p+"DateTime|"+p+"Period.start";	
 		} else if (t.equals(TYPE_STRING)) {
 			return p;
 		} else if (t.equals(TYPE_CODE)) {
@@ -290,7 +290,7 @@ public class QueryBuilder {
 		} else if (t.equals(TYPE_CODING)) {
 			return p+".code";
 		} else if (t.equals(TYPE_AGE_OR_RANGE)) {
-			return p+"Age.value|"+p+"Range.low.value";
+			return p+"Age.value|"+p+"Range.low.value";	
 		} else if (t.equals(TYPE_CONTACT_POINT)) {
 			return p+".value";
 		} else if (t.equals(TYPE_DATE)) {
@@ -373,6 +373,7 @@ public class QueryBuilder {
 			  String val = tokenParam.getValue();
 			  if (val == null) return;
 			  boolean isText = tokenParam.isText();
+			  TokenParamModifier modifier = tokenParam.getModifier();
 			  if (type.equals(TYPE_CODEABLE_CONCEPT)) {
 				if (isText) {
 				  bld.add(
@@ -420,6 +421,7 @@ public class QueryBuilder {
 			  } else if (type.equals(TYPE_STRING)) {
 				bld.addEq(path, tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 			  } 
+			  if (modifier == TokenParamModifier.NOT) bld.notBlock();
 			} else if (param instanceof StringParam) {
 			  StringParam stringParam = (StringParam) param;
 			  

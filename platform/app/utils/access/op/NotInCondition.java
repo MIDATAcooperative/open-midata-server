@@ -18,41 +18,35 @@
 package utils.access.op;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import utils.collections.CMaps;
 
 /**
- * check if object is in a list of objects
+ * Not-in operator as in mongoDB
+ * @author alexander
  *
  */
-public class InCondition implements Condition, Serializable {
-
+public class NotInCondition implements Condition, Serializable {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3810696744848273080L;
+	private static final long serialVersionUID = 4741230952351986598L;
 	private Set<Object> val;
 	
 	/**
 	 * Constructor
 	 * @param val value to compare target object with
 	 */
-	public InCondition(Set<Object> val) {
+	public NotInCondition(Set<Object> val) {
 		this.val = val;
 	}
-		
-	public Set<Object> getValues() {
-		return val;
-	}
-
+	
 	@Override
 	public boolean satisfiedBy(Object obj) {
-		return val.contains(obj);
+		return !val.contains(obj);
 	}
 
 	@Override
@@ -62,7 +56,7 @@ public class InCondition implements Condition, Serializable {
 
 	@Override
 	public Condition indexValueExpression() {
-		return new InIndexCondition(val);
+		return null;
 	}
 
 	@Override
@@ -77,17 +71,18 @@ public class InCondition implements Condition, Serializable {
 
 	@Override
     public Map<String, Object> asMongoQuery() {
-		return null;
+		return CMaps.map("$nin", val);
 	}
-	
-	@Override
-	public Object asMongoValue() {		
-		return val;
-	}
+		
 
 	@Override
 	public Condition mongoCompatible() {
 		return this;
+	}
+	
+	@Override
+	public String toString() {
+		return "{ $nin : "+val.toString()+" }";
 	}
 		
 	
