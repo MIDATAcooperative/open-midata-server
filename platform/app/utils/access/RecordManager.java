@@ -705,7 +705,7 @@ public class RecordManager {
 		      // use "O" for owner. No entry is same as creator for backwards compatibility
 		      rec.meta.put("modifiedBy", "O");
 		    } else {
-		      rec.meta.put("modifiedBy", record.modifiedBy);
+		      rec.meta.put("modifiedBy", record.modifiedBy.toDb());
 		    }
 		    
 			
