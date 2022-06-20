@@ -448,6 +448,7 @@ public class MobileAPI extends Controller {
 		record.app = inf.getUsedPlugin();
 		record.owner = owner;
 		record.creator = inf.getActor();
+		record.modifiedBy = inf.getActor();
 		record.created = record._id.getCreationDate();
 		
 		/*if (json.has("created-override")) {
@@ -501,7 +502,7 @@ public class MobileAPI extends Controller {
 		record._id = JsonValidation.getMidataId(json, "_id");	
 		record.version = JsonValidation.getStringOrNull(json, "version");
 		 				
-		record.creator = inf.getActor();
+		record.modifiedBy = inf.getActor();
 		record.lastUpdated = new Date();		
 							
 		try {

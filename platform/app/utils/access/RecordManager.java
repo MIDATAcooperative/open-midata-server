@@ -74,10 +74,10 @@ public class RecordManager {
 	public final static Set<String> COMPLETE_META = Collections.unmodifiableSet(Sets.create("id", "owner",
 			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated", "consentAps"));
 	public final static Set<String> COMPLETE_DATA = Collections.unmodifiableSet(Sets.create("id", "owner", "ownerName",
-			"app", "creator", "created", "name", "format", "content", "code", "description", "isStream", "lastUpdated",
+			"app", "creator", "modifiedBy", "created", "name", "format", "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group"));
 	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Collections.unmodifiableSet(Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated",
+			"app", "creator", "modifiedBy", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group", "watches", "stream"));
 	public final static Set<String> SHARING_FIELDS = Collections.unmodifiableSet(Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream", "stream", "app"));
 	
@@ -700,6 +700,14 @@ public class RecordManager {
 		    
 		    String version = Long.toString(System.currentTimeMillis());
 		    rec.meta.put("version", version);
+		    
+		    if (record.modifiedBy.equals(rec.owner)) {
+		      // use "O" for owner. No entry is same as creator for backwards compatibility
+		      rec.meta.put("modifiedBy", "O");
+		    } else {
+		      rec.meta.put("modifiedBy", record.modifiedBy);
+		    }
+		    
 			
 		    DBRecord clone = rec.clone();
 		    

@@ -1128,7 +1128,7 @@ public class Studies extends APIController {
 			return;
 		study.dataCreatedBefore = now;
 
-		Set<StudyParticipation> participants = StudyParticipation.getActiveParticipantsByStudy(study._id, Consent.FHIR);
+		Set<StudyParticipation> participants = StudyParticipation.getActiveParticipantsByStudy(study._id, StudyParticipation.STUDY_EXTRA);
 		for (StudyParticipation participant : participants) {
 			if (participant.status.equals(ConsentStatus.ACTIVE)) {
 				Circles.consentStatusChange(context, participant, ConsentStatus.FROZEN);

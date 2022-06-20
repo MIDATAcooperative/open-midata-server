@@ -42,14 +42,23 @@ public class RecordConversion {
 		record.format = (String) dbrecord.meta.get("format");		
 		if (record.format != null) {
 		  record.app = MidataId.from(dbrecord.meta.get("app"));
+		  record.version = (String) dbrecord.meta.get("version");
+		  
 		  Object creator = dbrecord.meta.get("creator");
 		  if (creator != null) record.creator = MidataId.from(creator); else record.creator = dbrecord.owner;
+		  
+		  Object modifiedBy = dbrecord.meta.get("modifiedBy");
+		  if (modifiedBy != null) {
+			  if ("O".equals(modifiedBy)) record.modifiedBy = dbrecord.owner;
+			  else record.modifiedBy = MidataId.from(modifiedBy); 
+		  } else record.modifiedBy = record.creator;
+		  
 		  record.name = (String) dbrecord.meta.get("name");				
 		  record.created = (Date) dbrecord.meta.get("created");
 		  record.lastUpdated = (Date) dbrecord.meta.get("lastUpdated");
 		  if (record.lastUpdated == null) record.lastUpdated = record.created;
 		  record.description = (String) dbrecord.meta.get("description");
-		  record.version = (String) dbrecord.meta.get("version");
+		  
 		  if (record.version == null) record.version = VersionedDBRecord.INITIAL_VERSION;
 						
 		  record.content = (String) dbrecord.meta.get("content");
@@ -97,6 +106,10 @@ public class RecordConversion {
 		BSONObject meta = dbrecord.meta;		
 		meta.put("app", record.app !=null ? record.app.toDb() : null);
 		meta.put("creator", (record.creator != null && !record.creator.equals(record.owner)) ? record.creator.toDb() : null);
+		if (record.modifiedBy != null && !record.modifiedBy.equals(record.creator)) {
+		  meta.put("modifiedBy", !record.modifiedBy.equals(record.owner) ? record.modifiedBy.toDb() : "O");
+		}		  
+						
 		meta.put("name", record.name);
 		meta.put("created", record.created);
 		if (record.lastUpdated != null) meta.put("lastUpdated", record.lastUpdated);

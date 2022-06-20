@@ -151,7 +151,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 		    	  }
 	    	  }
 	    	  
-	    	  basic.setAuthor(new Reference("Patient/"+rec.creator.toString()));
+	    	  basic.setAuthor(new Reference("Patient/"+rec.modifiedBy.toString()));
 	    	  basic.setSubject(new Reference("Patient/"+rec.owner.toString()));
 	    	  
 	    	  basic.addExtension().setUrl("http://midata.coop/extensions/format-codes/"+rec.format).setValue(new StringType(JsonOutput.toJsonString(rec.data)));
