@@ -31,6 +31,10 @@
 				<div class="col-md-8 col-lg-10 main-col">{{record.creatorName}}</div>
 			</div>
 			<div class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.modified_by'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{record.modifiedByName}}</div>
+			</div>
+			<div class="row mt-1">
 				<div class="col-md-4 col-lg-2" v-t="'recorddetail.created_with'"></div>
 				<div class="col-md-8 col-lg-10 main-col">{{record.app}}</div>
 			</div>

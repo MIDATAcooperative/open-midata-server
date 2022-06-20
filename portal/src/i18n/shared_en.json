@@ -779,6 +779,7 @@
     "name" :"Name:",
 	"owned_by" : "Owned by:",
 	"created_by" : "Created by:",
+	"modified_by" : "Last modified by:",
     "created_with" : "Created with:",
     "created_on" : "Created at:",
     "content" : "@PRODUCT content type:",
