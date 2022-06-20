@@ -700,6 +700,14 @@ public class RecordManager {
 		    
 		    String version = Long.toString(System.currentTimeMillis());
 		    rec.meta.put("version", version);
+		    
+		    if (record.modifiedBy.equals(rec.owner)) {
+		      // use "O" for owner. No entry is same as creator for backwards compatibility
+		      rec.meta.put("modifiedBy", "O");
+		    } else {
+		      rec.meta.put("modifiedBy", record.modifiedBy);
+		    }
+		    
 			
 		    DBRecord clone = rec.clone();
 		    

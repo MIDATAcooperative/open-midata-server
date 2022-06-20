@@ -184,6 +184,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public void updatePrepare(Record record, T theResource) throws AppException {
 		record.creator = info().getActor();
+		record.modifiedBy = record.creator;
 		prepare(record, theResource);	
 		prepareTags(record, theResource);
 	}
@@ -247,6 +248,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		Record record = new Record();
 		record._id = new MidataId();
 		record.creator = info().getActor();
+		record.modifiedBy = record.creator;
 		record.format = format;
 		record.app = info().getUsedPlugin();
 		record.created = record._id.getCreationDate();
@@ -450,6 +452,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		  if (creatorApp != null) meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
 		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, record.creator.equals(record.owner) ? record.ownerName : null ));
+		if (record.modifiedBy != null && !record.version.equals("0")) meta.addExtension("modifiedBy", FHIRTools.getReferenceToUser(record.modifiedBy, record.modifiedBy.equals(record.owner) ? record.ownerName : null ));
 				
 		resource.getMeta().addExtension(meta);
 		processAttachments(record, resource);

@@ -463,13 +463,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 				Object id = record.data.get("id");
 				// 
 				if (id.equals(record.owner.toString())) {
-					if (record.creator != null && record.creator.equals(record.owner)) record.creator = null; 
-					result.add(record);
-				//AccessLog.log("taken:"+record.content+" / "+record.name);
-				} else {
-					//AccessLog.log(id.toString()+" vs "+record.owner.toString());
-					//AccessLog.log(record.content+" / "+record.name);
-				}
+					if (record.creator != null && record.creator.equals(record.owner)) record.creator = null;
+					if (record.modifiedBy != null && record.modifiedBy.equals(record.owner)) record.modifiedBy = null;
+					result.add(record);				
+				} 
 			}
 			AccessLog.log("RESULT AFTER FILTER="+result.size());
 			return result;

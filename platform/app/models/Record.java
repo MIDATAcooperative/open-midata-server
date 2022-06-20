@@ -88,6 +88,14 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * This field is computed upon request from the creator field
 	 */
 	public String creatorName;
+	
+	/**
+	 * firstname lastname of the last modifier of this record
+	 * 
+	 * This field is neither stored in the database nor contained in the encrypted part of the record.
+	 * This field is computed upon request from the modifiedBy field
+	 */
+	public String modifiedByName;
 			
 	/**
 	 * The format of the records data.
@@ -143,6 +151,14 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * If the creator is the same as the owner the creator is not stored 	
 	 */
 	public  MidataId creator; 
+	
+	/**
+	 * the id of the user that last changed this record
+	 * 
+	 * The contents of this field is stored in the encrypted part of this record.
+	 * If the person is the same as the owner the person is not stored
+	 */
+	public MidataId modifiedBy;
 	
 	/**
 	 * record creation timestamp

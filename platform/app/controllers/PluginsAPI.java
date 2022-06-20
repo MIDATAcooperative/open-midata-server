@@ -462,6 +462,7 @@ public class PluginsAPI extends APIController {
 		record.app = authToken.getUsedPlugin();
 		record.owner = authToken.getLegacyOwner();
 		record.creator = authToken.getActor();
+		record.modifiedBy = record.creator;
 		record.created = record._id.getCreationDate();
 		
 		/*if (json.has("created-override")) {
@@ -706,7 +707,7 @@ public class PluginsAPI extends APIController {
 		 		
 		//record.app = authToken.pluginId;
 		//record.owner = authToken.ownerId;
-		record.creator = authToken.getActor();
+		record.modifiedBy = authToken.getActor();
 		record.lastUpdated = new Date();		
 							
 		try {
@@ -846,6 +847,7 @@ public class PluginsAPI extends APIController {
 			record.app = authToken.getUsedPlugin();
 			record.owner = authToken.getLegacyOwner();
 			record.creator = authToken.getActor();
+			record.modifiedBy = record.creator;
 			record.created = record._id.getCreationDate();
 			record.name = metaData.get("name")[0];
 			record.description = metaData.containsKey("description") ? metaData.get("description")[0] : null;
