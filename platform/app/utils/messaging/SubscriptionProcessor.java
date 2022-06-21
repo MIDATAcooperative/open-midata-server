@@ -105,7 +105,10 @@ public class SubscriptionProcessor extends AbstractActor {
 				AccessLog.log("ok:"+subscription.active+" "+subscription.content+" "+triggered.getEventCode());				
 				boolean answered = false;
 				if (subscription.active && (subscription.content == null || subscription.content.equals("MessageHeader") || subscription.content.equals(triggered.getEventCode())) && checkNotExpired(subscription)) {
-					if (triggered.getType().equals("fhir/MessageHeader") && (!triggered.getApp().equals(subscription.app))) continue;
+					if (triggered.getType().equals("fhir/MessageHeader") && (!triggered.getApp().equals(subscription.app))) {
+						AccessLog.log("trigger app="+triggered.getApp()+" subscription app="+subscription.app);
+						continue;
+					}
 									
 					Subscription fhirSubscription = SubscriptionResourceProvider.subscription(subscription);
 					SubscriptionChannelComponent channel = fhirSubscription.getChannel();
@@ -120,7 +123,11 @@ public class SubscriptionProcessor extends AbstractActor {
 						if (endpoint != null && endpoint.startsWith("node://")) {
 							answered = processApplication(subscription, triggered, channel) || answered;
 							if (answered) anyAnswered = true;
-						}						
+						} else if (endpoint != null && endpoint.startsWith("app://")) {
+							answered = true;
+							anyAnswered = true;
+							getSender().tell(new MessageResponse("Can only forward FHIR messages with destination",-1, triggered.getApp() != null ? triggered.getApp().toString() : null), getSelf());
+						}
 					} else if (channel.getType().equals(SubscriptionChannelType.EMAIL)) {
 						processEmail(subscription, triggered, channel);
 						answered = true;
@@ -136,7 +143,7 @@ public class SubscriptionProcessor extends AbstractActor {
 					if (!answered) {
 						//System.out.println("SEND DEFAULT ANSWER");
 						String app = triggered.getApp() != null ? triggered.getApp().toString() : null;
-						getSender().tell(new MessageResponse("No action",-1, app), getSelf());
+						getSender().tell(new MessageResponse("No matching subscription",-1, app), getSelf());
 						anyAnswered = true;
 					}
 				}
@@ -145,12 +152,12 @@ public class SubscriptionProcessor extends AbstractActor {
 			
 			if (!anyAnswered) {
 				String app = triggered.getApp() != null ? triggered.getApp().toString() : null;
-				getSender().tell(new MessageResponse("No action",-1, app), getSelf());
+				getSender().tell(new MessageResponse("No matching subscription",-1, app), getSelf());
 			}
 			
 		} catch (Exception e) {			
 			ErrorReporter.report("Subscriptions", null, e);
-			getSender().tell(new MessageResponse("Exception: "+e.toString(),-1, null), getSelf());
+			getSender().tell(new MessageResponse("Exception while processing subscription: "+e.toString(),-1, null), getSelf());
 			
 		} finally {
 			ServerTools.endRequest();
@@ -393,7 +400,9 @@ public class SubscriptionProcessor extends AbstractActor {
 		  if (r != null && r.length() >0) {
 			 sender.tell(new MessageResponse(r, p.exitValue(), plugin.filename), getSelf());  
 		  } else {
-			 sender.tell(new MessageResponse(null, p.exitValue(), plugin.filename), getSelf());
+			  String response = "";
+			  if (p.exitValue()==1) response = "Script not found";
+			 sender.tell(new MessageResponse(response, p.exitValue(), plugin.filename), getSelf());
 		  } 
 		  		    
 		  AccessLog.log("Response sended");		 		  
