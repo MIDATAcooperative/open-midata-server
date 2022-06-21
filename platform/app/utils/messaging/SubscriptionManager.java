@@ -63,6 +63,7 @@ import utils.fhir.ConsentResourceProvider;
 import utils.fhir.FHIRServlet;
 import utils.fhir.SubscriptionResourceProvider;
 import utils.stats.ActionRecorder;
+import utils.stats.Stats;
 import utils.sync.Instances;
 
 /**
@@ -114,9 +115,14 @@ public class SubscriptionManager {
 			Object obj = answer.join();
 			if (obj instanceof MessageResponse) {
 				MessageResponse res = (MessageResponse) obj;
-				if (res.getErrorcode() != 0) throw new InternalErrorException("App execution failed with return code "+res.getErrorcode());
+				AccessLog.log("Received MessageResponse with errorcode="+res.getErrorcode());				
+				if (res.getErrorcode() != 0) {
+					if (Stats.enabled) Stats.addComment(res.getErrorcode()+": "+res.getResponse());
+					throw new InternalErrorException("App execution failed with return code "+res.getErrorcode()+": "+res.getResponse());
+				}
 				return res.getResponse();
 			}
+			AccessLog.log("Received non MessageResponse answer");
 			return obj.toString();
 		}
 	}
@@ -460,13 +466,13 @@ class SubscriptionChecker extends AbstractActor {
 				  messageResponse(new MessageResponse("Target app not found.", 400, null));
 				  return;
 			  }
-			  User targetUser = getTargetUser(message);			  
+			  MidataId targetUser = getTargetUser(message, message.executor, targetApp);			  
 			  if (targetUser == null) {
 				  AccessLog.log("User not found");
 				  messageResponse(new MessageResponse("User not found.", 400, null));
 				  return;
 			  }			  
-			  SubscriptionTriggered trigger = new SubscriptionTriggered(targetUser._id, targetApp, "fhir/MessageHeader", message.getEventCode()+":"+sender.filename, message.getFhirVersion(), message.getMessage(), null, message.getParams());
+			  SubscriptionTriggered trigger = new SubscriptionTriggered(targetUser, targetApp, "fhir/MessageHeader", message.getEventCode()+":"+sender.filename, message.getFhirVersion(), message.getMessage(), null, message.getParams());
 			  processor.forward(trigger, getContext());
 			} catch (AppException e) {
 				messageResponse(new MessageResponse("Error", 500, null));
@@ -481,20 +487,32 @@ class SubscriptionChecker extends AbstractActor {
 		ActionRecorder.end(path, st);
 	}
 	
-	private User getTargetUser(ProcessMessage message) throws AppException {
+	private MidataId getTargetUser(ProcessMessage message, MidataId currentUserId, MidataId appId) throws AppException {
 		String dest = message.getDestination();
 		if (dest.startsWith("patient://")) {
 		   User user = Member.getByEmail(dest.substring("patient://".length()), Sets.create("_id"));
-		   return user;
+		   return user != null ? user._id : null;
 		} else if (dest.startsWith("practitioner://")) {
 			User user = HPUser.getByEmail(dest.substring("practitioner://".length()), Sets.create("_id"));
-			return user;
+			return user != null ? user._id : null;
 		} else if (dest.startsWith("Patient/")) {
 			User user = Member.getById(MidataId.from(dest.substring("Patient/".length())), Sets.create("_id"));
-			return user;
+			return user != null ? user._id : null;
 		} else if (dest.startsWith("Practitioner/")) {
 			User user = HPUser.getById(MidataId.from(dest.substring("Practitioner/".length())), Sets.create("_id"));
-			return user;
+			return user != null ? user._id : null;
+		} else if (dest.startsWith("service://")) {
+			//String appName = dest.substring("service://".length());
+			Set<MobileAppInstance> insts = MobileAppInstance.getActiveByApplicationAndOwner(appId, currentUserId, MobileAppInstance.APPINSTANCE_ALL);
+			for (MobileAppInstance appInst : insts) {
+				if (appInst.type == ConsentType.API) {
+					Set<MidataId> executors = appInst.authorized;
+					if (!executors.isEmpty()) {
+						MidataId executor = executors.iterator().next();
+						return executor;
+					}
+				}
+			}
 		}
 		return null;
 	}
