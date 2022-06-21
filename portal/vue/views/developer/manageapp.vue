@@ -221,7 +221,8 @@
              </check-box>
 		    <div v-if="app._id && app.withLogout" class="alert alert-warning">
 		      <strong v-t="'manageapp.important'"></strong>
-		      <p v-if="app.targetUserRole!='RESEARCH'" v-t="'manageapp.logoutwarning'"></p>
+		      <p v-if="app.type=='external'" v-t="'manageapp.servicewarning'"></p>
+		      <p v-else-if="app.targetUserRole!='RESEARCH'" v-t="'manageapp.logoutwarning'"></p>
 		      <p v-else v-t="'manageapp.researchwarning'"></p>		    
 		    </div>  		  
 		  </form-group>

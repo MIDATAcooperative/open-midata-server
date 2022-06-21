@@ -113,7 +113,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		convertToR4(subscriptionToConvert, data);
 		IParser parser = ctx().newJsonParser();		
 		Subscription result = parser.parseResource(getResourceType(), data.toString());
-				
+		result.setId(subscriptionToConvert._id.toString());		
 		return result;
 	}
 	

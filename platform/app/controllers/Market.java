@@ -486,7 +486,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)	
-	public Result updateDefaultSubscriptions(Request request, String pluginIdStr) throws JsonValidationException, AppException {
+	public Result updateDefaultSubscriptions(Request request, String pluginIdStr) throws JsonValidationException, AppException, LostUpdateException {
 		//if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		// validate json
 		JsonNode json = request.body().asJson();
@@ -500,7 +500,8 @@ public class Market extends APIController {
 		
 		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 		
-		app.version = JsonValidation.getLong(json, "version");				
+		app.version = JsonValidation.getLong(json, "version");	
+		app.pluginVersion = System.currentTimeMillis();
 		
 		parseSubscriptions(app, json);
 						

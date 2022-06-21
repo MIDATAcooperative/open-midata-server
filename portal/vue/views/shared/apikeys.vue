@@ -39,7 +39,7 @@
                                 <th v-t="'apikeys.status'"></th>
                                 <th></th>
                             </tr>
-                            <tr v-for="key in service.keys" :key="key._id">                        
+                            <tr v-for="key in service.keys" :key="key._id" :class="{ 'table-danger' : key.status!='ACTIVE' }">                        
                                 <td>
                                     {{ $filters.dateTime(key.dateOfCreation) }}
                                 </td>
