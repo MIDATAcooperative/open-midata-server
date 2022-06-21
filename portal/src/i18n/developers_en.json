@@ -188,6 +188,7 @@
     "important" : "IMPORTANT",
     "logoutwarning" : "Changing the application definition will log out all users from that application. They will have to confirm the use of the application again on next login.",
     "researchwarning" : "Changing the application definition will unlink this research application from all projects!",
+    "servicewarning" : "Changing the application definition requires the generation of new API-Keys for all instances of this service.",
     "creator" : "Creator",
     "organization" : "Organization",
     "publisher" : "Publisher",

@@ -469,10 +469,14 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		Instances.cacheClear("plugin",  _id);
 	}
 	
-	public void updateDefaultSubscriptions(List<SubscriptionData> subscriptions) throws InternalServerException {
+	public void updateDefaultSubscriptions(List<SubscriptionData> subscriptions) throws InternalServerException, LostUpdateException {
         this.defaultSubscriptions = subscriptions;
-        Model.set(Plugin.class, collection, _id, "defaultSubscriptions", subscriptions);
-        Instances.cacheClear("plugin",  _id);
+        try {
+	        DBLayer.secureUpdate(this, collection, "version", "defaultSubscriptions", "pluginVersion");
+			Instances.cacheClear("plugin",  _id);
+        } catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}   
 	}
 
 
