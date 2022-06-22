@@ -279,7 +279,7 @@ class ProcessMessage {
 	
 	final String destination;
 	
-	ProcessMessage(MidataId executor, MidataId app, String eventCode, String destination, String message, String fhirVersion, Map<String, String> params) {
+	ProcessMessage(MidataId executor, MidataId app, String eventCode, String destination, String fhirVersion, String message, Map<String, String> params) {
 		this.app = app;
 		this.executor = executor;
 		this.message = message;
