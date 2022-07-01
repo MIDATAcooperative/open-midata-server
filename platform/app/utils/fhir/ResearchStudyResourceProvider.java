@@ -26,6 +26,7 @@ import java.util.Set;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeType;
 import org.hl7.fhir.r4.model.Extension;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Period;
@@ -314,7 +315,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 	}
 	
 	public static void updateFromStudy(AccessContext context, Study study) throws AppException {
-		if (study.validationStatus == StudyValidationStatus.DRAFT) return;
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) return;
 		try {
 			info();
 		} catch (AuthenticationException e) {
@@ -340,7 +341,17 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		}
 		
 		researchStudy.setId(study._id.toString());
-		if (!doupdate) researchStudy.addIdentifier().setSystem("http://midata.coop/codesystems/project-code").setValue(study.code);
+		List<Identifier> allIds = new ArrayList<Identifier>();
+		allIds.add(new Identifier().setSystem("http://midata.coop/codesystems/project-code").setValue(study.code));
+		if (study.identifiers != null) {
+			for (String id : study.identifiers) {
+				String parts[] = id.split("[\\s\\|]");
+				if (parts.length==1) allIds.add(new Identifier().setValue(parts[0]));
+				else if (parts.length>=2) allIds.add(new Identifier().setSystem(parts[0]).setValue(parts[1]));
+			}
+		}
+		researchStudy.setIdentifier(allIds);
+		
 		researchStudy.setTitle(study.name);
 		researchStudy.setDescription(study.description);
 		

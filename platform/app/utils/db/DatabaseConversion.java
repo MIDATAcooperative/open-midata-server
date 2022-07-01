@@ -447,7 +447,7 @@ public class DatabaseConversion {
 			
 			Map<String, Object> map = new HashMap<String, Object>();
 			for (Map.Entry<String,Object> entry : dbObject.entrySet()) {				
-				String k= entry.getKey();				
+				String k= entry.getKey().replaceAll(DOT, ".");					
 				if (k.startsWith("_$"))
 					map.put(k.substring(1), conv.convert(entry.getValue()));
 				else 

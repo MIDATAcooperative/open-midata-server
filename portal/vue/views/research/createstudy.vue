@@ -34,6 +34,10 @@
             <form-group name="description" label="createstudy.study_description" :path="errors.description">
                 <textarea class="form-control" id="description" name="description" rows="5" v-validate v-model="study.description" required></textarea>
             </form-group>
+            <form-group name="identifiers" label="createstudy.study_identifiers" :path="errors.identifiers">
+                <textarea class="form-control" id="identifiers" name="identifiers" rows="5" v-validate v-model="study.identifiersStr"></textarea>
+                <p class="form-text text-muted" v-t="'createstudy.study_identifiers_info'"></p>
+            </form-group>
    
             <form-group label="common.empty">
                 <button type="submit" v-submit class="btn btn-primary" v-t="'common.submit_btn'"></button>
@@ -51,7 +55,7 @@ import Panel from 'components/Panel.vue';
 export default {
   data: () => ({
       studytypes : studies.studytypes,
-      study : {},
+      study : { identifiers : [] },
       role : null
   }),
 
@@ -73,7 +77,9 @@ export default {
 		if ($route.query.studyId) {
 			me.doBusy(server.get(jsRoutes.controllers.research.Studies.get($route.query.studyId).url)
 		    .then(function(data) { 				
-				$data.study = data.data;												
+				let study = data.data;	
+				if (study.identifiers) study.identifiersStr = study.identifiers.join("\n");
+				$data.study = study;											
 			}));			
 		} else me.ready();
 		
@@ -82,10 +88,10 @@ export default {
 	createstudy() {
 		const { $data, $route, $router } = this, me = this;
 	    let data;
-		
+		$data.study.identifiers = $data.study.identifiersStr.split(/\s*\n\s*/);
 		if ($route.query.studyId) {
 		
-			data = { name : $data.study.name, description : $data.study.description, type : $data.study.type };
+			data = { name : $data.study.name, description : $data.study.description, type : $data.study.type, identifiers : $data.study.identifiers };
 			me.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($route.query.studyId).url, data))
 			.then(function(result) { 
                 $router.push({ path : './study.overview', query : { studyId : $route.query.studyId }}); 

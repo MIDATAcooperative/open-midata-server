@@ -136,6 +136,25 @@ public class JsonExtraction {
 		}
 		return set;
 	}
+	
+	/**
+	 * Extracts a list with elements guaranteed to be strings.
+	 */
+	public static List<String> extractStringList(JsonNode json) throws JsonValidationException {
+		if (json == null) return null;
+		if (json.isTextual()) {
+			String txt = json.asText();
+			if (txt.length() > JsonValidation.MAX_STRING_LENGTH) throw new JsonValidationException("error.toolong.field","JSON too long");
+			return Collections.singletonList(txt);
+		}
+		List<String> list = new ArrayList<String>();
+		for (JsonNode jsonNode : json) {
+			String txt = jsonNode.asText();
+			if (txt.length() > JsonValidation.MAX_STRING_LENGTH) throw new JsonValidationException("error.toolong.field","JSON too long");
+			list.add(txt);
+		}
+		return list;
+	}
 
 	/**
 	 * Extracts any data type.

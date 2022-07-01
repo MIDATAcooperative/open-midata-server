@@ -335,7 +335,12 @@ public class OAuth2 extends Controller {
 		obj.put("scope", "user/*.*");
 		
 		obj.put("expires_in", MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME / 1000l);
+		if (user != null) {
+			obj.put("role", user.role.toPublicString());
+			obj.put("fhirUser", user.role.toPublicString()+"/"+user._id.toString());
+		} 		
 		obj.put("patient", appInstance.owner.toString());
+		
 		obj.put("refresh_token", refresh.encrypt());	
 						
 		return ok(obj).withHeader("Cache-Control", "no-store").withHeader("Pragma", "no-cache");
