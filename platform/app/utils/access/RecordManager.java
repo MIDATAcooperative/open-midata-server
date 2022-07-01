@@ -53,6 +53,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
+import utils.messaging.SubscriptionManager;
 import utils.viruscheck.FileTypeScanner;
 import utils.viruscheck.VirusScanner;
 
@@ -717,12 +718,14 @@ public class RecordManager {
 				try {
  				    VersionedDBRecord.add(vrec);
 				} catch (InternalServerException e) {
-					throw new PluginException(pluginId, "error.concurrent.update", "Please check your application so that it does not try concurrent updates on the same resource. Record has id '"+rec._id.toString()+" with record format '"+rec.getFormatOrNull()+"'.");
+					throw new PluginException(pluginId, "error.concurrent.update", "Please check your application so that it does not try concurrent updates on the same resource. Record has id '"+rec._id.toString()+" with record format '"+clone.getFormatOrNull()+"'.");
 				}
 			}
 		    DBRecord.upsert(rec); 	  	
 		    
 		    RecordLifecycle.notifyOfChange(clone, context.getCache());
+		    
+		    SubscriptionManager.resourceChange(record);
 		    return version;
 		} finally {
 	        AccessLog.logEnd("end updateRecord");

@@ -78,7 +78,7 @@ public class MessageProcessor {
 				Bundle resultBundle = new Bundle();				
 				return resultBundle;
 			}
-			AccessLog.log(result);
+			if (result != null) AccessLog.log(result);
 			
 			Bundle resultBundle = new Bundle();
 			

@@ -53,7 +53,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy");
 	
 	public @NotMaterialized static final Set<String> LINK_FIELDS = Sets.create("_id", "name", "code", "type", "joinMethods", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
 	
@@ -66,6 +66,11 @@ public class Study extends Model {
 	 * code of study 
 	 */
 	public String code;
+	
+	/**
+	 * additional identifiers
+	 */
+	public List<String> identifiers;
 	
 	/**
 	 * id of research organization which does the study
@@ -318,6 +323,11 @@ public class Study extends Model {
     public void setDescription(String description) throws InternalServerException {
     	this.description = description;
     	Model.set(Study.class, collection, this._id, "description", description);
+    }
+    
+    public void setIdentifiers(List<String> identifiers) throws InternalServerException {
+    	this.identifiers = identifiers;
+    	Model.set(Study.class, collection, this._id, "identifiers", identifiers);
     }
     
     public void setType(StudyType type) throws InternalServerException {

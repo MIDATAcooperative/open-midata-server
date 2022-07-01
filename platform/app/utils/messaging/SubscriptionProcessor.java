@@ -214,7 +214,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		AccessLog.log("process email type="+triggered.getType()+"  "+triggered.getEventCode());
 		if (triggered.getType().equals("fhir/MessageHeader")) {
 		  String ev = triggered.getEventCode();
-		  if (ev.indexOf(":")>=0) ev = ev.substring(0,ev.indexOf(":"));
+		  //if (ev.indexOf(":")>=0) ev = ev.substring(0,ev.indexOf(":"));
 		  AccessLog.log("send ev="+ev+" ow="+subscription.owner+" app="+subscription.app);
 		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, Collections.singleton(subscription.owner), null, replacements);			
 		} else {

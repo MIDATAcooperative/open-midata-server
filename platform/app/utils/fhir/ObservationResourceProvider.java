@@ -596,16 +596,18 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 			} else {
 				
 				// Otherwise determine effective date of last written record
-				Observation ref = parse(code.newestRecordContent, getResourceType());				
+				Observation ref = code.newestRecordContent != null ? parse(code.newestRecordContent, getResourceType()) : null;				
 				now = code.newest.getTime();
-				try {
-					DateTimeType t1 = ref.getEffectiveDateTimeType();
-					if (t1 != null && t1.getValue() != null) now = t1.getValue().getTime();
-					else {
-						Period p = ref.getEffectivePeriod();
-						if (p != null && p.getStart() != null) now = p.getStart().getTime();
-					}
-				} catch (FHIRException e) {}
+				if (ref != null) {
+					try {
+						DateTimeType t1 = ref.getEffectiveDateTimeType();
+						if (t1 != null && t1.getValue() != null) now = t1.getValue().getTime();
+						else {
+							Period p = ref.getEffectivePeriod();
+							if (p != null && p.getStart() != null) now = p.getStart().getTime();
+						}
+					} catch (FHIRException e) {}
+				}
 				
 				// How long should we look into the past?
 				long range = 1000l*60l*60l*24l*(count+3);

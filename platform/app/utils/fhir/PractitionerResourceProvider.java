@@ -201,7 +201,9 @@ public class PractitionerResourceProvider extends ResourceProvider<Practitioner,
 		Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
 		Object keywords = query.retrieveIndexValues();
 		if (keywords != null) properties.put("keywordsLC", keywords);
-		properties.put("searchable", true);
+		if (!info().getAccessor().toString().equals(properties.get("_id"))) {
+			properties.put("searchable", true);
+		}
 		properties.put("status", User.NON_DELETED);
 		Set<HPUser> users = HPUser.getAll(properties, Sets.create("firstname","lastname","birthday","gender","email","phone","city","country","zip","address1","address2","role"));
         return new ArrayList<User>(users);

@@ -95,33 +95,39 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	public Person personFromMidataUser(User userToConvert) throws AppException {
 		Person p = new Person();
 		p.setId(userToConvert._id.toString());
-		p.addName().setFamily(userToConvert.lastname).addGiven(userToConvert.firstname);
-	
-		//p.setBirthDate(member.birthday);
-		//p.addIdentifier().setSystem("http://midata.coop/midataID").setValue(member.midataID);
-		String gender = userToConvert.gender != null ? userToConvert.gender.toString() : Gender.UNKNOWN.toString();
-		p.setGender(AdministrativeGender.valueOf(gender));
-		if (userToConvert.email != null) p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(userToConvert.email);
-		if (userToConvert.phone != null && userToConvert.phone.length()>0) {
-			p.addTelecom().setSystem(ContactPointSystem.PHONE).setValue(userToConvert.phone);
-		}
-		p.addAddress().setCity(userToConvert.city).setCountry(userToConvert.country).setPostalCode(userToConvert.zip).addLine(userToConvert.address1).addLine(userToConvert.address2);
+		
+		if (userToConvert.searchable || userToConvert._id.equals(info().getAccessor())) {
+			p.addName().setFamily(userToConvert.lastname).addGiven(userToConvert.firstname);
+				
+			String gender = userToConvert.gender != null ? userToConvert.gender.toString() : Gender.UNKNOWN.toString();
+			p.setGender(AdministrativeGender.valueOf(gender));
+			if (userToConvert.email != null) p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(userToConvert.email);
+			if (userToConvert.phone != null && userToConvert.phone.length()>0) {
+				p.addTelecom().setSystem(ContactPointSystem.PHONE).setValue(userToConvert.phone);
+			}
+			p.addAddress().setCity(userToConvert.city).setCountry(userToConvert.country).setPostalCode(userToConvert.zip).addLine(userToConvert.address1).addLine(userToConvert.address2);
 
+		}
 		switch (userToConvert.role) {
 		case MEMBER:
-			p.addLink().setTarget(new Reference().setDisplay(getPersonName(userToConvert)).setReference("Patient/"+userToConvert._id.toString()));
+			p.addLink().setTarget(new Reference().setDisplay(getPersonName(userToConvert, info().getAccessor())).setReference("Patient/"+userToConvert._id.toString()));
 			break;
 		case PROVIDER:
 		case RESEARCH:
-			p.addLink().setTarget(new Reference().setDisplay(getPersonName(userToConvert)).setReference("Practitioner/"+userToConvert._id.toString()));
+			p.addLink().setTarget(new Reference().setDisplay(getPersonName(userToConvert, info().getAccessor())).setReference("Practitioner/"+userToConvert._id.toString()));
 			break;
 		default:
-			p.addLink().setTarget(new Reference().setDisplay(getPersonName(userToConvert)).setReference("RelatedPerson/"+userToConvert._id.toString()));
+			p.addLink().setTarget(new Reference().setDisplay(getPersonName(userToConvert, info().getAccessor())).setReference("RelatedPerson/"+userToConvert._id.toString()));
 			break;
 		} 
 		return p;
 	}
 	
+	protected static String getPersonName(User theUser, MidataId caller) {
+	  if (caller == null) return null;
+	  if (caller.equals(theUser._id) || theUser.searchable) return getPersonName(theUser);
+	  return null;
+	}
 	protected static String getPersonName(User theUser) {
 		return theUser.firstname+" "+theUser.lastname;
 	}

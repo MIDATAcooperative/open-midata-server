@@ -69,13 +69,17 @@ public class Messager {
 	}
 	
 	public static boolean sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel) throws AppException {
-		if (targets == null || targets.isEmpty()) return false;
+		if (targets == null || targets.isEmpty()) {
+			AccessLog.log("no email targets");
+			return false;
+		}
 		Plugin plugin = Plugin.getById(sourcePlugin, Sets.create("predefinedMessages", "name"));
 		if (plugin.predefinedMessages != null) {
 		  replacements.put("plugin-name", plugin.name);
 		  replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
 		  return sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements, channel);
 		}
+		AccessLog.log("no predefined messages");
 		return false;
 	}
 	
@@ -85,7 +89,13 @@ public class Messager {
 		MessageDefinition msg = null; 
 		if (code != null) msg = messageDefinitions.get(reason.toString()+"_"+code);
 		if (msg == null) msg = messageDefinitions.get(reason.toString());
-		if (msg == null) return false;
+		if (msg == null) {
+			for (String md : messageDefinitions.keySet()) {
+				AccessLog.log("has message key="+md);
+			}
+			AccessLog.log("no message definition for reason="+reason.toString()+" code="+code);
+			return false;
+		}
 		
 		Map<String, String> footers = null;
 		Plugin commonPlugin = Plugin.getById(RuntimeConstants.instance.commonPlugin, Sets.create("predefinedMessages"));

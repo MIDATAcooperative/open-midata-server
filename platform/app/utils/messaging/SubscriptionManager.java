@@ -52,6 +52,7 @@ import models.enums.UserStatus;
 import play.libs.ws.WSClient;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
@@ -93,16 +94,17 @@ public class SubscriptionManager {
 		    String resource = prov.serialize(prov.readConsentFromMidataConsent(context, consent, consent.type != ConsentType.STUDYRELATED));
 		    
 		    AccessLog.log("CONSENT RES CHANGE: "+resource);
-		    subscriptionChecker.tell(new ResourceChange("fhir/Consent", consent, resource), ActorRef.noSender());
+		    subscriptionChecker.tell(new ResourceChange("fhir/Consent", consent, false, resource), ActorRef.noSender());
 		} catch (AppException e) {
 			ErrorReporter.report("Subscripion processing", null, e);
 		}
 											
 	}
+		
 	
 	public static void resourceChange(Record record) {	
 		AccessLog.log("Resource change: "+record.format);
-		subscriptionChecker.tell(new ResourceChange(record.format, record), ActorRef.noSender());							
+		subscriptionChecker.tell(new ResourceChange(record.format, record, record.owner.equals(RuntimeConstants.instance.publicUser)), ActorRef.noSender());							
 	}
 	
 	public static String messageToProcess(MidataId executor, MidataId app, String eventCode, String destination, String fhirVersion, String bundleJSON, Map<String,String> params, boolean doasync) {
@@ -229,16 +231,20 @@ class ResourceChange {
 	
 	final String fhir;
 	
-	ResourceChange(String type, Model resource) {
+	final boolean isPublic;
+	
+	ResourceChange(String type, Model resource, boolean isPublic) {
 		this.type = type;
 		this.resource = resource;
 		this.fhir = null;
+		this.isPublic = isPublic;
 	}
 	
-	ResourceChange(String type, Model resource, String fhir) {
+	ResourceChange(String type, Model resource, boolean isPublic, String fhir) {
 		this.type = type;
 		this.resource = resource;
 		this.fhir = fhir;
+		this.isPublic = isPublic;
 	}
 
 	public String getType() {
@@ -255,6 +261,10 @@ class ResourceChange {
 	
 	public String toString() {
 		return type;
+	}
+	
+	public boolean isPublic() {
+		return isPublic;
 	}
 }
 
@@ -411,7 +421,12 @@ class SubscriptionChecker extends AbstractActor {
 			Record record = (Record) change.getResource();
 			content = record.content;
 			resourceId = record._id;
-			affected.add(record.owner);			
+			affected.add(record.owner);
+			
+			if (change.isPublic() && change.getType().equals("fhir/ResearchStudy")) {
+				List<SubscriptionData> allData = SubscriptionData.getAllActiveFormat("fhir/ResearchStudy", Sets.create("owner"));
+				for (SubscriptionData dat : allData) affected.add(dat.owner);
+			}
 			
 			/* TODO : The following section is not broken it should just be performance optimized somehow.
 			 * It determines which user accounts subscriptions need to be triggered by a resource change.
@@ -446,6 +461,8 @@ class SubscriptionChecker extends AbstractActor {
 				processor.tell(trigger, getSelf());
 			}
 		}
+		} catch (InternalServerException e) {
+			ErrorReporter.report("Subscripion processing", null, e);
 		} finally {
 			ServerTools.endRequest();
 			ActionRecorder.end(path, st);
@@ -457,7 +474,7 @@ class SubscriptionChecker extends AbstractActor {
 		long st = ActionRecorder.start(path);
 		
 		if (message.getDestination() != null) {		
-			AccessLog.logStart("jobs", "message with destination: "+message);
+			AccessLog.logStart("jobs", "message with destination: "+message.getDestination());
 			try {
 			  Plugin sender = Plugin.getById(message.getApp());
 			  MidataId targetApp = getTargetApp(message);			  

@@ -93,4 +93,7 @@ id0100	14.06.2022	a.kreutz	F	Adding groups to running projects is supported.
 id0101	14.06.2022	a.kreutz	B	Bundles do not contain version in fullUrl anymore.
 id0102	15.06.2022	a.kreutz	F	Support for :not query modifier
 id0103	20.06.2022	a.kreutz	I	Added modifiedBy extension to meta block
+id0104	01.07.2022	a.kreutz	I	Added role, fhirUser fields to OAuth login
+id0105	01.07.2022	a.kreutz	I	Subscription with trigger on ResearchStudy changes is now possible
+id0106	01.07.2022	a.kreutz	I	Projects may have external identifiers
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

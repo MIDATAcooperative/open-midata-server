@@ -197,8 +197,9 @@ public class Studies extends APIController {
 			study.code = CodeGenerator.nextUniqueCode();
 		} while (Study.existsByCode(study.code));
 		study.type = JsonValidation.getEnum(json, "type", StudyType.class);
-		study.description = JsonValidation.getString(json, "description");
-
+		study.description = JsonValidation.getString(json, "description");		
+		study.identifiers = JsonExtraction.extractStringList(json.get("identifiers"));
+		
 		study.createdAt = new Date();
 		study.createdBy = userId;
 		study.owner = research;
@@ -600,7 +601,7 @@ public class Studies extends APIController {
 		MidataId userid = MidataId.from(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 
-		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
+		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "identifiers", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
 				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
 				"dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy");
 		Study study = Study.getById(studyid, fields);
@@ -833,20 +834,18 @@ public class Studies extends APIController {
 		// study.addHistory(new History(EventType.VALIDATION_REQUESTED, user,
 		// null));
 		study.setValidationStatus(StudyValidationStatus.VALIDATION);
-
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
-
-		AuditManager.instance.success();
-
+		
 		if (InstanceConfig.getInstance().getInstanceType().getStudiesValidateAutomatically()) {
-			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_VALIDATED, userId, null, study);
-			// study.addHistory(new History(EventType.STUDY_VALIDATED, user,
-			// null));
+			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_VALIDATED, userId, null, study);		
 			study.setValidationStatus(StudyValidationStatus.VALIDATED);
 			AuditManager.instance.success();
 		} else {
 			sendAdminNotificationMail(study);
 		}
+		
+		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		AuditManager.instance.success();
+
 
 		return ok();
 	}
@@ -2129,6 +2128,9 @@ public class Studies extends APIController {
 		if (json.has("description")) {
 			study.setDescription(JsonValidation.getString(json, "description"));
 		}
+		if (json.has("identifiers")) {
+			study.setIdentifiers(JsonExtraction.extractStringList(json.get("identifiers")));
+		}
 		if (json.has("type")) {
 			study.setType(JsonValidation.getEnum(json, "type", StudyType.class));
 		}
@@ -2521,6 +2523,7 @@ public class Studies extends APIController {
 			return inputerror("name", "exists", "A study with this name already exists.");
 		study.code = JsonValidation.getString(studyJson, "code");
 		study.description = JsonValidation.getString(studyJson, "description");
+		study.identifiers = JsonExtraction.extractStringList(studyJson.get("identifiers"));
         study.owner = org._id;        
 		study.createdAt = new Date();
 		study.createdBy = userId;
