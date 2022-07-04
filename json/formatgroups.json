@@ -1,7 +1,7 @@
 {"_id":{"$oid":"55ae5a08f351efda91eadc7c"},"system":"v1","name":"all","label":{"de":"Persönliche Daten","en":"Personal Data","fr":"Données personnelles"}}
 {"_id":{"$oid":"55ae5a08f351efda91eadc7d"},"system":"v1","name":"lifestyle","label":{"de":"Lifestyle","en":"Lifestyle","fr":"Mode de vie"},"parent":"all"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc7e"},"system":"v1","name":"nutrition","label":{"de":"Ernährung","en":"Nutrition","fr":"Nutrition"},"parent":"lifestyle"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc7f"},"system":"v1","name":"mood","label":{"de":"Stimmung","en":"Mood","fr":"Humeur"},"parent":"lifestyle"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc7f"},"system":"v1","name":"mood","label":{"de":"Stimmung","en":"Mood","it":"Umore","fr":"Humeur"},"parent":"lifestyle"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc80"},"system":"v1","name":"qself","label":{"de":"Quantified Self","en":"Quantified self","fr":"Quantified Self"},"parent":"lifestyle"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc81"},"system":"v1","name":"activities","label":{"de":"Aktivitäten","en":"Activities","fr":"Activités"},"parent":"lifestyle"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc82"},"system":"v1","name":"sleep","label":{"de":"Schlaf","en":"Sleep","fr":"Sommeil"},"parent":"lifestyle"}
@@ -25,7 +25,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ecdd2"},"system":"v1","name":"diagnostics","label":{"de":"Familie","en":"Family","fr":"Diagnostiques"},"parent":"other"}
 {"_id":{"$oid":"56fa3f4f6c19d1e1e9d2536e"},"system":"v1","name":"unknown","label":{"de":"Unbestimmt","en":"Undetermined Content","fr":"Indéterminé"},"parent":"other"}
 {"_id":{"$oid":"5718f43aaed645098e8cee26"},"system":"v1","name":"activities/calories","label":{"de":"Verbrannte Kalorien","en":"Calories Burned in Activities","fr":"Calories"},"parent":"activities"}
-{"_id":{"$oid":"5718f43aaed645098e8cee27"},"system":"v1","name":"movement","label":{"de":"Bewegung","en":"Movement","fr":"Mobilité"},"parent":"activities"}
+{"_id":{"$oid":"5718f43aaed645098e8cee27"},"system":"v1","name":"movement","label":{"de":"Bewegung","en":"Movement","it":"Movimento","fr":"Mobilité"},"parent":"activities"}
 {"_id":{"$oid":"5718f43aaed645098e8cee28"},"system":"v1","name":"activities/minutes","label":{"de":"Mit Aktivitäten verbrachte Zeit","en":"Time-Info about Activities","fr":"Temps d'activité"},"parent":"activities"}
 {"_id":{"$oid":"5718f43aaed645098e8cee29"},"system":"v1","name":"movement/height","label":{"de":"Höhenunterschied","en":"Elevation","fr":"Dénivelé"},"parent":"activities"}
 {"_id":{"$oid":"5718f577aed645098e8cee2a"},"system":"v1","name":"body/height","label":{"de":"Grösse","en":"Height","fr":"Taille"},"parent":"qself"}
@@ -58,3 +58,4 @@
 {"_id":{"$oid":"61f3facae8d4223bfafd55ea"},"system":"v1","name":"organization","label":{"de":"Organisation","en":"Organization"},"parent":"entities"}
 {"_id":{"$oid":"6288d83102da8556e91f79e6"},"system":"v1","name":"vaccination","label":{"de":"Impfung","en":"Vaccination","it":"Vaccinazione","fr":"Vaccination"},"parent":"health"}
 {"_id":{"$oid":"628b54466020a06279c0d0be"},"system":"v1","name":"risks","label":{"de":"Risiken","en":"Risks","it":"Rischi","fr":"Risques"},"parent":"health"}
+{"_id":{"$oid":"628e2caaf91349166cef4ef0"},"system":"v1","name":"pain","label":{"de":"Schmerz","en":"Pain","it":"Dolore","fr":"Douleur"},"parent":"health"}

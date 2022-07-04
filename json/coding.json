@@ -179,8 +179,8 @@
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d44f"},"system":"http://loinc.org","code":"71230-7","display":"Birth certificate","content":"documents/birth-certificate"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d450"},"system":"http://loinc.org","code":"53247-3","display":"Eligibility acknowledgement","content":"documents/eligibility-acknowledgement"}
 {"_id":{"$oid":"583d69dcaed6451303c0586e"},"system":"http://midata.coop","code":"Task","display":"Task","content":"Task"}
-{"_id":{"$oid":"5857a6bfaed6456bcd027ada"},"system":"http://loinc.org","code":"6690-2","display":"Leukocytes in blood by automated count","content":"lab/leukocytes-in-blood"}
-{"_id":{"$oid":"5857a714aed6456bcd027adc"},"system":"http://loinc.org","code":"26515-7","display":"Platelets in blood","content":"lab/platelets-in-blood"}
+{"_id":{"$oid":"5857a6bfaed6456bcd027ada"},"system":"http://loinc.org","code":"6690-2","display":"Leukocytes [#/volume] in blood by automated count","content":"lab/leukocytes-in-blood"}
+{"_id":{"$oid":"5857a714aed6456bcd027adc"},"system":"http://loinc.org","code":"26515-7","display":"Platelets [#/volume] in blood","content":"lab/platelets-in-blood"}
 {"_id":{"$oid":"5857a759aed6456bcd027ade"},"system":"http://loinc.org","code":"718-7","display":"Hemoglobin in blood","content":"lab/hemoglobin-in-blood"}
 {"_id":{"$oid":"5857a86faed6456bcd027ae0"},"system":"http://loinc.org","code":"1988-5","display":"C reactive protein in serum or plasma","content":"lab/c-protein-in-serum-or-plasma"}
 {"_id":{"$oid":"5857a8efaed6456bcd027ae1"},"system":"http://loinc.org","code":"15189-4","display":"Immunoglobulin light chains.kappa/lambda in serum","content":"lab/loinc-15189-4"}
@@ -398,3 +398,25 @@
 {"_id":{"$oid":"628ddd22cf4e953049df4520"},"system":"http://snomed.info/sct","code":"226463006","display":"Sweets intake (observable entity)","content":"snomed/226463006"}
 {"_id":{"$oid":"628ddc02c343d84593f56899"},"system":"http://snomed.info/sct","code":"226382001","display":"Coffee intake (observable entity)","content":"snomed/226382001"}
 {"_id":{"$oid":"628d1957c343d84593f567ac"},"system":"http://snomed.info/sct","code":"124134002","display":"Deficiency of glucose-6-phosphate dehydrogenase (disorder)","content":"snomed/124134002"}
+{"_id":{"$oid":"62bb62cb9b71d13efff85ef7"},"system":"http://snomed.info/sct","code":"397724004","display":"Demonstrates knowledge of pain management (finding)","content":"snomed/397724004"}
+{"_id":{"$oid":"62bb63729b71d13efff85ef8"},"system":"http://snomed.info/sct","code":"704414005","display":"At risk of sleep impairment (finding)","content":"snomed/704414005"}
+{"_id":{"$oid":"62bb5dd89b71d13efff85eed"},"system":"http://snomed.info/sct","code":"365632008","display":"Finding of platelet count (finding)","content":"lab/platelets-in-blood"}
+{"_id":{"$oid":"62bb64e29df13005066e635e"},"system":"http://snomed.info/sct","code":"93831000119104","display":"Adjustment to life threatening illness (finding)","content":"snomed/93831000119104"}
+{"_id":{"$oid":"62bb62199b71d13efff85ef5"},"system":"http://snomed.info/sct","code":"429038000","display":"Pain onset during sleep (finding)","content":"snomed/429038000"}
+{"_id":{"$oid":"62bb654d9df13005066e6360"},"system":"http://snomed.info/sct","code":"1172456003","display":"Able to modify behavior and lifestyle to support a change in circumstance (finding)","content":"snomed/1172456003"}
+{"_id":{"$oid":"62bb4d2b9b71d13efff85edb"},"system":"http://snomed.info/sct","code":"161615003","display":"History of surgery (situation)","content":"snomed/161615003"}
+{"_id":{"$oid":"62bb56619df13005066e634f"},"system":"http://loinc.org","code":"26464-8","display":"Leukocytes [#/volume] in blood","content":"lab/leukocytes-in-blood"}
+{"_id":{"$oid":"628e1b6684cf0e5f516da4cb"},"system":"http://snomed.info/sct","code":"68130003","display":"Physical activity (observable entity)","content":"snomed/68130003"}
+{"_id":{"$oid":"62bb56159df13005066e634e"},"system":"http://snomed.info/sct","code":"365630000","display":"Finding of white blood cell number (finding)","content":"lab/leukocytes-in-blood"}
+{"_id":{"$oid":"62aa154a2b02d94c9b4f9435"},"system":"http://snomed.info/sct","code":"609328004","display":"Allergic disposition (finding)","content":"snomed/609328004"}
+{"_id":{"$oid":"62bb644c9df13005066e635c"},"system":"http://snomed.info/sct","code":"733903006","display":"Psychological resilience (finding)","content":"snomed/733903006"}
+{"_id":{"$oid":"62bb50ba9b71d13efff85edd"},"system":"http://snomed.info/sct","code":"365611000","display":"Finding of mean cell hemoglobin level (finding)","content":"snomed/365611000"}
+{"_id":{"$oid":"628e3f43f91349166cef4fad"},"system":"http://snomed.info/sct","code":"406127006","display":"Pain intensity (observable entity)","content":"snomed/406127006"}
+{"_id":{"$oid":"62bb4aa69b71d13efff85ed3"},"system":"http://snomed.info/sct","code":"165452003","display":"Mean corpuscular volume - normal (finding)","content":"snomed/165452003"}
+{"_id":{"$oid":"62bb56ea9df13005066e6351"},"system":"http://loinc.org","code":"804-5","display":"Leukocytes [#/volume] in blood by manual count","content":"lab/leukocytes-in-blood"}
+{"_id":{"$oid":"62bb584e9df13005066e6352"},"system":"http://snomed.info/sct","code":"365786009","display":"Finding of bilirubin level (finding)","content":"snomed/365786009"}
+{"_id":{"$oid":"628e4067f91349166cef4faf"},"system":"http://snomed.info/sct","code":"364633008","display":"Sensory dimension of pain (observable entity)","content":"snomed/364633008"}
+{"_id":{"$oid":"62bb56ba9df13005066e6350"},"system":"http://loinc.org","code":"49498-9","display":"Leukocytes [#/volume] in blood by estimate","content":"lab/leukocytes-in-blood"}
+{"_id":{"$oid":"62bb60469df13005066e6356"},"system":"http://snomed.info/sct","code":"716417006","display":"Able to manage generalized pain (finding)","content":"snomed/716417006"}
+{"_id":{"$oid":"628e2ce784cf0e5f516da4e4"},"system":"http://snomed.info/sct","code":"364626008","display":"Characteristic of pain at anatomical site (observable entity)","content":"snomed/364626008"}
+{"_id":{"$oid":"62bb65f99b71d13efff85efd"},"system":"http://snomed.info/sct","code":"286839000","display":"Character trait finding of ability to learn from adverse experience (finding)","content":"snomed/286839000"}
