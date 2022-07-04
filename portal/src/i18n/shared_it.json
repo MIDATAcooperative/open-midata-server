@@ -134,18 +134,10 @@
             "plugin" : "Esiste già un'applicazione con lo stesso nome.",
             "study" : "Esiste già un progetto di ricerca con questo nome.",
             "endpoint" : "Esiste già un endpoint con questo URL",
-
-            // TODO NEW: A content type with this name already exists.
-            "content" : "A content type with this name already exists.",
-
-            // TODO NEW: A content group with this name already exists.
-            "group" : "A content group with this name already exists.",
-
-            // TODO NEW: A project group with this name already exists.
-            "projectgroup" : "A project group with this name already exists.",
-
-            // TODO NEW: A code with this code and codesystem already exists.
-            "code" : "A code with this code and codesystem already exists."
+            "content" : "Esiste già un tipo di contenuto con questo nome.",
+            "group" : "Esiste già un gruppo di contenuti con questo nome.",
+            "projectgroup" : "Esiste già un gruppo di progetto con questo nome.",
+            "code" : "Esiste già un codice con questo codice e questo sistema di codici."
         },
 
         "blocked" : {
@@ -216,9 +208,7 @@
             "MALE" : "maschile",
             "FEMALE" : "femminile",
             "OTHER" : "altro",
-
-            // TODO NEW: not provided
-            "UNKNOWN" : "not provided"
+            "UNKNOWN" : "non indicato"
         },
         "country" : {
             "CH" : "Svizzera",
@@ -261,9 +251,7 @@
             "user-settings-change" : "Impostazioni dell'utente modificate",
             "user-email-change" : "E-mail dell'utente modificata",
             "user-birthday-change" : "Data di nascita dell'utente modificata",
-
-            // TODO NEW: User's gender information updated
-            "user-gender-change" : "User's gender information updated",
+            "user-gender-change" : "Sesso dell'utente modificato",
             "user-status-change-active" : "Account utente sbloccato",
             "user-status-change-blocked" : "Account utente bloccato",
             "user-email-confirmed" : "E-mail confermata dall'utente",
@@ -302,10 +290,6 @@
             "contract-send" : "Contratto inviato all'utente",
             "internal-comment" : "Commento dell'amministratore",
             "user-terms-of-use-agreed" : "Accettati i Condizioni generali di contratto",
-
-            // TODO CHANGED
-            // OLD: Audit Log consulted
-            // NEW: Audit log consulted
             "audit-log-used" : "Consultato il audit log",
             "added-as-team-member" : "Aggiunto come membro del team",
             "updated-role-in-team" : "Ruolo aggiornato nel team",
@@ -329,9 +313,7 @@
             "MIDATA_COOPERATIVE_MEMBER" : "L'utente deve essere membro della cooperativa",
             "ADMIN_VERIFIED" : "L'account deve essere stato sbloccato da un amministratore",
             "BIRTHDAY_SET" : "La data di nascita dell'utente deve essere nota",
-
-            // TODO NEW: The gender of the user must be known
-            "GENDER_SET" : "The gender of the user must be known",
+            "GENDER_SET" : "Il sesso dell'utente deve essere noto",
             "APP_UNLOCK_CODE" : "L'applicazione richiede un codice di sblocco"
         },
         "writepermissiontype" : {
@@ -709,9 +691,7 @@
         "address_entered" : "Per utilizzare questo servizio è richiesto il suo indirizzo postale; ti invitiamo a inserirlo.",
         "phone_entered" : "Per utilizzare questo servizio è richiesto un numero di telefono cellulare; ti invitiamo a inserirlo.",
         "birthday_entered" : "Per utilizzare questo servizio è necessaria una data di nascita valida. Aggiungi la tua data di nascita alle informazioni del suo account. (Esempio di formato: 31.12.1999)",
-
-        // TODO NEW: Information about your gender is required to use this service. Please provide your gender.
-        "gender_entered" : "Information about your gender is required to use this service. Please provide your gender.",
+        "gender_entered" : "Per utilizzare questo servizio è necessario inserire il proprio sesso. Indicare il proprio sesso.",
         "admin_verified" : "Il suo account deve essere sbloccato da un amministratore. Riprova più tardi. Se trascorse più di 24 ore il suo account non è stato sbloccato, contatta @SUPPORT.",
         "terms_agreed" : "I Condizioni generali di contratto sono stati aggiornati. Si prega di confermare di accettare la nuova versione.",
         "privacy_policy_agreed" : "La Dichiarazione sui dati personali è stata aggiornata. Si prega di confermare di accettare la nuova versione.",
@@ -800,9 +780,7 @@
         "name" : "Nome:",
         "owned_by" : "Il titolare è:",
         "created_by" : "Creato da:",
-
-        // TODO NEW: Last modified by:
-        "modified_by" : "Last modified by:",
+        "modified_by" : "Ultima modifica da:",
         "created_with" : "Creato con:",
         "created_on" : "Creato il:",
         "content" : "Tipo di contenuto @PRODUCT:",
@@ -1425,10 +1403,6 @@
         "cancel_btn" : "Annulla",
         "check_okay" : "L'elenco dei dati richiesti è completo e corretto?",
         "ask" : {
-
-            // TODO CHANGED
-            // OLD: Access to the audit event log
-            // NEW: Access to the audit log
             "AuditEvent" : "Accesso al audit log",
             "Consent" : "Accesso ai consensi dell'utente dell'applicazione con altri utenti o applicazioni",
             "Group" : "Accesso alle definizioni dei gruppi (teams di professionisti sanitari or ricercatori e gruppi specifici di progetto)",

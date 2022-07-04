@@ -34,12 +34,8 @@
         "study_name" : "Nome progetto",
         "study_type" : "Tipo di ricerca",
         "study_description" : "Descrizione progetto",
-
-        // TODO NEW: Identifiers
-        "study_identifiers" : "Identifiers",
-
-        // TODO NEW: Place any organization specific project identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.
-        "study_identifiers_info" : "Place any organization specific project identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.",
+        "study_identifiers" : "Identificatori",
+        "study_identifiers_info" : "Inserire qui tutti gli identificatori dei progetti delle istituzioni esterne. Inserire un identificatore per riga. Se si desidera, usare "|" per separare il sistema di codici dal valore. Gli identificatori non saranno visualizzati nelle pagine del progetto nel portale.",
         "developer_nostart" : "Attenzione!",
         "developer_nostart2" : "Come sviluppatore puoi solo impostare un progetto ma non condurlo. Come sviluppatore non è possibile avviare la ricerca dei partecipanti."
     },

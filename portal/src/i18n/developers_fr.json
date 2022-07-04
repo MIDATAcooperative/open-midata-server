@@ -159,23 +159,11 @@
             "secret" : "Application Secret était requis par l'ancienne API; il sert à assurer la rétrocompatibilité.",
             "mustParticipateInStudy" : "Les utilisateurs doivent participer au projet de recherche afin de pouvoir utiliser l'application.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à @PRODUCT par cette app. Le code n'est pas sensible à la casse.",
-
-            // TODO CHANGED
-            // OLD: Notify developer ({{user}}) by email on errors caused by this application.
-            // NEW: Notify app creator and developer team by email on errors caused by this application.
-            "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application.",
+            "send_reports" : "Avertir le créateur de l'application et l'équipe de développeurs par e-mail des erreurs causées par cette application.",
             "developerTeam" : "Entrez la liste, séparée par des virgules, des adresses e-mail d'autres développeurs sur cette instance @PRODUCT, qui développent cette application.",
             "code_challenge" : "Lors de la connexion OAuth2, l'application appelante doit utiliser la norme PKCE (Proof Key for Code Exchange)",
-
-            // TODO CHANGED
-            // OLD: Create non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.
-            // NEW: Create non-project related endpoint. Check only if you do NOT plan to use this endpoint with a project.
-            "createendpoint" : "Créer un endpoint non lié à un projet. Cochez uniquement si vous ne prévoyez PAS d'utiliser cet endpoint avec un projet.",
+            "createendpoint" : "Créer une instance de cet endpoint non liée au projet. Cochez uniquement si vous ne prévoyez PAS d'utiliser cet endpoint avec un projet.",
             "endpoint" : "Le chemin d'accès de cet endpoint FHIR non lié à un projet sera /opendata/endpointname/fhir",
-
-            // TODO CHANGED
-            // OLD: Do not forget: To activate the endpoint you need to add an API-Key afterwards.
-            // NEW: Do not forget: to activate the endpoint you need to add an API-Key afterwards.
             "endpoint2" : "N'oubliez pas: pour activer l'endpoint, vous devez ensuite ajouter une clé API."
         },
         "status" : {
@@ -192,22 +180,16 @@
         "queryeditor_btn" : "Aller à l'éditeur du filtre d'accès aux données (Data Access Filter)",
         "no_update_history" : "Pas d'historique des ressources FHIR",
         "pseudonymize" : "Lire pseudonymisé",
-
-        // TODO CHANGED
-        // OLD: Create Instance
-        // NEW: Create Endpoint
-        "createendpoint" : "Créer l'endpoint",
+        "createendpoint" : "Créer une instance de l'endpoint",
         "endpoint" : "Nom de l'endpoint",
         "usagestats_btn" : "Statistiques d'utilisation",
         "usagestats_help" : "Analyser la fréquence d'utilisation de l'application.",
         "export_btn" : "Exporter la définition de l'application",
         "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur.",
         "important" : "IMPORTANT",
-        "logoutwarning" : "Changer la définition de l'application déconnectera tous les utilisateurs de cette application. Ils devront confirmer à nouveau l'utilisation de l'application à la prochaine connexion.",
-        "researchwarning" : "Changer la définition de l'application dissociera cette application de recherche de tous les projets!",
-
-        // TODO NEW: Changing the application definition requires the generation of new API-Keys for all instances of this service.
-        "servicewarning" : "Changing the application definition requires the generation of new API-Keys for all instances of this service.",
+        "logoutwarning" : "Modifier la définition de l'application déconnectera tous les utilisateurs de cette application. Ils devront confirmer à nouveau l'utilisation de l'application à la prochaine connexion.",
+        "researchwarning" : "Modifier la définition de l'application dissociera cette application de recherche de tous les projets!",
+        "servicewarning" : "Modifier la définition de l'application nécessite la génération de nouvelles clés API pour toutes les instances de ce service.",
         "creator" : "Créateur",
         "organization" : "Organisation",
         "publisher" : "Éditeur",
@@ -362,10 +344,6 @@
     "repository" : {
         "title" : "Code Repository",
         "repository_url" : "URL du repository",
-
-        // TODO CHANGED
-        // OLD: (Optional) Subdirectory in repo
-        // NEW: (Optional) Subdirectory in repository
         "repository_dir" : "( Optionnel) Sous-répertoire dans le repository",
         "repository_token" : "Access Token",
         "repository_date" : "Dernier déploiement le",
@@ -496,9 +474,7 @@
             "auth2factorsetup" : "Configuration 2FA",
             "auth2factor" : "2FA",
             "birthday_set" : "Saisir la date de naissance",
-
-            // TODO NEW: Enter gender
-            "gender_set" : "Enter gender",
+            "gender_set" : "Saisir le sexe",
             "unlock_code" : "Code de déverrouillage de l'application"
         }
     },

@@ -158,12 +158,12 @@
        "secret" : "Application Secret was required by the old API; it stands for backward compatibility.",
        "mustParticipateInStudy" : "Users must participate in research project in order to use this application.",
        "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to @PRODUCT using the application. The code is not case sensitive.",
-       "send_reports" : "Notify app creator and developer team by email on errors caused by this application.",
+       "send_reports" : "Notify the application creator and developer team by email on errors caused by this application.",
        "developerTeam" : "Enter comma separated list of email addresses of other developers on that @PRODUCT instance, that develop this application.",
        "code_challenge" : "During OAuth2 login, the calling application must use PKCE (Proof Key for Code Exchange) standard",
-       "createendpoint" : "Create non-project related endpoint. Check only if you do NOT plan to use this endpoint with a project.",
+       "createendpoint" : "Create a non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.",
        "endpoint" : "The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir",
-       "endpoint2" : "Do not forget: to activate the endpoint you need to add an API-Key afterwards."
+       "endpoint2" : "Do not forget: to activate the endpoint you need to add an API key afterwards."
     },
     "status" : {
       "title" : "Application Status",
@@ -179,7 +179,7 @@
     "queryeditor_btn" : "Go to the Data Access Filter editor",
     "no_update_history" : "No FHIR Resource History",
     "pseudonymize" : "Read Pseudonymized",
-    "createendpoint" : "Create Endpoint",
+    "createendpoint" : "Create Endpoint Instance",
     "endpoint" : "Endpoint Name",
     "usagestats_btn" : "Usage Statistics",
     "usagestats_help" : "Analyze the usage frequency of the application.",
@@ -188,7 +188,7 @@
     "important" : "IMPORTANT",
     "logoutwarning" : "Changing the application definition will log out all users from that application. They will have to confirm the use of the application again on next login.",
     "researchwarning" : "Changing the application definition will unlink this research application from all projects!",
-    "servicewarning" : "Changing the application definition requires the generation of new API-Keys for all instances of this service.",
+    "servicewarning" : "Changing the application definition requires the generation of new API keys for all instances of this service.",
     "creator" : "Creator",
     "organization" : "Organization",
     "publisher" : "Publisher",
