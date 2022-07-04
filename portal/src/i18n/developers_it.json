@@ -159,11 +159,23 @@
             "secret" : "Application Secret era richiesto dalla vecchia API; sta per compatibilità all'indietro.",
             "mustParticipateInStudy" : "Gli utenti devono partecipare al progetto di ricerca per utilizzare l'applicazione.",
             "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a @PRODUCT tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli.",
+
+            // TODO CHANGED
+            // OLD: Notify developer ({{user}}) by email on errors caused by this application.
+            // NEW: Notify app creator and developer team by email on errors caused by this application.
             "send_reports" : "Notificare lo sviluppatore ({{utente}}}) via e-mail sulle cause di errore di questa applicazione.",
             "developerTeam" : "Inserire una lista separata da virgole di indirizzi e-mail di altri sviluppatori su quell'istanza @PRODUCT, che sviluppano questa applicazione.",
             "code_challenge" : "Durante il login OAuth2, l'applicazione chiamante deve usare lo standard PKCE (Proof Key for Code Exchange)",
+
+            // TODO CHANGED
+            // OLD: Create non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.
+            // NEW: Create non-project related endpoint. Check only if you do NOT plan to use this endpoint with a project.
             "createendpoint" : "Crea un endpoint non legata a un progetto. Selezionare solo se NON si prevede di utilizzare questo endpoint con un progetto.",
             "endpoint" : "Il percorso di questo endpoint FHIR non legata a un progetto sarà /opendata/endpointname/fhir",
+
+            // TODO CHANGED
+            // OLD: Do not forget: To activate the endpoint you need to add an API-Key afterwards.
+            // NEW: Do not forget: to activate the endpoint you need to add an API-Key afterwards.
             "endpoint2" : "Non dimenticare: per attivare l'endpoint è necessario aggiungere una API-Key dopo."
         },
         "status" : {
@@ -180,6 +192,10 @@
         "queryeditor_btn" : "Va all'editor Data Access Filter",
         "no_update_history" : "No storia risorse FHIR",
         "pseudonymize" : "Leggere pseudonimizzato",
+
+        // TODO CHANGED
+        // OLD: Create Instance
+        // NEW: Create Endpoint
         "createendpoint" : "Creare il endpoint",
         "endpoint" : "Nome dell'endpoint",
         "usagestats_btn" : "Statistiche d'uso",
@@ -189,6 +205,9 @@
         "important" : "IMPORTANTE",
         "logoutwarning" : "La modifica della definizione dell'applicazione comporta la disconnessione di tutti gli utenti dall'applicazione stessa. Dovranno confermare nuovamente l'utilizzo dell'applicazione al prossimo accedi.",
         "researchwarning" : "La modifica della definizione dell'applicazione dissocia questa applicazione di ricerca da tutti gli progetti!",
+
+        // TODO NEW: Changing the application definition requires the generation of new API-Keys for all instances of this service.
+        "servicewarning" : "Changing the application definition requires the generation of new API-Keys for all instances of this service.",
         "creator" : "Creatore",
         "organization" : "Organizzazione",
         "publisher" : "Editore",
@@ -343,6 +362,10 @@
     "repository" : {
         "title" : "Code Repository",
         "repository_url" : "URL del repository",
+
+        // TODO CHANGED
+        // OLD: (Optional) Subdirectory in repo
+        // NEW: (Optional) Subdirectory in repository
         "repository_dir" : "(Opzionale) Sottodirectory nel repository",
         "repository_token" : "Access Token",
         "repository_date" : "Ultimo dispiegato al",
@@ -473,6 +496,9 @@
             "auth2factorsetup" : "Impostazione 2FA",
             "auth2factor" : "2FA",
             "birthday_set" : "Inserire la data di nascita",
+
+            // TODO NEW: Enter gender
+            "gender_set" : "Enter gender",
             "unlock_code" : "Codice di sblocco dell'applicazione"
         }
     },

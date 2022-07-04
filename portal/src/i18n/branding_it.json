@@ -1,6 +1,10 @@
 {
 
     "footer" : {
+
+        // TODO CHANGED
+        // OLD: 
+        // NEW:  
         "copyright" : " ",
         "homepage" : "@OPERATOR homepage",
         "impressum" : "Impressum",

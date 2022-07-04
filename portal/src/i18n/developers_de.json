@@ -159,11 +159,23 @@
             "secret" : "Application Secret wurde von der alten API benötigt; es steht für Abwärtskompatibilität.",
             "mustParticipateInStudy" : "Benutzer müssen am Forschungsprojekt teilnehmen, um diese Applikation benutzen zu können.",
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei @PRODUCT über die Applikation eingegeben werden. Der Code ist nicht 'case sensitiv'.",
+
+            // TODO CHANGED
+            // OLD: Notify developer ({{user}}) by email on errors caused by this application.
+            // NEW: Notify app creator and developer team by email on errors caused by this application.
             "send_reports" : "Den Entwickler ({{user}}) per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.",
             "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf diese @PRODUCT Instanz ein, die diese Anwendung entwickeln.",
             "code_challenge" : "Beim OAuth2-Login muss die aufrufende Applikation den PKCE-Standard (Proof Key for Code Exchange) verwenden",
+
+            // TODO CHANGED
+            // OLD: Create non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.
+            // NEW: Create non-project related endpoint. Check only if you do NOT plan to use this endpoint with a project.
             "createendpoint" : "Nicht projektbezogener Endpoint erstellen. Nur ankreuzen, wenn Sie diesen Endpoint NICHT mit einem Projekt verwenden wollen.",
             "endpoint" : "Der Pfad dieses nicht projektbezogenen FHIR-Endpoint lautet /opendata/endpointname/fhir",
+
+            // TODO CHANGED
+            // OLD: Do not forget: To activate the endpoint you need to add an API-Key afterwards.
+            // NEW: Do not forget: to activate the endpoint you need to add an API-Key afterwards.
             "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen."
         },
         "status" : {
@@ -180,6 +192,10 @@
         "queryeditor_btn" : "Zum Editor des Datenzugriffsfilters (Data Access Filter) wechseln",
         "no_update_history" : "Keine FHIR Ressourcenhistorie",
         "pseudonymize" : "Pseudonymisiert lesen",
+
+        // TODO CHANGED
+        // OLD: Create Instance
+        // NEW: Create Endpoint
         "createendpoint" : "Endpoint erstellen",
         "endpoint" : "Endpoint Name",
         "usagestats_btn" : "Nutzungsstatistiken",
@@ -189,6 +205,9 @@
         "important" : "WICHTIG",
         "logoutwarning" : "Bei einer Änderung der Applikationsdefinition, werden alle Benutzer von dieser Applikation getrennt. Sie müssen die Verwendung der Applikation bei der nächsten Anmeldung erneut bestätigen.",
         "researchwarning" : "Eine Änderung der Applikationsdefinition entkoppelt diese Forschungsapplikation von allen Projekten!",
+
+        // TODO NEW: Changing the application definition requires the generation of new API-Keys for all instances of this service.
+        "servicewarning" : "Changing the application definition requires the generation of new API-Keys for all instances of this service.",
         "creator" : "Ersteller",
         "organization" : "Organisation",
         "publisher" : "Herausgeber",
@@ -343,6 +362,10 @@
     "repository" : {
         "title" : "Code Repository",
         "repository_url" : "Repository URL",
+
+        // TODO CHANGED
+        // OLD: (Optional) Subdirectory in repo
+        // NEW: (Optional) Subdirectory in repository
         "repository_dir" : "(Optional) Unterverzeichnis im Repository",
         "repository_token" : "Access Token",
         "repository_date" : "Zuletzt bereitgestellt am",
@@ -473,6 +496,9 @@
             "auth2factorsetup" : "2FA-Einstellung",
             "auth2factor" : "2FA",
             "birthday_set" : "Geburtsdatum erfassen",
+
+            // TODO NEW: Enter gender
+            "gender_set" : "Enter gender",
             "unlock_code" : "Freischaltcode der Applikation"
         }
     },

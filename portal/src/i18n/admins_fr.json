@@ -3,6 +3,10 @@
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Utilisateurs",
+
+        // TODO CHANGED
+        // OLD: Audit
+        // NEW: Audit Log
         "auditlog" : "Audit log",
         "news" : "News",
         "mails" : "E-Mails",

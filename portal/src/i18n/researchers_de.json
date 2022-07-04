@@ -34,6 +34,12 @@
         "study_name" : "Name des Forschungsprojektes",
         "study_type" : "Forschungsart",
         "study_description" : "Projektbeschreibung",
+
+        // TODO NEW: Identifiers
+        "study_identifiers" : "Identifiers",
+
+        // TODO NEW: Place any organization specific project identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.
+        "study_identifiers_info" : "Place any organization specific project identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.",
         "developer_nostart" : "Achtung!",
         "developer_nostart2" : "Als Entwickler können Sie ein Projekt nur einrichten, aber nicht durchführen. Als Entwickler ist es nicht möglich, die Teilnehmersuche zu starten."
     },
