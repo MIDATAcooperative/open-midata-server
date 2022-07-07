@@ -35,7 +35,7 @@
         "study_type" : "Tipo di ricerca",
         "study_description" : "Descrizione progetto",
         "study_identifiers" : "Identificatori",
-        "study_identifiers_info" : "Inserire qui tutti gli identificatori dei progetti delle istituzioni esterne. Inserire un identificatore per riga. Se si desidera, usare "|" per separare il sistema di codici dal valore. Gli identificatori non saranno visualizzati nelle pagine del progetto nel portale.",
+        "study_identifiers_info" : "Inserire qui tutti gli identificatori dei progetti delle istituzioni esterne. Inserire un identificatore per riga. Se si desidera, usare '|' per separare il sistema di codici dal valore. Gli identificatori non saranno visualizzati nelle pagine del progetto nel portale.",
         "developer_nostart" : "Attenzione!",
         "developer_nostart2" : "Come sviluppatore puoi solo impostare un progetto ma non condurlo. Come sviluppatore non è possibile avviare la ricerca dei partecipanti."
     },
