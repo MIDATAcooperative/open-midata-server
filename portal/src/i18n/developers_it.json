@@ -159,12 +159,12 @@
             "secret" : "Application Secret era richiesto dalla vecchia API; sta per compatibilità all'indietro.",
             "mustParticipateInStudy" : "Gli utenti devono partecipare al progetto di ricerca per utilizzare l'applicazione.",
             "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a @PRODUCT tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli.",
-            "send_reports" : "Notificare lo sviluppatore ({{utente}}}) via e-mail sulle cause di errore di questa applicazione.",
+            "send_reports" : "Avvisare il creatore dell'applicazione e il team di sviluppo via e-mail degli errori causati da questa applicazione.",
             "developerTeam" : "Inserire una lista separata da virgole di indirizzi e-mail di altri sviluppatori su quell'istanza @PRODUCT, che sviluppano questa applicazione.",
             "code_challenge" : "Durante il login OAuth2, l'applicazione chiamante deve usare lo standard PKCE (Proof Key for Code Exchange)",
-            "createendpoint" : "Crea un endpoint non legata a un progetto. Selezionare solo se NON si prevede di utilizzare questo endpoint con un progetto.",
+            "createendpoint" : "Creare un'istanza di questo endpoint non legata al progetto. Selezionare solo se NON si prevede di utilizzare questo endpoint con un progetto.",
             "endpoint" : "Il percorso di questo endpoint FHIR non legata a un progetto sarà /opendata/endpointname/fhir",
-            "endpoint2" : "Non dimenticare: per attivare l'endpoint è necessario aggiungere una API-Key dopo."
+            "endpoint2" : "Non dimenticare: per attivare l'endpoint è necessario aggiungere una chiavi API dopo."
         },
         "status" : {
             "title" : "Stato dell'applicazione",
@@ -180,7 +180,7 @@
         "queryeditor_btn" : "Va all'editor Data Access Filter",
         "no_update_history" : "No storia risorse FHIR",
         "pseudonymize" : "Leggere pseudonimizzato",
-        "createendpoint" : "Creare il endpoint",
+        "createendpoint" : "Creare un'istanza dell'endpoint",
         "endpoint" : "Nome dell'endpoint",
         "usagestats_btn" : "Statistiche d'uso",
         "usagestats_help" : "Analizzare la frequenza di utilizzo dell'applicazione.",
@@ -189,6 +189,7 @@
         "important" : "IMPORTANTE",
         "logoutwarning" : "La modifica della definizione dell'applicazione comporta la disconnessione di tutti gli utenti dall'applicazione stessa. Dovranno confermare nuovamente l'utilizzo dell'applicazione al prossimo accedi.",
         "researchwarning" : "La modifica della definizione dell'applicazione dissocia questa applicazione di ricerca da tutti gli progetti!",
+        "servicewarning" : "La modifica della definizione dell'applicazione richiede la generazione di nuove chiavi API per tutte le istanze di questo servizio.",
         "creator" : "Creatore",
         "organization" : "Organizzazione",
         "publisher" : "Editore",
@@ -473,6 +474,7 @@
             "auth2factorsetup" : "Impostazione 2FA",
             "auth2factor" : "2FA",
             "birthday_set" : "Inserire la data di nascita",
+            "gender_set" : "Inserire il sesso",
             "unlock_code" : "Codice di sblocco dell'applicazione"
         }
     },

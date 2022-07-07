@@ -159,10 +159,10 @@
             "secret" : "Application Secret wurde von der alten API benötigt; es steht für Abwärtskompatibilität.",
             "mustParticipateInStudy" : "Benutzer müssen am Forschungsprojekt teilnehmen, um diese Applikation benutzen zu können.",
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei @PRODUCT über die Applikation eingegeben werden. Der Code ist nicht 'case sensitiv'.",
-            "send_reports" : "Den Entwickler ({{user}}) per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.",
+            "send_reports" : "Den Ersteller der Applikation und das Entwicklerteam per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.",
             "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf diese @PRODUCT Instanz ein, die diese Anwendung entwickeln.",
             "code_challenge" : "Beim OAuth2-Login muss die aufrufende Applikation den PKCE-Standard (Proof Key for Code Exchange) verwenden",
-            "createendpoint" : "Nicht projektbezogener Endpoint erstellen. Nur ankreuzen, wenn Sie diesen Endpoint NICHT mit einem Projekt verwenden wollen.",
+            "createendpoint" : "Nicht projektbezogene Instanz des Endpoint erstellen. Nur ankreuzen, wenn Sie diesen Endpoint NICHT mit einem Projekt verwenden wollen.",
             "endpoint" : "Der Pfad dieses nicht projektbezogenen FHIR-Endpoint lautet /opendata/endpointname/fhir",
             "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen."
         },
@@ -180,7 +180,7 @@
         "queryeditor_btn" : "Zum Editor des Datenzugriffsfilters (Data Access Filter) wechseln",
         "no_update_history" : "Keine FHIR Ressourcenhistorie",
         "pseudonymize" : "Pseudonymisiert lesen",
-        "createendpoint" : "Endpoint erstellen",
+        "createendpoint" : "Endpoint-Instanz erstellen",
         "endpoint" : "Endpoint Name",
         "usagestats_btn" : "Nutzungsstatistiken",
         "usagestats_help" : "Nutzungshäufigkeit der Applikation analysieren.",
@@ -189,6 +189,7 @@
         "important" : "WICHTIG",
         "logoutwarning" : "Bei einer Änderung der Applikationsdefinition, werden alle Benutzer von dieser Applikation getrennt. Sie müssen die Verwendung der Applikation bei der nächsten Anmeldung erneut bestätigen.",
         "researchwarning" : "Eine Änderung der Applikationsdefinition entkoppelt diese Forschungsapplikation von allen Projekten!",
+        "servicewarning" : "Eine Änderung der Applikationsdefinition erfordert die Generierung neuer API-Schlüssel für alle Instanzen dieses Dienstes.",
         "creator" : "Ersteller",
         "organization" : "Organisation",
         "publisher" : "Herausgeber",
@@ -473,6 +474,7 @@
             "auth2factorsetup" : "2FA-Einstellung",
             "auth2factor" : "2FA",
             "birthday_set" : "Geburtsdatum erfassen",
+            "gender_set" : "Geschlecht erfassen",
             "unlock_code" : "Freischaltcode der Applikation"
         }
     },

@@ -354,7 +354,7 @@
     },
 
     "admin_services" : {
-        "endpoints" : "Endpoints",
+        "endpoints" : "FHIR Endpoints",
         "name" : "Instance de service",
         "endpoint" : "FHIR endpoint",
         "status" : "État",

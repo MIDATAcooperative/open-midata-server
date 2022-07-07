@@ -133,7 +133,11 @@
             "passcode" : "Wählen Sie bitte einen anderen Zugangscode!",
             "plugin" : "Eine Applikation mit diesem Namen existiert bereits.",
             "study" : "Ein Forschungsprojekt mit diesem Namen existiert bereits.",
-            "endpoint" : "Ein Endpoint mit dieser URL existiert bereits"
+            "endpoint" : "Ein Endpoint mit dieser URL existiert bereits",
+            "content" : "Ein Inhaltstyp mit diesem Namen existiert bereits.",
+            "group" : "Eine Inhaltsgruppe mit diesem Namen existiert bereits.",
+            "projectgroup" : "Eine Projektgruppe mit diesem Namen existiert bereits.",
+            "code" : "Ein Code mit diesem Code und Codesystem existiert bereits."
         },
 
         "blocked" : {
@@ -203,7 +207,8 @@
         "gender" : {
             "MALE" : "männlich",
             "FEMALE" : "weiblich",
-            "OTHER" : "anderes"
+            "OTHER" : "anderes",
+            "UNKNOWN" : "nicht angegeben"
         },
         "country" : {
             "CH" : "Schweiz",
@@ -246,6 +251,7 @@
             "user-settings-change" : "Benutzereinstellungen geändert",
             "user-email-change" : "E-Mail des Benutzers geändert",
             "user-birthday-change" : "Geburtsdatum des Benutzers geändert",
+            "user-gender-change" : "Geschlecht des Benutzers geändert",
             "user-status-change-active" : "Benutzerkonto entsperrt",
             "user-status-change-blocked" : "Benutzerkonto gesperrt",
             "user-email-confirmed" : "E-Mail bestätigt durch Benutzer",
@@ -307,6 +313,7 @@
             "MIDATA_COOPERATIVE_MEMBER" : "Der Benutzer muss Mitglied der Genossenschaft sein",
             "ADMIN_VERIFIED" : "Das Konto muss von einem Administrator freigeschaltet worden sein",
             "BIRTHDAY_SET" : "Das Geburtsdatum des Benutzers muss bekannt sein",
+            "GENDER_SET" : "Das Geschlecht des Benutzers muss bekannt sein",
             "APP_UNLOCK_CODE" : "Die Applikation benötigt einen Freischaltcode"
         },
         "writepermissiontype" : {
@@ -684,6 +691,7 @@
         "address_entered" : "Geben Sie bitte Ihre Postadresse ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "phone_entered" : "Geben Sie bitte Ihre Mobiltelefonnummer ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "birthday_entered" : "Für die Nutzung dieses Dienstes ist ein gültiges Geburtsdatum erforderlich. Bitte fügen Sie Ihr Geburtsdatum zu Ihren Kontoinformationen hinzu. (Formatbeispiel: 31.12.1999)",
+        "gender_entered" : "Ihr Geschlecht muss angegeben werden, um diesen Dienst nutzen zu können. Bitte geben Sie Ihr Geschlecht an.",
         "admin_verified" : "Ihr Konto muss durch einen Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte @SUPPORT.",
         "terms_agreed" : "Die Allgemeine Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
         "privacy_policy_agreed" : "Die Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
@@ -771,7 +779,8 @@
         "meta" : "Meta-Informationen",
         "name" : "Name:",
         "owned_by" : "Im Besitz von:",
-        "created_by" : "Erstellt durch:",
+        "created_by" : "Erstellt von:",
+        "modified_by" : "Zuletzt geändert von:",
         "created_with" : "Erstellt mit:",
         "created_on" : "Erstellt am:",
         "content" : "@PRODUCT-Inhaltstyp:",

@@ -2,7 +2,7 @@
   "admin_navbar" : {
     "admin" : "Admin",
     "members" : "Users",
-    "auditlog" : "Audit",
+    "auditlog" : "Audit Log",
     "news" : "News",
     "mails" : "E-Mails",
     "plugins" : "Applications",
