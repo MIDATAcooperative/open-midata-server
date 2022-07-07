@@ -422,6 +422,7 @@ public class ApplicationTools {
 		appInstance.status = ConsentStatus.ACTIVE;
 		appInstance.authorized = Collections.singleton(si.executorAccount);
 		appInstance.entityType = EntityType.SERVICES;
+		appInstance.dataupdate = System.currentTimeMillis();
 		
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
 		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
