@@ -30,8 +30,25 @@
             <error-box :error="error"></error-box>
             <p v-if="offline" class="alert alert-danger" v-t="'error.offline'"></p>
 			<form ref="myform" class="css-form form-horizontal" @submit.prevent="register()" role="form" novalidate>
-			    <span v-t="'registration.mandantory_fields'"></span> <span v-if="advancedPassword()" v-t="'registration.password_policy2'"></span><span v-else v-t="'registration.password_policy'"></span>
- 
+				<div v-if="short">
+					<form-group name="personalDetails" label="registration.personal_details" :path="errors.personalDetails"> 
+						<p class="form-control-plaintext">
+							{{ registration.firstname }} {{ registration.lastname }}<br>							
+     		    			<span v-if="registration.address1">{{ registration.address1 }}<br/></span>
+     		    			<span v-if="registration.address2">{{ registration.address2 }}<br/></span>
+     		    			<span v-if="registration.zip">{{ registration.zip }} {{ registration.city }}<br></span>
+							{{ getCountry(registration.country) }}
+						</p>
+					</form-group>						
+					<form-group v-if="registration.birthdayDate" name="birthday" label="registration.birthday" :path="errors.birthday">
+						<p class="form-control-plaintext">{{ registration.birthdayDate }}</p>
+					</form-group>	
+					<hr>
+				</div>
+
+				<p>
+			    <span v-if="reducedInput()" v-t="'registration.mandantory_fields2'"></span><span v-else v-t="'registration.mandantory_fields'"></span> <span v-if="advancedPassword()" v-t="'registration.password_policy2'"></span><span v-else v-t="'registration.password_policy'"></span>
+ 				</p>
 				<div v-if="role=='research'">
 					<h3 v-t="'researcher_registration.research_organization'"></h3>
 					<div class="required">
@@ -59,6 +76,7 @@
 					</form-group>  						  
 					<h3 v-t="'provider_registration.user'"></h3>
 				</div>
+			
                  <div class="required">								  
 				    <form-group name="email" label="registration.email" :path="errors.email">						
 						<input type="email" class="form-control" id="email" name="email" :placeholder="$t('registration.email')" v-model="registration.email" required v-validate>																    
@@ -71,15 +89,15 @@
                         <password class="form-control" id="password2" name="password2" :placeholder="$t('registration.password')" v-model="registration.password2" required></password>
                     </form-group>
                 </div>
-                <form-group name="secure" label="registration.secure" v-if="secureChoice()">
+                <!--<form-group name="secure" label="registration.secure" v-if="secureChoice()">
                     <div class="form-check">
                         <label class="form-check-label">
                             <input class="form-check-input" type="checkbox" v-model="registration.secure" disabled>
                             <span v-t="'registration.secure2'"></span>
                         </label>
                     </div>
-                </form-group>
-                <div class="required">
+                </form-group>-->
+                <div class="required" v-if="!short">
                     <form-group name="firstname" label="registration.firstname" :path="errors.firstname">
                         <input type="text" class="form-control" id="firstname" name="firstname" :placeholder="$t('registration.firstname')" v-model="registration.firstname" required v-validate>
                     </form-group>
@@ -154,7 +172,7 @@
                     <textarea class="form-control" rows="5" id="reason" name="reason" v-validate v-model="registration.reason" required></textarea>
                     <p class="form-text text-muted" translate="developer_registration.reason_fillout"></p>
                 </form-group>
-
+                <hr>
                 <form-group name="agb" label="registration.agb" >
                     <check-box v-model="registration.agb" name="agb" required :path="errors.agb">                                 
                         <span v-t="'registration.agb2'"></span>&nbsp;
@@ -248,7 +266,8 @@ export default {
 	role : "user",
 	links : [],
 	app : null,
-	isNew : false
+	isNew : false,
+	short : false
   }),
 
   props: ['preview', 'previewlinks'],
@@ -280,6 +299,7 @@ export default {
 
 	addressNeeded() {
         const { $data } = this;
+		if ($data.short) return false;
 		if ($data.role == "research" || $data.role == "provider" || $data.role == "developer" ) return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('ADDRESS_ENTERED') >= 0 ||  $data.app.requirements.indexOf('ADDRESS_VERIFIED') >=0 );
 	},
@@ -292,7 +312,9 @@ export default {
 
 	birthdayNeeded() {
 		const { $data, $route } = this;
+		if ($data.short) return false;
 		if ($route.query.birthdate) return true;
+		if ($data.role == "member") return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('BIRTHDAY_SET') >= 0);
 	},
 	
@@ -304,12 +326,13 @@ export default {
 
 	countryNeeded() {
 		const { $data, $route } = this;
+		if ($data.short) return false;
 		return this.addressNeeded() || !$route.query.country;
 	},
 
 	languageNeeded() {
-		const { $data, $route } = this;
-		return !$route.query.lang;
+		const { $data, $route } = this;	
+		return !$route.query.language;
 	},
 
 	secureChoice() {
@@ -339,6 +362,10 @@ export default {
 	
 	advancedPassword() {
 	   return this.$data.role != "member";
+	},
+
+	reducedInput() {
+       return this.$data.short && !this.languageNeeded() && !this.phoneNeeded() && !this.countryNeeded() && !this.birthdayNeeded() && this.$data.role == "member";
 	},
 
 	mustAccept(v) {
@@ -378,6 +405,14 @@ export default {
 			return (link.serviceApp.i18n[getLocale()] && link.serviceApp.i18n[getLocale()].name) ? link.serviceApp.i18n[getLocale()].name : link.serviceApp.name;
 		return "???";
     },
+
+	getCountry(c) {
+		let { $data, $t } = this;
+		for (let c1 of $data.countries) {
+			if (c1 == c) return $t("enum.country."+c1);
+		}
+		return "-";		
+	},
 
     register() {		        
 		const { $data, $router, $route, $t } = this, me = this;
@@ -564,7 +599,16 @@ export default {
 		if ($route.query.phone) $data.registration.phone = $route.query.phone;
 		if ($route.query.mobile) $data.registration.mobile = $route.query.mobile;
 	}
-	
+	if ($route.query.ro) {
+		let r = $data.registration;
+		
+		if (r.firstname && r.lastname && (r.gender || !me.genderNeeded()) && r.country && (r.birthdayDate || !me.birthdayNeeded())) {
+			if (!me.addressNeeded() || (r.city && r.zip && r.address1)) {				
+			   $data.short = true;
+			}
+		}		
+	}
+
   }
 }
 </script>
