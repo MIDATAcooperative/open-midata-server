@@ -267,10 +267,11 @@ export default {
 	links : [],
 	app : null,
 	isNew : false,
-	short : false
+	short : false,
+	queryParams : null
   }),
 
-  props: ['preview', 'previewlinks'],
+  props: ['preview', 'previewlinks', 'query'],
 
   components : {
      FormGroup, ErrorBox, Panel, TermsModal, CheckBox, Password 
@@ -313,26 +314,26 @@ export default {
 	birthdayNeeded() {
 		const { $data, $route } = this;
 		if ($data.short) return false;
-		if ($route.query.birthdate) return true;
+		if (this.$data.queryParams.birthdate) return true;
 		if ($data.role == "member") return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('BIRTHDAY_SET') >= 0);
 	},
 	
 	genderNeeded() {
 		const { $data, $route } = this;
-		if ($route.query.gender) return true;
+		if (this.$data.queryParams.gender) return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('GENDER_SET') >= 0);
 	},
 
 	countryNeeded() {
 		const { $data, $route } = this;
 		if ($data.short) return false;
-		return this.addressNeeded() || !$route.query.country;
+		return this.addressNeeded() || !this.$data.queryParams.country;
 	},
 
 	languageNeeded() {
 		const { $data, $route } = this;	
-		return !$route.query.language;
+		return !this.$data.queryParams.language;
 	},
 
 	secureChoice() {
@@ -365,7 +366,7 @@ export default {
 	},
 
 	reducedInput() {
-       return this.$data.short && !this.languageNeeded() && !this.phoneNeeded() && !this.countryNeeded() && !this.birthdayNeeded() && this.$data.role == "member";
+       return this.$data.short && !this.languageNeeded() && !this.phoneNeeded() && !this.countryNeeded() && !this.birthdayNeeded() /*& this.$data.role == "member"*/;
 	},
 
 	mustAccept(v) {
@@ -568,38 +569,38 @@ export default {
 	     return;
 	 }
 	
+	$data.queryParams = this.query || $route.query;
 	
-	
-	if ($route.query.login) {
-		$data.registration.email = $route.query.login;
+	if (this.$data.queryParams.login) {
+		$data.registration.email = this.$data.queryParams.login;
         
-        $data.actions = $route.query.actions;
-		$data.login = $route.query.login;
+        $data.actions = this.$data.queryParams.actions;
+		$data.login = this.$data.queryParams.login;
 		$data.isNew = true;
 	}
-	if ($route.query.given) $data.registration.firstname = $route.query.given;	
-	if ($route.query.family) $data.registration.lastname = $route.query.family;
-	if ($route.query.gender) $data.registration.gender = $route.query.gender;
-	if ($route.query.country) $data.registration.country = $route.query.country;
+	if (this.$data.queryParams.given) $data.registration.firstname = this.$data.queryParams.given;	
+	if (this.$data.queryParams.family) $data.registration.lastname = this.$data.queryParams.family;
+	if (this.$data.queryParams.gender) $data.registration.gender = this.$data.queryParams.gender;
+	if (this.$data.queryParams.country) $data.registration.country = this.$data.queryParams.country;
 	
-	if ($route.query.language) {
-		$data.registration.language = $route.query.language;
-		me.changeLanguage($route.query.language);
+	if (this.$data.queryParams.language) {
+		$data.registration.language = this.$data.queryParams.language;
+		me.changeLanguage(this.$data.queryParams.language);
 	}
-	if ($route.query.birthdate) {
-		var d = new Date($route.query.birthdate);
+	if (this.$data.queryParams.birthdate) {
+		var d = new Date(this.$data.queryParams.birthdate);
 		$data.registration.birthdayDate = d.getDate()+"."+(1+d.getMonth())+"."+d.getFullYear();		
 	}
 	if (me.addressNeeded()) {
-		if ($route.query.city) $data.registration.city = $route.query.city;
-		if ($route.query.zip) $data.registration.zip = $route.query.zip;
-		if ($route.query.street) $data.registration.address1 = $route.query.street;
+		if (this.$data.queryParams.city) $data.registration.city = this.$data.queryParams.city;
+		if (this.$data.queryParams.zip) $data.registration.zip = this.$data.queryParams.zip;
+		if (this.$data.queryParams.street) $data.registration.address1 = this.$data.queryParams.street;
 	}
 	if (me.addressNeeded() || me.phoneNeeded()) {
-		if ($route.query.phone) $data.registration.phone = $route.query.phone;
-		if ($route.query.mobile) $data.registration.mobile = $route.query.mobile;
+		if (this.$data.queryParams.phone) $data.registration.phone = this.$data.queryParams.phone;
+		if (this.$data.queryParams.mobile) $data.registration.mobile = this.$data.queryParams.mobile;
 	}
-	if ($route.query.ro) {
+	if (this.$data.queryParams.ro) {
 		let r = $data.registration;
 		
 		if (r.firstname && r.lastname && (r.gender || !me.genderNeeded()) && r.country && (r.birthdayDate || !me.birthdayNeeded())) {

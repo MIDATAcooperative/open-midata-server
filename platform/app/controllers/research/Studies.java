@@ -144,7 +144,7 @@ import utils.exceptions.InternalServerException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.FHIRTools;
 import utils.fhir.GroupResourceProvider;
-import utils.fhir.PractitionerResourceProvider;
+import utils.fhir.MidataPractitionerResourceProvider;
 import utils.fhir.ResearchStudyResourceProvider;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonExtraction;
@@ -393,7 +393,7 @@ public class Studies extends APIController {
 			ResourceProvider<DomainResource, Model> pprov = FHIRServlet.myProviders.get("Practitioner");
 			for (User user : users) {
 				String location = FHIRServlet.getBaseUrl() + "/" + pprov.getResourceType().getSimpleName() + "/" + user._id.toString();
-				String ser = pprov.serialize(PractitionerResourceProvider.practitionerFromMidataUser(user));
+				String ser = pprov.serialize(MidataPractitionerResourceProvider.practitionerFromMidataUser(user));
 				out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
 				first = false;
 			}

@@ -456,6 +456,8 @@
        "no_terms" : "No terms of use",
        "links" : "Linked projects",
        "no_links" : "None (yet)",
+       "urlParams" : "Test parameters to OAuth login",
+       "urlParams2" : "Test URL parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=de'.",
        "step" : {
          "login" : "Login",
          "registration" : "Registration",

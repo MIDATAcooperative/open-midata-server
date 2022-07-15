@@ -388,7 +388,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	}
 
 	@Override
-	public MidataAuditEvent fetchCurrent(IIdType theId) throws AppException {
+	public MidataAuditEvent fetchCurrent(IIdType theId, AuditEvent r) throws AppException {
 		return MidataAuditEvent.getById(MidataId.from(theId.getIdPart()));
 	}
 

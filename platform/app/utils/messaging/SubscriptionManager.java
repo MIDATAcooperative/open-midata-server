@@ -60,7 +60,7 @@ import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-import utils.fhir.ConsentResourceProvider;
+import utils.fhir.MidataConsentResourceProvider;
 import utils.fhir.FHIRServlet;
 import utils.fhir.SubscriptionResourceProvider;
 import utils.stats.ActionRecorder;
@@ -89,12 +89,12 @@ public class SubscriptionManager {
 	public static void resourceChange(AccessContext context, Consent consent) {	
 		AccessLog.log("Resource change: Consent");
 		
-		ConsentResourceProvider prov = (ConsentResourceProvider) FHIRServlet.myProviders.get("Consent"); 
+		MidataConsentResourceProvider prov = MidataConsentResourceProvider.getInstance(); 
 		try {
 		    String resource = prov.serialize(prov.readConsentFromMidataConsent(context, consent, consent.type != ConsentType.STUDYRELATED));
 		    
 		    AccessLog.log("CONSENT RES CHANGE: "+resource);
-		    subscriptionChecker.tell(new ResourceChange("fhir/Consent", consent, false, resource), ActorRef.noSender());
+		    subscriptionChecker.tell(new ResourceChange("fhir/Consent", consent, false, resource, consent.owner), ActorRef.noSender());
 		} catch (AppException e) {
 			ErrorReporter.report("Subscripion processing", null, e);
 		}
@@ -104,7 +104,7 @@ public class SubscriptionManager {
 	
 	public static void resourceChange(Record record) {	
 		AccessLog.log("Resource change: "+record.format);
-		subscriptionChecker.tell(new ResourceChange(record.format, record, record.owner.equals(RuntimeConstants.instance.publicUser)), ActorRef.noSender());							
+		subscriptionChecker.tell(new ResourceChange(record.format, record, record.owner.equals(RuntimeConstants.instance.publicUser), record.owner), ActorRef.noSender());							
 	}
 	
 	public static String messageToProcess(MidataId executor, MidataId app, String eventCode, String destination, String fhirVersion, String bundleJSON, Map<String,String> params, boolean doasync) {
@@ -161,7 +161,7 @@ public class SubscriptionManager {
 	    			newdata.add();
 	    			SubscriptionManager.subscriptionChange(newdata);
 	    			if (newdata.format.equals("init")) { 
-	    				subscriptionChecker.tell(new SubscriptionTriggered(userId, plugin._id, "init", "init", null, null, null, null), ActorRef.noSender());
+	    				subscriptionChecker.tell(new SubscriptionTriggered(userId, plugin._id, "init", "init", null, null, null, null, userId), ActorRef.noSender());
 	    			}
 	    		//}
 	    	}
@@ -233,18 +233,22 @@ class ResourceChange {
 	
 	final boolean isPublic;
 	
-	ResourceChange(String type, Model resource, boolean isPublic) {
+	final MidataId resourceOwner;
+	
+	ResourceChange(String type, Model resource, boolean isPublic, MidataId resourceOwner) {
 		this.type = type;
 		this.resource = resource;
 		this.fhir = null;
 		this.isPublic = isPublic;
+		this.resourceOwner = resourceOwner;
 	}
 	
-	ResourceChange(String type, Model resource, boolean isPublic, String fhir) {
+	ResourceChange(String type, Model resource, boolean isPublic, String fhir, MidataId resourceOwner) {
 		this.type = type;
 		this.resource = resource;
 		this.fhir = fhir;
 		this.isPublic = isPublic;
+		this.resourceOwner = resourceOwner;
 	}
 
 	public String getType() {
@@ -265,6 +269,10 @@ class ResourceChange {
 	
 	public boolean isPublic() {
 		return isPublic;
+	}
+	
+	public MidataId getResourceOwner() {
+		return resourceOwner;
 	}
 }
 
@@ -397,10 +405,11 @@ class SubscriptionChecker extends AbstractActor {
 		Set<MidataId> affected = new HashSet<MidataId>();
 		String resource = null;
 		MidataId resourceId = null;
+		MidataId sourceOwner = null;
 		String content = null;
 		if (change.getResource() instanceof Consent) {
 			Consent consent = (Consent) change.getResource();
-					
+			sourceOwner = consent.owner;
 			if (consent.owner != null) affected.add(consent.owner);
 			if (consent.authorized != null) affected.addAll(consent.authorized);
 			if (consent.observers != null) {
@@ -420,6 +429,7 @@ class SubscriptionChecker extends AbstractActor {
 		} else if (change.getResource() instanceof Record) {
 			Record record = (Record) change.getResource();
 			content = record.content;
+			sourceOwner = record.owner;
 			resourceId = record._id;
 			affected.add(record.owner);
 			
@@ -457,7 +467,7 @@ class SubscriptionChecker extends AbstractActor {
 		for (MidataId affectedUser : affected) {
 			if (withSubscription.contains(affectedUser)) {
 				
-				SubscriptionTriggered trigger = new SubscriptionTriggered(affectedUser, null, change.type, content, null, resource, resourceId, null);				
+				SubscriptionTriggered trigger = new SubscriptionTriggered(affectedUser, null, change.type, content, null, resource, resourceId, null, sourceOwner);				
 				processor.tell(trigger, getSelf());
 			}
 		}
@@ -489,7 +499,7 @@ class SubscriptionChecker extends AbstractActor {
 				  messageResponse(new MessageResponse("User not found.", 400, null));
 				  return;
 			  }			  
-			  SubscriptionTriggered trigger = new SubscriptionTriggered(targetUser, targetApp, "fhir/MessageHeader", message.getEventCode()+":"+sender.filename, message.getFhirVersion(), message.getMessage(), null, message.getParams());
+			  SubscriptionTriggered trigger = new SubscriptionTriggered(targetUser, targetApp, "fhir/MessageHeader", message.getEventCode()+":"+sender.filename, message.getFhirVersion(), message.getMessage(), null, message.getParams(), message.getExecutor());
 			  processor.forward(trigger, getContext());
 			} catch (AppException e) {
 				messageResponse(new MessageResponse("Error", 500, null));
@@ -497,7 +507,7 @@ class SubscriptionChecker extends AbstractActor {
 				ServerTools.endRequest();
 			}
 		} else {
-		  SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getFhirVersion(), message.getMessage(), null, message.getParams());
+		  SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getFhirVersion(), message.getMessage(), null, message.getParams(), message.getExecutor());
 		  processor.forward(trigger, getContext());
 		}
 		

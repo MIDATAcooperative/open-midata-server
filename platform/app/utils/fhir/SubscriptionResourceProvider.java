@@ -412,7 +412,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	}
 
 	@Override
-	public SubscriptionData init() {
+	public SubscriptionData init(Subscription theResource) {
 		SubscriptionData subscriptionData = new SubscriptionData();
 		subscriptionData._id = new MidataId();
 		subscriptionData.owner = info().getLegacyOwner();
@@ -440,7 +440,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	}
 
 	@Override
-	public SubscriptionData fetchCurrent(IIdType theId) throws AppException {
+	public SubscriptionData fetchCurrent(IIdType theId, Subscription resource) throws AppException {
 		return SubscriptionData.getByIdAndOwner(MidataId.from(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
 	}
 

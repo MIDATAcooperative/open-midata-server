@@ -28,6 +28,7 @@ import models.MessageDefinition;
 import models.MidataId;
 import models.Plugin;
 import models.User;
+import models.enums.AuditEventType;
 import models.enums.MessageChannel;
 import models.enums.MessageReason;
 import utils.AccessLog;
@@ -35,6 +36,8 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.ServerTools;
+import utils.audit.AuditEventBuilder;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.stats.ActionRecorder;
@@ -77,13 +80,13 @@ public class Messager {
 		if (plugin.predefinedMessages != null) {
 		  replacements.put("plugin-name", plugin.name);
 		  replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
-		  return sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements, channel);
+		  return sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements, channel, sourcePlugin);
 		}
 		AccessLog.log("no predefined messages");
 		return false;
 	}
 	
-	public static boolean sendMessage(Map<String, MessageDefinition> messageDefinitions, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel) throws AppException {
+	public static boolean sendMessage(Map<String, MessageDefinition> messageDefinitions, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel, MidataId sourceApp) throws AppException {
 		if (targets.isEmpty()) return false;
 		
 		MessageDefinition msg = null; 
@@ -104,17 +107,19 @@ public class Messager {
 		  if (footerDefs != null) footers = footerDefs.text;
 		}
 		
-		sendMessage(msg, footers, targets, defaultLanguage, replacements, channel);
+		sendMessage(msg, footers, targets, defaultLanguage, replacements, channel, sourceApp);
 		
 		return true;
 	}
 	
-	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel) throws AppException {	
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel, MidataId sourceApp) throws AppException {	
 		for (Object target : targets) {
 			if (target instanceof MidataId) {
 				MidataId userId = (MidataId) target;
-				User user = User.getById(userId, Sets.create("email", "firstname", "lastname", "language"));
-				if (user != null) sendMessage(messageDefinition, footers, user, replacements, channel);
+				User user = User.getById(userId, User.ALL_USER);
+				if (user != null) {					
+					sendMessage(messageDefinition, footers, user, replacements, channel, sourceApp);
+				}
 			} else if (target instanceof String) {
 				sendMessage(messageDefinition, footers, target.toString(), null, defaultLanguage, replacements, channel);
 			}
@@ -122,7 +127,7 @@ public class Messager {
 		}
 	}
 	
-	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, User member, Map<String, String> replacements, MessageChannel channel) {		
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, User member, Map<String, String> replacements, MessageChannel channel, MidataId sourceApp) throws AppException {		
 		String email = member.email;
 		if (email == null) return;
 		String fullname = member.firstname+" "+member.lastname;
@@ -154,9 +159,14 @@ public class Messager {
 		if (phone == null) channel = MessageChannel.EMAIL;
 		
 		if (channel.equals(MessageChannel.SMS)) {
+		   
+		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.EMAIL_SENT).withActorUser(member).withApp(sourceApp).withMessage(subject));
 		   Messager.sendSMS(phone, content);
+		   AuditManager.instance.success();
 		} else {
+		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SMS_SENT).withActorUser(member).withApp(sourceApp).withMessage(subject));
 		   Messager.sendTextMail(email, fullname, subject, content);
+		   AuditManager.instance.success();
 		}
 	}
 	

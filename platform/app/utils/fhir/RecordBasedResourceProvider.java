@@ -86,7 +86,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	 */
 	public abstract String getRecordFormat();
 	
-	public Record init() { return newRecord(getRecordFormat()); }
+	public Record init(T theResource) { return newRecord(getRecordFormat()); }
 	
 	/**
 	 * Default implementation to retrieve a FHIR resource by id.
@@ -278,7 +278,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	@Override
-	public Record fetchCurrent(IIdType theId)  {
+	public Record fetchCurrent(IIdType theId, T resource)  {
 		try {
 			if (theId == null) throw new UnprocessableEntityException("id missing");
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");

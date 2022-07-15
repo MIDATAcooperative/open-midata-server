@@ -293,7 +293,7 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 	private MidataId getOwner(IIdType iid) throws AppException {
 		String type = iid.getResourceType();
 		String id = iid.getIdPart();		
-		Model model = FHIRServlet.myProviders.get(type).fetchCurrent(iid);
+		Model model = FHIRServlet.myProviders.get(type).fetchCurrent(iid, null);
 		if (model==null) throw new BadRequestException("error.internal", "Referenced Record not found");
 		if (model instanceof Consent) return ((Consent) model).owner;
 		if (model instanceof Record) return ((Record) model).owner;

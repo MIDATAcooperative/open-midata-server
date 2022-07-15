@@ -280,7 +280,7 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	} 	
 
 	@Override
-	public User fetchCurrent(IIdType theId) throws AppException {
+	public User fetchCurrent(IIdType theId, Person p) throws AppException {
 		return User.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);
 	}
 
