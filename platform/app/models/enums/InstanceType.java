@@ -229,7 +229,7 @@ public enum InstanceType {
     	if (this == TEST || this == DEMO) {
  		   return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED);
  		}
-    	return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED, UserFeature.GENDER_SET);
+    	return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED, UserFeature.BIRTHDAY_SET);
 	}
     
     public boolean is2FAMandatory(UserRole role) {    	

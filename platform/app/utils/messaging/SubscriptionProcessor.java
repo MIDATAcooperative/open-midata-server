@@ -46,6 +46,7 @@ import models.Plugin;
 import models.SubscriptionData;
 import models.TestPluginCall;
 import models.User;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.MessageChannel;
 import models.enums.MessageReason;
@@ -59,6 +60,8 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
+import utils.audit.AuditManager;
 import utils.auth.KeyManager;
 import utils.auth.SpaceToken;
 import utils.collections.Sets;
@@ -115,8 +118,10 @@ public class SubscriptionProcessor extends AbstractActor {
 					
 					Stats.startRequest();
 					Stats.setPlugin(subscription.app);
+					
 					//System.out.println("type="+channel.getType().toString());
-					if (channel.getType().equals(SubscriptionChannelType.RESTHOOK)) {					
+					if (channel.getType().equals(SubscriptionChannelType.RESTHOOK)) {
+						AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.RESTHOOK).withActorUser(subscription.owner).withModifiedUser(triggered.getSourceOwner()).withApp(subscription.app));
 						processRestHook(subscription._id, triggered, channel);
 					} else if (channel.getType().equals(SubscriptionChannelType.MESSAGE)) {
 						String endpoint = channel.getEndpoint();
@@ -129,6 +134,7 @@ public class SubscriptionProcessor extends AbstractActor {
 							getSender().tell(new MessageResponse("Can only forward FHIR messages with destination",-1, triggered.getApp() != null ? triggered.getApp().toString() : null), getSelf());
 						}
 					} else if (channel.getType().equals(SubscriptionChannelType.EMAIL)) {
+						
 						processEmail(subscription, triggered, channel);
 						answered = true;
 						anyAnswered = true;
@@ -183,6 +189,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		   if (p > 0) request.addHeader(str.substring(0, p).trim(), str.substring(p+1));
 	   }
 	   AccessLog.log("Calling Rest Hook");
+	   
 	   CompletionStage<WSResponse> response = request.execute("POST");
 	   response.whenComplete((out, exception) -> {
 		   
@@ -215,7 +222,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		if (triggered.getType().equals("fhir/MessageHeader")) {
 		  String ev = triggered.getEventCode();
 		  //if (ev.indexOf(":")>=0) ev = ev.substring(0,ev.indexOf(":"));
-		  AccessLog.log("send ev="+ev+" ow="+subscription.owner+" app="+subscription.app);
+		  AccessLog.log("send ev="+ev+" ow="+subscription.owner+" app="+subscription.app);		  
 		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, Collections.singleton(subscription.owner), null, replacements);			
 		} else {
 		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), Collections.singleton(subscription.owner), null, replacements);
@@ -245,6 +252,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			subscription.disable();
 			return false;
 		}
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SCRIPT_INVOCATION).withActorUser(subscription.owner).withModifiedUser(triggered.getSourceOwner()).withApp(subscription.app));
 		//System.out.println("prcApp2");
 		String endpoint = channel.getEndpoint();		
 		
@@ -260,6 +268,8 @@ public class SubscriptionProcessor extends AbstractActor {
 			} catch (InternalServerException e) {
 				ErrorReporter.report("Subscription-Processor", null, e);
 			}
+			
+			AuditManager.instance.fail(500, "Service key expired", "error.internal");
 			return true;
 		}
 		
@@ -270,6 +280,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			//System.out.println("prcApp4");
 			if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) {
 				subscription.disable();
+				AuditManager.instance.fail(500, "Subscription owner bad status", "error.internal");
 				return false;
 			}
 		}
@@ -337,6 +348,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
 			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
 		}
+		AuditManager.instance.success();
 		return true;
 		} finally {
 			ServerTools.endRequest();

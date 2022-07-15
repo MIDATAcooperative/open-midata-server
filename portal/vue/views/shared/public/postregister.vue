@@ -612,6 +612,10 @@ export default {
         		$data.registration = JSON.parse(JSON.stringify($data.registration));
 				$data.registration.firstname = $data.registration.lastname = $data.registration.gender = $data.registration.city = $data.registration.zip = $data.registration.country = $data.registration.address1 = undefined;			
         	}
+        	if (!this.phoneNeeded()) {
+        	    $data.registration = JSON.parse(JSON.stringify($data.registration));
+				$data.registration.phone = $data.registration.mobile = undefined;
+        	}
         	$data.registration.authType = undefined;
 					
 			$data.registration.user = $data.registration._id;									

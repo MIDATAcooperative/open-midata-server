@@ -199,6 +199,8 @@ public class Plugins extends APIController {
         if (plugin != null && plugin.loginTemplateApprovedDate == null && !InstanceConfig.getInstance().getInstanceType().getNoLoginScreenValidation()) {
         	if (plugin.loginTemplate != LoginTemplate.TERMS_OF_USE_AND_GENERATED) plugin.loginTemplate = LoginTemplate.GENERATED;        	
         }
+        
+        //plugin.requirements.addAll(InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(UserRole.MEMBER));
 		return ok(JsonOutput.toJson(plugin, "Plugin", fields)).as("application/json");
 	}
 

@@ -168,7 +168,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	
 	
 	@Override
-	public Record fetchCurrent(IIdType theId)  {
+	public Record fetchCurrent(IIdType theId, Patient theResource)  {
 		try {
 			if (theId == null) throw new UnprocessableEntityException("id missing");
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");

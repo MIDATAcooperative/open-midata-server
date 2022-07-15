@@ -52,6 +52,11 @@
                     <option v-for="template in loginButtonsTemplates" :key="template" :value="template">{{ $t('enum.loginbuttonstemplate.'+template) }}</option>
                 </select>		        
 		    </form-group>	
+
+            <form-group label="applogin.urlParams">
+		        <input type="text" class="form-control" v-model="urlParams" @keypress="refresh()">
+                <p class="form-text">{{ $t('applogin.urlParams2') }}</p>
+		    </form-group>	
 		  
 		   <form-group name="withLogout" label="manageapp.logout" v-if="app._id">
 		     <check-box name="withLogout" v-model="app.withLogout" :path="errors.withLogout" :required="logoutRequired">		      
@@ -100,7 +105,7 @@
                 </div>
             
                 <div class="previewtile" >
-                    <Registration :preview="app" :previewlinks="links"></Registration>
+                    <Registration :preview="app" :previewlinks="links" :query="convertParams(urlParams)"></Registration>
                 </div>
             </div>
 
@@ -332,7 +337,8 @@ export default {
 		query : {},		
 		terms : [],
         links : [],
-        logoutRequired : false
+        logoutRequired : false,
+        urlParams : ""
     }),
 
     components: {  OAuth2, Registration, Confirm, Postregister, Panel, ErrorBox, FormGroup, CheckBox, Typeahead, AccessQuery },
@@ -412,6 +418,12 @@ export default {
             if (!$data.app || !$data.app.redirectUri) return "";
             return "/oauth.html#/portal/oauth2?response_type=code&client_id="+encodeURIComponent($data.app.filename)+"&redirect_uri="+encodeURIComponent($data.app.redirectUri.split(" ")[0]);
 	    },
+
+        convertParams(inp) {
+           if (!inp || inp == "") return navigator;
+           let obj = Object.fromEntries(new URLSearchParams(inp));
+           return obj;
+        },
 	
 	    keyCount(obj) {
 			const { $data, $route, $router } = this, me = this;
@@ -443,7 +455,15 @@ export default {
 											
 			me.doAction('submit', apps.updatePlugin($data.app))
 			.then(function() { $router.push({ path : "./manageapp", query : { appId : $route.query.appId } }); });			
-		}				
+		},
+        
+        refresh() {
+           let p = this.$data.previewType;
+           if (p) {
+            this.$data.previewType = "";
+            window.setTimeout(() => { this.$data.previewType = p },100);
+           }
+        }
     },
 
     created() {

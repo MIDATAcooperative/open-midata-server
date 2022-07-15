@@ -288,8 +288,8 @@
 {"_id":{"$oid":"5cc853caaed6452c8c5214eb"},"system":"http://snomed.info/sct","code":"86290005","display":"Respiratory rate","content":"loinc/9279-1"}
 {"_id":{"$oid":"5cc8541aaed6452c8c5214ed"},"system":"http://loinc.org","code":"8637-1","display":"R-R interval","content":"loinc/8637-1"}
 {"_id":{"$oid":"5cc85472aed6452c8c5214ee"},"system":"http://snomed.info/sct","code":"251833007","display":"Energy Expenditure","content":"snomed/251833007"}
-{"_id":{"$oid":"5cc854bfaed6452c8c5214f0"},"system":"http://snomed.info/sct","code":"229819007","display":"Tobacco use and exposure","content":"loinc/63582-1"}
-{"_id":{"$oid":"5cc85f5aaed6452c8c5214f2"},"system":"http://snomed.info/sct","code":"230056004","display":"Cigarette consumption","content":"loinc/63582-1"}
+{"_id":{"$oid":"5cc854bfaed6452c8c5214f0"},"system":"http://snomed.info/sct","code":"229819007","display":"Tobacco use and exposure (observable entity)","content":"loinc/63582-1"}
+{"_id":{"$oid":"5cc85f5aaed6452c8c5214f2"},"system":"http://snomed.info/sct","code":"230056004","display":"Cigarette consumption (observable entity)","content":"loinc/63582-1"}
 {"_id":{"$oid":"5cc86322aed64535da11812e"},"system":"http://snomed.info/sct","code":"276361009","display":"Waist circumference","content":"snomed/276361009"}
 {"_id":{"$oid":"5cc86374aed64535da118130"},"system":"http://snomed.info/sct","code":"58314002","display":"Ulnar pulse","content":"snomed/58314002"}
 {"_id":{"$oid":"5cc8644baed64535da118132"},"system":"http://www.stroke.usz.ch","code":"reuse","display":"REUSE Questionnaire","content":"reuse"}
@@ -420,3 +420,47 @@
 {"_id":{"$oid":"62bb60469df13005066e6356"},"system":"http://snomed.info/sct","code":"716417006","display":"Able to manage generalized pain (finding)","content":"snomed/716417006"}
 {"_id":{"$oid":"628e2ce784cf0e5f516da4e4"},"system":"http://snomed.info/sct","code":"364626008","display":"Characteristic of pain at anatomical site (observable entity)","content":"snomed/364626008"}
 {"_id":{"$oid":"62bb65f99b71d13efff85efd"},"system":"http://snomed.info/sct","code":"286839000","display":"Character trait finding of ability to learn from adverse experience (finding)","content":"snomed/286839000"}
+{"_id":{"$oid":"62cd2fa55d0d6215c274e067"},"system":"http://trevor.hug.ch","code":"mostEffectiveDrug","display":"Most effective drug","content":"trevor/mostEffectiveDrug"}
+{"_id":{"$oid":"62cd61dd5d0d6215c274e234"},"system":"http://trevor.hug.ch","code":"mostEffectiveRelaxingTherapy","display":"Most effective relaxing therapy","content":"trevor/mostEffectiveRelaxingTherapy"}
+{"_id":{"$oid":"62c73bb3c6c1481c61ff5c7e"},"system":"http://snomed.info/sct","code":"298060002","display":"Number of admissions (observable entity)","content":"snomed/298060002"}
+{"_id":{"$oid":"62cc4a3d199f0e5d32daa30a"},"system":"http://snomed.info/sct","code":"866145009","display":"General patient record note (record artifact)","content":"snomed/866145009"}
+{"_id":{"$oid":"62cbd10f199f0e5d32daa080"},"system":"http://snomed.info/sct","code":"365616005","display":"Finding of hematocrit (finding)","content":"snomed/365616005"}
+{"_id":{"$oid":"62c7f2e7d1fdf8118fb098e3"},"system":"http://snomed.info/sct","code":"247322000","display":"Abnormal sensation (finding)","content":"snomed/247322000"}
+{"_id":{"$oid":"62c81cc45d0d6215c274d0c0"},"system":"http://snomed.info/sct","code":"64113006","display":"Exhaustion due to excessive exertion (finding)","content":"snomed/64113006"}
+{"_id":{"$oid":"62cd86a55d0d6215c274e57d"},"system":"http://trevor.hug.ch","code":"treatmentFrequency","display":"Treatment frequency","content":"trevor/treatmentFrequency"}
+{"_id":{"$oid":"62cd5f835d0d6215c274e231"},"system":"http://trevor.hug.ch","code":"herbalTherapyFrequency","display":"Herbal therapy frequency","content":"trevor/herbalTherapyFrequency"}
+{"_id":{"$oid":"62cd6021199f0e5d32daa769"},"system":"http://trevor.hug.ch","code":"relaxingTherapyFrequency","display":"Relaxing therapy frequency","content":"trevor/relaxingTherapyFrequency"}
+{"_id":{"$oid":"62cc4690199f0e5d32daa304"},"system":"http://snomed.info/sct","code":"289163007","display":"Appetite problem (finding)","content":"snomed/289163007"}
+{"_id":{"$oid":"62cd85e0199f0e5d32daaa9b"},"system":"http://trevor.hug.ch","code":"preventiveTreatmentFrequency","display":"Preventive treatment frequency","content":"trevor/preventiveTreatmentFrequency"}
+{"_id":{"$oid":"62c84c6b5d0d6215c274d25f"},"system":"http://snomed.info/sct","code":"225791005","display":"Empowered (finding)","content":"snomed/225791005"}
+{"_id":{"$oid":"62c846865d0d6215c274d257"},"system":"http://snomed.info/sct","code":"64572001","display":"Disease (disorder)","content":"snomed/64572001"}
+{"_id":{"$oid":"62cc3eb55d0d6215c274de68"},"system":"http://snomed.info/sct","code":"39565009","display":"Pain crisis (finding)","content":"snomed/39565009"}
+{"_id":{"$oid":"62cc48aa5d0d6215c274df14"},"system":"http://snomed.info/sct","code":"720001001","display":"Dark yellow urine (finding)","content":"snomed/720001001"}
+{"_id":{"$oid":"62cc3f5a199f0e5d32daa271"},"system":"http://snomed.info/sct","code":"224974006","display":"Feeling stressed (finding)","content":"snomed/224974006"}
+{"_id":{"$oid":"62cd2cf95d0d6215c274e050"},"system":"http://trevor.hug.ch","code":"mostEffectiveAnalgesic","display":"Most effective analgesic","content":"trevor/mostEffectiveAnalgesic"}
+{"_id":{"$oid":"62cd299a199f0e5d32daa500"},"system":"http://trevor.hug.ch","code":"mostEffectiveTreatment","display":"Most effective treatment","content":"trevor/mostEffectiveTreatment"}
+{"_id":{"$oid":"62c74486d1fdf8118fb09863"},"system":"http://snomed.info/sct","code":"20361002","display":"Alteration in comfort: pain (finding)","content":"snomed/20361002"}
+{"_id":{"$oid":"62cd2c75199f0e5d32daa51f"},"system":"http://trevor.hug.ch","code":"mostEffectiveAntiInflammatory","display":"Most effective antiInflammatory","content":"trevor/mostEffectiveAntiInflammatory"}
+{"_id":{"$oid":"62cd2b2a199f0e5d32daa50a"},"system":"http://trevor.hug.ch","code":"mostEffectivePreventiveTreatment","display":"Most effective preventive treatment","content":"trevor/mostEffectivePreventiveTreatment"}
+{"_id":{"$oid":"62cd12b85d0d6215c274df50"},"system":"http://trevor.hug.ch","code":"earlyPainPrediction","display":"Early pain prediction","content":"trevor/earlyPainPrediction"}
+{"_id":{"$oid":"62cc4736199f0e5d32daa306"},"system":"http://snomed.info/sct","code":"17173007","display":"Excessive thirst (finding)","content":"snomed/17173007"}
+{"_id":{"$oid":"62c84547199f0e5d32da9307"},"system":"http://snomed.info/sct","code":"266918002","display":"Tobacco smoking consumption (observable entity)","content":"loinc/63582-1"}
+{"_id":{"$oid":"62c7d99fc6c1481c61ff5dcc"},"system":"http://snomed.info/sct","code":"816065002","display":"Normal sensation of pain (finding)","content":"snomed/816065002"}
+{"_id":{"$oid":"62c81a4a199f0e5d32da9147"},"system":"http://snomed.info/sct","code":"106131003","display":"Mood finding (finding)","content":"snomed/106131003"}
+{"_id":{"$oid":"62cd5f005d0d6215c274e22f"},"system":"http://trevor.hug.ch","code":"alternativeTherapyFrequency","display":"Alternative therapy frequency","content":"trevor/alternativeTherapyFrequency"}
+{"_id":{"$oid":"62c74750c6c1481c61ff5cd0"},"system":"http://snomed.info/sct","code":"736535009","display":"EuroQol visual analogue score (observable entity)","content":"snomed/736535009"}
+{"_id":{"$oid":"62c7db2cc6c1481c61ff5dce"},"system":"http://snomed.info/sct","code":"401207004","display":"Medication side effects present (finding)","content":"snomed/401207004"}
+{"_id":{"$oid":"62c81722199f0e5d32da9127"},"system":"http://snomed.info/sct","code":"405159006","display":"Comfort level (observable entity)","content":"snomed/405159006"}
+{"_id":{"$oid":"62cd2bcd199f0e5d32daa519"},"system":"http://trevor.hug.ch","code":"otherHelpfulDrug","display":"Other helpful drug","content":"trevor/otherHelpfulDrug"}
+{"_id":{"$oid":"62cd164d199f0e5d32daa41d"},"system":"http://trevor.hug.ch","code":"mostEffectiveNutritionalSupplement","display":"Most effective nutritional supplement","content":"trevor/mostEffectiveNutritionalSupplement"}
+{"_id":{"$oid":"62cc47c35d0d6215c274df12"},"system":"http://snomed.info/sct","code":"248549001","display":"Labored breathing (finding)","content":"snomed/248549001"}
+{"_id":{"$oid":"62cd5d015d0d6215c274e1ea"},"system":"http://snomed.info/sct","code":"513881000000106","display":"Current medication as reported by patient (observable entity)","content":"snomed/513881000000106"}
+{"_id":{"$oid":"62c74537c6c1481c61ff5ca9"},"system":"http://snomed.info/sct","code":"198288003","display":"Anxiety state (finding)","content":"snomed/198288003"}
+{"_id":{"$oid":"62ce9284199f0e5d32daadbc"},"system":"http://trevor.hug.ch","code":"hasRegularBloodTreatment","display":"Has regular blood treatment","content":"trevor/hasRegularBloodTreatment"}
+{"_id":{"$oid":"62c7f038d1fdf8118fb098e1"},"system":"http://snomed.info/sct","code":"284545001","display":"Ability to perform activities of everyday life (observable entity)","content":"snomed/284545001"}
+{"_id":{"$oid":"62cd5e38199f0e5d32daa75f"},"system":"http://trevor.hug.ch","code":"nutritionalSupplementFrequency","display":"Nutritional supplement frequency","content":"trevor/nutritionalSupplementFrequency"}
+{"_id":{"$oid":"62cd1196199f0e5d32daa3fe"},"system":"http://trevor.hug.ch","code":"hasConsumedOpioid","display":"Has consumed opioid","content":"trevor/hasConsumedOpioid"}
+{"_id":{"$oid":"62cd138a199f0e5d32daa40b"},"system":"http://trevor.hug.ch","code":"mostEffectiveHerbalTherapy","display":"Most effective herbal therapy","content":"trevor/mostEffectiveHerbalTherapy"}
+{"_id":{"$oid":"62cd15ae199f0e5d32daa41b"},"system":"http://trevor.hug.ch","code":"mostEffectiveAlternativeTherapy","display":"Most effective alternative therapy","content":"trevor/mostEffectiveAlternativeTherapy"}
+{"_id":{"$oid":"62c7d8b8d1fdf8118fb098dd"},"system":"http://snomed.info/sct","code":"308540004","display":"Inpatient stay (finding)","content":"snomed/308540004"}
+{"_id":{"$oid":"62d01828d030f500a7c46e15"},"system":"http://midata.coop","code":"Practitioner/Extern","display":"Practitioner","content":"Practitioner/Extern"}

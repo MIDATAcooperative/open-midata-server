@@ -94,7 +94,7 @@ import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.RequestTooLargeException;
-import utils.fhir.ConsentResourceProvider;
+import utils.fhir.MidataConsentResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -883,7 +883,7 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	public static void persistConsentMetadataChange(AccessContext context, Consent consent, boolean isNew) throws AppException {
-		ConsentResourceProvider.updateMidataConsent(consent, null);		
+		MidataConsentResourceProvider.updateMidataConsent(consent, null);		
 		if (consent.authorized == null && consent.type != ConsentType.EXTERNALSERVICE) throw new InternalServerException("error.internal", "Missing authorized");
 		if (isNew) {
 			consent.add();
@@ -909,14 +909,26 @@ public class Circles extends APIController {
 		if (category == null) category = consent.type.toString();
 		
 		User sender = User.getByIdAlsoDeleted(executorId, Sets.create("firstname", "lastname", "role", "email", "language"));
-		replacements.put("executor-firstname", sender.firstname);
-		replacements.put("executor-lastname", sender.lastname);
-		replacements.put("executor-email", sender.email != null ? sender.email : "none");
+		if (sender != null) {
+			replacements.put("executor-firstname", sender.firstname);
+			replacements.put("executor-lastname", sender.lastname);
+			replacements.put("executor-email", sender.email != null ? sender.email : "none");
+		} else {
+			replacements.put("executor-firstname", "-");
+			replacements.put("executor-lastname", "-");
+			replacements.put("executor-email", "none");
+		}
 		try {
 			if (executorId.equals(consent.owner)) {
-				replacements.put("grantor-firstname", sender.firstname);
-				replacements.put("grantor-lastname", sender.lastname);
-				replacements.put("grantor-email", sender.email != null ? sender.email : "none");
+				if (sender != null) {
+				   replacements.put("grantor-firstname", sender.firstname);
+				   replacements.put("grantor-lastname", sender.lastname);
+				   replacements.put("grantor-email", sender.email != null ? sender.email : "none");
+				} else {
+					replacements.put("grantor-firstname", "-");
+					replacements.put("grantor-lastname", "-");
+					replacements.put("grantor-email", "none");
+				}
 			} else if (consent.owner != null) {
 				User owner = User.getByIdAlsoDeleted(consent.owner, Sets.create("firstname", "lastname", "role", "email", "language"));
 				replacements.put("grantor-firstname", owner.firstname);
@@ -930,18 +942,18 @@ public class Circles extends APIController {
 				replacements.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+"&isnew=true&login="+URLEncoder.encode(consent.externalOwner, "UTF-8"));
 			}
 			replacements.put("consent-name", consent.name);		
-					
+		    String language = sender != null ? sender.language : InstanceConfig.getInstance().getDefaultLanguage();
 			if (reason == ConsentStatus.UNCONFIRMED) {
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_INVITED, category, consent.externalAuthorized, sender.language, replacements);
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_EXISTING, category, targets, sender.language, replacements);
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_INVITED, category, Collections.singleton(consent.externalOwner), sender.language, replacements);
-				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_EXISTING, category, Collections.singleton(consent.owner), sender.language, replacements);
+				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_INVITED, category, consent.externalAuthorized, language, replacements);
+				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_EXISTING, category, targets, language, replacements);
+				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_INVITED, category, Collections.singleton(consent.externalOwner), language, replacements);
+				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_EXISTING, category, Collections.singleton(consent.owner), language, replacements);
 			} else if (reason == ConsentStatus.ACTIVE) {
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, targets, sender.language, replacements);
-				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_OWNER, category, Collections.singleton(consent.owner), sender.language, replacements);			
+				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, targets, language, replacements);
+				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_OWNER, category, Collections.singleton(consent.owner), language, replacements);			
 			} else if (reason == ConsentStatus.REJECTED) {
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_AUTHORIZED, category, targets, sender.language, replacements);
-				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), sender.language, replacements);
+				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_AUTHORIZED, category, targets, language, replacements);
+				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), language, replacements);
 			}
 		} catch (UnsupportedEncodingException e) {}
 		
