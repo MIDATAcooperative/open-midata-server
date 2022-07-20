@@ -464,3 +464,7 @@
 {"_id":{"$oid":"62cd15ae199f0e5d32daa41b"},"system":"http://trevor.hug.ch","code":"mostEffectiveAlternativeTherapy","display":"Most effective alternative therapy","content":"trevor/mostEffectiveAlternativeTherapy"}
 {"_id":{"$oid":"62c7d8b8d1fdf8118fb098dd"},"system":"http://snomed.info/sct","code":"308540004","display":"Inpatient stay (finding)","content":"snomed/308540004"}
 {"_id":{"$oid":"62d01828d030f500a7c46e15"},"system":"http://midata.coop","code":"Practitioner/Extern","display":"Practitioner","content":"Practitioner/Extern"}
+{"_id":{"$oid":"62d539b295d2885306321564"},"system":"http://snomed.info/sct","code":"185278000","display":"Seen by general practitioner (finding)","content":"snomed/185278000"}
+{"_id":{"$oid":"62d6c64395d2885306321af1"},"system":"http://trevor.hug.ch","code":"sickleCellDiseaseSelfEfficacyScore","display":"Sickle cell disease self-efficacy score","content":"trevor/sickleCellDiseaseSelfEfficacyScore"}
+{"_id":{"$oid":"62d6c6c38152f823627a9076"},"system":"http://trevor.hug.ch","code":"sickleCellDiseaseEQ5DScore","display":"Sickle cell disease EQ-5D score","content":"trevor/sickleCellDiseaseEQ5DScore"}
+{"_id":{"$oid":"62d538fc8152f823627a8be9"},"system":"http://snomed.info/sct","code":"185265000","display":"Seen in emergency clinic (finding)","content":"snomed/185265000"}
