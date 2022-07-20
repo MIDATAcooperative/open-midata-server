@@ -176,7 +176,7 @@ public class Application extends APIController {
 		  replacements.put("password-link", url);
 		   				
 		  if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.PASSWORD_FORGOTTEN, null, Collections.singleton(user._id), null, replacements)) {			  		  		 
-		    Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString());
+		    Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString(), AuditManager.instance.convertLastEventToAsync());
 		  }		
 		  AuditManager.instance.success();
 		}
@@ -275,7 +275,7 @@ public class Application extends APIController {
 		   String role = user.role.toString();
 		   
 		   AccessLog.log("send admin notification mail: ", user.getPublicIdentifier());	   
-	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "New MIDATA User", adminnotify.render(site, email, role).toString());
+	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "New MIDATA User", adminnotify.render(site, email, role).toString(), null);
 	   }
 	}
 			

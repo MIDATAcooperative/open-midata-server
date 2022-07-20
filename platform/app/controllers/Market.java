@@ -251,7 +251,7 @@ public class Market extends APIController {
 							if (!appInstances.isEmpty()) {
 								String subject = InstanceConfig.getInstance().getPortalServerDomain()+": API Keys expired";
 								String content = "Dear "+manager.firstname+" "+manager.lastname+",\n\nthe definition for the service '"+app.name+"' has been updated. The existing API keys for that service have expired. You are managing at least one API keys for this service.\n\nPlease generate a new API key if required.\n\nThis is an automated mail.";
-								Messager.sendTextMail(manager.email, manager.firstname+" "+manager.lastname, subject, content);
+								Messager.sendTextMail(manager.email, manager.firstname+" "+manager.lastname, subject, content, null);
 							}
 						}
 					}

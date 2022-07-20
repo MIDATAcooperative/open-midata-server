@@ -52,18 +52,18 @@ public class ClusterMonitor extends AbstractActor {
 	    	  ServiceHandler.startup();
 	    	  ServiceHandler.shareKey();
 	    	  if (!cluster.selfAddress().equals(mUp.member().address())) {
-	    	    Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Platform", "Cluster member joined", mUp.member().address().toString());
+	    	    Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Platform", "Cluster member joined", mUp.member().address().toString(), null);
 	    	  }
 	         
 	      })
 	      .match(UnreachableMember.class, mUnreachable -> {
 	    	  if (!cluster.selfAddress().equals(mUnreachable.member().address())) {
-	    	    Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Platform", "Cluster member unreachable", mUnreachable.member().address().toString());
+	    	    Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Platform", "Cluster member unreachable", mUnreachable.member().address().toString(), null);
 	    	  }
 	      })
 	      .match(MemberRemoved.class, mRemoved -> {
 	    	  if (!cluster.selfAddress().equals(mRemoved.member().address())) {
-	    	    Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Platform", "Cluster member removed", mRemoved.member().address().toString());
+	    	    Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Platform", "Cluster member removed", mRemoved.member().address().toString(), null);
 	    	  }
 	      })
 	      .match(MemberEvent.class, message -> {

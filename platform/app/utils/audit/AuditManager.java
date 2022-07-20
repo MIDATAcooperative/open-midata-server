@@ -125,6 +125,28 @@ public class AuditManager {
 		event.add();
 	}
 	
+	public MidataId convertLastEventToAsync() {
+		MidataAuditEvent old = running.get();
+		if (old != null) {
+			MidataId result = old._id;			
+			running.set(old.next);
+			return result;
+		}
+		return null;
+	}
+	
+	public void resumeAsyncEvent(MidataId eventId) {
+		if (eventId==null) return;
+		MidataAuditEvent resumed = new MidataAuditEvent();
+		resumed._id = eventId;
+		MidataAuditEvent old = running.get();
+		if (old != null) {
+			resumed.next = old;
+		}
+		
+		running.set(resumed);
+	}
+	
 	public void success() throws AppException {
 		MidataAuditEvent event = running.get();
 		
@@ -152,5 +174,7 @@ public class AuditManager {
 	public void clear() {				
 		running.remove();
 	}
+	
+	
 	
 }

@@ -32,6 +32,8 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import akka.routing.ConsistentHashingPool;
+import akka.routing.ConsistentHashingRouter.ConsistentHashMapper;
 import akka.routing.RoundRobinPool;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import models.Consent;
@@ -50,6 +52,7 @@ import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.UserStatus;
 import play.libs.ws.WSClient;
+import scala.Option;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.RuntimeConstants;
@@ -393,7 +396,23 @@ class SubscriptionChecker extends AbstractActor {
 		//appWithSubscription = new HashSet<MidataId>();
 		//for (SubscriptionData sub : allsubsriptions) if (sub.app != null) appWithSubscription.add(sub.app);
 		
-		processor = this.context().actorOf(new RoundRobinPool(5).props(Props.create(SubscriptionProcessor.class).withDispatcher("slow-work-dispatcher")), "subscriptionProcessor");
+		final ConsistentHashMapper hashMapper =
+			    new ConsistentHashMapper() {
+			      @Override
+			      public Object hashKey(Object message) {
+			        if (message instanceof SubscriptionTriggered) {
+			          return ((SubscriptionTriggered) message).affected.toString();
+			        } else if (message instanceof RecheckMessage) {
+				      return ((RecheckMessage) message).id.toString();
+				    } else{
+			          return null;
+			        }
+			      }
+			    };
+
+		
+		 processor = this.context().actorOf(new ConsistentHashingPool(6).withHashMapper(hashMapper).withVirtualNodesFactor(10).props(Props.create(SubscriptionProcessor.class).withDispatcher("slow-work-dispatcher")), "subscriptionProcessor");
+		 //processor = this.context().actorOf(new RoundRobinPool(5).props(Props.create(SubscriptionProcessor.class).withDispatcher("slow-work-dispatcher")), "subscriptionProcessor");
 	}
 
 	void resourceChange(ResourceChange change) {	

@@ -189,10 +189,10 @@ public class SubscriptionProcessor extends AbstractActor {
 		   if (p > 0) request.addHeader(str.substring(0, p).trim(), str.substring(p+1));
 	   }
 	   AccessLog.log("Calling Rest Hook");
-	   
+	   final MidataId eventId = AuditManager.instance.convertLastEventToAsync();
 	   CompletionStage<WSResponse> response = request.execute("POST");
 	   response.whenComplete((out, exception) -> {
-		   
+		   AuditManager.instance.resumeAsyncEvent(eventId);
 		   String error = null;
 		   if (out != null && out.getStatus() >= 400) {
 			   error = "status "+out.getStatus();
@@ -205,13 +205,14 @@ public class SubscriptionProcessor extends AbstractActor {
 		   if (error != null) {
 			   try {
 				   SubscriptionData.setError(subscription, new Date().toString()+": "+error);
+				   AuditManager.instance.fail(400, error, "error.plugin");
 			   } catch (Exception e) {
 				   AccessLog.logException("Error during Subscription.setError", e);				   
 				   ErrorReporter.report("SubscriptionManager", null, e);
 			   } finally {
 				   ServerTools.endRequest();
 			   }
-		   }		   
+		   } else try { AuditManager.instance.success(); } catch (AppException e) {}		   
 	   });
 	}
 	
@@ -269,7 +270,7 @@ public class SubscriptionProcessor extends AbstractActor {
 				ErrorReporter.report("Subscription-Processor", null, e);
 			}
 			
-			AuditManager.instance.fail(500, "Service key expired", "error.internal");
+			AuditManager.instance.fail(500, "Service key expired", "error.missing.token");
 			return true;
 		}
 		
@@ -280,7 +281,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			//System.out.println("prcApp4");
 			if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) {
 				subscription.disable();
-				AuditManager.instance.fail(500, "Subscription owner bad status", "error.internal");
+				AuditManager.instance.fail(400, "Subscription owner bad status", "error.unknown.user");
 				return false;
 			}
 		}
@@ -290,7 +291,10 @@ public class SubscriptionProcessor extends AbstractActor {
 			AccessLog.log("RIGHT PATH");
 			System.out.println("RIGHT PATH "+plugin.name);
 			Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(plugin._id, subscription.owner, Sets.create("status", "dateOfCreation"));
-			if (mais.isEmpty()) return false;
+			if (mais.isEmpty()) {
+				AuditManager.instance.fail(400, "No application instance", "error.unknown.consent");
+				return false;
+			}
 			MidataId appInstanceId = null;
 			Date best = null;
 			for (MobileAppInstance mai : mais) {
@@ -301,7 +305,10 @@ public class SubscriptionProcessor extends AbstractActor {
 					}
 				}
 			}
-			if (appInstanceId == null) return false;	
+			if (appInstanceId == null) {
+				AuditManager.instance.fail(400, "No application instance", "error.unknown.consent");
+				return false;	
+			}
 			//AccessLog.log("HANDLE="+handle);
 
 			if (subscription.app == null) throw new NullPointerException(); 
@@ -323,25 +330,32 @@ public class SubscriptionProcessor extends AbstractActor {
 						System.out.println("NEW OAUTH2 - 3");
 						Plugin plugin2 = Plugin.getById(plugin._id, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));
 						final User user1 = user;
+						final MidataId eventId = AuditManager.instance.convertLastEventToAsync();
 						Plugins.requestAccessTokenOAuth2FromRefreshToken(handle, subscription.owner, plugin2, subscription.instance.toString(), oauthmeta.toMap()).thenAcceptAsync(success1 -> {
+							    AuditManager.instance.resumeAsyncEvent(eventId);
 							    boolean success = (Boolean) success1;
 								if (success) {
 									System.out.println("NEW OAUTH2 - 4");							
 									runProcess(sender, plugin, triggered, subscription, user1, token, endpoint);
 								} else {
 									System.out.println("NEW OAUTH2 - 4B");
-									sender.tell(new MessageResponse("OAuth 2 failed",-1, plugin.filename), getSelf());	
+									sender.tell(new MessageResponse("OAuth 2 failed",-1, plugin.filename), getSelf());
+									AuditManager.instance.fail(400, "OAuth 2 failed", "error.missing.token");
 								}
+								try { AuditManager.instance.success(); } catch (AppException e) {}
 						});
 					} else {
-						sender.tell(new MessageResponse("OAuth 2 no refresh token",-1, plugin.filename), getSelf());						
+						sender.tell(new MessageResponse("OAuth 2 no refresh token",-1, plugin.filename), getSelf());
+						AuditManager.instance.fail(400, "OAuth 2 no refresh token", "error.missing.token");
 					}
 				} else {
 					sender.tell(new MessageResponse("OAuth 2 no data",-1, plugin.filename), getSelf());
+					AuditManager.instance.fail(400, "OAuth 2 no data", "error.missing.consent_accept");
 				}	
 			} catch (APSNotExistingException e) {
 				subscription.disable();
 				sender.tell(new MessageResponse("Space no longer existing - disabled",-1, plugin.filename), getSelf());
+				AuditManager.instance.fail(400, "No application instance", "error.missing.plugin");
 			} 
 		} else {
 			//AccessLog.log("BPART HANDLE="+handle);
@@ -368,6 +382,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		if (testing) {
 			plugin = Plugin.getById(plugin._id, Plugin.ALL_DEVELOPER);
 			if (plugin.debugHandle != null) {
+				MidataId eventId = AuditManager.instance.convertLastEventToAsync();
 				TestPluginCall testcall = new TestPluginCall();
 				testcall._id = new MidataId();
 				testcall.handle = plugin.debugHandle;
@@ -383,7 +398,7 @@ public class SubscriptionProcessor extends AbstractActor {
 				
 				getContext().getSystem().scheduler().scheduleOnce(
 					      Duration.ofSeconds(1),
-					      getSelf(), new RecheckMessage(testcall._id, 0), getContext().dispatcher(), getSender());
+					      getSelf(), new RecheckMessage(testcall._id, AuditManager.instance.convertLastEventToAsync(), 0), getContext().dispatcher(), getSender());
 				return;
 				//getSender().tell(new MessageResponse(null,0), getSelf());				
 			}
@@ -413,13 +428,17 @@ public class SubscriptionProcessor extends AbstractActor {
 			 sender.tell(new MessageResponse(r, p.exitValue(), plugin.filename), getSelf());  
 		  } else {
 			  String response = "";
-			  if (p.exitValue()==1) response = "Script not found";
+			  if (p.exitValue()==1) {
+				  response = "Script not found";
+				  AuditManager.instance.fail(400, "Script error", "error.plugin");
+			  }
 			 sender.tell(new MessageResponse(response, p.exitValue(), plugin.filename), getSelf());
 		  } 
 		  		    
 		  AccessLog.log("Response sended");		 		  
 		} catch (Exception e) {			
 			sender.tell(new MessageResponse("Failed: "+e.toString(),-1, plugin.filename), getSelf());	
+			AuditManager.instance.fail(500, "Script error", "error.internal");
 		} 				
 	}
 	
@@ -431,13 +450,19 @@ public class SubscriptionProcessor extends AbstractActor {
 			TestPluginCall call = TestPluginCall.getById(msg.id);
 			if (call != null) {
 				if (call.answerStatus != TestPluginCall.NOTANSWERED) {
+					AuditManager.instance.resumeAsyncEvent(msg.eventId);
 					TestPluginCall.delete(call.handle, call._id);
 					getSender().tell(new MessageResponse(call.answer, call.answerStatus, null), getSelf());
+					if (call.answerStatus != 0) {
+						AuditManager.instance.fail(400, "error during debug", "error.plugin");
+					} else {
+						AuditManager.instance.success();
+					}
 				} else {
 					if (msg.count < 50) {
 						getContext().getSystem().scheduler().scheduleOnce(
 							      Duration.ofSeconds(1),
-							      getSelf(), new RecheckMessage(msg.id, msg.count + 1), getContext().dispatcher(), getSender());
+							      getSelf(), new RecheckMessage(msg.id, msg.eventId, msg.count + 1), getContext().dispatcher(), getSender());
 					
 					}
 				}
@@ -452,9 +477,11 @@ public class SubscriptionProcessor extends AbstractActor {
 
 class RecheckMessage {
 	public final MidataId id;
+	public final MidataId eventId;
 	public int count;
-	public RecheckMessage(MidataId id, int count) {
+	public RecheckMessage(MidataId id, MidataId eventId, int count) {
 		this.id = id;
+		this.eventId = eventId;
 		this.count = count;
 	}
 }

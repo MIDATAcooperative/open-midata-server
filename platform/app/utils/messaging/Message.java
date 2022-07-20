@@ -17,18 +17,22 @@
 
 package utils.messaging;
 
+import models.MidataId;
+
 public class Message {
 
 	private final String text;
 	private final String subject;
 	private final String receiverEmail;
 	private final String receiverName;
+	private final MidataId eventId;
 	
-	public Message(String receiverEmail, String receiverName, String subject, String text) {
+	public Message(String receiverEmail, String receiverName, String subject, String text, MidataId eventId) {
 		this.text = text;
 		this.subject = subject;
 		this.receiverEmail = receiverEmail;
 		this.receiverName = receiverName;
+		this.eventId = eventId;
 	}
 
 	public String getText() {
@@ -45,6 +49,10 @@ public class Message {
 
 	public String getReceiverName() {
 		return receiverName;
+	}
+	
+	public MidataId getEventId() {
+		return eventId;
 	}
 
 	
