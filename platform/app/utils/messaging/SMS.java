@@ -17,14 +17,18 @@
 
 package utils.messaging;
 
+import models.MidataId;
+
 public class SMS {
 
 	private final String text;
 	private final String phone;
+	private final MidataId eventId;
 	
-	public SMS(String phone, String text) {
+	public SMS(String phone, String text, MidataId eventId) {
 		this.phone = phone;
 		this.text = text;
+		this.eventId = eventId;
 	}
 
 	public String getText() {
@@ -33,6 +37,10 @@ public class SMS {
 
 	public String getPhone() {
 		return phone;
+	}
+	
+	public MidataId getEventId() {
+		return eventId;
 	}
 	
 	

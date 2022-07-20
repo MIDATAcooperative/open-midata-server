@@ -464,6 +464,15 @@ public class Studies extends APIController {
 			//code = checkCode(study, joinMethod, joinCode);
 			Set<MidataId> observers = ApplicationTools.getObserversForApp(usingApp);
 			participation = createStudyParticipation(context, study, user, null, observers, joinMethod);
+		} else {
+			if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
+				if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
+					if (participation.status != ConsentStatus.DELETED) {
+						Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);	
+					}
+					return match(context, userId, studyId, usingApp, joinMethod);
+				} else throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
+			}
 		}
 							
 		return participation;

@@ -77,9 +77,9 @@ public class SMSAuthenticator implements Authenticator {
 		if (phone == null) phone = user.phone;
 		
 		if (SMSUtils.isAvailable() && !phone.equals("@email")) {
-		  Messager.sendSMS(phone, prompt+": "+token.token);
+		  Messager.sendSMS(phone, prompt+": "+token.token, null);
 		} else {
-		  Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "SMS for "+phone, prompt+": "+token.token);
+		  Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "SMS for "+phone, prompt+": "+token.token, null);
 		}
 	}
 	

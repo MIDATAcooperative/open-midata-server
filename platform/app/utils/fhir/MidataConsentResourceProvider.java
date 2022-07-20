@@ -772,11 +772,9 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			MidataId studyId = study._id;
 			String joinCode = null;
 			StudyParticipation part;
-			/*if (consent.status == ConsentStatus.ACTIVE) {
-			   part = controllers.members.Studies.requestParticipation(info(), consent.owner, studyId, info().getUsedPlugin(), JoinMethod.API, joinCode);
-			} else {*/
-			   part = controllers.members.Studies.match(info(), consent.owner, studyId, info().getUsedPlugin(), JoinMethod.API);				
-			//}
+			
+			part = controllers.members.Studies.match(info(), consent.owner, studyId, info().getUsedPlugin(), JoinMethod.API);				
+			
 			theResource.setId(part._id.toString());
 			MidataConsentResourceProvider.updateMidataConsent(part, theResource);
 			Consent.set(part._id, "fhirConsent", part.fhirConsent);

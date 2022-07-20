@@ -57,14 +57,14 @@ public class Messager {
 		smsSender = system.actorOf(Props.create(SMSSender.class).withDispatcher("medium-work-dispatcher"), "smsSender");
 	}
 	
-	public static void sendTextMail(String email, String fullname, String subject, String content) {	
+	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId) {	
 		AccessLog.log("trigger send text mail to="+email);
-		mailSender.tell(new Message(email, fullname, subject, content), ActorRef.noSender());
+		mailSender.tell(new Message(email, fullname, subject, content, eventId), ActorRef.noSender());
 	}
 	
-	public static void sendSMS(String phone, String text) {
+	public static void sendSMS(String phone, String text, MidataId eventId) {
 		AccessLog.log("trigger send SMS to="+phone);
-		smsSender.tell(new SMS(phone, text), ActorRef.noSender());
+		smsSender.tell(new SMS(phone, text, eventId), ActorRef.noSender());
 	}
 
 	public static boolean sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
@@ -160,12 +160,12 @@ public class Messager {
 		
 		if (channel.equals(MessageChannel.SMS)) {
 		   
-		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.EMAIL_SENT).withActorUser(member).withApp(sourceApp).withMessage(subject));
-		   Messager.sendSMS(phone, content);
+		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SMS_SENT).withActorUser(member).withApp(sourceApp).withMessage(subject));
+		   Messager.sendSMS(phone, content, AuditManager.instance.convertLastEventToAsync());
 		   AuditManager.instance.success();
 		} else {
-		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SMS_SENT).withActorUser(member).withApp(sourceApp).withMessage(subject));
-		   Messager.sendTextMail(email, fullname, subject, content);
+		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.EMAIL_SENT).withActorUser(member).withApp(sourceApp).withMessage(subject));
+		   Messager.sendTextMail(email, fullname, subject, content, AuditManager.instance.convertLastEventToAsync());
 		   AuditManager.instance.success();
 		}
 	}
@@ -202,9 +202,9 @@ public class Messager {
 		}
 		
 		if (channel.equals(MessageChannel.SMS)) {
-		  Messager.sendSMS(email, content);
+		  Messager.sendSMS(email, content, null);
 		} else {
-		  Messager.sendTextMail(email, fullname, subject, content);
+		  Messager.sendTextMail(email, fullname, subject, content, null);
 		}
 	}
 }
@@ -222,15 +222,18 @@ class MailSender extends AbstractActor {
 	}
 		
 	public void receiveMessage(Message msg) throws Exception {
-		String path = "MailSender/receiveMessage";
+		String path = "MailSender/receiveMessage";		
 		long st = ActionRecorder.start(path);
+		AuditManager.instance.resumeAsyncEvent(msg.getEventId());
 		try {		
 		    AccessLog.logStart("jobs", "send email");
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
 			  MailUtils.sendTextMail(MailSenderType.USER, msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
-			}			
+			}		
+			AuditManager.instance.success();
 		} catch (Exception e) {
-			ErrorReporter.report("Messager (EMail)", null, e);	
+			ErrorReporter.report("Messager (EMail)", null, e);
+			AuditManager.instance.fail(400, e.toString(), "error.failed");
 			throw e;
 		} finally {
 			ServerTools.endRequest();			
@@ -255,13 +258,16 @@ class SMSSender extends AbstractActor {
 	public void sendSMS(SMS msg) throws Exception {
 		String path = "SMSSender/sendSMS";
 		long st = ActionRecorder.start(path);
+		AuditManager.instance.resumeAsyncEvent(msg.getEventId());
 		try {	
 			AccessLog.logStart("jobs", "send SMS");
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
 			   SMSUtils.sendSMS(msg.getPhone(), msg.getText());
-			}			
+			}		
+			AuditManager.instance.success();
 		} catch (Exception e) {
-			ErrorReporter.report("Messager (SMS)", null, e);	
+			ErrorReporter.report("Messager (SMS)", null, e);
+			AuditManager.instance.fail(400, e.toString(), "error.failed");
 			throw e;
 		} finally {
 			ServerTools.endRequest();	

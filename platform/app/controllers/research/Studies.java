@@ -863,7 +863,7 @@ public class Studies extends APIController {
 		String code = study.code;
 
 		AccessLog.log("send admin notification mail (study): " + code);
-		Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "Study to Validate", studynotify.render(site, name, code).toString());
+		Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "Study to Validate", studynotify.render(site, name, code).toString(), null);
 
 	}
 
@@ -1782,7 +1782,7 @@ public class Studies extends APIController {
 	}
 
 	public static void autoApprove(MidataId app, Study study, AccessContext context, String group) throws AppException {
-		Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");
+		Set<String> fields = StudyParticipation.STUDY_EXTRA; //.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");
 		List<StudyParticipation> participants1 = StudyParticipation.getParticipantsByStudy(study._id, CMaps.map("pstatus", ParticipationStatus.REQUEST), fields, 0);
 
 		autoApprove(app, study, context, group, participants1);
@@ -1835,13 +1835,14 @@ public class Studies extends APIController {
 			}
 
 			StudyParticipation.setManyStatus(ids, ParticipationStatus.ACCEPTED);
-
-			/*
-			 * for (StudyParticipation participation : participants) { if
-			 * (!participation.pstatus.equals(ParticipationStatus.ACCEPTED)) {
-			 * participation.pstatus = ParticipationStatus.ACCEPTED;
-			 * Circles.prepareConsent(participation, false); } }
-			 */
+			
+			for (StudyParticipation participation : participants) { 
+				if (!participation.pstatus.equals(ParticipationStatus.ACCEPTED)) {
+			      participation.pstatus = ParticipationStatus.ACCEPTED;
+			      Circles.persistConsentMetadataChange(context, participation, false); 
+			    } 
+			}
+			    
 
 			AuditManager.instance.success();
 		}
