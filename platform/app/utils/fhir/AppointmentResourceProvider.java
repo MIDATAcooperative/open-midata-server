@@ -88,9 +88,6 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
 			  
-			@Description(shortDefinition="The resource language")
-			@OptionalParam(name="_language")
-			StringAndListParam theResourceLanguage, 
   			@Description(shortDefinition="Any one of the individuals participating in the appointment")
   			@OptionalParam(name="actor", targetTypes={  } )
   			ReferenceAndListParam theActor, 
@@ -191,8 +188,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 		
 		paramMap.add("actor", theActor);
 		paramMap.add("appointment-type", theAppointment_type);

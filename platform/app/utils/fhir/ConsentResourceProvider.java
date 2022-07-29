@@ -72,11 +72,7 @@ public class ConsentResourceProvider extends HybridTypeResourceProvider<org.hl7.
 	    public Bundle getConsent(
 	    		@Description(shortDefinition="The resource identity")
 	    		@OptionalParam(name="_id")
-	    		StringAndListParam theId, 
-	    		 
-	    		@Description(shortDefinition="The resource language")
-	    		@OptionalParam(name="_language")
-	    		StringAndListParam theResourceLanguage, 
+	    		StringAndListParam theId, 	    		 	    	
 	    		   
 	    		@Description(shortDefinition="Actions controlled by this consent")
 	    		@OptionalParam(name="action")
@@ -169,8 +165,7 @@ public class ConsentResourceProvider extends HybridTypeResourceProvider<org.hl7.
 	    	
 	    	SearchParameterMap paramMap = new SearchParameterMap();
 	    	
-	    	paramMap.add("_id", theId);
-			paramMap.add("_language", theResourceLanguage);	   
+	    	paramMap.add("_id", theId);			 
 			
 			paramMap.add("action", theAction);
 			paramMap.add("actor", theActor);

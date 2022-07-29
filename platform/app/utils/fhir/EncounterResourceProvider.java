@@ -108,9 +108,7 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 	@Search()
 	public Bundle getEncounter(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+		
   			@Description(shortDefinition="The set of accounts that may be used for billing for this Encounter")
 			@OptionalParam(name="account", targetTypes={  } )
 			ReferenceAndListParam theAccount, 
@@ -242,8 +240,7 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);	
 		paramMap.add("account", theAccount);
 		paramMap.add("appointment", theAppointment);
 		paramMap.add("based-on", theBased_on);

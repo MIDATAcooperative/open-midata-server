@@ -106,9 +106,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 	@Search()
 	public Bundle getResearchStudy(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+		
 			@Description(shortDefinition="Classifications for the study")
   			@OptionalParam(name="category")
   			TokenAndListParam theCategory,
@@ -195,9 +193,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
-	
+		paramMap.add("_id", theId);			
 			
 		paramMap.add("category", theCategory);		
 		paramMap.add("date", theDate);		

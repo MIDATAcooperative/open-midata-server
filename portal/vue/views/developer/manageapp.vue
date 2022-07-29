@@ -170,6 +170,10 @@
 		    <input type="text" id="tokenExchangeParams" name="tokenExchangeParams" class="form-control" v-validate v-model="app.tokenExchangeParams">
 		    <p class="form-text text-muted" v-t="'manageapp.info.tokenExchangeParams'"></p>
 		  </form-group>
+		  <form-group name="refreshTkExchangeParams" label="manageapp.refreshTkExchangeParams" v-if="app.type == 'oauth2'" :path="errors.refreshTkExchangeParams">
+		    <input type="text" id="refreshTkExchangeParams" name="refreshTkExchangeParams" class="form-control" v-validate v-model="app.refreshTkExchangeParams">
+		    <p class="form-text text-muted" v-t="'manageapp.info.refreshTkExchangeParams'"></p>
+		  </form-group>
 		  <form-group name="consumerKey" label="Consumer Key" v-if="app.type == 'oauth1' || app.type == 'oauth2'" :path="errors.consumerKey">
 		    <input type="text" id="consumerKey" name="consumerKey" class="form-control" placeholder="Consumer key" v-validate v-model="app.consumerKey">
 		  </form-group>
@@ -261,6 +265,8 @@ import apps from "services/apps.js"
 import { status, ErrorBox, CheckBox, FormGroup, Typeahead } from 'basic-vue3-components'
 import ENV from 'config';
 
+const DEFAULT_REFRESH = "grant_type=<grant_type>&refresh_token=<refresh_token>&client_id=<client_id>";
+
 export default {
 
     data: () => ({	
@@ -287,7 +293,7 @@ export default {
 	        "Analysis", "Import", "Planning", "Protocol", "Expert"
         ],
         loginTemplates : [ "GENERATED", "TERMS_OF_USE_AND_GENERATED", "TERMS_OF_USE", "REDUCED" ],
-		app : { version:0, tags:[], i18n : {}, sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  },
+		app : { version:0, tags:[], i18n : {}, sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>", refreshTkExchangeParams : DEFAULT_REFRESH  },
 		allowDelete : false,
 		allowExport : false,
 		allowStudyConfig : false,
@@ -314,7 +320,7 @@ export default {
                 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate"])
 		    .then(function(data) { 
                 let app = data.data[0];	
 				
@@ -333,6 +339,7 @@ export default {
                 if (app.developerTeamLogins) app.developerTeamLoginsStr = app.developerTeamLogins.join(", "); 
 				else app.developerTeamLogins = [];
                 if (app.type === "oauth2" && ! (app.tokenExchangeParams) ) app.tokenExchangeParams = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
+                if (app.type === "oauth2" && ! (app.refreshTkExchangeParams) ) app.refreshTkExchangeParams = DEFAULT_REFRESH;
                 app.defaultQueryStr = JSON.stringify(app.defaultQuery);
                 //$data.updateQuery();
                 app.withLogout = false;
@@ -474,7 +481,7 @@ export default {
 			$data.terms = result.data;
 			if ($route.query.appId != null) { me.loadApp($route.query.appId); }
 			else {
-				let app = { version:0, tags:[], i18n : {}, defaultSubscriptions:[], icons:[], sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  };
+				let app = { version:0, tags:[], i18n : {}, defaultSubscriptions:[], icons:[], sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>", refreshTkExchangeParams : DEFAULT_REFRESH  };
 				for (let lang of $data.languages) {
 					if (!app.i18n[lang]) app.i18n[lang] = { name:"", description:"", defaultSpaceName:null };
 				}

@@ -577,7 +577,7 @@ public class Plugins extends APIController {
 
 		final MidataId appId = space.visualization;
 		Map<String, Object> properties = CMaps.map("_id", space.visualization);
-		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams");
+		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams");
 		Plugin app = Plugin.get(properties, fields);
 
 		String origin = config.getString("portal.originUrl");
@@ -682,7 +682,7 @@ public class Plugins extends APIController {
 		final MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 
 		Map<String, Object> properties = new ChainedMap<String, Object>().put("_id", appId.toObjectId()).get();
-		Set<String> fields = Sets.create("name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "type");
+		Set<String> fields = Sets.create("name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "type");
 
 		final Plugin app = Plugin.get(properties, fields);
 
@@ -708,51 +708,73 @@ public class Plugins extends APIController {
 		}
 		String refreshToken = rt.toString();
 
-		String postBuilder = app.tokenExchangeParams;
-		if (postBuilder == null)
+		String post0 = app.refreshTkExchangeParams;
+		if (post0 == null || post0.length()==0) {
+			
+		  String postBuilder = app.tokenExchangeParams;
+		  if (postBuilder == null)
 			postBuilder = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
-		String post0 = "grant_type=refresh_token&refresh_token=" + refreshToken;
-		if (postBuilder.indexOf("client_secret") >= 0)
-			post0 = "client_secret=" + app.consumerSecret + "&" + post0;
-		if (postBuilder.indexOf("client_id") >= 0)
-			post0 = "client_id=" + app.consumerKey + "&" + post0;
+		    post0 = "grant_type=refresh_token&refresh_token=" + refreshToken;
+		    if (postBuilder.indexOf("client_secret") >= 0)
+			  post0 = "client_secret=" + app.consumerSecret + "&" + post0;
+		    if (postBuilder.indexOf("client_id") >= 0)
+			  post0 = "client_id=" + app.consumerKey + "&" + post0;
+		}
 
+		post0 = post0.replace("<refresh_token>", refreshToken);
+		
+		post0 = post0.replace("<client_id>", app.consumerKey);
+		post0 = post0.replace("<client_secret>", app.consumerSecret);
+		post0 = post0.replace("<grant_type>", "refresh_token");
+		
+		
 		final String post = post0;
 		// request access token
 		WSRequest holder = ws.url(app.accessTokenUrl);
-		if (postBuilder.indexOf("client_secret") < 0)
+		if (post0.indexOf("client_secret") < 0)
 			holder = holder.setAuth(app.consumerKey, app.consumerSecret);
 		CompletionStage<WSResponse> promise = holder.setContentType("application/x-www-form-urlencoded; charset=utf-8").post(post);
 		return promise.thenApply(response -> {
 
 			try {
-			KeyManager.instance.continueSession(sessionHandle, userId);
-			AccessLog.log("OAUTH POST: "+post);
-			AccessLog.log("OAUTH RESPONSE: "+response.getBody());
-			JsonNode jsonNode = response.asJson();
-			if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
-				String accessToken = jsonNode.get("access_token").asText();
-				if (jsonNode.has("refresh_token") && jsonNode.get("refresh_token").isTextual()) {
-					tokens.put("refreshToken", jsonNode.get("refresh_token").asText());
+				KeyManager.instance.continueSession(sessionHandle, userId);
+				AccessLog.log("OAUTH POST: "+post);
+				AccessLog.log("OAUTH RESPONSE: "+response.getBody());
+				JsonNode jsonNode = response.asJson();
+				
+				// Try to deal with non-standard response formats.
+				if (!jsonNode.has("access_token")) {
+					for (JsonNode child : jsonNode) {
+						if (child.has("access_token")) {
+							jsonNode = child;
+							break;
+						}
+					}						
 				}
-				try {
-					tokens.put("accessToken", accessToken);
-					RecordManager.instance.setMeta(ContextManager.instance.createSessionForDownloadStream(userId, UserRole.MEMBER), spaceId, "_oauth", tokens);
-				} catch (InternalServerException e) {
+				
+				if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
+					String accessToken = jsonNode.get("access_token").asText();
+					if (jsonNode.has("refresh_token") && jsonNode.get("refresh_token").isTextual()) {
+						tokens.put("refreshToken", jsonNode.get("refresh_token").asText());
+					}
+					try {
+						tokens.put("accessToken", accessToken);
+						RecordManager.instance.setMeta(ContextManager.instance.createSessionForDownloadStream(userId, UserRole.MEMBER), spaceId, "_oauth", tokens);
+					} catch (InternalServerException e) {
+						return false;
+					} finally {
+						ServerTools.endRequest();
+					}
+					return true;
+				} else {
+					Stats.startRequest();
+					Stats.setPlugin(app._id);
+					Stats.addComment("send:" + post);
+					Stats.addComment("extern server: " + response.getStatus() + " " + response.getBody());
+					Stats.finishRequest("intern", "/oauth2", null, "400", Collections.<String> emptySet());
+	
 					return false;
-				} finally {
-					ServerTools.endRequest();
 				}
-				return true;
-			} else {
-				Stats.startRequest();
-				Stats.setPlugin(app._id);
-				Stats.addComment("send:" + post);
-				Stats.addComment("extern server: " + response.getStatus() + " " + response.getBody());
-				Stats.finishRequest("intern", "/oauth2", null, "400", Collections.<String> emptySet());
-
-				return false;
-			}
 			} catch (AppException e) {
 				return false;
 			} finally {

@@ -77,9 +77,7 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Molecu
 	@Search()
 	public Bundle getSequence(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+		
   			@Description(shortDefinition="Chromosome number of the reference sequence")
   			@OptionalParam(name="chromosome")
   			TokenAndListParam theChromosome,
@@ -162,8 +160,7 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Molecu
 		// for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);	
 		paramMap.add("chromosome", theChromosome);
 		paramMap.add("chromosome-variant-coordinate", theChromosome_variant_coordinate);
 		paramMap.add("chromosome-window-coordinate", theChromosome_window_coordinate);

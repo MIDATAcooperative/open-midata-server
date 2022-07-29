@@ -291,7 +291,7 @@ public class AutoRun extends APIController {
 			    	final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
 					final String visPath = InstanceConfig.getInstance().getConfig().getString("visualizations.path");
 					final ActorRef sender = getSender();		    	
-			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));
+			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams"));
 			    	if (plugin==null) {
 						sender.tell(new ImportResult(-1, "Plugin not existing", null), getSelf());
 						return;

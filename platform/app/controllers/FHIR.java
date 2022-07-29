@@ -27,6 +27,8 @@ import javax.servlet.ServletException;
 
 import org.bson.BSONObject;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import actions.MobileCall;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.ParamPrefixEnum;
@@ -38,12 +40,14 @@ import models.enums.ConsentStatus;
 import models.enums.UsageAction;
 import models.enums.UserRole;
 import models.enums.UserStatus;
+import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ConsentQueryTools;
+import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
@@ -509,4 +513,36 @@ public class FHIR extends Controller {
 		
 		return created().withHeader("Location", url);
 	}
+	
+	@MobileCall
+	public Result wellknownSmartConfiguration() {
+		ObjectNode obj = Json.newObject();
+		obj.put("authorization_endpoint", InstanceConfig.getInstance().getPortalOriginUrl()+"/authservice");
+		obj.put("token_endpoint", "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/token");
+		obj.putArray("token_endpoint_auth_methods_supported").add("client_secret_basic");
+        obj.putArray("grant_types_supported").add("authorization_code");
+		obj.putArray("scopes_supported");//.add: ["openid", "profile", "launch", "launch/patient", "patient/*.rs", "user/*.rs", "offline_access"],
+		obj.putArray("response_types_supported").add("code");
+		obj.put("management_endpoint", InstanceConfig.getInstance().getPortalOriginUrl());
+		obj.put("introspection_endpoint", "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/introspect"); // TODO change
+		//	  "revocation_endpoint": "https://ehr.example.com/user/revoke",
+		obj.putArray("code_challenge_methods_supported").add("S256");
+		obj.putArray("capabilities")
+		   .add("launch-standalone")
+		   .add("client-public")
+		   .add("client-confidential-symmetric")
+		   .add("context-standalone-patient")
+		   .add("permission-patient")
+		   .add("permission-user")		   
+		   .add("permission-offline")
+		   .add("permission-patient")
+		   .add("permission-user")
+		   .add("permission-v1")
+		   .add("permission-v2");
+		   		  
+		   //"sso-openid-connect"
+			  
+		return ok(obj).as("application/json");
+	}
+		
 }

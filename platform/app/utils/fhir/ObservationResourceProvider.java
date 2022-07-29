@@ -143,9 +143,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 	@Search()
 	public Bundle getObservation(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+		
 			@Description(shortDefinition="Reference to the service request.")
   			@OptionalParam(name="based-on", targetTypes={  } )
   			ReferenceAndListParam theBased_on, 
@@ -336,8 +334,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 	
 		paramMap.add("based-on", theBased_on);
 		paramMap.add("category", theCategory);

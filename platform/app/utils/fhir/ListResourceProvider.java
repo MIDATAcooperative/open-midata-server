@@ -97,9 +97,7 @@ public class ListResourceProvider extends RecordBasedResourceProvider<ListResour
 	@Search()
 	public Bundle getListResource(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+		
 			@Description(shortDefinition="What the purpose of this list is")
   			@OptionalParam(name="code")
   			TokenAndListParam theCode,
@@ -179,8 +177,7 @@ public class ListResourceProvider extends RecordBasedResourceProvider<ListResour
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 	
 	    paramMap.add("code", theCode);
 		paramMap.add("date", theDate);

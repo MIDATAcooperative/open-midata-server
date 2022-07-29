@@ -84,9 +84,7 @@ public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> impl
 	public Bundle getFlag(
 
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+		
 			@Description(shortDefinition = "Flag creator") @OptionalParam(name = "author", targetTypes = {}) ReferenceAndListParam theAuthor,
 
 			@Description(shortDefinition = "Time period when flag is active") @OptionalParam(name = "date") DateAndListParam theDate,
@@ -117,8 +115,7 @@ public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> impl
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);		
 		paramMap.add("author", theAuthor);
 		paramMap.add("date", theDate);
 		paramMap.add("encounter", theEncounter);
