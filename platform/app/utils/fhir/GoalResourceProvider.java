@@ -73,10 +73,7 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 
 	@Search()
 	public Bundle getGoal(
-			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,		
 			
   			@Description(shortDefinition="in-progress | improving | worsening | no-change | achieved | sustaining | not-achieved | no-progress | not-attainable")
   			@OptionalParam(name="achievement-status")
@@ -139,8 +136,7 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);	
 		
 		paramMap.add("achievement-status", theAchievement_status);
 		paramMap.add("category", theCategory);

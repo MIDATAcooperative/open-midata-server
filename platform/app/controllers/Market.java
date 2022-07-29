@@ -339,6 +339,7 @@ public class Market extends APIController {
 				} else if (app.type.equals("oauth2")) {
 					app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
 					app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
+					app.refreshTkExchangeParams = JsonValidation.getStringOrNull(json, "refreshTkExchangeParams");
 				}
 			}
 			if (app.type.equals("mobile") || app.type.equals("service")) {
@@ -772,6 +773,7 @@ public class Market extends APIController {
 			} else if (plugin.type.equals("oauth2")) {
 				plugin.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
 				plugin.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
+				plugin.refreshTkExchangeParams = JsonValidation.getStringOrNull(json, "refreshTkExchangeParams");
 			}
 		}
 		if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
@@ -901,6 +903,7 @@ public class Market extends APIController {
 			} else if (app.type.equals("oauth2")) {
 				app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
 				app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
+				app.refreshTkExchangeParams = JsonValidation.getStringOrNull(json, "refreshTkExchangeParams");
 			}
 		}
 		if (app.type.equals("mobile") || app.type.equals("service")) {

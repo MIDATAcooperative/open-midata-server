@@ -79,10 +79,7 @@ public class ConditionResourceProvider extends RecordBasedResourceProvider<Condi
 	@Search()
 	public Bundle getCondition(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
-			
+		
 			@Description(shortDefinition="Abatement as age or age range")
   			@OptionalParam(name="abatement-age")
   			QuantityAndListParam theAbatement_age, 
@@ -198,8 +195,7 @@ public class ConditionResourceProvider extends RecordBasedResourceProvider<Condi
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 		
 		paramMap.add("abatement-age", theAbatement_age);
 		paramMap.add("abatement-date", theAbatement_date);

@@ -163,11 +163,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	    public Bundle getGroup(
 	    		@Description(shortDefinition="The resource identity")
 	    		@OptionalParam(name="_id")
-	    		StringAndListParam theId, 
-	    		 
-	    		@Description(shortDefinition="The resource language")
-	    		@OptionalParam(name="_language")
-	    		StringAndListParam theResourceLanguage, 
+	    		StringAndListParam theId, 	    		 	    	
 	    		   
 	    		@Description(shortDefinition="Descriptive or actual")
 	  			@OptionalParam(name="actual")
@@ -240,8 +236,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	    	
 	    	SearchParameterMap paramMap = new SearchParameterMap();
 	    	
-	    	paramMap.add("_id", theId);
-			paramMap.add("_language", theResourceLanguage);
+	    	paramMap.add("_id", theId);			
 			paramMap.add("actual", theActual);
  			paramMap.add("characteristic", theCharacteristic);
  			paramMap.add("characteristic-value", theCharacteristic_value);

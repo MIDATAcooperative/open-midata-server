@@ -88,9 +88,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	@Search()
 	public Bundle getOrganization(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+			
 			@Description(shortDefinition="Is the Organization record active")
   			@OptionalParam(name="active")
   			TokenAndListParam theActive,
@@ -160,8 +158,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 						
 		paramMap.add("active", theActive);		
 		paramMap.add("address", theAddress);		

@@ -93,9 +93,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 	@Search()
 	public Bundle getDiagnosticReport(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+			
 			@Description(shortDefinition="Reference to the service request.")
   			@OptionalParam(name="based-on", targetTypes={  } )
   			ReferenceAndListParam theBased_on, 
@@ -192,8 +190,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);		
 		paramMap.add("based-on", theBased_on);
 		paramMap.add("category", theCategory);
 		paramMap.add("code", theCode);

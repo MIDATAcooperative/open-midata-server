@@ -100,10 +100,7 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
-			  
-			@Description(shortDefinition="The resource language")
-			@OptionalParam(name="_language")
-			StringAndListParam theResourceLanguage, 
+			  		
 			/*
 			@Description(shortDefinition="Return resources linked to by the given target")
 			@OptionalParam(name="_has")
@@ -186,8 +183,7 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 		
 		// paramMap.add("_has", theHas);
 		paramMap.add("author", theAuthor);
@@ -268,7 +264,7 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 		}
 		if (codings.isEmpty()) {
 			IIdType questions = FHIRTools.convertToId(theQuestionnaireResponse.getQuestionnaireElement());
-			if (questions != null && !questions.isEmpty()) {				
+			if (questions != null && !questions.isEmpty() && questions.getIdPart() != null) {				
 				Questionnaire q = (Questionnaire) FHIRServlet.myProviders.get("Questionnaire").getResourceById(questions);
 				codings = q.getCode();
 				if (codings != null) {

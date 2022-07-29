@@ -79,11 +79,7 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 			@Description(shortDefinition="The ID of the resource")
 			@OptionalParam(name="_id")
 			TokenAndListParam the_id, 
-			   
-			@Description(shortDefinition="The language of the resource")
-			@OptionalParam(name="_language")
-			StringAndListParam the_language, 
-			    
+			   					    
 			@Description(shortDefinition="Care manager/care coordinator for the patient")
   			@OptionalParam(name="care-manager", targetTypes={  } )
   			ReferenceAndListParam theCare_manager, 
@@ -151,8 +147,7 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);		
 		paramMap.add("care-manager", theCare_manager);
 		paramMap.add("condition", theCondition);
 		paramMap.add("date", theDate);

@@ -328,7 +328,7 @@ public class SubscriptionProcessor extends AbstractActor {
 						tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
 						final String token = tk.encrypt();
 						System.out.println("NEW OAUTH2 - 3");
-						Plugin plugin2 = Plugin.getById(plugin._id, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));
+						Plugin plugin2 = Plugin.getById(plugin._id, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams"));
 						final User user1 = user;
 						final MidataId eventId = AuditManager.instance.convertLastEventToAsync();
 						Plugins.requestAccessTokenOAuth2FromRefreshToken(handle, subscription.owner, plugin2, subscription.instance.toString(), oauthmeta.toMap()).thenAcceptAsync(success1 -> {

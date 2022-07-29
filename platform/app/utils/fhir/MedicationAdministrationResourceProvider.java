@@ -97,7 +97,7 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 	@Search()
 	public Bundle getMedicationAdministration(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
+			
  			@Description(shortDefinition="Return administrations of this medication code")
   			@OptionalParam(name="code")
   			TokenAndListParam theCode,
@@ -183,8 +183,7 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);		
 		paramMap.add("code", theCode);
 		paramMap.add("context", theContext);
 		paramMap.add("device", theDevice);

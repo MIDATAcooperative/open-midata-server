@@ -90,9 +90,7 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 	@Search()
 	public Bundle getImmunization(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+			
   			@Description(shortDefinition="Vaccination  (non)-Administration Date")
   			@OptionalParam(name="date")
   			DateAndListParam theDate, 
@@ -185,8 +183,7 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);		
 		paramMap.add("date", theDate);
 		paramMap.add("identifier", theIdentifier);
 		paramMap.add("location", theLocation);

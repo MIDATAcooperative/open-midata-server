@@ -112,9 +112,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 	@Search()
 	public Bundle getComposition(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+		
  			@Description(shortDefinition="Who attested the composition")
   			@OptionalParam(name="attester", targetTypes={  } )
   			ReferenceAndListParam theAttester, 
@@ -221,8 +219,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 			
 		paramMap.add("attester", theAttester);
 		paramMap.add("author", theAuthor);

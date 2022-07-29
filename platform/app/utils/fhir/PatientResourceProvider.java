@@ -229,9 +229,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	@Search()
 	public Bundle getPatient(@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+			
 			/*
 			 * @Description(
 			 * shortDefinition="Search the contents of the resource's data using a fulltext search"
@@ -339,8 +337,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			RequestDetails theDetails) throws AppException {
 
 		SearchParameterMap paramMap = new SearchParameterMap();
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 		/*
 		 * paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT,
 		 * theFtContent);
