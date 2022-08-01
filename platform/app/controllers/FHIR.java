@@ -521,7 +521,7 @@ public class FHIR extends Controller {
 		obj.put("token_endpoint", "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/token");
 		obj.putArray("token_endpoint_auth_methods_supported").add("client_secret_basic");
         obj.putArray("grant_types_supported").add("authorization_code");
-		obj.putArray("scopes_supported");//.add: ["openid", "profile", "launch", "launch/patient", "patient/*.rs", "user/*.rs", "offline_access"],
+		obj.putArray("scopes_supported").add("launch/patient").add("launch/practitioner").add("patient/*.crus").add("user/*.crus").add("offline_access");
 		obj.putArray("response_types_supported").add("code");
 		obj.put("management_endpoint", InstanceConfig.getInstance().getPortalOriginUrl());
 		obj.put("introspection_endpoint", "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/introspect"); // TODO change
@@ -534,9 +534,7 @@ public class FHIR extends Controller {
 		   .add("context-standalone-patient")
 		   .add("permission-patient")
 		   .add("permission-user")		   
-		   .add("permission-offline")
-		   .add("permission-patient")
-		   .add("permission-user")
+		   .add("permission-offline")		
 		   .add("permission-v1")
 		   .add("permission-v2");
 		   		  
