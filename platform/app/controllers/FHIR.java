@@ -194,19 +194,28 @@ public class FHIR extends Controller {
   		  
 		   if (serial!=null) {
 			   String[] serial2 = serial.split(",");
-			   MidataId instance;
-			   for (String k : serial2) if (k.startsWith("CN=")) {
-				   int p = k.indexOf(".");
-				   if (p<0) break;
-				   instance = MidataId.from(k.substring(3,p));
-				   if (instance == null) break;
-				   String key = k.substring(p+1);
+			   MidataId instance = null;
+			   String key = null;
+			   for (String k : serial2) {
+				   if (k.startsWith("CN=")) {			   
+					   int p = k.indexOf(".");
+				       if (p<0) key = k.substring(3);
+				       else {
+				    	   instance = MidataId.from(k.substring(3,p));
+				    	   if (instance == null) break;
+				    	   key = k.substring(p+1);
+				       }
+				   } else if (k.startsWith("OU=")) {
+					   if (instance==null && MidataId.isValid(k.substring(3))) instance = MidataId.from(k.substring(3));
+				   }
+			   }
+			   if (key != null && instance != null) {
 				   MobileAppSessionToken tk = new MobileAppSessionToken(instance, key, System.currentTimeMillis()+60000, UserRole.ANY);
 				   AccessContext inf = ExecutionInfo.checkMobileToken(tk, false);
 				   Stats.setPlugin(inf.getUsedPlugin());
 			       ResourceProvider.setAccessContext(inf);
 			       return inf;
-			   }
+			   }			   
 		   }
 		}
 		
