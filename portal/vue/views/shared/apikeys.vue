@@ -64,15 +64,29 @@
             <hr>
             <div><b v-t="'apikeys.key'"></b></div>
             <div v-t="'apikeys.instructions_key'"></div>
-            <input type="text" class="form-control" readonly @click="copyToClip($event)" v-model="showkey.access_token">
+            <input type="text" class="form-control mt-1" readonly @click="copyToClip($event)" v-model="showkey.access_token">
             <hr>
             <div><b v-t="'apikeys.refresh'"></b></div>
             <div v-t="'apikeys.instructions_refresh'"></div>
-            <input type="text" class="form-control" readonly @click="copyToClip($event)" v-model="showkey.refresh_token">
+            <input type="text" class="form-control mt-1" readonly @click="copyToClip($event)" v-model="showkey.refresh_token">
             <hr>
             <div><b v-t="'apikeys.common_name'"></b></div>
             <div v-t="'apikeys.instructions_common_name'"></div>
-            <input type="text" class="form-control" readonly @click="copyToClip($event)" v-model="showkey.cn">
+            <div class="row">
+            <div class="input-group col-lg-4 col-12 mb-1 mt-1">
+               <div class="input-group-prepend">
+                  <span class="input-group-text">OU</span>
+                </div>            
+                <input type="text" class="form-control" readonly @click="copyToClip($event)" v-model="showkey.ou">
+            </div>
+            
+            <div class="input-group col-lg-8 col-12 mb-1 mt-1">
+               <div class="input-group-prepend">
+                  <span class="input-group-text">CN</span>
+               </div>
+               <input type="text" class="form-control" readonly @click="copyToClip($event)" v-model="showkey.cn">
+            </div>
+            </div>
         </div>
     </modal>
 </div>

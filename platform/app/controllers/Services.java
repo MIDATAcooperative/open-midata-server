@@ -159,7 +159,8 @@ public class Services extends APIController {
         obj.put("access_token", session.encrypt());		
 		obj.put("expires_in", SERVICE_EXPIRATION_TIME / 1000l);		
 		obj.put("refresh_token", refresh.encrypt());
-		obj.put("cn", appInstance._id+"."+aeskey);
+		obj.put("ou", appInstance._id.toString());
+		obj.put("cn", aeskey);
 						
 		return ok(obj)
 				.as("application/json")
