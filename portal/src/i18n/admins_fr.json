@@ -206,8 +206,8 @@
         "value" : "Nombre total",
         "diff_yesterday" : "Diff. sur 1 jour",
         "diff_week" : "Diff. sur 7 jours",
-        "recordCount" : "Enregistrements dans la BD",
-        "vRecordCount" : "Enregistrements archivés",
+        "recordCount" : "Données dans la BD",
+        "vRecordCount" : "Données archivées",
         "indexPageCount" : "Pages index BD",
         "appCount" : "Applications",
         "languages" : "Langues utilisateur",
@@ -332,7 +332,7 @@
         "content" : "Type de contenu @PRODUCT",
         "security" : "Clés d'encryption des données",
         "medium" : "Réutiliser les clés pour les données de même type de la même personne",
-        "high" : "Utiliser une nouvelle clé pour chaque enregistrement",
+        "high" : "Utiliser une nouvelle clé pour chaque donnée",
         "group" : "Groupe dans l'arborescence des données",
         "defaultCode" : "Code par défaut",
         "resource_type" : "Type de ressource FHIR par défaut",
@@ -354,10 +354,6 @@
     },
 
     "admin_services" : {
-
-        // TODO CHANGED
-        // OLD: Endpoints
-        // NEW: FHIR Endpoints
         "endpoints" : "FHIR Endpoints",
         "name" : "Instance de service",
         "endpoint" : "FHIR endpoint",

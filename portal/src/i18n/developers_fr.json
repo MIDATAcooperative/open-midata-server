@@ -15,7 +15,7 @@
         "yourapps" : "Vos applications",
         "sandbox" : "Sandbox",
         "workspace" : "Workspace",
-        "records" : "Enregistrements de test",
+        "records" : "Données de test",
         "testusers" : "Utilisateurs de test"
     },
 
@@ -95,9 +95,7 @@
         "subscriptions_btn" : "Modifier les abonnements (Subscriptions) par défaut",
         "subscriptions_help" : "Définir les triggers qui provoquent une action sur le serveur @PRODUCT",
         "tokenExchangeParams" : "Paramètres OAuth 2 pour l'échange du token",
-
-        // TODO NEW: OAuth 2 Parameters for Refresh-Token Exchange
-        "refreshTkExchangeParams" : "OAuth 2 Parameters for Refresh-Token Exchange",
+        "refreshTkExchangeParams" : "Paramètres OAuth 2 pour l'échange du refresh token",
         "testfromlocal_btn" : "Testez votre plugin depuis localhost",
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
         "serverimport_btn" : "Tester le script d'importation automatique.",
@@ -148,11 +146,9 @@
             "name" : "Le nom de votre application tel qu'il est affiché pour les utilisateurs finaux.",
             "description" : "La description de votre application qui sera affichée sur la Marketplace.",
             "tokenExchangeParams" : "La valeur par défaut est client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> mais certains services nécessitent également client_secret=<client_secret> ou pas de client_id",
-
-            // TODO NEW: Default is grant_type=<grant_type>&refresh_token=<refresh_token>&client_id=<client_id> but some services also requrie client_secret=<client_secret> or other parameters
-            "refreshTkExchangeParams" : "Default is grant_type=<grant_type>&refresh_token=<refresh_token>&client_id=<client_id> but some services also requrie client_secret=<client_secret> or other parameters",
+            "refreshTkExchangeParams" : "La valeur par défaut est grant_type=<grant_type>&refresh_token=<refresh_token>&client_id=<client_id> mais certains services nécessitent également client_secret=<client_secret> ou d'autres paramètres",
             "no_update_history" : "Les mises à jour des ressources FHIR effectuées par cette application ne produisent aucune entrée d'historique. N'utiliser que si l'application fait de nombreuses et fréquentes mises à jour.",
-            "pseudonymize" : "Lire les données pseudonymisées. Ne met pas à jour les enregistrements des participants.",
+            "pseudonymize" : "Lire les données pseudonymisées. Ne met pas à jour les données des participants.",
             "resharesData" : "L'application est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
             "allowsUserSearch" : "Les utilisateurs de l'application sont autorisés à rechercher d'autres utilisateurs de la même application.",
             "consentObserving" : "Ce service surveille-t-il les consentements des utilisateurs ? Ajoutez 'Consentements (Consents)' au filtre d'accès aux données (Data Access Filter) afin de l'activer.",
@@ -165,23 +161,11 @@
             "secret" : "Application Secret était requis par l'ancienne API; il sert à assurer la rétrocompatibilité.",
             "mustParticipateInStudy" : "Les utilisateurs doivent participer au projet de recherche afin de pouvoir utiliser l'application.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à @PRODUCT par cette app. Le code n'est pas sensible à la casse.",
-
-            // TODO CHANGED
-            // OLD: Notify app creator and developer team by email on errors caused by this application.
-            // NEW: Notify the application creator and developer team by email on errors caused by this application.
             "send_reports" : "Avertir le créateur de l'application et l'équipe de développeurs par e-mail des erreurs causées par cette application.",
             "developerTeam" : "Entrez la liste, séparée par des virgules, des adresses e-mail d'autres développeurs sur cette instance @PRODUCT, qui développent cette application.",
             "code_challenge" : "Lors de la connexion OAuth2, l'application appelante doit utiliser la norme PKCE (Proof Key for Code Exchange)",
-
-            // TODO CHANGED
-            // OLD: Create non-project related endpoint. Check only if you do NOT plan to use this endpoint with a project.
-            // NEW: Create a non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.
             "createendpoint" : "Créer une instance de cet endpoint non liée au projet. Cochez uniquement si vous ne prévoyez PAS d'utiliser cet endpoint avec un projet.",
             "endpoint" : "Le chemin d'accès de cet endpoint FHIR non lié à un projet sera /opendata/endpointname/fhir",
-
-            // TODO CHANGED
-            // OLD: Do not forget: to activate the endpoint you need to add an API-Key afterwards.
-            // NEW: Do not forget: to activate the endpoint you need to add an API key afterwards.
             "endpoint2" : "N'oubliez pas: pour activer l'endpoint, vous devez ensuite ajouter une clé API."
         },
         "status" : {
@@ -198,10 +182,6 @@
         "queryeditor_btn" : "Aller à l'éditeur du filtre d'accès aux données (Data Access Filter)",
         "no_update_history" : "Pas d'historique des ressources FHIR",
         "pseudonymize" : "Lire pseudonymisé",
-
-        // TODO CHANGED
-        // OLD: Create Endpoint
-        // NEW: Create Endpoint Instance
         "createendpoint" : "Créer une instance de l'endpoint",
         "endpoint" : "Nom de l'endpoint",
         "usagestats_btn" : "Statistiques d'utilisation",
@@ -211,10 +191,6 @@
         "important" : "IMPORTANT",
         "logoutwarning" : "Modifier la définition de l'application déconnectera tous les utilisateurs de cette application. Ils devront confirmer à nouveau l'utilisation de l'application à la prochaine connexion.",
         "researchwarning" : "Modifier la définition de l'application dissociera cette application de recherche de tous les projets!",
-
-        // TODO CHANGED
-        // OLD: Changing the application definition requires the generation of new API-Keys for all instances of this service.
-        // NEW: Changing the application definition requires the generation of new API keys for all instances of this service.
         "servicewarning" : "Modifier la définition de l'application nécessite la génération de nouvelles clés API pour toutes les instances de ce service.",
         "creator" : "Créateur",
         "organization" : "Organisation",
@@ -483,12 +459,8 @@
         "no_terms" : "Aucunes de conditions d'utilisation",
         "links" : "Projets liés",
         "no_links" : "Aucun (pour le moment)",
-
-        // TODO NEW: Test parameters to OAuth login
-        "urlParams" : "Test parameters to OAuth login",
-
-        // TODO NEW: Test URL parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=de'.
-        "urlParams2" : "Test URL parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=de'.",
+        "urlParams" : "Paramètres de test pour la connexion OAuth",
+        "urlParams2" : "Paramètres de test de l'URL que votre application fournira au login. Par exemple 'family=Test&given=Some&ro=true&country=CH&language=fr'.",
         "step" : {
             "login" : "Connexion",
             "registration" : "Inscription",
