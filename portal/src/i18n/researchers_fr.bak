@@ -34,7 +34,7 @@
     "study_type" : "Type of research",
     "study_description" : "Project description",
     "study_identifiers" : "Identifiers",
-    "study_identifiers_info" : "Place any organization specific project identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.",
+    "study_identifiers_info" : "Enter all project identifiers from external institutions here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.",
     "developer_nostart" : "Attention!",
     "developer_nostart2" : "As developer you can only setup a project but not conduct it. As developer it is not possible to start the participant search."    
   },

@@ -95,6 +95,9 @@
         "subscriptions_btn" : "Cambia abbonamenti (Subscriptions) predefiniti",
         "subscriptions_help" : "Definire i trigger che causano un'azione sul server @PRODUCT",
         "tokenExchangeParams" : "Parametri OAuth 2 per lo scambio di token",
+
+        // TODO NEW: OAuth 2 Parameters for Refresh-Token Exchange
+        "refreshTkExchangeParams" : "OAuth 2 Parameters for Refresh-Token Exchange",
         "testfromlocal_btn" : "Testa il suo plugin da localhost",
         "testfromlocal_help" : "Durante lo sviluppo, è possibile testare il codice del plugin memorizzato nel proprio computer locale su questa istanza.",
         "serverimport_btn" : "Testa lo script dell'importazione automatica.",
@@ -145,6 +148,9 @@
             "name" : "Il nome, della propria applicazione, che sarà presentato all'utente finale.",
             "description" : "La descrizione del proprio applicazione che sarà mostrata sul Marketplace.",
             "tokenExchangeParams" : "La definizione predefinita è client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> tuttavia alcuni servizi richiedono anche client_secret=<client_secret> oppure nessun client_id",
+
+            // TODO NEW: Default is grant_type=<grant_type>&refresh_token=<refresh_token>&client_id=<client_id> but some services also requrie client_secret=<client_secret> or other parameters
+            "refreshTkExchangeParams" : "Default is grant_type=<grant_type>&refresh_token=<refresh_token>&client_id=<client_id> but some services also requrie client_secret=<client_secret> or other parameters",
             "no_update_history" : "Gli aggiornamenti delle risorse FHIR effettuati da questa applicazione non producono voci della cronologia. Utilizzare solo se l'applicazione esegue molti e frequenti aggiornamenti.",
             "pseudonymize" : "Leggere i dati pseudonimizzati. Non aggiorna i dati dei partecipanti.",
             "resharesData" : "L'applicazione è autorizzata a ricondividere con terzi i dati a cui accede.",
@@ -159,11 +165,23 @@
             "secret" : "Application Secret era richiesto dalla vecchia API; sta per compatibilità all'indietro.",
             "mustParticipateInStudy" : "Gli utenti devono partecipare al progetto di ricerca per utilizzare l'applicazione.",
             "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a @PRODUCT tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli.",
+
+            // TODO CHANGED
+            // OLD: Notify app creator and developer team by email on errors caused by this application.
+            // NEW: Notify the application creator and developer team by email on errors caused by this application.
             "send_reports" : "Avvisare il creatore dell'applicazione e il team di sviluppo via e-mail degli errori causati da questa applicazione.",
             "developerTeam" : "Inserire una lista separata da virgole di indirizzi e-mail di altri sviluppatori su quell'istanza @PRODUCT, che sviluppano questa applicazione.",
             "code_challenge" : "Durante il login OAuth2, l'applicazione chiamante deve usare lo standard PKCE (Proof Key for Code Exchange)",
+
+            // TODO CHANGED
+            // OLD: Create non-project related endpoint. Check only if you do NOT plan to use this endpoint with a project.
+            // NEW: Create a non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.
             "createendpoint" : "Creare un'istanza di questo endpoint non legata al progetto. Selezionare solo se NON si prevede di utilizzare questo endpoint con un progetto.",
             "endpoint" : "Il percorso di questo endpoint FHIR non legata a un progetto sarà /opendata/endpointname/fhir",
+
+            // TODO CHANGED
+            // OLD: Do not forget: to activate the endpoint you need to add an API-Key afterwards.
+            // NEW: Do not forget: to activate the endpoint you need to add an API key afterwards.
             "endpoint2" : "Non dimenticare: per attivare l'endpoint è necessario aggiungere una chiavi API dopo."
         },
         "status" : {
@@ -180,6 +198,10 @@
         "queryeditor_btn" : "Va all'editor Data Access Filter",
         "no_update_history" : "No storia risorse FHIR",
         "pseudonymize" : "Leggere pseudonimizzato",
+
+        // TODO CHANGED
+        // OLD: Create Endpoint
+        // NEW: Create Endpoint Instance
         "createendpoint" : "Creare un'istanza dell'endpoint",
         "endpoint" : "Nome dell'endpoint",
         "usagestats_btn" : "Statistiche d'uso",
@@ -189,6 +211,10 @@
         "important" : "IMPORTANTE",
         "logoutwarning" : "La modifica della definizione dell'applicazione comporta la disconnessione di tutti gli utenti dall'applicazione stessa. Dovranno confermare nuovamente l'utilizzo dell'applicazione al prossimo accedi.",
         "researchwarning" : "La modifica della definizione dell'applicazione dissocia questa applicazione di ricerca da tutti gli progetti!",
+
+        // TODO CHANGED
+        // OLD: Changing the application definition requires the generation of new API-Keys for all instances of this service.
+        // NEW: Changing the application definition requires the generation of new API keys for all instances of this service.
         "servicewarning" : "La modifica della definizione dell'applicazione richiede la generazione di nuove chiavi API per tutte le istanze di questo servizio.",
         "creator" : "Creatore",
         "organization" : "Organizzazione",
@@ -457,6 +483,12 @@
         "no_terms" : "Nessuna condizioni d'uso",
         "links" : "Progetti collegati",
         "no_links" : "Nessuno (ancora)",
+
+        // TODO NEW: Test parameters to OAuth login
+        "urlParams" : "Test parameters to OAuth login",
+
+        // TODO NEW: Test URL parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=de'.
+        "urlParams2" : "Test URL parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=de'.",
         "step" : {
             "login" : "Accesso",
             "registration" : "Iscrizione",

@@ -39,6 +39,9 @@
         "relogin" : "Veuillez vous reconnecter",
         "noconsent" : "Il n'y a pas de consentement actif permettant l'ajout de donnée à cette personne.",
         "unsupported" : "Opération non supportée",
+
+        // TODO NEW: Action failed
+        "failed" : "Action failed",
         "notrialuser_title" : "Inscription requise!",
         "notrialuser_detail" : "Pour utiliser cette fonctionnalité, vous devez compléter votre inscription. Veuillez demander une copie écrite des conditions générales et la renvoyer signée à @OPERATOR. Vous recevrez également un code d'activation permettant de vérifier votre adresse postale. Si vous désirez vérifier le status de votre compte, cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'État du compte'.",
         "mustbemember_title" : "Adhésion à @OPERATOR requise!",
@@ -251,6 +254,10 @@
             "user-settings-change" : "Paramètres de l'utilisateur modifiés",
             "user-email-change" : "Adresse e-mail modifiée",
             "user-birthday-change" : "Date de naissance de l'utilisateur modifiée",
+
+            // TODO CHANGED
+            // OLD: User's gender information updated
+            // NEW: User's gender changed
             "user-gender-change" : "Sexe de l'utilisateur modifié",
             "user-status-change-active" : "Compte utilisateur débloqué",
             "user-status-change-blocked" : "Compte utilisateur bloqué",
@@ -299,7 +306,19 @@
             "user-searched" : "Recherche d'utilisateur",
             "welcome-sent" : "E-mail de bienvenue envoyé",
             "tried-user-reregistration" : "Tentative de ré-inscription de l'utilisateur",
-            "signature-failure" : "La validation du consentement a échoué"
+            "signature-failure" : "La validation du consentement a échoué",
+
+            // TODO NEW: Email sent
+            "email-sent" : "Email sent",
+
+            // TODO NEW: SMS sent
+            "sms-sent" : "SMS sent",
+
+            // TODO NEW: Resthook called
+            "resthook-called" : "Resthook called",
+
+            // TODO NEW: Script invoked
+            "script-invocation" : "Script invoked"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -579,8 +598,14 @@
     "registration" : {
         "sign_up" : "S'inscrire",
         "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires.",
+
+        // TODO NEW: Please fill in your email and password.
+        "mandantory_fields2" : "Please fill in your email and password.",
         "password_policy" : "Le mot de passe doit comporter au moins 8 caractères et contenir une lettre et un chiffre.",
         "password_policy2" : "Le mot de passe doit comporter au moins 12 caractères et contenir une lettre, un chiffre et un caractère spécial.",
+
+        // TODO NEW: Personal Details
+        "personal_details" : "Personal Details",
         "email" : "E-mail",
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
@@ -691,6 +716,10 @@
         "address_entered" : "Votre adresse postale est requise pour utiliser ce service, veuillez la saisir.",
         "phone_entered" : "Un numéro de téléphone mobile est requis pour utiliser ce service, veuillez le saisir.",
         "birthday_entered" : "Une date de naissance valide est requise pour utiliser ce service. Veuillez ajouter votre date de naissance aux informations de votre compte. (Exemple de format : 31.12.1999)",
+
+        // TODO CHANGED
+        // OLD: Information about your gender is required to use this service. Please provide your gender.
+        // NEW: Your gender must be provided to use this service. Please indicate your gender.
         "gender_entered" : "Votre sexe doit être renseigné pour utiliser ce service. Veuillez indiquer votre sexe.",
         "admin_verified" : "Votre compte doit être validé par un administrateur. Veuillez réessayer plus tard. Si votre compte n'a pas été validé sous 24 heures, veuillez contacter @SUPPORT.",
         "terms_agreed" : "Les Conditions Générales ont été mises à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
@@ -1441,7 +1470,15 @@
         "instructions_key" : "Utilisez cette clé directement dans l'en-tête d'autorisation du service comme bearer token.",
         "refresh" : "Refresh token pour OAuth",
         "instructions_refresh" : "Pour améliorer la sécurité, échangez ce refresh token contre une nouvelle paire d'access token et refresh token.",
+
+        // TODO CHANGED
+        // OLD: CN (common name) for CSR (certificate request)
+        // NEW: OU (organization unit) and CN (common name) for CSR (certificate request)
         "common_name" : "CN (common name) pour CSR (certificate request)",
+
+        // TODO CHANGED
+        // OLD: For certificate based authentication create a CSR with the given CN field. Send the CSR to @SUPPORT
+        // NEW: For certificate based authentication create a CSR with the given OU and CN field. Send the CSR to @SUPPORT
         "instructions_common_name" : "Pour une authentification basée sur un certificat, créez un CSR avec le champ CN donné. Envoyez le CSR à @SUPPORT",
         "date" : "Date de création",
         "status" : "État",

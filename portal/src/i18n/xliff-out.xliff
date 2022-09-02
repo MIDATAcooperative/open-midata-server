@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xml:lang="en">
-    <file source-language="en" target-language="de" datatype="winres" original="shared_de.json">
+    <file source-language="en" target-language="it" datatype="winres" original="shared_it.json">
         <body>
             <group resname="navbar" id="navbar">
                 <trans-unit resname="me" id="navbar.me">
@@ -8,112 +8,46 @@
                 </trans-unit>
             </group>
             <group resname="error" id="error">
-                <group resname="exists" id="error.exists">
-                    <trans-unit resname="content" id="error.exists.content">
-                        <source>A content type with this name already exists.</source>
-                    </trans-unit>
-                    <trans-unit resname="group" id="error.exists.group">
-                        <source>A content group with this name already exists.</source>
-                    </trans-unit>
-                    <trans-unit resname="projectgroup" id="error.exists.projectgroup">
-                        <source>A project group with this name already exists.</source>
-                    </trans-unit>
-                    <trans-unit resname="code" id="error.exists.code">
-                        <source>A code with this code and codesystem already exists.</source>
-                    </trans-unit>
-                </group>
+                <trans-unit resname="failed" id="error.failed">
+                    <source>Action failed</source>
+                </trans-unit>
             </group>
             <group resname="enum" id="enum">
-                <group resname="gender" id="enum.gender">
-                    <trans-unit resname="UNKNOWN" id="enum.gender.UNKNOWN">
-                        <source>not provided</source>
-                    </trans-unit>
-                </group>
                 <group resname="eventtype" id="enum.eventtype">
                     <trans-unit resname="user-gender-change" id="enum.eventtype.user-gender-change">
-                        <source>User's gender information updated</source>
+                        <source>User's gender changed</source>
+                        <target>Sesso dell'utente modificato</target>
                     </trans-unit>
-                    <trans-unit resname="audit-log-used" id="enum.eventtype.audit-log-used">
-                        <source>Audit log consulted</source>
-                        <target>Audit Log angeschaut</target>
+                    <trans-unit resname="email-sent" id="enum.eventtype.email-sent">
+                        <source>Email sent</source>
                     </trans-unit>
-                </group>
-                <group resname="userfeature" id="enum.userfeature">
-                    <trans-unit resname="GENDER_SET" id="enum.userfeature.GENDER_SET">
-                        <source>The gender of the user must be known</source>
+                    <trans-unit resname="sms-sent" id="enum.eventtype.sms-sent">
+                        <source>SMS sent</source>
                     </trans-unit>
-                </group>
-                <group resname="studytype" id="enum.studytype">
-                    <trans-unit resname="COMMUNITY" id="enum.studytype.COMMUNITY">
-                        <source>Community</source>
+                    <trans-unit resname="resthook-called" id="enum.eventtype.resthook-called">
+                        <source>Resthook called</source>
                     </trans-unit>
-                </group>
-                <group resname="userrole" id="enum.userrole">
-                    <trans-unit resname="ADMIN" id="enum.userrole.ADMIN">
-                        <source>Administrator</source>
-                    </trans-unit>
-                </group>
-                <group resname="subuserrole" id="enum.subuserrole">
-                    <trans-unit resname="MANAGER" id="enum.subuserrole.MANAGER">
-                        <source>Manager</source>
+                    <trans-unit resname="script-invocation" id="enum.eventtype.script-invocation">
+                        <source>Script invoked</source>
                     </trans-unit>
                 </group>
                 <group resname="researcherrole" id="enum.researcherrole">
                     <trans-unit resname="SPONSOR" id="enum.researcherrole.SPONSOR">
                         <source>Sponsor</source>
                     </trans-unit>
-                    <trans-unit resname="INVESTIGATOR" id="enum.researcherrole.INVESTIGATOR">
-                        <source>Investigator</source>
-                    </trans-unit>
-                    <trans-unit resname="AUDITOR" id="enum.researcherrole.AUDITOR">
-                        <source>Auditor</source>
-                    </trans-unit>
-                    <trans-unit resname="STUDYNURSE" id="enum.researcherrole.STUDYNURSE">
-                        <source>Study Nurse</source>
-                    </trans-unit>
-                    <trans-unit resname="MONITOR" id="enum.researcherrole.MONITOR">
-                        <source>Monitor</source>
-                    </trans-unit>
-                </group>
-                <group resname="language" id="enum.language">
-                    <trans-unit resname="EN" id="enum.language.EN">
-                        <source>English</source>
-                    </trans-unit>
                 </group>
                 <group resname="month" id="enum.month">
-                    <trans-unit resname="01" id="enum.month.01">
-                        <source>Jan</source>
-                    </trans-unit>
                     <trans-unit resname="02" id="enum.month.02">
                         <source>Feb</source>
+                    </trans-unit>
+                    <trans-unit resname="03" id="enum.month.03">
+                        <source>Mar</source>
                     </trans-unit>
                     <trans-unit resname="04" id="enum.month.04">
                         <source>Apr</source>
                     </trans-unit>
-                    <trans-unit resname="06" id="enum.month.06">
-                        <source>Jun</source>
-                    </trans-unit>
-                    <trans-unit resname="07" id="enum.month.07">
-                        <source>Jul</source>
-                    </trans-unit>
-                    <trans-unit resname="08" id="enum.month.08">
-                        <source>Aug</source>
-                    </trans-unit>
-                    <trans-unit resname="09" id="enum.month.09">
-                        <source>Sep</source>
-                    </trans-unit>
                     <trans-unit resname="11" id="enum.month.11">
                         <source>Nov</source>
-                    </trans-unit>
-                </group>
-                <group resname="codesystems" id="enum.codesystems">
-                    <trans-unit resname="fhir" id="enum.codesystems.fhir">
-                        <source>FHIR Resource</source>
-                    </trans-unit>
-                </group>
-                <group resname="tags" id="enum.tags">
-                    <trans-unit resname="Import" id="enum.tags.Import">
-                        <source>Import</source>
                     </trans-unit>
                 </group>
                 <group resname="plugintype" id="enum.plugintype">
@@ -140,169 +74,81 @@
                 <trans-unit resname="empty" id="common.empty">
                     <source> </source>
                 </trans-unit>
+                <group resname="yesno" id="common.yesno">
+                    <trans-unit resname="false" id="common.yesno.false">
+                        <source>No</source>
+                    </trans-unit>
+                </group>
             </group>
-            <group resname="passphrase" id="passphrase">
-                <trans-unit resname="passphrase" id="passphrase.passphrase">
-                    <source>Passphrase</source>
+            <group resname="registration" id="registration">
+                <trans-unit resname="mandantory_fields2" id="registration.mandantory_fields2">
+                    <source>Please fill in your email and password.</source>
+                </trans-unit>
+                <trans-unit resname="personal_details" id="registration.personal_details">
+                    <source>Personal Details</source>
+                </trans-unit>
+                <trans-unit resname="password" id="registration.password">
+                    <source>Password</source>
+                </trans-unit>
+            </group>
+            <group resname="login" id="login">
+                <trans-unit resname="password" id="login.password">
+                    <source>Password</source>
                 </trans-unit>
             </group>
             <group resname="postregister" id="postregister">
-                <trans-unit resname="code" id="postregister.code">
-                    <source>Code</source>
-                </trans-unit>
                 <trans-unit resname="gender_entered" id="postregister.gender_entered">
-                    <source>Information about your gender is required to use this service. Please provide your gender.</source>
-                </trans-unit>
-                <trans-unit resname="securityToken" id="postregister.securityToken">
-                    <source>Code</source>
-                </trans-unit>
-            </group>
-            <group resname="market" id="market">
-                <trans-unit resname="plugins" id="market.plugins">
-                    <source>Plugins</source>
-                </trans-unit>
-            </group>
-            <group resname="providersearch" id="providersearch">
-                <trans-unit resname="name" id="providersearch.name">
-                    <source>Name</source>
+                    <source>Your gender must be provided to use this service. Please indicate your gender.</source>
+                    <target>Per utilizzare questo servizio è necessario inserire il proprio sesso. Indicare il proprio sesso.</target>
                 </trans-unit>
             </group>
             <group resname="recorddetail" id="recorddetail">
-                <trans-unit resname="name" id="recorddetail.name">
-                    <source>Name:</source>
-                </trans-unit>
-                <trans-unit resname="modified_by" id="recorddetail.modified_by">
-                    <source>Last modified by:</source>
-                </trans-unit>
-                <trans-unit resname="format" id="recorddetail.format">
-                    <source>Format:</source>
-                </trans-unit>
                 <trans-unit resname="id" id="recorddetail.id">
                     <source>Record ID</source>
                 </trans-unit>
-                <trans-unit resname="code" id="recorddetail.code">
-                    <source>Code(s)</source>
-                </trans-unit>
-            </group>
-            <group resname="studydetails" id="studydetails">
-                <trans-unit resname="status" id="studydetails.status">
-                    <source>Status</source>
-                </trans-unit>
             </group>
             <group resname="user" id="user">
-                <trans-unit resname="name" id="user.name">
-                    <source>Name:</source>
-                </trans-unit>
                 <trans-unit resname="midataID" id="user.midataID">
                     <source>@PRODUCT ID:</source>
                 </trans-unit>
             </group>
-            <group resname="visualization" id="visualization">
-                <group resname="location" id="visualization.location">
-                    <trans-unit resname="workspace" id="visualization.location.workspace">
-                        <source>Workspace</source>
-                    </trans-unit>
-                    <trans-unit resname="sandbox" id="visualization.location.sandbox">
-                        <source>Workspace</source>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="editconsent" id="editconsent">
-                <trans-unit resname="reshare" id="editconsent.reshare">
-                    <source>@:newconsent.reshare</source>
-                </trans-unit>
-                <trans-unit resname="reshare2" id="editconsent.reshare2">
-                    <source>@:newconsent.reshare2</source>
-                </trans-unit>
-            </group>
             <group resname="editconsent2" id="editconsent2">
-                <trans-unit resname="status" id="editconsent2.status">
-                    <source>Status</source>
-                </trans-unit>
                 <trans-unit resname="team" id="editconsent2.team">
                     <source>Team</source>
                 </trans-unit>
             </group>
-            <group resname="consents" id="consents">
-                <trans-unit resname="status" id="consents.status">
-                    <source>Status</source>
-                </trans-unit>
-            </group>
-            <group resname="importrecords" id="importrecords">
-                <trans-unit resname="title" id="importrecords.title">
-                    <source>Import</source>
-                </trans-unit>
-            </group>
-            <group resname="spaces" id="spaces">
-                <trans-unit resname="title" id="spaces.title">
-                    <source>@PLATFORM Plugin</source>
-                </trans-unit>
-            </group>
             <group resname="records" id="records">
-                <trans-unit resname="type_global" id="records.type_global">
-                    <source>Global</source>
-                </trans-unit>
                 <trans-unit resname="just_name" id="records.just_name">
                     <source>{{name}}</source>
                 </trans-unit>
             </group>
-            <group resname="oauth2" id="oauth2">
-                <trans-unit resname="shares_format" id="oauth2.shares_format">
-                    <source>Format: {{ format }}</source>
-                </trans-unit>
-            </group>
             <group resname="dashboard" id="dashboard">
-                <trans-unit resname="training" id="dashboard.training">
-                    <source>Training</source>
-                </trans-unit>
-                <trans-unit resname="details" id="dashboard.details">
-                    <source>Details</source>
-                </trans-unit>
-                <trans-unit resname="newsconfig" id="dashboard.newsconfig">
-                    <source>News</source>
+                <trans-unit resname="social" id="dashboard.social">
+                    <source>Social</source>
                 </trans-unit>
             </group>
             <group resname="auditlog" id="auditlog">
-                <trans-unit resname="actor" id="auditlog.actor">
-                    <source>Actor</source>
-                </trans-unit>
-                <trans-unit resname="entity" id="auditlog.entity">
-                    <source>Entity</source>
-                </trans-unit>
-                <trans-unit resname="title" id="auditlog.title">
-                    <source>Audit Log</source>
+                <trans-unit resname="via" id="auditlog.via">
+                    <source>via</source>
                 </trans-unit>
                 <trans-unit resname="MEMBER" id="auditlog.MEMBER">
                     <source>Account</source>
-                </trans-unit>
-                <trans-unit resname="ADMIN" id="auditlog.ADMIN">
-                    <source>Account (Administrator)</source>
                 </trans-unit>
             </group>
             <group resname="changeemail" id="changeemail">
                 <trans-unit resname="midataId" id="changeemail.midataId">
                     <source>@PRODUCT ID</source>
                 </trans-unit>
-                <trans-unit resname="name" id="changeemail.name">
-                    <source>Name</source>
+            </group>
+            <group resname="accountwipe" id="accountwipe">
+                <trans-unit resname="password" id="accountwipe.password">
+                    <source>Password</source>
                 </trans-unit>
             </group>
             <group resname="queryeditor" id="queryeditor">
-                <trans-unit resname="title" id="queryeditor.title">
-                    <source>Data Access Filter Editor</source>
-                </trans-unit>
                 <trans-unit resname="access_query" id="queryeditor.access_query">
                     <source>Data Access Filter</source>
                 </trans-unit>
-                <trans-unit resname="code" id="queryeditor.code">
-                    <source>Code</source>
-                </trans-unit>
-                <group resname="ask" id="queryeditor.ask">
-                    <trans-unit resname="AuditEvent" id="queryeditor.ask.AuditEvent">
-                        <source>Access to the audit log</source>
-                        <target>Zugriff auf das Audit Log</target>
-                    </trans-unit>
-                </group>
             </group>
             <group resname="timeline" id="timeline">
                 <trans-unit resname="title" id="timeline.title">
@@ -321,8 +167,13 @@
                 </trans-unit>
             </group>
             <group resname="apikeys" id="apikeys">
-                <trans-unit resname="status" id="apikeys.status">
-                    <source>Status</source>
+                <trans-unit resname="common_name" id="apikeys.common_name">
+                    <source>OU (organization unit) and CN (common name) for CSR (certificate request)</source>
+                    <target>CN (common name) per CSR (certificate request)</target>
+                </trans-unit>
+                <trans-unit resname="instructions_common_name" id="apikeys.instructions_common_name">
+                    <source>For certificate based authentication create a CSR with the given OU and CN field. Send the CSR to @SUPPORT</source>
+                    <target>Per l'autenticazione basata su certificato creare una CSR con il campo CN dato. Inviare la CSR a @SUPPORT</target>
                 </trans-unit>
             </group>
         </body>
@@ -344,39 +195,27 @@
                 </trans-unit>
             </group>
             <group resname="error" id="error">
-                <group resname="exists" id="error.exists">
-                    <trans-unit resname="content" id="error.exists.content">
-                        <source>A content type with this name already exists.</source>
-                    </trans-unit>
-                    <trans-unit resname="group" id="error.exists.group">
-                        <source>A content group with this name already exists.</source>
-                    </trans-unit>
-                    <trans-unit resname="projectgroup" id="error.exists.projectgroup">
-                        <source>A project group with this name already exists.</source>
-                    </trans-unit>
-                    <trans-unit resname="code" id="error.exists.code">
-                        <source>A code with this code and codesystem already exists.</source>
-                    </trans-unit>
-                </group>
+                <trans-unit resname="failed" id="error.failed">
+                    <source>Action failed</source>
+                </trans-unit>
             </group>
             <group resname="enum" id="enum">
-                <group resname="gender" id="enum.gender">
-                    <trans-unit resname="UNKNOWN" id="enum.gender.UNKNOWN">
-                        <source>not provided</source>
-                    </trans-unit>
-                </group>
                 <group resname="eventtype" id="enum.eventtype">
                     <trans-unit resname="user-gender-change" id="enum.eventtype.user-gender-change">
-                        <source>User's gender information updated</source>
+                        <source>User's gender changed</source>
+                        <target>Sexe de l'utilisateur modifié</target>
                     </trans-unit>
-                    <trans-unit resname="audit-log-used" id="enum.eventtype.audit-log-used">
-                        <source>Audit log consulted</source>
-                        <target>Audit log consulté</target>
+                    <trans-unit resname="email-sent" id="enum.eventtype.email-sent">
+                        <source>Email sent</source>
                     </trans-unit>
-                </group>
-                <group resname="userfeature" id="enum.userfeature">
-                    <trans-unit resname="GENDER_SET" id="enum.userfeature.GENDER_SET">
-                        <source>The gender of the user must be known</source>
+                    <trans-unit resname="sms-sent" id="enum.eventtype.sms-sent">
+                        <source>SMS sent</source>
+                    </trans-unit>
+                    <trans-unit resname="resthook-called" id="enum.eventtype.resthook-called">
+                        <source>Resthook called</source>
+                    </trans-unit>
+                    <trans-unit resname="script-invocation" id="enum.eventtype.script-invocation">
+                        <source>Script invoked</source>
                     </trans-unit>
                 </group>
                 <group resname="subuserrole" id="enum.subuserrole">
@@ -439,6 +278,14 @@
                     </trans-unit>
                 </group>
             </group>
+            <group resname="registration" id="registration">
+                <trans-unit resname="mandantory_fields2" id="registration.mandantory_fields2">
+                    <source>Please fill in your email and password.</source>
+                </trans-unit>
+                <trans-unit resname="personal_details" id="registration.personal_details">
+                    <source>Personal Details</source>
+                </trans-unit>
+            </group>
             <group resname="lostpw" id="lostpw">
                 <trans-unit resname="continue" id="lostpw.continue">
                     <source>Continue</source>
@@ -449,7 +296,8 @@
                     <source>Code</source>
                 </trans-unit>
                 <trans-unit resname="gender_entered" id="postregister.gender_entered">
-                    <source>Information about your gender is required to use this service. Please provide your gender.</source>
+                    <source>Your gender must be provided to use this service. Please indicate your gender.</source>
+                    <target>Votre sexe doit être renseigné pour utiliser ce service. Veuillez indiquer votre sexe.</target>
                 </trans-unit>
                 <trans-unit resname="securityToken" id="postregister.securityToken">
                     <source>Code</source>
@@ -464,9 +312,6 @@
                 </trans-unit>
             </group>
             <group resname="recorddetail" id="recorddetail">
-                <trans-unit resname="modified_by" id="recorddetail.modified_by">
-                    <source>Last modified by:</source>
-                </trans-unit>
                 <trans-unit resname="format" id="recorddetail.format">
                     <source>Format:</source>
                 </trans-unit>
@@ -580,12 +425,6 @@
                 <trans-unit resname="data_period_restriction" id="queryeditor.data_period_restriction">
                     <source>Date</source>
                 </trans-unit>
-                <group resname="ask" id="queryeditor.ask">
-                    <trans-unit resname="AuditEvent" id="queryeditor.ask.AuditEvent">
-                        <source>Access to the audit log</source>
-                        <target>Accès à l'aidit log</target>
-                    </trans-unit>
-                </group>
             </group>
             <group resname="timeline" id="timeline">
                 <trans-unit resname="title" id="timeline.title">
@@ -596,190 +435,90 @@
                 </trans-unit>
             </group>
             <group resname="apikeys" id="apikeys">
+                <trans-unit resname="common_name" id="apikeys.common_name">
+                    <source>OU (organization unit) and CN (common name) for CSR (certificate request)</source>
+                    <target>CN (common name) pour CSR (certificate request)</target>
+                </trans-unit>
+                <trans-unit resname="instructions_common_name" id="apikeys.instructions_common_name">
+                    <source>For certificate based authentication create a CSR with the given OU and CN field. Send the CSR to @SUPPORT</source>
+                    <target>Pour une authentification basée sur un certificat, créez un CSR avec le champ CN donné. Envoyez le CSR à @SUPPORT</target>
+                </trans-unit>
                 <trans-unit resname="ACTIVE" id="apikeys.ACTIVE">
                     <source>Active</source>
                 </trans-unit>
             </group>
         </body>
     </file>
-    <file source-language="en" target-language="it" datatype="winres" original="shared_it.json">
+    <file source-language="en" target-language="it" datatype="winres" original="admins_it.json">
         <body>
-            <group resname="navbar" id="navbar">
-                <trans-unit resname="me" id="navbar.me">
-                    <source>Timeline</source>
+            <group resname="admin_navbar" id="admin_navbar">
+                <trans-unit resname="admin" id="admin_navbar.admin">
+                    <source>Admin</source>
                 </trans-unit>
             </group>
-            <group resname="error" id="error">
-                <group resname="exists" id="error.exists">
-                    <trans-unit resname="content" id="error.exists.content">
-                        <source>A content type with this name already exists.</source>
-                    </trans-unit>
-                    <trans-unit resname="group" id="error.exists.group">
-                        <source>A content group with this name already exists.</source>
-                    </trans-unit>
-                    <trans-unit resname="projectgroup" id="error.exists.projectgroup">
-                        <source>A project group with this name already exists.</source>
-                    </trans-unit>
-                    <trans-unit resname="code" id="error.exists.code">
-                        <source>A code with this code and codesystem already exists.</source>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="enum" id="enum">
-                <group resname="gender" id="enum.gender">
-                    <trans-unit resname="UNKNOWN" id="enum.gender.UNKNOWN">
-                        <source>not provided</source>
-                    </trans-unit>
-                </group>
-                <group resname="eventtype" id="enum.eventtype">
-                    <trans-unit resname="user-gender-change" id="enum.eventtype.user-gender-change">
-                        <source>User's gender information updated</source>
-                    </trans-unit>
-                    <trans-unit resname="audit-log-used" id="enum.eventtype.audit-log-used">
-                        <source>Audit log consulted</source>
-                        <target>Consultato il audit log</target>
-                    </trans-unit>
-                </group>
-                <group resname="userfeature" id="enum.userfeature">
-                    <trans-unit resname="GENDER_SET" id="enum.userfeature.GENDER_SET">
-                        <source>The gender of the user must be known</source>
-                    </trans-unit>
-                </group>
-                <group resname="researcherrole" id="enum.researcherrole">
-                    <trans-unit resname="SPONSOR" id="enum.researcherrole.SPONSOR">
-                        <source>Sponsor</source>
-                    </trans-unit>
-                </group>
-                <group resname="month" id="enum.month">
-                    <trans-unit resname="02" id="enum.month.02">
-                        <source>Feb</source>
-                    </trans-unit>
-                    <trans-unit resname="03" id="enum.month.03">
-                        <source>Mar</source>
-                    </trans-unit>
-                    <trans-unit resname="04" id="enum.month.04">
-                        <source>Apr</source>
-                    </trans-unit>
-                    <trans-unit resname="11" id="enum.month.11">
-                        <source>Nov</source>
-                    </trans-unit>
-                </group>
-                <group resname="plugintype" id="enum.plugintype">
-                    <trans-unit resname="visualization" id="enum.plugintype.visualization">
-                        <source>Plugin</source>
-                    </trans-unit>
-                    <trans-unit resname="oauth1" id="enum.plugintype.oauth1">
-                        <source>OAuth 1</source>
-                    </trans-unit>
-                    <trans-unit resname="oauth2" id="enum.plugintype.oauth2">
-                        <source>OAuth 2</source>
-                    </trans-unit>
-                    <trans-unit resname="endpoint" id="enum.plugintype.endpoint">
-                        <source>FHIR endpoint</source>
-                    </trans-unit>
-                </group>
-                <group resname="entitytype" id="enum.entitytype">
-                    <trans-unit resname="USERGROUP" id="enum.entitytype.USERGROUP">
-                        <source>Team</source>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="common" id="common">
-                <trans-unit resname="empty" id="common.empty">
-                    <source> </source>
-                </trans-unit>
-                <group resname="yesno" id="common.yesno">
-                    <trans-unit resname="false" id="common.yesno.false">
-                        <source>No</source>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="registration" id="registration">
-                <trans-unit resname="password" id="registration.password">
-                    <source>Password</source>
-                </trans-unit>
-            </group>
-            <group resname="login" id="login">
-                <trans-unit resname="password" id="login.password">
-                    <source>Password</source>
-                </trans-unit>
-            </group>
-            <group resname="postregister" id="postregister">
-                <trans-unit resname="gender_entered" id="postregister.gender_entered">
-                    <source>Information about your gender is required to use this service. Please provide your gender.</source>
-                </trans-unit>
-            </group>
-            <group resname="recorddetail" id="recorddetail">
-                <trans-unit resname="modified_by" id="recorddetail.modified_by">
-                    <source>Last modified by:</source>
-                </trans-unit>
-                <trans-unit resname="id" id="recorddetail.id">
-                    <source>Record ID</source>
-                </trans-unit>
-            </group>
-            <group resname="user" id="user">
-                <trans-unit resname="midataID" id="user.midataID">
-                    <source>@PRODUCT ID:</source>
-                </trans-unit>
-            </group>
-            <group resname="editconsent2" id="editconsent2">
-                <trans-unit resname="team" id="editconsent2.team">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-            <group resname="records" id="records">
-                <trans-unit resname="just_name" id="records.just_name">
-                    <source>{{name}}</source>
-                </trans-unit>
-            </group>
-            <group resname="dashboard" id="dashboard">
-                <trans-unit resname="social" id="dashboard.social">
-                    <source>Social</source>
-                </trans-unit>
-            </group>
-            <group resname="auditlog" id="auditlog">
-                <trans-unit resname="via" id="auditlog.via">
-                    <source>via</source>
-                </trans-unit>
-                <trans-unit resname="MEMBER" id="auditlog.MEMBER">
-                    <source>Account</source>
-                </trans-unit>
-            </group>
-            <group resname="changeemail" id="changeemail">
-                <trans-unit resname="midataId" id="changeemail.midataId">
+            <group resname="admin_members" id="admin_members">
+                <trans-unit resname="midata_id" id="admin_members.midata_id">
                     <source>@PRODUCT ID</source>
                 </trans-unit>
             </group>
-            <group resname="accountwipe" id="accountwipe">
-                <trans-unit resname="password" id="accountwipe.password">
-                    <source>Password</source>
+            <group resname="admin_address" id="admin_address">
+                <trans-unit resname="midata_id" id="admin_address.midata_id">
+                    <source>@PRODUCT ID</source>
                 </trans-unit>
             </group>
-            <group resname="queryeditor" id="queryeditor">
-                <trans-unit resname="access_query" id="queryeditor.access_query">
+            <group resname="admin_plugins" id="admin_plugins">
+                <trans-unit resname="plugin_market" id="admin_plugins.plugin_market">
+                    <source>Store</source>
+                </trans-unit>
+            </group>
+            <group resname="admin_study" id="admin_study">
+                <trans-unit resname="sharing_query" id="admin_study.sharing_query">
                     <source>Data Access Filter</source>
                 </trans-unit>
-                <group resname="ask" id="queryeditor.ask">
-                    <trans-unit resname="AuditEvent" id="queryeditor.ask.AuditEvent">
-                        <source>Access to the audit log</source>
-                        <target>Accesso al audit log</target>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="timeline" id="timeline">
-                <trans-unit resname="title" id="timeline.title">
-                    <source>Timeline</source>
-                </trans-unit>
-                <trans-unit resname="fitness" id="timeline.fitness">
-                    <source>Fitness</source>
+                <trans-unit resname="team" id="admin_study.team">
+                    <source>Team</source>
                 </trans-unit>
             </group>
-            <group resname="changelog" id="changelog">
-                <trans-unit resname="B" id="changelog.B">
-                    <source>Bugfix</source>
+            <group resname="admin_stats" id="admin_stats">
+                <trans-unit resname="indexPageCount" id="admin_stats.indexPageCount">
+                    <source>DB Index Pages</source>
                 </trans-unit>
-                <trans-unit resname="S" id="changelog.S">
-                    <source>Bugfix</source>
+            </group>
+            <group resname="admin_pwrecover" id="admin_pwrecover">
+                <trans-unit resname="share" id="admin_pwrecover.share">
+                    <source>Share</source>
+                </trans-unit>
+            </group>
+            <group resname="usagestats" id="usagestats">
+                <trans-unit resname="REGISTRATION" id="usagestats.REGISTRATION">
+                    <source>Registration</source>
+                </trans-unit>
+                <trans-unit resname="LOGIN" id="usagestats.LOGIN">
+                    <source>Login</source>
+                </trans-unit>
+                <trans-unit resname="REFRESH" id="usagestats.REFRESH">
+                    <source>Session</source>
+                </trans-unit>
+                <trans-unit resname="INSTALL" id="usagestats.INSTALL">
+                    <source>Activation</source>
+                </trans-unit>
+                <trans-unit resname="GET" id="usagestats.GET">
+                    <source>Read</source>
+                </trans-unit>
+                <trans-unit resname="POST" id="usagestats.POST">
+                    <source>Write</source>
+                </trans-unit>
+                <trans-unit resname="PUT" id="usagestats.PUT">
+                    <source>Update</source>
+                </trans-unit>
+                <trans-unit resname="DELETE" id="usagestats.DELETE">
+                    <source>Delete</source>
+                </trans-unit>
+            </group>
+            <group resname="admin_services" id="admin_services">
+                <trans-unit resname="endpoints" id="admin_services.endpoints">
+                    <source>FHIR Endpoints</source>
+                    <target>FHIR Endpoints</target>
                 </trans-unit>
             </group>
         </body>
@@ -789,10 +528,6 @@
             <group resname="admin_navbar" id="admin_navbar">
                 <trans-unit resname="admin" id="admin_navbar.admin">
                     <source>Admin</source>
-                </trans-unit>
-                <trans-unit resname="auditlog" id="admin_navbar.auditlog">
-                    <source>Audit Log</source>
-                    <target>Audit log</target>
                 </trans-unit>
                 <trans-unit resname="news" id="admin_navbar.news">
                     <source>News</source>
@@ -930,85 +665,168 @@
             </group>
             <group resname="admin_services" id="admin_services">
                 <trans-unit resname="endpoints" id="admin_services.endpoints">
-                    <source>Endpoints</source>
+                    <source>FHIR Endpoints</source>
+                    <target>FHIR Endpoints</target>
                 </trans-unit>
             </group>
         </body>
     </file>
-    <file source-language="en" target-language="it" datatype="winres" original="admins_it.json">
+    <file source-language="en" target-language="de" datatype="winres" original="developers_de.json">
         <body>
-            <group resname="admin_navbar" id="admin_navbar">
-                <trans-unit resname="admin" id="admin_navbar.admin">
-                    <source>Admin</source>
+            <group resname="developer_navbar" id="developer_navbar">
+                <trans-unit resname="sandbox" id="developer_navbar.sandbox">
+                    <source>Sandbox</source>
                 </trans-unit>
-                <trans-unit resname="auditlog" id="admin_navbar.auditlog">
-                    <source>Audit Log</source>
-                    <target>Audit log</target>
-                </trans-unit>
-            </group>
-            <group resname="admin_members" id="admin_members">
-                <trans-unit resname="midata_id" id="admin_members.midata_id">
-                    <source>@PRODUCT ID</source>
+                <trans-unit resname="workspace" id="developer_navbar.workspace">
+                    <source>Workspace</source>
                 </trans-unit>
             </group>
-            <group resname="admin_address" id="admin_address">
-                <trans-unit resname="midata_id" id="admin_address.midata_id">
-                    <source>@PRODUCT ID</source>
+            <group resname="developer_yourapps" id="developer_yourapps">
+                <trans-unit resname="name" id="developer_yourapps.name">
+                    <source>Name</source>
                 </trans-unit>
             </group>
-            <group resname="admin_plugins" id="admin_plugins">
-                <trans-unit resname="plugin_market" id="admin_plugins.plugin_market">
-                    <source>Store</source>
+            <group resname="appmessages" id="appmessages">
+                <trans-unit resname="code" id="appmessages.code">
+                    <source>Code</source>
                 </trans-unit>
             </group>
-            <group resname="admin_study" id="admin_study">
-                <trans-unit resname="sharing_query" id="admin_study.sharing_query">
+            <group resname="manageapp" id="manageapp">
+                <trans-unit resname="refreshTkExchangeParams" id="manageapp.refreshTkExchangeParams">
+                    <source>OAuth 2 Parameters for Refresh-Token Exchange</source>
+                </trans-unit>
+                <trans-unit resname="repository_btn" id="manageapp.repository_btn">
+                    <source>Code Repository</source>
+                </trans-unit>
+                <trans-unit resname="debug_btn" id="manageapp.debug_btn">
+                    <source>API Tester Sandbox</source>
+                </trans-unit>
+                <group resname="info" id="manageapp.info">
+                    <trans-unit resname="refreshTkExchangeParams" id="manageapp.info.refreshTkExchangeParams">
+                        <source>Default is grant_type=&lt;grant_type&gt;&amp;refresh_token=&lt;refresh_token&gt;&amp;client_id=&lt;client_id&gt; but some services also requrie client_secret=&lt;client_secret&gt; or other parameters</source>
+                    </trans-unit>
+                    <trans-unit resname="send_reports" id="manageapp.info.send_reports">
+                        <source>Notify the application creator and developer team by email on errors caused by this application.</source>
+                        <target>Den Ersteller der Applikation und das Entwicklerteam per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.</target>
+                    </trans-unit>
+                    <trans-unit resname="createendpoint" id="manageapp.info.createendpoint">
+                        <source>Create a non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.</source>
+                        <target>Nicht projektbezogene Instanz des Endpoint erstellen. Nur ankreuzen, wenn Sie diesen Endpoint NICHT mit einem Projekt verwenden wollen.</target>
+                    </trans-unit>
+                    <trans-unit resname="endpoint2" id="manageapp.info.endpoint2">
+                        <source>Do not forget: to activate the endpoint you need to add an API key afterwards.</source>
+                        <target>Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen.</target>
+                    </trans-unit>
+                </group>
+                <trans-unit resname="access_query_json" id="manageapp.access_query_json">
                     <source>Data Access Filter</source>
                 </trans-unit>
-                <trans-unit resname="team" id="admin_study.team">
-                    <source>Team</source>
+                <trans-unit resname="createendpoint" id="manageapp.createendpoint">
+                    <source>Create Endpoint Instance</source>
+                    <target>Endpoint-Instanz erstellen</target>
+                </trans-unit>
+                <trans-unit resname="endpoint" id="manageapp.endpoint">
+                    <source>Endpoint Name</source>
+                </trans-unit>
+                <trans-unit resname="servicewarning" id="manageapp.servicewarning">
+                    <source>Changing the application definition requires the generation of new API keys for all instances of this service.</source>
+                    <target>Eine Änderung der Applikationsdefinition erfordert die Generierung neuer API-Schlüssel für alle Instanzen dieses Dienstes.</target>
                 </trans-unit>
             </group>
-            <group resname="admin_stats" id="admin_stats">
-                <trans-unit resname="indexPageCount" id="admin_stats.indexPageCount">
-                    <source>DB Index Pages</source>
+            <group resname="appdebug" id="appdebug">
+                <trans-unit resname="title" id="appdebug.title">
+                    <source>API Tester</source>
+                </trans-unit>
+                <trans-unit resname="oauth_login" id="appdebug.oauth_login">
+                    <source>OAuth Login</source>
+                </trans-unit>
+                <trans-unit resname="device" id="appdebug.device">
+                    <source>Device</source>
+                </trans-unit>
+                <trans-unit resname="refresh_token" id="appdebug.refresh_token">
+                    <source>Refresh Token</source>
                 </trans-unit>
             </group>
-            <group resname="admin_pwrecover" id="admin_pwrecover">
-                <trans-unit resname="share" id="admin_pwrecover.share">
-                    <source>Share</source>
+            <group resname="appicon" id="appicon">
+                <group resname="type" id="appicon.type">
+                    <trans-unit resname="image/jpeg" id="appicon.type.image/jpeg">
+                        <source>JPEG</source>
+                    </trans-unit>
+                    <trans-unit resname="image/png" id="appicon.type.image/png">
+                        <source>PNG</source>
+                    </trans-unit>
+                    <trans-unit resname="image/gif" id="appicon.type.image/gif">
+                        <source>GIF</source>
+                    </trans-unit>
+                </group>
+            </group>
+            <group resname="appsubscriptions" id="appsubscriptions">
+                <trans-unit resname="trigger" id="appsubscriptions.trigger">
+                    <source>Trigger</source>
                 </trans-unit>
             </group>
-            <group resname="usagestats" id="usagestats">
-                <trans-unit resname="REGISTRATION" id="usagestats.REGISTRATION">
-                    <source>Registration</source>
+            <group resname="appreviews" id="appreviews">
+                <trans-unit resname="status" id="appreviews.status">
+                    <source>Status</source>
                 </trans-unit>
-                <trans-unit resname="LOGIN" id="usagestats.LOGIN">
-                    <source>Login</source>
+                <trans-unit resname="ACCESS_FILTER" id="appreviews.ACCESS_FILTER">
+                    <source>Data Access Filter</source>
                 </trans-unit>
-                <trans-unit resname="REFRESH" id="usagestats.REFRESH">
-                    <source>Session</source>
+                <trans-unit resname="QUERIES" id="appreviews.QUERIES">
+                    <source>Queries</source>
                 </trans-unit>
-                <trans-unit resname="INSTALL" id="usagestats.INSTALL">
-                    <source>Activation</source>
-                </trans-unit>
-                <trans-unit resname="GET" id="usagestats.GET">
-                    <source>Read</source>
-                </trans-unit>
-                <trans-unit resname="POST" id="usagestats.POST">
-                    <source>Write</source>
-                </trans-unit>
-                <trans-unit resname="PUT" id="usagestats.PUT">
-                    <source>Update</source>
-                </trans-unit>
-                <trans-unit resname="DELETE" id="usagestats.DELETE">
-                    <source>Delete</source>
+                <trans-unit resname="ICONS" id="appreviews.ICONS">
+                    <source>Icons</source>
                 </trans-unit>
             </group>
-            <group resname="admin_services" id="admin_services">
-                <trans-unit resname="endpoints" id="admin_services.endpoints">
-                    <source>Endpoints</source>
+            <group resname="repository" id="repository">
+                <trans-unit resname="title" id="repository.title">
+                    <source>Code Repository</source>
                 </trans-unit>
+                <trans-unit resname="repository_url" id="repository.repository_url">
+                    <source>Repository URL</source>
+                </trans-unit>
+                <trans-unit resname="repository_token" id="repository.repository_token">
+                    <source>Access Token</source>
+                </trans-unit>
+                <trans-unit resname="phase_checkout" id="repository.phase_checkout">
+                    <source>Check out</source>
+                </trans-unit>
+                <trans-unit resname="phase_build" id="repository.phase_build">
+                    <source>Build</source>
+                </trans-unit>
+                <trans-unit resname="log" id="repository.log">
+                    <source>Log</source>
+                </trans-unit>
+            </group>
+            <group resname="workspace" id="workspace">
+                <trans-unit resname="title" id="workspace.title">
+                    <source>Workspace</source>
+                </trans-unit>
+                <trans-unit resname="midata" id="workspace.midata">
+                    <source>@PLATFORM Back-end</source>
+                </trans-unit>
+                <group resname="severity" id="workspace.severity">
+                    <trans-unit resname="zinfo" id="workspace.severity.zinfo">
+                        <source>Info</source>
+                    </trans-unit>
+                </group>
+                <trans-unit resname="param" id="workspace.param">
+                    <source>Parameter</source>
+                </trans-unit>
+            </group>
+            <group resname="applogin" id="applogin">
+                <trans-unit resname="urlParams" id="applogin.urlParams">
+                    <source>Test parameters to OAuth login</source>
+                </trans-unit>
+                <trans-unit resname="urlParams2" id="applogin.urlParams2">
+                    <source>Test URL parameters your application will provide to the login. For example 'family=Test&amp;given=Some&amp;ro=true&amp;country=CH&amp;language=de'.</source>
+                </trans-unit>
+                <group resname="step" id="applogin.step">
+                    <trans-unit resname="auth2factor" id="applogin.step.auth2factor">
+                        <source>2FA</source>
+                    </trans-unit>
+                </group>
             </group>
         </body>
     </file>
@@ -1033,6 +851,9 @@
                 </trans-unit>
             </group>
             <group resname="manageapp" id="manageapp">
+                <trans-unit resname="refreshTkExchangeParams" id="manageapp.refreshTkExchangeParams">
+                    <source>OAuth 2 Parameters for Refresh-Token Exchange</source>
+                </trans-unit>
                 <trans-unit resname="repository_btn" id="manageapp.repository_btn">
                     <source>Code Repository</source>
                 </trans-unit>
@@ -1040,16 +861,19 @@
                     <source>API Tester Sandbox</source>
                 </trans-unit>
                 <group resname="info" id="manageapp.info">
+                    <trans-unit resname="refreshTkExchangeParams" id="manageapp.info.refreshTkExchangeParams">
+                        <source>Default is grant_type=&lt;grant_type&gt;&amp;refresh_token=&lt;refresh_token&gt;&amp;client_id=&lt;client_id&gt; but some services also requrie client_secret=&lt;client_secret&gt; or other parameters</source>
+                    </trans-unit>
                     <trans-unit resname="send_reports" id="manageapp.info.send_reports">
-                        <source>Notify app creator and developer team by email on errors caused by this application.</source>
-                        <target>Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application.</target>
+                        <source>Notify the application creator and developer team by email on errors caused by this application.</source>
+                        <target>Avertir le créateur de l'application et l'équipe de développeurs par e-mail des erreurs causées par cette application.</target>
                     </trans-unit>
                     <trans-unit resname="createendpoint" id="manageapp.info.createendpoint">
-                        <source>Create non-project related endpoint. Check only if you do NOT plan to use this endpoint with a project.</source>
-                        <target>Créer un endpoint non lié à un projet. Cochez uniquement si vous ne prévoyez PAS d'utiliser cet endpoint avec un projet.</target>
+                        <source>Create a non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.</source>
+                        <target>Créer une instance de cet endpoint non liée au projet. Cochez uniquement si vous ne prévoyez PAS d'utiliser cet endpoint avec un projet.</target>
                     </trans-unit>
                     <trans-unit resname="endpoint2" id="manageapp.info.endpoint2">
-                        <source>Do not forget: to activate the endpoint you need to add an API-Key afterwards.</source>
+                        <source>Do not forget: to activate the endpoint you need to add an API key afterwards.</source>
                         <target>N'oubliez pas: pour activer l'endpoint, vous devez ensuite ajouter une clé API.</target>
                     </trans-unit>
                 </group>
@@ -1057,14 +881,15 @@
                     <source>Data Access Filter</source>
                 </trans-unit>
                 <trans-unit resname="createendpoint" id="manageapp.createendpoint">
-                    <source>Create Endpoint</source>
-                    <target>Créer l'endpoint</target>
+                    <source>Create Endpoint Instance</source>
+                    <target>Créer une instance de l'endpoint</target>
                 </trans-unit>
                 <trans-unit resname="important" id="manageapp.important">
                     <source>IMPORTANT</source>
                 </trans-unit>
                 <trans-unit resname="servicewarning" id="manageapp.servicewarning">
-                    <source>Changing the application definition requires the generation of new API-Keys for all instances of this service.</source>
+                    <source>Changing the application definition requires the generation of new API keys for all instances of this service.</source>
+                    <target>Modifier la définition de l'application nécessite la génération de nouvelles clés API pour toutes les instances de ce service.</target>
                 </trans-unit>
             </group>
             <group resname="appdebug" id="appdebug">
@@ -1123,10 +948,6 @@
                 <trans-unit resname="title" id="repository.title">
                     <source>Code Repository</source>
                 </trans-unit>
-                <trans-unit resname="repository_dir" id="repository.repository_dir">
-                    <source>(Optional) Subdirectory in repository</source>
-                    <target>( Optionnel) Sous-répertoire dans le repository</target>
-                </trans-unit>
                 <trans-unit resname="repository_token" id="repository.repository_token">
                     <source>Access Token</source>
                 </trans-unit>
@@ -1151,12 +972,15 @@
                 </group>
             </group>
             <group resname="applogin" id="applogin">
+                <trans-unit resname="urlParams" id="applogin.urlParams">
+                    <source>Test parameters to OAuth login</source>
+                </trans-unit>
+                <trans-unit resname="urlParams2" id="applogin.urlParams2">
+                    <source>Test URL parameters your application will provide to the login. For example 'family=Test&amp;given=Some&amp;ro=true&amp;country=CH&amp;language=de'.</source>
+                </trans-unit>
                 <group resname="step" id="applogin.step">
                     <trans-unit resname="auth2factor" id="applogin.step.auth2factor">
                         <source>2FA</source>
-                    </trans-unit>
-                    <trans-unit resname="gender_set" id="applogin.step.gender_set">
-                        <source>Enter gender</source>
                     </trans-unit>
                 </group>
             </group>
@@ -1173,6 +997,9 @@
                 </trans-unit>
             </group>
             <group resname="manageapp" id="manageapp">
+                <trans-unit resname="refreshTkExchangeParams" id="manageapp.refreshTkExchangeParams">
+                    <source>OAuth 2 Parameters for Refresh-Token Exchange</source>
+                </trans-unit>
                 <trans-unit resname="repository_btn" id="manageapp.repository_btn">
                     <source>Code Repository</source>
                 </trans-unit>
@@ -1180,28 +1007,32 @@
                     <source>API Tester Sandbox</source>
                 </trans-unit>
                 <group resname="info" id="manageapp.info">
+                    <trans-unit resname="refreshTkExchangeParams" id="manageapp.info.refreshTkExchangeParams">
+                        <source>Default is grant_type=&lt;grant_type&gt;&amp;refresh_token=&lt;refresh_token&gt;&amp;client_id=&lt;client_id&gt; but some services also requrie client_secret=&lt;client_secret&gt; or other parameters</source>
+                    </trans-unit>
                     <trans-unit resname="send_reports" id="manageapp.info.send_reports">
-                        <source>Notify app creator and developer team by email on errors caused by this application.</source>
-                        <target>Notificare lo sviluppatore ({{utente}}}) via e-mail sulle cause di errore di questa applicazione.</target>
+                        <source>Notify the application creator and developer team by email on errors caused by this application.</source>
+                        <target>Avvisare il creatore dell'applicazione e il team di sviluppo via e-mail degli errori causati da questa applicazione.</target>
                     </trans-unit>
                     <trans-unit resname="createendpoint" id="manageapp.info.createendpoint">
-                        <source>Create non-project related endpoint. Check only if you do NOT plan to use this endpoint with a project.</source>
-                        <target>Crea un endpoint non legata a un progetto. Selezionare solo se NON si prevede di utilizzare questo endpoint con un progetto.</target>
+                        <source>Create a non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.</source>
+                        <target>Creare un'istanza di questo endpoint non legata al progetto. Selezionare solo se NON si prevede di utilizzare questo endpoint con un progetto.</target>
                     </trans-unit>
                     <trans-unit resname="endpoint2" id="manageapp.info.endpoint2">
-                        <source>Do not forget: to activate the endpoint you need to add an API-Key afterwards.</source>
-                        <target>Non dimenticare: per attivare l'endpoint è necessario aggiungere una API-Key dopo.</target>
+                        <source>Do not forget: to activate the endpoint you need to add an API key afterwards.</source>
+                        <target>Non dimenticare: per attivare l'endpoint è necessario aggiungere una chiavi API dopo.</target>
                     </trans-unit>
                 </group>
                 <trans-unit resname="access_query_json" id="manageapp.access_query_json">
                     <source>Data Access Filter</source>
                 </trans-unit>
                 <trans-unit resname="createendpoint" id="manageapp.createendpoint">
-                    <source>Create Endpoint</source>
-                    <target>Creare il endpoint</target>
+                    <source>Create Endpoint Instance</source>
+                    <target>Creare un'istanza dell'endpoint</target>
                 </trans-unit>
                 <trans-unit resname="servicewarning" id="manageapp.servicewarning">
-                    <source>Changing the application definition requires the generation of new API-Keys for all instances of this service.</source>
+                    <source>Changing the application definition requires the generation of new API keys for all instances of this service.</source>
+                    <target>La modifica della definizione dell'applicazione richiede la generazione di nuove chiavi API per tutte le istanze di questo servizio.</target>
                 </trans-unit>
             </group>
             <group resname="appdebug" id="appdebug">
@@ -1265,10 +1096,6 @@
                 <trans-unit resname="title" id="repository.title">
                     <source>Code Repository</source>
                 </trans-unit>
-                <trans-unit resname="repository_dir" id="repository.repository_dir">
-                    <source>(Optional) Subdirectory in repository</source>
-                    <target>(Opzionale) Sottodirectory nel repository</target>
-                </trans-unit>
                 <trans-unit resname="repository_token" id="repository.repository_token">
                     <source>Access Token</source>
                 </trans-unit>
@@ -1293,14 +1120,765 @@
                 </group>
             </group>
             <group resname="applogin" id="applogin">
+                <trans-unit resname="urlParams" id="applogin.urlParams">
+                    <source>Test parameters to OAuth login</source>
+                </trans-unit>
+                <trans-unit resname="urlParams2" id="applogin.urlParams2">
+                    <source>Test URL parameters your application will provide to the login. For example 'family=Test&amp;given=Some&amp;ro=true&amp;country=CH&amp;language=de'.</source>
+                </trans-unit>
                 <group resname="step" id="applogin.step">
                     <trans-unit resname="auth2factor" id="applogin.step.auth2factor">
                         <source>2FA</source>
                     </trans-unit>
-                    <trans-unit resname="gender_set" id="applogin.step.gender_set">
-                        <source>Enter gender</source>
+                </group>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="de" datatype="winres" original="members_de.json">
+        <body>
+            <group resname="help_welcome" id="help_welcome">
+                <trans-unit resname="menu_me" id="help_welcome.menu_me">
+                    <source>Dashboard</source>
+                </trans-unit>
+                <trans-unit resname="menu_research" id="help_welcome.menu_research">
+                    <source>News</source>
+                </trans-unit>
+            </group>
+            <group resname="help_setup" id="help_setup">
+                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
+                    <source>Fitbit</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
+                    <source>Jawbone</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
+                    <source>Withings</source>
+                </trans-unit>
+            </group>
+            <group resname="accountdata" id="accountdata">
+                <trans-unit resname="midata_id" id="accountdata.midata_id">
+                    <source>@PRODUCT ID:</source>
+                </trans-unit>
+            </group>
+            <group resname="yourstudies" id="yourstudies">
+                <trans-unit resname="status" id="yourstudies.status">
+                    <source>Status</source>
+                </trans-unit>
+            </group>
+            <group resname="providers" id="providers">
+                <trans-unit resname="name" id="providers.name">
+                    <source>Name</source>
+                </trans-unit>
+                <trans-unit resname="status" id="providers.status">
+                    <source>Status</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="de" datatype="winres" original="shared_de.json">
+        <body>
+            <group resname="navbar" id="navbar">
+                <trans-unit resname="me" id="navbar.me">
+                    <source>Timeline</source>
+                </trans-unit>
+            </group>
+            <group resname="error" id="error">
+                <trans-unit resname="failed" id="error.failed">
+                    <source>Action failed</source>
+                </trans-unit>
+            </group>
+            <group resname="enum" id="enum">
+                <group resname="eventtype" id="enum.eventtype">
+                    <trans-unit resname="user-gender-change" id="enum.eventtype.user-gender-change">
+                        <source>User's gender changed</source>
+                        <target>Geschlecht des Benutzers geändert</target>
+                    </trans-unit>
+                    <trans-unit resname="email-sent" id="enum.eventtype.email-sent">
+                        <source>Email sent</source>
+                    </trans-unit>
+                    <trans-unit resname="sms-sent" id="enum.eventtype.sms-sent">
+                        <source>SMS sent</source>
+                    </trans-unit>
+                    <trans-unit resname="resthook-called" id="enum.eventtype.resthook-called">
+                        <source>Resthook called</source>
+                    </trans-unit>
+                    <trans-unit resname="script-invocation" id="enum.eventtype.script-invocation">
+                        <source>Script invoked</source>
                     </trans-unit>
                 </group>
+                <group resname="studytype" id="enum.studytype">
+                    <trans-unit resname="COMMUNITY" id="enum.studytype.COMMUNITY">
+                        <source>Community</source>
+                    </trans-unit>
+                </group>
+                <group resname="userrole" id="enum.userrole">
+                    <trans-unit resname="ADMIN" id="enum.userrole.ADMIN">
+                        <source>Administrator</source>
+                    </trans-unit>
+                </group>
+                <group resname="subuserrole" id="enum.subuserrole">
+                    <trans-unit resname="MANAGER" id="enum.subuserrole.MANAGER">
+                        <source>Manager</source>
+                    </trans-unit>
+                </group>
+                <group resname="researcherrole" id="enum.researcherrole">
+                    <trans-unit resname="SPONSOR" id="enum.researcherrole.SPONSOR">
+                        <source>Sponsor</source>
+                    </trans-unit>
+                    <trans-unit resname="INVESTIGATOR" id="enum.researcherrole.INVESTIGATOR">
+                        <source>Investigator</source>
+                    </trans-unit>
+                    <trans-unit resname="AUDITOR" id="enum.researcherrole.AUDITOR">
+                        <source>Auditor</source>
+                    </trans-unit>
+                    <trans-unit resname="STUDYNURSE" id="enum.researcherrole.STUDYNURSE">
+                        <source>Study Nurse</source>
+                    </trans-unit>
+                    <trans-unit resname="MONITOR" id="enum.researcherrole.MONITOR">
+                        <source>Monitor</source>
+                    </trans-unit>
+                </group>
+                <group resname="language" id="enum.language">
+                    <trans-unit resname="EN" id="enum.language.EN">
+                        <source>English</source>
+                    </trans-unit>
+                </group>
+                <group resname="month" id="enum.month">
+                    <trans-unit resname="01" id="enum.month.01">
+                        <source>Jan</source>
+                    </trans-unit>
+                    <trans-unit resname="02" id="enum.month.02">
+                        <source>Feb</source>
+                    </trans-unit>
+                    <trans-unit resname="04" id="enum.month.04">
+                        <source>Apr</source>
+                    </trans-unit>
+                    <trans-unit resname="06" id="enum.month.06">
+                        <source>Jun</source>
+                    </trans-unit>
+                    <trans-unit resname="07" id="enum.month.07">
+                        <source>Jul</source>
+                    </trans-unit>
+                    <trans-unit resname="08" id="enum.month.08">
+                        <source>Aug</source>
+                    </trans-unit>
+                    <trans-unit resname="09" id="enum.month.09">
+                        <source>Sep</source>
+                    </trans-unit>
+                    <trans-unit resname="11" id="enum.month.11">
+                        <source>Nov</source>
+                    </trans-unit>
+                </group>
+                <group resname="codesystems" id="enum.codesystems">
+                    <trans-unit resname="fhir" id="enum.codesystems.fhir">
+                        <source>FHIR Resource</source>
+                    </trans-unit>
+                </group>
+                <group resname="tags" id="enum.tags">
+                    <trans-unit resname="Import" id="enum.tags.Import">
+                        <source>Import</source>
+                    </trans-unit>
+                </group>
+                <group resname="plugintype" id="enum.plugintype">
+                    <trans-unit resname="visualization" id="enum.plugintype.visualization">
+                        <source>Plugin</source>
+                    </trans-unit>
+                    <trans-unit resname="oauth1" id="enum.plugintype.oauth1">
+                        <source>OAuth 1</source>
+                    </trans-unit>
+                    <trans-unit resname="oauth2" id="enum.plugintype.oauth2">
+                        <source>OAuth 2</source>
+                    </trans-unit>
+                    <trans-unit resname="endpoint" id="enum.plugintype.endpoint">
+                        <source>FHIR endpoint</source>
+                    </trans-unit>
+                </group>
+                <group resname="entitytype" id="enum.entitytype">
+                    <trans-unit resname="USERGROUP" id="enum.entitytype.USERGROUP">
+                        <source>Team</source>
+                    </trans-unit>
+                </group>
+            </group>
+            <group resname="common" id="common">
+                <trans-unit resname="empty" id="common.empty">
+                    <source> </source>
+                </trans-unit>
+            </group>
+            <group resname="registration" id="registration">
+                <trans-unit resname="mandantory_fields2" id="registration.mandantory_fields2">
+                    <source>Please fill in your email and password.</source>
+                </trans-unit>
+                <trans-unit resname="personal_details" id="registration.personal_details">
+                    <source>Personal Details</source>
+                </trans-unit>
+            </group>
+            <group resname="passphrase" id="passphrase">
+                <trans-unit resname="passphrase" id="passphrase.passphrase">
+                    <source>Passphrase</source>
+                </trans-unit>
+            </group>
+            <group resname="postregister" id="postregister">
+                <trans-unit resname="code" id="postregister.code">
+                    <source>Code</source>
+                </trans-unit>
+                <trans-unit resname="gender_entered" id="postregister.gender_entered">
+                    <source>Your gender must be provided to use this service. Please indicate your gender.</source>
+                    <target>Ihr Geschlecht muss angegeben werden, um diesen Dienst nutzen zu können. Bitte geben Sie Ihr Geschlecht an.</target>
+                </trans-unit>
+                <trans-unit resname="securityToken" id="postregister.securityToken">
+                    <source>Code</source>
+                </trans-unit>
+            </group>
+            <group resname="market" id="market">
+                <trans-unit resname="plugins" id="market.plugins">
+                    <source>Plugins</source>
+                </trans-unit>
+            </group>
+            <group resname="providersearch" id="providersearch">
+                <trans-unit resname="name" id="providersearch.name">
+                    <source>Name</source>
+                </trans-unit>
+            </group>
+            <group resname="recorddetail" id="recorddetail">
+                <trans-unit resname="name" id="recorddetail.name">
+                    <source>Name:</source>
+                </trans-unit>
+                <trans-unit resname="format" id="recorddetail.format">
+                    <source>Format:</source>
+                </trans-unit>
+                <trans-unit resname="id" id="recorddetail.id">
+                    <source>Record ID</source>
+                </trans-unit>
+                <trans-unit resname="code" id="recorddetail.code">
+                    <source>Code(s)</source>
+                </trans-unit>
+            </group>
+            <group resname="studydetails" id="studydetails">
+                <trans-unit resname="status" id="studydetails.status">
+                    <source>Status</source>
+                </trans-unit>
+            </group>
+            <group resname="user" id="user">
+                <trans-unit resname="name" id="user.name">
+                    <source>Name:</source>
+                </trans-unit>
+                <trans-unit resname="midataID" id="user.midataID">
+                    <source>@PRODUCT ID:</source>
+                </trans-unit>
+            </group>
+            <group resname="visualization" id="visualization">
+                <group resname="location" id="visualization.location">
+                    <trans-unit resname="workspace" id="visualization.location.workspace">
+                        <source>Workspace</source>
+                    </trans-unit>
+                    <trans-unit resname="sandbox" id="visualization.location.sandbox">
+                        <source>Workspace</source>
+                    </trans-unit>
+                </group>
+            </group>
+            <group resname="editconsent" id="editconsent">
+                <trans-unit resname="reshare" id="editconsent.reshare">
+                    <source>@:newconsent.reshare</source>
+                </trans-unit>
+                <trans-unit resname="reshare2" id="editconsent.reshare2">
+                    <source>@:newconsent.reshare2</source>
+                </trans-unit>
+            </group>
+            <group resname="editconsent2" id="editconsent2">
+                <trans-unit resname="status" id="editconsent2.status">
+                    <source>Status</source>
+                </trans-unit>
+                <trans-unit resname="team" id="editconsent2.team">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+            <group resname="consents" id="consents">
+                <trans-unit resname="status" id="consents.status">
+                    <source>Status</source>
+                </trans-unit>
+            </group>
+            <group resname="importrecords" id="importrecords">
+                <trans-unit resname="title" id="importrecords.title">
+                    <source>Import</source>
+                </trans-unit>
+            </group>
+            <group resname="spaces" id="spaces">
+                <trans-unit resname="title" id="spaces.title">
+                    <source>@PLATFORM Plugin</source>
+                </trans-unit>
+            </group>
+            <group resname="records" id="records">
+                <trans-unit resname="type_global" id="records.type_global">
+                    <source>Global</source>
+                </trans-unit>
+                <trans-unit resname="just_name" id="records.just_name">
+                    <source>{{name}}</source>
+                </trans-unit>
+            </group>
+            <group resname="oauth2" id="oauth2">
+                <trans-unit resname="shares_format" id="oauth2.shares_format">
+                    <source>Format: {{ format }}</source>
+                </trans-unit>
+            </group>
+            <group resname="dashboard" id="dashboard">
+                <trans-unit resname="training" id="dashboard.training">
+                    <source>Training</source>
+                </trans-unit>
+                <trans-unit resname="details" id="dashboard.details">
+                    <source>Details</source>
+                </trans-unit>
+                <trans-unit resname="newsconfig" id="dashboard.newsconfig">
+                    <source>News</source>
+                </trans-unit>
+            </group>
+            <group resname="auditlog" id="auditlog">
+                <trans-unit resname="actor" id="auditlog.actor">
+                    <source>Actor</source>
+                </trans-unit>
+                <trans-unit resname="entity" id="auditlog.entity">
+                    <source>Entity</source>
+                </trans-unit>
+                <trans-unit resname="title" id="auditlog.title">
+                    <source>Audit Log</source>
+                </trans-unit>
+                <trans-unit resname="MEMBER" id="auditlog.MEMBER">
+                    <source>Account</source>
+                </trans-unit>
+                <trans-unit resname="ADMIN" id="auditlog.ADMIN">
+                    <source>Account (Administrator)</source>
+                </trans-unit>
+            </group>
+            <group resname="changeemail" id="changeemail">
+                <trans-unit resname="midataId" id="changeemail.midataId">
+                    <source>@PRODUCT ID</source>
+                </trans-unit>
+                <trans-unit resname="name" id="changeemail.name">
+                    <source>Name</source>
+                </trans-unit>
+            </group>
+            <group resname="queryeditor" id="queryeditor">
+                <trans-unit resname="title" id="queryeditor.title">
+                    <source>Data Access Filter Editor</source>
+                </trans-unit>
+                <trans-unit resname="access_query" id="queryeditor.access_query">
+                    <source>Data Access Filter</source>
+                </trans-unit>
+                <trans-unit resname="code" id="queryeditor.code">
+                    <source>Code</source>
+                </trans-unit>
+            </group>
+            <group resname="timeline" id="timeline">
+                <trans-unit resname="title" id="timeline.title">
+                    <source>Timeline</source>
+                </trans-unit>
+                <trans-unit resname="fitness" id="timeline.fitness">
+                    <source>Fitness</source>
+                </trans-unit>
+            </group>
+            <group resname="changelog" id="changelog">
+                <trans-unit resname="B" id="changelog.B">
+                    <source>Bugfix</source>
+                </trans-unit>
+                <trans-unit resname="S" id="changelog.S">
+                    <source>Bugfix</source>
+                </trans-unit>
+            </group>
+            <group resname="apikeys" id="apikeys">
+                <trans-unit resname="common_name" id="apikeys.common_name">
+                    <source>OU (organization unit) and CN (common name) for CSR (certificate request)</source>
+                    <target>CN (common name) für CSR (certificate request)</target>
+                </trans-unit>
+                <trans-unit resname="instructions_common_name" id="apikeys.instructions_common_name">
+                    <source>For certificate based authentication create a CSR with the given OU and CN field. Send the CSR to @SUPPORT</source>
+                    <target>Für zertifikatsbasierte Authentifizierung erstellen Sie eine CSR mit dem angegebenen CN-Feld. Senden Sie den CSR an @SUPPORT</target>
+                </trans-unit>
+                <trans-unit resname="status" id="apikeys.status">
+                    <source>Status</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
+        <body>
+            <group resname="help_welcome" id="help_welcome">
+                <trans-unit resname="menu_config" id="help_welcome.menu_config">
+                    <source>Config</source>
+                </trans-unit>
+            </group>
+            <group resname="help_setup" id="help_setup">
+                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
+                    <source>Fitbit</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
+                    <source>Jawbone</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
+                    <source>Withings</source>
+                </trans-unit>
+            </group>
+            <group resname="accountdata" id="accountdata">
+                <trans-unit resname="midata_id" id="accountdata.midata_id">
+                    <source>@PRODUCT ID:</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="fr" datatype="winres" original="members_fr.json">
+        <body>
+            <group resname="help_welcome" id="help_welcome">
+                <trans-unit resname="menu_research" id="help_welcome.menu_research">
+                    <source>News</source>
+                </trans-unit>
+            </group>
+            <group resname="help_setup" id="help_setup">
+                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
+                    <source>Fitbit</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
+                    <source>Jawbone</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
+                    <source>Withings</source>
+                </trans-unit>
+            </group>
+            <group resname="accountdata" id="accountdata">
+                <trans-unit resname="midata_id" id="accountdata.midata_id">
+                    <source>@PRODUCT ID:</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="de" datatype="winres" original="providers_de.json">
+        <body>
+            <group resname="provider_registration" id="provider_registration">
+                <trans-unit resname="url" id="provider_registration.url">
+                    <source>Homepage URL</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_navbar" id="provider_navbar">
+                <trans-unit resname="workspace" id="provider_navbar.workspace">
+                    <source>Workspace</source>
+                </trans-unit>
+                <trans-unit resname="market" id="provider_navbar.market">
+                    <source>Store</source>
+                </trans-unit>
+                <trans-unit resname="usergroups" id="provider_navbar.usergroups">
+                    <source>Teams</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_organization" id="provider_organization">
+                <trans-unit resname="name" id="provider_organization.name">
+                    <source>Name</source>
+                </trans-unit>
+                <trans-unit resname="url" id="provider_organization.url">
+                    <source>Homepage URL</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_patientsearch" id="provider_patientsearch">
+                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
+                    <source>@PRODUCT ID</source>
+                </trans-unit>
+                <trans-unit resname="usergroup" id="provider_patientsearch.usergroup">
+                    <source>Team (optional)</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_usergroups" id="provider_usergroups">
+                <trans-unit resname="title" id="provider_usergroups.title">
+                    <source>Teams</source>
+                </trans-unit>
+                <trans-unit resname="name" id="provider_usergroups.name">
+                    <source>Team</source>
+                </trans-unit>
+                <trans-unit resname="status" id="provider_usergroups.status">
+                    <source>Status</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_editusergroup" id="provider_editusergroup">
+                <trans-unit resname="status" id="provider_editusergroup.status">
+                    <source>Status</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="fr" datatype="winres" original="providers_fr.json">
+        <body>
+            <group resname="provider_registration" id="provider_registration">
+                <trans-unit resname="description" id="provider_registration.description">
+                    <source>Description</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_navbar" id="provider_navbar">
+                <trans-unit resname="patients" id="provider_navbar.patients">
+                    <source>Patients</source>
+                </trans-unit>
+                <trans-unit resname="workspace" id="provider_navbar.workspace">
+                    <source>Workspace</source>
+                </trans-unit>
+                <trans-unit resname="usergroups" id="provider_navbar.usergroups">
+                    <source>Teams</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_organization" id="provider_organization">
+                <trans-unit resname="description" id="provider_organization.description">
+                    <source>Description</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_patientsearch" id="provider_patientsearch">
+                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
+                    <source>@PRODUCT ID</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_patients" id="provider_patients">
+                <trans-unit resname="title" id="provider_patients.title">
+                    <source>Patients</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_usergroups" id="provider_usergroups">
+                <trans-unit resname="title" id="provider_usergroups.title">
+                    <source>Teams</source>
+                </trans-unit>
+                <trans-unit resname="name" id="provider_usergroups.name">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
+        <body>
+            <group resname="provider_navbar" id="provider_navbar">
+                <trans-unit resname="workspace" id="provider_navbar.workspace">
+                    <source>Workspace</source>
+                </trans-unit>
+                <trans-unit resname="market" id="provider_navbar.market">
+                    <source>Store</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_patientsearch" id="provider_patientsearch">
+                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
+                    <source>@PRODUCT ID</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_usergroups" id="provider_usergroups">
+                <trans-unit resname="name" id="provider_usergroups.name">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="de" datatype="winres" original="researchers_de.json">
+        <body>
+            <group resname="researcher_navbar" id="researcher_navbar">
+                <trans-unit resname="workspace" id="researcher_navbar.workspace">
+                    <source>Workspace</source>
+                </trans-unit>
+            </group>
+            <group resname="researcher_organization" id="researcher_organization">
+                <trans-unit resname="name" id="researcher_organization.name">
+                    <source>Name</source>
+                </trans-unit>
+            </group>
+            <group resname="createstudy" id="createstudy">
+                <trans-unit resname="study_identifiers_info" id="createstudy.study_identifiers_info">
+                    <source>Enter all project identifiers from external institutions here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.</source>
+                    <target>Geben Sie hier alle Projektidentifikatoren von externen Institutionen ein. Geben Sie einen Identifikator pro Zeile ein. Verwenden Sie '|', um Codesystem und Wert zu trennen, falls gewünscht. Die Identifikatoren werden auf den Projektseiten des Portals nicht angezeigt.</target>
+                </trans-unit>
+            </group>
+            <group resname="studynav" id="studynav">
+                <trans-unit resname="details" id="studynav.details">
+                    <source>Details</source>
+                </trans-unit>
+                <trans-unit resname="codes" id="studynav.codes">
+                    <source>Codes</source>
+                </trans-unit>
+                <trans-unit resname="team" id="studynav.team">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+            <group resname="studies" id="studies">
+                <trans-unit resname="name" id="studies.name">
+                    <source>Name</source>
+                </trans-unit>
+            </group>
+            <group resname="studyactions" id="studyactions">
+                <trans-unit resname="validation" id="studyactions.validation">
+                    <source>Status</source>
+                </trans-unit>
+            </group>
+            <group resname="studyoverview" id="studyoverview">
+                <trans-unit resname="name" id="studyoverview.name">
+                    <source>Name</source>
+                </trans-unit>
+                <trans-unit resname="code" id="studyoverview.code">
+                    <source>Code</source>
+                </trans-unit>
+            </group>
+            <group resname="studyparticipant" id="studyparticipant">
+                <trans-unit resname="status" id="studyparticipant.status">
+                    <source>Status:</source>
+                </trans-unit>
+            </group>
+            <group resname="studyparticipants" id="studyparticipants">
+                <trans-unit resname="name" id="studyparticipants.name">
+                    <source>Name</source>
+                </trans-unit>
+                <trans-unit resname="status" id="studyparticipants.status">
+                    <source>Status</source>
+                </trans-unit>
+            </group>
+            <group resname="studyrules" id="studyrules">
+                <trans-unit resname="sharing_query" id="studyrules.sharing_query">
+                    <source>Data Access Filter</source>
+                </trans-unit>
+            </group>
+            <group resname="study_checklist" id="study_checklist">
+                <trans-unit resname="optional" id="study_checklist.optional">
+                    <source>(optional)</source>
+                </trans-unit>
+            </group>
+            <group resname="codes" id="codes">
+                <trans-unit resname="code" id="codes.code">
+                    <source>Code</source>
+                </trans-unit>
+                <trans-unit resname="status" id="codes.status">
+                    <source>Status</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="fr" datatype="winres" original="researchers_fr.json">
+        <body>
+            <group resname="researcher_registration" id="researcher_registration">
+                <trans-unit resname="description" id="researcher_registration.description">
+                    <source>Description</source>
+                </trans-unit>
+            </group>
+            <group resname="researcher_navbar" id="researcher_navbar">
+                <trans-unit resname="workspace" id="researcher_navbar.workspace">
+                    <source>Workspace</source>
+                </trans-unit>
+            </group>
+            <group resname="researcher_organization" id="researcher_organization">
+                <trans-unit resname="description" id="researcher_organization.description">
+                    <source>Description</source>
+                </trans-unit>
+            </group>
+            <group resname="createstudy" id="createstudy">
+                <trans-unit resname="study_identifiers_info" id="createstudy.study_identifiers_info">
+                    <source>Enter all project identifiers from external institutions here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.</source>
+                    <target>Saisissez ici tous les identifiants du projet provenant d'institutions externes. Saisissez un identifiant par ligne. Utilisez '|' pour séparer le système de code et la valeur si vous le souhaitez. Les identifiants ne seront pas affichés sur les pages du projet dans le portail.</target>
+                </trans-unit>
+                <trans-unit resname="developer_nostart" id="createstudy.developer_nostart">
+                    <source>Attention!</source>
+                </trans-unit>
+            </group>
+            <group resname="studynav" id="studynav">
+                <trans-unit resname="actions" id="studynav.actions">
+                    <source>Applications</source>
+                </trans-unit>
+                <trans-unit resname="participants" id="studynav.participants">
+                    <source>Participants</source>
+                </trans-unit>
+                <trans-unit resname="codes" id="studynav.codes">
+                    <source>Codes</source>
+                </trans-unit>
+                <trans-unit resname="team" id="studynav.team">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+            <group resname="studies" id="studies">
+                <trans-unit resname="validation" id="studies.validation">
+                    <source>Validation</source>
+                </trans-unit>
+                <trans-unit resname="participants" id="studies.participants">
+                    <source>Participants</source>
+                </trans-unit>
+            </group>
+            <group resname="studyactions" id="studyactions">
+                <trans-unit resname="app" id="studyactions.app">
+                    <source>Application</source>
+                </trans-unit>
+            </group>
+            <group resname="studyfields" id="studyfields">
+                <trans-unit resname="assistance" id="studyfields.assistance">
+                    <source>Assistance</source>
+                </trans-unit>
+                <trans-unit resname="group_description" id="studyfields.group_description">
+                    <source>Description</source>
+                </trans-unit>
+            </group>
+            <group resname="studyoverview" id="studyoverview">
+                <trans-unit resname="description" id="studyoverview.description">
+                    <source>Description</source>
+                </trans-unit>
+                <trans-unit resname="code" id="studyoverview.code">
+                    <source>Code</source>
+                </trans-unit>
+                <trans-unit resname="checklist" id="studyoverview.checklist">
+                    <source>Checklist</source>
+                </trans-unit>
+            </group>
+            <group resname="studyparticipant" id="studyparticipant">
+                <trans-unit resname="participant" id="studyparticipant.participant">
+                    <source>Participant:</source>
+                </trans-unit>
+            </group>
+            <group resname="studyrules" id="studyrules">
+                <trans-unit resname="sharing_query" id="studyrules.sharing_query">
+                    <source>Data Access Filter</source>
+                </trans-unit>
+            </group>
+            <group resname="researcher_sharing" id="researcher_sharing">
+                <trans-unit resname="source" id="researcher_sharing.source">
+                    <source>Source</source>
+                </trans-unit>
+                <trans-unit resname="app" id="researcher_sharing.app">
+                    <source>Application</source>
+                </trans-unit>
+            </group>
+            <group resname="codes" id="codes">
+                <trans-unit resname="code" id="codes.code">
+                    <source>Code</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="researchers_it.json">
+        <body>
+            <group resname="createstudy" id="createstudy">
+                <trans-unit resname="study_identifiers_info" id="createstudy.study_identifiers_info">
+                    <source>Enter all project identifiers from external institutions here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.</source>
+                    <target>Inserire qui tutti gli identificatori dei progetti delle istituzioni esterne. Inserire un identificatore per riga. Se si desidera, usare '|' per separare il sistema di codici dal valore. Gli identificatori non saranno visualizzati nelle pagine del progetto nel portale.</target>
+                </trans-unit>
+            </group>
+            <group resname="studynav" id="studynav">
+                <trans-unit resname="team" id="studynav.team">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+            <group resname="studyrules" id="studyrules">
+                <trans-unit resname="sharing_query" id="studyrules.sharing_query">
+                    <source>Data Access Filter</source>
+                </trans-unit>
+            </group>
+            <group resname="codes" id="codes">
+                <trans-unit resname="no" id="codes.no">
+                    <source>No</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="de" datatype="winres" original="branding_de.json">
+        <body>
+            <group resname="footer" id="footer">
+                <trans-unit resname="copyright" id="footer.copyright">
+                    <source> </source>
+                </trans-unit>
+                <trans-unit resname="homepage" id="footer.homepage">
+                    <source>@OPERATOR Homepage</source>
+                </trans-unit>
+                <trans-unit resname="impressum" id="footer.impressum">
+                    <source>Impressum</source>
+                </trans-unit>
             </group>
         </body>
     </file>
@@ -1312,7 +1890,6 @@
                 </trans-unit>
                 <trans-unit resname="auditlog" id="admin_navbar.auditlog">
                     <source>Audit Log</source>
-                    <target>Audit Log</target>
                 </trans-unit>
                 <trans-unit resname="news" id="admin_navbar.news">
                     <source>News</source>
@@ -1450,7 +2027,8 @@
             </group>
             <group resname="admin_services" id="admin_services">
                 <trans-unit resname="endpoints" id="admin_services.endpoints">
-                    <source>Endpoints</source>
+                    <source>FHIR Endpoints</source>
+                    <target>FHIR Endpoints</target>
                 </trans-unit>
                 <trans-unit resname="endpoint" id="admin_services.endpoint">
                     <source>FHIR Endpoint</source>
@@ -1461,597 +2039,11 @@
             </group>
         </body>
     </file>
-    <file source-language="en" target-language="de" datatype="winres" original="members_de.json">
-        <body>
-            <group resname="help_welcome" id="help_welcome">
-                <trans-unit resname="menu_me" id="help_welcome.menu_me">
-                    <source>Dashboard</source>
-                </trans-unit>
-                <trans-unit resname="menu_research" id="help_welcome.menu_research">
-                    <source>News</source>
-                </trans-unit>
-            </group>
-            <group resname="help_setup" id="help_setup">
-                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
-                    <source>Fitbit</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
-                    <source>Jawbone</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
-                    <source>Withings</source>
-                </trans-unit>
-            </group>
-            <group resname="accountdata" id="accountdata">
-                <trans-unit resname="midata_id" id="accountdata.midata_id">
-                    <source>@PRODUCT ID:</source>
-                </trans-unit>
-            </group>
-            <group resname="yourstudies" id="yourstudies">
-                <trans-unit resname="status" id="yourstudies.status">
-                    <source>Status</source>
-                </trans-unit>
-            </group>
-            <group resname="providers" id="providers">
-                <trans-unit resname="name" id="providers.name">
-                    <source>Name</source>
-                </trans-unit>
-                <trans-unit resname="status" id="providers.status">
-                    <source>Status</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="de" datatype="winres" original="developers_de.json">
-        <body>
-            <group resname="developer_navbar" id="developer_navbar">
-                <trans-unit resname="sandbox" id="developer_navbar.sandbox">
-                    <source>Sandbox</source>
-                </trans-unit>
-                <trans-unit resname="workspace" id="developer_navbar.workspace">
-                    <source>Workspace</source>
-                </trans-unit>
-            </group>
-            <group resname="developer_yourapps" id="developer_yourapps">
-                <trans-unit resname="name" id="developer_yourapps.name">
-                    <source>Name</source>
-                </trans-unit>
-            </group>
-            <group resname="appmessages" id="appmessages">
-                <trans-unit resname="code" id="appmessages.code">
-                    <source>Code</source>
-                </trans-unit>
-            </group>
-            <group resname="manageapp" id="manageapp">
-                <trans-unit resname="repository_btn" id="manageapp.repository_btn">
-                    <source>Code Repository</source>
-                </trans-unit>
-                <trans-unit resname="debug_btn" id="manageapp.debug_btn">
-                    <source>API Tester Sandbox</source>
-                </trans-unit>
-                <group resname="info" id="manageapp.info">
-                    <trans-unit resname="send_reports" id="manageapp.info.send_reports">
-                        <source>Notify app creator and developer team by email on errors caused by this application.</source>
-                        <target>Den Entwickler ({{user}}) per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.</target>
-                    </trans-unit>
-                    <trans-unit resname="createendpoint" id="manageapp.info.createendpoint">
-                        <source>Create non-project related endpoint. Check only if you do NOT plan to use this endpoint with a project.</source>
-                        <target>Nicht projektbezogener Endpoint erstellen. Nur ankreuzen, wenn Sie diesen Endpoint NICHT mit einem Projekt verwenden wollen.</target>
-                    </trans-unit>
-                    <trans-unit resname="endpoint2" id="manageapp.info.endpoint2">
-                        <source>Do not forget: to activate the endpoint you need to add an API-Key afterwards.</source>
-                        <target>Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen.</target>
-                    </trans-unit>
-                </group>
-                <trans-unit resname="access_query_json" id="manageapp.access_query_json">
-                    <source>Data Access Filter</source>
-                </trans-unit>
-                <trans-unit resname="createendpoint" id="manageapp.createendpoint">
-                    <source>Create Endpoint</source>
-                    <target>Endpoint erstellen</target>
-                </trans-unit>
-                <trans-unit resname="endpoint" id="manageapp.endpoint">
-                    <source>Endpoint Name</source>
-                </trans-unit>
-                <trans-unit resname="servicewarning" id="manageapp.servicewarning">
-                    <source>Changing the application definition requires the generation of new API-Keys for all instances of this service.</source>
-                </trans-unit>
-            </group>
-            <group resname="appdebug" id="appdebug">
-                <trans-unit resname="title" id="appdebug.title">
-                    <source>API Tester</source>
-                </trans-unit>
-                <trans-unit resname="oauth_login" id="appdebug.oauth_login">
-                    <source>OAuth Login</source>
-                </trans-unit>
-                <trans-unit resname="device" id="appdebug.device">
-                    <source>Device</source>
-                </trans-unit>
-                <trans-unit resname="refresh_token" id="appdebug.refresh_token">
-                    <source>Refresh Token</source>
-                </trans-unit>
-            </group>
-            <group resname="appicon" id="appicon">
-                <group resname="type" id="appicon.type">
-                    <trans-unit resname="image/jpeg" id="appicon.type.image/jpeg">
-                        <source>JPEG</source>
-                    </trans-unit>
-                    <trans-unit resname="image/png" id="appicon.type.image/png">
-                        <source>PNG</source>
-                    </trans-unit>
-                    <trans-unit resname="image/gif" id="appicon.type.image/gif">
-                        <source>GIF</source>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="appsubscriptions" id="appsubscriptions">
-                <trans-unit resname="trigger" id="appsubscriptions.trigger">
-                    <source>Trigger</source>
-                </trans-unit>
-            </group>
-            <group resname="appreviews" id="appreviews">
-                <trans-unit resname="status" id="appreviews.status">
-                    <source>Status</source>
-                </trans-unit>
-                <trans-unit resname="ACCESS_FILTER" id="appreviews.ACCESS_FILTER">
-                    <source>Data Access Filter</source>
-                </trans-unit>
-                <trans-unit resname="QUERIES" id="appreviews.QUERIES">
-                    <source>Queries</source>
-                </trans-unit>
-                <trans-unit resname="ICONS" id="appreviews.ICONS">
-                    <source>Icons</source>
-                </trans-unit>
-            </group>
-            <group resname="repository" id="repository">
-                <trans-unit resname="title" id="repository.title">
-                    <source>Code Repository</source>
-                </trans-unit>
-                <trans-unit resname="repository_url" id="repository.repository_url">
-                    <source>Repository URL</source>
-                </trans-unit>
-                <trans-unit resname="repository_dir" id="repository.repository_dir">
-                    <source>(Optional) Subdirectory in repository</source>
-                    <target>(Optional) Unterverzeichnis im Repository</target>
-                </trans-unit>
-                <trans-unit resname="repository_token" id="repository.repository_token">
-                    <source>Access Token</source>
-                </trans-unit>
-                <trans-unit resname="phase_checkout" id="repository.phase_checkout">
-                    <source>Check out</source>
-                </trans-unit>
-                <trans-unit resname="phase_build" id="repository.phase_build">
-                    <source>Build</source>
-                </trans-unit>
-                <trans-unit resname="log" id="repository.log">
-                    <source>Log</source>
-                </trans-unit>
-            </group>
-            <group resname="workspace" id="workspace">
-                <trans-unit resname="title" id="workspace.title">
-                    <source>Workspace</source>
-                </trans-unit>
-                <trans-unit resname="midata" id="workspace.midata">
-                    <source>@PLATFORM Back-end</source>
-                </trans-unit>
-                <group resname="severity" id="workspace.severity">
-                    <trans-unit resname="zinfo" id="workspace.severity.zinfo">
-                        <source>Info</source>
-                    </trans-unit>
-                </group>
-                <trans-unit resname="param" id="workspace.param">
-                    <source>Parameter</source>
-                </trans-unit>
-            </group>
-            <group resname="applogin" id="applogin">
-                <group resname="step" id="applogin.step">
-                    <trans-unit resname="auth2factor" id="applogin.step.auth2factor">
-                        <source>2FA</source>
-                    </trans-unit>
-                    <trans-unit resname="gender_set" id="applogin.step.gender_set">
-                        <source>Enter gender</source>
-                    </trans-unit>
-                </group>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="fr" datatype="winres" original="members_fr.json">
-        <body>
-            <group resname="help_welcome" id="help_welcome">
-                <trans-unit resname="menu_research" id="help_welcome.menu_research">
-                    <source>News</source>
-                </trans-unit>
-            </group>
-            <group resname="help_setup" id="help_setup">
-                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
-                    <source>Fitbit</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
-                    <source>Jawbone</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
-                    <source>Withings</source>
-                </trans-unit>
-            </group>
-            <group resname="accountdata" id="accountdata">
-                <trans-unit resname="midata_id" id="accountdata.midata_id">
-                    <source>@PRODUCT ID:</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
-        <body>
-            <group resname="help_welcome" id="help_welcome">
-                <trans-unit resname="menu_config" id="help_welcome.menu_config">
-                    <source>Config</source>
-                </trans-unit>
-            </group>
-            <group resname="help_setup" id="help_setup">
-                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
-                    <source>Fitbit</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
-                    <source>Jawbone</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
-                    <source>Withings</source>
-                </trans-unit>
-            </group>
-            <group resname="accountdata" id="accountdata">
-                <trans-unit resname="midata_id" id="accountdata.midata_id">
-                    <source>@PRODUCT ID:</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
-        <body>
-            <group resname="provider_navbar" id="provider_navbar">
-                <trans-unit resname="workspace" id="provider_navbar.workspace">
-                    <source>Workspace</source>
-                </trans-unit>
-                <trans-unit resname="market" id="provider_navbar.market">
-                    <source>Store</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_patientsearch" id="provider_patientsearch">
-                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
-                    <source>@PRODUCT ID</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_usergroups" id="provider_usergroups">
-                <trans-unit resname="name" id="provider_usergroups.name">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="de" datatype="winres" original="providers_de.json">
-        <body>
-            <group resname="provider_registration" id="provider_registration">
-                <trans-unit resname="url" id="provider_registration.url">
-                    <source>Homepage URL</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_navbar" id="provider_navbar">
-                <trans-unit resname="workspace" id="provider_navbar.workspace">
-                    <source>Workspace</source>
-                </trans-unit>
-                <trans-unit resname="market" id="provider_navbar.market">
-                    <source>Store</source>
-                </trans-unit>
-                <trans-unit resname="usergroups" id="provider_navbar.usergroups">
-                    <source>Teams</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_organization" id="provider_organization">
-                <trans-unit resname="name" id="provider_organization.name">
-                    <source>Name</source>
-                </trans-unit>
-                <trans-unit resname="url" id="provider_organization.url">
-                    <source>Homepage URL</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_patientsearch" id="provider_patientsearch">
-                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
-                    <source>@PRODUCT ID</source>
-                </trans-unit>
-                <trans-unit resname="usergroup" id="provider_patientsearch.usergroup">
-                    <source>Team (optional)</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_usergroups" id="provider_usergroups">
-                <trans-unit resname="title" id="provider_usergroups.title">
-                    <source>Teams</source>
-                </trans-unit>
-                <trans-unit resname="name" id="provider_usergroups.name">
-                    <source>Team</source>
-                </trans-unit>
-                <trans-unit resname="status" id="provider_usergroups.status">
-                    <source>Status</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_editusergroup" id="provider_editusergroup">
-                <trans-unit resname="status" id="provider_editusergroup.status">
-                    <source>Status</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="researchers_it.json">
-        <body>
-            <group resname="createstudy" id="createstudy">
-                <trans-unit resname="study_identifiers" id="createstudy.study_identifiers">
-                    <source>Identifiers</source>
-                </trans-unit>
-                <trans-unit resname="study_identifiers_info" id="createstudy.study_identifiers_info">
-                    <source>Place any organization specific project identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.</source>
-                </trans-unit>
-            </group>
-            <group resname="studynav" id="studynav">
-                <trans-unit resname="team" id="studynav.team">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-            <group resname="studyrules" id="studyrules">
-                <trans-unit resname="sharing_query" id="studyrules.sharing_query">
-                    <source>Data Access Filter</source>
-                </trans-unit>
-            </group>
-            <group resname="codes" id="codes">
-                <trans-unit resname="no" id="codes.no">
-                    <source>No</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="fr" datatype="winres" original="researchers_fr.json">
-        <body>
-            <group resname="researcher_registration" id="researcher_registration">
-                <trans-unit resname="description" id="researcher_registration.description">
-                    <source>Description</source>
-                </trans-unit>
-            </group>
-            <group resname="researcher_navbar" id="researcher_navbar">
-                <trans-unit resname="workspace" id="researcher_navbar.workspace">
-                    <source>Workspace</source>
-                </trans-unit>
-            </group>
-            <group resname="researcher_organization" id="researcher_organization">
-                <trans-unit resname="description" id="researcher_organization.description">
-                    <source>Description</source>
-                </trans-unit>
-            </group>
-            <group resname="createstudy" id="createstudy">
-                <trans-unit resname="study_identifiers" id="createstudy.study_identifiers">
-                    <source>Identifiers</source>
-                </trans-unit>
-                <trans-unit resname="study_identifiers_info" id="createstudy.study_identifiers_info">
-                    <source>Place any organization specific project identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.</source>
-                </trans-unit>
-                <trans-unit resname="developer_nostart" id="createstudy.developer_nostart">
-                    <source>Attention!</source>
-                </trans-unit>
-            </group>
-            <group resname="studynav" id="studynav">
-                <trans-unit resname="actions" id="studynav.actions">
-                    <source>Applications</source>
-                </trans-unit>
-                <trans-unit resname="participants" id="studynav.participants">
-                    <source>Participants</source>
-                </trans-unit>
-                <trans-unit resname="codes" id="studynav.codes">
-                    <source>Codes</source>
-                </trans-unit>
-                <trans-unit resname="team" id="studynav.team">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-            <group resname="studies" id="studies">
-                <trans-unit resname="validation" id="studies.validation">
-                    <source>Validation</source>
-                </trans-unit>
-                <trans-unit resname="participants" id="studies.participants">
-                    <source>Participants</source>
-                </trans-unit>
-            </group>
-            <group resname="studyactions" id="studyactions">
-                <trans-unit resname="app" id="studyactions.app">
-                    <source>Application</source>
-                </trans-unit>
-            </group>
-            <group resname="studyfields" id="studyfields">
-                <trans-unit resname="assistance" id="studyfields.assistance">
-                    <source>Assistance</source>
-                </trans-unit>
-                <trans-unit resname="group_description" id="studyfields.group_description">
-                    <source>Description</source>
-                </trans-unit>
-            </group>
-            <group resname="studyoverview" id="studyoverview">
-                <trans-unit resname="description" id="studyoverview.description">
-                    <source>Description</source>
-                </trans-unit>
-                <trans-unit resname="code" id="studyoverview.code">
-                    <source>Code</source>
-                </trans-unit>
-                <trans-unit resname="checklist" id="studyoverview.checklist">
-                    <source>Checklist</source>
-                </trans-unit>
-            </group>
-            <group resname="studyparticipant" id="studyparticipant">
-                <trans-unit resname="participant" id="studyparticipant.participant">
-                    <source>Participant:</source>
-                </trans-unit>
-            </group>
-            <group resname="studyrules" id="studyrules">
-                <trans-unit resname="sharing_query" id="studyrules.sharing_query">
-                    <source>Data Access Filter</source>
-                </trans-unit>
-            </group>
-            <group resname="researcher_sharing" id="researcher_sharing">
-                <trans-unit resname="source" id="researcher_sharing.source">
-                    <source>Source</source>
-                </trans-unit>
-                <trans-unit resname="app" id="researcher_sharing.app">
-                    <source>Application</source>
-                </trans-unit>
-            </group>
-            <group resname="codes" id="codes">
-                <trans-unit resname="code" id="codes.code">
-                    <source>Code</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="de" datatype="winres" original="researchers_de.json">
-        <body>
-            <group resname="researcher_navbar" id="researcher_navbar">
-                <trans-unit resname="workspace" id="researcher_navbar.workspace">
-                    <source>Workspace</source>
-                </trans-unit>
-            </group>
-            <group resname="researcher_organization" id="researcher_organization">
-                <trans-unit resname="name" id="researcher_organization.name">
-                    <source>Name</source>
-                </trans-unit>
-            </group>
-            <group resname="createstudy" id="createstudy">
-                <trans-unit resname="study_identifiers" id="createstudy.study_identifiers">
-                    <source>Identifiers</source>
-                </trans-unit>
-                <trans-unit resname="study_identifiers_info" id="createstudy.study_identifiers_info">
-                    <source>Place any organization specific project identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.</source>
-                </trans-unit>
-            </group>
-            <group resname="studynav" id="studynav">
-                <trans-unit resname="details" id="studynav.details">
-                    <source>Details</source>
-                </trans-unit>
-                <trans-unit resname="codes" id="studynav.codes">
-                    <source>Codes</source>
-                </trans-unit>
-                <trans-unit resname="team" id="studynav.team">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-            <group resname="studies" id="studies">
-                <trans-unit resname="name" id="studies.name">
-                    <source>Name</source>
-                </trans-unit>
-            </group>
-            <group resname="studyactions" id="studyactions">
-                <trans-unit resname="validation" id="studyactions.validation">
-                    <source>Status</source>
-                </trans-unit>
-            </group>
-            <group resname="studyoverview" id="studyoverview">
-                <trans-unit resname="name" id="studyoverview.name">
-                    <source>Name</source>
-                </trans-unit>
-                <trans-unit resname="code" id="studyoverview.code">
-                    <source>Code</source>
-                </trans-unit>
-            </group>
-            <group resname="studyparticipant" id="studyparticipant">
-                <trans-unit resname="status" id="studyparticipant.status">
-                    <source>Status:</source>
-                </trans-unit>
-            </group>
-            <group resname="studyparticipants" id="studyparticipants">
-                <trans-unit resname="name" id="studyparticipants.name">
-                    <source>Name</source>
-                </trans-unit>
-                <trans-unit resname="status" id="studyparticipants.status">
-                    <source>Status</source>
-                </trans-unit>
-            </group>
-            <group resname="studyrules" id="studyrules">
-                <trans-unit resname="sharing_query" id="studyrules.sharing_query">
-                    <source>Data Access Filter</source>
-                </trans-unit>
-            </group>
-            <group resname="study_checklist" id="study_checklist">
-                <trans-unit resname="optional" id="study_checklist.optional">
-                    <source>(optional)</source>
-                </trans-unit>
-            </group>
-            <group resname="codes" id="codes">
-                <trans-unit resname="code" id="codes.code">
-                    <source>Code</source>
-                </trans-unit>
-                <trans-unit resname="status" id="codes.status">
-                    <source>Status</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="fr" datatype="winres" original="providers_fr.json">
-        <body>
-            <group resname="provider_registration" id="provider_registration">
-                <trans-unit resname="description" id="provider_registration.description">
-                    <source>Description</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_navbar" id="provider_navbar">
-                <trans-unit resname="patients" id="provider_navbar.patients">
-                    <source>Patients</source>
-                </trans-unit>
-                <trans-unit resname="workspace" id="provider_navbar.workspace">
-                    <source>Workspace</source>
-                </trans-unit>
-                <trans-unit resname="usergroups" id="provider_navbar.usergroups">
-                    <source>Teams</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_organization" id="provider_organization">
-                <trans-unit resname="description" id="provider_organization.description">
-                    <source>Description</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_patientsearch" id="provider_patientsearch">
-                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
-                    <source>@PRODUCT ID</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_patients" id="provider_patients">
-                <trans-unit resname="title" id="provider_patients.title">
-                    <source>Patients</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_usergroups" id="provider_usergroups">
-                <trans-unit resname="title" id="provider_usergroups.title">
-                    <source>Teams</source>
-                </trans-unit>
-                <trans-unit resname="name" id="provider_usergroups.name">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="de" datatype="winres" original="branding_de.json">
-        <body>
-            <group resname="footer" id="footer">
-                <trans-unit resname="copyright" id="footer.copyright">
-                    <source> </source>
-                    <target> </target>
-                </trans-unit>
-                <trans-unit resname="homepage" id="footer.homepage">
-                    <source>@OPERATOR Homepage</source>
-                </trans-unit>
-                <trans-unit resname="impressum" id="footer.impressum">
-                    <source>Impressum</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
     <file source-language="en" target-language="fr" datatype="winres" original="branding_fr.json">
         <body>
             <group resname="footer" id="footer">
                 <trans-unit resname="copyright" id="footer.copyright">
                     <source> </source>
-                    <target> </target>
                 </trans-unit>
                 <trans-unit resname="impressum" id="footer.impressum">
                     <source>Impressum</source>
@@ -2064,7 +2056,6 @@
             <group resname="footer" id="footer">
                 <trans-unit resname="copyright" id="footer.copyright">
                     <source> </source>
-                    <target> </target>
                 </trans-unit>
                 <trans-unit resname="impressum" id="footer.impressum">
                     <source>Impressum</source>

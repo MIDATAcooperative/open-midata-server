@@ -39,6 +39,9 @@
         "relogin" : "Melden Sie sich bitte erneut an",
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
         "unsupported" : "Operation nicht unterstützt",
+
+        // TODO NEW: Action failed
+        "failed" : "Action failed",
         "notrialuser_title" : "Vollständige Mitgliedschaft notwendig!",
         "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung der Allgemeinen Geschäftsbedingungen und senden Sie diese unterschrieben an @OPERATOR zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "mustbemember_title" : "Mitgliedschaft bei @OPERATOR erforderlich!",
@@ -251,6 +254,10 @@
             "user-settings-change" : "Benutzereinstellungen geändert",
             "user-email-change" : "E-Mail des Benutzers geändert",
             "user-birthday-change" : "Geburtsdatum des Benutzers geändert",
+
+            // TODO CHANGED
+            // OLD: User's gender information updated
+            // NEW: User's gender changed
             "user-gender-change" : "Geschlecht des Benutzers geändert",
             "user-status-change-active" : "Benutzerkonto entsperrt",
             "user-status-change-blocked" : "Benutzerkonto gesperrt",
@@ -299,7 +306,19 @@
             "user-searched" : "Suche nach Benutzer",
             "welcome-sent" : "Willkommens-E-Mail gesendet",
             "tried-user-reregistration" : "Versuchte Neuregistrierung des Benutzers",
-            "signature-failure" : "Zustimmungsvalidierung fehlgeschlagen"
+            "signature-failure" : "Zustimmungsvalidierung fehlgeschlagen",
+
+            // TODO NEW: Email sent
+            "email-sent" : "Email sent",
+
+            // TODO NEW: SMS sent
+            "sms-sent" : "SMS sent",
+
+            // TODO NEW: Resthook called
+            "resthook-called" : "Resthook called",
+
+            // TODO NEW: Script invoked
+            "script-invocation" : "Script invoked"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "Die E-Mail-Adresse des Benutzers muss der Plattform bekannt sein",
@@ -579,8 +598,14 @@
     "registration" : {
         "sign_up" : "Registrierung",
         "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder.",
+
+        // TODO NEW: Please fill in your email and password.
+        "mandantory_fields2" : "Please fill in your email and password.",
         "password_policy" : "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Ziffer enthalten.",
         "password_policy2" : "Das Passwort muss mindestens 12 Zeichen lang sein und einen Buchstaben, eine Ziffer und ein Sonderzeichen enthalten.",
+
+        // TODO NEW: Personal Details
+        "personal_details" : "Personal Details",
         "email" : "E-Mail",
         "password" : "Passwort",
         "password_repetition" : "Passwort wiederholen",
@@ -691,6 +716,10 @@
         "address_entered" : "Geben Sie bitte Ihre Postadresse ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "phone_entered" : "Geben Sie bitte Ihre Mobiltelefonnummer ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "birthday_entered" : "Für die Nutzung dieses Dienstes ist ein gültiges Geburtsdatum erforderlich. Bitte fügen Sie Ihr Geburtsdatum zu Ihren Kontoinformationen hinzu. (Formatbeispiel: 31.12.1999)",
+
+        // TODO CHANGED
+        // OLD: Information about your gender is required to use this service. Please provide your gender.
+        // NEW: Your gender must be provided to use this service. Please indicate your gender.
         "gender_entered" : "Ihr Geschlecht muss angegeben werden, um diesen Dienst nutzen zu können. Bitte geben Sie Ihr Geschlecht an.",
         "admin_verified" : "Ihr Konto muss durch einen Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte @SUPPORT.",
         "terms_agreed" : "Die Allgemeine Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
@@ -1441,7 +1470,15 @@
         "instructions_key" : "Verwenden Sie diesen Schlüssel direkt im Autorisierungs-Header des Dienstes als bearer token.",
         "refresh" : "Refresh token für OAuth",
         "instructions_refresh" : "Um die Sicherheit zu erhöhen, tauschen Sie dieses refresh token gegen ein neues Paar aus access token und refresh token aus.",
+
+        // TODO CHANGED
+        // OLD: CN (common name) for CSR (certificate request)
+        // NEW: OU (organization unit) and CN (common name) for CSR (certificate request)
         "common_name" : "CN (common name) für CSR (certificate request)",
+
+        // TODO CHANGED
+        // OLD: For certificate based authentication create a CSR with the given CN field. Send the CSR to @SUPPORT
+        // NEW: For certificate based authentication create a CSR with the given OU and CN field. Send the CSR to @SUPPORT
         "instructions_common_name" : "Für zertifikatsbasierte Authentifizierung erstellen Sie eine CSR mit dem angegebenen CN-Feld. Senden Sie den CSR an @SUPPORT",
         "date" : "Erstellungsdatum",
         "status" : "Status",

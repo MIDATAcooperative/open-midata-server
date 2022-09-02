@@ -354,6 +354,10 @@
     },
 
     "admin_services" : {
+
+        // TODO CHANGED
+        // OLD: Endpoints
+        // NEW: FHIR Endpoints
         "endpoints" : "FHIR Endpoints",
         "name" : "Service-Instanz",
         "endpoint" : "FHIR Endpoint",
