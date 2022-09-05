@@ -15,7 +15,7 @@
         "yourapps" : "Vos applications",
         "sandbox" : "Sandbox",
         "workspace" : "Workspace",
-        "records" : "Enregistrements de test",
+        "records" : "Données de test",
         "testusers" : "Utilisateurs de test"
     },
 
@@ -95,6 +95,7 @@
         "subscriptions_btn" : "Modifier les abonnements (Subscriptions) par défaut",
         "subscriptions_help" : "Définir les triggers qui provoquent une action sur le serveur @PRODUCT",
         "tokenExchangeParams" : "Paramètres OAuth 2 pour l'échange du token",
+        "refreshTkExchangeParams" : "Paramètres OAuth 2 pour l'échange du refresh token",
         "testfromlocal_btn" : "Testez votre plugin depuis localhost",
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
         "serverimport_btn" : "Tester le script d'importation automatique.",
@@ -145,8 +146,9 @@
             "name" : "Le nom de votre application tel qu'il est affiché pour les utilisateurs finaux.",
             "description" : "La description de votre application qui sera affichée sur la Marketplace.",
             "tokenExchangeParams" : "La valeur par défaut est client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> mais certains services nécessitent également client_secret=<client_secret> ou pas de client_id",
+            "refreshTkExchangeParams" : "La valeur par défaut est grant_type=<grant_type>&refresh_token=<refresh_token>&client_id=<client_id> mais certains services nécessitent également client_secret=<client_secret> ou d'autres paramètres",
             "no_update_history" : "Les mises à jour des ressources FHIR effectuées par cette application ne produisent aucune entrée d'historique. N'utiliser que si l'application fait de nombreuses et fréquentes mises à jour.",
-            "pseudonymize" : "Lire les données pseudonymisées. Ne met pas à jour les enregistrements des participants.",
+            "pseudonymize" : "Lire les données pseudonymisées. Ne met pas à jour les données des participants.",
             "resharesData" : "L'application est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
             "allowsUserSearch" : "Les utilisateurs de l'application sont autorisés à rechercher d'autres utilisateurs de la même application.",
             "consentObserving" : "Ce service surveille-t-il les consentements des utilisateurs ? Ajoutez 'Consentements (Consents)' au filtre d'accès aux données (Data Access Filter) afin de l'activer.",
@@ -457,6 +459,8 @@
         "no_terms" : "Aucunes de conditions d'utilisation",
         "links" : "Projets liés",
         "no_links" : "Aucun (pour le moment)",
+        "urlParams" : "Paramètres de test pour la connexion OAuth",
+        "urlParams2" : "Paramètres de test de l'URL que votre application fournira au login. Par exemple 'family=Test&given=Some&ro=true&country=CH&language=fr'.",
         "step" : {
             "login" : "Connexion",
             "registration" : "Inscription",

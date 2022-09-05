@@ -39,6 +39,7 @@
         "relogin" : "Accedere nuovamente",
         "noconsent" : "Non esiste alcun consenso attivo che consenta di aggiungere dati per la persona di destinazione.",
         "unsupported" : "Operazione non supportata",
+        "failed" : "Azione fallita",
         "notrialuser_title" : "È richiesta l'iscrizione completa in qualità di membro!",
         "notrialuser_detail" : "Per utilizzare questa funzionalità, è necessario completare la propria registrazione. Richiedere una copia scritta dei Condizioni generali di contratto e restituirla firmata a @OPERATOR. Si riceverà inoltre un codice di conferma per verificare il proprio indirizzo postale. Se si desidera controllare lo stato del proprio account fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "mustbemember_title" : "È richiesta l'appartenenza a @OPERATOR!",
@@ -299,7 +300,11 @@
             "user-searched" : "Cerca per utente",
             "welcome-sent" : "E-mail di benvenuto inviata",
             "tried-user-reregistration" : "Tentativo di registrazione dell'utente",
-            "signature-failure" : "Convalida del consenso fallita"
+            "signature-failure" : "Convalida del consenso fallita",
+            "email-sent" : "E-mail inviata",
+            "sms-sent" : "SMS inviato",
+            "resthook-called" : "Resthook chiamato",
+            "script-invocation" : "Script invocato"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
@@ -579,8 +584,10 @@
     "registration" : {
         "sign_up" : "Registrazione",
         "mandantory_fields" : "Inserire le informazioni qui sotto, i campi contrassegnati da un asterisco * sono obbligatori.",
+        "mandantory_fields2" : "Inserite il vostro indirizzo e-mail e la vostra password.",
         "password_policy" : "La password deve essere lunga almeno 8 caratteri e contenere una lettera e una cifra.",
         "password_policy2" : "La password deve essere lunga almeno 12 caratteri e contenere una lettera, una cifra e un carattere speciale.",
+        "personal_details" : "Dati personali",
         "email" : "E-mail",
         "password" : "Password",
         "password_repetition" : "Ripetere la password",
@@ -1441,8 +1448,8 @@
         "instructions_key" : "Utilizzare questa chiave direttamente nell'header dell'autorizzazione del servizio come bearer token.",
         "refresh" : "Refresh token per OAuth",
         "instructions_refresh" : "Per una maggiore sicurezza, scambiare questo refresh token con un nuovo paio di access token e refresh token.",
-        "common_name" : "CN (common name) per CSR (certificate request)",
-        "instructions_common_name" : "Per l'autenticazione basata su certificato creare una CSR con il campo CN dato. Inviare la CSR a @SUPPORT",
+        "common_name" : "OU (organization unit) e CN (common name) per il CSR (certificate request)",
+        "instructions_common_name" : "Per l'autenticazione basata su certificato, create un CSR con i campi OU e CN indicati. Inviate il CSR a @SUPPORT",
         "date" : "Data di creazione",
         "status" : "Stato",
         "ACTIVE" : "Attiva",

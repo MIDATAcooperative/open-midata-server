@@ -39,6 +39,7 @@
         "relogin" : "Melden Sie sich bitte erneut an",
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
         "unsupported" : "Operation nicht unterstützt",
+        "failed" : "Aktion fehlgeschlagen",
         "notrialuser_title" : "Vollständige Mitgliedschaft notwendig!",
         "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung der Allgemeinen Geschäftsbedingungen und senden Sie diese unterschrieben an @OPERATOR zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "mustbemember_title" : "Mitgliedschaft bei @OPERATOR erforderlich!",
@@ -299,7 +300,11 @@
             "user-searched" : "Suche nach Benutzer",
             "welcome-sent" : "Willkommens-E-Mail gesendet",
             "tried-user-reregistration" : "Versuchte Neuregistrierung des Benutzers",
-            "signature-failure" : "Zustimmungsvalidierung fehlgeschlagen"
+            "signature-failure" : "Zustimmungsvalidierung fehlgeschlagen",
+            "email-sent" : "E-Mail gesendet",
+            "sms-sent" : "SMS gesendet",
+            "resthook-called" : "Resthook aufgerufen",
+            "script-invocation" : "Skript aufgerufen"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "Die E-Mail-Adresse des Benutzers muss der Plattform bekannt sein",
@@ -579,8 +584,10 @@
     "registration" : {
         "sign_up" : "Registrierung",
         "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder.",
+        "mandantory_fields2" : "Bitte geben Sie Ihre E-Mail-Adresse und Ihr Passwort ein.",
         "password_policy" : "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Ziffer enthalten.",
         "password_policy2" : "Das Passwort muss mindestens 12 Zeichen lang sein und einen Buchstaben, eine Ziffer und ein Sonderzeichen enthalten.",
+        "personal_details" : "Personalien",
         "email" : "E-Mail",
         "password" : "Passwort",
         "password_repetition" : "Passwort wiederholen",
@@ -1441,8 +1448,8 @@
         "instructions_key" : "Verwenden Sie diesen Schlüssel direkt im Autorisierungs-Header des Dienstes als bearer token.",
         "refresh" : "Refresh token für OAuth",
         "instructions_refresh" : "Um die Sicherheit zu erhöhen, tauschen Sie dieses refresh token gegen ein neues Paar aus access token und refresh token aus.",
-        "common_name" : "CN (common name) für CSR (certificate request)",
-        "instructions_common_name" : "Für zertifikatsbasierte Authentifizierung erstellen Sie eine CSR mit dem angegebenen CN-Feld. Senden Sie den CSR an @SUPPORT",
+        "common_name" : "OU (organization unit) und CN (common name) für das CSR (certificate request)",
+        "instructions_common_name" : "Für zertifikatsbasierte Authentifizierung erstellen Sie eine CSR mit den angegebenen OU- und CN-Feldern. Senden Sie den CSR an @SUPPORT",
         "date" : "Erstellungsdatum",
         "status" : "Status",
         "ACTIVE" : "Aktiv",

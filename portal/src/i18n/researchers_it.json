@@ -348,7 +348,7 @@
     },
 
     "researcher_sharing" : {
-        "description" : "Condividi o non condividi i record del suo account con gruppi di partecipanti al progetto",
+        "description" : "Condividere o non condividere i record del proprio account con gruppi di partecipanti al progetto",
         "source" : "Fonte",
         "me" : "Dati del mio account",
         "project" : "Dati dall'analizzatore",

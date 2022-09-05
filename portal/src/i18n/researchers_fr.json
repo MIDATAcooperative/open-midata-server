@@ -48,10 +48,10 @@
         "actions" : "Applications",
         "participants" : "Participants",
         "codes" : "Codes",
-        "records" : "Enregistrements",
+        "records" : "Données",
         "results" : "Résultats",
         "team" : "Team",
-        "sharing" : "Enregistrements publiés"
+        "sharing" : "Données publiées"
     },
 
     "studies" : {
@@ -199,7 +199,7 @@
         "country" : "Pays:",
         "status" : "État:",
         "group" : "Groupe:",
-        "shared_records" : "Enregistrements partagés",
+        "shared_records" : "Données partagées",
         "history" : "Historique de participation"
     },
 
@@ -232,7 +232,7 @@
         "startDate" : "Date de début de l'exportation (optionnel)",
         "endDate" : "Date de fin de l'exportation (optionnel)",
         "group" : "Groupe de données",
-        "number_of_records" : "# enregistrements",
+        "number_of_records" : "# données",
         "download_btn" : "Télécharger",
         "fhir_download_btn" : "Télécharger le FHIR Bundle",
         "fhir_download_original_btn" : "Télécharger non pseudonymisé"
@@ -348,7 +348,7 @@
     },
 
     "researcher_sharing" : {
-        "description" : "Partager ou supprimer le partage d'enregistrements de votre compte avec des groupes de participants au projet",
+        "description" : "Partager ou non les données de votre compte avec des groupes de participants au projet",
         "source" : "Source",
         "me" : "Données de mon compte",
         "project" : "Données de l'analyseur",
