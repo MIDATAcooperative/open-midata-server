@@ -25,6 +25,7 @@ import models.enums.UserRole;
 import utils.AccessLog;
 import utils.ConsentQueryTools;
 import utils.ErrorReporter;
+import utils.RuntimeConstants;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.collections.RequestCache;
@@ -34,10 +35,12 @@ public class PreLoginAccessContext extends AccessContext {
 
 	private UserRole role;
 	private RequestCache requestCache = new RequestCache();
+	private MidataId usedPlugin;
 	
-	public PreLoginAccessContext(APSCache cache, UserRole role) {
+	public PreLoginAccessContext(APSCache cache, UserRole role, MidataId usedPlugin) {
 	  	super(cache, null);
 	  	this.role = role;
+	  	this.usedPlugin = usedPlugin;
 	}
 	
 	@Override
@@ -135,6 +138,11 @@ public class PreLoginAccessContext extends AccessContext {
 	@Override
 	public RequestCache getRequestCache() {
 		return requestCache;
+	}
+	
+	public MidataId getUsedPlugin() {
+		if (usedPlugin != null) return usedPlugin;
+		return RuntimeConstants.instance.portalPlugin; 
 	}
 	
 	@Override

@@ -149,7 +149,7 @@ public class PWRecovery extends APIController {
 		if (sessionToken != null) KeyManager.instance.unlock(user._id, sessionToken, proc.nextPublicExtKey);		
 		
 		if (user.email.equals(RuntimeConstants.BACKEND_SERVICE)) {
-			AccessContext context = ContextManager.instance.createLoginOnlyContext(user._id, user.role);
+			AccessContext context = ContextManager.instance.createLoginOnlyContext(user._id, null, user.role);
 			provideServiceKey(context, user);
 			proc.nextPassword = null;
 		}
@@ -359,7 +359,7 @@ public class PWRecovery extends APIController {
   	      }
   	      autorun.password = null;
   	      User.set(autorun._id, "password", null);
-		  provideServiceKey(ContextManager.instance.createLoginOnlyContext(autorun._id, UserRole.ANY), autorun);
+		  provideServiceKey(ContextManager.instance.createLoginOnlyContext(autorun._id, null, UserRole.ANY), autorun);
   	    }
       	
       	return ok();

@@ -460,7 +460,7 @@
         "links" : "Progetti collegati",
         "no_links" : "Nessuno (ancora)",
         "urlParams" : "Parametri di prova per il login OAuth",
-        "urlParams2" : "Parametri di prova dell'URL che l'applicazione fornirà al login. Ad esempio, "family=Test&given=Some&ro=true&country=CH&language=it".",
+        "urlParams2" : "Parametri di prova dell'URL che l'applicazione fornirà al login. Ad esempio, 'family=Test&given=Some&ro=true&country=CH&language=it'.",
         "step" : {
             "login" : "Accesso",
             "registration" : "Iscrizione",

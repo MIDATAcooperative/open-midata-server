@@ -415,7 +415,7 @@ public class Users extends APIController {
 		User.set(user._id, "notifications", user.notifications);
 		
 		user.updateKeywords(true);
-		AccessContext context = ContextManager.instance.createLoginOnlyContext(user._id, user.role);
+		AccessContext context = ContextManager.instance.createLoginOnlyContext(user._id, null, user.role);
 		if (user.role.equals(UserRole.MEMBER)) {	
 			
 			if (!executorId.equals(userId)) {

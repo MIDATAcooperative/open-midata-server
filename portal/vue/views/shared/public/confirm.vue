@@ -124,7 +124,7 @@
 							<input id="appAgb" name="appAgb" class="form-check-input" type="checkbox" v-model="login.appAgb" />
 							
 							<label for="appAgb" class="form-check-label">
-						   		<span v-t="'registration.app_agb2'"></span>
+						   		<span v-t="'registration.app_agb2'"></span>&nbsp;
 						   		<a @click="showTerms(app.termsOfUse)" href="javascript:" v-t="'registration.app_agb3'"></a>
 						 	</label>							 					
 						 

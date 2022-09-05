@@ -43,6 +43,7 @@ import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 
 /**
  * parameters for a single query for records
@@ -572,7 +573,7 @@ public class Query {
 				 if (!MidataId.isValid(app.toString())) {
 					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
 					 if (p!=null) resolved.add(p._id.toString());
-					 else throw new BadRequestException("error.internal", "Queried for unknown app.");
+					 else throw new PluginException(context.getUsedPlugin(), "error.internal", "Queried for unknown app.");
 				 } else resolved.add(app.toString());
 			 }
 			 properties.put("app", resolved);
@@ -584,7 +585,7 @@ public class Query {
 				 if (!MidataId.isValid(app.toString())) {
 					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
 					 if (p!=null) resolved.add(p._id.toString());
-					 else throw new BadRequestException("error.internal", "Queried for unknown app.");
+					 else throw new PluginException(context.getUsedPlugin(), "error.internal", "Queried for unknown app.");
 				 } else resolved.add(app.toString());
 			 }
 			 properties.put("observer", resolved);

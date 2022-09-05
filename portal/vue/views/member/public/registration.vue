@@ -127,20 +127,23 @@
                         </select>
                     </form-group>
                 </div>
-                <div v-if="addressNeeded()" class="required">
-                    <form-group name="address1" label="registration.address" :path="errors.address">
-                        <input type="text" class="form-control" id="address1" name="address1" :placeholder="$t('registration.address_line1')" v-model="registration.address1" required v-validate>
-                    </form-group>
+                <div v-if="addressNeeded()">
+                    <div class="required">
+	                    <form-group name="address1" label="registration.address" :path="errors.address">
+	                        <input type="text" class="form-control" id="address1" name="address1" :placeholder="$t('registration.address_line1')" v-model="registration.address1" required v-validate>
+	                    </form-group>
+                    </div>
                     <form-group name="address2" label="common.empty">
                         <input type="text" class="form-control" id="address2" name="address2" :placeholder="$t('registration.address_line2')" v-model="registration.address2" v-validate>
                     </form-group>
-                                
-                    <form-group name="city" label="registration.city" :path="errors.city">
-                        <input type="text" class="form-control" id="city" name="city" :placeholder="$t('registration.city')" v-model="registration.city" required v-validate>
-                    </form-group>
-                    <form-group name="zip" label="registration.zip" :path="errors.zip">
-                        <input type="text" class="form-control" id="zip" name="zip" :placeholder="$t('registration.zip')" v-model="registration.zip" required v-validate>
-                    </form-group>
+                    <div class="required">            
+	                    <form-group name="city" label="registration.city" :path="errors.city">
+	                        <input type="text" class="form-control" id="city" name="city" :placeholder="$t('registration.city')" v-model="registration.city" required v-validate>
+	                    </form-group>
+	                    <form-group name="zip" label="registration.zip" :path="errors.zip">
+	                        <input type="text" class="form-control" id="zip" name="zip" :placeholder="$t('registration.zip')" v-model="registration.zip" required v-validate>
+	                    </form-group>
+                    </div>
                 </div>
                 <div v-if="countryNeeded()" class="required">
                     <form-group name="country" label="registration.country" :path="errors.country">
@@ -184,10 +187,10 @@
 					<div v-if="app && app.loginTemplate == 'REDUCED'">					
 					<section v-if="app.termsOfUse">
 						<div class="form-check">
-							<input id="appAgb" name="appAgb" class="form-check-input" type="checkbox" required v-model="login.appAgb" />
+							<input id="appAgb" name="appAgb" class="form-check-input" type="checkbox" required v-model="registration.appAgb" />
 							
 							<label for="appAgb" class="form-check-label">
-						   		<span v-t="'registration.app_agb2'"></span>
+						   		<span v-t="'registration.app_agb2'"></span>&nbsp;
 						   		<a @click="showTerms(app.termsOfUse)" href="javascript:" v-t="'registration.app_agb3'"></a>
 						 	</label>							 					
 						 
@@ -251,7 +254,7 @@ import TermsModal from 'components/TermsModal.vue';
 
 export default {
   data: () => ({
-    registration : { language : getLocale(), confirmStudy : [], secure : true, unlockCode : "", country : languages.countries[0], gender:"" },
+    registration : { language : getLocale(), confirmStudy : [], secure : true, unlockCode : "", country : languages.countries[0], gender:"", confirm : false },
 	languages : languages.all,
 	countries : languages.countries,	
 	flags : { optional : false },
@@ -551,6 +554,7 @@ export default {
 	    $data.app = oauth.app;
 		$data.links = oauth.links;
 		if ($data.app.loginTemplate=="REDUCED") {
+		    $data.registration.confirm = true;
 			me.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app-use", $data.app._id).url)
 			.then(function(data) {	
 			

@@ -306,7 +306,7 @@ public class OAuth2 extends Controller {
     		
     		if (KeyManager.instance.unlock(appInstance._id, aeskey != null ? aeskey : phrase) == KeyManager.KEYPROTECTION_FAIL) throw new BadRequestException("error.internal", "invalid_grant");
     	
-    		tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role);
+    		tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, appInstance.applicationId, user.role);
     		meta = RecordManager.instance.getMeta(tempContext, appInstance._id, "_app").toMap();							
     		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
     		
@@ -929,7 +929,7 @@ public class OAuth2 extends Controller {
 		PortalSessionToken tk = PortalSessionToken.session();
 		if (tk instanceof ExtendedSessionToken) {
 			ExtendedSessionToken token = (ExtendedSessionToken) tk;
-			token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, tk.userRole);
+			token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, null, tk.userRole);
 			JsonNode json = Json.newObject();
 			Plugin app = token.appId != null ? validatePlugin(token, json) : null;
 			return loginHelper(request, token, json, app, token.currentContext);
@@ -942,7 +942,7 @@ public class OAuth2 extends Controller {
             token.handle = tk.handle;			
 			token.created = tk.created;
             token.remoteAddress = tk.remoteAddress;
-            token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, tk.userRole);
+            token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, null, tk.userRole);
             token.setPortal();
             JsonNode json = Json.newObject();
             return loginHelper(request, token, json, null, token.currentContext);
@@ -1006,7 +1006,7 @@ public class OAuth2 extends Controller {
 		if (token.handle != null) {			
 			if (token.currentContext == null) {
 				KeyManager.instance.continueSession(token.handle);
-				token.currentContext = ContextManager.instance.createLoginOnlyContext(token.ownerId, user.role);
+				token.currentContext = ContextManager.instance.createLoginOnlyContext(token.ownerId, token.appId, user.role );
 			}
 			keyType = KeyManager.KEYPROTECTION_NONE;
 		} else {
@@ -1017,7 +1017,7 @@ public class OAuth2 extends Controller {
 			}
 			token.handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true); // TODO Check lifetime
 			keyType = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey); 
-			token.currentContext = ContextManager.instance.createLoginOnlyContext(user._id, user.role);
+			token.currentContext = ContextManager.instance.createLoginOnlyContext(user._id, token.appId, user.role);
 		}		
 		AccessLog.log("Using context="+token.currentContext.toString());
 		appInstance = checkExistingAppInstance(token, token.currentContext, json, links);
@@ -1062,7 +1062,7 @@ public class OAuth2 extends Controller {
 		AccessLog.log("[login] do, time=", Long.toString(ts4-ts3));
 		
 		if (app != null) {
-			token.currentContext = keyType == KeyManager.KEYPROTECTION_NONE ? ContextManager.instance.createLoginOnlyContext(user._id, user.role) : null;
+			token.currentContext = keyType == KeyManager.KEYPROTECTION_NONE ? ContextManager.instance.createLoginOnlyContext(user._id, app._id, user.role) : null;
 				
 			appInstance = loginAppInstance(token, appInstance, user, keyType == KeyManager.KEYPROTECTION_NONE, links);
 			
