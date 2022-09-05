@@ -160,9 +160,9 @@ public class ContextManager {
 	 * @return
 	 * @throws InternalServerException
 	 */
-	public AccessContext createLoginOnlyContext(MidataId executorId, UserRole role) throws InternalServerException {
+	public AccessContext createLoginOnlyContext(MidataId executorId, MidataId usedApp, UserRole role) throws InternalServerException {
 		AccessLog.log("[session] Login-context for ", executorId.toString());
-		return use(new PreLoginAccessContext(getCache(executorId), role).forAccount());
+		return use(new PreLoginAccessContext(getCache(executorId), role, usedApp).forAccount());
 	}
 	
 	/**
@@ -175,7 +175,7 @@ public class ContextManager {
 	 */
 	public AccessContext createLoginOnlyContext(MidataId executorId, UserRole role, MobileAppInstance appInstance) throws AppException {
 		AccessLog.log("[session] Login-context for ", executorId.toString());
-		return use(new PreLoginAccessContext(getCache(executorId), role).forApp(appInstance));
+		return use(new PreLoginAccessContext(getCache(executorId), role, appInstance.applicationId).forApp(appInstance));
 	}
 			
 	

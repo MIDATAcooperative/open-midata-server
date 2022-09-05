@@ -435,15 +435,8 @@ export default {
 		updateApp() {
 		
 			const { $data, $route, $router } = this, me = this;
-		
-			let i18n = $data.app.i18n;
-			for (let lang of $data.languages) {			
-				if (i18n[lang] && i18n[lang].name == "") {
-					delete i18n[lang];
-				} 
-			}
-			$data.app.i18n = i18n;
-			
+		    
+				
 			// check whether url contains ":authToken"
 			if ($data.app.type && $data.app.type !== "mobile" && $data.app.type !== "service" && $data.app.url && $data.app.url.indexOf(":authToken") < 0) {
 				this.setError("authToken", "Url must contain ':authToken' to receive the authorization token required to create records.");			  
@@ -458,11 +451,21 @@ export default {
 			} else $data.app.developerTeamLogins = [];
 			if (!$data.app.createendpoint) $data.app.endpoint = undefined;
 			
+			let app = JSON.parse(JSON.stringify($data.app));
+			let i18n = app.i18n;
+			for (let lang of $data.languages) {			
+				if (i18n[lang] && i18n[lang].name == "") {
+					delete i18n[lang];
+				} 
+			}
+			app.i18n = i18n;
+			
+			
 			if ($data.app._id == null) {
-				me.doAction('submit', apps.registerPlugin($data.app))
+				me.doAction('submit', apps.registerPlugin(app))
 				.then(function(data) { $router.push({ path : './manageapp', query : { appId : data.data._id }}); });
 			} else {			
-				me.doAction('submit', apps.updatePlugin($data.app))
+				me.doAction('submit', apps.updatePlugin(app))
 				.then(function() { $router.push({ path : "./manageapp", query : { appId : $route.query.appId } }); });
 			}
 		}				

@@ -411,7 +411,7 @@ public class Administration extends APIController {
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");			
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = ContextManager.instance.createLoginOnlyContext(userId, getRole());
+		AccessContext context = ContextManager.instance.createLoginOnlyContext(userId, null, getRole());
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
 		  requireSubUserRole(request, SubUserRole.USERADMIN);
