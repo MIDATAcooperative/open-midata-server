@@ -70,7 +70,7 @@ public class Terms extends APIController {
 		terms.creatorLogin = user.email; 
 		terms.language = JsonValidation.getString(json, "language");
 		terms.name = JsonValidation.getString(json,  "name");
-		terms.text = JsonValidation.getString(json, "text");
+		terms.text = JsonValidation.getUnboundString(json, "text");
 		terms.title = JsonValidation.getString(json, "title");
 		terms.version = JsonValidation.getString(json, "version");
 
