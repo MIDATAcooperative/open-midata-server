@@ -47,7 +47,7 @@ const baseRoutes = [
     path : '/public_provider',
     name: 'public_provider',
     component: PublicNav,
-    meta : { role : "provider" }
+    meta : { role : "provider", termsRole : "provider" }
   },
   {
     path : '/public_developer',
@@ -65,7 +65,7 @@ const baseRoutes = [
     path : '/provider',
     name: 'provider',
     component: () => import(/* webpackChunkName: "provider" */ 'views/nav/provider.vue'),
-    meta : { role : "provider", keep : true }
+    meta : { role : "provider", termsRole : "provider", keep : true }
   },
   {
     path : '/research',

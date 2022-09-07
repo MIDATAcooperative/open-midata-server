@@ -35,6 +35,7 @@ import utils.exceptions.BadRequestException;
 public class JsonValidation {
 
 	public final static int MAX_STRING_LENGTH = 10000;
+	public final static int MAX_UNBOUND_STRING_LENGTH = 1024*1024*16;
 	private final static int MAX_EMAIL_LENGTH = 254;
 	
 	/**
@@ -65,6 +66,13 @@ public class JsonValidation {
 		String res = json.path(field).asText();
 		if (res != null) res = res.trim();
 		if (res != null && res.length() > MAX_STRING_LENGTH) throw new JsonValidationException("error.toolong.field", "Request parameter '" + field + "' is too long.");
+		return res;
+	}
+	
+	public static String getUnboundString(JsonNode json, String field) throws JsonValidationException  {
+		String res = json.path(field).asText();
+		if (res != null) res = res.trim();
+		if (res != null && res.length() > MAX_UNBOUND_STRING_LENGTH) throw new JsonValidationException("error.toolong.field", "Request parameter '" + field + "' is too long.");
 		return res;
 	}
 		
