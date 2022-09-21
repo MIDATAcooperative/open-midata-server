@@ -88,7 +88,11 @@ export default {
 	createstudy() {
 		const { $data, $route, $router } = this, me = this;
 	    let data;
-		$data.study.identifiers = $data.study.identifiersStr.split(/\s*\n\s*/);
+	    if ($data.study.identifiersStr) {
+		  $data.study.identifiers = $data.study.identifiersStr.split(/\s*\n\s*/);
+		} else {
+		  $data.study.identifiers = [];
+		}
 		if ($route.query.studyId) {
 		
 			data = { name : $data.study.name, description : $data.study.description, type : $data.study.type, identifiers : $data.study.identifiers };

@@ -185,7 +185,8 @@
 
      "already_done" : {
        "email_verification" : "Email has already been verified.",
-       "unsubscribed" : "You have already unsubscribed from this communication channel."
+       "unsubscribed" : "You have already unsubscribed from this communication channel.",
+       "validation" : "Project has already been validated."
      },
 
      "no_alter" : {

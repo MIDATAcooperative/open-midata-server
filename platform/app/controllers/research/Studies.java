@@ -797,9 +797,9 @@ public class Studies extends APIController {
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus == StudyValidationStatus.VALIDATED)
-			return badRequest("Study has already been validated.");
+			throw new BadRequestException("error.invalid.status_transition", "Study has already been validated.");
 		if (study.validationStatus == StudyValidationStatus.VALIDATION)
-			return badRequest("Validation is already in progress.");
+			throw new BadRequestException("error.invalid.status_transition", "Validation is already in progress.");			
 
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
@@ -924,7 +924,7 @@ public class Studies extends APIController {
 
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_REJECTED, userId, null, study);
 		if (!study.validationStatus.equals(StudyValidationStatus.VALIDATION))
-			return badRequest("Study has already been validated.");
+			throw new BadRequestException("error.already_done.validation","Study has already been validated.");
 
 		// study.addHistory(new History(EventType.STUDY_REJECTED, user, "Reset
 		// to draft mode"));
@@ -1056,7 +1056,7 @@ public class Studies extends APIController {
 		if (study.validationStatus != StudyValidationStatus.VALIDATED)
 			throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		if (study.participantSearchStatus == ParticipantSearchStatus.PRE)
-			return badRequest("Participant search must be done before.");
+			throw new BadRequestException("error.invalid.status_transition", "Participant search must be done before.");
 		if (study.executionStatus != StudyExecutionStatus.PRE)
 			throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 
@@ -1720,7 +1720,7 @@ public class Studies extends APIController {
 			Set<String> memberFields = Sets.create("_id", "firstname", "lastname", "address1", "address2", "city", "zip", "country", "email", "phone", "mobile");
 			Member member = Member.getById(participation.owner, memberFields);
 			if (member == null)
-				return badRequest("Member does not exist");
+				throw new BadRequestException("error.unknown.user", "Member does not exist");
 			obj.put("member", JsonOutput.toJsonNode(member, "User", memberFields));
 		} else {
 			participation.owner = null;
@@ -1900,7 +1900,7 @@ public class Studies extends APIController {
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING)
 			throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 		if (participation.pstatus != ParticipationStatus.REQUEST)
-			return badRequest("Wrong participation status.");
+			throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
@@ -2071,7 +2071,7 @@ public class Studies extends APIController {
 		if (!self.role.maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 		if (study.validationStatus != StudyValidationStatus.DRAFT)
-			return badRequest("Setup can only be changed as long as study is in draft phase.");
+			throw new BadRequestException("error.no_alter.study", "Setup can only be changed as long as study is in draft phase.");
 
 		if (json.has("groups")) {
 

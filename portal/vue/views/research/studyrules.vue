@@ -26,7 +26,12 @@
             <form-group name="recordQuery" label="studyrules.sharing_query">
                 <access-query :query="study.recordQuery" :details="true"></access-query>	  
                 <div class="margin-top">   
-                    <router-link :to="{ path : './study.query', query : { studyId : studyid } }" class="btn btn-default" v-t="'studyrules.queryeditor_btn'"></router-link>
+                    <router-link :to="{ path : './study.query', query : { studyId : studyid } }" class="btn btn-default" v-t="'studyrules.queryeditor_btn'"></router-link>                    
+                </div>
+                <div class="margin-top">
+                    <check-box name="emptyQuery" :disabled="studyLocked()" :checked="queryIsEmpty()" @click="toggleQueryEmpty()">
+                      <span class="margin-left" v-t="'studyrules.sharing_query_empty'"></span>
+                    </check-box>                  
                 </div>
             </form-group>
 
@@ -110,7 +115,8 @@ export default {
         leavePolicies : studies.leavePolicies,
         rejoinPolicies : studies.rejoinPolicies,
         terms : [],
-        observers : null
+        observers : null,
+        undoInfo : {}
     }),
 
     components: {  TabPanel, Panel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, RadioBox, AccessQuery, Typeahead },
@@ -152,6 +158,7 @@ export default {
             } else $data.study.consentObserverNames = [];
                         
             let data = { joinMethods : $data.study.joinMethods, termsOfUse : $data.study.termsOfUse, requirements: $data.study.requirements, startDate : $data.study.startDate, endDate : $data.study.endDate, dataCreatedBefore : $data.study.dataCreatedBefore, consentObserverNames : $data.study.consentObserverNames, leavePolicy : $data.study.leavePolicy, rejoinPolicy : $data.study.rejoinPolicy };
+            if ($data.study.recordQuery) data.recordQuery = $data.study.recordQuery;
             me.doAction("change", server.put(jsRoutes.controllers.research.Studies.update($data.studyid).url, data)
             .then(function(data) { 				
                 me.reload();            
@@ -166,6 +173,29 @@ export default {
         toggle(array,itm) {		
 		    var pos = array.indexOf(itm);
 		    if (pos < 0) array.push(itm); else array.splice(pos, 1);
+        },
+               
+        
+        /*queryIsNonEmpty() {
+           const { $data } = this;
+           const ne = function(x) { return x && x.length; };
+           let q = $data.study.recordQuery;
+           return q && (q.$or || ne(q.group) || ne(q.content) || ne(q.app));
+        },*/ 
+        
+        queryIsEmpty() {
+           const { $data } = this;
+           let q = $data.study.recordQuery;
+           return q && !q.$or && !q.group && q.content && q.content.length == 0; 
+        },
+        
+        toggleQueryEmpty() {
+           const { $data } = this;
+           if (!this.queryIsEmpty()) {
+             $data.undoInfo = $data.study.recordQuery; 
+             $data.study.recordQuery = { content : [] };
+           } 
+           else $data.study.recordQuery = $data.undoInfo;
         }
            
     },
