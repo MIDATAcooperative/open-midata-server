@@ -300,7 +300,7 @@ export default {
 		resourceOptions : {
 			"fhir/AuditEvent" : ["noapp", "noowner", "notime", "nopublic"], 
 			"fhir/Consent:Consent" : ["noapp", "noowner", "notime", "nopublic", "observer", "category"],
-			"fhir/ResearchStudy" : ["noapp","noowner","initpublic","notime","nopublic"],
+			"fhir/ResearchStudy:ResearchStudy" : ["noapp","noowner","initpublic","notime","nopublic"],
 			"fhir/Organization" : ["noapp","noowner","initpublic","notime","nopublic"],
 			"fhir/ValueSet" : ["noapp","noowner", "notime","initpublic"],
 			"fhir/Group" : ["noowner"],

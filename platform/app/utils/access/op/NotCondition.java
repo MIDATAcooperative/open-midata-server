@@ -80,7 +80,7 @@ public class NotCondition implements Condition, Serializable {
 
 	@Override
 	public Map<String, Object> asMongoQuery() {
-		Map<String, Object> result = new HashMap<String, Object>();		
+				
 		return CMaps.map("$not", cond.asMongoValue());
 	}
 

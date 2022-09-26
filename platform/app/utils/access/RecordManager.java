@@ -585,7 +585,9 @@ public class RecordManager {
 		  System.out.println("FAIL UPLOAD");
 		  try {
 		    FileStorage.delete(id.toObjectId());
-		  } catch (Exception e2) { }
+		  } catch (Exception e2) { 
+			// We do not handle error during Error
+		  }
 		  throw new InternalServerException("error.internal", e);
 		}
 		System.out.println("EXIT UPLOAD");

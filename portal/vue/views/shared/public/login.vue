@@ -63,7 +63,7 @@
 					<form name="myform" ref="myform" class="form" @submit.prevent="dologin()" role="form" v-if="!offline">
 						<div class="form-group">
 							<input type="email" class="form-control" :placeholder="$t('login.email_address')" required v-validate v-model="login.email" style="margin-bottom:5px;" autofocus>
-							<password class="form-control" :placeholder="$t('login.password')" required v-model="login.password" style="margin-bottom:5px;"></password>
+							<password class="form-control" :placeholder="$t('login.password')" required v-model="login.password" style="margin-bottom:5px;" ref="pwField"></password>
 							<select class="form-control" v-if="!fixedRole" v-model="login.role" v-validate required>
 							    <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                                 <option v-for="role in roles" :key="role.value" :value="role.value">{{ $t(role.name) }}</option>
@@ -163,6 +163,14 @@ export default {
 		    if ($data.app && $data.app.i18n && $data.app.i18n[$data.lang]) return " - "+$data.app.i18n[$data.lang].name;
 		    return " - "+$data.app.name;
         }
+    },
+    
+    mounted() {
+       const { $data, $refs } = this;
+       if ($data.login.email != "") {
+          //console.log($refs.pwField);
+         $refs.pwField.$el.querySelector('input').focus();
+       }
     },
 
     created() {

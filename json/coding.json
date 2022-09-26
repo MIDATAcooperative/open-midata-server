@@ -339,7 +339,7 @@
 {"_id":{"$oid":"5ebc1038aed6453267473719"},"system":"http://snomed.info/sct","code":"193462001","display":"Insomnia","content":"snomed/193462001"}
 {"_id":{"$oid":"5ebc106baed645326747371b"},"system":"http://snomed.info/sct","code":"404640003","display":"Dizziness","content":"snomed/404640003"}
 {"_id":{"$oid":"5ebc10b6aed645326747371d"},"system":"http://snomed.info/sct","code":"60119000","display":"Exhaustion","content":"snomed/60119000"}
-{"_id":{"$oid":"5ee7398faed64514ac528de8"},"system":"http://midata.coop","code":"ResearchStudy","display":"Research Study","content":"ResearchStudy"}
+{"_id":{"$oid":"5ee7398faed64514ac528de8"},"system":"http://midata.coop","code":"ResearchStudy","display":"Projects on Midata","content":"ResearchStudy"}
 {"_id":{"$oid":"5fac0700aed6452079bc3352"},"system":"http://loinc.org","code":"10197-2","display":"Physical findings of Eye Narrative","content":"loinc/10197-2"}
 {"_id":{"$oid":"5fb39da4aed64513b2abccd0"},"system":"http://midata.coop","code":"bodysway-test","display":"Bodysway Test","content":"bodysway-test"}
 {"_id":{"$oid":"5fb39e25aed64513b2abccd2"},"system":"http://midata.coop","code":"fear-of-falls-one-question","display":"Fear of falls (One Question)","content":"fear-of-falls"}
@@ -468,3 +468,4 @@
 {"_id":{"$oid":"62d6c64395d2885306321af1"},"system":"http://trevor.hug.ch","code":"sickleCellDiseaseSelfEfficacyScore","display":"Sickle cell disease self-efficacy score","content":"trevor/sickleCellDiseaseSelfEfficacyScore"}
 {"_id":{"$oid":"62d6c6c38152f823627a9076"},"system":"http://trevor.hug.ch","code":"sickleCellDiseaseEQ5DScore","display":"Sickle cell disease EQ-5D score","content":"trevor/sickleCellDiseaseEQ5DScore"}
 {"_id":{"$oid":"62d538fc8152f823627a8be9"},"system":"http://snomed.info/sct","code":"185265000","display":"Seen in emergency clinic (finding)","content":"snomed/185265000"}
+{"_id":{"$oid":"6331a1c2597dd11d84950082"},"system":"http://midata.coop","code":"ExternalResearchStudy","display":"External research study","content":"ExternalResearchStudy"}

@@ -94,7 +94,7 @@ public class HistoryIndexKey extends BaseIndexKey<HistoryIndexKey,HistoryIndexKe
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof HistoryIndexKey) {
+		if (obj!= null && obj instanceof HistoryIndexKey) {
 			HistoryIndexKey other = (HistoryIndexKey) obj;			
 			return ts == other.ts && recordId.equals(other.recordId) && isDelete == other.isDelete;
 		}

@@ -69,26 +69,11 @@ import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
-public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<ResearchStudy> implements IResourceProvider {
+public class MidataResearchStudyResourceProvider extends RecordBasedResourceProvider<ResearchStudy> implements IResourceProvider {
 
 	// Provide one default constructor
-	public ResearchStudyResourceProvider() {
-			
-		searchParamNameToPathMap.put("ResearchStudy:principalinvestigator", "principalinvestigator");
-		searchParamNameToPathMap.put("ResearchStudy:part-of", "partOf");
-		searchParamNameToPathMap.put("ResearchStudy:protocol", "protocol");
-		searchParamNameToPathMap.put("ResearchStudy:site", "site");
-		searchParamNameToPathMap.put("ResearchStudy:sponsor", "sponsor");
-		
-		searchParamNameToTypeMap.put("ResearchStudy:principalinvestigator", Sets.create("Practitioner", "PractitionerRole"));
-		searchParamNameToTypeMap.put("ResearchStudy:part-of", Sets.create("ResearchStudy"));
-		searchParamNameToTypeMap.put("ResearchStudy:protocol", Sets.create("PlanDefinition"));
-		searchParamNameToTypeMap.put("ResearchStudy:site", Sets.create("Location"));
-		searchParamNameToTypeMap.put("ResearchStudy:sponsor", Sets.create("Organization"));
-		
-			
-		// Use name of @Search function as last parameter
-		registerSearches("ResearchStudy", getClass(), "getResearchStudy");
+	public MidataResearchStudyResourceProvider() {
+				
 	}
 	
 	// Return corresponding FHIR class
@@ -103,123 +88,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 	// Throw out unsupported search parameters (like "_has" and all starting with "PARAM_" )
 	// Replace DateRangeParam with DateAndListParam everywhere except for _lastUpdated	
 	// Add non FHIR _page parameter used for the pagination mechanism
-	@Search()
-	public Bundle getResearchStudy(
-			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-		
-			@Description(shortDefinition="Classifications for the study")
-  			@OptionalParam(name="category")
-  			TokenAndListParam theCategory,
-			
-			@Description(shortDefinition="When the study began and ended")
- 			@OptionalParam(name="date")
-			DateAndListParam theDate, 
-						
-			@Description(shortDefinition="Drugs, devices, etc. under study")
-  			@OptionalParam(name="focus")
-  			TokenAndListParam theFocus,
-			
-						
-			@Description(shortDefinition="Business Identifier for study")
-  			@OptionalParam(name="identifier")
-  			TokenAndListParam theIdentifier,
-									
-			@Description(shortDefinition="Used to search for the study")
-  			@OptionalParam(name="keyword")
-  			TokenAndListParam theKeyword,
-									
-			@Description(shortDefinition="Geographic region(s) for study")
-  			@OptionalParam(name="location")
-  			TokenAndListParam theLocation,
-			
-					
-			@Description(shortDefinition="Part of larger study")
-  			@OptionalParam(name="partof", targetTypes={ ResearchStudy.class } )
-  			ReferenceAndListParam thePartof, 
-								
-			@Description(shortDefinition="Researcher who oversees multiple aspects of the study")
-  			@OptionalParam(name="principalinvestigator", targetTypes={ Practitioner.class, PractitionerRole.class } )
-  			ReferenceAndListParam thePrincipalinvestigator, 
-						
-			@Description(shortDefinition="Steps followed in executing study")
-  			@OptionalParam(name="protocol", targetTypes={ PlanDefinition.class } )
-  			ReferenceAndListParam theProtocol, 
-			
-			@Description(shortDefinition="Facility where study activities are conducted")
-  			@OptionalParam(name="site", targetTypes={ Location.class} )
-  			ReferenceAndListParam theSite, 
-			
-			@Description(shortDefinition="Organization that initiates and is legally responsible for the study")
-  			@OptionalParam(name="sponsor", targetTypes={ Organization.class} )
-  			ReferenceAndListParam theSponsor, 
-									
-			@Description(shortDefinition="active | administratively-completed | approved | closed-to-accrual | closed-to-accrual-and-intervention | completed | disapproved | in-review | temporarily-closed-to-accrual | temporarily-closed-to-accrual-and-intervention | withdrawn")
-  			@OptionalParam(name="status")
-  			TokenAndListParam theStatus,
-						
-			@Description(shortDefinition="Name for this study")
-  			@OptionalParam(name="title")
-  			StringAndListParam theTitle,
-			
-						  		
- 			@IncludeParam(reverse=true)
- 			Set<Include> theRevIncludes,
- 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
- 			@OptionalParam(name="_lastUpdated")
- 			DateRangeParam theLastUpdated, 
- 
- 			@IncludeParam(allow= {
- 					"ResearchStudy:principalinvestigator",
- 					"ResearchStudy:part-of",
- 					"ResearchStudy:protocol",
- 					"ResearchStudy:site",
- 					"ResearchStudy:sponsor",  					 
- 					"*"
- 			}) 
- 			Set<Include> theIncludes,						
-								
-			@Sort SortSpec theSort,		
-			
-			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
-			
-			// Non FHIR parameter used for pagination
-			@OptionalParam(name="_page")
-			StringParam _page,
-			
-			RequestDetails theDetails
 
-	) throws AppException {
-
-		// The implementation of this method may also be copied from happy fhir except for the last lines
-		SearchParameterMap paramMap = new SearchParameterMap();
-
-		paramMap.add("_id", theId);			
-			
-		paramMap.add("category", theCategory);		
-		paramMap.add("date", theDate);		
-		paramMap.add("focus", theFocus);		
-		paramMap.add("identifier", theIdentifier);		
-		paramMap.add("keyword", theKeyword);		
-		paramMap.add("location", theLocation);		
-		paramMap.add("partof", thePartof);					
-		paramMap.add("principalinvestigator", thePrincipalinvestigator);						
-		paramMap.add("protocol", theProtocol);				
-		paramMap.add("site", theSite);				
-		paramMap.add("sponsor", theSponsor);				
-		paramMap.add("status", theStatus);		
-		paramMap.add("title", theTitle);
-		
-		paramMap.setRevIncludes(theRevIncludes);
-		paramMap.setLastUpdated(theLastUpdated);
-		paramMap.setIncludes(theIncludes);
-		paramMap.setSort(theSort);
-		paramMap.setCount(theCount);
-		
-		// The last lines are different than the happy fhir version
-		paramMap.setFrom(_page != null ? _page.getValue() : null);
-		return searchBundle(paramMap, theDetails);
-		
-	}
 
 	// The actual search method implementation.
 	// Basically this "maps" the FHIR query to a MIDATA query and executes it
@@ -231,7 +100,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		// construct empty query and a builder for that query
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/ResearchStudy");
-
+		query.putAccount("content", "ResearchStudy");
 		// Now all possible searches need to be handeled. For performance reasons it makes sense
 		// to put searches that are very restrictive and frequently used first in order
 	
@@ -316,10 +185,10 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 			info();
 		} catch (AuthenticationException e) {
 						
-			ResearchStudyResourceProvider.setAccessContext(context);
+			MidataResearchStudyResourceProvider.setAccessContext(context);
 		}
 				
-		ResearchStudyResourceProvider provider = ((ResearchStudyResourceProvider) FHIRServlet.myProviders.get("ResearchStudy")); 
+		MidataResearchStudyResourceProvider provider = getInstance(); 
 		
 		ResearchStudy researchStudy;
 		
@@ -419,6 +288,9 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		
 	}
 	
+	public static MidataResearchStudyResourceProvider getInstance() {
+		return (MidataResearchStudyResourceProvider) (((HybridTypeResourceProvider) FHIRServlet.myProviders.get("ResearchStudy")).getSecondProvider());
+	}
 	
 
 }

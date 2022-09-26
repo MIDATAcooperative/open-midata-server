@@ -429,3 +429,4 @@
 {"_id":{"$oid":"62d6c64395d2885306321af2"},"system":"v1","name":"assessment","content":"trevor/sickleCellDiseaseSelfEfficacyScore"}
 {"_id":{"$oid":"62d538fc8152f823627a8bea"},"system":"v1","name":"encounters","content":"snomed/185265000"}
 {"_id":{"$oid":"62d6c6c38152f823627a9077"},"system":"v1","name":"assessment","content":"trevor/sickleCellDiseaseEQ5DScore"}
+{"_id":{"$oid":"6331a1c2597dd11d84950084"},"system":"v1","name":"publicinfo","content":"ExternalResearchStudy"}
