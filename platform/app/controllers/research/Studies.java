@@ -145,7 +145,7 @@ import utils.fhir.FHIRServlet;
 import utils.fhir.FHIRTools;
 import utils.fhir.GroupResourceProvider;
 import utils.fhir.MidataPractitionerResourceProvider;
-import utils.fhir.ResearchStudyResourceProvider;
+import utils.fhir.MidataResearchStudyResourceProvider;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -248,7 +248,7 @@ public class Studies extends APIController {
 
 		Study.add(study);
 
-		ResearchStudyResourceProvider.updateFromStudy(context, study);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study);
 
 		AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, userId, userId, null, study._id);
 		AuditManager.instance.success();
@@ -843,7 +843,7 @@ public class Studies extends APIController {
 			sendAdminNotificationMail(study);
 		}
 		
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		AuditManager.instance.success();
 
 
@@ -895,7 +895,7 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_VALIDATED, user, null));
 		study.setValidationStatus(StudyValidationStatus.VALIDATED);
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		AuditManager.instance.success();
 
 		return ok();
@@ -929,7 +929,7 @@ public class Studies extends APIController {
 		// study.addHistory(new History(EventType.STUDY_REJECTED, user, "Reset
 		// to draft mode"));
 		study.setValidationStatus(StudyValidationStatus.DRAFT);
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		AuditManager.instance.success();
 
@@ -976,7 +976,7 @@ public class Studies extends APIController {
 		// study.addHistory(new History(EventType.PARTICIPANT_SEARCH_STARTED,
 		// user, null));
 		study.setParticipantSearchStatus(ParticipantSearchStatus.SEARCHING);
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		AuditManager.instance.success();
 
@@ -1022,7 +1022,7 @@ public class Studies extends APIController {
 		// study.addHistory(new History(EventType.PARTICIPANT_SEARCH_CLOSED,
 		// user, null));
 		study.setParticipantSearchStatus(ParticipantSearchStatus.CLOSED);
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		AuditManager.instance.success();
 
@@ -1068,7 +1068,7 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_STARTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.RUNNING);
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		Market.updateActiveStatus(study);
 		AuditManager.instance.success();
 
@@ -1113,7 +1113,7 @@ public class Studies extends APIController {
 		closeStudy(context, study);
 		// study.addHistory(new History(EventType.STUDY_FINISHED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.FINISHED);
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		Market.updateActiveStatus(study);
 
 		AuditManager.instance.success();
@@ -1175,7 +1175,7 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_ABORTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.ABORTED);
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		Market.updateActiveStatus(study);
 
 		AuditManager.instance.success();
@@ -2038,7 +2038,7 @@ public class Studies extends APIController {
 		study.setRequiredInformation(inf);
 		study.setAnonymous(anonymous);
 		study.setAssistance(assist);
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		AuditManager.instance.success();
 		return ok();
 	}
@@ -2156,7 +2156,7 @@ public class Studies extends APIController {
 			study.setconsentObserver(study.consentObserver);
 		}
 
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		AuditManager.instance.success();
 		return ok();
 	}
@@ -2264,7 +2264,7 @@ public class Studies extends APIController {
 
 			study.setInfosInternal(result);
 		}
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		return ok();
 	}
@@ -2335,7 +2335,7 @@ public class Studies extends APIController {
 		Set<StudyAppLink> links = StudyAppLink.getByStudy(studyId);
 		for (StudyAppLink link : links)
 			link.delete();
-		ResearchStudyResourceProvider.deleteStudy(context, study._id);
+		MidataResearchStudyResourceProvider.deleteStudy(context, study._id);
 		Study.delete(studyId);
 
 		AuditManager.instance.success();
@@ -2400,7 +2400,7 @@ public class Studies extends APIController {
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 
 		Study.add(study);
-		ResearchStudyResourceProvider.updateFromStudy(context, study);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study);
 
 		Set<StudyAppLink> sals = StudyAppLink.getByStudy(oldGroup);
 		for (StudyAppLink sal : sals) {
@@ -2628,7 +2628,7 @@ public class Studies extends APIController {
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 
 		Study.add(study);
-		ResearchStudyResourceProvider.updateFromStudy(context, study);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study);
 
 		for (int i = 1; i < allJson.size(); i++) {
 			JsonNode sal = allJson.get(i);
@@ -2703,7 +2703,7 @@ public class Studies extends APIController {
 		study.groups.add(newGroup);
 		study.setGroups(study.groups);
 		
-		ResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		AuditManager.instance.success();
 				
 		return ok();

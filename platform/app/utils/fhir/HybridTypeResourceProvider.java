@@ -44,12 +44,12 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 	public ResourceProvider<T,M2> getSecondProvider() { return second; }
 	
 	public HybridTypeResourceProvider(Class<M1> firstClass, ReadWriteResourceProvider<T,M1> firstProvider,
-			                          Class<M2> secondClass, ResourceProvider<T,M2> secondProvider) {
+			                          Class<M2> secondClass, ResourceProvider<T,M2> secondProvider, boolean secondWritable) {
 		this.firstClass = firstClass;
 		this.first = firstProvider;
 		this.secondClass = secondClass;
 		this.second = secondProvider;
-		if (secondProvider instanceof ReadWriteResourceProvider) {
+		if (secondProvider instanceof ReadWriteResourceProvider && secondWritable) {
             this.secondRW = (ReadWriteResourceProvider) secondProvider;			
 		}
 	}
@@ -80,7 +80,8 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 		if (handleWithFirstProvider(theResource)) {
 			return first.createExecute((M1) record, theResource);
 		} else  {
-			return secondRW.createExecute((M2) record, theResource);
+			if (secondRW!=null) return secondRW.createExecute((M2) record, theResource);
+			else throw new BadRequestException("error.nowrite", "Cannot write this resource.");
 		} 
 		
 	}

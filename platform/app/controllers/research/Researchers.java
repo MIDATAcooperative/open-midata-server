@@ -287,7 +287,7 @@ public class Researchers extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result updateOrganization(Request request, String id) throws AppException {
 		requireSubUserRole(request, SubUserRole.MASTER);
-		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		
 		AccessContext context = portalContext(request);
 		JsonNode json = request.body().asJson();
 		

@@ -96,5 +96,6 @@ id0103	20.06.2022	a.kreutz	I	Added modifiedBy extension to meta block
 id0104	01.07.2022	a.kreutz	I	Added role, fhirUser fields to OAuth login
 id0105	01.07.2022	a.kreutz	I	Subscription with trigger on ResearchStudy changes is now possible
 id0106	01.07.2022	a.kreutz	I	Projects may have external identifiers
-id0107	15.07.2022	a.kreutz	I	Non Midata Consents storeable
+id0107	15.07.2022	a.kreutz	I	Non Midata Consents storable
+id0108	26.09.2022	a.kreutz	F	Non Midata Research Studies storable
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

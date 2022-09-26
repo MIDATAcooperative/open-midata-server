@@ -235,7 +235,7 @@ public class AndCondition implements Condition, Serializable {
 	@Override
 	public Map<String, Object> asMongoQuery() {
 		Map<String, Object> result = new HashMap<String, Object>();		
-		List<Object> parts = new ArrayList<Object>();
+		
 		for (Condition check : checks) {
 			Map<String, Object> part = (Map<String, Object>) check.asMongoQuery(); 
 			result.putAll(part); 						

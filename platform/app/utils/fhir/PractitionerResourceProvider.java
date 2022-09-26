@@ -45,7 +45,7 @@ import utils.exceptions.AppException;
 public class PractitionerResourceProvider extends HybridTypeResourceProvider<Practitioner, Record, User> {
 
 	public PractitionerResourceProvider() {
-		super(Record.class, new RecordPractitionerResourceProvider(), User.class, new MidataPractitionerResourceProvider());
+		super(Record.class, new RecordPractitionerResourceProvider(), User.class, new MidataPractitionerResourceProvider(), false);
 		registerSearches("Practitioner", getClass(), "getPractitioner");
 	}
 	

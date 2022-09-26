@@ -56,7 +56,7 @@ import utils.exceptions.AppException;
 public class ConsentResourceProvider extends HybridTypeResourceProvider<org.hl7.fhir.r4.model.Consent, Consent, Record> {
 
 	public ConsentResourceProvider() {
-		super(Consent.class, new MidataConsentResourceProvider(), Record.class, new RecordConsentResourceProvider());
+		super(Consent.class, new MidataConsentResourceProvider(), Record.class, new RecordConsentResourceProvider(), true);
 		registerSearches("Consent", getClass(), "getConsent");
 		searchParamNameToPathMap.put("Consent:patient", "patient");
 		searchParamNameToTypeMap.put("Consent:patient", Sets.create("Patient"));
