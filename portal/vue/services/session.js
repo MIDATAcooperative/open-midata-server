@@ -128,6 +128,7 @@ import oauth from './oauth';
 					var userId = result.user;
 					if (requiredRole && result.role != requiredRole.toUpperCase()) {
 						console.log("Wrong role "+result.role+" vs "+requiredRole.toUpperCase());
+						sessionStorage.token = undefined;
 						document.location.href="/#/public/login";
 						return;
 					}
@@ -144,6 +145,7 @@ import oauth from './oauth';
 					});																					
 				}, function() {
 					console.log("session.login error branch");
+					sessionStorage.token = undefined;
 					document.location.href="/#/public/login"; 
 				});		
 			});
@@ -156,7 +158,7 @@ import oauth from './oauth';
 						
 			session.progress = null;	
 			session.currentUser = null;
-			sessionStorage.token = null;
+			sessionStorage.token = undefined;
 			session.org = null;
 			session.cache = {};
 			actions.logout();

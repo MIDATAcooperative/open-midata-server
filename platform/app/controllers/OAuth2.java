@@ -196,7 +196,7 @@ public class OAuth2 extends Controller {
 		Optional<String> param = request.header("Authorization");
 		if (!param.isPresent() || !param.get().startsWith("Bearer ")) OAuth2.invalidToken();
 		String token = param.get().substring("Bearer ".length());
-	    AccessContext inf = ExecutionInfo.checkToken(request, token, false);
+	    AccessContext inf = ExecutionInfo.checkToken(request, token, false, false);
 	    User user = User.getById(inf.getAccessor(), User.ALL_USER);
 	    ObjectNode obj = Json.newObject();	 
 	    
@@ -1127,7 +1127,7 @@ public class OAuth2 extends Controller {
 	    	
 	    	MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
 			if (authToken != null) {				
-			   AccessContext context = ExecutionInfo.checkMobileToken(authToken, false);	
+			   AccessContext context = ExecutionInfo.checkMobileToken(authToken, false, true);	
 	    		 
 		       User user = User.getById(context.getOwner(), User.FOR_LOGIN);
 		       Plugin plugin = Plugin.getById(context.getUsedPlugin());

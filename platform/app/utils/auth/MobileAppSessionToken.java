@@ -49,6 +49,8 @@ public class MobileAppSessionToken {
 	public long expiration;
 	
 	public UserRole role;
+	
+	public MidataId restrictedResourceId;
 
 	public MobileAppSessionToken(MidataId appInstanceId, String aeskey, long expirationTime, UserRole role) {
 		this.appInstanceId = appInstanceId;
@@ -57,8 +59,17 @@ public class MobileAppSessionToken {
 		this.role = role;
 	}
 	
+	public MobileAppSessionToken(MidataId appInstanceId, String aeskey, long expirationTime, UserRole role, MidataId restrictedResourceId) {
+		this.appInstanceId = appInstanceId;
+		this.aeskey = aeskey;
+		this.expiration = expirationTime;
+		this.role = role;
+		this.restrictedResourceId = restrictedResourceId;
+	}
+	
 	public String encrypt() throws InternalServerException {
 		Map<String, Object> map = CMaps.map("a", appInstanceId.toString()).map("p", aeskey).map("c", expiration).map("r", role.toShortString());						
+		if (restrictedResourceId != null) map.put("i", restrictedResourceId.toString());
 		String json = Json.stringify(Json.toJson(map));
 		return TokenCrypto.encryptToken(json);
 	}
@@ -84,8 +95,9 @@ public class MobileAppSessionToken {
 			long expirationTime = json.get("c").asLong();
 		    if (expirationTime < System.currentTimeMillis()) return null;
 		    String r = json.get("r").asText();
-		    UserRole role = UserRole.fromShortString(r);		    
-			return new MobileAppSessionToken(appInstanceId, aeskey, expirationTime, role);
+		    UserRole role = UserRole.fromShortString(r);
+		    MidataId restrictedResourceId = json.has("i") ? MidataId.from(json.get("i").asText()) : null;
+			return new MobileAppSessionToken(appInstanceId, aeskey, expirationTime, role, restrictedResourceId);
 		} catch (Exception e) {
 			return null;
 		}
