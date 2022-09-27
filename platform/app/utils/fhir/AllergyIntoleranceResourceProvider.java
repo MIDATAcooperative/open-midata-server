@@ -79,9 +79,6 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 	public Bundle getAllergyIntolerance(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
 
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
-		
   			@Description(shortDefinition="Source of the information about the allergy")
   			@OptionalParam(name="asserter", targetTypes={  } )
   			ReferenceAndListParam theAsserter, 
@@ -175,8 +172,7 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 	
 		paramMap.add("asserter", theAsserter);
 		paramMap.add("category", theCategory);

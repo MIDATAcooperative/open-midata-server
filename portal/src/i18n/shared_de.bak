@@ -38,6 +38,7 @@
      "relogin" : "Please relogin",
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
+     "failed" : "Action failed",
      "notrialuser_title" : "Full membership required!",
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "@OPERATOR membership required!",
@@ -132,7 +133,11 @@
        "passcode" : "Please choose a different passcode!",
        "plugin" : "An application with the same name already exists.",
        "study" : "A research project with this name already exists.",
-       "endpoint" : "An endpoint with this URL already exists"
+       "endpoint" : "An endpoint with this URL already exists",
+       "content" : "A content type with this name already exists.",
+       "group" : "A content group with this name already exists.",
+       "projectgroup" : "A project group with this name already exists.",
+       "code" : "A code with this code and codesystem already exists."
      },
 
      "blocked" : {
@@ -202,7 +207,8 @@
      "gender" : {
        "MALE" : "male",
        "FEMALE" : "female",
-       "OTHER" : "other"
+       "OTHER" : "other",
+       "UNKNOWN" : "not provided"
      },
      "country" : {
        "CH" : "Switzerland",
@@ -245,6 +251,7 @@
 	   "user-settings-change" :"User's settings changed",
 	   "user-email-change" :"User's email changed",
 	   "user-birthday-change" : "User's date of birth changed",
+	   "user-gender-change" : "User's gender changed",
 	   "user-status-change-active" : "User account unlocked",
 	   "user-status-change-blocked" : "User account blocked",
 	   "user-email-confirmed" : "Email confirmed by user",
@@ -283,7 +290,7 @@
        "contract-send" : "Contract send to user",
        "internal-comment" : "Administrator's comment",
        "user-terms-of-use-agreed" : "Agreed to General Terms and Conditions",
-       "audit-log-used" : "Audit Log consulted",	   
+       "audit-log-used" : "Audit log consulted",	   
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
 	   "removed-from-team" : "Removed from team",
@@ -292,7 +299,11 @@
 	   "user-searched" : "Search for user",
 	   "welcome-sent" : "Welcome email sent",
 	   "tried-user-reregistration" : "Attempted user re-registration",
-	   "signature-failure" : "Consent validation failed"	   
+	   "signature-failure" : "Consent validation failed",
+	   "email-sent" : "Email sent",
+	   "sms-sent" : "SMS sent",
+	   "resthook-called" : "Resthook called",
+	   "script-invocation" : "Script invoked"	   	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -306,6 +317,7 @@
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
 	   "ADMIN_VERIFIED" : "Account must have been unlocked by an administrator",
 	   "BIRTHDAY_SET" : "The date of birth of the user must be known",
+	   "GENDER_SET" : "The gender of the user must be known",
 	   "APP_UNLOCK_CODE" : "The application requires an unlock code"
 	 },
 	 "writepermissiontype" : {
@@ -571,8 +583,10 @@
   "registration" : {
     "sign_up" : "Sign Up",
     "mandantory_fields" : "Please fill in the information below, fields marked with an asterisk (*) are mandatory.",
+    "mandantory_fields2" : "Please fill in your email and password.",
     "password_policy" : "The password must be at least 8 characters long and contain one letter and one digit.",
     "password_policy2" : "The password must be at least 12 characters long and contain one letter, one digit and a special character.",
+    "personal_details" : "Personal Details",
     "email" : "EMail",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
@@ -683,6 +697,7 @@
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
     "birthday_entered" : "A valid date of birth is required to use this service. Please add your date of birth to your account information. (Format example: 31.12.1999)",
+    "gender_entered" : "Your gender must be provided to use this service. Please indicate your gender.",
     "admin_verified" : "Your account must be unlocked by an administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact @SUPPORT.",
     "terms_agreed" : "The General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
     "privacy_policy_agreed" : "The Privacy Policy has been updated. Please confirm that you agree to the new version.",
@@ -771,6 +786,7 @@
     "name" :"Name:",
 	"owned_by" : "Owned by:",
 	"created_by" : "Created by:",
+	"modified_by" : "Last modified by:",
     "created_with" : "Created with:",
     "created_on" : "Created at:",
     "content" : "@PRODUCT content type:",
@@ -1393,7 +1409,7 @@
     "cancel_btn" : "Cancel",
     "check_okay" : "Is the list of required data now complete and correct?",
     "ask" : {
-      "AuditEvent" : "Access to the audit event log",
+      "AuditEvent" : "Access to the audit log",
       "Consent" : "Access to consents of the application user with other users or applications",
       "Group" : "Access to group definitions (teams of health professionals or researchers as well as project-specific groups)",
       "Patient" : "Patient Records: name, email, address of account holders",
@@ -1431,8 +1447,8 @@
     "instructions_key" : "Use this key directly in the authorization header of the service as bearer token.",
     "refresh" : "Refresh token for OAuth",
     "instructions_refresh" : "For improved security, exchange this refresh token against a new pair of access token and refresh token.",
-    "common_name" : "CN (common name) for CSR (certificate request)",
-    "instructions_common_name" : "For certificate based authentication create a CSR with the given CN field. Send the CSR to @SUPPORT",
+    "common_name" : "OU (organization unit) and CN (common name) for CSR (certificate request)",
+    "instructions_common_name" : "For certificate based authentication create a CSR with the given OU and CN field. Send the CSR to @SUPPORT",
     "date" : "Date of creation",
     "status" : "Status",
     "ACTIVE" : "Active",

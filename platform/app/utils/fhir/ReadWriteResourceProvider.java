@@ -102,7 +102,7 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 	 */
 	final
 	protected MethodOutcome create(T theResource) throws AppException {
-		M record = init();			
+		M record = init(theResource);			
 		createPrepare(record, theResource);
 		theResource = createExecute(record, theResource);		
 		processResource(record, theResource);						
@@ -113,7 +113,7 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 	
 	public abstract T createExecute(M record, T theResource) throws AppException;
 	
-	public abstract M init();
+	public abstract M init(T theResource);
 	
 	/**
 	 * Default implementation for update
@@ -124,7 +124,7 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 	 */
 	final
 	protected MethodOutcome update(IdType theId, T theResource) throws AppException {
-		M record = fetchCurrent(theId);
+		M record = fetchCurrent(theId, theResource);
 		if (record == null) throw new ResourceNotFoundException(theId);
 		updatePrepare(record, theResource);		
 		updateExecute(record, theResource);	

@@ -115,10 +115,12 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	public abstract Class<T> getResourceType();
 	
 	
-			
+	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
+		return null;
+	}
 
 	
-	public abstract M fetchCurrent(IIdType theId) throws AppException;
+	public abstract M fetchCurrent(IIdType theId, T resource) throws AppException;
 	
 	public abstract void processResource(M record, T resource) throws AppException;
 			
@@ -156,7 +158,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	public abstract T getResourceById(@IdParam IIdType theId) throws AppException;
 	
 	public String getResourceUrl(String baseUrl, IBaseResource r) {
-		String res = baseUrl+"/"+r.getIdElement().toString();//+"/_history/"+r.getMeta().getVersionId();		
+		String res = baseUrl+"/"+r.getIdElement().toVersionless().toString();		
 		return res;
 	}
 	
@@ -214,18 +216,24 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		return resource._id.toString();
 	}
 	
+	public List<T> basicSearch(SearchParameterMap params) throws AppException {
+		List<M> raw = searchRaw(params);
+	    List<T> resources = parse(raw, getResourceType());
+	   		  
+	   if (params.getCount() != null && raw.size() == params.getCount() + 1) {			   
+		   params.setFrom(getFromId(raw.get(raw.size() - 1)));
+		   if (resources.size() > params.getCount()) {
+		     resources = resources.subList(0, params.getCount());
+		   }
+	   } else params.setFrom(null);
+	   
+	   return resources;
+	}
+	
 	public List<IBaseResource> search(SearchParameterMap params) {
 		try {		
-			List<IBaseResource> results = new ArrayList<IBaseResource>();
-			List<M> raw = searchRaw(params);
-		    List<T> resources = parse(raw, getResourceType());
-		   		  
-		   if (params.getCount() != null && raw.size() == params.getCount() + 1) {			   
-			   params.setFrom(getFromId(raw.get(raw.size() - 1)));
-			   if (resources.size() > params.getCount()) {
-			     resources = resources.subList(0, params.getCount());
-			   }
-		   } else params.setFrom(null);
+			List<IBaseResource> results = new ArrayList<IBaseResource>();			
+		    List<T> resources = basicSearch(params);		   		  
 		   
 		   results.addAll(resources);
 		   

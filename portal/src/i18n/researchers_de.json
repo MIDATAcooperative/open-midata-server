@@ -34,6 +34,8 @@
         "study_name" : "Name des Forschungsprojektes",
         "study_type" : "Forschungsart",
         "study_description" : "Projektbeschreibung",
+        "study_identifiers" : "Identifikatoren",
+        "study_identifiers_info" : "Geben Sie hier alle Projektidentifikatoren von externen Institutionen ein. Geben Sie einen Identifikator pro Zeile ein. Verwenden Sie '|', um Codesystem und Wert zu trennen, falls gewünscht. Die Identifikatoren werden auf den Projektseiten des Portals nicht angezeigt.",
         "developer_nostart" : "Achtung!",
         "developer_nostart2" : "Als Entwickler können Sie ein Projekt nur einrichten, aber nicht durchführen. Als Entwickler ist es nicht möglich, die Teilnehmersuche zu starten."
     },
@@ -346,7 +348,7 @@
     },
 
     "researcher_sharing" : {
-        "description" : "Datensätze von Ihrem Konto mit Gruppen von Projektteilnehmern teilen oder nicht mehr teilen",
+        "description" : "Datensätze aus Ihrem Konto mit Gruppen von Projektteilnehmern teilen oder nicht mehr teilen",
         "source" : "Quelle",
         "me" : "Daten aus meinem Konto",
         "project" : "Daten vom Analysator",

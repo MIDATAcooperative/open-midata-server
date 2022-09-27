@@ -81,10 +81,7 @@ public class RiskAssessmentResourceProvider extends RecordBasedResourceProvider<
 	@Search()
 	public Bundle getRiskAssessment(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
-																		
+																			
 			@Description(shortDefinition="Condition assessed")
   			@OptionalParam(name="condition", targetTypes={  } )
   			ReferenceAndListParam theCondition, 
@@ -156,8 +153,7 @@ public class RiskAssessmentResourceProvider extends RecordBasedResourceProvider<
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 	
 		paramMap.add("condition", theCondition);
 		paramMap.add("date", theDate);

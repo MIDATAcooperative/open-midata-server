@@ -75,9 +75,7 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 	@Search()
 	public Bundle getFamilyMemberHistory(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+			
  			@Description(shortDefinition="A search by a condition code")
   			@OptionalParam(name="code")
   			TokenAndListParam theCode,
@@ -142,8 +140,7 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);	
 		paramMap.add("code", theCode);
 		paramMap.add("date", theDate);
 		paramMap.add("identifier", theIdentifier);

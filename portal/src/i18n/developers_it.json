@@ -95,6 +95,7 @@
         "subscriptions_btn" : "Cambia abbonamenti (Subscriptions) predefiniti",
         "subscriptions_help" : "Definire i trigger che causano un'azione sul server @PRODUCT",
         "tokenExchangeParams" : "Parametri OAuth 2 per lo scambio di token",
+        "refreshTkExchangeParams" : "Parametri OAuth 2 per lo scambio del refresh token",
         "testfromlocal_btn" : "Testa il suo plugin da localhost",
         "testfromlocal_help" : "Durante lo sviluppo, è possibile testare il codice del plugin memorizzato nel proprio computer locale su questa istanza.",
         "serverimport_btn" : "Testa lo script dell'importazione automatica.",
@@ -145,6 +146,7 @@
             "name" : "Il nome, della propria applicazione, che sarà presentato all'utente finale.",
             "description" : "La descrizione del proprio applicazione che sarà mostrata sul Marketplace.",
             "tokenExchangeParams" : "La definizione predefinita è client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> tuttavia alcuni servizi richiedono anche client_secret=<client_secret> oppure nessun client_id",
+            "refreshTkExchangeParams" : "L'impostazione predefinita è grant_type=<grant_type>&refresh_token=<refresh_token>&client_id=<client_id> ma alcuni servizi richiedono anche client_secret=<client_secret> o altri parametri",
             "no_update_history" : "Gli aggiornamenti delle risorse FHIR effettuati da questa applicazione non producono voci della cronologia. Utilizzare solo se l'applicazione esegue molti e frequenti aggiornamenti.",
             "pseudonymize" : "Leggere i dati pseudonimizzati. Non aggiorna i dati dei partecipanti.",
             "resharesData" : "L'applicazione è autorizzata a ricondividere con terzi i dati a cui accede.",
@@ -159,12 +161,12 @@
             "secret" : "Application Secret era richiesto dalla vecchia API; sta per compatibilità all'indietro.",
             "mustParticipateInStudy" : "Gli utenti devono partecipare al progetto di ricerca per utilizzare l'applicazione.",
             "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a @PRODUCT tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli.",
-            "send_reports" : "Notificare lo sviluppatore ({{utente}}}) via e-mail sulle cause di errore di questa applicazione.",
+            "send_reports" : "Avvisare il creatore dell'applicazione e il team di sviluppo via e-mail degli errori causati da questa applicazione.",
             "developerTeam" : "Inserire una lista separata da virgole di indirizzi e-mail di altri sviluppatori su quell'istanza @PRODUCT, che sviluppano questa applicazione.",
             "code_challenge" : "Durante il login OAuth2, l'applicazione chiamante deve usare lo standard PKCE (Proof Key for Code Exchange)",
-            "createendpoint" : "Crea un endpoint non legata a un progetto. Selezionare solo se NON si prevede di utilizzare questo endpoint con un progetto.",
+            "createendpoint" : "Creare un'istanza di questo endpoint non legata al progetto. Selezionare solo se NON si prevede di utilizzare questo endpoint con un progetto.",
             "endpoint" : "Il percorso di questo endpoint FHIR non legata a un progetto sarà /opendata/endpointname/fhir",
-            "endpoint2" : "Non dimenticare: per attivare l'endpoint è necessario aggiungere una API-Key dopo."
+            "endpoint2" : "Non dimenticare: per attivare l'endpoint è necessario aggiungere una chiavi API dopo."
         },
         "status" : {
             "title" : "Stato dell'applicazione",
@@ -180,7 +182,7 @@
         "queryeditor_btn" : "Va all'editor Data Access Filter",
         "no_update_history" : "No storia risorse FHIR",
         "pseudonymize" : "Leggere pseudonimizzato",
-        "createendpoint" : "Creare il endpoint",
+        "createendpoint" : "Creare un'istanza dell'endpoint",
         "endpoint" : "Nome dell'endpoint",
         "usagestats_btn" : "Statistiche d'uso",
         "usagestats_help" : "Analizzare la frequenza di utilizzo dell'applicazione.",
@@ -189,6 +191,7 @@
         "important" : "IMPORTANTE",
         "logoutwarning" : "La modifica della definizione dell'applicazione comporta la disconnessione di tutti gli utenti dall'applicazione stessa. Dovranno confermare nuovamente l'utilizzo dell'applicazione al prossimo accedi.",
         "researchwarning" : "La modifica della definizione dell'applicazione dissocia questa applicazione di ricerca da tutti gli progetti!",
+        "servicewarning" : "La modifica della definizione dell'applicazione richiede la generazione di nuove chiavi API per tutte le istanze di questo servizio.",
         "creator" : "Creatore",
         "organization" : "Organizzazione",
         "publisher" : "Editore",
@@ -456,6 +459,8 @@
         "no_terms" : "Nessuna condizioni d'uso",
         "links" : "Progetti collegati",
         "no_links" : "Nessuno (ancora)",
+        "urlParams" : "Parametri di prova per il login OAuth",
+        "urlParams2" : "Parametri di prova dell'URL che l'applicazione fornirà al login. Ad esempio, 'family=Test&given=Some&ro=true&country=CH&language=it'.",
         "step" : {
             "login" : "Accesso",
             "registration" : "Iscrizione",
@@ -473,6 +478,7 @@
             "auth2factorsetup" : "Impostazione 2FA",
             "auth2factor" : "2FA",
             "birthday_set" : "Inserire la data di nascita",
+            "gender_set" : "Inserire il sesso",
             "unlock_code" : "Codice di sblocco dell'applicazione"
         }
     },

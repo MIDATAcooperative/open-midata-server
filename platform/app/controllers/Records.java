@@ -573,7 +573,6 @@ public class Records extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result fixAccount(Request request) throws AppException {
-		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 
 		List<String> messages = RecordManager.instance.fixAccount(portalContext(request));
 

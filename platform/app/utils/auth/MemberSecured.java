@@ -36,7 +36,7 @@ public class MemberSecured extends AnyRoleSecured {
 		  UserRole role = PortalSessionToken.session().getRole();
 		  if (! UserRole.MEMBER.equals(role)) return Optional.empty();			  
 		}
-		return Optional.of(result);
+		return Optional.empty();
 	}
 
 	@Override

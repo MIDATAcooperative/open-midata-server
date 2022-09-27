@@ -143,9 +143,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 	@Search()
 	public Bundle getObservation(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+		
 			@Description(shortDefinition="Reference to the service request.")
   			@OptionalParam(name="based-on", targetTypes={  } )
   			ReferenceAndListParam theBased_on, 
@@ -336,8 +334,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 	
 		paramMap.add("based-on", theBased_on);
 		paramMap.add("category", theCategory);
@@ -596,16 +593,18 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 			} else {
 				
 				// Otherwise determine effective date of last written record
-				Observation ref = parse(code.newestRecordContent, getResourceType());				
+				Observation ref = code.newestRecordContent != null ? parse(code.newestRecordContent, getResourceType()) : null;				
 				now = code.newest.getTime();
-				try {
-					DateTimeType t1 = ref.getEffectiveDateTimeType();
-					if (t1 != null && t1.getValue() != null) now = t1.getValue().getTime();
-					else {
-						Period p = ref.getEffectivePeriod();
-						if (p != null && p.getStart() != null) now = p.getStart().getTime();
-					}
-				} catch (FHIRException e) {}
+				if (ref != null) {
+					try {
+						DateTimeType t1 = ref.getEffectiveDateTimeType();
+						if (t1 != null && t1.getValue() != null) now = t1.getValue().getTime();
+						else {
+							Period p = ref.getEffectivePeriod();
+							if (p != null && p.getStart() != null) now = p.getStart().getTime();
+						}
+					} catch (FHIRException e) {}
+				}
 				
 				// How long should we look into the past?
 				long range = 1000l*60l*60l*24l*(count+3);

@@ -31,6 +31,10 @@
 				<div class="col-md-8 col-lg-10 main-col">{{record.creatorName}}</div>
 			</div>
 			<div class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.modified_by'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{record.modifiedByName}}</div>
+			</div>
+			<div class="row mt-1">
 				<div class="col-md-4 col-lg-2" v-t="'recorddetail.created_with'"></div>
 				<div class="col-md-8 col-lg-10 main-col">{{record.app}}</div>
 			</div>
@@ -40,7 +44,7 @@
 			</div>
 			<div class="row mt-1">
 				<div class="col-md-4 col-lg-2" v-t="'recorddetail.id'"></div>
-				<div class="col-md-8 col-lg-10 main-col">{{record._id}}</div>
+				<div class="col-md-8 col-lg-10 main-col">{{recordId}}</div>
 			</div>		
 			<div v-if="record.format && record.format.startsWith('fhir/')" class="row mt-1">
 				<div class="col-md-4 col-lg-2" v-t="'enum.codesystems.fhir'"></div>
@@ -85,7 +89,8 @@ export default {
     data: () => ({       
         record: {},
         url : null,
-        userId : null
+        userId : null,
+        recordId : null
 		
 	}),				
 
@@ -102,6 +107,12 @@ export default {
 	        me.doBusy(server.post(jsRoutes.controllers.Records.get().url, {"_id": recordId }))
 	        .then(function(records1) {
 			    let record = records1.data;
+			    
+			    if (record.content=="PseudonymizedPatient" || record.content=="Patient" ) {
+			      $data.recordId = record.data.id;
+			    } else {
+			      $data.recordId = record._id;
+			    }
 			    
 			    me.doBusy(records.getUrl(recordId)).
 	               then(function(results) {

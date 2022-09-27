@@ -53,6 +53,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
+import utils.messaging.SubscriptionManager;
 import utils.viruscheck.FileTypeScanner;
 import utils.viruscheck.VirusScanner;
 
@@ -74,10 +75,10 @@ public class RecordManager {
 	public final static Set<String> COMPLETE_META = Collections.unmodifiableSet(Sets.create("id", "owner",
 			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated", "consentAps"));
 	public final static Set<String> COMPLETE_DATA = Collections.unmodifiableSet(Sets.create("id", "owner", "ownerName",
-			"app", "creator", "created", "name", "format", "content", "code", "description", "isStream", "lastUpdated",
+			"app", "creator", "modifiedBy", "created", "name", "format", "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group"));
 	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Collections.unmodifiableSet(Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated",
+			"app", "creator", "modifiedBy", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group", "watches", "stream"));
 	public final static Set<String> SHARING_FIELDS = Collections.unmodifiableSet(Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream", "stream", "app"));
 	
@@ -584,7 +585,9 @@ public class RecordManager {
 		  System.out.println("FAIL UPLOAD");
 		  try {
 		    FileStorage.delete(id.toObjectId());
-		  } catch (Exception e2) { }
+		  } catch (Exception e2) { 
+			// We do not handle error during Error
+		  }
 		  throw new InternalServerException("error.internal", e);
 		}
 		System.out.println("EXIT UPLOAD");
@@ -700,6 +703,14 @@ public class RecordManager {
 		    
 		    String version = Long.toString(System.currentTimeMillis());
 		    rec.meta.put("version", version);
+		    
+		    if (record.modifiedBy.equals(rec.owner)) {
+		      // use "O" for owner. No entry is same as creator for backwards compatibility
+		      rec.meta.put("modifiedBy", "O");
+		    } else {
+		      rec.meta.put("modifiedBy", record.modifiedBy.toDb());
+		    }
+		    
 			
 		    DBRecord clone = rec.clone();
 		    
@@ -709,12 +720,14 @@ public class RecordManager {
 				try {
  				    VersionedDBRecord.add(vrec);
 				} catch (InternalServerException e) {
-					throw new PluginException(pluginId, "error.concurrent.update", "Please check your application so that it does not try concurrent updates on the same resource. Record has id '"+rec._id.toString()+" with record format '"+rec.getFormatOrNull()+"'.");
+					throw new PluginException(pluginId, "error.concurrent.update", "Please check your application so that it does not try concurrent updates on the same resource. Record has id '"+rec._id.toString()+" with record format '"+clone.getFormatOrNull()+"'.");
 				}
 			}
 		    DBRecord.upsert(rec); 	  	
 		    
 		    RecordLifecycle.notifyOfChange(clone, context.getCache());
+		    
+		    SubscriptionManager.resourceChange(record);
 		    return version;
 		} finally {
 	        AccessLog.logEnd("end updateRecord");

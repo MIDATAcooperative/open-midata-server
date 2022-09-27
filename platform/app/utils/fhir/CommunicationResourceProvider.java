@@ -97,12 +97,7 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
-			  
-			@Description(shortDefinition="The resource language")
-			@OptionalParam(name="_language")
-			StringAndListParam theResourceLanguage, 
-						
-			    
+			  											 
   			@Description(shortDefinition="Request fulfilled by this communication")
   			@OptionalParam(name="based-on", targetTypes={  } )
   			ReferenceAndListParam theBased_on, 
@@ -195,8 +190,7 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);	
+		paramMap.add("_id", theId);	
 	
 		paramMap.add("category", theCategory);
 		paramMap.add("encounter", theEncounter);

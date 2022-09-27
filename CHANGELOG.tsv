@@ -89,4 +89,13 @@ id0087	29.03.2022	a.kreutz	F	Non-project FHIR endpoints	It is now possible to cr
 id0088	11.04.2022	a.kreutz	F	Added FHIR RiskAssessment Resource
 id0089	20.04.2022	a.kreutz	I	Resource counting optimization	There is now better support for FHIR searches with _count=0 as parameter.
 id0099	23.05.2022	a.kreutz	I	New storage format for APS	Record-Key lists in Access Permission Sets are now stored using B+ Trees.
+id0100	14.06.2022	a.kreutz	F	Adding groups to running projects is supported.
+id0101	14.06.2022	a.kreutz	B	Bundles do not contain version in fullUrl anymore.
+id0102	15.06.2022	a.kreutz	F	Support for :not query modifier
+id0103	20.06.2022	a.kreutz	I	Added modifiedBy extension to meta block
+id0104	01.07.2022	a.kreutz	I	Added role, fhirUser fields to OAuth login
+id0105	01.07.2022	a.kreutz	I	Subscription with trigger on ResearchStudy changes is now possible
+id0106	01.07.2022	a.kreutz	I	Projects may have external identifiers
+id0107	15.07.2022	a.kreutz	I	Non Midata Consents storable
+id0108	26.09.2022	a.kreutz	F	Non Midata Research Studies storable
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

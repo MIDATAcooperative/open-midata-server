@@ -94,7 +94,11 @@ public class AndCondition implements Condition, Serializable {
 		   } else if (accessKey.equals("$in")) {			   
 			  checks.add(new InCondition(makeSet(value)));
 		   } else if (accessKey.equals("$or")) {			   
-			  checks.add(new OrCondition(makeSet(value)));		   
+			  checks.add(new OrCondition(makeSet(value)));
+		   } else if (accessKey.equals("$not")) {			   
+			  checks.add(new NotCondition(parseRemaining(value)));
+		   } else if (accessKey.equals("$nin")) {			   
+			  checks.add(new NotInCondition(makeSet(value)));	
 		   } else if (accessKey.equals("$and")) {			   
 			  for (Object obj : makeSet(value)) {
 				  checks.add(parseRemaining(obj));
@@ -121,7 +125,7 @@ public class AndCondition implements Condition, Serializable {
 			Condition c = checks.get(i).optimize();
 			if (c instanceof FieldAccess) {
 				Condition c2 = ((FieldAccess) c).getCondition();
-				if (c2 instanceof ElemMatchCondition || c2 instanceof CompareCaseInsensitive || c2 instanceof EqualsSingleValueCondition) {
+				if (c2 instanceof ElemMatchCondition || c2 instanceof CompareCaseInsensitive || c2 instanceof EqualsSingleValueCondition || c2 instanceof NotInCondition) {
 					allFieldAccess = false;
 				} else {
 				   String field = ((FieldAccess) c).getField();
@@ -231,7 +235,7 @@ public class AndCondition implements Condition, Serializable {
 	@Override
 	public Map<String, Object> asMongoQuery() {
 		Map<String, Object> result = new HashMap<String, Object>();		
-		List<Object> parts = new ArrayList<Object>();
+		
 		for (Condition check : checks) {
 			Map<String, Object> part = (Map<String, Object>) check.asMongoQuery(); 
 			result.putAll(part); 						

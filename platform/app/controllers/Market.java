@@ -251,7 +251,7 @@ public class Market extends APIController {
 							if (!appInstances.isEmpty()) {
 								String subject = InstanceConfig.getInstance().getPortalServerDomain()+": API Keys expired";
 								String content = "Dear "+manager.firstname+" "+manager.lastname+",\n\nthe definition for the service '"+app.name+"' has been updated. The existing API keys for that service have expired. You are managing at least one API keys for this service.\n\nPlease generate a new API key if required.\n\nThis is an automated mail.";
-								Messager.sendTextMail(manager.email, manager.firstname+" "+manager.lastname, subject, content);
+								Messager.sendTextMail(manager.email, manager.firstname+" "+manager.lastname, subject, content, null);
 							}
 						}
 					}
@@ -339,6 +339,7 @@ public class Market extends APIController {
 				} else if (app.type.equals("oauth2")) {
 					app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
 					app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
+					app.refreshTkExchangeParams = JsonValidation.getStringOrNull(json, "refreshTkExchangeParams");
 				}
 			}
 			if (app.type.equals("mobile") || app.type.equals("service")) {
@@ -486,7 +487,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)	
-	public Result updateDefaultSubscriptions(Request request, String pluginIdStr) throws JsonValidationException, AppException {
+	public Result updateDefaultSubscriptions(Request request, String pluginIdStr) throws JsonValidationException, AppException, LostUpdateException {
 		//if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		// validate json
 		JsonNode json = request.body().asJson();
@@ -500,7 +501,8 @@ public class Market extends APIController {
 		
 		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 		
-		app.version = JsonValidation.getLong(json, "version");				
+		app.version = JsonValidation.getLong(json, "version");	
+		app.pluginVersion = System.currentTimeMillis();
 		
 		parseSubscriptions(app, json);
 						
@@ -771,6 +773,7 @@ public class Market extends APIController {
 			} else if (plugin.type.equals("oauth2")) {
 				plugin.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
 				plugin.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
+				plugin.refreshTkExchangeParams = JsonValidation.getStringOrNull(json, "refreshTkExchangeParams");
 			}
 		}
 		if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
@@ -900,6 +903,7 @@ public class Market extends APIController {
 			} else if (app.type.equals("oauth2")) {
 				app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
 				app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
+				app.refreshTkExchangeParams = JsonValidation.getStringOrNull(json, "refreshTkExchangeParams");
 			}
 		}
 		if (app.type.equals("mobile") || app.type.equals("service")) {

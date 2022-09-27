@@ -168,7 +168,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	
 	
 	@Override
-	public Record fetchCurrent(IIdType theId)  {
+	public Record fetchCurrent(IIdType theId, Patient theResource)  {
 		try {
 			if (theId == null) throw new UnprocessableEntityException("id missing");
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
@@ -229,9 +229,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	@Search()
 	public Bundle getPatient(@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+			
 			/*
 			 * @Description(
 			 * shortDefinition="Search the contents of the resource's data using a fulltext search"
@@ -339,8 +337,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			RequestDetails theDetails) throws AppException {
 
 		SearchParameterMap paramMap = new SearchParameterMap();
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 		/*
 		 * paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT,
 		 * theFtContent);
@@ -463,13 +460,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 				Object id = record.data.get("id");
 				// 
 				if (id.equals(record.owner.toString())) {
-					if (record.creator != null && record.creator.equals(record.owner)) record.creator = null; 
-					result.add(record);
-				//AccessLog.log("taken:"+record.content+" / "+record.name);
-				} else {
-					//AccessLog.log(id.toString()+" vs "+record.owner.toString());
-					//AccessLog.log(record.content+" / "+record.name);
-				}
+					if (record.creator != null && record.creator.equals(record.owner)) record.creator = null;
+					if (record.modifiedBy != null && record.modifiedBy.equals(record.owner)) record.modifiedBy = null;
+					result.add(record);				
+				} 
 			}
 			AccessLog.log("RESULT AFTER FILTER="+result.size());
 			return result;

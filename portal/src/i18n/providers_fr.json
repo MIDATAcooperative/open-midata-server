@@ -93,7 +93,7 @@
 
     "provider_memberdetails" : {
         "propose_consent" : "Demander le consentement",
-        "pick_consent" : "Sélectionnez un consentement pour afficher les enregistrements individuels",
+        "pick_consent" : "Sélectionnez un consentement pour afficher les données individuelles",
         "share_btn" : "Partager des données avec le patient"
     },
 

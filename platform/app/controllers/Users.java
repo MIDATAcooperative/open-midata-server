@@ -415,7 +415,7 @@ public class Users extends APIController {
 		User.set(user._id, "notifications", user.notifications);
 		
 		user.updateKeywords(true);
-		AccessContext context = ContextManager.instance.createLoginOnlyContext(user._id, user.role);
+		AccessContext context = ContextManager.instance.createLoginOnlyContext(user._id, null, user.role);
 		if (user.role.equals(UserRole.MEMBER)) {	
 			
 			if (!executorId.equals(userId)) {
@@ -568,7 +568,7 @@ public class Users extends APIController {
 		AuditManager.instance.success();
 		
 		if (reason != null) {
-			Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "["+InstanceConfig.getInstance().getPortalServerDomain()+"]: Account Deletion", "Reason given by user: "+reason);
+			Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "["+InstanceConfig.getInstance().getPortalServerDomain()+"]: Account Deletion", "Reason given by user: "+reason, null);
 		}
 		
 		return ok();

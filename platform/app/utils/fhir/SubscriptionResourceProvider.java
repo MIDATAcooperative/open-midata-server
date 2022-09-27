@@ -113,7 +113,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		convertToR4(subscriptionToConvert, data);
 		IParser parser = ctx().newJsonParser();		
 		Subscription result = parser.parseResource(getResourceType(), data.toString());
-				
+		result.setId(subscriptionToConvert._id.toString());		
 		return result;
 	}
 	
@@ -175,11 +175,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	    		@Description(shortDefinition="The ID of the resource")
 	  			@OptionalParam(name="_id")
 	  			TokenAndListParam the_id, 
-	    
-	  			@Description(shortDefinition="The language of the resource")
-	  			@OptionalParam(name="_language")
-	  			StringAndListParam the_language, 
-	    
+	    	  			    
 	  			@Description(shortDefinition="A tag to be added to the resource matching the criteria")
 	  			@OptionalParam(name="add-tag")
 	  			TokenAndListParam theAdd_tag, 
@@ -229,8 +225,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	    	
 	    	SearchParameterMap paramMap = new SearchParameterMap();
 	    		    	
-	    	paramMap.add("_id", the_id);
-	    	paramMap.add("_language", the_language);
+	    	paramMap.add("_id", the_id);	    	
 	    	paramMap.add("add-tag", theAdd_tag);
 	    	paramMap.add("contact", theContact);
 	    	paramMap.add("criteria", theCriteria);
@@ -412,7 +407,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	}
 
 	@Override
-	public SubscriptionData init() {
+	public SubscriptionData init(Subscription theResource) {
 		SubscriptionData subscriptionData = new SubscriptionData();
 		subscriptionData._id = new MidataId();
 		subscriptionData.owner = info().getLegacyOwner();
@@ -440,7 +435,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	}
 
 	@Override
-	public SubscriptionData fetchCurrent(IIdType theId) throws AppException {
+	public SubscriptionData fetchCurrent(IIdType theId, Subscription resource) throws AppException {
 		return SubscriptionData.getByIdAndOwner(MidataId.from(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
 	}
 

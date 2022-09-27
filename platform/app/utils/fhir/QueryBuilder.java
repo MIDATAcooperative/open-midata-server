@@ -419,6 +419,7 @@ public class QueryBuilder {
 			  String val = tokenParam.getValue();
 			  if (val == null) return;
 			  boolean isText = tokenParam.isText();
+			  TokenParamModifier modifier = tokenParam.getModifier();			  
 			  if (type.equals(TYPE_CODEABLE_CONCEPT)) {
 				if (isText) {
 				  bld.add(
@@ -474,6 +475,7 @@ public class QueryBuilder {
 					  bld.addEq(path, value, CompareCaseInsensitiveOperator.EQUALS);
 					}
 			  }
+			  if (modifier == TokenParamModifier.NOT) bld.notBlock();
 			} else if (param instanceof StringParam) {
 			  StringParam stringParam = (StringParam) param;
 			  

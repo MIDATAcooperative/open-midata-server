@@ -90,11 +90,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 	public Bundle getDocumentReference(
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
-			
-			@Description(shortDefinition="The resource language")
-			@OptionalParam(name="_language")
-			StringAndListParam theResourceLanguage, 
-			 
+								 
 			@Description(shortDefinition="Who/what authenticated the document")
   			@OptionalParam(name="authenticator", targetTypes={  } )
   			ReferenceAndListParam theAuthenticator, 
@@ -229,8 +225,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 		/*
 		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT, theFtContent);
 		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_TEXT, theFtText);

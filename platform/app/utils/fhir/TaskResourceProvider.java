@@ -93,10 +93,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
-			  
-			@Description(shortDefinition="The resource language")
-			@OptionalParam(name="_language")
-			StringAndListParam theResourceLanguage, 
+			  		
 			 /* 
 			@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
@@ -227,8 +224,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);	
 		
 	    //paramMap.add("_has", theHas);
 		paramMap.add("authored-on", theAuthored_on);

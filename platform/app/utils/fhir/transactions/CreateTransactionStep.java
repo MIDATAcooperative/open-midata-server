@@ -47,7 +47,7 @@ public class CreateTransactionStep extends TransactionStep {
 	
 	@Override
     public void init() {
-    	record = ((ReadWriteResourceProvider) provider).init();
+    	record = ((ReadWriteResourceProvider) provider).init(resource);
     }
 	
 	@Override

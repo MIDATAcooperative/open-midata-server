@@ -39,6 +39,7 @@
         "relogin" : "Accedere nuovamente",
         "noconsent" : "Non esiste alcun consenso attivo che consenta di aggiungere dati per la persona di destinazione.",
         "unsupported" : "Operazione non supportata",
+        "failed" : "Azione fallita",
         "notrialuser_title" : "È richiesta l'iscrizione completa in qualità di membro!",
         "notrialuser_detail" : "Per utilizzare questa funzionalità, è necessario completare la propria registrazione. Richiedere una copia scritta dei Condizioni generali di contratto e restituirla firmata a @OPERATOR. Si riceverà inoltre un codice di conferma per verificare il proprio indirizzo postale. Se si desidera controllare lo stato del proprio account fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "mustbemember_title" : "È richiesta l'appartenenza a @OPERATOR!",
@@ -133,7 +134,11 @@
             "passcode" : "Scegliere un codice password diverso!",
             "plugin" : "Esiste già un'applicazione con lo stesso nome.",
             "study" : "Esiste già un progetto di ricerca con questo nome.",
-            "endpoint" : "Esiste già un endpoint con questo URL"
+            "endpoint" : "Esiste già un endpoint con questo URL",
+            "content" : "Esiste già un tipo di contenuto con questo nome.",
+            "group" : "Esiste già un gruppo di contenuti con questo nome.",
+            "projectgroup" : "Esiste già un gruppo di progetto con questo nome.",
+            "code" : "Esiste già un codice con questo codice e questo sistema di codici."
         },
 
         "blocked" : {
@@ -203,7 +208,8 @@
         "gender" : {
             "MALE" : "maschile",
             "FEMALE" : "femminile",
-            "OTHER" : "altro"
+            "OTHER" : "altro",
+            "UNKNOWN" : "non indicato"
         },
         "country" : {
             "CH" : "Svizzera",
@@ -246,6 +252,7 @@
             "user-settings-change" : "Impostazioni dell'utente modificate",
             "user-email-change" : "E-mail dell'utente modificata",
             "user-birthday-change" : "Data di nascita dell'utente modificata",
+            "user-gender-change" : "Sesso dell'utente modificato",
             "user-status-change-active" : "Account utente sbloccato",
             "user-status-change-blocked" : "Account utente bloccato",
             "user-email-confirmed" : "E-mail confermata dall'utente",
@@ -293,7 +300,11 @@
             "user-searched" : "Cerca per utente",
             "welcome-sent" : "E-mail di benvenuto inviata",
             "tried-user-reregistration" : "Tentativo di registrazione dell'utente",
-            "signature-failure" : "Convalida del consenso fallita"
+            "signature-failure" : "Convalida del consenso fallita",
+            "email-sent" : "E-mail inviata",
+            "sms-sent" : "SMS inviato",
+            "resthook-called" : "Resthook chiamato",
+            "script-invocation" : "Script invocato"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
@@ -307,6 +318,7 @@
             "MIDATA_COOPERATIVE_MEMBER" : "L'utente deve essere membro della cooperativa",
             "ADMIN_VERIFIED" : "L'account deve essere stato sbloccato da un amministratore",
             "BIRTHDAY_SET" : "La data di nascita dell'utente deve essere nota",
+            "GENDER_SET" : "Il sesso dell'utente deve essere noto",
             "APP_UNLOCK_CODE" : "L'applicazione richiede un codice di sblocco"
         },
         "writepermissiontype" : {
@@ -572,8 +584,10 @@
     "registration" : {
         "sign_up" : "Registrazione",
         "mandantory_fields" : "Inserire le informazioni qui sotto, i campi contrassegnati da un asterisco * sono obbligatori.",
+        "mandantory_fields2" : "Inserite il vostro indirizzo e-mail e la vostra password.",
         "password_policy" : "La password deve essere lunga almeno 8 caratteri e contenere una lettera e una cifra.",
         "password_policy2" : "La password deve essere lunga almeno 12 caratteri e contenere una lettera, una cifra e un carattere speciale.",
+        "personal_details" : "Dati personali",
         "email" : "E-mail",
         "password" : "Password",
         "password_repetition" : "Ripetere la password",
@@ -684,6 +698,7 @@
         "address_entered" : "Per utilizzare questo servizio è richiesto il suo indirizzo postale; ti invitiamo a inserirlo.",
         "phone_entered" : "Per utilizzare questo servizio è richiesto un numero di telefono cellulare; ti invitiamo a inserirlo.",
         "birthday_entered" : "Per utilizzare questo servizio è necessaria una data di nascita valida. Aggiungi la tua data di nascita alle informazioni del suo account. (Esempio di formato: 31.12.1999)",
+        "gender_entered" : "Per utilizzare questo servizio è necessario inserire il proprio sesso. Indicare il proprio sesso.",
         "admin_verified" : "Il suo account deve essere sbloccato da un amministratore. Riprova più tardi. Se trascorse più di 24 ore il suo account non è stato sbloccato, contatta @SUPPORT.",
         "terms_agreed" : "I Condizioni generali di contratto sono stati aggiornati. Si prega di confermare di accettare la nuova versione.",
         "privacy_policy_agreed" : "La Dichiarazione sui dati personali è stata aggiornata. Si prega di confermare di accettare la nuova versione.",
@@ -772,6 +787,7 @@
         "name" : "Nome:",
         "owned_by" : "Il titolare è:",
         "created_by" : "Creato da:",
+        "modified_by" : "Ultima modifica da:",
         "created_with" : "Creato con:",
         "created_on" : "Creato il:",
         "content" : "Tipo di contenuto @PRODUCT:",
@@ -1432,8 +1448,8 @@
         "instructions_key" : "Utilizzare questa chiave direttamente nell'header dell'autorizzazione del servizio come bearer token.",
         "refresh" : "Refresh token per OAuth",
         "instructions_refresh" : "Per una maggiore sicurezza, scambiare questo refresh token con un nuovo paio di access token e refresh token.",
-        "common_name" : "CN (common name) per CSR (certificate request)",
-        "instructions_common_name" : "Per l'autenticazione basata su certificato creare una CSR con il campo CN dato. Inviare la CSR a @SUPPORT",
+        "common_name" : "OU (organization unit) e CN (common name) per il CSR (certificate request)",
+        "instructions_common_name" : "Per l'autenticazione basata su certificato, create un CSR con i campi OU e CN indicati. Inviate il CSR a @SUPPORT",
         "date" : "Data di creazione",
         "status" : "Stato",
         "ACTIVE" : "Attiva",

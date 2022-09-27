@@ -58,7 +58,7 @@ import utils.context.AccessContext;
 import utils.context.ConsentAccessContext;
 import utils.context.ContextManager;
 import utils.exceptions.AppException;
-import utils.fhir.ConsentResourceProvider;
+import utils.fhir.MidataConsentResourceProvider;
 import utils.fhir.GroupResourceProvider;
 import utils.fhir.OrganizationResourceProvider;
 import utils.fhir.PatientResourceProvider;
@@ -313,7 +313,7 @@ public class AccountPatches {
 		    List<Consent> consents = Consent.getBroken();
 		    if (consents.size() == 0) foundSome = false;
 			for (Consent consent : consents) {				
-				ConsentResourceProvider.updateMidataConsent(consent, null);		
+				MidataConsentResourceProvider.updateMidataConsent(consent, null);		
 				Consent.set(consent._id, "fhirConsent", consent.fhirConsent);
 			}
 		}

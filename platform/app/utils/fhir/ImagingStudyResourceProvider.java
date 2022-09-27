@@ -91,9 +91,7 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 	@Search()
 	public Bundle getImagingStudy(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+		
   			@Description(shortDefinition="The order for the image")
   			@OptionalParam(name="basedon", targetTypes={  } )
   			ReferenceAndListParam theBasedon, 
@@ -196,8 +194,7 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);	
 		paramMap.add("basedon", theBasedon);
 		paramMap.add("bodysite", theBodysite);
 		paramMap.add("dicom-class", theDicom_class);

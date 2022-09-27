@@ -28,6 +28,7 @@ import models.MessageDefinition;
 import models.MidataId;
 import models.Plugin;
 import models.User;
+import models.enums.AuditEventType;
 import models.enums.MessageChannel;
 import models.enums.MessageReason;
 import utils.AccessLog;
@@ -35,6 +36,8 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.ServerTools;
+import utils.audit.AuditEventBuilder;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.stats.ActionRecorder;
@@ -54,14 +57,14 @@ public class Messager {
 		smsSender = system.actorOf(Props.create(SMSSender.class).withDispatcher("medium-work-dispatcher"), "smsSender");
 	}
 	
-	public static void sendTextMail(String email, String fullname, String subject, String content) {	
+	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId) {	
 		AccessLog.log("trigger send text mail to="+email);
-		mailSender.tell(new Message(email, fullname, subject, content), ActorRef.noSender());
+		mailSender.tell(new Message(email, fullname, subject, content, eventId), ActorRef.noSender());
 	}
 	
-	public static void sendSMS(String phone, String text) {
+	public static void sendSMS(String phone, String text, MidataId eventId) {
 		AccessLog.log("trigger send SMS to="+phone);
-		smsSender.tell(new SMS(phone, text), ActorRef.noSender());
+		smsSender.tell(new SMS(phone, text, eventId), ActorRef.noSender());
 	}
 
 	public static boolean sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
@@ -69,23 +72,33 @@ public class Messager {
 	}
 	
 	public static boolean sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel) throws AppException {
-		if (targets == null || targets.isEmpty()) return false;
+		if (targets == null || targets.isEmpty()) {
+			AccessLog.log("no email targets");
+			return false;
+		}
 		Plugin plugin = Plugin.getById(sourcePlugin, Sets.create("predefinedMessages", "name"));
 		if (plugin.predefinedMessages != null) {
 		  replacements.put("plugin-name", plugin.name);
 		  replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
-		  return sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements, channel);
+		  return sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements, channel, sourcePlugin);
 		}
+		AccessLog.log("no predefined messages");
 		return false;
 	}
 	
-	public static boolean sendMessage(Map<String, MessageDefinition> messageDefinitions, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel) throws AppException {
+	public static boolean sendMessage(Map<String, MessageDefinition> messageDefinitions, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel, MidataId sourceApp) throws AppException {
 		if (targets.isEmpty()) return false;
 		
 		MessageDefinition msg = null; 
 		if (code != null) msg = messageDefinitions.get(reason.toString()+"_"+code);
 		if (msg == null) msg = messageDefinitions.get(reason.toString());
-		if (msg == null) return false;
+		if (msg == null) {
+			for (String md : messageDefinitions.keySet()) {
+				AccessLog.log("has message key="+md);
+			}
+			AccessLog.log("no message definition for reason="+reason.toString()+" code="+code);
+			return false;
+		}
 		
 		Map<String, String> footers = null;
 		Plugin commonPlugin = Plugin.getById(RuntimeConstants.instance.commonPlugin, Sets.create("predefinedMessages"));
@@ -94,17 +107,19 @@ public class Messager {
 		  if (footerDefs != null) footers = footerDefs.text;
 		}
 		
-		sendMessage(msg, footers, targets, defaultLanguage, replacements, channel);
+		sendMessage(msg, footers, targets, defaultLanguage, replacements, channel, sourceApp);
 		
 		return true;
 	}
 	
-	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel) throws AppException {	
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel, MidataId sourceApp) throws AppException {	
 		for (Object target : targets) {
 			if (target instanceof MidataId) {
 				MidataId userId = (MidataId) target;
-				User user = User.getById(userId, Sets.create("email", "firstname", "lastname", "language"));
-				if (user != null) sendMessage(messageDefinition, footers, user, replacements, channel);
+				User user = User.getById(userId, User.ALL_USER);
+				if (user != null) {					
+					sendMessage(messageDefinition, footers, user, replacements, channel, sourceApp);
+				}
 			} else if (target instanceof String) {
 				sendMessage(messageDefinition, footers, target.toString(), null, defaultLanguage, replacements, channel);
 			}
@@ -112,7 +127,7 @@ public class Messager {
 		}
 	}
 	
-	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, User member, Map<String, String> replacements, MessageChannel channel) {		
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, User member, Map<String, String> replacements, MessageChannel channel, MidataId sourceApp) throws AppException {		
 		String email = member.email;
 		if (email == null) return;
 		String fullname = member.firstname+" "+member.lastname;
@@ -144,9 +159,14 @@ public class Messager {
 		if (phone == null) channel = MessageChannel.EMAIL;
 		
 		if (channel.equals(MessageChannel.SMS)) {
-		   Messager.sendSMS(phone, content);
+		   
+		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SMS_SENT).withActorUser(member).withApp(sourceApp).withMessage(subject));
+		   Messager.sendSMS(phone, content, AuditManager.instance.convertLastEventToAsync());
+		   AuditManager.instance.success();
 		} else {
-		   Messager.sendTextMail(email, fullname, subject, content);
+		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.EMAIL_SENT).withActorUser(member).withApp(sourceApp).withMessage(subject));
+		   Messager.sendTextMail(email, fullname, subject, content, AuditManager.instance.convertLastEventToAsync());
+		   AuditManager.instance.success();
 		}
 	}
 	
@@ -182,9 +202,9 @@ public class Messager {
 		}
 		
 		if (channel.equals(MessageChannel.SMS)) {
-		  Messager.sendSMS(email, content);
+		  Messager.sendSMS(email, content, null);
 		} else {
-		  Messager.sendTextMail(email, fullname, subject, content);
+		  Messager.sendTextMail(email, fullname, subject, content, null);
 		}
 	}
 }
@@ -202,15 +222,18 @@ class MailSender extends AbstractActor {
 	}
 		
 	public void receiveMessage(Message msg) throws Exception {
-		String path = "MailSender/receiveMessage";
+		String path = "MailSender/receiveMessage";		
 		long st = ActionRecorder.start(path);
+		AuditManager.instance.resumeAsyncEvent(msg.getEventId());
 		try {		
 		    AccessLog.logStart("jobs", "send email");
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
 			  MailUtils.sendTextMail(MailSenderType.USER, msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
-			}			
+			}		
+			AuditManager.instance.success();
 		} catch (Exception e) {
-			ErrorReporter.report("Messager (EMail)", null, e);	
+			ErrorReporter.report("Messager (EMail)", null, e);
+			AuditManager.instance.fail(400, e.toString(), "error.failed");
 			throw e;
 		} finally {
 			ServerTools.endRequest();			
@@ -235,13 +258,16 @@ class SMSSender extends AbstractActor {
 	public void sendSMS(SMS msg) throws Exception {
 		String path = "SMSSender/sendSMS";
 		long st = ActionRecorder.start(path);
+		AuditManager.instance.resumeAsyncEvent(msg.getEventId());
 		try {	
 			AccessLog.logStart("jobs", "send SMS");
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
 			   SMSUtils.sendSMS(msg.getPhone(), msg.getText());
-			}			
+			}		
+			AuditManager.instance.success();
 		} catch (Exception e) {
-			ErrorReporter.report("Messager (SMS)", null, e);	
+			ErrorReporter.report("Messager (SMS)", null, e);
+			AuditManager.instance.fail(400, e.toString(), "error.failed");
 			throw e;
 		} finally {
 			ServerTools.endRequest();	

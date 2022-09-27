@@ -299,14 +299,14 @@ export default {
 		mode : null,
 		resourceOptions : {
 			"fhir/AuditEvent" : ["noapp", "noowner", "notime", "nopublic"], 
-			"fhir/Consent" : ["noapp", "noowner", "notime", "nopublic", "observer", "category"],
-			"fhir/ResearchStudy" : ["noapp","noowner","initpublic","notime","nopublic"],
+			"fhir/Consent:Consent" : ["noapp", "noowner", "notime", "nopublic", "observer", "category"],
+			"fhir/ResearchStudy:ResearchStudy" : ["noapp","noowner","initpublic","notime","nopublic"],
 			"fhir/Organization" : ["noapp","noowner","initpublic","notime","nopublic"],
 			"fhir/ValueSet" : ["noapp","noowner", "notime","initpublic"],
 			"fhir/Group" : ["noowner"],
 			"fhir/Patient" : ["noapp", "notime", "nopublic"],
 			"fhir/Person" : ["noapp", "noowner", "notime", "nopublic"],
-			"fhir/Practitioner" : ["noapp", "noowner", "notime"],
+			"fhir/Practitioner:Practitioner" : ["noapp", "noowner", "notime"],
 			"fhir/Subscription" : ["noapp", "noowner", "notime", "nopublic"],
 			"fhir/Observation" : ["effective"],
 			"fhir/QuestionnaireResponse" : ["custom"],
@@ -347,7 +347,7 @@ export default {
 				}));				
 			} else if ($route.meta.mode == "app") {
 				$data.mode = "app";
-				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate"])
+				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate"])
 				.then(function(data) { 
 					$data.app = data.data[0];
 					$data.target.appname = $data.app.filename;
@@ -605,7 +605,8 @@ export default {
 			$data.currentBlock = block;
 			
 			$data.currentBlock.flags = {};		
-			var ro = $data.resourceOptions[block.format];
+			var ro = $data.resourceOptions[block.format+":"+block.content];
+			if (!ro) ro = $data.resourceOptions[block.format]; 
 			if (ro) {			
 				for (let r of ro) { $data.currentBlock.flags[r] = true; }
 			}

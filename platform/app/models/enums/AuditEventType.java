@@ -208,6 +208,14 @@ public enum AuditEventType {
 	
 	WELCOME_SENT(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "welcome-sent", "Welcome mail sent"), AuditEventAction.E),
 	
+	EMAIL_SENT(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "email-sent", "Email sent"), AuditEventAction.E),
+	
+	SMS_SENT(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "sms-sent", "SMS sent"), AuditEventAction.E),
+	
+	RESTHOOK(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "resthook-called", "Resthook called"), AuditEventAction.E),
+	
+	SCRIPT_INVOCATION(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "script-invocation", "Script invoced"), AuditEventAction.E),
+	
 	ADDED_AS_TEAM_MEMBER(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "added-as-team-member", "Added as team member"), AuditEventAction.C),
 	
 	UPDATED_ROLE_IN_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "updated-role-in-team", "Updated role in team"), AuditEventAction.U),

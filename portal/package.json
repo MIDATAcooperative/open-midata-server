@@ -1,6 +1,6 @@
 {
   "name": "midata-portal",
-  "version": "2.1.6",
+  "version": "2.1.8",
   "description": "Midata Portal",
   "main": "index.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "eslint-webpack-plugin": "^2.5.4",
     "file-loader": "^6.2.0",
     "glob": "^7.1.6",
-    "html-webpack-plugin": "^5.3.2",
+    "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.1.0",
     "postcss-loader": "^6.2.1",
     "sass": "^1.35.1",

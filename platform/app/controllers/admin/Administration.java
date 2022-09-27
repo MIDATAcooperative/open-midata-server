@@ -411,7 +411,7 @@ public class Administration extends APIController {
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");			
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = ContextManager.instance.createLoginOnlyContext(userId, getRole());
+		AccessContext context = ContextManager.instance.createLoginOnlyContext(userId, null, getRole());
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
 		  requireSubUserRole(request, SubUserRole.USERADMIN);
@@ -502,7 +502,7 @@ public class Administration extends APIController {
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
 	public Result deleteStudy(Request request, String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 		AccessContext context = portalContext(request);

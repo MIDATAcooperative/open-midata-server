@@ -111,9 +111,7 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 	@Search()
 	public Bundle getCarePlan(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+			
   			@Description(shortDefinition="Detail type of activity")
   			@OptionalParam(name="activity-code")
   			TokenAndListParam theActivity_code,
@@ -231,8 +229,7 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);		
 		paramMap.add("activity-code", theActivity_code);
 		paramMap.add("activity-date", theActivity_date);
 		paramMap.add("activity-reference", theActivity_reference);
