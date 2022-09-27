@@ -17,6 +17,8 @@
 
 package controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,6 +61,7 @@ import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;
@@ -81,6 +84,7 @@ import utils.context.AppAccessContext;
 import utils.context.ContextManager;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
@@ -100,6 +104,7 @@ public class MobileAPI extends Controller {
 	
 	public final static long DEFAULT_ACCESSTOKEN_EXPIRATION_TIME = 1000l * 60l * 60l * 6l;
 	public final static long DEFAULT_REFRESHTOKEN_EXPIRATION_TIME = 1000l * 60l * 60l * 24l * 31l;
+	public final static long DEFAULT_IMAGE_EXPIRATION_TIME = 1000l * 30l;
 	
 	/**
 	 * handle OPTIONS requests. 
@@ -343,7 +348,7 @@ public class MobileAPI extends Controller {
 		Rights.chk("getRecords", UserRole.ANY, fields);
 
 		// decrypt authToken
-		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), true);		
+		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false, true);		
 		if (inf == null) OAuth2.invalidToken(); 
 							
         Stats.setPlugin(inf.getUsedPlugin());
@@ -383,11 +388,11 @@ public class MobileAPI extends Controller {
 		String param2 = request.queryString("access_token").orElse(null);
 		
 		if (param.isPresent() && param.get().startsWith("Bearer ")) {
-          info = ExecutionInfo.checkToken(request, param.get().substring("Bearer ".length()), false);                  
+          info = ExecutionInfo.checkToken(request, param.get().substring("Bearer ".length()), false, true);                  
 		} else if (json != null && json.has("authToken")) {
-		  info = ExecutionInfo.checkToken(request, JsonValidation.getString(json, "authToken"), false);
+		  info = ExecutionInfo.checkToken(request, JsonValidation.getString(json, "authToken"), false, true);
 		} else if (param2 != null) {
-		  info = ExecutionInfo.checkToken(request, param2, false);
+		  info = ExecutionInfo.checkToken(request, param2, false, true);
 		} else throw new BadRequestException("error.auth", "Please provide authorization token as 'Authorization' header or 'authToken' request parameter.");
 					
 		String id =json != null ? JsonValidation.getString(json, "_id") : request.queryString("_id").orElseThrow();
@@ -425,7 +430,7 @@ public class MobileAPI extends Controller {
 		JsonValidation.validate(json, "authToken", "data", "name", "format");
 		if (!json.has("content") && !json.has("code")) throw new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
 		
-		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false, false);
 		Stats.setPlugin(inf.getUsedPlugin());	
 		UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.POST);	
 		
@@ -491,7 +496,7 @@ public class MobileAPI extends Controller {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "_id", "version");
 		
-		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false, false);
 		Stats.setPlugin(inf.getUsedPlugin());	
 		UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.PUT);
 		
@@ -558,7 +563,7 @@ public class MobileAPI extends Controller {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "target-study", "target-study-group");
 		
-		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false, false);
 		Stats.setPlugin(inf.getUsedPlugin());	
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
@@ -600,7 +605,7 @@ public class MobileAPI extends Controller {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "target-study", "target-study-group");
 		
-		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false, false);
 		Stats.setPlugin(inf.getUsedPlugin());	
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
@@ -710,9 +715,31 @@ public class MobileAPI extends Controller {
 		Collection<Consent> consents = Consent.getAllActiveByAuthorized(context.getLegacyOwner());
 		
 		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
-		
-		
+				
 		return ok(JsonOutput.toJson(consents, "Consent", fields)).as("application/json");
+	}
+	
+
+	@MobileCall
+	public Result getImageToken(Request request) throws AppException {
+        String param = request.header("Authorization").get();
+		
+		if (param != null && param.startsWith("Bearer ")) {
+			  MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(param.substring("Bearer ".length()));
+			  if (authToken == null) OAuth2.invalidToken(); 
+	          AccessContext info = ExecutionInfo.checkMobileToken(authToken, false, false);
+	          if (info == null) OAuth2.invalidToken(); 
+	          Stats.setPlugin(info.getUsedPlugin());
+	          String id = request.queryString("_id").orElseThrow();
+	         
+	          MobileAppSessionToken tk = new MobileAppSessionToken(authToken.appInstanceId, authToken.aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_IMAGE_EXPIRATION_TIME, authToken.role, MidataId.from(id));
+	          try {
+				return ok("https://"+InstanceConfig.getInstance().getPlatformServer()+request.uri()+"&access_token="+URLEncoder.encode(tk.encrypt(), "UTF-8")).as("text/plain");
+			  } catch (UnsupportedEncodingException e) {
+				 throw new InternalServerException("error.internal", e);
+			  } 
+	    } 
+		throw new BadRequestException("error.invalid.token", "Invalid or expired authToken.", Http.Status.UNAUTHORIZED);	
 	}
 		
 }

@@ -93,6 +93,7 @@ export default {
 		    $data.user.passwordHash = crypto.getHash($data.user.password);
 		    me.doAction("wipe", server.post("/api/shared/users/wipe", $data.user)).then(function() {
 				//if ($route.query.actions) window.close();
+				session.logout();
 		        document.location.href="/#/public/login"; 
 	        });
 	    },

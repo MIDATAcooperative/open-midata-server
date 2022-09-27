@@ -41,6 +41,7 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.util.JSONParseException;
 
+import actions.MobileCall;
 import actions.VisualizationCall;
 import models.Consent;
 import models.ContentInfo;
@@ -62,6 +63,7 @@ import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
+import play.mvc.Http;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Http.Request;
@@ -77,7 +79,9 @@ import utils.access.RecordConversion;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
+import utils.auth.MobileAppSessionToken;
 import utils.auth.Rights;
+import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
@@ -412,7 +416,7 @@ public class PluginsAPI extends APIController {
 		String authTokenStr = request.queryString("authToken").orElseThrow();
 		String id = request.queryString("id").orElseThrow();
 		
-		AccessContext info = ExecutionInfo.checkToken(request, authTokenStr, false);		
+		AccessContext info = ExecutionInfo.checkToken(request, authTokenStr, false, true);		
 		if (info == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
@@ -834,7 +838,7 @@ public class PluginsAPI extends APIController {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 	
-		AccessContext authToken = ExecutionInfo.checkToken(request, metaData.get("authToken")[0], false);
+		AccessContext authToken = ExecutionInfo.checkToken(request, metaData.get("authToken")[0], false, false);
 		Stats.setPlugin(authToken.getUsedPlugin());
 		
 		System.out.println("Passed 1");
@@ -926,5 +930,28 @@ public class PluginsAPI extends APIController {
 	private static CompletionStage<Result> badRequestPromise(final String errorMessage) {
 		return CompletableFuture.completedFuture(badRequest(errorMessage));
 
+	}
+		
+	@VisualizationCall
+	public Result getImageToken(Request request) throws AppException {
+        String param = request.header("Authorization").get();
+		
+		if (param != null && param.startsWith("Bearer ")) {
+			  SpaceToken authToken = SpaceToken.decrypt(request, param.substring("Bearer ".length()));
+			  if (authToken == null) OAuth2.invalidToken(); 
+	          AccessContext info = ExecutionInfo.checkSpaceToken(authToken);
+	          if (info == null) OAuth2.invalidToken(); 
+	          Stats.setPlugin(info.getUsedPlugin());
+	          String id = request.queryString("_id").orElseThrow();
+	          MidataId recId = MidataId.from(id);
+	          if (authToken.recordId != null && !authToken.recordId.equals(recId)) { OAuth2.invalidToken(); } 
+	          authToken.recordId = recId;
+	          try {
+				return ok("https://"+InstanceConfig.getInstance().getPlatformServer()+request.uri()+"&access_token="+URLEncoder.encode(authToken.encrypt(), "UTF-8")).as("text/plain");
+			  } catch (UnsupportedEncodingException e) {
+				 throw new InternalServerException("error.internal", e);
+			  } 
+	    } 
+		throw new BadRequestException("error.invalid.token", "Invalid or expired authToken.", Http.Status.UNAUTHORIZED);	
 	}
 }
