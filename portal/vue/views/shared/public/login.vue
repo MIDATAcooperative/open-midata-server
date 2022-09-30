@@ -98,7 +98,7 @@ import ENV from "config";
 
 export default {
     data: () => ({
-        login : { role : "MEMBER" },
+        login : { role : "MEMBER", email : "", password : "" },
         actions : null,
         offline : false,
         notPublic : ENV.instanceType == "prod",

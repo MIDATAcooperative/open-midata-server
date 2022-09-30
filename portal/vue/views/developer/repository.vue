@@ -52,28 +52,30 @@
 				  		  
 		<b v-t="'repository.server'"></b>:
 		<select class="form-control" v-model="crit.sel">
-            <option v-for="node in report.clusterNodes" :key="node" :value="dot(node)">{{ node }}</option>
+            <option v-for="node in report.clusterNodes" :key="node" :value="node">{{ node }}</option>
         </select>
 		<hr>
+		
         <div v-if="report && report.checkoutReport">
-            <div v-if="report.checkoutReport[crit.sel]">
+         
+            <div v-if="test(report.checkoutReport, crit.sel)">
                 <b v-t="'repository.checkout'"></b>
-                <pre>{{ report.checkoutReport[crit.sel] }}</pre>
+                <pre>{{ test(report.checkoutReport, crit.sel) }}</pre>
             </div>
             
-            <div v-if="report.installReport[crit.sel]">
+            <div v-if="test(report.installReport, crit.sel)">
                 <b v-t="'repository.install'"></b>
-                <pre>{{ report.installReport[crit.sel] }}</pre>
+                <pre>{{ test(report.installReport, crit.sel) }}</pre>
             </div>
             
-            <div v-if="report.auditReport[crit.sel]">
+            <div v-if="test(report.auditReport, crit.sel)">
                 <b v-t="'repository.audit'"></b>
-                <pre>{{ report.auditReport[crit.sel] }}</pre>
+                <pre>{{ test(report.auditReport, crit.sel) }}</pre>
             </div>
             
-            <div v-if="report.buildReport[crit.sel]">
+            <div v-if="test(report.buildReport, crit.sel)">
                 <b v-t="'repository.build'"></b>
-                <pre>{{ report.buildReport[crit.sel] }}</pre>
+                <pre>{{ test(report.buildReport, crit.sel) }}</pre>
             </div>
 		  		  		 		
         </div>
@@ -92,7 +94,7 @@ let pull = null;
 export default {
 
     data: () => ({	
-        report : { clusterNodes : [] },
+        report : { clusterNodes : [], buildReport : {} },
         appId : null,
         app : null,
         crit : { sel : null }
@@ -130,8 +132,9 @@ export default {
             server.get(jsRoutes.controllers.Market.updateFromRepository($data.appId).url).then(function(result) {
                 if (result.data && result.data.clusterNodes) {
                     $data.report = result.data;	
+                   
                     if (!$data.crit.sel && $data.report && $data.report.clusterNodes && $data.report.clusterNodes.length) {			   
-                        $data.crit.sel = me.dot($data.report.clusterNodes[0]); 
+                        $data.crit.sel = $data.report.clusterNodes[0]; 
                     }
                 }
             });
@@ -140,6 +143,12 @@ export default {
 	
 	    dot(x) {
 		    return x!=null ? x.replaceAll(".","[dot]") : "";
+	    },
+	    
+	    test(x,y) {
+	       if (x[y]) return x[y];
+	       if (x[this.dot(y)]) return x[this.dot(y)];
+	       return undefined;
 	    },
 	
 	    style(p,c,n) {
