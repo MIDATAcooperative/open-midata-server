@@ -157,7 +157,7 @@ const routes = [
     component: postRegister
   },
   {
-    base : ["member", "research", "developer", "provider"],
+    base : ["member", "research", "developer", "provider", "admin"],
     path : "upgrade",
     component: postRegister
   },
