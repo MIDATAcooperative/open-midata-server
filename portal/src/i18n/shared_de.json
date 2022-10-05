@@ -1348,13 +1348,11 @@
     },
 
     "serviceleave" : {
-        "title" : "Haben Sie Ihre Session beendet?",
-        "thankyou" : "Danke für Ihre Hilfe!",
-        "continue" : "Bitte benutzen Sie das Hauptmenü, um Ihre Session fortzusetzen oder sich abzumelden.",
+        "title" : "Sie verlassen @PRODUCT",
+        "thankyou" : "Danke für Ihre Hilfe!",        
         "logout_btn" : "Abmelden",
         "goodbye_btn" : "Session beenden und Fenster schliessen",
-        "logoutreturn" : "Sie werden zur aufrufenden Seite weitergeleitet.",
-        "return_btn" : "Abmelden und fortfahren"
+        "logoutreturn" : "Sie verlassen jetzt das @PRODUCT Account Management Portal."        
     },
 
     "queryeditor" : {

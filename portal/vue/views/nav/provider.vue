@@ -21,7 +21,7 @@
 		<div id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">			
 			<div class="container">
 				<div class="navbar-header">
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
+					<button class="ml-1 navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>
@@ -55,8 +55,8 @@
 
 
 					<ul class="nav navbar-nav">
-						<li class="nav-item"><router-link class="nav-link" :to="{ name : 'provider.user', query : { userId : user._id}}">{{user.name}}</router-link></li>
-						<li class="nav-item"><a class="nav-link" @click="logout()" href="javascript:"> <span class="fas fa-power-off"></span> <span
+						<li class="nav-item"><router-link data-toggle="collapse" data-target=".navbar-ex1-collapse" class="nav-link" :to="{ name : 'provider.user', query : { userId : user._id}}">{{user.name}}</router-link></li>
+						<li class="nav-item"><a data-toggle="collapse" data-target=".navbar-ex1-collapse" class="nav-link" @click="logout()" href="javascript:"> <span class="fas fa-power-off"></span> <span
 								v-t="'navbar.sign_out'"></span>
 						</a></li>
 					</ul>				
