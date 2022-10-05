@@ -106,10 +106,10 @@
         </div>
         <p v-else v-t="'workspace.add_something'"></p>
         <div class="mt-3">
-            <button class="btn btn-primary mr-1" type="button" @click="showAddApp" v-t="'workspace.newapp_btn'"></button>
-            <button class="btn btn-primary mr-1" type="button" @click="showAddProject" v-t="'workspace.newproject_btn'"></button>
-            <button class="btn btn-primary mr-1" type="button" @click="showAddUser" v-t="'workspace.newuser_btn'"></button>
-            <button class="btn btn-primary mr-1" type="button" @click="reset()" v-t="'workspace.reset_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="showAddApp" v-t="'workspace.newapp_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="showAddProject" v-t="'workspace.newproject_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="showAddUser" v-t="'workspace.newuser_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="reset()" v-t="'workspace.reset_btn'"></button>
         </div>
     </panel>
     

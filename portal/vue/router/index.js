@@ -213,7 +213,8 @@ const routes = [
   {
     base : ["member", "developer", "admin", "research", "provider"],
     path : "user2",
-    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/user2.vue')
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/user2.vue'),
+    meta : { locked : true }
   },
   {
     base : ["member", "developer", "admin", "research", "provider"],
@@ -292,7 +293,8 @@ const routes = [
   {
     base : ["member", "provider", "research", "developer", "admin"],
     path : "serviceleave",
-    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/serviceleave.vue')
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/serviceleave.vue'),
+    meta : { lock : true }
   },
   {
     base : ["member", "provider", "research", "developer", "admin"],

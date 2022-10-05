@@ -57,11 +57,13 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.RuntimeConstants;
 import utils.ServerTools;
+import utils.audit.AuditManager;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.MidataConsentResourceProvider;
 import utils.fhir.FHIRServlet;
@@ -80,12 +82,14 @@ public class SubscriptionManager {
 	private static ActorSystem system;
 	
 	private static ActorRef subscriptionChecker;
+	private static ActorRef accountWiper;
 	
 	public static void init(ActorSystem system1, WSClient ws1) {
 		system = system1;
 	   	ws = ws1;
 	   	
 	   	subscriptionChecker = system.actorOf(Props.create(SubscriptionChecker.class).withDispatcher("medium-work-dispatcher"), "subscriptionChecker");
+	   	accountWiper = system.actorOf(Props.create(AccountWiper.class).withDispatcher("medium-work-dispatcher"), "accountWiper");
 	}
 	
 	
@@ -108,6 +112,16 @@ public class SubscriptionManager {
 	public static void resourceChange(Record record) {	
 		AccessLog.log("Resource change: "+record.format);
 		subscriptionChecker.tell(new ResourceChange(record.format, record, record.owner.equals(RuntimeConstants.instance.publicUser), record.owner), ActorRef.noSender());							
+	}
+	
+	public static void accountWipe(AccessContext context, MidataId userId) throws AppException {
+		User user = User.getByIdAlsoDeleted(userId, User.ALL_USER_INTERNAL);
+		if (user != null) {
+			user.status = UserStatus.DELETED;
+			user.set("status", user.status);
+			
+			accountWiper.tell(new AccountWipeMessage(userId, KeyManager.instance.currentHandle(context.getAccessor()), context.getAccessor(), 0, AuditManager.instance.convertLastEventToAsync()), ActorRef.noSender());
+		}
 	}
 	
 	public static String messageToProcess(MidataId executor, MidataId app, String eventCode, String destination, String fhirVersion, String bundleJSON, Map<String,String> params, boolean doasync) {

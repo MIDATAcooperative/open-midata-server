@@ -96,6 +96,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
 import utils.messaging.ServiceHandler;
+import utils.messaging.SubscriptionManager;
 import utils.stats.UsageStatsRecorder;
 import utils.sync.Instances;
 
@@ -459,14 +460,8 @@ public class Administration extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActorUser(executorId).withModifiedUser(selected));
 		
-		Users.doAccountWipe(portalContext(request), userId);
-		
-		AuditManager.instance.success();
-		
-			/*if (!User.exists(CMaps.map("organization", PortalSessionToken.session().org))) {
-			  Research.delete(PortalSessionToken.session().org);			
-		}*/
-		
+		SubscriptionManager.accountWipe(portalContext(request), userId);
+						
 		return ok();
 	}
 	

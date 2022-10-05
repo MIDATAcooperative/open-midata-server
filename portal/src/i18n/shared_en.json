@@ -855,6 +855,7 @@
 	"export_btn" : "Export your data",
 	"delete_records_btn" : "Delete Records",
 	"wipe_account_btn" : "Delete Account",
+	"cancel_btn" : "Back to application",
 	"metrics_btn" : "Calculate Account Metrics",
 	"servicekeys_btn" : "Manage API Keys",
 	"account_repaired" : "Your account has been repaired.",
@@ -1348,13 +1349,11 @@
   },
   
   "serviceleave" : {
-    "title" : "Did you finish your session?",
-    "thankyou" : "Thank you for your help!",
-    "continue" : "Please use the top menu to continue your session or log out.",
+    "title" : "You are leaving @PRODUCT",
+    "thankyou" : "Thank you for your help!",    
     "logout_btn" : "Log out",
     "goodbye_btn" : "End session and close window",
-    "logoutreturn" : "You will be redirected to the calling page.",
-    "return_btn" : "Log out and continue"
+    "logoutreturn" : "You are now leaving the @PRODUCT account management portal."    
   },
   
   "queryeditor" : {
