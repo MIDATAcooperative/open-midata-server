@@ -1673,24 +1673,24 @@ public class Market extends APIController {
 		
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
-		boolean doDelete = JsonValidation.getBoolean(json, "doDelete");
+		String action  = JsonValidation.getStringOrNull(json, "action");
 		
 		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
 		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 
-		if (app.repositoryUrl != null && !app.repositoryUrl.equals(repo) && !doDelete) {
+		if (app.repositoryUrl != null && !app.repositoryUrl.equals(repo) && action==null) {
 			if (DeploymentManager.hasUserDeployment(pluginId)) throw new BadRequestException("error.notauthorized.remove_first", "Remove existing deployment first.");
 		}
-		if (!doDelete) {
+		if (action==null) {
 			app.repositoryUrl = repo;
 		    if (token != null) app.repositoryToken = token;
 		    app.repositoryDirectory = directory;
 		    app.updateRepo();
 		}
 	    	 
-	    DeploymentReport report = DeploymentManager.deploy(app._id, userId, doDelete);
+	    DeploymentReport report = DeploymentManager.deploy(app._id, userId, action);
 		
 	    return ok(JsonOutput.toJson(report, "DeploymentReport", DeploymentReport.ALL)).as("application/json");
 		

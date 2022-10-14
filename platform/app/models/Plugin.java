@@ -67,7 +67,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams", "refreshTkExchangeParams",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports", "licenceDef", "pseudonymize", "consentObserving", "repositoryUrl", "repositoryDirectory", "repositoryDate", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports", "licenceDef", "pseudonymize", "consentObserving", "repositoryUrl", "repositoryDirectory", "repositoryDate", "repositoryAuditDate", "repositoryRisks", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -367,6 +367,16 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * Last update from repository
 	 */
 	public long repositoryDate;
+	
+	/**
+	 * Last npm audit from repository
+	 */
+	public long repositoryAuditDate;
+	
+	/**
+	 * Risks found
+	 */
+	public String repositoryRisks;
 	
 	/**
 	 * how should the login page look like?

@@ -122,7 +122,7 @@ public class Circles extends APIController {
 	public Result get(Request request) throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request.body().asJson();
-						
+				
 		List<Circle> circles = null;
 
 		if (json.has("owner")) {

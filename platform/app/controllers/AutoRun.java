@@ -289,7 +289,7 @@ public class AutoRun extends APIController {
 			    	Space space = request.space;
 			        
 			    	final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
-					final String visPath = InstanceConfig.getInstance().getConfig().getString("visualizations.path");
+					final String visPath = InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/scripts";
 					final ActorRef sender = getSender();		    	
 			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams"));
 			    	if (plugin==null) {

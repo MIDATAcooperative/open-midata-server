@@ -348,9 +348,14 @@
     "repository_dir" : "(Optional) Subdirectory in repository",
     "repository_token" : "Access Token",
     "repository_date" : "Last deployed at",
+    "repository_audit_date" : "Last audited at",
+    "repository_risks" : "Audit Result",
     "never" : "Never",
     "refresh_btn" : "Refresh",
     "submit_btn" : "Checkout now",
+    "audit_btn" : "Audit",
+    "audit_fix_btn" : "Audit Fix",
+    "redeploy_btn" : "Redeploy",
     "status" : "Deployment Status",
     "phase_provided" : "The repository needs to be provided",
     "phase_sceduled" : "Deployment scheduled",
@@ -358,7 +363,12 @@
     "phase_audit" : "Security Audit",
     "phase_install" : "Install packages",
     "phase_build" : "Build",
-    "phase_complete" : "Deployed",
+    "phase_complete" : "Done",
+    "phase_import_cdn" : "Deploy on CDN",
+    "phase_import_scripts" : "Deploy to Scripting Engine",
+    "phase_wipe_cdn" : "Remove from CDN",
+    "phase_wipe_scripts" : "Remove from Scripting Engine",
+    "phase_delete" : "Remove Repository",
     "log" : "Log",
     "server" : "Reporting Server",
     "checkout" : "Checkout from repository",
@@ -438,6 +448,16 @@
         "project_no_requirements" : "No requirements selected for project.",
         "app_in_development" : "Application is still in development."
      }
+    },
+    
+    "developer_updplugins" : {
+       "title" : "Plugin Deployment",
+       "repositoryUrl" : "Repository",
+       "repositoryDate" : "Deployed at",
+       "repositoryAuditDate" : "Audited at",
+       "repositoryRisks" : "Security Risks",
+       "repo_btn" : "Deployment",
+       "empty" : "There are no plugins available"
     },
 
     "applogin" : {
