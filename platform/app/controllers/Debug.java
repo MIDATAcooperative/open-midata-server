@@ -77,4 +77,12 @@ public class Debug extends Controller {
 	  return ok();
 	}
 	
+	@APICall	
+	public Result test() throws AppException {
+		try {
+	      Thread.sleep(10000);
+		} catch (InterruptedException e) {}
+	  return ok("ok");
+	}
+	
 }

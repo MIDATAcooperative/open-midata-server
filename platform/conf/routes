@@ -5,6 +5,7 @@
 # Test
 
 GET     /debug/aps/:id                                   controllers.Debug.get(request: Request, id: String)
+GET     /debug/test                                      controllers.Debug.test()
 GET     /api/ping                                            controllers.Debug.ping()
 POST    /fhir/$p<\$process\-message>                     controllers.FHIR.postProcessMessage(request: Request, p)
 POST    /fhir/Binary                                     controllers.FHIR.binaryUpload(request: Request)
