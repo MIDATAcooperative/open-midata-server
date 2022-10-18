@@ -63,7 +63,7 @@ public class FHIRServlet extends RestfulServer {
 	   //String serverBaseUrl = getBaseUrl();	
 	   
        setServerAddressStrategy(new ServerAddressStrategy());
-       this.setServerConformanceProvider(new MidataConformanceProvider());
+       this.setServerConformanceProvider(new MidataConformanceProvider(this));
        // ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());       
        
       /*

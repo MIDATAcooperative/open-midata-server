@@ -92,14 +92,16 @@ public class MongoDatabase extends Database {
 			}
 			
 			 MongoClientOptions.Builder builder = new MongoClientOptions.Builder();			
-			 builder.maxConnectionIdleTime(60000);			 
+			 //builder.maxConnectionIdleTime(60000);
+			 builder.readPreference(ReadPreference.primaryPreferred());
+			 builder.writeConcern(WriteConcern.W1);
+			 
 			 MongoClientOptions options = builder.build();
 			
 			if (credential != null) {		
-				mongoClient = new MongoClient(addr, Arrays.asList(this.credential), options);
+				mongoClient = new MongoClient(addr, this.credential, options);
 			} else mongoClient = new MongoClient(addr, options);			
-			mongoClient.setReadPreference(ReadPreference.primaryPreferred());
-			mongoClient.setWriteConcern(WriteConcern.W1);
+						
 			
 		} else { 
 		
