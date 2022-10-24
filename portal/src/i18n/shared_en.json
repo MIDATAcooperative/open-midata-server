@@ -304,7 +304,9 @@
 	   "email-sent" : "Email sent",
 	   "sms-sent" : "SMS sent",
 	   "resthook-called" : "Resthook called",
-	   "script-invocation" : "Script invoked"	   	   
+	   "script-invocation" : "Script invoked",
+	   "plugin-deployed" : "Plugin deployed",
+	   "plugin-undeployed" : "Plugin undeployed"	   	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -546,6 +548,13 @@
 	   "ALLOWED" : "Allowed",
 	   "FORBIDDEN" : "Forbidden",
 	   "NULL" : "Undefined"
+	 },
+	 "deploymentstatus" : {
+	    "NONE" : "None",
+	    "READY" : "Ready",
+	    "RUNNING" : "Building",
+	    "FAILED" : "Failed",
+	    "DONE" : "Done"
 	 }
    },
 

@@ -52,7 +52,7 @@
 	    
 	  
 		    <form-group myid="x" label="common.empty">
-		        <router-link :to="{ path : './manageapp', query :  {appId:app._id} }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
+		        <button type="button" class="btn btn-default mr-1" v-t="'common.back_btn'" @click="$router.back()"></button>
 		        <button type="button" class="btn btn-danger mr-1" @click="repoAction('wipe')" :disabled="!report" v-t="'common.delete_btn'"></button>		    
 		        <button type="submit" :disabled="action!=null" class="btn btn-primary mr-1" v-t="'repository.submit_btn'">Submit</button>
 		        <button type="button" @click="repoAction('audit')" :disabled="action!=null" class="btn btn-default mr-1" v-t="'repository.audit_btn'">Audit</button>

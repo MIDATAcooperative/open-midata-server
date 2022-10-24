@@ -70,7 +70,7 @@ public class MultiServerContainer extends AbstractContainer {
     void doAction(DeployAction msg) throws AppException {
 		
     	if (msg.clusterNode == null) {
-    		DeployStatus status = getDeployStatus(msg.pluginId, false);
+    		CurrentDeployStatus status = getDeployStatus(msg.pluginId, false);
     		if (status == null) {
     			status = getDeployStatus(msg.pluginId, true);
     			broadcast(msg.newPhase(DeployPhase.COUNT, getSelf()));
@@ -78,10 +78,10 @@ public class MultiServerContainer extends AbstractContainer {
     		status.reports = new HashMap<String, String>();
     		broadcast(msg);
     	} else if (msg.status == DeployPhase.REPORT_COUNT) {
-    		DeployStatus status = getDeployStatus(msg.pluginId, false);
+    		CurrentDeployStatus status = getDeployStatus(msg.pluginId, false);
     		status.numStarted++;    		
     	} else if (msg.status.isReport()) {
-    		DeployStatus status = getDeployStatus(msg.pluginId, false);
+    		CurrentDeployStatus status = getDeployStatus(msg.pluginId, false);
     		if (msg.success) {
     			status.numFinished++;
     		} else status.numFailed++;

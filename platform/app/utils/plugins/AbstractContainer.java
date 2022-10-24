@@ -38,7 +38,7 @@ import utils.messaging.InputStreamCollector;
 
 public abstract class AbstractContainer extends AbstractActor {
 
-	protected Map<MidataId, DeployStatus> statusMap = new HashMap<MidataId, DeployStatus>();
+	protected Map<MidataId, CurrentDeployStatus> statusMap = new HashMap<MidataId, CurrentDeployStatus>();
 	
 	@Override
 	public Receive createReceive() {
@@ -88,10 +88,10 @@ public abstract class AbstractContainer extends AbstractActor {
 		 }		 
 	}
 	
-	  protected DeployStatus getDeployStatus(MidataId plugin, boolean create) throws AppException {
-			DeployStatus result = statusMap.get(plugin);		
+	  protected CurrentDeployStatus getDeployStatus(MidataId plugin, boolean create) throws AppException {
+			CurrentDeployStatus result = statusMap.get(plugin);		
 			if (create) {
-				result = new DeployStatus();
+				result = new CurrentDeployStatus();
 				result.tasks = new ArrayDeque<DeployPhase>();
 				statusMap.put(plugin, result);
 				result.report = new DeploymentReport();
@@ -127,7 +127,7 @@ public abstract class AbstractContainer extends AbstractActor {
 		}
 }
 
-class DeployStatus {
+class CurrentDeployStatus {
 	public Plugin plugin;
 	public DeploymentReport report;
 	public int numStarted;
@@ -136,4 +136,5 @@ class DeployStatus {
 	public int numFailed;
 	public Map<String, String> reports;
 	public Queue<DeployPhase> tasks;
+	public MidataId auditEvent;
 }

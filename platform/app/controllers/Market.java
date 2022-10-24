@@ -71,6 +71,7 @@ import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AppReviewChecklist;
 import models.enums.ConsentStatus;
+import models.enums.DeploymentStatus;
 import models.enums.EntityType;
 import models.enums.IconUse;
 import models.enums.JoinMethod;
@@ -84,6 +85,7 @@ import models.enums.ReviewStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
+import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -583,6 +585,11 @@ public class Market extends APIController {
 		app.repositoryDirectory = JsonValidation.getStringOrNull(pluginJson, "repositoryDirectory");
 		app.repositoryToken = JsonValidation.getStringOrNull(pluginJson, "repositoryToken");
 		app.repositoryDate = 0;
+		if (app.repositoryUrl != null && app.repositoryUrl.trim().length()>0) {
+		   app.deployStatus = DeploymentStatus.READY;
+		} else {
+		   app.deployStatus = DeploymentStatus.NONE;
+		}
 		
 		try {
 		List<PluginIcon> icons = new ArrayList<PluginIcon>();
@@ -1687,12 +1694,48 @@ public class Market extends APIController {
 			app.repositoryUrl = repo;
 		    if (token != null) app.repositoryToken = token;
 		    app.repositoryDirectory = directory;
+		    app.deployStatus = DeploymentStatus.RUNNING;
 		    app.updateRepo();
 		}
 	    	 
 	    DeploymentReport report = DeploymentManager.deploy(app._id, userId, action);
 		
 	    return ok(JsonOutput.toJson(report, "DeploymentReport", DeploymentReport.ALL)).as("application/json");
+		
+	}
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public Result globalRepoAction(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.PLUGINADMIN);
+		JsonNode json = request.body().asJson();
+		JsonValidation.validate(json, "action");		
+		String action = JsonValidation.getString(json, "action");
+		
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+
+		if ("deploy-ready".equals(action)) {
+			// Deploy ready and failed
+			Set<Plugin> plugins = Plugin.getAll(CMaps.map("deployStatus", Sets.createEnum(DeploymentStatus.READY, DeploymentStatus.FAILED)), Sets.create("_id"));
+			for (Plugin plugin : plugins) {
+				Plugin.set(plugin._id, "deployStatus", DeploymentStatus.RUNNING);
+				DeploymentManager.deploy(plugin._id, userId, null); 
+			}
+		}		    
+		else if ("deploy-all".equals(action)) {
+			// Deploy all available
+			Set<Plugin> plugins = Plugin.getAll(CMaps.map("deployStatus", Sets.createEnum(DeploymentStatus.READY, DeploymentStatus.DONE, DeploymentStatus.FAILED)), Sets.create("_id"));
+			for (Plugin plugin : plugins) {
+				Plugin.set(plugin._id, "deployStatus", DeploymentStatus.RUNNING);
+				DeploymentManager.deploy(plugin._id, userId, null);
+			}
+		} else if ("audit-all".equals(action)) {
+  		    // Audit all ready and deployed
+			Set<Plugin> plugins = Plugin.getAll(CMaps.map("deployStatus", Sets.createEnum(DeploymentStatus.READY, DeploymentStatus.DONE, DeploymentStatus.FAILED)), Sets.create("_id"));
+			for (Plugin plugin : plugins) DeploymentManager.deploy(plugin._id, userId, "audit");
+		}
+	    return ok();
 		
 	}
 	

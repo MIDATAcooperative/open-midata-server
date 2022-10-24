@@ -136,6 +136,11 @@
     "not_reviewed" : "Not reviewed yet",
     "ACCEPTED" : "Reviewed",
     "NEEDS_FIXING" : "Needs Fixing",  
+    "default_context" : "Display Location",
+    "default_context_me" : "Dashboard / Timeline",
+    "default_context_config" : "Configuration / Imports",
+    "default_context_extern" : "Standalone Plugin",
+    "deploy_status" : "Deployment Status",
     "info" : {
        "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
@@ -453,10 +458,14 @@
     "developer_updplugins" : {
        "title" : "Plugin Deployment",
        "repositoryUrl" : "Repository",
+       "deployStatus" : "Status",
        "repositoryDate" : "Deployed at",
        "repositoryAuditDate" : "Audited at",
        "repositoryRisks" : "Security Risks",
        "repo_btn" : "Deployment",
+       "deploy_ready_btn" : "Deploy ready",
+       "deploy_all_btn" : "Redeploy all",
+       "audit_btn" : "Audit all",
        "empty" : "There are no plugins available"
     },
 

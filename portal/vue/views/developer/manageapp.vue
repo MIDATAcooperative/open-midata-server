@@ -103,12 +103,16 @@
 		    <input type="text" id="url" name="url" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" v-validate v-model="app.url">		    
 		    <p class="form-text text-muted" v-t="'manageapp.info.url'"></p>
 		  </form-group>
-		  <form-group name="previewUrl" label="Dashboard Tile URL" v-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'" :path="errors.previewUrl">
+		  <!-- <form-group name="previewUrl" label="Dashboard Tile URL" v-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'" :path="errors.previewUrl">
 		    <input type="text" id="previewUrl" name="previewUrl" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" v-validate v-model="app.previewUrl">
 		    <p class="form-text text-muted" v-t="'manageapp.info.previewUrl'"></p>
-		  </form-group>		 
-		  <form-group name="defaultSpaceContext" label="Default Dashboard" v-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'" :path="errors.defaultSpaceContext">
-		    <input type="text" id="defaultSpaceContext" name="defaultSpaceContext" class="form-control" placeholder="Dashboard Name" v-validate v-model="app.defaultSpaceContext">
+		  </form-group> -->		 
+		  <form-group name="defaultSpaceContext" label="manageapp.default_context" v-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'" :path="errors.defaultSpaceContext">		    
+		    <select class="form-control" name="defaultSpaceContext" v-validate required v-model="app.defaultSpaceContext">
+                <option value="me">{{ $t('manageapp.default_context_me') }}</option>
+                <option value="config">{{ $t('manageapp.default_context_config') }}</option>
+                <option value="extern">{{ $t('manageapp.default_context_extern') }}</option>
+            </select>
 		    <p class="form-text text-muted" v-t="'manageapp.info.defaultSpaceContext'"></p>
 		  </form-group>		 
 		  <form-group name="defaultQuery" label="manageapp.access_query_json" class="danger-change" v-if="app._id">
@@ -293,7 +297,7 @@ export default {
 	        "Analysis", "Import", "Planning", "Protocol", "Expert"
         ],
         loginTemplates : [ "GENERATED", "TERMS_OF_USE_AND_GENERATED", "TERMS_OF_USE", "REDUCED" ],
-		app : { version:0, tags:[], i18n : {}, sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>", refreshTkExchangeParams : DEFAULT_REFRESH  },
+		app : { version:0, tags:[], url: "index.html#:path?authToken=:authToken", i18n : {}, sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>", refreshTkExchangeParams : DEFAULT_REFRESH  },
 		allowDelete : false,
 		allowExport : false,
 		allowStudyConfig : false,
@@ -484,7 +488,7 @@ export default {
 			$data.terms = result.data;
 			if ($route.query.appId != null) { me.loadApp($route.query.appId); }
 			else {
-				let app = { version:0, tags:[], i18n : {}, defaultSubscriptions:[], icons:[], sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>", refreshTkExchangeParams : DEFAULT_REFRESH  };
+				let app = { version:0, tags:[], url: "index.html#:path?authToken=:authToken", defaultSpaceContext : "me", i18n : {}, defaultSubscriptions:[], icons:[], sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>", refreshTkExchangeParams : DEFAULT_REFRESH  };
 				for (let lang of $data.languages) {
 					if (!app.i18n[lang]) app.i18n[lang] = { name:"", description:"", defaultSpaceName:null };
 				}
