@@ -37,6 +37,7 @@ import models.Plugin;
 import models.RecordGroup;
 import models.Study;
 import utils.AccessLog;
+import utils.PluginLoginCache;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -571,7 +572,7 @@ public class Query {
 			 Set<String> resolved = new HashSet<String>();
 			 for (Object app : apps) {
 				 if (!MidataId.isValid(app.toString())) {
-					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
+					 Plugin p = PluginLoginCache.getByFilename(app.toString());					 
 					 if (p!=null) resolved.add(p._id.toString());
 					 else throw new PluginException(context.getUsedPlugin(), "error.internal", "Queried for unknown app.");
 				 } else resolved.add(app.toString());
@@ -583,7 +584,7 @@ public class Query {
 			 Set<String> resolved = new HashSet<String>();
 			 for (Object app : apps) {
 				 if (!MidataId.isValid(app.toString())) {
-					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
+					 Plugin p = PluginLoginCache.getByFilename(app.toString());					 
 					 if (p!=null) resolved.add(p._id.toString());
 					 else throw new PluginException(context.getUsedPlugin(), "error.internal", "Queried for unknown app.");
 				 } else resolved.add(app.toString());

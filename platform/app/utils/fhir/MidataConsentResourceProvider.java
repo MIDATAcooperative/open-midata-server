@@ -101,6 +101,7 @@ import models.enums.WritePermissionType;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
+import utils.PluginLoginCache;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -563,7 +564,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		 Set<MidataId> resolved = new HashSet<MidataId>();
 		 for (Object app : apps) {
 			 if (!MidataId.isValid(app.toString())) {
-				 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
+				 Plugin p = PluginLoginCache.getByFilename(app.toString());					 
 				 if (p!=null) resolved.add(p._id);
 				 else throw new BadRequestException("error.internal", "Queried for unknown app.");
 			 } else resolved.add(MidataId.from(app));

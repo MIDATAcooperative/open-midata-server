@@ -21,7 +21,9 @@ package utils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,7 +67,7 @@ public class AccessLog {
 	 * @param txt the line to be logged
 	 */
 	public static void log(String txt) {
-		int id = ident.get();
+		int id = ident.get().size()*2;
 		if (id > "                                            ".length()) {
 			System.out.println(getReport());			
 		}
@@ -78,11 +80,11 @@ public class AccessLog {
 	}
 	
 	public static void log(String txt, String txt2) {
-		int id = ident.get();
+		int id = ident.get().size()*2;
 		if (id > "                                            ".length()) {
 			System.out.println(getReport());			
 		}
-		String msg = "                                            ".substring(0,ident.get());	
+		String msg = "                                            ".substring(0,id);	
 		if (logForMail) {
 			LogContext c = msgs.get();
 			c.print(msg);
@@ -92,11 +94,11 @@ public class AccessLog {
 	}
 	
 	public static void log(String txt, String txt2, String txt3) {
-		int id = ident.get();
+		int id = ident.get().size()*2;
 		if (id > "                                            ".length()) {
 			System.out.println(getReport());			
 		}
-		String msg = "                                            ".substring(0,ident.get());	
+		String msg = "                                            ".substring(0,id);	
 		if (logForMail) {
 			LogContext c = msgs.get();
 			c.print(msg);
@@ -107,7 +109,8 @@ public class AccessLog {
 	}
 	
 	public static void log(String txt, String txt2, String txt3, String txt4) {
-		String msg = "                                            ".substring(0,ident.get());	
+		int id = ident.get().size()*2;
+		String msg = "                                            ".substring(0,id);	
 		if (logForMail) {
 			LogContext c = msgs.get();
 			c.print(msg);
@@ -119,7 +122,8 @@ public class AccessLog {
 	}
 	
 	public static void log(String txt, String txt2, String txt3, String txt4, String txt5) {
-		String msg = "                                            ".substring(0,ident.get());	
+		int id = ident.get().size()*2;
+		String msg = "                                            ".substring(0,id);	
 		if (logForMail) {
 			LogContext c = msgs.get();
 			c.print(msg);
@@ -132,7 +136,8 @@ public class AccessLog {
 	}
 	
 	public static void log(String txt, String txt2, String txt3, String txt4, String txt5, String txt6) {
-		String msg = "                                            ".substring(0,ident.get());	
+		int id = ident.get().size()*2;
+		String msg = "                                            ".substring(0,id);	
 		if (logForMail) {
 			LogContext c = msgs.get();
 			c.print(msg);
@@ -144,8 +149,43 @@ public class AccessLog {
 			c.println(txt6);
 		}
 	}
+	
+	public static void log(String txt, String txt2, String txt3, String txt4, String txt5, String txt6, String txt7) {
+		int id = ident.get().size()*2;
+		String msg = "                                            ".substring(0,id);	
+		if (logForMail) {
+			LogContext c = msgs.get();
+			c.print(msg);
+			c.print(txt);
+			c.print(txt2);
+			c.print(txt3);
+			c.print(txt4);
+			c.print(txt5);
+			c.print(txt6);
+			c.println(txt7);
+		}
+	}
+	
+	public static void log(String txt, String txt2, String txt3, String txt4, String txt5, String txt6, String txt7, String txt8) {
+		int id = ident.get().size()*2;
+		String msg = "                                            ".substring(0,id);	
+		if (logForMail) {
+			LogContext c = msgs.get();
+			c.print(msg);
+			c.print(txt);
+			c.print(txt2);
+			c.print(txt3);
+			c.print(txt4);
+			c.print(txt5);
+			c.print(txt6);
+			c.print(txt7);
+			c.println(txt8);
+		}
+	}
+	
 	public static void log(String... txt) {
-		String msg = "                                            ".substring(0,ident.get());	
+		int id = ident.get().size()*2;
+		String msg = "                                            ".substring(0,id);	
 		if (logForMail) {
 			LogContext c = msgs.get();
 			c.print(msg);
@@ -220,9 +260,9 @@ public class AccessLog {
 	}
 	
 	
-	private static ThreadLocal<Integer> ident = new ThreadLocal<Integer>() {
-        @Override protected Integer initialValue() {
-            return 0;
+	private static ThreadLocal<Deque<Long>> ident = new ThreadLocal<Deque<Long>>() {
+        @Override protected Deque<Long> initialValue() {
+            return new ArrayDeque<Long>();
         }
 	};
 	
@@ -249,7 +289,7 @@ public class AccessLog {
 		  String report = context.toString();
 		  if (report.length()>0) context.context.debug(report);
 		}
-		ident.set(0);		
+		ident.get().clear();		
 		if (context != null) {
 			context.writer.close();
 			try {
@@ -279,31 +319,31 @@ public class AccessLog {
 	 */
 	public static void logBegin(String txt) {
 		log(txt);		
-		ident.set(ident.get() + 2);
+		ident.get().push(System.currentTimeMillis());
 	}
 	public static void logBegin(String txt, String txt2) {
 		log(txt, txt2);		
-		ident.set(ident.get() + 2);
+		ident.get().push(System.currentTimeMillis());
 	}
 	public static void logBegin(String txt, String txt2, String txt3) {
 		log(txt, txt2, txt3);		
-		ident.set(ident.get() + 2);
+		ident.get().push(System.currentTimeMillis());
 	}
 	public static void logBegin(String txt, String txt2, String txt3, String txt4) {
 		log(txt, txt2, txt3, txt4);		
-		ident.set(ident.get() + 2);
+		ident.get().push(System.currentTimeMillis());
 	}
 	public static void logBegin(String txt, String txt2, String txt3, String txt4, String txt5) {
 		log(txt, txt2, txt3, txt4, txt5);		
-		ident.set(ident.get() + 2);
+		ident.get().push(System.currentTimeMillis());
 	}
 	public static void logBegin(String txt, String txt2, String txt3, String txt4, String txt5, String txt6) {
 		log(txt, txt2, txt3, txt4, txt5, txt6);		
-		ident.set(ident.get() + 2);
+		ident.get().push(System.currentTimeMillis());
 	}
 	public static void logBegin(String... txt) {
 		log(txt);		
-		ident.set(ident.get() + 2);
+		ident.get().push(System.currentTimeMillis());
 	}
 	
 	private static String path() {
@@ -336,29 +376,24 @@ public class AccessLog {
 	 * @param txt a message to be logged
 	 */
 	public static void logEnd(String txt) {
-		ident.set(ident.get() - 2);
-		if (ident.get() < 0) ident.set(0);		
-		log(txt);			
+		long ts = System.currentTimeMillis() - ident.get().pop();			
+		log(txt, " ts=", Long.toString(ts));			
 	}
 	public static void logEnd(String txt, String txt2) {
-		ident.set(ident.get() - 2);
-		if (ident.get() < 0) ident.set(0);		
-		log(txt, txt2);			
+		long ts = System.currentTimeMillis() - ident.get().pop();		
+		log(txt, txt2, " ts=", Long.toString(ts));			
 	}
 	public static void logEnd(String txt, String txt2, String txt3) {
-		ident.set(ident.get() - 2);
-		if (ident.get() < 0) ident.set(0);		
-		log(txt, txt2, txt3);			
+		long ts = System.currentTimeMillis() - ident.get().pop();
+		log(txt, txt2, txt3, " ts=", Long.toString(ts));			
 	}
 	public static void logEnd(String txt, String txt2, String txt3, String txt4) {
-		ident.set(ident.get() - 2);
-		if (ident.get() < 0) ident.set(0);		
-		log(txt, txt2, txt3, txt4);			
+		long ts = System.currentTimeMillis() - ident.get().pop();
+		log(txt, txt2, txt3, txt4, " ts=", Long.toString(ts));			
 	}
 	public static void logEnd(String txt, String txt2, String txt3, String txt4, String txt5) {
-		ident.set(ident.get() - 2);
-		if (ident.get() < 0) ident.set(0);		
-		log(txt, txt2, txt3, txt4, txt5);			
+		long ts = System.currentTimeMillis() - ident.get().pop();
+		log(txt, txt2, txt3, txt4, txt5, " ts=", Long.toString(ts));			
 	}
 	
 	/**

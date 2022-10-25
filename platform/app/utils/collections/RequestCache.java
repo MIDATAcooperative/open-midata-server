@@ -22,6 +22,7 @@ import java.util.Map;
 
 import models.MidataId;
 import models.User;
+import models.enums.UserStatus;
 import utils.buffer.StudyPublishBuffer;
 import utils.exceptions.AppException;
 
@@ -31,6 +32,10 @@ public class RequestCache {
 	private StudyPublishBuffer studyPublishBuffer;
 	
 	public User getUserById(MidataId userId) throws AppException {
+		return getUserById(userId, false);
+	}
+	
+	public User getUserById(MidataId userId, boolean alsoDeleted) throws AppException {
 		User result = null;
 		if (userCache == null) {
 			userCache = new HashMap<MidataId, User>();
@@ -38,9 +43,10 @@ public class RequestCache {
 			result = userCache.get(userId);
 		}
 		if (result == null) {
-			result = User.getById(userId, User.PUBLIC);
+			result = User.getByIdAlsoDeleted(userId, User.PUBLIC);
 			userCache.put(userId, result);
 		}
+		if (!alsoDeleted && result != null && result.status == UserStatus.DELETED) return null;
 		return result;
 	}
 	
