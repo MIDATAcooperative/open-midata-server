@@ -264,7 +264,7 @@ public class QueryEngine {
 	}*/
 	
     public static DBIterator<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId aps, AccessContext context, APSCache cache) throws AppException {    	
-    	long queryStart = System.currentTimeMillis();
+    	
     	if (context == null) throw new NullPointerException(); // context = new DummyAccessContext(cache);
     	AccessLog.logBeginPath("full-query(aps="+aps.toString()+")"," context="+context.toString());
     	Feature qm = null;
@@ -288,7 +288,7 @@ public class QueryEngine {
 		
 		//AccessLog.log("fullQuery="+result.toString());
 							
-		AccessLog.logEndPath("time= "+(System.currentTimeMillis() - queryStart)+" ms");
+		AccessLog.logEndPath("");
 		
 		return result;
 	}

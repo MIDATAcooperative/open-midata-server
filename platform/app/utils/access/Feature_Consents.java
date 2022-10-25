@@ -85,7 +85,7 @@ public class Feature_Consents extends Feature {
 	protected static List<DBRecord> lookup(Query q, List<DBRecord> prefetched, Feature next) throws AppException {
 	
 		AccessLog.logBeginPath("simple-lookup("+prefetched.size()+")", null);
-		long time = System.currentTimeMillis();
+		
 		List<DBRecord> results = null;
 	
 		Query q2 = new Query(q, "simple-lookup", CMaps.map("_id", q.getApsId()).map("flat", "true").map("streams", "true"));
@@ -102,7 +102,7 @@ public class Feature_Consents extends Feature {
 		}
 		if (results==null) results = Collections.emptyList();
 																			
-		AccessLog.logEndPath("#found="+results.size()+" time="+(System.currentTimeMillis() - time));
+		AccessLog.logEndPath("#found="+results.size());
 		return results;
 	}
 

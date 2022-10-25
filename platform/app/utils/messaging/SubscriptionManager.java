@@ -55,6 +55,7 @@ import play.libs.ws.WSClient;
 import scala.Option;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.PluginLoginCache;
 import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.audit.AuditManager;
@@ -586,7 +587,7 @@ class SubscriptionChecker extends AbstractActor {
 				Subscription fhirSubscription = SubscriptionResourceProvider.subscription(data);				
 				if (fhirSubscription.getChannel().getType().equals(SubscriptionChannelType.MESSAGE) && fhirSubscription.getChannel().getEndpoint().startsWith("app://")) {					
 					String appname = fhirSubscription.getChannel().getEndpoint().substring("app://".length());
-					Plugin target = Plugin.getByFilename(appname, Sets.create("_id","status"));
+					Plugin target = PluginLoginCache.getByFilename(appname);
 					if (target != null) return target._id;
 				}
 			}
