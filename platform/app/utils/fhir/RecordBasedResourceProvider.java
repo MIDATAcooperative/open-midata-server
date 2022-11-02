@@ -444,6 +444,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		if (resource.getMeta() != null && resource.getMeta().getVersionId() != null && !record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
         List<UpdateFileHandleSupport> handles = attachmentsToHandles(attachments);
 		
+        record.addTag("fhir:r4");
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = BasicDBObject.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();
