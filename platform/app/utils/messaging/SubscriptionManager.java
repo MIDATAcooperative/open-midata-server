@@ -474,6 +474,9 @@ class SubscriptionChecker extends AbstractActor {
 				for (SubscriptionData dat : allData) affected.add(dat.owner);
 			}
 			
+			Set<Consent> apis = Consent.getAllByOwner(record.owner, CMaps.map("status", ConsentStatus.ACTIVE).map("type", ConsentType.API), Sets.create("authorized"), 0);
+			for (Consent consent : apis) affected.addAll(consent.authorized);
+			
 			/* TODO : The following section is not broken it should just be performance optimized somehow.
 			 * It determines which user accounts subscriptions need to be triggered by a resource change.
 			 * Without this section only the account owner of the changed resource is notified.
