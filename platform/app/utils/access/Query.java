@@ -574,7 +574,7 @@ public class Query {
 				 if (!MidataId.isValid(app.toString())) {
 					 Plugin p = PluginLoginCache.getByFilename(app.toString());					 
 					 if (p!=null) resolved.add(p._id.toString());
-					 else throw new PluginException(context.getUsedPlugin(), "error.internal", "Queried for unknown app.");
+					 else throw new PluginException(context.getUsedPlugin(), "error.internal", "Queried for unknown app in access filter with name '"+app.toString()+"'.");
 				 } else resolved.add(app.toString());
 			 }
 			 properties.put("app", resolved);
@@ -586,7 +586,7 @@ public class Query {
 				 if (!MidataId.isValid(app.toString())) {
 					 Plugin p = PluginLoginCache.getByFilename(app.toString());					 
 					 if (p!=null) resolved.add(p._id.toString());
-					 else throw new PluginException(context.getUsedPlugin(), "error.internal", "Queried for unknown app.");
+					 else throw new PluginException(context.getUsedPlugin(), "error.internal", "Queried for unknown app as observer with name '"+app.toString()+"'.");
 				 } else resolved.add(app.toString());
 			 }
 			 properties.put("observer", resolved);
@@ -599,7 +599,7 @@ public class Query {
 				 if (!MidataId.isValid(study.toString())) {
 					 Study s = Study.getByCodeFromMember(study.toString(), Sets.create("_id"));					 
 					 if (s!=null) resolved.add(s._id.toString());
-					 else throw new BadRequestException("error.internal", "Queried for unknown study.");
+					 else throw new BadRequestException("error.internal", "Queried for unknown study in access filter.");
 				 } else resolved.add(study.toString());
 			 }
 			 properties.put("study", resolved);

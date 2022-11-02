@@ -179,7 +179,7 @@ public class SubscriptionManager {
 	    			newdata.add();
 	    			SubscriptionManager.subscriptionChange(newdata);
 	    			if (newdata.format.equals("init")) { 
-	    				subscriptionChecker.tell(new SubscriptionTriggered(userId, plugin._id, "init", "init", null, null, null, null, userId), ActorRef.noSender());
+	    				subscriptionChecker.tell(new SubscriptionTriggered(userId, plugin._id, "init", "init", null, null, null, null, userId, null), ActorRef.noSender());
 	    			}
 	    		//}
 	    	}
@@ -439,6 +439,7 @@ class SubscriptionChecker extends AbstractActor {
 		Set<MidataId> affected = new HashSet<MidataId>();
 		String resource = null;
 		MidataId resourceId = null;
+		String resourceVersion = null;
 		MidataId sourceOwner = null;
 		String content = null;
 		if (change.getResource() instanceof Consent) {
@@ -458,13 +459,14 @@ class SubscriptionChecker extends AbstractActor {
 								
 			}
 			resource = change.getFhir();
-			
+			resourceVersion = MidataConsentResourceProvider.getInstance().getVersion(consent);
 			content = "Consent";
 		} else if (change.getResource() instanceof Record) {
 			Record record = (Record) change.getResource();
 			content = record.content;
 			sourceOwner = record.owner;
 			resourceId = record._id;
+			resourceVersion = record.version;
 			affected.add(record.owner);
 			
 			if (change.isPublic() && change.getType().equals("fhir/ResearchStudy")) {
@@ -501,7 +503,7 @@ class SubscriptionChecker extends AbstractActor {
 		for (MidataId affectedUser : affected) {
 			if (withSubscription.contains(affectedUser)) {
 				
-				SubscriptionTriggered trigger = new SubscriptionTriggered(affectedUser, null, change.type, content, null, resource, resourceId, null, sourceOwner);				
+				SubscriptionTriggered trigger = new SubscriptionTriggered(affectedUser, null, change.type, content, null, resource, resourceId, null, sourceOwner, resourceVersion);				
 				processor.tell(trigger, getSelf());
 			}
 		}
@@ -533,7 +535,7 @@ class SubscriptionChecker extends AbstractActor {
 				  messageResponse(new MessageResponse("User not found.", 400, null));
 				  return;
 			  }			  
-			  SubscriptionTriggered trigger = new SubscriptionTriggered(targetUser, targetApp, "fhir/MessageHeader", message.getEventCode()+":"+sender.filename, message.getFhirVersion(), message.getMessage(), null, message.getParams(), message.getExecutor());
+			  SubscriptionTriggered trigger = new SubscriptionTriggered(targetUser, targetApp, "fhir/MessageHeader", message.getEventCode()+":"+sender.filename, message.getFhirVersion(), message.getMessage(), null, message.getParams(), message.getExecutor(), null);
 			  processor.forward(trigger, getContext());
 			} catch (AppException e) {
 				messageResponse(new MessageResponse("Error", 500, null));
@@ -541,7 +543,7 @@ class SubscriptionChecker extends AbstractActor {
 				ServerTools.endRequest();
 			}
 		} else {
-		  SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getFhirVersion(), message.getMessage(), null, message.getParams(), message.getExecutor());
+		  SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getFhirVersion(), message.getMessage(), null, message.getParams(), message.getExecutor(), null);
 		  processor.forward(trigger, getContext());
 		}
 		

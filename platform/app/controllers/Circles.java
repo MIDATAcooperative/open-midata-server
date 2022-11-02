@@ -620,8 +620,9 @@ public class Circles extends APIController {
 		if (consent.type != ConsentType.REPRESENTATIVE && consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.API && consent.type != ConsentType.IMPLICIT) throw new BadRequestException("error.unsupported", "Operation not supported");
 				
 		switch (consent.type) {
-		case EXTERNALSERVICE:
 		case API:
+			ApplicationTools.leaveInstalledService(context, circleId, false);
+		case EXTERNALSERVICE:
 			AuditManager.instance.addAuditEvent(AuditEventType.APP_DELETED, userId, consent);break;
 		default: AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_DELETE, userId, consent);break;
 		}

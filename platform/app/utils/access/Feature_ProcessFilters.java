@@ -103,6 +103,13 @@ public class Feature_ProcessFilters extends Feature {
 		if (q.restrictedBy("clear-hidden")) {
 			result = new ProcessingTools.ClearByHiddenTag(result);
 		}
+		
+		Set<String> tags = q.getRestrictionOrNull("tag");
+		if (tags != null) {
+			for (String tag : tags) {
+				result = new ProcessingTools.FilterByTag(result, tag, true);
+			}
+		}
 
 		return result;
 

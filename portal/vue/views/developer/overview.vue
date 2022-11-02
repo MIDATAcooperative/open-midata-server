@@ -144,7 +144,7 @@
 																	
 			  </td>
 			</tr>
-			<tr  v-if="!(app.type=='analyzer' || app.type=='external' || app.type=='endpoint')">
+			<tr  v-if="!(app.type=='analyzer' || app.type=='endpoint')">
 			  <td @click="go('appmessages')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/mail.jpg"></div>														   
 				<div><b v-t="'manageapp.messages_btn'"></b><span class="badge" style="margin-left:10px">{{ keyCount(app.predefinedMessages) }} <span v-t="'manageapp.defined'"></span></span> <span class="badge" :class="{ 'badge-success' : reviews.MAILS=='ACCEPTED', 'badge-danger' : reviews.MAILS=='NEEDS_FIXING', 'badge-light' : !reviews.MAILS }" style="margin-left:10px"><span v-if="reviews.MAILS">{{ $t('manageapp.'+reviews.MAILS) }}</span><span v-if="!reviews.MAILS" v-t="'manageapp.not_reviewed'"></span></span></div>
