@@ -163,6 +163,24 @@ public class ApplicationTools {
 		AccessLog.logEnd("end refresh or install service:"+serviceAppId);
 		return result;
 	}
+
+	public static void leaveInstalledService(AccessContext context, MidataId appInstanceId, boolean reject) throws AppException {
+		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
+		if (!appInstance.owner.equals(context.getAccessor())) throw new InternalServerException("error.internal", "Not owner");
+		leaveInstalledService(context, appInstance, reject);
+	}
+	
+	public static void leaveInstalledService(AccessContext context, MobileAppInstance service, boolean reject) throws AppException {
+		if (service.status.equals(ConsentStatus.UNCONFIRMED) || service.status.equals(ConsentStatus.ACTIVE) || service.status.equals(ConsentStatus.INVALID)) {
+			boolean sendMessage = service.status == ConsentStatus.ACTIVE; 
+			Plugin app = Plugin.getById(service.applicationId);		
+			User user = context.getRequestCache().getUserById(context.getAccessor());
+			if (user != null) AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_REJECTED).withActorUser(context.getActor()).withModifiedUser(user).withConsent(service));		
+			if (reject) Circles.consentStatusChange(context, service, ConsentStatus.REJECTED);
+			else Circles.consentStatusChange(context, service, ConsentStatus.EXPIRED);
+			if (app != null && sendMessage) sendServiceRejectMessage(user, app);
+		}
+	}
 	
 	public static Set<MidataId> getObserversForApp(Set<StudyAppLink> links) throws InternalServerException {
 		if (links == null) return null;
@@ -469,6 +487,13 @@ public class ApplicationTools {
 				Messager.sendMessage(app._id, MessageReason.FIRSTUSE_EXISTINGUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());	
 			} 
 			Messager.sendMessage(app._id, MessageReason.FIRSTUSE_ANYUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
+		}
+    }
+    
+    private static void sendServiceRejectMessage(User member, Plugin app) throws AppException {
+        if (app.predefinedMessages!=null) {
+			AccessLog.log("send service reject message");			
+			Messager.sendMessage(app._id, MessageReason.SERVICE_WITHDRAW, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
 		}
     }
 

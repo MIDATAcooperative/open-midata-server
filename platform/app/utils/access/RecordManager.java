@@ -602,13 +602,16 @@ public class RecordManager {
 		
 		// Do not check files larger than 100MB
 		if (handle.getLength() >= 1024l * 1024l * 100l) return null;
-		
+				
 		FileTypeScanner.getInstance().isValidFile(fileData.filename, fileData.contentType);
 		
+		AccessLog.logBegin("start virus scan");
 		InputStream inputStream = EncryptionUtils.decryptStream(handle.getKey(), fileData.inputStream);
 		
 		VirusScanner vscan = new VirusScanner();
-		return vscan.scan(inputStream);
+		String result = vscan.scan(inputStream);
+		AccessLog.logEnd("end virus scan");
+		return result;
 	}
 	
 	/**
@@ -664,7 +667,9 @@ public class RecordManager {
 			if (record.format != null && !rec.meta.getString("format").equals(record.format)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record format during update.");
 			if (record.content != null && !rec.meta.getString("content").equals(record.content)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record content type during update.");
 			if (record.owner != null && !rec.owner.equals(record.owner)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record owner during update! new="+record.owner.toString()+" old="+rec.owner.toString());
-			
+						
+			QueryTagTools.checkTagsForUpdate(context, record, rec);
+						
 			List<EncryptedFileHandle> allData2 = new ArrayList<EncryptedFileHandle>(allData.size());
 			for (UpdateFileHandleSupport data : allData) {
 				if (data != null) {
@@ -889,6 +894,9 @@ public class RecordManager {
 		while (it.hasNext()) {
 	   	   DBRecord record = it.next();			
 	       if (record.meta.getString("content").equals("Patient")) it.remove();
+	       Set<String> tags = RecordConversion.instance.getTags(record);
+	       if (tags.contains(QueryTagTools.SECURITY_NODELETE)) it.remove();
+	       
 		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
 		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
 		}
@@ -921,11 +929,14 @@ public class RecordManager {
 			
 		    DBRecord clone = record.clone();
 		    
+		    Record rec = RecordConversion.instance.currentVersionFromDB(record);
 			RecordEncryption.encryptRecord(record);	
 						
 			VersionedDBRecord.add(vrec);
 		    DBRecord.upsert(record); 	  			    
-		    RecordLifecycle.notifyOfChange(clone, cache);									
+		    RecordLifecycle.notifyOfChange(clone, cache);	
+		    
+		    SubscriptionManager.resourceChange(rec);
 		}
 				
 		for (MidataId streamId : streams) {

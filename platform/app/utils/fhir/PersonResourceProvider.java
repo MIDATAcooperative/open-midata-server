@@ -102,11 +102,14 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 			String gender = userToConvert.gender != null ? userToConvert.gender.toString() : Gender.UNKNOWN.toString();
 			p.setGender(AdministrativeGender.valueOf(gender));
 			if (userToConvert.email != null) p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(userToConvert.email);
+			
+			/*
 			if (userToConvert.phone != null && userToConvert.phone.length()>0) {
 				p.addTelecom().setSystem(ContactPointSystem.PHONE).setValue(userToConvert.phone);
 			}
+			
 			p.addAddress().setCity(userToConvert.city).setCountry(userToConvert.country).setPostalCode(userToConvert.zip).addLine(userToConvert.address1).addLine(userToConvert.address2);
-
+            */
 		}
 		switch (userToConvert.role) {
 		case MEMBER:

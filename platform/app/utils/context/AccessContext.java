@@ -17,6 +17,10 @@
 
 package utils.context;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import models.Consent;
@@ -111,7 +115,16 @@ public abstract class AccessContext {
 	 * @return
 	 * @throws AppException
 	 */
-	public abstract Object getAccessRestriction(String content, String format, String field) throws AppException; 
+	public abstract Object getAccessRestriction(String content, String format, String field) throws AppException;
+	
+	public List<String> getAccessRestrictionList(String content, String format, String field) throws AppException {
+		Object result = getAccessRestriction(content, format, field);
+		if (result == null) return Collections.emptyList();
+		if (result instanceof String) return Collections.singletonList((String) result);
+		if (result instanceof List) return (List<String>) result;
+		if (result instanceof Collection) return new ArrayList<String>((Collection) result);
+		throw new InternalServerException("error.internal", "Unknown restriction");
+	}
 	
 	/**
 	 * create history records during updates with this context?

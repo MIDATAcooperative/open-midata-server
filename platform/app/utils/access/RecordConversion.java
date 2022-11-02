@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bson.BSONObject;
 import org.bson.types.BasicBSONList;
@@ -66,13 +67,7 @@ public class RecordConversion {
 		  if (code != null) {
 		    record.code = (code instanceof String) ? Collections.singleton((String) code) : new HashSet((Collection) code);
 		  }
-		  Object tags = dbrecord.meta.get("tags");
-		  if (tags != null) {
-			  record.tags = new HashSet<String>();
-			  for (Object o : ((BasicBSONList) tags)) {
-				  record.tags.add(o.toString());				  
-			  }
-		  }			
+		  record.tags = getTags(dbrecord);		  	
 		}
 		
 		record.owner = dbrecord.owner;
@@ -96,7 +91,19 @@ public class RecordConversion {
 		return result;
 	}
 	
-
+	public Set<String> getTags(DBRecord dbrecord) {
+		 Object tags = dbrecord.meta.get("tags");
+		 if (tags != null) {
+			  Set<String> tagSet = new HashSet<String>();
+			  for (Object o : ((BasicBSONList) tags)) {
+				  tagSet.add(o.toString());	
+				  AccessLog.log("ADD TAG: "+o.toString());
+			  }
+			  AccessLog.log("ADD TAGS DONE");
+			  return tagSet;
+		 } else return null;		 
+	}
+	
 	
 	public DBRecord toDB(Record record) {
 		DBRecord dbrecord = new DBRecord();

@@ -56,6 +56,7 @@
        "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
 	   "FIRSTUSE_ANYUSER" : "First use of application",
 	   "FIRSTUSE_EXISTINGUSER" : "First use of application (if no registration email sent)",
+	   "SERVICE_WITHDRAW" : "Stop use of service",
 	   "CONSENT_REQUEST_OWNER_INVITED" : "Proposed consent (Grantor, Invitation)",
 	   "CONSENT_REQUEST_OWNER_EXISTING" : "Proposed consent (Grantor, Account Holder)",
 	   "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Proposed consent (Grantee, Invitation)",

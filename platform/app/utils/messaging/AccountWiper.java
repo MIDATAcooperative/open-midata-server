@@ -33,6 +33,7 @@ import models.KeyInfoExtern;
 import models.KeyRecoveryData;
 import models.KeyRecoveryProcess;
 import models.MidataId;
+import models.MobileAppInstance;
 import models.Research;
 import models.ResearchUser;
 import models.Space;
@@ -46,6 +47,7 @@ import models.enums.ParticipationStatus;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.AccessLog;
+import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.ServerTools;
 import utils.access.RecordManager;
@@ -142,19 +144,20 @@ public class AccountWiper extends AbstractActor {
 	}
 	
 	private void appLeavePhase(AccessContext context, MidataId userId) throws AppException {
-		Set<Consent> allconsents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.EXTERNALSERVICE)), Consent.ALL, Integer.MAX_VALUE);
-		for (Consent consent : allconsents) {
-			if (consent.status == ConsentStatus.ACTIVE) {
-			  Circles.consentStatusChange(context, consent, ConsentStatus.EXPIRED);
+		Set<MobileAppInstance> allconsents = MobileAppInstance.getByOwner(userId, MobileAppInstance.APPINSTANCE_ALL);
+		for (MobileAppInstance consent : allconsents) {
+			if (consent.type == ConsentType.EXTERNALSERVICE && consent.status == ConsentStatus.ACTIVE) {
+			  ApplicationTools.leaveInstalledService(context, consent, false);
+			  
 			} 
 		}
 	}
 	
 	private void serviceLeavePhase(AccessContext context, MidataId userId) throws AppException {
-		Set<Consent> allconsents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.API)), Consent.ALL, Integer.MAX_VALUE);
-		for (Consent consent : allconsents) {
-			if (consent.status == ConsentStatus.ACTIVE) {
-			  Circles.consentStatusChange(context, consent, ConsentStatus.EXPIRED);
+		Set<MobileAppInstance> allconsents = MobileAppInstance.getByOwner(userId, MobileAppInstance.APPINSTANCE_ALL);
+		for (MobileAppInstance consent : allconsents) {
+			if (consent.type == ConsentType.API && consent.status == ConsentStatus.ACTIVE) {
+			  ApplicationTools.leaveInstalledService(context, consent, false);			  
 			} 
 		}
 	}

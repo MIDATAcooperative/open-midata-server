@@ -45,6 +45,11 @@ public enum MessageReason {
 	FIRSTUSE_EXISTINGUSER,
 	
 	/**
+	 * Message sent if user withdraws consent from a service (also on account deletion)
+	 */
+	SERVICE_WITHDRAW,
+	
+	/**
 	 * Message sent for a proposed consent to a non MIDATA user consent owner
 	 */
 	CONSENT_REQUEST_OWNER_INVITED,

@@ -566,7 +566,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			 if (!MidataId.isValid(app.toString())) {
 				 Plugin p = PluginLoginCache.getByFilename(app.toString());					 
 				 if (p!=null) resolved.add(p._id);
-				 else throw new BadRequestException("error.internal", "Queried for unknown app.");
+				 else throw new BadRequestException("error.internal", "Queried for unknown app as observer with internal name '"+app.toString()+"'.");
 			 } else resolved.add(MidataId.from(app));
 		 }
 		 return resolved;
