@@ -57,9 +57,7 @@
             "REGISTRATION_BY_OTHER_PERSON" : "Registrazione di un nuovo utente da parte di altre persone",
             "FIRSTUSE_ANYUSER" : "Primo utilizzo dell'applicazione",
             "FIRSTUSE_EXISTINGUSER" : "Primo utilizzo dell'applicazione (se non è stata inviata l'e-mail di registrazione)",
-
-            // TODO NEW: Stop use of service
-            "SERVICE_WITHDRAW" : "Stop use of service",
+            "SERVICE_WITHDRAW" : "Cessare l'utilizzo del servizio",
             "CONSENT_REQUEST_OWNER_INVITED" : "Consenso proposto (Concedente, Invito)",
             "CONSENT_REQUEST_OWNER_EXISTING" : "Consenso proposto (Concedente, Titolare account)",
             "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Consenso proposto (Beneficiario, Invito)",
@@ -98,10 +96,6 @@
         "subscriptions_btn" : "Cambia abbonamenti (Subscriptions) predefiniti",
         "subscriptions_help" : "Definire i trigger che causano un'azione sul server @PRODUCT",
         "tokenExchangeParams" : "Parametri OAuth 2 per lo scambio di token",
-
-        // TODO CHANGED
-        // OLD: OAuth 2 Parameters for Refresh-Token Exchange
-        // NEW: OAuth 2 Parameters for Refresh Token Exchange
         "refreshTkExchangeParams" : "Parametri OAuth 2 per lo scambio del refresh token",
         "testfromlocal_btn" : "Testa il suo plugin da localhost",
         "testfromlocal_help" : "Durante lo sviluppo, è possibile testare il codice del plugin memorizzato nel proprio computer locale su questa istanza.",
@@ -467,10 +461,6 @@
         "links" : "Progetti collegati",
         "no_links" : "Nessuno (ancora)",
         "urlParams" : "Parametri di prova per il login OAuth",
-
-        // TODO CHANGED
-        // OLD: Test URL parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=de'.
-        // NEW: URL test parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=en'.
         "urlParams2" : "Parametri di prova dell'URL che l'applicazione fornirà al login. Ad esempio, 'family=Test&given=Some&ro=true&country=CH&language=it'.",
         "step" : {
             "login" : "Accesso",

@@ -245,9 +245,7 @@
         "endDate" : "Offizielles Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "sharing_query" : "Data Access Filter",
-
-        // TODO NEW: Project does NOT require any data from @PRODUCT.
-        "sharing_query_empty" : "Project does NOT require any data from @PRODUCT.",
+        "sharing_query_empty" : "Das Projekt benötigt KEINE Daten von @PRODUCT.",
         "join_methods" : "Erlaubte Teilnahmeverfahren",
         "leavePolicy" : "Rücktrittsrecht der Teilnehmer",
         "rejoinPolicy" : "Wiedereinstiegsrecht der Teilnehmer",

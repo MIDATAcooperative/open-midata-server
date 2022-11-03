@@ -57,9 +57,7 @@
             "REGISTRATION_BY_OTHER_PERSON" : "Registrierung eines neuen Benutzers durch eine andere Person",
             "FIRSTUSE_ANYUSER" : "Erstanwendung der Applikation",
             "FIRSTUSE_EXISTINGUSER" : "Erstanwendung der Appplikation (wenn kein Registrierungs-E-Mail versendet)",
-
-            // TODO NEW: Stop use of service
-            "SERVICE_WITHDRAW" : "Stop use of service",
+            "SERVICE_WITHDRAW" : "Nutzung des Dienstes einstellen",
             "CONSENT_REQUEST_OWNER_INVITED" : "Vorgeschlagene Zustimmung (Geber, Einladung)",
             "CONSENT_REQUEST_OWNER_EXISTING" : "Vorgeschlagene Zustimmung (Geber, Nutzer)",
             "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Vorgeschlagene Zustimmung (Empfänger, Einladung)",
@@ -98,10 +96,6 @@
         "subscriptions_btn" : "Standardabonnements (Subscriptions) ändern",
         "subscriptions_help" : "Trigger definieren, die eine Aktion auf dem @PRODUCT Server auslösen",
         "tokenExchangeParams" : "OAuth 2-Parameter für den Token-Austausch",
-
-        // TODO CHANGED
-        // OLD: OAuth 2 Parameters for Refresh-Token Exchange
-        // NEW: OAuth 2 Parameters for Refresh Token Exchange
         "refreshTkExchangeParams" : "OAuth 2-Parameter für den Austausch des Refresh Tokens",
         "testfromlocal_btn" : "Testen Sie Ihr Plugin von localhost aus",
         "testfromlocal_help" : "Während der Entwicklung können Sie den Plugin-Code, der auf Ihrem lokalen Computer gespeichert ist, auf dieser Instanz testen.",
@@ -467,10 +461,6 @@
         "links" : "Verknüpfte Projekte",
         "no_links" : "(noch) keines",
         "urlParams" : "Testparameter für die OAuth-Anmeldung",
-
-        // TODO CHANGED
-        // OLD: Test URL parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=de'.
-        // NEW: URL test parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=en'.
         "urlParams2" : "URL-Testparameter, die Ihre Applikation für die Anmeldung bereitstellen wird. Zum Beispiel 'family=Test&given=Some&ro=true&country=CH&language=de'.",
         "step" : {
             "login" : "Anmeldung",

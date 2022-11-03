@@ -57,9 +57,7 @@
             "REGISTRATION_BY_OTHER_PERSON" : "Inscription d'un nouvel utilisateur par une autre personne",
             "FIRSTUSE_ANYUSER" : "Première utilisation de l'application",
             "FIRSTUSE_EXISTINGUSER" : "Première utilisation de l'application (si pas d'e-mail d'inscription envoyé)",
-
-            // TODO NEW: Stop use of service
-            "SERVICE_WITHDRAW" : "Stop use of service",
+            "SERVICE_WITHDRAW" : "Cesser l'utilisation du service",
             "CONSENT_REQUEST_OWNER_INVITED" : "Consentement proposé (cédant, invitation)",
             "CONSENT_REQUEST_OWNER_EXISTING" : "Consentement proposé (cédant, utilisateur)",
             "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Consentement proposé (bénéficiaire, invitation)",
@@ -98,10 +96,6 @@
         "subscriptions_btn" : "Modifier les abonnements (Subscriptions) par défaut",
         "subscriptions_help" : "Définir les triggers qui provoquent une action sur le serveur @PRODUCT",
         "tokenExchangeParams" : "Paramètres OAuth 2 pour l'échange du token",
-
-        // TODO CHANGED
-        // OLD: OAuth 2 Parameters for Refresh-Token Exchange
-        // NEW: OAuth 2 Parameters for Refresh Token Exchange
         "refreshTkExchangeParams" : "Paramètres OAuth 2 pour l'échange du refresh token",
         "testfromlocal_btn" : "Testez votre plugin depuis localhost",
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
@@ -467,10 +461,6 @@
         "links" : "Projets liés",
         "no_links" : "Aucun (pour le moment)",
         "urlParams" : "Paramètres de test pour la connexion OAuth",
-
-        // TODO CHANGED
-        // OLD: Test URL parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=de'.
-        // NEW: URL test parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=en'.
         "urlParams2" : "Paramètres de test de l'URL que votre application fournira au login. Par exemple 'family=Test&given=Some&ro=true&country=CH&language=fr'.",
         "step" : {
             "login" : "Connexion",
