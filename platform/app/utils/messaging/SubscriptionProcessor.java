@@ -103,7 +103,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			}
 				
 			boolean anyAnswered = false;
-			
+			AccessLog.log("found "+allMatching.size()+" possible subscriptions");
 			for (SubscriptionData subscription : allMatching) {	
 				AccessLog.log("ok:"+subscription.active+" "+subscription.content+" "+triggered.getEventCode());				
 				boolean answered = false;

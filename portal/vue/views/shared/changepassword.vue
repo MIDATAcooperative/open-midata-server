@@ -35,11 +35,6 @@
 		<form-group name="password2" label="changepassword.repeat_password" :path="errors.password2">
 			<password class="form-control" id="password2" name="password2" :placeholder="$t('changepassword.new_password')" v-model="pw.password2"
 					required autocomplete="off" />
-        </form-group>
-		<form-group name="secure" label="registration.secure">
-            <check-box name="secure" v-model="pw.secure" :path="errors.secure" disabled>
-                <span v-t="'registration.secure2'"></span>
-            </check-box>
         </form-group>				
 		<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'changepassword.change_btn'"></button>		
         <success action="changePassword" msg="changeaddress.success" :finished="finished"></success>
