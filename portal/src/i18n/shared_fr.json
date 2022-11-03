@@ -186,7 +186,10 @@
 
         "already_done" : {
             "email_verification" : "L'adresse e-mail a déjà été vérifié.",
-            "unsubscribed" : "Vous vous êtes déjà désabonné de ce canal de communication."
+            "unsubscribed" : "Vous vous êtes déjà désabonné de ce canal de communication.",
+
+            // TODO NEW: Project has already been validated.
+            "validation" : "Project has already been validated."
         },
 
         "no_alter" : {
@@ -584,10 +587,18 @@
     "registration" : {
         "sign_up" : "S'inscrire",
         "mandantory_fields" : "Veuillez saisir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires.",
+
+        // TODO CHANGED
+        // OLD: Please fill in your email and password.
+        // NEW: Please fill in your email address and password.
         "mandantory_fields2" : "Veuillez saisir votre adresse e-mail et votre mot de passe.",
         "password_policy" : "Le mot de passe doit comporter au moins 8 caractères et contenir une lettre et un chiffre.",
         "password_policy2" : "Le mot de passe doit comporter au moins 12 caractères et contenir une lettre, un chiffre et un caractère spécial.",
         "personal_details" : "Données personnelles",
+
+        // TODO CHANGED
+        // OLD: EMail
+        // NEW: Email
         "email" : "E-mail",
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
@@ -855,6 +866,9 @@
         "export_btn" : "Exporter vos données",
         "delete_records_btn" : "Supprimer des données",
         "wipe_account_btn" : "Supprimer le compte",
+
+        // TODO NEW: Back to application
+        "cancel_btn" : "Back to application",
         "metrics_btn" : "Calculer les métriques du compte",
         "servicekeys_btn" : "Gérer les clés API",
         "account_repaired" : "Votre compte a été réparé.",
@@ -1348,13 +1362,19 @@
     },
 
     "serviceleave" : {
+
+        // TODO CHANGED
+        // OLD: Did you finish your session?
+        // NEW: You are leaving @PRODUCT
         "title" : "Avez-vous terminé votre session?",
         "thankyou" : "Merci pour votre aide!",
-        "continue" : "Veuillez utiliser le menu principal pour continuer votre session ou vous déconnecter.",
         "logout_btn" : "Se déconnecter",
         "goodbye_btn" : "Fin de la session et fermeture de la fenêtre",
-        "logoutreturn" : "Vous serez redirigé vers la page d'appel.",
-        "return_btn" : "Déconnectez-vous et continuez"
+
+        // TODO CHANGED
+        // OLD: You will be redirected to the calling page.
+        // NEW: You are now leaving the @PRODUCT account management portal.
+        "logoutreturn" : "Vous serez redirigé vers la page d'appel."
     },
 
     "queryeditor" : {
@@ -1398,6 +1418,35 @@
         "observer" : "Uniquement avec cet observer (optionnel)",
         "category" : "Catégorie (optionnelle)",
         "custom_filter" : "Filtre personnalisé (JSON)",
+
+        // TODO NEW: Security Tags
+        "security_tags" : "Security Tags",
+
+        // TODO NEW: Tag
+        "tag" : "Tag",
+
+        // TODO NEW: Require for read
+        "require" : "Require for read",
+
+        // TODO NEW: Allow write
+        "allow" : "Allow write",
+
+        // TODO NEW: Auto-Add
+        "add" : "Auto-Add",
+        "tags" : {
+
+            // TODO NEW: Reliable
+            "reliable" : "Reliable",
+
+            // TODO NEW: No delete
+            "no_delete" : "No delete",
+
+            // TODO NEW: Read only
+            "read_only" : "Read only",
+
+            // TODO NEW: Hide from patient
+            "hidden" : "Hide from patient"
+        },
         "remove_btn" : "Supprimer",
         "apply_btn" : "Appliquer",
         "newentry" : "Saisissez le nom, le code, le type de ressource ou (une partie de) la description du type de données à ajouter:",
@@ -1449,6 +1498,10 @@
         "refresh" : "Refresh token pour OAuth",
         "instructions_refresh" : "Pour améliorer la sécurité, échangez ce refresh token contre une nouvelle paire d'access token et refresh token.",
         "common_name" : "OU (organization unit) et CN (common name) pour le CSR (certificate request)",
+
+        // TODO CHANGED
+        // OLD: For certificate based authentication create a CSR with the given OU and CN field. Send the CSR to @SUPPORT
+        // NEW: For certificate based authentication create a CSR with the given OU and CN fields. Send the CSR to @SUPPORT
         "instructions_common_name" : "Pour une authentification basée sur un certificat, créez un CSR avec les champs OU et CN donnés. Envoyez le CSR à @SUPPORT",
         "date" : "Date de création",
         "status" : "État",

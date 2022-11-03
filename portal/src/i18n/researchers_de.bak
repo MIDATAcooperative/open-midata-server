@@ -244,6 +244,7 @@
     "endDate" : "Official end date",
     "dataCreatedBefore" : "Data freeze date",
     "sharing_query" : "Data Access Filter",
+    "sharing_query_empty" : "Project does NOT require any data from @PRODUCT.",
     "join_methods" : "Allowed Participation Procedures",
     "leavePolicy" : "Participant withdrawal policy",
     "rejoinPolicy" : "Participant rejoin policy",
