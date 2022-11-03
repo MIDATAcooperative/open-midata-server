@@ -895,7 +895,7 @@ public class RecordManager {
 	   	   DBRecord record = it.next();			
 	       if (record.meta.getString("content").equals("Patient")) it.remove();
 	       Set<String> tags = RecordConversion.instance.getTags(record);
-	       if (tags.contains(QueryTagTools.SECURITY_NODELETE)) it.remove();
+	       if (tags != null && tags.contains(QueryTagTools.SECURITY_NODELETE)) it.remove();
 	       
 		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
 		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
@@ -1117,6 +1117,11 @@ public class RecordManager {
 		AccessLog.logEnd("end applying queries");
 	}
 	
+	public boolean checkRecordInAccessQuery(AccessContext context, Record rec, Consent consent) throws AppException {		
+	    DBRecord record = RecordConversion.instance.toDB(rec);	    
+	    Map<String, Object> query = ConsentQueryTools.getSharingQuery(consent, false);	    
+		return QueryEngine.isInQuery(context, query, record);					
+	}
 	/*
 	public Set<MidataId> findAllSharingAps(MidataId executorId, Record record1) throws AppException {
 		 
