@@ -483,14 +483,17 @@ class SubscriptionChecker extends AbstractActor {
 			if (!apis.isEmpty()) {
 				AccessContext context = ContextManager.instance.createSessionForDownloadStream(record.owner, UserRole.ANY);
 				for (Consent consent : apis) {
-														 
+					try {									 
 					  if (RecordManager.instance.checkRecordInAccessQuery(context, record, consent)) {					
 						  AccessLog.log("found matching external API consent:"+consent._id);
 						  affected.addAll(consent.authorized);
 					  } else {
 						  AccessLog.log("non matching external API consent:"+consent._id);
 					  }
-									
+					} catch (Exception e) {
+					  ErrorReporter.report("Subscripion processing", null, e);
+					  AccessLog.logException("subscription processing", e);
+					}
 				}
 			} else AccessLog.log("no external APIs found.");				
 			

@@ -949,16 +949,16 @@ public class Market extends APIController {
 	 */	
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result deletePlugin(String pluginIdStr) throws JsonValidationException, AppException {		
+	public Result deletePlugin(Request request, String pluginIdStr) throws JsonValidationException, AppException {		
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
-		
-		deletePlugin(pluginId);
+		AccessContext context = portalContext(request);
+		deletePlugin(context, pluginId);
 		
 		return ok();
 	}
 	
-	private static void deletePlugin(MidataId pluginId) throws JsonValidationException, AppException {
+	private static void deletePlugin(AccessContext context, MidataId pluginId) throws JsonValidationException, AppException {
 		
 		
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
@@ -966,7 +966,7 @@ public class Market extends APIController {
 
 		if (DeploymentManager.hasUserDeployment(pluginId)) throw new BadRequestException("error.notauthorized.remove_first", "Remove existing deployment first.");
 		
-		if (app.type.equals("mobile") || app.type.equals("service")) {
+		if (app.type.equals("mobile") || app.type.equals("service") || app.type.equals("external") || app.type.equals("analyzer")) {
 			Set<MobileAppInstance> installations =  MobileAppInstance.getByApplication(pluginId, Sets.create("_id", "owner"));
 			for (MobileAppInstance inst : installations) {				
 				KeyManager.instance.deleteKey(inst._id);
@@ -977,7 +977,13 @@ public class Market extends APIController {
 			for (Space inst : installations) {
 				Space.delete(inst.owner, inst._id);
 			}
-		}		 
+		}	
+		if (app.type.equals("external") || app.type.equals("analyzer")) {
+			Set<ServiceInstance> instances = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
+			for (ServiceInstance inst : instances) {
+				ApplicationTools.deleteServiceInstance(context, inst);
+			}
+		}
 		app.status = PluginStatus.DELETED;
 		app.spotlighted = false;
 		String filename = app.filename;
@@ -1006,13 +1012,14 @@ public class Market extends APIController {
         // validate request     
         MidataId pluginId = new MidataId(pluginIdStr);
         MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext(request);
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
         if (!app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
         if (app.status != PluginStatus.DEVELOPMENT && app.status != PluginStatus.BETA) throw new BadRequestException("error.auth", "Plugin may not be deleted. Ask an admin.");
               
-        deletePlugin(pluginId);        
+        deletePlugin(context, pluginId);        
         
         return ok();
     }
