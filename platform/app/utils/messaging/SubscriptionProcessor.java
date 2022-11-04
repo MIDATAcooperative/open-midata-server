@@ -393,12 +393,12 @@ public class SubscriptionProcessor extends AbstractActor {
 				testcall.token = token;
 				testcall.resourceId = id;				
 				testcall.answer = null;
-				testcall.answerStatus = TestPluginCall.NOTANSWERED;
+				testcall.answerStatus = TestPluginCall.NOTANSWERED;			
 				testcall.add();
 				
 				getContext().getSystem().scheduler().scheduleOnce(
 					      Duration.ofSeconds(1),
-					      getSelf(), new RecheckMessage(testcall._id, AuditManager.instance.convertLastEventToAsync(), 0), getContext().dispatcher(), getSender());
+					      getSelf(), new RecheckMessage(testcall._id, eventId, 0), getContext().dispatcher(), getSender());
 				return;
 				//getSender().tell(new MessageResponse(null,0), getSelf());				
 			}
@@ -464,6 +464,9 @@ public class SubscriptionProcessor extends AbstractActor {
 							      Duration.ofSeconds(1),
 							      getSelf(), new RecheckMessage(msg.id, msg.eventId, msg.count + 1), getContext().dispatcher(), getSender());
 					
+					} else {
+						AuditManager.instance.resumeAsyncEvent(msg.eventId);
+						AuditManager.instance.fail(500, "error during debug", "error.timeout");
 					}
 				}
 			}

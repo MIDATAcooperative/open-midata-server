@@ -39,6 +39,7 @@
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
      "failed" : "Action failed",
+     "timeout" : "Timeout",
      "notrialuser_title" : "Full membership required!",
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "@OPERATOR membership required!",
