@@ -186,7 +186,8 @@
 
         "already_done" : {
             "email_verification" : "Die E-Mail-Adresse wurde bereits verifiziert.",
-            "unsubscribed" : "Sie haben sich bereits von diesem Kommunikationskanal abgemeldet."
+            "unsubscribed" : "Sie haben sich bereits von diesem Kommunikationskanal abgemeldet.",
+            "validation" : "Das Projekt wurde bereits validiert."
         },
 
         "no_alter" : {
@@ -855,6 +856,7 @@
         "export_btn" : "Export Ihrer Daten",
         "delete_records_btn" : "Datensätze löschen",
         "wipe_account_btn" : "Konto löschen",
+        "cancel_btn" : "Zurück zur Applikation",
         "metrics_btn" : "Account-Metriken berechnen",
         "servicekeys_btn" : "API-Schlüssel verwalten",
         "account_repaired" : "Ihr Konto wurde repariert.",
@@ -1349,10 +1351,10 @@
 
     "serviceleave" : {
         "title" : "Sie verlassen @PRODUCT",
-        "thankyou" : "Danke für Ihre Hilfe!",        
+        "thankyou" : "Danke für Ihre Hilfe!",
         "logout_btn" : "Abmelden",
         "goodbye_btn" : "Session beenden und Fenster schliessen",
-        "logoutreturn" : "Sie verlassen jetzt das @PRODUCT Account Management Portal."        
+        "logoutreturn" : "Sie verlassen jetzt das @PRODUCT-Kontoverwaltungsportal."
     },
 
     "queryeditor" : {
@@ -1396,6 +1398,17 @@
         "observer" : "Nur mit diesem Observer (optional)",
         "category" : "Kategorie (optional)",
         "custom_filter" : "Benutzerdefinierte Filter (JSON)",
+        "security_tags" : "Sicherheits-Tags",
+        "tag" : "Tag",
+        "require" : "Erforderlich zum Lesen",
+        "allow" : "Schreiben zulassen",
+        "add" : "Automatisch hinzufügen",
+        "tags" : {
+            "reliable" : "Zuverlässig",
+            "no_delete" : "Kein Löschen",
+            "read_only" : "Nur lesen",
+            "hidden" : "Vor dem Patienten verstecken"
+        },
         "remove_btn" : "Entfernen",
         "apply_btn" : "Anwenden",
         "newentry" : "Geben Sie Name, Code, Ressourcentyp oder (Teil-)Beschreibung des Datentyps ein, den Sie hinzufügen möchten:",

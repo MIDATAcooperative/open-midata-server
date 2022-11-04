@@ -186,7 +186,8 @@
 
         "already_done" : {
             "email_verification" : "L'adresse e-mail a déjà été vérifié.",
-            "unsubscribed" : "Vous vous êtes déjà désabonné de ce canal de communication."
+            "unsubscribed" : "Vous vous êtes déjà désabonné de ce canal de communication.",
+            "validation" : "Le projet a déjà été validé."
         },
 
         "no_alter" : {
@@ -855,6 +856,7 @@
         "export_btn" : "Exporter vos données",
         "delete_records_btn" : "Supprimer des données",
         "wipe_account_btn" : "Supprimer le compte",
+        "cancel_btn" : "Retour à l'application",
         "metrics_btn" : "Calculer les métriques du compte",
         "servicekeys_btn" : "Gérer les clés API",
         "account_repaired" : "Votre compte a été réparé.",
@@ -1348,13 +1350,11 @@
     },
 
     "serviceleave" : {
-        "title" : "Avez-vous terminé votre session?",
+        "title" : "Vous quittez @PRODUCT",
         "thankyou" : "Merci pour votre aide!",
-        "continue" : "Veuillez utiliser le menu principal pour continuer votre session ou vous déconnecter.",
         "logout_btn" : "Se déconnecter",
         "goodbye_btn" : "Fin de la session et fermeture de la fenêtre",
-        "logoutreturn" : "Vous serez redirigé vers la page d'appel.",
-        "return_btn" : "Déconnectez-vous et continuez"
+        "logoutreturn" : "Vous quittez maintenant le portail de gestion du compte @PRODUCT."
     },
 
     "queryeditor" : {
@@ -1398,6 +1398,17 @@
         "observer" : "Uniquement avec cet observer (optionnel)",
         "category" : "Catégorie (optionnelle)",
         "custom_filter" : "Filtre personnalisé (JSON)",
+        "security_tags" : "Balises de sécurité",
+        "tag" : "Balise",
+        "require" : "Requis pour la lecture",
+        "allow" : "Autoriser l'écriture",
+        "add" : "Ajout automatique",
+        "tags" : {
+            "reliable" : "Fiable",
+            "no_delete" : "Pas de suppression",
+            "read_only" : "En lecture seule",
+            "hidden" : "Cacher au patient"
+        },
         "remove_btn" : "Supprimer",
         "apply_btn" : "Appliquer",
         "newentry" : "Saisissez le nom, le code, le type de ressource ou (une partie de) la description du type de données à ajouter:",

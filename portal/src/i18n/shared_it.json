@@ -186,7 +186,8 @@
 
         "already_done" : {
             "email_verification" : "L'e-mail è già stata verificata.",
-            "unsubscribed" : "Si è già cancellato da questo canale di comunicazione."
+            "unsubscribed" : "Si è già cancellato da questo canale di comunicazione.",
+            "validation" : "Il progetto è già stato convalidato."
         },
 
         "no_alter" : {
@@ -855,6 +856,7 @@
         "export_btn" : "Esporta i suoi dati",
         "delete_records_btn" : "Elimina record",
         "wipe_account_btn" : "Cancella account",
+        "cancel_btn" : "Torna all'applicazione",
         "metrics_btn" : "Calcolare le metriche del account",
         "servicekeys_btn" : "Gestire le chiavi API",
         "account_repaired" : "Il suo account è stato riparato.",
@@ -1348,13 +1350,11 @@
     },
 
     "serviceleave" : {
-        "title" : "Ha terminato la sua sessione?",
+        "title" : "Stai lasciando @PRODUCT",
         "thankyou" : "Grazie per il suo aiuto!",
-        "continue" : "Si prega di utilizzare il menu in alto per continuare la sessione o uscire.",
         "logout_btn" : "Disconnetti",
         "goodbye_btn" : "Termina sessione e chiudi finestra",
-        "logoutreturn" : "Verrete reindirizzati alla pagina delle chiamate.",
-        "return_btn" : "Disconnetti e continuare"
+        "logoutreturn" : "Ora state lasciando il portale di gestione dell'account @PRODUCT."
     },
 
     "queryeditor" : {
@@ -1398,6 +1398,17 @@
         "observer" : "Solo con questo observer (opzionale)",
         "category" : "Categoria (opzionale)",
         "custom_filter" : "Filtro personalizzato (JSON)",
+        "security_tags" : "Tag di sicurezza",
+        "tag" : "Tag",
+        "require" : "Richiesto per la lettura",
+        "allow" : "Consentire la scrittura",
+        "add" : "Aggiunta automatica",
+        "tags" : {
+            "reliable" : "Affidabile",
+            "no_delete" : "Nessuna cancellazione",
+            "read_only" : "Solo lettura",
+            "hidden" : "Nascondere al paziente"
+        },
         "remove_btn" : "Rimuovi",
         "apply_btn" : "Applica",
         "newentry" : "Inserisce nome, codice, tipo di risorsa o descrizione (parziale) del tipo di dato da aggiungere:",
