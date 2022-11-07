@@ -393,7 +393,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		          subscriptionData.content = null;
 		        } else {
 	              subscriptionData.format = "fhir/"+crit;
-	              subscriptionData.content = crit;
+	              subscriptionData.content = null;
 		        }
 	           
 	        }

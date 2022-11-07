@@ -174,7 +174,7 @@ public class ApplicationTools {
 		if (service.status.equals(ConsentStatus.UNCONFIRMED) || service.status.equals(ConsentStatus.ACTIVE) || service.status.equals(ConsentStatus.INVALID)) {
 			boolean sendMessage = service.status == ConsentStatus.ACTIVE; 
 			Plugin app = Plugin.getById(service.applicationId);		
-			User user = context.getRequestCache().getUserById(context.getAccessor());
+			User user = context.getRequestCache().getUserById(context.getAccessor(), true);
 			if (user != null) AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_REJECTED).withActorUser(context.getActor()).withModifiedUser(user).withConsent(service));		
 			if (reject) Circles.consentStatusChange(context, service, ConsentStatus.REJECTED);
 			else Circles.consentStatusChange(context, service, ConsentStatus.EXPIRED);
