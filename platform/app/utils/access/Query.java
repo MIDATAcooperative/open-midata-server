@@ -483,6 +483,7 @@ public class Query {
 	              properties.containsKey("creator") ||
 	              properties.containsKey("data") ||
 	              properties.containsKey("code") ||
+	              properties.containsKey("tag") ||
 	              properties.containsKey("name");
 		 
 		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("created-before") || properties.containsKey("updated-after") || properties.containsKey("shared-after") || properties.containsKey("updated-before") || properties.containsKey("history-date");
