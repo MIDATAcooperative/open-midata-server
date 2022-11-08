@@ -178,7 +178,7 @@ public class ApplicationTools {
 			if (user != null) AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_REJECTED).withActorUser(context.getActor()).withModifiedUser(user).withConsent(service));		
 			if (reject) Circles.consentStatusChange(context, service, ConsentStatus.REJECTED);
 			else Circles.consentStatusChange(context, service, ConsentStatus.EXPIRED);
-			if (app != null && sendMessage) sendServiceRejectMessage(user, app);
+			if (app != null && user != null && sendMessage) sendServiceRejectMessage(user, app);
 		}
 	}
 	

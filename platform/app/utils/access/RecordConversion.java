@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 
 import models.MidataId;
@@ -96,10 +97,8 @@ public class RecordConversion {
 		 if (tags != null) {
 			  Set<String> tagSet = new HashSet<String>();
 			  for (Object o : ((BasicBSONList) tags)) {
-				  tagSet.add(o.toString());	
-				  AccessLog.log("ADD TAG: "+o.toString());
-			  }
-			  AccessLog.log("ADD TAGS DONE");
+				  tagSet.add(o.toString());					  
+			  }			  
 			  return tagSet;
 		 } else return null;		 
 	}
@@ -107,8 +106,7 @@ public class RecordConversion {
 	
 	public DBRecord toDB(Record record) {
 		DBRecord dbrecord = new DBRecord();
-		dbrecord._id = record._id;
-		dbrecord.data = record.data;
+		dbrecord._id = record._id;		
 		dbrecord.owner = record.owner;
 		BSONObject meta = dbrecord.meta;		
 		meta.put("app", record.app !=null ? record.app.toDb() : null);
@@ -131,6 +129,7 @@ public class RecordConversion {
 		   meta.put("code", record.code);
 		}
 		dbrecord.data = record.data;
+		if (record.data==null) dbrecord.data = new BasicBSONObject();
 		return dbrecord;
 	}
 	
