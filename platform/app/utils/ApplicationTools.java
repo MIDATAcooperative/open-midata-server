@@ -172,9 +172,10 @@ public class ApplicationTools {
 	
 	public static void leaveInstalledService(AccessContext context, MobileAppInstance service, boolean reject) throws AppException {
 		if (service.status.equals(ConsentStatus.UNCONFIRMED) || service.status.equals(ConsentStatus.ACTIVE) || service.status.equals(ConsentStatus.INVALID)) {
+			AccessLog.log("leave installed service:", service._id.toString());
 			boolean sendMessage = service.status == ConsentStatus.ACTIVE; 
 			Plugin app = Plugin.getById(service.applicationId);		
-			User user = context.getRequestCache().getUserById(context.getAccessor(), true);
+			User user = context.getRequestCache().getUserById(service.owner, true);
 			if (user != null) AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_REJECTED).withActorUser(context.getActor()).withModifiedUser(user).withConsent(service));		
 			if (reject) Circles.consentStatusChange(context, service, ConsentStatus.REJECTED);
 			else Circles.consentStatusChange(context, service, ConsentStatus.EXPIRED);
@@ -608,11 +609,7 @@ public class ApplicationTools {
 		if (useOriginalContextOnFail) return context;
 		return null;
 	}
-									
-									
-				
-	
-
+																						
 	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
 		AccessLog.logBegin("start refresh app id=",appInstance._id.toString());
 		long tStart = System.currentTimeMillis();
@@ -652,6 +649,7 @@ public class ApplicationTools {
 
 	public static void deleteServiceInstance(AccessContext context, ServiceInstance instance) throws InternalServerException {
         Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.ALL);
+        AccessLog.log("delete service instance:",instance._id.toString()," #instances=", Integer.toString(appInstances.size()));
         for (MobileAppInstance appInstance : appInstances) {
             try {
               ApplicationTools.removeAppInstance(context, context.getAccessor(), appInstance);            
