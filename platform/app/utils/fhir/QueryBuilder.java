@@ -588,7 +588,7 @@ public class QueryBuilder {
 				} else throw new NullPointerException();
 				
 				if (prefix==null) prefix = ParamPrefixEnum.EQUAL;
-				AccessLog.log("prefix="+prefix);
+				//AccessLog.log("prefix="+prefix);
 				Object lDate1 = lDate;
 				Object hDate1 = hDate;
 				

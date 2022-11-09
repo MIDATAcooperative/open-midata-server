@@ -125,48 +125,55 @@ public class AccountWiper extends AbstractActor {
 	
 	private void retreatPhase(AccessContext context, MidataId userId) throws AppException {
         MidataId executorId = context.getAccessor();
-		
+		AccessLog.logBegin("begin expire all consents with healthcare, friends and delegation");
 		Set<Consent> allconsents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.HCRELATED, ConsentType.HEALTHCARE, ConsentType.REPRESENTATIVE)), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : allconsents) {
 			if (consent.status == ConsentStatus.ACTIVE) {
 			  Circles.consentStatusChange(context, consent, ConsentStatus.EXPIRED);
 			} 
 		}
-		
+		AccessLog.logEnd("end expire all consents");
+		AccessLog.logBegin("begin retreat from all projects");
 		Set<StudyParticipation> studies = StudyParticipation.getAllByMember(userId, Sets.create("_id", "study", "status", "pstatus"));
 		for (StudyParticipation study : studies) {
 			if (study.pstatus == ParticipationStatus.MEMBER_REJECTED || study.pstatus == ParticipationStatus.MEMBER_RETREATED || study.pstatus == ParticipationStatus.RESEARCH_REJECTED) continue;
 			try {
 			  controllers.members.Studies.retreatParticipation(context, userId, study.study);
-			} catch (Exception e) {}			
+			} catch (Exception e) {
+			  AccessLog.logException("Error retreating from project", e);
+			  ErrorReporter.report("Account wiper", null, e);
+			}			
 		}
-					
+		AccessLog.logEnd("end retreat from all projects");
 	}
 	
 	private void appLeavePhase(AccessContext context, MidataId userId) throws AppException {
+		AccessLog.logBegin("begin expire all application consents");
 		Set<MobileAppInstance> allconsents = MobileAppInstance.getByOwner(userId, MobileAppInstance.APPINSTANCE_ALL);
 		for (MobileAppInstance consent : allconsents) {
 			if (consent.type == ConsentType.EXTERNALSERVICE && consent.status == ConsentStatus.ACTIVE) {
-			  ApplicationTools.leaveInstalledService(context, consent, false);
-			  
+			  ApplicationTools.removeAppInstance(context, context.getAccessor(), consent);			  
 			} 
 		}
+		AccessLog.logEnd("end expire all application consents");
 	}
 	
 	private void serviceLeavePhase(AccessContext context, MidataId userId) throws AppException {
+		AccessLog.logBegin("begin expire all service uses");
 		Set<MobileAppInstance> allconsents = MobileAppInstance.getByOwner(userId, MobileAppInstance.APPINSTANCE_ALL);
 		for (MobileAppInstance consent : allconsents) {
 			if (consent.type == ConsentType.API && consent.status == ConsentStatus.ACTIVE) {
 			  ApplicationTools.leaveInstalledService(context, consent, false);			  
 			} 
 		}
+		AccessLog.logEnd("end expire all service uses");
 	}
 	
 				
 	private void consentRemovalPhase(AccessContext context, MidataId userId) throws AppException {
 		MidataId executorId = context.getAccessor();
         SubscriptionData.deleteByOwner(userId);
-		
+        AccessLog.logBegin("begin remove all spaces");
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {
 			if (executorId.equals(userId)) {
@@ -175,7 +182,8 @@ public class AccountWiper extends AbstractActor {
 			
 			Space.delete(userId, space._id);
 		}
-		
+		AccessLog.logEnd("end remove all spaces");
+		AccessLog.logBegin("begin wipe consents");
 		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE, ConsentType.API, ConsentType.REPRESENTATIVE)), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			if (executorId.equals(userId)) {
@@ -183,7 +191,8 @@ public class AccountWiper extends AbstractActor {
 			} else AccessPermissionSet.delete(consent._id);
 			Circle.delete(userId, consent._id);
 		}
-						
+		AccessLog.logEnd("end wipe consents");
+		AccessLog.logBegin("begin remove authorization from other consents");				
 		Set<Consent> consents2 = Consent.getAllByAuthorized(userId);
 		for (Consent consent : consents2) {
 			consent = Consent.getByIdAndAuthorized(consent._id, userId, Sets.create("authorized"));
@@ -191,7 +200,7 @@ public class AccountWiper extends AbstractActor {
 			Consent.set(consent._id, "authorized", consent.authorized);	
 			Consent.set(consent._id, "lastUpdated", new Date());
 		}
-		
+		AccessLog.logEnd("end remove authorization");
 		Set<UserGroupMember> ugs = UserGroupMember.getAllByMember(userId);
 		for (UserGroupMember ug : ugs) {
 			AccessPermissionSet.delete(ug._id);
@@ -204,6 +213,7 @@ public class AccountWiper extends AbstractActor {
 	}
 				
 	private void cleanUpPhase(AccessContext context, MidataId userId) throws AppException {
+	    AccessLog.logBegin("begin cleanup");
         KeyRecoveryProcess.delete(userId);
         KeyRecoveryData.delete(userId);
         FutureLogin.delete(userId);
@@ -232,5 +242,6 @@ public class AccountWiper extends AbstractActor {
 				user.delete();
 			} 						
 		}
+		AccessLog.logEnd("end cleanup");
 	}
 }

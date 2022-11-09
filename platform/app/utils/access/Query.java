@@ -162,6 +162,14 @@ public class Query {
 		return r;
 	}
 	
+	public Query onlyRestrictions(Set<String> allowed) throws AppException {
+		Query r = new Query(properties, fields, cache, apsId, context, true);
+		r.path = this.path;
+	    r.properties.keySet().retainAll(allowed);
+		r.process();
+		return r;
+	}
+	
 	public void getPath(StringBuilder str) {
 		if (prev != null) {
 			prev.getPath(str);
