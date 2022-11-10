@@ -46,9 +46,13 @@ public class AndCondition implements Condition, Serializable {
 
     public static Condition and(Condition cond1, Condition cond2) {
     	if (cond1 == null) return cond2;
-    	if (cond2 == null) return cond1;
+    	if (cond2 == null) return cond1;    	
     	if (cond1 instanceof AndCondition) {
-    		((AndCondition) cond1).checks.add(cond2);
+    		if (cond1.getClass()==cond2.getClass()) {
+    		  ((AndCondition) cond1).checks.addAll(((AndCondition) cond2).checks);
+    		} else {
+    		  ((AndCondition) cond1).checks.add(cond2);
+    		}
     		return (AndCondition) cond1;
     	} else if (cond2 instanceof AndCondition) {
     		((AndCondition) cond2).checks.add(cond1);
