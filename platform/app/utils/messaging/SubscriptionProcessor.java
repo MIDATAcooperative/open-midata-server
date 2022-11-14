@@ -375,7 +375,11 @@ public class SubscriptionProcessor extends AbstractActor {
 		String visDir = InstanceConfig.getInstance().getConfig().getString("visualizations.path");
 		String visPath =  visDir+"/"+plugin.filename+"/"+cmd;
 		final String lang = (user != null && user.language != null) ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
-		final String id = triggered.getResourceId() != null ? triggered.getResourceId().toString() : "-";
+		
+		String type = triggered.getType();
+		if (type.startsWith("fhir/")) type = type.substring("fhir/".length());
+		
+		final String id = triggered.getResourceId() != null ? type+"/"+triggered.getResourceId().toString()+"/_history/"+triggered.resourceVersion : "-";
 		final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
 		boolean testing = InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable() && (plugin.status.equals(PluginStatus.DEVELOPMENT) || plugin.status.equals(PluginStatus.BETA));
 		//System.out.println("prcApp5");
