@@ -409,7 +409,8 @@ public class SubscriptionProcessor extends AbstractActor {
 		}				
 		//System.out.println("prcApp6");
 		
-		  AccessLog.log("Build process...");		  
+		  AccessLog.log("Build process...");
+		  AccessLog.log("/usr/bin/firejail --quiet --whitelist="+visDir+" "+nodepath+" "+visPath+" "+token+" "+lang+" http://localhost:9001 "+subscription.owner.toString()+" "+id);
 		  Process p = new ProcessBuilder("/usr/bin/firejail","--quiet","--whitelist="+visDir,nodepath, visPath, token, lang, "http://localhost:9001", subscription.owner.toString(), id).redirectError(Redirect.INHERIT).start();
 		  //System.out.println("Output...");
 		  PrintWriter out = new PrintWriter(new OutputStreamWriter(p.getOutputStream()));		  
