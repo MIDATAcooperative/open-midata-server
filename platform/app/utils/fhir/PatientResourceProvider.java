@@ -660,7 +660,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		String loginEmail = user.email;
 		if (loginEmail == null || loginEmail.trim().length()==0) {
 			for (Identifier identifier : thePatient.getIdentifier()) {
-				if (identifier.getSystem().equals("http://midata.coop/identifier/patient-login")) {
+				if ("http://midata.coop/identifier/patient-login".equals(identifier.getSystem())) {
 					loginEmail = identifier.getValue();					
 					changes = true;
 				}
@@ -771,20 +771,20 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		for (ContactPoint point : thePatient.getTelecom()) {
 
 			if (!point.hasPeriod() || !point.getPeriod().hasEnd()) {
-				if (point.getSystem().equals(ContactPointSystem.EMAIL)) {
+				if (ContactPointSystem.EMAIL.equals(point.getSystem())) {
 					user.email = point.getValue();
 					user.emailLC = user.email.toLowerCase();
 					foundEmail = true;
-				} else if (point.getSystem().equals(ContactPointSystem.PHONE)) {
+				} else if (ContactPointSystem.PHONE.equals(point.getSystem())) {
 					user.phone = point.getValue();
-				} else if (point.getSystem().equals(ContactPointSystem.SMS)) {
+				} else if (ContactPointSystem.SMS.equals(point.getSystem())) {
 					user.mobile = point.getValue();
 				}
 			}
 		}
 
 		for (Identifier identifier : thePatient.getIdentifier()) {
-			if (identifier.getSystem().equals("http://midata.coop/identifier/patient-login")) {
+			if ("http://midata.coop/identifier/patient-login".equals(identifier.getSystem())) {
 				user.email = identifier.getValue();
 				user.emailLC = user.email.toLowerCase();
 				foundLoginId = true;
