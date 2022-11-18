@@ -415,7 +415,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			  token2 = "token:"+token.substring(3000);
 		  }
 		  AccessLog.log("Build process...");
-		  AccessLog.log("/usr/bin/firejail --quiet --whitelist="+visDir+" "+nodepath+" "+visPath+" "+token1+" "+lang+" http://localhost:9001 "+subscription.owner.toString()+" "+id+" "+token2);
+		  //AccessLog.log("/usr/bin/firejail --quiet --whitelist="+visDir+" "+nodepath+" "+visPath+" "+token1+" "+lang+" http://localhost:9001 "+subscription.owner.toString()+" "+id+" "+token2);
 		  Process p = new ProcessBuilder("/usr/bin/firejail","--quiet","--whitelist="+visDir,nodepath, visPath, token1, lang, "http://localhost:9001", subscription.owner.toString(), id, token2).redirectError(Redirect.INHERIT).start();
 		  //System.out.println("Output...");
 		  PrintWriter out = new PrintWriter(new OutputStreamWriter(p.getOutputStream()));		  
