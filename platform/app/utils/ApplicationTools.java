@@ -127,10 +127,13 @@ public class ApplicationTools {
 
 		// protokoll app installation
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.INSTALL);
+
+		// Eventually flush artifacts from sharing
+		if (context!=null) context.clearCache();
 		
 		// confirm audit entries
 		AuditManager.instance.success();
-
+		
 		AccessLog.logEnd("end install app");
 		return appInstance;
 	}
