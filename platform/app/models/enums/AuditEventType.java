@@ -199,6 +199,8 @@ public enum AuditEventType {
 	 */
 	USER_TERMS_OF_USE_AGREED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "user-terms-of-use-agreed", "Agreed to terms of use"), AuditEventAction.E),
 	
+	USER_TERMS_OF_USE_NOTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "user-terms-of-use-noted", "Noted terms of use"), AuditEventAction.E),
+	
 	AUDIT_LOG_USE(new Coding(System.DCM,"110101","Audit Log Used"), new Coding(System.MIDATA, "audit-log-used", "Audit Log Used"), AuditEventAction.R),
 	
 	/**

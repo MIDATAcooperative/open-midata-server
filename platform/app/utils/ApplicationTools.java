@@ -118,7 +118,7 @@ public class ApplicationTools {
 		}
 		
 		// Agree to terms and co
-		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);					
+		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id, true);					
 		
 		Circles.consentStatusChange(context, appInstance, null, false);
 		

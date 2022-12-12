@@ -116,7 +116,7 @@
 						  <a @click="showTerms({which : progress.termsOfUse});" href="javascript:" v-t="'registration.agb3'"></a>
 						</p>
 						<div class="extraspace"></div>
-						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.termsOfUse);" v-t="'postregister.agree_btn'"></button>
+						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.termsOfUse);" v-t="'postregister.noted_btn'"></button>
 						<div class="extraspace"></div>
 						<error-box :error="error"></error-box>
 					</div>
@@ -128,7 +128,7 @@
 						  <a @click="showTerms({which : progress.privacyPolicy});" href="javascript:" v-t="'registration.privacypolicy3'"></a>
 						</p>
 						<div class="extraspace"></div>
-						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.privacyPolicy);" v-t="'postregister.agree_btn'"></button>
+						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.privacyPolicy);" v-t="'postregister.noted_btn'"></button>
 						<div class="extraspace"></div>
 						<error-box :error="error"></error-box>
 					</div>
