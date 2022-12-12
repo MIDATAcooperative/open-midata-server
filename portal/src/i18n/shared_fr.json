@@ -40,6 +40,9 @@
         "noconsent" : "Il n'y a pas de consentement actif permettant l'ajout de donnée à cette personne.",
         "unsupported" : "Opération non supportée",
         "failed" : "Action échouée",
+
+        // TODO NEW: Timeout
+        "timeout" : "Timeout",
         "notrialuser_title" : "Inscription requise!",
         "notrialuser_detail" : "Pour utiliser cette fonctionnalité, vous devez compléter votre inscription. Veuillez demander une copie écrite des conditions générales et la renvoyer signée à @OPERATOR. Vous recevrez également un code d'activation permettant de vérifier votre adresse postale. Si vous désirez vérifier le status de votre compte, cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'État du compte'.",
         "mustbemember_title" : "Adhésion à @OPERATOR requise!",
@@ -292,6 +295,9 @@
             "contract-send" : "Contrat envoyé à l'utilisateur",
             "internal-comment" : "Commentaire administrateur",
             "user-terms-of-use-agreed" : "Conditions générales acceptées",
+
+            // TODO NEW: Noted General Terms and Conditions
+            "user-terms-of-use-noted" : "Noted General Terms and Conditions",
             "audit-log-used" : "Audit log consulté",
             "added-as-team-member" : "Ajouté comme membre d'un team",
             "updated-role-in-team" : "Rôle dans le team modifié",
@@ -701,7 +707,15 @@
         "birthday_entered" : "Une date de naissance valide est requise pour utiliser ce service. Veuillez ajouter votre date de naissance aux informations de votre compte. (Exemple de format : 31.12.1999)",
         "gender_entered" : "Votre sexe doit être renseigné pour utiliser ce service. Veuillez indiquer votre sexe.",
         "admin_verified" : "Votre compte doit être validé par un administrateur. Veuillez réessayer plus tard. Si votre compte n'a pas été validé sous 24 heures, veuillez contacter @SUPPORT.",
+
+        // TODO CHANGED
+        // OLD: The General Terms and Conditions have been updated. Please confirm that you agree to the new version.
+        // NEW: The General Terms and Conditions have been updated. Please confirm that you have taken note of the new version.
         "terms_agreed" : "Les Conditions Générales ont été mises à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
+
+        // TODO CHANGED
+        // OLD: The Privacy Policy has been updated. Please confirm that you agree to the new version.
+        // NEW: The Privacy Policy has been updated. Please confirm that you have taken note of the new version.
         "privacy_policy_agreed" : "La Déclaration de protection des données a été mise à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
         "auth2factor" : "Un code d'autorisation a été envoyé sur votre téléphone. Veuillez l'entrer.",
         "securityToken" : "Code",
@@ -716,6 +730,9 @@
         "emailnotify" : "Notifications",
         "emailnotify2" : "Veuillez m'envoyer un e-mail chaque fois que je me connecte au portail @PRODUCT à {{domain}}.",
         "agree_btn" : "Je suis d'accord",
+
+        // TODO NEW: I've seen it
+        "noted_btn" : "I've seen it",
         "keyrecovery" : {
             "intro" : "La clé privée utilisée pour crypter vos données doit être récupérée. Pour récupérer votre clé, essayez l'une des options suivantes:",
             "way1" : "Avez-vous une application utilisant @PRODUCT où vous êtes encore connecté? Si oui, ouvrez cette application et votre clé sera récupérée. Essayez de vous connecter à nouveau par la suite.",
