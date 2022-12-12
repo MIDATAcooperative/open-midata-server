@@ -292,7 +292,7 @@
        "contract-send" : "Contract send to user",
        "internal-comment" : "Administrator's comment",
        "user-terms-of-use-agreed" : "Agreed to General Terms and Conditions",
-       "user-terms-of-use-noted" : "Noted General Terms and Conditions",
+       "user-terms-of-use-noted" : "Took note of General Terms and Conditions",
        "audit-log-used" : "Audit log consulted",	   
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
@@ -717,7 +717,7 @@
     "emailnotify" : "Notifications",
     "emailnotify2" : "Please send me an email everytime I log into the @PRODUCT portal at {{domain}}.",
     "agree_btn" : "I agree",
-    "noted_btn" : "I've seen it",
+    "noted_btn" : "I took note of it",
     "keyrecovery" : {
       "intro" : "The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:",
       "way1" : "Do you have any application using @PRODUCT where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.",

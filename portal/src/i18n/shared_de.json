@@ -40,8 +40,6 @@
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
         "unsupported" : "Operation nicht unterstützt",
         "failed" : "Aktion fehlgeschlagen",
-
-        // TODO NEW: Timeout
         "timeout" : "Timeout",
         "notrialuser_title" : "Vollständige Mitgliedschaft notwendig!",
         "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung der Allgemeinen Geschäftsbedingungen und senden Sie diese unterschrieben an @OPERATOR zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
@@ -295,9 +293,7 @@
             "contract-send" : "Vertrag an Benutzer versandt",
             "internal-comment" : "Anmerkung Administrator",
             "user-terms-of-use-agreed" : "Allgemeine Geschäftsbedingungen angenommen",
-
-            // TODO NEW: Noted General Terms and Conditions
-            "user-terms-of-use-noted" : "Noted General Terms and Conditions",
+            "user-terms-of-use-noted" : "Allgemeine Geschäftsbedingungen zur Kenntnis genommen",
             "audit-log-used" : "Audit Log angeschaut",
             "added-as-team-member" : "Hinzugefügt als Teammitglied",
             "updated-role-in-team" : "Rolle im Team aktualisiert",
@@ -707,16 +703,8 @@
         "birthday_entered" : "Für die Nutzung dieses Dienstes ist ein gültiges Geburtsdatum erforderlich. Bitte fügen Sie Ihr Geburtsdatum zu Ihren Kontoinformationen hinzu. (Formatbeispiel: 31.12.1999)",
         "gender_entered" : "Ihr Geschlecht muss angegeben werden, um diesen Dienst nutzen zu können. Bitte geben Sie Ihr Geschlecht an.",
         "admin_verified" : "Ihr Konto muss durch einen Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte @SUPPORT.",
-
-        // TODO CHANGED
-        // OLD: The General Terms and Conditions have been updated. Please confirm that you agree to the new version.
-        // NEW: The General Terms and Conditions have been updated. Please confirm that you have taken note of the new version.
-        "terms_agreed" : "Die Allgemeine Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
-
-        // TODO CHANGED
-        // OLD: The Privacy Policy has been updated. Please confirm that you agree to the new version.
-        // NEW: The Privacy Policy has been updated. Please confirm that you have taken note of the new version.
-        "privacy_policy_agreed" : "Die Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
+        "terms_agreed" : "Die Allgemeinen Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie die neue Fassung zur Kenntnis genommen haben.",
+        "privacy_policy_agreed" : "Die Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie die neue Fassung zur Kenntnis genommen haben.",
         "auth2factor" : "Ein Autorisierungscode wurde an Ihr Telefon gesendet. Bitte geben Sie ihn ein.",
         "securityToken" : "Code",
         "securityToken_btn" : "Senden",
@@ -730,9 +718,7 @@
         "emailnotify" : "Benachrichtigungen",
         "emailnotify2" : "Bitte senden Sie mir jedes Mal eine E-Mail, wenn ich mich im @PRODUCT Portal unter {{domain}} anmelde.",
         "agree_btn" : "Ich stimme zu",
-
-        // TODO NEW: I've seen it
-        "noted_btn" : "I've seen it",
+        "noted_btn" : "Ich habe es zur Kenntnis genommen",
         "keyrecovery" : {
             "intro" : "Der private Schlüssel, der zur Verschlüsselung Ihrer Daten verwendet wird, muss wiederhergestellt werden. Um Ihren Schlüssel wiederherzustellen, versuchen Sie eine dieser Optionen:",
             "way1" : "Haben Sie eine Applikation die @PRODUCT benutzt, bei der Sie noch angemeldet sind? Wenn ja, öffnen Sie diese Applikation und Ihr Schlüssel wird wiederhergestellt. Versuchen Sie anschliessend, sich erneut anzumelden.",
