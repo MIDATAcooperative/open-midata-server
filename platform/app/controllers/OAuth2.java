@@ -1079,6 +1079,7 @@ public class OAuth2 extends Controller {
 			AuditManager.instance.success();
 					
 			long ts5 = System.currentTimeMillis();
+            token.currentContext.clearCache();
 			AccessLog.log("[login] done app, time=", Long.toString(ts5-ts4));
 			return ok(obj);
 		} else {
@@ -1107,6 +1108,7 @@ public class OAuth2 extends Controller {
 			AuditManager.instance.success();
 			
 			long ts5 = System.currentTimeMillis();
+			token.currentContext.clearCache();
 			AccessLog.log("[login] done, time=", Long.toString(ts5-ts4));
 			return ok(obj).as("application/json");
 		}

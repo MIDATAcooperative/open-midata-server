@@ -119,10 +119,7 @@ public class ConsentAccessContext extends AccessContext{
 	public boolean isIncluded(DBRecord record) throws AppException {
 		if (consent.writes == null) return false;
 		
-		if (!sharingQuery && consent.sharingQuery == null) {
-			  consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
-			  sharingQuery = true;
-		}
+		loadSharingQuery();
 		
 		if (consent.sharingQuery == null) return false;
 		return !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(record)).isEmpty();
@@ -166,12 +163,15 @@ public class ConsentAccessContext extends AccessContext{
 	
 	@Override
 	public boolean mayAccess(String content, String format) throws AppException {
+		loadSharingQuery();		
+		return Feature_FormatGroups.mayAccess(consent.sharingQuery, content, format);		
+	}
+	
+	private void loadSharingQuery() throws AppException {
 		if (!sharingQuery && consent.sharingQuery == null) {
 			  consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
 			  sharingQuery = true;
 		}
-		
-		return Feature_FormatGroups.mayAccess(consent.sharingQuery, content, format);		
 	}
 	
 	@Override
@@ -186,6 +186,7 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {
+		loadSharingQuery();
 		return Feature_FormatGroups.getAccessRestriction(consent.sharingQuery, content, format, field);
 		
 	}

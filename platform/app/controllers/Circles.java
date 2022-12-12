@@ -774,7 +774,7 @@ public class Circles extends APIController {
 	}
 	
 	public static void consentStatusChange(AccessContext context, Consent consent, ConsentStatus newStatus, boolean patientRecord) throws AppException {
-		AccessLog.logBegin("start consent status change from="+consent.status+" to="+newStatus);
+		AccessLog.logBegin("start consent status change from="+consent.status+" to="+newStatus+" type="+consent.type);
 		ConsentStatus oldStatus = consent.status;
 		boolean wasActive = oldStatus.isSharingData();
 		boolean active = (newStatus == null) ? wasActive : newStatus.isSharingData();
@@ -961,6 +961,7 @@ public class Circles extends APIController {
 	}
 	
 	public static void fetchExistingConsents(AccessContext context, String emailLC) throws AppException {
+		AccessLog.logBegin("begin fetch existing consents");
 		Set<Consent> consents = Consent.getByExternalEmail(emailLC);
 		for (Consent consent : consents) {
 			addUsers(context, context.getAccessor(), EntityType.USER, consent, Collections.singleton(context.getAccessor()));
@@ -983,6 +984,7 @@ public class Circles extends APIController {
 			
 			persistConsentMetadataChange(context, consent, false);
 		}
+		AccessLog.logEnd("end fetch existing consents");
 	}
 	
 	/**

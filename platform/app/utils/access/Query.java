@@ -162,6 +162,14 @@ public class Query {
 		return r;
 	}
 	
+	public Query onlyRestrictions(Set<String> allowed) throws AppException {
+		Query r = new Query(properties, fields, cache, apsId, context, true);
+		r.path = this.path;
+	    r.properties.keySet().retainAll(allowed);
+		r.process();
+		return r;
+	}
+	
 	public void getPath(StringBuilder str) {
 		if (prev != null) {
 			prev.getPath(str);
@@ -483,6 +491,7 @@ public class Query {
 	              properties.containsKey("creator") ||
 	              properties.containsKey("data") ||
 	              properties.containsKey("code") ||
+	              properties.containsKey("tag") ||
 	              properties.containsKey("name");
 		 
 		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("created-before") || properties.containsKey("updated-after") || properties.containsKey("shared-after") || properties.containsKey("updated-before") || properties.containsKey("history-date");

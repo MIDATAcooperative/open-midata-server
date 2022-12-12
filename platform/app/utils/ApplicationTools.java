@@ -118,7 +118,7 @@ public class ApplicationTools {
 		}
 		
 		// Agree to terms and co
-		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);					
+		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id, true);					
 		
 		Circles.consentStatusChange(context, appInstance, null, false);
 		
@@ -127,10 +127,13 @@ public class ApplicationTools {
 
 		// protokoll app installation
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.INSTALL);
+
+		// Eventually flush artifacts from sharing
+		if (context!=null) context.clearCache();
 		
 		// confirm audit entries
 		AuditManager.instance.success();
-
+		
 		AccessLog.logEnd("end install app");
 		return appInstance;
 	}
@@ -172,13 +175,14 @@ public class ApplicationTools {
 	
 	public static void leaveInstalledService(AccessContext context, MobileAppInstance service, boolean reject) throws AppException {
 		if (service.status.equals(ConsentStatus.UNCONFIRMED) || service.status.equals(ConsentStatus.ACTIVE) || service.status.equals(ConsentStatus.INVALID)) {
+			AccessLog.log("leave installed service:", service._id.toString());
 			boolean sendMessage = service.status == ConsentStatus.ACTIVE; 
 			Plugin app = Plugin.getById(service.applicationId);		
-			User user = context.getRequestCache().getUserById(context.getAccessor());
+			User user = context.getRequestCache().getUserById(service.owner, true);
 			if (user != null) AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_REJECTED).withActorUser(context.getActor()).withModifiedUser(user).withConsent(service));		
 			if (reject) Circles.consentStatusChange(context, service, ConsentStatus.REJECTED);
 			else Circles.consentStatusChange(context, service, ConsentStatus.EXPIRED);
-			if (app != null && sendMessage) sendServiceRejectMessage(user, app);
+			if (app != null && user != null && sendMessage) sendServiceRejectMessage(user, app);
 		}
 	}
 	
@@ -608,11 +612,7 @@ public class ApplicationTools {
 		if (useOriginalContextOnFail) return context;
 		return null;
 	}
-									
-									
-				
-	
-
+																						
 	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
 		AccessLog.logBegin("start refresh app id=",appInstance._id.toString());
 		long tStart = System.currentTimeMillis();
@@ -652,6 +652,7 @@ public class ApplicationTools {
 
 	public static void deleteServiceInstance(AccessContext context, ServiceInstance instance) throws InternalServerException {
         Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.ALL);
+        AccessLog.log("delete service instance:",instance._id.toString()," #instances=", Integer.toString(appInstances.size()));
         for (MobileAppInstance appInstance : appInstances) {
             try {
               ApplicationTools.removeAppInstance(context, context.getAccessor(), appInstance);            

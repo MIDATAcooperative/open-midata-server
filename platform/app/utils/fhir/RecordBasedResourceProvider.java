@@ -205,6 +205,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			    if (internal != null) tags.add(internal);				
 			}
 		}
+		Set<String> oldTags = record.tags;
+		if (oldTags == null) oldTags = Collections.emptySet();
+		
 		record.tags = tags.isEmpty() ? null : tags;
 		
 		AccessContext info = info();
@@ -213,7 +216,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		List<String> allowTags = info.getAccessRestrictionList(record.content, record.format, "allow-tag");
 		if (record.tags != null) {
 			for (String usedTag : record.tags) {			   
-			   if (usedTag.startsWith("security:") && !alwaysAllowedTags.contains(usedTag) && !allowTags.contains(usedTag) && !addTags.contains(usedTag)) throw new PluginException(info.getUsedPlugin(), "error.plugin", "Not allowed security tag used: '"+usedTag+"'");	
+			   if (usedTag.startsWith("security:") && !alwaysAllowedTags.contains(usedTag) && !allowTags.contains(usedTag) && !addTags.contains(usedTag) && !oldTags.contains(usedTag)) throw new PluginException(info.getUsedPlugin(), "error.plugin", "Not allowed security tag used: '"+usedTag+"'");	
 			}
 		}
 		

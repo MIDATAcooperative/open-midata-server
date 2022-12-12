@@ -588,7 +588,7 @@ public class QueryBuilder {
 				} else throw new NullPointerException();
 				
 				if (prefix==null) prefix = ParamPrefixEnum.EQUAL;
-				AccessLog.log("prefix="+prefix);
+				//AccessLog.log("prefix="+prefix);
 				Object lDate1 = lDate;
 				Object hDate1 = hDate;
 				
@@ -643,6 +643,7 @@ public class QueryBuilder {
 				String units = quantityParam.getUnits();
 				String system = quantityParam.getSystem();
 				BigDecimal val = quantityParam.getValue();               
+                if (val==null) throw new InvalidRequestException("Quantity-type restriction needs a numeric value.");
                 
                 String lPath = null;
 				String hPath = null;

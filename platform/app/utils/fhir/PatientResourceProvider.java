@@ -510,6 +510,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	public void updatePatientForAccount(Member member) throws AppException {
 		if (!member.role.equals(UserRole.MEMBER)) return;
+		AccessLog.logBegin("update patient record");
 		AccessContext context = ContextManager.instance.createSharingContext(info(), member._id);
 		List<Record> allExisting = RecordManager.instance.list(info().getAccessorRole(), context,
 				CMaps.map("format", "fhir/Patient").map("owner", member._id).map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
@@ -527,6 +528,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			prepare(existing, patient);
 			updateRecord(existing, patient, getAttachments(patient));
 		}
+		AccessLog.logEnd("update patient record");
 	}
 
 	public static void updatePatientForAccount(AccessContext context, MidataId who) throws AppException {
@@ -658,7 +660,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		String loginEmail = user.email;
 		if (loginEmail == null || loginEmail.trim().length()==0) {
 			for (Identifier identifier : thePatient.getIdentifier()) {
-				if (identifier.getSystem().equals("http://midata.coop/identifier/patient-login")) {
+				if ("http://midata.coop/identifier/patient-login".equals(identifier.getSystem())) {
 					loginEmail = identifier.getValue();					
 					changes = true;
 				}
@@ -712,6 +714,30 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (!thePatient.hasGender()) throw new UnprocessableEntityException("Gender required for patient");
 		if (!thePatient.hasBirthDate()) throw new UnprocessableEntityException("Birth date required for patient");
 		if (!thePatient.hasAddress()) throw new UnprocessableEntityException("Country required for patient");
+		
+		// At least email, telephone or full address required
+		boolean foundMinimal = false;
+		for (ContactPoint point : thePatient.getTelecom()) {
+			if (!point.hasPeriod() || !point.getPeriod().hasEnd()) {
+				if (ContactPointSystem.EMAIL.equals(point.getSystem())) {
+					foundMinimal = true;
+				} else if (ContactPointSystem.PHONE.equals(point.getSystem())) {
+					foundMinimal = true;
+				} else if (ContactPointSystem.SMS.equals(point.getSystem())) {
+					foundMinimal = true;
+				}
+			}
+		}
+		if (!foundMinimal) {
+		for (Address address : thePatient.getAddress()) {
+			if (!address.hasPeriod() || !address.getPeriod().hasEnd()) {
+				if (address.hasPostalCode() && address.hasLine()) {
+					foundMinimal = true;
+				}
+			}
+		}
+		}
+		if (!foundMinimal) throw new UnprocessableEntityException("Email, phone or complete address required for account creation.");
 		
 		/*
 		Config config = InstanceConfig.getInstance().getConfig();
@@ -769,20 +795,20 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		for (ContactPoint point : thePatient.getTelecom()) {
 
 			if (!point.hasPeriod() || !point.getPeriod().hasEnd()) {
-				if (point.getSystem().equals(ContactPointSystem.EMAIL)) {
+				if (ContactPointSystem.EMAIL.equals(point.getSystem())) {
 					user.email = point.getValue();
 					user.emailLC = user.email.toLowerCase();
 					foundEmail = true;
-				} else if (point.getSystem().equals(ContactPointSystem.PHONE)) {
+				} else if (ContactPointSystem.PHONE.equals(point.getSystem())) {
 					user.phone = point.getValue();
-				} else if (point.getSystem().equals(ContactPointSystem.SMS)) {
+				} else if (ContactPointSystem.SMS.equals(point.getSystem())) {
 					user.mobile = point.getValue();
 				}
 			}
 		}
 
 		for (Identifier identifier : thePatient.getIdentifier()) {
-			if (identifier.getSystem().equals("http://midata.coop/identifier/patient-login")) {
+			if ("http://midata.coop/identifier/patient-login".equals(identifier.getSystem())) {
 				user.email = identifier.getValue();
 				user.emailLC = user.email.toLowerCase();
 				foundLoginId = true;
@@ -901,7 +927,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			
 			for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/terms-agreed")) {
 				String agreed = ext.getValue().primitiveValue();
-				user.agreedToTerms(agreed, info.getUsedPlugin());
+				user.agreedToTerms(agreed, info.getUsedPlugin(), true);
 			}
 						
 			KeyManager.instance.unlock(user._id, null);

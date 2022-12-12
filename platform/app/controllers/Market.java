@@ -205,6 +205,7 @@ public class Market extends APIController {
 					app.loginTemplateApprovedByEmail = null;
 					app.loginTemplateApprovedById = null;
 					app.loginTemplateApprovedDate = null;
+					markReviewObsolete(pluginId, AppReviewChecklist.TERMS_OF_USE_MATCH_QUERY);
 				}
 				app.defaultQuery = query;
 												
@@ -533,7 +534,7 @@ public class Market extends APIController {
 		
 		String json = JsonOutput.toJson(mixed, mapping);
 		//String base64 = Base64.getEncoder().encodeToString(json.getBytes());
-		return ok(json);
+		return ok(json).as("application/json");
 	}
 	
 	@APICall
@@ -863,6 +864,7 @@ public class Market extends APIController {
 			  app.loginTemplateApprovedByEmail = null;
 			  app.loginTemplateApprovedById = null;
 			  app.loginTemplateApprovedDate = null;
+			  markReviewObsolete(app._id, AppReviewChecklist.TERMS_OF_USE_MATCH_QUERY);
 		  }
 		}
 		if (json.has("loginButtonsTemplate")) {
@@ -1518,10 +1520,10 @@ public class Market extends APIController {
 		
 		Plugin.set(plugin._id, "debugHandle", plugin.debugHandle);
 		
-		return ok(JsonOutput.toJson(plugin, "Plugin", Sets.create("debugHandle")));
+		return ok(JsonOutput.toJson(plugin, "Plugin", Sets.create("debugHandle"))).as("application/json");
 	}
 	
-	public void markReviewObsolete(MidataId pluginId, AppReviewChecklist check) throws AppException {
+	public static void markReviewObsolete(MidataId pluginId, AppReviewChecklist check) throws AppException {
 		List<PluginReview> reviews = PluginReview.getReviews(pluginId, check);
 		for (PluginReview review : reviews) review.markObsolete();
 	}
@@ -1569,8 +1571,7 @@ public class Market extends APIController {
 			} else {
 			  unapproveLoginTemplate(review.pluginId, userId);
 			}
-		}
-		
+		}		
 		
 		return ok();
 	}

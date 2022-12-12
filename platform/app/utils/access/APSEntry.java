@@ -128,6 +128,7 @@ class APSEntry {
 	 
 	public static void mergeAllInto(Map<String, Object> props, Map<String, Object> targetPermissions) throws InternalServerException {
 		BasicBSONList lst = (BasicBSONList) props.get("p");
+		if (lst==null) return;
 		DBRecord dummy = new DBRecord();		
 		
 		for (Object row : lst) {

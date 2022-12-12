@@ -116,8 +116,8 @@ public class Messager {
 		for (Object target : targets) {
 			if (target instanceof MidataId) {
 				MidataId userId = (MidataId) target;
-				User user = User.getById(userId, User.ALL_USER);
-				if (user != null) {					
+				User user = User.getByIdAlsoDeleted(userId, User.ALL_USER);
+				if (user != null && !("deleted".equals(user.email))) {					
 					sendMessage(messageDefinition, footers, user, replacements, channel, sourceApp);
 				}
 			} else if (target instanceof String) {

@@ -652,6 +652,30 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (!thePatient.hasBirthDate()) throw new UnprocessableEntityException("Birth date required for patient");
 		if (!thePatient.hasAddress()) throw new UnprocessableEntityException("Country required for patient");
 		
+		// At least email, telephone or full address required
+		boolean foundMinimal = false;
+		for (ContactPoint point : thePatient.getTelecom()) {
+			if (!point.hasPeriod() || !point.getPeriod().hasEnd()) {
+				if (ContactPointSystem.EMAIL.equals(point.getSystem())) {
+					foundMinimal = true;
+				} else if (ContactPointSystem.PHONE.equals(point.getSystem())) {
+					foundMinimal = true;
+				} else if (ContactPointSystem.SMS.equals(point.getSystem())) {
+					foundMinimal = true;
+				}
+			}
+		}
+		if (!foundMinimal) {
+		for (Address address : thePatient.getAddress()) {
+			if (!address.hasPeriod() || !address.getPeriod().hasEnd()) {
+				if (address.hasPostalCode() && address.hasLine()) {
+					foundMinimal = true;
+				}
+			}
+		}
+		}
+		if (!foundMinimal) throw new UnprocessableEntityException("Email, phone or complete address required for account creation.");
+		
 		/*
 		Config config = InstanceConfig.getInstance().getConfig();
 		String terms = "midata-terms-of-use--" + (config.hasPath("versions.midata-terms-of-use") ? config.getString("versions.midata-terms-of-use") : "1.0");
@@ -676,7 +700,6 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	@Override
 	public void createExecute(Record record, Patient thePatient) throws AppException {
-
 		
 		// create the user
 		Member user = new Member();
@@ -836,7 +859,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			
 			for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/terms-agreed")) {
 				String agreed = ext.getValue().primitiveValue();
-				user.agreedToTerms(agreed, info.getUsedPlugin());
+				user.agreedToTerms(agreed, info.getUsedPlugin(), true);
 			}
 						
 			KeyManager.instance.unlock(user._id, null);

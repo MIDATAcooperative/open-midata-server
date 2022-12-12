@@ -375,7 +375,11 @@ public class SubscriptionProcessor extends AbstractActor {
 		String visDir = InstanceConfig.getInstance().getConfig().getString("visualizations.path");
 		String visPath =  visDir+"/"+plugin.filename+"/"+cmd;
 		final String lang = (user != null && user.language != null) ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
-		final String id = triggered.getResourceId() != null ? triggered.getResourceId().toString() : "-";
+		
+		String type = triggered.getType();
+		if (type.startsWith("fhir/")) type = type.substring("fhir/".length());
+		
+		final String id = triggered.getResourceId() != null ? type+"/"+triggered.getResourceId().toString()+"/_history/"+triggered.resourceVersion : "-";
 		final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
 		boolean testing = InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable() && (plugin.status.equals(PluginStatus.DEVELOPMENT) || plugin.status.equals(PluginStatus.BETA));
 		//System.out.println("prcApp5");
@@ -404,9 +408,15 @@ public class SubscriptionProcessor extends AbstractActor {
 			}
 		}				
 		//System.out.println("prcApp6");
-		
-		  AccessLog.log("Build process...");		  
-		  Process p = new ProcessBuilder("/usr/bin/firejail","--quiet","--whitelist="+visDir,nodepath, visPath, token, lang, "http://localhost:9001", subscription.owner.toString(), id).redirectError(Redirect.INHERIT).start();
+		  String token1 = token;
+		  String token2 = "";
+		  if (token.length() > 3000) {
+			  token1 = token.substring(0, 3000);
+			  token2 = "token:"+token.substring(3000);
+		  }
+		  AccessLog.log("Build process...");
+		  //AccessLog.log("/usr/bin/firejail --quiet --whitelist="+visDir+" "+nodepath+" "+visPath+" "+token1+" "+lang+" http://localhost:9001 "+subscription.owner.toString()+" "+id+" "+token2);
+		  Process p = new ProcessBuilder("/usr/bin/firejail","--quiet","--whitelist="+visDir,nodepath, visPath, token1, lang, "http://localhost:9001", subscription.owner.toString(), id, token2).redirectError(Redirect.INHERIT).start();
 		  //System.out.println("Output...");
 		  PrintWriter out = new PrintWriter(new OutputStreamWriter(p.getOutputStream()));		  
 		  out.println(triggered.resource);

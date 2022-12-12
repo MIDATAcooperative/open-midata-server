@@ -466,7 +466,7 @@ public class User extends Model implements Comparable<User> {
 		Model.set(User.class, collection, userId, field, value);
 	}		
 	
-	public void agreedToTerms(String terms, MidataId app) throws AppException {
+	public void agreedToTerms(String terms, MidataId app, boolean agreed) throws AppException {
 		if (terms == null || terms.length() == 0) return;
 		
 		User u2 = User.getById(this._id, Sets.create("termsAgreed"));
@@ -474,7 +474,11 @@ public class User extends Model implements Comparable<User> {
 		if (this.termsAgreed==null) this.termsAgreed = new HashSet<String>();
 		
 		if (!termsAgreed.contains(terms)) {
-			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_TERMS_OF_USE_AGREED).withApp(app).withActorUser(this).withMessage(terms));
+			if (agreed) {
+			  AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_TERMS_OF_USE_AGREED).withApp(app).withActorUser(this).withMessage(terms));
+			} else {
+			  AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_TERMS_OF_USE_NOTED).withApp(app).withActorUser(this).withMessage(terms));				
+			}
 			termsAgreed.add(terms);
 			Model.set(User.class, collection, this._id, "termsAgreed", this.termsAgreed);
 			AuditManager.instance.success();
