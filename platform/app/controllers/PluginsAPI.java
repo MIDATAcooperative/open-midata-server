@@ -413,12 +413,23 @@ public class PluginsAPI extends APIController {
 	public Result getFile(Request request) throws AppException, JsonValidationException {
 		Stats.startRequest(request);
 	
-		String authTokenStr = request.queryString("authToken").orElseThrow();
-		String id = request.queryString("id").orElseThrow();
+		AccessContext info = null;
+		Optional<String> param = request.header("Authorization");
+		String param2 = request.queryString("authToken").orElse(null);
 		
-		AccessContext info = ExecutionInfo.checkToken(request, authTokenStr, false, true);		
+		if (param.isPresent() && param.get().startsWith("Bearer ")) {
+          info = ExecutionInfo.checkToken(request, param.get().substring("Bearer ".length()), false, true);                  	
+		} else if (param2 != null) {
+		  info = ExecutionInfo.checkToken(request, param2, false, true);
+		} else throw new BadRequestException("error.auth", "Please provide authorization token as 'Authorization' header or 'authToken' request parameter.");
+				
+		String id = request.queryString("id").orElse(null);
+					
 		if (info == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+		}
+		if (id == null) {
+			throw new BadRequestException("error.missing.input_field", "Missing id");
 		}
 		Stats.setPlugin(info.getUsedPlugin());
 		Pair<String,Integer> recordId = RecordManager.instance.parseFileId(id);

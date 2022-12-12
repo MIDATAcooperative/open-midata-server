@@ -643,6 +643,7 @@ public class QueryBuilder {
 				String units = quantityParam.getUnits();
 				String system = quantityParam.getSystem();
 				BigDecimal val = quantityParam.getValue();               
+                if (val==null) throw new InvalidRequestException("Quantity-type restriction needs a numeric value.");
                 
                 String lPath = null;
 				String hPath = null;
