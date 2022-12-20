@@ -91,14 +91,7 @@
 						</form-group>
 						<form-group name="passwordnew" label="setpw.new_password_repeat" :path="errors.passwordnew">
 							<password class="form-control" name="passwordnew" v-model="setpw.passwordRepeat" style="margin-bottom:5px;" required />
-						</form-group>
-						<div class="dynheight">
-							<form-group name="secure" label="registration.secure">
-                                <check-box v-model="setpw.secure" name="secure" disabled> 			
-							      <span v-t="'registration.secure2'"></span>
-                                </check-box>							    
-							</form-group>
-						</div>
+						</form-group>						
 						<div class="extraspace"></div>
 						<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'setpw.set_new_btn'"></button>
 						<div class="extraspace"></div>

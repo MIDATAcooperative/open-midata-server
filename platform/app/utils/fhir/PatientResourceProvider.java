@@ -711,20 +711,36 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	@Override
 	public void createPrepare(Record record, Patient thePatient) throws AppException {
 		if (!thePatient.hasName()) throw new UnprocessableEntityException("Name required for patient");
+		boolean nameFound = false;
+		for (HumanName name : thePatient.getName()) {
+			if (name.getPeriod() == null || !name.getPeriod().hasEnd()) {
+				if (name.getGivenAsSingleString()!=null && 
+					name.getGivenAsSingleString().trim().length()>0 &&
+					name.getFamily()!=null &&
+					name.getFamily().trim().length()>0) nameFound = true;
+				
+			}
+		}
+		if (!nameFound) throw new UnprocessableEntityException("Name required for patient");
 		if (!thePatient.hasGender()) throw new UnprocessableEntityException("Gender required for patient");
 		if (!thePatient.hasBirthDate()) throw new UnprocessableEntityException("Birth date required for patient");
 		if (!thePatient.hasAddress()) throw new UnprocessableEntityException("Country required for patient");
 		
-		// At least email, telephone or full address required
+		// At least email or full address required
 		boolean foundMinimal = false;
+		boolean foundCountry = false;
 		for (ContactPoint point : thePatient.getTelecom()) {
 			if (!point.hasPeriod() || !point.getPeriod().hasEnd()) {
-				if (ContactPointSystem.EMAIL.equals(point.getSystem())) {
-					foundMinimal = true;
-				} else if (ContactPointSystem.PHONE.equals(point.getSystem())) {
-					foundMinimal = true;
-				} else if (ContactPointSystem.SMS.equals(point.getSystem())) {
-					foundMinimal = true;
+				if (point.hasValue()) {
+					if (ContactPointSystem.EMAIL.equals(point.getSystem())) {
+						foundMinimal = true;
+						String mail = point.getValue();
+						if (mail.indexOf("@")<=0) throw new UnprocessableEntityException("Valid email address required.");
+					} /*else if (ContactPointSystem.PHONE.equals(point.getSystem())) {
+						foundMinimal = true;
+					} else if (ContactPointSystem.SMS.equals(point.getSystem())) {
+						foundMinimal = true;
+					}*/
 				}
 			}
 		}
@@ -734,11 +750,18 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 				if (address.hasPostalCode() && address.hasLine()) {
 					foundMinimal = true;
 				}
+				if (address.hasCountry()) foundCountry = true;
 			}
 		}
 		}
-		if (!foundMinimal) throw new UnprocessableEntityException("Email, phone or complete address required for account creation.");
+		if (!foundMinimal) throw new UnprocessableEntityException("Email or complete address required for account creation.");
+		if (!foundCountry) throw new UnprocessableEntityException("Country required for patient");
 		
+		for (Identifier identifier : thePatient.getIdentifier()) {
+			if ("http://midata.coop/identifier/patient-login".equals(identifier.getSystem()) && identifier.hasValue()) {
+				if (identifier.getValue().indexOf("@")<=0) throw new UnprocessableEntityException("Email must be valid."); 
+			}
+		}
 		/*
 		Config config = InstanceConfig.getInstance().getConfig();
 		String terms = "midata-terms-of-use--" + (config.hasPath("versions.midata-terms-of-use") ? config.getString("versions.midata-terms-of-use") : "1.0");
@@ -795,20 +818,22 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		for (ContactPoint point : thePatient.getTelecom()) {
 
 			if (!point.hasPeriod() || !point.getPeriod().hasEnd()) {
-				if (ContactPointSystem.EMAIL.equals(point.getSystem())) {
-					user.email = point.getValue();
-					user.emailLC = user.email.toLowerCase();
-					foundEmail = true;
-				} else if (ContactPointSystem.PHONE.equals(point.getSystem())) {
-					user.phone = point.getValue();
-				} else if (ContactPointSystem.SMS.equals(point.getSystem())) {
-					user.mobile = point.getValue();
+				if (point.hasValue()) {
+					if (ContactPointSystem.EMAIL.equals(point.getSystem())) {
+						user.email = point.getValue();
+						user.emailLC = user.email.toLowerCase();
+						foundEmail = true;
+					} else if (ContactPointSystem.PHONE.equals(point.getSystem())) {
+						user.phone = point.getValue();
+					} else if (ContactPointSystem.SMS.equals(point.getSystem())) {
+						user.mobile = point.getValue();
+					}
 				}
 			}
 		}
 
 		for (Identifier identifier : thePatient.getIdentifier()) {
-			if ("http://midata.coop/identifier/patient-login".equals(identifier.getSystem())) {
+			if ("http://midata.coop/identifier/patient-login".equals(identifier.getSystem()) && identifier.hasValue()) {
 				user.email = identifier.getValue();
 				user.emailLC = user.email.toLowerCase();
 				foundLoginId = true;
@@ -842,13 +867,13 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 		user.initialApp = info().getUsedPlugin();
 
-		if (user.firstname == null)
+		if (user.firstname == null || user.firstname.trim().length()==0)
 			throw new UnprocessableEntityException("Patient 'given' name not given.");
-		if (user.lastname == null)
+		if (user.lastname == null || user.lastname.trim().length()==0)
 			throw new UnprocessableEntityException("Patient family name not given.");
 		// if (user.email == null) throw new
 		// UnprocessableEntityException("Patient email not given.");
-		if (user.country == null)
+		if (user.country == null || user.country.trim().length()==0)
 			throw new UnprocessableEntityException("Patient country not given.");
 		if (user.gender == null)
 			throw new UnprocessableEntityException("Patient gender not given.");

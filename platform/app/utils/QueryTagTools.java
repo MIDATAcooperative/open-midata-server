@@ -64,6 +64,7 @@ public class QueryTagTools {
 		Set<String> oldTags = RecordConversion.instance.getTags(rec);
 		Set<String> newTags = record.tags;
 		if (newTags==null) newTags = Collections.emptySet();
+		if (oldTags==null) oldTags = Collections.emptySet();
 		
 		if (oldTags.contains(SECURITY_READONLY)) throw new BadRequestException("error.plugin", "Tried to write to read-only resource.");
 		if (oldTags.contains(SECURITY_RELIABLE) && !newTags.contains(SECURITY_RELIABLE)) throw new BadRequestException("error.plugin", "Cannot reduce reliability.");
