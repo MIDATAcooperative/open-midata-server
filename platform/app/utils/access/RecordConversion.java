@@ -41,6 +41,7 @@ public class RecordConversion {
 		Record record = new Record();
 		
 		record._id = dbrecord._id;
+		record.context = dbrecord.context;
 		record.format = (String) dbrecord.meta.get("format");		
 		if (record.format != null) {
 		  record.app = MidataId.from(dbrecord.meta.get("app"));
