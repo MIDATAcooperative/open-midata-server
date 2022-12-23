@@ -26,6 +26,7 @@ import org.bson.BSONObject;
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.NotMaterialized;
 
 /**
@@ -203,6 +204,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 */
 	public BSONObject data; 
 	
+	public AccessContext context;
 	
 	//public Set<MidataId> dependencies;
 
