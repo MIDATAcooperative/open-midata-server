@@ -217,12 +217,14 @@ public class Application extends APIController {
 	
 	
 	public static void sendWelcomeMail(MidataId sourcePlugin, User user, User executingUser) throws AppException {
-	   if (user.developer == null) {
+	   if (user.developer == null) {		
+		   
+		   if (user.email == null) return;
+		   
 		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
 			   throw new InternalServerException("error.ratelimit", "Rate limit hit");
 		   }
 		   
-		   if (user.email == null) return;
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
 		   user.set("resettoken", token.token);
 		   user.set("resettokenTs", System.currentTimeMillis());
