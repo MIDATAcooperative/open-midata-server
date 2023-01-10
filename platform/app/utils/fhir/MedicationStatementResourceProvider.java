@@ -69,6 +69,7 @@ public class MedicationStatementResourceProvider extends RecordBasedResourceProv
 		
 		FhirPseudonymizer.forR4()
 		  .reset("MedicationStatement")		
+		  .hideIfPseudonymized("MedicationStatement", "text")
 		  .pseudonymizeReference("MedicationStatement", "informationSource")
 		  .pseudonymizeReference("MedicationStatement", "note", "authorReference");		  
 	}

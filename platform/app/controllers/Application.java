@@ -219,7 +219,7 @@ public class Application extends APIController {
 	public static void sendWelcomeMail(MidataId sourcePlugin, User user, User executingUser) throws AppException {
 	   if (user.developer == null) {		
 		   
-		   if (user.email == null) return;
+		   if (user.email == null || user.email.trim().length()==0) return;
 		   
 		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
 			   throw new InternalServerException("error.ratelimit", "Rate limit hit");

@@ -92,6 +92,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Composition")
+		  .hideIfPseudonymized("Composition", "text")
 		  .pseudonymizeReference("Composition", "attester", "party")
 		  .pseudonymizeReference("Composition", "author")
 		  .pseudonymizeReference("Composition", "relatesTo", "targetReference");

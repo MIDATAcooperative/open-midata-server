@@ -62,6 +62,7 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Goal")	
+		  .hideIfPseudonymized("Goal", "text")
 		  .pseudonymizeReference("Goal", "expressedBy")
 		  .pseudonymizeReference("Goal", "note", "authorReference");
 	}

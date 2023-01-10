@@ -80,6 +80,7 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Communication")
+		  .hideIfPseudonymized("Communication", "text")
 		  .pseudonymizeReference("Communication", "recipient")
 		  .pseudonymizeReference("Communication", "sender")
 		  .pseudonymizeReference("Communication", "note", "authorReference")

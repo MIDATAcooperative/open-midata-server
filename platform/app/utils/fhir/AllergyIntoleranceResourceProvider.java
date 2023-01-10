@@ -65,6 +65,7 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 		
 		FhirPseudonymizer.forR4()
 		  .reset("AllergyIntolerance")
+		  .hideIfPseudonymized("AllergyIntolerance", "text")
 		  .pseudonymizeReference("AllergyIntolerance", "asserter")
 		  .pseudonymizeReference("AllergyIntolerance", "recorder")
 		  .pseudonymizeReference("AllergyIntolerance", "reaction", "note", "authorReference");

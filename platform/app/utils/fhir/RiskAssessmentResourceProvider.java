@@ -60,7 +60,8 @@ public class RiskAssessmentResourceProvider extends RecordBasedResourceProvider<
 		registerSearches("RiskAssessment", getClass(), "getRiskAssessment");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("RiskAssessment")		
+		  .reset("RiskAssessment")	
+		  .hideIfPseudonymized("RiskAssessment", "text")
 		  .pseudonymizeReference("RiskAssessment", "performer")
 		  .pseudonymizeReference("RiskAssessment", "note", "authorReference")
 		  ;		  

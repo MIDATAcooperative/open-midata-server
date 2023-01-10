@@ -97,6 +97,7 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 		
 		FhirPseudonymizer.forR4()
 		  .reset("CarePlan")
+		  .hideIfPseudonymized("CarePlan", "text")
 		  .pseudonymizeReference("CarePlan", "author")
 		  .pseudonymizeReference("CarePlan", "contributor")
 		  .pseudonymizeReference("CarePlan", "note", "authorReference")
