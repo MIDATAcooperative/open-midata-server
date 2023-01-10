@@ -74,6 +74,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Appointment")
+		  .hideIfPseudonymized("Appointment", "text")
 		  .pseudonymizeReference("Appointment", "participant", "actor");
 	}
 	

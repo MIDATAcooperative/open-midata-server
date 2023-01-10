@@ -219,5 +219,14 @@ import Axios from 'axios';
 		if (! /[a-zA-Z]/.test(pw)) return false;
 		return true;
 	};
+	
+	service.createVerifier = function() {
+		return forge.util.encode64(forge.random.getBytesSync(32));
+	};
+	
+	service.createChallenge = function(verifier) {		
+		let dg = forge.sha256.create().update(verifier).digest().data;		
+		return forge.util.encode64(dg);
+	}
 		
 export default service;

@@ -78,7 +78,8 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 		registerSearches("ImagingStudy", getClass(), "getImagingStudy");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("ImagingStudy")		
+		  .reset("ImagingStudy")	
+		  .hideIfPseudonymized("ImagingStudy", "text")
 		  .pseudonymizeReference("ImagingStudy", "series", "performer", "actor")
 		  .pseudonymizeReference("ImagingStudy", "note", "authorReference");
 	}

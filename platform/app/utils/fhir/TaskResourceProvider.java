@@ -75,6 +75,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Task")
+		  .hideIfPseudonymized("Task", "text")
 		  .pseudonymizeReference("Task", "for")
 		  .pseudonymizeReference("Task", "focus")
 		  .pseudonymizeReference("Task", "requester")

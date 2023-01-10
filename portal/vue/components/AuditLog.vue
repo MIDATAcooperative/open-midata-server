@@ -15,11 +15,11 @@
  along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-<div v-if="log.filtered">
+<div v-if="log">
     <pagination v-model="log"></pagination>
 			
 
-	<div v-for="entry in log.filtered" :key="entry._id">
+	<div v-for="entry in log.filtered" :key="entry.id">
 		<div class="row">
 		    <div class="col-sm-6 col-md-2" style="color:#707070">{{ $filters.dateTime(entry.recorded)  }}</div>
 		    <div class="col-sm-6 col-md-3">
@@ -67,7 +67,7 @@ export default {
 
     data : ()=>({      
         title : "",
-        log : {}
+        log : null
     }),
 
     components : { },
@@ -91,9 +91,9 @@ export default {
     		if (me.from && me.to) crit.date = ["sa"+new Date(me.from).toISOString(), "eb"+new Date(me.to).toISOString()];
     			    			    		
     		crit._count=1001;
-    		
+    		$data.log = null;
     		fhir.search("AuditEvent", crit)
-    		.then(function(log) {
+    		.then(function(log) {    		    
     			$data.log = me.process(log);    				
     		});
     			

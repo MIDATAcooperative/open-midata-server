@@ -47,6 +47,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -83,6 +84,10 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 		searchParamNameToTypeMap.put("DiagnosticReport:subject", Sets.create("Group", "Device", "Patient", "Location"));
 
 		registerSearches("DiagnosticReport", getClass(), "getDiagnosticReport");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("DiagnosticReport")
+		  .hideIfPseudonymized("DiagnosticReport", "text");		  
 	}
 
 	@Override

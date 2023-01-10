@@ -69,7 +69,8 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 		registerSearches("Media", getClass(), "getMedia");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("Media")		
+		  .reset("Media")	
+		  .hideIfPseudonymized("Media", "text")
 		  .pseudonymizeReference("Media", "operator")
 		  .pseudonymizeReference("Media", "note", "authorReference");		  
 	}

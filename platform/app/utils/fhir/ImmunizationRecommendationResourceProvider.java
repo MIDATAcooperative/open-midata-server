@@ -48,7 +48,7 @@ public class ImmunizationRecommendationResourceProvider extends RecordBasedResou
 		
 		registerSearches("ImmunizationRecommendation", getClass(), "getImmunizationRecommendation");
 
-		FhirPseudonymizer.forR4().reset("ImmunizationRecommendation");
+		FhirPseudonymizer.forR4().reset("ImmunizationRecommendation").hideIfPseudonymized("ImmunizationRecommendation", "text");
 	}
 
 	@Override

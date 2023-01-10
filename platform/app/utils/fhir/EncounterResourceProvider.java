@@ -49,6 +49,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -98,6 +99,10 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		searchParamNameToTypeMap.put("Encounter:subject", Sets.create("Group", "Patient"));
 
 		registerSearches("Encounter", getClass(), "getEncounter");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("Encounter")	
+		  .hideIfPseudonymized("Encounter", "text");		  
 	}
 
 	@Override

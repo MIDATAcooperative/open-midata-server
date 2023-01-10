@@ -76,7 +76,8 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 		registerSearches("Specimen", getClass(), "getSpecimen");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("Specimen")				 
+		  .reset("Specimen")	
+		  .hideIfPseudonymized("Specimen", "text")
 		  .pseudonymizeReference("Specimen", "note", "authorReference");
 	}
 	

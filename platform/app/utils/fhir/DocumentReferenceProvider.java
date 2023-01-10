@@ -76,7 +76,8 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		registerSearches("DocumentReference", getClass(), "getDocumentReference");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("DocumentReference")		
+		  .reset("DocumentReference")	
+		  .hideIfPseudonymized("DocumentReference", "text")
 		  .pseudonymizeReference("DocumentReference", "author")
 		  .pseudonymizeReference("DocumentReference", "context", "sourcePatientInfo");
 	}

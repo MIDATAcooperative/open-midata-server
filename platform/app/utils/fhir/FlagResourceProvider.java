@@ -71,7 +71,8 @@ public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> impl
 		registerSearches("Flag", getClass(), "getFlag");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("Flag")		
+		  .reset("Flag")	
+		  .hideIfPseudonymized("Flag", "text")
 		  .pseudonymizeReference("Flag", "author");
 	}
 
