@@ -744,7 +744,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 				}
 			}
 		}
-		if (!foundMinimal) {
+	
 		for (Address address : thePatient.getAddress()) {
 			if (!address.hasPeriod() || !address.getPeriod().hasEnd()) {
 				if (address.hasPostalCode() && address.hasLine()) {
@@ -752,7 +752,6 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 				}
 				if (address.hasCountry()) foundCountry = true;
 			}
-		}
 		}
 		if (!foundMinimal) throw new UnprocessableEntityException("Email or complete address required for account creation.");
 		if (!foundCountry) throw new UnprocessableEntityException("Country required for patient");
