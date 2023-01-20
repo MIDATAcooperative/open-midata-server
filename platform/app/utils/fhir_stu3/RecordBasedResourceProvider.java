@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
@@ -60,6 +61,7 @@ import models.Record;
 import models.TypedMidataId;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.QueryTagTools;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
@@ -418,5 +420,11 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public Date getLastUpdated(Record record) {
 		return record.lastUpdated != null ? record.lastUpdated : record.created;
+	}
+	
+	public void addSecurityTag(Record record, DomainResource theResource, String tag) {
+		  record.addTag(tag);
+		  Pair<String, String> coding = QueryTagTools.getSystemCodeForTag(tag);
+		  theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
 	}
 }

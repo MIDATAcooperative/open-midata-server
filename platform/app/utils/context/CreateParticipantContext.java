@@ -44,6 +44,14 @@ public class CreateParticipantContext extends ConsentAccessContext {
 			&& record.meta.getString("format").equals("fhir/Patient")) return true;
 		return super.mayCreateRecord(record);
 	}
+	
+	
+
+	@Override
+	public boolean mustPseudonymize() {
+		return false;
+	}
+
 
 	@Override
 	public String getContextName() {

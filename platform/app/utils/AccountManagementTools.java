@@ -187,9 +187,10 @@ public class AccountManagementTools {
 	public static AccessContext registerUserAccount(AccessContext context, Member user) throws AppException {
 		Application.registerSetDefaultFields(user, false);
 		
+		Plugin plugin = Plugin.getById(context.getUsedPlugin());
 		user.status = UserStatus.ACTIVE;
 				
-		user.emailStatus = (user.email != null && user.status == UserStatus.ACTIVE) ? EMailStatus.EXTERN_VALIDATED : EMailStatus.UNVALIDATED;				
+		user.emailStatus = (user.email != null && plugin.accountEmailsValidated) ? EMailStatus.EXTERN_VALIDATED : EMailStatus.UNVALIDATED;				
 		user.flags = EnumSet.of(AccountActionFlags.CHANGE_PASSWORD);
 				
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, context.getUsedPlugin(), context.getLegacyOwner(), user);
@@ -272,7 +273,7 @@ public class AccountManagementTools {
 	
 	public static Consent createAnalyzerConsent(AccessContext info, Member user, FHIRPatientHolder fhirPatient, boolean active) throws AppException {		
 		MidataId linkedProject = getProjectForAnalyzerFromContext(info);		
-		return participateToProject(info, user, fhirPatient, linkedProject, true, JoinMethod.API);
+		return participateToProject(info, user, fhirPatient, linkedProject, active, JoinMethod.API);
 	}
 	
 	public static Consent createConsentFromAPIContext(AccessContext context, Member user, FHIRPatientHolder fhirPatient, Member existing) throws AppException {
@@ -280,9 +281,9 @@ public class AccountManagementTools {
 		try {
 	        Plugin plugin = Plugin.getById(context.getUsedPlugin());
 	        if (plugin.type.equals("external")) {
-	        	return createExternalServiceConsent(context, user, existing == null);
+	        	return createExternalServiceConsent(context, user, existing == null || plugin.usePreconfirmed);
 	        } else if (plugin.type.equals("analyzer") || plugin.targetUserRole.equals(UserRole.RESEARCH)) {
-	        	return createAnalyzerConsent(context, user, fhirPatient, existing == null);
+	        	return createAnalyzerConsent(context, user, fhirPatient, existing == null || plugin.usePreconfirmed);
 	        } 
 			HPUser hpuser = HPUser.getById(context.getLegacyOwner(), Sets.create("provider", "firstname", "lastname"));
 			if (hpuser != null) {
@@ -335,7 +336,7 @@ public class AccountManagementTools {
 		return result;
 	}
 	
-	public static List<Study> determineProjectsFromUsedApp(AccessContext context) throws AppException {
+	public static List<Study> determineProjectsFromUsedApp(AccessContext context, boolean fromLinks) throws AppException {
 		MidataId pluginId = context.getUsedPlugin();
 		if (pluginId == null) return null;
 		
@@ -344,6 +345,8 @@ public class AccountManagementTools {
 			MidataId studyId = getProjectForAnalyzerFromContext(context);
 			return Collections.singletonList(Study.getById(studyId, Sets.create("_id","code","name")));
 		}
+		
+		if (!fromLinks) return null;
 		
 		Set<StudyAppLink> sals = StudyAppLink.getByApp(pluginId);
 		if (sals.isEmpty()) return null;
@@ -373,7 +376,7 @@ public class AccountManagementTools {
 		}
 		
 		if (part != null) {
-			if (part.ownerName != null) {
+			if (part.ownerName != null && !part.ownerName.equals("???")) {
 				Study study = Study.getById(projectId, Sets.create("_id","code","name"));
 				fhirPatient.populateIdentifier(context, study, part);							
 			}

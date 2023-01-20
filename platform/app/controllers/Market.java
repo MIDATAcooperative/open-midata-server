@@ -192,6 +192,9 @@ public class Market extends APIController {
 			  app.name = JsonValidation.getString(json, "name");
 			}
 			
+			app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
+			app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
+			
 			
 			if (withLogout) {
 				Map<String, Object> oldDefaultQuery = app.defaultQuery;
@@ -716,6 +719,8 @@ public class Market extends APIController {
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		plugin.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
+		plugin.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
 		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		plugin.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		plugin.codeChallenge = JsonValidation.getBoolean(json, "codeChallenge");
@@ -844,6 +849,8 @@ public class Market extends APIController {
 		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
+		app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
 		app.consentObserving = JsonValidation.getBoolean(json, "consentObserving");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");

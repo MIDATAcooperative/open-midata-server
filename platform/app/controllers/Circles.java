@@ -788,7 +788,7 @@ public class Circles extends APIController {
 		boolean wasActive = oldStatus.isSharingData();
 		boolean active = (newStatus == null) ? wasActive : newStatus.isSharingData();
 		boolean isNew = (newStatus == null);
-		boolean preconfirmed = consent.status == ConsentStatus.PRECONFIRMED;
+		boolean preconfirmed = consent.status == ConsentStatus.PRECONFIRMED && (isNew || newStatus == ConsentStatus.PRECONFIRMED);
 		
 		if (context!=null) {
 			context = ApplicationTools.actAsRepresentative(context, consent.owner, true);

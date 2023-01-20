@@ -127,10 +127,7 @@ public class AccountCreationAccessContext extends AccessContext {
 	public AccessContext forAccountReshare() {
 		return new AccountCreationAccessContext(getCache(), null);		
 	}
-	
-	public void close() throws AppException {
-		getCache().finishTouch();
-	}
+		
 	
 	@Override
 	public String toString() {

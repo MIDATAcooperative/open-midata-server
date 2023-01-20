@@ -488,6 +488,14 @@ public abstract class AccessContext {
 	}
 	
 	/**
+	 * finished use of context
+	 * @throws AppException
+	 */
+	public void close() throws AppException {
+		getCache().finishTouch();
+	}
+	
+	/**
 	 * Is it possible to create active consents for accessor with this context?
 	 * @return
 	 */

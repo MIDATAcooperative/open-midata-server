@@ -553,11 +553,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			resource.addIdentifier(new Identifier().setValue(record.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
 		}
 				
-		if (info().getLegacyOwner().equals(record.owner) && info().getUsedPlugin() != null) {
-		  List<Study> studies = AccountManagementTools.determineProjectsFromUsedApp(info());
+		if (info().getUsedPlugin() != null) {
+		  List<Study> studies = AccountManagementTools.determineProjectsFromUsedApp(info(), info().getLegacyOwner().equals(record.owner));
 		  populateIdentifiers(record.owner, resource, studies);		  		 
 		}
-			
+					
 	}
 	
 	
@@ -799,7 +799,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		AccessContext tempContext = info();
 				
 		// Prepare a new user based on the FHIR resource
-		FHIRPatientHolder fhirPatient = new FhirPatientHolderR4(thePatient);		
+		FHIRPatientHolder fhirPatient = new FHIRPatientHolderR4(thePatient);		
 		Member user = buildMemberFromPatient(thePatient);
 		user.initialApp = info().getUsedPlugin();
 	
@@ -831,14 +831,18 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		
 		// Otherwise reuse existing user
 		} else {		
-			user = existing;		
-			thePatient.setId(user._id.toString());
-			addSecurityTag(record, thePatient, QueryTagTools.SECURITY_LOCALCOPY);
-			addSecurityTag(record, thePatient, QueryTagTools.SECURITY_GENERATED);
-			prepare(record, thePatient);
-						
-			tempContext = new AccountReuseAccessContext(info, user._id, record);
-			//insertRecord(tempContext, record, thePatient);
+			user = existing;										
+			Plugin plugin = Plugin.getById(info.getUsedPlugin());
+			if (plugin.usePreconfirmed) {
+				thePatient.setId(user._id.toString());
+				addSecurityTag(record, thePatient, QueryTagTools.SECURITY_LOCALCOPY);
+				addSecurityTag(record, thePatient, QueryTagTools.SECURITY_GENERATED);
+				prepare(record, thePatient);
+				
+			    tempContext = new AccountReuseAccessContext(info, user._id, record);
+			} else {
+			  tempContext = info;
+			}
 			
 		}
 		
@@ -856,7 +860,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		// Cleanup
 		thePatient.setId(user._id.toString());					
-		if (tempContext != null && tempContext instanceof AccountCreationAccessContext) ((AccountCreationAccessContext) tempContext).close();
+		if (tempContext != null) tempContext.close();
 		
 		AuditManager.instance.success();
 		
@@ -865,7 +869,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	
 	protected void populateIdentifiers(MidataId owner, Patient thePatient, List<Study> studies) throws AppException {
 		if (studies == null || studies.isEmpty()) return;
-		FHIRPatientHolder fhirPatient = new FhirPatientHolderR4(thePatient);
+		FHIRPatientHolder fhirPatient = new FHIRPatientHolderR4(thePatient);
 		for (Study study : studies) {
 			StudyParticipation sp = StudyParticipation.getByStudyAndMember(study._id, owner, Sets.create("status", "pstatus", "ownerName"));
 		    fhirPatient.populateIdentifier(info(), study, sp);
