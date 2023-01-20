@@ -34,6 +34,12 @@ public enum ConsentStatus {
    ACTIVE,
    
    /**
+    * the consent is active, consent has been given on paper but not on the platorm by the user itself
+    * such a consent can only access and write new data created using this consent
+    */
+   PRECONFIRMED,
+   
+   /**
     * the consent was not created by the member and therefore needs confirmation by him
     */
    UNCONFIRMED,
@@ -64,7 +70,7 @@ public enum ConsentStatus {
    DELETED;
    
    public boolean isSharingData() {
-	   return this == ACTIVE || this == FROZEN;
+	   return this == ACTIVE || this == FROZEN || this == PRECONFIRMED;
    }
      
 }

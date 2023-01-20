@@ -75,6 +75,7 @@
         
       
         				<span class="lead text-success" v-if="consent.status == 'ACTIVE'" v-t="'editconsent2.status_active'"></span>
+        				<span class="lead text-success" v-if="consent.status == 'PRECONFIRMED'" v-t="'editconsent2.status_preconfirmed'"></span>
         				<span class="lead text-danger" v-if="consent.status == 'EXPIRED'" v-t="'editconsent2.status_expired'"></span>
         				<span class="lead text-warning" v-if="consent.status == 'UNCONFIRMED'" v-t="'editconsent2.status_unconfirmed'"></span>    
         				<span class="lead text-danger" v-if="consent.status == 'REJECTED'" v-t="'editconsent2.status_rejected'"></span>
@@ -450,13 +451,7 @@ export default {
 				$data.consent = data.data[0];
 				
 				if ($data.consent.type == "CIRCLE") $data.isSimple = false;
-				
-				if ($data.consent.status === "ACTIVE" || $data.consent.owner === $data.userId) {
-				  //views.setView("records_shared", { aps : $route.query.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : false, allowAdd : false, type : "circles" });
-				} else {
-				  //views.disableView("records_shared");
-				}
-
+								
 				if ($data.consent.entityType == "USERGROUP") {
 					me.doBusy(usergroups.search({ "_id" : $data.consent.authorized }, ["name"]))
 					.then(function(data2) {
@@ -768,14 +763,14 @@ export default {
         const { $data, $route, $router } = this, me = this;
 		if (! $data.consent) return false;
 		//if ($scope.consent.owner !== $scope.userId) return false;
-		return ($data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID' || $data.consent.status == 'ACTIVE') && $data.consent.type != 'STUDYPARTICIPATION';
+		return ($data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID' || $data.consent.status == 'ACTIVE' || $data.consent.status == 'PRECONFIRMED') && $data.consent.type != 'STUDYPARTICIPATION';
 	},
 	
 	mayConfirm() {
 		const { $data, $route, $router } = this, me = this;
 		if (! $data.consent) return false;
 		if ($data.consent.owner !== $data.userId) return false;
-		return $data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID';
+		return $data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID' || $data.consent.status == 'PRECONFIRMED';
 	},
 	
 	mayDelete() {
@@ -783,7 +778,7 @@ export default {
 		if (! $data.consent) return false;
 		if ($data.consent.owner !== $data.userId) return false;
 		
-		return ($data.consent.status == 'ACTIVE' || $data.consent.status == 'REJECTED' || $data.consent.status == 'EXPIRED' || $data.consent.status == 'INVALID') && ($data.consent.type != 'STUDYPARTICIPATION' && $data.consent.type != 'HEALTHCARE');
+		return ($data.consent.status == 'ACTIVE' || $data.consent.status == 'REJECTED' || $data.consent.status == 'EXPIRED' || $data.consent.status == 'INVALID' || $data.consent.status == 'PRECONFIRMED') && ($data.consent.type != 'STUDYPARTICIPATION' && $data.consent.type != 'HEALTHCARE');
 	},
 	
 	mayChangeUsers() {

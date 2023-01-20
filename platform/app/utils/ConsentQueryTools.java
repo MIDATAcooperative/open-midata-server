@@ -1,3 +1,20 @@
+/*
+ * This file is part of the Open MIDATA Server.
+ *
+ * The Open MIDATA Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * The Open MIDATA Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package utils;
 
 import java.util.ArrayList;
@@ -63,7 +80,7 @@ public class ConsentQueryTools {
 		if (query == null) query = Circles.getQueries(consent.owner, consent._id);	
 		consent.sharingQuery = query;
 		
-		if (consent.status == ConsentStatus.ACTIVE && verify) {
+		if (consent.isActive() && verify && consent.status != ConsentStatus.PRECONFIRMED) {
 			if (!verifyIntegrity(consent)) {
 				consent.setStatus(ConsentStatus.INVALID);
 				AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SIGNATURE_FAILURE).withModifiedUser(consent.owner).withConsent(consent));
@@ -87,6 +104,7 @@ public class ConsentQueryTools {
 		consent.sharingQuery = query;
 		consent.lastUpdated = new Date();
 		if (consent.status == ConsentStatus.FROZEN) throw new InternalServerException("error.internal", "Query cannot be changed for frozen consents");		
+		// TODO PRECONFIRMED
 		if (consent.status == ConsentStatus.ACTIVE) {
 			AccessContext validAccessContext = ApplicationTools.actAsRepresentative(context, consent.owner, false);
 			updateSignature(validAccessContext, consent);
@@ -108,6 +126,8 @@ public class ConsentQueryTools {
 	}
 	
 	private static void executeDataSharing(AccessContext context, Consent consent, boolean removeOld) throws AppException {
+		if (consent.status == ConsentStatus.PRECONFIRMED) return;
+		
 		Map<String, Object> query = getSharingQuery(consent, false);
 		
 		if (query!=null) {

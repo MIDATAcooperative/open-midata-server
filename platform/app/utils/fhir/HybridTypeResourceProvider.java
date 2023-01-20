@@ -29,6 +29,7 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.Model;
 import scala.NotImplementedError;
+import utils.AccessLog;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 
@@ -77,12 +78,17 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 
 	@Override
 	public T createExecute(Model record, T theResource) throws AppException {
-		if (handleWithFirstProvider(theResource)) {
-			return first.createExecute((M1) record, theResource);
-		} else  {
-			if (secondRW!=null) return secondRW.createExecute((M2) record, theResource);
-			else throw new BadRequestException("error.nowrite", "Cannot write this resource.");
-		} 
+		AccessLog.logBegin("begin create for resource ", getResourceType().getSimpleName());
+		try {
+			if (handleWithFirstProvider(theResource)) {
+				return first.createExecute((M1) record, theResource);
+			} else  {
+				if (secondRW!=null) return secondRW.createExecute((M2) record, theResource);
+				else throw new BadRequestException("error.nowrite", "Cannot write this resource.");
+			} 
+		} finally {
+			AccessLog.logEnd("end create for resource");
+		}
 		
 	}
 
@@ -96,12 +102,17 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 
 	@Override
 	public void updatePrepare(Model record, T theResource) throws AppException {
-		if (handleWithFirstProvider(theResource)) {
-			first.updatePrepare((M1) record, theResource);
-		} else  {
-			if (secondRW!=null) secondRW.updatePrepare((M2) record, theResource);
-			else throw new BadRequestException("error.nowrite", "Cannot write this resource.");
-		} 
+		AccessLog.logBegin("begin update for resource ", getResourceType().getSimpleName());
+		try {
+			if (handleWithFirstProvider(theResource)) {
+				first.updatePrepare((M1) record, theResource);
+			} else  {
+				if (secondRW!=null) secondRW.updatePrepare((M2) record, theResource);
+				else throw new BadRequestException("error.nowrite", "Cannot write this resource.");
+			} 
+		} finally {
+			AccessLog.logEnd("end update for resource");
+		}
 		
 	}
 

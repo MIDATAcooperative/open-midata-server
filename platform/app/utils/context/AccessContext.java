@@ -304,7 +304,7 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public AccessContext forConsentReshare(Consent consent) throws AppException {
-		return new ConsentAccessContext(consent, getCache(), null);
+		return new CreateParticipantContext(consent, getCache());		
 	}
 	
 	/**
@@ -394,7 +394,7 @@ public abstract class AccessContext {
 		else {
           Consent consent = Consent.getByIdUnchecked(aps, Consent.ALL);
           if (consent != null) {
-        	  if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN && !consent.owner.equals(getAccessor())) throw new InternalServerException("error.internal",  "Consent-Context creation not possible");
+        	  if (!consent.isSharingData() && !consent.owner.equals(getAccessor())) throw new InternalServerException("error.internal",  "Consent-Context creation not possible");
         	  return forConsent(consent);
           }
           
@@ -485,6 +485,20 @@ public abstract class AccessContext {
 	 */
 	public void cleanup() {
 		if (parent != null) parent.cleanup();
+	}
+	
+	/**
+	 * Is it possible to create active consents for accessor with this context?
+	 * @return
+	 */
+	public boolean canCreateActiveConsents() {
+		if (parent != null) return parent.canCreateActiveConsents();
+		return true;
+	}
+	
+	public MidataId getPatientRecordId() {
+		if (parent != null) return parent.getPatientRecordId();
+		return cache.getAccountOwner();
 	}
 	
 }

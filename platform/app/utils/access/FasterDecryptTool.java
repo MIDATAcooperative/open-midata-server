@@ -66,7 +66,7 @@ public class FasterDecryptTool {
 				if (key != null && !EncryptionUtils.isDeprecatedKey(key)) {
 					keys.put(c._id, key);
 				} else {
-					if (c.status==ConsentStatus.ACTIVE && c.status==ConsentStatus.FROZEN) missing.add(c);
+					if (c.isSharingData()) missing.add(c);
 				}
 			} catch (LostUpdateException e) {
 				root.reload();

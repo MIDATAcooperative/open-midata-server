@@ -41,6 +41,7 @@ public class QueryTagTools {
 	public static String SECURITY_HIDDEN = "security:hidden";
 	public static String SECURITY_PUBLIC = "security:public";
 	public static String SECURITY_GENERATED = "security:generated";
+	public static String SECURITY_LOCALCOPY = "security:local-copy";
 	
 	public static List<SecurityTag> tags;
 	
@@ -93,6 +94,7 @@ public class QueryTagTools {
 		tags.add(new SecurityTag(SECURITY_PUBLIC, "http://terminology.hl7.org/CodeSystem/v3-Confidentiality", "U", null));
 		tags.add(new SecurityTag(SECURITY_PUBLIC, "http://midata.coop/codesystems/security", "public", null));
 		tags.add(new SecurityTag(SECURITY_GENERATED, "http://midata.coop/codesystems/security", "generated", null));
+		tags.add(new SecurityTag(SECURITY_LOCALCOPY, "http://midata.coop/codesystems/security", "local-copy", null));
 		tags.add(new SecurityTag(SECURITY_READONLY, "http://terminology.hl7.org/CodeSystem/v3-ActCode", "INFOREADONLY", null));
 		tags.add(new SecurityTag(SECURITY_NODELETE, "http://midata.coop/codesystems/security", "no-delete", null));
 		tags.add(new SecurityTag(SECURITY_RELIABLE, "http://terminology.hl7.org/CodeSystem/v3-ObservationValue", "reliable", null));

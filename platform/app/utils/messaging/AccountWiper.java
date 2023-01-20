@@ -128,7 +128,7 @@ public class AccountWiper extends AbstractActor {
 		AccessLog.logBegin("begin expire all consents with healthcare, friends and delegation");
 		Set<Consent> allconsents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.HCRELATED, ConsentType.HEALTHCARE, ConsentType.REPRESENTATIVE)), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : allconsents) {
-			if (consent.status == ConsentStatus.ACTIVE) {
+			if (consent.isActive()) {
 			  Circles.consentStatusChange(context, consent, ConsentStatus.EXPIRED);
 			} 
 		}

@@ -508,7 +508,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 					Collection<StatsIndexKey> old = index.lookup(lookup);
 					for (StatsIndexKey k : old) index.removeEntry(k);
 					
-					if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) {
+					if (consent.isSharingData()) {
 						Map<String, Object> restrictions = new HashMap<String, Object>();				
 						restrictions.put("no-postfilter-steams", "true");
 						restrictions.put("group-system", "v1");
