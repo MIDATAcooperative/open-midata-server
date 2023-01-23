@@ -247,7 +247,7 @@ public class Records extends APIController {
 
 			Circles.fillConsentFields(tempContext, Collections.singleton(consent), Sets.create("sharingQuery"));
 			query = ConsentQueryTools.getSharingQuery(consent, true);
-			if (!consent.status.equals(ConsentStatus.ACTIVE) && !userId.equals(consent.owner))
+			if (!consent.isSharingData() && !userId.equals(consent.owner))
 				readRecords = false;
 			context = tempContext.forConsent(consent);
 		} else {

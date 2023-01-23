@@ -223,7 +223,7 @@ public class HealthProvider extends APIController {
 		} else {
 		    AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_REJECTED).withActorUser(context.getActor()).withModifiedUser(userId).withConsent(target));
 				
-			if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE) || target.status.equals(ConsentStatus.INVALID)) {
+			if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE) || target.status.equals(ConsentStatus.PRECONFIRMED) || target.status.equals(ConsentStatus.INVALID)) {
 				target.setConfirmDate(new Date());			
 				Circles.consentStatusChange(context, target, ConsentStatus.REJECTED);
 				Circles.sendConsentNotifications(userId, target, ConsentStatus.REJECTED);
@@ -237,7 +237,7 @@ public class HealthProvider extends APIController {
 	   if (consent == null) throw new BadRequestException("error.notfound.consent", "Consent not found");
 	   
 	   AccessContext contextConsent = context.forConsent(consent);
-	   if (consent.status != ConsentStatus.ACTIVE) return;
+	   if (!consent.isActive()) return;
 	   AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_REJECTED, userId, consent);
 	   if (consent.authorized.contains(userId)) {
 		   

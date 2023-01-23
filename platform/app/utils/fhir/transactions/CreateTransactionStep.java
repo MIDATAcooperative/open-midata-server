@@ -24,6 +24,7 @@ import org.hl7.fhir.r4.model.DomainResource;
 
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import models.Model;
+import utils.AccessLog;
 import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ReadWriteResourceProvider;
@@ -59,10 +60,13 @@ public class CreateTransactionStep extends TransactionStep {
 	public void execute() throws AppException {
 		
 			if (result == null) {
-				try {
+				AccessLog.logBegin("begin create transaction for resource ",provider.getResourceType().getSimpleName());
+				try {					
 					((ReadWriteResourceProvider) provider).createExecute(record, resource);
 				} catch (AppException e) {
 				  throw new InternalErrorException(e.getMessage());
+				} finally {
+					AccessLog.logEnd("end create transaction");
 				}
 				result = new BundleEntryComponent();
 				BundleEntryResponseComponent response = new BundleEntryResponseComponent();

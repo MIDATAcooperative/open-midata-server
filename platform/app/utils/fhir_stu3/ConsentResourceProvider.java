@@ -180,6 +180,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		c.setId(consentToConvert._id.toString());
 		
 		switch (consentToConvert.status) {
+		case PRECONFIRMED:
 		case ACTIVE:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.ACTIVE);break;
 		case UNCONFIRMED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.PROPOSED);break;
 		case REJECTED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.REJECTED);break;

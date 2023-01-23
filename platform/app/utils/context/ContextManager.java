@@ -181,6 +181,8 @@ public class ContextManager {
 	
 	public AccessContext createSharingContext(AccessContext context1, MidataId aps) throws AppException {
 		AccessLog.log("create sharing context user=", context1.getAccessor().toString(), " source aps=", aps.toString());
+		//if (!context1.canCreateActiveConsents() && context1.getOwner().equals(aps)) return context1;
+		
 		APSCache cache = context1.getCache();
 		AccessContext context = new AccountAccessContext(cache, null);
 		if (context1.getAccessor().equals(aps)) return context;

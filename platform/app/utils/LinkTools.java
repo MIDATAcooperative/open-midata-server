@@ -50,7 +50,7 @@ public class LinkTools {
 			if (inst.isEmpty()) return null;
 			return inst.iterator().next();
 		} else {
-			Set<Consent> consents = Consent.getAllByAuthorized(link.userId, CMaps.map("status",  Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)).map("owner", targetUser).map("categoryCode", link.identifier), Consent.ALL);
+			Set<Consent> consents = Consent.getAllByAuthorized(link.userId, CMaps.map("status",  Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN, ConsentStatus.PRECONFIRMED)).map("owner", targetUser).map("categoryCode", link.identifier), Consent.ALL);
 			if (consents.isEmpty()) return null;
 			return consents.iterator().next();
 		}

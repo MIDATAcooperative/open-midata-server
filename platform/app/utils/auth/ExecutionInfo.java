@@ -211,6 +211,7 @@ public class ExecutionInfo {
 			  session = session.forSingleRecord(authToken.restrictedResourceId);
 			} else OAuth2.invalidToken();
 		}
+		AccessLog.log("using as context:", session.toString());
 		AccessLog.logEnd("end check 'mobile' type session token");
 		
         return session;						

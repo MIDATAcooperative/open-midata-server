@@ -420,7 +420,9 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		c.getProvision().getActor().clear();
 		
 		switch (consentToConvert.status) {
-		case ACTIVE:c.setStatus(ConsentState.ACTIVE);break;
+		case PRECONFIRMED:
+		case ACTIVE:
+			c.setStatus(ConsentState.ACTIVE);break;
 		case UNCONFIRMED:c.setStatus(ConsentState.PROPOSED);break;
 		case REJECTED:c.setStatus(ConsentState.REJECTED);break;
 		case EXPIRED:c.setStatus(ConsentState.INACTIVE);break;

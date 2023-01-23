@@ -949,6 +949,34 @@ public class RecordManager {
 		AccessLog.logEnd("end delete #records="+recs.size());				
 	}
 
+	public void addLocalRecord(AccessContext context, Record record) throws AppException {
+		DBRecord dbrecord = RecordConversion.instance.toDB(record);
+		AccessLog.logBegin("Begin Add Local Record execPerson=",context.getCache().getAccountOwner().toString()," format=",String.valueOf(dbrecord.meta.get("format")));	
+		byte[] usedKey = null;
+		if (dbrecord.meta.get("created") == null) throw new InternalServerException("error.internal", "Missing creation date");
+		
+		dbrecord.time = 0;				
+		dbrecord = dbrecord.clone();
+		if (dbrecord.owner.equals(dbrecord.meta.get("creator"))) dbrecord.meta.removeField("creator");
+																	
+
+		APS apswrapper = context.getCache().getAPS(context.getTargetAps());			
+		apswrapper.provideRecordKey(dbrecord);		
+		usedKey = dbrecord.key;
+    														
+		DBRecord unencrypted = dbrecord.clone();
+			
+		RecordEncryption.encryptRecord(dbrecord);		
+		DBRecord.add(dbrecord);	  
+		    
+		apswrapper.addPermission(unencrypted, false);	
+		
+		context.getCache().changeWatches().addWatchingAps(dbrecord, context.getTargetAps());
+		context.getCache().addNewRecord(unencrypted);		    													   
+
+	    AccessLog.logEnd("End Add Local Record");	
+	}
+	
 	private byte[] addRecordIntern(AccessContext context, DBRecord record, boolean documentPart, MidataId alternateAps, boolean upsert) throws AppException {		
 		
 		if (!documentPart) Feature_Streams.placeNewRecordInStream(context, record, alternateAps);
@@ -1011,6 +1039,7 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void applyQuery(AccessContext context, Map<String, Object> query, MidataId sourceaps, Consent target, boolean ownerInformation) throws AppException {
+		if (target.status == ConsentStatus.PRECONFIRMED) return;
 		
 		MidataId targetaps = target._id;
 		Pair<Map<String, Object>, Map<String, Object>> pair = Feature_Streams.convertToQueryPair(query);

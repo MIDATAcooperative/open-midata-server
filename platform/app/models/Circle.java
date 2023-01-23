@@ -81,7 +81,7 @@ public class Circle extends Consent {
 	}
 	
 	public static Set<Circle> getAllActiveByMember(MidataId member) throws InternalServerException {
-		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  Sets.create(ConsentType.CIRCLE, ConsentType.REPRESENTATIVE)).map("status", EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)), Consent.SMALL);
+		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  Sets.create(ConsentType.CIRCLE, ConsentType.REPRESENTATIVE)).map("status", EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.FROZEN, ConsentStatus.PRECONFIRMED)), Consent.SMALL);
 	}
 
 	public static void set(MidataId circleId, String field, Object value) throws InternalServerException {

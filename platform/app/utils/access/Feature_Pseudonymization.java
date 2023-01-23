@@ -181,7 +181,7 @@ public class Feature_Pseudonymization extends Feature {
 	
 	public static Pair<MidataId,String> pseudonymizeUser(AccessContext context, Consent consent) throws AppException {
 		if (consent.getOwnerName() != null && !consent.getOwnerName().equals("?")) return Pair.of(consent._id,consent.ownerName);
-		if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN) return Pair.of(consent._id, "???");
+		if (!consent.isSharingData()) return Pair.of(consent._id, "???");
 		BasicBSONObject patient = (BasicBSONObject) RecordManager.instance.getMeta(context, consent._id, "_patient");
 		if (patient != null) {
 			MidataId pseudoId = new MidataId(patient.getString("id"));

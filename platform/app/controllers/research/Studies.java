@@ -1129,7 +1129,7 @@ public class Studies extends APIController {
 
 		Set<StudyParticipation> participants = StudyParticipation.getActiveParticipantsByStudy(study._id, StudyParticipation.STUDY_EXTRA);
 		for (StudyParticipation participant : participants) {
-			if (participant.status.equals(ConsentStatus.ACTIVE)) {
+			if (participant.isActive()) {
 				Circles.consentStatusChange(context, participant, ConsentStatus.FROZEN);
 			}
 		}
@@ -1705,7 +1705,7 @@ public class Studies extends APIController {
 		}
 		ReferenceTool.resolveOwners(Collections.singleton(participation), true);
 
-		if (participation.status.equals(ConsentStatus.ACTIVE) || participation.status.equals(ConsentStatus.FROZEN)) {
+		if (participation.isSharingData()) {
 			Collection<RecordsInfo> stats = RecordManager.instance.info(UserRole.RESEARCH, participation._id, context.forConsent(participation),
 					CMaps.map(), AggregationType.ALL);
 			if (!stats.isEmpty())

@@ -70,6 +70,11 @@ public enum MessageReason {
 	CONSENT_REQUEST_AUTHORIZED_EXISTING,
 	
 	/**
+	 * Message send to consent owner for creation of a preconfirmed consent
+	 */
+	CONSENT_PRECONFIRMED_OWNER,
+	
+	/**
 	 * Message sent to consent owner upon confirmation of consent
 	 */
 	CONSENT_CONFIRM_OWNER,

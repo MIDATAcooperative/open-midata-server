@@ -167,9 +167,9 @@
 		    <input type="text" class="form-control" v-validate v-model="currentBlock.category">	    
 		  </form-group>
 		  <div v-if="mode=='study'">
-		  <form-group name="restrictions" label="queryeditor.restrictions" v-if="timeModes.length || dataPeriodModes.length || currentBlock.flags.custom" :path="errors.restrictions">
-		    <div class="form-check" v-if="timeModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.timeRestriction"><span v-t="'queryeditor.time_restriction'"></span></label></div>
-		    <div class="form-check" v-if="dataPeriodModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.dataPeriodRestriction"><span v-t="'queryeditor.data_period_restriction'"></span></label></div>
+		  <form-group name="restrictions" label="queryeditor.restrictions" v-if="(timeModes && timeModes.length) || (dataPeriodModes && dataPeriodModes.length) || currentBlock.flags.custom" :path="errors.restrictions">
+		    <div class="form-check" v-if="timeModes && timeModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.timeRestriction"><span v-t="'queryeditor.time_restriction'"></span></label></div>
+		    <div class="form-check" v-if="dataPeriodModes && dataPeriodModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.dataPeriodRestriction"><span v-t="'queryeditor.data_period_restriction'"></span></label></div>
 		    <div class="form-check" v-if="currentBlock.flags.custom"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.customFilter"><span v-t="'queryeditor.custom_filter'"></span></label></div>
 		  </form-group>
 		  <form-group name="timeRestrictionDate" label="queryeditor.time_restriction" v-if="currentBlock.timeRestriction" :path="errors.timeRestrictionDate">
@@ -376,7 +376,7 @@ export default {
 				}));				
 			} else if ($route.meta.mode == "app") {
 				$data.mode = "app";
-				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate"])
+				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated"])
 				.then(function(data) { 
 					$data.app = data.data[0];
 					$data.target.appname = $data.app.filename;

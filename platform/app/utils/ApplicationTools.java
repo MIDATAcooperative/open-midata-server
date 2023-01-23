@@ -664,6 +664,8 @@ public class ApplicationTools {
 
         ServiceInstance.delete(instance._id);
     }
+	
+	
 
     
 }
