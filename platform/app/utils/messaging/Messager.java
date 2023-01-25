@@ -62,6 +62,11 @@ public class Messager {
 		mailSender.tell(new Message(email, fullname, subject, content, eventId), ActorRef.noSender());
 	}
 	
+	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId, MailSenderType type) {	
+		AccessLog.log("trigger send text mail to="+email);
+		mailSender.tell(new Message(type, email, fullname, subject, content, eventId), ActorRef.noSender());
+	}
+	
 	public static void sendSMS(String phone, String text, MidataId eventId) {
 		AccessLog.log("trigger send SMS to="+phone);
 		smsSender.tell(new SMS(phone, text, eventId), ActorRef.noSender());
@@ -228,13 +233,21 @@ class MailSender extends AbstractActor {
 		try {		
 		    AccessLog.logStart("jobs", "send email");
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
-			  MailUtils.sendTextMail(MailSenderType.USER, msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
+			  MailUtils.sendTextMail(msg.getType(), msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
 			}		
 			AuditManager.instance.success();
 		} catch (Exception e) {
-			ErrorReporter.report("Messager (EMail)", null, e);
-			AuditManager.instance.fail(400, e.toString(), "error.failed");
-			throw e;
+			// Do not create endless loop
+			//ErrorReporter.report("Messager (EMail)", null, e);
+			
+			// We try resending once
+			try {
+			  MailUtils.sendTextMail(msg.getType(), msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
+			  AuditManager.instance.success();
+			} catch (Exception e2) {
+			  AuditManager.instance.fail(400, e2.toString(), "error.failed");
+			}
+			
 		} finally {
 			ServerTools.endRequest();			
 			ActionRecorder.end(path, st);
