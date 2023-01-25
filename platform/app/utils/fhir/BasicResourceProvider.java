@@ -324,7 +324,8 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 		}		
 	}
 
-    public Record init() { return newRecord("fhir/Basic"); }
+    @Override
+    public Record init(Basic resource) { return newRecord("fhir/Basic"); }
 
 	@Override
 	public String getRecordFormat() {		
