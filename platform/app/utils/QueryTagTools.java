@@ -42,6 +42,7 @@ public class QueryTagTools {
 	public static String SECURITY_PUBLIC = "security:public";
 	public static String SECURITY_GENERATED = "security:generated";
 	public static String SECURITY_LOCALCOPY = "security:local-copy";
+	public static String SECURITY_NOT_PSEUDONYMISABLE = "security:not-pseudonymisable";
 	
 	public static List<SecurityTag> tags;
 	
@@ -98,6 +99,7 @@ public class QueryTagTools {
 		tags.add(new SecurityTag(SECURITY_READONLY, "http://terminology.hl7.org/CodeSystem/v3-ActCode", "INFOREADONLY", null));
 		tags.add(new SecurityTag(SECURITY_NODELETE, "http://midata.coop/codesystems/security", "no-delete", null));
 		tags.add(new SecurityTag(SECURITY_RELIABLE, "http://terminology.hl7.org/CodeSystem/v3-ObservationValue", "reliable", null));
+		tags.add(new SecurityTag(SECURITY_NOT_PSEUDONYMISABLE, "http://midata.coop/codesystems/security", "not-pseudonymisable", null));
 	}
 		
 }

@@ -32,6 +32,8 @@ import models.Consent;
 import models.MidataId;
 import models.enums.ConsentStatus;
 import utils.AccessLog;
+import utils.QueryTagTools;
+import utils.access.ProcessingTools.FilterIterator;
 import utils.access.op.CompareCaseInsensitive;
 import utils.access.op.Condition;
 import utils.access.op.FieldAccess;
@@ -104,7 +106,12 @@ public class Feature_Pseudonymization extends Feature {
 			BasicBSONList tags = (BasicBSONList) r.meta.get("tags");
 			boolean r4 = false;
 			if (tags != null) {		
-				r4 = tags.contains("fhir:r4");							
+				r4 = tags.contains("fhir:r4");	
+				if (tags.contains(QueryTagTools.SECURITY_NOT_PSEUDONYMISABLE)) {
+					r.data = null; 
+					r.meta = null;
+					return;
+				}
 			}
 			if (r4) FhirPseudonymizer.forR4().pseudonymize(r);
 			else FhirPseudonymizer.forSTU3().pseudonymize(r);
@@ -223,5 +230,6 @@ public class Feature_Pseudonymization extends Feature {
 	public static void addPseudonymization(AccessContext context, MidataId consentId, MidataId pseudoId, String pseudoName) throws AppException {
 		RecordManager.instance.setMeta(context, consentId, "_patient", CMaps.map("id", pseudoId.toString()).map("name", pseudoName));		
 	}
+	   
 
 }
