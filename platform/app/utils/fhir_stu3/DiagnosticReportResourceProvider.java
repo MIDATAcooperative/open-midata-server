@@ -49,7 +49,9 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import models.enums.AuditEventType;
 import utils.InstanceConfig;
+import utils.audit.AuditHeaderTool;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -237,6 +239,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 		}
 		
 		insertRecord(record, theDiagnosticReport, attachment);
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 	}	
 
 	@Override

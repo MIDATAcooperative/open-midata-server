@@ -36,7 +36,8 @@
                     <span v-else-if="entry.agent[0].role[0].coding[0].code != 'MEMBER' && entry.agent[0].role[0].coding[0].code != '110150'" class="badge badge-info ml-1">{{ $t('enum.userrole.'+entry.agent[0].role[0].coding[0].code) }}</span>
                 </div>
 			    <div class="text-primary">{{ entry.agent[0].altId }}</div>
-			    <div v-if="entry.agent.length>1"><i><span v-t="'auditlog.via'"></span> {{ entry.agent[1].name }}</i></div>  
+			    <div v-if="entry.agent.length>1 && entry.agent[1].name"><i><span v-t="'auditlog.via'"></span> {{ entry.agent[1].name }}</i></div>
+			    <div v-if="entry.agent.length>2 && entry.agent[2].name"><i><span v-t="'auditlog.via'"></span> {{ entry.agent[2].name }}</i></div>  
 			</div><div v-else class="col-sm-6 col-md-4"></div>		  
 			  
 			<div class="col-sm-6 col-md-3">

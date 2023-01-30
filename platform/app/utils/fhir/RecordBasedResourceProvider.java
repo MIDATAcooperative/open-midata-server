@@ -62,6 +62,7 @@ import models.MidataId;
 import models.Plugin;
 import models.Record;
 import models.TypedMidataId;
+import models.enums.AuditEventType;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
@@ -71,6 +72,7 @@ import utils.access.RecordManager;
 import utils.access.ReuseFileHandle;
 import utils.access.UpdateFileHandleSupport;
 import utils.access.VersionedDBRecord;
+import utils.audit.AuditHeaderTool;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -113,7 +115,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		convertToR4(record, data);
 		IParser parser = ctx().newJsonParser();		
 		T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(data));
-		processResource(record, p);		
+		processResource(record, p);	
+		//AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_READ, record.context.getOwner());
 		return p;
 	}
 	
@@ -124,6 +127,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	   
 	   List<T> result = new ArrayList<T>(records.size());
 	   IParser parser = ctx().newJsonParser();
+	   //boolean audited = false;
 	   for (Record record : records) {	
 		    if (record.data == null || !record.data.containsField("resourceType")) continue;
 		    Object data = record.data;
@@ -131,6 +135,11 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(data));
 			processResource(record, p);
 			result.add(p);
+			
+			/*if (!audited) {
+				AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_HISTORY, record.context.getOwner());
+				audited = true;
+			}*/
 	   }
 	   
 	   return result;
@@ -180,7 +189,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@Override
 	public T createExecute(Record record, T theResource) throws AppException {
-		List<Attachment> attachments = getAttachments(theResource);		
+		List<Attachment> attachments = getAttachments(theResource);	
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 		insertRecord(record, theResource, attachments, info());
 		return theResource;
 	}
@@ -232,7 +242,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@Override
 	public void updateExecute(Record record, T theResource) throws AppException {
-		List<Attachment> attachments = getAttachments(theResource);	
+		List<Attachment> attachments = getAttachments(theResource);
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
 		updateRecord(record, theResource, attachments);
 	}
 	

@@ -44,8 +44,10 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
+import models.enums.AuditEventType;
 import utils.InstanceConfig;
 import utils.access.pseudo.FhirPseudonymizer;
+import utils.audit.AuditHeaderTool;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -209,7 +211,8 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 	public void createExecute(Record record, Media theMedia) throws AppException {
 		Attachment attachment = null; 		
 		attachment = theMedia.getContent();						
-		insertRecord(record, theMedia, attachment);		
+		insertRecord(record, theMedia, attachment);	
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 	}	
 	
 	@Override

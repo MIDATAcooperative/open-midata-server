@@ -324,7 +324,8 @@ export default {
 		   { id : "security:reliable", label : "reliable" },
 		   { id : "security:no-delete", label : "no_delete" },
 		   { id : "security:read-only", label : "read_only" },
-		   { id : "security:hidden", label : "hidden" }
+		   { id : "security:hidden", label : "hidden" },
+		   { id : "security:not-pseudonymisable", label : "not_pseudonymisable" }
 		],
 		resourceOptions : {
 			"fhir/AuditEvent" : ["noapp", "noowner", "notime", "nopublic", "notags"], 

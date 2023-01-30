@@ -54,8 +54,10 @@ import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
+import models.enums.AuditEventType;
 import utils.InstanceConfig;
 import utils.access.pseudo.FhirPseudonymizer;
+import utils.audit.AuditHeaderTool;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -377,6 +379,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		}
 		
 		insertRecord(record, theDocumentReference, attachment);
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 	}	
 	
 	@Override
