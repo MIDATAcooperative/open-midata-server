@@ -120,6 +120,16 @@ public enum MessageReason {
 	USER_PRIVATE_KEY_RECOVERED,
 	
 	/**
+	 * Account was access from 3rd party API but match was not perfect
+	 */
+	NON_PERFECT_ACCOUNT_MATCH,
+	
+	/**
+	 * User reregistration was tried from 3rd party
+	 */
+	TRIED_USER_REREGISTRATION,
+	
+	/**
 	 * A resource has been changed
 	 */
 	RESOURCE_CHANGE,

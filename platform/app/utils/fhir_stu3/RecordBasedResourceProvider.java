@@ -59,12 +59,14 @@ import models.MidataId;
 import models.Plugin;
 import models.Record;
 import models.TypedMidataId;
+import models.enums.AuditEventType;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.QueryTagTools;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
+import utils.audit.AuditHeaderTool;
 import utils.collections.CMaps;
 import utils.context.AccessContext;
 import utils.context.ConsentAccessContext;
@@ -102,7 +104,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);					
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(record.data));
-		processResource(record, p);		
+		processResource(record, p);	
+		//AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_READ, record.context.getOwner());
 		return p;
 	}
 	
@@ -113,11 +116,17 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	   
 	   List<T> result = new ArrayList<T>(records.size());
 	   IParser parser = ctx().newJsonParser();
+	   //boolean audited = false;
 	   for (Record record : records) {	
 		    if (record.data == null || !record.data.containsField("resourceType")) continue;
 			T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(record.data));
 			processResource(record, p);
 			result.add(p);
+			
+			/*if (!audited) {
+				AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_HISTORY, record.context.getOwner());
+				audited = true;
+			}*/
 	   }
 	   
 	   return result;
@@ -132,6 +141,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public void createExecute(Record record, T theResource) throws AppException {
 		insertRecord(record, theResource);
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 	}
 	
 	@Override
@@ -172,6 +182,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public void updateExecute(Record record, T theResource) throws AppException {
 		updateRecord(record, theResource);
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
 	}
 	
 	@Override

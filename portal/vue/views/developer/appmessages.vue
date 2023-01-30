@@ -117,7 +117,7 @@ export default {
         app : null,
 
         languages : languages.array,
-        reasons : ['REGISTRATION', 'REGISTRATION_BY_OTHER_PERSON', 'FIRSTUSE_ANYUSER', 'FIRSTUSE_EXISTINGUSER', 'LOGIN', 'SERVICE_WITHDRAW', 'ACCOUNT_UNLOCK', 'CONSENT_REQUEST_OWNER_INVITED', 'CONSENT_REQUEST_OWNER_EXISTING', 'CONSENT_REQUEST_AUTHORIZED_INVITED', 'CONSENT_REQUEST_AUTHORIZED_EXISTING', 'CONSENT_CONFIRM_OWNER', 'CONSENT_CONFIRM_AUTHORIZED', 'CONSENT_REJECT_OWNER', 'CONSENT_REJECT_AUTHORIZED', 'EMAIL_CHANGED_OLDADDRESS', 'EMAIL_CHANGED_NEWADDRESS', 'PASSWORD_FORGOTTEN', 'USER_PRIVATE_KEY_RECOVERED', 'RESOURCE_CHANGE', 'PROCESS_MESSAGE' ],
+        reasons : ['REGISTRATION', 'REGISTRATION_BY_OTHER_PERSON', 'FIRSTUSE_ANYUSER', 'FIRSTUSE_EXISTINGUSER', 'LOGIN', 'SERVICE_WITHDRAW', 'ACCOUNT_UNLOCK', 'CONSENT_REQUEST_OWNER_INVITED', 'CONSENT_REQUEST_OWNER_EXISTING', 'CONSENT_REQUEST_AUTHORIZED_INVITED', 'CONSENT_REQUEST_AUTHORIZED_EXISTING', 'CONSENT_CONFIRM_OWNER', 'CONSENT_CONFIRM_AUTHORIZED', 'CONSENT_REJECT_OWNER', 'CONSENT_REJECT_AUTHORIZED', 'EMAIL_CHANGED_OLDADDRESS', 'EMAIL_CHANGED_NEWADDRESS', 'PASSWORD_FORGOTTEN', 'USER_PRIVATE_KEY_RECOVERED', 'RESOURCE_CHANGE', 'PROCESS_MESSAGE', 'NON_PERFECT_ACCOUNT_MATCH', 'TRIED_USER_REREGISTRATION' ],
 	    sel : { lang : 'en' },
         selmsg : null,
         messages : [],
@@ -142,7 +142,9 @@ export default {
             'PASSWORD_FORGOTTEN' : [ "site", "password-link", "firstname", "lastname", "email" ],
             'RESOURCE_CHANGE' : [ "midata-portal-url", "plugin-name", "firstname", "lastname", "email" ],
             'PROCESS_MESSAGE' : [ "midata-portal-url", "plugin-name", "firstname", "lastname", "email" ],
-            'USER_PRIVATE_KEY_RECOVERED' : [ "firstname", "lastname", "email", "site" ]
+            'USER_PRIVATE_KEY_RECOVERED' : [ "firstname", "lastname", "email", "site" ],
+            'NON_PERFECT_ACCOUNT_MATCH' : [ "plugin-name", "firstname", "lastname", "email", "site" ],
+            'TRIED_USER_REREGISTRATION' : [ "plugin-name", "firstname", "lastname", "email", "site" ]
         }
     }),
 

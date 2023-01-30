@@ -58,6 +58,8 @@ import utils.InstanceConfig;
  *
  */
 public class PlayHttpServletRequest implements HttpServletRequest {
+	
+	private static ThreadLocal<PlayHttpServletRequest> current = new ThreadLocal<PlayHttpServletRequest>();
 
 	private Http.Request request;
 	private Map<String, Object> attribs = new HashMap<String, Object>();
@@ -70,11 +72,13 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 	public PlayHttpServletRequest(Http.Request request, String basePath) {
 	   this.request = request;	
 	   this.basePath = basePath;
+	   current.set(this);
 	}
 	
 	public PlayHttpServletRequest(Http.Request request) {
 		this.request = request;	
 		this.basePath = "/fhir";
+		current.set(this);
 	}
 	
 	@Override
@@ -463,4 +467,11 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 		throw new RuntimeException("Not implemented");
 	}
 
+	public static void clear() {
+		current.set(null);
+	}
+	
+	public static PlayHttpServletRequest getCurrent() {
+		return current.get();
+	}
 }

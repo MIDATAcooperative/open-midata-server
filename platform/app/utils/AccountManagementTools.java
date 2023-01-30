@@ -107,13 +107,13 @@ public class AccountManagementTools {
 					 
 				 if (!nameOk && birthdateOk) {
 					 // Log, notify
-					 logAndNotify(context, user ,result);
+					 logAndNotify(context, user ,result, true);
 				 } else if (!nameOk && !birthdateOk) {
-					 logAndNotify(context, user ,result);
+					 logAndNotify(context, user ,result, false);
 					 AuditManager.instance.fail(400, "Same email used", "error.exists.email");
 					 throw new UnprocessableEntityException("Different account with same email already exists.");
 				 } else if (nameOk && !birthdateOk && !addressOk) {
-					 logAndNotify(context, user ,result);
+					 logAndNotify(context, user ,result, false);
 					 AuditManager.instance.fail(400, "Same email used", "error.nomatch.birthdate");
 					 throw new UnprocessableEntityException("Possible candidate has no matching birth date.");
 				 } else if (nameOk && !birthdateOk && addressOk) {
@@ -146,7 +146,7 @@ public class AccountManagementTools {
 					 if ((mailGiven && hasMail && !user.emailLC.equals(candidate.emailLC))
 						|| (!mailGiven && hasMail)) {
 						 if (hasAddress && addressOk) {
-							 logAndNotify(context, user ,candidate);
+							 logAndNotify(context, user ,candidate, false);
 							 AuditManager.instance.fail(400, "Same email used", "error.nomatch.email");
 							 throw new UnprocessableEntityException("Account exists. Please provide same email as used for account."); 
 						 }
@@ -162,17 +162,17 @@ public class AccountManagementTools {
 		 return null;
 	}
 	
-	public static void logAndNotify(AccessContext context, Member user, Member existing) throws AppException {
+	public static void logAndNotify(AccessContext context, Member user, Member existing, boolean used) throws AppException {
 		AuditManager.instance.addAuditEvent(
 				AuditEventBuilder
-				   .withType(AuditEventType.TRIED_USER_REREGISTRATION)
+				   .withType(used ? AuditEventType.NON_PERFECT_ACCOUNT_MATCH : AuditEventType.TRIED_USER_REREGISTRATION)
 				   .withApp(context.getUsedPlugin())
 				   .withModifiedUser(existing)
 		);
 		Set targets = new HashSet();
 		if (existing.email != null) targets.add(existing._id);
 		if (user.email != null && !user.email.equals(existing.email)) targets.add(user.email);
-		Messager.sendMessage(context.getUsedPlugin(), MessageReason.ACCOUNT_UNLOCK, null, targets, InstanceConfig.getInstance().getDefaultLanguage(), new HashMap<String, String>());
+		Messager.sendMessage(context.getUsedPlugin(), used ? MessageReason.NON_PERFECT_ACCOUNT_MATCH : MessageReason.TRIED_USER_REREGISTRATION, null, targets, InstanceConfig.getInstance().getDefaultLanguage(), new HashMap<String, String>());
 		
 	}
 	
@@ -258,7 +258,8 @@ public class AccountManagementTools {
 		return consent;	
 	}
 	
-	public static Consent createExternalServiceConsent(AccessContext info, Member user, boolean active) throws AppException {		
+	public static Consent createExternalServiceConsent(AccessContext info, Member user, boolean active) throws AppException {
+		if (!active) throw new UnprocessableEntityException("Cannot create consent for existing account.");
 		MobileAppInstance instance = ApplicationTools.installApp(info, info.getUsedPlugin(), user, null, true, null, null);		
 		return instance;
 	}

@@ -115,6 +115,7 @@ import utils.RuntimeConstants;
 import utils.access.DBIterator;
 import utils.access.Feature_Pseudonymization;
 import utils.access.RecordManager;
+import utils.audit.AuditHeaderTool;
 import utils.audit.AuditManager;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
@@ -161,6 +162,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		IParser parser = ctx().newJsonParser();
 		Patient p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(record.data));
 		processResource(record, p);
+		//AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_READ, record.context.getOwner());
 		return p;
 	}
 	
@@ -216,10 +218,16 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		List<Patient> result = new ArrayList<Patient>(records.size());
 		IParser parser = ctx().newJsonParser();
+		//boolean audited = false;
 		for (Record record : records) {
 			Patient p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(record.data));
 			processResource(record, p);
 			result.add(p);
+			
+			/*if (!audited) {
+				AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_HISTORY, record.context.getOwner());
+				audited = true;
+			}*/
 		}
 
 		return result;
@@ -739,8 +747,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			prepare(record, thePatient);			
 			insertRecord(tempContext, record, thePatient);
 
-			// if (user.emailLC!=null) Circles.fetchExistingConsents(user._id,
-			// user.emailLC);
+			if (user.emailLC!=null) Circles.fetchExistingConsents(tempContext, user.emailLC);
 		
 		// Otherwise reuse existing user
 		} else {		

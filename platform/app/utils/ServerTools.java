@@ -22,6 +22,7 @@ import utils.audit.AuditManager;
 import utils.auth.PortalSessionToken;
 import utils.context.ContextManager;
 import utils.fhir.ResourceProvider;
+import utils.servlet.PlayHttpServletRequest;
 
 public class ServerTools {
 
@@ -33,6 +34,7 @@ public class ServerTools {
 		   AccessLog.newRequest();	
 		   ResourceProvider.setAccessContext(null);
 		   PortalSessionToken.clear();
+		   PlayHttpServletRequest.clear();
 		}
 	}
 }
