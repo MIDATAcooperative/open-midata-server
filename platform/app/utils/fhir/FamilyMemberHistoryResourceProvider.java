@@ -49,6 +49,7 @@ import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -65,6 +66,10 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 		searchParamNameToTypeMap.put("FamilyMemberHistory:patient", Sets.create("Patient"));
 
 		registerSearches("FamilyMemberHistory", getClass(), "getFamilyMemberHistory");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("FamilyMemberHistory")	
+		  .hideIfPseudonymized("FamilyMemberHistory", "text");
 	}
 
 	@Override

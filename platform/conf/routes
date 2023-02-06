@@ -5,6 +5,7 @@
 # Test
 
 GET     /debug/aps/:id                                   controllers.Debug.get(request: Request, id: String)
+GET     /debug/test                                      controllers.Debug.test()
 GET     /api/ping                                            controllers.Debug.ping()
 POST    /fhir/$p<\$process\-message>                     controllers.FHIR.postProcessMessage(request: Request, p)
 POST    /fhir/Binary                                     controllers.FHIR.binaryUpload(request: Request)
@@ -56,8 +57,8 @@ POST    /api/admin/news/delete/:id                       controllers.News.delete
 POST    /api/admin/mails/get                             controllers.BulkMails.get(request: Request)
 POST	/api/admin/mails/add							 controllers.BulkMails.add(request: Request)
 POST	/api/admin/mails/update							 controllers.BulkMails.update(request: Request)
-POST    /api/admin/mails/delete/:id	   					 controllers.BulkMails.delete(id: String)
-POST    /api/admin/mails/send/:id                        controllers.BulkMails.send(id: String)
+POST    /api/admin/mails/delete/:id	   					 controllers.BulkMails.delete(request: Request, id: String)
+POST    /api/admin/mails/send/:id                        controllers.BulkMails.send(request: Request, id: String)
 POST    /api/admin/mails/test/:id                        controllers.BulkMails.test(request: Request,id: String) 
 POST    /api/members/mail/unsubscribe                    controllers.BulkMails.unsubscribe(request: Request)
 
@@ -118,7 +119,7 @@ POST    /api/shared/links/:id                            controllers.Market.vali
 DELETE  /api/shared/links/:id                            controllers.Market.deleteStudyAppLink(request: Request, id: String)
 
 PUT     /api/admins/plugins/:appId            	         controllers.Market.updatePluginStatus(request: Request, appId: String)
-DELETE  /api/admins/plugins/:appId            	         controllers.Market.deletePlugin(appId: String)
+DELETE  /api/admins/plugins/:appId            	         controllers.Market.deletePlugin(request: Request, appId: String)
 
 POST     /api/admins/importplugin                        controllers.Market.importPlugin(request: Request)
 GET      /api/admins/exportplugin/:appId                 controllers.Market.exportPlugin(appId: String)
@@ -333,7 +334,7 @@ OPTIONS /v1/consents/search  controllers.MobileAPI.checkPreflight()
 POST    /v1/consents/search  controllers.MobileAPI.getConsents(request: Request)
 OPTIONS /v1/records/file    controllers.MobileAPI.checkPreflight()
 GET     /v1/records/file    controllers.MobileAPI.getFile(request: Request)
-POST    /v1/records/file    controllers.MobileAPI.getFile(request: Request)
+POST    /v1/records/file    controllers.MobileAPI.getImageToken(request: Request)
 OPTIONS /v1/records/summary    controllers.MobileAPI.checkPreflight()
 POST    /v1/records/summary    controllers.MobileAPI.getInfo(request: Request)
 # Plugins Public API
@@ -345,6 +346,7 @@ OPTIONS /v1/plugin_api/records/summary  controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/records/summary  controllers.PluginsAPI.getInfo(request: Request)
 OPTIONS /v1/plugin_api/records/file    controllers.PluginsAPI.checkPreflight()
 GET     /v1/plugin_api/records/file    controllers.PluginsAPI.getFile(request: Request)
+POST    /v1/plugin_api/records/file    controllers.PluginsAPI.getFile(request: Request)
 OPTIONS /v1/plugin_api/records/create  controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/records/create  controllers.PluginsAPI.createRecord(request: Request)
 OPTIONS /v1/plugin_api/records/update  controllers.PluginsAPI.checkPreflight()

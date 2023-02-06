@@ -84,7 +84,7 @@ public class ExecutionInfo {
 		this.role = role;
 	}*/
 	
-	public static AccessContext checkToken(Request request, String token, boolean allowInactive) throws AppException {
+	public static AccessContext checkToken(Request request, String token, boolean allowInactive, boolean allowRestricted) throws AppException {
 		String plaintext = TokenCrypto.decryptToken(token);
 		if (plaintext == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");	
 		JsonNode json = Json.parse(plaintext);
@@ -93,7 +93,7 @@ public class ExecutionInfo {
 		if (json.has("instanceId")) {
 			return checkSpaceToken(SpaceToken.decrypt(request, json));
 		} else {
-			return checkMobileToken(MobileAppSessionToken.decrypt(json), allowInactive);
+			return checkMobileToken(MobileAppSessionToken.decrypt(json), allowInactive, allowRestricted);
 		}
 	}
 	
@@ -175,14 +175,14 @@ public class ExecutionInfo {
 		
 	}
 	
-	public static AccessContext checkMobileToken(String token, boolean allowInactive) throws AppException {		
+	public static AccessContext checkMobileToken(String token, boolean allowInactive, boolean allowRestricted) throws AppException {		
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
 		if (authToken == null) OAuth2.invalidToken(); 
 				
-		return checkMobileToken(authToken, allowInactive);		
+		return checkMobileToken(authToken, allowInactive, allowRestricted);		
 	}
 	
-	public static AccessContext checkMobileToken(MobileAppSessionToken authToken, boolean allowInactive) throws AppException {		
+	public static AccessContext checkMobileToken(MobileAppSessionToken authToken, boolean allowInactive, boolean allowRestricted) throws AppException {		
 		if (authToken == null) OAuth2.invalidToken();				
 		
 		AccessLog.logBegin("begin check 'mobile' type session token");
@@ -206,6 +206,12 @@ public class ExecutionInfo {
 				
 		AccessContext session = ContextManager.instance.upgradeSessionForApp(tempContext, appInstance);
 		
+		if (authToken.restrictedResourceId != null) {
+			if (allowRestricted) {
+			  session = session.forSingleRecord(authToken.restrictedResourceId);
+			} else OAuth2.invalidToken();
+		}
+		AccessLog.log("using as context:", session.toString());
 		AccessLog.logEnd("end check 'mobile' type session token");
 		
         return session;						

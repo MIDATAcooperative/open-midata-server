@@ -16,20 +16,21 @@
 -->
 <template>
 <panel :title="$t('serviceleave.title')" :busy="isBusy" style="max-width:330px; padding-top:30px; margin:0 auto;">
-    <p v-t="'serviceleave.thankyou'"></p>
-		   
-	<div v-if="!callback">
-		<p v-t="'serviceleave.continue'"></p>
-		<button type="button" class="btn btn-primary" v-t="'serviceleave.logout_btn'" @click="logout();"></button>
-	</div>
-	<div v-if="callback=='close'">
-		<button class="btn btn-primary" v-t="'serviceleave.goodbye_btn'" @click="close();"></button>
-	</div>
-		   
-	<div v-if="callback && callback!='close'">
+    
+    <div v-if="callback && callback!='close'">
 		<p v-t="'serviceleave.logoutreturn'"></p>
-		<button class="btn btn-primary" v-t="'serviceleave.return_btn'" @click="leave();"></button>
+		<!-- <button class="btn btn-primary" v-t="'serviceleave.return_btn'" @click="leave();"></button> -->
 	</div>
+	<div v-else>
+	    <p v-t="'serviceleave.thankyou'"></p>			  
+		<div v-if="!callback">			
+			<button type="button" class="btn btn-primary" v-t="'serviceleave.logout_btn'" @click="logout();"></button>
+		</div>
+		<div v-if="callback=='close'">
+			<button class="btn btn-primary" v-t="'serviceleave.goodbye_btn'" @click="close();"></button>
+		</div>
+    </div>
+	
 		   
 </panel>
 </template>
@@ -57,7 +58,8 @@ export default {
             const { $data, $route } = this, me = this;
 		    actions.logout();
 		    if ($route.query.callback) {
-			    $data.callback = $route.query.callback;			
+			    $data.callback = $route.query.callback;		
+			    window.setTimeout(() => { this.leave(); }, 2000); 	
 		    }
 			me.ready();
 	    },

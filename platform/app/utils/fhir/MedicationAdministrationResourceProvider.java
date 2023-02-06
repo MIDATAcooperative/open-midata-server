@@ -84,7 +84,8 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 		registerSearches("MedicationAdministration", getClass(), "getMedicationAdministration");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("MedicationAdministration")		
+		  .reset("MedicationAdministration")	
+		  .hideIfPseudonymized("MedicationAdministration", "text")
 		  .pseudonymizeReference("MedicationAdministration", "performer", "actor")
 		  .pseudonymizeReference("MedicationAdministration", "note", "authorReference");		  
 	}

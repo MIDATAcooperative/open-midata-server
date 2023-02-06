@@ -1,6 +1,6 @@
 {"_id":{"$oid":"5666a53faa4c3cbdf82292bd"},"system":"http://midata.coop","code":"food/calories-in","display":"Calories intake","content":"food/calories-in"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292be"},"system":"http://midata.coop","display":"Water Consumption","code":"food/water","content":"food/water"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292bf"},"system":"http://midata.coop","display":"Calories Burned","code":"activities/calories","content":"activities/calories"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292bf"},"system":"http://midata.coop","code":"activities/calories","display":"Calories burned","content":"activities/calories"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c0"},"system":"http://midata.coop","display":"Steps","code":"activities/steps","content":"activities/steps"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c1"},"system":"http://midata.coop","display":"Distance","code":"activities/distance","content":"activities/distance"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c2"},"system":"http://midata.coop","display":"Floors Climbed","code":"activities/floors","content":"activities/floors"}
@@ -9,7 +9,7 @@
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c5"},"system":"http://midata.coop","display":"Minutes Lightly Active","code":"activities/minutes-lightly-active","content":"activities/minutes-lightly-active"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c6"},"system":"http://midata.coop","display":"Minutes Fairly Active","code":"activities/minutes-fairly-active","content":"activities/minutes-fairly-active"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c7"},"system":"http://midata.coop","display":"Minutes Very Active","code":"activities/minutes-very-active","content":"activities/minutes-very-active"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c8"},"system":"http://midata.coop","display":"Calories Burned in Activities","code":"activities/activity-calories","content":"activities/activity-calories"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c8"},"system":"http://midata.coop","code":"activities/activity-calories","display":"Calories burned in activities","content":"activities/activity-calories"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c9"},"system":"http://midata.coop","display":"Time in Bed","code":"sleep/time-in-bed","content":"sleep/time-in-bed"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292ca"},"system":"http://midata.coop","display":"Minutes Asleep","code":"sleep/minutes-asleep","content":"sleep/minutes-asleep"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292cb"},"system":"http://midata.coop","display":"Minutes Awake","code":"sleep/minutes-awake","content":"sleep/minutes-awake"}
@@ -257,7 +257,7 @@
 {"_id":{"$oid":"5c054f0faed6451e85cebdcb"},"system":"http://midata.coop","code":"MSMotTestDotDetails","display":"MS Motoriktest Punkte bewegen - Details pro Punkt pro Durchgang","content":"MSMotTestDotDetail"}
 {"_id":{"$oid":"5c078b16aed64512e74a4ea0"},"system":"http://snomed.info/sct","code":"364645004","display":"Eating feeding / drinking observable","content":"snomed/364645004"}
 {"_id":{"$oid":"5c078b65aed64512e74a4ea2"},"system":"http://snomed.info/sct","code":"248254009","display":"Quality of sleep","content":"snomed/248254009"}
-{"_id":{"$oid":"5c078c58aed64512e74a4ea4"},"system":"http://hl7.org/fhir/sid/icd-10","code":"G43","display":"Migräne","content":"condition/icd-10-g43"}
+{"_id":{"$oid":"5c078c58aed64512e74a4ea4"},"system":"http://hl7.org/fhir/sid/icd-10","code":"G43","display":"Migraine","content":"condition/icd-10-g43"}
 {"_id":{"$oid":"5c0a3764aed6450b0383214d"},"system":"http://snomed.info/sct","code":"167641001","display":"Feces: bacteria present","content":"snomed/167641001"}
 {"_id":{"$oid":"5c0a37e0aed6450b03832150"},"system":"http://snomed.info/sct","code":"119339001","display":"Stool specimen","content":"snomed/119339001"}
 {"_id":{"$oid":"5c0a3830aed6450b03832151"},"system":"http://snomed.info/sct","code":"409822003","display":"Superkingdom Bacteria (organism)","content":"snomed/409822003"}
@@ -469,3 +469,7 @@
 {"_id":{"$oid":"62d6c6c38152f823627a9076"},"system":"http://trevor.hug.ch","code":"sickleCellDiseaseEQ5DScore","display":"Sickle cell disease EQ-5D score","content":"trevor/sickleCellDiseaseEQ5DScore"}
 {"_id":{"$oid":"62d538fc8152f823627a8be9"},"system":"http://snomed.info/sct","code":"185265000","display":"Seen in emergency clinic (finding)","content":"snomed/185265000"}
 {"_id":{"$oid":"6331a1c2597dd11d84950082"},"system":"http://midata.coop","code":"ExternalResearchStudy","display":"External research study","content":"ExternalResearchStudy"}
+{"_id":{"$oid":"638bb3197c2d224aef2ecc59"},"system":"http://snomed.info/sct","code":"23560001","display":"Asperger's syndrome","content":"condition/icd-10-f84.5"}
+{"_id":{"$oid":"638bb28e7c2d224aef2ecc57"},"system":"http://hl7.org/fhir/sid/icd-10","code":"F84.5","display":"Asperger's syndrome","content":"condition/icd-10-f84.5"}
+{"_id":{"$oid":"638bb3a287721075a246e5f3"},"system":"http://snomed.info/sct","code":"37796009","display":"Migraine","content":"condition/icd-10-g43"}
+{"_id":{"$oid":"6397322f87721075a246ffe5"},"system":"http://midata.coop","code":"external-patient-id","display":"External Patient ID","content":"external-patient-id"}

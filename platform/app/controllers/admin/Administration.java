@@ -96,6 +96,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
 import utils.messaging.ServiceHandler;
+import utils.messaging.SubscriptionManager;
 import utils.stats.UsageStatsRecorder;
 import utils.sync.Instances;
 
@@ -119,7 +120,7 @@ public class Administration extends APIController {
 		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "user", "status");
-				
+		requireSubUserRole(request, SubUserRole.USERADMIN);
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
@@ -459,14 +460,8 @@ public class Administration extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActorUser(executorId).withModifiedUser(selected));
 		
-		Users.doAccountWipe(portalContext(request), userId);
-		
-		AuditManager.instance.success();
-		
-			/*if (!User.exists(CMaps.map("organization", PortalSessionToken.session().org))) {
-			  Research.delete(PortalSessionToken.session().org);			
-		}*/
-		
+		SubscriptionManager.accountWipe(portalContext(request), userId);
+						
 		return ok();
 	}
 	
@@ -506,7 +501,7 @@ public class Administration extends APIController {
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 		AccessContext context = portalContext(request);
-		
+		requireSubUserRole(request, SubUserRole.STUDYADMIN);
 		
 		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "createdBy", "code"));
 		

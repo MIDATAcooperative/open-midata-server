@@ -274,7 +274,11 @@ export default {
         if (!$data.app) return "";
         var back = document.location.href;				
         if (back.indexOf("?") > 0) back = back.substr(0, back.indexOf("?"));
-        return "/oauth.html#/portal/oauth2?response_type=code&client_id="+encodeURIComponent($data.app.filename)+"&redirect_uri="+encodeURIComponent(back)+"&device_id="+encodeURIComponent($data.device);
+        let v = sessionStorage.verifier;
+        let ch = crypto.createChallenge(v);
+        
+        ch = ch.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+        return "/oauth.html#/portal/oauth2?response_type=code&client_id="+encodeURIComponent($data.app.filename)+"&redirect_uri="+encodeURIComponent(back)+"&device_id="+encodeURIComponent($data.device)+"&code_challenge="+encodeURIComponent(ch)+"&code_challenge_method=S256";
 	    },
 	
 	    doOauthLogin() {
@@ -283,6 +287,7 @@ export default {
         sessionStorage.oldDevice = $data.device;
         sessionStorage.oldFhirRelease = $data.fhirRelease;
         sessionStorage.oldApp = $data.app._id;
+        sessionStorage.verifier = crypto.createVerifier();
         window.document.location.href = me.getOAuthLogin();
 	    },
 	
@@ -337,7 +342,9 @@ export default {
       requestAccessToken(code) {
         const { $data, $route } = this, me = this;   
             //console.log("CODE: "+code);
-            var body = "grant_type=authorization_code&redirect_uri=x&client_id="+encodeURIComponent($data.app.filename)+"&code="+encodeURIComponent(code);	    
+            let verifier = sessionStorage.verifier;
+            sessionStorage.verifier = null;
+            var body = "grant_type=authorization_code&redirect_uri=x&client_id="+encodeURIComponent($data.app.filename)+"&code="+encodeURIComponent(code)+"&code_verifier="+encodeURIComponent(verifier);	    
             Axios.post(ENV.apiurl+"/v1/token", body, { headers : { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(function(result) {
             //console.log(result.data);
             

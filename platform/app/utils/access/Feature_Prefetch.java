@@ -66,8 +66,7 @@ public class Feature_Prefetch extends Feature {
 	protected static List<DBRecord> lookup(Query q, List<DBRecord> prefetched, Feature next, boolean withUserGroup) throws AppException {
 		//if (true) return Feature_StreamIndex.lookup(q, prefetched, next);
 		
-		AccessLog.logBeginPath("lookup("+prefetched.size()+")","groups="+withUserGroup);
-		long time = System.currentTimeMillis();
+		AccessLog.logBeginPath("lookup("+prefetched.size()+")","groups="+withUserGroup);		
 		List<DBRecord> results = null;
 		Feature nextWithUserGroup = null;
 		for (DBRecord record : prefetched) {
@@ -127,7 +126,7 @@ public class Feature_Prefetch extends Feature {
 									
 		//Feature_AccountQuery.setOwnerField(q, results);			
 						
-		AccessLog.logEndPath("#found="+results.size()+" time="+(System.currentTimeMillis() - time));
+		AccessLog.logEndPath("#found="+results.size());
 		return results;
 	}
 		

@@ -85,6 +85,7 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 		
 		FhirPseudonymizer.forR4()
 		  .reset("QuestionnaireResponse")
+		  .hideIfPseudonymized("QuestionnaireResponse", "text")
 		  .pseudonymizeReference("QuestionnaireResponse", "source")
 		  .pseudonymizeReference("QuestionnaireResponse", "author");
 	}

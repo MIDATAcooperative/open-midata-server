@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -61,18 +62,23 @@ import models.MidataId;
 import models.Plugin;
 import models.Record;
 import models.TypedMidataId;
+import models.enums.AuditEventType;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.QueryTagTools;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.access.ReuseFileHandle;
 import utils.access.UpdateFileHandleSupport;
 import utils.access.VersionedDBRecord;
+import utils.audit.AuditHeaderTool;
 import utils.collections.CMaps;
+import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.ConsentAccessContext;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 import utils.json.JsonOutput;
@@ -109,7 +115,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		convertToR4(record, data);
 		IParser parser = ctx().newJsonParser();		
 		T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(data));
-		processResource(record, p);		
+		processResource(record, p);	
+		//AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_READ, record.context.getOwner());
 		return p;
 	}
 	
@@ -120,6 +127,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	   
 	   List<T> result = new ArrayList<T>(records.size());
 	   IParser parser = ctx().newJsonParser();
+	   //boolean audited = false;
 	   for (Record record : records) {	
 		    if (record.data == null || !record.data.containsField("resourceType")) continue;
 		    Object data = record.data;
@@ -127,6 +135,11 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(data));
 			processResource(record, p);
 			result.add(p);
+			
+			/*if (!audited) {
+				AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_HISTORY, record.context.getOwner());
+				audited = true;
+			}*/
 	   }
 	   
 	   return result;
@@ -176,7 +189,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@Override
 	public T createExecute(Record record, T theResource) throws AppException {
-		List<Attachment> attachments = getAttachments(theResource);		
+		List<Attachment> attachments = getAttachments(theResource);	
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 		insertRecord(record, theResource, attachments, info());
 		return theResource;
 	}
@@ -189,36 +203,47 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		prepareTags(record, theResource);
 	}
 	
+	private final static Set<String> alwaysAllowedTags = Sets.create("security:public", "security:generated");
+	
 	public void prepareTags(Record record, T theResource) throws AppException {
 		//boolean hiddenTagFound = false;
 		Set<String> tags = new HashSet<String>();
 		if (theResource.getMeta().hasSecurity()) {
 			List<Coding> codes = theResource.getMeta().getSecurity();
 			for (Coding c : codes) {
-				if (c.getSystem().equals("http://terminology.hl7.org/CodeSystem/v3-ActCode") && c.getCode().equals("PHY")) {
-					//hiddenTagFound = true;
-					tags.add("security:hidden");
-				} else if (c.getSystem().equals("http://terminology.hl7.org/CodeSystem/v3-Confidentiality") && c.getCode().equals("U")) {
-					tags.add("security:public");				
-				} else if (c.getSystem().equals("http://midata.coop/codesystems/security") && c.getCode().equals("public")) {
-					tags.add("security:public");
-				} else if (c.getSystem().equals("http://midata.coop/codesystems/security") && c.getCode().equals("generated")) {
-					tags.add("security:generated");
-				}
+			    String internal = QueryTagTools.getTagForCoding(c.getSystem(), c.getCode());
+			    if (internal != null) tags.add(internal);				
 			}
 		}
+		Set<String> oldTags = record.tags;
+		if (oldTags == null) oldTags = Collections.emptySet();
+		
 		record.tags = tags.isEmpty() ? null : tags;
-		/*if (tagFound) {
-			if (record.tags == null) record.tags = new HashSet<String>();
-			record.tags.add("security:hidden");
-		} else {
-			if (record.tags != null) record.tags.remove("security:hidden");
-		}*/
+		
+		AccessContext info = info();
+		
+		List<String> addTags = info.getAccessRestrictionList(record.content, record.format, "add-tag");
+		List<String> allowTags = info.getAccessRestrictionList(record.content, record.format, "allow-tag");
+		if (record.tags != null) {
+			for (String usedTag : record.tags) {			   
+			   if (usedTag.startsWith("security:") && !alwaysAllowedTags.contains(usedTag) && !allowTags.contains(usedTag) && !addTags.contains(usedTag) && !oldTags.contains(usedTag)) throw new PluginException(info.getUsedPlugin(), "error.plugin", "Not allowed security tag used: '"+usedTag+"'");	
+			}
+		}
+		
+		for (String tag : addTags) {
+			if (record.tags==null || !record.tags.contains(tag)) {
+			  record.addTag(tag);
+			  Pair<String, String> coding = QueryTagTools.getSystemCodeForTag(tag);
+			  theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
+			}
+		}
+				
 	}
 	
 	@Override
 	public void updateExecute(Record record, T theResource) throws AppException {
-		List<Attachment> attachments = getAttachments(theResource);	
+		List<Attachment> attachments = getAttachments(theResource);
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
 		updateRecord(record, theResource, attachments);
 	}
 	
@@ -318,12 +343,18 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	public static void insertRecord(AccessContext targetConsent, Record record, IBaseResource resource) throws AppException {
+		insertRecord(targetConsent, record, resource, null);
+	}
+	
+	public static void insertRecord(AccessContext targetConsent, Record record, IBaseResource resource, List<EncryptedFileHandle> handles) throws AppException {
 		AccessLog.logBegin("begin insert FHIR record");		    
+												
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);			
 			record.data = BasicDBObject.parse(encoded);	
 			record.addTag("fhir:r4");
+			
 			try {
-			  PluginsAPI.createRecord(targetConsent, record);			
+			  PluginsAPI.createRecord(targetConsent, record, handles);			
 			} finally {
 		      AccessLog.logEnd("end insert FHIR record");
 			}
@@ -409,27 +440,25 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	public void insertRecord(Record record, T resource, List<Attachment> attachments, AccessContext targetContext) throws AppException {
-		if (attachments == null || attachments.isEmpty()) {
-			insertRecord(targetContext, record, (IBaseResource) resource);
-			return;
-		} 
-		AccessLog.logBegin("begin insert FHIR record with attachment");
-		List<UpdateFileHandleSupport> handles = attachmentsToHandles(attachments);	
-		List<EncryptedFileHandle> handles1 = handles.isEmpty() ? Collections.emptyList() : new ArrayList<EncryptedFileHandle>();
-		for (UpdateFileHandleSupport uf : handles) {
-			if (uf instanceof EncryptedFileHandle) handles1.add((EncryptedFileHandle) uf); else throw new UnprocessableEntityException("Illegal attachment URL");
-		}
-		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-		record.data = BasicDBObject.parse(encoded);		
-		PluginsAPI.createRecord(targetContext, record, handles1);			
 		
-		AccessLog.logEnd("end insert FHIR record with attachment");
+		List<EncryptedFileHandle> handles1 = null;
+		if (attachments != null && !attachments.isEmpty()) {			
+			List<UpdateFileHandleSupport> handles = attachmentsToHandles(attachments);	
+			handles1 = handles.isEmpty() ? Collections.emptyList() : new ArrayList<EncryptedFileHandle>();
+			for (UpdateFileHandleSupport uf : handles) {
+				AccessLog.log("handle attachment attachment");
+				if (uf instanceof EncryptedFileHandle) handles1.add((EncryptedFileHandle) uf); else throw new UnprocessableEntityException("Illegal attachment URL");
+			}
+		}
+		
+		insertRecord(targetContext, record, (IBaseResource) resource, handles1);		
 	}
 	
 	public void updateRecord(Record record, IBaseResource resource, List<Attachment> attachments) throws AppException {
 		if (resource.getMeta() != null && resource.getMeta().getVersionId() != null && !record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
         List<UpdateFileHandleSupport> handles = attachmentsToHandles(attachments);
 		
+        record.addTag("fhir:r4");
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = BasicDBObject.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();
@@ -541,5 +570,11 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			att.setDataElement(new Base64BinaryType(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING));
 		  }
 		}
+	}
+	
+	public void addSecurityTag(Record record, DomainResource theResource, String tag) {
+		  record.addTag(tag);
+		  Pair<String, String> coding = QueryTagTools.getSystemCodeForTag(tag);
+		  theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
 	}
 }

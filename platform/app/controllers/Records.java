@@ -247,7 +247,7 @@ public class Records extends APIController {
 
 			Circles.fillConsentFields(tempContext, Collections.singleton(consent), Sets.create("sharingQuery"));
 			query = ConsentQueryTools.getSharingQuery(consent, true);
-			if (!consent.status.equals(ConsentStatus.ACTIVE) && !userId.equals(consent.owner))
+			if (!consent.isSharingData() && !userId.equals(consent.owner))
 				readRecords = false;
 			context = tempContext.forConsent(consent);
 		} else {
@@ -660,7 +660,7 @@ public class Records extends APIController {
 							  attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
 							  if (attpos > 0) {
 								out.append(ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(context, new RecordToken(rec._id.toString(), rec.stream.toString()), idx);
+								FileData fileData = RecordManager.instance.fetchFile(context, new RecordToken(rec._id.toString(), context.getTargetAps().toString()), idx);
 
 								int BUFFER_SIZE = 3 * 1024;
 

@@ -98,7 +98,7 @@ import ENV from "config";
 
 export default {
     data: () => ({
-        login : { role : "MEMBER" },
+        login : { role : "MEMBER", email : "", password : "" },
         actions : null,
         offline : false,
         notPublic : ENV.instanceType == "prod",
@@ -180,7 +180,9 @@ export default {
 		
 		if ($route.query.language) {		
 		   setLocale($route.query.language);
-	    }
+	    } else if ($route.query.lang) {		
+		   setLocale($route.query.lang);
+	    } 
 
         $data.actions = $route.query.actions;
 	    $data.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);	

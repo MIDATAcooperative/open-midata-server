@@ -55,6 +55,7 @@ import models.UserGroupMember;
 import models.enums.AccountActionFlags;
 import models.enums.AccountNotifications;
 import models.enums.AuditEventType;
+import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
@@ -95,6 +96,7 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.SubscriptionManager;
 
 /**
  * user related functions
@@ -350,10 +352,15 @@ public class Users extends APIController {
 			  user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 			}
 		}
+		
+		
 		if (json.has("phone") || json.has("mobile")) {
-		  if (user.mobile != null) JsonValidation.validate(json, "mobile");
-		  user.phone = JsonValidation.getStringOrNull(json, "phone");
 		  String mobile = JsonValidation.getStringOrNull(json, "mobile");
+		  if (user.mobile != null && user.mobile.trim().length()>0) {
+			  JsonValidation.validate(json, "mobile");
+			  if (mobile==null) throw new JsonValidationException("error.missing.input_field", "mobile", "required", "Request parameter 'mobile' may not be empty.");
+		  }
+		  user.phone = JsonValidation.getStringOrNull(json, "phone");		  
 		  if (mobile==null || !mobile.equals(user.mobile)) {
 			  user.mobileStatus = EMailStatus.UNVALIDATED;
 			  user.mobile = mobile;  
@@ -557,15 +564,14 @@ public class Users extends APIController {
 		if (!check.equals(userId)) throw new InternalServerException("error.internal", "Session mismatch for wipe account.");
 		
 		User user = User.getById(userId, User.FOR_LOGIN);
+		if (user==null) return ok();
 		if (!user.authenticationValid(password) && !user.authenticationValid(passwordHash)) {
 			throw new BadRequestException("accountwipe.error",  "Invalid password.");
 		}
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, userId);
 		
-		doAccountWipe(portalContext(request), userId);
-			
-		AuditManager.instance.success();
+		SubscriptionManager.accountWipe(portalContext(request), userId);
 		
 		if (reason != null) {
 			Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "["+InstanceConfig.getInstance().getPortalServerDomain()+"]: Account Deletion", "Reason given by user: "+reason, null);
@@ -573,84 +579,7 @@ public class Users extends APIController {
 		
 		return ok();
 	}
-	
-	public static void doAccountWipe(AccessContext context, MidataId userId) throws AppException {
-		MidataId executorId = context.getAccessor();
-        SubscriptionData.deleteByOwner(userId);
-		
-		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
-		for (Space space : spaces) {
-			if (executorId.equals(userId)) {
-			  RecordManager.instance.deleteAPS(context, space._id);
-			} else AccessPermissionSet.delete(space._id);		
 			
-			Space.delete(userId, space._id);
-		}
-		
-		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE, ConsentType.API, ConsentType.REPRESENTATIVE)), Consent.ALL, Integer.MAX_VALUE);
-		for (Consent consent : consents) {
-			if (executorId.equals(userId)) {
-			RecordManager.instance.deleteAPS(context, consent._id);
-			} else AccessPermissionSet.delete(consent._id);
-			Circle.delete(userId, consent._id);
-		}
-		
-		Set<StudyParticipation> studies = StudyParticipation.getAllByMember(userId, Sets.create("_id", "study", "status", "pstatus"));
-		for (StudyParticipation study : studies) {
-			if (study.pstatus == ParticipationStatus.MEMBER_REJECTED || study.pstatus == ParticipationStatus.MEMBER_RETREATED || study.pstatus == ParticipationStatus.RESEARCH_REJECTED) continue;
-			try {
-			  controllers.members.Studies.retreatParticipation(context, userId, study.study);
-			} catch (Exception e) {}			
-		}
-		
-		Set<Consent> consents2 = Consent.getAllByAuthorized(userId);
-		for (Consent consent : consents2) {
-			consent = Consent.getByIdAndAuthorized(consent._id, userId, Sets.create("authorized"));
-			consent.authorized.remove(userId);
-			Consent.set(consent._id, "authorized", consent.authorized);	
-			Consent.set(consent._id, "lastUpdated", new Date());
-		}
-		
-		Set<UserGroupMember> ugs = UserGroupMember.getAllByMember(userId);
-		for (UserGroupMember ug : ugs) {
-			AccessPermissionSet.delete(ug._id);
-			ug.delete();
-		}
-		
-		if (executorId.equals(userId)) {
-		  RecordManager.instance.clearIndexes(context, userId);
-		}
-				
-        KeyRecoveryProcess.delete(userId);
-        KeyRecoveryData.delete(userId);
-        FutureLogin.delete(userId);
-		KeyManager.instance.deleteKey(userId);
-		KeyInfoExtern.delete(userId);
-		AccessPermissionSet.delete(userId);
-						
-		User user = User.getByIdAlsoDeleted(userId, User.ALL_USER_INTERNAL);
-		if (user != null) {
-			if (user.role == UserRole.PROVIDER) {
-				HPUser hp = HPUser.getById(userId, Sets.create("provider"));
-				user.delete();
-				if (!User.exists(CMaps.map("provider", hp.provider).map("status", User.NON_DELETED))) {
-					OrganizationResourceProvider.deleteOrganization(context, hp.provider);
-					HealthcareProvider.delete(hp.provider);
-				}			
-			} else
-			if (user.role == UserRole.RESEARCH) {
-				ResearchUser ru = ResearchUser.getById(userId, Sets.create("organization"));
-				user.delete();
-				if (!User.exists(CMaps.map("organization", ru.organization).map("status", User.NON_DELETED))) {
-				  OrganizationResourceProvider.deleteOrganization(context, ru.organization);
-				  Research.delete(ru.organization);	
-				}
-			} else {
-				user.delete();
-			} 						
-		}
-	}
-	
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public Result getAccountStats() throws AppException {

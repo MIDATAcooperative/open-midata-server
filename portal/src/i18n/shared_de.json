@@ -40,6 +40,7 @@
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
         "unsupported" : "Operation nicht unterstützt",
         "failed" : "Aktion fehlgeschlagen",
+        "timeout" : "Timeout",
         "notrialuser_title" : "Vollständige Mitgliedschaft notwendig!",
         "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung der Allgemeinen Geschäftsbedingungen und senden Sie diese unterschrieben an @OPERATOR zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "mustbemember_title" : "Mitgliedschaft bei @OPERATOR erforderlich!",
@@ -186,7 +187,8 @@
 
         "already_done" : {
             "email_verification" : "Die E-Mail-Adresse wurde bereits verifiziert.",
-            "unsubscribed" : "Sie haben sich bereits von diesem Kommunikationskanal abgemeldet."
+            "unsubscribed" : "Sie haben sich bereits von diesem Kommunikationskanal abgemeldet.",
+            "validation" : "Das Projekt wurde bereits validiert."
         },
 
         "no_alter" : {
@@ -291,6 +293,7 @@
             "contract-send" : "Vertrag an Benutzer versandt",
             "internal-comment" : "Anmerkung Administrator",
             "user-terms-of-use-agreed" : "Allgemeine Geschäftsbedingungen angenommen",
+            "user-terms-of-use-noted" : "Allgemeine Geschäftsbedingungen zur Kenntnis genommen",
             "audit-log-used" : "Audit Log angeschaut",
             "added-as-team-member" : "Hinzugefügt als Teammitglied",
             "updated-role-in-team" : "Rolle im Team aktualisiert",
@@ -700,8 +703,8 @@
         "birthday_entered" : "Für die Nutzung dieses Dienstes ist ein gültiges Geburtsdatum erforderlich. Bitte fügen Sie Ihr Geburtsdatum zu Ihren Kontoinformationen hinzu. (Formatbeispiel: 31.12.1999)",
         "gender_entered" : "Ihr Geschlecht muss angegeben werden, um diesen Dienst nutzen zu können. Bitte geben Sie Ihr Geschlecht an.",
         "admin_verified" : "Ihr Konto muss durch einen Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte @SUPPORT.",
-        "terms_agreed" : "Die Allgemeine Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
-        "privacy_policy_agreed" : "Die Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
+        "terms_agreed" : "Die Allgemeinen Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie die neue Fassung zur Kenntnis genommen haben.",
+        "privacy_policy_agreed" : "Die Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie die neue Fassung zur Kenntnis genommen haben.",
         "auth2factor" : "Ein Autorisierungscode wurde an Ihr Telefon gesendet. Bitte geben Sie ihn ein.",
         "securityToken" : "Code",
         "securityToken_btn" : "Senden",
@@ -715,6 +718,7 @@
         "emailnotify" : "Benachrichtigungen",
         "emailnotify2" : "Bitte senden Sie mir jedes Mal eine E-Mail, wenn ich mich im @PRODUCT Portal unter {{domain}} anmelde.",
         "agree_btn" : "Ich stimme zu",
+        "noted_btn" : "Ich habe es zur Kenntnis genommen",
         "keyrecovery" : {
             "intro" : "Der private Schlüssel, der zur Verschlüsselung Ihrer Daten verwendet wird, muss wiederhergestellt werden. Um Ihren Schlüssel wiederherzustellen, versuchen Sie eine dieser Optionen:",
             "way1" : "Haben Sie eine Applikation die @PRODUCT benutzt, bei der Sie noch angemeldet sind? Wenn ja, öffnen Sie diese Applikation und Ihr Schlüssel wird wiederhergestellt. Versuchen Sie anschliessend, sich erneut anzumelden.",
@@ -855,6 +859,7 @@
         "export_btn" : "Export Ihrer Daten",
         "delete_records_btn" : "Datensätze löschen",
         "wipe_account_btn" : "Konto löschen",
+        "cancel_btn" : "Zurück zur Applikation",
         "metrics_btn" : "Account-Metriken berechnen",
         "servicekeys_btn" : "API-Schlüssel verwalten",
         "account_repaired" : "Ihr Konto wurde repariert.",
@@ -1348,13 +1353,11 @@
     },
 
     "serviceleave" : {
-        "title" : "Haben Sie Ihre Session beendet?",
+        "title" : "Sie verlassen @PRODUCT",
         "thankyou" : "Danke für Ihre Hilfe!",
-        "continue" : "Bitte benutzen Sie das Hauptmenü, um Ihre Session fortzusetzen oder sich abzumelden.",
         "logout_btn" : "Abmelden",
         "goodbye_btn" : "Session beenden und Fenster schliessen",
-        "logoutreturn" : "Sie werden zur aufrufenden Seite weitergeleitet.",
-        "return_btn" : "Abmelden und fortfahren"
+        "logoutreturn" : "Sie verlassen jetzt das @PRODUCT-Kontoverwaltungsportal."
     },
 
     "queryeditor" : {
@@ -1398,6 +1401,17 @@
         "observer" : "Nur mit diesem Observer (optional)",
         "category" : "Kategorie (optional)",
         "custom_filter" : "Benutzerdefinierte Filter (JSON)",
+        "security_tags" : "Sicherheits-Tags",
+        "tag" : "Tag",
+        "require" : "Erforderlich zum Lesen",
+        "allow" : "Schreiben zulassen",
+        "add" : "Automatisch hinzufügen",
+        "tags" : {
+            "reliable" : "Zuverlässig",
+            "no_delete" : "Kein Löschen",
+            "read_only" : "Nur lesen",
+            "hidden" : "Vor dem Patienten verstecken"
+        },
         "remove_btn" : "Entfernen",
         "apply_btn" : "Anwenden",
         "newentry" : "Geben Sie Name, Code, Ressourcentyp oder (Teil-)Beschreibung des Datentyps ein, den Sie hinzufügen möchten:",

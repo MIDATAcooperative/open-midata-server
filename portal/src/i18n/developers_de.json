@@ -57,6 +57,7 @@
             "REGISTRATION_BY_OTHER_PERSON" : "Registrierung eines neuen Benutzers durch eine andere Person",
             "FIRSTUSE_ANYUSER" : "Erstanwendung der Applikation",
             "FIRSTUSE_EXISTINGUSER" : "Erstanwendung der Appplikation (wenn kein Registrierungs-E-Mail versendet)",
+            "SERVICE_WITHDRAW" : "Nutzung des Dienstes einstellen",
             "CONSENT_REQUEST_OWNER_INVITED" : "Vorgeschlagene Zustimmung (Geber, Einladung)",
             "CONSENT_REQUEST_OWNER_EXISTING" : "Vorgeschlagene Zustimmung (Geber, Nutzer)",
             "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Vorgeschlagene Zustimmung (Empfänger, Einladung)",

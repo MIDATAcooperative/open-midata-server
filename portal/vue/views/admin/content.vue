@@ -18,8 +18,7 @@
 <template>
     <div  class="midata-overlay borderless">
         <panel :title="getTitle()" :busy="isBusy">
-        
-				
+        				
 		<p v-t="'content.intro'"></p>
 		<div class="row">
 		<div class="col-sm-8 mt-1">
@@ -42,10 +41,11 @@
 		  <tr v-for="choice in newentry.choices" :key="JSON.stringify(choice)">
 		    <td><a href="javascript:" @click="addContent(choice)">{{ choice.display }}</a>
 		      <span v-if="choice.group" class="text-muted">(Group)</span>
+		      <span v-else class="text-muted">(Content)</span>
 		    </td>
 		    <td>
-		      <div v-for="code in choice.codes" :key="JSON.stringify(code)"><a href="javascript:" @click="addContent(choice, code)">{{ code.system }} {{ code.code }}</a></div>
-		      <div v-for="content in orderDisplay(choice.contents)" :key="JSON.stringify(content)"><a href="javascript:" @click="addContent(content);">{{ content.display }}</a><span v-if="content.content" class="text-muted">(Content)</span></div>
+		      <div v-for="code in choice.codes" :key="JSON.stringify(code)"><a href="javascript:" @click="addContent(choice, code)">{{ code.system }} {{ code.code }}</a> <span class="text-muted">(Code)</span></div>
+		      <div v-for="content in orderDisplay(choice.contents)" :key="JSON.stringify(content)"><a href="javascript:" @click="addContent(content);">{{ content.display }}</a><span v-if="content.content" class="text-muted">(Content)</span><span v-else>(Group)</span></div>
 		    </td> 
 		  </tr>
 		</table>
@@ -462,7 +462,7 @@ export default {
 							}
 						}
 					};
-					if (dat.contents && dat.contents.length == 1 && (!dat.children || dat.children.length==0)) return;
+					//if (dat.contents && dat.contents.length == 1 && (!dat.children || dat.children.length==0)) return;
 					if (add(grp)) {
 						recproc(dat);
 					}
@@ -501,8 +501,10 @@ export default {
 					let l = result.data.length; 		
 					for (let i2=0;i2<l;i2++) { 
 						let dat = result.data[i2];
-						for (let lang in dat.label) {					
-						if (dat.label[lang].toLowerCase().indexOf(what) >= 0 || dat.name.toLowerCase().indexOf(what) >= 0) {						    					
+						for (let lang in dat.label) {	
+									
+						if (dat.label[lang].toLowerCase().indexOf(what) >= 0 || dat.name.toLowerCase().indexOf(what) >= 0) {
+						    console.log(dat);							    					
 							addgroup(dat);
 							
 						}

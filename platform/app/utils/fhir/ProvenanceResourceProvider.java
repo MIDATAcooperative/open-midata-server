@@ -83,7 +83,8 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 		addPathWithVersion("Provenance.target");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("Provenance")		
+		  .reset("Provenance")	
+		  .hideIfPseudonymized("Provenance", "text")
 		  .pseudonymizeReference("Provenance", "target")
 		  .pseudonymizeReference("Provenance", "entry", "item");
 	}

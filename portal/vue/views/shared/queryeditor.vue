@@ -40,6 +40,8 @@
 		      <span v-if="mode=='app'"> / </span>
 		      <span class="text-danger" v-if="block.app && block.app != 'all'"><span v-t="'queryeditor.short_app_other'"></span> {{ block.appName }}</span>
 		      <span class="text-success" v-if="!block.app || block.app == 'all'" v-t="'queryeditor.short_app_all'"></span>
+		      <span v-if="block.addTag" v-for="atag of block.addTag" :key="atag" class="ml-1 badge badge-danger">{{ getTagName(atag) }}</span>
+		      <span v-if="block.allowTag" v-for="atag of block.allowTag" :key="atag" class="ml-1 badge badge-warning">{{ getTagName(atag) }}</span>
 		    </div>		   
 		    
 		    <div v-if="block.timeRestrictionMode">
@@ -165,9 +167,9 @@
 		    <input type="text" class="form-control" v-validate v-model="currentBlock.category">	    
 		  </form-group>
 		  <div v-if="mode=='study'">
-		  <form-group name="restrictions" label="queryeditor.restrictions" v-if="timeModes.length || dataPeriodModes.length || currentBlock.flags.custom" :path="errors.restrictions">
-		    <div class="form-check" v-if="timeModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.timeRestriction"><span v-t="'queryeditor.time_restriction'"></span></label></div>
-		    <div class="form-check" v-if="dataPeriodModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.dataPeriodRestriction"><span v-t="'queryeditor.data_period_restriction'"></span></label></div>
+		  <form-group name="restrictions" label="queryeditor.restrictions" v-if="(timeModes && timeModes.length) || (dataPeriodModes && dataPeriodModes.length) || currentBlock.flags.custom" :path="errors.restrictions">
+		    <div class="form-check" v-if="timeModes && timeModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.timeRestriction"><span v-t="'queryeditor.time_restriction'"></span></label></div>
+		    <div class="form-check" v-if="dataPeriodModes && dataPeriodModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.dataPeriodRestriction"><span v-t="'queryeditor.data_period_restriction'"></span></label></div>
 		    <div class="form-check" v-if="currentBlock.flags.custom"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.customFilter"><span v-t="'queryeditor.custom_filter'"></span></label></div>
 		  </form-group>
 		  <form-group name="timeRestrictionDate" label="queryeditor.time_restriction" v-if="currentBlock.timeRestriction" :path="errors.timeRestrictionDate">
@@ -204,7 +206,28 @@
 		  <form-group id="customFilter"  label="queryeditor.custom_filter" v-if="currentBlock.customFilter">		   		     
 		     <input type="text" class="form-control" v-validate v-model="currentBlock.customFilterValue"> 
 		  </form-group>
+		
 		  </div>
+		  <form-group id="securityTags"  label="queryeditor.security_tags" v-if="mode=='app' && !currentBlock.flags.notags">		   		     
+		     <table class="table table-hover table-borderless table-sm">
+		        <thead>
+		          <tr>
+		             <th>{{ $t("queryeditor.tag") }}</th>
+		             <th>{{ $t("queryeditor.require") }}</th>
+		             <th>{{ $t("queryeditor.allow") }}</th>
+		             <th>{{ $t("queryeditor.add") }}</th>
+		          </tr>
+		        </thead>
+		        <tbody>
+		           <tr v-for="tag in tags" :key="tag.id">
+		             <td>{{ $t("queryeditor.tags."+tag.label) }}</td>
+		             <td><input type="checkbox" :checked="isTagPresent(tag,'tag')" @change="changeTag(tag, 'tag')"></td>
+		             <td><input type="checkbox" :checked="isTagPresent(tag,'allowTag')" @change="changeTag(tag, 'allowTag')"></td>
+		             <td><input type="checkbox" :checked="isTagPresent(tag,'addTag')" @change="changeTag(tag, 'addTag')"></td>
+		           </tr>
+		        </tbody>
+		     </table> 
+		  </form-group>
           <form-group id="x" label="common.empty">								
 		    <button class="btn btn-default space" @click="deleteBlock()" v-t="'queryeditor.remove_btn'"></button>
 		    <button class="btn btn-default space" @click="applyBlock()" v-t="'queryeditor.apply_btn'"></button>
@@ -297,17 +320,24 @@ export default {
     	writemodes : apps.writemodes,
 		expertmode : false,
 		mode : null,
+		tags : [
+		   { id : "security:reliable", label : "reliable" },
+		   { id : "security:no-delete", label : "no_delete" },
+		   { id : "security:read-only", label : "read_only" },
+		   { id : "security:hidden", label : "hidden" },
+		   { id : "security:not-pseudonymisable", label : "not_pseudonymisable" }
+		],
 		resourceOptions : {
-			"fhir/AuditEvent" : ["noapp", "noowner", "notime", "nopublic"], 
-			"fhir/Consent:Consent" : ["noapp", "noowner", "notime", "nopublic", "observer", "category"],
-			"fhir/ResearchStudy:ResearchStudy" : ["noapp","noowner","initpublic","notime","nopublic"],
-			"fhir/Organization" : ["noapp","noowner","initpublic","notime","nopublic"],
+			"fhir/AuditEvent" : ["noapp", "noowner", "notime", "nopublic", "notags"], 
+			"fhir/Consent:Consent" : ["noapp", "noowner", "notime", "nopublic", "observer", "category", "notags"],
+			"fhir/ResearchStudy:ResearchStudy" : ["noapp","noowner","initpublic","notime","nopublic", "notags"],
+			"fhir/Organization" : ["noapp","noowner","initpublic","notime","nopublic", "notags"],
 			"fhir/ValueSet" : ["noapp","noowner", "notime","initpublic"],
-			"fhir/Group" : ["noowner"],
-			"fhir/Patient" : ["noapp", "notime", "nopublic"],
-			"fhir/Person" : ["noapp", "noowner", "notime", "nopublic"],
-			"fhir/Practitioner:Practitioner" : ["noapp", "noowner", "notime"],
-			"fhir/Subscription" : ["noapp", "noowner", "notime", "nopublic"],
+			"fhir/Group" : ["noowner", "notags"],
+			"fhir/Patient" : ["noapp", "notime", "nopublic", "notags"],
+			"fhir/Person" : ["noapp", "noowner", "notime", "nopublic", "notags"],
+			"fhir/Practitioner:Practitioner" : ["noapp", "noowner", "notime", "notags"],
+			"fhir/Subscription" : ["noapp", "noowner", "notime", "nopublic", "notags"],
 			"fhir/Observation" : ["effective"],
 			"fhir/QuestionnaireResponse" : ["custom"],
 			"fhir/DocumentReference" : []	
@@ -347,7 +377,7 @@ export default {
 				}));				
 			} else if ($route.meta.mode == "app") {
 				$data.mode = "app";
-				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate"])
+				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated"])
 				.then(function(data) { 
 					$data.app = data.data[0];
 					$data.target.appname = $data.app.filename;
@@ -383,6 +413,11 @@ export default {
 			if (format.startsWith("fhir/")) return format.substr(5);
 			return format;
 		},
+		
+		getTagName(tag) {
+		   if (tag.startsWith("security:")) return tag.substring(9);
+		   return tag;
+		},
 
 		buildAccessQuery() {	
 			const { $data, $route, $router } = this, me = this;	
@@ -410,6 +445,10 @@ export default {
 				if (block.timeRestriction && block.timeRestrictionMode) {
 					fb[block.timeRestrictionMode] = block.timeRestrictionDate;
 				}
+				if (block.addTag) fb["add-tag"] = block.addTag;
+				if (block.allowTag) fb["allow-tag"] = block.allowTag;
+				if (block.tag) fb.tag = block.tag;
+				
 				if (block.dataPeriodRestriction && block.dataPeriodRestrictionMode) {
 					if (!fb.data) fb.data = {};
 					if (block.dataPeriodRestrictionMode === "effective") {
@@ -757,6 +796,9 @@ export default {
 					if (ac("code")) nblock.code = ac("code");		
 					if (ac("group")) nblock.group = ac("group");
 					if (ac("group-system")) nblock.system = ac("group-system");
+					if (ac("add-tag")) nblock.addTag = ac("add-tag");
+					if (ac("tag")) nblock.tag = ac("tag");
+					if (ac("allow-tag")) nblock.allowTag = ac("allow-tag");
 					nblock["public"] = ac("public") || "no";
 					if (ac("created-after")) {
 						nblock.timeRestriction = true;
@@ -799,8 +841,13 @@ export default {
 					if (ac("owner")) {
 						nblock.owner = noarray(ac("owner"));
 					}
+					
+					let iterate = [ nblock ];
+					for (let x of ["group","code","content","app","format","add-tag","tag","allow-tag"]) {
+					  iterate = unwrap(iterate, x);
+					}
 				
-					for (let r of unwrap(unwrap(unwrap(unwrap(unwrap([ nblock ],"group"),"code"),"content"),"app"),"format")) {
+					for (let r of iterate) {
 						(function(r) {
 						if (!r.app) r.app = "all";
 						if (r.app == $data.target.appname) { r.app = "self";r.appName = $data.target.appname; }
@@ -824,6 +871,18 @@ export default {
 
 		noCode(block) {
 			block.code = undefined;
+		},
+		
+		isTagPresent(tag, where) {
+		   let r = this.$data.currentBlock[where];
+		   return (r && r.indexOf(tag.id)>=0); 
+		},
+		
+		changeTag(tag, where) {
+		   let cb = this.$data.currentBlock;
+		   if (!cb[where]) cb[where] = [];
+		   if (this.isTagPresent(tag,where)) cb[where].splice(cb[where].indexOf(tag.id),1);
+		   else cb[where].push(tag.id);
 		}
     },
 

@@ -24,6 +24,7 @@ import org.hl7.fhir.r4.model.DomainResource;
 import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import models.Model;
+import utils.AccessLog;
 import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ReadWriteResourceProvider;
@@ -69,13 +70,18 @@ public class UpdateTransactionStep extends TransactionStep {
 		
 		
 		if (result == null) {
-			((ReadWriteResourceProvider) provider).updateExecute(record, resource);
-			result = new BundleEntryComponent();
-			BundleEntryResponseComponent response = new BundleEntryResponseComponent();
-			response.setLastModified(((ReadWriteResourceProvider) provider).getLastUpdated(record));
-			response.setStatus("200 OK");
-			response.setLocation(FHIRServlet.getBaseUrl()+"/"+provider.getResourceType().getSimpleName()+"/"+record._id.toString()+"/_history/"+((ReadWriteResourceProvider) provider).getVersion(record));
-			result.setResponse(response);
+			AccessLog.logBegin("begin update transaction for resource ",provider.getResourceType().getSimpleName());
+			try {	
+				((ReadWriteResourceProvider) provider).updateExecute(record, resource);
+				result = new BundleEntryComponent();
+				BundleEntryResponseComponent response = new BundleEntryResponseComponent();
+				response.setLastModified(((ReadWriteResourceProvider) provider).getLastUpdated(record));
+				response.setStatus("200 OK");
+				response.setLocation(FHIRServlet.getBaseUrl()+"/"+provider.getResourceType().getSimpleName()+"/"+record._id.toString()+"/_history/"+((ReadWriteResourceProvider) provider).getVersion(record));
+				result.setResponse(response);
+			} finally {
+				AccessLog.logEnd("end update transaction");
+			}
 		}	
 		
 	}

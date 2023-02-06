@@ -50,18 +50,24 @@ import models.SubscriptionData;
 import models.User;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.libs.ws.WSClient;
 import scala.Option;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.PluginLoginCache;
 import utils.RuntimeConstants;
 import utils.ServerTools;
+import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.MidataConsentResourceProvider;
 import utils.fhir.FHIRServlet;
@@ -80,12 +86,14 @@ public class SubscriptionManager {
 	private static ActorSystem system;
 	
 	private static ActorRef subscriptionChecker;
+	private static ActorRef accountWiper;
 	
 	public static void init(ActorSystem system1, WSClient ws1) {
 		system = system1;
 	   	ws = ws1;
 	   	
 	   	subscriptionChecker = system.actorOf(Props.create(SubscriptionChecker.class).withDispatcher("medium-work-dispatcher"), "subscriptionChecker");
+	   	accountWiper = system.actorOf(Props.create(AccountWiper.class).withDispatcher("medium-work-dispatcher"), "accountWiper");
 	}
 	
 	
@@ -108,6 +116,16 @@ public class SubscriptionManager {
 	public static void resourceChange(Record record) {	
 		AccessLog.log("Resource change: "+record.format);
 		subscriptionChecker.tell(new ResourceChange(record.format, record, record.owner.equals(RuntimeConstants.instance.publicUser), record.owner), ActorRef.noSender());							
+	}
+	
+	public static void accountWipe(AccessContext context, MidataId userId) throws AppException {
+		User user = User.getByIdAlsoDeleted(userId, User.ALL_USER_INTERNAL);
+		if (user != null) {
+			user.status = UserStatus.DELETED;
+			user.set("status", user.status);
+			
+			accountWiper.tell(new AccountWipeMessage(userId, KeyManager.instance.currentHandle(context.getAccessor()), context.getAccessor(), 0, AuditManager.instance.convertLastEventToAsync()), ActorRef.noSender());
+		}
 	}
 	
 	public static String messageToProcess(MidataId executor, MidataId app, String eventCode, String destination, String fhirVersion, String bundleJSON, Map<String,String> params, boolean doasync) {
@@ -164,7 +182,7 @@ public class SubscriptionManager {
 	    			newdata.add();
 	    			SubscriptionManager.subscriptionChange(newdata);
 	    			if (newdata.format.equals("init")) { 
-	    				subscriptionChecker.tell(new SubscriptionTriggered(userId, plugin._id, "init", "init", null, null, null, null, userId), ActorRef.noSender());
+	    				subscriptionChecker.tell(new SubscriptionTriggered(userId, plugin._id, "init", "init", null, null, null, null, userId, null), ActorRef.noSender());
 	    			}
 	    		//}
 	    	}
@@ -424,6 +442,7 @@ class SubscriptionChecker extends AbstractActor {
 		Set<MidataId> affected = new HashSet<MidataId>();
 		String resource = null;
 		MidataId resourceId = null;
+		String resourceVersion = null;
 		MidataId sourceOwner = null;
 		String content = null;
 		if (change.getResource() instanceof Consent) {
@@ -437,25 +456,46 @@ class SubscriptionChecker extends AbstractActor {
 					  Set<ServiceInstance> instances = ServiceInstance.getByApp(appId, Sets.create("_id","executorAccount","status"));
 					  for (ServiceInstance instance : instances) if (instance.status == UserStatus.ACTIVE) affected.add(instance.executorAccount);
 					} catch (InternalServerException e) {
+					  AccessLog.logException("subscription processing", e);
 					  ErrorReporter.report("Subscripion processing", null, e);
 					}
 				}
 								
 			}
 			resource = change.getFhir();
-			
+			resourceVersion = MidataConsentResourceProvider.getInstance().getVersion(consent);
 			content = "Consent";
 		} else if (change.getResource() instanceof Record) {
 			Record record = (Record) change.getResource();
 			content = record.content;
 			sourceOwner = record.owner;
 			resourceId = record._id;
+			resourceVersion = record.version;
 			affected.add(record.owner);
 			
 			if (change.isPublic() && change.getType().equals("fhir/ResearchStudy")) {
+				AccessLog.log("change is public research study");
 				List<SubscriptionData> allData = SubscriptionData.getAllActiveFormat("fhir/ResearchStudy", Sets.create("owner"));
 				for (SubscriptionData dat : allData) affected.add(dat.owner);
 			}
+						
+			Set<Consent> apis = Consent.getAllByOwner(record.owner, CMaps.map("status", ConsentStatus.ACTIVE).map("type", ConsentType.API), Sets.create("authorized", "_id", "sharingQuery", "type"), 0);			
+			if (!apis.isEmpty()) {
+				AccessContext context = ContextManager.instance.createSessionForDownloadStream(record.owner, UserRole.ANY);
+				for (Consent consent : apis) {
+					try {									 
+					  if (RecordManager.instance.checkRecordInAccessQuery(context, record, consent)) {					
+						  AccessLog.log("found matching external API consent:"+consent._id);
+						  affected.addAll(consent.authorized);
+					  } else {
+						  AccessLog.log("non matching external API consent:"+consent._id);
+					  }
+					} catch (Exception e) {
+					  ErrorReporter.report("Subscripion processing", null, e);
+					  AccessLog.logException("subscription processing", e);
+					}
+				}
+			} else AccessLog.log("no external APIs found.");				
 			
 			/* TODO : The following section is not broken it should just be performance optimized somehow.
 			 * It determines which user accounts subscriptions need to be triggered by a resource change.
@@ -482,16 +522,17 @@ class SubscriptionChecker extends AbstractActor {
 			} catch (AppException e) {}
 			*/
 		}
-		
+		AccessLog.log("total possible affected users="+affected.size());
 		for (MidataId affectedUser : affected) {
 			if (withSubscription.contains(affectedUser)) {
-				
-				SubscriptionTriggered trigger = new SubscriptionTriggered(affectedUser, null, change.type, content, null, resource, resourceId, null, sourceOwner);				
+				AccessLog.log("trigger subscriptions for user="+affectedUser.toString());
+				SubscriptionTriggered trigger = new SubscriptionTriggered(affectedUser, null, change.type, content, null, resource, resourceId, null, sourceOwner, resourceVersion);				
 				processor.tell(trigger, getSelf());
 			}
 		}
-		} catch (InternalServerException e) {
+		} catch (Exception e) {
 			ErrorReporter.report("Subscripion processing", null, e);
+			AccessLog.logException("subscription processing", e);
 		} finally {
 			ServerTools.endRequest();
 			ActionRecorder.end(path, st);
@@ -518,7 +559,7 @@ class SubscriptionChecker extends AbstractActor {
 				  messageResponse(new MessageResponse("User not found.", 400, null));
 				  return;
 			  }			  
-			  SubscriptionTriggered trigger = new SubscriptionTriggered(targetUser, targetApp, "fhir/MessageHeader", message.getEventCode()+":"+sender.filename, message.getFhirVersion(), message.getMessage(), null, message.getParams(), message.getExecutor());
+			  SubscriptionTriggered trigger = new SubscriptionTriggered(targetUser, targetApp, "fhir/MessageHeader", message.getEventCode()+":"+sender.filename, message.getFhirVersion(), message.getMessage(), null, message.getParams(), message.getExecutor(), null);
 			  processor.forward(trigger, getContext());
 			} catch (AppException e) {
 				messageResponse(new MessageResponse("Error", 500, null));
@@ -526,7 +567,7 @@ class SubscriptionChecker extends AbstractActor {
 				ServerTools.endRequest();
 			}
 		} else {
-		  SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getFhirVersion(), message.getMessage(), null, message.getParams(), message.getExecutor());
+		  SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getFhirVersion(), message.getMessage(), null, message.getParams(), message.getExecutor(), null);
 		  processor.forward(trigger, getContext());
 		}
 		
@@ -572,7 +613,7 @@ class SubscriptionChecker extends AbstractActor {
 				Subscription fhirSubscription = SubscriptionResourceProvider.subscription(data);				
 				if (fhirSubscription.getChannel().getType().equals(SubscriptionChannelType.MESSAGE) && fhirSubscription.getChannel().getEndpoint().startsWith("app://")) {					
 					String appname = fhirSubscription.getChannel().getEndpoint().substring("app://".length());
-					Plugin target = Plugin.getByFilename(appname, Sets.create("_id","status"));
+					Plugin target = PluginLoginCache.getByFilename(appname);
 					if (target != null) return target._id;
 				}
 			}

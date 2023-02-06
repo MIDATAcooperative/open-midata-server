@@ -101,6 +101,7 @@ import models.enums.WritePermissionType;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
+import utils.PluginLoginCache;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -419,7 +420,9 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		c.getProvision().getActor().clear();
 		
 		switch (consentToConvert.status) {
-		case ACTIVE:c.setStatus(ConsentState.ACTIVE);break;
+		case PRECONFIRMED:
+		case ACTIVE:
+			c.setStatus(ConsentState.ACTIVE);break;
 		case UNCONFIRMED:c.setStatus(ConsentState.PROPOSED);break;
 		case REJECTED:c.setStatus(ConsentState.REJECTED);break;
 		case EXPIRED:c.setStatus(ConsentState.INACTIVE);break;
@@ -563,9 +566,9 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		 Set<MidataId> resolved = new HashSet<MidataId>();
 		 for (Object app : apps) {
 			 if (!MidataId.isValid(app.toString())) {
-				 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
+				 Plugin p = PluginLoginCache.getByFilename(app.toString());					 
 				 if (p!=null) resolved.add(p._id);
-				 else throw new BadRequestException("error.internal", "Queried for unknown app.");
+				 else throw new BadRequestException("error.internal", "Queried for unknown app as observer with internal name '"+app.toString()+"'.");
 			 } else resolved.add(MidataId.from(app));
 		 }
 		 return resolved;

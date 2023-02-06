@@ -61,7 +61,13 @@ public class Consent extends Model implements Comparable<Consent> {
 	 */
 	public @NotMaterialized final static Set<String> FHIR = Sets.create(ALL, "fhirConsent");
 	
-	public @NotMaterialized final static Set<ConsentStatus> NOT_DELETED = Collections.unmodifiableSet(EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.DRAFT, ConsentStatus.EXPIRED, ConsentStatus.FROZEN, ConsentStatus.REJECTED, ConsentStatus.INVALID, ConsentStatus.UNCONFIRMED));
+	public @NotMaterialized final static Set<ConsentStatus> NOT_DELETED = Collections.unmodifiableSet(EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.DRAFT, ConsentStatus.EXPIRED, ConsentStatus.FROZEN, ConsentStatus.REJECTED, ConsentStatus.INVALID, ConsentStatus.UNCONFIRMED, ConsentStatus.PRECONFIRMED));
+	
+	protected @NotMaterialized final static Set<ConsentStatus> ACTIVE_STATUS = Collections.unmodifiableSet(Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.PRECONFIRMED));
+	
+	protected @NotMaterialized final static Set<ConsentStatus> SHARING_STATUS = Collections.unmodifiableSet(Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN, ConsentStatus.PRECONFIRMED));
+	
+	protected @NotMaterialized final static Set<ConsentStatus> WRITEABLE_STATUS = Collections.unmodifiableSet(Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.PRECONFIRMED));
 	/**
 	 * When this consent was created
 	 */
@@ -219,11 +225,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)), Consent.SMALL);
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", SHARING_STATUS), Consent.SMALL);
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member, long since) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)).map("dataupdate", CMaps.map("$gte", since)), Consent.SMALL);
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", SHARING_STATUS).map("dataupdate", CMaps.map("$gte", since)), Consent.SMALL);
 	}
 	
 	public static Set<Consent> getAllByAuthorized(MidataId member, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
@@ -239,11 +245,15 @@ public class Consent extends Model implements Comparable<Consent> {
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorizedAndOwners(MidataId member, Set<MidataId> owners) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)), Consent.SMALL);
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status", SHARING_STATUS), Consent.SMALL);
+	}
+	
+	public static Set<Consent> getAllWriteableByAuthorizedAndOwners(MidataId member, Set<MidataId> owners) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status", WRITEABLE_STATUS), Consent.SMALL);
 	}
 	
 	public static Set<Consent> getHealthcareOrResearchActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)).map("type",  EnumSet.of(ConsentType.HEALTHCARE, ConsentType.STUDYPARTICIPATION, ConsentType.API)), Consent.SMALL);
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status", SHARING_STATUS).map("type",  EnumSet.of(ConsentType.HEALTHCARE, ConsentType.STUDYPARTICIPATION, ConsentType.API)), Consent.SMALL);
 	}
 	
 	public static Set<Consent> getByExternalEmail(String emailLC) throws InternalServerException {
@@ -358,5 +368,17 @@ public class Consent extends Model implements Comparable<Consent> {
 	
 	public static List<Consent> getBroken() throws AppException {
 		return Model.getAllList(Consent.class, collection, CMaps.map("fhirConsent", CMaps.map("$exists", false)), FHIR, 1000);
+	}
+	
+	public boolean isActive() {
+		return this.status == ConsentStatus.ACTIVE || this.status == ConsentStatus.PRECONFIRMED;
+	}
+	
+	public boolean isSharingData() {
+		return this.status == ConsentStatus.ACTIVE || this.status == ConsentStatus.PRECONFIRMED || this.status == ConsentStatus.FROZEN;
+	}
+	
+	public boolean isWriteable() {
+		return this.status == ConsentStatus.ACTIVE || this.status == ConsentStatus.PRECONFIRMED;
 	}
 }

@@ -192,6 +192,9 @@ public class Market extends APIController {
 			  app.name = JsonValidation.getString(json, "name");
 			}
 			
+			app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
+			app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
+			
 			
 			if (withLogout) {
 				Map<String, Object> oldDefaultQuery = app.defaultQuery;
@@ -205,6 +208,7 @@ public class Market extends APIController {
 					app.loginTemplateApprovedByEmail = null;
 					app.loginTemplateApprovedById = null;
 					app.loginTemplateApprovedDate = null;
+					markReviewObsolete(pluginId, AppReviewChecklist.TERMS_OF_USE_MATCH_QUERY);
 				}
 				app.defaultQuery = query;
 												
@@ -283,6 +287,9 @@ public class Market extends APIController {
 			
 			app.i18n = new HashMap<String, Plugin_i18n>();
 			
+			if (app.resharesData && app.usePreconfirmed) {
+				throw new JsonValidationException("error.invalid.usePreconfirmed", "usePreconfirmed", "invalid", "Data reshare and preconfirmation not allowed together.");
+			}
 			
 			if (getRole().equals(UserRole.ADMIN) && withLogout) {
 				/*String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
@@ -533,7 +540,7 @@ public class Market extends APIController {
 		
 		String json = JsonOutput.toJson(mixed, mapping);
 		//String base64 = Base64.getEncoder().encodeToString(json.getBytes());
-		return ok(json);
+		return ok(json).as("application/json");
 	}
 	
 	@APICall
@@ -715,6 +722,8 @@ public class Market extends APIController {
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		plugin.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
+		plugin.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
 		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		plugin.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		plugin.codeChallenge = JsonValidation.getBoolean(json, "codeChallenge");
@@ -726,6 +735,10 @@ public class Market extends APIController {
 		if (plugin.type.equals("analyzer") || plugin.type.equals("endpoint")) {
 			plugin.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
 		} else plugin.pseudonymize = false;
+		
+		if (plugin.resharesData && plugin.usePreconfirmed) {
+			throw new JsonValidationException("error.invalid.usePreconfirmed", "usePreconfirmed", "invalid", "Data reshare and preconfirmation not allowed together.");
+		}
 		
 		try {
 		    Query.validate(plugin.defaultQuery, plugin.type.equals("mobile") || plugin.type.equals("service"));
@@ -843,6 +856,8 @@ public class Market extends APIController {
 		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
+		app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
 		app.consentObserving = JsonValidation.getBoolean(json, "consentObserving");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
@@ -863,6 +878,7 @@ public class Market extends APIController {
 			  app.loginTemplateApprovedByEmail = null;
 			  app.loginTemplateApprovedById = null;
 			  app.loginTemplateApprovedDate = null;
+			  markReviewObsolete(app._id, AppReviewChecklist.TERMS_OF_USE_MATCH_QUERY);
 		  }
 		}
 		if (json.has("loginButtonsTemplate")) {
@@ -949,16 +965,16 @@ public class Market extends APIController {
 	 */	
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result deletePlugin(String pluginIdStr) throws JsonValidationException, AppException {		
+	public Result deletePlugin(Request request, String pluginIdStr) throws JsonValidationException, AppException {		
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
-		
-		deletePlugin(pluginId);
+		AccessContext context = portalContext(request);
+		deletePlugin(context, pluginId);
 		
 		return ok();
 	}
 	
-	private static void deletePlugin(MidataId pluginId) throws JsonValidationException, AppException {
+	private static void deletePlugin(AccessContext context, MidataId pluginId) throws JsonValidationException, AppException {
 		
 		
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
@@ -966,7 +982,7 @@ public class Market extends APIController {
 
 		if (DeploymentManager.hasUserDeployment(pluginId)) throw new BadRequestException("error.notauthorized.remove_first", "Remove existing deployment first.");
 		
-		if (app.type.equals("mobile") || app.type.equals("service")) {
+		if (app.type.equals("mobile") || app.type.equals("service") || app.type.equals("external") || app.type.equals("analyzer")) {
 			Set<MobileAppInstance> installations =  MobileAppInstance.getByApplication(pluginId, Sets.create("_id", "owner"));
 			for (MobileAppInstance inst : installations) {				
 				KeyManager.instance.deleteKey(inst._id);
@@ -977,7 +993,13 @@ public class Market extends APIController {
 			for (Space inst : installations) {
 				Space.delete(inst.owner, inst._id);
 			}
-		}		 
+		}	
+		if (app.type.equals("external") || app.type.equals("analyzer")) {
+			Set<ServiceInstance> instances = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
+			for (ServiceInstance inst : instances) {
+				ApplicationTools.deleteServiceInstance(context, inst);
+			}
+		}
 		app.status = PluginStatus.DELETED;
 		app.spotlighted = false;
 		String filename = app.filename;
@@ -1006,13 +1028,14 @@ public class Market extends APIController {
         // validate request     
         MidataId pluginId = new MidataId(pluginIdStr);
         MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext(request);
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
         if (!app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
         if (app.status != PluginStatus.DEVELOPMENT && app.status != PluginStatus.BETA) throw new BadRequestException("error.auth", "Plugin may not be deleted. Ask an admin.");
               
-        deletePlugin(pluginId);        
+        deletePlugin(context, pluginId);        
         
         return ok();
     }
@@ -1511,10 +1534,10 @@ public class Market extends APIController {
 		
 		Plugin.set(plugin._id, "debugHandle", plugin.debugHandle);
 		
-		return ok(JsonOutput.toJson(plugin, "Plugin", Sets.create("debugHandle")));
+		return ok(JsonOutput.toJson(plugin, "Plugin", Sets.create("debugHandle"))).as("application/json");
 	}
 	
-	public void markReviewObsolete(MidataId pluginId, AppReviewChecklist check) throws AppException {
+	public static void markReviewObsolete(MidataId pluginId, AppReviewChecklist check) throws AppException {
 		List<PluginReview> reviews = PluginReview.getReviews(pluginId, check);
 		for (PluginReview review : reviews) review.markObsolete();
 	}
@@ -1562,8 +1585,7 @@ public class Market extends APIController {
 			} else {
 			  unapproveLoginTemplate(review.pluginId, userId);
 			}
-		}
-		
+		}		
 		
 		return ok();
 	}

@@ -299,7 +299,7 @@ public class EncryptedAPS {
 		notStored = false;
 	}
 	
-	public void savePermissions() throws InternalServerException, LostUpdateException {
+	public void savePermissions() throws AppException, LostUpdateException {
 		if (!isLoaded()) return;
 		
 		if (!aps.security.equals(APSSecurityLevel.NONE)) {
@@ -318,6 +318,12 @@ public class EncryptedAPS {
 			encodeAPS();
 			aps.updateEncrypted();
 			if (aps.consent) Consent.touch(apsId, aps.version);
+			// If we are using an accessible sublist permissions are null now, we need to restore them
+			if (acc_aps != aps) {
+				acc_aps = aps;
+				subEncryptionKey = null;
+				findAndselectAccessibleSubset();
+			}
 		} else {
 			aps.updatePermissions();
 			if (aps.consent) Consent.touch(apsId, aps.version);

@@ -85,15 +85,17 @@ export default {
   
     methods : {
         accountWipe() {
-            const { $data, $route } = this, me = this;
+            const { $data, $route, $router } = this, me = this;
 		    if (!$data.user.password) {
 			    $data.error = { code : "accountwipe.error" };
 			    return;
 		    }
 		    $data.user.passwordHash = crypto.getHash($data.user.password);
 		    me.doAction("wipe", server.post("/api/shared/users/wipe", $data.user)).then(function() {
-				//if ($route.query.actions) window.close();
-		        document.location.href="/#/public/login"; 
+				if (!actions.showAction($router, $route)) {
+				  session.logout();
+		          document.location.href="/#/public/login"; 
+		        }
 	        });
 	    },
 

@@ -137,7 +137,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "public" */ 'views/shared/public/termsPage.vue')
   },
   {
-    base : ["oauth", "public", "public_provider", "public_research", "public_developer"],
+    base : ["oauth", "public", "public_provider", "public_research", "public_developer","member", "research", "developer", "provider", "admin"],
     path : "postregister",
     meta : { keep : true },
     component: postRegister
@@ -157,7 +157,7 @@ const routes = [
     component: postRegister
   },
   {
-    base : ["member", "research", "developer", "provider"],
+    base : ["member", "research", "developer", "provider", "admin"],
     path : "upgrade",
     component: postRegister
   },
@@ -213,7 +213,8 @@ const routes = [
   {
     base : ["member", "developer", "admin", "research", "provider"],
     path : "user2",
-    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/user2.vue')
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/user2.vue'),
+    meta : { locked : true }
   },
   {
     base : ["member", "developer", "admin", "research", "provider"],
@@ -292,7 +293,8 @@ const routes = [
   {
     base : ["member", "provider", "research", "developer", "admin"],
     path : "serviceleave",
-    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/serviceleave.vue')
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/serviceleave.vue'),
+    meta : { lock : true }
   },
   {
     base : ["member", "provider", "research", "developer", "admin"],

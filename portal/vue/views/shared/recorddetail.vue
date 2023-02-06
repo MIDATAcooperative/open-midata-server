@@ -84,6 +84,7 @@ import session from 'services/session.js';
 import server from 'services/server.js';
 import { status, ErrorBox } from 'basic-vue3-components';
 import { getLocale } from 'services/lang.js';
+import ENV from "config";
 
 export default {
     data: () => ({       

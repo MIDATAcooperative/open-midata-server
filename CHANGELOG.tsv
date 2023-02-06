@@ -98,4 +98,6 @@ id0105	01.07.2022	a.kreutz	I	Subscription with trigger on ResearchStudy changes 
 id0106	01.07.2022	a.kreutz	I	Projects may have external identifiers
 id0107	15.07.2022	a.kreutz	I	Non Midata Consents storable
 id0108	26.09.2022	a.kreutz	F	Non Midata Research Studies storable
+id0109	02.11.2022	a.kreutz	F	More security tags supported	FHIR resources may now be tagged as reliable, read-only or not deletable.
+id0110	20.01.2023	a.kreutz	I	Account creation via API rewritten	External services and project analyzers are now able to create accounts. 
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

@@ -67,6 +67,7 @@ public class ConditionResourceProvider extends RecordBasedResourceProvider<Condi
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Condition")
+		  .hideIfPseudonymized("Condition", "text")
 		  .pseudonymizeReference("Condition", "asserter")
 		  .pseudonymizeReference("Condition", "note", "authorReference");		  
 	}

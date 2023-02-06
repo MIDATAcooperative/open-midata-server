@@ -41,6 +41,7 @@ import models.enums.BulkMailType;
 import models.enums.CommunicationChannelUseStatus;
 import models.enums.ConsentStatus;
 import models.enums.EMailStatus;
+import models.enums.SubUserRole;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -68,7 +69,7 @@ import utils.messaging.MailSenderType;
 import utils.messaging.MailUtils;
 import utils.stats.ActionRecorder;
 
-public class BulkMails extends Controller {
+public class BulkMails extends APIController {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
@@ -100,8 +101,9 @@ public class BulkMails extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result add(Request request) throws JsonValidationException, InternalServerException {
+	public Result add(Request request) throws JsonValidationException, AppException {
 		// validate json
+		requireSubUserRole(request, SubUserRole.NEWSWRITER);
 		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "name");
@@ -128,7 +130,8 @@ public class BulkMails extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result update(Request request) throws JsonValidationException, InternalServerException {
+	public Result update(Request request) throws JsonValidationException, AppException {
+		requireSubUserRole(request, SubUserRole.NEWSWRITER);
 		// validate json
 		JsonNode json = request.body().asJson();
 		
@@ -177,8 +180,8 @@ public class BulkMails extends Controller {
 	 */
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result delete(String mailItemIdString) throws AppException {
-			
+	public Result delete(Request request, String mailItemIdString) throws AppException {
+		requireSubUserRole(request, SubUserRole.NEWSWRITER);
 		MidataId mailItemId = MidataId.from(mailItemIdString);
 				
 		BulkMail mailCampaign = BulkMail.getById(mailItemId, BulkMail.ALL);
@@ -193,8 +196,8 @@ public class BulkMails extends Controller {
 	
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result send(String mailItemIdString) throws AppException {
-		
+	public Result send(Request request, String mailItemIdString) throws AppException {
+		requireSubUserRole(request, SubUserRole.NEWSWRITER);
 		MidataId mailItemId = MidataId.from(mailItemIdString);
 		
 		BulkMail mailCampaign = BulkMail.getById(mailItemId, BulkMail.ALL);
@@ -232,7 +235,7 @@ public class BulkMails extends Controller {
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
     public Result test(Request request, String mailItemIdString) throws AppException {
-		
+		requireSubUserRole(request, SubUserRole.NEWSWRITER);
 		MidataId mailItemId = MidataId.from(mailItemIdString);
 		
 		BulkMail mailCampaign = BulkMail.getById(mailItemId, BulkMail.ALL);
@@ -328,7 +331,7 @@ public class BulkMails extends Controller {
 			String link;
 			if (study!=null) {
 				StudyParticipation sp = StudyParticipation.getByStudyAndMember(study, targetUser, Sets.create("_id","status"));
-				if (sp==null || sp.status != ConsentStatus.ACTIVE) return false;
+				if (! sp.isActive()) return false;
 				
 				link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.consentToken(sp._id);
 			} else link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.userToken(targetUser);

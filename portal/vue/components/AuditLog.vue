@@ -15,11 +15,11 @@
  along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-<div v-if="log.filtered">
+<div v-if="log">
     <pagination v-model="log"></pagination>
 			
 
-	<div v-for="entry in log.filtered" :key="entry._id">
+	<div v-for="entry in log.filtered" :key="entry.id">
 		<div class="row">
 		    <div class="col-sm-6 col-md-2" style="color:#707070">{{ $filters.dateTime(entry.recorded)  }}</div>
 		    <div class="col-sm-6 col-md-3">
@@ -36,7 +36,8 @@
                     <span v-else-if="entry.agent[0].role[0].coding[0].code != 'MEMBER' && entry.agent[0].role[0].coding[0].code != '110150'" class="badge badge-info ml-1">{{ $t('enum.userrole.'+entry.agent[0].role[0].coding[0].code) }}</span>
                 </div>
 			    <div class="text-primary">{{ entry.agent[0].altId }}</div>
-			    <div v-if="entry.agent.length>1"><i><span v-t="'auditlog.via'"></span> {{ entry.agent[1].name }}</i></div>  
+			    <div v-if="entry.agent.length>1 && entry.agent[1].name"><i><span v-t="'auditlog.via'"></span> {{ entry.agent[1].name }}</i></div>
+			    <div v-if="entry.agent.length>2 && entry.agent[2].name"><i><span v-t="'auditlog.via'"></span> {{ entry.agent[2].name }}</i></div>  
 			</div><div v-else class="col-sm-6 col-md-4"></div>		  
 			  
 			<div class="col-sm-6 col-md-3">
@@ -67,7 +68,7 @@ export default {
 
     data : ()=>({      
         title : "",
-        log : {}
+        log : null
     }),
 
     components : { },
@@ -91,9 +92,9 @@ export default {
     		if (me.from && me.to) crit.date = ["sa"+new Date(me.from).toISOString(), "eb"+new Date(me.to).toISOString()];
     			    			    		
     		crit._count=1001;
-    		
+    		$data.log = null;
     		fhir.search("AuditEvent", crit)
-    		.then(function(log) {
+    		.then(function(log) {    		    
     			$data.log = me.process(log);    				
     		});
     			

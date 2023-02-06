@@ -123,6 +123,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Observation")		
+		  .hideIfPseudonymized("Observation", "text")
 		  .pseudonymizeReference("Observation", "performer")
 		  .pseudonymizeReference("Observation", "note", "authorReference")
 		  ;		  

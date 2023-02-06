@@ -49,7 +49,9 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.ContentInfo;
 import models.Record;
+import models.enums.AuditEventType;
 import utils.access.pseudo.FhirPseudonymizer;
+import utils.audit.AuditHeaderTool;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -74,6 +76,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Appointment")
+		  .hideIfPseudonymized("Appointment", "text")
 		  .pseudonymizeReference("Appointment", "participant", "actor");
 	}
 	
@@ -256,6 +259,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	@Override
 	public Appointment createExecute(Record record, Appointment theAppointment) throws AppException {
 		insertRecord(record, theAppointment);
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 		shareRecord(record, theAppointment);
 		return theAppointment;
 	}		
@@ -269,7 +273,8 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	
 	@Override
 	public void updateExecute(Record record, Appointment theAppointment) throws AppException {
-		updateRecord(record, theAppointment, getAttachments(theAppointment));			
+		updateRecord(record, theAppointment, getAttachments(theAppointment));	
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
 		shareRecord(record, theAppointment);
 	}
 			

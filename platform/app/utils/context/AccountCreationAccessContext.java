@@ -29,6 +29,10 @@ public class AccountCreationAccessContext extends AccessContext {
 	    super(new APSCache(newAccountId, newAccountId), parent);
 	}
 	
+	protected AccountCreationAccessContext(APSCache cache, AccessContext parent) /*throws AppException*/ {
+	    super(cache, parent);
+	}
+	
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
 		return true;
@@ -109,9 +113,21 @@ public class AccountCreationAccessContext extends AccessContext {
 		return getCache().getAccessor();
 	}
 	
-	public void close() throws AppException {
-		getCache().finishTouch();
+	@Override
+	protected AccessContext getRootContext() {	
+		return this;
 	}
+	
+	@Override
+	public APSCache getRootCache() {	
+		return getCache();
+	}
+	
+	@Override
+	public AccessContext forAccountReshare() {
+		return new AccountCreationAccessContext(getCache(), null);		
+	}
+		
 	
 	@Override
 	public String toString() {

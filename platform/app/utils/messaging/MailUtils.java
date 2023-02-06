@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import com.typesafe.config.Config;
 
+import models.MidataId;
 import play.api.libs.mailer.SMTPConfiguration;
 import play.api.libs.mailer.SMTPMailer;
 import play.libs.mailer.Email;
@@ -80,9 +81,10 @@ public class MailUtils {
 		instance.sendEmail(sender, email, fullname, subject, content);
 	}
 	
-		
-		  
-
+	public static void sendTextMailAsync(MailSenderType sender, String email, String fullname, String subject, Object content) {
+		Messager.sendTextMail(email, fullname, subject, content.toString(), null, sender);
+	}
+					 
 	public void sendEmail(MailSenderType sender, String email, String fullname, String subject, Object content) {
 		System.out.println("Start send mail to "+email+" at "+new Date().toString());
 		

@@ -106,10 +106,10 @@
         </div>
         <p v-else v-t="'workspace.add_something'"></p>
         <div class="mt-3">
-            <button class="btn btn-primary mr-1" type="button" @click="showAddApp" v-t="'workspace.newapp_btn'"></button>
-            <button class="btn btn-primary mr-1" type="button" @click="showAddProject" v-t="'workspace.newproject_btn'"></button>
-            <button class="btn btn-primary mr-1" type="button" @click="showAddUser" v-t="'workspace.newuser_btn'"></button>
-            <button class="btn btn-primary mr-1" type="button" @click="reset()" v-t="'workspace.reset_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="showAddApp" v-t="'workspace.newapp_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="showAddProject" v-t="'workspace.newproject_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="showAddUser" v-t="'workspace.newuser_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="reset()" v-t="'workspace.reset_btn'"></button>
         </div>
     </panel>
     
@@ -639,7 +639,7 @@ export default {
             .then((st) => { $data.availableProjects = st.data }));
             for (let entry of $data.setup) {
                 if (entry.type == "app") {
-                    waitFor.push(apps.getApps({ filename : entry.name }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate"])
+                    waitFor.push(apps.getApps({ filename : entry.name }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated"])
                     .then(function(result) {
                         if (result.data.length==0) {
                             me.addError("workspace.error.app_no_exist", entry.name);

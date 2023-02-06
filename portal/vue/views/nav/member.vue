@@ -23,7 +23,7 @@
 			<div class="container">
 				<div class="navbar-header">
 
-					<router-link v-if="$route.query.actions" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user2', query : { userId : user._id, actions : $route.query.actions }}"><span class="fas fa-user"></span></router-link>						
+					<router-link v-if="$route.query.actions" class="ml-1 navbar-toggler" :class="{'vishidden':$route.meta.locked}" data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user2', query : { userId : user._id, actions : $route.query.actions }}"><span class="fas fa-user"></span></router-link>						
 					<button v-else class="ml-1 navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
@@ -101,7 +101,7 @@
 		</div>
 	</div>
 </div>
-<footer id="footer">
+<footer id="footer" class="d-none d-md-block">
 	<div class="container">
 		<p>&nbsp;</p>
 

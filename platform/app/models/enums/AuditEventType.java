@@ -28,6 +28,8 @@ public enum AuditEventType {
 	
 	TRIED_USER_REREGISTRATION(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "tried-user-reregistration", "Attempted User reregistration"), AuditEventAction.E),
 	
+	NON_PERFECT_ACCOUNT_MATCH(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "non-perfect-account-match", "Non perfect account match during access from 3rd party"), AuditEventAction.E),
+	
 	USER_AUTHENTICATION(new Coding(System.DCM,"110114","User Authentication"), new Coding(System.DCM, "110122", "Login"), AuditEventAction.E),
 	
 	USER_PASSWORD_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-password-change", "Password changed"), AuditEventAction.U),
@@ -199,7 +201,21 @@ public enum AuditEventType {
 	 */
 	USER_TERMS_OF_USE_AGREED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "user-terms-of-use-agreed", "Agreed to terms of use"), AuditEventAction.E),
 	
+	USER_TERMS_OF_USE_NOTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "user-terms-of-use-noted", "Noted terms of use"), AuditEventAction.E),
+	
 	AUDIT_LOG_USE(new Coding(System.DCM,"110101","Audit Log Used"), new Coding(System.MIDATA, "audit-log-used", "Audit Log Used"), AuditEventAction.R),
+	
+	REST_CREATE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.HL7REST, "create", "Resource created"), AuditEventAction.C),
+	
+	REST_UPDATE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.HL7REST, "update", "Resource updated"), AuditEventAction.U),
+	
+    REST_READ(new Coding(System.DCM,"110112","Query"), new Coding(System.HL7REST, "read", "Resource read"), AuditEventAction.R),
+    
+    REST_VREAD(new Coding(System.DCM,"110112","Query"), new Coding(System.HL7REST, "vread", "Resource version read"), AuditEventAction.R),
+    
+    REST_HISTORY(new Coding(System.DCM,"110112","Query"), new Coding(System.HL7REST, "history", "Resource history read"), AuditEventAction.R),
+    
+    REST_SEARCH(new Coding(System.DCM,"110112","Query"), new Coding(System.HL7REST, "search", "Searched for resources"), AuditEventAction.R),
 	
 	/**
 	 * a user has searched for the Person record of another user
@@ -251,5 +267,6 @@ public enum AuditEventType {
 	private static class System {
 		public final static String DCM = "http://dicom.nema.org/resources/ontology/DCM";
 		public final static String MIDATA = "http://midata.coop/codesystems/event-types";
+		public final static String HL7REST = "http://hl7.org/fhir/restful-interaction";
     }
 }

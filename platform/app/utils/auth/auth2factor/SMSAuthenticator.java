@@ -43,7 +43,7 @@ public class SMSAuthenticator implements Authenticator {
 	/**
 	 * Minimum time between SMS 
 	 */
-	public static final long MIN_TIME_BETWEEN_SMS = 1000l * 60l * 1l;
+	public static final long MIN_TIME_BETWEEN_SMS = 1000l * 10l * 1l;
 	
 	/**
 	 * Allow 5 SMS per hour

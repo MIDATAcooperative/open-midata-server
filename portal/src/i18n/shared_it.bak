@@ -39,6 +39,7 @@
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
      "failed" : "Action failed",
+     "timeout" : "Timeout",
      "notrialuser_title" : "Full membership required!",
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "@OPERATOR membership required!",
@@ -185,7 +186,8 @@
 
      "already_done" : {
        "email_verification" : "Email has already been verified.",
-       "unsubscribed" : "You have already unsubscribed from this communication channel."
+       "unsubscribed" : "You have already unsubscribed from this communication channel.",
+       "validation" : "Project has already been validated."
      },
 
      "no_alter" : {
@@ -290,6 +292,7 @@
        "contract-send" : "Contract send to user",
        "internal-comment" : "Administrator's comment",
        "user-terms-of-use-agreed" : "Agreed to General Terms and Conditions",
+       "user-terms-of-use-noted" : "Noted General Terms and Conditions",
        "audit-log-used" : "Audit log consulted",	   
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
@@ -583,11 +586,11 @@
   "registration" : {
     "sign_up" : "Sign Up",
     "mandantory_fields" : "Please fill in the information below, fields marked with an asterisk (*) are mandatory.",
-    "mandantory_fields2" : "Please fill in your email and password.",
+    "mandantory_fields2" : "Please fill in your email address and password.",
     "password_policy" : "The password must be at least 8 characters long and contain one letter and one digit.",
     "password_policy2" : "The password must be at least 12 characters long and contain one letter, one digit and a special character.",
     "personal_details" : "Personal Details",
-    "email" : "EMail",
+    "email" : "Email",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
     "secure" : "Account Protection",
@@ -699,8 +702,8 @@
     "birthday_entered" : "A valid date of birth is required to use this service. Please add your date of birth to your account information. (Format example: 31.12.1999)",
     "gender_entered" : "Your gender must be provided to use this service. Please indicate your gender.",
     "admin_verified" : "Your account must be unlocked by an administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact @SUPPORT.",
-    "terms_agreed" : "The General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
-    "privacy_policy_agreed" : "The Privacy Policy has been updated. Please confirm that you agree to the new version.",
+    "terms_agreed" : "The General Terms and Conditions have been updated. Please confirm that you have taken note of the new version.",
+    "privacy_policy_agreed" : "The Privacy Policy has been updated. Please confirm that you have taken note of the new version.",
     "auth2factor" : "An authorization code has been send to your phone. Please enter it.",
     "securityToken" : "Code",
     "securityToken_btn" : "Send",
@@ -714,6 +717,7 @@
     "emailnotify" : "Notifications",
     "emailnotify2" : "Please send me an email everytime I log into the @PRODUCT portal at {{domain}}.",
     "agree_btn" : "I agree",
+    "noted_btn" : "I've seen it",
     "keyrecovery" : {
       "intro" : "The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:",
       "way1" : "Do you have any application using @PRODUCT where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.",
@@ -854,6 +858,7 @@
 	"export_btn" : "Export your data",
 	"delete_records_btn" : "Delete Records",
 	"wipe_account_btn" : "Delete Account",
+	"cancel_btn" : "Back to application",
 	"metrics_btn" : "Calculate Account Metrics",
 	"servicekeys_btn" : "Manage API Keys",
 	"account_repaired" : "Your account has been repaired.",
@@ -1347,13 +1352,11 @@
   },
   
   "serviceleave" : {
-    "title" : "Did you finish your session?",
-    "thankyou" : "Thank you for your help!",
-    "continue" : "Please use the top menu to continue your session or log out.",
+    "title" : "You are leaving @PRODUCT",
+    "thankyou" : "Thank you for your help!",    
     "logout_btn" : "Log out",
     "goodbye_btn" : "End session and close window",
-    "logoutreturn" : "You will be redirected to the calling page.",
-    "return_btn" : "Log out and continue"
+    "logoutreturn" : "You are now leaving the @PRODUCT account management portal."    
   },
   
   "queryeditor" : {
@@ -1397,6 +1400,17 @@
     "observer" : "Only with this observer (optional)",
     "category" : "Category (optional)",
     "custom_filter" : "User Defined Filter (JSON)",
+    "security_tags" : "Security Tags",
+    "tag" : "Tag",
+    "require" : "Require for read",
+    "allow" : "Allow write",
+    "add" : "Auto-Add",
+    "tags" : {
+      "reliable" : "Reliable",
+      "no_delete" : "No delete",
+      "read_only" : "Read only",
+      "hidden" : "Hide from patient"
+    },
     "remove_btn" : "Remove",
     "apply_btn" : "Apply",
     "newentry" : "Enter name, code, resource type or (part of) description of data type to add:",
@@ -1448,7 +1462,7 @@
     "refresh" : "Refresh token for OAuth",
     "instructions_refresh" : "For improved security, exchange this refresh token against a new pair of access token and refresh token.",
     "common_name" : "OU (organization unit) and CN (common name) for CSR (certificate request)",
-    "instructions_common_name" : "For certificate based authentication create a CSR with the given OU and CN field. Send the CSR to @SUPPORT",
+    "instructions_common_name" : "For certificate based authentication create a CSR with the given OU and CN fields. Send the CSR to @SUPPORT",
     "date" : "Date of creation",
     "status" : "Status",
     "ACTIVE" : "Active",

@@ -26,14 +26,14 @@
                 <Sorter sortby="filename" v-model="apps" v-t="'developer_yourapps.filename'">Internal</Sorter>
                 <Sorter sortby="type" v-model="apps" v-t="'developer_yourapps.type'">Type</Sorter>
                 <Sorter sortby="targetUserRole" v-model="apps" v-t="'developer_yourapps.role'">Target Role</Sorter>
-                <th></th>
+                <th class="d-none d-lg-table-cell"></th>
             </tr>
             <tr v-for="app in apps.filtered" :key="app._id">
                 <td><router-link :to="{ path : './manageapp', query : { appId : app._id } }">{{  app.name }}</router-link></td>
                 <td>{{ app.filename }}</td>
                 <td>{{ $t('enum.plugintype.'+app.type) }}</td>
                 <td>{{ $t('enum.userrole.'+app.targetUserRole) }}</td>
-                <td>
+                <td class="d-none d-lg-table-cell">
                     <router-link class="btn btn-default btn-sm mr-1" :to="{ path : './manageapp', query : { appId : app._id }}" v-t="'developer_yourapps.manage_btn'">manage</router-link> 
                     <router-link class="btn btn-default btn-sm" :to="{ path : './appstats' ,query :  { appId : app._id }}" v-t="'developer_yourapps.debug_info_btn'">debug info</router-link></td>
             </tr>

@@ -77,7 +77,8 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 		registerSearches("Procedure", getClass(), "getProcedure");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("Procedure")		
+		  .reset("Procedure")	
+		  .hideIfPseudonymized("Procedure", "text")
 		  .pseudonymizeReference("Procedure", "recorder")
 		  .pseudonymizeReference("Procedure", "asserter")
 		  .pseudonymizeReference("Procedure", "performer", "actor")

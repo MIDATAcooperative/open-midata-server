@@ -424,15 +424,14 @@ public class Studies extends APIController {
 		participation.setPStatus(ParticipationStatus.REQUEST, joinMethod);	
 		
 		//participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
-		if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp);		
-		if (study.requiredInformation.equals(InformationType.RESTRICTED) || study.requiredInformation.equals(InformationType.NONE)) {						
-			PatientResourceProvider.createPatientForStudyParticipation(context, study, participation, user);
-			Circles.autosharePatientRecord(context, participation);
-		} else {
-			Circles.autosharePatientRecord(context, participation);
-		}
+		if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp, true);		
 		
-		Circles.consentStatusChange(context, participation, ConsentStatus.ACTIVE);				
+		Circles.consentStatusChange(context, participation, ConsentStatus.ACTIVE);
+		
+		if (study.requiredInformation.equals(InformationType.RESTRICTED) || study.requiredInformation.equals(InformationType.NONE)) {						
+			PatientResourceProvider.createPatientForStudyParticipation(context, study, participation, user);						
+		} 
+
 
 		AuditManager.instance.success();
 		
