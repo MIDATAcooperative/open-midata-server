@@ -233,8 +233,11 @@
     "group" : "Data Group",
     "number_of_records" : "# Records",
     "download_btn" : "Download",
-    "fhir_download_btn" : "Download FHIR Bundle",
-    "fhir_download_original_btn" : "Download not pseudonymized"
+    "fhir_download_btn" : "Download Bundle",
+    "fhir_download_original_btn" : "Download not pseudonymized",
+    "file" : "Export file",
+    "file_fhir" : "FHIR Format",
+    "add_csvdef_btn" : "Upload CSV-Export Definition"
   },
   
   "studyrules" : {

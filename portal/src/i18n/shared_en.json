@@ -87,7 +87,8 @@
        "consent_members" : "This consent may only be confirmed once all external persons have joined the platform.",
        "entity_type" : "Invalid entity type",
        "joincode" : "The provided participation code is not accepted.",
-       "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time."
+       "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
+       "csvmapping" : "Invalid mapping provided."
      },
 
      "missing" : {

@@ -414,7 +414,7 @@ public class Studies extends APIController {
 					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, initialInf,
 							CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after", startDate).mapNotEmpty("updated-before", endDate),
 							RecordManager.COMPLETE_DATA);
-					System.out.println("study export start!");
+					
 					return new RecIterator(allRecords);
 				} finally {
 					ServerTools.endRequest();
