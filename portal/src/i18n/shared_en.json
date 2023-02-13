@@ -87,7 +87,8 @@
        "consent_members" : "This consent may only be confirmed once all external persons have joined the platform.",
        "entity_type" : "Invalid entity type",
        "joincode" : "The provided participation code is not accepted.",
-       "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time."
+       "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
+       "csvmapping" : "Invalid mapping provided."
      },
 
      "missing" : {
@@ -415,7 +416,8 @@
 	 "studytype" : {
 	   "CLINICAL" : "Clinical Study",
 	   "CITIZENSCIENCE" : "Citizen Science Project",
-	   "COMMUNITY" : "Community"
+	   "COMMUNITY" : "Community",
+	   "REGISTRY" : "Registry"
 	 },
 	 "joinmethod" : {
 	   "APP" : "Participant uses the linked application",
@@ -1157,6 +1159,8 @@
     "link_ORGANIZATION_optional" : "You may share data with this third party:", 
     "link_CLINICAL_required" : "In order to use this application you need to participate in a clinical study:",
     "link_CLINICAL_optional" : "Additionally you may participate in a clinical study:",
+    "link_REGISTRY_required" : "In order to use this application you need to share data with a registry:",
+    "link_REGISTRY_optional" : "Additionally you may share data with a registry:",
     "link_CITIZENSCIENCE_required" : "In order to use this application you must participate in a citizen science project:",
     "link_CITIZENSCIENCE_optional" : "Additionally you may participate in a citizen science project:",
     "link_COMMUNITY_required" : "In order to use this application you must participate in a community project:",
