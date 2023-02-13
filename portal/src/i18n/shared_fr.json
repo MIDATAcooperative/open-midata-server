@@ -87,7 +87,13 @@
             "url" : "URL invalide",
             "consent_members" : "Ce consentement ne pourra être confirmé que lorsque toutes les personnes externes auront rejoint la plateforme.",
             "entity_type" : "Type d'entité non valide",
-            "joincode" : "Le code de participation fourni n'est pas accepté."
+            "joincode" : "Le code de participation fourni n'est pas accepté.",
+
+            // TODO NEW: Consent preconfirmation and resharing to 3rd party is not allowed at the same time.
+            "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
+
+            // TODO NEW: Invalid mapping provided.
+            "csvmapping" : "Invalid mapping provided."
         },
 
         "missing" : {
@@ -203,6 +209,15 @@
 
         "notrequired" : {
             "licence" : "Aucune licence n'est requise pour cette application"
+        },
+
+        "nomatch" : {
+
+            // TODO NEW: Birthdate does not match
+            "birthdate" : "Birthdate does not match",
+
+            // TODO NEW: Different email provided
+            "email" : "Different email provided"
         }
     },
 
@@ -215,8 +230,83 @@
         },
         "country" : {
             "CH" : "Suisse",
+
+            // TODO NEW: Austria
+            "AT" : "Austria",
+
+            // TODO NEW: Belgium
+            "BE" : "Belgium",
+
+            // TODO NEW: Bulgaria
+            "BG" : "Bulgaria",
+
+            // TODO NEW: Croatia
+            "HR" : "Croatia",
+
+            // TODO NEW: Cyprus
+            "CY" : "Cyprus",
+
+            // TODO NEW: Czech Republic
+            "CZ" : "Czech Republic",
+
+            // TODO NEW: Denmark
+            "DK" : "Denmark",
+
+            // TODO NEW: Estonia
+            "EE" : "Estonia",
+
+            // TODO NEW: Finland
+            "FI" : "Finland",
+
+            // TODO NEW: France
+            "FR" : "France",
             "DE" : "Allemagne",
+
+            // TODO NEW: Greece
+            "GR" : "Greece",
+
+            // TODO NEW: Hungary
+            "HU" : "Hungary",
+
+            // TODO NEW: Ireland
+            "IE" : "Ireland",
+
+            // TODO NEW: Italy
+            "IT" : "Italy",
+
+            // TODO NEW: Latvia
+            "LV" : "Latvia",
+
+            // TODO NEW: Lithuania
+            "LT" : "Lithuania",
+
+            // TODO NEW: Luxembourg
+            "LU" : "Luxembourg",
+
+            // TODO NEW: Malta
+            "MT" : "Malta",
             "NL" : "Pays-Bas",
+
+            // TODO NEW: Poland
+            "PL" : "Poland",
+
+            // TODO NEW: Portugal
+            "PT" : "Portugal",
+
+            // TODO NEW: Romania
+            "RO" : "Romania",
+
+            // TODO NEW: Slovakia
+            "SK" : "Slovakia",
+
+            // TODO NEW: Slovenia
+            "SI" : "Slovenia",
+
+            // TODO NEW: Spain
+            "ES" : "Spain",
+
+            // TODO NEW: Sweden
+            "SW" : "Sweden",
             "GB" : "Royaume-Uni"
         },
         "eventtype" : {
@@ -293,8 +383,30 @@
             "contract-send" : "Contrat envoyé à l'utilisateur",
             "internal-comment" : "Commentaire administrateur",
             "user-terms-of-use-agreed" : "Conditions générales acceptées",
+
+            // TODO CHANGED
+            // OLD: Noted General Terms and Conditions
+            // NEW: Took note of General Terms and Conditions
             "user-terms-of-use-noted" : "A pris connaissance des Conditions générales",
             "audit-log-used" : "Audit log consulté",
+
+            // TODO NEW: Resource created
+            "create" : "Resource created",
+
+            // TODO NEW: Resource updated
+            "update" : "Resource updated",
+
+            // TODO NEW: Resource read
+            "read" : "Resource read",
+
+            // TODO NEW: Resource version read
+            "vread" : "Resource version read",
+
+            // TODO NEW: Resource history read
+            "history" : "Resource history read",
+
+            // TODO NEW: Searched for resources
+            "search" : "Searched for resources",
             "added-as-team-member" : "Ajouté comme membre d'un team",
             "updated-role-in-team" : "Rôle dans le team modifié",
             "removed-from-team" : "Supprimé du team",
@@ -303,6 +415,9 @@
             "user-searched" : "Recherche d'utilisateur",
             "welcome-sent" : "E-mail de bienvenue envoyé",
             "tried-user-reregistration" : "Tentative de ré-inscription de l'utilisateur",
+
+            // TODO NEW: Non perfect account match during access from 3rd party
+            "non-perfect-account-match" : "Non perfect account match during access from 3rd party",
             "signature-failure" : "La validation du consentement a échoué",
             "email-sent" : "E-mail envoyé",
             "sms-sent" : "SMS envoyé",
@@ -332,6 +447,9 @@
         },
         "consentstatus" : {
             "ACTIVE" : "Actif",
+
+            // TODO NEW: Active (Preconfirmed)
+            "PRECONFIRMED" : "Active (Preconfirmed)",
             "EXPIRED" : "Expiré",
             "REJECTED" : "Rejeté",
             "UNCONFIRMED" : "Non confirmé",
@@ -377,7 +495,10 @@
         "studytype" : {
             "CLINICAL" : "Étude clinique",
             "CITIZENSCIENCE" : "Projet de sciences citoyennes",
-            "COMMUNITY" : "Communauté"
+            "COMMUNITY" : "Communauté",
+
+            // TODO NEW: Registry
+            "REGISTRY" : "Registry"
         },
         "joinmethod" : {
             "APP" : "Le participant utilise l'application liée",
@@ -718,6 +839,10 @@
         "emailnotify" : "Notifications",
         "emailnotify2" : "Veuillez m'envoyer un e-mail chaque fois que je me connecte au portail @PRODUCT à {{domain}}.",
         "agree_btn" : "Je suis d'accord",
+
+        // TODO CHANGED
+        // OLD: I've seen it
+        // NEW: I took note of it
         "noted_btn" : "J'en ai pris connaissance",
         "keyrecovery" : {
             "intro" : "La clé privée utilisée pour crypter vos données doit être récupérée. Pour récupérer votre clé, essayez l'une des options suivantes:",
@@ -964,6 +1089,9 @@
         "type_api" : "Ce consentement partage des données avec un service externe.",
         "type_implicit" : "Ce consentement créé implicitement permet aux destinataires de lire les messages les concernant.",
         "status_active" : "Ce consentement est actif.",
+
+        // TODO NEW: This consent has been externally confirmed and is active.
+        "status_preconfirmed" : "This consent has been externally confirmed and is active.",
         "status_expired" : "Ce consentement a expiré. Les données ne sont plus partagées.",
         "status_unconfirmed" : "Ce consentement nécessite une confirmation par son propriétaire.",
         "status_rejected" : "Ce consentement a été rejeté par son propriétaire.",
@@ -987,6 +1115,9 @@
         "date_of_creation" : "créé le",
         "valid_until" : "expire le",
         "status_active" : "Actif maintenant",
+
+        // TODO NEW: Active now (Preconfirmed)
+        "status_preconfirmed" : "Active now (Preconfirmed)",
         "status_expired" : "Expiré",
         "status_unconfirmed" : "Besoin de confirmation",
         "status_rejected" : "Rejeté",
@@ -1117,6 +1248,12 @@
         "link_ORGANIZATION_optional" : "Vous pouvez partager des données avec ce tiers:",
         "link_CLINICAL_required" : "Pour pouvoir utiliser cette application, vous devez participer à une étude clinique:",
         "link_CLINICAL_optional" : "En outre, vous pouvez participer à une étude clinique:",
+
+        // TODO NEW: In order to use this application you need to share data with a registry:
+        "link_REGISTRY_required" : "In order to use this application you need to share data with a registry:",
+
+        // TODO NEW: Additionally you may share data with a registry:
+        "link_REGISTRY_optional" : "Additionally you may share data with a registry:",
         "link_CITIZENSCIENCE_required" : "Pour pouvoir utiliser cette application, vous devez participer à un projet de science citoyenne:",
         "link_CITIZENSCIENCE_optional" : "En outre, vous pouvez  participer à un projet de science citoyenne:",
         "link_COMMUNITY_required" : "Pour pouvoir utiliser cette application, vous devez participer à un projet communautaire:",
@@ -1410,7 +1547,10 @@
             "reliable" : "Fiable",
             "no_delete" : "Pas de suppression",
             "read_only" : "En lecture seule",
-            "hidden" : "Cacher au patient"
+            "hidden" : "Cacher au patient",
+
+            // TODO NEW: Not pseudonymisable
+            "not_pseudonymisable" : "Not pseudonymisable"
         },
         "remove_btn" : "Supprimer",
         "apply_btn" : "Appliquer",

@@ -71,6 +71,12 @@
             "EMAIL_CHANGED_NEWADDRESS" : "E-Mail-Adresse geändert (an neue E-Mail-Adresse senden)",
             "PASSWORD_FORGOTTEN" : "Passwort vergessen",
             "USER_PRIVATE_KEY_RECOVERED" : "Wiederherstellung des Benutzerschlüssels abgeschlossen",
+
+            // TODO NEW: User reregistration from API: weak match
+            "NON_PERFECT_ACCOUNT_MATCH" : "User reregistration from API: weak match",
+
+            // TODO NEW: User reregistration from API: bad match
+            "TRIED_USER_REREGISTRATION" : "User reregistration from API: bad match",
             "RESOURCE_CHANGE" : "Änderung einer Resource [code]",
             "PROCESS_MESSAGE" : "FHIR-Nachricht mit Ereignis [Code] verarbeiten",
             "LOGIN" : "Anmeldungs-Benachrichtigung (falls vom Benutzer aktiviert)"
@@ -88,6 +94,12 @@
         "targetUserRole" : "Zielrolle",
         "loginTemplate" : "Texte zum Anmeldevorgang",
         "loginButtonsTemplate" : "Ablauf des Anmeldevorgangs",
+
+        // TODO NEW: Preconfirmation
+        "usePreconfirmed" : "Preconfirmation",
+
+        // TODO NEW: External email validation
+        "accountEmailsValidated" : "External email validation",
         "edit_btn" : "Einstellungen ändern",
         "edit_help" : "Ändern Sie die Einstellungen für Ihre Applikation.",
         "query_btn" : "Data Access Filter ändern",
@@ -151,6 +163,12 @@
             "no_update_history" : "FHIR Ressourcen-Updates, die von dieser Applikation durchgeführt werden, erzeugen keine Historieneinträge. Nur verwenden, wenn die Applikation viele und häufige Updates durchführt.",
             "pseudonymize" : "Pseudonymisierte Daten lesen. Aktualisiert keine Datensätze von Teilnehmern.",
             "resharesData" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
+
+            // TODO NEW: Account creation via API may use preconfirmed consents.
+            "usePreconfirmed" : "Account creation via API may use preconfirmed consents.",
+
+            // TODO NEW: Account emails send by API have been validated by 3rd party.
+            "accountEmailsValidated" : "Account emails send by API have been validated by 3rd party.",
             "allowsUserSearch" : "Benutzer dieser Applikation dürfen nach anderen Benutzern der gleichen Applikation suchen.",
             "consentObserving" : "Überwacht dieser Dienst die Einwilligungen der Benutzer? Fügen Sie 'Zustimmungen (Consents)' zum Datenzugriffsfilter (Data Access Filter) hinzu, um es zu aktivieren.",
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
