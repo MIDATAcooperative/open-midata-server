@@ -31,6 +31,7 @@ import org.hl7.fhir.r4.model.AuditEvent.AuditEventEntityComponent;
 import org.hl7.fhir.r4.model.AuditEvent.AuditEventOutcome;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeType;
+import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
@@ -72,6 +73,7 @@ import models.enums.ConsentType;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.access.op.AndCondition;
+import utils.audit.AuditExtraInfo;
 import utils.collections.CMaps;
 import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
@@ -294,7 +296,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	
 	 	
 			
-	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, User actorUser, User modifiedUser, Consent affectedConsent, String message, Study study) throws AppException {
+	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, User actorUser, User modifiedUser, Consent affectedConsent, String message, Study study, AuditExtraInfo extra) throws AppException {
 		AuditEvent ae = new AuditEvent();
 
 		ae.setId(mae._id.toString());
@@ -381,6 +383,68 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			  actor.setName(plugin.name);
 			  actor.setWho(new Reference().setIdentifier(new Identifier().setValue(appUsed.toString())));
 			}
+		}
+		
+		if (extra != null) {
+			AuditEventAgentComponent actor = ae.addAgent();
+			boolean practitionerSet = false;
+
+			if (extra.getPurposeName() != null || extra.getPurposeCoding() != null) {
+				if (extra.getPurposeCoding() != null) {
+					int p = extra.getPurposeCoding().indexOf("|");
+					String code = extra.getPurposeCoding();
+					String system = null;
+					if (p>0) {
+						system = code.substring(0, p);
+						code = code.substring(p+1);
+					}					
+					actor.addPurposeOfUse().addCoding()
+					  .setDisplay(extra.getPurposeName())
+					  .setSystem(system)
+					  .setCode(code);
+				} else {
+					actor.addPurposeOfUse().setText(extra.getPurposeName());
+				}
+				
+			}
+			
+			if (extra.getPractitionerName() != null || extra.getPractitionerReference() != null) {
+				Reference pRef = new Reference();
+				if (extra.getPractitionerName() != null) {
+					pRef.setDisplay(extra.getPractitionerName());
+					actor.setName(extra.getPractitionerName());
+				}
+				if (extra.getPractitionerReference() != null) pRef.setReference(extra.getPractitionerReference());
+				actor.setWho(pRef);
+				
+				actor.setType(new CodeableConcept(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/extra-security-role-type").setCode("humanuser").setDisplay("human user")));
+				
+				practitionerSet = true;
+			}
+			
+			if (extra.getOrganizationName() != null || extra.getOrganizationReference() != null) {
+				if (practitionerSet) {
+					actor = ae.addAgent();
+				}
+				Reference orgRef = new Reference();
+				if (extra.getOrganizationName() != null) {
+					orgRef.setDisplay(extra.getOrganizationName());
+					actor.setName(extra.getOrganizationName());
+				}
+				if (extra.getOrganizationReference() != null) orgRef.setReference(extra.getOrganizationReference());
+				actor.setWho(orgRef);
+				
+				//actor.setType(new CodeableConcept(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/extra-security-role-type").setCode("humanuser").setDisplay("human user")));
+			}
+									
+			if (extra.getLocationName() != null || extra.getLocationReference() != null) {
+				Reference locRef = new Reference();
+				if (extra.getLocationName() != null) locRef.setDisplay(extra.getLocationName());
+				if (extra.getLocationReference() != null) locRef.setReference(extra.getLocationReference());
+				locRef.setReference(extra.getLocationReference());
+				actor.setLocation(locRef);
+			}
+			
 		}
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(ae);		

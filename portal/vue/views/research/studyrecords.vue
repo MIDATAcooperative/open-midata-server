@@ -27,6 +27,13 @@
             <form-group name="startDate" label="studyrecords.startDate" :path="errors.startDate">	    
                 <input id="startDate" name="startDate" type="date" class="form-control" v-model="filter.startDate" />                              
             </form-group>
+            
+            <form-group name="file" label="studyrecords.file" :path="errors.file">
+                <select id="file" name="file" v-model="filter.selectedFile" class="form-control">
+                   <option value="*fhir" v-t="'studyrecords.file_fhir'"></option>
+                   <option v-for="file in files" :key="file" :value="file">CSV: {{file}}</option>
+                </select>
+            </form-group>
     
             <table class="table table-striped" v-if="infos.length">	
                 <tr>
@@ -37,10 +44,16 @@
                 <tr v-for="info in infos" :key="info.group">        
                     <td>{{ info.group }}</td>      
                     <td><span v-if="info.count==-1" v-t="'-1'"></span><span v-else>{{ info.count }}</span></td>
-                    <td><button :disabled="action != null || !study.myRole.export" @click="fhirDownload(info, 'pseudonymized')" href="javascript:" class="btn btn-sm btn-primary" v-t="'studyrecords.fhir_download_btn'"></button></td>
-                    <td><button v-if="!study.myRole.pseudo" :disabled="action != null || !study.myRole.export" @click="fhirDownload(info, 'original')" href="javascript:" class="btn btn-sm btn-primary" v-t="'studyrecords.fhir_download_original_btn'"></button></td>
+                    <td><button type="button" :disabled="action != null || !study.myRole.export" @click="fhirDownload(info, 'pseudonymized')" href="javascript:" class="btn btn-sm btn-primary" v-t="'studyrecords.fhir_download_btn'"></button></td>
+                    <td><button type="button" v-if="!study.myRole.pseudo" :disabled="action != null || !study.myRole.export" @click="fhirDownload(info, 'original')" href="javascript:" class="btn btn-sm btn-primary" v-t="'studyrecords.fhir_download_original_btn'"></button></td>
                 </tr>
             </table>
+            
+            <p v-t="'studyrecords.csvdef'" v-if="csvEdit"></p>
+            <textarea class="form-control mt-1" v-model="jsonDefinition" rows="10" v-if="csvEdit">
+            </textarea>
+            <error-box class="mt-1" :error="error"></error-box>
+            <button type="button" class="mt-3 btn btn-default" @click="addCSVDefinition()" v-t="'studyrecords.add_csvdef_btn'"></button>
         </form>     
     </tab-panel>
 </div>
@@ -61,7 +74,10 @@ import _ from "lodash";
 export default {
     data: () => ({	
         studyid : null,
-        filter : { startDate : "" },
+        filter : { startDate : "", selectedFile : "*fhir" },
+        files : [],
+        jsonDefinition : "",
+        csvEdit : false,
         downloadUrl : "",
         infos : [],
         lockChanges : false,
@@ -93,11 +109,18 @@ export default {
                         }));
                     }
                 }));
+                
+                me.doBusy(server.get(jsRoutes.controllers.research.CSVDownload.getCSVDef($data.studyid).url)
+                .then(function(data) { 		
+                    if (data.data && data.data.names) $data.files = data.data.names;
+                    if (data.data && data.data.jsonDefinition) $data.jsonDefinition = data.data.jsonDefinition;                      
+                }));
             });
 							
-		    $data.downloadUrl = ENV.apiurl + jsRoutes.controllers.research.Studies.download($data.studyid).url;
+		    // $data.downloadUrl = ENV.apiurl + jsRoutes.controllers.research.Studies.download($data.studyid).url;
 	    },
 	
+	/*
 	    download() {
             const { $data } = this, me = this;   
             me.doAction("download", server.token())
@@ -105,16 +128,34 @@ export default {
                 document.location.href = ENV.apiurl + jsRoutes.controllers.research.Studies.download($data.studyid).url + "?token=" + encodeURIComponent(response.data.token);
             });
 	    },
+	*/
 	
 	    fhirDownload(what, mode) {
 		    const { $data, $filters } = this, me = this;   
             me.doAction("download", server.token())
             .then(function(response) {
                 var urlParams = "";
-                if ($data.filter.startDate) urlParams += "&startDate="+encodeURIComponent(new Date($data.filter.startDate).getTime());            
-                document.location.href = ENV.apiurl + jsRoutes.controllers.research.Studies.downloadFHIR($data.studyid, what.group, mode).url + "?token=" + encodeURIComponent(response.data.token)+urlParams;
+                if ($data.filter.startDate) urlParams += "&startDate="+encodeURIComponent(new Date($data.filter.startDate).getTime());
+                if ($data.filter.selectedFile == "*fhir") {                           
+                   document.location.href = ENV.apiurl + jsRoutes.controllers.research.Studies.downloadFHIR($data.studyid, what.group, mode).url + "?token=" + encodeURIComponent(response.data.token)+urlParams;
+                } else {
+                   console.log(jsRoutes.controllers.research.CSVDownload.downloadCSV($data.studyid, what.group, mode, $data.filter.selectedFile));
+                   document.location.href = ENV.apiurl + jsRoutes.controllers.research.CSVDownload.downloadCSV($data.studyid, what.group, mode, $data.filter.selectedFile).url + "?token=" + encodeURIComponent(response.data.token)+urlParams;
+                }
             });
+	    },
+	    
+	    addCSVDefinition() {
+	       const { $data, $filters } = this, me = this;
+	       if (!$data.csvEdit) {
+	         $data.csvEdit = true;
+	         return;
+	       }
+	       let data = { jsonDefinition : $data.jsonDefinition };
+	       me.doAction("download", server.post(jsRoutes.controllers.research.CSVDownload.updateCSVDef($data.studyid).url, data))
+	       .then(me.reload);	       
 	    }
+	    
     },
 
     created() {

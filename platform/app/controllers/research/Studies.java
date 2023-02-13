@@ -414,7 +414,7 @@ public class Studies extends APIController {
 					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, initialInf,
 							CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after", startDate).mapNotEmpty("updated-before", endDate),
 							RecordManager.COMPLETE_DATA);
-					System.out.println("study export start!");
+					
 					return new RecIterator(allRecords);
 				} finally {
 					ServerTools.endRequest();
@@ -484,7 +484,7 @@ public class Studies extends APIController {
 							  attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
 							  if (attpos > 0) {
 								out.append(ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(context, new RecordToken(rec._id.toString(), rec.stream.toString()), idx);
+								FileData fileData = RecordManager.instance.fetchFile(context, new RecordToken(rec._id.toString(), rec.context.getTargetAps().toString()), idx);
 
 								int BUFFER_SIZE = 3 * 1024;
 
@@ -1129,7 +1129,7 @@ public class Studies extends APIController {
 
 		Set<StudyParticipation> participants = StudyParticipation.getActiveParticipantsByStudy(study._id, StudyParticipation.STUDY_EXTRA);
 		for (StudyParticipation participant : participants) {
-			if (participant.status.equals(ConsentStatus.ACTIVE)) {
+			if (participant.isActive()) {
 				Circles.consentStatusChange(context, participant, ConsentStatus.FROZEN);
 			}
 		}
@@ -1705,7 +1705,7 @@ public class Studies extends APIController {
 		}
 		ReferenceTool.resolveOwners(Collections.singleton(participation), true);
 
-		if (participation.status.equals(ConsentStatus.ACTIVE) || participation.status.equals(ConsentStatus.FROZEN)) {
+		if (participation.isSharingData()) {
 			Collection<RecordsInfo> stats = RecordManager.instance.info(UserRole.RESEARCH, participation._id, context.forConsent(participation),
 					CMaps.map(), AggregationType.ALL);
 			if (!stats.isEmpty())

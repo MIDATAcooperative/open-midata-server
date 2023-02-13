@@ -36,8 +36,8 @@ errorreports.targetname="Security Officer"
 instanceType=INSTANCETYPE
 default.language=DEFAULT_LANGUAGE
 
-versions.midata-terms-of-use=1.1
-versions.midata-privacy-policy=1.1
+versions.midata-terms-of-use=1.2
+versions.midata-privacy-policy=1.2
 versions.midata-terms-of-use-hp=1.0
 versions.midata-privacy-policy-hp=1.0
 

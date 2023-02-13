@@ -71,6 +71,7 @@ import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.QueryTagTools;
 import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.DBRecord;
@@ -87,8 +88,10 @@ import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.AccountCreationAccessContext;
+import utils.context.AccountReuseAccessContext;
 import utils.context.ConsentAccessContext;
 import utils.context.ContextManager;
+import utils.context.CreateParticipantContext;
 import utils.context.PublicAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -413,12 +416,23 @@ public class PluginsAPI extends APIController {
 	public Result getFile(Request request) throws AppException, JsonValidationException {
 		Stats.startRequest(request);
 	
-		String authTokenStr = request.queryString("authToken").orElseThrow();
-		String id = request.queryString("id").orElseThrow();
+		AccessContext info = null;
+		Optional<String> param = request.header("Authorization");
+		String param2 = request.queryString("authToken").orElse(null);
 		
-		AccessContext info = ExecutionInfo.checkToken(request, authTokenStr, false, true);		
+		if (param.isPresent() && param.get().startsWith("Bearer ")) {
+          info = ExecutionInfo.checkToken(request, param.get().substring("Bearer ".length()), false, true);                  	
+		} else if (param2 != null) {
+		  info = ExecutionInfo.checkToken(request, param2, false, true);
+		} else throw new BadRequestException("error.auth", "Please provide authorization token as 'Authorization' header or 'authToken' request parameter.");
+				
+		String id = request.queryString("id").orElse(null);
+					
 		if (info == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+		}
+		if (id == null) {
+			throw new BadRequestException("error.missing.input_field", "Missing id");
 		}
 		Stats.setPlugin(info.getUsedPlugin());
 		Pair<String,Integer> recordId = RecordManager.instance.parseFileId(id);
@@ -509,14 +523,14 @@ public class PluginsAPI extends APIController {
 		if (record.owner==null) record.owner = inf.getLegacyOwner();
 		if (record.name==null) record.name="unnamed";
 		
-		if (record.tags != null && record.tags.contains("security:public")) {
+		if (record.tags != null && record.tags.contains(QueryTagTools.SECURITY_PUBLIC)) {
 			record.owner = RuntimeConstants.instance.publicUser;
 			context = context.forPublic();
 		}
 		
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
         				
-		if (!record.owner.equals(inf.getAccessor()) && !inf.getAccessor().equals(RuntimeConstants.instance.autorunService) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext) && !(context instanceof PublicAccessContext)) {
+		if (!record.owner.equals(inf.getAccessor()) && !inf.getAccessor().equals(RuntimeConstants.instance.autorunService) && !(context instanceof ConsentAccessContext) && !(context instanceof CreateParticipantContext) && !(context instanceof AccountCreationAccessContext) && !(context instanceof PublicAccessContext)) {
 			BSONObject query = RecordManager.instance.getMeta(inf, inf.getTargetAps(), "_query");
 			Set<Consent> consent = null;
 			if (query != null && query.containsField("link-study")) {
@@ -562,8 +576,9 @@ public class PluginsAPI extends APIController {
 		if (context.mustPseudonymize()) throw new PluginException(inf.getUsedPlugin(), "error.plugin", dbrecord.getErrorInfo()+" may not be created. Access is pseudonymized! \n\nCreate permisssion chain:\n========================\n"+context.getMayCreateRecordReport(dbrecord));
 		
 		//MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
-		
-		if (fileData != null) {			 
+		if (record.tags.contains(QueryTagTools.SECURITY_LOCALCOPY)) {
+			  RecordManager.instance.addLocalRecord(context, record);
+		} else if (fileData != null) {			 
 			  RecordManager.instance.addRecord(context, record, context.getTargetAps(), fileData);
 		} else {
 			  RecordManager.instance.addRecord(context, record, context.getTargetAps());

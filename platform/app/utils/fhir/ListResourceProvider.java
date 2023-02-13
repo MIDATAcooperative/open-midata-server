@@ -76,7 +76,8 @@ public class ListResourceProvider extends RecordBasedResourceProvider<ListResour
 		registerSearches("List", getClass(), "getListResource");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("List")		
+		  .reset("List")
+		  .hideIfPseudonymized("List", "text")
 		  .pseudonymizeReference("List", "source")
 		  .pseudonymizeReference("List", "entry", "item")
 		  .pseudonymizeReference("List", "note", "authorReference");

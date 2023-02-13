@@ -312,6 +312,8 @@ public class Feature_FormatGroups extends Feature {
 	}
 	
 	public static Object getAccessRestriction(Map<String, Object> properties, String content, String format, String restriction) throws AppException {
+		if (properties == null) return null;
+		
 		if (properties.containsKey("$or")) {
 			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");			
 			for (Map<String, Object> part : parts) {

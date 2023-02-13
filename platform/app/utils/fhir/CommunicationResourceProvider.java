@@ -57,8 +57,10 @@ import models.ContentInfo;
 import models.MidataId;
 import models.Record;
 import models.TypedMidataId;
+import models.enums.AuditEventType;
 import utils.access.RecordManager;
 import utils.access.pseudo.FhirPseudonymizer;
+import utils.audit.AuditHeaderTool;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -80,6 +82,7 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Communication")
+		  .hideIfPseudonymized("Communication", "text")
 		  .pseudonymizeReference("Communication", "recipient")
 		  .pseudonymizeReference("Communication", "sender")
 		  .pseudonymizeReference("Communication", "note", "authorReference")
@@ -260,6 +263,7 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 	
 	public Communication createExecute(Record record, Communication theCommunication) throws AppException {
 		shareRecord(record, theCommunication);
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 		return theCommunication;
 	}	
 	

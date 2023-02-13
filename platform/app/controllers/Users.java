@@ -352,10 +352,15 @@ public class Users extends APIController {
 			  user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 			}
 		}
+		
+		
 		if (json.has("phone") || json.has("mobile")) {
-		  if (user.mobile != null) JsonValidation.validate(json, "mobile");
-		  user.phone = JsonValidation.getStringOrNull(json, "phone");
 		  String mobile = JsonValidation.getStringOrNull(json, "mobile");
+		  if (user.mobile != null && user.mobile.trim().length()>0) {
+			  JsonValidation.validate(json, "mobile");
+			  if (mobile==null) throw new JsonValidationException("error.missing.input_field", "mobile", "required", "Request parameter 'mobile' may not be empty.");
+		  }
+		  user.phone = JsonValidation.getStringOrNull(json, "phone");		  
 		  if (mobile==null || !mobile.equals(user.mobile)) {
 			  user.mobileStatus = EMailStatus.UNVALIDATED;
 			  user.mobile = mobile;  

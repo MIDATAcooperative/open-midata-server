@@ -217,12 +217,14 @@ public class Application extends APIController {
 	
 	
 	public static void sendWelcomeMail(MidataId sourcePlugin, User user, User executingUser) throws AppException {
-	   if (user.developer == null) {
+	   if (user.developer == null) {		
+		   
+		   if (user.email == null || user.email.trim().length()==0) return;
+		   
 		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
 			   throw new InternalServerException("error.ratelimit", "Rate limit hit");
 		   }
 		   
-		   if (user.email == null) return;
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
 		   user.set("resettoken", token.token);
 		   user.set("resettokenTs", System.currentTimeMillis());
@@ -1104,6 +1106,9 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.updateParticipation(),
 				controllers.research.routes.javascript.Studies.download(),
 				controllers.research.routes.javascript.Studies.downloadFHIR(),
+				controllers.research.routes.javascript.CSVDownload.updateCSVDef(),
+				controllers.research.routes.javascript.CSVDownload.getCSVDef(),
+				controllers.research.routes.javascript.CSVDownload.downloadCSV(),
 				controllers.research.routes.javascript.Studies.listCodes(),
 				controllers.research.routes.javascript.Studies.generateCodes(),
 				controllers.research.routes.javascript.Studies.startValidation(),

@@ -83,10 +83,14 @@ public class AuditManager {
 	}
 	
 	public void addAuditEvent(AuditEventBuilder builder) throws AppException {
-		addAuditEvent(builder.getType(), builder.getApp(), builder.getActorUser(), builder.getModifiedUser(), builder.getConsent(), builder.getMessage(), builder.getStudy());
+		addAuditEvent(builder.getType(), builder.getApp(), builder.getActorUser(), builder.getModifiedUser(), builder.getConsent(), builder.getMessage(), builder.getStudy(), builder.getExtraInfo());
 	}
 	
 	public void addAuditEvent(AuditEventType type, MidataId app, User who, User modifiedUser, Consent consent, String message, Study study) throws AppException {
+	    addAuditEvent(type, app, who, modifiedUser, consent, message, study, null);	
+	}
+	
+	public void addAuditEvent(AuditEventType type, MidataId app, User who, User modifiedUser, Consent consent, String message, Study study, AuditExtraInfo extra) throws AppException {
 		MidataAuditEvent mae = new MidataAuditEvent();
 		mae._id = new MidataId();
 		mae.event = type;
@@ -111,7 +115,7 @@ public class AuditManager {
 			if (consent.owner != null) mae.authorized.add(consent.owner);
 			if (consent.authorized != null) mae.authorized.addAll(consent.authorized);
 		}
-		AuditEventResourceProvider.updateMidataAuditEvent(mae, app, who, modifiedUser, consent, message, study);
+		AuditEventResourceProvider.updateMidataAuditEvent(mae, app, who, modifiedUser, consent, message, study, extra);
 		addAuditEvent(mae);
 	}
 	

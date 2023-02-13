@@ -78,7 +78,8 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 		registerSearches("Immunization", getClass(), "getImmunization");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("Immunization")			  
+		  .reset("Immunization")	
+		  .hideIfPseudonymized("Immunization", "text")
 		  .pseudonymizeReference("Immunization", "note", "authorReference");
 	}
 

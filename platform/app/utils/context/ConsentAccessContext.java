@@ -25,6 +25,7 @@ import controllers.Circles;
 import models.Consent;
 import models.MidataId;
 import models.Record;
+import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.WritePermissionType;
 import utils.access.APSCache;
@@ -66,6 +67,7 @@ public class ConsentAccessContext extends AccessContext{
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
 		if (consent.writes == null) return parent==null || parent.mayCreateRecord(record);
 		if (!consent.writes.isCreateAllowed()) return false;
+		if (!consent.isWriteable()) return false;
 		if (consent.writes.isUnrestricted()) return parent==null || parent.mayCreateRecord(record);
 		
 		if (!sharingQuery && consent.sharingQuery == null) {
@@ -82,7 +84,7 @@ public class ConsentAccessContext extends AccessContext{
 		
 		if (consent.writes == null) return false;
 		if (!consent.writes.isUpdateAllowed()) return false;
-		
+		if (!consent.isWriteable()) return false;
 		if (consent.type.equals(ConsentType.STUDYRELATED)) {			
 			if (parent != null && parent instanceof UserGroupAccessContext && parent.parent != null) {				
 				return parent.parent.mayUpdateRecord(stored, newVersion);
@@ -97,7 +99,7 @@ public class ConsentAccessContext extends AccessContext{
 		WritePermissionType wt = consent.writes;
 		if (wt==null) wt = WritePermissionType.NONE;
 		boolean inFilter = consent.sharingQuery != null && !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(rec)).isEmpty();		
-		return "\n- Does the record pass the access filter? ["+inFilter+"]\n- Is record creation allowed in general? ["+wt.isCreateAllowed()+"]\n- Is update of records allowed in general? ["+wt.isUpdateAllowed()+"]";
+		return "\n- Does the record pass the access filter? ["+inFilter+"]\n- Is record creation allowed in general? ["+wt.isCreateAllowed()+"]\n- Is update of records allowed in general? ["+wt.isUpdateAllowed()+"]"+"]\n- Has consent a status that allows writing? ["+consent.isWriteable()+"]";
 	}
 
 	@Override
@@ -119,10 +121,7 @@ public class ConsentAccessContext extends AccessContext{
 	public boolean isIncluded(DBRecord record) throws AppException {
 		if (consent.writes == null) return false;
 		
-		if (!sharingQuery && consent.sharingQuery == null) {
-			  consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
-			  sharingQuery = true;
-		}
+		loadSharingQuery();
 		
 		if (consent.sharingQuery == null) return false;
 		return !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(record)).isEmpty();
@@ -166,12 +165,15 @@ public class ConsentAccessContext extends AccessContext{
 	
 	@Override
 	public boolean mayAccess(String content, String format) throws AppException {
+		loadSharingQuery();		
+		return Feature_FormatGroups.mayAccess(consent.sharingQuery, content, format);		
+	}
+	
+	private void loadSharingQuery() throws AppException {
 		if (!sharingQuery && consent.sharingQuery == null) {
 			  consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
 			  sharingQuery = true;
 		}
-		
-		return Feature_FormatGroups.mayAccess(consent.sharingQuery, content, format);		
 	}
 	
 	@Override
@@ -186,6 +188,7 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {
+		loadSharingQuery();
 		return Feature_FormatGroups.getAccessRestriction(consent.sharingQuery, content, format, field);
 		
 	}

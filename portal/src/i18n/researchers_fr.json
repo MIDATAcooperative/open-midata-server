@@ -245,6 +245,7 @@
         "endDate" : "Date de fin officielle",
         "dataCreatedBefore" : "Données figées dès le",
         "sharing_query" : "Data Access Filter",
+        "sharing_query_empty" : "Le projet ne requiert PAS de données de @PRODUCT.",
         "join_methods" : "Procédures de participation autorisées",
         "leavePolicy" : "Conditions de retrait des participants",
         "rejoinPolicy" : "Conditions de réintégration des participants",

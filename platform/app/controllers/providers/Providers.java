@@ -324,7 +324,7 @@ public class Providers extends APIController {
 				
 		boolean activeConsent = false;
 		for (Consent consent : memberKeys) {
-			if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) activeConsent = true;
+			if (consent.isSharingData()) activeConsent = true;
 		}
 		
 		memberFields = activeConsent 
@@ -380,7 +380,7 @@ public class Providers extends APIController {
 		
 		boolean activeConsent = false;
 		for (Consent consent : memberKeys) {
-			if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) activeConsent = true;
+			if (consent.isSharingData()) activeConsent = true;
 		}
 		
 		Set<String> memberFields = activeConsent 

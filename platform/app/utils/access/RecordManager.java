@@ -602,13 +602,16 @@ public class RecordManager {
 		
 		// Do not check files larger than 100MB
 		if (handle.getLength() >= 1024l * 1024l * 100l) return null;
-		
+				
 		FileTypeScanner.getInstance().isValidFile(fileData.filename, fileData.contentType);
 		
+		AccessLog.logBegin("start virus scan");
 		InputStream inputStream = EncryptionUtils.decryptStream(handle.getKey(), fileData.inputStream);
 		
 		VirusScanner vscan = new VirusScanner();
-		return vscan.scan(inputStream);
+		String result = vscan.scan(inputStream);
+		AccessLog.logEnd("end virus scan");
+		return result;
 	}
 	
 	/**
@@ -664,7 +667,9 @@ public class RecordManager {
 			if (record.format != null && !rec.meta.getString("format").equals(record.format)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record format during update.");
 			if (record.content != null && !rec.meta.getString("content").equals(record.content)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record content type during update.");
 			if (record.owner != null && !rec.owner.equals(record.owner)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record owner during update! new="+record.owner.toString()+" old="+rec.owner.toString());
-			
+						
+			QueryTagTools.checkTagsForUpdate(context, record, rec);
+						
 			List<EncryptedFileHandle> allData2 = new ArrayList<EncryptedFileHandle>(allData.size());
 			for (UpdateFileHandleSupport data : allData) {
 				if (data != null) {
@@ -889,6 +894,9 @@ public class RecordManager {
 		while (it.hasNext()) {
 	   	   DBRecord record = it.next();			
 	       if (record.meta.getString("content").equals("Patient")) it.remove();
+	       Set<String> tags = RecordConversion.instance.getTags(record);
+	       if (tags != null && tags.contains(QueryTagTools.SECURITY_NODELETE)) it.remove();
+	       
 		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
 		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
 		}
@@ -921,11 +929,14 @@ public class RecordManager {
 			
 		    DBRecord clone = record.clone();
 		    
+		    Record rec = RecordConversion.instance.currentVersionFromDB(record);
 			RecordEncryption.encryptRecord(record);	
 						
 			VersionedDBRecord.add(vrec);
 		    DBRecord.upsert(record); 	  			    
-		    RecordLifecycle.notifyOfChange(clone, cache);									
+		    RecordLifecycle.notifyOfChange(clone, cache);	
+		    
+		    SubscriptionManager.resourceChange(rec);
 		}
 				
 		for (MidataId streamId : streams) {
@@ -938,6 +949,34 @@ public class RecordManager {
 		AccessLog.logEnd("end delete #records="+recs.size());				
 	}
 
+	public void addLocalRecord(AccessContext context, Record record) throws AppException {
+		DBRecord dbrecord = RecordConversion.instance.toDB(record);
+		AccessLog.logBegin("Begin Add Local Record execPerson=",context.getCache().getAccountOwner().toString()," format=",String.valueOf(dbrecord.meta.get("format")));	
+		byte[] usedKey = null;
+		if (dbrecord.meta.get("created") == null) throw new InternalServerException("error.internal", "Missing creation date");
+		
+		dbrecord.time = 0;				
+		dbrecord = dbrecord.clone();
+		if (dbrecord.owner.equals(dbrecord.meta.get("creator"))) dbrecord.meta.removeField("creator");
+																	
+
+		APS apswrapper = context.getCache().getAPS(context.getTargetAps());			
+		apswrapper.provideRecordKey(dbrecord);		
+		usedKey = dbrecord.key;
+    														
+		DBRecord unencrypted = dbrecord.clone();
+			
+		RecordEncryption.encryptRecord(dbrecord);		
+		DBRecord.add(dbrecord);	  
+		    
+		apswrapper.addPermission(unencrypted, false);	
+		
+		context.getCache().changeWatches().addWatchingAps(dbrecord, context.getTargetAps());
+		context.getCache().addNewRecord(unencrypted);		    													   
+
+	    AccessLog.logEnd("End Add Local Record");	
+	}
+	
 	private byte[] addRecordIntern(AccessContext context, DBRecord record, boolean documentPart, MidataId alternateAps, boolean upsert) throws AppException {		
 		
 		if (!documentPart) Feature_Streams.placeNewRecordInStream(context, record, alternateAps);
@@ -1000,6 +1039,7 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void applyQuery(AccessContext context, Map<String, Object> query, MidataId sourceaps, Consent target, boolean ownerInformation) throws AppException {
+		if (target.status == ConsentStatus.PRECONFIRMED) return;
 		
 		MidataId targetaps = target._id;
 		Pair<Map<String, Object>, Map<String, Object>> pair = Feature_Streams.convertToQueryPair(query);
@@ -1106,6 +1146,11 @@ public class RecordManager {
 		AccessLog.logEnd("end applying queries");
 	}
 	
+	public boolean checkRecordInAccessQuery(AccessContext context, Record rec, Consent consent) throws AppException {		
+	    DBRecord record = RecordConversion.instance.toDB(rec);	    
+	    Map<String, Object> query = ConsentQueryTools.getSharingQuery(consent, false);	    
+		return QueryEngine.isInQuery(context, query, record);					
+	}
 	/*
 	public Set<MidataId> findAllSharingAps(MidataId executorId, Record record1) throws AppException {
 		 

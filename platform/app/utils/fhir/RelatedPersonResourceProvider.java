@@ -62,7 +62,8 @@ public class RelatedPersonResourceProvider extends RecordBasedResourceProvider<R
 		registerSearches("RelatedPerson", getClass(), "getRelatedPerson");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("RelatedPerson");
+		  .reset("RelatedPerson")
+		  .hideIfPseudonymized("RelatedPerson", "text");
 	}
 	
 	@Override

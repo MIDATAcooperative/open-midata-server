@@ -155,6 +155,17 @@
 		            <span v-t="'manageapp.info.allowsUserSearch'"></span>
                </check-box>		    
 		  </form-group>
+		  <form-group name="usePreconfirmed" label="manageapp.usePreconfirmed" v-if="!(app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2' || app.type=='endpoint')">
+               <check-box name="usePreconfirmed" v-model="app.usePreconfirmed" :path="errors.usePreconfirmed">		    
+		            <span v-t="'manageapp.info.usePreconfirmed'"></span>
+               </check-box>		    
+		  </form-group>
+		  <form-group name="accountEmailsValidated" label="manageapp.accountEmailsValidated" v-if="!(app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2' || app.type=='endpoint')">
+               <check-box name="accountEmailsValidated" v-model="app.accountEmailsValidated" :path="errors.accountEmailsValidated">		    
+		            <span v-t="'manageapp.info.accountEmailsValidated'"></span>
+               </check-box>		    
+		  </form-group>
+		  
 		   <form-group name="consentObserving" label="Consent Observing" v-if="app.type == 'external'">
                <check-box name="consentObserving" v-model="app.consentObserving" disabled>
                    <span v-t="'manageapp.info.consentObserving'"></span>
@@ -324,7 +335,7 @@ export default {
                 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated"])
 		    .then(function(data) { 
                 let app = data.data[0];	
 				

@@ -118,7 +118,7 @@ public class ApplicationTools {
 		}
 		
 		// Agree to terms and co
-		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);					
+		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id, true);					
 		
 		Circles.consentStatusChange(context, appInstance, null, false);
 		
@@ -127,10 +127,13 @@ public class ApplicationTools {
 
 		// protokoll app installation
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.INSTALL);
+
+		// Eventually flush artifacts from sharing
+		if (context!=null) context.clearCache();
 		
 		// confirm audit entries
 		AuditManager.instance.success();
-
+		
 		AccessLog.logEnd("end install app");
 		return appInstance;
 	}
@@ -162,6 +165,25 @@ public class ApplicationTools {
 		}
 		AccessLog.logEnd("end refresh or install service:"+serviceAppId);
 		return result;
+	}
+
+	public static void leaveInstalledService(AccessContext context, MidataId appInstanceId, boolean reject) throws AppException {
+		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
+		if (!appInstance.owner.equals(context.getAccessor())) throw new InternalServerException("error.internal", "Not owner");
+		leaveInstalledService(context, appInstance, reject);
+	}
+	
+	public static void leaveInstalledService(AccessContext context, MobileAppInstance service, boolean reject) throws AppException {
+		if (service.status.equals(ConsentStatus.UNCONFIRMED) || service.status.equals(ConsentStatus.ACTIVE) || service.status.equals(ConsentStatus.INVALID)) {
+			AccessLog.log("leave installed service:", service._id.toString());
+			boolean sendMessage = service.status == ConsentStatus.ACTIVE; 
+			Plugin app = Plugin.getById(service.applicationId);		
+			User user = context.getRequestCache().getUserById(service.owner, true);
+			if (user != null) AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_REJECTED).withActorUser(context.getActor()).withModifiedUser(user).withConsent(service));		
+			if (reject) Circles.consentStatusChange(context, service, ConsentStatus.REJECTED);
+			else Circles.consentStatusChange(context, service, ConsentStatus.EXPIRED);
+			if (app != null && user != null && sendMessage) sendServiceRejectMessage(user, app);
+		}
 	}
 	
 	public static Set<MidataId> getObserversForApp(Set<StudyAppLink> links) throws InternalServerException {
@@ -471,6 +493,13 @@ public class ApplicationTools {
 			Messager.sendMessage(app._id, MessageReason.FIRSTUSE_ANYUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
 		}
     }
+    
+    private static void sendServiceRejectMessage(User member, Plugin app) throws AppException {
+        if (app.predefinedMessages!=null) {
+			AccessLog.log("send service reject message");			
+			Messager.sendMessage(app._id, MessageReason.SERVICE_WITHDRAW, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
+		}
+    }
 
     private static void createConsentsForProjects(AccessContext context, User member, Set<MidataId> studyConfirm, Plugin app,
             Set<StudyAppLink> links) throws AppException, InternalServerException {
@@ -583,11 +612,7 @@ public class ApplicationTools {
 		if (useOriginalContextOnFail) return context;
 		return null;
 	}
-									
-									
-				
-	
-
+																						
 	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
 		AccessLog.logBegin("start refresh app id=",appInstance._id.toString());
 		long tStart = System.currentTimeMillis();
@@ -627,6 +652,7 @@ public class ApplicationTools {
 
 	public static void deleteServiceInstance(AccessContext context, ServiceInstance instance) throws InternalServerException {
         Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.ALL);
+        AccessLog.log("delete service instance:",instance._id.toString()," #instances=", Integer.toString(appInstances.size()));
         for (MobileAppInstance appInstance : appInstances) {
             try {
               ApplicationTools.removeAppInstance(context, context.getAccessor(), appInstance);            
@@ -638,6 +664,8 @@ public class ApplicationTools {
 
         ServiceInstance.delete(instance._id);
     }
+	
+	
 
     
 }

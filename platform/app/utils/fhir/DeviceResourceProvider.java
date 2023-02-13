@@ -64,7 +64,8 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 		registerSearches("Device", getClass(), "getDevice");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("Device")		  
+		  .reset("Device")	
+		  .hideIfPseudonymized("Device", "text")
 		  .pseudonymizeReference("Device", "note", "authorReference");
 	}
 	

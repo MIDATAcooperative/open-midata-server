@@ -132,8 +132,8 @@ public class Terms extends APIController {
 		String terms = InstanceConfig.getInstance().getTermsOfUse(user.role);
 		String ppolicy = InstanceConfig.getInstance().getPrivacyPolicy(user.role);
 				
-		user.agreedToTerms(terms, user.initialApp);
-		user.agreedToTerms(ppolicy, user.initialApp);		
+		user.agreedToTerms(terms, user.initialApp, true);
+		user.agreedToTerms(ppolicy, user.initialApp, true);		
 	}
 	
 	
@@ -155,7 +155,7 @@ public class Terms extends APIController {
 		//if (terms.equals("midata-privacy-policy-*")) terms = InstanceConfig.getInstance().getPrivacyPolicy(user.role);
 		//else if (terms.equals("midata-terms-of-use-*")) terms = InstanceConfig.getInstance().getTermsOfUse(user.role);
 				
-		user.agreedToTerms(terms, app);
+		user.agreedToTerms(terms, app, false);
 		
 		return OAuth2.loginHelper(request);	
 	}

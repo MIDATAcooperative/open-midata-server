@@ -78,6 +78,7 @@ public class SpaceAccessContext extends AccessContext {
 	}
 	@Override
 	public boolean isIncluded(DBRecord record) throws AppException {
+		loadSharingQuery();
 		if(space.query != null && !QueryEngine.listFromMemory(this, space.query, Collections.singletonList(record)).isEmpty()) return true;
 		return record.owner.equals(space.owner) || record.owner.equals(RuntimeConstants.instance.publicUser);
 	}
@@ -100,13 +101,17 @@ public class SpaceAccessContext extends AccessContext {
 	
 	@Override
 	public boolean mayAccess(String content, String format) throws AppException {
+		loadSharingQuery();
+		
+		return Feature_FormatGroups.mayAccess(space.query, content, format);	
+	}
+	
+	private void loadSharingQuery() throws AppException {
 		if (!sharingQuery && space.query == null) {
 			  BSONObject q = RecordManager.instance.getMeta(this, space._id, "_query");
 			  if (q != null) space.query = q.toMap();			  
 			  sharingQuery = true;
 		}
-		
-		return Feature_FormatGroups.mayAccess(space.query, content, format);	
 	}
 	
 	public Space getInstance() {
@@ -129,6 +134,7 @@ public class SpaceAccessContext extends AccessContext {
 
 	@Override
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {
+		loadSharingQuery();
 		return Feature_FormatGroups.getAccessRestriction(space.query, content, format, field);
 	}
 

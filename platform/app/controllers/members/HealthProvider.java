@@ -45,6 +45,7 @@ import play.mvc.BodyParser;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.ApplicationTools;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
@@ -217,18 +218,17 @@ public class HealthProvider extends APIController {
 			return;
 		}
 		
-		if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
-		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_REJECTED).withActorUser(context.getActor()).withModifiedUser(userId).withConsent(target));
+		if (target.type.equals(ConsentType.EXTERNALSERVICE) || target.type.equals(ConsentType.API)) {
+		   ApplicationTools.leaveInstalledService(context, consentId, true);		   
 		} else {
-		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_REJECTED).withActorUser(context.getActor()).withModifiedUser(userId).withConsent(target));
+		    AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_REJECTED).withActorUser(context.getActor()).withModifiedUser(userId).withConsent(target));
+				
+			if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE) || target.status.equals(ConsentStatus.PRECONFIRMED) || target.status.equals(ConsentStatus.INVALID)) {
+				target.setConfirmDate(new Date());			
+				Circles.consentStatusChange(context, target, ConsentStatus.REJECTED);
+				Circles.sendConsentNotifications(userId, target, ConsentStatus.REJECTED);
+			} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");
 		}
-		
-		if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE) || target.status.equals(ConsentStatus.INVALID)) {
-			target.setConfirmDate(new Date());			
-			Circles.consentStatusChange(context, target, ConsentStatus.REJECTED);
-			Circles.sendConsentNotifications(userId, target, ConsentStatus.REJECTED);
-		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");
-	
 		AuditManager.instance.success();
 	}
     
@@ -237,7 +237,7 @@ public class HealthProvider extends APIController {
 	   if (consent == null) throw new BadRequestException("error.notfound.consent", "Consent not found");
 	   
 	   AccessContext contextConsent = context.forConsent(consent);
-	   if (consent.status != ConsentStatus.ACTIVE) return;
+	   if (!consent.isActive()) return;
 	   AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_REJECTED, userId, consent);
 	   if (consent.authorized.contains(userId)) {
 		   

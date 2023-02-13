@@ -331,7 +331,7 @@ public class BulkMails extends APIController {
 			String link;
 			if (study!=null) {
 				StudyParticipation sp = StudyParticipation.getByStudyAndMember(study, targetUser, Sets.create("_id","status"));
-				if (sp==null || sp.status != ConsentStatus.ACTIVE) return false;
+				if (! sp.isActive()) return false;
 				
 				link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.consentToken(sp._id);
 			} else link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.userToken(targetUser);

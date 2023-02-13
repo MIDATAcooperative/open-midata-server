@@ -137,7 +137,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "public" */ 'views/shared/public/termsPage.vue')
   },
   {
-    base : ["oauth", "public", "public_provider", "public_research", "public_developer"],
+    base : ["oauth", "public", "public_provider", "public_research", "public_developer","member", "research", "developer", "provider", "admin"],
     path : "postregister",
     meta : { keep : true },
     component: postRegister

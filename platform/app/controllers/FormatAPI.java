@@ -74,7 +74,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	public Result listGroups() throws AppException {
 	    Collection<RecordGroup> groups = RecordGroup.getAll();
-	    return ok(Json.toJson(groups));
+	    return ok(Json.toJson(groups)).as("application/json");
 	}
 	
 	/**
@@ -85,7 +85,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	public Result listFormats() throws InternalServerException {
 	    Collection<FormatInfo> formats = FormatInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("format", "comment", "visName"));
-	    return ok(Json.toJson(formats));
+	    return ok(Json.toJson(formats)).as("application/json");
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	public Result listContents() throws InternalServerException {
 	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), Sets.create("content", "security", "comment", "label", "defaultCode", "resourceType", "subType", "defaultUnit", "category", "source"));
-	    return ok(Json.toJson(contents));
+	    return ok(Json.toJson(contents)).as("application/json");
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	public Result listCodes() throws InternalServerException {
 	    Collection<ContentCode> codes = ContentCode.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), Sets.create("system", "code", "display", "content"));
-	    return ok(Json.toJson(codes));
+	    return ok(Json.toJson(codes)).as("application/json");
 	}
 	
 	/**
@@ -364,12 +364,12 @@ public class FormatAPI extends Controller {
 			  code.display = loinc.LONG_COMMON_NAME;
 			  results.add(code);
 		  }
-		  return ok(Json.toJson(results));
+		  return ok(Json.toJson(results)).as("application/json");
 		} else {		
 	      Collection<ContentCode> contents = ContentCode.getAll(CMaps.map(properties).map("deleted", CMaps.map("$ne", true)), fields);
 	      
 	      
-	      return ok(Json.toJson(contents));
+	      return ok(Json.toJson(contents)).as("application/json");
 		}
 	}
 	
@@ -393,7 +393,7 @@ public class FormatAPI extends Controller {
 				
 	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map(properties).map("deleted", CMaps.map("$ne", true)), fields);
 	      	      
-	    return ok(Json.toJson(contents));		
+	    return ok(Json.toJson(contents)).as("application/json");		
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -410,7 +410,7 @@ public class FormatAPI extends Controller {
 				
 	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map(properties).map("deleted", CMaps.map("$ne", true)), fields);
 	      	      
-	    return ok(Json.toJson(contents));		
+	    return ok(Json.toJson(contents)).as("application/json");		
 	}
 	
 	@APICall
@@ -428,7 +428,7 @@ public class FormatAPI extends Controller {
 		obj.set("formatgroups", JsonOutput.toJsonNode(rg, "RecordGroup", RecordGroup.ALL));
 		obj.set("groupcontent", JsonOutput.toJsonNode(gc, "GroupContent", GroupContent.ALL));
 		
-		return ok(obj);
+		return ok(obj).as("application/json");
 		
 	}
 	

@@ -32,6 +32,7 @@ public class AuditEventBuilder {
 	private Consent consent;
 	private String message;
 	private Study study;
+	private AuditExtraInfo extra;
 	
 	public AuditEventType getType() {
 		return type;
@@ -107,9 +108,19 @@ public class AuditEventBuilder {
 		return this;
 	}
 	
+	public AuditEventBuilder withExtraInfo(AuditExtraInfo extra) {
+		this.extra = extra;
+		return this;
+	}
+	
+	public AuditExtraInfo getExtraInfo() {
+		return extra;
+	}
+	
 	public static AuditEventBuilder withType(AuditEventType type) {
 		AuditEventBuilder builder = new AuditEventBuilder();
 		builder.type = type;
 		return builder;
 	}
+		
 }

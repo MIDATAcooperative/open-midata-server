@@ -696,7 +696,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 					//	  done.add(data.owner);
 						  //foundone = true;
 						  isSlow = 0;
-						  processor.tell(new SubscriptionTriggered(data._id, data.owner, data.app, data.format, null, null, null, null, null, null), getSelf());
+						  processor.tell(new SubscriptionTriggered(data._id, data.owner, data.app, data.format, null, null, null, null, null, null, null), getSelf());
 						  return true;
 					//}
 				}		

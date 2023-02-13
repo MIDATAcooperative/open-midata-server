@@ -50,7 +50,9 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.MidataId;
 import models.Record;
+import models.enums.AuditEventType;
 import utils.access.pseudo.FhirPseudonymizer;
+import utils.audit.AuditHeaderTool;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -75,6 +77,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Task")
+		  .hideIfPseudonymized("Task", "text")
 		  .pseudonymizeReference("Task", "for")
 		  .pseudonymizeReference("Task", "focus")
 		  .pseudonymizeReference("Task", "requester")
@@ -307,6 +310,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	public Task createExecute(Record record, Task theTask) throws AppException {
 		MidataId consent = insertMessageRecord(record, theTask);
         shareRecord(record, theTask, consent);
+        AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
         return theTask;
 	}	
 	
@@ -346,6 +350,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	@Override
 	public void updateExecute(Record record, Task theTask) throws AppException {
 		updateRecord(record, theTask, getAttachments(theTask));
+		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
 		shareRecord(record, theTask, info().getAccessor()); // XXX To be checked
 	}
 

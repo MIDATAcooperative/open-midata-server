@@ -39,6 +39,7 @@
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
      "failed" : "Action failed",
+     "timeout" : "Timeout",
      "notrialuser_title" : "Full membership required!",
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "@OPERATOR membership required!",
@@ -85,7 +86,9 @@
        "url" : "Invalid URL",
        "consent_members" : "This consent may only be confirmed once all external persons have joined the platform.",
        "entity_type" : "Invalid entity type",
-       "joincode" : "The provided participation code is not accepted."       
+       "joincode" : "The provided participation code is not accepted.",
+       "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
+       "csvmapping" : "Invalid mapping provided."
      },
 
      "missing" : {
@@ -201,6 +204,11 @@
      
      "notrequired" : {
        "licence" : "No license is required for this application"
+     },
+     
+     "nomatch" : {
+       "birthdate" : "Birthdate does not match",
+       "email" : "Different email provided"
      }
    },
 
@@ -212,10 +220,35 @@
        "UNKNOWN" : "not provided"
      },
      "country" : {
-       "CH" : "Switzerland",
-       "DE" : "Germany",
-       "NL" : "Netherlands",
-       "GB" : "United Kingdom"
+       "CH" : "Switzerland",       
+	    "AT" : "Austria",
+	    "BE" : "Belgium",
+	    "BG" : "Bulgaria",
+	    "HR" : "Croatia",
+	    "CY" : "Cyprus",
+	    "CZ" : "Czech Republic",
+	    "DK" : "Denmark",
+	    "EE" : "Estonia",
+	    "FI" : "Finland",
+	    "FR" : "France",
+	    "DE" : "Germany",
+	    "GR" : "Greece",
+	    "HU" : "Hungary",
+	    "IE" : "Ireland",
+	    "IT" : "Italy",
+	    "LV" : "Latvia",
+	    "LT" : "Lithuania",
+	    "LU" : "Luxembourg",
+	    "MT" : "Malta",
+	    "NL" : "Netherlands",
+	    "PL" : "Poland",
+	    "PT" : "Portugal",
+	    "RO" : "Romania",
+	    "SK" : "Slovakia",
+	    "SI" : "Slovenia",
+	    "ES" : "Spain",
+	    "SW" : "Sweden",          
+	    "GB" : "United Kingdom"
      },
      "eventtype" : {
        "CODE_ENTERED" : "Code entered",
@@ -291,7 +324,14 @@
        "contract-send" : "Contract send to user",
        "internal-comment" : "Administrator's comment",
        "user-terms-of-use-agreed" : "Agreed to General Terms and Conditions",
-       "audit-log-used" : "Audit log consulted",	   
+       "user-terms-of-use-noted" : "Took note of General Terms and Conditions",
+       "audit-log-used" : "Audit log consulted",	
+       "create" : "Resource created",
+	   "update" : "Resource updated",
+       "read" : "Resource read",
+       "vread" : "Resource version read",
+       "history" : "Resource history read",
+       "search" : "Searched for resources",          
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
 	   "removed-from-team" : "Removed from team",
@@ -300,6 +340,7 @@
 	   "user-searched" : "Search for user",
 	   "welcome-sent" : "Welcome email sent",
 	   "tried-user-reregistration" : "Attempted user re-registration",
+	   "non-perfect-account-match" : "Non perfect account match during access from 3rd party",
 	   "signature-failure" : "Consent validation failed",
 	   "email-sent" : "Email sent",
 	   "sms-sent" : "SMS sent",
@@ -331,6 +372,7 @@
 	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",
+	   "PRECONFIRMED" : "Active (Preconfirmed)",
 	   "EXPIRED" : "Expired",
 	   "REJECTED" : "Rejected",
 	   "UNCONFIRMED" : "Unconfirmed",
@@ -376,7 +418,8 @@
 	 "studytype" : {
 	   "CLINICAL" : "Clinical Study",
 	   "CITIZENSCIENCE" : "Citizen Science Project",
-	   "COMMUNITY" : "Community"
+	   "COMMUNITY" : "Community",
+	   "REGISTRY" : "Registry"
 	 },
 	 "joinmethod" : {
 	   "APP" : "Participant uses the linked application",
@@ -709,8 +752,8 @@
     "birthday_entered" : "A valid date of birth is required to use this service. Please add your date of birth to your account information. (Format example: 31.12.1999)",
     "gender_entered" : "Your gender must be provided to use this service. Please indicate your gender.",
     "admin_verified" : "Your account must be unlocked by an administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact @SUPPORT.",
-    "terms_agreed" : "The General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
-    "privacy_policy_agreed" : "The Privacy Policy has been updated. Please confirm that you agree to the new version.",
+    "terms_agreed" : "The General Terms and Conditions have been updated. Please confirm that you have taken note of the new version.",
+    "privacy_policy_agreed" : "The Privacy Policy has been updated. Please confirm that you have taken note of the new version.",
     "auth2factor" : "An authorization code has been send to your phone. Please enter it.",
     "securityToken" : "Code",
     "securityToken_btn" : "Send",
@@ -724,6 +767,7 @@
     "emailnotify" : "Notifications",
     "emailnotify2" : "Please send me an email everytime I log into the @PRODUCT portal at {{domain}}.",
     "agree_btn" : "I agree",
+    "noted_btn" : "I took note of it",
     "keyrecovery" : {
       "intro" : "The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:",
       "way1" : "Do you have any application using @PRODUCT where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.",
@@ -969,6 +1013,7 @@
     "type_api" : "This consent shares data with an external service.",
     "type_implicit" : "This implicitely created consent shares messages with their receivers.",
     "status_active" : "This consent is active.",
+    "status_preconfirmed" : "This consent has been externally confirmed and is active.",
     "status_expired" : "This consent is expired. Data is no longer shared.",
     "status_unconfirmed" : "This consent needs confirmation by its owner.",
     "status_rejected" : "This consent has been rejected by its owner.",
@@ -992,6 +1037,7 @@
     "date_of_creation" : "created at",
     "valid_until" : "expires at",
     "status_active" : "Active now",
+    "status_preconfirmed" : "Active now (Preconfirmed)",
     "status_expired" : "Expired",
     "status_unconfirmed" : "Needs confirmation",
     "status_rejected" : "Rejected",
@@ -1122,6 +1168,8 @@
     "link_ORGANIZATION_optional" : "You may share data with this third party:", 
     "link_CLINICAL_required" : "In order to use this application you need to participate in a clinical study:",
     "link_CLINICAL_optional" : "Additionally you may participate in a clinical study:",
+    "link_REGISTRY_required" : "In order to use this application you need to share data with a registry:",
+    "link_REGISTRY_optional" : "Additionally you may share data with a registry:",
     "link_CITIZENSCIENCE_required" : "In order to use this application you must participate in a citizen science project:",
     "link_CITIZENSCIENCE_optional" : "Additionally you may participate in a citizen science project:",
     "link_COMMUNITY_required" : "In order to use this application you must participate in a community project:",
@@ -1406,6 +1454,18 @@
     "observer" : "Only with this observer (optional)",
     "category" : "Category (optional)",
     "custom_filter" : "User Defined Filter (JSON)",
+    "security_tags" : "Security Tags",
+    "tag" : "Tag",
+    "require" : "Require for read",
+    "allow" : "Allow write",
+    "add" : "Auto-Add",
+    "tags" : {
+      "reliable" : "Reliable",
+      "no_delete" : "No delete",
+      "read_only" : "Read only",
+      "hidden" : "Hide from patient",
+      "not_pseudonymisable" : "Not pseudonymisable"
+    },
     "remove_btn" : "Remove",
     "apply_btn" : "Apply",
     "newentry" : "Enter name, code, resource type or (part of) description of data type to add:",
