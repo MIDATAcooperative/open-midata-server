@@ -57,7 +57,7 @@
                         </div>
                     </td>
                     <td>
-                        <div v-for="(k,v) in call.resultCount" :key="v" :class="{ 'text-danger' : (k>=400) }">status {{ k }} : {{ v }}</div>
+                        <div v-for="(v,k) in call.resultCount" :key="v" :class="{ 'text-danger' : (k>=400) }">status {{ k }} : {{ v }}</div>
                         <div class="text-info" v-for="(comment,idx3) in call.comments" :key="idx3">{{ comment }}</div>
                     </td>
                

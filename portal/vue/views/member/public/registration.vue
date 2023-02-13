@@ -391,7 +391,7 @@ export default {
 			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_service";
 			return "oauth2.confirm_service_opt";
 		} 
-		if (link.study.type == "CLINICAL") {
+		if (link.study.type == "CLINICAL" || link.study.type == "REGISTRY") {
 			if (link.type.indexOf("REQUIRE_P") >= 0 /*&& !(link.type.indexOf("OFFER_EXTRA_PAGE") >=0)*/) return "oauth2.confirm_study";
 			return "oauth2.confirm_study_opt";
 		}

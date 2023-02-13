@@ -49,6 +49,7 @@
                 </tr>
             </table>
             
+            <p v-t="'studyrecords.csvdef'" v-if="csvEdit"></p>
             <textarea class="form-control mt-1" v-model="jsonDefinition" rows="10" v-if="csvEdit">
             </textarea>
             <error-box class="mt-1" :error="error"></error-box>
