@@ -234,24 +234,12 @@
         "group" : "Gruppo di dati",
         "number_of_records" : "# record",
         "download_btn" : "Scarica",
-
-        // TODO CHANGED
-        // OLD: Download FHIR Bundle
-        // NEW: Download Bundle
-        "fhir_download_btn" : "Scarica bundle FHIR",
+        "fhir_download_btn" : "Scarica bundle",
         "fhir_download_original_btn" : "Download senza pseudonimo",
-
-        // TODO NEW: Export file
-        "file" : "Export file",
-
-        // TODO NEW: FHIR Format
-        "file_fhir" : "FHIR Format",
-
-        // TODO NEW: Expert Feature: Paste JSON mapping from FHIR to CSV here.
-        "csvdef" : "Expert Feature: Paste JSON mapping from FHIR to CSV here.",
-
-        // TODO NEW: Upload CSV-Export Definition
-        "add_csvdef_btn" : "Upload CSV-Export Definition"
+        "file" : "Esportare il file",
+        "file_fhir" : "Formato FHIR",
+        "csvdef" : "Funzione esperti: incolla qui la mappatura JSON da FHIR a CSV.",
+        "add_csvdef_btn" : "Scarica la definizione di esportazione CSV"
     },
 
     "studyrules" : {
