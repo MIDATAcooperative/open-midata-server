@@ -135,7 +135,7 @@
     "anonymous" : "Anonymous Participation",
     "anonymous2" : ", the pseudonymization mapping may not be accessed.",
     "not_anonymous1" : "Not pseudonymized",
-    "not_anonymous2" : ", requests member to share full name, date of birth and contact Information (address, phone, email)",
+    "not_anonymous2" : ", requests member to share full name, birthdate and contact information (address, phone, email)",
     "assistance" : "Assistance",
     "no_assistance1" : "None",
     "no_assistance2" : " - the account holder participates alone.",

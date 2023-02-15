@@ -2,7 +2,7 @@
    "footer" : {       
      "for_members" : "For Account Holders",
 	 "for_researchers" : "For Research Organizations",
-	 "for_providers" : "For Healthcare Providers",
+	 "for_providers" : "For Health Professionals",
 	 "for_developers" : "For Developers"
    },
 
@@ -131,7 +131,7 @@
      "exists" : {
        "user" : "A person with this email is already registered.",
        "member" : "A person with this email is already registered.",
-       "provider" : "A healthcare provider with this name already exists.",
+       "provider" : "A health professional with this name already exists.",
        "organization" : "An organization with this name already exists.",
        "passcode" : "Please choose a different passcode!",
        "plugin" : "An application with the same name already exists.",
@@ -208,7 +208,7 @@
      
      "nomatch" : {
        "birthdate" : "Birthdate does not match",
-       "email" : "Different email provided"
+       "email" : "Different email address provided"
      }
    },
 
@@ -284,7 +284,7 @@
 	   "user-phone-change" :"User's phone number changed",
 	   "user-settings-change" :"User's settings changed",
 	   "user-email-change" :"User's email changed",
-	   "user-birthday-change" : "User's date of birth changed",
+	   "user-birthday-change" : "User's birthdate changed",
 	   "user-gender-change" : "User's gender changed",
 	   "user-status-change-active" : "User account unlocked",
 	   "user-status-change-blocked" : "User account blocked",
@@ -358,7 +358,7 @@
 	   "PASSPORT_VERIFIED" : "ID card of users must have been verified",
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
 	   "ADMIN_VERIFIED" : "Account must have been unlocked by an administrator",
-	   "BIRTHDAY_SET" : "The date of birth of the user must be known",
+	   "BIRTHDAY_SET" : "The birthdate of the user must be known",
 	   "GENDER_SET" : "The gender of the user must be known",
 	   "APP_UNLOCK_CODE" : "The application requires an unlock code"
 	 },
@@ -462,7 +462,7 @@
 	   "ANY" : "Any Role",
 	   "DEVELOPER" : "Developer",
 	   "MEMBER" : "Account Holder",
-	   "PROVIDER" : "Healthcare provider",
+	   "PROVIDER" : "Health professional",
 	   "RESEARCH" : "Researcher"	  
 	 },
 	 "subuserrole" : {
@@ -639,8 +639,8 @@
     "firstname" : "First Name",
     "lastname" : "Surname",
     "gender" : "Gender",
-    "birthday" : "Date of birth",
-    "birthday2" : "Date of birth (format: 31.12.1999)",
+    "birthday" : "Birthdate",
+    "birthday2" : "Birthdate (format: 31.12.1999)",
     "language" : "Preferred Language",
     "day" : "Day",
     "month" : "Month",
@@ -740,7 +740,7 @@
     "email_success" : "Thank you for confirming your email address.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
-    "birthday_entered" : "A valid date of birth is required to use this service. Please add your date of birth to your account information. (Format example: 31.12.1999)",
+    "birthday_entered" : "A valid birthdate is required to use this service. Please add your birthdate to your account information. (Format example: 31.12.1999)",
     "gender_entered" : "Your gender must be provided to use this service. Please indicate your gender.",
     "admin_verified" : "Your account must be unlocked by an administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact @SUPPORT.",
     "terms_agreed" : "The General Terms and Conditions have been updated. Please confirm that you have taken note of the new version.",
@@ -818,11 +818,11 @@
   },
 
   "providersearch" : {
-    "title" : "Provider search",
+    "title" : "Health professional search",
     "name" : "Name",
     "city_or_zip" : "City / Zip",
-    "only_with_contact" : "Search only healthcare providers you already had contact with.",
-    "empty_result" : "No providers found.",
+    "only_with_contact" : "Search only health professionals you already had contact with.",
+    "empty_result" : "No health professional found.",
     "add_consent_btn" : "Add Consent"
   },
 
@@ -847,7 +847,7 @@
   "studydetails" : {
     "study" : "Research project",    
     "organization" : "Organization performing the project:",
-    "providers_monitoring" : "Healthcare professionals monitoring the project",
+    "providers_monitoring" : "Health professionals monitoring the project",
     "no_providers" : "None",
     "provider_remove_btn" : "Remove",
     "provider_add_btn" : "Add",
@@ -855,7 +855,7 @@
     "information_that_needs_sharing" : "Required data",
     "information_restricted" : "Your gender, year of birth and country of residence",
     "information_none" : "A pseudonym",
-    "information_demographic" : "Your complete demographic data (name, date of birth, address, ...)",
+    "information_demographic" : "Your complete demographic data (name, birthdate, address, ...)",
     "records_with_format" : "Records that have format:",
     "records_with_content" : "Records that have content:",
     "records_with_group" : "Records that belong to group:",
@@ -886,7 +886,7 @@
     "user" : "User",
     "name" : "Name:",
     "email" : "Email:",
-    "birthday" : "Date of birth:",
+    "birthday" : "Birthdate:",
     "midataID" : "@PRODUCT ID:",
     "action" : "More...",
     "change_password_btn" : "Change Password",
@@ -997,7 +997,7 @@
     "consent_empty" : "This consent does not share any data at the moment.",
     "type_circle" : "This consent shares data with other @PRODUCT account holders.",
     "type_representative" : "This consent authorizes another person to use your account. All data of the account owner is shared with the representative.",
-    "type_healthcare" : "This consent shares data with healthcare professionals.",
+    "type_healthcare" : "This consent shares data with health professionals.",
     "type_studyparticipation" : "This consent shares data with a research project.",
     "type_studyrelated" : "This consent shares data with a project participant.",
     "type_externalservice" : "This consent shares data with an application.",
@@ -1042,7 +1042,7 @@
 
   "consents" : {
     "title" : "Consents",
-    "description" : "Using consents you can grant others (healthcare professionals, friends, researchers, ...) access to some of your data. Use this page to manage your consents and create new ones.",
+    "description" : "Using consents you can grant others (health professionals, friends, researchers, ...) access to some of your data. Use this page to manage your consents and create new ones.",
     "count" : "You have {{ count }} consent(s):",
     "where_owner" : "Show consents where you share data with someone else",
     "where_authorized" : "Show consents where data is shared with you",
@@ -1211,11 +1211,11 @@
 	  "circles2" : "Your Circles",
 	  "circles2_teaser" : "Create Circles to share your data with others. Share with friends, family or others.",
 	  "providers" : "Your Health Consents",
-	  "providers_teaser" : "Search for healthcare providers and add them to your list in order to share data with them.",
-	  "providersearch" : "Search for Health Providers",
-	  "providersearch_text" : "Search function for healthcare providers.",
+	  "providers_teaser" : "Search for health professionals and add them to your list in order to share data with them.",
+	  "providersearch" : "Search for Health Professionals",
+	  "providersearch_text" : "Search function for health professionals.",
 	  "usergroupsearch" : "Search for Teams",
-	  "hcrecords" : "Newest records from your healthcare providers",
+	  "hcrecords" : "Newest records from your health professionals",
 	  "records" : "Records",
     "share" : "Share",
     "details" : "Details",
@@ -1329,9 +1329,9 @@
     "EXTERNALSERVICE" : "Application",
     "API" : "Service",
     "STUDYPARTICIPATION" : "Participation",
-    "HEALTHCARE" : "Consent (Health Provider)",
+    "HEALTHCARE" : "Consent (Health Professional)",
     "MEMBER" : "Account",
-    "PROVIDER" : "Account (Health Provider)",
+    "PROVIDER" : "Account (Health Professional)",
     "HCRELATED" : "Account (Account Holder)",
     "RESEARCH" : "Account (Researcher)",
     "ADMIN" : "Account (Administrator)",

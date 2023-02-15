@@ -9,7 +9,7 @@
 
     "navbar" : {
         "cookiebanner" : "Questo sito web utilizza i cookie. Per ulteriori informazioni, vedere",
-        "privacypolicy" : "Dichiarazione sui dati personali",
+        "privacypolicy" : "Informativa sulla privacy",
         "cookiebanner_close_btn" : "Chiudere",
         "toggle_navigation" : "Attiva/Disattiva navigazione",
         "login" : "Accedi",
@@ -87,7 +87,9 @@
             "url" : "URL non valido",
             "consent_members" : "Questo consenso può essere confermato solo dopo che tutte le persone esterne hanno aderito alla piattaforma.",
             "entity_type" : "Tipo di entità non valida",
-            "joincode" : "Il codice di partecipazione fornito non è accettato."
+            "joincode" : "Il codice di partecipazione fornito non è accettato.",
+            "usePreconfirmed" : "La preconferma del consenso e la condivisione con terzi non sono consentite allo stesso tempo.",
+            "csvmapping" : "Mappatura non valida fornita."
         },
 
         "missing" : {
@@ -99,7 +101,7 @@
             "groupsystem" : "È obbligatorio immettere il sistema del gruppo.",
             "token" : "Token mancante o errato.",
             "agb" : "Condizioni generali di contratto non accettate.",
-            "privacypolicy" : "La Dichiarazione sui dati personali devono essere accettate.",
+            "privacypolicy" : "La Informativa sulla privacy devono essere accettate.",
             "study_accept" : "La partecipazione al progetto deve essere accettata.",
             "study_group" : "Il partecipante deve dapprima essere assegnato a un gruppo.",
             "consent_accept" : "Il consenso deve essere dato per continuare",
@@ -203,6 +205,11 @@
 
         "notrequired" : {
             "licence" : "Non è richiesta alcuna licenza per questa applicazione"
+        },
+
+        "nomatch" : {
+            "birthdate" : "La data di nascita non corrisponde",
+            "email" : "Indirizzo e-mail diverso da quello fornito"
         }
     },
 
@@ -215,8 +222,33 @@
         },
         "country" : {
             "CH" : "Svizzera",
+            "AT" : "Austria",
+            "BE" : "Belgio",
+            "BG" : "Bulgaria",
+            "HR" : "Croazia",
+            "CY" : "Cipro",
+            "CZ" : "Repubblica Ceca",
+            "DK" : "Danimarca",
+            "EE" : "Estonia",
+            "FI" : "Finlandia",
+            "FR" : "Francia",
             "DE" : "Germania",
-            "NL" : "Olanda",
+            "GR" : "Grecia",
+            "HU" : "Ungheria",
+            "IE" : "Irlanda",
+            "IT" : "Italia",
+            "LV" : "Lettonia",
+            "LT" : "Lituania",
+            "LU" : "Lussemburgo",
+            "MT" : "Malta",
+            "NL" : "Paesi Bassi",
+            "PL" : "Polonia",
+            "PT" : "Portogallo",
+            "RO" : "Romania",
+            "SK" : "Slovacchia",
+            "SI" : "Slovenia",
+            "ES" : "Spagna",
+            "SW" : "Svezia",
             "GB" : "Regno Unito"
         },
         "eventtype" : {
@@ -295,6 +327,12 @@
             "user-terms-of-use-agreed" : "Condizioni generali di contratto accettati",
             "user-terms-of-use-noted" : "Ha preso atto delle Condizioni generali di contratto",
             "audit-log-used" : "Consultato il audit log",
+            "create" : "Risorsa creata",
+            "update" : "Risorsa aggiornata",
+            "read" : "Risorsa letta",
+            "vread" : "Versione della risorsa letta",
+            "history" : "Storia della risorsa letta",
+            "search" : "Ricerca di risorse",
             "added-as-team-member" : "Aggiunto come membro del team",
             "updated-role-in-team" : "Ruolo aggiornato nel team",
             "removed-from-team" : "Rimosso dal team",
@@ -303,6 +341,7 @@
             "user-searched" : "Cerca per utente",
             "welcome-sent" : "E-mail di benvenuto inviata",
             "tried-user-reregistration" : "Tentativo di registrazione dell'utente",
+            "non-perfect-account-match" : "Corrispondenza non perfetta del conto durante l'accesso da parte di terzi",
             "signature-failure" : "Convalida del consenso fallita",
             "email-sent" : "E-mail inviata",
             "sms-sent" : "SMS inviato",
@@ -332,6 +371,7 @@
         },
         "consentstatus" : {
             "ACTIVE" : "Attivo",
+            "PRECONFIRMED" : "Attivo (preconfermato)",
             "EXPIRED" : "Scaduto",
             "REJECTED" : "Rifiutato",
             "UNCONFIRMED" : "Non confermato",
@@ -377,7 +417,8 @@
         "studytype" : {
             "CLINICAL" : "Studio clinico",
             "CITIZENSCIENCE" : "Progetto Scienza Cittadina",
-            "COMMUNITY" : "Comunità"
+            "COMMUNITY" : "Comunità",
+            "REGISTRY" : "Registro"
         },
         "joinmethod" : {
             "APP" : "Il partecipante utilizza un'applicazione collegata",
@@ -620,7 +661,7 @@
         "agb2" : "Accetto i",
         "agb3" : "Condizioni generali di contratto",
         "privacypolicy2" : "e la",
-        "privacypolicy3" : "Dichiarazione sui dati personali",
+        "privacypolicy3" : "Informativa sulla privacy",
         "app_agb" : "Condizioni dell'app",
         "app_agb2" : "Accetto i",
         "app_agb3" : "Condizioni generali di contratto dell'app",
@@ -704,7 +745,7 @@
         "gender_entered" : "Per utilizzare questo servizio è necessario inserire il proprio sesso. Indicare il proprio sesso.",
         "admin_verified" : "Il suo account deve essere sbloccato da un amministratore. Riprova più tardi. Se trascorse più di 24 ore il suo account non è stato sbloccato, contatta @SUPPORT.",
         "terms_agreed" : "Le Condizioni generali di contratto sono state aggiornate. Si prega di confermare di aver preso atto della nuova versione.",
-        "privacy_policy_agreed" : "La Dichiarazione sui dati personali è stata aggiornata. Si prega di confermare di aver preso atto della nuova versione.",       
+        "privacy_policy_agreed" : "La Informativa sulla privacy è stata aggiornata. Si prega di confermare di aver preso atto della nuova versione.",
         "auth2factor" : "Un codice di autorizzazione è stato inviato al suo telefono. Per favore, inseriscilo.",
         "securityToken" : "Codice",
         "securityToken_btn" : "Inviare",
@@ -964,6 +1005,7 @@
         "type_api" : "Questo consenso condivide dati con un servizio esterno.",
         "type_implicit" : "Questo consenso creato implicitamente condivide i messaggi su se stessi.",
         "status_active" : "Questo consenso è attivo.",
+        "status_preconfirmed" : "Questo consenso è stato confermato esternamente ed è attivo.",
         "status_expired" : "Questo è scaduto. I dati non sono più condivisi.",
         "status_unconfirmed" : "Questo consenso richiede la conferma dal suo proprietario.",
         "status_rejected" : "Questo consenso è stato rifiutato dal suo proprietario.",
@@ -987,6 +1029,7 @@
         "date_of_creation" : "creato il",
         "valid_until" : "scade il",
         "status_active" : "Attivo ora",
+        "status_preconfirmed" : "Attivo ora (preconfermato)",
         "status_expired" : "Scaduto",
         "status_unconfirmed" : "Necessità di conferma",
         "status_rejected" : "Rifiutato",
@@ -1117,6 +1160,8 @@
         "link_ORGANIZATION_optional" : "Lei può condividere i dati con questa terza parte:",
         "link_CLINICAL_required" : "Per poter utilizzare questa applicazione è necessario partecipare a uno studio clinico:",
         "link_CLINICAL_optional" : "Inoltre puoi partecipare a uno studio clinico:",
+        "link_REGISTRY_required" : "Per utilizzare questa applicazione è necessario condividere i dati con un registro:",
+        "link_REGISTRY_optional" : "Inoltre, è possibile condividere i dati con un registro:",
         "link_CITIZENSCIENCE_required" : "Per poter utilizzare questa applicazione è necessario partecipare a un progetto di citizen science:",
         "link_CITIZENSCIENCE_optional" : "Inoltre puoi partecipare a un progetto di citizen science:",
         "link_COMMUNITY_required" : "Per poter utilizzare questa applicazione è necessario partecipare a un progetto comunitario:",
@@ -1410,7 +1455,8 @@
             "reliable" : "Affidabile",
             "no_delete" : "Nessuna cancellazione",
             "read_only" : "Solo lettura",
-            "hidden" : "Nascondere al paziente"
+            "hidden" : "Nascondere al paziente",
+            "not_pseudonymisable" : "Non pseudonimizzabile"
         },
         "remove_btn" : "Rimuovi",
         "apply_btn" : "Applica",
