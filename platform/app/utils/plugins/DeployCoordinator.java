@@ -18,6 +18,9 @@
 package utils.plugins;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -33,6 +36,7 @@ import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.stats.ActionRecorder;
@@ -43,6 +47,8 @@ public class DeployCoordinator extends AbstractContainer {
 	private ActorRef buildContainer;
 	private ActorRef scriptContainer;
 	private ActorRef cdnContainer;
+	private List<DeployAction> waiting;
+	private boolean running;
 	
 	static Props props(final ActorRef buildContainer, ActorRef scriptContainer, ActorRef cdnContainer) {	    
 	    return Props.create(DeployCoordinator.class, () -> new DeployCoordinator(buildContainer, scriptContainer, cdnContainer));
@@ -52,12 +58,21 @@ public class DeployCoordinator extends AbstractContainer {
 		this.buildContainer = buildContainer;
 		this.scriptContainer = scriptContainer;
 		this.cdnContainer = cdnContainer;
+		this.waiting = new ArrayList<DeployAction>();
 	}
 	
 	@Override
 	public void preStart() throws Exception {		
 		super.preStart();
 		
+		try {
+			Set<Plugin> failed = Plugin.getAll(CMaps.map("deployStatus", DeploymentStatus.RUNNING), Sets.create("_id", "deployStatus"));
+			for (Plugin pl : failed) {
+				Plugin.set(pl._id, "deployStatus", DeploymentStatus.FAILED);			
+			}
+		} catch (AppException e) {
+			ErrorReporter.report("deploy", null, e);
+		}
 		/*
 		if (InstanceConfig.getInstance().getInternalBuilderUrl() != null) {
 			//buildContainer = getContext().actorOf(Props.create(ExternPluginDeployment.class).withDispatcher("pinned-dispatcher"), "pluginDeployment");
@@ -69,11 +84,33 @@ public class DeployCoordinator extends AbstractContainer {
 
 	}
 	
+	public void scedule(DeployAction action, CurrentDeployStatus status) throws AppException {
+		if (!running) {
+			running = true;
+			newPhase(action, status.tasks.poll());
+		} else {
+			waiting.add(action);
+		}
+	}
+	
+	public void next() throws AppException {
+		System.out.println("XXXX waiting="+waiting.size());
+		if (!waiting.isEmpty()) {
+			DeployAction action = waiting.remove(0);
+			CurrentDeployStatus status = getDeployStatus(action.pluginId, false);
+			newPhase(action, status.tasks.poll());
+			System.out.println("XXXX SCEDULED PHASE");
+		} else {
+			running = false;
+			System.out.println("XXXX DONE");
+		}
+	}
+	
 	public void deploy(DeployAction action) {	
 		String path = "PluginDeployment/coordinator";
 		long st = ActionRecorder.start(path);
 		try {
-			Plugin plugin = Plugin.getById(action.pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken"));		
+			Plugin plugin = Plugin.getById(action.pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken", "hasScripts"));		
 			if (plugin.filename.indexOf(".")>=0 || plugin.filename.indexOf("/") >=0 || plugin.filename.indexOf("\\")>=0) return;
 			System.out.println("XXXXXX COORD IN="+action.status);
 		switch(action.status) {
@@ -84,14 +121,14 @@ public class DeployCoordinator extends AbstractContainer {
 			status.tasks.add(DeployPhase.INSTALL);
 			status.tasks.add(DeployPhase.AUDIT);
 			status.tasks.add(DeployPhase.COMPILE);
-			status.tasks.add(DeployPhase.EXPORT_SCRIPTS);
+			if (plugin.hasScripts) status.tasks.add(DeployPhase.EXPORT_SCRIPTS);
 			status.tasks.add(DeployPhase.EXPORT_TO_CDN);	
 			status.tasks.add(DeployPhase.FINISHED);
 		    status.report.planned.addAll(status.tasks);
 		    AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_DEPLOYED).withActorUser(action.userId).withApp(action.pluginId));
 		    Plugin.set(action.pluginId, "deployStatus", DeploymentStatus.RUNNING);
 		    status.auditEvent = AuditManager.instance.convertLastEventToAsync();
-			newPhase(action, status.tasks.poll());
+			scedule(action, status);
 			break;
 			
 		case COORDINATE_DELETE:
@@ -101,13 +138,13 @@ public class DeployCoordinator extends AbstractContainer {
 			status.report.planned.addAll(status.tasks);
 			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_UNDEPLOYED).withActorUser(action.userId).withApp(action.pluginId).withMessage("delete"));			
 		    status.auditEvent = AuditManager.instance.convertLastEventToAsync();
-			newPhase(action, status.tasks.poll());
+		    scedule(action, status);
 			break;
 		case COORDINATE_AUDIT:
 			status = getDeployStatus(action.pluginId, true);
 			status.tasks.add(DeployPhase.AUDIT);		
 			status.report.planned.addAll(status.tasks);
-			newPhase(action, status.tasks.poll());
+			scedule(action, status);
 			break;
 		case COORDINATE_AUDIT_FIX:
 			status = getDeployStatus(action.pluginId, true);
@@ -115,18 +152,18 @@ public class DeployCoordinator extends AbstractContainer {
 			status.tasks.add(DeployPhase.INSTALL);
 			status.tasks.add(DeployPhase.COMPILE);
 			status.report.planned.addAll(status.tasks);
-			newPhase(action, status.tasks.poll());
+			scedule(action, status);
 			break;
 		case COORDINATE_DEPLOY:
 			status = getDeployStatus(action.pluginId, true);
 			status.tasks.add(DeployPhase.EXPORT_TO_CDN);
-			status.tasks.add(DeployPhase.EXPORT_SCRIPTS);
+			if (plugin.hasScripts) status.tasks.add(DeployPhase.EXPORT_SCRIPTS);
 			status.tasks.add(DeployPhase.FINISHED);
 			status.report.planned.addAll(status.tasks);
 			Plugin.set(action.pluginId, "deployStatus", DeploymentStatus.RUNNING);
 			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_DEPLOYED).withActorUser(action.userId).withApp(action.pluginId).withMessage("deploy only"));
 		    status.auditEvent = AuditManager.instance.convertLastEventToAsync();
-			newPhase(action, status.tasks.poll());
+		    scedule(action, status);
 			break;
 		case COORDINATE_WIPE:
 			status = getDeployStatus(action.pluginId, true);
@@ -137,7 +174,7 @@ public class DeployCoordinator extends AbstractContainer {
 			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_DEPLOYED).withActorUser(action.userId).withApp(action.pluginId).withMessage("wipe"));
 			Plugin.set(action.pluginId, "deployStatus", DeploymentStatus.READY);
 		    status.auditEvent = AuditManager.instance.convertLastEventToAsync();
-			newPhase(action, status.tasks.poll());
+		    scedule(action, status);
 			break;
 					
 		case REPORT_CHECKOUT:
@@ -181,10 +218,10 @@ public class DeployCoordinator extends AbstractContainer {
 			break;
 		case REPORT_EXPORT_TO_CDN:
 			status = getDeployStatus(action.pluginId, false);
-			System.out.println("AAAAA4");
+			
 			if (checkFail(action, status, DeployPhase.EXPORT_TO_CDN)) {
 				newPhase(action, DeployPhase.IMPORT_CDN);
-				System.out.println("AAAAA5");
+			
 			}
 			break;
 		case REPORT_IMPORT_CDN:
@@ -196,7 +233,7 @@ public class DeployCoordinator extends AbstractContainer {
 			System.out.println("AAAAA4");
 			if (checkFail(action, status, DeployPhase.EXPORT_SCRIPTS)) {
 				newPhase(action, DeployPhase.IMPORT_SCRIPTS);
-				System.out.println("AAAAA5");
+				
 			}
 			break;
 		case REPORT_IMPORT_SCRIPTS:
@@ -223,7 +260,7 @@ public class DeployCoordinator extends AbstractContainer {
 			Plugin.set(action.pluginId, "deployStatus", DeploymentStatus.DONE);
 			statusMap.remove(action.pluginId);
 			
-            checkFail(action, status, DeployPhase.FINISHED);
+            if (checkFail(action, status, DeployPhase.FINISHED)) next();
 			break;	
 		}
 		} catch (AppException e) {			
@@ -244,6 +281,7 @@ public class DeployCoordinator extends AbstractContainer {
 			Plugin.set(action.pluginId, "deployStatus", DeploymentStatus.FAILED);
 			AuditManager.instance.resumeAsyncEvent(status.auditEvent);
 			AuditManager.instance.fail(400, last.toString(), "error.failed");
+			next();
 			return false;
 		} else {
 			status.report.done.add(last);
@@ -282,6 +320,7 @@ public class DeployCoordinator extends AbstractContainer {
 					status.report.add();					
 					statusMap.remove(action.pluginId);
 				}
+				next();
 	    	}
 	  }
 }

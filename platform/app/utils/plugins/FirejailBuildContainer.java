@@ -143,7 +143,7 @@ public class FirejailBuildContainer extends AbstractBuildContainer {
 		cmd.add("--quiet");
 		cmd.add("--whitelist="+targetDir.getAbsolutePath());		
 		cmd.add("npm");
-		cmd.add("ci");		
+		cmd.add("ci");	
 		return process(targetDir, cmd);
 	}
 	
@@ -206,12 +206,10 @@ public class FirejailBuildContainer extends AbstractBuildContainer {
 		cmd.add(".");
 		Pair<Boolean, String> r1 = process(baseDir, cmd);
 		
-		if (r1.getLeft()) {
-			System.out.println("AAAAA1");
-			Source<ByteString, CompletionStage<IOResult>> result = FileIO.fromFile(new File(baseDir.getAbsolutePath()+"/"+getCDNArchive(filename)));
-			System.out.println("AAAAA2");
+		if (r1.getLeft()) {			
+			Source<ByteString, CompletionStage<IOResult>> result = FileIO.fromFile(new File(baseDir.getAbsolutePath()+"/"+getCDNArchive(filename)));			
 			SourceRef<ByteString> ref = result.runWith(StreamRefs.sourceRef(), getContext().getSystem());
-			System.out.println("AAAAA3");
+			
 			return Pair.of(null, ref);
 		} else {
 			return Pair.of(r1.getRight(), null);
@@ -231,11 +229,10 @@ public class FirejailBuildContainer extends AbstractBuildContainer {
 		Pair<Boolean, String> r1 = process(baseDir, cmd);
 		
 		if (r1.getLeft()) {
-			System.out.println("AAAAA1");
-			Source<ByteString, CompletionStage<IOResult>> result = FileIO.fromFile(new File(baseDir.getAbsolutePath()+"/"+getScriptArchive(filename)));
-			System.out.println("AAAAA2");
+			
+			Source<ByteString, CompletionStage<IOResult>> result = FileIO.fromFile(new File(baseDir.getAbsolutePath()+"/"+getScriptArchive(filename)));			
 			SourceRef<ByteString> ref = result.runWith(StreamRefs.sourceRef(), getContext().getSystem());
-			System.out.println("AAAAA3");
+			
 			return Pair.of(null, ref);
 		} else {
 			return Pair.of(r1.getRight(), null);

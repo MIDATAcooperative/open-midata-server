@@ -68,7 +68,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams", "refreshTkExchangeParams",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports", "licenceDef", "pseudonymize", "consentObserving", "repositoryUrl", "repositoryDirectory", "repositoryDate", "repositoryAuditDate", "repositoryRisks", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "deployStatus", "usePreconfirmed", "accountEmailsValidated");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports", "licenceDef", "pseudonymize", "consentObserving", "repositoryUrl", "repositoryDirectory", "repositoryDate", "repositoryAuditDate", "repositoryRisks", "hasScripts", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "deployStatus", "usePreconfirmed", "accountEmailsValidated");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -390,6 +390,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public String repositoryRisks;
 	
 	/**
+	 * Server side scripts present
+	 */
+	public boolean hasScripts;
+	
+	/**
 	 * Status of code deployment
 	 */
 	public DeploymentStatus deployStatus;
@@ -481,7 +486,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	}
 	
 	public void updateRepo() throws InternalServerException {				
-	   setMultiple(collection, Sets.create("repositoryUrl", "repositoryDirectory", "repositoryToken", "deployStatus"));
+	   setMultiple(collection, Sets.create("repositoryUrl", "repositoryDirectory", "repositoryToken", "deployStatus", "hasScripts"));
 	   Instances.cacheClear("plugin",  _id);		
 	}
 	

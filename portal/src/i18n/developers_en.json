@@ -359,6 +359,8 @@
     "repository_url" : "Repository URL",
     "repository_dir" : "(Optional) Subdirectory in repository",
     "repository_token" : "Access Token",
+    "has_scripts" : "Serverside code",
+    "has_scripts2" : "This repository contains scripts that need to be executed on the server.",
     "repository_date" : "Last deployed at",
     "repository_audit_date" : "Last audited at",
     "repository_risks" : "Audit Result",

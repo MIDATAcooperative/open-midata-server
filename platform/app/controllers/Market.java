@@ -591,6 +591,7 @@ public class Market extends APIController {
 		app.repositoryUrl = JsonValidation.getStringOrNull(pluginJson, "repositoryUrl");
 		app.repositoryDirectory = JsonValidation.getStringOrNull(pluginJson, "repositoryDirectory");
 		app.repositoryToken = JsonValidation.getStringOrNull(pluginJson, "repositoryToken");
+		app.hasScripts = JsonValidation.getBoolean(pluginJson, "hasScripts");
 		app.repositoryDate = 0;
 		if (app.repositoryUrl != null && app.repositoryUrl.trim().length()>0) {
 		   app.deployStatus = DeploymentStatus.READY;
@@ -1704,7 +1705,7 @@ public class Market extends APIController {
 		MidataId pluginId = new MidataId(pluginIdStr);
 		String action  = JsonValidation.getStringOrNull(json, "action");
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl"));
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "hasScripts"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
 		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
@@ -1716,6 +1717,7 @@ public class Market extends APIController {
 			app.repositoryUrl = repo;
 		    if (token != null) app.repositoryToken = token;
 		    app.repositoryDirectory = directory;
+		    app.hasScripts = JsonValidation.getBoolean(json, "hasScripts");
 		    app.deployStatus = DeploymentStatus.RUNNING;
 		    app.updateRepo();
 		}
@@ -1742,7 +1744,7 @@ public class Market extends APIController {
 			Set<Plugin> plugins = Plugin.getAll(CMaps.map("deployStatus", Sets.createEnum(DeploymentStatus.READY, DeploymentStatus.FAILED)), Sets.create("_id"));
 			for (Plugin plugin : plugins) {
 				Plugin.set(plugin._id, "deployStatus", DeploymentStatus.RUNNING);
-				DeploymentManager.deploy(plugin._id, userId, null); 
+				DeploymentManager.deploy(plugin._id, userId, null);
 			}
 		}		    
 		else if ("deploy-all".equals(action)) {
@@ -1767,7 +1769,7 @@ public class Market extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "repositoryDirectory"));
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "repositoryDirectory", "hasScripts"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
 		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");

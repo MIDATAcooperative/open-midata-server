@@ -32,7 +32,7 @@ public enum DeploymentStatus {
 	/**
 	 * Repository is provided, but plugin is not deployed
 	 */
-	READY,
+	READY,	
 	
 	/**
 	 * Deployment is currently sceduled

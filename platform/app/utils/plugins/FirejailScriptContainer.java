@@ -48,14 +48,14 @@ public class FirejailScriptContainer extends AbstractScriptContainer {
 		@Override
 		void doAction(DeployAction msg) throws AppException {		
 			if (msg.status == DeployPhase.IMPORT_SCRIPTS) {
-				Plugin plugin = Plugin.getById(msg.pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken"));		
+				Plugin plugin = Plugin.getById(msg.pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken", "hasScripts"));		
 				if (plugin.filename.indexOf(".")>=0 || plugin.filename.indexOf("/") >=0 || plugin.filename.indexOf("\\")>=0) return;
 										
 				File baseDir = new File(globalBaseDirectory);
 				
 				doDownload(msg, baseDir, plugin.filename, msg.exportedData);
 			} else if (msg.status == DeployPhase.WIPE_SCRIPT) {
-				Plugin plugin = Plugin.getById(msg.pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken"));		
+				Plugin plugin = Plugin.getById(msg.pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken", "hasScripts"));		
 				if (plugin.filename.indexOf(".")>=0 || plugin.filename.indexOf("/") >=0 || plugin.filename.indexOf("\\")>=0) return;
 										
 				File baseDir = new File(globalBaseDirectory+"/"+plugin.filename);
