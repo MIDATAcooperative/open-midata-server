@@ -473,3 +473,5 @@
 {"_id":{"$oid":"638bb28e7c2d224aef2ecc57"},"system":"http://hl7.org/fhir/sid/icd-10","code":"F84.5","display":"Asperger's syndrome","content":"condition/icd-10-f84.5"}
 {"_id":{"$oid":"638bb3a287721075a246e5f3"},"system":"http://snomed.info/sct","code":"37796009","display":"Migraine","content":"condition/icd-10-g43"}
 {"_id":{"$oid":"6397322f87721075a246ffe5"},"system":"http://midata.coop","code":"external-patient-id","display":"External Patient ID","content":"external-patient-id"}
+{"_id":{"$oid":"63d7e2a8ee2c0a65c3e75532"},"system":"http://midata.coop","code":"support-needs","display":"Need for support","content":"support-needs"}
+{"_id":{"$oid":"63d7e143f4df477d87ac976e"},"system":"http://midata.coop","code":"promis-questionnaire","display":"PROMIS Questionnaire","content":"promis-questionnaire"}
