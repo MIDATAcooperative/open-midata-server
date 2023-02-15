@@ -234,8 +234,12 @@
         "group" : "Groupe de données",
         "number_of_records" : "# données",
         "download_btn" : "Télécharger",
-        "fhir_download_btn" : "Télécharger le FHIR Bundle",
-        "fhir_download_original_btn" : "Télécharger non pseudonymisé"
+        "fhir_download_btn" : "Télécharger le Bundle",
+        "fhir_download_original_btn" : "Télécharger non pseudonymisé",
+        "file" : "Exporter le fichier",
+        "file_fhir" : "Format FHIR",
+        "csvdef" : "Fonction expert: collez ici le mappage JSON de FHIR vers CSV.",
+        "add_csvdef_btn" : "Télécharger la définition de l'export CSV"
     },
 
     "studyrules" : {

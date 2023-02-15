@@ -234,8 +234,12 @@
         "group" : "Datengruppe",
         "number_of_records" : "# Einträge",
         "download_btn" : "Herunterladen",
-        "fhir_download_btn" : "FHIR Bundle herunterladen",
-        "fhir_download_original_btn" : "Nicht pseudonymisiert herunterladen"
+        "fhir_download_btn" : "Bundle herunterladen",
+        "fhir_download_original_btn" : "Nicht pseudonymisiert herunterladen",
+        "file" : "Datei exportieren",
+        "file_fhir" : "FHIR-Format",
+        "csvdef" : "Expertenfunktion: JSON-Mapping von FHIR nach CSV hier einfügen.",
+        "add_csvdef_btn" : "CSV-Export Definition hochladen"
     },
 
     "studyrules" : {
