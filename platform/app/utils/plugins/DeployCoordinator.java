@@ -169,7 +169,7 @@ public class DeployCoordinator extends AbstractContainer {
 			     Plugin.set(plugin._id, "repositoryRisks", plugin.repositoryRisks);
 			     Plugin.set(plugin._id, "repositoryAuditDate", plugin.repositoryAuditDate);
 			   }
-			}
+			}			
 			if (checkFail(action, status, DeployPhase.AUDIT)) {}
 			newPhase(action, status.tasks.poll());
 			break;
@@ -236,7 +236,7 @@ public class DeployCoordinator extends AbstractContainer {
 
 	private boolean checkFail(DeployAction action, CurrentDeployStatus status, DeployPhase last) throws AppException {
 		
-		if (!action.success) {
+		if (!action.success && action.status != DeployPhase.REPORT_AUDIT) {
 			if (last!=null) status.report.failed.add(last);
 			//status.report.done.add(DeployPhase.FAILED);
 			status.report.finsihed = System.currentTimeMillis();	

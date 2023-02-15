@@ -119,16 +119,22 @@ $(CERTIFICATE_DIR)/dhparams.pem:
 	mkdir -p $(CERTIFICATE_DIR)
 	openssl dhparam -out $(CERTIFICATE_DIR)/dhparams.pem 2048	
 
-tasks/check-plugins: $(PLUGINS_DIR)/staging $(PLUGINS_DIR)/web $(PLUGINS_DIR)/scripts visualizations
+tasks/check-plugins: $(PLUGINS_DIR)/plugins $(PLUGINS_DIR)/staging $(PLUGINS_DIR)/web $(PLUGINS_DIR)/scripts visualizations
+
+$(PLUGINS_DIR)/plugins:
+	mkdir -p $(PLUGINS_DIR)/plugins
 
 $(PLUGINS_DIR)/staging:
-	mkdir -p $(PLUGINS_DIR)/staging
+	mkdir -p $(PLUGINS_DIR)/staging	
 
 $(PLUGINS_DIR)/web:
 	mkdir -p $(PLUGINS_DIR)/web
+	cp -r $(PLUGINS_DIR)/plugins/* $(PLUGINS_DIR)/web
+	chmod -R 755 $(PLUGINS_DIR)/web		
 
 $(PLUGINS_DIR)/scripts:
 	mkdir -p $(PLUGINS_DIR)/scripts
+	cp -r $(PLUGINS_DIR)/plugins/* $(PLUGINS_DIR)/scripts
 
 visualizations:
 	ln -s $(PLUGINS_DIR) visualizations 		
