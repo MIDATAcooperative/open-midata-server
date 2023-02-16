@@ -17,18 +17,34 @@
 
 package utils.plugins;
 
+import java.io.File;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import akka.NotUsed;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.stream.IOResult;
+import akka.stream.SourceRef;
+import akka.stream.javadsl.FileIO;
+import akka.stream.javadsl.Flow;
+import akka.stream.javadsl.Keep;
+import akka.stream.javadsl.Sink;
+import akka.stream.javadsl.Source;
+import akka.stream.javadsl.StreamRefs;
+import akka.util.ByteString;
 import models.MidataId;
 import models.Plugin;
 import utils.ErrorReporter;
 import utils.ServerTools;
 import utils.exceptions.AppException;
+import utils.messaging.AccountWipeMessage;
 import utils.stats.ActionRecorder;
 import utils.sync.Instances;
 
@@ -37,6 +53,7 @@ public class MultiServerContainer extends AbstractContainer {
 	
 	private String clusterNode;
 	private ActorRef targetActor;
+	
 	
 	static Props props(Class targetClass, final ActorRef targetActor) {	    
 	    return Props.create(targetClass, () -> new MultiServerContainer(targetActor));
@@ -58,7 +75,7 @@ public class MultiServerContainer extends AbstractContainer {
 		try {
 			defaultMessages(msg);
 		} catch (AppException e) {			
-		   ErrorReporter.report("CDNContainer", null, e);
+		   ErrorReporter.report("MultiServerContainer", null, e);
 		} finally {
 		  ServerTools.endRequest();
 		  ActionRecorder.end(path, st);
@@ -73,28 +90,63 @@ public class MultiServerContainer extends AbstractContainer {
     		CurrentDeployStatus status = getDeployStatus(msg.pluginId, false);
     		if (status == null) {
     			status = getDeployStatus(msg.pluginId, true);
-    			broadcast(msg.newPhase(DeployPhase.COUNT, getSelf()));
-    		}    		
-    		status.reports = new HashMap<String, String>();
-    		broadcast(msg);
-    	} else if (msg.status == DeployPhase.REPORT_COUNT) {
+    			status.actors = new ArrayList<ActorRef>();
+    			broadcast(msg.newPhase(DeployPhase.COUNT, getSelf()));  
+    			getContext().getSystem().scheduler().scheduleOnce(
+    					   Duration.ofSeconds(5),
+    					   getSelf(), msg, getContext().dispatcher(), getSender());    			
+    		} else {   		
+    		    status.reports = new HashMap<String, String>();
+    		    
+    		    if (msg.exportedData != null) {
+    		    	Flow<ByteString, ByteString, ArrayList<SourceRef>> flow = 
+    		    			Flow.of(ByteString.class)
+    		    			.mapMaterializedValue(nu -> new ArrayList<SourceRef>());
+    		    	
+    	            for (ActorRef actorRef : status.actors) {    	                  		    	 
+    		    	  flow = flow.alsoToMat(StreamRefs.sourceRef(), (al, ref) -> { al.add(ref); return al; });
+    	            }
+    	            
+    	            Sink<ByteString, ArrayList<SourceRef>> sink = flow.toMat(Sink.ignore(), Keep.left());
+
+    	            ArrayList<SourceRef> sources = (ArrayList<SourceRef>) msg.
+    	            		exportedData.getSource().runWith(sink, getContext().getSystem());
+    	                	            
+    	            int i=0;
+                    for (ActorRef actorRef : status.actors) {
+                    	System.out.println("USE SOURCE REF"+i);
+	    		    	actorRef.tell(msg.forward("*", sources.get(i)), getSender());
+	    		    	i++;
+	    		    }
+                                                                                   				    		    	
+    		    } else {
+	    		    for (ActorRef actorRef : status.actors) {
+	    		    	actorRef.tell(msg.forward("*"), getSender());
+	    		    }
+    		    }
+    		    
+    		}
+    	} else if (msg.status == DeployPhase.REPORT_COUNT) {    		
     		CurrentDeployStatus status = getDeployStatus(msg.pluginId, false);
-    		status.numStarted++;    		
+    		System.out.println("GOT REPORT COUNT "+status.actors.size());
+    		status.numStarted++;    
+    		status.actors.add(getSender());
+    	} else if (msg.status == DeployPhase.FINISHED) {
+			statusMap.remove(msg.pluginId);		
     	} else if (msg.status.isReport()) {
     		CurrentDeployStatus status = getDeployStatus(msg.pluginId, false);
     		if (msg.success) {
     			status.numFinished++;
     		} else status.numFailed++;
     		if (msg.report != null) status.reports.putAll(msg.report);
-    		
+    		    		    		
     		if (status.numFailed + status.numFinished >= status.numStarted) {
     		  msg.replyTo.tell(msg.response(status.numFailed == 0 && status.numFinished > 0, status.reports), getSelf());
     		}
     		
-    		if (msg.status == DeployPhase.FINISHED) {
-    			statusMap.remove(status.plugin._id);
-    		}
+    		
     	} else {
+    		
     		targetActor.tell(msg.forward(clusterNode), getSelf());
     	}
 	}
@@ -102,6 +154,7 @@ public class MultiServerContainer extends AbstractContainer {
   
     
     private void broadcast(DeployAction action) {
+    	
 		Instances.sendDeploy(action.forward("*"), getSelf());
 	}
 

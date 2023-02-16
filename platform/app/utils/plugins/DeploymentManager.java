@@ -52,7 +52,10 @@ private static ActorSystem system;
 		ActorRef localCDNContainer = system.actorOf(Props.create(FilesystemCDNContainer.class).withDispatcher("pinned-dispatcher"), "pluginCDN");
 		ActorRef localScriptContainer = system.actorOf(Props.create(FirejailScriptContainer.class).withDispatcher("pinned-dispatcher"), "pluginScripts");
 		
-		deployer = system.actorOf(DeployCoordinator.props(localBuildContainer, localScriptContainer, localCDNContainer).withDispatcher("medium-work-dispatcher"), "pluginDeployment");
+		ActorRef globalCDNContainer = system.actorOf(MultiServerContainer.props(MultiServerContainer.class, localCDNContainer), "globalCDN");
+		ActorRef globalScriptContainer = system.actorOf(MultiServerContainer.props(MultiServerContainer.class, localScriptContainer), "globalScripts");
+		
+		deployer = system.actorOf(DeployCoordinator.props(localBuildContainer, globalScriptContainer, globalCDNContainer).withDispatcher("medium-work-dispatcher"), "pluginDeployment");
 			   		
 	}
 	

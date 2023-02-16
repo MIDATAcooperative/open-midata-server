@@ -137,4 +137,7 @@ class CurrentDeployStatus {
 	public Map<String, String> reports;
 	public Queue<DeployPhase> tasks;
 	public MidataId auditEvent;
+	
+	public List<ActorRef> actors;
+	
 }

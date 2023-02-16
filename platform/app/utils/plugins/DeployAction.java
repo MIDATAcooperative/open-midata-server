@@ -70,6 +70,10 @@ public class DeployAction implements Serializable {
 		return new DeployAction(this, clusterNode, status, report, success, replyTo, exportedData);
 	}
 	
+	public DeployAction forward(String clusterNode, SourceRef exportedData) {
+		return new DeployAction(this, clusterNode, status, report, success, replyTo, exportedData);
+	}
+	
 	public DeployAction response(DeployPhase status, boolean success, String report) {
 		Map<String, String> mreport = new HashMap<String, String>();
 		if (clusterNode==null) mreport.put("all",  report); else mreport.put(clusterNode, report);

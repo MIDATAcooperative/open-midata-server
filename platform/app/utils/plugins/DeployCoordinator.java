@@ -123,6 +123,7 @@ public class DeployCoordinator extends AbstractContainer {
 			status.tasks.add(DeployPhase.COMPILE);
 			if (plugin.hasScripts) status.tasks.add(DeployPhase.EXPORT_SCRIPTS);
 			status.tasks.add(DeployPhase.EXPORT_TO_CDN);	
+			status.tasks.add(DeployPhase.DELETE);	
 			status.tasks.add(DeployPhase.FINISHED);
 		    status.report.planned.addAll(status.tasks);
 		    AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_DEPLOYED).withActorUser(action.userId).withApp(action.pluginId));
@@ -142,7 +143,10 @@ public class DeployCoordinator extends AbstractContainer {
 			break;
 		case COORDINATE_AUDIT:
 			status = getDeployStatus(action.pluginId, true);
-			status.tasks.add(DeployPhase.AUDIT);		
+			status.tasks.add(DeployPhase.CHECKOUT);
+			status.tasks.add(DeployPhase.INSTALL);
+			status.tasks.add(DeployPhase.AUDIT);	
+			status.tasks.add(DeployPhase.DELETE);	
 			status.report.planned.addAll(status.tasks);
 			scedule(action, status);
 			break;
@@ -259,9 +263,35 @@ public class DeployCoordinator extends AbstractContainer {
 			Plugin.set(action.pluginId, "repositoryDate", System.currentTimeMillis());
 			Plugin.set(action.pluginId, "deployStatus", DeploymentStatus.DONE);
 			statusMap.remove(action.pluginId);
-			
+			buildContainer.tell(action.forward("*"), getSender());
+			cdnContainer.tell(action.forward("*"), getSender());
+			scriptContainer.tell(action.forward("*"), getSender());
             if (checkFail(action, status, DeployPhase.FINISHED)) next();
 			break;	
+		case COUNT:
+			System.out.println("RESPOND TO COUNT");
+			 result(action, DeployPhase.REPORT_COUNT, true, null);
+			 break;
+		case CHECKOUT:
+		case INSTALL:
+		case AUDIT:
+		case AUDITFIX:
+		case COMPILE:						
+		case EXPORT_TO_CDN:
+		case EXPORT_SCRIPTS:
+		case DELETE:
+			buildContainer.tell(action, getSender());
+			break;
+					
+		case IMPORT_CDN:
+		case WIPE_CDN:
+			cdnContainer.tell(action, getSender());
+			break;
+			
+		case IMPORT_SCRIPTS:
+		case WIPE_SCRIPT:
+			scriptContainer.tell(action, getSender());
+									
 		}
 		} catch (AppException e) {			
 		  ErrorReporter.report("DeployCoordinator", null, e);
