@@ -147,7 +147,7 @@ public class MultiServerContainer extends AbstractContainer {
     		
     	} else {
     		
-    		targetActor.tell(msg.forward(clusterNode), getSelf());
+    		targetActor.tell(msg.forward(clusterNode), getSender());
     	}
 	}
     
