@@ -933,11 +933,11 @@ public class PluginsAPI extends APIController {
 	}
 		
 	
-	@BodyParser.Of(BodyParser.Json.class)
+	//@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public Result generateId(Request request) throws JsonValidationException, AppException {
-		JsonNode json = request.body().asJson();		
-		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());									
+		//JsonNode json = request.body().asJson();		
+		//AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());									
 		return ok(new MidataId().toString());
 	}
 	

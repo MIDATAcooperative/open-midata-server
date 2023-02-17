@@ -18,7 +18,11 @@
 package utils.plugins;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
+import akka.actor.ActorRef;
+import akka.stream.SourceRef;
 import models.MidataId;
 
 public class DeployAction implements Serializable {
@@ -36,28 +40,54 @@ public class DeployAction implements Serializable {
 	
 	public final String clusterNode;
 	
-	public final String report;
+	public final Map<String, String> report;
 	
 	public final boolean success;
+	
+	public final ActorRef replyTo;
+	
+	public final SourceRef exportedData;
 			
-	public DeployAction(DeployAction msg, String clusterNode, DeployPhase status, String report, boolean success) {
+	public DeployAction(DeployAction msg, String clusterNode, DeployPhase status, Map<String, String> report, boolean success, ActorRef replyTo, SourceRef exportedData) {
 		this.pluginId = msg.pluginId;
 		this.userId = msg.userId;
 		this.clusterNode = clusterNode;
 		this.status = status;
-		this.report = report;
+		if (report != null) {
+			this.report = new HashMap<String, String>();
+			this.report.putAll(report);
+		} else this.report = null;
 		this.success = success;
+		this.replyTo = replyTo;
+		this.exportedData = exportedData;
 	}
 	
-	public DeployAction(DeployAction msg, DeployPhase status) {
-		this.pluginId = msg.pluginId;
-		this.userId = msg.userId;
-		this.status = status;
-		this.report = null;
-		this.success = true;
-		this.clusterNode = null;
+	public DeployAction newPhase(DeployPhase status, ActorRef replyTo) {
+		return new DeployAction(this, null, status, null, true, replyTo, exportedData);
 	}
 	
+	public DeployAction forward(String clusterNode) {
+		return new DeployAction(this, clusterNode, status, report, success, replyTo, exportedData);
+	}
+	
+	public DeployAction forward(String clusterNode, SourceRef exportedData) {
+		return new DeployAction(this, clusterNode, status, report, success, replyTo, exportedData);
+	}
+	
+	public DeployAction response(DeployPhase status, boolean success, String report) {
+		Map<String, String> mreport = new HashMap<String, String>();
+		if (clusterNode==null) mreport.put("all",  report); else mreport.put(clusterNode, report);
+		return new DeployAction(this, clusterNode, status, mreport, success, replyTo, null);	
+	}
+	
+	public DeployAction response(boolean success, Map<String, String> reports) {
+		return new DeployAction(this, clusterNode, status, reports, success, replyTo, null);
+	}
+	
+	public DeployAction response(DeployPhase status, SourceRef exportedData) {
+		return new DeployAction(this, clusterNode, status, report, true, replyTo, exportedData);
+	}
+		
 	public DeployAction(MidataId pluginId, MidataId userId, DeployPhase status) {
 		this.pluginId = pluginId;
 		this.userId = userId;
@@ -65,6 +95,8 @@ public class DeployAction implements Serializable {
 		this.report = null;
 		this.success = true;
 		this.clusterNode = null;
+		this.replyTo = null;
+		this.exportedData = null;
 	}
 }
 

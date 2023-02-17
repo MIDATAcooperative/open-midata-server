@@ -535,6 +535,11 @@ const routes = [
   },
   {
     base : ["admin"],
+    path : "updplugins",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/developer/updplugins.vue')
+  },
+  {
+    base : ["admin"],
     path : "yourapps2",
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/yourapps.vue')
   },

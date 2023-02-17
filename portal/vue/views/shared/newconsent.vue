@@ -249,8 +249,8 @@
 						<span v-t="'editconsent2.exclude'"></span>: {{ groupExcludeLabels.join(", ") }}
 					</div>
 				</div>
-                <p v-if="sharing.records.length == 0 && !sharing.query.group.length" v-t="'editconsent.consent_empty'"></p>
-                <p v-if="sharing.records.length">{{ $t('editconsent.shares_records', { count : sharing.records.length }) }}</p>
+                <p v-if="(!sharing.records || sharing.records.length == 0) && !sharing.query.group.length" v-t="'editconsent.consent_empty'"></p>
+                <p v-if="sharing.records && sharing.records.length">{{ $t('editconsent.shares_records', { count : sharing.records.length }) }}</p>
 				
                 <div class="extraspace"></div>
                 <p><b class="text-primary" v-t="'editconsent.restrictions'"></b></p>

@@ -240,6 +240,10 @@ public enum AuditEventType {
 	
 	APP_DEFINITION_CHANGED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "app-definition-changed", "App Definition Changed"), AuditEventAction.U),
 	
+	PLUGIN_DEPLOYED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "plugin-deployed", "Plugin deployed"), AuditEventAction.U),
+	
+	PLUGIN_UNDEPLOYED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "plugin-undeployed", "Plugin undeployed"), AuditEventAction.U),
+	
 	SIGNATURE_FAILURE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "signature-failure", "Signature failure"), AuditEventAction.E);
 	
 	private AuditEventAction action;

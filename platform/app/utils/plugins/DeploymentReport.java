@@ -36,9 +36,11 @@ public class DeploymentReport extends Model {
 	private static final String collection = "deployreport";
 	
 	@NotMaterialized
-	public static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "status", "clusterNodes", "checkoutReport", "installReport", "buildReport", "auditReport", "sceduled", "started", "finished"));
+	public static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "planned", "failed", "done", "clusterNodes", "checkoutReport", "installReport", "buildReport", "auditReport", "sceduled", "started", "finished"));
 	
-	public Set<DeployPhase> status;
+	public Set<DeployPhase> planned;
+	public Set<DeployPhase> failed;
+	public Set<DeployPhase> done;
 	
 	public Set<String> clusterNodes;
 	
@@ -58,7 +60,9 @@ public class DeploymentReport extends Model {
 	
 	public void init() {
 		clusterNodes = new HashSet<String>();	
-		status = new HashSet<DeployPhase>();
+		planned = new HashSet<DeployPhase>();
+		failed = new HashSet<DeployPhase>();
+		done = new HashSet<DeployPhase>();
 		checkoutReport = new HashMap<String, String>();		
 		installReport = new HashMap<String, String>();		
 		buildReport = new HashMap<String, String>();		
