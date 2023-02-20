@@ -116,13 +116,13 @@ public class MultiServerContainer extends AbstractContainer {
     	            int i=0;
                     for (ActorRef actorRef : status.actors) {
                     	System.out.println("USE SOURCE REF"+i);
-	    		    	actorRef.tell(msg.forward("*", sources.get(i)), getSender());
+	    		    	actorRef.tell(msg.forward("*", sources.get(i)), getSelf());
 	    		    	i++;
 	    		    }
                                                                                    				    		    	
     		    } else {
 	    		    for (ActorRef actorRef : status.actors) {
-	    		    	actorRef.tell(msg.forward("*"), getSender());
+	    		    	actorRef.tell(msg.forward("*"), getSelf());
 	    		    }
     		    }
     		    
@@ -140,8 +140,9 @@ public class MultiServerContainer extends AbstractContainer {
     			status.numFinished++;
     		} else status.numFailed++;
     		if (msg.report != null) status.reports.putAll(msg.report);
-    		    		    		
+    		System.out.println("XXXXX MULTI RESULTS="+status.numFinished+" / "+status.numStarted);		    		
     		if (status.numFailed + status.numFinished >= status.numStarted) {
+    		  System.out.println("XXXXX MULTI RESULTS REPLYTO="+msg.replyTo.toString());
     		  msg.replyTo.tell(msg.response(status.numFailed == 0 && status.numFinished > 0, status.reports), getSelf());
     		}
     		
