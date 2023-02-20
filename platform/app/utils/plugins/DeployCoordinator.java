@@ -353,7 +353,7 @@ public class DeployCoordinator extends AbstractContainer {
 	    		
 	    		if (type ==	DeployPhase.IMPORT_CDN || type == DeployPhase.WIPE_CDN) ref = cdnContainer;
 	    		else if (type == DeployPhase.IMPORT_SCRIPTS || type == DeployPhase.WIPE_SCRIPT) ref = scriptContainer;
-	    		if (type == DeployPhase.FINISHED || type == DeployPhase.FINISH_AUDIT) ref = getSelf();
+	    		else if (type == DeployPhase.FINISHED || type == DeployPhase.FINISH_AUDIT) ref = getSelf();
 	    			    			    		
 	    		ref.tell(action.newPhase(type, getSelf()), getSelf());	
 	    	} else {
