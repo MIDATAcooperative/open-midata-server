@@ -19,6 +19,7 @@ package utils.plugins;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -131,7 +132,7 @@ public class MultiServerContainer extends AbstractContainer {
     		System.out.println("GOT REPORT COUNT "+status.actors.size());
     		status.numStarted++;    
     		status.actors.add(getSender());
-    	} else if (msg.status == DeployPhase.FINISHED) {
+    	} else if (msg.status == DeployPhase.FINISHED || msg.status == DeployPhase.FINISH_AUDIT) {
 			statusMap.remove(msg.pluginId);		
     	} else if (msg.status.isReport()) {
     		CurrentDeployStatus status = getDeployStatus(msg.pluginId, false);
@@ -149,6 +150,22 @@ public class MultiServerContainer extends AbstractContainer {
     		
     		targetActor.tell(msg.forward(clusterNode), getSender());
     	}
+	}
+	
+	protected CurrentDeployStatus getDeployStatus(MidataId plugin, boolean create) throws AppException {
+			CurrentDeployStatus result = statusMap.get(plugin);		
+			if (create) {
+				result = new CurrentDeployStatus();
+				result.tasks = new ArrayDeque<DeployPhase>();
+				statusMap.put(plugin, result);
+				result.report = new DeploymentReport();
+				result.report._id = plugin;
+				result.report.init();
+				result.report.done.add(DeployPhase.SCEDULED);
+				result.report.done.add(DeployPhase.COORDINATE);
+				result.report.sceduled = System.currentTimeMillis();			
+			}
+			return result;
 	}
     
   

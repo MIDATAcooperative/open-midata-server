@@ -1757,7 +1757,10 @@ public class Market extends APIController {
 		} else if ("audit-all".equals(action)) {
   		    // Audit all ready and deployed
 			Set<Plugin> plugins = Plugin.getAll(CMaps.map("deployStatus", Sets.createEnum(DeploymentStatus.READY, DeploymentStatus.DONE, DeploymentStatus.FAILED)), Sets.create("_id"));
-			for (Plugin plugin : plugins) DeploymentManager.deploy(plugin._id, userId, "audit");
+			for (Plugin plugin : plugins) {
+				Plugin.set(plugin._id, "repositoryRisks", "Waiting for audit...");
+				DeploymentManager.deploy(plugin._id, userId, "audit");
+			}
 		}
 	    return ok();
 		

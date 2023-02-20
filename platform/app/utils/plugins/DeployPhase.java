@@ -70,6 +70,8 @@ enum DeployPhase implements Serializable {
 				
 	FINISHED,
 	
+	FINISH_AUDIT,
+	
 	FAILED,
 	
 	COORDINATE_DELETE,
@@ -98,6 +100,7 @@ enum DeployPhase implements Serializable {
 				|| this == REPORT_IMPORT_SCRIPTS				
 				|| this == REPORT_IMPORT_CDN
 				|| this == FINISHED
+				|| this == FINISH_AUDIT
 				|| this == FAILED
 				|| this == REPORT_WIPE_CDN; 
 	}

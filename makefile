@@ -268,6 +268,7 @@ platform/conf/application.conf: platform/conf/application.conf.template conf/set
 	$(eval CLUSTERX:=$(call join-with,$(komma),$(CLUSTERSERVERS))) 
 	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' platform/conf/application.conf
 	sed -i 's|PLUGINS_SERVER|$(DOMAIN)/plugin|' platform/conf/application.conf
+	sed -i 's|PLUGINS_DIR|$(PLUGINS_DIR)|' platform/conf/application.conf
 	sed -i 's|DOMAIN|$(DOMAIN)|' platform/conf/application.conf	
 	sed -i 's|PLATFORM_HOSTNAME|$(HOSTNAME)|' platform/conf/application.conf
 	sed -i 's|CLUSTER_SERVER|$(CLUSTERX)|' platform/conf/application.conf
