@@ -110,7 +110,8 @@ public class DeployCoordinator extends AbstractContainer {
 		String path = "PluginDeployment/coordinator";
 		long st = ActionRecorder.start(path);
 		try {
-			Plugin plugin = Plugin.getById(action.pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken", "hasScripts"));		
+			Plugin plugin = Plugin.getById(action.pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken", "hasScripts"));
+			if (plugin==null || plugin.filename == null) return;
 			if (plugin.filename.indexOf(".")>=0 || plugin.filename.indexOf("/") >=0 || plugin.filename.indexOf("\\")>=0) return;
 			System.out.println("XXXXXX COORD IN="+action.status);
 		switch(action.status) {
