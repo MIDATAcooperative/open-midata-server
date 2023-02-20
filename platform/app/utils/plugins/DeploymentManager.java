@@ -54,7 +54,7 @@ private static ActorSystem system;
 		
 		deployer = system.actorOf(DeployCoordinator.props(localBuildContainer, globalScriptContainer, globalCDNContainer).withDispatcher("medium-work-dispatcher"), "pluginDeployment");
 		
-		final ClusterSingletonManagerSettings settings =
+		/*final ClusterSingletonManagerSettings settings =
 				  ClusterSingletonManagerSettings.create(Instances.system());
 	
 		
@@ -65,7 +65,7 @@ private static ActorSystem system;
 			    ClusterSingletonProxySettings.create(Instances.system());
 		
 		deployer = Instances.system().actorOf(ClusterSingletonProxy.props("/user/deployer", proxySettings).withDispatcher("medium-work-dispatcher"), "deployer-Consumer");			
-			   		
+			*/   		
 	}
 	
 	public static WSClient getWsClient() {
