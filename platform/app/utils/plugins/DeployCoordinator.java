@@ -136,6 +136,7 @@ public class DeployCoordinator extends AbstractContainer {
 			
 			status = getDeployStatus(action.pluginId, true);
 			status.tasks.add(DeployPhase.DELETE);	
+			status.tasks.add(DeployPhase.FINISH_AUDIT);
 			status.report.planned.addAll(status.tasks);
 			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_UNDEPLOYED).withActorUser(action.userId).withApp(action.pluginId).withMessage("delete"));			
 		    status.auditEvent = AuditManager.instance.convertLastEventToAsync();
@@ -147,14 +148,18 @@ public class DeployCoordinator extends AbstractContainer {
 			status.tasks.add(DeployPhase.INSTALL);
 			status.tasks.add(DeployPhase.AUDIT);	
 			status.tasks.add(DeployPhase.DELETE);	
+			status.tasks.add(DeployPhase.FINISH_AUDIT);
 			status.report.planned.addAll(status.tasks);
 			scedule(action, status);
 			break;
 		case COORDINATE_AUDIT_FIX:
 			status = getDeployStatus(action.pluginId, true);
-			status.tasks.add(DeployPhase.AUDITFIX);
+			status.tasks.add(DeployPhase.CHECKOUT);
 			status.tasks.add(DeployPhase.INSTALL);
+			status.tasks.add(DeployPhase.AUDITFIX);
 			status.tasks.add(DeployPhase.COMPILE);
+			status.tasks.add(DeployPhase.DELETE);	
+			status.tasks.add(DeployPhase.FINISH_AUDIT);
 			status.report.planned.addAll(status.tasks);
 			scedule(action, status);
 			break;
@@ -233,8 +238,7 @@ public class DeployCoordinator extends AbstractContainer {
 		    if (checkFail(action, status, DeployPhase.IMPORT_CDN)) newPhase(action, status.tasks.poll());
 			break;
 		case REPORT_EXPORT_SCRIPTS:
-			status = getDeployStatus(action.pluginId, false);
-			System.out.println("AAAAA4");
+			status = getDeployStatus(action.pluginId, false);			
 			if (checkFail(action, status, DeployPhase.EXPORT_SCRIPTS)) {
 				newPhase(action, DeployPhase.IMPORT_SCRIPTS);
 				
@@ -256,6 +260,16 @@ public class DeployCoordinator extends AbstractContainer {
 			status = getDeployStatus(action.pluginId, false);
 		    if (checkFail(action, status, DeployPhase.WIPE_SCRIPT)) newPhase(action, status.tasks.poll());
 			break;
+		case FINISH_AUDIT:
+			status = getDeployStatus(action.pluginId, false);
+			status.report.done.add(DeployPhase.FINISH_AUDIT);
+			status.report.finsihed = System.currentTimeMillis();								
+			statusMap.remove(action.pluginId);
+			buildContainer.tell(action.forward("*"), getSender());
+			cdnContainer.tell(action.forward("*"), getSender());
+			scriptContainer.tell(action.forward("*"), getSender());
+            if (checkFail(action, status, DeployPhase.FINISH_AUDIT)) next();
+			break;	
 		case FINISHED:
 			status = getDeployStatus(action.pluginId, false);
 			status.report.done.add(DeployPhase.FINISHED);
@@ -339,7 +353,7 @@ public class DeployCoordinator extends AbstractContainer {
 	    		
 	    		if (type ==	DeployPhase.IMPORT_CDN || type == DeployPhase.WIPE_CDN) ref = cdnContainer;
 	    		else if (type == DeployPhase.IMPORT_SCRIPTS || type == DeployPhase.WIPE_SCRIPT) ref = scriptContainer;
-	    		if (type == DeployPhase.FINISHED) ref = getSelf();
+	    		if (type == DeployPhase.FINISHED || type == DeployPhase.FINISH_AUDIT) ref = getSelf();
 	    			    			    		
 	    		ref.tell(action.newPhase(type, getSelf()), getSelf());	
 	    	} else {
