@@ -169,6 +169,7 @@ public class CSVConverter {
 		if (filter.hasNonNull("$find")) {
 			ObjectNode f = Json.newObject();
 			f.set("filter", filter);
+			this.all = data;
 			String exists = extract(data, filter.path("$find").asText().split("\\."), f);
 	        return exists!=null && exists.length()>0;              
 		} else {		
@@ -177,6 +178,7 @@ public class CSVConverter {
 		    Iterator<String> it = current.path("filter").fieldNames();
 			while (it.hasNext()) {
 				String key = it.next();
+				if (key.equals("$find")) continue;
 				String val = extract(data, key.split("\\."), null);
 				JsonNode fval = current.path("filter").path(key);
 				if (!checkMatch(val,fval)) match = false;					
@@ -186,8 +188,7 @@ public class CSVConverter {
 		}
 	}
 	
-	public void preprocessMapping(JsonNode base, JsonNode data, JsonNode map, JsonNode subdata, JsonNode current, boolean grouping) {
-		
+	public void preprocessMapping(JsonNode base, JsonNode data, JsonNode map, JsonNode subdata, JsonNode current, boolean grouping) {		
 		if (current.hasNonNull("filter")) {		
 			if (current.path("filter").isArray()) {
 				for (JsonNode f : current.path("filter")) {
@@ -274,7 +275,7 @@ public class CSVConverter {
 	}
 	
 	public String extract(JsonNode data, String[] path, JsonNode field) {
-		System.out.println("extract="+path+" data="+data.toString());
+		System.out.println("extract="+path+" data="+data);		
 		return extractFromList(extract(data, path, 0, field), field);
 	}
 	
@@ -364,6 +365,7 @@ public class CSVConverter {
 			Iterator<String> it = current.path("filter").fieldNames();
 			while (it.hasNext()) {
 			    String key = it.next();
+                if (key.equals("$find")) continue;
 				String val = extract(this.all, key.split("\\."), null);
 				if (!checkMatch(val,current.path("filter").path(key))) match = false;				
 			}
