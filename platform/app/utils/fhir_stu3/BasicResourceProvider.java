@@ -296,6 +296,9 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 		
 		record.name = display != null ? (display + " / " + date) : date;   
 		
+		Reference subjectRef = theBasic.getSubject();
+		if (cleanAndSetRecordOwner(record, subjectRef)) theBasic.setSubject(null);
+		
 		clean(theBasic);
     }
     

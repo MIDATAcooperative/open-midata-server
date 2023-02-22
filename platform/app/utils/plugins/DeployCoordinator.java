@@ -179,7 +179,8 @@ public class DeployCoordinator extends AbstractContainer {
 			status = getDeployStatus(action.pluginId, true);
 			status.tasks.add(DeployPhase.WIPE_CDN);
 			status.tasks.add(DeployPhase.WIPE_SCRIPT);
-			status.tasks.add(DeployPhase.DELETE);		
+			status.tasks.add(DeployPhase.DELETE);	
+			status.tasks.add(DeployPhase.FINISH_AUDIT);
 			status.report.planned.addAll(status.tasks);
 			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_DEPLOYED).withActorUser(action.userId).withApp(action.pluginId).withMessage("wipe"));
 			Plugin.set(action.pluginId, "deployStatus", DeploymentStatus.READY);
@@ -306,6 +307,7 @@ public class DeployCoordinator extends AbstractContainer {
 		case IMPORT_SCRIPTS:
 		case WIPE_SCRIPT:
 			scriptContainer.tell(action, getSender());
+			break;
 									
 		}
 		} catch (AppException e) {			
