@@ -129,6 +129,12 @@ public class CSVConverter {
 	}
 
 		
+	public boolean checkMatch(List<String> val, JsonNode fval) {
+		for (String v : val) {
+			if (checkMatch(v, fval)) return true;
+		}
+		return false;
+	}
 	
 	public boolean checkMatch(String val, JsonNode fval) {
 		System.out.println("checkMatch="+val);
@@ -175,12 +181,12 @@ public class CSVConverter {
 		} else {		
 	   
 		    boolean match = true;
-		    Iterator<String> it = current.path("filter").fieldNames();
+		    Iterator<String> it = filter /*current.path("filter")*/.fieldNames();
 			while (it.hasNext()) {
 				String key = it.next();
 				if (key.equals("$find")) continue;
-				String val = extract(data, key.split("\\."), null);
-				JsonNode fval = current.path("filter").path(key);
+				List<String> val = extractPlain(data, key.split("\\."), null);
+				JsonNode fval = filter.path(key);
 				if (!checkMatch(val,fval)) match = false;					
 			}
 			if (!match) return false;
@@ -189,13 +195,13 @@ public class CSVConverter {
 	}
 	
 	public void preprocessMapping(JsonNode base, JsonNode data, JsonNode map, JsonNode subdata, JsonNode current, boolean grouping) {		
-		if (current.hasNonNull("filter")) {		
+		if (current.hasNonNull("filter")) {	
+			this.all = data;
 			if (current.path("filter").isArray()) {
 				for (JsonNode f : current.path("filter")) {
 			      if (!processFilter(data, current, f)) return;
 				}
-			}
-			if (!processFilter(data, current, current.path("filter"))) return;
+			} else if (!processFilter(data, current, current.path("filter"))) return;
 						
 		}
 		
@@ -277,6 +283,11 @@ public class CSVConverter {
 	public String extract(JsonNode data, String[] path, JsonNode field) {
 		System.out.println("extract="+path+" data="+data);		
 		return extractFromList(extract(data, path, 0, field), field);
+	}
+	
+	public List<String> extractPlain(JsonNode data, String[] path, JsonNode field) {
+		System.out.println("extractPlain="+path+" data="+data);		
+		return extract(data, path, 0, field);
 	}
 	
 	public List<String> extract(JsonNode data, String[] path, int idx, JsonNode field) {		
@@ -366,7 +377,7 @@ public class CSVConverter {
 			while (it.hasNext()) {
 			    String key = it.next();
                 if (key.equals("$find")) continue;
-				String val = extract(this.all, key.split("\\."), null);
+				List<String> val = extractPlain(this.all, key.split("\\."), null);
 				if (!checkMatch(val,current.path("filter").path(key))) match = false;				
 			}
 			field = current;
@@ -407,10 +418,14 @@ public class CSVConverter {
 			if (splitted.length>1) return splitted[1];
 			return data.asText();
 		case "exists" :
+			String falseValue = null;
+			String trueValue = "true";
+			if (use.hasNonNull("true")) trueValue = use.path("true").asText();
+			if (use.hasNonNull("false")) falseValue = use.path("false").asText();
 			if (use.path("value").asBoolean(true)) {
-			    return (data.isMissingNode() || data.isNull()) ? null : "true";
+			    return (data.isMissingNode() || data.isNull()) ? falseValue : trueValue;
 			} else {
-				return (data.isMissingNode() || data.isNull()) ? "true" : null;
+				return (data.isMissingNode() || data.isNull()) ? trueValue : falseValue;
 			}		
 		case "equals" :
 			String val = extract(all, path(use), use);
