@@ -77,9 +77,14 @@ public class CSVWriter {
 
 	    }
 
+	    private String separator = DEFAULT_SEPARATOR;
+	    
+	    public void setSeparator(String separator) {
+	    	this.separator = separator;
+	    }
 	    
 	    public void writeToCsvBuffer(List<String> columns, StringBuilder out) {
-	    	String line = convertToCsvFormat(columns);
+	    	String line = convertToCsvFormat(columns, separator);
 	        out.append(line);
 	    	out.append(NEW_LINE_WINDOWS);	        
 	    }

@@ -37,6 +37,8 @@ public class CSVConverter {
 	private JsonNode mapping;
 	private JsonNode selectedMapping;
 	private String selectedFile;
+	private String multiSeparator = " / ";
+	private String globalMissing = "";
 	
 	//private JsonNode field;
 	private JsonNode all;
@@ -66,6 +68,10 @@ public class CSVConverter {
 			
 			if (selectedFile == null || selectedFile.equals(map.path("file").asText())) {
 				selectedMapping = map;
+				
+				if (map.hasNonNull("fieldSeparator")) writer.setSeparator(map.path("fieldSeparator").asText());
+				if (map.hasNonNull("multiValueSeparator")) multiSeparator = map.path("multiValueSeparator").asText();
+				if (map.hasNonNull("missingValues")) globalMissing = map.path("missingValues").asText();
 				
 				List<String> headers = new ArrayList<String>();
 										
@@ -240,8 +246,8 @@ public class CSVConverter {
 
            if (!_group.containsKey(keyValue)) _group.put(keyValue, Json.newObject());
            JsonNode group = _group.get(keyValue);
-           if (!group.has(name)) ((ObjectNode) group).set("name", Json.newArray());
-           ((ArrayNode) group.path("name")).add(fixedData);
+           if (!group.has(name)) ((ObjectNode) group).set(name, Json.newArray());
+           ((ArrayNode) group.path(name)).add(fixedData);
                       
 		} else {		
 		   this.processMapping(base, data,map);
@@ -255,6 +261,7 @@ public class CSVConverter {
 	public void flushGroup(JsonNode base) {
 		if (!_group.isEmpty()) {
 			for (JsonNode v : _group.values()) {
+			System.out.println("---------------GROUP:"+v.toString());
 			   preprocessMapping(base, v, base, v, base, false);                                  
 			}
 			_group.clear();
@@ -334,7 +341,7 @@ public class CSVConverter {
 		
 	
 	public String extractFromList(List<String> input, JsonNode field) {
-		String separator = " ; ";
+		String separator = multiSeparator;
 		String result = null;
 		
 		
@@ -359,7 +366,7 @@ public class CSVConverter {
 		
 		if (result == null || result.length() == 0) {
 			if (field != null && field.hasNonNull("missing")) return field.path("missing").asText();
-			return "null";
+			return globalMissing;
 		}
 		
 		return result;
