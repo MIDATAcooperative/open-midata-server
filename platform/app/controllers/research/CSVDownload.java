@@ -360,7 +360,7 @@ public class CSVDownload extends APIController {
 		Source<ByteString, NotUsed> main = Source.fromIterator(creator).withAttributes(ActorAttributes.dispatcher("my-thread-pool-dispatcher"));	
 
 		// Serves this stream with 200 OK
-		Result result = ok().chunked(main).as("application/json+fhir");
+		Result result = ok().chunked(main).as("text/csv; charset=utf-8");
 		String fileName = file.endsWith(".csv") ? file : file + ".csv";
 		return setAttachmentContentDisposition(result, fileName);				
 	}

@@ -81,7 +81,9 @@ public class CSVConverter {
 				}
 				
 				prepareNested(headers, map);
-				
+				if (map.path("bom").asBoolean(true)) {
+					outBuffer.append('\uFEFF');
+				}
 				write(headers);
 			}			
 			/*var writer = csvWriter({ headers: headers });
