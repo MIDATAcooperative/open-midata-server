@@ -143,7 +143,7 @@ public class CSVConverter {
 	}
 	
 	public boolean checkMatch(String val, JsonNode fval) {
-		System.out.println("checkMatch="+val);
+		//System.out.println("checkMatch="+val);
 		if (fval.isArray()) {
 			for (JsonNode n : fval) {
 				if (n.asText().equals(val)) return true;
@@ -233,7 +233,7 @@ public class CSVConverter {
 	public void processGrouping(JsonNode base, JsonNode data, JsonNode map, boolean grouping) {
 		if (grouping) {
 		   this.all = data;		   
-		   String keyValue = extract(data, path(map), map.path("key"));      
+		   String keyValue = extract(data, path(map.path("key")), map.path("key"));      
            this.all = null;
 
 		   JsonNode fixedData = data.deepCopy();
@@ -261,7 +261,7 @@ public class CSVConverter {
 	public void flushGroup(JsonNode base) {
 		if (!_group.isEmpty()) {
 			for (JsonNode v : _group.values()) {
-			System.out.println("---------------GROUP:"+v.toString());
+			//System.out.println("---------------GROUP:"+v.toString());
 			   preprocessMapping(base, v, base, v, base, false);                                  
 			}
 			_group.clear();
@@ -274,7 +274,7 @@ public class CSVConverter {
 	}
 	
 	public void processMapping(JsonNode base, JsonNode data, JsonNode map) {
-		System.out.println("mapping="+data.toString());
+		//System.out.println("mapping="+data.toString());
 		List<String> out = new ArrayList<String>();
 		for (JsonNode field : map.path("fields")) {
 			this.all = data;			
@@ -288,20 +288,20 @@ public class CSVConverter {
 	}
 	
 	public String extract(JsonNode data, String[] path, JsonNode field) {
-		System.out.println("extract="+path+" data="+data);		
+		//System.out.println("extract="+path+" data="+data);		
 		return extractFromList(extract(data, path, 0, field), field);
 	}
 	
 	public List<String> extractPlain(JsonNode data, String[] path, JsonNode field) {
-		System.out.println("extractPlain="+path+" data="+data);		
+		//System.out.println("extractPlain="+path+" data="+data);		
 		return extract(data, path, 0, field);
 	}
 	
 	public List<String> extract(JsonNode data, String[] path, int idx, JsonNode field) {		
-		System.out.println("extract pathlen="+path.length+" idx="+idx);
+		//System.out.println("extract pathlen="+path.length+" idx="+idx);
 		if (idx < path.length) {
 			JsonNode dataold = data;
-			System.out.println("datapath="+path[idx]);
+			//System.out.println("datapath="+path[idx]);
 			data = data.path(path[idx]);						
 			return handleArrays(data, path, idx, field, dataold, path[idx]);			
 		} else return handleArraysFinal(data, field, null, null);
@@ -374,7 +374,7 @@ public class CSVConverter {
 	
 	public String extractFinal(JsonNode data, JsonNode field) {
 		
-		System.out.println("extractFinal="+data.toString());
+		//System.out.println("extractFinal="+data.toString());
 		if (field != null && field.hasNonNull("filter")) {
 			JsonNode current = field;			
 			field = null;
