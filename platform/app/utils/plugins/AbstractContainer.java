@@ -107,21 +107,17 @@ public abstract class AbstractContainer extends AbstractActor {
 	
 	
 	  
-	  boolean result(DeployAction action, DeployPhase type, Pair<Boolean, String> result) {
-		    System.out.println("XXXXX SEND RESULT="+type+" "+result);
-		    System.out.println("XXX SENDER="+getSender().toString());
+	  boolean result(DeployAction action, DeployPhase type, Pair<Boolean, String> result) {		    
 			getSender().tell(action.response(type, result.getLeft(), result.getRight()), getSelf());
 			return result.getLeft();
 		}
 	  
-	  boolean result(ActorRef sender, DeployAction action, DeployPhase type, Pair<Boolean, String> result) {
-		    System.out.println("XXXXX SEND RESULT="+type+" "+result);
-		    System.out.println("XXX SENDER="+sender.toString());
+	  boolean result(ActorRef sender, DeployAction action, DeployPhase type, Pair<Boolean, String> result) {		    
 			sender.tell(action.response(type, result.getLeft(), result.getRight()), getSelf());
 			return result.getLeft();
 		}
 	  
-	  boolean result(DeployAction action, DeployPhase type, boolean success, String report) {
+	  boolean result(DeployAction action, DeployPhase type, boolean success, String report) {		  
 			getSender().tell(action.response(type, success, report), getSelf());
 			return success;
 		}
