@@ -72,7 +72,7 @@ public class FirejailScriptContainer extends AbstractScriptContainer {
 		public void doDownload(final DeployAction action, final File baseDir, final String filename, SourceRef<ByteString> data) {
 			File dest = new File(baseDir+"/"+filename);
 			if (!dest.exists()) dest.mkdir();
-			System.out.println("XXX DEST="+dest.getAbsolutePath());
+			
 			final ActorRef sender = getSender();	
 			Sink<ByteString, CompletionStage<IOResult>> result = FileIO.toFile(new File(dest.getAbsolutePath()+"/"+getScriptsArchive(filename)));
 			
@@ -109,7 +109,8 @@ public class FirejailScriptContainer extends AbstractScriptContainer {
 			List<String> cmd = new ArrayList<String>();
 			cmd.add("/bin/rm");		
 			cmd.add("-rf");
-			cmd.add(deploymentDir.getAbsolutePath());			
+			cmd.add(deploymentDir.getAbsolutePath());
+			
 			process(deploymentDir, cmd);
 			
 			result(action, DeployPhase.REPORT_WIPE_SCRIPT, true, "");

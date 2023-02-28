@@ -102,7 +102,9 @@ enum DeployPhase implements Serializable {
 				|| this == FINISHED
 				|| this == FINISH_AUDIT
 				|| this == FAILED
-				|| this == REPORT_WIPE_CDN; 
+				|| this == REPORT_WIPE_CDN
+				|| this == REPORT_WIPE_SCRIPT
+				|| this == REPORT_DELETE; 
 	}
 	
 }

@@ -94,15 +94,15 @@ public class DeployCoordinator extends AbstractContainer {
 	}
 	
 	public void next() throws AppException {
-		System.out.println("XXXX waiting="+waiting.size());
+		
 		if (!waiting.isEmpty()) {
 			DeployAction action = waiting.remove(0);
 			CurrentDeployStatus status = getDeployStatus(action.pluginId, false);
 			newPhase(action, status.tasks.poll());
-			System.out.println("XXXX SCEDULED PHASE");
+		
 		} else {
 			running = false;
-			System.out.println("XXXX DONE");
+		
 		}
 	}
 	
@@ -113,7 +113,7 @@ public class DeployCoordinator extends AbstractContainer {
 			Plugin plugin = Plugin.getById(action.pluginId, Sets.create("filename", "repositoryUrl", "repositoryDirectory", "repositoryToken", "hasScripts"));
 			if (plugin==null || plugin.filename == null) return;
 			if (plugin.filename.indexOf(".")>=0 || plugin.filename.indexOf("/") >=0 || plugin.filename.indexOf("\\")>=0) return;
-			System.out.println("XXXXXX COORD IN="+action.status);
+			
 		switch(action.status) {
 		case COORDINATE:
 			
@@ -177,8 +177,8 @@ public class DeployCoordinator extends AbstractContainer {
 			break;
 		case COORDINATE_WIPE:
 			status = getDeployStatus(action.pluginId, true);
-			status.tasks.add(DeployPhase.WIPE_CDN);
 			status.tasks.add(DeployPhase.WIPE_SCRIPT);
+			status.tasks.add(DeployPhase.WIPE_CDN);			
 			status.tasks.add(DeployPhase.DELETE);	
 			status.tasks.add(DeployPhase.FINISH_AUDIT);
 			status.report.planned.addAll(status.tasks);
