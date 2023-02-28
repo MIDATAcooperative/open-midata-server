@@ -576,7 +576,7 @@ public class PluginsAPI extends APIController {
 		if (context.mustPseudonymize()) throw new PluginException(inf.getUsedPlugin(), "error.plugin", dbrecord.getErrorInfo()+" may not be created. Access is pseudonymized! \n\nCreate permisssion chain:\n========================\n"+context.getMayCreateRecordReport(dbrecord));
 		
 		//MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
-		if (record.tags.contains(QueryTagTools.SECURITY_LOCALCOPY)) {
+		if (record.tags != null && record.tags.contains(QueryTagTools.SECURITY_LOCALCOPY)) {
 			  RecordManager.instance.addLocalRecord(context, record);
 		} else if (fileData != null) {			 
 			  RecordManager.instance.addRecord(context, record, context.getTargetAps(), fileData);
