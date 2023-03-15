@@ -83,6 +83,11 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public String ownerName;
 	
 	/**
+	 * the type of owner. May also be a group
+	 */
+	public String ownerType;
+	
+	/**
 	 * firstname lastname of the creator of this record
 	 * 
 	 * This field is neither stored in the database nor contained in the encrypted part of the record.

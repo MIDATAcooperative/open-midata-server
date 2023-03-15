@@ -53,7 +53,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy", "forceClientCertificate");
 	
 	public @NotMaterialized static final Set<String> LINK_FIELDS = Sets.create("_id", "name", "code", "type", "joinMethods", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
 	
@@ -224,6 +224,8 @@ public class Study extends Model {
     
     public @NotMaterialized Set<String> consentObserverNames;
     
+    public boolean forceClientCertificate;
+    
     public static void add(Study study) throws InternalServerException {
 		Model.insert(collection, study);
 	 }
@@ -278,6 +280,11 @@ public class Study extends Model {
     
     public void setAssistance(AssistanceType inf) throws InternalServerException {
 		Model.set(Study.class, collection, this._id, "assistance", inf);
+	}
+    
+    public void setForceClientCertificate(boolean forceClientCertificate) throws InternalServerException {
+    	this.forceClientCertificate = forceClientCertificate;
+		Model.set(Study.class, collection, this._id, "forceClientCertificate", forceClientCertificate);
 	}
     
     public void setGroups(List<StudyGroup> groups) throws InternalServerException {

@@ -58,7 +58,10 @@ public class CreateParticipantContext extends ConsentAccessContext {
 		return super.getContextName()+" (Reshare)";
 	}
 	
-	
+	@Override
+	public boolean isUserGroupContext() {	
+		return false;
+	}
 	
 	
 }

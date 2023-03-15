@@ -204,6 +204,7 @@ public class APSTreeImplementation extends APSImplementation {
 	}
 
 	public void removePermission(Collection<DBRecord> records) throws AppException {
+		if (records.isEmpty()) return;
 		try {
 			ready();
 			try (DBSession session = DBLayer.startTransaction("aps")) {

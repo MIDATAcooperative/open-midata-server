@@ -29,6 +29,7 @@ import models.MobileAppInstance;
 import models.Record;
 import models.ServiceInstance;
 import models.Space;
+import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.UserRole;
@@ -165,6 +166,10 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public abstract String getOwnerName() throws AppException;
+	
+	public String getOwnerType() {
+		return null;
+	}
 	
 	/**
 	 * return restrictions that must be added to query during query processing
@@ -400,6 +405,11 @@ public abstract class AccessContext {
           
           Space space = Space.getByIdAndOwner(aps, getOwner(), Space.ALL);
           if (space != null) return new SpaceAccessContext(space, getCache(), null, space.owner);
+          
+          
+          UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(aps, getAccessor());
+          if (ugm != null)  return forUserGroup(ugm);
+         
 		}
 		
 		throw new InternalServerException("error.internal",  "Consent creation not possible");
@@ -507,6 +517,11 @@ public abstract class AccessContext {
 	public MidataId getPatientRecordId() {
 		if (parent != null) return parent.getPatientRecordId();
 		return cache.getAccountOwner();
+	}
+	
+	public boolean isUserGroupContext() {
+		if (parent != null) return parent.isUserGroupContext();
+		return false;
 	}
 	
 }

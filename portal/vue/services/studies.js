@@ -36,7 +36,8 @@ import server from "./server";
 		  changeTeam : true,
 		  auditLog : true,
 		  participants : true,
-		  setup : true
+		  setup : true,
+          applications : true
 		},
 		{ id :"INVESTIGATOR",
 			  roleName : "Investigator",

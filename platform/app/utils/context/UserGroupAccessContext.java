@@ -71,13 +71,19 @@ public class UserGroupAccessContext extends AccessContext {
 	public String getOwnerName() throws AppException {		
 		return parent.getOwnerName();
 	}
+	
+	@Override
+	public String getOwnerType() {		
+		return "Group";
+	}
+	
 	@Override
 	public MidataId getOwner() {
-		return parent.getOwner();
+		return getAccessor();// parent.getOwner();
 	}
 	@Override
 	public MidataId getOwnerPseudonymized() throws AppException {
-		return parent.getOwnerPseudonymized();
+		return getAccessor();//  parent.getOwnerPseudonymized();
 	}
 	@Override
 	public MidataId getSelf() {
@@ -105,5 +111,9 @@ public class UserGroupAccessContext extends AccessContext {
 	public String getContextName() {
 		return "User Group/Project access with role '"+ugm.getRole().roleName+"'";
 	}
-
+	
+	@Override
+	public boolean isUserGroupContext() {		
+		return true;
+	}
 }

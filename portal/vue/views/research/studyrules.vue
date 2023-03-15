@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-    <study-nav page="study.rules"></study-nav>
+    <study-nav page="study.rules" :study="study"></study-nav>
     <tab-panel :busy="isBusy">
 	        
         <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="submit()" role="form">		
@@ -66,6 +66,12 @@
             <form-group name="requirements" label="studyrules.requirements" :path="errors.requirements">
                 <check-box v-for="req in requirements" :key="req" :name="req" :disabled="studyLocked()" :checked="study.requirements.indexOf(req)>=0" @click="toggle(study.requirements, req);">
                     <span class="margin-left" v-t="'enum.userfeature.'+req"></span>
+                </check-box>		 
+            </form-group>
+            
+            <form-group name="security" label="studyrules.security" :path="errors.security">
+                <check-box name="forceClientCertificate" :disabled="studyLocked()" v-model="study.forceClientCertificate">
+                    <span class="margin-left" v-t="'studyrules.forceClientCertificate'"></span>
                 </check-box>		 
             </form-group>
 
@@ -157,7 +163,7 @@ export default {
                 $data.study.consentObserverNames = plugins;
             } else $data.study.consentObserverNames = [];
                         
-            let data = { joinMethods : $data.study.joinMethods, termsOfUse : $data.study.termsOfUse, requirements: $data.study.requirements, startDate : $data.study.startDate, endDate : $data.study.endDate, dataCreatedBefore : $data.study.dataCreatedBefore, consentObserverNames : $data.study.consentObserverNames, leavePolicy : $data.study.leavePolicy, rejoinPolicy : $data.study.rejoinPolicy };
+            let data = { joinMethods : $data.study.joinMethods, termsOfUse : $data.study.termsOfUse, requirements: $data.study.requirements, startDate : $data.study.startDate, endDate : $data.study.endDate, dataCreatedBefore : $data.study.dataCreatedBefore, consentObserverNames : $data.study.consentObserverNames, leavePolicy : $data.study.leavePolicy, rejoinPolicy : $data.study.rejoinPolicy, forceClientCertificate : $data.study.forceClientCertificate };
             if ($data.study.recordQuery) data.recordQuery = $data.study.recordQuery;
             me.doAction("change", server.put(jsRoutes.controllers.research.Studies.update($data.studyid).url, data)
             .then(function(data) { 				

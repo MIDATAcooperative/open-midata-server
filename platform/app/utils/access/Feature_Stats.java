@@ -115,8 +115,11 @@ public class Feature_Stats extends Feature {
 			}
 			
 			AccessLog.logBegin("stats count local");
-			for (StatsIndexKey inf : countConsent(qloc, next, Feature_Indexes.getContextForAps(q, q.getApsId()))) {
-				map.put(getKey(inf), inf);
+			if (!q.getContext().isUserGroupContext()) {
+				for (StatsIndexKey inf : countConsent(qloc, next, Feature_Indexes.getContextForAps(q, q.getApsId()))) {
+					map.put(getKey(inf), inf);
+					//AccessLog.log("REG: "+getKey(inf)+"="+inf.count);
+				}
 			}
 			AccessLog.logEnd("stats count local");
 						
@@ -148,6 +151,7 @@ public class Feature_Stats extends Feature {
 				for (Consent consent : consents) {
 					for (StatsIndexKey inf : countConsent(qloc, next, Feature_Indexes.getContextForAps(q, consent._id))) {
 					  map.put(getKey(inf), inf);
+					  //AccessLog.log("REG-C: "+getKey(inf)+"="+inf.count);
 					}
 				}
 			}
@@ -163,8 +167,10 @@ public class Feature_Stats extends Feature {
 				if (!q.getApsId().equals(q.getCache().getAccountOwner())) lookup.setAps(q.getApsId());
 				Collection<StatsIndexKey> matches = index.lookup(lookup);										
 				
-				for (StatsIndexKey inf : matches) {									
+				for (StatsIndexKey inf : matches) {		
+					if (q.getContext().isUserGroupContext() && inf.aps.equals(q.getApsId())) continue;
 					map.putIfAbsent(getKey(inf), inf);
+					//AccessLog.log("REG-I: "+getKey(inf)+"="+inf.count);
 				}
 				
 				IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getAccessor(), q.getApsId(), true);

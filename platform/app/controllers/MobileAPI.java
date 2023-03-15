@@ -348,7 +348,7 @@ public class MobileAPI extends Controller {
 		Rights.chk("getRecords", UserRole.ANY, fields);
 
 		// decrypt authToken
-		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false, true);		
+		AccessContext inf = ExecutionInfo.checkMobileToken(request, json.get("authToken").asText(), false, true);		
 		if (inf == null) OAuth2.invalidToken(); 
 							
         Stats.setPlugin(inf.getUsedPlugin());
@@ -430,7 +430,7 @@ public class MobileAPI extends Controller {
 		JsonValidation.validate(json, "authToken", "data", "name", "format");
 		if (!json.has("content") && !json.has("code")) throw new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
 		
-		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false, false);
+		AccessContext inf = ExecutionInfo.checkMobileToken(request, json.get("authToken").asText(), false, false);
 		Stats.setPlugin(inf.getUsedPlugin());	
 		UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.POST);	
 		
@@ -496,7 +496,7 @@ public class MobileAPI extends Controller {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "_id", "version");
 		
-		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false, false);
+		AccessContext inf = ExecutionInfo.checkMobileToken(request, json.get("authToken").asText(), false, false);
 		Stats.setPlugin(inf.getUsedPlugin());	
 		UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.PUT);
 		
@@ -563,7 +563,7 @@ public class MobileAPI extends Controller {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "target-study", "target-study-group");
 		
-		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false, false);
+		AccessContext inf = ExecutionInfo.checkMobileToken(request, json.get("authToken").asText(), false, false);
 		Stats.setPlugin(inf.getUsedPlugin());	
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
@@ -582,14 +582,15 @@ public class MobileAPI extends Controller {
     	if (ugm == null) throw new BadRequestException("error.invalid.study", "You are now allowed to do that");
     	
 		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");		
-		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.getAccessor(), group, studyId, Sets.create("_id"));		
-		srs.addAll(StudyRelated.getActiveByOwnerGroupAndStudy(studyId, group, studyId, Sets.create("_id")));
+		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudyPublic(inf.getAccessor(), group, studyId, Sets.create("_id"));		
+		srs.addAll(StudyRelated.getActiveByOwnerGroupAndStudyPublic(studyId, group, studyId, Sets.create("_id")));
 		properties.put("force-local", true);
 		List<Record> recs = RecordManager.instance.list(inf.getAccessorRole(), inf, properties, Sets.create("_id"));
 		AccessLog.log("unshareRecord: srs="+srs.size()+" recs="+recs.size());
 		if (!srs.isEmpty()) {
+			AccessContext infGroup = inf.forUserGroup(ugm);
 			for (StudyRelated sr : srs ) {
-			  RecordManager.instance.unshare(inf.forConsentReshare(sr), recs);
+			  RecordManager.instance.unshare(infGroup.forConsent(sr), recs);
 			}
 		}																		
 		
@@ -605,7 +606,7 @@ public class MobileAPI extends Controller {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "target-study", "target-study-group");
 		
-		AccessContext inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false, false);
+		AccessContext inf = ExecutionInfo.checkMobileToken(request, json.get("authToken").asText(), false, false);
 		Stats.setPlugin(inf.getUsedPlugin());	
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
@@ -624,24 +625,25 @@ public class MobileAPI extends Controller {
 		MidataId sharer = properties.get("usergroup") != null ? studyId : inf.getAccessor(); 	
 		//properties.remove("usergroup");
 		
-		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(sharer, group, studyId, Sets.create("_id"));
+		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudyPublic(sharer, group, studyId, Sets.create("_id"));
+		//Set<StudyRelated> nsrs = StudyRelated.getActiveByOwnerGroupAndStudyPrivate(sharer, group, studyId, Sets.create("_id"));
 		
-		//List<Record> recs = RecordManager.instance.list(inf.executorId, inf.role, inf.context, properties, Sets.create("_id"));
 		int count = 0;
-		//if (!recs.isEmpty()) {
+		
 			
 			if (srs.isEmpty()) {				
 				Study study = Study.getById(studyId, Study.ALL);
 				Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
 				controllers.research.Studies.joinSharing(inf, sharer, study, group, false, new ArrayList<StudyParticipation>(parts));
-				srs = StudyRelated.getActiveByOwnerGroupAndStudy(sharer, group, studyId, Sets.create("_id"));
+				srs = StudyRelated.getActiveByOwnerGroupAndStudyPublic(sharer, group, studyId, Sets.create("_id"));
 			}
 			
 			AccessContext context = ContextManager.instance.createSharingContext(inf, sharer);
 			for (StudyRelated sr : srs ) {
 			  count = RecordManager.instance.share(context, sr._id, sr.owner, properties, false);
 			}
-		//}								
+			
+										
 								
 		return count;
 	}
@@ -727,7 +729,7 @@ public class MobileAPI extends Controller {
 		if (param != null && param.startsWith("Bearer ")) {
 			  MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(param.substring("Bearer ".length()));
 			  if (authToken == null) OAuth2.invalidToken(); 
-	          AccessContext info = ExecutionInfo.checkMobileToken(authToken, false, false);
+	          AccessContext info = ExecutionInfo.checkMobileToken(request, authToken, false, false);
 	          if (info == null) OAuth2.invalidToken(); 
 	          Stats.setPlugin(info.getUsedPlugin());
 	          String id = request.queryString("_id").orElseThrow();

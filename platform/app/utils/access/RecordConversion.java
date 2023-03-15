@@ -73,7 +73,8 @@ public class RecordConversion {
 		}
 		
 		record.owner = dbrecord.owner;
-		record.ownerName = (String) dbrecord.meta.get("ownerName");						
+		record.ownerName = (String) dbrecord.meta.get("ownerName");
+		record.ownerType = dbrecord.ownerType;
 		record.group = dbrecord.group;
 		record.id = dbrecord.id;
 		record.isStream = dbrecord.isStream!=null;

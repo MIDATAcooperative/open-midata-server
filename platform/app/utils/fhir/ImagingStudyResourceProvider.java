@@ -323,7 +323,7 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 
 		// Add subject field from record owner field if it is not already there
 		if (p.getSubject().isEmpty()) {  // TODO correct to use patient?
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

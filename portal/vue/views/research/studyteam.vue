@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-    <study-nav page="study.team"></study-nav>
+    <study-nav page="study.team" :study="study"></study-nav>
     <tab-panel :busy="isBusy">
 	
         <error-box :error="error"></error-box>
@@ -94,7 +94,7 @@ export default {
         members : null,
 	    form : {},
         roles : studies.roles,
-        rights : ["setup", "readData", "writeData", "unpseudo", "export", "changeTeam", "participants", "auditLog" ],
+        rights : ["setup", "readData", "writeData", "unpseudo", "export", "changeTeam", "participants", "auditLog", "applications" ],
         add : { role:{} }       
     }),
 
@@ -176,7 +176,8 @@ export default {
             r += role["export"] ? "E" : "-";
             r += role.changeTeam ? "T" : "-";
             r += role.participants ? "P" : "-";
-            r += role.auditLog ? "L" : "-";	   
+            r += role.auditLog ? "L" : "-";
+            r += role.applications ? "A" : "-";	   
             return r;
 	    },
 	

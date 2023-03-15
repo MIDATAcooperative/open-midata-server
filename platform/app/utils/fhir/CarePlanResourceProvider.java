@@ -374,7 +374,7 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 
 		// Add subject field from record owner field if it is not already there
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

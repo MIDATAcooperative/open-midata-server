@@ -258,7 +258,7 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 
 		// Add subject field from record owner field if it is not already there
 		if (p.getPatient().isEmpty()) {
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName)); // TODO is it currect to use patient?
+			p.setPatient(FHIRTools.getReferenceToOwner(record)); // TODO is it currect to use patient?
 		}
 	}
 

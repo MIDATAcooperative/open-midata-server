@@ -147,6 +147,13 @@ public class Services extends APIController {
         
         ServiceInstance serviceInstance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);  
         
+        boolean forceClientCertificate = false;
+        if (serviceInstance.linkedStudy != null) {
+        	Study study = Study.getById(serviceInstance.linkedStudy, Sets.create("forceClientCertificate"));
+        	if (study == null) throw new InternalServerException("error.internal", "Related project not found.");
+        	forceClientCertificate = study.forceClientCertificate;
+        }
+        
         MobileAppInstance appInstance = ApplicationTools.createServiceApiKey(context, serviceInstance);
         
         String aeskey = KeyManager.instance.newAESKey(appInstance._id);	
@@ -156,9 +163,12 @@ public class Services extends APIController {
         
         ObjectNode obj = Json.newObject();	 
 
-        obj.put("access_token", session.encrypt());		
-		obj.put("expires_in", SERVICE_EXPIRATION_TIME / 1000l);		
-		obj.put("refresh_token", refresh.encrypt());
+        if (!forceClientCertificate) {
+	        obj.put("access_token", session.encrypt());		
+			obj.put("expires_in", SERVICE_EXPIRATION_TIME / 1000l);		
+			obj.put("refresh_token", refresh.encrypt());
+        }
+		
 		obj.put("ou", appInstance._id.toString());
 		obj.put("cn", aeskey);
 						

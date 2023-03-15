@@ -88,7 +88,7 @@ public class Feature_AccountQuery extends Feature {
             	account = true;
             	Set<String> sets = query.restrictedBy("owner") ? query.getRestriction("owner") : Collections.singleton("all");    			    		
 
-    			if (((sets.contains("self") || sets.contains("all") || sets.contains(query.getApsId().toString())) && !query.restrictedBy("consent-after") && !query.restrictedBy("usergroup") && !query.restrictedBy("study"))) {
+    			if (((sets.contains("self") || sets.contains("all") || sets.contains(query.getApsId().toString())) && !query.restrictedBy("consent-after") && !query.getContext().isUserGroupContext() /*("usergroup"*/ && !query.restrictedBy("study") /*&& !query.restrictedBy("study-related")*/)) {
     				return new IdAndConsentFieldIterator(next.iterator(query), query.getContext(), query.getApsId(), query.returns("id"));						
     			} else {
     				return ProcessingTools.empty();
@@ -433,8 +433,12 @@ public class Feature_AccountQuery extends Feature {
 				if (q.restrictedBy("consent-after") || q.restrictedBy("consent-type-exclude") || q.restrictedBy("updatable")) withLimit = false;
 			}
 			
-			if (q.restrictedBy("study-related")) {				
-				consents = new ArrayList<Consent>(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, sets.contains("all") ? null : owners, Consent.SMALL, limit));
+			if (q.restrictedBy("study-related")) {	
+				if (q.getStringRestriction("study-related").equals("public")) {
+					consents = new ArrayList<Consent>(StudyRelated.getActiveByAuthorizedGroupAndStudyPublic(q.getCache().getAccountOwner(), studyGroups, studies, sets.contains("all") ? null : owners, Consent.SMALL, limit));	
+				} else {
+				    consents = new ArrayList<Consent>(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, sets.contains("all") ? null : owners, Consent.SMALL, limit));
+				}
 			} else if (q.restrictedBy("participant-related")) {
 				consents =  new ArrayList<Consent>(StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit, withLimit ? (10+MAX_CONSENTS_IN_QUERY) : Integer.MAX_VALUE));		    	
 			} else {
@@ -462,7 +466,7 @@ public class Feature_AccountQuery extends Feature {
 			for (String owner : sets) {
 				if (MidataId.isValid(owner)) {
 					MidataId id = new MidataId(owner);
-					if (!id.equals(q.getCache().getAccountOwner())) owners.add(id);
+					if (!id.equals(q.getCache().getAccountOwner()) || q.getContext().isUserGroupContext()) owners.add(id);
 				}
 			}
 			if (!owners.isEmpty()) {

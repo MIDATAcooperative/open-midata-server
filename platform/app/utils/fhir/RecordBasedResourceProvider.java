@@ -480,8 +480,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		  Plugin creatorApp = Plugin.getById(record.app);		
 		  if (creatorApp != null) meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
-		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, record.creator.equals(record.owner) ? record.ownerName : null ));
-		if (record.modifiedBy != null && !record.version.equals("0")) meta.addExtension("modifiedBy", FHIRTools.getReferenceToUser(record.modifiedBy, record.modifiedBy.equals(record.owner) ? record.ownerName : null ));
+		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToCreator(record));
+		if (record.modifiedBy != null && !record.version.equals("0")) meta.addExtension("modifiedBy", FHIRTools.getReferenceToModifiedBy(record));
 				
 		resource.getMeta().addExtension(meta);
 		processAttachments(record, resource);

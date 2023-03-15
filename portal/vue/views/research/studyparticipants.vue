@@ -16,7 +16,7 @@
 -->
 <template>
 <div >
-    <study-nav page="study.participants"></study-nav>
+    <study-nav page="study.participants" :study="study"></study-nav>
     <tab-panel :busy="isBusy">
 	
             <form class="css-form form-horizontal">
@@ -103,6 +103,7 @@ import _ from "lodash";
 export default {
     data: () => ({	
         studyid : null,
+        study : null,
         results : null,
         total : 0,
         acceptall : { autoJoin:false, autoJoinGroup:null },
