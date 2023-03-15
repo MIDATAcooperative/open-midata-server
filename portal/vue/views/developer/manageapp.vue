@@ -209,8 +209,12 @@
 		    <input type="text" id="redirectUri" name="redirectUri" class="form-control" placeholder="Redirect URI" v-validate v-model="app.redirectUri">
 		    <p class="form-text text-muted" v-t="'manageapp.info.redirectUri'"></p>
 		  </form-group>
-		   <form-group name="developmentServer" label="Development Server" v-if="!(app.type == 'mobile' || app.type == 'service' || !app.developmentServer)" >
+		  <form-group name="developmentServer" label="Development Server" v-if="!(app.type == 'mobile' || app.type == 'service' || !app.developmentServer)" >
 		    <p class="form-control-plaintext">{{ app.developmentServer }}</p>
+		  </form-group>
+		  <form-group name="allowedIPs" label="manageapp.allowedIPs" v-if="app.type == 'analyzer' || app.type == 'external'" :path="errors.allowedIPs" class="danger-change">
+		    <input type="text" id="allowedIPs" name="allowedIPs" class="form-control" v-validate v-model="app.allowedIPs" @change="requireLogout();">
+		    <p class="form-text text-muted" v-t="'manageapp.info.allowedIPs'"></p>
 		  </form-group>
 		   <form-group name="unlockCode" label="manageapp.unlock_code" v-if="app.type == 'mobile'" :path="errors.unlockCode">
 		    <input type="text" id="unlockCode" name="unlockCode" class="form-control" v-validate v-model="app.unlockCode">
@@ -335,7 +339,7 @@ export default {
                 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs"])
 		    .then(function(data) { 
                 let app = data.data[0];	
 				

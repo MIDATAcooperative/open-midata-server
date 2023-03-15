@@ -54,8 +54,7 @@ public class StatsIndexRoot extends TsBaseIndexRoot<StatsIndexKey,StatsIndexKey>
 		if (key.aps==null) throw new NullPointerException();
 		if (key.group==null) throw new NullPointerException();
 		modCount++;
-		//if (modCount > 100) lockIndex();
-				
+		//if (modCount > 100) lockIndex();		
 		//StatsIndexKey key = new StatsIndexKey();
 		btree.insert(key);						
 	}

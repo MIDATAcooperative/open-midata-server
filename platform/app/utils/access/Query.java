@@ -321,6 +321,10 @@ public class Query {
 		return properties.get(field) != null;
 	}		
 	
+	public boolean restrictedToOtherAps(String field) throws BadRequestException {
+		return restrictedBy(field) && !getMidataIdRestriction(field).contains(getApsId());
+	}
+	
 	public boolean returns(String field) {
 		return fields.contains(field);
 	}

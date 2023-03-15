@@ -1129,7 +1129,7 @@ public class OAuth2 extends Controller {
 	    	
 	    	MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
 			if (authToken != null) {				
-			   AccessContext context = ExecutionInfo.checkMobileToken(authToken, false, true);	
+			   AccessContext context = ExecutionInfo.checkMobileToken(request, authToken, false, true);	
 	    		 
 		       User user = User.getById(context.getOwner(), User.FOR_LOGIN);
 		       Plugin plugin = Plugin.getById(context.getUsedPlugin());

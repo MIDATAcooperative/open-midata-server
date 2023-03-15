@@ -17,6 +17,9 @@
 
 package utils.auth;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.Circles;
@@ -25,6 +28,7 @@ import models.Consent;
 import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Plugin;
 import models.Space;
 import models.User;
 import models.enums.ConsentStatus;
@@ -41,49 +45,10 @@ import utils.context.ContextManager;
 import utils.context.SpaceAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 
 public class ExecutionInfo {
-
-	public MidataId executorId;
-	
-	public MidataId ownerId;
-	
-	public MidataId pluginId;
-	
-	public MidataId targetAPS;
-	
-	public MidataId recordId;
-	
-	public UserRole role;
-	
-	public Space space;
-	
-	public RequestCache cache = new RequestCache();
-	
-	public AccessContext context = null;
-	
-	public String overrideBaseUrl = null;
-	
-	public ExecutionInfo() {}
-	
-	/*public ExecutionInfo(MidataId executor, UserRole role) throws InternalServerException {
-		this.executorId = executor;
-		this.ownerId = executor;
-		this.targetAPS = executor;
-		this.pluginId = RuntimeConstants.instance.portalPlugin;
-		this.context = ContextManager.instance.createContextFromAccount(executor);
-		this.role = role;
-	}
-	
-	public ExecutionInfo(MidataId executor, UserRole role, AccessContext context) throws InternalServerException {
-		this.executorId = executor;
-		this.ownerId = executor;
-		this.targetAPS = executor;
-		this.pluginId = RuntimeConstants.instance.portalPlugin;
-		this.context = context;
-		this.role = role;
-	}*/
-	
+		
 	public static AccessContext checkToken(Request request, String token, boolean allowInactive, boolean allowRestricted) throws AppException {
 		String plaintext = TokenCrypto.decryptToken(token);
 		if (plaintext == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");	
@@ -93,7 +58,7 @@ public class ExecutionInfo {
 		if (json.has("instanceId")) {
 			return checkSpaceToken(SpaceToken.decrypt(request, json));
 		} else {
-			return checkMobileToken(MobileAppSessionToken.decrypt(json), allowInactive, allowRestricted);
+			return checkMobileToken(request, MobileAppSessionToken.decrypt(json), allowInactive, allowRestricted);
 		}
 	}
 	
@@ -175,14 +140,51 @@ public class ExecutionInfo {
 		
 	}
 	
-	public static AccessContext checkMobileToken(String token, boolean allowInactive, boolean allowRestricted) throws AppException {		
+	public static AccessContext checkMobileToken(Request request, String token, boolean allowInactive, boolean allowRestricted) throws AppException {		
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
 		if (authToken == null) OAuth2.invalidToken(); 
 				
-		return checkMobileToken(authToken, allowInactive, allowRestricted);		
+		return checkMobileToken(request, authToken, allowInactive, allowRestricted);		
 	}
 	
-	public static AccessContext checkMobileToken(MobileAppSessionToken authToken, boolean allowInactive, boolean allowRestricted) throws AppException {		
+	private static boolean verifyAddress(String ip, String allowed) throws InternalServerException {
+		String[] ranges = allowed.split(",");
+		for (String range : ranges) {
+			String[] r = range.trim().split("/");
+			if (matches(r[0], ip, Integer.parseInt(r[1]))) return true;
+		}
+		return false;
+	}
+	
+	public static boolean matches(String required, String address, int maskBits) throws InternalServerException {
+		try {
+			InetAddress requiredAddress = InetAddress.getByName(required);
+			InetAddress remoteAddress = InetAddress.getByName(address);
+			if (!requiredAddress.getClass().equals(remoteAddress.getClass())) {
+				return false;
+			}
+			if (maskBits < 0) {
+				return remoteAddress.equals(requiredAddress);
+			}
+			byte[] remAddr = remoteAddress.getAddress();
+			byte[] reqAddr = requiredAddress.getAddress();
+			int maskFullBytes = maskBits / 8;
+			byte finalByte = (byte) (0xFF00 >> (maskBits & 0x07));
+			for (int i = 0; i < maskFullBytes; i++) {
+				if (remAddr[i] != reqAddr[i]) {
+					return false;
+				}
+			}
+			if (finalByte != 0) {
+				return (remAddr[maskFullBytes] & finalByte) == (reqAddr[maskFullBytes] & finalByte);
+			}
+			return true;
+		} catch (UnknownHostException e) {
+			throw new InternalServerException("error.internal", "Unknown host");
+		}
+	}
+		
+	public static AccessContext checkMobileToken(Request request, MobileAppSessionToken authToken, boolean allowInactive, boolean allowRestricted) throws AppException {		
 		if (authToken == null) OAuth2.invalidToken();				
 		
 		AccessLog.logBegin("begin check 'mobile' type session token");
@@ -192,6 +194,11 @@ public class ExecutionInfo {
         
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
         
+        Plugin plugin = Plugin.getById(appInstance.applicationId);
+        if (plugin.allowedIPs != null) {
+        	String reqIp = SpaceToken.remoteAddr(request);
+        	if (!verifyAddress(reqIp, plugin.allowedIPs)) OAuth2.invalidToken(); 
+        }
         
         KeyManager.instance.login(60000l, false);
         if (KeyManager.instance.unlock(appInstance._id, authToken.aeskey) == KeyManager.KEYPROTECTION_FAIL) {

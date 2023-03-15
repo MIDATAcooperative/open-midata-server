@@ -378,7 +378,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 		super.processResource(record, p);
 		
 		if (p.getFor().isEmpty()) {			
-			p.setFor(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setFor(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

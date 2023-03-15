@@ -622,6 +622,8 @@ public class PluginsAPI extends APIController {
 			BSONObject query = RecordManager.instance.getMeta(inf, inf.getTargetAps(), "_query");
 			if (query != null && query.containsField("target-study")) {				
 				inf.getRequestCache().getStudyPublishBuffer().add(inf, record);						
+			} else if (query != null && query.containsField("target-study-private")) {				
+				inf.getRequestCache().getStudyPublishBuffer().addPrivate(inf, record);
 			}
 		}
 		

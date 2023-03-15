@@ -138,14 +138,17 @@ public class Feature_Pseudonymization extends Feature {
 		@Override
 		public DBRecord next() throws AppException {
 			DBRecord r = chain.next();
+			
 			if (r.context != null) {
 				if (r.context.mustPseudonymize() || r.context.mustRename()) {
+			
 					if (r.meta != null) {
 						r.owner = r.context.getOwnerPseudonymized();
-		
+			
 						String name = r.context.getOwnerName();
 						if (oname && name != null) {															
 							r.meta.put("ownerName", name);
+							r.ownerType = r.context.getOwnerType();
 						}
 		
 						// Bugfix for older records
@@ -165,6 +168,7 @@ public class Feature_Pseudonymization extends Feature {
 				} else {		
 					if (!r.context.mayContainRecordsFromMultipleOwners() || r.owner==null) {
 					  r.owner = r.context.getOwner();
+					  r.ownerType = r.context.getOwnerType();
 					} 
 				}
 			}

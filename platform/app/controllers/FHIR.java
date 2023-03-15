@@ -211,7 +211,7 @@ public class FHIR extends Controller {
 			   }
 			   if (key != null && instance != null) {
 				   MobileAppSessionToken tk = new MobileAppSessionToken(instance, key, System.currentTimeMillis()+60000, UserRole.ANY);
-				   AccessContext inf = ExecutionInfo.checkMobileToken(tk, false, false);
+				   AccessContext inf = ExecutionInfo.checkMobileToken(request, tk, false, false);
 				   Stats.setPlugin(inf.getUsedPlugin());
 			       ResourceProvider.setAccessContext(inf);
 			       return inf;

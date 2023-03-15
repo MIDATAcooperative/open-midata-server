@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.bson.BSONObject;
 
+import controllers.research.Studies;
 import models.MidataId;
 import models.Record;
 import models.StudyRelated;
@@ -40,6 +41,7 @@ import utils.exceptions.InternalServerException;
 public class StudyPublishBuffer {
 
 	private Set<MidataId> records_to_publish;
+	private Set<MidataId> records_to_publish_private;
 	private AccessContext context;
 	private boolean lazy;
 		
@@ -66,10 +68,25 @@ public class StudyPublishBuffer {
 	}
 	
 	/**
+	 * Add record that needs to be part of study export but not public
+	 * @param context
+	 * @param record
+	 * @throws AppException
+	 */
+	public void addPrivate(AccessContext context, Record record) throws AppException {
+		if (this.context == null) this.context = context;
+		if (context != this.context) throw new InternalServerException("error.internal", "Execution context changed.");
+		if (records_to_publish_private == null) records_to_publish_private = new HashSet<MidataId>();
+		records_to_publish_private.add(record._id);
+		if (!lazy) save();
+	}
+	
+	/**
 	 * publish previously added records
 	 * @throws AppException
 	 */
 	public void save() throws AppException {
+		savePrivate();
 		if (records_to_publish == null || records_to_publish.isEmpty()) return;
 						
 		BSONObject query = RecordManager.instance.getMeta(context, context.getTargetAps(), "_query");
@@ -89,5 +106,27 @@ public class StudyPublishBuffer {
 		
 		records_to_publish.clear();
 		this.context = null;
+	}
+	
+	private void savePrivate() throws AppException {
+		if (records_to_publish_private == null || records_to_publish_private.isEmpty()) return;
+		
+		BSONObject query = RecordManager.instance.getMeta(context, context.getTargetAps(), "_query");
+		if (query != null && query.containsField("target-study-private")) {
+			Map<String, Object> q = query.toMap(); 
+			MidataId studyId = MidataId.from(q.get("target-study-private"));
+			AccessLog.log("local publishing #recs=", Integer.toString(records_to_publish_private.size()), " to study ", studyId.toString());
+			Object groupObj = q.get("target-study-group");
+			String group = groupObj != null ? groupObj.toString() : null;
+			
+			Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudyPrivate(context.getAccessor(), group, studyId, Sets.create("_id"));
+			if (!srs.isEmpty()) {
+				for (StudyRelated sr : srs ) {
+				  RecordManager.instance.share(context, context.getLegacyOwner(), sr._id, records_to_publish_private, false);
+				}
+			}
+		}
+		
+		records_to_publish_private.clear();		
 	}
 }

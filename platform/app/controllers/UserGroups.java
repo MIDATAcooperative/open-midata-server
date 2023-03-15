@@ -299,7 +299,8 @@ public class UserGroups extends APIController {
 			role.pseudo = !JsonValidation.getBoolean(json, "unpseudo");
 			role.participants = JsonValidation.getBoolean(json, "participants");
 			role.setup = JsonValidation.getBoolean(json, "setup");
-			role.roleName = JsonValidation.getString(json, "roleName");
+			role.applications = JsonValidation.getBoolean(json, "applications");
+			role.roleName = JsonValidation.getString(json, "roleName");			
 			role.id = JsonValidation.getString(json, "id");	
 		}
 		

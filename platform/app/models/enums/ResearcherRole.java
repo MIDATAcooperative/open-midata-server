@@ -29,6 +29,7 @@ public class ResearcherRole implements JsonSerializable {
 	public boolean auditLog;
 	public boolean participants;
 	public boolean setup;
+	public boolean applications;
 	public String roleName;
 	public String id;
 	
@@ -64,6 +65,10 @@ public class ResearcherRole implements JsonSerializable {
 		return setup;
 	}
 	
+	public boolean mayUseApplications() {
+		return applications;
+	}
+	
 	public static ResearcherRole SPONSOR() {
 		ResearcherRole result = new ResearcherRole();
 		result.changeTeam = true;
@@ -73,6 +78,7 @@ public class ResearcherRole implements JsonSerializable {
 		result.export = true;
 		result.participants = true;
 		result.setup = true;
+		result.applications = true;
 		result.roleName = "Sponsor";
 		result.id = "SPONSOR";
 		return result;
@@ -87,6 +93,7 @@ public class ResearcherRole implements JsonSerializable {
 		result.export = false;
 		result.participants = false;
 		result.setup = true;
+		result.applications = true;
 		result.roleName = "Developer";
 		result.id = "DEVELOPER";
 		return result;
@@ -102,6 +109,7 @@ public class ResearcherRole implements JsonSerializable {
 		result.pseudo = false;
 		result.export = false;
 		result.setup = false;
+		result.applications = true;
 		result.roleName = "HC";
 		result.id = "HC";
 		return result;

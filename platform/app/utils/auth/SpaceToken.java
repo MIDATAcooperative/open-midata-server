@@ -137,7 +137,7 @@ public class SpaceToken {
 		this.role = role;
 	}
 	
-	private static String remoteAddr(Request req) {
+	public static String remoteAddr(Request req) {
 		if (req.hasHeader("X-Real-IP-LB")) {
 			return req.header("X-Real-IP-LB").get();
 		}

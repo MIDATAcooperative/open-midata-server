@@ -62,14 +62,18 @@
         <div class="body">
             <div v-t="'apikeys.instructions'"></div>
             <hr>
+            <div v-if="showkey.access_token">
             <div><b v-t="'apikeys.key'"></b></div>
             <div v-t="'apikeys.instructions_key'"></div>
             <input type="text" class="form-control mt-1" readonly @click="copyToClip($event)" v-model="showkey.access_token">
             <hr>
+            </div>
+            <div v-if="showkey.refresh_token">
             <div><b v-t="'apikeys.refresh'"></b></div>
             <div v-t="'apikeys.instructions_refresh'"></div>
             <input type="text" class="form-control mt-1" readonly @click="copyToClip($event)" v-model="showkey.refresh_token">
             <hr>
+            </div>
             <div><b v-t="'apikeys.common_name'"></b></div>
             <div v-t="'apikeys.instructions_common_name'"></div>
             <div class="row">

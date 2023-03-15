@@ -195,8 +195,7 @@ public class Market extends APIController {
 			}
 			
 			app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
-			app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
-			
+			app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");			
 			
 			if (withLogout) {
 				Map<String, Object> oldDefaultQuery = app.defaultQuery;
@@ -242,6 +241,9 @@ public class Market extends APIController {
 				}
 				if (json.has("loginButtonsTemplate")) {
 				  app.loginButtonsTemplate = JsonValidation.getEnum(json, "loginButtonsTemplate", LoginButtonsTemplate.class);
+				}
+				if (json.has("allowedIPs")) {
+					app.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");
 				}
 				
 				if (app.type.equals("external")) {
@@ -732,6 +734,7 @@ public class Market extends APIController {
 		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		plugin.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
 		plugin.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
+		plugin.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");		
 		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		plugin.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		plugin.codeChallenge = JsonValidation.getBoolean(json, "codeChallenge");
@@ -866,6 +869,7 @@ public class Market extends APIController {
 		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
 		app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
+		app.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");
 		app.consentObserving = JsonValidation.getBoolean(json, "consentObserving");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");

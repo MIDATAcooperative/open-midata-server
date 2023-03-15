@@ -270,7 +270,7 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 		super.processResource(record, p);
 		
 		if (p.getPatient().isEmpty()) {			
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setPatient(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

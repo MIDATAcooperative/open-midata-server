@@ -299,8 +299,9 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	}
 	
 	public Set<UserGroup> searchNonResources(SearchParameterMap params) {
+		
 		try {
-							
+			if (!checkAccessible()) return Collections.emptySet();				
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);
 			builder.handleIdRestriction();		

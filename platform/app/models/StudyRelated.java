@@ -33,6 +33,7 @@ public class StudyRelated extends Consent {
 
 	public MidataId study;
 	public String group;
+	public boolean noBackshare;
 	
 	public StudyRelated() {
 		this.type = ConsentType.STUDYRELATED;
@@ -47,8 +48,20 @@ public class StudyRelated extends Consent {
 		return Model.getAll(StudyRelated.class, collection, CMaps.mapNotEmpty("owner", owner).map("type", ConsentType.STUDYRELATED).mapNotEmpty("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE), fields);
 	}
 	
+	public static Set<StudyRelated> getActiveByOwnerGroupAndStudyPublic(MidataId owner, String group, MidataId studyId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyRelated.class, collection, CMaps.mapNotEmpty("owner", owner).map("type", ConsentType.STUDYRELATED).mapNotEmpty("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE).map("noBackshare", CMaps.map("$ne", true)), fields);
+	}
+	
+	public static Set<StudyRelated> getActiveByOwnerGroupAndStudyPrivate(MidataId owner, String group, MidataId studyId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyRelated.class, collection, CMaps.mapNotEmpty("owner", owner).map("type", ConsentType.STUDYRELATED).mapNotEmpty("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE).map("noBackshare", true), fields);
+	}
+	
 	public static Set<StudyRelated> getActiveByAuthorizedGroupAndStudy(MidataId authorized, Set<String> group, Set<MidataId> studyId, Set<MidataId> owners, Set<String> fields, long since) throws InternalServerException {
 		return Model.getAll(StudyRelated.class, collection, CMaps.map("authorized", authorized).map("type", ConsentType.STUDYRELATED).mapNotEmpty("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE).mapNotEmpty("owner", owners).map("dataupdate", CMaps.map("$gte", since)), fields);
+	}
+	
+	public static Set<StudyRelated> getActiveByAuthorizedGroupAndStudyPublic(MidataId authorized, Set<String> group, Set<MidataId> studyId, Set<MidataId> owners, Set<String> fields, long since) throws InternalServerException {
+		return Model.getAll(StudyRelated.class, collection, CMaps.map("authorized", authorized).map("type", ConsentType.STUDYRELATED).mapNotEmpty("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE).mapNotEmpty("owner", owners).map("dataupdate", CMaps.map("$gte", since)).map("noBackshare", CMaps.map("$ne", true)), fields);
 	}
 	
 	public static Set<StudyRelated> getActiveByAuthorizedAndIds(MidataId authorized, Set<MidataId> ids) throws InternalServerException {

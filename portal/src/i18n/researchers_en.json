@@ -257,7 +257,9 @@
     "terms_of_use_hint" : "If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to a platform administrator. We will upload the text in the correct format and provide you with the ID you need to enter here.",
     "consent_observers" : "External Consent Observers",
     "show_terms" : "Show General Terms and Conditions",
-    "requirements" : "Requirements"
+    "requirements" : "Requirements",
+    "security" : "Security",
+    "forceClientCertificate" : "Force the use of client certificates for project analyzers."
   },
   
   "addresearcher" : {
@@ -288,7 +290,8 @@
       "changeTeam" : "Change team",
       "auditLog" : "View audit log",
       "participants" : "Manage participants",
-      "setup" : "Setup Project"
+      "setup" : "Setup Project",
+      "applications" : "Manage linked applications"
     }
   },
   

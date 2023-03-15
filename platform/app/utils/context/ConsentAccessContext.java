@@ -141,6 +141,11 @@ public class ConsentAccessContext extends AccessContext{
 		return ownerName;
 		
 	}
+	
+	public String getOwnerType() {
+		if (consent.type.equals(ConsentType.STUDYRELATED)) return "Group";
+		return null;
+	}
 
 	@Override
 	public MidataId getOwner() {
@@ -149,6 +154,7 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public MidataId getOwnerPseudonymized() throws AppException {
+		if (consent.type.equals(ConsentType.STUDYRELATED)) return consent.owner;
 		if (ownerpseudoId!=null) return ownerpseudoId;
 		Pair<MidataId,String> p = Feature_Pseudonymization.pseudonymizeUser(getCache(), consent);
 		if (p!=null) {
