@@ -290,20 +290,22 @@ public class CSVConverter {
 				    else comp = comp.thenComparing(comp1);
 				}
 				
-				ArrayNode grpData = (ArrayNode) groupData.path(as);
-				List<JsonNode> sorted = StreamSupport.stream(grpData.spliterator(), false)				  
-			     .sorted(comp)			    
-			     .collect(Collectors.toList());
-				
-				if (group.hasNonNull("limit")) {
-					int limit = group.path("limit").asInt();
-				    if (sorted.size() > limit) sorted = sorted.subList(0, limit);
+				if (groupData.has(as)) {
+					ArrayNode grpData = (ArrayNode) groupData.path(as);
+					List<JsonNode> sorted = StreamSupport.stream(grpData.spliterator(), false)				  
+				     .sorted(comp)			    
+				     .collect(Collectors.toList());
+					
+					if (group.hasNonNull("limit")) {
+						int limit = group.path("limit").asInt();
+					    if (sorted.size() > limit) sorted = sorted.subList(0, limit);
+					}
+					
+					ArrayNode result = Json.newArray();
+					result.addAll(sorted);
+					
+					groupData.set(as, result);
 				}
-				
-				ArrayNode result = Json.newArray();
-				result.addAll(sorted);
-				
-				groupData.set(as, result);
 			}					
 		}
 	}
