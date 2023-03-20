@@ -19,11 +19,14 @@ package utils.csv;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -43,7 +46,7 @@ public class CSVConverter {
 	//private JsonNode field;
 	private JsonNode all;
 	
-	private Map<String, JsonNode> _group;
+	private Map<String, ObjectNode> _group;
 	private String _keyValue;
 	private StringBuilder outBuffer;
 	private CSVWriter writer;
@@ -51,7 +54,7 @@ public class CSVConverter {
 	public CSVConverter(JsonNode mapping, String selectedFile) {
 		this.mapping = mapping;
 		this.selectedFile = selectedFile;
-		this._group = new HashMap<String, JsonNode>();
+		this._group = new HashMap<String, ObjectNode>();
 		this.writer = new CSVWriter();
 		this.outBuffer = new StringBuilder();
 	}
@@ -114,7 +117,7 @@ public class CSVConverter {
 		}
 		
 		if (map.hasNonNull("group")) {			
-			_group = new HashMap<String, JsonNode>();
+			_group = new HashMap<String, ObjectNode>();
 			
 			for (JsonNode group : map.path("group")) {		
 	          if (!group.hasNonNull("key") || !group.path("key").hasNonNull("fhir")) throw new BadRequestException("error.invalid.csvmapping", "Missing group key definition");
@@ -260,10 +263,56 @@ public class CSVConverter {
 		return !_group.isEmpty();
 	}
 	
+	public void processSortAndLimit(JsonNode base, ObjectNode groupData) {
+		JsonNode groups = base.path("group");
+		for (int grp=0;grp<groups.size();grp++) {
+			JsonNode group = groups.path(grp);
+			String as = group.path("as").asText();
+			if (group.hasNonNull("sort")) {
+				
+				Comparator<JsonNode> comp = null;
+				ArrayNode sorts = null;
+				if (group.path("sort").isArray()) sorts = (ArrayNode) group.path("sort");
+				else {
+					sorts = Json.newArray();
+					sorts.add(group.path("sort"));
+				}
+				
+				for (JsonNode sortCriteria : sorts) {
+				
+				    final String[] sortPath = path(sortCriteria);
+				    boolean descending = sortCriteria.path("descending").asBoolean(false);
+								    
+				    Comparator<JsonNode> comp1 = Comparator.comparing(o -> extract(o, sortPath, sortCriteria));
+				    if (descending) comp1 = comp1.reversed();
+				    
+				    if (comp == null) comp = comp1;
+				    else comp = comp.thenComparing(comp1);
+				}
+				
+				ArrayNode grpData = (ArrayNode) groupData.path(as);
+				List<JsonNode> sorted = StreamSupport.stream(grpData.spliterator(), false)				  
+			     .sorted(comp)			    
+			     .collect(Collectors.toList());
+				
+				if (group.hasNonNull("limit")) {
+					int limit = group.path("limit").asInt();
+				    if (sorted.size() > limit) sorted = sorted.subList(0, limit);
+				}
+				
+				ArrayNode result = Json.newArray();
+				result.addAll(sorted);
+				
+				groupData.set(as, result);
+			}					
+		}
+	}
+	
 	public void flushGroup(JsonNode base) {
 		if (!_group.isEmpty()) {
-			for (JsonNode v : _group.values()) {
+			for (ObjectNode v : _group.values()) {
 			//System.out.println("---------------GROUP:"+v.toString());
+			   processSortAndLimit(base, v);
 			   preprocessMapping(base, v, base, v, base, false);                                  
 			}
 			_group.clear();

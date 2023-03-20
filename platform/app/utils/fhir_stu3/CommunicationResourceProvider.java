@@ -59,6 +59,7 @@ import models.enums.AuditEventType;
 import utils.access.RecordManager;
 import utils.access.pseudo.FhirPseudonymizer;
 import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -244,8 +245,9 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 	}
 	
 	public void createExecute(Record record, Communication theCommunication) throws AppException {
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 		shareRecord(record, theCommunication);
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		if (audit) AuditManager.instance.success();
 	}	
 	
 	public void prepareForSharing(Communication theCommunication) throws AppException {

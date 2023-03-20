@@ -45,6 +45,7 @@ public class ErrorReporter {
 	private static String bugReportName = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
 	private static volatile long lastReport = 0;
 	public final static long PER_DAY = 1000l * 60l * 60l * 24l;
+	public final static String PLUGIN_PREFIX =  "PluginProblem:";
 	
 	/**
 	 * Report an exception
@@ -89,7 +90,7 @@ public class ErrorReporter {
 			String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
 			String txt = "Dear Developer,\n\non "+timeStamp+"\nthe plugin/app called '"+plg.name+"' (internal: '"+plg.filename+"')\non the MIDATA instance at '"+InstanceConfig.getInstance().getPortalServerDomain()+"'\nhas caused this error:\n\n"+e.getMessage()+"\n\nThis is an automated email send by the MIDATA platform.\nYou can turn off reporting for this application in the application settings.";				
 			
-			if (RateLimitedAction.doRateLimited("PluginProblem:"+plg._id.toString(), AuditEventType.EMAIL_SENT, 0, 30, PER_DAY)) {
+			if (RateLimitedAction.doRateLimited(PLUGIN_PREFIX+plg._id.toString(), AuditEventType.EMAIL_SENT, 0, 30, PER_DAY)) {
 				if (plg.sendReports) {						
 					MailUtils.sendTextMailAsync(MailSenderType.STATUS, plg.creatorLogin, plg.creatorLogin, "Error Report: ["+plg.name+"] "+InstanceConfig.getInstance().getPortalServerDomain(), txt);
 					
