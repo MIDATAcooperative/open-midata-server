@@ -53,6 +53,7 @@ import models.Record;
 import models.enums.AuditEventType;
 import utils.access.pseudo.FhirPseudonymizer;
 import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -309,8 +310,9 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	@Override
 	public Task createExecute(Record record, Task theTask) throws AppException {
 		MidataId consent = insertMessageRecord(record, theTask);
-        shareRecord(record, theTask, consent);
-        AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+        shareRecord(record, theTask, consent);        
+        if (audit) AuditManager.instance.success();
         return theTask;
 	}	
 	
@@ -349,9 +351,10 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	
 	@Override
 	public void updateExecute(Record record, Task theTask) throws AppException {
-		updateRecord(record, theTask, getAttachments(theTask));
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
+		updateRecord(record, theTask, getAttachments(theTask));		
 		shareRecord(record, theTask, info().getAccessor()); // XXX To be checked
+		if (audit) AuditManager.instance.success();
 	}
 
 	public void prepare(Record record, Task theTask) throws AppException {

@@ -52,6 +52,7 @@ import models.Record;
 import models.enums.AuditEventType;
 import utils.access.pseudo.FhirPseudonymizer;
 import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -257,10 +258,11 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	
 
 	@Override
-	public Appointment createExecute(Record record, Appointment theAppointment) throws AppException {
+	public Appointment createExecute(Record record, Appointment theAppointment) throws AppException {		
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 		insertRecord(record, theAppointment);
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 		shareRecord(record, theAppointment);
+		if (audit) AuditManager.instance.success();
 		return theAppointment;
 	}		
 	
@@ -273,9 +275,10 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	
 	@Override
 	public void updateExecute(Record record, Appointment theAppointment) throws AppException {
-		updateRecord(record, theAppointment, getAttachments(theAppointment));	
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
+		updateRecord(record, theAppointment, getAttachments(theAppointment));		
 		shareRecord(record, theAppointment);
+		if (audit) AuditManager.instance.success();
 	}
 			
 	public void shareRecord(Record record, Appointment theAppointment) throws AppException {

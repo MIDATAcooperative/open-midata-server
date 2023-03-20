@@ -73,6 +73,7 @@ import utils.access.ReuseFileHandle;
 import utils.access.UpdateFileHandleSupport;
 import utils.access.VersionedDBRecord;
 import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -190,8 +191,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public T createExecute(Record record, T theResource) throws AppException {
 		List<Attachment> attachments = getAttachments(theResource);	
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 		insertRecord(record, theResource, attachments, info());
+		if (audit) AuditManager.instance.success();
 		return theResource;
 	}
 	
@@ -243,8 +245,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public void updateExecute(Record record, T theResource) throws AppException {
 		List<Attachment> attachments = getAttachments(theResource);
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
 		updateRecord(record, theResource, attachments);
+		if (audit) AuditManager.instance.success();
 	}
 	
 	@Override
