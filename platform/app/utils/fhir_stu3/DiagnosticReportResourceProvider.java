@@ -52,6 +52,7 @@ import models.Record;
 import models.enums.AuditEventType;
 import utils.InstanceConfig;
 import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -237,9 +238,9 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 		if (att != null && att.size() == 1) {
 			attachment = att.get(0);		
 		}
-		
-		insertRecord(record, theDiagnosticReport, attachment);
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);		
+		insertRecord(record, theDiagnosticReport, attachment);		
+		if (audit) AuditManager.instance.success();
 	}	
 
 	@Override

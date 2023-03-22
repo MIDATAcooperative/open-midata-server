@@ -19,13 +19,20 @@ package utils.plugins;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.PoisonPill;
 import akka.actor.Props;
+import akka.cluster.singleton.ClusterSingletonManager;
+import akka.cluster.singleton.ClusterSingletonManagerSettings;
+import akka.cluster.singleton.ClusterSingletonProxy;
+import akka.cluster.singleton.ClusterSingletonProxySettings;
 import models.MidataId;
 import models.Plugin;
 import play.libs.ws.WSClient;
 import utils.InstanceConfig;
+import utils.access.IndexSupervisor;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.sync.Instances;
 
 public class DeploymentManager {
 
@@ -37,28 +44,51 @@ private static ActorSystem system;
 	public static void init(WSClient ws1, ActorSystem system1) {
 		system = system1;	
 		ws = ws1;
+								
+		ActorRef localBuildContainer = system.actorOf(Props.create(FirejailBuildContainer.class).withDispatcher("pinned-dispatcher"), "pluginBuilder");
+		ActorRef localCDNContainer = system.actorOf(Props.create(FilesystemCDNContainer.class).withDispatcher("pinned-dispatcher"), "pluginCDN");
+		ActorRef localScriptContainer = system.actorOf(Props.create(FirejailScriptContainer.class).withDispatcher("pinned-dispatcher"), "pluginScripts");
 		
-		if (InstanceConfig.getInstance().getInternalBuilderUrl() != null) {
-		  deployer = system.actorOf(Props.create(ExternPluginDeployment.class).withDispatcher("pinned-dispatcher"), "pluginDeployment");
-		} else {
-		  deployer = system.actorOf(Props.create(PluginDeployment.class).withDispatcher("pinned-dispatcher"), "pluginDeployment");
-		}
-	   			
+		ActorRef globalCDNContainer = system.actorOf(MultiServerContainer.props(MultiServerContainer.class, localCDNContainer), "globalCDN");
+		ActorRef globalScriptContainer = system.actorOf(MultiServerContainer.props(MultiServerContainer.class, localScriptContainer), "globalScripts");
+		
+		deployer = system.actorOf(DeployCoordinator.props(localBuildContainer, globalScriptContainer, globalCDNContainer).withDispatcher("medium-work-dispatcher"), "pluginDeployment");
+		
+		/*final ClusterSingletonManagerSettings settings =
+				  ClusterSingletonManagerSettings.create(Instances.system());
+	
+		
+		ActorRef deployerSingleton = Instances.system().actorOf(ClusterSingletonManager.props(DeployCoordinator.props(localBuildContainer, globalScriptContainer, globalCDNContainer).withDispatcher("medium-work-dispatcher"), PoisonPill.getInstance(),
+				settings), "deployer");
+		
+		final ClusterSingletonProxySettings proxySettings =
+			    ClusterSingletonProxySettings.create(Instances.system());
+		
+		deployer = Instances.system().actorOf(ClusterSingletonProxy.props("/user/deployer", proxySettings).withDispatcher("medium-work-dispatcher"), "deployer-Consumer");			
+			*/   		
 	}
 	
 	public static WSClient getWsClient() {
 		return ws;
 	}
 	
-	public static DeploymentReport deploy(MidataId plugin, MidataId executor, boolean doDelete) throws AppException {
+	public static DeploymentReport deploy(MidataId plugin, MidataId executor, String action) throws AppException {
 		DeploymentReport report = new DeploymentReport();
 		report._id = plugin;
 		report.init();
-		report.status.add(DeployPhase.SCEDULED);
+		report.done.add(DeployPhase.SCEDULED);
 		report.sceduled = System.currentTimeMillis();
 		report.add();
 		
-		deployer.tell(new DeployAction(plugin, executor, doDelete ? DeployPhase.COORDINATE_DELETE : DeployPhase.COORDINATE), ActorRef.noSender());
+		DeployPhase task = DeployPhase.COORDINATE;
+		
+		if ("delete".equals(action)) task = DeployPhase.COORDINATE_DELETE;
+		else if ("wipe".equals(action)) task = DeployPhase.COORDINATE_WIPE;
+		else if ("audit".equals(action)) task = DeployPhase.COORDINATE_AUDIT;
+		else if ("auditfix".equals(action)) task = DeployPhase.COORDINATE_AUDIT_FIX;
+		else if ("redeploy".equals(action)) task = DeployPhase.COORDINATE_DEPLOY;
+		
+		deployer.tell(new DeployAction(plugin, executor, task), ActorRef.noSender());
 		
 		return report;
 	}
@@ -71,15 +101,6 @@ private static ActorSystem system;
 		Plugin plugin = Plugin.getById(pluginId, Sets.create("filename", "repositoryUrl"));
 		if (plugin == null || plugin.repositoryUrl==null) return false;
 		if (plugin.repositoryDate==0) return false;
-		return true;
-		
-		/*String deployLocation =  InstanceConfig.getInstance().getConfig().getString("visualizations.path");
-		String targetDir = deployLocation+"/"+plugin.filename;
-		File test = new File(targetDir);
-		if (test.exists()) return true;
-		test = new File(deployLocation+"/../plugin_active/"+plugin.filename);
-		if (test.exists()) return true;
-		return false;*/
-		
+		return true;						
 	}
 }

@@ -377,7 +377,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 	public void processResource(Record record, DocumentReference p) throws AppException {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}		
 	}
 

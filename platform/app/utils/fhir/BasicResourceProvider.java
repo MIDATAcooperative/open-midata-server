@@ -315,15 +315,18 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 				throw new UnprocessableEntityException("Cannot process created");
 			}
 		}
-		record.name = display != null ? (display + " / " + date) : date;		
+		record.name = display != null ? (display + " / " + date) : date;	
 			
-		 clean(theBasic);
+		Reference subjectRef = theBasic.getSubject();
+		if (cleanAndSetRecordOwner(record, subjectRef)) theBasic.setSubject(null);
+					
+		clean(theBasic);
     }
     
     public void processResource(Record record, Basic resource) throws AppException {
     	super.processResource(record, resource);
     	if (resource.getSubject().isEmpty()) {
-    		resource.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+    		resource.setSubject(FHIRTools.getReferenceToOwner(record));
  
 		}		
 	}

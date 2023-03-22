@@ -313,7 +313,7 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 
 		// Add subject field from record owner field if it is not already there
 		if (p.getPatient().isEmpty()) {
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setPatient(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

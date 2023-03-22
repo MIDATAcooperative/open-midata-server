@@ -99,6 +99,10 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		return utils.fhir.ResourceProvider.info();
 	}
 	
+	public static boolean hasInfo() {
+		return utils.fhir.ResourceProvider.hasInfo();
+	}
+	
 	/**
 	 * Retrives AccessContext for current thread or default instance
 	 * @return AccessContext

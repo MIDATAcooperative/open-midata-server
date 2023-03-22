@@ -165,6 +165,7 @@ public class Feature_Streams extends Feature {
 		public DBRecord next() throws AppException {
 			DBRecord result = in.next();
 			result.owner = stream.owner;
+			result.ownerType = stream.ownerType;
 			fromStream(stream, result, medium);
 			
 			return result;

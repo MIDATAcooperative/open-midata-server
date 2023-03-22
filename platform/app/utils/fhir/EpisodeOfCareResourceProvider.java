@@ -241,7 +241,7 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 		super.processResource(record, p);
 		
 		if (p.getPatient().isEmpty()) {			
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setPatient(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

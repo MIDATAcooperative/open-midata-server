@@ -71,6 +71,7 @@ import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AppReviewChecklist;
 import models.enums.ConsentStatus;
+import models.enums.DeploymentStatus;
 import models.enums.EntityType;
 import models.enums.IconUse;
 import models.enums.JoinMethod;
@@ -84,6 +85,7 @@ import models.enums.ReviewStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
+import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -193,8 +195,7 @@ public class Market extends APIController {
 			}
 			
 			app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
-			app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
-			
+			app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");			
 			
 			if (withLogout) {
 				Map<String, Object> oldDefaultQuery = app.defaultQuery;
@@ -240,6 +241,9 @@ public class Market extends APIController {
 				}
 				if (json.has("loginButtonsTemplate")) {
 				  app.loginButtonsTemplate = JsonValidation.getEnum(json, "loginButtonsTemplate", LoginButtonsTemplate.class);
+				}
+				if (json.has("allowedIPs")) {
+					app.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");
 				}
 				
 				if (app.type.equals("external")) {
@@ -589,7 +593,13 @@ public class Market extends APIController {
 		app.repositoryUrl = JsonValidation.getStringOrNull(pluginJson, "repositoryUrl");
 		app.repositoryDirectory = JsonValidation.getStringOrNull(pluginJson, "repositoryDirectory");
 		app.repositoryToken = JsonValidation.getStringOrNull(pluginJson, "repositoryToken");
+		app.hasScripts = JsonValidation.getBoolean(pluginJson, "hasScripts");
 		app.repositoryDate = 0;
+		if (app.repositoryUrl != null && app.repositoryUrl.trim().length()>0) {
+		   app.deployStatus = DeploymentStatus.READY;
+		} else {
+		   app.deployStatus = DeploymentStatus.NONE;
+		}
 		
 		try {
 		List<PluginIcon> icons = new ArrayList<PluginIcon>();
@@ -724,6 +734,7 @@ public class Market extends APIController {
 		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		plugin.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
 		plugin.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
+		plugin.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");		
 		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		plugin.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		plugin.codeChallenge = JsonValidation.getBoolean(json, "codeChallenge");
@@ -858,6 +869,7 @@ public class Market extends APIController {
 		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
 		app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
+		app.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");
 		app.consentObserving = JsonValidation.getBoolean(json, "consentObserving");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
@@ -1695,26 +1707,66 @@ public class Market extends APIController {
 		
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
-		boolean doDelete = JsonValidation.getBoolean(json, "doDelete");
+		String action  = JsonValidation.getStringOrNull(json, "action");
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl"));
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "hasScripts"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
 		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 
-		if (app.repositoryUrl != null && !app.repositoryUrl.equals(repo) && !doDelete) {
+		if (app.repositoryUrl != null && !app.repositoryUrl.equals(repo) && action==null) {
 			if (DeploymentManager.hasUserDeployment(pluginId)) throw new BadRequestException("error.notauthorized.remove_first", "Remove existing deployment first.");
 		}
-		if (!doDelete) {
+		if (action==null) {
 			app.repositoryUrl = repo;
 		    if (token != null) app.repositoryToken = token;
 		    app.repositoryDirectory = directory;
+		    app.hasScripts = JsonValidation.getBoolean(json, "hasScripts");
+		    app.deployStatus = DeploymentStatus.RUNNING;
 		    app.updateRepo();
 		}
 	    	 
-	    DeploymentReport report = DeploymentManager.deploy(app._id, userId, doDelete);
+	    DeploymentReport report = DeploymentManager.deploy(app._id, userId, action);
 		
 	    return ok(JsonOutput.toJson(report, "DeploymentReport", DeploymentReport.ALL)).as("application/json");
+		
+	}
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public Result globalRepoAction(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.PLUGINADMIN);
+		JsonNode json = request.body().asJson();
+		JsonValidation.validate(json, "action");		
+		String action = JsonValidation.getString(json, "action");
+		
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+
+		if ("deploy-ready".equals(action)) {
+			// Deploy ready and failed
+			Set<Plugin> plugins = Plugin.getAll(CMaps.map("deployStatus", Sets.createEnum(DeploymentStatus.READY, DeploymentStatus.FAILED)), Sets.create("_id"));
+			for (Plugin plugin : plugins) {
+				Plugin.set(plugin._id, "deployStatus", DeploymentStatus.RUNNING);
+				DeploymentManager.deploy(plugin._id, userId, null);
+			}
+		}		    
+		else if ("deploy-all".equals(action)) {
+			// Deploy all available
+			Set<Plugin> plugins = Plugin.getAll(CMaps.map("deployStatus", Sets.createEnum(DeploymentStatus.READY, DeploymentStatus.DONE, DeploymentStatus.FAILED)), Sets.create("_id"));
+			for (Plugin plugin : plugins) {
+				Plugin.set(plugin._id, "deployStatus", DeploymentStatus.RUNNING);
+				DeploymentManager.deploy(plugin._id, userId, null);
+			}
+		} else if ("audit-all".equals(action)) {
+  		    // Audit all ready and deployed
+			Set<Plugin> plugins = Plugin.getAll(CMaps.map("deployStatus", Sets.createEnum(DeploymentStatus.READY, DeploymentStatus.DONE, DeploymentStatus.FAILED)), Sets.create("_id"));
+			for (Plugin plugin : plugins) {
+				Plugin.set(plugin._id, "repositoryRisks", "Waiting for audit...");
+				DeploymentManager.deploy(plugin._id, userId, "audit");
+			}
+		}
+	    return ok();
 		
 	}
 	
@@ -1724,7 +1776,7 @@ public class Market extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "repositoryDirectory"));
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "repositoryDirectory", "hasScripts"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
 		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");

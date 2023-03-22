@@ -50,7 +50,7 @@
 <script>
 
 import Panel from "components/Panel.vue"
-
+import apps from "services/apps.js"
 import spaces from "services/spaces.js"
 import session from "services/session.js"
 import { status, ErrorBox, Success, FormGroup } from 'basic-vue3-components'

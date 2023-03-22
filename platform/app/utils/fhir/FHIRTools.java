@@ -75,6 +75,42 @@ public class FHIRTools {
 	 * @return
 	 * @throws InternalServerException
 	 */
+	public static Reference getReferenceToOwner(Record record) throws AppException {
+		if (record == null) return null;
+		if (record.ownerType != null) return new Reference().setDisplay(record.ownerName); //.setReference(record.ownerType+"/"+record.owner.toString());	   
+        return getReferenceToUser(record.owner, record.ownerName);		
+	}
+	
+	/**
+	 * Returns a FHIR reference to the specified creator. Automatically chooses Patient, Practitioner or RelatedPerson
+	 * @param id
+	 * @return
+	 * @throws InternalServerException
+	 */
+	public static Reference getReferenceToCreator(Record record) throws AppException {
+		if (record == null) return null;
+		if (record.owner.equals(record.creator)) {
+			if (record.ownerType != null) return new Reference().setDisplay(record.ownerName).setReference(record.ownerType+"/"+record.owner.toString());
+			return getReferenceToUser(record.owner, record.ownerName);
+		}
+        return getReferenceToUser(record.creator, record.creatorName);		
+	}
+	
+	public static Reference getReferenceToModifiedBy(Record record) throws AppException {
+		if (record == null) return null;
+		if (record.owner.equals(record.modifiedBy)) {
+			if (record.ownerType != null) return new Reference().setDisplay(record.ownerName).setReference(record.ownerType+"/"+record.owner.toString());
+			return getReferenceToUser(record.owner, record.ownerName);
+		}
+        return getReferenceToUser(record.modifiedBy, record.modifiedByName);		
+	}
+	
+	/**
+	 * Returns a FHIR reference to the specified user. Automatically chooses Patient, Practitioner or RelatedPerson
+	 * @param id
+	 * @return
+	 * @throws InternalServerException
+	 */
 	public static Reference getReferenceToUser(MidataId id, String defName) throws AppException {
 		if (id == null) return null;
 	    if (RuntimeConstants.instance.publicUser.equals(id)) return null;

@@ -38,10 +38,10 @@ public class AuditHeaderTool {
 			return null;
 		}
 	}
-	public static void createAuditEntryFromHeaders(AccessContext context, AuditEventType type, MidataId targetUserId) throws AppException {
+	public static boolean createAuditEntryFromHeaders(AccessContext context, AuditEventType type, MidataId targetUserId) throws AppException {
 		
 		PlayHttpServletRequest request = PlayHttpServletRequest.getCurrent();
-		if (request == null) return;
+		if (request == null) return false;
 		
 		AuditExtraInfo extra = new AuditExtraInfo();
 		
@@ -70,9 +70,10 @@ public class AuditHeaderTool {
 				  .withExtraInfo(extra)
 			 );
 			
-			AuditManager.instance.success();
+			return true;
+			
 		}	
-		
+		return false;
 		
 	}
 }

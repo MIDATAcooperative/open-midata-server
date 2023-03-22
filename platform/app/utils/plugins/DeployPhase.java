@@ -24,7 +24,15 @@ enum DeployPhase implements Serializable {
 	
 	COORDINATE,
 	
-	STARTED,
+	COORDINATE_AUDIT,
+	
+	COORDINATE_AUDIT_FIX,
+	
+	COORDINATE_DEPLOY,
+	
+	COUNT,
+	
+	REPORT_COUNT,
 	
 	CHECKOUT,
 	
@@ -36,19 +44,67 @@ enum DeployPhase implements Serializable {
 	
 	AUDIT,
 	
+	AUDITFIX,
+	
 	REPORT_AUDIT,
 	
 	COMPILE,
 	
 	REPORT_COMPILE,
 			
-	PUBLISH,				
+	EXPORT_TO_CDN,	
 	
+	REPORT_EXPORT_TO_CDN,
+	
+	IMPORT_CDN,
+	
+	REPORT_IMPORT_CDN,
+	
+	EXPORT_SCRIPTS,
+	
+	REPORT_EXPORT_SCRIPTS,
+	
+	IMPORT_SCRIPTS,
+	
+	REPORT_IMPORT_SCRIPTS,
+				
 	FINISHED,
+	
+	FINISH_AUDIT,
 	
 	FAILED,
 	
 	COORDINATE_DELETE,
 	
-	DELETE
+	DELETE,
+	
+	REPORT_DELETE,
+	
+	COORDINATE_WIPE,
+	
+	WIPE_CDN,
+	
+	REPORT_WIPE_CDN,
+	
+	WIPE_SCRIPT,
+	
+	REPORT_WIPE_SCRIPT;
+	
+	boolean isReport() {
+		return this == REPORT_CHECKOUT 
+				|| this == REPORT_INSTALL 
+				|| this == REPORT_AUDIT 
+				|| this == REPORT_COMPILE 
+				|| this == REPORT_EXPORT_SCRIPTS				
+				|| this == REPORT_EXPORT_TO_CDN
+				|| this == REPORT_IMPORT_SCRIPTS				
+				|| this == REPORT_IMPORT_CDN
+				|| this == FINISHED
+				|| this == FINISH_AUDIT
+				|| this == FAILED
+				|| this == REPORT_WIPE_CDN
+				|| this == REPORT_WIPE_SCRIPT
+				|| this == REPORT_DELETE; 
+	}
+	
 }

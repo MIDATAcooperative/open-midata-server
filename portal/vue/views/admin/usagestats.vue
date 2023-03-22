@@ -137,7 +137,7 @@ export default {
 
     created() {
         const { $data, $route } = this, me = this;
-        $data.criteria.to = this.$filters.usDate(new Date());
+        $data.criteria.to = this.$filters.usDate(new Date());   
         if ($route.query.appId) {
             $data.criteria.days = 30;
             me.loadApp($route.query.appId);

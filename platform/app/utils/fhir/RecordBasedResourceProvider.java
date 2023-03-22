@@ -73,6 +73,7 @@ import utils.access.ReuseFileHandle;
 import utils.access.UpdateFileHandleSupport;
 import utils.access.VersionedDBRecord;
 import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -190,8 +191,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public T createExecute(Record record, T theResource) throws AppException {
 		List<Attachment> attachments = getAttachments(theResource);	
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 		insertRecord(record, theResource, attachments, info());
+		if (audit) AuditManager.instance.success();
 		return theResource;
 	}
 	
@@ -243,8 +245,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public void updateExecute(Record record, T theResource) throws AppException {
 		List<Attachment> attachments = getAttachments(theResource);
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
 		updateRecord(record, theResource, attachments);
+		if (audit) AuditManager.instance.success();
 	}
 	
 	@Override
@@ -480,8 +483,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		  Plugin creatorApp = Plugin.getById(record.app);		
 		  if (creatorApp != null) meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
-		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, record.creator.equals(record.owner) ? record.ownerName : null ));
-		if (record.modifiedBy != null && !record.version.equals("0")) meta.addExtension("modifiedBy", FHIRTools.getReferenceToUser(record.modifiedBy, record.modifiedBy.equals(record.owner) ? record.ownerName : null ));
+		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToCreator(record));
+		if (record.modifiedBy != null && !record.version.equals("0")) meta.addExtension("modifiedBy", FHIRTools.getReferenceToModifiedBy(record));
 				
 		resource.getMeta().addExtension(meta);
 		processAttachments(record, resource);

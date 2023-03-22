@@ -132,6 +132,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 */
 	public @NotMaterialized MidataId owner; // person the record is about
 			
+	/**
+	 * the type of the owner. 
+	 * THe owner may also be a group instead of a person
+	 */
+	public @NotMaterialized String ownerType;
 	
 	/**
 	 * The AES key that is used to encrypt/decrypt this record

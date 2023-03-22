@@ -517,7 +517,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 						Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new IndexAccessContext(cache, index.getModel().pseudonymize), false);
 						
 						Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
-						for (StatsIndexKey k : keys) {
+						for (StatsIndexKey k : keys) {							
 							k.studyGroup = consent.group;
 							index.addEntry(k);
 						}

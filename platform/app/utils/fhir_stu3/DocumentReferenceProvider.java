@@ -58,6 +58,7 @@ import models.enums.AuditEventType;
 import utils.InstanceConfig;
 import utils.access.pseudo.FhirPseudonymizer;
 import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -378,8 +379,9 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 			attachment = theDocumentReference.getContent().get(0).getAttachment();			
 		}
 		
-		insertRecord(record, theDocumentReference, attachment);
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		insertRecord(record, theDocumentReference, attachment);		
+		if (audit) AuditManager.instance.success();
 	}	
 	
 	@Override

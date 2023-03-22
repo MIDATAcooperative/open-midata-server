@@ -310,6 +310,7 @@ export default {
 		   r += role.changeTeam ? "T" : "-";
 		   r += role.participants ? "P" : "-";
 		   r += role.auditLog ? "L" : "-";	   
+		   r += role.applications ? "A" : "-";
 		   return r;
 		},
 	

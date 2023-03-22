@@ -67,6 +67,7 @@ import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.CMaps;
 import utils.context.AccessContext;
 import utils.context.ConsentAccessContext;
@@ -140,8 +141,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@Override
 	public void createExecute(Record record, T theResource) throws AppException {
-		insertRecord(record, theResource);
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		insertRecord(record, theResource);		
+		if (audit) AuditManager.instance.success();
 	}
 	
 	@Override
@@ -181,8 +183,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@Override
 	public void updateExecute(Record record, T theResource) throws AppException {
-		updateRecord(record, theResource);
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
+		updateRecord(record, theResource);		
+		if (audit) AuditManager.instance.success();
 	}
 	
 	@Override

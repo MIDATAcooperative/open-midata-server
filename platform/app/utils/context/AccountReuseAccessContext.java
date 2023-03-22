@@ -60,5 +60,10 @@ public class AccountReuseAccessContext extends AccountCreationAccessContext {
 	public AccessContext forAccountReshare() {
 		return new AccountReuseAccessContext(getCache(), null);		
 	}
+	
+	@Override
+	public boolean isUserGroupContext() {
+		return false;
+	}
 
 }

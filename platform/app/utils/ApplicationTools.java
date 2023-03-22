@@ -388,7 +388,7 @@ public class ApplicationTools {
 		if (instance.managerAccount.equals(context.getAccessor())) return instance;
 
 		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(instance.managerAccount, context.getAccessor());
-		if (ugm != null) {
+		if (ugm != null && ugm.role.mayUseApplications()) {
 			Feature_UserGroups.loadKey(context, ugm);
 			return instance;
 		}

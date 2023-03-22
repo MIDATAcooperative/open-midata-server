@@ -26,7 +26,7 @@ portal.server="DOMAIN"
 platform.server="DOMAIN"
 apps.server="DOMAIN"
 visualizations.server="PLUGINS_SERVER"
-visualizations.path="ROOTDIR/visualizations"
+visualizations.path="PLUGINS_DIR"
 node.server="DOMAIN:5000"
 node.path="/usr/bin/node"
 

@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-    <study-nav page="study.codes"></study-nav>
+    <study-nav page="study.codes" :study="study"></study-nav>
 	<tab-panel :busy="isBusy">
 	        
 	        <p v-t="'codes.intro'"></p>
@@ -116,7 +116,8 @@ export default {
 		codes : null,
 		newcodes : { count:1, reuseable:"true", manually:"false", group:"" },
 		createnew : false,
-		blocked : false	
+		blocked : false,
+		study : null	
     }),
 
     components: {  Panel, TabPanel, ErrorBox, FormGroup, StudyNav, Success },

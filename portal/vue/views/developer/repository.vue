@@ -18,29 +18,52 @@
 		    <form-group name="repository_dir" label="repository.repository_dir" :path="errors.repository_dir">
 		        <input type="text" id="repository_dir" name="repository_dir" class="form-control" v-validate v-model="app.repositoryDirectory" required>		    
 		    </form-group>
+		    
+		    <form-group name="has_scripts" label="repository.has_scripts" :path="errors.hasScripts">
+		       <check-box name="has_scripts" v-model="app.hasScripts">
+                   <span v-t="'repository.has_scripts2'"></span>
+               </check-box>				        		   
+		    </form-group>
 
 		    <form-group label="repository.repository_date">
 		        <p v-if="app.repositoryDate" class="form-control-plaintext">{{ $filters.dateTime(app.repositoryDate) }}</p>		    		   
 		        <p v-else class="form-control-plaintext" v-t="'repository.never'"></p>
 		    </form-group>
+		    
+		    <form-group label="repository.repository_audit_date">
+		        <p v-if="app.repositoryAuditDate" class="form-control-plaintext">{{ $filters.dateTime(app.repositoryAuditDate) }}</p>		    		   
+		        <p v-else class="form-control-plaintext" v-t="'repository.never'"></p>
+		    </form-group>
+		    
+		    <form-group label="repository.repository_risks">
+		        <input type="text" id="repositoryRisks" name="repositoryRisks" class="form-control"  v-validate v-model="app.repositoryRisks" readonly>
+		    </form-group>
 	  
 	        <form-group label="repository.status">
 	            <ul class="list-group">
                     <li class="list-group-item" v-t="'repository.phase_provided'" :class="{ 'list-group-item-success' : report }"></li>
-                    <li class="list-group-item" v-t="'repository.phase_sceduled'" :class="style('SCEDULED','COORDINATE','CHECKOUT')"></li>
-                    <li class="list-group-item" v-t="'repository.phase_checkout'" :class="style('COORDINATE','CHECKOUT','INSTALL')"></li>
-                    <li class="list-group-item" v-t="'repository.phase_install'" :class="style('CHECKOUT','INSTALL','AUDIT')"></li>
-                    <li class="list-group-item" v-t="'repository.phase_audit'" :class="style('INSTALL','AUDIT','COMPILE')"></li>
-                    <li class="list-group-item" v-t="'repository.phase_build'" :class="style('AUDIT','COMPILE','FINISHED')"></li>
-                    <li class="list-group-item" v-t="'repository.phase_complete'" :class="style('COMPILE','FINISHED','XXX')"></li>
+                    <li class="list-group-item" v-t="'repository.phase_sceduled'" :class="style('SCEDULED')"></li>
+                    <li class="list-group-item" v-t="'repository.phase_checkout'" :class="style('CHECKOUT')"></li>
+                    <li class="list-group-item" v-t="'repository.phase_install'" :class="style('INSTALL')"></li>
+                    <li class="list-group-item" v-t="'repository.phase_audit'" :class="style('AUDIT')"></li>
+                    <li class="list-group-item" v-t="'repository.phase_build'" :class="style('COMPILE')"></li>
+                    <li class="list-group-item" v-t="'repository.phase_import_cdn'" :class="style('EXPORT_TO_CDN')"></li>
+                    <li class="list-group-item" v-t="'repository.phase_import_scripts'" :class="style('EXPORT_SCRIPTS')"></li>
+                    <li class="list-group-item" v-t="'repository.phase_wipe_cdn'" :class="style('WIPE_CDN')"></li>
+                    <li class="list-group-item" v-t="'repository.phase_wipe_scripts'" :class="style('WIPE_SCRIPT')"></li>
+                    <li class="list-group-item" v-t="'repository.phase_delete'" :class="style('DELETE')"></li>
+                    <li class="list-group-item" v-t="'repository.phase_complete'" :class="style('FINISHED')"></li>
                 </ul>
 	        </form-group>
 	    
 	  
 		    <form-group myid="x" label="common.empty">
-		        <router-link :to="{ path : './manageapp', query :  {appId:app._id} }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
-		        <button type="button" class="btn btn-danger mr-1" @click="doDelete()" :disabled="!report" v-t="'common.delete_btn'"></button>		    
-		        <button type="submit" :disabled="action!=null" class="btn btn-primary mr-1" v-t="'repository.submit_btn'">Submit</button>		    		    
+		        <button type="button" class="btn btn-default mr-1" v-t="'common.back_btn'" @click="$router.back()"></button>
+		        <button type="button" class="btn btn-danger mr-1" @click="repoAction('wipe')" :disabled="!report" v-t="'common.delete_btn'"></button>		    
+		        <button type="submit" :disabled="action!=null" class="btn btn-primary mr-1" v-t="'repository.submit_btn'">Submit</button>
+		        <button type="button" @click="repoAction('audit')" :disabled="action!=null" class="btn btn-default mr-1" v-t="'repository.audit_btn'">Audit</button>
+		        <button type="button" @click="repoAction('auditfix')" :disabled="action!=null" class="btn btn-default mr-1" v-t="'repository.audit_fix_btn'">Audit Fix</button>
+		        <button type="button" @click="repoAction('redeploy')" :disabled="action!=null" class="btn btn-default mr-1" v-t="'repository.redeploy_btn'">Redeploy</button>		    		    
 		    </form-group>
 		  
 		  		  
@@ -121,7 +144,7 @@ export default {
         loadApp(appId) {
             const { $data } = this, me = this;
             $data.appId=appId;
-            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "repositoryUrl", "repositoryDirectory", "repositoryDate" ])
+            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "repositoryUrl", "repositoryDirectory", "repositoryDate", "repositoryAuditDate", "repositoryRisks", "hasScripts" ])
             .then(function(data) { 
                 $data.app = data.data[0];			
             }));
@@ -129,6 +152,7 @@ export default {
 	
 	    loadReport(appId) {
             const { $data } = this, me = this;
+            
             server.get(jsRoutes.controllers.Market.updateFromRepository($data.appId).url).then(function(result) {
                 if (result.data && result.data.clusterNodes) {
                     $data.report = result.data;	
@@ -151,25 +175,18 @@ export default {
 	       return undefined;
 	    },
 	
-	    style(p,c,n) {
+	    style(p) {
             const { $data } = this, me = this;
-            if (!$data.report || !$data.report.status) return "list-group-item-light";
-            if ($data.report.status.indexOf(c)>=0) {
-                if ($data.report.status.indexOf("FAILED")>=0 && $data.report.status.indexOf(n)<0) {
-                return "list-group-item-danger";
-                } else {
-                return "list-group-item-success";
-                }
-            } else if ($data.report.status.indexOf(p)>=0 && $data.report.status.indexOf("FAILED")<0) {
-            return "active"; 
-            } else {
-            return "list-group-item-light";
-            }
+            if (!$data.report || !$data.report.done) return "list-group-item-light";
+            if ($data.report.done.indexOf(p)>=0) return "list-group-item-success";
+            if ($data.report.failed.indexOf(p)>=0) return "list-group-item-danger";
+            if ($data.report.planned.indexOf(p)<0) return "d-none";          
+            return "list-group-item-light";          
 	    },
 	
 	    submit() {
 		    const { $data } = this, me = this;
-            $data.app.doDelete = undefined;
+            $data.app.action = undefined;
             me.doAction("submit", server.post(jsRoutes.controllers.Market.updateFromRepository($data.app._id).url, $data.app)
             .then(function(result) {
                 $data.report = result.data; 
@@ -177,13 +194,13 @@ export default {
 
 	    },
 	
-        doDelete() {
+        repoAction(action) {
 		    const { $data } = this, me = this;
-            $data.app.doDelete = true; 							
-            me.doAction("submit", server.post(jsRoutes.controllers.Market.updateFromRepository($data.app._id).url, $data.app))
+            $data.app.action = action; 							
+            me.doAction("submit", server.post(jsRoutes.controllers.Market.updateFromRepository($data.app._id).url, $data.app)
             .then(function(result) {
                 $data.report = result.data; 
-            });
+            }));
 
 	    }
     },

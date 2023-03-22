@@ -414,7 +414,7 @@ public class Studies extends APIController {
 					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, initialInf,
 							CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after", startDate).mapNotEmpty("updated-before", endDate),
 							RecordManager.COMPLETE_DATA);
-					System.out.println("study export start!");
+					
 					return new RecIterator(allRecords);
 				} finally {
 					ServerTools.endRequest();
@@ -603,7 +603,7 @@ public class Studies extends APIController {
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "identifiers", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
 				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
-				"dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy");
+				"dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy", "forceClientCertificate");
 		Study study = Study.getById(studyid, fields);
 
 		if (study != null && study.consentObserver != null) {
@@ -1184,7 +1184,7 @@ public class Studies extends APIController {
 
 	public static StudyRelated findFreeSharingConsent(AccessContext context, MidataId researcher, Study study, String group, boolean ifDataShared) throws AppException {
 		MidataId ownerId = researcher;
-		Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(researcher, group, study._id, Consent.ALL);
+		Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudyPublic(researcher, group, study._id, Consent.ALL);
 		if (consents.isEmpty() && ifDataShared)
 			return null;
 
@@ -1237,9 +1237,42 @@ public class Studies extends APIController {
 		RecordManager.instance.copyAPS(context, reference._id, consent._id, ownerId);
 		return consent;
 	}
+	
+	public static StudyRelated findFreeNoBSConsent(AccessContext context, MidataId researcher, Study study, String group) throws AppException {
+		MidataId ownerId = researcher;
+		Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudyPrivate(researcher, group, study._id, Consent.ALL);
+		
+		StudyRelated reference = null;
+
+		if (consents.isEmpty()) {
+			StudyRelated consent = new StudyRelated();
+			consent._id = new MidataId();
+			consent.study = study._id;
+			consent.group = group;
+			consent.owner = ownerId;
+			consent.name = "Project-local:" + study.name;
+			consent.authorized = new HashSet<MidataId>();
+			consent.entityType = EntityType.USERGROUP;
+			consent.dateOfCreation = new Date();
+			consent.lastUpdated = consent.dateOfCreation;
+			consent.status = ConsentStatus.ACTIVE;
+			consent.writes = WritePermissionType.UPDATE_EXISTING;
+			consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
+			consent.noBackshare = true;
+
+			RecordManager.instance.createAnonymizedAPS(ownerId, context.getAccessor(), consent._id, true, true, true);
+			Circles.persistConsentMetadataChange(context, consent, true);
+			Circles.addUsers(context, ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
+
+			reference = consent;
+		}  else {
+			reference = consents.iterator().next();
+		}
+		return reference;
+	}
 
 	public static void fixSharing(AccessContext context, MidataId researcher, Study study, String group) throws AppException {
-		Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(researcher, group, study._id, Consent.ALL);
+		Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudyPublic(researcher, group, study._id, Consent.ALL);
 		if (consents.isEmpty())
 			return;
 
@@ -1331,7 +1364,7 @@ public class Studies extends APIController {
 
 		if (group == null) {
 			for (StudyGroup grp : study.groups) {
-				Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, grp.name, study._id, Sets.create("authorized"));
+				Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudyPublic(userId, grp.name, study._id, Sets.create("authorized"));
 
 				if (consents.isEmpty()) {
 					Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyid, grp.name, Sets.create());
@@ -1342,7 +1375,7 @@ public class Studies extends APIController {
 			return ok();
 
 		} else {
-			Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, group, study._id, Sets.create("authorized"));
+			Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudyPublic(userId, group, study._id, Sets.create("authorized"));
 
 			if (consents.isEmpty()) {
 				Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyid, group, Sets.create());
@@ -1387,9 +1420,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		// if (!self.role.maySetup()) throw new
-		// BadRequestException("error.notauthorized.action", "User is not
-		// allowed to change study setup.");
+		if (!self.role.mayUseApplications()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 		// validate json
 		JsonNode json = request.body().asJson();
@@ -1424,7 +1455,7 @@ public class Studies extends APIController {
 
 				if (group == null) {
 					for (StudyGroup grp : study.groups) {
-						Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(study._id, grp.name, study._id, Sets.create("authorized"));
+						Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudyPublic(study._id, grp.name, study._id, Sets.create("authorized"));
 
 						if (consents.isEmpty()) {
 							Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp.name, Sets.create());
@@ -1433,7 +1464,7 @@ public class Studies extends APIController {
 					}
 
 				} else {
-					Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(study._id, group, study._id, Sets.create("authorized"));
+					Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudyPublic(study._id, group, study._id, Sets.create("authorized"));
 
 					if (consents.isEmpty()) {
 						Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
@@ -1442,6 +1473,18 @@ public class Studies extends APIController {
 
 				}
 
+			} else {
+
+				if (group == null) {
+					for (StudyGroup grp : study.groups) {
+						Studies.findFreeNoBSConsent(context, study._id, study, grp.name);
+					}
+
+				} else {
+					Studies.findFreeNoBSConsent(context, study._id, study, group);					
+				}
+
+				
 			}
 
 		} else {
@@ -1449,7 +1492,7 @@ public class Studies extends APIController {
 
 				if (group == null) {
 					for (StudyGroup grp : study.groups) {
-						Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, grp.name, study._id, Sets.create("authorized"));
+						Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudyPublic(userId, grp.name, study._id, Sets.create("authorized"));
 
 						if (consents.isEmpty()) {
 							Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp.name, Sets.create());
@@ -1458,7 +1501,7 @@ public class Studies extends APIController {
 					}
 
 				} else {
-					Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, group, study._id, Sets.create("authorized"));
+					Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudyPublic(userId, group, study._id, Sets.create("authorized"));
 
 					if (consents.isEmpty()) {
 						Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
@@ -1491,6 +1534,10 @@ public class Studies extends APIController {
 					query.put("target-study", studyId.toString());
 					if (group != null)
 						query.put("target-study-group", group);
+				} else {
+					query.put("target-study-private", studyId.toString());
+					if (group != null)
+						query.put("target-study-group", group);
 				}
 				query.put("link-study", studyId.toString());
 				if (group != null)
@@ -1513,6 +1560,10 @@ public class Studies extends APIController {
 
 				if (shareBack) {
 					query.put("target-study", studyId.toString());
+					if (group != null)
+						query.put("target-study-group", group);
+				} else {
+					query.put("target-study-private", studyId.toString());
 					if (group != null)
 						query.put("target-study-group", group);
 				}
@@ -2139,7 +2190,10 @@ public class Studies extends APIController {
 			study.setJoinMethods(JsonValidation.getEnumSet(json, "joinMethods", JoinMethod.class));
 		}
 		if (json.has("leavePolicy")) {
-			study.setLeavePolicy(JsonValidation.getEnum(json,  "leavePolicy", ProjectLeavePolicy.class));
+			study.setLeavePolicy(JsonValidation.getEnum(json,  "leavePolicy", ProjectLeavePolicy.class));			
+		}
+		if (json.has("forceClientCertificate")) {			
+			study.setForceClientCertificate(JsonValidation.getBoolean(json, "forceClientCertificate"));
 		}
 		if (json.has("rejoinPolicy")) {
 			study.setRejoinPolicy(JsonValidation.getEnum(json,  "rejoinPolicy", RejoinPolicy.class));
@@ -2608,6 +2662,9 @@ public class Studies extends APIController {
 		study.requiredInformation = JsonValidation.getEnum(studyJson, "requiredInformation", InformationType.class);
 		study.assistance = JsonValidation.getEnum(studyJson, "assistance", AssistanceType.class);
 		study.anonymous = JsonValidation.getBoolean(studyJson, "anonymous");
+		study.forceClientCertificate = JsonValidation.getBoolean(studyJson, "forceClientCertificate"); 
+		study.leavePolicy = JsonValidation.getEnum(studyJson, "leavePolicy", ProjectLeavePolicy.class);
+		study.rejoinPolicy = JsonValidation.getEnum(studyJson, "rejoinPolicy", RejoinPolicy.class);
 
 		UserGroup userGroup = new UserGroup();
 		userGroup.name = study.name;

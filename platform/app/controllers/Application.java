@@ -1106,6 +1106,9 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.updateParticipation(),
 				controllers.research.routes.javascript.Studies.download(),
 				controllers.research.routes.javascript.Studies.downloadFHIR(),
+				controllers.research.routes.javascript.CSVDownload.updateCSVDef(),
+				controllers.research.routes.javascript.CSVDownload.getCSVDef(),
+				controllers.research.routes.javascript.CSVDownload.downloadCSV(),
 				controllers.research.routes.javascript.Studies.listCodes(),
 				controllers.research.routes.javascript.Studies.generateCodes(),
 				controllers.research.routes.javascript.Studies.startValidation(),
@@ -1198,6 +1201,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.searchLicenses(),
 				controllers.routes.javascript.Market.updateFromRepository(),
 				controllers.routes.javascript.Market.getDeployStatus(),
+				controllers.routes.javascript.Market.globalRepoAction(),
 
 				// Services
 				controllers.routes.javascript.Services.listServiceInstancesStudy(),

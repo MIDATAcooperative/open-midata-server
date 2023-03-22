@@ -293,7 +293,7 @@ class RecordConsentResourceProvider extends RecordBasedResourceProvider<org.hl7.
 		super.processResource(record, resource);
 		
 		if (resource.getPatient().isEmpty()) {			
-			resource.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			resource.setPatient(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 	

@@ -576,7 +576,7 @@ public class PluginsAPI extends APIController {
 		if (context.mustPseudonymize()) throw new PluginException(inf.getUsedPlugin(), "error.plugin", dbrecord.getErrorInfo()+" may not be created. Access is pseudonymized! \n\nCreate permisssion chain:\n========================\n"+context.getMayCreateRecordReport(dbrecord));
 		
 		//MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
-		if (record.tags.contains(QueryTagTools.SECURITY_LOCALCOPY)) {
+		if (record.tags != null && record.tags.contains(QueryTagTools.SECURITY_LOCALCOPY)) {
 			  RecordManager.instance.addLocalRecord(context, record);
 		} else if (fileData != null) {			 
 			  RecordManager.instance.addRecord(context, record, context.getTargetAps(), fileData);
@@ -622,6 +622,8 @@ public class PluginsAPI extends APIController {
 			BSONObject query = RecordManager.instance.getMeta(inf, inf.getTargetAps(), "_query");
 			if (query != null && query.containsField("target-study")) {				
 				inf.getRequestCache().getStudyPublishBuffer().add(inf, record);						
+			} else if (query != null && query.containsField("target-study-private")) {				
+				inf.getRequestCache().getStudyPublishBuffer().addPrivate(inf, record);
 			}
 		}
 		
@@ -933,11 +935,11 @@ public class PluginsAPI extends APIController {
 	}
 		
 	
-	@BodyParser.Of(BodyParser.Json.class)
+	//@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public Result generateId(Request request) throws JsonValidationException, AppException {
-		JsonNode json = request.body().asJson();		
-		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());									
+		//JsonNode json = request.body().asJson();		
+		//AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());									
 		return ok(new MidataId().toString());
 	}
 	

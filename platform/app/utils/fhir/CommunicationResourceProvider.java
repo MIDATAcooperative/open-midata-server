@@ -61,6 +61,7 @@ import models.enums.AuditEventType;
 import utils.access.RecordManager;
 import utils.access.pseudo.FhirPseudonymizer;
 import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -262,8 +263,9 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 	}
 	
 	public Communication createExecute(Record record, Communication theCommunication) throws AppException {
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 		shareRecord(record, theCommunication);
-		AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		if (audit) AuditManager.instance.success();
 		return theCommunication;
 	}	
 	
@@ -336,7 +338,7 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 	public void processResource(Record record, Communication p) throws AppException {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {			
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 	

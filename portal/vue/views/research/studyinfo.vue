@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-    <study-nav page="study.info"></study-nav>
+    <study-nav page="study.info" :study="study"></study-nav>
     <tab-panel :busy="isBusy">
 	
         <error-box :error="error"></error-box>

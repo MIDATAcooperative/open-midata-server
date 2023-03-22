@@ -133,5 +133,10 @@ public class AccountCreationAccessContext extends AccessContext {
 	public String toString() {
 		return "account-create("+cache.getAccessor()+","+parentString()+")";
 	}
+	
+	@Override
+	public boolean isUserGroupContext() {		
+		return false;
+	}
 
 }

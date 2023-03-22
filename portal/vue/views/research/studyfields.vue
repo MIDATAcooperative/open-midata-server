@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-    <study-nav page="study.fields"></study-nav>
+    <study-nav page="study.fields" :study="study"></study-nav>
     <tab-panel :busy="isBusy">
        
 
@@ -78,7 +78,7 @@
 	                <td><input class="form-control" type="text"  :disabled="studyLocked()" v-validate v-model="group.description"></td>
 	                <td><button type="button" class="btn btn-danger btn-sm" @click="deleteGroup(group);" v-t="'common.delete_btn'" :disabled="studyLocked()">Delete</button></td>
 	            </tr>
-	            <tr v-if="studyLocked()">
+	            <tr v-if="studyLocked() && study.myRole && study.myRole.setup">
 	                <td><input name="name" class="form-control" type="text" v-validate v-model="newGroup.name"></td>
 	                <td><input name="description" class="form-control" type="text" v-validate v-model="newGroup.description"></td>
 	                <td><button type="button" class="btn btn-secondary btn-sm" @click="addNewGroup()" v-t="'common.add_btn'">Add</button></td>

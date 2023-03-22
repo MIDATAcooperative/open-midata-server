@@ -244,7 +244,7 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 	public void processResource(Record record, Device p) throws AppException {
 		super.processResource(record, p);
 		if (p.getPatient().isEmpty()) {
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setPatient(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

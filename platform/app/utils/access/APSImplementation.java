@@ -595,6 +595,7 @@ class APSImplementation extends APS {
 	}
 
 	public void removePermission(Collection<DBRecord> records) throws AppException {
+		if (records.isEmpty()) return;
 		try {
 			boolean updated = false;
 			for (DBRecord record : records)

@@ -460,7 +460,8 @@ public class RecordManager {
 			throws AppException {
 		if (records.size() == 0) return;
 		
-        AccessLog.logBegin("begin unshare who=",context.getCache().getAccessor().toString()," aps=",context.getTargetAps().toString()," #recs=", Integer.toString(records.size()));
+        AccessLog.logBegin("begin unshare who=",context.toString()," aps=",context.getTargetAps().toString()," #recs=", Integer.toString(records.size()));
+                
         APSCache cache = context.getCache();
 		APS apswrapper = cache.getAPS(context.getTargetAps());
 		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, context.getTargetAps(), context.internal(),
