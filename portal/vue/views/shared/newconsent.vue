@@ -286,11 +286,11 @@
             </form-group>    
             
             <form-group name="validUntil" label="newconsent.expiration_date">        
-                <input id="validUntil" type="date" class="form-control" v-validate v-model="consent.validUntil" >              
+                <input id="validUntil" type="date" class="form-control" v-validate v-date="consent.validUntil" v-model="consent.validUntil" >              
             </form-group>
 
             <form-group name="createdBefore" label="newconsent.created_before">	  
-                <input id="createdBefore" type="date" class="form-control" v-validate v-model="consent.createdBefore"  />              
+                <input id="createdBefore" type="date" class="form-control" v-validate v-date="consent.createdBefore" v-model="consent.createdBefore"  />              
             </form-group>
 
             <form-group name="name" label="newconsent.name">

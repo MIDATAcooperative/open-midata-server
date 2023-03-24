@@ -36,15 +36,15 @@
             </form-group>
 
             <form-group name="startDate" label="studyrules.startDate" :path="errors.startDate">	    
-                <input id="startDate" name="startDate" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.startDate"  />                 
+                <input id="startDate" name="startDate" type="date" class="form-control" :disabled="studyLocked()" v-date="study.startDate" v-validate v-model="study.startDate"  />                 
             </form-group>
     
             <form-group name="endDate" label="studyrules.endDate" :path="errors.endDate">	    
-                <input id="endDate" name="endDate" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.endDate" />                  
+                <input id="endDate" name="endDate" type="date" class="form-control" :disabled="studyLocked()" v-date="study.endDate" v-validate v-model="study.endDate" />                  
             </form-group>
     
             <form-group name="dataCreatedBefore" label="studyrules.dataCreatedBefore" :path="errors.dataCreatedBefore">	    
-                <input id="dataCreatedBefore" name="dataCreatedBefore" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.dataCreatedBefore"/>        
+                <input id="dataCreatedBefore" name="dataCreatedBefore" type="date" class="form-control" :disabled="studyLocked()" v-date="study.dataCreatedBefore" v-validate v-model="study.dataCreatedBefore"/>        
             </form-group>
         
             <form-group name="termsOfUse" label="studyrules.terms_of_use" :path="errors.termsOfUse">	    

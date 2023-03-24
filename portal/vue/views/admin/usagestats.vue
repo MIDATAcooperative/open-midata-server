@@ -32,7 +32,7 @@
             
             <div class="form-group col-4">
                 <label for="until">Until:</label>            
-                <input type="date" id="date" @input="recalc()" class="form-control" autofocus v-model="criteria.to">				  
+                <input type="date" id="date" @input="recalc()" class="form-control" autofocus v-date="criteria.to" v-model="criteria.to">				  
             </div>
               	    	    
         </form>           

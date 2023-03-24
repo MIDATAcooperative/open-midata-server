@@ -26,7 +26,7 @@
 		    </form-group>
 		  
 		    <form-group name="date" label="admin_managenews.date" :path="errors.date">		      
-				<input type="date" class="form-control" name="date" v-validate v-model="newsItem.date">			
+				<input type="date" class="form-control" name="date" v-validate v-date="newsItem.date" v-model="newsItem.date">			
 		    </form-group>
 		
 		    <form-group name="language" label="admin_managenews.language" :path="errors.language">
@@ -46,7 +46,7 @@
 		    <hr>
 		  
 		    <form-group name="expires" label="admin_managenews.expires" :path="errors.expires">		      
-				<input type="date" name="expires" class="form-control" v-validate v-model="newsItem.expires">				  
+				<input type="date" name="expires" class="form-control" v-validate v-date="newsItem.expires" v-model="newsItem.expires">				  
 		    </form-group>
 		
 		    <form-group name="layout" label="admin_managenews.layout" :path="errors.laqyout">
