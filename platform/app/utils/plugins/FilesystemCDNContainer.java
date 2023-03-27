@@ -37,7 +37,7 @@ import utils.InstanceConfig;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class FilesystemCDNContainer extends AbstractCDNContainer {
+public class FilesystemCDNContainer extends AbstractLocalContainer {
 
     private String globalBaseDirectory;
 	
@@ -106,12 +106,7 @@ public class FilesystemCDNContainer extends AbstractCDNContainer {
 		result(sender, action, DeployPhase.REPORT_IMPORT_CDN, result);
 	}
 
-	@Override
-	void publishAction(DeployAction msg) throws AppException {
-		// TODO Auto-generated method stub
 		
-	}
-	
 	  public void doWipe(DeployAction action, File deploymentDir) {
 			
 			List<String> cmd = new ArrayList<String>();

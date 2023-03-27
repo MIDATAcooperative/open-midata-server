@@ -33,8 +33,11 @@ import akka.actor.AbstractActor.Receive;
 import models.MidataId;
 import models.Plugin;
 import utils.AccessLog;
+import utils.ErrorReporter;
+import utils.ServerTools;
 import utils.exceptions.AppException;
 import utils.messaging.InputStreamCollector;
+import utils.stats.ActionRecorder;
 
 public abstract class AbstractContainer extends AbstractActor {
 
@@ -47,7 +50,19 @@ public abstract class AbstractContainer extends AbstractActor {
 			   .build();
 	}
 	
-	abstract void deploy(DeployAction msg);
+	void deploy(DeployAction msg) {
+		String path = "PluginDeployment/"+getClass().getName();
+		long st = ActionRecorder.start(path);
+		try {
+			defaultMessages(msg);
+		} catch (AppException e) {			
+		   ErrorReporter.report(getClass().getName(), null, e);
+		} finally {
+		  ServerTools.endRequest();
+		  ActionRecorder.end(path, st);
+		}
+	
+	}
 	
 	public void defaultMessages(DeployAction msg) throws AppException {
 		if (msg.status == DeployPhase.COUNT) {
@@ -59,34 +74,7 @@ public abstract class AbstractContainer extends AbstractActor {
 	
 	abstract void doAction(DeployAction msg) throws AppException;
 	
-	public Pair<Boolean, String> process(File targetDir, List<String> command) {
-		 AccessLog.log("Execute command "+command.toString());
-		 System.out.println(command.toString());
-		 try {
-			  Process p = new ProcessBuilder(command).directory(targetDir).redirectErrorStream(true).start();
-			  //System.out.println("Output...");
-			  /*PrintWriter out = new PrintWriter(new OutputStreamWriter(p.getOutputStream()));		  
-			  out.println(triggered.resource);
-			  out.close();*/
-			  //System.out.println("Output done...");
-			  InputStreamCollector result = new InputStreamCollector(p.getInputStream());
-			  result.start();
-			  //System.out.println("Input...");
-			  p.waitFor();
-			  //System.out.println("Wait for finished...");
-			  result.join();
-			  AccessLog.log("Wait for input...");
-			  AccessLog.log(result.getResult());	
-			  int exit = p.exitValue();
-			  AccessLog.log("EXIT VALUE = "+exit);
-			  return Pair.of(exit==0, result.getResult());
-		 } catch (IOException e) {
-			 e.printStackTrace();
-			 return Pair.of(false, "IO Exception");
-		 } catch (InterruptedException e2) {
-			 return Pair.of(false, "Interrupted Exception");
-		 }		 
-	}
+	
 	
 	  protected CurrentDeployStatus getDeployStatus(MidataId plugin, boolean create) throws AppException {
 			CurrentDeployStatus result = statusMap.get(plugin);		
