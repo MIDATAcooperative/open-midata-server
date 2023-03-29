@@ -62,7 +62,7 @@ public class ExternBuildContainer extends AbstractExternContainer {
 			process(filename, "clone", repo, action, DeployPhase.REPORT_CHECKOUT);					
 			break;
 		case INSTALL:
-			process(filename, "install", repo, action, DeployPhase.REPORT_INSTALL); 
+			process(filename, "ci", repo, action, DeployPhase.REPORT_INSTALL); 
 			break;
 		case AUDIT:
 			process(filename, "audit", repo, action, DeployPhase.REPORT_AUDIT);
@@ -71,7 +71,7 @@ public class ExternBuildContainer extends AbstractExternContainer {
 			process(filename, "auditfix", repo, action, DeployPhase.REPORT_AUDIT);			
 			break;
 		case COMPILE:
-			process(filename, "compile", repo, action, DeployPhase.REPORT_COMPILE);
+			process(filename, "build", repo, action, DeployPhase.REPORT_COMPILE);
 			break;
 		case EXPORT_TO_CDN:
 			processWithResult(filename, "export_cdn", repo, action, DeployPhase.REPORT_EXPORT_TO_CDN);			
