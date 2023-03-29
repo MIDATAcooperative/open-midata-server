@@ -1420,7 +1420,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.role.mayUseApplications()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+		if (!self.role.mayUseApplications() && !self.role.maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 		// validate json
 		JsonNode json = request.body().asJson();
@@ -1488,6 +1488,9 @@ public class Studies extends APIController {
 			}
 
 		} else {
+			
+			if (!self.role.mayUseApplications()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+			
 			if (shareBack) {
 
 				if (group == null) {

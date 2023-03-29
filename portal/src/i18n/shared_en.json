@@ -125,7 +125,8 @@
        "record" : "Unknown record",
        "user" : "User does not exist",      
        "participation" : "Research project participation not found.",
-       "organization" : "Organization does not exist."
+       "organization" : "Organization does not exist.",
+       "service" : "Service does not exist."
      },
 
      "exists" : {

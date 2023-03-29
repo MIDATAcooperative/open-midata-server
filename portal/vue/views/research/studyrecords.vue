@@ -25,7 +25,7 @@
                 
         <form name="myform" ref="myform" novalidate class="form form-horizontal">
             <form-group name="startDate" label="studyrecords.startDate" :path="errors.startDate">	    
-                <input id="startDate" name="startDate" type="date" class="form-control" v-model="filter.startDate" />                              
+                <input id="startDate" name="startDate" type="date" class="form-control" v-date="filter.startDate" v-model="filter.startDate" />                              
             </form-group>
             
             <form-group name="file" label="studyrecords.file" :path="errors.file">

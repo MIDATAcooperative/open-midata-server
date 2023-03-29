@@ -50,7 +50,7 @@
 		    </form-group>
 		  
 		    <form-group name="expireDate" label="admin_addlicence.expireDate" :path="expireDate">		        
-				<input type="date" name="expireDate" class="form-control" v-validate v-model="licence.expireDate">				              
+				<input type="date" name="expireDate" class="form-control" v-validate v-date="licence.expireDate" v-model="licence.expireDate">				              
 		    </form-group>
 		  		  
 		    <form-group label="common.empty">

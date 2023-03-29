@@ -382,13 +382,14 @@ public class ApplicationTools {
 
 
 
-	public static ServiceInstance checkServiceInstanceOwner(AccessContext context, MidataId serviceId) throws AppException {
+	public static ServiceInstance checkServiceInstanceOwner(AccessContext context, MidataId serviceId, boolean userWithMaySetupIsAccepted) throws AppException {
 		ServiceInstance instance = ServiceInstance.getById(serviceId, ServiceInstance.ALL);
 		if (instance == null) throw new BadRequestException("error.unknown.service", "Service Instance does not exist");
 		if (instance.managerAccount.equals(context.getAccessor())) return instance;
 
 		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(instance.managerAccount, context.getAccessor());
-		if (ugm != null && ugm.role.mayUseApplications()) {
+		if (ugm != null && (ugm.role.mayUseApplications() || ugm.role.maySetup())) {
+			if (!userWithMaySetupIsAccepted && !ugm.role.mayUseApplications()) throw new BadRequestException("error.notauthorized.action", "Application manage permission required.");
 			Feature_UserGroups.loadKey(context, ugm);
 			return instance;
 		}
