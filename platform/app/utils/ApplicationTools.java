@@ -485,7 +485,7 @@ public class ApplicationTools {
 		}*/
 	}
 
-    private static void sendFirstUseMessage(User member, Plugin app) throws AppException {
+    public static void sendFirstUseMessage(User member, Plugin app) throws AppException {
         if (app.predefinedMessages!=null) {
 			AccessLog.log("send first use message");
 			if (!app._id.equals(member.initialApp)) {

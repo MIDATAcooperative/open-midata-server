@@ -273,7 +273,8 @@ public class AccountManagementTools {
 	}
 	
 	public static Consent createAnalyzerConsent(AccessContext info, Member user, FHIRPatientHolder fhirPatient, boolean active) throws AppException {		
-		MidataId linkedProject = getProjectForAnalyzerFromContext(info);		
+		MidataId linkedProject = getProjectForAnalyzerFromContext(info);	
+		ApplicationTools.sendFirstUseMessage(user, Plugin.getById(info.getUsedPlugin()));
 		return participateToProject(info, user, fhirPatient, linkedProject, active, JoinMethod.API);
 	}
 	
