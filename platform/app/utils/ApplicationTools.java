@@ -237,7 +237,7 @@ public class ApplicationTools {
 								
 		Map<String, Object> query = appInstance.sharingQuery;
 		if (serviceInstance.linkedStudy != null) query.put("study", serviceInstance.linkedStudy.toString());
-		if (serviceInstance.linkedStudyGroup != null) query.put("study-group", serviceInstance.linkedStudyGroup);
+		if (serviceInstance.linkedStudyGroup != null && serviceInstance.restrictReadToGroup) query.put("study-group", serviceInstance.linkedStudyGroup);
 		
 		if (serviceInstance.linkedStudy != null) query.put("target-study", serviceInstance.linkedStudy.toString());
 		if (serviceInstance.linkedStudyGroup != null) query.put("target-study-group", serviceInstance.linkedStudyGroup);			
@@ -281,7 +281,7 @@ public class ApplicationTools {
 		return appInstance;
 	}
 
-	public static ServiceInstance createServiceInstance(AccessContext context, Plugin app, Study study, String group, String endpoint, boolean studyRelatedOnly) throws AppException {
+	public static ServiceInstance createServiceInstance(AccessContext context, Plugin app, Study study, String group, String endpoint, boolean studyRelatedOnly, boolean restrictReadToGroup) throws AppException {
 		AccessLog.log("create service instance");
 
 		if (!app.type.equals("analyzer") && !app.type.equals("endpoint")) throw new InternalServerException("error.internal", "Wrong app type");
@@ -300,6 +300,7 @@ public class ApplicationTools {
 		si.studyRelatedOnly = studyRelatedOnly;
 		si.linkedStudy = study._id;
 		si.linkedStudyGroup = group;
+		si.restrictReadToGroup = restrictReadToGroup;
 		si.managerAccount = study._id;
 		si.status = UserStatus.ACTIVE;
 		si.executorAccount = study._id;
