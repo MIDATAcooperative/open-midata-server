@@ -394,8 +394,32 @@ public class AccountManagementTools {
 		str1 = str1.trim().toLowerCase();
 		str2 = str2.trim().toLowerCase();
 		if (str2.length() == 0 && matchIfEmpty) return true;
-		
+		str1 = soundsSimilar(str1);
+		str2 = soundsSimilar(str2);
 		return str1.equals(str2);
+	}
+	
+	private static String soundsSimilar(String str) {
+		str = str.replace(".", " ").replace("/", " ").replace("-", " ").replace("  ", " ");		
+		str = str.replace("ß", "s").replace("ss","s");
+		str = str.replace("ll", "l").replace("rr", "r");
+		str = str.replace("d", "t").replace("tt", "t");
+		str = str.replace("v", "f");
+		str = str.replace("ñ", "n");
+		str = str.replace("b", "p").replace("pp", "p").replace("pf", "f");
+		str = str.replace("g", "k").replace("c", "k").replace("kk", "k");
+		str = str.replace("ê", "e").replace("â","a").replace("ô", "o").replace("î","i");
+		str = str.replace("é", "e").replace("á","a").replace("ó", "o").replace("í","i");
+		str = str.replace("è", "e").replace("à","a").replace("ò", "o").replace("ì","i");
+		str = str.replace("ă", "a");
+		str = str.replace("ë", "e").replace("ï","i");
+		str = str.replace("õ", "o");
+		str = str.replace("æ", "ae").replace("œ", "oe").replace("ç", "c").replace("ę", "e").replace("ą", "a");
+		str = str.replace("ee", "e").replace("aa", "a").replace("oo", "o").replace("ii", "i");
+		str = str.replace("eh", "e").replace("ah", "a").replace("oh", "o").replace("ih", "i");				
+		str = str.replace("ü", "ue").replace("ä", "ae").replace("ö", "oe");
+		
+		return str;
 	}
 	
 	public static boolean nonEmpty(String str) {
