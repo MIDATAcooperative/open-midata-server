@@ -6,6 +6,7 @@
     "news" : "News",
     "mails" : "E-Mails",
     "plugins" : "Applications",
+    "updplugins" : "Plugin Deployment",
     "usagestats" : "Application usage statistics",
 	"content" : "Content Types",
 	"studies" : "Projects",

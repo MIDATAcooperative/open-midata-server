@@ -3,6 +3,10 @@
     "footer" : {
         "for_members" : "Pour les possesseurs de compte",
         "for_researchers" : "Pour les organismes de recherche",
+
+        // TODO CHANGED
+        // OLD: For Healthcare Providers
+        // NEW: For Health Professionals
         "for_providers" : "Pour les professionnels de la santé",
         "for_developers" : "Pour les développeurs"
     },
@@ -126,12 +130,19 @@
             "record" : "Données inconnues",
             "user" : "Utilisateur inexistant",
             "participation" : "Participation au projet de recherche introuvable.",
-            "organization" : "L'organisation n'existe pas."
+            "organization" : "L'organisation n'existe pas.",
+
+            // TODO NEW: Service does not exist.
+            "service" : "Service does not exist."
         },
 
         "exists" : {
             "user" : "Une personne avec cet e-mail est déjà inscrite.",
             "member" : "Une personne avec cet e-mail est déjà inscrite.",
+
+            // TODO CHANGED
+            // OLD: A healthcare provider with this name already exists.
+            // NEW: A health professional with this name already exists.
             "provider" : "Un professionel de la santé avec ce nom existe déjà.",
             "organization" : "Une organisation portant ce nom existe déjà.",
             "passcode" : "Veuillez choisir un autre NIP!",
@@ -209,6 +220,10 @@
 
         "nomatch" : {
             "birthdate" : "La date de naissance ne correspond pas",
+
+            // TODO CHANGED
+            // OLD: Different email provided
+            // NEW: Different email address provided
             "email" : "Adresse e-mail différente fournie"
         }
     },
@@ -285,6 +300,10 @@
             "user-phone-change" : "N° de téléphone de l'utilisateur modifié",
             "user-settings-change" : "Paramètres de l'utilisateur modifiés",
             "user-email-change" : "Adresse e-mail modifiée",
+
+            // TODO CHANGED
+            // OLD: User's date of birth changed
+            // NEW: User's birthdate changed
             "user-birthday-change" : "Date de naissance de l'utilisateur modifiée",
             "user-gender-change" : "Sexe de l'utilisateur modifié",
             "user-status-change-active" : "Compte utilisateur débloqué",
@@ -346,7 +365,13 @@
             "email-sent" : "E-mail envoyé",
             "sms-sent" : "SMS envoyé",
             "resthook-called" : "Resthook appelé",
-            "script-invocation" : "Script invoqué"
+            "script-invocation" : "Script invoqué",
+
+            // TODO NEW: Plugin deployed
+            "plugin-deployed" : "Plugin deployed",
+
+            // TODO NEW: Plugin undeployed
+            "plugin-undeployed" : "Plugin undeployed"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -359,6 +384,10 @@
             "PASSPORT_VERIFIED" : "La carte d'identité de l'utilisateur doit avoir été vérifiée.",
             "MIDATA_COOPERATIVE_MEMBER" : "L'utilisateur doit être membre de la cooperative.",
             "ADMIN_VERIFIED" : "Le compte doit avoir été validé par un administrateur",
+
+            // TODO CHANGED
+            // OLD: The date of birth of the user must be known
+            // NEW: The birthdate of the user must be known
             "BIRTHDAY_SET" : "La date de naissance de l'utilisateur doit être connue",
             "GENDER_SET" : "Le sexe de l'utilisateur doit être connu",
             "APP_UNLOCK_CODE" : "L'application nécessite un code de déverrouillage"
@@ -463,6 +492,10 @@
             "ANY" : "Tous les rôles",
             "DEVELOPER" : "Développeur",
             "MEMBER" : "Utilisateur",
+
+            // TODO CHANGED
+            // OLD: Healthcare provider
+            // NEW: Health professional
             "PROVIDER" : "Professionnel de la santé",
             "RESEARCH" : "Chercheur"
         },
@@ -590,6 +623,23 @@
             "ALLOWED" : "Autorisé",
             "FORBIDDEN" : "Pas autorisé",
             "NULL" : "Indéterminé"
+        },
+        "deploymentstatus" : {
+
+            // TODO NEW: None
+            "NONE" : "None",
+
+            // TODO NEW: Ready
+            "READY" : "Ready",
+
+            // TODO NEW: Building
+            "RUNNING" : "Building",
+
+            // TODO NEW: Failed
+            "FAILED" : "Failed",
+
+            // TODO NEW: Done
+            "DONE" : "Done"
         }
     },
 
@@ -640,7 +690,15 @@
         "firstname" : "Prénom",
         "lastname" : "Nom",
         "gender" : "Sexe",
+
+        // TODO CHANGED
+        // OLD: Date of birth
+        // NEW: Birthdate
         "birthday" : "Date de naissance",
+
+        // TODO CHANGED
+        // OLD: Date of birth (format: 31.12.1999)
+        // NEW: Birthdate (format: 31.12.1999)
         "birthday2" : "Date de naissance (format: 31.12.1999)",
         "language" : "Langue préférée",
         "day" : "Jour",
@@ -741,6 +799,10 @@
         "email_success" : "Merci d’avoir confirmé votre adresse e-mail.",
         "address_entered" : "Votre adresse postale est requise pour utiliser ce service, veuillez la saisir.",
         "phone_entered" : "Un numéro de téléphone mobile est requis pour utiliser ce service, veuillez le saisir.",
+
+        // TODO CHANGED
+        // OLD: A valid date of birth is required to use this service. Please add your date of birth to your account information. (Format example: 31.12.1999)
+        // NEW: A valid birthdate is required to use this service. Please add your birthdate to your account information. (Format example: 31.12.1999)
         "birthday_entered" : "Une date de naissance valide est requise pour utiliser ce service. Veuillez ajouter votre date de naissance aux informations de votre compte. (Exemple de format : 31.12.1999)",
         "gender_entered" : "Votre sexe doit être renseigné pour utiliser ce service. Veuillez indiquer votre sexe.",
         "admin_verified" : "Votre compte doit être validé par un administrateur. Veuillez réessayer plus tard. Si votre compte n'a pas été validé sous 24 heures, veuillez contacter @SUPPORT.",
@@ -819,10 +881,22 @@
     },
 
     "providersearch" : {
+
+        // TODO CHANGED
+        // OLD: Provider search
+        // NEW: Health professional search
         "title" : "Recherche de professionnels de la santé",
         "name" : "Nom",
         "city_or_zip" : "Localité / Code postal",
+
+        // TODO CHANGED
+        // OLD: Search only healthcare providers you already had contact with.
+        // NEW: Search only health professionals you already had contact with.
         "only_with_contact" : "Rechercher uniquement les professionnels de la santé avec lesquels vous avez déjà eu contact.",
+
+        // TODO CHANGED
+        // OLD: No providers found.
+        // NEW: No health professional found.
         "empty_result" : "Aucun professionnel de la santé trouvé.",
         "add_consent_btn" : "Ajouter un consentement"
     },
@@ -848,6 +922,10 @@
     "studydetails" : {
         "study" : "Projet de recherche",
         "organization" : "Organisme de recherche",
+
+        // TODO CHANGED
+        // OLD: Healthcare professionals monitoring the project
+        // NEW: Health professionals monitoring the project
         "providers_monitoring" : "Professionnels de la santé qui encadrent le projet",
         "no_providers" : "Aucun",
         "provider_remove_btn" : "supprimer",
@@ -856,6 +934,10 @@
         "information_that_needs_sharing" : "Données requises",
         "information_restricted" : "Votre sexe, année de naissance et pays de résidence",
         "information_none" : "Un pseudonyme",
+
+        // TODO CHANGED
+        // OLD: Your complete demographic data (name, date of birth, address, ...)
+        // NEW: Your complete demographic data (name, birthdate, address, ...)
         "information_demographic" : "L'ensemble de vos données démographiques (nom, date de naissance, adresse, ...)",
         "records_with_format" : "Données au format:",
         "records_with_content" : "Données avec contenu:",
@@ -887,6 +969,10 @@
         "user" : "Utilisateur",
         "name" : "Prénom:",
         "email" : "E-mail:",
+
+        // TODO CHANGED
+        // OLD: Date of birth:
+        // NEW: Birthdate:
         "birthday" : "Date de naissance:",
         "midataID" : "@PRODUCT ID:",
         "action" : "Plus...",
@@ -998,6 +1084,10 @@
         "consent_empty" : "Ce consentement ne partage actuellement aucunes données.",
         "type_circle" : "Ce consentement partage des données avec d'autres titulaires de comptes @PRODUCT.",
         "type_representative" : "Ce consentement autorise une autre personne à utiliser votre compte. Toutes les données du propriétaire du compte sont partagées avec le représentant.",
+
+        // TODO CHANGED
+        // OLD: This consent shares data with healthcare professionals.
+        // NEW: This consent shares data with health professionals.
         "type_healthcare" : "Ce consentement partage des données avec des professionnels de la santé.",
         "type_studyparticipation" : "Ce consentement partage des données avec un projet de recherche.",
         "type_studyrelated" : "Ce consentement partage des données avec un participant d'un projet.",
@@ -1043,6 +1133,10 @@
 
     "consents" : {
         "title" : "Consentements",
+
+        // TODO CHANGED
+        // OLD: Using consents you can grant others (healthcare professionals, friends, researchers, ...) access to some of your data. Use this page to manage your consents and create new ones.
+        // NEW: Using consents you can grant others (health professionals, friends, researchers, ...) access to some of your data. Use this page to manage your consents and create new ones.
         "description" : "Les consentements permettent de donner access à vos données à d'autres utilisateurs (professionnels de la santé, amis, chercheurs, ...). Cette page vous permet de gérer vos consentements et d'en créer de nouveaux.",
         "count" : "Vous avez {{ count }} consentement(s):",
         "where_owner" : "Afficher les consentements pour lesquels vous partagez des données avec d'autres personnes",
@@ -1212,10 +1306,26 @@
         "circles2" : "Vos Cercles",
         "circles2_teaser" : "Créez des Cercles pour partager vos données avec d'autres utilisateurs. Partagez avec des amis, la famille ou des tiers.",
         "providers" : "Vos consentements",
+
+        // TODO CHANGED
+        // OLD: Search for healthcare providers and add them to your list in order to share data with them.
+        // NEW: Search for health professionals and add them to your list in order to share data with them.
         "providers_teaser" : "Recherchez des professionnels de la santé et ajoutez les à votre liste, afin de pouvoir partager des données avec eux.",
+
+        // TODO CHANGED
+        // OLD: Search for Health Providers
+        // NEW: Search for Health Professionals
         "providersearch" : "Rechercher des professionnels de la santé",
+
+        // TODO CHANGED
+        // OLD: Search function for healthcare providers.
+        // NEW: Search function for health professionals.
         "providersearch_text" : "Fonction de recherche de professionnels de la santé.",
         "usergroupsearch" : "Rechercher une équipe",
+
+        // TODO CHANGED
+        // OLD: Newest records from your healthcare providers
+        // NEW: Newest records from your health professionals
         "hcrecords" : "Nouvelles données provenant de vos professionnels de la santé",
         "records" : "Données",
         "share" : "Partager",
@@ -1330,8 +1440,16 @@
         "EXTERNALSERVICE" : "Application",
         "API" : "Service",
         "STUDYPARTICIPATION" : "Participation",
+
+        // TODO CHANGED
+        // OLD: Consent (Health Provider)
+        // NEW: Consent (Health Professional)
         "HEALTHCARE" : "Consentement (Professionnel de la santé)",
         "MEMBER" : "Compte",
+
+        // TODO CHANGED
+        // OLD: Account (Health Provider)
+        // NEW: Account (Health Professional)
         "PROVIDER" : "Compte (Professionnel de la santé)",
         "HCRELATED" : "Compte (Titulaire de compte)",
         "RESEARCH" : "Compte (Chercheur)",

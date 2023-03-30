@@ -43,6 +43,10 @@
 
     "accountdata" : {
         "midata_id" : "@PRODUCT ID:",
+
+        // TODO CHANGED
+        // OLD: Date of birth:
+        // NEW: Birthdate:
         "birthday" : "Compleanno:",
         "change_btn" : "Modifica"
     },
@@ -78,6 +82,10 @@
         "confirmation_date" : "Data di conferma",
         "confirm_btn" : "conferma",
         "reject_btn" : "rifiuta",
+
+        // TODO CHANGED
+        // OLD: You have not registered any contacts as a healthcare professional.
+        // NEW: You have not registered any contacts as a health professional.
         "empty" : "Non ha registrato alcun contatto come professionista sanitario."
     },
 

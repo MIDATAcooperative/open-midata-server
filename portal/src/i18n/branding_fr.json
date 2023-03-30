@@ -34,6 +34,10 @@
             "name" : "Instance de test",
             "intro" : "Ceci est une instance de test de @PLATFORM.",
             "purpose" : "Cette instance peut être utilisée pour développer et tester des nouvelles applications dans un environnement sécurisé. Elle est également utilisée pour tester des nouvelles versions du portail et du backend avant de mettre à jour les autres instances.",
+
+            // TODO CHANGED
+            // OLD: Register your own developer account. After validation by an administrator, you may register test users, researchers and health providers without additional validation.
+            // NEW: Register your own developer account. After validation by an administrator, you may register test users, researchers and health professionals without additional validation.
             "access" : "Créer votre propre compte de développeur. Après validation par un administrateur, vous pourrez générer des comptes de test de type utilisateur, chercheur ou professionnels de la santé, sans autre validation.",
             "uptime" : "Il n'y a aucune garantie quant à la disponibilité. Les mises à jours sont effectuées autant que nécessaire. Elles sont toutefois effectuées de préférence entre 12:00 et 13:00 heure d'Europe centrale, mais peuvent aussi être effectuées plusieurs fois par jour en cas de problèmes.",
             "data" : "Conservez uniquement des données de test sur cette instance. Les données et les comptes peuvent être effacés si nécessaire. Les données peuvent être corrompues par erreur. Il n'y a pas de sauvegarde des données."
