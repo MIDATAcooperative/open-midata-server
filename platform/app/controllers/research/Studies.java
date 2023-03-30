@@ -1450,7 +1450,7 @@ public class Studies extends APIController {
 
 		if (plugin.type.equals("analyzer") || plugin.type.equals("endpoint")) {
 
-			ServiceInstance si = ApplicationTools.createServiceInstance(context, plugin, study, group, endpoint, onlyAggregated);
+			ServiceInstance si = ApplicationTools.createServiceInstance(context, plugin, study, group, endpoint, onlyAggregated, restrictRead);
 			if (shareBack) {
 
 				if (group == null) {
@@ -2260,7 +2260,7 @@ public class Studies extends APIController {
 					serviceInstance = instances.iterator().next();
 				else {
 					Plugin autoJoiner = Plugin.getById(RuntimeConstants.instance.autojoinerPlugin);
-					serviceInstance = ApplicationTools.createServiceInstance(context, autoJoiner, study, null, null, true);
+					serviceInstance = ApplicationTools.createServiceInstance(context, autoJoiner, study, null, null, true, true);
 				}
 
 				MobileAppInstance appInstance = ApplicationTools.createServiceApiKey(context, serviceInstance);
@@ -2715,7 +2715,8 @@ public class Studies extends APIController {
 				String group = JsonValidation.getString(sal, "group");
 				String endpoint = JsonValidation.getString(sal, "endpoint");
 				boolean studyRelatedOnly = JsonValidation.getBoolean(sal, "studyRelatedOnly");
-				ApplicationTools.createServiceInstance(context, plugin, study, group, endpoint, studyRelatedOnly);
+				boolean restrictReadToGroup = JsonValidation.getBoolean(sal, "restrictReadToGroup");
+				ApplicationTools.createServiceInstance(context, plugin, study, group, endpoint, studyRelatedOnly, restrictReadToGroup);
 			}
 		}
 
