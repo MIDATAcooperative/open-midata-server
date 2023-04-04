@@ -34,10 +34,6 @@
             "name" : "Test-Instanz",
             "intro" : "Dies ist eine Testinstanz von @PLATFORM.",
             "purpose" : "Diese Instanz kann benutzt werden, um Applikationen in einer sicheren Umgebung zu entwickeln und zu testen. Sie wird auch verwendet, um neue Versionen des Portals und des Backends zu testen, bevor die anderen Instanzen aktualisiert werden.",
-
-            // TODO CHANGED
-            // OLD: Register your own developer account. After validation by an administrator, you may register test users, researchers and health providers without additional validation.
-            // NEW: Register your own developer account. After validation by an administrator, you may register test users, researchers and health professionals without additional validation.
             "access" : "Registrieren Sie Ihr eigenes Entwicklerkonto. Nach Validierung durch einen Administrator, können Sie Testkonten für Nutzer, Forscher und Gesundheitsfachpersonen registrieren ohne zusätzliche Validierung.",
             "uptime" : "Es gibt keine Garantie über die Verfügbarkeit. Die Instanz kann jederzeit nach Bedarf aktualisiert werden. Wenn möglich, werden Updates zwischen 12:00 und 13:00 mitteleuropäische Zeit ausgeführt, können aber bei Problemen auch mehrmals pro Tag auftreten.",
             "data" : "Speichern Sie nur Testdaten auf dieser Instanz. Daten und Konten können gelöscht werden wenn nötig. Daten können durch Fehler korrupt werden. Die Daten werden nicht gesichert."

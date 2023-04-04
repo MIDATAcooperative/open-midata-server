@@ -50,10 +50,6 @@
         "email" : "e-mail",
         "or" : "ou",
         "midataid" : "@PRODUCT ID",
-
-        // TODO CHANGED
-        // OLD: Date of birth
-        // NEW: Birthdate
         "birthday" : "Date de naissance",
         "searching" : "Recherche...",
         "address" : "Adresse",

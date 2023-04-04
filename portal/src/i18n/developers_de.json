@@ -71,15 +71,7 @@
             "EMAIL_CHANGED_NEWADDRESS" : "E-Mail-Adresse geändert (an neue E-Mail-Adresse senden)",
             "PASSWORD_FORGOTTEN" : "Passwort vergessen",
             "USER_PRIVATE_KEY_RECOVERED" : "Wiederherstellung des Benutzerschlüssels abgeschlossen",
-
-            // TODO CHANGED
-            // OLD: User reregistration from API: weak match
-            // NEW: User re-registration from API: weak match
             "NON_PERFECT_ACCOUNT_MATCH" : "Nutzer-Neuregistrierung aus der API: geringe Übereinstimmung",
-
-            // TODO CHANGED
-            // OLD: User reregistration from API: bad match
-            // NEW: User re-registration from API: bad match
             "TRIED_USER_REREGISTRATION" : "Nutzer-Neuregistrierung aus der API: schlechte Übereinstimmung",
             "RESOURCE_CHANGE" : "Änderung einer Resource [code]",
             "PROCESS_MESSAGE" : "FHIR-Nachricht mit Ereignis [Code] verarbeiten",
@@ -99,14 +91,8 @@
         "loginTemplate" : "Texte zum Anmeldevorgang",
         "loginButtonsTemplate" : "Ablauf des Anmeldevorgangs",
         "usePreconfirmed" : "Vorabbestätigung",
-
-        // TODO CHANGED
-        // OLD: External email validation
-        // NEW: External email address validation
         "accountEmailsValidated" : "Externe Überprüfung der E-Mail-Adressen",
-
-        // TODO NEW: Whitelist IP ranges
-        "allowedIPs" : "Whitelist IP ranges",
+        "allowedIPs" : "IP-Bereiche auf der Whitelist",
         "edit_btn" : "Einstellungen ändern",
         "edit_help" : "Ändern Sie die Einstellungen für Ihre Applikation.",
         "query_btn" : "Data Access Filter ändern",
@@ -123,10 +109,6 @@
         "applogin_btn" : "Anmeldevorgang",
         "applogin_help" : "Anmeldevorgang anzeigen und bearbeiten",
         "link_btn" : "Verknüpfungen mit Forschungsprojekten oder externen Parteien",
-
-        // TODO CHANGED
-        // OLD: Applications may suggest or require participation in a research project. Research projects may recommend the use of applications. Use of the application may require a user's consent to healthcare professionals or teams to view their data.
-        // NEW: Applications may suggest or require participation in a research project. Research projects may recommend the use of applications. Use of the application may require a user's consent to health professionals or teams to view their data.
         "link_help" : "Applikationen können die Teilnahme an einem Forschungsprojekt vorschlagen oder erfordern. Forschungsprojekte können die Verwendung von Applikationen empfehlen. Die Nutzung der Applikation kann die Zustimmung zur Dateneinsicht durch Gesundheitsfachpersonen oder Teams bedingen.",
         "repository_btn" : "Code Repository",
         "repository_help" : "Checkout der neuesten Version Ihres Codes",
@@ -161,21 +143,11 @@
         "not_reviewed" : "Noch nicht überprüft",
         "ACCEPTED" : "Überprüft",
         "NEEDS_FIXING" : "Korrektur erforderlich",
-
-        // TODO NEW: Display Location
-        "default_context" : "Display Location",
-
-        // TODO NEW: Dashboard / Timeline
+        "default_context" : "Anzeige unter",
         "default_context_me" : "Dashboard / Timeline",
-
-        // TODO NEW: Configuration / Imports
-        "default_context_config" : "Configuration / Imports",
-
-        // TODO NEW: Standalone Plugin
-        "default_context_extern" : "Standalone Plugin",
-
-        // TODO NEW: Deployment Status
-        "deploy_status" : "Deployment Status",
+        "default_context_config" : "Konfiguration / Importe",
+        "default_context_extern" : "Unabhängiges Plugin",
+        "deploy_status" : "Status der Installation",
         "info" : {
             "filename" : "Dieser Name wird intern für die Kennung Ihrer Applikation verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Ist Ihre Applikation nur für eine spezifische Rolle bestimmt? Wenn nicht, wählen Sie 'Alle Rollen'.",
@@ -190,14 +162,8 @@
             "pseudonymize" : "Pseudonymisierte Daten lesen. Aktualisiert keine Datensätze von Teilnehmern.",
             "resharesData" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
             "usePreconfirmed" : "Bei der Erstellung von Konten über die API können vorab bestätigte Zustimmungen verwendet werden.",
-
-            // TODO CHANGED
-            // OLD: Account emails send by API have been validated by 3rd party.
-            // NEW: Account email addresses send by API have been validated by 3rd party.
             "accountEmailsValidated" : "Die von der API gesendeten Konto-E-Mail-Adressen wurden von einem Drittanbieter validiert.",
-
-            // TODO NEW: Comma separated list of IP addresses or IP ranges (CIDR format) that are allowed to connect to the platform. Leave empty for unrestricted access.
-            "allowedIPs" : "Comma separated list of IP addresses or IP ranges (CIDR format) that are allowed to connect to the platform. Leave empty for unrestricted access.",
+            "allowedIPs" : "Durch Kommata getrennte Liste von IP-Adressen oder IP-Bereichen (CIDR-Format), die eine Verbindung zur Plattform herstellen dürfen. Leer lassen für uneingeschränkten Zugang.",
             "allowsUserSearch" : "Benutzer dieser Applikation dürfen nach anderen Benutzern der gleichen Applikation suchen.",
             "consentObserving" : "Überwacht dieser Dienst die Einwilligungen der Benutzer? Fügen Sie 'Zustimmungen (Consents)' zum Datenzugriffsfilter (Data Access Filter) hinzu, um es zu aktivieren.",
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
@@ -396,31 +362,17 @@
         "repository_url" : "Repository URL",
         "repository_dir" : "(Optional) Unterverzeichnis im Repository",
         "repository_token" : "Access Token",
-
-        // TODO NEW: Serverside code
-        "has_scripts" : "Serverside code",
-
-        // TODO NEW: This repository contains scripts that need to be executed on the server.
-        "has_scripts2" : "This repository contains scripts that need to be executed on the server.",
+        "has_scripts" : "Serverseitiger Code",
+        "has_scripts2" : "Dieses Repository enthält Skripte, die auf dem Server ausgeführt werden müssen.",
         "repository_date" : "Zuletzt bereitgestellt am",
-
-        // TODO NEW: Last audited at
-        "repository_audit_date" : "Last audited at",
-
-        // TODO NEW: Audit Result
-        "repository_risks" : "Audit Result",
+        "repository_audit_date" : "Zuletzt geprüft am",
+        "repository_risks" : "Prüfungsergebnis",
         "never" : "Nie",
         "refresh_btn" : "Aktualisieren",
         "submit_btn" : "Jetzt auschecken",
-
-        // TODO NEW: Audit
-        "audit_btn" : "Audit",
-
-        // TODO NEW: Audit Fix
+        "audit_btn" : "Prüfung",
         "audit_fix_btn" : "Audit Fix",
-
-        // TODO NEW: Redeploy
-        "redeploy_btn" : "Redeploy",
+        "redeploy_btn" : "Reinstallieren",
         "status" : "Status des Deployment",
         "phase_provided" : "Das Repository muss angegeben werden",
         "phase_sceduled" : "Deployment geplant",
@@ -428,26 +380,12 @@
         "phase_audit" : "Sicherheitsaudit",
         "phase_install" : "Packages installieren",
         "phase_build" : "Build",
-
-        // TODO CHANGED
-        // OLD: Deployed
-        // NEW: Done
-        "phase_complete" : "Bereitgestellt",
-
-        // TODO NEW: Deploy on CDN
-        "phase_import_cdn" : "Deploy on CDN",
-
-        // TODO NEW: Deploy to Scripting Engine
-        "phase_import_scripts" : "Deploy to Scripting Engine",
-
-        // TODO NEW: Remove from CDN
-        "phase_wipe_cdn" : "Remove from CDN",
-
-        // TODO NEW: Remove from Scripting Engine
-        "phase_wipe_scripts" : "Remove from Scripting Engine",
-
-        // TODO NEW: Remove Repository
-        "phase_delete" : "Remove Repository",
+        "phase_complete" : "Fertig",
+        "phase_import_cdn" : "Auf CDN installieren",
+        "phase_import_scripts" : "Auf Scripting Engine installieren",
+        "phase_wipe_cdn" : "Vom CDN entfernen",
+        "phase_wipe_scripts" : "Von der Scripting Engine entfernen",
+        "phase_delete" : "Repository entfernen",
         "log" : "Log",
         "server" : "Reporting-Server",
         "checkout" : "Auschecken aus dem Repository",
@@ -530,39 +468,17 @@
     },
 
     "developer_updplugins" : {
-
-        // TODO NEW: Plugin Deployment
-        "title" : "Plugin Deployment",
-
-        // TODO NEW: Repository
+        "title" : "Installation von Plugins",
         "repositoryUrl" : "Repository",
-
-        // TODO NEW: Status
         "deployStatus" : "Status",
-
-        // TODO NEW: Deployed at
-        "repositoryDate" : "Deployed at",
-
-        // TODO NEW: Audited at
-        "repositoryAuditDate" : "Audited at",
-
-        // TODO NEW: Security Risks
-        "repositoryRisks" : "Security Risks",
-
-        // TODO NEW: Deployment
-        "repo_btn" : "Deployment",
-
-        // TODO NEW: Deploy ready
-        "deploy_ready_btn" : "Deploy ready",
-
-        // TODO NEW: Redeploy all
-        "deploy_all_btn" : "Redeploy all",
-
-        // TODO NEW: Audit all
-        "audit_btn" : "Audit all",
-
-        // TODO NEW: There are no plugins available
-        "empty" : "There are no plugins available"
+        "repositoryDate" : "Installiert am",
+        "repositoryAuditDate" : "Geprüft am",
+        "repositoryRisks" : "Sicherheitsrisiken",
+        "repo_btn" : "Installation",
+        "deploy_ready_btn" : "Bereitgestellte Plugins installieren",
+        "deploy_all_btn" : "Alle reinstallieren",
+        "audit_btn" : "Alle prüfen",
+        "empty" : "Es sind keine Plugins vorhanden"
     },
 
     "applogin" : {
@@ -601,10 +517,6 @@
             "address_verified" : "Überprüfung der Adresse",
             "auth2factorsetup" : "2FA-Einstellung",
             "auth2factor" : "2FA",
-
-            // TODO CHANGED
-            // OLD: Enter date of birth
-            // NEW: Enter birthdate
             "birthday_set" : "Geburtsdatum erfassen",
             "gender_set" : "Geschlecht erfassen",
             "unlock_code" : "Freischaltcode der Applikation"

@@ -7,9 +7,7 @@
         "news" : "News",
         "mails" : "E-Mails",
         "plugins" : "Applikationen",
-
-        // TODO NEW: Plugin Deployment
-        "updplugins" : "Plugin Deployment",
+        "updplugins" : "Installation von Plugins",
         "usagestats" : "Statistik der Applikationsnutzung",
         "content" : "Inhaltstypen",
         "studies" : "Projekte",

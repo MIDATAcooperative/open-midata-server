@@ -136,10 +136,6 @@
         "anonymous" : "Participation anonyme",
         "anonymous2" : ", la cartographie de pseudonymisation n'est pas accessible.",
         "not_anonymous1" : "Pas pseudonymisé",
-
-        // TODO CHANGED
-        // OLD: , requests member to share full name, date of birth and contact Information (address, phone, email)
-        // NEW: , requests member to share full name, birthdate and contact information (address, phone, email)
         "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, e-mail)",
         "assistance" : "Assistance",
         "no_assistance1" : "Aucune",
@@ -263,12 +259,8 @@
         "consent_observers" : "Observers externes de consentements",
         "show_terms" : "Afficher les conditions générales",
         "requirements" : "Exigences",
-
-        // TODO NEW: Security
-        "security" : "Security",
-
-        // TODO NEW: Force the use of client certificates for project analyzers.
-        "forceClientCertificate" : "Force the use of client certificates for project analyzers."
+        "security" : "Sécurité",
+        "forceClientCertificate" : "Forcer l'utilisation de certificats clients pour les analyseurs de projets."
     },
 
     "addresearcher" : {
@@ -300,9 +292,7 @@
             "auditLog" : "Afficher l'audit log",
             "participants" : "Gérer les participants",
             "setup" : "Configuration du projet",
-
-            // TODO NEW: Manage linked applications
-            "applications" : "Manage linked applications"
+            "applications" : "Gérer les applications liées"
         }
     },
 
