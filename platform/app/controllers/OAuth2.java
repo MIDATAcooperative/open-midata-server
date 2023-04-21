@@ -149,9 +149,10 @@ public class OAuth2 extends Controller {
       				Plugin checkedPlugin = Plugin.getById(mai.applicationId); 
       				if (checkedPlugin == null || mai.appVersion != checkedPlugin.pluginVersion) {
       					AccessLog.log("linked service outdated");
-      					if (context != null) {	      					
+      					// Actively removing service will cause trouble with email notifications and subscriptions.
+      					/*if (context != null) {	      					
 	      					ApplicationTools.removeAppInstance(context, mai.owner, mai);
-      					}
+      					}*/
       					c = null;
       				}
       			  }
