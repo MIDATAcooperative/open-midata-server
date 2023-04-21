@@ -258,7 +258,9 @@
         "terms_of_use_hint" : "Si les conditions générales du projet doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à un administrateur de la plateforme. Nous téléchargerons le texte au bon format et vous fournirons l'ID que vous devez saisir ici.",
         "consent_observers" : "Observers externes de consentements",
         "show_terms" : "Afficher les conditions générales",
-        "requirements" : "Exigences"
+        "requirements" : "Exigences",
+        "security" : "Sécurité",
+        "forceClientCertificate" : "Forcer l'utilisation de certificats clients pour les analyseurs de projets."
     },
 
     "addresearcher" : {
@@ -289,7 +291,8 @@
             "changeTeam" : "Modifier le team",
             "auditLog" : "Afficher l'audit log",
             "participants" : "Gérer les participants",
-            "setup" : "Configuration du projet"
+            "setup" : "Configuration du projet",
+            "applications" : "Gérer les applications liées"
         }
     },
 

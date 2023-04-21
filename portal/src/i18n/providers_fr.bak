@@ -49,7 +49,7 @@
      "email" : "email",
      "or" : "or",
      "midataid" : "@PRODUCT ID",
-     "birthday" : "Date of birth",
+     "birthday" : "Birthdate",
      "searching" : "Searching...",
      "address" : "Address",
      "show_patient_btn" : "Show Patient",

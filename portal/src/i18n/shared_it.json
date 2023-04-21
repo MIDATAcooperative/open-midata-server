@@ -3,7 +3,7 @@
     "footer" : {
         "for_members" : "Per i titolari di un account",
         "for_researchers" : "Per le organizzazioni di ricerca",
-        "for_providers" : "Per i fornitori di prestazioni sanitarie",
+        "for_providers" : "Per i professionisti sanitari",
         "for_developers" : "Per gli sviluppatori"
     },
 
@@ -126,13 +126,14 @@
             "record" : "Record sconosciuto",
             "user" : "L'utente non esiste",
             "participation" : "Partecipazione al progetto di ricerca non trovata.",
-            "organization" : "L'organizzazione non esiste."
+            "organization" : "L'organizzazione non esiste.",
+            "service" : "Il servizio non esiste."
         },
 
         "exists" : {
             "user" : "Una persona è già registrata con questo indirizzo e-mail.",
             "member" : "Una persona è già registrata con questo indirizzo e-mail.",
-            "provider" : "Un fornitore di prestazioni sanitarie con questo nome esiste già.",
+            "provider" : "Un professionista sanitario con questo nome esiste già.",
             "organization" : "Esiste già un'organizzazione con questo nome.",
             "passcode" : "Scegliere un codice password diverso!",
             "plugin" : "Esiste già un'applicazione con lo stesso nome.",
@@ -249,7 +250,10 @@
             "SI" : "Slovenia",
             "ES" : "Spagna",
             "SW" : "Svezia",
-            "GB" : "Regno Unito"
+            "GB" : "Regno Unito",
+            "LI" : "Liechtenstein",
+            "NO" : "Norvegia",
+            "IS" : "Islanda"
         },
         "eventtype" : {
             "CODE_ENTERED" : "Codice inserito",
@@ -346,7 +350,9 @@
             "email-sent" : "E-mail inviata",
             "sms-sent" : "SMS inviato",
             "resthook-called" : "Resthook chiamato",
-            "script-invocation" : "Script invocato"
+            "script-invocation" : "Script invocato",
+            "plugin-deployed" : "Plugin installato",
+            "plugin-undeployed" : "Plugin non installato"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
@@ -463,7 +469,7 @@
             "ANY" : "Qualsiasi ruolo",
             "DEVELOPER" : "Sviluppatore",
             "MEMBER" : "Titolare di un account",
-            "PROVIDER" : "Fornitore di prestazioni sanitarie",
+            "PROVIDER" : "Professionista sanitario",
             "RESEARCH" : "Ricercatore"
         },
         "subuserrole" : {
@@ -590,6 +596,13 @@
             "ALLOWED" : "Autorizzato",
             "FORBIDDEN" : "Non autorizzato",
             "NULL" : "Indeterminato"
+        },
+        "deploymentstatus" : {
+            "NONE" : "None",
+            "READY" : "Ready",
+            "RUNNING" : "Building",
+            "FAILED" : "Failed",
+            "DONE" : "Done"
         }
     },
 
@@ -819,11 +832,11 @@
     },
 
     "providersearch" : {
-        "title" : "Ricerca fornitore",
+        "title" : "Ricerca professionista sanitario",
         "name" : "Nome",
         "city_or_zip" : "Città / Codice Postale",
-        "only_with_contact" : "Cercare solo i fornitori di prestazioni sanitarie con cui si è già in contatto.",
-        "empty_result" : "Non è stato trovato alcun fornitore.",
+        "only_with_contact" : "Cercare solo i professionisti sanitari con cui si è già in contatto.",
+        "empty_result" : "Non è stato trovato alcun professionista sanitario.",
         "add_consent_btn" : "Aggiungi consenso"
     },
 
@@ -1212,11 +1225,11 @@
         "circles2" : "Le tue cerchie",
         "circles2_teaser" : "Crea Cerchie per condividere i suoi dati con altri. Condividi con amici, famiglia o altri.",
         "providers" : "I suoi consensi per salute e sanità",
-        "providers_teaser" : "Cerca altri fornitori di prestazioni sanitarie e aggiungili al suo elenco per condividere dati con loro.",
-        "providersearch" : "Cerca fornitori di prestazioni sanitarie",
-        "providersearch_text" : "Funzione di ricerca per fornitori di prestazioni sanitarie.",
+        "providers_teaser" : "Cerca altri professionisti sanitari e aggiungili al suo elenco per condividere dati con loro.",
+        "providersearch" : "Cerca professionisti sanitari",
+        "providersearch_text" : "Funzione di ricerca per professionisti sanitari.",
         "usergroupsearch" : "Cerca i team",
-        "hcrecords" : "I record più recenti dai suoi fornitori di prestazioni sanitarie",
+        "hcrecords" : "I record più recenti dai suoi professionisti sanitari",
         "records" : "Record",
         "share" : "Condividi",
         "details" : "Dettagli",
@@ -1330,9 +1343,9 @@
         "EXTERNALSERVICE" : "Applicazione",
         "API" : "Servizio",
         "STUDYPARTICIPATION" : "Partecipazione",
-        "HEALTHCARE" : "Consenso (Fornitore di prestazioni sanitarie)",
+        "HEALTHCARE" : "Consenso (Professionista sanitario)",
         "MEMBER" : "Account",
-        "PROVIDER" : "Account (Fornitore di prestazioni sanitarie)",
+        "PROVIDER" : "Account (Professionista sanitario)",
         "HCRELATED" : "Account (Titolare di un account)",
         "RESEARCH" : "Account (Ricercatore)",
         "ADMIN" : "Account (Amministratore)",
