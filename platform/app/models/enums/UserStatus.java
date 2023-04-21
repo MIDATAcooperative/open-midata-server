@@ -50,5 +50,9 @@ public enum UserStatus {
   /**
    * This user account has been deleted and access keys have been destroyed
    */
-  WIPED
+  WIPED;
+  
+  public boolean isDeleted() {
+	  return this == DELETED || this == WIPED;
+  }
 }
