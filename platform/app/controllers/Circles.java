@@ -631,8 +631,10 @@ public class Circles extends APIController {
 		switch (consent.type) {
 		case API:
 			ApplicationTools.leaveInstalledService(context, circleId, false);
+			break;
 		case EXTERNALSERVICE:
-			AuditManager.instance.addAuditEvent(AuditEventType.APP_DELETED, userId, consent);break;
+			AuditManager.instance.addAuditEvent(AuditEventType.APP_DELETED, userId, consent);
+			break;
 		default: AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_DELETE, userId, consent);break;
 		}
 		

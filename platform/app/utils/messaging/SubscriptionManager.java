@@ -104,8 +104,8 @@ public class SubscriptionManager {
 		try {
 		    String resource = prov.serialize(prov.readConsentFromMidataConsent(context, consent, consent.type != ConsentType.STUDYRELATED));
 		    
-		    AccessLog.log("CONSENT RES CHANGE: "+resource);
-		    subscriptionChecker.tell(new ResourceChange("fhir/Consent", consent, false, resource, consent.owner), ActorRef.noSender());
+		    AccessLog.log("CONSENT RES CHANGE: "+resource);		   
+		    resourceChange(context, new ResourceChange("fhir/Consent", consent, false, resource, consent.owner));
 		} catch (AppException e) {
 			ErrorReporter.report("Subscripion processing", null, e);
 		}
@@ -116,6 +116,16 @@ public class SubscriptionManager {
 	public static void resourceChange(Record record) {	
 		AccessLog.log("Resource change: "+record.format);
 		subscriptionChecker.tell(new ResourceChange(record.format, record, record.owner.equals(RuntimeConstants.instance.publicUser), record.owner), ActorRef.noSender());							
+	}
+	
+	public static void resourceChange(AccessContext context, ResourceChange change) {
+		SubscriptionBuffer buf = context.getRequestCache().getSubscriptionBuffer();
+		if (buf != null) buf.add(change);
+		else resourceChange(change);							
+	}
+	
+	public static void resourceChange(ResourceChange change) {			
+		subscriptionChecker.tell(change, ActorRef.noSender());							
 	}
 	
 	public static void accountWipe(AccessContext context, MidataId userId) throws AppException {
