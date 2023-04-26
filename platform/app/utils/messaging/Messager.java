@@ -285,7 +285,7 @@ class SMSSender extends AbstractActor {
 			AccessLog.logStart("jobs", "send SMS");
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {
 				
-				if (!RateLimitedAction.doRateLimited(msg.getPhone(), AuditEventType.SMS_SENT, 0, 12, Messager.PER_HOUR)) {					
+				if (!RateLimitedAction.doRateLimited(msg.getPhone(), AuditEventType.SMS_SENT, 0, 20, Messager.PER_HOUR * 2l)) {					
 					AuditManager.instance.fail(400, "Rate limit reached", "error.ratelimit");
 				    return;	
 				}
