@@ -27,6 +27,7 @@ import akka.actor.Props;
 import models.MessageDefinition;
 import models.MidataId;
 import models.Plugin;
+import models.RateLimitedAction;
 import models.User;
 import models.enums.AuditEventType;
 import models.enums.MessageChannel;
@@ -51,6 +52,8 @@ public class Messager {
 		
 	private static ActorSystem system;
 	
+	public static long PER_HOUR = 1000l * 60l * 60l;
+	
 	public static void init(ActorSystem system1) {
 		system = system1;
 		mailSender = system.actorOf(Props.create(MailSender.class).withDispatcher("medium-work-dispatcher"), "mailSender");
@@ -58,7 +61,7 @@ public class Messager {
 	}
 	
 	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId) {	
-		AccessLog.log("trigger send text mail to="+email);
+		AccessLog.log("trigger send text mail to="+email);		
 		mailSender.tell(new Message(email, fullname, subject, content, eventId), ActorRef.noSender());
 	}
 	
@@ -163,7 +166,7 @@ public class Messager {
 		if (phone == null) phone = member.phone;
 		if (phone == null) channel = MessageChannel.EMAIL;
 		
-		if (channel.equals(MessageChannel.SMS)) {
+		if (channel.equals(MessageChannel.SMS) && SMSUtils.isAvailable()) {
 		   
 		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SMS_SENT).withActorUser(member).withApp(sourceApp).withMessage(subject));
 		   Messager.sendSMS(phone, content, AuditManager.instance.convertLastEventToAsync());
@@ -207,7 +210,7 @@ public class Messager {
 		}
 		
 		if (channel.equals(MessageChannel.SMS)) {
-		  Messager.sendSMS(email, content, null);
+		  if (SMSUtils.isAvailable()) Messager.sendSMS(email, content, null);
 		} else {
 		  Messager.sendTextMail(email, fullname, subject, content, null);
 		}
@@ -229,11 +232,17 @@ class MailSender extends AbstractActor {
 	public void receiveMessage(Message msg) throws Exception {
 		String path = "MailSender/receiveMessage";		
 		long st = ActionRecorder.start(path);
-		AuditManager.instance.resumeAsyncEvent(msg.getEventId());
+		AuditManager.instance.resumeAsyncEvent(msg.getEventId());		
 		try {		
 		    AccessLog.logStart("jobs", "send email");
-			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
-			  MailUtils.sendTextMail(msg.getType(), msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
+			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {
+				
+				if (!RateLimitedAction.doRateLimited(msg.getReceiverEmail(), AuditEventType.EMAIL_SENT, 0, 30, Messager.PER_HOUR)) {					
+					AuditManager.instance.fail(400, "Rate limit reached", "error.ratelimit");
+				    return;	
+				}
+				
+			    MailUtils.sendTextMail(msg.getType(), msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
 			}		
 			AuditManager.instance.success();
 		} catch (Exception e) {
@@ -274,7 +283,13 @@ class SMSSender extends AbstractActor {
 		AuditManager.instance.resumeAsyncEvent(msg.getEventId());
 		try {	
 			AccessLog.logStart("jobs", "send SMS");
-			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
+			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {
+				
+				if (!RateLimitedAction.doRateLimited(msg.getPhone(), AuditEventType.SMS_SENT, 0, 12, Messager.PER_HOUR)) {					
+					AuditManager.instance.fail(400, "Rate limit reached", "error.ratelimit");
+				    return;	
+				}
+				
 			   SMSUtils.sendSMS(msg.getPhone(), msg.getText());
 			}		
 			AuditManager.instance.success();
