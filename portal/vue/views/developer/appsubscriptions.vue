@@ -48,7 +48,7 @@
                     <option v-for="action in actions" :key="action" :value="action">{{ $t('appsubscriptions.actions.'+action) }}</option>
                     </select>
                 </td>
-		        <td><input class="form-control" type="text" v-if="subscription.action!='email'" v-validate v-model="subscription.parameter"></td>
+		        <td><input class="form-control" type="text" v-validate v-model="subscription.parameter"></td>
 		        <td><button class="btn btn-sm btn-default" @click="delete1(subscription)" v-t="'common.delete_btn'"></button></td>
 		      </tr>
 		    </table>
@@ -140,6 +140,10 @@ export default {
                         
                         if (subscription.fhirSubscription.channel.type === "email") {
                             subscription.action = "email";
+                            subscription.parameter = subscription.fhirSubscription.channel.endpoint;
+                        } else if (subscription.fhirSubscription.channel.type === "sms") {
+                            subscription.action = "sms";
+                            subscription.parameter = subscription.fhirSubscription.channel.endpoint;
                         } else if (subscription.fhirSubscription.channel.type === "rest-hook") {
                             subscription.action = "rest-hook";
                             subscription.parameter = subscription.fhirSubscription.channel.endpoint;
@@ -212,7 +216,12 @@ export default {
                     subscription.fhirSubscription.channel.endpoint = subscription.parameter;
                     break;
                 case "email":
-                    subscription.fhirSubscription.channel.type = "email";    			
+                    subscription.fhirSubscription.channel.type = "email";    
+                    subscription.fhirSubscription.channel.endpoint = subscription.parameter;			
+                    break;
+                case "sms":
+                    subscription.fhirSubscription.channel.type = "sms";    
+                    subscription.fhirSubscription.channel.endpoint = subscription.parameter;			
                     break;
                 case "nodejs":
                     subscription.fhirSubscription.channel.type = "message";
