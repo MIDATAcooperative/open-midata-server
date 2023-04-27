@@ -126,7 +126,8 @@
             "record" : "Données inconnues",
             "user" : "Utilisateur inexistant",
             "participation" : "Participation au projet de recherche introuvable.",
-            "organization" : "L'organisation n'existe pas."
+            "organization" : "L'organisation n'existe pas.",
+            "service" : "Le service n'existe pas."
         },
 
         "exists" : {
@@ -249,7 +250,10 @@
             "SI" : "Slovénie",
             "ES" : "Espagne",
             "SW" : "Suède",
-            "GB" : "Royaume-Uni"
+            "GB" : "Royaume-Uni",
+            "LI" : "Liechtenstein",
+            "NO" : "Norvège",
+            "IS" : "Islande"
         },
         "eventtype" : {
             "CODE_ENTERED" : "Code entré",
@@ -346,7 +350,9 @@
             "email-sent" : "E-mail envoyé",
             "sms-sent" : "SMS envoyé",
             "resthook-called" : "Resthook appelé",
-            "script-invocation" : "Script invoqué"
+            "script-invocation" : "Script invoqué",
+            "plugin-deployed" : "Plugin déployé",
+            "plugin-undeployed" : "Plugin non déployé"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -590,6 +596,13 @@
             "ALLOWED" : "Autorisé",
             "FORBIDDEN" : "Pas autorisé",
             "NULL" : "Indéterminé"
+        },
+        "deploymentstatus" : {
+            "NONE" : "None",
+            "READY" : "Ready",
+            "RUNNING" : "Building",
+            "FAILED" : "Failed",
+            "DONE" : "Done"
         }
     },
 

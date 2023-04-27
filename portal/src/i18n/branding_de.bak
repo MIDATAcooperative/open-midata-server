@@ -33,7 +33,7 @@
         "name" : "Test Instance",
         "intro": "This is a test instance of @PLATFORM.",
         "purpose" : "This instance may be used to develop and test new applications in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.",
-        "access" : "Register your own developer account. After validation by an administrator, you may register test users, researchers and health providers without additional validation.",
+        "access" : "Register your own developer account. After validation by an administrator, you may register test users, researchers and health professionals without additional validation.",
         "uptime" : "There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible, updates are done between 12:00 and 13:00 central european time, but may occur more than once a day if problems occur.",
         "data" : "Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup of the data."
      },

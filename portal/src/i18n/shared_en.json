@@ -250,7 +250,10 @@
 	    "SI" : "Slovenia",
 	    "ES" : "Spain",
 	    "SW" : "Sweden",          
-	    "GB" : "United Kingdom"
+	    "GB" : "United Kingdom",
+	    "LI" : "Liechtenstein",
+	    "NO" : "Norway",
+	    "IS" : "Iceland"
      },
      "eventtype" : {
        "CODE_ENTERED" : "Code entered",
