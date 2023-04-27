@@ -384,7 +384,7 @@ public class Studies extends APIController {
 		boolean first = true;
 
 		if (initialInf.mayAccess("Practitioner", "fhir/Practitioner")) {
-			Set<UserGroupMember> ugms = UserGroupMember.getAllByGroup(study._id);
+			Set<UserGroupMember> ugms = UserGroupMember.getAllUserByGroup(study._id);
 			Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
 			for (UserGroupMember member : ugms)
 				idmap.put(member.member, member);
@@ -1860,7 +1860,7 @@ public class Studies extends APIController {
 			if (!ugmm.role.manageParticipants())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 		} else auditUser = RuntimeConstants.instance.backendService;
-		Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByGroup(study._id);
+		Set<UserGroupMember> ugms = UserGroupMember.getAllActiveUserByGroup(study._id);
 		
 		List<List<StudyParticipation>> parts = Lists.partition(participants1, 1000);
 		for (List<StudyParticipation> participants : parts) {
@@ -2448,7 +2448,7 @@ public class Studies extends APIController {
 		GroupResourceProvider.updateMidataUserGroup(userGroup);
 		userGroup.add();
 
-		Set<UserGroupMember> members = UserGroupMember.getAllActiveByGroup(oldGroup);
+		Set<UserGroupMember> members = UserGroupMember.getAllActiveUserByGroup(oldGroup);
 
 		for (UserGroupMember member : members) {
 			ProjectTools.addToUserGroup(context, member.role, userGroup._id, member.member);

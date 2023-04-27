@@ -158,7 +158,7 @@ public class Services extends APIController {
         
         String aeskey = KeyManager.instance.newAESKey(appInstance._id);	
 
-        MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + SERVICE_EXPIRATION_TIME, UserRole.ANY); 
+        MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + SERVICE_EXPIRATION_TIME, UserRole.ANY, null); 
         OAuthRefreshToken refresh = OAuth2.createRefreshToken(context, appInstance, aeskey);
         
         ObjectNode obj = Json.newObject();	 

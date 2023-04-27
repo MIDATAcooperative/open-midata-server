@@ -292,7 +292,7 @@
     "trigger" : "Trigger",
     "triggerDetail" : "FHIR Resource",
     "action" : "Action",
-    "params" : "URL / Filename",
+    "params" : "URL / Filename/ Target",
     "triggers" : {
       "fhir_Consent" : "Consent changes",
       "fhir_MessageHeader" : "FHIR message",

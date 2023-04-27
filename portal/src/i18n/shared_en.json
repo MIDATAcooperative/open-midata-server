@@ -88,7 +88,8 @@
        "entity_type" : "Invalid entity type",
        "joincode" : "The provided participation code is not accepted.",
        "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
-       "csvmapping" : "Invalid mapping provided."
+       "csvmapping" : "Invalid mapping provided.",
+       "id" : "Invalid identifier"
      },
 
      "missing" : {
@@ -552,6 +553,7 @@
 	   "mobile" : "Application (Smartphone, Web)",
 	   "external": "External Service",
 	   "analyzer" : "Project analyzer",
+	   "broker" : "Data broker",
 	   "endpoint" : "FHIR endpoint"
 	 },
 	 "infos" : {

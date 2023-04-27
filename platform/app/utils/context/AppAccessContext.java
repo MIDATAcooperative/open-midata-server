@@ -155,6 +155,7 @@ public class AppAccessContext extends AccessContext {
 		case "oauth2" : result="Importer";break;
 		case "mobile" : result="Application";break;
 		case "external" : result="External Service (API-Side)";break;
+		case "broker" : result="Data broker";break;
 		case "analyzer" : result="Project Aggregator";break;
 		}
 		result += " '"+plugin.name+"'";

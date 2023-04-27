@@ -228,7 +228,7 @@ public class Market extends APIController {
 					markReviewObsolete(app._id, AppReviewChecklist.ACCESS_FILTER);
 				}
 				
-				app.consentObserving = app.type.equals("external") && Feature_FormatGroups.mayAccess(app.defaultQuery, "Consent", "fhir/Consent");
+				app.consentObserving = (app.type.equals("external") || app.type.equals("broker")) && Feature_FormatGroups.mayAccess(app.defaultQuery, "Consent", "fhir/Consent");
 
 				if (json.has("loginTemplate")) {
 				  LoginTemplate template = JsonValidation.getEnum(json, "loginTemplate", LoginTemplate.class); 
@@ -246,7 +246,7 @@ public class Market extends APIController {
 					app.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");
 				}
 				
-				if (app.type.equals("external")) {
+				if (app.type.equals("external") || app.type.equals("broker")) {
 															
 					Set<ServiceInstance> si = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
 					if (si.isEmpty() && userId.equals(app.creator)) {
@@ -679,6 +679,8 @@ public class Market extends APIController {
 			JsonValidation.validate(json, "filename", "name", "description", "url");
 		} else if (type.equals("external")) {
 			JsonValidation.validate(json, "filename", "name", "description");
+		} else if (type.equals("broker")) {
+			JsonValidation.validate(json, "filename", "name", "description");
 		} else if (type.equals("analyzer") || type.equals("endpoint")) {
 			JsonValidation.validate(json, "filename", "name", "description");
 		} else {
@@ -808,7 +810,7 @@ public class Market extends APIController {
 			
 		Plugin.add(plugin);
 
-		if (plugin.type.equals("service")) {
+		if (plugin.type.equals("external") || plugin.type.equals("broker")) {
 			ApplicationTools.createServiceInstance(context, plugin, userId);
 		}
 		String endpoint = JsonValidation.getStringOrNull(json, "endpoint");

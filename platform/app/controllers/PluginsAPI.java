@@ -321,7 +321,7 @@ public class PluginsAPI extends APIController {
 						
 		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		Stats.setPlugin(inf.getUsedPlugin());
-		UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.GET);
+		UsageStatsRecorder.protokoll(inf, UsageAction.GET);
 		
 		Collection<Record> records = getRecords(inf, properties, fields);
 				
@@ -460,7 +460,7 @@ public class PluginsAPI extends APIController {
 		AccessContext authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		Stats.setPlugin(authToken.getUsedPlugin());
 		if (authToken.getSingleReadableRecord() != null) throw new BadRequestException("error.internal", "This view is readonly.");
-		UsageStatsRecorder.protokoll(authToken.getUsedPlugin(), UsageAction.POST);	
+		UsageStatsRecorder.protokoll(authToken, UsageAction.POST);	
 		
 		String data = JsonValidation.getJsonString(json, "data");
 		String name = JsonValidation.getString(json, "name");
@@ -711,7 +711,7 @@ public class PluginsAPI extends APIController {
 		AccessContext authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 				
 		if (authToken.getSingleReadableRecord() != null) throw new BadRequestException("error.internal", "This view is readonly.");
-		UsageStatsRecorder.protokoll(authToken.getUsedPlugin(), UsageAction.PUT);				
+		UsageStatsRecorder.protokoll(authToken, UsageAction.PUT);				
 		
 		String data = JsonValidation.getJsonString(json, "data");
 		

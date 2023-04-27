@@ -43,6 +43,7 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.ProjectTools;
+import utils.UserGroupTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -140,7 +141,7 @@ public class UserGroups extends APIController {
 	}
 	
 	public static Set<UserGroupMember> listUserGroupMembers(MidataId groupId) throws AppException {
-		Set<UserGroupMember> members = UserGroupMember.getAllByGroup(groupId);
+		Set<UserGroupMember> members = UserGroupMember.getAllUserByGroup(groupId);
 		Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
 		for (UserGroupMember member : members) idmap.put(member.member, member);
 		Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()), Sets.create("firstname", "lastname", "email"));
@@ -158,41 +159,11 @@ public class UserGroups extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result createUserGroup(Request request) throws AppException {
         JsonNode json = request.body().asJson();		
-		JsonValidation.validate(json, "name");
-		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		JsonValidation.validate(json, "name");		
 		AccessContext context = portalContext(request);
 		
-		UserGroup userGroup = new UserGroup();
-		
-		userGroup.name = JsonValidation.getString(json, "name");
-		
-		userGroup.type = UserGroupType.CARETEAM;
-		userGroup.status = UserStatus.ACTIVE;
-		userGroup.creator = executorId;
-		
-		userGroup._id = new MidataId();
-		userGroup.nameLC = userGroup.name.toLowerCase();	
-		userGroup.keywordsLC = new HashSet<String>();
-		userGroup.registeredAt = new Date();
-		
-		userGroup.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(userGroup._id, null);
-				
-		GroupResourceProvider.updateMidataUserGroup(userGroup);
-		userGroup.add();
-		
-		UserGroupMember member = new UserGroupMember();
-		member._id = new MidataId();
-		member.member = executorId;
-		member.userGroup = userGroup._id;
-		member.status = ConsentStatus.ACTIVE;
-		member.startDate = new Date();
-																				
-		Map<String, Object> accessData = new HashMap<String, Object>();
-		accessData.put("aliaskey", KeyManager.instance.generateAlias(userGroup._id, member._id));
-		RecordManager.instance.createPrivateAPS(context.getCache(), executorId, member._id);
-		RecordManager.instance.setMeta(context, member._id, "_usergroup", accessData);
-						
-		member.add();
+		UserGroup userGroup = UserGroupTools.createUserGroup(context, new MidataId(), JsonValidation.getString(json, "name"));
+		UserGroupMember member = UserGroupTools.createUserGroupMember(context, userGroup._id);
 				
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 		

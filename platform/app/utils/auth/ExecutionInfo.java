@@ -31,6 +31,7 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.Space;
 import models.User;
+import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.UserRole;
 import play.libs.Json;
@@ -50,7 +51,7 @@ import utils.exceptions.InternalServerException;
 public class ExecutionInfo {
 		
 	public static AccessContext checkToken(Request request, String token, boolean allowInactive, boolean allowRestricted) throws AppException {
-		String plaintext = TokenCrypto.decryptToken(token);
+		String plaintext = TokenCrypto.decryptToken(MobileAppSessionToken.noExtra(token));
 		if (plaintext == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");	
 		JsonNode json = Json.parse(plaintext);
 		if (json == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
@@ -58,7 +59,7 @@ public class ExecutionInfo {
 		if (json.has("instanceId")) {
 			return checkSpaceToken(SpaceToken.decrypt(request, json));
 		} else {
-			return checkMobileToken(request, MobileAppSessionToken.decrypt(json), allowInactive, allowRestricted);
+			return checkMobileToken(request, MobileAppSessionToken.decrypt(json, MobileAppSessionToken.parseExtra(token)), allowInactive, allowRestricted);
 		}
 	}
 	
@@ -212,6 +213,17 @@ public class ExecutionInfo {
 		}
 				
 		AccessContext session = ContextManager.instance.upgradeSessionForApp(tempContext, appInstance);
+		
+		String group = authToken.getExtra().get("grp");
+		if (group != null) {
+			MidataId groupId = MidataId.parse(group);
+			UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(groupId, session.getAccessor());
+			if (ugm != null) {
+				session = session.forUserGroup(ugm);
+			} else {
+				OAuth2.invalidToken();
+			}
+		}
 		
 		if (authToken.restrictedResourceId != null) {
 			if (allowRestricted) {

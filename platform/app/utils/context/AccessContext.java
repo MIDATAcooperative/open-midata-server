@@ -26,12 +26,14 @@ import java.util.Map;
 import models.Consent;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Plugin;
 import models.Record;
 import models.ServiceInstance;
 import models.Space;
 import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
+import models.enums.EntityType;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
@@ -230,6 +232,14 @@ public abstract class AccessContext {
 		return cache.getAccessor();
 	}
 	
+	public EntityType getAccessorEntityType() throws InternalServerException {
+		if (parent != null) return parent.getAccessorEntityType();
+		
+		Plugin pl = Plugin.getById(getUsedPlugin());
+		if (pl.type.equals("external") || pl.type.equals("broker") || pl.type.equals("endpoint")) return EntityType.SERVICES;
+		return EntityType.USER;
+	}
+	
 	/**
 	 * what is the user role of the accessor?
 	 * This is used for handling security tags
@@ -374,7 +384,7 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public AccessContext forServiceInstance(ServiceInstance instance) throws AppException {
-		return new ServiceInstanceAccessContext(getCache(), instance);
+		return new ServiceInstanceAccessContext(getCache(), getRequestCache(), instance);
 	}
 	
 	/**

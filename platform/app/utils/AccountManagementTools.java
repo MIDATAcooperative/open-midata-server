@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import org.bson.BSONObject;
 
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Application;
 import controllers.Circles;
@@ -48,12 +49,14 @@ import models.Study;
 import models.StudyAppLink;
 import models.StudyParticipation;
 import models.User;
+import models.UserGroup;
 import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EMailStatus;
+import models.enums.EntityType;
 import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
@@ -62,6 +65,8 @@ import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
+import utils.access.Feature_FormatGroups;
+import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
@@ -71,9 +76,11 @@ import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.AccountCreationAccessContext;
 import utils.context.AppAccessContext;
+import utils.context.UserGroupAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 import utils.messaging.Messager;
 
 public class AccountManagementTools {
@@ -236,6 +243,33 @@ public class AccountManagementTools {
 		return consent;
 	}
 	
+	public static Consent createDataBrokerConsent(AccessContext context, Member user, boolean active) throws AppException {
+		
+		if (context.getAccessorEntityType() != EntityType.USERGROUP) throw new PluginException(context.getUsedPlugin(), "error.plugin", "Data broker cannot directly create patient resources.");
+		
+		UserGroup userGroup = UserGroup.getById(context.getAccessor(), UserGroup.ALL);
+		if (userGroup == null) throw new InternalServerException("error.internal", "User group for data broker not found.");
+
+		String consentName = userGroup.name;				
+		Plugin app = Plugin.getById(context.getUsedPlugin());
+	
+		Consent consent = new MemberKey();
+		consent.writes = app.writes;
+		consent.owner = user._id;
+		consent.name = consentName;
+		consent.creatorApp = context.getUsedPlugin();
+		consent.authorized = new HashSet<MidataId>();
+		consent.status = active ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
+		consent.authorized.add(context.getAccessor());
+		consent.entityType = context.getAccessorEntityType();
+		
+		Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
+		consent.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);	
+				
+		Circles.addConsent(context, consent, true, null, true);
+		return consent;
+	}
+	
 	public static Consent createRepresentativeConsent(AccessContext context, User executorUser, MidataId targetUser, boolean active) throws AppException {
 				
 		Consent consent = new Circle();
@@ -286,6 +320,8 @@ public class AccountManagementTools {
 	        	return createExternalServiceConsent(context, user, existing == null || plugin.usePreconfirmed);
 	        } else if (plugin.type.equals("analyzer") || plugin.targetUserRole.equals(UserRole.RESEARCH)) {
 	        	return createAnalyzerConsent(context, user, fhirPatient, existing == null || plugin.usePreconfirmed);
+	        } else if (plugin.type.equals("broker")) {	        	
+	        	return createDataBrokerConsent(context, user, existing == null || plugin.usePreconfirmed);
 	        } 
 			HPUser hpuser = HPUser.getById(context.getLegacyOwner(), Sets.create("provider", "firstname", "lastname"));
 			if (hpuser != null) {

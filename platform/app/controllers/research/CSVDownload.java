@@ -207,7 +207,7 @@ public class CSVDownload extends APIController {
 		
 
 		if (initialInf.mayAccess("Practitioner", "fhir/Practitioner")) {
-			Set<UserGroupMember> ugms = UserGroupMember.getAllByGroup(study._id);
+			Set<UserGroupMember> ugms = UserGroupMember.getAllUserByGroup(study._id);
 			Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
 			for (UserGroupMember member : ugms)
 				idmap.put(member.member, member);

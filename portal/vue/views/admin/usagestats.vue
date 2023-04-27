@@ -120,7 +120,7 @@ export default {
                 var bykey = {};                
                 var list = [];
                 for (let r of result.data) {
-                    var k = r.date+r.object;
+                    var k = r.date+r.object+r.detail;
                     var grp = bykey[k];
                     if (!grp) {
                         bykey[k] = grp = { object : r.object, date : r.date, objectName : r.objectName, actions : {} };

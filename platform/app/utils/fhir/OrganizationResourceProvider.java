@@ -24,6 +24,7 @@ import java.util.Set;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Endpoint;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Organization;
 
 import ca.uhn.fhir.model.api.Include;
@@ -31,6 +32,8 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
+import ca.uhn.fhir.rest.annotation.Operation;
+import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
@@ -41,16 +44,20 @@ import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
+import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.exceptions.ForbiddenOperationException;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import models.HealthcareProvider;
 import models.MidataId;
 import models.Record;
 import models.Research;
+import models.enums.EntityType;
+import utils.ApplicationTools;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.collections.CMaps;
@@ -207,7 +214,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
         // type would be TYPE_DATETIME and path would be "effectiveDateTime" instead										
 		
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
-		builder.restriction("name", true, QueryBuilder.TYPE_STRING, "name");
+		builder.restrictionMany("name", true, QueryBuilder.TYPE_STRING, "name", "alias");
 		builder.restriction("phonetic", true, QueryBuilder.TYPE_STRING, "name");
 		builder.restriction("partof", true, "Organization", "partOf");				
 		builder.restriction("type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "type");
@@ -397,5 +404,17 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		}
 		
 	}
-		
+   
+
+	@Operation(name="$register-local", idempotent=false)
+	public Organization registerLocal(				  
+	   @OperationParam(name="org") Organization theResource	  
+	   ) throws AppException {
+		  AccessContext context = info();
+		  if (context.getAccessorEntityType() != EntityType.SERVICES) throw new InvalidRequestException("Wrong application type.");
+		  MidataId resourceId = new MidataId();
+		  theResource.setId(resourceId.toString());
+		  ApplicationTools.createDataBrokerGroup(info(), resourceId , theResource.getName());
+		  return theResource;
+	}
 }
