@@ -26,6 +26,7 @@ import java.util.Map;
 import models.Consent;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Plugin;
 import models.Record;
 import models.ServiceInstance;
 import models.Space;
@@ -374,7 +375,7 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public AccessContext forServiceInstance(ServiceInstance instance) throws AppException {
-		return new ServiceInstanceAccessContext(getCache(), instance);
+		return new ServiceInstanceAccessContext(getCache(), getRequestCache(), instance);
 	}
 	
 	/**

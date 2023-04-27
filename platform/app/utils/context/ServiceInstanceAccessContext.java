@@ -5,17 +5,19 @@ import models.Record;
 import models.ServiceInstance;
 import utils.access.APSCache;
 import utils.access.DBRecord;
+import utils.collections.RequestCache;
 import utils.exceptions.AppException;
 
 public class ServiceInstanceAccessContext extends AccessContext {
 
 	private ServiceInstance serviceInstance;
+	private RequestCache requestCache;
 	
-	public ServiceInstanceAccessContext(APSCache cache, ServiceInstance serviceInstance) {
+	public ServiceInstanceAccessContext(APSCache cache, RequestCache requestCache, ServiceInstance serviceInstance) {
 		super(cache, null);	 
 		this.serviceInstance = serviceInstance;
-	}
-	
+		this.requestCache = requestCache;
+	}	
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
 		return true;
@@ -93,6 +95,11 @@ public class ServiceInstanceAccessContext extends AccessContext {
 		return null;
 	}
 	
+	@Override
+	public RequestCache getRequestCache() {
+		return requestCache;
+	}
+
 	@Override
 	public String getContextName() {
 		return "Service Instance '"+serviceInstance.name+"'";
