@@ -39,12 +39,12 @@ import utils.json.JsonValidation;
 
 public class UserGroupTools {
 
-	public static UserGroup createUserGroup(AccessContext context, MidataId targetId, String name) throws AppException {
+	public static UserGroup createUserGroup(AccessContext context, UserGroupType type, MidataId targetId, String name) throws AppException {
         UserGroup userGroup = new UserGroup();
 		
 		userGroup.name = name;
 		
-		userGroup.type = UserGroupType.CARETEAM;
+		userGroup.type = type;
 		userGroup.status = UserStatus.ACTIVE;
 		userGroup.creator = context.getActor();
 		
@@ -55,7 +55,9 @@ public class UserGroupTools {
 		
 		userGroup.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(userGroup._id, null);
 				
-		GroupResourceProvider.updateMidataUserGroup(userGroup);
+		if (type == UserGroupType.CARETEAM) GroupResourceProvider.updateMidataUserGroup(userGroup);
+		else userGroup.fhirGroup = null;
+		
 		userGroup.add();
 		
 		return userGroup;
@@ -66,7 +68,7 @@ public class UserGroupTools {
 		member._id = new MidataId();
 		member.member = context.getAccessor();
 		member.entityType = context.getAccessorEntityType();
-		if (member.entityType == EntityType.USERGROUP) throw new InternalServerException("error.internal", "Cannot create group membership from within usergroup.");
+		//if (member.entityType == EntityType.USERGROUP) throw new InternalServerException("error.internal", "Cannot create group membership from within usergroup.");
 		member.userGroup = userGroupId;
 		member.status = ConsentStatus.ACTIVE;
 		member.startDate = new Date();

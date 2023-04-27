@@ -162,7 +162,7 @@ public class UserGroups extends APIController {
 		JsonValidation.validate(json, "name");		
 		AccessContext context = portalContext(request);
 		
-		UserGroup userGroup = UserGroupTools.createUserGroup(context, new MidataId(), JsonValidation.getString(json, "name"));
+		UserGroup userGroup = UserGroupTools.createUserGroup(context, UserGroupType.CARETEAM, new MidataId(), JsonValidation.getString(json, "name"));
 		UserGroupMember member = UserGroupTools.createUserGroupMember(context, userGroup._id);
 				
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);

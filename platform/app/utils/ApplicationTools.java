@@ -50,6 +50,7 @@ import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
+import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
@@ -687,7 +688,7 @@ public class ApplicationTools {
 	public static void createDataBrokerGroup(AccessContext context, MidataId targetId, String name) throws AppException {
 		MidataId pluginId = context.getUsedPlugin();
 		
-		UserGroup userGroup = UserGroupTools.createUserGroup(context, targetId, name);
+		UserGroup userGroup = UserGroupTools.createUserGroup(context, UserGroupType.CARETEAM, targetId, name);
 		UserGroupMember member = UserGroupTools.createUserGroupMember(context, userGroup._id);
 				
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);

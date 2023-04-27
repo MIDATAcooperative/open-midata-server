@@ -99,6 +99,7 @@ public class UserGroup extends Model {
 	 * Public key of group
 	 */
 	public byte[] publicKey;
+		
 	
 	/**
 	 * FHIR representation of UserGroup
