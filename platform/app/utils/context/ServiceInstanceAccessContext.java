@@ -17,8 +17,8 @@ public class ServiceInstanceAccessContext extends AccessContext {
 		super(cache, null);	 
 		this.serviceInstance = serviceInstance;
 		this.requestCache = requestCache;
-	}
-	
+	}	
+
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
 		return true;
@@ -96,6 +96,11 @@ public class ServiceInstanceAccessContext extends AccessContext {
 		return null;
 	}
 			
+	@Override
+	public RequestCache getRequestCache() {
+		return requestCache;
+	}
+
 	@Override
 	public RequestCache getRequestCache() {
 		return requestCache;
