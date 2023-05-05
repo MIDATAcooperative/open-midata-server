@@ -253,7 +253,7 @@ public class Consent extends Model implements Comparable<Consent> {
 	}
 	
 	public static Set<Consent> getHealthcareOrResearchActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status", SHARING_STATUS).map("type",  EnumSet.of(ConsentType.HEALTHCARE, ConsentType.STUDYPARTICIPATION, ConsentType.API)), Consent.SMALL);
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status", SHARING_STATUS).map("type",  EnumSet.of(ConsentType.HEALTHCARE, ConsentType.STUDYPARTICIPATION, ConsentType.API, ConsentType.REPRESENTATIVE)), Consent.SMALL);
 	}
 	
 	public static Set<Consent> getByExternalEmail(String emailLC) throws InternalServerException {
