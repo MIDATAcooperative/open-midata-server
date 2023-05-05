@@ -58,6 +58,7 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
+import utils.UserGroupTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -97,20 +98,21 @@ public class Providers extends APIController {
 	public Result register(Request request) throws AppException {
 		JsonNode json = request.body().asJson();
 		
-		JsonValidation.validate(json, "name", "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "pub", "priv_pw", "recovery");
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "pub", "priv_pw", "recovery");
 					
-		String name = JsonValidation.getString(json, "name");
-		if (HealthcareProvider.existsByName(name)) return inputerror("name", "exists", "A healthcare provider with this name already exists.");
+		String name = JsonValidation.getStringOrNull(json, "name");
+		if (name != null && HealthcareProvider.existsByName(name)) return inputerror("name", "exists", "A healthcare provider with this name already exists.");
 		
 		String email = JsonValidation.getEMail(json, "email");
 		if (HPUser.existsByEMail(email)) return inputerror("email", "exists", "A user with this email address already exists.");
 		
-		HealthcareProvider provider = new HealthcareProvider();
+		/*HealthcareProvider provider = new HealthcareProvider();
 		
 		provider._id = new MidataId();
 		provider.name = name;
 		provider.description = JsonValidation.getStringOrNull(json, "description");
 		provider.url = JsonValidation.getStringOrNull(json, "url");
+		*/
 		//research.description = JsonValidation.getString(json, "description");
 		
 		HPUser user = new HPUser(email);
@@ -158,9 +160,7 @@ public class Providers extends APIController {
 			  
 		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
-		
-		HealthcareProvider.add(provider);		
-		user.provider = provider._id;
+				
 		HPUser.add(user);
 			  
 		KeyManager.instance.newFutureLogin(user);	
@@ -168,7 +168,10 @@ public class Providers extends APIController {
 				
 		RecordManager.instance.createPrivateAPS(null, user._id, user._id);		
 		
-		OrganizationResourceProvider.updateFromHP(context, provider);
+		if (name != null) {
+		   HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, JsonValidation.getStringOrNull(json, "description"), true);		
+		   OrganizationResourceProvider.updateFromHP(context, provider);
+		}
 		
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
@@ -204,9 +207,8 @@ public class Providers extends APIController {
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
 		if (provider != null) {
-			HealthcareProvider.add(provider);
-		    user.provider = provider._id;
-		    OrganizationResourceProvider.updateFromHP(context, provider);
+			provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, provider.name, provider.description, true);		
+			OrganizationResourceProvider.updateFromHP(context, provider);			
 		}
 		HPUser.add(user);
 					
@@ -444,13 +446,14 @@ public class Providers extends APIController {
 		
 		JsonValidation.validate(json, "_id", "name");
 					
-		String name = JsonValidation.getString(json, "name");				
+		String name = JsonValidation.getString(json, "name");
+		MidataId providerid = MidataId.parse(id);
 		//String description = JsonValidation.getString(json, "description");
 				
-		MidataId providerid = PortalSessionToken.session().getOrgId();
-		
-		if (!providerid.equals(JsonValidation.getMidataId(json, "_id"))) throw new InternalServerException("error.internal", "Tried to change other healthcare provider organization!");
-		
+		if (!UserGroupTools.accessorIsMemberOfGroup(context, providerid)) {
+			throw new InternalServerException("error.internal", "Tried to change other healthcare provider organization!");
+		}
+				
 		if (HealthcareProvider.existsByName(name, providerid)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider organization with this name already exists.");			
 		
 		HealthcareProvider provider = HealthcareProvider.getById(providerid, HealthcareProvider.ALL);
@@ -462,6 +465,28 @@ public class Providers extends APIController {
 		provider.url = JsonValidation.getStringOrNull(json, "url");
 		provider.setMultiple(Sets.create("name", "description", "url"));
 		OrganizationResourceProvider.updateFromHP(context, provider);		
+		
+		return ok();		
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(ProviderSecured.class)
+	public Result createOrganization(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.MASTER);
+		
+		AccessContext context = portalContext(request);
+		JsonNode json = request.body().asJson();
+		
+		JsonValidation.validate(json, "name");
+					
+		String name = JsonValidation.getString(json, "name");
+		String description = JsonValidation.getStringOrNull(json, "description");
+						
+		if (HealthcareProvider.existsByName(name)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider organization with this name already exists.");			
+						
+		HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, description, true);		
+		OrganizationResourceProvider.updateFromHP(context, provider);
 		
 		return ok();		
 	}

@@ -1154,6 +1154,7 @@ public class Application extends APIController {
 				controllers.providers.routes.javascript.Providers.registerOther(),				
 				controllers.providers.routes.javascript.Providers.getOrganization(),
 				controllers.providers.routes.javascript.Providers.updateOrganization(),
+				controllers.providers.routes.javascript.Providers.createOrganization(),
 								
 				// Developers
 				controllers.routes.javascript.Developers.register(),

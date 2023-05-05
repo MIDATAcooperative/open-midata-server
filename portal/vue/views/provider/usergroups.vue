@@ -21,12 +21,14 @@
         <table class="table" v-if="usergroups.filtered.length > 0">
         <tr>
           <Sorter sortby="name" v-model="usergroups" v-t="'provider_usergroups.name'"></Sorter>
+          <Sorter sortby="type" v-model="usergroups" v-t="'provider_usergroups.type'"></Sorter>
           <th v-t="'provider_usergroups.searchable'"></th>
           <Sorter sortby="status" v-model="usergroups" v-t="'provider_usergroups.status'"></Sorter>  
           <th></th>        
         </tr>
         <tr v-for="item in usergroups.filtered" :key="item._id" >
           <td><router-link :to="{ path : './editusergroup', query :  { groupId : item._id }}">{{ item.name }}</router-link></td>
+          <td>{{ $t('enum.usergrouptype.'+item.type) }}</td>
           <td><input type="checkbox" disabled v-model="item.searchable"></td>
           <td>{{ $t('enum.userstatus.'+item.status) }}</td>          
           <td><button class="btn btn-danger btn-sm" v-if="item.status != 'DELETED'" :disabled="action!=null" v-t="'common.delete_btn'" @click="deleteGroup(item)"></button></td>

@@ -25,11 +25,13 @@
   
   "provider_organization" : {
     "title" : "Organization",
+    "empty" : "You are not part of an organization.",
     "name" : "Name",
     "description" : "Description",
     "url" : "Homepage URL",
     "members" : "All members of your organization",
     "addprovider" : "Register New Member",
+    "edit_btn" : "Edit Organization",
     "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions."
   },
   
@@ -69,6 +71,7 @@
   "provider_usergroups" : {
     "title" : "Teams",
     "name" : "Team",
+    "type" : "Type",
     "status" : "Status",
     "searchable" : "Public",
     "empty" : "You are not part of a team."

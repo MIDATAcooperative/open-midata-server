@@ -203,6 +203,11 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 	
 	public void addActorsToConsent(Consent consentToConvert, org.hl7.fhir.r4.model.Consent p) throws AppException {
 		p.getProvision().getActor().removeIf(actor -> { return actor.hasRole() && ("GRANTEE".equals(actor.getRole().getCodingFirstRep().getCode())); });
+		if (EntityType.ORGANIZATION.equals(consentToConvert.entityType)) {
+			for (MidataId auth : consentToConvert.authorized) {
+			   p.getProvision().addActor().setRole(new CodeableConcept().addCoding(new Coding().setSystem("http://hl7.org/fhir/v3/RoleCode").setCode("GRANTEE"))).setReference(new Reference("Organization/"+auth.toString()));
+			}			
+		}
 		if (EntityType.USERGROUP.equals(consentToConvert.entityType)) {
 			for (MidataId auth : consentToConvert.authorized) {
 			   p.getProvision().addActor().setRole(new CodeableConcept().addCoding(new Coding().setSystem("http://hl7.org/fhir/v3/RoleCode").setCode("GRANTEE"))).setReference(new Reference("Group/"+auth.toString()));
@@ -694,6 +699,9 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			  if (mid.getType().equals("Group")) {
 				  if (consent.entityType != null && !consent.entityType.equals(EntityType.USERGROUP)) throw new NotImplementedOperationException("Consent actors need to be all people or all groups. Mixed actors are not supported.");
 				  consent.entityType = EntityType.USERGROUP;
+			  } else if (mid.getType().equals("Organization")) {
+				  if (consent.entityType != null && !consent.entityType.equals(EntityType.ORGANIZATION)) throw new NotImplementedOperationException("Consent actors need to be all people or all groups. Mixed actors are not supported.");
+				  consent.entityType = EntityType.ORGANIZATION;			
 			  } else {
 				  if (consent.entityType != null && !consent.entityType.equals(EntityType.USER)) throw new NotImplementedOperationException("Consent actors need to be all people or all groups. Mixed actors are not supported.");				  
 				  consent.entityType = EntityType.USER;

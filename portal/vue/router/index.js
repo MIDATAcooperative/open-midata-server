@@ -383,6 +383,16 @@ const routes = [
     }
   },
   {
+    base : ["provider"],
+    path : "addorganization",
+    component: () => import(/* webpackChunkName: "research" */ 'views/provider/editorg.vue'),   
+  },
+  {
+    base : ["provider"],
+    path : "updateorganization",
+    component: () => import(/* webpackChunkName: "research" */ 'views/provider/editorg.vue'),   
+  },
+  {
     base : ["admin"],
     path : "registration",
     component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),

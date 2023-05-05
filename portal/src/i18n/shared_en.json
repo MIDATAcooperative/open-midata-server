@@ -588,6 +588,12 @@
 	   "USERGROUP" : "Team",
 	   "ORGANIZATION" : "Organization"
 	 },
+	 "usergrouptype" : {
+	   "ORGANIZATION" : "Organization",
+	   "CARETEAM" : "Care Team",
+	   "HEALTHCARESERVICE" : "Halthcare Service",
+	   "RESEARCHTEAM" : "Research"
+	 },
 	 "bulkmailtype" : {
 	   "MARKETING" : "Marketing - Account Holders",
 	   "PROJECT" : "Project specific",

@@ -32,6 +32,7 @@ import models.MidataId;
 import models.StudyRelated;
 import models.UserGroupMember;
 import models.enums.APSSecurityLevel;
+import models.enums.EntityType;
 import utils.AccessLog;
 import utils.access.index.ConsentToKeyIndexRoot;
 import utils.access.index.StatsIndexRoot;
@@ -262,11 +263,61 @@ public class APSCache {
 	}
 	
 	public Set<UserGroupMember> getAllActiveByMember() throws InternalServerException {
-		if (userGroupMember != null) return userGroupMember;
-		
-		userGroupMember = UserGroupMember.getAllActiveByMember(getAccountOwner());
+		if (userGroupMember != null) return userGroupMember;		
+		userGroupMember = getAllActiveByMember(Collections.singleton(getAccountOwner()));						
 		return userGroupMember;
 	}
+	
+	private Set<UserGroupMember> getAllActiveByMember(Set<MidataId> members) throws InternalServerException {
+		Set<UserGroupMember> results = UserGroupMember.getAllActiveByMember(members);
+		Set<MidataId> recursion = new HashSet<MidataId>();
+		for (UserGroupMember ugm : results) recursion.add(ugm.userGroup);
+		if (!recursion.isEmpty()) {
+			Set<UserGroupMember> inner = getAllActiveByMember(recursion);
+			results.addAll(inner);
+		}
+		return results;
+	}
+	
+	public List<UserGroupMember> getByGroupAndActiveMember(UserGroupMember ugm, MidataId member) throws InternalServerException {
+		if (ugm.member.equals(member)) return Collections.singletonList(ugm);
+		return getByGroupAndActiveMember(ugm.userGroup, member);
+	}
+	
+	public List<UserGroupMember> getByGroupAndActiveMember(MidataId userGroup, MidataId member) throws InternalServerException {
+		if (userGroupMember == null && member.equals(getAccountOwner())) {
+			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndActiveMember(userGroup, member);
+			if (isMemberOfGroup != null) return Collections.singletonList(isMemberOfGroup);
+		}
+		
+		List<UserGroupMember> result = new ArrayList<UserGroupMember>();
+		if (getByGroupAndActiveMember(result, userGroup, member)) {
+			return result;
+		} else {
+			return null;
+		}
+
+	}
+	
+	private boolean getByGroupAndActiveMember(List<UserGroupMember> result, MidataId userGroup, MidataId member) throws InternalServerException  {
+	    Set<UserGroupMember> all = getAllActiveByMember();
+	    for (UserGroupMember ugm : all) {
+	    	if (ugm.userGroup.equals(userGroup)) {
+	    		if (ugm.member.equals(member)) {
+	    			result.add(ugm);
+	    			return true;
+	    		} else if (ugm.entityType == EntityType.USERGROUP) {
+		    	   if (getByGroupAndActiveMember(result, ugm.member, member)) {
+		    		   result.add(ugm);
+		    		   return true;
+		    	   }
+		    	}
+	    	} 
+	    }		
+	    return false;
+	}
+	
+	
 	
 	public Collection<Consent> getAllActiveConsentsByAuthorized(long limit) throws InternalServerException {
 		if (consentLimit != -1 && limit >= consentLimit) {

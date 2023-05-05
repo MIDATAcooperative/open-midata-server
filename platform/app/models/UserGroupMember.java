@@ -38,7 +38,7 @@ import utils.exceptions.InternalServerException;
 public class UserGroupMember extends Model implements Comparable<Model> {
 	
 	protected static final @NotMaterialized String collection = "groupmember";
-	public static final @NotMaterialized Set<String> ALL = Sets.create("userGroup", "member", "entityType", "status", "user", "startDate", "endDate", "role");
+	public static final @NotMaterialized Set<String> ALL = Sets.create("userGroup", "member", "entityType", "status", "user", "entityName", "startDate", "endDate", "role");
 
 	/**
 	 * Id of user group a group member belongs to
@@ -84,6 +84,9 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 	
 	@NotMaterialized
 	public User user;
+	
+	@NotMaterialized
+	public String entityName;
 		
 			
 	public static Set<UserGroupMember> getAllByMember(MidataId member) throws InternalServerException {
@@ -94,12 +97,20 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 		return Model.getAll(UserGroupMember.class, collection, CMaps.map("member", member).map("status", ConsentStatus.ACTIVE), ALL);
 	}
 	
+	public static Set<UserGroupMember> getAllActiveByMember(Set<MidataId> members) throws InternalServerException {
+		return Model.getAll(UserGroupMember.class, collection, CMaps.map("member", members).map("status", ConsentStatus.ACTIVE), ALL);
+	}
+	
 	public static Set<UserGroupMember> getAllByGroup(MidataId group) throws InternalServerException {
 		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group), ALL);
 	}
 	
+	public static Set<UserGroupMember> getAllByGroup(MidataId group, EntityType type) throws InternalServerException {
+		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("entityType", type), ALL);
+	}
+	
 	public static Set<UserGroupMember> getAllUserByGroup(MidataId group) throws InternalServerException {
-		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("entityType", CMaps.map("$ne", EntityType.SERVICES)), ALL);
+		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("entityType", Sets.create(EntityType.USER, null)), ALL);
 	}
 	
 	public static Set<UserGroupMember> getAllActiveByGroup(MidataId group) throws InternalServerException {
@@ -107,7 +118,7 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 	}
 	
 	public static Set<UserGroupMember> getAllActiveUserByGroup(MidataId group) throws InternalServerException {
-		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("status", ConsentStatus.ACTIVE).map("entityType", CMaps.map("$ne", EntityType.SERVICES)), ALL);
+		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("status", ConsentStatus.ACTIVE).map("entityType", Sets.create(EntityType.USER, null)), ALL);
 	}
 	
 	public static UserGroupMember getByGroupAndMember(MidataId group, MidataId member) throws InternalServerException {

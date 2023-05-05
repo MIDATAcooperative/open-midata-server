@@ -20,18 +20,26 @@ package utils;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import models.HealthcareProvider;
 import models.MidataId;
+import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
+import models.enums.ResearcherRole;
 import models.enums.UserGroupType;
 import models.enums.UserStatus;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
+import utils.collections.CMaps;
+import utils.collections.Sets;
 import utils.context.AccessContext;
+import utils.context.UserGroupAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.GroupResourceProvider;
@@ -82,5 +90,54 @@ public class UserGroupTools {
 				
 		return member;		
 		
+	}
+	
+	public static HealthcareProvider createOrUpdateOrganizationUserGroup(AccessContext context, MidataId organizationId, String name, String description, boolean addAccessor) throws AppException {
+		UserGroup existing = UserGroup.getById(organizationId, UserGroup.ALL);
+		if (existing != null) {
+			if (name != null && !existing.name.equals(name)) {
+				existing.name = name;
+				UserGroup.set(existing._id, "name", existing.name);
+			} else return null;
+		}
+				
+		HealthcareProvider provider = HealthcareProvider.getById(organizationId, HealthcareProvider.ALL);
+		if (provider == null) {
+			if (name != null) {
+				provider = new HealthcareProvider();
+				provider._id = organizationId;
+				provider.name = name;
+				provider.description = description;
+				HealthcareProvider.add(provider);				
+			} else throw new InternalServerException("error.internal", "Organization not found");
+		} else {
+			provider.name = name;
+			provider.description = description;
+			provider.setMultiple(Sets.create("name", "description"));
+		}
+		
+		Set<User> members = User.getAllUser(CMaps.map("provider", organizationId), User.ALL_USER);
+		if (addAccessor) {
+			User owner = context.getRequestCache().getUserById(context.getAccessor());
+			members.add(owner);
+		}
+		
+		if (members.isEmpty()) {
+			return provider;
+		} else {
+			UserGroup userGroup = createUserGroup(context, UserGroupType.ORGANIZATION, organizationId, provider.name);		
+			for (User user : members) {
+				ProjectTools.addToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.USER, user._id);
+			}
+			RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
+		}
+		
+		return provider;
+	}
+	
+	public static boolean accessorIsMemberOfGroup(AccessContext context, MidataId targetGroup) throws InternalServerException {
+		List<UserGroupMember> chain = context.getCache().getByGroupAndActiveMember(targetGroup, context.getAccessor());
+		if (chain != null && !chain.isEmpty()) return true;
+		return false;
 	}
 }

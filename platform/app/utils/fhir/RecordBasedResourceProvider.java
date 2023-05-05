@@ -205,7 +205,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		prepareTags(record, theResource);
 	}
 	
-	private final static Set<String> alwaysAllowedTags = Sets.create("security:public", "security:generated");
+	private final static Set<String> alwaysAllowedTags = Sets.create("security:public", "security:generated", "security:platform-mapped");
 	
 	public void prepareTags(Record record, T theResource) throws AppException {
 		//boolean hiddenTagFound = false;

@@ -154,10 +154,11 @@ POST    /api/research/register                           controllers.research.Re
 POST    /api/research/addresearcher                      controllers.research.Researchers.registerOther(request: Request)
 POST    /api/research/login                              controllers.research.Researchers.login(request: Request)
 GET     /api/shared/org/:id                              controllers.research.Researchers.getOrganization(id: String)
-POST    /api/shared/org                                  controllers.research.Researchers.updateOrganization(request: Request,id: String)
+POST    /api/shared/org/:id                              controllers.research.Researchers.updateOrganization(request: Request,id: String)
 
 GET     /api/shared/hp/:id                              controllers.providers.Providers.getOrganization(id: String)
-POST    /api/shared/hp                                  controllers.providers.Providers.updateOrganization(request: Request,id: String)
+PUT     /api/shared/hp/:id                               controllers.providers.Providers.updateOrganization(request: Request,id: String)
+POST    /api/shared/hp                                   controllers.providers.Providers.createOrganization(request: Request)
 POST    /api/provider/addprovider                       controllers.providers.Providers.registerOther(request: Request)
 
 POST    /api/research/studies                            controllers.research.Studies.create(request: Request)

@@ -34,6 +34,7 @@ import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
+import models.enums.EntityType;
 import models.enums.ResearcherRole;
 import models.enums.UserGroupType;
 import models.enums.UserRole;
@@ -91,7 +92,7 @@ public class UserGroups extends APIController {
 			properties.remove("member");
 			Rights.chk("UserGroups.searchOwn", getRole(), properties, fields);
 		    
-			Set<UserGroupMember> ugms = null; UserGroupMember.getAllByMember(executorId);
+			Set<UserGroupMember> ugms = null; 
 			
 			if (properties.containsKey("active")) {
 				properties.remove("active");
@@ -130,14 +131,37 @@ public class UserGroups extends APIController {
 		Set<String> fields = UserGroupMember.ALL;
 										
 		Set<UserGroupMember> members = listUserGroupMembers(groupId);
-		Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
-		for (UserGroupMember member : members) idmap.put(member.member, member);
-		Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()), Sets.create("firstname", "lastname", "email", "role"));
-		for (User user : users) idmap.get(user._id).user = user;
+		
 		Map<String, Set<String>> fieldMap = new HashMap<String, Set<String>>();
 		fieldMap.put("UserGroupMember", fields);
 		fieldMap.put("User", Sets.create("firstname", "lastname", "email", "role"));
-		return ok(JsonOutput.toJson(members, fieldMap)); 		
+		return ok(JsonOutput.toJson(members, fieldMap)).as("application/json"); 		
+	}
+	
+	/**
+	 * List members of a user group
+	 * @return
+	 * @throws AppException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public Result listUserGroupGroups(Request request) throws AppException {
+		JsonNode json = request.body().asJson();				
+		//MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		
+        JsonValidation.validate(json, "usergroup");
+        MidataId groupId = JsonValidation.getMidataId(json, "usergroup");
+				
+		Set<String> fields = UserGroupMember.ALL;
+										
+		Set<UserGroupMember> members = UserGroupMember.getAllByGroup(groupId, EntityType.USERGROUP);
+		Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
+		for (UserGroupMember member : members) idmap.put(member.member, member);
+		Set<UserGroup> groups = UserGroup.getAllUserGroup(CMaps.map("_id", idmap.keySet()), UserGroup.ALL);
+		for (UserGroup group : groups) idmap.get(group._id).entityName = group.name;
+					
+		return ok(JsonOutput.toJson(groups, "UserGroup", UserGroup.ALL)).as("application/json"); 		
 	}
 	
 	public static Set<UserGroupMember> listUserGroupMembers(MidataId groupId) throws AppException {
@@ -250,6 +274,8 @@ public class UserGroups extends APIController {
 		AccessContext context = portalContext(request);
 	
 		MidataId groupId = JsonValidation.getMidataId(json, "group");
+		EntityType memberType = EntityType.USER;
+		if (json.has("type")) memberType = JsonValidation.getEnum(json, "type", EntityType.class);
 		Set<MidataId> targetUserIds = JsonExtraction.extractMidataIdSet(json.get("members"));
 		
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
@@ -279,7 +305,7 @@ public class UserGroups extends APIController {
 			if (role == null || !role.pseudo) throw new BadRequestException("error.invalid.anonymous", "Unpseudonymized access not allowed");
 		}
 		
-		ProjectTools.addToUserGroup(context, self, role, targetUserIds);
+		ProjectTools.addToUserGroup(context, self, role, memberType, targetUserIds);
 		
 		AuditManager.instance.success();
 		return ok();

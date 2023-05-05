@@ -102,11 +102,6 @@ public class ServiceInstanceAccessContext extends AccessContext {
 	}
 
 	@Override
-	public RequestCache getRequestCache() {
-		return requestCache;
-	}
-
-	@Override
 	public String getContextName() {
 		return "Service Instance '"+serviceInstance.name+"'";
 	}

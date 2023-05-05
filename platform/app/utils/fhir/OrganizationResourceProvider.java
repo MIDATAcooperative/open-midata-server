@@ -351,6 +351,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		if (!doupdate) {
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");
+			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("platform-mapped");
 		}
 		
 		if (doupdate) {
@@ -394,6 +395,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		if (!doupdate) {
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");
+			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("platform-mapped");
 		}
 		
 		if (doupdate) {
