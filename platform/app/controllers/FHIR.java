@@ -194,7 +194,7 @@ public class FHIR extends Controller {
   		  
 		   if (serial!=null) {
 			   AccessLog.log("ser="+serial+";");
-			   serial = serial.replaceAll("\\", "");
+			   serial = serial.replace("\\", "");
 			   String[] serial2 = serial.split(",");
 			   MidataId instance = null;
 			   String key = null;
