@@ -797,10 +797,10 @@ public class QueryBuilder {
                            String rt = r.getResourceType();
                            if (rt == null) throw new BadRequestException("error.internal", "Target resource type for chaining not known.");
                            params.add(r.getChain(), ResourceProvider.asQueryParameter(rt, r.getChain(), r));
-                           resultList = FHIRServlet.myProviders.get(rt).search(params);
+                           resultList = FHIRServlet.getProvider(rt).search(params);
                         } else {
                            params.add(r.getChain(), ResourceProvider.asQueryParameter(targetType, r.getChain(), r));
-                           resultList = FHIRServlet.myProviders.get(targetType).search(params);
+                           resultList = FHIRServlet.getProvider(targetType).search(params);
                         }
                         for (BaseResource br : resultList) {
                         	ReferenceParam rp = new ReferenceParam(br.getId());                        	

@@ -434,5 +434,10 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		if (!info.mayAccess(getResourceType().getSimpleName(), "fhir/"+getResourceType().getSimpleName())) return false;
 		return true;
 	}
-
+	
+	protected int getProcessingOrder() {
+		return 2;
+	}
+	
+	
 }

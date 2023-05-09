@@ -66,7 +66,12 @@ public class Transactions {
 	   }
 	   boolean isDocument = type.equals(BundleType.DOCUMENT); 
 	   
+	   List<TransactionStep> earlySteps = new ArrayList<TransactionStep>();
 	   List<TransactionStep> steps = new ArrayList<TransactionStep>();
+	   List<TransactionStep> lateSteps = new ArrayList<TransactionStep>();
+	   List<TransactionStep> originalOrder = new ArrayList<TransactionStep>();
+	   
+	   	   
 	   for (BundleEntryComponent nextEntry : theInput.getEntry()) {
 	      
 		   BundleEntryRequestComponent req = nextEntry.getRequest();
@@ -88,9 +93,9 @@ public class Transactions {
 					 }					 
 				 }
 				 if (existing != null) {
-					 steps.add(new UpdateTransactionStep(provider, (DomainResource) res, existing));
+					 steps(earlySteps, steps, lateSteps, provider, originalOrder, new UpdateTransactionStep(provider, (DomainResource) res, existing));
 				 } else {
-					 steps.add(new CreateTransactionStep(provider, (DomainResource) res));
+					 steps(earlySteps, steps, lateSteps, provider, originalOrder, new CreateTransactionStep(provider, (DomainResource) res));
 				 }				   
 			   } else throw new UnprocessableEntityException("No request in bundle");
 		   } else {
@@ -102,13 +107,13 @@ public class Transactions {
 			     if (res == null || res.getResourceType() == null || res.getResourceType().name() == null) throw new UnprocessableEntityException("Missing Resource Type inside Bundle entry");
 			     ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());
 			     if (provider == null) throw new UnprocessableEntityException("Resource Type not supported: "+res.getResourceType().name());
-			     steps.add(new CreateTransactionStep(provider, (DomainResource) res));
+			     steps(earlySteps, steps, lateSteps, provider, originalOrder, new CreateTransactionStep(provider, (DomainResource) res));
 			   } else if (verb.equals(HTTPVerb.PUT)) {
 				 Resource res = nextEntry.getResource();
 				 if (res == null || res.getResourceType() == null || res.getResourceType().name() == null) throw new UnprocessableEntityException("Missing Resource Type inside Bundle entry");
 				 ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());
 				 if (provider == null) throw new UnprocessableEntityException("Resource Type not supported: "+res.getResourceType().name());
-				 steps.add(new UpdateTransactionStep(provider, (DomainResource) res));
+				 steps(earlySteps, steps, lateSteps, provider, originalOrder, new UpdateTransactionStep(provider, (DomainResource) res));
 			   } else if (verb.equals(HTTPVerb.DELETE)) {
 				   throw new NotImplementedOperationException("Currently no support for DELETE");
 			   } else if (verb.equals(HTTPVerb.GET)) {
@@ -119,6 +124,14 @@ public class Transactions {
 		   }
 		   
 	   }
+	   
+	   if (!earlySteps.isEmpty()) {
+		   earlySteps.addAll(steps);
+		   steps = earlySteps;
+		   earlySteps = null;
+	   }
+	   steps.addAll(lateSteps);
+	   lateSteps = null;
 	   	  
 	   AccessContext inf = ResourceProvider.info();
 	   inf.getRequestCache().getStudyPublishBuffer().setLazy(true);
@@ -126,31 +139,47 @@ public class Transactions {
 	   try {
 		   if (isDocument || type.equals(BundleType.TRANSACTION)) {
 			   
-			   for (TransactionStep step : steps) step.init();
-			   resolveReferences(steps);
 			   boolean failed = false;
-			   
 			   for (TransactionStep step : steps) {
 				   try {
-				     step.prepare();
+				      step.init();
 				   } catch (BaseServerResponseException e) {
-					 failed = true;
-					 step.setResultBasedOnException(e);					 
-					 throw e;
-				   } catch (BadRequestException e1) {
-					  failed = true;
-					 step.setResultBasedOnException(e1);
-					 throw new UnprocessableEntityException(e1.getMessage());
-				   } catch (AppException e2) {					   
-					 failed = true;
+					  step.setResultBasedOnException(e);			
+				   } catch (AppException e2) {
+					  if (!failed && e2 instanceof PluginException) {
+					    ErrorReporter.reportPluginProblem("FHIR Batch", null, (PluginException) e2);
+					  }
 					  step.setResultBasedOnException(e2);
-					 throw e2;
-				   } catch (NullPointerException e3) {
 					  failed = true;
-					  step.setResultBasedOnException(e3);
-					 throw e3;
 				   }
-			   }		   
+
+			   }
+			   			   			   
+			   if (!failed) {
+				   resolveReferences(steps);
+				   
+				   for (TransactionStep step : steps) {
+					   try {
+					     step.prepare();
+					   } catch (BaseServerResponseException e) {
+						 failed = true;
+						 step.setResultBasedOnException(e);					 
+						 throw e;
+					   } catch (BadRequestException e1) {
+						  failed = true;
+						 step.setResultBasedOnException(e1);
+						 throw new UnprocessableEntityException(e1.getMessage());
+					   } catch (AppException e2) {					   
+						 failed = true;
+						  step.setResultBasedOnException(e2);
+						 throw e2;
+					   } catch (NullPointerException e3) {
+						  failed = true;
+						  step.setResultBasedOnException(e3);
+						 throw e3;
+					   }
+				   }		   
+			   }
 			   if (!failed) {
 			     for (TransactionStep step : steps) {
 			    	 try {
@@ -166,7 +195,19 @@ public class Transactions {
 			   }
 		   } else {
 			   boolean failed = false;
-			   for (TransactionStep step : steps) step.init();
+			   for (TransactionStep step : steps) {
+				   try {
+					  step.init();
+				   } catch (BaseServerResponseException e) {
+					  step.setResultBasedOnException(e);			
+				   } catch (AppException e2) {
+					  if (!failed && e2 instanceof PluginException) {
+					    ErrorReporter.reportPluginProblem("FHIR Batch", null, (PluginException) e2);
+					  }
+					  step.setResultBasedOnException(e2);
+					  failed = true;
+				   }
+			   }
 			   resolveReferences(steps);
 			   for (TransactionStep step : steps) {
 				   try {				 				
@@ -188,7 +229,7 @@ public class Transactions {
 	   }
 	   	   
 	   Bundle retVal = new Bundle();		 
-	   for (TransactionStep step : steps) retVal.addEntry(step.getResult());	   
+	   for (TransactionStep step : originalOrder) retVal.addEntry(step.getResult());	   
 	   return retVal;
 	   } catch (BaseServerResponseException e2) {
 		   throw e2;
@@ -225,18 +266,30 @@ public class Transactions {
 	public void resolveReferences(Map<String, IdType> idSubstitutions, IBaseResource resource, FhirTerser terser) {
 		List<IBaseReference> allRefs = terser.getAllPopulatedChildElementsOfType(resource, IBaseReference.class);
 		for (IBaseReference nextRef : allRefs) {
-			AccessLog.log("checkref:"+nextRef.toString());
+			AccessLog.log("checkref:"+nextRef.getReferenceElement().getValue());
 			IIdType nextId = nextRef.getReferenceElement();
 			if (!nextId.hasIdPart()) {
 				continue;
 			}
 			if (idSubstitutions.containsKey(nextId.getIdPart())) {
 				IdType newId = idSubstitutions.get(nextId.getIdPart());
-				AccessLog.log("set ref:"+nextRef.toString()+" -> "+newId.toString());
+				AccessLog.log("set ref:"+nextRef.getReferenceElement().getValue()+" -> "+newId.getValue());
 				nextRef.setResource(null);
 				nextRef.setReference(newId.getValue());
 			} 
 		}
+	}
+	
+	private List<TransactionStep> steps(List<TransactionStep> early, List<TransactionStep> normal, List<TransactionStep> late, ResourceProvider provider, List<TransactionStep> originalOrder, TransactionStep newStep) {
+		originalOrder.add(newStep);
+		int p = provider.getProcessingOrder();
+		switch(p) {
+		case 1: early.add(newStep);return early;
+		case 2: normal.add(newStep);return normal;
+		case 3: late.add(newStep);return late;
+		default: normal.add(newStep);return normal;
+		}
+		
 	}
 }
 	   

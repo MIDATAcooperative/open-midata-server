@@ -93,7 +93,7 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 	}
 
 	@Override
-	public Model init(T theResource) {
+	public Model init(T theResource) throws AppException {
 		if (handleWithFirstProvider(theResource)) return first.init(theResource);
 		if (secondRW!=null) {
 		  return secondRW.init(theResource);
