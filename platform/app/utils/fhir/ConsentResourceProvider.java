@@ -296,6 +296,12 @@ class RecordConsentResourceProvider extends RecordBasedResourceProvider<org.hl7.
 			resource.setPatient(FHIRTools.getReferenceToOwner(record));
 		}
 	}
+
+	@Override
+	protected int getProcessingOrder() {
+		return 1;
+	}
+	
 	
 	
 }

@@ -93,7 +93,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	 */
 	public abstract String getRecordFormat();
 	
-	public Record init(T theResource) { return newRecord(getRecordFormat()); }
+	public Record init(T theResource) throws AppException { return newRecord(getRecordFormat()); }
 	
 	/**
 	 * Default implementation to retrieve a FHIR resource by id.

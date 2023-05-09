@@ -47,7 +47,7 @@ public class CreateTransactionStep extends TransactionStep {
 	}
 	
 	@Override
-    public void init() {
+    public void init() throws AppException {
     	record = ((ReadWriteResourceProvider) provider).init(resource);
     }
 	
