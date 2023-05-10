@@ -131,6 +131,25 @@ select option[value=""] {
 	margin-left: 15px;
 }
 
+.form-check { 
+  @include media-breakpoint-down(sm) {
+     padding-left: 3rem;
+     min-height: 35px;
+  } 
+}
+.form-check-input {
+  @include media-breakpoint-down(sm) {
+     margin-left: -3rem;
+     min-height: 25px;
+     min-width: 25px;
+  }
+}
+.form-check-label {
+  @include media-breakpoint-down(sm) {     
+     min-height: 25px;     
+  }
+}
+
 
 iframe { border:none; margin:none; padding:none }
 
