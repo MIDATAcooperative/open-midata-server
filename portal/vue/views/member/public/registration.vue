@@ -242,19 +242,7 @@
 	 </div>
   
 </template>
-<style>
-.form-check { 
-  padding-left: 2rem 
-}
-.form-check-input {
-  margin-left: -2rem;
-  min-height: 20px;
-  min-width: 20px;
-}
 
-.form-check-label {
-}
-</style>
 <script>
 import server from "services/server.js";
 import crypto from "services/crypto.js";
@@ -395,12 +383,13 @@ export default {
 	
 	showLogin() {
 	   const { $route, $router } = this;
-	   let params = JSON.parse(JSON.stringify($route.query));
+	   let query = $route.query || {};	 
+	   let params = JSON.parse(JSON.stringify(query));
 	   params.login = this.$data.registration.email;
-		if ($route.query.client_id) {
+		if (query.client_id) {
 		  $router.push({ path : "./oauth2", query : params });
 		} else {
-		  $router.push({ path : "./registration", query : params });
+		  $router.push({ path : "./login", query : params });
 		} 		  
 	},
 
