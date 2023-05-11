@@ -95,24 +95,24 @@
 			
 			    <form-group name="searchable" label="user.searchable_short">
                     <radio-box v-model="user.searchable" :value="true" name="searchable">				
-				        <span  v-t="'user.searchable_yes'"></span>
+				        <span class="margin-left" v-t="'user.searchable_yes'"></span>
                     </radio-box>
                     <radio-box v-model="user.searchable" :value="false" name="searchable" :path="errors.searchable">				
-				        <span  v-t="'user.searchable_no'"></span>
+				        <span class="margin-left" v-t="'user.searchable_no'"></span>
                     </radio-box>                				  
 				    <span class="form-text text-muted" v-t="'user.searchable_info'"></span>
                 </form-group>
                 <div class="extraspace"></div>
                 <form-group name="auth_type" label="user.auth_type">
                     <radio-box v-for="mode in authTypes" :key="mode" v-model="user.authType" :value="mode" :path="errors.authType" name="authType">							  
-				        <span>{{ $t('enum.secondaryauthtype.'+mode) }}</span>
+				        <span  class="margin-left">{{ $t('enum.secondaryauthtype.'+mode) }}</span>
                     </radio-box>
                 </form-group>
                 <div class="extraspace"></div>
                 <form-group name="notifications" label="user.notifications">			
 			        <div v-t="'user.notifications2'"></div>
                     <radio-box name="notifications" v-for="mode in notificationTypes" :key="mode" :value="mode" v-model="user.notifications" :path="errors.notifications">				  
-				    <span>{{ $t('enum.accountnotifications.'+mode) }}</span>
+				    <span class="margin-left">{{ $t('enum.accountnotifications.'+mode) }}</span>
                     </radio-box>
                 </form-group>
 			
