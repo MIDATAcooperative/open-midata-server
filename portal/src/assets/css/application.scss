@@ -135,6 +135,7 @@ select option[value=""] {
   @include media-breakpoint-down(sm) {
      padding-left: 3rem;
      min-height: 35px;
+     margin-bottom: 10px;
   } 
 }
 .form-check-input {
@@ -146,8 +147,13 @@ select option[value=""] {
 }
 .form-check-label {
   @include media-breakpoint-down(sm) {     
-     min-height: 25px;     
+     min-height: 25px;        
   }
+}
+.form-check-label .margin-left {
+   @include media-breakpoint-down(sm) {
+	  margin-left: 0px;
+   }
 }
 
 
