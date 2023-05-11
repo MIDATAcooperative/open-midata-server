@@ -87,6 +87,7 @@ import models.Consent;
 import models.ConsentVersion;
 import models.ContentCode;
 import models.MidataId;
+import models.MobileAppInstance;
 import models.Plugin;
 import models.Research;
 import models.Study;
@@ -203,15 +204,30 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 	
 	public void addActorsToConsent(Consent consentToConvert, org.hl7.fhir.r4.model.Consent p) throws AppException {
 		p.getProvision().getActor().removeIf(actor -> { return actor.hasRole() && ("GRANTEE".equals(actor.getRole().getCodingFirstRep().getCode())); });
-		if (EntityType.ORGANIZATION.equals(consentToConvert.entityType)) {
-			for (MidataId auth : consentToConvert.authorized) {
-			   p.getProvision().addActor().setRole(new CodeableConcept().addCoding(new Coding().setSystem("http://hl7.org/fhir/v3/RoleCode").setCode("GRANTEE"))).setReference(new Reference("Organization/"+auth.toString()));
+
+		if (consentToConvert.type == ConsentType.EXTERNALSERVICE || consentToConvert.type == ConsentType.API) {
+			MobileAppInstance mai = null;
+			if (consentToConvert instanceof MobileAppInstance) {
+				mai = (MobileAppInstance) consentToConvert;				
+			} else {
+				mai = MobileAppInstance.getById(consentToConvert._id, MobileAppInstance.APPINSTANCE_ALL);
+			}
+			if (mai != null) {
+			   Plugin plg = Plugin.getById(mai.applicationId);
+               if (plg != null) {			
+			      p.getProvision().addActor().setRole(new CodeableConcept().addCoding(new Coding().setSystem("http://dicom.nema.org/resources/ontology/DCM").setCode("110150").setDisplay("Application"))).setReference(new Reference().setIdentifier(new Identifier().setSystem("http://midata.coop/codesystems/app").setValue(plg.filename.toString())));
+               }
 			}			
-		}
-		if (EntityType.USERGROUP.equals(consentToConvert.entityType)) {
+		} else if (EntityType.USERGROUP.equals(consentToConvert.entityType)) {
 			for (MidataId auth : consentToConvert.authorized) {
 			   p.getProvision().addActor().setRole(new CodeableConcept().addCoding(new Coding().setSystem("http://hl7.org/fhir/v3/RoleCode").setCode("GRANTEE"))).setReference(new Reference("Group/"+auth.toString()));
-			}			
+			}	
+		} else if (EntityType.SERVICES.equals(consentToConvert.entityType)) {
+			// No action at present
+		} else if (EntityType.ORGANIZATION.equals(consentToConvert.entityType)) {
+			for (MidataId auth : consentToConvert.authorized) {
+			   p.getProvision().addActor().setRole(new CodeableConcept().addCoding(new Coding().setSystem("http://hl7.org/fhir/v3/RoleCode").setCode("GRANTEE"))).setReference(new Reference("Organization/"+auth.toString()));
+			}	
 		} else {
 			for (MidataId auth : consentToConvert.authorized) {
 				try {

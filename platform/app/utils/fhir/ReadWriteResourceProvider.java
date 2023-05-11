@@ -119,7 +119,7 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 	
 	public abstract T createExecute(M record, T theResource) throws AppException;
 	
-	public abstract M init(T theResource);
+	public abstract M init(T theResource) throws AppException;
 	
 	/**
 	 * Default implementation for update

@@ -26,8 +26,7 @@
 			<div class="midatalogo">
 				<img src="/images/logo.png" style="height: 36px;" alt="">
 			</div>
-
-            <error-box :error="error"></error-box>
+           
             <p v-if="offline" class="alert alert-danger" v-t="'error.offline'"></p>
 			<form ref="myform" class="css-form form-horizontal" @submit.prevent="register()" role="form" novalidate>
 				<div v-if="short">
@@ -80,7 +79,7 @@
                  <div class="required">								  
 				    <form-group name="email" label="registration.email" :path="errors.email">						
 						<input type="email" class="form-control" id="email" name="email" :placeholder="$t('registration.email')" v-model="registration.email" required v-validate>																    
-						<router-link v-if="isNew" :to="{ path : './login', query : {actions:actions, login:login} }" v-t="'registration.already_have_account'"></router-link>
+						<a href="javascript:" v-if="isNew" @click="showLogin()" v-t="'registration.already_have_account'"></a>
 					</form-group>
 					<form-group name="password" label="registration.password" :path="errors.password"> 
 						<password class="form-control" id="password" name="password" :placeholder="$t('registration.password')" v-model="registration.password1" required></password>							  
@@ -210,8 +209,13 @@
 
                 </form-group>   
 
+				 <error-box :error="error">
+				   <div v-if="error=='error.exists.user'">
+				      <a href="javascript:" @click="showLogin()" v-t="'registration.already_have_account2'"></a>				      
+				   </div>
+				 </error-box>
 				
-                <button class="btn btn-primary btn-block" type="submit" :disabled="action!=null" v-t="'registration.sign_up_btn'" v-submit>					
+                <button class="mt-1 btn btn-primary btn-block" type="submit" :disabled="action!=null" v-t="'registration.sign_up_btn'" v-submit>					
                 </button>
 			
 			</form>
@@ -238,6 +242,7 @@
 	 </div>
   
 </template>
+
 <script>
 import server from "services/server.js";
 import crypto from "services/crypto.js";
@@ -374,6 +379,18 @@ export default {
 
 	mustAccept(v) {
 		return v==true ? "" : $t('error.missing.agb')
+	},
+	
+	showLogin() {
+	   const { $route, $router } = this;
+	   let query = $route.query || {};	 
+	   let params = JSON.parse(JSON.stringify(query));
+	   params.login = this.$data.registration.email;
+		if (query.client_id) {
+		  $router.push({ path : "./oauth2", query : params });
+		} else {
+		  $router.push({ path : "./login", query : params });
+		} 		  
 	},
 
 	getLinkHeading(link) {
