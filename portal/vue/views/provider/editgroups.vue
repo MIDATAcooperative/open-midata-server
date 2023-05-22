@@ -17,50 +17,47 @@
 <template>
 <div>
     
-    <panel :busy="isBusy" :title="getTitle()">	
-        <error-box :error="error"></error-box>
-
-        <form name="myform" ref="myform" class="css-form form-horizontal" @submit.prevent="create()" novalidate role="form">
-            <form-group id="name" label="provider_editusergroup.name" :path="errors.name">
-                <p v-if="usergroup._id" class="form-control-plaintext">{{ usergroup.name }}</p>
-                <input v-else id="name" name="name" type="text" class="form-control" v-validate v-model="usergroup.name" required>
-            </form-group> 
-            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup._id">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" v-validate v-model="usergroup.searchable" @change="edit();">
-                    <div class="margin-left">
-                        <success :finished="finished" action="change" msg="common.save_ok"></success>                        
-                    </div>
-                </div>                     
-            </form-group>    
-            <form-group id="status" label="provider_editusergroup.status" v-if="usergroup._id">
-                <p class="form-control-plaintext" v-t="'enum.userstatus.'+usergroup.status"></p>               
-            </form-group> 
-
-            <button type="submit" v-submit v-if="!usergroup._id" class="btn btn-primary" v-t="'provider_newusergroup.create_btn'"></button>
-        </form>	         
-        
+    <panel :busy="isBusy" :title="$t('provider_editgroups.title')">	
+                       
         <pagination v-model="members"></pagination>
         <table class="table table-striped table-hover" v-if="members.filtered.length">
             <tr>
-                <Sorter v-t="'editgroups.entityName'" sortby="entityName" v-model="members"></Sorter>
-                                
+                <Sorter v-t="'provider_editgroups.entityName'" sortby="entityName" v-model="members"></Sorter>
+                <Sorter v-t="'provider_editgroups.entityType'" sortby="entityType" v-model="members"></Sorter>                                
+                <Sorter v-t="'provider_editgroups.roleName'" sortby="role.roleName" v-model="members"></Sorter>
+                <th></th>
                 <th></th>   
             </tr>
             <tr class="clickable" @click="select(member)" v-for="member in members.filtered" :key="member._id">
                 <td>{{ member.entityName }}</td>
-                
+                <td>{{ $t('enum.entitytype.'+member.entityType) }}</td>
+                <td>{{ $t('provider_editgroups.role.'+member.role.roleName) }}</td>
+                <td>{{ matrix(member.role) }}</td>
                 <td>
-                    <button type="button" v-if="member.member != user._id" @click="removePerson(member)" :disabled="action!=null" class="close" aria-label="Delete">
+                    <button type="button" v-if="member.member != user._id" @click="removeGroup(member)" :disabled="action!=null" class="close" aria-label="Delete">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>
             </tr>				
         </table>
-
+        
+         <form class="css-form form-horizontal" role="form">
+            
+            <form-group name="selected" v-if="add.entityName" label="provider_editusergroup.selected">
+               <p class="form-control-static">{{ add.entityName }}</p>
+            </form-group>
+            <form-group name="rights" label="provider_editusergroup.rights">
+                <check-box v-for="req in rights" :name="req" :key="req" v-model="add.role[req]" :disabled="!mayChangeTeam()">
+                    <span>{{ $t('provider_editusergroup.right.'+req) }}</span>
+                </check-box>		 
+            </form-group>                         
+        </form>			
+        <error-box :error="error"></error-box>
         <div v-if="usergroup._id">
             <router-link :to="{ path : './usergroups' }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
-            <button type="button" class="btn btn-default" v-if="usergroup.status == 'ACTIVE'" @click="addPeople();" v-t="'editconsent.add_people_btn'"></button>
+            <button v-if="add.entityName" :disabled="action != null || !mayChangeTeam()" type="button" class="btn btn-primary mr-1" v-t="'provider_editusergroup.update_btn'" @click="updateMember();"></button>
+            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addOrganizations();" v-t="'provider_editgroups.add_organization_btn'"></button>
+            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addUserGroups();" v-t="'provider_editgroups.add_group_btn'"></button>            
         </div>                          
     </panel>  
 
@@ -69,17 +66,14 @@
         <pagination v-model="expired"></pagination>
         <table class="table table-striped table-hover" v-if="expired.filtered.length">
             <tr>
-                <Sorter v-t="'common.user.firstname'" sortby="user.firstname" v-model="expired"></Sorter>
-                <Sorter sortby="user.lastname" v-model="expired" v-t="'common.user.lastname'"></Sorter>
-                <Sorter v-t="'common.user.email'" sortby="user.email" v-model="expired"></Sorter>
-                <Sorter v-t="'provider_editusergroup.startDate'" sortby="startDate" v-model="expired"></Sorter>
-                <Sorter v-t="'provider_editusergroup.endDate'" sortby="endDate" v-model="expired"></Sorter>
+               <Sorter v-t="'provider_editgroups.entityName'" sortby="entityName" v-model="expired"></Sorter>            
+               <Sorter v-t="'provider_editgroups.entityType'" sortby="entityType" v-model="expired"></Sorter>
+               <Sorter v-t="'provider_editusergroup.startDate'" sortby="startDate" v-model="expired"></Sorter>
+               <Sorter v-t="'provider_editusergroup.endDate'" sortby="endDate" v-model="expired"></Sorter>
             </tr>
             <tr v-for="member in expired.filtered" :key="member._id">
-                <td>{{ member.user.firstname }}</td>
-                <td>{{ member.user.lastname }}</td>
-                <td>{{ member.user.email }}</td>
-                
+                <td>{{ member.entityName }}</td>
+                <td>{{ $t('enum.entitytype.'+member.entityType) }}</td>                
                 <td>{{ $filters.date(member.startDate) }}</td>
                 <td>{{ $filters.date(member.endDate) }}</td> 
             </tr>				
@@ -88,9 +82,14 @@
     </panel>
     </div>
 
-    <modal id="provSearch" full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('providersearch.title')">
-	   <provider-search :setup="setupProvidersearch" @add="addPerson"></provider-search>
+    <modal id="provSearch" full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('usergroupsearch.title')">
+	   <user-group-search :setup="setupProvidersearch" @add="addGroup"></user-group-search>
 	</modal>
+	
+	<modal id="organizationSearch" full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
+	   <organization-search :setup="setupOrganizationSearch" @add="addGroup"></organization-search>
+	</modal>
+	
 </div>
    
 </template>
@@ -102,7 +101,8 @@ import usergroups from "services/usergroups.js"
 import studies from "services/studies.js"
 import session from "services/session.js"
 import users from "services/users.js"
-import ProviderSearch from "components/tiles/ProviderSearch.vue"
+import UserGroupSearch from "components/tiles/UserGroupSearch.vue"
+import OrganizationSearch from "components/tiles/OrganizationSearch.vue"
 import { rl, status, ErrorBox, Success, CheckBox, FormGroup, Modal } from 'basic-vue3-components'
 import _ from "lodash";
 
@@ -114,11 +114,13 @@ export default {
         members : null,
         expired : null,
         setupProvidersearch : null,
+        setupOrganizationSearch : null,
 	    form : {},        
-        add : { role:{} }       
+        add : { user:null, role:{} },
+        rights : [ "readData", "writeData", "changeTeam","setup","applications" ]       
     }),
 
-    components: {  ErrorBox, FormGroup, Success, CheckBox, Panel, Modal, ProviderSearch },
+    components: {  ErrorBox, FormGroup, Success, CheckBox, Panel, Modal, UserGroupSearch, OrganizationSearch },
 
     mixins : [ status, rl ],
 
@@ -126,6 +128,8 @@ export default {
         init() {
 		    const { $data } = this, me = this;
 
+            $data.add = { user:null, role:{ roleName:"hc" } };
+            
             if ($data.groupId) {
             
             me.doBusy(usergroups.search({ "_id" : $data.groupId }, ["name", "status", "searchable" ])
@@ -146,12 +150,7 @@ export default {
             }
                         
 	    },
-
-        getTitle() {
-            const { $data, $t } = this, me = this;
-            if ($data.usergroup && $data.usergroup._id) return $t('provider_editusergroup.title');
-            return $t('provider_newusergroup.title');
-        },
+       
 
         create() {	
 			const { $data, $router } = this, me = this;
@@ -163,13 +162,17 @@ export default {
                 me.init();
 		    }));				
 	    },
+	    
+	    select(who) {
+	       this.$data.add = who;
+	    },
 	
 	    edit() {	
             const { $data, $router } = this, me = this;	
 		    me.doAction("change", usergroups.editUserGroup($data.usergroup));
 	    },
 			
-	    removePerson(person) {
+	    removeGroup(person) {
             const { $data } = this, me = this;
             me.doAction("change", server.post(jsRoutes.controllers.UserGroups.deleteUserGroupMembership().url, { member : person.member, group : $data.groupId })
             .then(function() {				
@@ -177,31 +180,72 @@ export default {
             }));
             
 	    },
+	    
+	    mayChangeTeam() {
+	      return true;
+	    },
+	    
+	     matrix(role) {
+            var r = "";            
+            r += role.readData ? "R" : "-";
+            r += role.writeData ? "W" : "-";          
+            r += role.changeTeam ? "T" : "-";          
+            r += role.applications ? "A" : "-";
+            r += role.setup ? "S" : "-";	   
+            return r;
+	    },
 	
-        addPeople() {
+        addUserGroups() {
             const { $data, $route, $router } = this, me = this;
 		
 		    $data.setupProvidersearch = {}; 
 	    },
+	    
+	    addOrganizations() {
+            const { $data, $route, $router } = this, me = this;
+		 
+            this.$router.push({ path : './addorganization', query : { parentId : $data.groupId} });
+        
+		
+		
+		    //$data.setupOrganizationSearch = {}; 
+	    },
 
-        addPerson(persons) {	
+        addGroup(groups) {	
 		    const { $data, $route, $router } = this, me = this;
-				   
+		    console.log("TRIGGER");
+		    console.log(groups);
 		    $data.setupProvidersearch = null;
 
-            if (!persons.length) persons = [ persons ];					
-		    let personIds = [];
-            for (let p of persons) personIds.push(p._id);
+            if (!groups.length) groups = [ groups ];					
+		    let groupsIds = [];
+		    let isPeople = false;
+            for (let p of groups) {
+               if (p.email) isPeople = true;
+               groupsIds.push(p._id || p.id);
+            }
 		
-		    me.doAction("change", usergroups.addMembersToUserGroup($data.groupId, personIds).
-            then(function() { me.init(); }));		
+		   if (isPeople) {
+		      me.doAction("change", usergroups.addMembersToUserGroup($data.groupId, groupsIds).
+              then(function() { me.init(); }));
+		   } else {
+		      me.doAction("change", usergroups.addGroupsToUserGroup($data.groupId, groupsIds).
+              then(function() { me.init(); }));
+           }		
+        },
+               
+        
+        updateMember() {
+            const { $data } = this, me = this;
+            me.doAction("change", usergroups.addGroupsToUserGroup($data.groupId, [ $data.add.member ], $data.add.role).
+            then(function() { me.init(); }));
         }
 				    	 		 
     },
 
     created() {
         const { $data, $route } = this, me = this;
-        $data.groupId = $route.query.groupId;
+        $data.groupId = $route.query.groupId || $route.query.orgId;
 
         session.currentUser.then(function(userId) {			
 			$data.user = session.user;		

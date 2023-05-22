@@ -18,7 +18,7 @@
 <div>
     
     <panel :busy="isBusy" :title="getTitle()">	
-        <error-box :error="error"></error-box>
+        
 
         <form name="myform" ref="myform" class="css-form form-horizontal" @submit.prevent="create()" novalidate role="form">
             <form-group id="name" label="provider_editusergroup.name" :path="errors.name">
@@ -46,13 +46,16 @@
                 <Sorter v-t="'common.user.firstname'" sortby="user.firstname" v-model="members"></Sorter>
                 <Sorter sortby="user.lastname" v-model="members" v-t="'common.user.lastname'"></Sorter>
                 <Sorter v-t="'common.user.email'" sortby="user.email" v-model="members"></Sorter>
+                <th></th>
                 <th></th>   
             </tr>
             <tr class="clickable" @click="select(member)" v-for="member in members.filtered" :key="member._id">
                 <td>{{ member.user.firstname }}</td>
                 <td>{{ member.user.lastname }}</td>
                 <td>{{ member.user.email }}</td>
-                
+                <td>
+                    {{ matrix(member.role) }}
+                </td>
                 <td>
                     <button type="button" v-if="member.member != user._id" @click="removePerson(member)" :disabled="action!=null" class="close" aria-label="Delete">
                         <span aria-hidden="true">&times;</span>
@@ -60,10 +63,25 @@
                 </td>
             </tr>				
         </table>
+        
+         <form class="css-form form-horizontal" role="form">
+            
+            <form-group name="selected" v-if="add.user" label="provider_editusergroup.selected">
+               <p class="form-control-static">{{ (add.user || {}).email }}</p>
+            </form-group>
+            <form-group name="rights" label="provider_editusergroup.rights">
+                <check-box v-for="req in rights" :name="req" :key="req" v-model="add.role[req]" :disabled="!mayChangeTeam()">
+                    <span>{{ $t('provider_editusergroup.right.'+req) }}</span>
+                </check-box>		 
+            </form-group>                         
+        </form>			
 
+        <error-box :error="error"></error-box>
         <div v-if="usergroup._id">
             <router-link :to="{ path : './usergroups' }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
-            <button type="button" class="btn btn-default" v-if="usergroup.status == 'ACTIVE'" @click="addPeople();" v-t="'editconsent.add_people_btn'"></button>
+            <button v-if="add.user" :disabled="action != null || !mayChangeTeam()" type="button" class="btn btn-primary mr-1" v-t="'provider_editusergroup.update_btn'" @click="updateMember();"></button>
+            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addPeople();" v-t="'editconsent.add_people_btn'"></button>            
+            <success :finished="finished" action="change" msg="common.save_ok"></success>
         </div>                          
     </panel>  
 
@@ -118,7 +136,8 @@ export default {
         expired : null,
         setupProvidersearch : null,
 	    form : {},        
-        add : { role:{} }       
+        add : { user:null, role:{} },
+        rights : [ "readData", "writeData", "changeTeam","setup","applications" ]       
     }),
 
     components: {  ErrorBox, FormGroup, Success, CheckBox, Panel, Modal, ProviderSearch },
@@ -129,6 +148,8 @@ export default {
         init() {
 		    const { $data } = this, me = this;
 
+            $data.add = { user:null, role:{ roleName:"hc" } };
+            
             if ($data.groupId) {
             
             me.doBusy(usergroups.search({ "_id" : $data.groupId }, ["name", "status", "searchable" ])
@@ -156,6 +177,10 @@ export default {
             if ($data.usergroup && $data.usergroup._id) return $t('provider_editusergroup.title');
             return $t('provider_newusergroup.title');
         },
+        
+        mayChangeTeam() {
+          return true;
+        },
 
         create() {	
 			const { $data, $router } = this, me = this;
@@ -166,6 +191,10 @@ export default {
                 $data.groupId = data.data._id;				 
                 me.init();
 		    }));				
+	    },
+	    
+	    select(who) {
+	       this.$data.add = who;
 	    },
 	
 	    edit() {	
@@ -180,6 +209,16 @@ export default {
                 me.init();
             }));
             
+	    },
+	    
+	     matrix(role) {
+            var r = "";            
+            r += role.readData ? "R" : "-";
+            r += role.writeData ? "W" : "-";          
+            r += role.changeTeam ? "T" : "-";          
+            r += role.applications ? "A" : "-";
+            r += role.setup ? "S" : "-";	   
+            return r;
 	    },
 	
         addPeople() {
@@ -197,8 +236,14 @@ export default {
 		    let personIds = [];
             for (let p of persons) personIds.push(p._id);
 		
-		    me.doAction("change", usergroups.addMembersToUserGroup($data.groupId, personIds).
+		    me.doAction("change", usergroups.addMembersToUserGroup($data.groupId, personIds, $data.add.role).
             then(function() { me.init(); }));		
+        },
+        
+        updateMember() {
+            const { $data } = this, me = this;
+            me.doAction("change", usergroups.addMembersToUserGroup($data.groupId, [ $data.add.user._id ], $data.add.role).
+            then(function() { me.init(); }));
         }
 				    	 		 
     },

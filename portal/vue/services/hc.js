@@ -28,6 +28,10 @@ import server from "./server";
 	    return server.post(jsRoutes.controllers.members.HealthProvider.search().url, data);
 	};
 	
+	service.searchOrganization = function(props) {		
+	    return server.post(jsRoutes.controllers.providers.Providers.searchOrganization().url, props);
+	};
+	
 	service.confirm = function(consentId) {
 		var data = {"consent": consentId };
 

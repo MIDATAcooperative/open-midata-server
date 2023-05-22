@@ -48,6 +48,7 @@ import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
+import models.enums.ResearcherRole;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
 import models.enums.UserGroupType;
@@ -407,8 +408,8 @@ public class ApplicationTools {
 		if (instance.managerAccount.equals(context.getAccessor())) return instance;
 
 		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(instance.managerAccount, context.getAccessor());
-		if (ugm != null && (ugm.role.mayUseApplications() || ugm.role.maySetup())) {
-			if (!userWithMaySetupIsAccepted && !ugm.role.mayUseApplications()) throw new BadRequestException("error.notauthorized.action", "Application manage permission required.");
+		if (ugm != null && (ugm.getRole().mayUseApplications() || ugm.getRole().maySetup())) {
+			if (!userWithMaySetupIsAccepted && !ugm.getRole().mayUseApplications()) throw new BadRequestException("error.notauthorized.action", "Application manage permission required.");
 			Feature_UserGroups.loadKey(context, ugm);
 			return instance;
 		}
@@ -689,7 +690,7 @@ public class ApplicationTools {
 		MidataId pluginId = context.getUsedPlugin();
 		
 		UserGroup userGroup = UserGroupTools.createUserGroup(context, UserGroupType.CARETEAM, targetId, name);
-		UserGroupMember member = UserGroupTools.createUserGroupMember(context, userGroup._id);
+		UserGroupMember member = UserGroupTools.createUserGroupMember(context, ResearcherRole.HC(), userGroup._id);
 				
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 		

@@ -29,6 +29,7 @@ import utils.access.DBRecord;
 import utils.access.Feature_FormatGroups;
 import utils.access.QueryEngine;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class AppAccessContext extends AccessContext {
 
@@ -52,7 +53,7 @@ public class AppAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) throws InternalServerException {
 		if (instance.writes == null) return true;
 		if (!instance.writes.isUpdateAllowed()) return false;
 		if (parent != null) return parent.mayUpdateRecord(stored, newVersion);

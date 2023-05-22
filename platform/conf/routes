@@ -160,6 +160,7 @@ GET     /api/shared/hp/:id                              controllers.providers.Pr
 PUT     /api/shared/hp/:id                               controllers.providers.Providers.updateOrganization(request: Request,id: String)
 POST    /api/shared/hp                                   controllers.providers.Providers.createOrganization(request: Request)
 POST    /api/provider/addprovider                       controllers.providers.Providers.registerOther(request: Request)
+POST    /api/shared/hp/search                           controllers.providers.Providers.searchOrganization(request: Request)
 
 POST    /api/research/studies                            controllers.research.Studies.create(request: Request)
 GET     /api/research/studies                            controllers.research.Studies.list(request: Request)
@@ -243,6 +244,7 @@ GET     /api/providers/member/:member                    controllers.providers.P
 
 POST    /api/shared/usergroups/search                     controllers.UserGroups.search(request: Request)
 POST    /api/shared/usergroups/members                    controllers.UserGroups.listUserGroupMembers(request: Request)
+POST    /api/shared/usergroups/groups                     controllers.UserGroups.listUserGroupGroups(request: Request)
 POST    /api/shared/usergroups/create                     controllers.UserGroups.createUserGroup(request: Request)
 POST    /api/shared/usergroups/delete/:group              controllers.UserGroups.deleteUserGroup(request: Request,group: String)
 POST    /api/shared/usergroups/edit/:group                controllers.UserGroups.editUserGroup(request: Request,group: String)

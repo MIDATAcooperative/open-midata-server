@@ -105,10 +105,10 @@ public class Rights {
 		role(UserRole.ADMIN, Plugin.ALL_DEVELOPER);
 		
 		action("UserGroups.search");
-		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member", "role");
+		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member", "role", "setup");
 
 		action("UserGroups.searchOwn");
-		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member", "role", "active");
+		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member", "role", "active", "setup");
 	}
 	
 	public static void chk(String action, UserRole role, Map<String, Object> props, Set<String> fields) throws InternalServerException, AuthException {

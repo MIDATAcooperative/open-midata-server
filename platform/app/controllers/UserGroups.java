@@ -20,6 +20,7 @@ package controllers;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import models.Consent;
+import models.HealthcareProvider;
 import models.MidataId;
 import models.Study;
 import models.User;
@@ -35,6 +37,7 @@ import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
+import models.enums.Permission;
 import models.enums.ResearcherRole;
 import models.enums.UserGroupType;
 import models.enums.UserRole;
@@ -79,7 +82,7 @@ public class UserGroups extends APIController {
 	public Result search(Request request) throws AppException {
 		JsonNode json = request.body().asJson();				
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		
+		AccessContext context = portalContext(request);
         JsonValidation.validate(json, "properties", "fields");
 		
 		// get parameters
@@ -96,12 +99,18 @@ public class UserGroups extends APIController {
 			
 			if (properties.containsKey("active")) {
 				properties.remove("active");
-				ugms = UserGroupMember.getAllActiveByMember(executorId);
+				ugms = context.getCache().getAllActiveByMember();
 			} else {
 			   ugms = UserGroupMember.getAllByMember(executorId);
+			   ugms.addAll(context.getCache().getAllActiveByMember());			   
 			}
 			Set<MidataId> ids = new HashSet<MidataId>();
-			for (UserGroupMember ugm : ugms) ids.add(ugm.userGroup);
+			if (properties.containsKey("setup")) {
+				properties.remove("setup");
+				for (UserGroupMember ugm : ugms) if (ugm.getRole().maySetup()) ids.add(ugm.userGroup);
+			} else {
+			    for (UserGroupMember ugm : ugms) ids.add(ugm.userGroup);
+			}
 			properties.put("_id", ids);
 		} else {
 			Rights.chk("UserGroups.search", getRole(), properties, fields);
@@ -155,13 +164,13 @@ public class UserGroups extends APIController {
 				
 		Set<String> fields = UserGroupMember.ALL;
 										
-		Set<UserGroupMember> members = UserGroupMember.getAllByGroup(groupId, EntityType.USERGROUP);
+		Set<UserGroupMember> members = UserGroupMember.getAllByGroup(groupId, Sets.createEnum(EntityType.USERGROUP, EntityType.ORGANIZATION, EntityType.SERVICES));
 		Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
 		for (UserGroupMember member : members) idmap.put(member.member, member);
 		Set<UserGroup> groups = UserGroup.getAllUserGroup(CMaps.map("_id", idmap.keySet()), UserGroup.ALL);
 		for (UserGroup group : groups) idmap.get(group._id).entityName = group.name;
 					
-		return ok(JsonOutput.toJson(groups, "UserGroup", UserGroup.ALL)).as("application/json"); 		
+		return ok(JsonOutput.toJson(members, "UserGroupMember", UserGroupMember.ALL)).as("application/json"); 		
 	}
 	
 	public static Set<UserGroupMember> listUserGroupMembers(MidataId groupId) throws AppException {
@@ -187,7 +196,7 @@ public class UserGroups extends APIController {
 		AccessContext context = portalContext(request);
 		
 		UserGroup userGroup = UserGroupTools.createUserGroup(context, UserGroupType.CARETEAM, new MidataId(), JsonValidation.getString(json, "name"));
-		UserGroupMember member = UserGroupTools.createUserGroupMember(context, userGroup._id);
+		UserGroupMember member = UserGroupTools.createUserGroupMember(context, ResearcherRole.HC(), userGroup._id);
 				
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 		
@@ -249,12 +258,14 @@ public class UserGroups extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result editUserGroup(Request request, String groupIdStr) throws AppException {
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId groupId = MidataId.from(groupIdStr);
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "name");
 		
-		UserGroupMember execMember = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
-		if (execMember == null) throw new BadRequestException("error.invalid.usergroup", "Only members may edit a group");
+		if (!UserGroupTools.accessorIsMemberOfGroup(context, groupId, Permission.SETUP)) {
+			throw new BadRequestException("error.notauthorized.action", "Only members may edit a group");		
+		}
 		
 		UserGroup userGroup = UserGroup.getById(groupId, UserGroup.ALL);
 
@@ -278,9 +289,24 @@ public class UserGroups extends APIController {
 		if (json.has("type")) memberType = JsonValidation.getEnum(json, "type", EntityType.class);
 		Set<MidataId> targetUserIds = JsonExtraction.extractMidataIdSet(json.get("members"));
 		
-		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
-		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of group");
-		if (!self.getRole().mayChangeTeam()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");
+		if (!UserGroupTools.accessorIsMemberOfGroup(context, groupId, Permission.CHANGE_TEAM)) {
+			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");		
+		}
+		
+		for (MidataId targetUserId : targetUserIds) {
+			switch(memberType) {
+			case USER:
+				if (User.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.notexists.user", "Target user does not exist.");
+				break;
+			case ORGANIZATION:
+				if (HealthcareProvider.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.notexists.organization", "Target organization does not exist.");
+				break;
+			case USERGROUP:
+				if (targetUserIds.size()==1 && HealthcareProvider.getById(targetUserId, Sets.create("_id")) != null) memberType=EntityType.ORGANIZATION;
+				if (UserGroup.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.notexists.usergroup", "Target team does not exist.");
+				break;
+			}
+		}
 		
 		Study study = Study.getById(groupId, Sets.create("anonymous"));
 		boolean anonymous = study != null && study.anonymous;
@@ -305,7 +331,8 @@ public class UserGroups extends APIController {
 			if (role == null || !role.pseudo) throw new BadRequestException("error.invalid.anonymous", "Unpseudonymized access not allowed");
 		}
 		
-		ProjectTools.addToUserGroup(context, self, role, memberType, targetUserIds);
+		List<UserGroupMember> self = context.getCache().getByGroupAndActiveMember(groupId, context.getAccessor(), Permission.CHANGE_TEAM);
+		ProjectTools.addToUserGroup(context, self.get(self.size()-1), role, memberType, targetUserIds);
 		
 		AuditManager.instance.success();
 		return ok();
@@ -318,23 +345,17 @@ public class UserGroups extends APIController {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "member", "group");
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-	
+		AccessContext context = portalContext(request);
+		
 		MidataId groupId = JsonValidation.getMidataId(json, "group");
 		MidataId targetUserId = JsonValidation.getMidataId(json, "member");
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.REMOVED_FROM_TEAM, null, executorId, targetUserId, null, groupId);
 		
 		if (targetUserId.equals(executorId)) throw new BadRequestException("error.invalid.user", "You cannot remove yourself from group.");
-		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
-		if (self == null) throw new AuthException("error.internal", "User not member of group");
-						
-		UserGroupMember target = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
-		if (target == null) throw new BadRequestException("error.invalid.user", "User is not member of group");
-		target.status = ConsentStatus.EXPIRED;
-		target.endDate = new Date();
-		UserGroupMember.set(target._id, "status", target.status);
-		UserGroupMember.set(target._id, "endDate", target.endDate);
-
+		
+		UserGroupTools.removeMemberFromUserGroup(context, targetUserId, groupId);
+		
 		AuditManager.instance.success();
 		return ok();
 	}

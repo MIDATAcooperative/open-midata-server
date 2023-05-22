@@ -86,7 +86,7 @@ export default {
 			    $data.persons = me.process(data.data, { filter : { search : "" }});
 		    }));
 */
-			me.doBusy(usergroups.search({ "member" : true, type : "ORGANIZATION" }, usergroups.ALLPUBLIC )
+			me.doBusy(usergroups.search({ "member" : true, type : "ORGANIZATION", setup : true }, usergroups.ALLPUBLIC )
     	    .then(function(results) {
 		        $data.orgs = [];
 				for (let grp of results.data) {

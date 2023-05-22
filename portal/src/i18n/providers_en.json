@@ -32,7 +32,19 @@
     "members" : "All members of your organization",
     "addprovider" : "Register New Member",
     "edit_btn" : "Edit Organization",
-    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions."
+    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions.",
+    "parent" : "Part of Organization",
+    "select_btn" : "Select",
+    "managerType" : "Organization Manager",
+    "managers" : {
+      "ME" : "Add yourself as manager only",
+      "ME2" : "Add yourself as member and manager",
+      "PARENT" : "Organization is managed by parent organization",
+      "OTHERMEMBER" : "Add another practitioner as member and manager",
+      "EXTERNALUSER" : "Add another practitioner as manager"
+    },
+    "manager" : "eMail of Manager"
+    
   },
   
   "addprovider" : {
@@ -90,7 +102,36 @@
     "status" : "Status",
     "searchable" : "Findable by Account Holders",
     "startDate" : "Member From",
-    "endDate" : "Member Until"
+    "endDate" : "Member Until",
+    "selected" : "Selected Member",
+    "rights" : "Permissions",
+   
+    "right" : {
+      "readData" : "Read data",
+      "writeData" : "Write data",
+      "changeTeam" : "Change team",
+      "setup" : "Change organization",
+      "applications" : "Manage applications"
+    },
+    "update_btn" : "Update"
+  },
+  
+  "provider_editgroups" : {
+    "title" : "Edit Sub-Entities",
+   
+    "entityName" : "Entity Name",    
+    "entityType" : "Entity Type",
+    "roleName" : "Role",
+    "role" : {
+       "MANAGER" : "Managing Organization",
+       "SUBORGANIZATION" : "Sub-Organization",
+       "HC" : "Other"
+    },
+    "startDate" : "Member From",
+    "endDate" : "Member Until",
+    
+    "add_organization_btn" : "Add Organization",
+    "add_group_btn" : "Add other Team"
   },
   
   "provider_memberdetails" : {

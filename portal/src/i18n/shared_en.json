@@ -1324,6 +1324,13 @@
      "add_group_btn" : "Add As Changing Team To Consent"
   },
   
+  "organizationsearch" : {
+     "title" : "Search for Organizations",
+     "name" : "Organization Name",
+     "city_or_zip" : "City or zip code",
+     "empty_result" : "No matching organizations found."
+  },
+  
   "confirm" : {
     "title" : "Are you really sure?",    
     "cancel" : "Cancel"

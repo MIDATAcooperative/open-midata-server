@@ -37,7 +37,7 @@ public class HealthcareProvider extends Model {
 	private static final String collection = "providers";
 	
 	@NotMaterialized
-	 public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "name","description","url")); 
+	 public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "name","description","url","parent")); 
 		
 	/**
 	 * the name of the healthcare provider (clinic)
@@ -45,6 +45,7 @@ public class HealthcareProvider extends Model {
 	public String name;
 	public String description;
 	public String url;
+	public MidataId parent;
 	
 	public static void add(HealthcareProvider provider) throws InternalServerException {
 		Model.insert(collection, provider);

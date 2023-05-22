@@ -19,10 +19,13 @@ package utils.context;
 
 import models.MidataId;
 import models.Record;
+import models.enums.Permission;
 import utils.RuntimeConstants;
+import utils.UserGroupTools;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class PublicAccessContext extends AccessContext {
 	
@@ -41,7 +44,10 @@ public class PublicAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {		
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) throws InternalServerException {	
+		if (UserGroupTools.isGroupManaged(newVersion.format, newVersion.content)) {
+			return newVersion.tags != null && newVersion.tags.contains("security:public") && UserGroupTools.accessorIsMemberOfGroup(parent, stored._id, Permission.SETUP);
+		}
 		return newVersion.tags != null && newVersion.tags.contains("security:public") &&
 			   (newVersion.creator != null && newVersion.creator.toString().equals(stored.meta.getString("creator"))
 			   || (newVersion.app != null && newVersion.app.toString().equals(stored.meta.getString("app"))));

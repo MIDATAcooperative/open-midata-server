@@ -26,12 +26,31 @@
             <form-group name="description" label="provider_organization.description" :path="errors.description">
                 <textarea class="form-control" id="description" :readonly="!isMasterUser()" name="description" rows="5" v-validate v-model="org.description" required></textarea>
             </form-group>
+            <form-group name="parent" label="provider_organization.parent" :path="errors.parent">
+                <p class="form-control-plaintext"><span class="mr-1" v-if="parentOrg">{{ (parentOrg || {}).name }}</span><button type="button" @click="selectParent()" class="btn btn-sm btn-default" v-t="'provider_organization.select_btn'"></button></p>
+                
+            </form-group>
+            <form-group v-if="!org._id" name="managerType" label="provider_organization.managerType" :path="errors.managerType">
+                <select name="managerType" class="form-control" v-validate v-model="org.managerTypeExt">
+                  <option v-for="m in managers" :key="m" :value="m">{{ $t('provider_organization.managers.'+m) }}</option>
+                </select>                
+            </form-group>
+            <form-group v-if="!org._id && (org.managerTypeExt=='OTHERMEMBER' || org.managerTypeExt=='EXTERNALUSER')" name="manager" label="provider_organization.manager" :path="errors.manager"> 
+		        <input type="text" class="form-control" id="manager" name="manager" v-validate v-model="org.manager" required>		    
+            </form-group>
             <form-group name="x" label="common.empty">
                 <button type="submit" :disabled="!isMasterUser() || action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
                 <success :finished="finished" action="update" msg="common.save_ok"></success>                
             </form-group>          
         </form>	
-    </panel>     
+    </panel>  
+    <div v-if="orgId">
+      <editgroups></editgroups>
+    </div>   
+    <modal id="parentOrganizationSearch" full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
+	   <organization-search :setup="parentOrganizationSearch" @add="setParent"></organization-search>
+	</modal>
+    
    <!-- <panel :title="$t('provider_organization.members')" :busy="isBusy">	 
         <pagination v-model="persons" search="search"></pagination>
 	    <table class="table table-striped" v-if="persons.filtered.length">
@@ -58,22 +77,36 @@ import server from "services/server.js"
 import session from "services/session.js"
 import users from "services/users.js"
 import usergroups from "services/usergroups.js"
-import { rl, status, ErrorBox, FormGroup, Success } from 'basic-vue3-components'
+import editgroups from "views/provider/editgroups.vue"
+import OrganizationSearch from "components/tiles/OrganizationSearch.vue"
+import { rl, status, ErrorBox, FormGroup, Success, Modal } from 'basic-vue3-components'
 
 export default {
     data: () => ({	
         orgId : null,
         org : null,
-        persons : null
+        currentUser : null,
+        parentOrg : null,
+        persons : null,
+        managers : ["ME", "ME2", "PARENT", "OTHERMEMBER", "EXTERNALUSER"],
+        setupOrganizationSearch : null
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, Success },
+    components: {  Panel, ErrorBox, FormGroup, Success, editgroups, OrganizationSearch, Modal },
 
     mixins : [ status, rl ],
+    
+    watch : {
+		$route(to, from) { 						
+			if (to.path.indexOf("addorganization") < 0) return;
+		    this.$data.orgId = this.$route.query.orgId;        
+            this.reload();	    
+		}
+	},
 
     methods : {
         reload() {
-            const { $data } = this, me = this;
+            const { $data, $route } = this, me = this;
 
 /*
             me.doBusy(users.getMembers({  role : "PROVIDER", provider : session.org }, users.MINIMAL )
@@ -86,11 +119,27 @@ export default {
 		    if ($data.orgId) {
 				me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization($data.orgId).url)
 	    		.then(function(data) { 	               
-	        		$data.org = data.data;												
+	        		$data.org = data.data;	
+	        		
+	        		if ($data.org.parent) {
+	        		   me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization($data.org.parent).url)
+	    		       .then(function(data2) { 	               
+	        		     $data.parentOrg = data2.data;
+	        		   }));
+	        		}											
 	    		}));	   
     		} else {
-    		   $data.org = {};
-    		   me.ready();
+    		   $data.org = { parent : $route.query.parentId };
+    		   if ($route.query.parentId) {
+		      	
+        		   me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization($route.query.parentId).url)
+    		       .then(function(data2) { 	               
+        		     $data.parentOrg = data2.data;
+        		   }));
+        		
+    		   } else {
+    		      me.ready();
+    		   }
     		}
 	    			   
 				    				
@@ -104,7 +153,31 @@ export default {
 	       		  $data.orgId = res.data._id;	       		  
 	       		}));
 	       	} else {
-  	       	    me.doAction("update", server.post(jsRoutes.controllers.providers.Providers.createOrganization().url, $data.org));
+	       	    switch($data.org.managerTypeExt) {
+	       	      case "ME":
+	       	        $data.org.managerType = "USER";
+	       	        $data.org.manager = undefined;
+	       	        break;
+	       	      case "ME2":
+	       	        $data.org.managerType = "USER";
+	       	        $data.org.manager = undefined;
+	       	        break;
+	       	      case "PARENT":
+	       	        $data.org.managerType = "ORGANIZATION";
+	       	        $data.org.manager = $data.org.parent;
+	       	        break;
+	       	      case "OTHERMEMBER":
+	       	        $data.org.managerType = "USER";
+	       	        break;
+	       	      case "EXTERNALUSER":
+	       	        $data.org.managerType = "USER";
+	       	        break;
+	       	    }
+  	       	    me.doAction("update", server.post(jsRoutes.controllers.providers.Providers.createOrganization().url, $data.org))
+  	       	    .then((res) => {
+	       		  $data.orgId = res.data._id;
+	       		  me.reload();	       		  
+	       		});
 	       	}	       		
 	    },
 	
@@ -114,7 +187,24 @@ export default {
 
         add() {
             this.$router.push({ path : './addprovider' });
-        }
+        },
+        
+        selectParent() {
+            const { $data, $route, $router } = this, me = this;
+		
+		    $data.setupOrganizationSearch = {}; 
+	    },
+	    
+	    setParent(parentOrg) {	
+		    const { $data, $route, $router } = this, me = this;
+		    console.log("TRIGGER");
+		    
+		    $data.setupOrganizationSearch = null;
+
+            if (parentOrg.length) parentOrg = parentOrg[0];					
+		    $data.org.parent = parentOrg._id || parentOrg.id;
+		    $data.parentOrg = parentOrg;		    		
+        },
 	
     },
 
@@ -122,7 +212,7 @@ export default {
         const { $data, $route } = this, me = this;
         $data.orgId = $route.query.orgId;
         
-        session.currentUser.then(function() { me.reload(); });	    
+        session.currentUser.then(function(user) { $data.currentUser = user; me.reload(); });	    
     }
     
 }

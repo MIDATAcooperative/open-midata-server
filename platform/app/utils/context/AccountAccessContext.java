@@ -22,6 +22,7 @@ import models.Record;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class AccountAccessContext extends AccessContext {
 
@@ -36,7 +37,7 @@ public class AccountAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) throws InternalServerException {
 		if (parent != null) return parent.mayUpdateRecord(stored, newVersion);
 		return true;
 	}

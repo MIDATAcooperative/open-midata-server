@@ -1443,7 +1443,7 @@ public class Market extends APIController {
 			UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(link.studyId, userId);
 			if (self == null)
 				throw new AuthException("error.notauthorized.study", "User not member of study group");
-			if (!self.role.maySetup())
+			if (!self.getRole().maySetup())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 	        link.validationResearch = StudyValidationStatus.VALIDATED;
 		} else if (role.equals(UserRole.ADMIN)) {

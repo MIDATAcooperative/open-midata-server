@@ -21,8 +21,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.hl7.fhir.r4.model.Organization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -48,7 +51,10 @@ import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
+import models.enums.EntityType;
 import models.enums.Gender;
+import models.enums.Permission;
+import models.enums.ResearcherRole;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -75,6 +81,7 @@ import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.FHIRServlet;
 import utils.fhir.OrganizationResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -169,7 +176,7 @@ public class Providers extends APIController {
 		RecordManager.instance.createPrivateAPS(null, user._id, user._id);		
 		
 		if (name != null) {
-		   HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, JsonValidation.getStringOrNull(json, "description"), true);		
+		   HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, JsonValidation.getStringOrNull(json, "description"), null, true);		
 		   OrganizationResourceProvider.updateFromHP(context, provider);
 		}
 		
@@ -207,7 +214,7 @@ public class Providers extends APIController {
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
 		if (provider != null) {
-			provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, provider.name, provider.description, true);		
+			provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, provider.name, provider.description, null, true);		
 			OrganizationResourceProvider.updateFromHP(context, provider);			
 		}
 		HPUser.add(user);
@@ -341,6 +348,32 @@ public class Providers extends APIController {
 		return ok(Json.toJson(obj));
 	}
 	
+	/**
+	 * healthcare provider search for MIDATA members by MIDATAID and birthday.
+	 * @return Member and list of consents
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@Security.Authenticated(AnyRoleSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public Result searchOrganization(Request request) throws JsonValidationException, AppException {
+	
+		JsonNode json = request.body().asJson();
+		String name = JsonValidation.getStringOrNull(json, "name");
+		String city = JsonValidation.getStringOrNull(json, "city");
+		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.getProvider("Organization")); 
+		List<Organization> orgs = provider.search(portalContext(request), name, city);
+		StringBuffer out = new StringBuffer("[");
+		boolean first = true;
+		for (Organization org : orgs) {
+		   if (first) first=false; else out.append(",");			  
+		   out.append(provider.serialize(org));
+		}
+		out.append("]");
+		return ok(out.toString()).as("application/json");
+	}
+	
     /**
      * return list of all patients of current healthcare provider	
      * @return list of Members
@@ -450,8 +483,8 @@ public class Providers extends APIController {
 		MidataId providerid = MidataId.parse(id);
 		//String description = JsonValidation.getString(json, "description");
 				
-		if (!UserGroupTools.accessorIsMemberOfGroup(context, providerid)) {
-			throw new InternalServerException("error.internal", "Tried to change other healthcare provider organization!");
+		if (!UserGroupTools.accessorIsMemberOfGroup(context, providerid, Permission.SETUP)) {
+			throw new BadRequestException("error.notauthorized.action", "Tried to change other healthcare provider organization!");
 		}
 				
 		if (HealthcareProvider.existsByName(name, providerid)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider organization with this name already exists.");			
@@ -460,11 +493,16 @@ public class Providers extends APIController {
 
 		if (provider == null) throw new InternalServerException("error.internal", "Healthcare provider organization not found.");
 		
-		provider.name = name;	
-		provider.description = JsonValidation.getStringOrNull(json, "description");
-		provider.url = JsonValidation.getStringOrNull(json, "url");
-		provider.setMultiple(Sets.create("name", "description", "url"));
-		OrganizationResourceProvider.updateFromHP(context, provider);		
+		MidataId parent = JsonValidation.getMidataId(json, "parent");
+		
+		if (parent != null && !parent.equals(provider.parent)) {
+			if (!UserGroupTools.accessorIsMemberOfGroup(context, parent, Permission.SETUP)) {
+				throw new BadRequestException("error.notauthorized.action", "Tried to change other healthcare provider organization!");
+			}	
+		}
+				
+	   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, name, JsonValidation.getStringOrNull(json, "description"), parent, false);		
+	   OrganizationResourceProvider.updateFromHP(context, provider);		
 		
 		return ok();		
 	}
@@ -482,13 +520,35 @@ public class Providers extends APIController {
 					
 		String name = JsonValidation.getString(json, "name");
 		String description = JsonValidation.getStringOrNull(json, "description");
-						
+		
+		String manager = JsonValidation.getStringOrNull(json, "manager");
+		EntityType managerType = JsonValidation.getEnum(json, "managerType", EntityType.class);
+		MidataId managerId = null;
+		
+		MidataId parent = JsonValidation.getMidataId(json, "parent");
+		
 		if (HealthcareProvider.existsByName(name)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider organization with this name already exists.");			
-						
-		HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, description, true);		
+		
+		if (managerType == EntityType.ORGANIZATION) {
+			  managerId = parent;
+		} else if (managerType == EntityType.USER) {
+			if (manager == null) {
+				managerId = context.getAccessor();
+			} else {
+			    HPUser user = HPUser.getByEmail(manager, Sets.create("_id"));
+			    if (user == null) throw new JsonValidationException("error.unknown.user", "manager", "unknown", "No practitioner with this name exists.");
+			    managerId = user._id;
+			}
+		}
+		
+		HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, description, parent, managerId.equals(context.getAccessor()));
+				
+		
+		if (!managerId.equals(context.getAccessor())) UserGroupTools.createUserGroupMember(context, managerId, managerType, ResearcherRole.MANAGER(), provider._id);
+		
 		OrganizationResourceProvider.updateFromHP(context, provider);
 		
-		return ok();		
+		return ok(JsonOutput.toJson(provider, "HealthcareProvider", HealthcareProvider.ALL)).as("application/json");		
 	}
 	
 }

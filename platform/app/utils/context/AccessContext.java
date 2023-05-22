@@ -34,6 +34,7 @@ import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
+import models.enums.Permission;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
@@ -78,7 +79,7 @@ public abstract class AccessContext {
 	 * @param newVersion new version of record
 	 * @return
 	 */
-	public abstract boolean mayUpdateRecord(DBRecord stored, Record newVersion);
+	public abstract boolean mayUpdateRecord(DBRecord stored, Record newVersion) throws InternalServerException;
 	
 	/**
 	 * Must records be pseudonymized in the current context?
@@ -395,6 +396,16 @@ public abstract class AccessContext {
 	 */
 	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
 		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(getCache(), ugm), this);
+	}
+	
+	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
+		
+		APSCache cache = getCache();
+		APSCache subcache = cache;
+		List<UserGroupMember> ugms = cache.getByGroupAndActiveMember(userGroup, cache.getAccessor(), permission);
+		for (UserGroupMember ugmx : ugms) subcache = Feature_UserGroups.readySubCache(cache, subcache, ugmx);
+		UserGroupMember ugm = ugms.get(ugms.size()-1);
+		return new UserGroupAccessContext(ugm, subcache, this);
 	}
 	
 	/**

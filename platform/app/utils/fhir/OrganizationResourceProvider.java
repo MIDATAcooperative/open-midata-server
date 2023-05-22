@@ -17,15 +17,18 @@
 
 package utils.fhir;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.instance.model.api.IBaseExtension;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Endpoint;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Organization;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -57,8 +60,10 @@ import models.MidataId;
 import models.Record;
 import models.Research;
 import models.enums.EntityType;
+import models.enums.ResearcherRole;
 import utils.ApplicationTools;
 import utils.RuntimeConstants;
+import utils.UserGroupTools;
 import utils.access.RecordManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -230,9 +235,23 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 																		
 		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
-		//query.putAccount("public", "only");
+		//query.putAccount("public", "also");
 		// At last execute the constructed query
 		return query;
+	}
+	
+	public List<Organization> search(AccessContext context, String name, String city) throws AppException {
+		SearchParameterMap params = new SearchParameterMap();
+		if (name != null) params.add("name", new StringParam(name));		
+		if (city != null) params.add("address-city", new StringParam(city));
+		Query query = new Query();		
+		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Organization");
+		builder.restrictionMany("name", true, QueryBuilder.TYPE_STRING, "name", "alias");
+		builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "address.city");
+		query.putAccount("public", "only");
+		query.putAccount("content", "Organization/HP");
+		List<Record> result = query.execute(context);
+		return parse(result, getResourceType());
 	}
 	
 		
@@ -281,8 +300,14 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		  record.code = Collections.singleton("http://midata.coop Organization/Research");
 		  record._id = MidataId.from(theOrganization.getId());
 		} else {
-		  record.content = "Organization";
-		  record.code = Collections.singleton("http://midata.coop Organization");
+		
+		  if (theOrganization.getMeta().getSecurity("http://midata.coop/codesystems/security", "platform-mapped") != null) {
+			  record.content = "Organization/HP";			
+			  record.code = Collections.singleton("http://midata.coop Organization/HP");			  
+		  } else {						
+			  record.content = "Organization";
+			  record.code = Collections.singleton("http://midata.coop Organization");
+		  }
 		}			   
 		record.owner = RuntimeConstants.instance.publicUser;	
 		
@@ -298,6 +323,27 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		// Add _id field and meta section
 		super.processResource(record, p);
 				
+	}
+	
+	
+
+	@Override
+	public Organization createExecute(Record record, Organization theResource) throws AppException {
+		
+		if (record.content.equals("Organization/HP") && theResource.getUserData("source")==null) {
+			MidataId parent = null;
+			if (theResource.hasPartOf()) {
+			   Reference parentRef = theResource.getPartOf();
+			   parent =  MidataId.parse(parentRef.getId());
+			}
+		   HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), "", parent, true);		  		
+		   UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+		   
+		   
+		}
+		
+		return super.createExecute(record, theResource);
+		
 	}
 
 	@Override
@@ -352,7 +398,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("platform-mapped");
-		}
+		}				
 		
 		if (doupdate) {
 		  provider.updateRecord(oldRecord, org, provider.getAttachments(org));

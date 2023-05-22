@@ -29,6 +29,7 @@ import org.bson.BasicBSONObject;
 
 import models.MidataId;
 import models.UserGroupMember;
+import models.enums.Permission;
 import models.enums.ResearcherRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
@@ -55,7 +56,7 @@ public class Feature_UserGroups extends Feature {
 			MidataId usergroup = q.getMidataIdRestriction("usergroup").iterator().next();
 			
 			if (usergroup.equals(q.getCache().getAccountOwner())) return next.iterator(q);
-			List<UserGroupMember> isMemberOfGroup = q.getCache().getByGroupAndActiveMember(usergroup, q.getCache().getAccountOwner());
+			List<UserGroupMember> isMemberOfGroup = q.getCache().getByGroupAndActiveMember(usergroup, q.getCache().getAccountOwner(), Permission.READ_DATA);
 			if (isMemberOfGroup == null) throw new InternalServerException("error.internal", "Not member of provided user group");
 			return doQueryAsGroup(isMemberOfGroup, q);					
 		}
@@ -88,7 +89,9 @@ public class Feature_UserGroups extends Feature {
 		public DBIterator<DBRecord> advance(UserGroupMember usergroup) throws AppException {
 			
 			if (usergroup == null) return next.iterator(query);
-			return doQueryAsGroup(query.getCache().getByGroupAndActiveMember(usergroup, query.getContext().getAccessor()), query);
+			List<UserGroupMember> path = query.getCache().getByGroupAndActiveMember(usergroup, query.getContext().getAccessor(), Permission.READ_DATA);
+			if (path == null || path.isEmpty()) return ProcessingTools.empty();
+			return doQueryAsGroup(path, query);
 			
 		}
 
@@ -192,13 +195,15 @@ public class Feature_UserGroups extends Feature {
 				
 		if (!cache.hasSubCache(ugm.userGroup)) {
 			APSCache subcache = cache;
-			List<UserGroupMember> ugms = cache.getByGroupAndActiveMember(ugm, cache.getAccessor());
+			List<UserGroupMember> ugms = cache.getByGroupAndActiveMember(ugm, cache.getAccessor(), Permission.ANY);
 			for (UserGroupMember ugmx : ugms) subcache = readySubCache(cache, subcache, ugmx);					
 		}
 		return cache.getSubCache(ugm.userGroup);				
 	}
+	
+	
 			
-	private static APSCache readySubCache(APSCache cache, APSCache subcache, UserGroupMember ugm) throws AppException {
+	public static APSCache readySubCache(APSCache cache, APSCache subcache, UserGroupMember ugm) throws AppException {
 		BasicBSONObject obj = subcache.getAPS(ugm._id, ugm.member).getMeta("_usergroup");
 		KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));
 		return cache.getSubCache(ugm.userGroup);
