@@ -422,6 +422,12 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 				practitionerSet = true;
 			}
 			
+			if (extra.getExternalUser() != null) {
+				actor.setWho(new Reference().setDisplay(extra.getExternalUser()));
+				actor.setName(extra.getExternalUser());
+				actor.setType(new CodeableConcept(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/extra-security-role-type").setCode("humanuser").setDisplay("human user")));
+			}
+			
 			if (extra.getOrganizationName() != null || extra.getOrganizationReference() != null) {
 				if (practitionerSet) {
 					actor = ae.addAgent();

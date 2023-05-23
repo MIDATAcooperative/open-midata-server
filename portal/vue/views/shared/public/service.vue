@@ -15,12 +15,52 @@
  along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-    <div></div>
+    	<div class="container">
+		<div class="row">
+			<!-- Login -->
+			<div class="col-sm-12">
+			    <div class="d-none d-lg-block" style="padding-top:100px;"></div>
+				<div class="panel-container" style="max-width:600px; padding-top:20px; margin:0 auto;">
+					<div class="panel panel-primary">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title" v-t="'service.title'"></h3>
+		            	</div>
+		            	<div class="panel-body">
+			            	<error-box :error="error" />
+
+							<div class="alert alert-success" v-if="success">
+								<p v-t="'service.success'"></p>								
+							</div>						
+		            	</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
 </template>
 <script>
+import server from "services/server.js";
+import { status, ErrorBox } from 'basic-vue3-components';
 export default {
+   data: () => ({
+     success : false,         
+   }),
+   
+    components : {
+      ErrorBox
+    },
+    
+    mixins : [ status ],
+
     created() {
-        const { $route, $router} = this;
+        const { $route, $router, $data } = this;
+        		
+        if ($route.query.token) {
+           this.doBusy(server.post(jsRoutes.controllers.TokenActions.action().url, { token : $route.query.token }))
+           .then(() => { $data.success = true; });
+           return;
+        }
         		
 		let actions = [];
 		let params = {};
