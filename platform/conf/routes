@@ -267,7 +267,7 @@ GET		/api/admins/pwrecovery                           controllers.PWRecovery.get
 POST	/api/admins/pwrecovery                           controllers.PWRecovery.storeRecoveryShare(request: Request)
 POST	/api/admins/pwrecovery/finish                    controllers.PWRecovery.finishRecovery(request: Request)
 POST	/api/admins/pwrecovery/servicekey                controllers.PWRecovery.requestServiceKeyRecovery(request: Request)
-
+POST    /api/tokenaction                                 controllers.TokenActions.action(request:Request)
 
 # Apps
 

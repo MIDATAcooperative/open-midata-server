@@ -95,6 +95,11 @@ public enum MessageReason {
 	CONSENT_REJECT_AUTHORIZED,
 	
 	/**
+	 * Message send to authorized person upon rejection of an already active consent
+	 */
+	CONSENT_REJECT_ACTIVE_AUTHORIZED,
+	
+	/**
 	 * Message sent because account has been unlocked by admin
 	 */
 	ACCOUNT_UNLOCK,

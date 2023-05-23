@@ -29,6 +29,7 @@ import utils.RuntimeConstants;
 import utils.access.APSCache;
 import utils.access.Feature_UserGroups;
 import utils.access.RecordManager;
+import utils.auth.ActionToken;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.exceptions.AppException;
@@ -140,6 +141,17 @@ public class ContextManager {
 	public AccessContext createInitialSession(MidataId accessorId, UserRole accessorRole, MidataId pluginId) throws InternalServerException {
 		AccessLog.log("[session] Initial context for ", accessorId.toString());
 		return use(new SessionAccessContext(getCache(accessorId), accessorRole, pluginId, null, accessorId));
+	}
+	
+	/**
+	 * Create AccessContext for an request that only uses an action token
+	 * @param token
+	 * @return
+	 * @throws InternalServerException
+	 */
+	public ActionTokenAccessContext createActionTokenSession(ActionToken token) throws InternalServerException {
+		AccessLog.log("[session] Action-token context for ", token.action.toString());
+		return (ActionTokenAccessContext) use(new ActionTokenAccessContext(token));
 	}
 	
 	/**
