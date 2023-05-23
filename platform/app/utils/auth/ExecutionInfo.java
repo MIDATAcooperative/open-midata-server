@@ -42,6 +42,7 @@ import utils.collections.CMaps;
 import utils.collections.RequestCache;
 import utils.collections.Sets;
 import utils.context.AccessContext;
+import utils.context.ActionTokenAccessContext;
 import utils.context.ContextManager;
 import utils.context.SpaceAccessContext;
 import utils.exceptions.AppException;
@@ -58,6 +59,8 @@ public class ExecutionInfo {
 		
 		if (json.has("instanceId")) {
 			return checkSpaceToken(SpaceToken.decrypt(request, json));
+		} else if (json.has("action"))  {
+			return checkActionToken(request, token);
 		} else {
 			return checkMobileToken(request, MobileAppSessionToken.decrypt(json, MobileAppSessionToken.parseExtra(token)), allowInactive, allowRestricted);
 		}
@@ -72,6 +75,14 @@ public class ExecutionInfo {
 		
 		return checkSpaceToken(authToken);
 		
+	}
+	
+	public static ActionTokenAccessContext checkActionToken(Request request, String token) throws AppException {
+		ActionToken authToken = ActionToken.decrypt(token);
+		if (authToken == null) {
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+		}
+		return ContextManager.instance.createActionTokenSession(authToken);
 	}
 	
 	public static AccessContext checkSpaceToken(SpaceToken authToken) throws AppException {	

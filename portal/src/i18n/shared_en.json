@@ -1425,6 +1425,11 @@
     "error" : "Password not correct. The account has not been deleted."
   },
   
+  "service" : {
+     "title" : "Token-Link service for @PRODUCT",
+     "success" : "Your token-link has been processed. You can now close this window."
+  },
+  
   "serviceleave" : {
     "title" : "You are leaving @PRODUCT",
     "thankyou" : "Thank you for your help!",    

@@ -1966,6 +1966,7 @@ public class Studies extends APIController {
 		// History(EventType.PARTICIPATION_REJECTED, user, comment));
 		participation.pstatus = ParticipationStatus.RESEARCH_REJECTED;
 		Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
+		Circles.sendConsentNotifications(context.getAccessor(), participation, ConsentStatus.REJECTED, false);
 		leaveSharing(context, studyId, partId);
 		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
 		AuditManager.instance.success();

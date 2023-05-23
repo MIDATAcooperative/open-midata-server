@@ -78,6 +78,7 @@ import utils.access.Feature_Streams;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
+import utils.auth.ActionToken;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
@@ -479,11 +480,11 @@ public class Circles extends APIController {
 		
 										
 		if (consent.status == ConsentStatus.UNCONFIRMED) {
-			sendConsentNotifications(context.getAccessor(), consent, consent.status);
+			sendConsentNotifications(context.getAccessor(), consent, consent.status, false);
 		} else if (consent.status == ConsentStatus.ACTIVE) {
-			sendConsentNotifications(context.getAccessor(), consent, consent.status);
+			sendConsentNotifications(context.getAccessor(), consent, consent.status, false);
 		} else if (consent.status == ConsentStatus.PRECONFIRMED) {
-			sendConsentNotifications(context.getAccessor(), consent, consent.status);
+			sendConsentNotifications(context.getAccessor(), consent, consent.status, false);
 		}
 				
 		AuditManager.instance.success();
@@ -638,8 +639,9 @@ public class Circles extends APIController {
 		default: AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_DELETE, userId, consent);break;
 		}
 		
+		boolean wasActive = consent.isActive();
 		consentStatusChange(context, consent, ConsentStatus.EXPIRED);
-		
+		sendConsentNotifications(context.getAccessor(), consent, ConsentStatus.EXPIRED, wasActive);
 				
 		// delete circle		
 		switch (consent.type) {
@@ -769,9 +771,10 @@ public class Circles extends APIController {
 	
 	public static void consentExpired(AccessContext context, MidataId consentId) throws AppException {
 		Consent consent = getConsentById(context, consentId, Consent.FHIR);
-		if (consent != null && !consent.status.equals(ConsentStatus.EXPIRED)) {			
+		if (consent != null && !consent.status.equals(ConsentStatus.EXPIRED)) {
+			boolean wasActive = consent.isActive();
 			consentStatusChange(context, consent, ConsentStatus.EXPIRED);
-			
+			sendConsentNotifications(context.getAccessor(), consent, ConsentStatus.EXPIRED, wasActive);			
 		}
 	}
 	/**
@@ -927,10 +930,10 @@ public class Circles extends APIController {
 		SubscriptionManager.resourceChange(context, consent);
 	}
 	
-	public static void sendConsentNotifications(MidataId executorId, Consent consent, ConsentStatus reason) throws AppException {
+	public static void sendConsentNotifications(MidataId executorId, Consent consent, ConsentStatus reason, boolean wasActive) throws AppException {
 		MidataId sourcePlugin = consent.creatorApp != null ? consent.creatorApp : RuntimeConstants.instance.portalPlugin;
 		Map<String, String> replacements = new HashMap<String, String>();
-		Set<Object> targets = new HashSet<Object>();
+		Set<MidataId> targets = new HashSet<MidataId>();
 		targets.addAll(consent.authorized);
 		targets.remove(executorId);
 						
@@ -973,18 +976,40 @@ public class Circles extends APIController {
 			replacements.put("consent-name", consent.name);		
 		    String language = sender != null ? sender.language : InstanceConfig.getInstance().getDefaultLanguage();
 			if (reason == ConsentStatus.UNCONFIRMED) {
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_INVITED, category, consent.externalAuthorized, language, replacements);
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_EXISTING, category, targets, language, replacements);
+				if (consent.externalAuthorized != null && !consent.externalAuthorized.isEmpty()) {
+				   for (String targetMail : consent.externalAuthorized) {
+					   Map<String, String> replacementsExt = new HashMap<String, String>();
+					   replacementsExt.putAll(replacements);
+					   replacementsExt.put("reject-url", InstanceConfig.getInstance().getServiceURL()+"?token="+URLEncoder.encode(new ActionToken(null, consent._id, targetMail, AuditEventType.CONSENT_REJECTED, -1).encrypt(), "UTF-8"));		
+				       Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_INVITED, category, Collections.singleton(targetMail), language, replacementsExt);
+				   }
+				}
+				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_EXISTING, category, targets, language, replacements);						
 				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_INVITED, category, Collections.singleton(consent.externalOwner), language, replacements);
 				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_EXISTING, category, Collections.singleton(consent.owner), language, replacements);
 			} else if (reason == ConsentStatus.ACTIVE) {
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, targets, language, replacements);
+				for (MidataId target : targets) {
+					Map<String, String> replacementsExt = new HashMap<String, String>();
+					replacementsExt.putAll(replacements);
+					User user = User.getById(target, Sets.create("email"));
+				    replacementsExt.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(user.email != null ? ("&login="+URLEncoder.encode(user.email, "UTF-8")) : ""));
+				    replacementsExt.put("reject-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(user.email != null ? ("&login="+URLEncoder.encode(user.email, "UTF-8")) : ""));
+				
+				    Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, Collections.singleton(target), language, replacementsExt);
+				}
 				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_OWNER, category, Collections.singleton(consent.owner), language, replacements);			
 			} else if (reason == ConsentStatus.PRECONFIRMED) {
 				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_PRECONFIRMED_OWNER, category, Collections.singleton(consent.owner), language, replacements);				
 			} else if (reason == ConsentStatus.REJECTED) {
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_AUTHORIZED, category, targets, language, replacements);
-				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), language, replacements);
+				
+				if (!executorId.equals(consent.owner)) {
+					Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), language, replacements);					
+				} 
+				if (wasActive) {
+					Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_ACTIVE_AUTHORIZED, category, targets, language, replacements);	
+				} else {
+					Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_AUTHORIZED, category, targets, language, replacements);
+				}																 
 			}
 		} catch (UnsupportedEncodingException e) {}
 		
