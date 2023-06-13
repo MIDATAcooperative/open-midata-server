@@ -34,6 +34,7 @@ import org.bson.types.BasicBSONList;
 import models.MidataId;
 import models.Record;
 import utils.AccessLog;
+import utils.QueryTagTools;
 import utils.access.op.AndCondition;
 import utils.access.op.Condition;
 import utils.exceptions.AppException;
@@ -358,6 +359,30 @@ public class ProcessingTools {
 
 	}
 	
+	static class FilterByNonPseudonymizeTag extends FilterIterator<DBRecord> {
+				
+
+		public FilterByNonPseudonymizeTag(DBIterator<DBRecord> chain) throws AppException {
+			super(chain);	
+			if (chain.hasNext())
+				next();
+		}
+
+		@Override
+		public boolean contained(DBRecord record) {
+			if (record.isStream!=null || record.context==null) return true;
+			if (record.meta==null) return false;
+			Collection tags = (Collection) record.meta.get("tags");						
+			return (!record.context.mustPseudonymize()) || tags == null || !tags.contains(QueryTagTools.SECURITY_NOT_PSEUDONYMISABLE);
+		}
+		
+		@Override
+		public String toString() {
+			return "filter-non-pseudo(["+passed+"/"+filtered+"] "+chain.toString()+")";
+		}
+
+	}
+	
 	static class ClearByHiddenTag extends FilterIterator<DBRecord> {
 		
 
@@ -414,6 +439,7 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
+		    AccessLog.log("META rec._id="+record._id.toString()+" pseudo="+record.context.mustPseudonymize());
 			return record.meta != null;
 		}
 		

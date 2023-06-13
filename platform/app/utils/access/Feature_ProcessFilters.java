@@ -65,6 +65,8 @@ public class Feature_ProcessFilters extends Feature {
 		if (q.restrictedBy("history-date")) {
 			result = new Feature_Versioning.HistoryDate(result, q);
 		}
+		
+		result = new ProcessingTools.FilterByNonPseudonymizeTag(result);
 
 		if (q.restrictedBy("creator")) {
 			result = new ProcessingTools.FilterByMetaSet(result, "creator", q.getIdRestrictionDB("creator"), false);
