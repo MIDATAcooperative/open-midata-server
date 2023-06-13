@@ -438,8 +438,7 @@ public class ProcessingTools {
 		}
 
 		@Override
-		public boolean contained(DBRecord record) {
-		    AccessLog.log("META rec._id="+record._id.toString()+" pseudo="+record.context.mustPseudonymize());
+		public boolean contained(DBRecord record) {		    
 			return record.meta != null;
 		}
 		
