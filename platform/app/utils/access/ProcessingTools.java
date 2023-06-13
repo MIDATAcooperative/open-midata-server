@@ -441,7 +441,8 @@ public class ProcessingTools {
 		public boolean contained(DBRecord record) throws AppException {
 			//AccessLog.log("rec meta="+record.meta+" enc="+record.encrypted+" dat="+record.data+" encdat="+record.encryptedData);
 			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime || record.sharedAt != null)) {				
-				 RecordEncryption.decryptRecord(record);				   			
+				 RecordEncryption.decryptRecord(record);	
+				 if (record.meta == null) return false;
 				 if (!record.meta.containsField("creator") && record.owner != null) record.meta.put("creator", record.owner.toDb());
 				 if (filterDelete && record.meta.containsField("deleted")) return false;
 				 return true;

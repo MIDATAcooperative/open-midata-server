@@ -73,6 +73,7 @@ public class Feature_Versioning extends Feature {
 				rec.merge(record);
 				
 				RecordEncryption.decryptRecord(rec);
+				if (rec.meta == null) continue;
 				rec.meta.put("ownerName", record.meta.get("ownerName"));
 				
                 currentlist.add(rec);
@@ -123,14 +124,16 @@ public class Feature_Versioning extends Feature {
 				rec.merge(record);
 				
 				RecordEncryption.decryptRecord(rec);
-				rec.meta.put("ownerName", record.meta.get("ownerName"));
+				if (rec.meta != null) rec.meta.put("ownerName", record.meta.get("ownerName"));
 				
                 next = rec;
 			} else {
 				QueryEngine.fetchFromDB(q, record);
 				RecordEncryption.decryptRecord(record);
-				String vers = record.meta.getString("version", VersionedDBRecord.INITIAL_VERSION);
-				if (vers.equals(version)) next = record;
+				if (record.meta != null) {
+					String vers = record.meta.getString("version", VersionedDBRecord.INITIAL_VERSION);
+					if (vers.equals(version)) next = record;
+				}
 			}
 			}
 			return result;
@@ -300,6 +303,7 @@ public class Feature_Versioning extends Feature {
 					DBRecord next = fetchIds.get(rec._id);
                     rec.merge(next);					
 					RecordEncryption.decryptRecord(rec);
+					if (rec.meta == null) continue;
 					Date vlastUpdate = rec.meta.getDate("lastUpdated");
 					if (vlastUpdate == null) vlastUpdate = next._id.getCreationDate();
 					if (!vlastUpdate.after(historyDate)) {
