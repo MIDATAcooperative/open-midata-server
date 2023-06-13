@@ -57,6 +57,8 @@
             <router-link :to="{ path : './usergroups' }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
             <button v-if="add.entityName" :disabled="action != null || !mayChangeTeam()" type="button" class="btn btn-primary mr-1" v-t="'provider_editusergroup.update_btn'" @click="updateMember();"></button>
             <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addOrganizations();" v-t="'provider_editgroups.add_organization_btn'"></button>
+            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addOrganizations2();" v-t="'provider_editgroups.add_organization2_btn'"></button>
+            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addBroker();" v-t="'provider_editgroups.add_broker_btn'"></button>
             <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addUserGroups();" v-t="'provider_editgroups.add_group_btn'"></button>            
         </div>                          
     </panel>  
@@ -90,6 +92,10 @@
 	   <organization-search :setup="setupOrganizationSearch" @add="addGroup"></organization-search>
 	</modal>
 	
+	<modal id="databrokerSearch" full-width="true" @close="setupBrokerSearch=null" :open="setupBrokerSearch!=null" :title="$t('databrokersearch.title')">
+	   <data-broker-search :setup="setupBrokerSearch" @add="addGroup"></data-broker-search>
+	</modal>
+	
 </div>
    
 </template>
@@ -103,6 +109,7 @@ import session from "services/session.js"
 import users from "services/users.js"
 import UserGroupSearch from "components/tiles/UserGroupSearch.vue"
 import OrganizationSearch from "components/tiles/OrganizationSearch.vue"
+import DataBrokerSearch from "components/tiles/DataBrokerSearch.vue"
 import { rl, status, ErrorBox, Success, CheckBox, FormGroup, Modal } from 'basic-vue3-components'
 import _ from "lodash";
 
@@ -115,12 +122,13 @@ export default {
         expired : null,
         setupProvidersearch : null,
         setupOrganizationSearch : null,
+        setupBrokerSearch : null,
 	    form : {},        
         add : { user:null, role:{} },
         rights : [ "readData", "writeData", "changeTeam","setup","applications" ]       
     }),
 
-    components: {  ErrorBox, FormGroup, Success, CheckBox, Panel, Modal, UserGroupSearch, OrganizationSearch },
+    components: {  ErrorBox, FormGroup, Success, CheckBox, Panel, Modal, UserGroupSearch, OrganizationSearch, DataBrokerSearch },
 
     mixins : [ status, rl ],
 
@@ -165,6 +173,7 @@ export default {
 	    
 	    select(who) {
 	       this.$data.add = who;
+	       console.log(who);
 	    },
 	
 	    edit() {	
@@ -204,11 +213,17 @@ export default {
 	    addOrganizations() {
             const { $data, $route, $router } = this, me = this;
 		 
-            this.$router.push({ path : './addorganization', query : { parentId : $data.groupId} });
-        
-		
-		
-		    //$data.setupOrganizationSearch = {}; 
+            this.$router.push({ path : './addorganization', query : { parentId : $data.groupId} });      		   
+	    },
+	    
+	    addOrganizations2() {
+            const { $data, $route, $router } = this, me = this;		                     		
+		    $data.setupOrganizationSearch = {}; 
+	    },
+	    
+	    addBroker() {
+	        const { $data, $route, $router } = this, me = this;		                     		
+		    $data.setupBrokerSearch = {};
 	    },
 
         addGroup(groups) {	
@@ -216,17 +231,23 @@ export default {
 		    console.log("TRIGGER");
 		    console.log(groups);
 		    $data.setupProvidersearch = null;
+		    $data.setupBrokerSearch = null;
 
             if (!groups.length) groups = [ groups ];					
 		    let groupsIds = [];
 		    let isPeople = false;
+		    let isService = false;
             for (let p of groups) {
                if (p.email) isPeople = true;
+               if (p.filename) isService = true;
                groupsIds.push(p._id || p.id);
             }
 		
 		   if (isPeople) {
 		      me.doAction("change", usergroups.addMembersToUserGroup($data.groupId, groupsIds).
+              then(function() { me.init(); }));
+		   } else if (isService) {
+		      me.doAction("change", usergroups.addBrokerToUserGroup($data.groupId, groupsIds).
               then(function() { me.init(); }));
 		   } else {
 		      me.doAction("change", usergroups.addGroupsToUserGroup($data.groupId, groupsIds).
@@ -237,8 +258,13 @@ export default {
         
         updateMember() {
             const { $data } = this, me = this;
-            me.doAction("change", usergroups.addGroupsToUserGroup($data.groupId, [ $data.add.member ], $data.add.role).
-            then(function() { me.init(); }));
+            if ($data.add.entityType == "SERVICES") {
+	            me.doAction("change", usergroups.addBrokerToUserGroup($data.groupId, [ $data.add.member ], $data.add.role).
+	            then(function() { me.init(); }));
+            } else {
+	            me.doAction("change", usergroups.addGroupsToUserGroup($data.groupId, [ $data.add.member ], $data.add.role).
+	            then(function() { me.init(); }));
+            }
         }
 				    	 		 
     },

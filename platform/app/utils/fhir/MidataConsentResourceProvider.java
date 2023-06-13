@@ -103,6 +103,7 @@ import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.PluginLoginCache;
+import utils.QueryTagTools;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -789,7 +790,8 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		  consent.name = ext.getValue().toString();	
 		}
 		if (consent.name == null) consent.name = "Unnamed";
-									
+			
+		addSecurityTag(theResource, QueryTagTools.SECURITY_PLATFORM_MAPPED);	
 	}
 
 	@Override
@@ -947,7 +949,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		  if (creatorApp != null && !meta.hasExtension("app")) meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
 		if (record.creator != null && !meta.hasExtension("creator")) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, null));
-				
+		addSecurityTag(resource, QueryTagTools.SECURITY_PLATFORM_MAPPED);	
 		
 	}
 

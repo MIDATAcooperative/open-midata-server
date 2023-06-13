@@ -586,7 +586,8 @@
 	 "entitytype" : {
 	   "USER" : "User",
 	   "USERGROUP" : "Team",
-	   "ORGANIZATION" : "Organization"
+	   "ORGANIZATION" : "Organization",
+	   "SERVICES" : "Data Broker"
 	 },
 	 "usergrouptype" : {
 	   "ORGANIZATION" : "Organization",
@@ -983,6 +984,7 @@
     "set_owner_btn" : "Select person that shares its data",
     "add_yourself_btn" : "Add yourself",
     "add_person_btn" : "Add New Person",
+    "add_organization_btn" : "Add New Organization",
     "add_usergroup_btn" : "Add New Team",
     "writes" : "Write Permission",
     "writes2" : "The persons authorized by this consent may create or update data in your account covered by this consent.",
@@ -1329,6 +1331,12 @@
      "name" : "Organization Name",
      "city_or_zip" : "City or zip code",
      "empty_result" : "No matching organizations found."
+  },
+  
+  "databrokersearch" : {
+    "title" : "Search Data Brokers (APIs)",
+    "name" : "Data broker name",
+    "empty_result" : "No matching data brokers found."
   },
   
   "confirm" : {

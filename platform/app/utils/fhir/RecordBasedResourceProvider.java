@@ -576,8 +576,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	public void addSecurityTag(Record record, DomainResource theResource, String tag) {
-		  record.addTag(tag);
+		  if (record != null) record.addTag(tag);
 		  Pair<String, String> coding = QueryTagTools.getSystemCodeForTag(tag);
-		  theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
+		  if (!theResource.getMeta().hasSecurity() || theResource.getMeta().getSecurity(coding.getLeft(), coding.getRight())==null) {
+		    theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
+		  }
 	}
 }

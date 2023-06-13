@@ -782,6 +782,12 @@ public class RecordManager {
 		while (it.hasNext()) {
 	   	   DBRecord record = it.next();			
 	       if (record.meta.getString("content").equals("Patient")) it.remove();
+	       else {
+		       Set<String> tags = RecordConversion.instance.getTags(record);
+		       if (tags != null && tags.contains(QueryTagTools.SECURITY_PLATFORM_MAPPED)) it.remove();
+			   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
+			   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
+	       }
 		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
 		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
 		}
@@ -897,7 +903,8 @@ public class RecordManager {
 	       if (record.meta.getString("content").equals("Patient")) it.remove();
 	       Set<String> tags = RecordConversion.instance.getTags(record);
 	       if (tags != null && tags.contains(QueryTagTools.SECURITY_NODELETE)) it.remove();
-	       
+	       if (tags != null && tags.contains(QueryTagTools.SECURITY_PLATFORM_MAPPED)) it.remove();
+	       	       
 		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
 		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
 		}

@@ -30,6 +30,8 @@ import actions.APICall;
 import models.Consent;
 import models.HealthcareProvider;
 import models.MidataId;
+import models.Plugin;
+import models.ServiceInstance;
 import models.Study;
 import models.User;
 import models.UserGroup;
@@ -166,10 +168,16 @@ public class UserGroups extends APIController {
 										
 		Set<UserGroupMember> members = UserGroupMember.getAllByGroup(groupId, Sets.createEnum(EntityType.USERGROUP, EntityType.ORGANIZATION, EntityType.SERVICES));
 		Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
-		for (UserGroupMember member : members) idmap.put(member.member, member);
+		for (UserGroupMember member : members) {
+			idmap.put(member.member, member);
+			if (member.entityType == EntityType.SERVICES) {
+				ServiceInstance si = ServiceInstance.getById(member.member, ServiceInstance.LIMITED);
+				if (si != null) member.entityName = si.name;
+			}
+		}
 		Set<UserGroup> groups = UserGroup.getAllUserGroup(CMaps.map("_id", idmap.keySet()), UserGroup.ALL);
 		for (UserGroup group : groups) idmap.get(group._id).entityName = group.name;
-					
+									
 		return ok(JsonOutput.toJson(members, "UserGroupMember", UserGroupMember.ALL)).as("application/json"); 		
 	}
 	
@@ -286,25 +294,48 @@ public class UserGroups extends APIController {
 	
 		MidataId groupId = JsonValidation.getMidataId(json, "group");
 		EntityType memberType = EntityType.USER;
-		if (json.has("type")) memberType = JsonValidation.getEnum(json, "type", EntityType.class);
-		Set<MidataId> targetUserIds = JsonExtraction.extractMidataIdSet(json.get("members"));
 		
-		if (!UserGroupTools.accessorIsMemberOfGroup(context, groupId, Permission.CHANGE_TEAM)) {
+		if (json.has("type")) memberType = JsonValidation.getEnum(json, "type", EntityType.class);
+		Permission permission = memberType.getChangePermission();
+		
+		Set<MidataId> targetUserIds1 = JsonExtraction.extractMidataIdSet(json.get("members"));
+		
+		if (!UserGroupTools.accessorIsMemberOfGroup(context, groupId, permission)) {
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");		
 		}
-		
-		for (MidataId targetUserId : targetUserIds) {
+		Set<MidataId> targetUserIds = new HashSet<MidataId>();
+		for (MidataId targetUserId : targetUserIds1) {
 			switch(memberType) {
 			case USER:
 				if (User.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.notexists.user", "Target user does not exist.");
+				targetUserIds.add(targetUserId);
 				break;
 			case ORGANIZATION:
 				if (HealthcareProvider.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.notexists.organization", "Target organization does not exist.");
+				targetUserIds.add(targetUserId);
 				break;
 			case USERGROUP:
 				if (targetUserIds.size()==1 && HealthcareProvider.getById(targetUserId, Sets.create("_id")) != null) memberType=EntityType.ORGANIZATION;
 				if (UserGroup.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.notexists.usergroup", "Target team does not exist.");
+				targetUserIds.add(targetUserId);
 				break;
+			case SERVICES:
+				Plugin pl = Plugin.getById(targetUserId);
+				if (pl==null) {
+					targetUserIds.add(targetUserId);
+				} else if (!pl.type.equals("broker")) throw new BadRequestException("error.notexists.plugin", "Target data broker does not exist.");
+				else {
+					Set<ServiceInstance> si = ServiceInstance.getByApp(targetUserId, ServiceInstance.LIMITED);
+					boolean found = false;
+					for (ServiceInstance s : si) {
+						if (s.status == UserStatus.ACTIVE) {
+							targetUserIds.add(s._id);
+							found = true;
+						}
+					}
+					if (!found) throw new BadRequestException("error.notexists.plugin", "Target data broker does not exist.");
+				}
+		
 			}
 		}
 		
@@ -331,7 +362,7 @@ public class UserGroups extends APIController {
 			if (role == null || !role.pseudo) throw new BadRequestException("error.invalid.anonymous", "Unpseudonymized access not allowed");
 		}
 		
-		List<UserGroupMember> self = context.getCache().getByGroupAndActiveMember(groupId, context.getAccessor(), Permission.CHANGE_TEAM);
+		List<UserGroupMember> self = context.getCache().getByGroupAndActiveMember(groupId, context.getAccessor(), permission);
 		ProjectTools.addToUserGroup(context, self.get(self.size()-1), role, memberType, targetUserIds);
 		
 		AuditManager.instance.success();

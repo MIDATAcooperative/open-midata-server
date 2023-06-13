@@ -40,9 +40,9 @@
 				
 				<div v-for="provider in providers.filtered" :key="provider._id">
 				    <div class="row">
-					<div class="col-md-6 col-12 main-col">{{ provider.firstname }} {{ provider.lastname }}</div>					
-					<div class="col-lg-5 col-md-4 col-12"><span v-if="provider.address1">{{ provider.address1 }}<br/></span>{{ provider.zip }} {{ provider.city }}</div>					
-					<div class="col-lg-1 col-md-2 col-12"><a class="btn btn-primary btn-sm" href="javascript:" @click="addConsent(provider)" v-t="'common.add_btn'"></a></div>
+					<div class="col-lg-6 col-12 main-col">{{ provider.firstname }} {{ provider.lastname }}</div>					
+					<div class="col-lg-4 col-12"><span v-if="provider.address1">{{ provider.address1 }}<br/></span>{{ provider.zip }} {{ provider.city }}</div>					
+					<div class="col-lg-2 col-12"><a class="btn btn-primary btn-sm" href="javascript:" @click="addConsent(provider)" v-t="'common.add_btn'"></a></div>
 					</div>
 					<div style="border-bottom: 1px solid #e0e0e0; margin-top:10px; margin-bottom:5px"></div>
 				</div>

@@ -226,6 +226,7 @@
 					<div class="margin-top" v-if="mayAddPeople()">
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" @click="addYourself();" v-t="'newconsent.add_yourself_btn'"></button>
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addOrganization();" v-t="'newconsent.add_organization_btn'"></button>
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
 					</div>
 					<div class="extraspace"></div>
@@ -348,6 +349,10 @@
 	   <provider-search :setup="setupProvidersearch" @add="addPerson"></provider-search>
 	</modal>
 	
+	<modal id="organizationSearch" full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
+	   <organization-search :setup="setupOrganizationSearch" @add="addPerson"></organization-search>
+	</modal>
+	
 	<modal id="setupUser" full-width="true" @close="setupAdduser=null" :open="setupAdduser!=null" :title="$t('dashboard.addusers')">
 	  <add-users :setup="setupAdduser" @close="setupAdduser=null" @add="addPerson"></add-users>
 	</modal>
@@ -374,6 +379,7 @@ import users from 'services/users';
 import hc from 'services/hc';
 import { getLocale } from 'services/lang';
 import ProviderSearch from "components/tiles/ProviderSearch.vue"
+import OrganizationSearch from "components/tiles/OrganizationSearch.vue"
 import Panel from "components/Panel.vue"
 import AddUsers from "components/tiles/AddUsers.vue"
 import UserGroupSearch from "components/tiles/UserGroupSearch.vue"
@@ -407,12 +413,13 @@ export default {
         sharing : {},
 		owner : null,
 		setupProvidersearch : null,
+		setupOrganizationSearch : null,
 		setupAdduser : null,
 		setupAddowner : null,
 		setupSearchGroup : null
 	}),		
     
-    components: { ErrorBox, CheckBox, Panel, FormGroup, ProviderSearch, AddUsers, Modal, UserGroupSearch },
+    components: { ErrorBox, CheckBox, Panel, FormGroup, ProviderSearch, OrganizationSearch, AddUsers, Modal, UserGroupSearch },
 
     mixins : [ status ],
 
@@ -645,16 +652,18 @@ export default {
 	
 	addPerson(person, isTeam) {	
 		const { $data, $route, $router } = this, me = this;
-		
+		console.log(person);
 		if (person.members) isTeam = true;
+		if (person.resourceType == "Organization") isTeam = true;
 		$data.setupProvidersearch = null;
+		$data.setupOrganizationSearch = null;
 		$data.setupAdduser = null;
 		$data.setupSearchGroup = null;
 		$data.setupAddowner = null;
 
 		if (isTeam) {
 			$data.authteams.push(person);
-			$data.consent.authorized.push(person._id);
+			$data.consent.authorized.push(person._id || person.id);
 			$data.consent.entityType = "USERGROUP";
 			if (!$data.consent.name) $data.consent.name = me.getName(person);
 		} else {
@@ -722,7 +731,10 @@ export default {
 		$data.setupSearchGroup= {};		
 	},
 	
-	
+	addOrganization() {
+		const { $data, $route, $router } = this, me = this;	
+		$data.setupOrganizationSearch = {};		
+	},
 	
 	addYourself() {
         const { $data, $route, $router } = this, me = this;

@@ -59,12 +59,17 @@ import models.HealthcareProvider;
 import models.MidataId;
 import models.Record;
 import models.Research;
+import models.enums.AuditEventType;
 import models.enums.EntityType;
 import models.enums.ResearcherRole;
 import utils.ApplicationTools;
+import utils.OrganizationTools;
+import utils.QueryTagTools;
 import utils.RuntimeConstants;
 import utils.UserGroupTools;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
+import utils.audit.AuditManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -274,31 +279,40 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	
 	@Override
 	public void updatePrepare(Record record, Organization theResource) throws AppException {
-		if (record.tags != null && record.tags.contains("security:generated")) {
+		if (theResource.getUserData("source")==null && record.content.equals("Organization/HP")) {
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CHANGED).withActorUser(info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
+			HealthcareProvider hp = HealthcareProvider.getById(record._id, HealthcareProvider.ALL);
+			hp.name = theResource.getName();
+			MidataId oldParent = hp.parent;
+			if (theResource.hasPartOf()) {
+			   Reference parentRef = theResource.getPartOf();
+			   hp.parent =  MidataId.parse(parentRef.getId());
+			} else hp.parent = null;
+			OrganizationTools.prepareModel(info(), hp, oldParent);
+			record.mapped = hp;
+		}
+		if (!record.content.equals("Organization/HP") && record.tags != null && record.tags.contains("security:generated")) {
 			if (theResource.getUserData("source") == null) throw new ForbiddenOperationException("Update not allowed on generated resources");
 		}
 		super.updatePrepare(record, theResource);		
 	}
+	
+	
 			
-	// Prepare a Midata record to be written into the database. Tasks:
-	// a) Each record must have syntactical type "format" set and semantical type "content" set. 
-	// b) Each record must have a "name" that will be shown to the user in the record tree.
-	//    The name should describe the content, should not reveal secrets.
-	// c) If the "subject" is the record owner he should be removed from the FHIR representation
-	public void prepare(Record record, Organization theOrganization) throws AppException {
-		// Task a : Set Record "content" field by using a code from the resource (or a fixed value or something else useful)
-		String display = theOrganization.getName();	
-		record.name = display;	
+	@Override
+	public void createPrepare(Record record, Organization theOrganization) throws AppException {
 		
 		Object source = theOrganization.getUserData("source");
 		if (source != null && source.equals("HP")) {
 		  record.content = "Organization/HP";			
 		  record.code = Collections.singleton("http://midata.coop Organization/HP");
 		  record._id = MidataId.from(theOrganization.getId());
+		  addSecurityTag(record, theOrganization, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		} else if (source != null && source.equals("Research")) {
 		  record.content = "Organization/Research";
 		  record.code = Collections.singleton("http://midata.coop Organization/Research");
 		  record._id = MidataId.from(theOrganization.getId());
+		  addSecurityTag(record, theOrganization, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		} else {
 		
 		  if (theOrganization.getMeta().getSecurity("http://midata.coop/codesystems/security", "platform-mapped") != null) {
@@ -311,6 +325,19 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		}			   
 		record.owner = RuntimeConstants.instance.publicUser;	
 		
+		super.createPrepare(record, theOrganization);
+	}
+
+	// Prepare a Midata record to be written into the database. Tasks:
+	// a) Each record must have syntactical type "format" set and semantical type "content" set. 
+	// b) Each record must have a "name" that will be shown to the user in the record tree.
+	//    The name should describe the content, should not reveal secrets.
+	// c) If the "subject" is the record owner he should be removed from the FHIR representation
+	public void prepare(Record record, Organization theOrganization) throws AppException {
+		// Task a : Set Record "content" field by using a code from the resource (or a fixed value or something else useful)
+		String display = theOrganization.getName();	
+		record.name = display;	
+					
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
 		clean(theOrganization);
  
@@ -329,7 +356,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 
 	@Override
 	public Organization createExecute(Record record, Organization theResource) throws AppException {
-		
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CREATED).withActorUser(info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
 		if (record.content.equals("Organization/HP") && theResource.getUserData("source")==null) {
 			MidataId parent = null;
 			if (theResource.hasPartOf()) {
@@ -396,14 +423,16 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 		if (!doupdate) {
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
-			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");
-			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("platform-mapped");
+			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");			
 		}				
 		
+		provider.addSecurityTag(oldRecord, org, QueryTagTools.SECURITY_PLATFORM_MAPPED);
+		
 		if (doupdate) {
+		  provider.updatePrepare(oldRecord, org);
 		  provider.updateRecord(oldRecord, org, provider.getAttachments(org));
 		} else {
-		  //RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", research._id).map("format","fhir/Organization"));
+		  //RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", research._id).map("format","fhir/Organization"));		  
 		  provider.createResource(org);
 		}
 		
@@ -438,12 +467,18 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		org.setName(healthProvider.name);
 		org.setUserData("source", "HP");
 		
+		if (healthProvider.parent != null) {
+			HealthcareProvider prov = HealthcareProvider.getById(healthProvider.parent, HealthcareProvider.ALL);
+			if (prov != null) {
+			  org.setPartOf(new Reference("Organization/"+healthProvider.parent).setDisplay(prov.name));
+			}
+		} else org.setPartOf(null);
+		
 		if (!doupdate) {
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
-			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");
-			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("platform-mapped");
+			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");			
 		}
-		
+		provider.addSecurityTag(oldRecord, org, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		if (doupdate) {
 		  provider.updateRecord(oldRecord, org, provider.getAttachments(org));
 		} else {
@@ -453,6 +488,19 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 	}
    
+   
+   
+
+	@Override
+	public void updateExecute(Record record, Organization theResource) throws AppException {
+		
+		super.updateExecute(record, theResource);
+		if (theResource.getUserData("Source")==null) {		
+			OrganizationTools.updateModel(info(), (HealthcareProvider) record.mapped);   						
+			UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+		}
+	}
+	
 
 	@Operation(name="$register-local", idempotent=false)
 	public Organization registerLocal(				  

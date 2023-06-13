@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.EntityType;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
@@ -46,6 +47,8 @@ public class HealthcareProvider extends Model {
 	public String description;
 	public String url;
 	public MidataId parent;
+	public MidataId managerId;
+	public EntityType managerType;
 	
 	public static void add(HealthcareProvider provider) throws InternalServerException {
 		Model.insert(collection, provider);

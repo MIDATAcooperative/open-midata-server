@@ -29,6 +29,7 @@ import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
+import models.enums.Permission;
 import models.enums.ResearcherRole;
 import utils.access.Feature_UserGroups;
 import utils.access.RecordManager;
@@ -47,7 +48,7 @@ public class ProjectTools {
 
     public static void addToUserGroup(AccessContext context, UserGroupMember self, ResearcherRole role, EntityType type, Set<MidataId> targetUserIds) throws AppException {
     	
-    	context = context.forUserGroup(self);
+    	context = context.forUserGroup(self.userGroup, type.getChangePermission());
     	    
         MidataId groupId = self.userGroup;
 	

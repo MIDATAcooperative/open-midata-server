@@ -61,5 +61,11 @@ import server from "./server";
 		if (role) for (let prop in role) data[prop] = role[prop];
 		return server.post(jsRoutes.controllers.UserGroups.addMembersToUserGroup().url, data);
 	};
+	
+	service.addBrokerToUserGroup = function(group, members, role) {
+		var data = {"group": group, "members" : members, "type" : "services" };
+		if (role) for (let prop in role) data[prop] = role[prop];
+		return server.post(jsRoutes.controllers.UserGroups.addMembersToUserGroup().url, data);
+	};
 
 export default service;

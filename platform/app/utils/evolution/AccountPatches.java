@@ -331,7 +331,7 @@ public class AccountPatches {
 	}
 	
 	public static void fixOrgs() throws AppException {
-		AccessLog.logBegin("start fix organization records");
+		/*AccessLog.logBegin("start fix organization records");
 		KeyManager.instance.login(1000l*60l*60l, false);
 		KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
 		MidataId executor = RuntimeConstants.instance.publicUser;
@@ -348,7 +348,7 @@ public class AccountPatches {
 			OrganizationResourceProvider.updateFromHP(session, provider);
 		}
 		AccessLog.logEnd("end fix organization records");
-		ServerTools.endRequest();
+		ServerTools.endRequest();*/
 	}
 	
 }

@@ -69,6 +69,9 @@ public enum AuditEventType {
 	 */
 	USER_ACCOUNT_DELETED(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-account-deleted", "User account deleted"), AuditEventAction.D),
 	
+	ORGANIZATION_CREATED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "organization-created", "Organization created"), AuditEventAction.C),
+
+	ORGANIZATION_CHANGED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "organization-updated", "Organization updated"), AuditEventAction.U),
 	
 	APP_FIRST_USE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "app-first-use", "First use of application"), AuditEventAction.E),
 	
