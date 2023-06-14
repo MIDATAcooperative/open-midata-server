@@ -102,5 +102,6 @@ id0109	02.11.2022	a.kreutz	F	More security tags supported	FHIR resources may now
 id0110	20.01.2023	a.kreutz	I	Account creation via API rewritten	External services and project analyzers are now able to create accounts.
 id0111	13.02.2023	a.kreutz	F	FHIR to CSV mapping available	Researchers can now upload a JSON with FHIR to CSV mapping and export CSV directly in the portal.
 id0112	26.04.2023	a.kreutz	F	eMail/SMS messages may have a fixed receiver
-id0113	26.04.2023	a.kreutz	I	eMail and SMS sending limited	A user may only receive up to 30 emails per hours and 12 SMS per hour.  
+id0113	26.04.2023	a.kreutz	I	eMail and SMS sending limited	A user may only receive up to 30 emails per hours and 12 SMS per hour.
+id0114	14.06.2023	a.kreutz	F	Allow active Consents to non-Midata users.	Via API you can now create active Consents with people having no Midata account yet. The Consent will automatically have status proposed until the target user has registered an account. Afterwards it will be set to active automatically (unless it was rejected before).  
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
