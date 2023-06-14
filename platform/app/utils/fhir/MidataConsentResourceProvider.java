@@ -813,7 +813,8 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		} else {		    		   
 			String encoded = ctx.newJsonParser().encodeResourceToString(theResource);		
 			consent.fhirConsent = BasicDBObject.parse(encoded);		 
-	        Circles.addConsent(info(), consent, true, null, false);        
+	        Circles.addConsent(info(), consent, true, null, false);   
+	        if (consent.status == ConsentStatus.UNCONFIRMED && theResource.getStatus() == ConsentState.ACTIVE) theResource.setStatus(ConsentState.PROPOSED);
 			theResource.setDateTime(consent.dateOfCreation);
 			theResource.setId(consent._id.toString());
 			processDataSharing(consent, theResource);

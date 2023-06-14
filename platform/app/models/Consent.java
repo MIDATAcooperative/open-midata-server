@@ -184,7 +184,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	 */
 	public WritePermissionType writes;
 	
-	
+	/**
+	 * For consents with external grantees the system may automatically set consent status to active once all external
+	 * grantees joined the platform. This field is in none of the default sets for reading.
+	 */
+	public byte[] autoConfirmHandle;
 		
 	
 	/**

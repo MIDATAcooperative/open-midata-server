@@ -144,7 +144,8 @@ public class Transactions {
 				   try {
 				      step.init();
 				   } catch (BaseServerResponseException e) {
-					  step.setResultBasedOnException(e);			
+					  step.setResultBasedOnException(e);
+					  failed = true;
 				   } catch (AppException e2) {
 					  if (!failed && e2 instanceof PluginException) {
 					    ErrorReporter.reportPluginProblem("FHIR Batch", null, (PluginException) e2);
