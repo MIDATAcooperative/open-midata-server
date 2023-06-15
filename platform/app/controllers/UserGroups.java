@@ -223,8 +223,8 @@ public class UserGroups extends APIController {
 		MidataId groupId = MidataId.from(groupIdStr);
 		AccessContext context = portalContext(request);
 		
-		UserGroupMember execMember = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
-		if (execMember == null) throw new BadRequestException("error.invalid.usergroup", "Only members may delete a group");
+		List<UserGroupMember> path = context.getCache().getByGroupAndActiveMember(groupId, context.getAccessor(), Permission.SETUP);		
+		if (path == null) throw new BadRequestException("error.invalid.usergroup", "Only members may delete a group");
 		
 		UserGroup userGroup = UserGroup.getById(groupId, Sets.create("_id", "status"));
 		

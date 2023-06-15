@@ -309,8 +309,20 @@ public abstract class AccessContext {
 	 * @return
 	 * @throws AppException
 	 */
-	public AccessContext forConsent(Consent consent) throws AppException {		
-		return new ConsentAccessContext(consent, getCache(), this);
+	public AccessContext forConsent(Consent consent) throws AppException {
+		if (consent.owner != null && consent.owner.equals(getAccessor())) return new ConsentAccessContext(consent, getCache(), this);
+		if (consent.authorized != null && consent.authorized.contains(getAccessor())) return new ConsentAccessContext(consent, getCache(), this);
+		
+		if (consent.authorized != null && consent.entityType != EntityType.USER) {
+		   for (MidataId id : consent.authorized) {
+			   List<UserGroupMember> ugms = getCache().getByGroupAndActiveMember(id, getAccessor(), Permission.ANY);
+			   if (ugms != null) {
+				   AccessContext result = forUserGroup(ugms);				   
+				   return new ConsentAccessContext(consent, result.getCache(), result); 
+			   }
+		   }
+		}
+		throw new InternalServerException("error.internal", "Consent context not createable");
 	}
 	
 	/**
@@ -399,10 +411,13 @@ public abstract class AccessContext {
 	}
 	
 	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
-		
-		APSCache cache = getCache();
-		APSCache subcache = cache;
 		List<UserGroupMember> ugms = cache.getByGroupAndActiveMember(userGroup, cache.getAccessor(), permission);
+		return forUserGroup(ugms);		
+	}
+	
+	public UserGroupAccessContext forUserGroup(List<UserGroupMember> ugms) throws AppException {				
+		APSCache cache = getCache();
+		APSCache subcache = cache;			
 		for (UserGroupMember ugmx : ugms) subcache = Feature_UserGroups.readySubCache(cache, subcache, ugmx);
 		UserGroupMember ugm = ugms.get(ugms.size()-1);
 		return new UserGroupAccessContext(ugm, subcache, this);

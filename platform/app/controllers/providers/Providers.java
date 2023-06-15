@@ -20,6 +20,7 @@ package controllers.providers;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,7 @@ import models.Member;
 import models.MemberKey;
 import models.MidataId;
 import models.User;
+import models.UserGroup;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
@@ -364,6 +366,16 @@ public class Providers extends APIController {
 		String city = JsonValidation.getStringOrNull(json, "city");
 		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.getProvider("Organization")); 
 		List<Organization> orgs = provider.search(portalContext(request), name, city);
+	
+		Map<MidataId, Organization> orgsById = new HashMap<MidataId, Organization>();
+		for (Organization org : orgs) orgsById.put(MidataId.from(org.getIdElement().getIdPart()), org);		
+		Map<String, Object> properties = CMaps.map("searchable", true).map("_id", orgsById.keySet());				
+	    Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, Sets.create("_id"));
+	    
+	    orgs.clear();
+	    for (UserGroup grp : groups) orgs.add(orgsById.get(grp._id));
+
+		
 		StringBuffer out = new StringBuffer("[");
 		boolean first = true;
 		for (Organization org : orgs) {
