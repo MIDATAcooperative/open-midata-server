@@ -157,7 +157,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	public Patient getResourceById(@IdParam IIdType theId) throws AppException {
 
 		String id = theId.getIdPart();
-		MidataId targetId = new MidataId(id);
+		MidataId targetId = MidataId.parse(id);
 
 		AccessContext info = info();
 		List<Record> allRecs = RecordManager.instance.list(info.getAccessorRole(), info, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),

@@ -1000,6 +1000,7 @@ public class Circles extends APIController {
 					replacementsExt.putAll(replacements);
 					User user = User.getById(target, Sets.create("email"));
 					if (user != null) {
+
 					    replacementsExt.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(user.email != null ? ("&login="+URLEncoder.encode(user.email, "UTF-8")) : ""));
 					    replacementsExt.put("reject-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(user.email != null ? ("&login="+URLEncoder.encode(user.email, "UTF-8")) : ""));
 					

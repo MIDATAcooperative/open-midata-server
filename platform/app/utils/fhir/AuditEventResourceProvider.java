@@ -100,7 +100,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	@Read()
 	public AuditEvent getResourceById(@IdParam IIdType theId) throws AppException {
 		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
-		MidataAuditEvent mae = MidataAuditEvent.getById(MidataId.from(theId.getIdPart()));	
+		MidataAuditEvent mae = MidataAuditEvent.getById(MidataId.parse(theId.getIdPart()));	
 		if (mae != null) return readAuditEventFromMidataAuditEvent(mae);
 		throw new ResourceNotFoundException(theId);		
 	}
