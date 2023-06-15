@@ -34,6 +34,7 @@ import org.bson.types.BasicBSONList;
 import models.MidataId;
 import models.Record;
 import utils.AccessLog;
+import utils.QueryTagTools;
 import utils.access.op.AndCondition;
 import utils.access.op.Condition;
 import utils.exceptions.AppException;
@@ -358,6 +359,30 @@ public class ProcessingTools {
 
 	}
 	
+	static class FilterByNonPseudonymizeTag extends FilterIterator<DBRecord> {
+				
+
+		public FilterByNonPseudonymizeTag(DBIterator<DBRecord> chain) throws AppException {
+			super(chain);	
+			if (chain.hasNext())
+				next();
+		}
+
+		@Override
+		public boolean contained(DBRecord record) {
+			if (record.isStream!=null || record.context==null) return true;
+			if (record.meta==null) return false;
+			Collection tags = (Collection) record.meta.get("tags");						
+			return (!record.context.mustPseudonymize()) || tags == null || !tags.contains(QueryTagTools.SECURITY_NOT_PSEUDONYMISABLE);
+		}
+		
+		@Override
+		public String toString() {
+			return "filter-non-pseudo(["+passed+"/"+filtered+"] "+chain.toString()+")";
+		}
+
+	}
+	
 	static class ClearByHiddenTag extends FilterIterator<DBRecord> {
 		
 
@@ -413,7 +438,7 @@ public class ProcessingTools {
 		}
 
 		@Override
-		public boolean contained(DBRecord record) {
+		public boolean contained(DBRecord record) {		    
 			return record.meta != null;
 		}
 		
@@ -441,7 +466,8 @@ public class ProcessingTools {
 		public boolean contained(DBRecord record) throws AppException {
 			//AccessLog.log("rec meta="+record.meta+" enc="+record.encrypted+" dat="+record.data+" encdat="+record.encryptedData);
 			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime || record.sharedAt != null)) {				
-				 RecordEncryption.decryptRecord(record);				   			
+				 RecordEncryption.decryptRecord(record);	
+				 if (record.meta == null) return false;
 				 if (!record.meta.containsField("creator") && record.owner != null) record.meta.put("creator", record.owner.toDb());
 				 if (filterDelete && record.meta.containsField("deleted")) return false;
 				 return true;

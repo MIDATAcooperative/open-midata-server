@@ -38,6 +38,7 @@ import org.bson.BasicBSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
+import controllers.research.AutoJoiner;
 import models.Circle;
 import models.Consent;
 import models.HCRelated;
@@ -102,6 +103,7 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
 
 /**
@@ -450,7 +452,12 @@ public class Circles extends APIController {
 			if (externalAuthorized.isEmpty()) consent.externalAuthorized = null;
 			else {
 				consent.externalAuthorized = externalAuthorized;
-				consent.status = ConsentStatus.UNCONFIRMED;
+				if (consent.status == ConsentStatus.ACTIVE) {
+					consent.status = ConsentStatus.UNCONFIRMED;
+					if (context.getAccessor().equals(consent.owner)) {
+					  consent.autoConfirmHandle = ServiceHandler.encrypt(KeyManager.instance.currentHandle(context.getAccessor()));
+					}
+				}
 			}
 		}
 		
@@ -1024,6 +1031,8 @@ public class Circles extends APIController {
 			Consent.set(consent._id, "externalAuthorized", consent.externalAuthorized);
 			
 			persistConsentMetadataChange(context, consent, false);
+			
+			if (consent.externalAuthorized.isEmpty() && consent.status==ConsentStatus.UNCONFIRMED) AutoJoiner.autoConfirm(consent._id);
 		}
 		
 		consents = Consent.getByExternalOwnerEmail(emailLC);
