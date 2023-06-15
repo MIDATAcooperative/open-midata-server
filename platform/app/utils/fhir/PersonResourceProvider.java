@@ -81,7 +81,7 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	@Read()
 	public Person getResourceById(@IdParam IIdType theId) throws AppException {
 		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
-		User member = User.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
+		User member = User.getById(MidataId.parse(theId.getIdPart()), User.ALL_USER);	
 		if (member == null) return null;
 		return personFromMidataUser(member);
 	}		
@@ -284,7 +284,7 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 
 	@Override
 	public User fetchCurrent(IIdType theId, Person p) throws AppException {
-		return User.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);
+		return User.getById(MidataId.parse(theId.getIdPart()), User.ALL_USER);
 	}
 
 	@Override

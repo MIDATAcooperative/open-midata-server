@@ -71,7 +71,7 @@ public class MidataPractitionerResourceProvider extends ResourceProvider<Practit
 	@Read()
 	public Practitioner getResourceById(@IdParam IIdType theId) throws AppException {
 		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
-		HPUser member = HPUser.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
+		HPUser member = HPUser.getById(MidataId.parse(theId.getIdPart()), User.ALL_USER);	
 		if (member == null) return null;
 		return practitionerFromMidataUser(member);
 	}
@@ -144,7 +144,7 @@ public class MidataPractitionerResourceProvider extends ResourceProvider<Practit
 	
 	@Override
 	public User fetchCurrent(IIdType theId, Practitioner r) throws AppException {
-		return HPUser.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
+		return HPUser.getById(MidataId.parse(theId.getIdPart()), User.ALL_USER);	
 	}
 
 	@Override

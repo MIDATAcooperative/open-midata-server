@@ -55,6 +55,7 @@ import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.util.FhirTerser;
 import ca.uhn.fhir.util.UrlUtil;
+import models.MidataId;
 import models.Model;
 import models.Record;
 import utils.ErrorReporter;
@@ -377,7 +378,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	
 			
 	protected static boolean isLocalId(IIdType theId) {
-		if (theId.getBaseUrl() == null) return true;
+		if (theId.getBaseUrl() == null && MidataId.isValid(theId.getIdPart())) return true;
 		return false;
 	}
 		
