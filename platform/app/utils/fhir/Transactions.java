@@ -38,6 +38,7 @@ import ca.uhn.fhir.rest.annotation.Transaction;
 import ca.uhn.fhir.rest.annotation.TransactionParam;
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
@@ -140,22 +141,8 @@ public class Transactions {
 		   if (isDocument || type.equals(BundleType.TRANSACTION)) {
 			   
 			   boolean failed = false;
-			   for (TransactionStep step : steps) {
-				   try {
-				      step.init();
-				   } catch (BaseServerResponseException e) {
-					  step.setResultBasedOnException(e);
-					  failed = true;
-				   } catch (AppException e2) {
-					  if (!failed && e2 instanceof PluginException) {
-					    ErrorReporter.reportPluginProblem("FHIR Batch", null, (PluginException) e2);
-					  }
-					  step.setResultBasedOnException(e2);
-					  failed = true;
-				   }
-
-			   }
-			   			   			   
+			   for (TransactionStep step : steps) step.init();
+				   			   			   			   
 			   if (!failed) {
 				   resolveReferences(steps);
 				   
@@ -229,11 +216,20 @@ public class Transactions {
 		   inf.getRequestCache().getStudyPublishBuffer().save();
 	   }
 	   	   
-	   Bundle retVal = new Bundle();		 
+	   Bundle retVal = new Bundle();	
+	   
+	   if (type.equals(BundleType.BATCH)) {
+		   retVal.setType(BundleType.BATCHRESPONSE);
+	   } else if (type.equals(BundleType.TRANSACTION)) {
+		   retVal.setType(BundleType.TRANSACTIONRESPONSE);
+	   }
+	   
 	   for (TransactionStep step : originalOrder) retVal.addEntry(step.getResult());	   
 	   return retVal;
 	   } catch (BaseServerResponseException e2) {
 		   throw e2;
+	   } catch (BadRequestException e4) {
+		   throw new InvalidRequestException(e4.getMessage(), TransactionStep.outcomeFromException(e4));
 	   } catch (PluginException e3) {
 		   ErrorReporter.reportPluginProblem("FHIR Transaction", null, e3);
 		   throw new InternalErrorException(e3.getMessage());

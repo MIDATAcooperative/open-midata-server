@@ -96,7 +96,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	@Read()
 	public Subscription getResourceById(@IdParam IIdType theId) throws AppException {
 		if (!info().mayAccess("Subscription", "fhir/Subscription")) return null;
-		SubscriptionData subscription = SubscriptionData.getByIdAndOwner(MidataId.from(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
+		SubscriptionData subscription = SubscriptionData.getByIdAndOwner(MidataId.parse(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
 		if (subscription == null) return null;
 		return readSubscriptionFromMidataSubscription(subscription);
 	}
@@ -436,7 +436,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 
 	@Override
 	public SubscriptionData fetchCurrent(IIdType theId, Subscription resource) throws AppException {
-		return SubscriptionData.getByIdAndOwner(MidataId.from(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
+		return SubscriptionData.getByIdAndOwner(MidataId.parse(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
 	}
 
 	@Override

@@ -134,7 +134,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 	@Read(version=true)	
 	public org.hl7.fhir.r4.model.Consent getResourceById(@IdParam IIdType theId) throws AppException {
 		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
-		models.Consent consent = Circles.getConsentById(info(), MidataId.from(theId.getIdPart()), info().getUsedPlugin(), Consent.FHIR);	
+		models.Consent consent = Circles.getConsentById(info(), MidataId.parse(theId.getIdPart()), info().getUsedPlugin(), Consent.FHIR);	
 		if (consent == null) return null;
 		
 		if (theId.hasVersionIdPart()) {
@@ -925,7 +925,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 
 	@Override
 	public Consent fetchCurrent(IIdType theId, org.hl7.fhir.r4.model.Consent resource) throws AppException {
-		return Circles.getConsentById(info(), MidataId.from(theId.getIdPart()), info().getUsedPlugin(), Consent.FHIR);	
+		return Circles.getConsentById(info(), MidataId.parse(theId.getIdPart()), info().getUsedPlugin(), Consent.FHIR);	
 	}
 
 	@Override

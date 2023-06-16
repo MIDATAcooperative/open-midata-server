@@ -107,7 +107,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 			List<Record> result = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
 			record = result.isEmpty() ? null : result.get(0);
 		} else {
-		    record = RecordManager.instance.fetch(info().getAccessorRole(), info(), new MidataId(theId.getIdPart()), null);
+		    record = RecordManager.instance.fetch(info().getAccessorRole(), info(), MidataId.parse(theId.getIdPart()), null);
 		}
 		if (record == null) throw new ResourceNotFoundException(theId);		
     	    	
