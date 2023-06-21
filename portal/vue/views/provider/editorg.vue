@@ -40,6 +40,7 @@
             </form-group>
             <form-group name="x" label="common.empty">
                 <button type="submit" :disabled="!isMasterUser() || action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
+                <button v-if="org._id" type="button" :disabled="!isMasterUser() || action!=null" class="btn btn-default ml-1" v-t="'common.delete_btn'" @click="deleteOrg()"></button>
                 <success :finished="finished" action="update" msg="common.save_ok"></success>                
             </form-group>          
         </form>	
@@ -175,11 +176,23 @@ export default {
 	       	    }
   	       	    me.doAction("update", server.post(jsRoutes.controllers.providers.Providers.createOrganization().url, $data.org))
   	       	    .then((res) => {
-	       		  $data.orgId = res.data._id;
-	       		  me.reload();	       		  
+	       		  me.$router.back();		  
 	       		});
 	       	}	       		
 	    },
+	
+		deleteOrg() {									
+            const { $data } = this, me = this;
+            if ($data.orgId) { 
+                let org = $data.org;
+                org.status = "DELETED";
+	       		me.doAction("update", server.put(jsRoutes.controllers.providers.Providers.updateOrganization($data.org._id).url, org)
+	       		.then((res) => {
+	       		   this.$router.push({ path : './organization' });	       		  
+	       		}));
+	       	} 
+	    },
+	
 	
 	    isMasterUser() {
 		    return session.hasSubRole('MASTER');

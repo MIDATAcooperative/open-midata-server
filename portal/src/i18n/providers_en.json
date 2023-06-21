@@ -129,7 +129,7 @@
     },
     "startDate" : "Member From",
     "endDate" : "Member Until",
-    
+    "empty" : "No sub-entities found.",
     "add_organization_btn" : "Create Sub-Organization",
     "add_organization2_btn" : "Link other Organization",
     "add_broker_btn" : "Add API Access",

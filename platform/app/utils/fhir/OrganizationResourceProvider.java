@@ -62,6 +62,7 @@ import models.Research;
 import models.enums.AuditEventType;
 import models.enums.EntityType;
 import models.enums.ResearcherRole;
+import models.enums.UserStatus;
 import utils.ApplicationTools;
 import utils.OrganizationTools;
 import utils.QueryTagTools;
@@ -281,7 +282,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	public void updatePrepare(Record record, Organization theResource) throws AppException {
 		if (theResource.getUserData("source")==null && record.content.equals("Organization/HP")) {
 			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CHANGED).withActorUser(info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
-			HealthcareProvider hp = HealthcareProvider.getById(record._id, HealthcareProvider.ALL);
+			HealthcareProvider hp = HealthcareProvider.getByIdAlsoDeleted(record._id, HealthcareProvider.ALL);
 			hp.name = theResource.getName();
 			MidataId oldParent = hp.parent;
 			if (theResource.hasPartOf()) {
@@ -290,6 +291,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			} else hp.parent = null;
 			OrganizationTools.prepareModel(info(), hp, oldParent);
 			record.mapped = hp;
+			
 		}
 		if (!record.content.equals("Organization/HP") && record.tags != null && record.tags.contains("security:generated")) {
 			if (theResource.getUserData("source") == null) throw new ForbiddenOperationException("Update not allowed on generated resources");
@@ -384,7 +386,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	}
 	
 	public static void updateFromHP(AccessContext context, MidataId orgId) throws AppException {
-		HealthcareProvider provider = HealthcareProvider.getById(orgId, HealthcareProvider.ALL);
+		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(orgId, HealthcareProvider.ALL);
 		updateFromHP(context, provider);
 	}
 	
@@ -468,7 +470,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		org.setUserData("source", "HP");
 		
 		if (healthProvider.parent != null) {
-			HealthcareProvider prov = HealthcareProvider.getById(healthProvider.parent, HealthcareProvider.ALL);
+			HealthcareProvider prov = HealthcareProvider.getByIdAlsoDeleted(healthProvider.parent, HealthcareProvider.ALL);
 			if (prov != null) {
 			  org.setPartOf(new Reference("Organization/"+healthProvider.parent).setDisplay(prov.name));
 			}
@@ -478,6 +480,13 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");			
 		}
+		
+		if (healthProvider.status != null && healthProvider.status.isDeleted()) {
+			org.setActive(false);
+		} else {
+			org.setActive(true);
+		}
+		
 		provider.addSecurityTag(oldRecord, org, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		if (doupdate) {
 		  provider.updateRecord(oldRecord, org, provider.getAttachments(org));
@@ -495,8 +504,13 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	public void updateExecute(Record record, Organization theResource) throws AppException {
 		
 		super.updateExecute(record, theResource);
-		if (theResource.getUserData("Source")==null) {		
-			OrganizationTools.updateModel(info(), (HealthcareProvider) record.mapped);   						
+		if (theResource.getUserData("Source")==null) {	
+			HealthcareProvider hp = (HealthcareProvider) record.mapped;
+			if (!theResource.getActive() && (hp.status == null || !hp.status.isDeleted())) {
+				hp.status = UserStatus.DELETED;
+			}
+			
+			OrganizationTools.updateModel(info(), hp);   						
 			UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
 		}
 	}

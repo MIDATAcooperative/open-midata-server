@@ -16,6 +16,8 @@
 -->
 <template>
     <panel :title="$t('provider_usergroups.title')" :busy="isBusy">    
+        <error-box :error="error"></error-box>
+    
         <pagination v-model="usergroups" search="name"></pagination>
 
         <table class="table" v-if="usergroups.filtered.length > 0">
@@ -31,7 +33,7 @@
           <td>{{ $t('enum.usergrouptype.'+item.type) }}</td>
           <td><input type="checkbox" disabled v-model="item.searchable"></td>
           <td>{{ $t('enum.userstatus.'+item.status) }}</td>          
-          <td><button class="btn btn-danger btn-sm" v-if="item.status != 'DELETED'" :disabled="action!=null" v-t="'common.delete_btn'" @click="deleteGroup(item)"></button></td>
+          <td><button class="btn btn-danger btn-sm" v-if="item.status != 'DELETED' && (!item.type || item.type=='CARETEAM')" :disabled="action!=null" v-t="'common.delete_btn'" @click="deleteGroup(item)"></button></td>
         </tr>
       </table>
       <p v-if="usergroups.filtered.length == 0" v-t="'provider_usergroups.empty'"></p>

@@ -276,7 +276,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		MidataId owner = record.owner;
 		if (!owner.equals(inf.getAccessor())) {
 			Consent consent = Circles.getOrCreateMessagingConsent(inf, inf.getAccessor(), owner, owner, false);
-			insertRecord(record, resource, new ConsentAccessContext(consent, info()));
+			insertRecord(record, resource, info().forConsent(consent));
 			shareFrom = consent._id;
 		} else {
 			insertRecord(record, resource);

@@ -41,6 +41,8 @@
             </tr>				
         </table>
         
+        <p v-if="members.filtered.length==0" v-t="'provider_editgroups.empty'"></p>
+        
          <form class="css-form form-horizontal" role="form">
             
             <form-group name="selected" v-if="add.entityName" label="provider_editusergroup.selected">

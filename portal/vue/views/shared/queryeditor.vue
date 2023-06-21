@@ -878,10 +878,14 @@ export default {
 		   return (r && r.indexOf(tag.id)>=0); 
 		},
 		
-		changeTag(tag, where) {
+		changeTag(tag, where) {	
 		   let cb = this.$data.currentBlock;
-		   if (!cb[where]) cb[where] = [];
-		   if (this.isTagPresent(tag,where)) cb[where].splice(cb[where].indexOf(tag.id),1);
+		   if (!cb[where]) cb[where] = []
+		   else if (!Array.isArray(cb[where])) cb[where] = [ cb[where] ];		 
+		   if (this.isTagPresent(tag,where)) {
+		     cb[where].splice(cb[where].indexOf(tag.id),1);		
+		     if (cb[where].length==0) cb[where] = undefined;    
+		   }
 		   else cb[where].push(tag.id);
 		}
     },

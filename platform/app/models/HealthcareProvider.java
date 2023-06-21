@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.enums.EntityType;
+import models.enums.UserStatus;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
@@ -37,8 +38,10 @@ public class HealthcareProvider extends Model {
 	
 	private static final String collection = "providers";
 	
+	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString(), null));
+	
 	@NotMaterialized
-	 public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "name","description","url","parent")); 
+	 public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "name","description","url","parent","status")); 
 		
 	/**
 	 * the name of the healthcare provider (clinic)
@@ -49,6 +52,7 @@ public class HealthcareProvider extends Model {
 	public MidataId parent;
 	public MidataId managerId;
 	public EntityType managerType;
+	public UserStatus status;
 	
 	public static void add(HealthcareProvider provider) throws InternalServerException {
 		Model.insert(collection, provider);
@@ -59,15 +63,19 @@ public class HealthcareProvider extends Model {
     }
  
 	public static HealthcareProvider getById(MidataId id, Set<String> fields) throws InternalServerException {
+		return Model.get(HealthcareProvider.class, collection, CMaps.map("_id", id).map("status", NON_DELETED), fields);
+	}
+	
+	public static HealthcareProvider getByIdAlsoDeleted(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(HealthcareProvider.class, collection, CMaps.map("_id", id), fields);
 	}
 	
     public static boolean existsByName(String name) throws InternalServerException {
-	   return Model.exists(HealthcareProvider.class, collection, CMaps.map("name", name));
+	   return Model.exists(HealthcareProvider.class, collection, CMaps.map("name", name).map("status", NON_DELETED));
     }
     
     public static boolean existsByName(String name, MidataId exclude) throws InternalServerException {
-    	HealthcareProvider r = Model.get(HealthcareProvider.class, collection, CMaps.map("name", name), Sets.create("_id"));
+    	 HealthcareProvider r = Model.get(HealthcareProvider.class, collection, CMaps.map("name", name).map("status", NON_DELETED), Sets.create("_id"));
 		 return r != null && !r._id.equals(exclude);
 	 }
     

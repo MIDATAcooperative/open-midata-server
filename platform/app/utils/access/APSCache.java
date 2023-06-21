@@ -297,31 +297,36 @@ public class APSCache {
 		}
 		
 		List<UserGroupMember> result = new ArrayList<UserGroupMember>();
-		if (getByGroupAndActiveMember(new HashSet<MidataId>(), result, userGroup, member, permission)) {
+		Set<MidataId> tested = new HashSet<MidataId>();
+		if (getByGroupAndActiveMember(tested, result, userGroup, member, permission)) {
+			AccessLog.log("getByGroupAndActiveMember grp=",userGroup.toString()," permission=",permission.toString()," tested=",tested.toString()," r=true");
 			return result;
 		} else {
+			AccessLog.log("getByGroupAndActiveMember grp=",userGroup.toString()," permission=",permission.toString()," tested=",tested.toString()," r=false");
 			return null;
 		}
 
 	}
 	
-	private boolean getByGroupAndActiveMember(Set<MidataId> tested, List<UserGroupMember> result, MidataId userGroup, MidataId member, Permission permission) throws InternalServerException  {
+	private boolean getByGroupAndActiveMember(Set<MidataId> tested, List<UserGroupMember> result, MidataId userGroup, MidataId member, Permission permission) throws InternalServerException  {		
 	    Set<UserGroupMember> all = getAllActiveByMember();
 	    for (UserGroupMember ugm : all) {
-	    	if (tested.contains(ugm._id)) continue;
-	    	tested.add(ugm._id);
+	    	if (tested.contains(ugm._id)) continue;	    	
+	    	
 	    	if (ugm.userGroup.equals(userGroup)) {
+	    		tested.add(ugm._id);
+	    		
 	    		if (ugm.member.equals(member) && ugm.getRole().may(permission)) {
 	    			result.add(ugm);
 	    			return true;
 	    		} else if (ugm.entityType == EntityType.USERGROUP || ugm.entityType == EntityType.ORGANIZATION) {
 		    	   if (ugm.getRole().may(permission) && getByGroupAndActiveMember(tested, result, ugm.member, member, permission)) {
-		    		   result.add(ugm);
+		    		   result.add(ugm);		    		   
 		    		   return true;
 		    	   }
 		    	}
 	    	} 
-	    }		
+	    }	    
 	    return false;
 	}
 	

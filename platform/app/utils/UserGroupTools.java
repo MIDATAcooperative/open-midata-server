@@ -29,6 +29,7 @@ import org.hl7.fhir.instance.model.api.IBaseExtension;
 import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import models.Consent;
 import models.HealthcareProvider;
 import models.MidataId;
 import models.User;
@@ -123,7 +124,7 @@ public class UserGroupTools {
 			} 
 		}
 				
-		HealthcareProvider provider = HealthcareProvider.getById(organizationId, HealthcareProvider.ALL);
+		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(organizationId, HealthcareProvider.ALL);
 		if (provider == null) {
 			if (name != null) {
 				provider = new HealthcareProvider();
@@ -131,6 +132,7 @@ public class UserGroupTools {
 				provider.name = name;
 				provider.description = description;
 				provider.parent = parent;
+				provider.status = UserStatus.ACTIVE;
 				HealthcareProvider.add(provider);				
 			} else throw new InternalServerException("error.internal", "Organization not found");
 		} else {
@@ -138,7 +140,8 @@ public class UserGroupTools {
 			provider.name = name;
 			provider.description = description;
 			provider.parent = parent;
-			provider.setMultiple(Sets.create("name", "description", "parent"));
+			provider.status = UserStatus.ACTIVE;
+			provider.setMultiple(Sets.create("name", "description", "parent", "status"));
 			if (oldParent != null && oldParent.equals(parent)) {
 				// No change
 				oldParent = parent = null;
@@ -224,27 +227,86 @@ public class UserGroupTools {
 	}
 	
 	public static void removeMemberFromUserGroup(AccessContext context, MidataId targetUserId, MidataId groupId) throws AppException {
-		if (!UserGroupTools.accessorIsMemberOfGroup(context, groupId, Permission.CHANGE_TEAM)) {
-			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");		
+		AccessLog.logBegin("BEGIN removeMemberFromUserGroup targetUserId="+targetUserId.toString()+" groupId="+groupId.toString());
+		try {
+			if (!UserGroupTools.accessorIsMemberOfGroup(context, groupId, Permission.CHANGE_TEAM)) {
+				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");		
+			}
+										
+			UserGroupMember target = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
+			if (target == null) throw new BadRequestException("error.invalid.user", "User is not member of group");
+			
+			if (target.getRole().id.equals("SUBORGANIZATION")) {
+				HealthcareProvider prov = HealthcareProvider.getByIdAlsoDeleted(targetUserId, HealthcareProvider.ALL);
+				prov.parent = null;
+				prov.set("parent", null);
+				OrganizationResourceProvider.updateFromHP(context, prov);
+			}
+			
+			target.status = ConsentStatus.EXPIRED;
+			target.endDate = new Date();
+			UserGroupMember.set(target._id, "status", target.status);
+			UserGroupMember.set(target._id, "endDate", target.endDate);
+		} finally {
+			AccessLog.logEnd("END removeMemberFromUserGroup");
 		}
-									
-		UserGroupMember target = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
-		if (target == null) throw new BadRequestException("error.invalid.user", "User is not member of group");
-		
-		if (target.getRole().id.equals("SUBORGANIZATION")) {
-			HealthcareProvider prov = HealthcareProvider.getById(targetUserId, HealthcareProvider.ALL);
-			prov.parent = null;
-			prov.set("parent", null);
-			OrganizationResourceProvider.updateFromHP(context, prov);
-		}
-		
-		target.status = ConsentStatus.EXPIRED;
-		target.endDate = new Date();
-		UserGroupMember.set(target._id, "status", target.status);
-		UserGroupMember.set(target._id, "endDate", target.endDate);
 
 	}
 	
-	
+	public static void deleteUserGroup(AccessContext context, MidataId groupId, boolean force) throws AppException {
+		AccessLog.logBegin("BEGIN deleteUserGroup groupId="+groupId.toString());
+		try {
+			List<UserGroupMember> path = context.getCache().getByGroupAndActiveMember(groupId, context.getAccessor(), Permission.SETUP);		
+			if (path == null) throw new BadRequestException("error.invalid.usergroup", "Only members may delete a group");
+			
+			context = context.forUserGroup(path);
+			
+			UserGroup userGroup = UserGroup.getById(groupId, UserGroup.FHIR);
+			if (!force && userGroup.type != UserGroupType.CARETEAM) throw new BadRequestException("error.unsupported", "No group deletion for entities.");
+			
+			Set<Consent> consents = Consent.getAllByAuthorized(groupId);
+			
+			if (consents.isEmpty() && userGroup.type == UserGroupType.CARETEAM) {		
+				Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		
+				for (UserGroupMember member : allMembers) {
+					RecordManager.instance.deleteAPS(context, member._id);
+					member.delete();
+				}
+				
+				RecordManager.instance.deleteAPS(context, groupId);
+				UserGroup.delete(groupId);
+			} else {
+				Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		
+				for (UserGroupMember member : allMembers) {
+					if (member.status == ConsentStatus.ACTIVE) {
+						member.status = ConsentStatus.EXPIRED;
+						member.endDate = new Date();
+						UserGroupMember.set(member._id, "status" , member.status);
+						UserGroupMember.set(member._id, "endDate" , member.endDate);
+					}
+				}
+									
+				userGroup.status = UserStatus.DELETED;
+				userGroup.searchable = false;
+				UserGroup.set(userGroup._id, "searchable", userGroup.searchable);
+				UserGroup.set(userGroup._id, "status", userGroup.status);
+				
+				GroupResourceProvider.updateMidataUserGroup(userGroup);
+			}
+			
+			Set<UserGroupMember> allGroupIsMember = UserGroupMember.getAllActiveByMember(groupId);
+			for (UserGroupMember member : allGroupIsMember) {
+				if (member.status == ConsentStatus.ACTIVE) {
+					member.status = ConsentStatus.EXPIRED;
+					member.endDate = new Date();
+					UserGroupMember.set(member._id, "status" , member.status);
+					UserGroupMember.set(member._id, "endDate" , member.endDate);
+				}
+			}
+			
+		} finally {
+			AccessLog.logEnd("END deleteUserGroup");
+		}
+	}
 		
 }

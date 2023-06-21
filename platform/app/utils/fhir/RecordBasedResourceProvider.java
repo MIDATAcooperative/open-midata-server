@@ -372,7 +372,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 				
 		if (!owner.equals(inf.getAccessor())) {
 			Consent consent = Circles.getOrCreateMessagingConsent(inf, inf.getAccessor(), owner, owner, false);
-			insertRecord(record, resource, attachments, new ConsentAccessContext(consent, info()));
+			insertRecord(record, resource, attachments, info().forConsent(consent));
 			shareFrom = consent._id;
 		} else {
 			insertRecord(record, resource, attachments, info());

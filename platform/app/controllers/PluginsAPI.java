@@ -538,11 +538,11 @@ public class PluginsAPI extends APIController {
 				MidataId groupId = MidataId.from(query.get("link-study"));
                 UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(groupId, inf.getAccessor());
                 if (ugm != null) context = context.forUserGroup(ugm);
-				consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(groupId, record.owner);
+				consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(Collections.singleton(groupId), record.owner);
 				
 			} else {
-				
-			    consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(inf.getAccessor(), record.owner);
+			
+			    consent = Circles.getHealthcareOrResearchActiveByAuthorizedAndOwner(inf, record.owner);
 			}
 									
 			if (consent == null || consent.isEmpty()) {
@@ -555,7 +555,8 @@ public class PluginsAPI extends APIController {
 			AccessContext contextWithConsent = null;
 			AccessContext lastTried = null;
 			for (Consent c : consent) {
-				ConsentAccessContext cac = new ConsentAccessContext(c, context);
+				
+				AccessContext cac = context.forConsent(c);								
 				
 				if (cac.mayCreateRecord(dbrecord)) {				
 					contextWithConsent = cac;

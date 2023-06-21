@@ -17,11 +17,13 @@
 
 package utils;
 
+import controllers.UserGroups;
 import models.HealthcareProvider;
 import models.MidataId;
 import models.enums.EntityType;
 import models.enums.Permission;
 import models.enums.ResearcherRole;
+import models.enums.UserStatus;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -50,14 +52,19 @@ public class OrganizationTools {
 
 	
 	public static HealthcareProvider loadModelFromId(AccessContext context, MidataId id) throws AppException {
-		HealthcareProvider provider = HealthcareProvider.getById(id, HealthcareProvider.ALL);
+		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(id, HealthcareProvider.ALL);
 		if (provider == null) throw new InternalServerException("error.internal", "Healthcare provider organization not found.");		
 		return provider;		
 	}
 
 	
 	public static HealthcareProvider updateModel(AccessContext context, HealthcareProvider midataResource) throws AppException {
-		 HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, midataResource._id, midataResource.name, midataResource.description, midataResource.parent, false);		  		
-         return provider;
+		 if (midataResource.status == UserStatus.DELETED) {
+			 UserGroupTools.deleteUserGroup(context, midataResource._id, true);
+			 midataResource.set("status", UserStatus.DELETED);
+		 } else {
+			 midataResource = UserGroupTools.createOrUpdateOrganizationUserGroup(context, midataResource._id, midataResource.name, midataResource.description, midataResource.parent, false);
+		 }
+         return midataResource;
 	}
 }

@@ -315,7 +315,7 @@ public abstract class AccessContext {
 		
 		if (consent.authorized != null && consent.entityType != EntityType.USER) {
 		   for (MidataId id : consent.authorized) {
-			   List<UserGroupMember> ugms = getCache().getByGroupAndActiveMember(id, getAccessor(), Permission.ANY);
+			   List<UserGroupMember> ugms = getCache().getByGroupAndActiveMember(id, getAccessor(), Permission.ANY);			   
 			   if (ugms != null) {
 				   AccessContext result = forUserGroup(ugms);				   
 				   return new ConsentAccessContext(consent, result.getCache(), result); 
@@ -443,8 +443,8 @@ public abstract class AccessContext {
           if (space != null) return new SpaceAccessContext(space, getCache(), null, space.owner);
           
           
-          UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(aps, getAccessor());
-          if (ugm != null)  return forUserGroup(ugm);
+          List<UserGroupMember> ugms = getCache().getByGroupAndActiveMember(aps, getAccessor(), Permission.READ_DATA);
+          if (ugms != null)  return forUserGroup(ugms);
          
 		}
 		

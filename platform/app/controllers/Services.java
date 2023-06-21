@@ -31,6 +31,7 @@ import models.ServiceInstance;
 import models.Study;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
+import models.enums.Permission;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
@@ -80,11 +81,16 @@ public class Services extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
     public Result listServiceInstances(Request request) throws AppException {
 
+		AccessContext context = portalContext(request);
         MidataId managerId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));     
-        Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(managerId);
+        Set<UserGroupMember> ugms = context.getCache().getAllActiveByMember();
         Set<MidataId> managers = new HashSet<MidataId>();
         managers.add(managerId);
-        for (UserGroupMember ugm : ugms) managers.add(ugm.userGroup);
+        for (UserGroupMember ugm : ugms) {
+        	if (context.getCache().getByGroupAndActiveMember(ugm, context.getAccessor(), Permission.SETUP)!=null) {
+        	  managers.add(ugm.userGroup);
+        	}
+        }
         Set<ServiceInstance> instances = ServiceInstance.getByManager(managers, ServiceInstance.ALL);
         return ok(JsonOutput.toJson(instances, "ServiceInstance", ServiceInstance.ALL)).as("application/json");
     }

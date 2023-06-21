@@ -1054,7 +1054,7 @@ public class RecordManager {
 				
 		AccessLog.logBegin("BEGIN APPLY QUERY");
 		MidataId userId = context.getCache().getAccessor();
-		AccessContext targetContext = new ConsentAccessContext(target, context);
+		AccessContext targetContext = context.forConsent(target);
 		boolean targetIsEmpty = targetContext.getCache().getAPS(targetaps).hasNoDirectEntries();
 		if (pair.getRight() != null) {
 			AccessLog.logBegin("SINGLE RECORDS");
@@ -1628,7 +1628,7 @@ public class RecordManager {
 		result.numConsentsOwner = Consent.count(userId);
 		Set<MidataId> auth = new HashSet<MidataId>();
 		auth.add(userId);
-		for (UserGroupMember ugm : UserGroupMember.getAllActiveByMember(userId)) {
+		for (UserGroupMember ugm : context.getCache().getAllActiveByMember()) {
 			auth.add(ugm.userGroup);
 			result.numUserGroups++;
 		}

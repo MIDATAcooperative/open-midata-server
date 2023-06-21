@@ -56,7 +56,7 @@ public class Feature_UserGroups extends Feature {
 			MidataId usergroup = q.getMidataIdRestriction("usergroup").iterator().next();
 			
 			if (usergroup.equals(q.getCache().getAccountOwner())) return next.iterator(q);
-			List<UserGroupMember> isMemberOfGroup = q.getCache().getByGroupAndActiveMember(usergroup, q.getCache().getAccountOwner(), Permission.READ_DATA);
+			List<UserGroupMember> isMemberOfGroup = q.getCache().getByGroupAndActiveMember(usergroup, q.getCache().getAccessor(), Permission.READ_DATA);
 			if (isMemberOfGroup == null) throw new InternalServerException("error.internal", "Not member of provided user group");
 			return doQueryAsGroup(isMemberOfGroup, q);					
 		}
@@ -111,11 +111,13 @@ public class Feature_UserGroups extends Feature {
 		MidataId group = null;
 		APSCache subcache = q.getCache();
 	    UserGroupMember lastUgm = null;
+	    UserGroupMember firstUgm = null;
 	    boolean mayExportData = true;
 	    boolean pseudonymizeAccess = false;
 	    boolean mayReadData = true;
 	    AccessContext context = q.getContext();
-		for (UserGroupMember ugm : ugms) {		
+		for (UserGroupMember ugm : ugms) {
+			if (firstUgm==null) firstUgm = ugm;
 			group = ugm.userGroup;	
 			lastUgm = ugm;			
 			subcache = readySubCache(q.getCache(), subcache,  ugm);
@@ -124,6 +126,7 @@ public class Feature_UserGroups extends Feature {
 			mayReadData = mayReadData && ugm.role.mayReadData();
 			pseudonymizeAccess = pseudonymizeAccess || ugm.role.pseudonymizedAccess();
 			context = new UserGroupAccessContext(ugm, subcache, context);
+			AccessLog.log("QUERY AS GROUP pA="+pseudonymizeAccess+" context="+context.toString());
 		}
 		
 		Map<String, Object> newprops = new HashMap<String, Object>();
@@ -140,7 +143,7 @@ public class Feature_UserGroups extends Feature {
 		if (!mayReadData) return ProcessingTools.empty();		
 				
 		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal		 
-		MidataId aps = (q.getApsId().equals(lastUgm.member) /*|| q.getContext() instanceof DummyAccessContext */) ? group : q.getApsId();
+		MidataId aps = (q.getApsId().equals(firstUgm.member) /*|| q.getContext() instanceof DummyAccessContext */) ? group : q.getApsId();
 		
 		AccessLog.logBeginPath("ug("+lastUgm.userGroup+")", null);
 		Query qnew = new Query("ug","ug="+lastUgm.userGroup,newprops, q.getFields(), subcache, aps, context ,q).setFromRecord(q.getFromRecord());

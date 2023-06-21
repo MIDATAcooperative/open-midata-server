@@ -307,6 +307,7 @@ public class Providers extends APIController {
 	@APICall
 	public Result search(Request request) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		JsonNode json = request.body().asJson();
 		
 		Member result = null;
@@ -330,7 +331,7 @@ public class Providers extends APIController {
 		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "lastname", "email"));
 		
 		//MemberKeys.getOrCreate(hpuser, result);
-		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(userId, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", result._id), Consent.ALL);
+		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(context, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", result._id), Consent.ALL);
 		//if (memberKeys.isEmpty() && removeIfNoConsents) return ok();
 				
 		boolean activeConsent = false;
@@ -418,9 +419,10 @@ public class Providers extends APIController {
 	@APICall
 	public Result getMember(Request request, String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId memberId = MidataId.from(id);
 		
-		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(userId, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", memberId), Consent.ALL);		
+		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(context, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", memberId), Consent.ALL);		
 		if (memberKeys.isEmpty()) throw new BadRequestException("error.notauthorized.account", "You are not authorized.");
 		
 		Set<HCRelated> backconsent = HCRelated.getByAuthorizedAndOwner(memberId,  userId);
@@ -472,9 +474,9 @@ public class Providers extends APIController {
 	public Result getOrganization(String id) throws AppException {
 			
 		//MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		MidataId providerid = MidataId.from(id);
+		MidataId providerid = MidataId.parse(id);
 						
-		HealthcareProvider provider = HealthcareProvider.getById(providerid, HealthcareProvider.ALL);
+		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(providerid, HealthcareProvider.ALL);
 		if (provider == null) return notFound();						
 		return ok(JsonOutput.toJson(provider, "HealthcareProvider", HealthcareProvider.ALL));		
 	}
@@ -492,16 +494,20 @@ public class Providers extends APIController {
 		JsonValidation.validate(json, "_id", "name");
 					
 		String name = JsonValidation.getString(json, "name");
+		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		MidataId providerid = MidataId.parse(id);
 		//String description = JsonValidation.getString(json, "description");
 				
 		if (!UserGroupTools.accessorIsMemberOfGroup(context, providerid, Permission.SETUP)) {
 			throw new BadRequestException("error.notauthorized.action", "Tried to change other healthcare provider organization!");
 		}
-				
-		if (HealthcareProvider.existsByName(name, providerid)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider organization with this name already exists.");			
 		
-		HealthcareProvider provider = HealthcareProvider.getById(providerid, HealthcareProvider.ALL);
+		if (status != UserStatus.DELETED) {
+			if (HealthcareProvider.existsByName(name, providerid)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider organization with this name already exists.");
+		}
+									
+		
+		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(providerid, HealthcareProvider.ALL);
 
 		if (provider == null) throw new InternalServerException("error.internal", "Healthcare provider organization not found.");
 		
@@ -513,9 +519,15 @@ public class Providers extends APIController {
 			}	
 		}
 				
-	   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, name, JsonValidation.getStringOrNull(json, "description"), parent, false);		
-	   OrganizationResourceProvider.updateFromHP(context, provider);		
-		
+		if (status == UserStatus.DELETED) {
+			provider.status = UserStatus.DELETED;
+			provider.set("status", UserStatus.DELETED);
+			OrganizationResourceProvider.updateFromHP(context, provider);
+			UserGroupTools.deleteUserGroup(context, provider._id, true);						
+		} else {
+		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, name, JsonValidation.getStringOrNull(json, "description"), parent, false);		
+		   OrganizationResourceProvider.updateFromHP(context, provider);		
+		}
 		return ok();		
 	}
 	

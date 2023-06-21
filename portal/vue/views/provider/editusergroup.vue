@@ -148,7 +148,7 @@ export default {
         init() {
 		    const { $data } = this, me = this;
 
-            $data.add = { user:null, role:{ roleName:"hc" } };
+            $data.add = { user:null, role:{ roleName:"hc", unpseudo:true, readData:true, writeData:true } };
             
             if ($data.groupId) {
             
@@ -159,7 +159,7 @@ export default {
                             
             me.doBusy(usergroups.listUserGroupMembers($data.groupId)
             .then(function(data) {                
-                for (let member of data.data)  { member.role.unpseudo = !member.role.pseudo; }
+                //for (let member of data.data)  { member.role.unpseudo = !member.role.pseudo; }
                 $data.members = me.process(data.data, { filter : { status : 'ACTIVE' }, sort : "user.lastname" });                
                 $data.expired = me.process(data.data, { filter : { status : 'EXPIRED' }, sort : "user.lastname" });                
             }));

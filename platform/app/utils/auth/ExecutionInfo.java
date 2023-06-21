@@ -19,6 +19,7 @@ package utils.auth;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -33,6 +34,7 @@ import models.Space;
 import models.User;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
+import models.enums.Permission;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
@@ -96,7 +98,7 @@ public class ExecutionInfo {
 						
 			session = ContextManager.instance.createSession(authToken.executorId, authToken.role, null, authToken.userId, null);
 			 		
-			Consent consent = Circles.getConsentById(session, authToken.spaceId, Consent.ALL);
+			Consent consent = Circles.getConsentById(session, authToken.spaceId, Consent.ALL);			
 			if (consent != null) {
 			  session = session.forConsent(consent); 
 			} else {
@@ -228,9 +230,9 @@ public class ExecutionInfo {
 		String group = authToken.getExtra().get("grp");
 		if (group != null) {
 			MidataId groupId = MidataId.parse(group);
-			UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(groupId, session.getAccessor());
-			if (ugm != null) {
-				session = session.forUserGroup(ugm);
+			List<UserGroupMember> ugms = session.getCache().getByGroupAndActiveMember(groupId, session.getAccessor(), Permission.READ_DATA);			
+			if (ugms != null) {
+				session = session.forUserGroup(ugms);
 			} else {
 				OAuth2.invalidToken();
 			}

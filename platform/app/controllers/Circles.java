@@ -181,7 +181,7 @@ public class Circles extends APIController {
 			consents = (c!=null) ? Collections.singletonList(c) : Collections.<Consent>emptyList();
 		} else if (properties.containsKey("member")) {
 		  properties.remove("member");
-		  consents = new ArrayList<Consent>(getConsentsAuthorized(owner, properties, Consent.ALL));
+		  consents = new ArrayList<Consent>(getConsentsAuthorized(context, properties, Consent.ALL));
 		} else {
 		  consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, Consent.ALL, RETURNED_CONSENT_LIMIT));
 		}
@@ -280,13 +280,42 @@ public class Circles extends APIController {
 								
 	}
 	
-	public static Collection<Consent> getConsentsAuthorized(MidataId user, Map<String, Object> properties, Set<String> fields) throws AppException {
-		Set<UserGroupMember> groups = UserGroupMember.getAllActiveByMember(user);
+	public static Collection<Consent> getConsentsAuthorized(AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
+		Set<UserGroupMember> groups = context.getCache().getAllActiveByMember();
 		Set<MidataId> auth = new HashSet<MidataId>();
-		auth.add(user);
+		auth.add(context.getAccessor());
 		for (UserGroupMember group : groups) auth.add(group.userGroup);
 		Collection<Consent> consents = Consent.getAllByAuthorized(auth, properties, fields, RETURNED_CONSENT_LIMIT);
 		return consents;
+	}
+	
+	public static Set<Consent> getHealthcareOrResearchActiveByAuthorizedAndOwner(AccessContext context, MidataId owner) throws InternalServerException {
+		Set<UserGroupMember> grps = getAllWritableActiveByMember(new HashSet<MidataId>(), Collections.singleton(context.getAccessor()));
+		Set<MidataId> members = null;
+		if (grps.isEmpty()) members = Collections.singleton(context.getAccessor()); else {
+			members = new HashSet<MidataId>();
+			members.add(context.getAccessor());
+			for (UserGroupMember ugm : grps) members.add(ugm.userGroup);
+		}
+		return Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(members, owner);
+	}
+	
+	private static Set<UserGroupMember> getAllWritableActiveByMember(Set<MidataId> alreadyFound, Set<MidataId> members) throws InternalServerException {
+		Set<UserGroupMember> results = UserGroupMember.getAllActiveByMember(members);
+		Set<UserGroupMember> results1 = UserGroupMember.getAllActiveByMember(members);
+		Set<MidataId> recursion = new HashSet<MidataId>();
+		for (UserGroupMember ugm : results1) {
+			if (!alreadyFound.contains(ugm.userGroup) && ugm.getRole().mayWriteData()) {
+				recursion.add(ugm.userGroup);
+				alreadyFound.add(ugm.userGroup);
+				results.add(ugm);
+			}
+		}
+		if (!recursion.isEmpty()) {
+			Set<UserGroupMember> inner = getAllWritableActiveByMember(alreadyFound, recursion);
+			results.addAll(inner);
+		}
+		return results;
 	}
 	
 	public static Consent getConsentById(AccessContext context, MidataId consentId, Set<String> fields) throws AppException {
@@ -305,7 +334,7 @@ public class Circles extends APIController {
 		if (observerId != null && consent.observers != null && consent.observers.contains(observerId)) return consent;
 		if (consent.owner != null && ApplicationTools.actAsRepresentative(context, consent.owner, false) != null) return consent;
 		
-		Set<UserGroupMember> groups = UserGroupMember.getAllActiveByMember(context.getAccessor());
+		Set<UserGroupMember> groups = context.getCache().getAllActiveByMember();
 		for (UserGroupMember group : groups) if (consent.authorized.contains(group.userGroup)) return consent;
 		return null;							
 	}

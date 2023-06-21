@@ -119,7 +119,7 @@ public class QueryEngine {
 	
 	public static Collection<RecordsInfo> infoQuery(Query q, MidataId aps, boolean cached, AggregationType aggrType, MidataId owner) throws AppException {
 		long t = System.currentTimeMillis();
-		AccessLog.logBegin("begin infoQuery aps=",aps.toString()," cached=",Boolean.toString(cached));
+		AccessLog.logBegin("begin infoQuery aps=",aps.toString()," cached=",Boolean.toString(cached)," context="+q.getContext().toString());
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
 		//APS myaps = q.getCache().getAPS(aps);

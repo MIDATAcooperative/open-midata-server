@@ -60,7 +60,7 @@
 						<h3 v-t="'researcher_registration.research_user'">Research User</h3>
 					</div>
 				</div>
-				<div v-if="role=='provider'">
+				<!-- <div v-if="role=='provider'">
 					<h3 v-t="'provider_registration.provider'"></h3>
 					<div class="required">
 						<form-group name="name" label="provider_registration.name" :path="errors.name"> 
@@ -74,7 +74,7 @@
 						<input type="text" class="form-control" name="url" placeholder="https://www.example.com" v-validate v-model="registration.url">
 					</form-group>  						  
 					<h3 v-t="'provider_registration.user'"></h3>
-				</div>
+				</div> -->
 			
                  <div class="required">								  
 				    <form-group name="email" label="registration.email" :path="errors.email">						

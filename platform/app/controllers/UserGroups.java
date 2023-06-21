@@ -220,43 +220,10 @@ public class UserGroups extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result deleteUserGroup(Request request, String groupIdStr) throws AppException {       
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		MidataId groupId = MidataId.from(groupIdStr);
+		MidataId groupId = MidataId.parse(groupIdStr);
 		AccessContext context = portalContext(request);
 		
-		List<UserGroupMember> path = context.getCache().getByGroupAndActiveMember(groupId, context.getAccessor(), Permission.SETUP);		
-		if (path == null) throw new BadRequestException("error.invalid.usergroup", "Only members may delete a group");
-		
-		UserGroup userGroup = UserGroup.getById(groupId, Sets.create("_id", "status"));
-		
-		Set<Consent> consents = Consent.getAllByAuthorized(groupId);
-		
-		if (consents.isEmpty()) {		
-			Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		
-			for (UserGroupMember member : allMembers) {
-				RecordManager.instance.deleteAPS(context, member._id);
-				member.delete();
-			}
-			
-			RecordManager.instance.deleteAPS(context, groupId);
-			UserGroup.delete(groupId);
-		} else {
-			Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		
-			for (UserGroupMember member : allMembers) {
-				if (member.status == ConsentStatus.ACTIVE) {
-					member.status = ConsentStatus.EXPIRED;
-					member.endDate = new Date();
-					UserGroupMember.set(member._id, "status" , member.status);
-					UserGroupMember.set(member._id, "endDate" , member.endDate);
-				}
-			}
-			
-			userGroup.status = UserStatus.DELETED;
-			userGroup.searchable = false;
-			UserGroup.set(userGroup._id, "searchable", userGroup.searchable);
-			UserGroup.set(userGroup._id, "status", userGroup.status);
-			
-			GroupResourceProvider.updateMidataUserGroup(userGroup);
-		}
+		UserGroupTools.deleteUserGroup(context, groupId, false);
 					
 		return ok();
 	}
