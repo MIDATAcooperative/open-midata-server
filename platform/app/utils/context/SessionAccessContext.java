@@ -166,7 +166,7 @@ public class SessionAccessContext extends AccessContext {
 	
 	@Override
 	public String toString() {
-		return "session("+cache.getAccessor()+")";
+		return "session(accessor="+cache.getAccessor()+")";
 	}
 		
 

@@ -143,7 +143,7 @@ public class AppAccessContext extends AccessContext {
 	
 	@Override
 	public String toString() {
-		return "app("+instance._id+" "+parentString()+")";
+		return "app(instance="+instance._id+" "+parentString()+")";
 	}
 
 	@Override

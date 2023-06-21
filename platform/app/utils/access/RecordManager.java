@@ -1628,7 +1628,7 @@ public class RecordManager {
 		result.numConsentsOwner = Consent.count(userId);
 		Set<MidataId> auth = new HashSet<MidataId>();
 		auth.add(userId);
-		for (UserGroupMember ugm : context.getCache().getAllActiveByMember()) {
+		for (UserGroupMember ugm : context.getAllActiveByMember()) {
 			auth.add(ugm.userGroup);
 			result.numUserGroups++;
 		}

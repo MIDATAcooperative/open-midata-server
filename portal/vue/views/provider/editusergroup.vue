@@ -136,7 +136,7 @@ export default {
         expired : null,
         setupProvidersearch : null,
 	    form : {},        
-        add : { user:null, role:{} },
+        add : { user:null, role:{ unpseudo:true } },
         rights : [ "readData", "writeData", "changeTeam","setup","applications" ]       
     }),
 
@@ -159,7 +159,7 @@ export default {
                             
             me.doBusy(usergroups.listUserGroupMembers($data.groupId)
             .then(function(data) {                
-                //for (let member of data.data)  { member.role.unpseudo = !member.role.pseudo; }
+                for (let member of data.data)  { member.role.unpseudo = true; }
                 $data.members = me.process(data.data, { filter : { status : 'ACTIVE' }, sort : "user.lastname" });                
                 $data.expired = me.process(data.data, { filter : { status : 'EXPIRED' }, sort : "user.lastname" });                
             }));

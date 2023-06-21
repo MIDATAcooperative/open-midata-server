@@ -32,6 +32,7 @@ import org.hl7.fhir.instance.model.api.IIdType;
 import models.Consent;
 import models.HealthcareProvider;
 import models.MidataId;
+import models.TypedMidataId;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -50,6 +51,7 @@ import utils.context.UserGroupAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.FHIRTools;
 import utils.fhir.GroupResourceProvider;
 import utils.fhir.OrganizationResourceProvider;
 import utils.json.JsonValidation;
@@ -148,13 +150,16 @@ public class UserGroupTools {
 			}
 		}
 		
+		 
 		Set<User> members = User.getAllUser(CMaps.map("provider", organizationId), User.ALL_USER);
 		if (addAccessor) {
-			User owner = context.getRequestCache().getUserById(context.getAccessor());
-			members.add(owner);
+			if (context.getAccessorEntityType() == EntityType.USER) {
+				User owner = context.getRequestCache().getUserById(context.getAccessor());
+				if (owner != null) members.add(owner);
+			} 
 		}
 		
-		if (members.isEmpty() && parent==null) {
+		if (members.isEmpty() && parent==null && context.getAccessorEntityType() != EntityType.SERVICES) {
 			//return provider;
 		} else {
 			UserGroup userGroup = createUserGroup(context, UserGroupType.ORGANIZATION, organizationId, provider.name);			
@@ -164,6 +169,7 @@ public class UserGroupTools {
 			RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 		}
 		
+		if (context.getAccessorEntityType() == EntityType.SERVICES) ProjectTools.addToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.SERVICES, context.getAccessor());
 		if (parent != null) ProjectTools.addToUserGroup(context.forUserGroup(parent, Permission.SETUP), ResearcherRole.SUBORGANIZATION(), parent, EntityType.ORGANIZATION, organizationId);
 		if (oldParent != null) UserGroupTools.removeMemberFromUserGroup(context.forUserGroup(oldParent, Permission.SETUP), organizationId, oldParent);
 		
@@ -193,8 +199,9 @@ public class UserGroupTools {
 				IBaseDatatype value = ext.getValue();
 				if (value instanceof IBaseReference) {
 					IIdType ref = ((IBaseReference) value).getReferenceElement();
-					String resourceType = ref.getResourceType();
-					MidataId resourceId = MidataId.parse(ref.getIdPart());
+					TypedMidataId mref = FHIRTools.getMidataIdFromReference(ref);
+					String resourceType = mref.getType();
+					MidataId resourceId = mref.getMidataId();
 					
 					if (!oldEntries.containsKey(resourceId)) {
 						switch(resourceType) {

@@ -247,7 +247,10 @@ public class AccountManagementTools {
 		
 		if (context.getAccessorEntityType() != EntityType.USERGROUP) throw new PluginException(context.getUsedPlugin(), "error.plugin", "Data broker cannot directly create patient resources.");
 		
-		UserGroup userGroup = UserGroup.getById(context.getAccessor(), UserGroup.ALL);
+		AccessContext ac = context;
+		while (ac != null && !(ac instanceof UserGroupAccessContext)) ac = ac.getParent();
+		
+		UserGroup userGroup = UserGroup.getById(ac.getAccessor(), UserGroup.ALL);
 		if (userGroup == null) throw new InternalServerException("error.internal", "User group for data broker not found.");
 
 		String consentName = userGroup.name;				
@@ -260,7 +263,7 @@ public class AccountManagementTools {
 		consent.creatorApp = context.getUsedPlugin();
 		consent.authorized = new HashSet<MidataId>();
 		consent.status = active ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
-		consent.authorized.add(context.getAccessor());
+		consent.authorized.add(ac.getAccessor());
 		consent.entityType = context.getAccessorEntityType();
 		
 		Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    

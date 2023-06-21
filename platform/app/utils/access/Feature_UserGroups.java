@@ -64,7 +64,7 @@ public class Feature_UserGroups extends Feature {
 		if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
 			
 			if (!q.isRestrictedToSelf()) {
-				Set<UserGroupMember> isMemberOfGroups = q.getCache().getAllActiveByMember();
+				Set<UserGroupMember> isMemberOfGroups = q.getContext().getAllActiveByMember();
 				if (!isMemberOfGroups.isEmpty()) {
 					q.setFromRecord(null);
 					List<UserGroupMember> members = new ArrayList<UserGroupMember>(isMemberOfGroups);
@@ -126,7 +126,7 @@ public class Feature_UserGroups extends Feature {
 			mayReadData = mayReadData && ugm.role.mayReadData();
 			pseudonymizeAccess = pseudonymizeAccess || ugm.role.pseudonymizedAccess();
 			context = new UserGroupAccessContext(ugm, subcache, context);
-			AccessLog.log("QUERY AS GROUP pA="+pseudonymizeAccess+" context="+context.toString());
+			//AccessLog.log("QUERY AS GROUP pA="+pseudonymizeAccess+" context="+context.toString());
 		}
 		
 		Map<String, Object> newprops = new HashMap<String, Object>();

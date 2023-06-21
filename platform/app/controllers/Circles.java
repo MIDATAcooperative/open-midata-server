@@ -59,6 +59,7 @@ import models.enums.ConsentType;
 import models.enums.EntityType;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
+import models.enums.Permission;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
@@ -281,16 +282,17 @@ public class Circles extends APIController {
 	}
 	
 	public static Collection<Consent> getConsentsAuthorized(AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
-		Set<UserGroupMember> groups = context.getCache().getAllActiveByMember();
+		Set<UserGroupMember> groups = context.getAllActiveByMember();
 		Set<MidataId> auth = new HashSet<MidataId>();
 		auth.add(context.getAccessor());
-		for (UserGroupMember group : groups) auth.add(group.userGroup);
+		for (UserGroupMember group : groups) if (context.getCache().getByGroupAndActiveMember(group, context.getAccessor(), Permission.READ_DATA)!=null) auth.add(group.userGroup);
 		Collection<Consent> consents = Consent.getAllByAuthorized(auth, properties, fields, RETURNED_CONSENT_LIMIT);
 		return consents;
 	}
 	
 	public static Set<Consent> getHealthcareOrResearchActiveByAuthorizedAndOwner(AccessContext context, MidataId owner) throws InternalServerException {
-		Set<UserGroupMember> grps = getAllWritableActiveByMember(new HashSet<MidataId>(), Collections.singleton(context.getAccessor()));
+		
+		Set<UserGroupMember> grps = context.usesUserGroupsForQueries() ? getAllWritableActiveByMember(new HashSet<MidataId>(), Collections.singleton(context.getAccessor())) : Collections.emptySet();
 		Set<MidataId> members = null;
 		if (grps.isEmpty()) members = Collections.singleton(context.getAccessor()); else {
 			members = new HashSet<MidataId>();
@@ -334,7 +336,7 @@ public class Circles extends APIController {
 		if (observerId != null && consent.observers != null && consent.observers.contains(observerId)) return consent;
 		if (consent.owner != null && ApplicationTools.actAsRepresentative(context, consent.owner, false) != null) return consent;
 		
-		Set<UserGroupMember> groups = context.getCache().getAllActiveByMember();
+		Set<UserGroupMember> groups = context.getAllActiveByMember();
 		for (UserGroupMember group : groups) if (consent.authorized.contains(group.userGroup)) return consent;
 		return null;							
 	}

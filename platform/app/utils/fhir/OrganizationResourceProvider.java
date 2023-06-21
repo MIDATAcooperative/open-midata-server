@@ -25,10 +25,12 @@ import java.util.Set;
 import org.hl7.fhir.instance.model.api.IBaseExtension;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Endpoint;
+import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Type;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -319,7 +321,11 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 		  if (theOrganization.getMeta().getSecurity("http://midata.coop/codesystems/security", "platform-mapped") != null) {
 			  record.content = "Organization/HP";			
-			  record.code = Collections.singleton("http://midata.coop Organization/HP");			  
+			  record.code = Collections.singleton("http://midata.coop Organization/HP");
+			  HealthcareProvider hp = new HealthcareProvider();
+			  hp.name = theOrganization.getName();
+			  hp._id = record._id;
+			  OrganizationTools.prepareModel(info(), hp, null);
 		  } else {						
 			  record.content = "Organization";
 			  record.code = Collections.singleton("http://midata.coop Organization");
@@ -339,7 +345,13 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		// Task a : Set Record "content" field by using a code from the resource (or a fixed value or something else useful)
 		String display = theOrganization.getName();	
 		record.name = display;	
-					
+		
+		for (Extension ext : theOrganization.getExtensionsByUrl("http://midata.coop/extensions/managed-by")) {
+			Type t = ext.getValue();
+			if (t instanceof Reference) t = FHIRTools.resolve((Reference) t);
+			ext.setValue(t);
+		}
+		
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
 		clean(theOrganization);
  

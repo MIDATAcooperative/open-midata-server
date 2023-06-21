@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import models.Consent;
 import models.MidataId;
@@ -421,6 +422,17 @@ public abstract class AccessContext {
 		for (UserGroupMember ugmx : ugms) subcache = Feature_UserGroups.readySubCache(cache, subcache, ugmx);
 		UserGroupMember ugm = ugms.get(ugms.size()-1);
 		return new UserGroupAccessContext(ugm, subcache, this);
+	}
+	
+	public boolean usesUserGroupsForQueries() throws InternalServerException {
+		if (getAccessorEntityType() == EntityType.SERVICES) return false;
+		if (getAccessorEntityType() == EntityType.USER && getAccessorRole() == UserRole.MEMBER) return false;
+		return true;
+	}
+	
+	public Set<UserGroupMember> getAllActiveByMember() throws AppException {
+		if (!usesUserGroupsForQueries()) return Collections.emptySet();
+		return getCache().getAllActiveByMember();
 	}
 	
 	/**
