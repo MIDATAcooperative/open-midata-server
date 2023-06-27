@@ -1172,6 +1172,8 @@ public class Application extends APIController {
 				controllers.admin.routes.javascript.Administration.getStats(),
 				controllers.admin.routes.javascript.Administration.getUsageStats(),
 				controllers.admin.routes.javascript.Administration.getSystemHealth(),
+				controllers.admin.routes.javascript.Administration.searchOrganization(),
+				controllers.admin.routes.javascript.Administration.changeOrganizationStatus(),
 				controllers.routes.javascript.PWRecovery.getUnfinished(),
 				controllers.routes.javascript.PWRecovery.storeRecoveryShare(),
 				controllers.routes.javascript.PWRecovery.finishRecovery(),

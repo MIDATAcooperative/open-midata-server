@@ -55,7 +55,7 @@
             </form-group>                         
         </form>			
         <error-box :error="error"></error-box>
-        <div v-if="usergroup._id">
+        <div v-if="usergroup && usergroup._id">
             <router-link :to="{ path : './usergroups' }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
             <button v-if="add.entityName" :disabled="action != null || !mayChangeTeam()" type="button" class="btn btn-primary mr-1" v-t="'provider_editusergroup.update_btn'" @click="updateMember();"></button>
             <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addOrganizations();" v-t="'provider_editgroups.add_organization_btn'"></button>

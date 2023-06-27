@@ -161,6 +161,8 @@ PUT     /api/shared/hp/:id                               controllers.providers.P
 POST    /api/shared/hp                                   controllers.providers.Providers.createOrganization(request: Request)
 POST    /api/provider/addprovider                       controllers.providers.Providers.registerOther(request: Request)
 POST    /api/shared/hp/search                           controllers.providers.Providers.searchOrganization(request: Request)
+POST    /api/admin/hp/search                           controllers.admin.Administration.searchOrganization(request: Request)
+POST    /api/admin/hp/status                           controllers.admin.Administration.changeOrganizationStatus(request: Request)
 
 POST    /api/research/studies                            controllers.research.Studies.create(request: Request)
 GET     /api/research/studies                            controllers.research.Studies.list(request: Request)

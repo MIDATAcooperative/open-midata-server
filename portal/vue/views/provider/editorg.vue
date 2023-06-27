@@ -158,20 +158,25 @@ export default {
 	       	      case "ME":
 	       	        $data.org.managerType = "USER";
 	       	        $data.org.manager = undefined;
+	       	        $data.org.fullAccess = true;
 	       	        break;
 	       	      case "ME2":
 	       	        $data.org.managerType = "USER";
 	       	        $data.org.manager = undefined;
+	       	        $data.org.fullAccess = false;
 	       	        break;
 	       	      case "PARENT":
 	       	        $data.org.managerType = "ORGANIZATION";
 	       	        $data.org.manager = $data.org.parent;
+	       	        $data.org.fullAccess = false;
 	       	        break;
 	       	      case "OTHERMEMBER":
 	       	        $data.org.managerType = "USER";
+	       	        $data.org.fullAccess = true;
 	       	        break;
 	       	      case "EXTERNALUSER":
 	       	        $data.org.managerType = "USER";
+	       	        $data.org.fullAccess = false;
 	       	        break;
 	       	    }
   	       	    me.doAction("update", server.post(jsRoutes.controllers.providers.Providers.createOrganization().url, $data.org))

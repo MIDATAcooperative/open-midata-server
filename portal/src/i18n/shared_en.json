@@ -111,7 +111,8 @@
        "access_query" : "No data selected",
        "plugin" : "This plugin does not exist in your account.",
        "auth_type" : "Two factor authentication is required for your type of account.",
-       "licence" : "A valid license is required to use this application."
+       "licence" : "A valid license is required to use this application.",
+       "manager" : "You must grant someone else manager permissions before removing this entity from the group." 
      },
 
      "unknown" : {

@@ -112,7 +112,7 @@ public class UserGroupTools {
 		
 	}
 	
-	public static HealthcareProvider createOrUpdateOrganizationUserGroup(AccessContext context, MidataId organizationId, String name, String description, MidataId parent, boolean addAccessor) throws AppException {
+	public static HealthcareProvider createOrUpdateOrganizationUserGroup(AccessContext context, MidataId organizationId, String name, String description, MidataId parent, boolean addAccessor, boolean accessorFullAccess) throws AppException {
 		if (parent != null && !accessorIsMemberOfGroup(context, parent, Permission.SETUP)) throw new BadRequestException("error.notauthorized.action", "You are not authorized to manage parent organization.");
 		AccessLog.logBegin("begin createOrUpdateOrganizationUserGroup org="+organizationId.toString()+" name="+name+" addAccessor="+addAccessor);
 		try {
@@ -152,20 +152,22 @@ public class UserGroupTools {
 		
 		 
 		Set<User> members = User.getAllUser(CMaps.map("provider", organizationId), User.ALL_USER);
+		User owner = null;
 		if (addAccessor) {
 			if (context.getAccessorEntityType() == EntityType.USER) {
-				User owner = context.getRequestCache().getUserById(context.getAccessor());
-				if (owner != null) members.add(owner);
+				owner = context.getRequestCache().getUserById(context.getAccessor());
+				
 			} 
 		}
 		
-		if (members.isEmpty() && parent==null && context.getAccessorEntityType() != EntityType.SERVICES) {
+		if (members.isEmpty() && owner == null && parent==null && context.getAccessorEntityType() != EntityType.SERVICES) {
 			//return provider;
 		} else {
-			UserGroup userGroup = createUserGroup(context, UserGroupType.ORGANIZATION, organizationId, provider.name);			
+			UserGroup userGroup = createUserGroup(context, UserGroupType.ORGANIZATION, organizationId, provider.name);
+			if (owner != null) ProjectTools.addToUserGroup(context, accessorFullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), organizationId, EntityType.USER, owner._id);
 			for (User user : members) {
 				ProjectTools.addToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.USER, user._id);
-			}
+			}			
 			RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 		}
 		
@@ -242,6 +244,15 @@ public class UserGroupTools {
 										
 			UserGroupMember target = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
 			if (target == null) throw new BadRequestException("error.invalid.user", "User is not member of group");
+						
+			Set<UserGroupMember> others = UserGroupMember.getAllActiveByGroup(groupId);
+			boolean foundManager = false;
+			boolean foundChangeTeam = false;
+			for (UserGroupMember other : others) {
+				if (other.getRole().manageParticipants() && !targetUserId.equals(other.member)) foundChangeTeam = true;
+				if (other.getRole().maySetup() && !targetUserId.equals(other.member)) foundManager = true;
+			}
+			if (!foundManager || !foundChangeTeam) throw new BadRequestException("error.missing.manager", "No manager left");
 			
 			if (target.getRole().id.equals("SUBORGANIZATION")) {
 				HealthcareProvider prov = HealthcareProvider.getByIdAlsoDeleted(targetUserId, HealthcareProvider.ALL);
@@ -313,6 +324,27 @@ public class UserGroupTools {
 			
 		} finally {
 			AccessLog.logEnd("END deleteUserGroup");
+		}
+	}
+	
+	public static void changeUserGroupStatus(MidataId groupId, UserStatus target) throws AppException {
+		AccessLog.logBegin("BEGIN changeUserGroupStatus groupId="+groupId.toString()+" status="+target);
+		try {
+			ConsentStatus status = (target == UserStatus.BLOCKED) ? ConsentStatus.INVALID : ConsentStatus.ACTIVE;
+			ConsentStatus from = (target == UserStatus.BLOCKED) ? ConsentStatus.ACTIVE : ConsentStatus.INVALID;
+			UserGroup userGroup = UserGroup.getById(groupId, UserGroup.FHIR);
+			Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		
+			for (UserGroupMember member : allMembers) {
+				if (member.status == from) {
+					UserGroupMember.set(member._id, "status", status);
+				}				
+			} 					
+			userGroup.status = target;			
+			UserGroup.set(userGroup._id, "status", userGroup.status);			
+			GroupResourceProvider.updateMidataUserGroup(userGroup);							
+			
+		} finally {
+			AccessLog.logEnd("END changeUserGroupStatus");
 		}
 	}
 		

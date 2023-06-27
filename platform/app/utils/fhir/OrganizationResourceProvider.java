@@ -377,7 +377,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			   Reference parentRef = theResource.getPartOf();
 			   parent =  MidataId.parse(parentRef.getId());
 			}
-		   HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), "", parent, true);		  		
+		   HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), "", parent, true, false);		  		
 		   UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
 		   
 		   

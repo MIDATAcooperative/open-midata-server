@@ -2,6 +2,7 @@
   "admin_navbar" : {
     "admin" : "Admin",
     "members" : "Users",
+    "organizations" : "Organizations",
     "auditlog" : "Audit Log",
     "news" : "News",
     "mails" : "E-Mails",
@@ -34,6 +35,15 @@
     "midata_id" : "@PRODUCT ID",
     "empty" : "No matching users found."
   },
+
+  "admin_organizations" : {
+    "title" : "Organizations",
+    "name" : "Name",
+    "status" : "Status",    
+    "empty" : "No matching organizations found.",
+    "members_btn" : "show members"
+  },
+
 
   "admin_address" : {
     "title" : "User profile",

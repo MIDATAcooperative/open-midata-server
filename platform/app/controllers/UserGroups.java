@@ -41,6 +41,7 @@ import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.Permission;
 import models.enums.ResearcherRole;
+import models.enums.SubUserRole;
 import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -239,7 +240,8 @@ public class UserGroups extends APIController {
 		JsonValidation.validate(json, "name");
 		
 		if (!UserGroupTools.accessorIsMemberOfGroup(context, groupId, Permission.SETUP)) {
-			throw new BadRequestException("error.notauthorized.action", "Only members may edit a group");		
+			requireSubUserRoleForRole(request, SubUserRole.USERADMIN, UserRole.ADMIN);
+			if (context.getAccessorRole() != UserRole.ADMIN) new BadRequestException("error.notauthorized.action", "Only members may edit a group");		
 		}
 		
 		UserGroup userGroup = UserGroup.getById(groupId, UserGroup.ALL);

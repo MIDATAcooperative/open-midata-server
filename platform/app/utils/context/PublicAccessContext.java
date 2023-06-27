@@ -20,6 +20,7 @@ package utils.context;
 import models.MidataId;
 import models.Record;
 import models.enums.Permission;
+import models.enums.UserRole;
 import utils.RuntimeConstants;
 import utils.UserGroupTools;
 import utils.access.APSCache;
@@ -46,7 +47,7 @@ public class PublicAccessContext extends AccessContext {
 	@Override
 	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) throws InternalServerException {	
 		if (UserGroupTools.isGroupManaged(newVersion.format, newVersion.content)) {
-			return newVersion.tags != null && newVersion.tags.contains("security:public") && UserGroupTools.accessorIsMemberOfGroup(parent, stored._id, Permission.SETUP);
+			return newVersion.tags != null && newVersion.tags.contains("security:public") && (UserGroupTools.accessorIsMemberOfGroup(parent, stored._id, Permission.SETUP) || getAccessorRole() == UserRole.ADMIN);
 		}
 		return newVersion.tags != null && newVersion.tags.contains("security:public") &&
 			   (newVersion.creator != null && newVersion.creator.toString().equals(stored.meta.getString("creator"))
