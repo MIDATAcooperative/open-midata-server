@@ -330,8 +330,8 @@ public class UserGroupTools {
 	public static void changeUserGroupStatus(MidataId groupId, UserStatus target) throws AppException {
 		AccessLog.logBegin("BEGIN changeUserGroupStatus groupId="+groupId.toString()+" status="+target);
 		try {
-			ConsentStatus status = (target == UserStatus.BLOCKED) ? ConsentStatus.INVALID : ConsentStatus.ACTIVE;
-			ConsentStatus from = (target == UserStatus.BLOCKED) ? ConsentStatus.ACTIVE : ConsentStatus.INVALID;
+			ConsentStatus status = (target == UserStatus.BLOCKED || target == UserStatus.NEW) ? ConsentStatus.INVALID : ConsentStatus.ACTIVE;
+			ConsentStatus from = (target == UserStatus.BLOCKED || target == UserStatus.NEW) ? ConsentStatus.ACTIVE : ConsentStatus.INVALID;
 			UserGroup userGroup = UserGroup.getById(groupId, UserGroup.FHIR);
 			Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		
 			for (UserGroupMember member : allMembers) {

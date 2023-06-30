@@ -63,7 +63,7 @@ public class OrganizationTools {
 		 if (midataResource.status == UserStatus.DELETED) {
 			 UserGroupTools.deleteUserGroup(context, midataResource._id, true);
 			 midataResource.set("status", UserStatus.DELETED);
-		 } else if (midataResource.status == UserStatus.BLOCKED) {
+		 } else if (midataResource.status == UserStatus.BLOCKED || midataResource.status == UserStatus.NEW) {
 			 
 		 } else {
 			 midataResource = UserGroupTools.createOrUpdateOrganizationUserGroup(context, midataResource._id, midataResource.name, midataResource.description, midataResource.parent, false, false);

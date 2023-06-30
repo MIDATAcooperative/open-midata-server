@@ -219,11 +219,11 @@ public class AccountManagementTools {
 	
 	public static Consent createHPConsent(AccessContext info, Member user, HPUser hpuser, boolean active) throws AppException {
 		String consentName = hpuser.firstname + " " + hpuser.lastname;
-		if (hpuser.provider != null) {
+		/*if (hpuser.provider != null) {
 			HealthcareProvider prov = HealthcareProvider.getById(hpuser.provider, HealthcareProvider.ALL);
 			if (prov != null)
 				consentName = prov.name;
-		}
+		}*/
 		
 		Plugin plugin = Plugin.getById(info.getUsedPlugin());
 	

@@ -72,7 +72,7 @@ public class QueryTagTools {
 		if (oldTags.contains(SECURITY_READONLY)) throw new BadRequestException("error.plugin", "Tried to write to read-only resource.");
 		if (oldTags.contains(SECURITY_RELIABLE) && !newTags.contains(SECURITY_RELIABLE)) throw new BadRequestException("error.plugin", "Cannot reduce reliability.");
 		if (oldTags.contains(SECURITY_PUBLIC) != newTags.contains(SECURITY_PUBLIC)) throw new BadRequestException("error.plugin", "Cannot change public security tag on existing resource.");
-		if (oldTags.contains(SECURITY_PLATFORM_MAPPED) != newTags.contains(SECURITY_PLATFORM_MAPPED)) throw new BadRequestException("error.plugin", "Cannot change platform-mapped security tag on existing resource.");
+		if (oldTags.contains(SECURITY_PLATFORM_MAPPED) && !newTags.contains(SECURITY_PLATFORM_MAPPED)) throw new BadRequestException("error.plugin", "Cannot change platform-mapped security tag on existing resource.");
 		
 		rec.meta.put("tags", record.tags);
 	}

@@ -69,7 +69,7 @@ public class LinkTools {
 	   consent.writes =WritePermissionType.UPDATE_AND_CREATE;	
 	   consent.creatorApp = link.appId;
 	   consent.creator = context.getActor();
-	   consent.organization =link.providerId;
+	   //consent.organization =link.providerId;
 	   consent.observers = observers;
 	   if (link.what != null) {
 	      consent.sharingQuery = link.what;

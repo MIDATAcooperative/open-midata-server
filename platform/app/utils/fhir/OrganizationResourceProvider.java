@@ -53,6 +53,7 @@ import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
+import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.exceptions.ForbiddenOperationException;
@@ -248,14 +249,16 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		return query;
 	}
 	
-	public List<Organization> search(AccessContext context, String name, String city) throws AppException {
+	public List<Organization> search(AccessContext context, String name, String city, boolean onlyActive) throws AppException {
 		SearchParameterMap params = new SearchParameterMap();
 		if (name != null) params.add("name", new StringParam(name));		
 		if (city != null) params.add("address-city", new StringParam(city));
+		if (onlyActive) params.add("active", new TokenParam("true"));
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Organization");
 		builder.restrictionMany("name", true, QueryBuilder.TYPE_STRING, "name", "alias");
 		builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "address.city");
+		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
 		query.putAccount("public", "only");
 		query.putAccount("content", "Organization/HP");
 		List<Record> result = query.execute(context);
@@ -493,7 +496,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");			
 		}
 		
-		if (healthProvider.status != null && healthProvider.status.isDeleted()) {
+		if (healthProvider.status != null && (healthProvider.status.isDeleted() || healthProvider.status == UserStatus.NEW)) {
 			org.setActive(false);
 		} else {
 			org.setActive(true);

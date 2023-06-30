@@ -205,7 +205,16 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		prepareTags(record, theResource);
 	}
 	
-	private final static Set<String> alwaysAllowedTags = Sets.create("security:public", "security:generated", "security:platform-mapped");
+	private final static Set<String> alwaysAllowedTagsFull = Sets.create("security:public", "security:generated", "security:platform-mapped");
+	
+	private final static Set<String> alwaysAllowedTagsSmall = Sets.create("security:public");
+	private final static Set<String> extendedFormats = Sets.create("fhir/Patient", "fhir/Organization", "fhir/Consent" ,"fhir/ResearchStudy", "fhir/Group", "fhir/Practitioner", "fhir/Person");
+	
+	private Set<String> alwaysAllowedTags(String format) {
+	    if (extendedFormats.contains(format)) return alwaysAllowedTagsFull;
+		return alwaysAllowedTagsSmall;
+		
+	}
 	
 	public void prepareTags(Record record, T theResource) throws AppException {
 		//boolean hiddenTagFound = false;
@@ -228,7 +237,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		List<String> allowTags = info.getAccessRestrictionList(record.content, record.format, "allow-tag");
 		if (record.tags != null) {
 			for (String usedTag : record.tags) {			   
-			   if (usedTag.startsWith("security:") && !alwaysAllowedTags.contains(usedTag) && !allowTags.contains(usedTag) && !addTags.contains(usedTag) && !oldTags.contains(usedTag)) throw new PluginException(info.getUsedPlugin(), "error.plugin", "Not allowed security tag used: '"+usedTag+"'");	
+			   if (usedTag.startsWith("security:") && !alwaysAllowedTags(record.format).contains(usedTag) && !allowTags.contains(usedTag) && !addTags.contains(usedTag) && !oldTags.contains(usedTag)) throw new PluginException(info.getUsedPlugin(), "error.plugin", "Not allowed security tag used: '"+usedTag+"'");	
 			}
 		}
 		

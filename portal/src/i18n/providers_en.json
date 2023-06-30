@@ -29,6 +29,7 @@
     "name" : "Name",
     "description" : "Description",
     "url" : "Homepage URL",
+    "status" : "Status",
     "members" : "All members of your organization",
     "addprovider" : "Register New Member",
     "edit_btn" : "Edit Organization",
@@ -105,6 +106,7 @@
     "endDate" : "Member Until",
     "selected" : "Selected Member",
     "rights" : "Permissions",
+    "notexists" : "This team does not (yet) exist.",
    
     "right" : {
       "readData" : "Read data",
@@ -133,7 +135,8 @@
     "add_organization_btn" : "Create Sub-Organization",
     "add_organization2_btn" : "Link other Organization",
     "add_broker_btn" : "Add API Access",
-    "add_group_btn" : "Add other Team"
+    "add_group_btn" : "Add other Team",
+    "former_members" : "Former Sub-Entities"
   },
   
   "provider_memberdetails" : {

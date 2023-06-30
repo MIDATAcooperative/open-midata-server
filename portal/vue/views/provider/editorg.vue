@@ -26,6 +26,17 @@
             <form-group name="description" label="provider_organization.description" :path="errors.description">
                 <textarea class="form-control" id="description" :readonly="!isMasterUser()" name="description" rows="5" v-validate v-model="org.description" required></textarea>
             </form-group>
+            <form-group name="status" label="provider_organization.status" :path="errors.status">
+                <p class="form-control-plaintext" v-t="'enum.userstatus.'+org.status"></p>
+            </form-group>
+            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup && usergroup._id">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" v-validate v-model="usergroup.searchable" @change="edit();">
+                    <div class="margin-left">
+                        <success :finished="finished" action="change" msg="common.save_ok"></success>                        
+                    </div>
+                </div>                     
+            </form-group> 
             <form-group name="parent" label="provider_organization.parent" :path="errors.parent">
                 <p class="form-control-plaintext"><span class="mr-1" v-if="parentOrg">{{ (parentOrg || {}).name }}</span><button type="button" @click="selectParent()" class="btn btn-sm btn-default" v-t="'provider_organization.select_btn'"></button></p>
                 
@@ -47,7 +58,8 @@
     </panel>  
     <div v-if="orgId">
       <editgroups></editgroups>
-    </div>   
+      <editusergroup></editusergroup>
+    </div>      
     <modal id="parentOrganizationSearch" full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
 	   <organization-search :setup="parentOrganizationSearch" @add="setParent"></organization-search>
 	</modal>
@@ -78,6 +90,7 @@ import server from "services/server.js"
 import session from "services/session.js"
 import users from "services/users.js"
 import usergroups from "services/usergroups.js"
+import editusergroup from "views/provider/editusergroup.vue"
 import editgroups from "views/provider/editgroups.vue"
 import OrganizationSearch from "components/tiles/OrganizationSearch.vue"
 import { rl, status, ErrorBox, FormGroup, Success, Modal } from 'basic-vue3-components'
@@ -86,6 +99,7 @@ export default {
     data: () => ({	
         orgId : null,
         org : null,
+        usergroup : null,
         currentUser : null,
         parentOrg : null,
         persons : null,
@@ -93,7 +107,7 @@ export default {
         setupOrganizationSearch : null
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, Success, editgroups, OrganizationSearch, Modal },
+    components: {  Panel, ErrorBox, FormGroup, Success, editgroups, editusergroup, OrganizationSearch, Modal },
 
     mixins : [ status, rl ],
     
@@ -128,9 +142,15 @@ export default {
 	        		     $data.parentOrg = data2.data;
 	        		   }));
 	        		}											
-	    		}));	   
+	    		}));
+	    		
+	    		me.doBusy(usergroups.search({ "_id" : $data.orgId }, ["name", "status", "searchable" ])
+				.then(function(data) {		
+				    if (data.data.length) $data.usergroup = data.data[0]; else $data.usergroup = null;								                						
+				}));	   
     		} else {
-    		   $data.org = { parent : $route.query.parentId };
+    		   $data.org = { parent : $route.query.parentId, status : "ACTIVE" };
+    		   $data.usergroup = null;
     		   if ($route.query.parentId) {
 		      	
         		   me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization($route.query.parentId).url)
@@ -158,12 +178,12 @@ export default {
 	       	      case "ME":
 	       	        $data.org.managerType = "USER";
 	       	        $data.org.manager = undefined;
-	       	        $data.org.fullAccess = true;
+	       	        $data.org.fullAccess = false;
 	       	        break;
 	       	      case "ME2":
 	       	        $data.org.managerType = "USER";
 	       	        $data.org.manager = undefined;
-	       	        $data.org.fullAccess = false;
+	       	        $data.org.fullAccess = true;
 	       	        break;
 	       	      case "PARENT":
 	       	        $data.org.managerType = "ORGANIZATION";
@@ -206,6 +226,11 @@ export default {
         add() {
             this.$router.push({ path : './addprovider' });
         },
+        
+        edit() {	
+            const { $data, $router } = this, me = this;	
+		    me.doAction("change", usergroups.editUserGroup($data.usergroup));
+	    },
         
         selectParent() {
             const { $data, $route, $router } = this, me = this;

@@ -1369,10 +1369,10 @@ public class Market extends APIController {
 		if (link.linkTargetType == LinkTargetType.ORGANIZATION) {
 			JsonValidation.validate(json, "userLogin");
 			HPUser user = HPUser.getByEmail(JsonValidation.getString(json, "userLogin"), Sets.create("status","provider"));
-			if (user == null || user.status != UserStatus.ACTIVE) throw new JsonValidationException("error.invalid.user", "User not found or not active");
-			HealthcareProvider prov = HealthcareProvider.getById(user.provider, HealthcareProvider.ALL);
+			if (user == null || user.status != UserStatus.ACTIVE) throw new JsonValidationException("error.invalid.user", "User not found or not active");					
+			/*HealthcareProvider prov = HealthcareProvider.getById(user.provider, HealthcareProvider.ALL);
 			if (prov == null) throw new JsonValidationException("error.invalid.user", "User not found or not active");
-			link.providerId = prov._id;
+			link.providerId = prov._id;*/
 			link.userId = user._id;
 		} else {
 			JsonValidation.validate(json, "serviceAppId");

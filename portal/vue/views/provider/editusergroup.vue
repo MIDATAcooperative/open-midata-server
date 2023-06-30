@@ -20,12 +20,12 @@
     <panel :busy="isBusy" :title="getTitle()">	
         
 
-        <form name="myform" ref="myform" class="css-form form-horizontal" @submit.prevent="create()" novalidate role="form">
+        <form v-if="usergroup" name="myform" ref="myform" class="css-form form-horizontal" @submit.prevent="create()" novalidate role="form">
             <form-group id="name" label="provider_editusergroup.name" :path="errors.name">
                 <p v-if="usergroup._id" class="form-control-plaintext">{{ usergroup.name }}</p>
                 <input v-else id="name" name="name" type="text" class="form-control" v-validate v-model="usergroup.name" required>
             </form-group> 
-            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup._id">
+            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup._id && usergroup.type!='ORGANIZATION'">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" v-validate v-model="usergroup.searchable" @change="edit();">
                     <div class="margin-left">
@@ -64,7 +64,7 @@
             </tr>				
         </table>
         
-         <form class="css-form form-horizontal" role="form">
+         <form v-if="usergroup" class="css-form form-horizontal" role="form">
             
             <form-group name="selected" v-if="add.user" label="provider_editusergroup.selected">
                <p class="form-control-static">{{ (add.user || {}).email }}</p>
@@ -75,9 +75,10 @@
                 </check-box>		 
             </form-group>                         
         </form>			
+        <div v-else v-t="'provider_editusergroup.notexists'"></div>
 
         <error-box :error="error"></error-box>
-        <div v-if="usergroup._id">
+        <div v-if="usergroup && usergroup._id">
             <a @click="$router.back()" href="javascript:" class="btn btn-default mr-1" v-t="'common.back_btn'"></a>
             <button v-if="add.user" :disabled="action != null || !mayChangeTeam()" type="button" class="btn btn-primary mr-1" v-t="'provider_editusergroup.update_btn'" @click="updateMember();"></button>
             <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addPeople();" v-t="'editconsent.add_people_btn'"></button>            
@@ -152,9 +153,9 @@ export default {
             
             if ($data.groupId) {
             
-            me.doBusy(usergroups.search({ "_id" : $data.groupId }, ["name", "status", "searchable" ])
-			.then(function(data) {				
-				$data.usergroup = data.data[0];								                						
+            me.doBusy(usergroups.search({ "_id" : $data.groupId }, ["name", "status", "searchable", "type" ])
+			.then(function(data) {		
+			    if (data.data.length) $data.usergroup = data.data[0]; else $data.usergroup = null;								                						
 			}));
                             
             me.doBusy(usergroups.listUserGroupMembers($data.groupId)
@@ -174,7 +175,7 @@ export default {
 
         getTitle() {
             const { $data, $t } = this, me = this;
-            if ($data.usergroup && $data.usergroup._id) return $t('provider_editusergroup.title');
+            if ($data.groupId) return $t('provider_editusergroup.title');
             return $t('provider_newusergroup.title');
         },
         
@@ -250,7 +251,7 @@ export default {
 
     created() {
         const { $data, $route } = this, me = this;
-        $data.groupId = $route.query.groupId;
+        $data.groupId = $route.query.groupId || $route.query.orgId;
 
         session.currentUser.then(function(userId) {			
 			$data.user = session.user;		

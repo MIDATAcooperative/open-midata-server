@@ -619,15 +619,16 @@ public class Administration extends APIController {
 		JsonNode json = request.body().asJson();
 		String name = JsonValidation.getStringOrNull(json, "name");
 		String city = JsonValidation.getStringOrNull(json, "city");
-		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
+		
+		UserStatus status = (JsonValidation.getStringOrNull(json, "status") != null) ? JsonValidation.getEnum(json, "status", UserStatus.class) : null;
 		
 		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.getProvider("Organization")); 
-		List<Organization> orgs = provider.search(portalContext(request), name, city);
+		List<Organization> orgs = provider.search(portalContext(request), name, city, false);
 	
 		Map<MidataId, Organization> orgsById = new HashMap<MidataId, Organization>();
 		for (Organization org : orgs) orgsById.put(MidataId.from(org.getIdElement().getIdPart()), org);		
 		NChainedMap<String, Object> properties = CMaps.map("_id", orgsById.keySet());	
-		properties = properties.map("status", status);
+		properties = properties.mapNotEmpty("status", status);
 	    Set<HealthcareProvider> providers = HealthcareProvider.getAll(properties, HealthcareProvider.ALL);
 	    
 	    return ok(JsonOutput.toJson(providers, "HealthcareProvider", HealthcareProvider.ALL));

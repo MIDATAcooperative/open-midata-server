@@ -18,22 +18,14 @@
     <panel :titel="$t('admin_organizations.title')" :busy="isBusy">
 		<error-box :error="error"></error-box>
 		<form class="css-form form-horizontal">
-		    <!-- <form-group name="search" label="admin_members.search_type">
-		        <select class="form-control" id="search" @change="reload(searchName);" v-model="searchName" v-validate>
-                    <option v-for="search in searches" :key="search.name" :value="search.name">{{ $t(search.name) }}</option>
-                </select>
-		    </form-group>
-		    <form-group name="role" label="admin_members.role" v-if="search.changeable">
-		        <select class="form-control" id="role" @change="reload();" v-model="search.criteria.role" v-validate>
-                    <option v-for="role in roles" :key="role" :value="role">{{ $t('enum.userrole.'+role) }}</option>
-                </select>
-		    </form-group> -->
+		  
 		    <form-group name="status" label="admin_members.status">
 		        <select  class="form-control" id="status" @change="reload();" v-model="search.criteria.status">
+		            <option value=""></option>
                     <option v-for="status in stati" :key="status" :value="status">{{ $t('enum.userstatus.'+status) }}</option>
                 </select>
 		    </form-group>
-		    <form-group name="name" label="name">
+		    <form-group name="name" label="admin_organizations.name">
 		        <div class="input-group">
 		            <input type="text" class="form-control" id="lastname" v-model="search.criteria.name" v-validate>
 		            <div class="input-group-append">
@@ -83,7 +75,7 @@ export default {
        
 	    stati : [ "NEW", "ACTIVE", "BLOCKED", "DELETED" ],
 	 
-        search : { criteria : { name : "", status:"ACTIVE" } },
+        search : { criteria : { name : "", status:"" } },
         organizations : null,
         setup : { sort : "email", filter : { search : "" }, ignoreCase : true},
         dateLimit: null
@@ -102,9 +94,7 @@ export default {
                        
             $data.organizations = null;		
     		me.doBusy(server.post(jsRoutes.controllers.admin.Administration.searchOrganization().url, $data.search.criteria)
-    		.then(function(data) {
-    		    console.log("DDDDDOOONNNNNEEE!!!");
-    		    console.log(data.data);
+    		.then(function(data) {    		   
     			$data.organizations = me.process(data.data, { sort : "name", filter : { "name" : "" } });
     		}));
             

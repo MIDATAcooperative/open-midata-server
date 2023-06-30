@@ -45,3 +45,5 @@ db.studies.find({ type : { $exists : false}}).forEach(function(e) { db.studies.u
 db.plugins.find({ linkedStudy : { $ne : null } }).forEach(function(e) { db.studyapplink.insert({ studyId : e.linkedStudy, appId : e._id, type : (e.mustParticipateInStudy ? ["OFFER_P","REQUIRE_P"] : ["OFFER_P"] ), usePeriod:["RUNNING","FINISHED","PRE"], validationDeveloper : "VALIDATED", validationResearch : "VALIDATED", active : true }); db.plugins.update({ _id : e._id }, { $unset : { linkedStudy : 1, mustParticipateInStudy : 1 } }); });
 
 db.studyapplink.find({ linkTargetType : { $exists : false } }).forEach(function(e) { db.studyapplink.update({ _id : e._id}, { $set : { linkTargetType : "STUDY" } }); });
+
+db.providers.find({ status : { $exists : false } }).forEach(function(e) { db.providers.update({ _id : e._id}, { $set : { status : "NEW" } }); });

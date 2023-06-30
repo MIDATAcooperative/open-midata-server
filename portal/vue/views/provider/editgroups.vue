@@ -66,7 +66,7 @@
     </panel>  
 
     <div v-if="expired && expired.filtered.length">
-    <panel :busy="isBusy" :title="$t('provider_editusergroup.former_members')">
+    <panel :busy="isBusy" :title="$t('provider_editgroups.former_members')">
         <pagination v-model="expired"></pagination>
         <table class="table table-striped table-hover" v-if="expired.filtered.length">
             <tr>
@@ -86,7 +86,7 @@
     </panel>
     </div>
 
-    <modal id="provSearch" full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('usergroupsearch.title')">
+    <modal id="providerSearch" full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('usergroupsearch.title')">
 	   <user-group-search :setup="setupProvidersearch" @add="addGroup"></user-group-search>
 	</modal>
 	

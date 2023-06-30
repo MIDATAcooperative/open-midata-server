@@ -240,6 +240,8 @@ public class Providers extends APIController {
 		
 		requireSubUserRole(request, SubUserRole.MASTER);
 		
+		throw new InternalServerException("error.notimplemented", "Function no longer supported");
+		/*
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language");
 							
@@ -265,15 +267,13 @@ public class Providers extends APIController {
 		user.provider = PortalSessionToken.session().orgId;
 		if (user.provider == null) throw new InternalServerException("error.internal", "No organization in session for register provider!");
 		user.status = UserStatus.ACTIVE;
-		
-		//user.authType = SecondaryAuthType.SMS;
-						
+								
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request.attrs().get(play.mvc.Security.USERNAME)), user);
 		AccessContext context = portalContext(request);
 		register(context, user ,null, executingUser);
 			
 		AuditManager.instance.success();
-		return ok();		
+		return ok();	*/	
 	}
 	
 	/**
@@ -366,7 +366,7 @@ public class Providers extends APIController {
 		String name = JsonValidation.getStringOrNull(json, "name");
 		String city = JsonValidation.getStringOrNull(json, "city");
 		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.getProvider("Organization")); 
-		List<Organization> orgs = provider.search(portalContext(request), name, city);
+		List<Organization> orgs = provider.search(portalContext(request), name, city, true);
 	
 		Map<MidataId, Organization> orgsById = new HashMap<MidataId, Organization>();
 		for (Organization org : orgs) orgsById.put(MidataId.from(org.getIdElement().getIdPart()), org);		
@@ -556,6 +556,7 @@ public class Providers extends APIController {
 		
 		if (managerType == EntityType.ORGANIZATION) {
 			  managerId = parent;
+			  if (parent == null) throw new BadRequestException("error.unknown.organization", "Parent is empty.");
 		} else if (managerType == EntityType.USER) {
 			if (manager == null) {
 				managerId = context.getAccessor();
