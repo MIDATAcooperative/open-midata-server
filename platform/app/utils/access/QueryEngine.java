@@ -359,18 +359,20 @@ public class QueryEngine {
           	  comb.remove("$or");
           	  Query query2 = new Query(path,properties.toString(),comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext(), query).setFromRecord(query.getFromRecord());
             		  
-    		  List<DBRecord> results = qm.query(query2);
+    		  DBIterator<DBRecord> results = qm.iterator(query2);
     		  
-    		  if (results.isEmpty()) return ProcessingTools.empty();
+    		  if (!results.hasNext()) return ProcessingTools.empty();
     		  
     		  Query query_no_id = new Query(query, "combine-no-id", Collections.emptyMap()).setFromRecord(query.getFromRecord());
     		  query_no_id.getProperties().remove("_id");
     		  
-    		  APS inMemory = new Feature_InMemoryQuery(results);
+    		  Feature_InMemoryQuery inMemory = new Feature_InMemoryQuery(Collections.emptyList());
     		  query.getCache().addAPS(inMemory);
     		  Feature qmm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)));		
-    		      		  
-    		  return combineIterator(query_no_id, path, properties, qmm);
+    		  
+    		  return new ProcessingTools.BlockwiseChainIterator(query_no_id, path, properties, qmm, results, inMemory);
+    		  
+    		  //return combineIterator(query_no_id, path, properties, qmm);
     	  }
     		    		    		
     	  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties(), query.getContext());

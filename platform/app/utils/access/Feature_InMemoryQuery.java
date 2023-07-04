@@ -50,6 +50,10 @@ public class Feature_InMemoryQuery extends APS {
 		this.storedOwner = storedOwner;
 		this.contents = contents;
 	}
+	
+	public void setContent(List<DBRecord> recs) {
+		contents = recs;
+	}
 				
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {

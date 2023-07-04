@@ -156,6 +156,15 @@ public abstract class Model implements JsonSerializable {
 		}
 	}
 	
+	protected static <T extends Model> DBIterator<T> getAllCursor(Class<T> modelClass, String collection,
+			Map<String, ? extends Object> properties, Set<String> fields, String sortField, int order, int limit) throws InternalServerException {
+		try {
+			return DBLayer.getAllCursor(modelClass, collection, properties, fields, limit, sortField, order);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
 	protected static <T extends Model> List<T> getAllList(Class<T> modelClass, String collection,
 			Map<String, ? extends Object> properties, Set<String> fields, int limit, String sortField, int order) throws InternalServerException {
 		try {
