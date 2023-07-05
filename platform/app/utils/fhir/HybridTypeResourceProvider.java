@@ -27,9 +27,13 @@ import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import models.MidataId;
 import models.Model;
+import models.Record;
 import scala.NotImplementedError;
 import utils.AccessLog;
+import utils.access.RecordManager;
+import utils.collections.CMaps;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 
@@ -180,10 +184,10 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 	}
 	
 	@History()
-	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
-		List<T> result = first.getHistory(theId);
+	public List<T> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {		
+		List<T> result = first.getHistory(theId, theCount);
 		if (result != null) return result;
-		return second.getHistory(theId);
+		return second.getHistory(theId, theCount);
 	}
 
 	@Override

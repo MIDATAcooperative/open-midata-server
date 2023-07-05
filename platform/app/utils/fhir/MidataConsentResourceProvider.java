@@ -89,6 +89,7 @@ import models.ContentCode;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
+import models.Record;
 import models.Research;
 import models.Study;
 import models.StudyParticipation;
@@ -106,6 +107,7 @@ import utils.PluginLoginCache;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
@@ -149,7 +151,9 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 	}
 	
 	@History()
-	public List<org.hl7.fhir.r4.model.Consent> getHistory(@IdParam IIdType theId) throws AppException {
+	public List<org.hl7.fhir.r4.model.Consent> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
+	  Integer count = (theCount != null) ? theCount : 2000;		
+		
 	  if (!checkAccessible()) throw new ResourceNotFoundException(theId);
 	  models.Consent consent = Circles.getConsentById(info(), MidataId.from(theId.getIdPart()), info().getUsedPlugin(), Consent.FHIR);
 	  if (consent==null) throw new ResourceNotFoundException(theId);

@@ -115,7 +115,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	
     @History()
     @Override
-	public List<Group> getHistory(@IdParam IIdType theId) throws AppException {
+	public List<Group> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
     	throw new ResourceNotFoundException("No history kept for Group resource"); 
     }
     

@@ -59,7 +59,9 @@ import models.MidataId;
 import models.Model;
 import models.Record;
 import utils.ErrorReporter;
+import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
+import utils.collections.CMaps;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -116,7 +118,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	public abstract Class<T> getResourceType();
 	
 	
-	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
+	public List<T> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {		
 		return null;
 	}
 
