@@ -64,7 +64,6 @@ import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
-import models.enums.WritePermissionType;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -862,8 +861,7 @@ public class OAuth2 extends Controller {
 			}
 		}
 	}
-	
-	
+				
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public Result login(Request request) throws AppException {
@@ -1013,6 +1011,7 @@ public class OAuth2 extends Controller {
 		} else {
 			String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken");
 			if (sessionToken == null && user.security.equals(AccountSecurityLevel.KEY_EXT_PASSWORD)) {
+				
 				AccessLog.log("[login] returning login challenge");
 				return Application.loginChallenge(token, user);
 			}

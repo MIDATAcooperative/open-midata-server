@@ -216,12 +216,14 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	@History()
 	@Override
-	public List<Patient> getHistory(@IdParam IIdType theId) throws AppException {
+	public List<Patient> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
+		Integer count = (theCount != null) ? theCount : 2000;
+		
 		String id = theId.getIdPart();
 		MidataId targetId = new MidataId(id);
 
 		List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(),
-				CMaps.map("owner", targetId).map("format", "fhir/Patient").map("history", true).map("sort", "lastUpdated desc"), RecordManager.COMPLETE_DATA);
+				CMaps.map("owner", targetId).map("format", "fhir/Patient").map("history", true).map("sort", "lastUpdated desc").mapNotEmpty("limit", theCount), RecordManager.COMPLETE_DATA);
 		if (records.isEmpty())
 			throw new ResourceNotFoundException(theId);
 

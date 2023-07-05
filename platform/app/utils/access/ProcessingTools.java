@@ -86,17 +86,19 @@ public class ProcessingTools {
 		public void close() {
 						
 		}
+	
 	}
 	
 	public static DBIterator<DBRecord> sort(Map<String, Object> properties, DBIterator<DBRecord> input) throws AppException {
 		if (!properties.containsKey("sort"))
 			return input;
 
+		String sortBy = properties.get("sort").toString();								
+		
 		List<DBRecord> result = new ArrayList<DBRecord>();
 		while (input.hasNext())
 			result.add(input.next());
-
-		String sortBy = properties.get("sort").toString();
+		
 		if (sortBy.startsWith("lastUpdated")) {
 			for (DBRecord r : result) {
 				if (r.meta.getDate("lastUpdated") == null)
@@ -207,7 +209,8 @@ public class ProcessingTools {
 		public void close() {
 			chain.close();			
 		}
-
+	
+		
 	}
 
 	static class DuplicateEliminator<A> extends FilterIterator<A> {
@@ -255,7 +258,7 @@ public class ProcessingTools {
 		@Override
 		public A next() throws AppException {
 			current++;
-			//AccessLog.log("LIMIT " + current);
+			AccessLog.log("LIMIT " + current);
 			return chain.next();
 		}
 		
@@ -268,6 +271,7 @@ public class ProcessingTools {
 		public void close() {
 			chain.close();			
 		}
+		
 
 	}
 
@@ -745,6 +749,7 @@ public class ProcessingTools {
 		public void close() {
 			chain.close();			
 		}
+	
 
 	}
 
@@ -773,7 +778,66 @@ public class ProcessingTools {
 		public void close() {
 			input.close();			
 		}
+	
 		
+	}
+	
+	static class BlockwiseChainIterator implements DBIterator<DBRecord> {
 		
+		private Query query;
+		private String path;
+		private Feature next;
+		private int limit = 1;
+		private Map<String, Object> properties;
+		private DBIterator<DBRecord> current;
+		private DBIterator<DBRecord> input;
+		private Feature_InMemoryQuery holder;
+		
+		BlockwiseChainIterator(Query query, String path, Map<String, Object> properties,Feature next, DBIterator<DBRecord> input, Feature_InMemoryQuery holder) throws AppException {
+			this.next = next;
+			this.input = input;
+			this.holder = holder;
+			this.query = query;
+			this.path = path;
+			this.properties = properties;
+			advance();
+		}
+		
+		private void advance() throws AppException {
+			List<DBRecord> cache = new ArrayList<DBRecord>();
+			int idx = 0;
+			while (idx < limit && input.hasNext()) {
+				cache.add(input.next());
+				idx++;
+			}
+			if (!cache.isEmpty()) {
+				holder.setContent(cache);
+			    current =  QueryEngine.combineIterator(query, path, properties, next);
+			} else current = ProcessingTools.empty();
+		}
+		
+		@Override
+		public DBRecord next() throws AppException {
+			DBRecord r = current.next();
+			while (!current.hasNext() && input.hasNext()) {
+				advance();				
+			}
+		    return r;
+		}
+		
+		@Override
+		public boolean hasNext() throws AppException {
+			return current.hasNext();			
+		}
+			
+		@Override
+		public void close() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		public String toString() {
+			return "blockwise-filter("+current.toString()+")";
+		}
 	}
 }

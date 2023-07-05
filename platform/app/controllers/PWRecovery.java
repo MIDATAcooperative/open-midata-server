@@ -49,6 +49,7 @@ import play.mvc.BodyParser;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
@@ -294,6 +295,14 @@ public class PWRecovery extends APIController {
     	return ok(JsonOutput.toJson(open, "KeyRecoveryProcess", KeyRecoveryProcess.ALL)).as("application/json");
     }
     
+    public static void sendAdminRecoveryRequiredMail() throws InternalServerException {
+
+		String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
+		AccessLog.log("send admin notification mail (password recovery): ");
+		Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "Key Recovery", "Dear Midata Admin,\n\na key recovery is required on "+site+"\n\nRegards,\nyour Midata instance", null);
+
+	}
+    
     public static Result checkAuthentication(PortalSessionToken token, User user, String password, String sessionToken) throws AppException {
     	try {
 	    	if (user.flags != null && user.flags.contains(AccountActionFlags.KEY_RECOVERY)) {
@@ -304,6 +313,7 @@ public class PWRecovery extends APIController {
 	    		} else {
 	    			KeyRecoveryProcess rec = KeyRecoveryProcess.getById(user._id);	    			
 		    		if (PasswordHash.validatePassword(password, rec.nextPassword)) {
+		    		     
 		    			if (sessionToken == null) {		    			
 			    			ObjectNode obj = Json.newObject();
 			    			
@@ -315,6 +325,12 @@ public class PWRecovery extends APIController {
 			    			obj.put("tryrecover", true);
 			    			obj.put("sessionToken", token.encrypt());
 			    			return ok(obj);
+		    			} else if (sessionToken.equals("no-recovery")) {
+							KeyRecoveryProcess krp = KeyRecoveryProcess.getById(user._id);
+							if (!rec.ready) {
+								sendAdminRecoveryRequiredMail();								
+							}
+							return ok();							
 		    			} else {
 		    				KeyManager.instance.login(60000, false);
 		    				finishRecovery(user, rec, sessionToken);

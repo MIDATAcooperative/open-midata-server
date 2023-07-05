@@ -48,6 +48,7 @@ import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.AccessLog;
+import utils.OrganizationTools;
 import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.RecordManager;
@@ -331,24 +332,28 @@ public class AccountPatches {
 	}
 	
 	public static void fixOrgs() throws AppException {
-		/*AccessLog.logBegin("start fix organization records");
+
+		AccessLog.logBegin("start fix organization records");
 		KeyManager.instance.login(1000l*60l*60l, false);
 		KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
 		MidataId executor = RuntimeConstants.instance.publicUser;
-		AccessContext session = ContextManager.instance.createRootPublicGroupContext();
-		Set<Research> res = Research.getAll(CMaps.map(), Research.ALL);
+		AccessContext session = ContextManager.instance.createAdminRootPublicGroupContext();
+		/*Set<Research> res = Research.getAll(CMaps.map(), Research.ALL);
 		for (Research research : res) {
 			RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", research._id).map("format","fhir/Organization"));
 			OrganizationResourceProvider.updateFromResearch(session, research);
-		}
+		}*/
 		
 		Set<HealthcareProvider> hps = HealthcareProvider.getAll(CMaps.map(), HealthcareProvider.ALL);
 		for (HealthcareProvider provider : hps) {
-			RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", provider._id).map("format","fhir/Organization"));
+			//RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", provider._id).map("format","fhir/Organization"));
+			provider = OrganizationTools.updateModel(session, provider);
 			OrganizationResourceProvider.updateFromHP(session, provider);
 		}
+
+
 		AccessLog.logEnd("end fix organization records");
-		ServerTools.endRequest();*/
+		ServerTools.endRequest();
 	}
 	
 }

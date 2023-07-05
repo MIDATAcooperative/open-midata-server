@@ -17,6 +17,7 @@
 
 package utils.access;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.bson.BasicBSONObject;
@@ -104,6 +105,10 @@ public class VersionedDBRecord extends DBRecord {
 	
 	public static Set<VersionedDBRecord> getAllById(Set<MidataId> id, Set<String> fields) throws InternalServerException {
 		return Model.getAll(VersionedDBRecord.class, collection, CMaps.map("_id._id", id), fields);
+	}
+	
+	public static DBIterator<VersionedDBRecord> getAllByIdCursor(MidataId id, Set<String> fields, String sortField, int order) throws InternalServerException {
+		return Model.getAllCursor(VersionedDBRecord.class, collection, CMaps.map("_id._id", id), fields, sortField, order, 0);
 	}
 	
 	public static VersionedDBRecord getByIdAndVersion(MidataId id, String version, Set<String> fields) throws InternalServerException {
