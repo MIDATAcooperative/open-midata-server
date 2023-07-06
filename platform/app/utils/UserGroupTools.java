@@ -112,7 +112,7 @@ public class UserGroupTools {
 		
 	}
 	
-	public static HealthcareProvider createOrUpdateOrganizationUserGroup(AccessContext context, MidataId organizationId, String name, String description, MidataId parent, boolean addAccessor, boolean accessorFullAccess) throws AppException {
+	public static HealthcareProvider createOrUpdateOrganizationUserGroup(AccessContext context, MidataId organizationId, String name, HealthcareProvider infos, MidataId parent, boolean addAccessor, boolean accessorFullAccess) throws AppException {
 		if (parent != null && !accessorIsMemberOfGroup(context, parent, Permission.SETUP)) throw new BadRequestException("error.notauthorized.action", "You are not authorized to manage parent organization.");
 		AccessLog.logBegin("begin createOrUpdateOrganizationUserGroup org="+organizationId.toString()+" name="+name+" addAccessor="+addAccessor);
 		try {
@@ -132,18 +132,37 @@ public class UserGroupTools {
 				provider = new HealthcareProvider();
 				provider._id = organizationId;
 				provider.name = name;
-				provider.description = description;
+				if (infos != null) {
+					if (infos.description != null) provider.description = infos.description;					
+					if (infos.city != null) provider.city = infos.city;
+					if (infos.zip != null) provider.zip = infos.zip;
+					if (infos.country != null) provider.country = infos.country;
+					if (infos.address1 != null) provider.address1 = infos.address1;
+					if (infos.address2 != null) provider.address2 = infos.address2;
+					if (infos.phone != null) provider.phone = infos.phone;
+					if (infos.mobile != null) provider.mobile = infos.mobile;					
+				}
+				
 				provider.parent = parent;
-				provider.status = UserStatus.ACTIVE;
+				provider.status = UserStatus.NEW;
 				HealthcareProvider.add(provider);				
 			} else throw new InternalServerException("error.internal", "Organization not found");
 		} else {
 			oldParent = provider.parent;
 			provider.name = name;
-			provider.description = description;
+			if (infos != null) {
+				if (infos.description != null) provider.description = infos.description;					
+				if (infos.city != null) provider.city = infos.city;
+				if (infos.zip != null) provider.zip = infos.zip;
+				if (infos.country != null) provider.country = infos.country;
+				if (infos.address1 != null) provider.address1 = infos.address1;
+				if (infos.address2 != null) provider.address2 = infos.address2;
+				if (infos.phone != null) provider.phone = infos.phone;
+				if (infos.mobile != null) provider.mobile = infos.mobile;					
+			}
 			provider.parent = parent;
 			provider.status = UserStatus.ACTIVE;
-			provider.setMultiple(Sets.create("name", "description", "parent", "status"));
+			provider.setMultiple(Sets.create("name", "description", "parent", "status","city","zip","country","address1","address2","phone","mobile"));
 			if (oldParent != null && oldParent.equals(parent)) {
 				// No change
 				oldParent = parent = null;

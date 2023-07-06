@@ -586,7 +586,7 @@
 	 },
 	 "entitytype" : {
 	   "USER" : "User",
-	   "USERGROUP" : "Team",
+	   "USERGROUP" : "Team",	  
 	   "ORGANIZATION" : "Organization",
 	   "SERVICES" : "Data Broker"
 	 },

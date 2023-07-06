@@ -178,7 +178,9 @@ public class Providers extends APIController {
 		RecordManager.instance.createPrivateAPS(null, user._id, user._id);		
 		
 		if (name != null) {
-		   HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, JsonValidation.getStringOrNull(json, "description"), null, true, true);		
+		   HealthcareProvider provider = new HealthcareProvider();
+		   provider.description = JsonValidation.getStringOrNull(json, "description"); 
+		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, provider, null, true, true);		
 		   OrganizationResourceProvider.updateFromHP(context, provider);
 		}
 		
@@ -216,7 +218,7 @@ public class Providers extends APIController {
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
 		if (provider != null) {
-			provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, provider.name, provider.description, null, true, true);		
+			provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, provider.name, provider, null, true, true);		
 			OrganizationResourceProvider.updateFromHP(context, provider);			
 		}
 		HPUser.add(user);
@@ -518,14 +520,23 @@ public class Providers extends APIController {
 				throw new BadRequestException("error.notauthorized.action", "Tried to change other healthcare provider organization!");
 			}	
 		}
-				
+		
+		provider.description = JsonValidation.getStringOrNull(json, "description");
+		provider.city = JsonValidation.getStringOrNull(json, "city");
+		provider.zip = JsonValidation.getStringOrNull(json, "zip");
+		provider.country = JsonValidation.getStringOrNull(json, "country");
+		provider.address1 = JsonValidation.getStringOrNull(json, "address1");
+		provider.address2 = JsonValidation.getStringOrNull(json, "address2");
+		provider.phone = JsonValidation.getStringOrNull(json, "phone");
+		provider.mobile = JsonValidation.getStringOrNull(json, "mobile");
+ 				
 		if (status == UserStatus.DELETED) {
 			provider.status = UserStatus.DELETED;
 			provider.set("status", UserStatus.DELETED);
 			OrganizationResourceProvider.updateFromHP(context, provider);
 			UserGroupTools.deleteUserGroup(context, provider._id, true);						
 		} else {
-		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, name, JsonValidation.getStringOrNull(json, "description"), parent, false, false);		
+		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, name, provider, parent, false, false);		
 		   OrganizationResourceProvider.updateFromHP(context, provider);		
 		}
 		return ok();		
@@ -543,7 +554,18 @@ public class Providers extends APIController {
 		JsonValidation.validate(json, "name");
 					
 		String name = JsonValidation.getString(json, "name");
-		String description = JsonValidation.getStringOrNull(json, "description");
+		
+		HealthcareProvider provider = new HealthcareProvider();
+		
+		provider.description = JsonValidation.getStringOrNull(json, "description");
+		provider.city = JsonValidation.getStringOrNull(json, "city");
+		provider.zip = JsonValidation.getStringOrNull(json, "zip");
+		provider.country = JsonValidation.getStringOrNull(json, "country");
+		provider.address1 = JsonValidation.getStringOrNull(json, "address1");
+		provider.address2 = JsonValidation.getStringOrNull(json, "address2");
+		provider.phone = JsonValidation.getStringOrNull(json, "phone");
+		provider.mobile = JsonValidation.getStringOrNull(json, "mobile");
+ 	
 		
 		String manager = JsonValidation.getStringOrNull(json, "manager");
 		EntityType managerType = JsonValidation.getEnum(json, "managerType", EntityType.class);
@@ -567,9 +589,8 @@ public class Providers extends APIController {
 			}
 		}
 		
-		HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, description, parent, managerId.equals(context.getAccessor()), fullAccess);
-				
-		
+		provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, provider, parent, managerId.equals(context.getAccessor()), fullAccess);
+						
 		if (!managerId.equals(context.getAccessor())) UserGroupTools.createUserGroupMember(context, managerId, managerType, fullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), provider._id);
 		
 		OrganizationResourceProvider.updateFromHP(context, provider);

@@ -27,6 +27,7 @@
     "title" : "Organization",
     "empty" : "You are not part of an organization.",
     "name" : "Name",
+    "address" : "Address",
     "description" : "Description",
     "url" : "Homepage URL",
     "status" : "Status",

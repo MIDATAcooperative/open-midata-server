@@ -41,16 +41,13 @@ public class OrganizationTools {
 			}	
 		}
 	}
-
-	/*
+	
 	public static void createModel(AccessContext context, HealthcareProvider midataResource) throws AppException {
 		MidataId managerId = midataResource.managerId;
 		EntityType managerType = midataResource.managerType;
-        HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, midataResource._id, midataResource.name, midataResource.description, midataResource.parent, midataResource.managerId.equals(context.getAccessor()), false);		
+        HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, midataResource._id, midataResource.name, midataResource, midataResource.parent, midataResource.managerId.equals(context.getAccessor()), false);		
 		if (!managerId.equals(context.getAccessor())) UserGroupTools.createUserGroupMember(context, managerId, managerType, ResearcherRole.MANAGER(), provider._id);	
 	}
-	*/
-
 	
 	public static HealthcareProvider loadModelFromId(AccessContext context, MidataId id) throws AppException {
 		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(id, HealthcareProvider.ALL);
@@ -63,10 +60,10 @@ public class OrganizationTools {
 		 if (midataResource.status == UserStatus.DELETED) {
 			 UserGroupTools.deleteUserGroup(context, midataResource._id, true);
 			 midataResource.set("status", UserStatus.DELETED);
-		 } else if (midataResource.status == UserStatus.BLOCKED || midataResource.status == UserStatus.NEW) {
+		 } else if (midataResource.status == UserStatus.BLOCKED) {
 			 
 		 } else {
-			 midataResource = UserGroupTools.createOrUpdateOrganizationUserGroup(context, midataResource._id, midataResource.name, midataResource.description, midataResource.parent, false, false);
+			 midataResource = UserGroupTools.createOrUpdateOrganizationUserGroup(context, midataResource._id, midataResource.name, midataResource, midataResource.parent, false, false);
 		 }
          return midataResource;
 	}

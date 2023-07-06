@@ -257,8 +257,7 @@ public class ProcessingTools {
 
 		@Override
 		public A next() throws AppException {
-			current++;
-			AccessLog.log("LIMIT " + current);
+			current++;			
 			return chain.next();
 		}
 		

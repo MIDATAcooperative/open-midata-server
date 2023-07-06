@@ -198,10 +198,17 @@
 					<div v-for="usergroup in authteams" :key="usergroup._id">
 						<div class="card-body">
 							<button type="button" :disabled="action!=null" v-if="mayChangeUsers()" @click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
-							<img :src="getIconRole('team')" class="float-left consenticon">
+							<img :src="getIconRole(usergroup.type=='ORGANIZATION' ? 'organization' : 'team')" class="float-left consenticon">
 							<div class="iconspace">
-								<div v-t="'editconsent2.team'"></div>	
+								<div v-t="'enum.usergrouptype.'+usergroup.type"></div>	
 								<strong>{{ usergroup.name }}</strong>
+								 <address v-if="usergroup.org">                                      
+		    {{ usergroup.org.address1 }}<br>
+			{{ usergroup.org.address2 }}<br>
+			{{ usergroup.org.zip }} {{ usergroup.org.city }}<br>
+			{{ usergroup.org.country }}<br><br>			
+			<span v-if="usergroup.org.phone"><span v-t="'common.user.phone'"></span>: {{ usergroup.org.phone }}</span>
+		                </address>
 							</div>
 						</div>
 					</div>
@@ -460,10 +467,18 @@ export default {
 				if ($data.consent.type == "CIRCLE") $data.isSimple = false;
 								
 				if ($data.consent.entityType == "USERGROUP") {
-					me.doBusy(usergroups.search({ "_id" : $data.consent.authorized }, ["name"]))
+					me.doBusy(usergroups.search({ "_id" : $data.consent.authorized }, ["name", "status", "type"]))
 					.then(function(data2) {
 						for (let userGroup of data2.data) {
-							$data.authteams.push(userGroup);
+						    userGroup.org = null;
+						    $data.authteams.push(userGroup);
+						    if (userGroup.type == "ORGANIZATION") {
+						       me.doBusy(hc.getOrganization(userGroup._id).
+						       then(function(data3) {
+						          userGroup.org = data3.data; 
+						       }
+						       ));					        
+						    } 
 						}
 					});
 				} else {
@@ -662,6 +677,17 @@ export default {
 		$data.setupAddowner = null;
 
 		if (isTeam) {
+		    if (person.id) {
+		        person.org = null;
+		        person.type = "ORGANIZATION";
+		        me.doBusy(hc.getOrganization(person.id).
+				then(function(data3) {
+					person.org = data3.data; 
+				}));	
+		    } else {
+		        if (!person.type) person.type = "CARETEAM";
+		    }
+		
 			$data.authteams.push(person);
 			$data.consent.authorized.push(person._id || person.id);
 			$data.consent.entityType = "USERGROUP";
@@ -867,6 +893,7 @@ export default {
 	getIconRole(item) {
 		if (!item) return "/images/account.jpg";
 		if (item == "team") return "/images/team.jpeg";
+		if (item == "organization") return "/images/team.jpeg";
 		if (item == "app") return "/images/app.jpg";
 		if (item == "community") return "/images/community.jpeg";
 		if (item == "external") return "/images/question.jpeg";

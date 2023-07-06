@@ -41,7 +41,7 @@ public class HealthcareProvider extends Model {
 	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString(), null));
 	
 	@NotMaterialized
-	 public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "name","description","url","parent","status")); 
+	 public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "name","description","url","parent","status","city", "zip", "country", "address1", "address2", "phone", "mobile")); 
 		
 	/**
 	 * the name of the healthcare provider (clinic)
@@ -53,6 +53,41 @@ public class HealthcareProvider extends Model {
 	public MidataId managerId;
 	public EntityType managerType;
 	public UserStatus status;
+	
+	/**
+	 * City of clinic address
+	 */
+	public String city;	 
+	
+	/**
+	 * Zip code of clinic address
+	 */
+	public String zip;	 
+	
+	/**
+	 * Country of clinic address
+	 */
+	public String country;
+	
+	/**
+	 * Address line 1 (Street) of clinic address
+	 */
+	public String address1;
+	
+	/**
+	 * Address line 2 of clinic address
+	 */
+	public String address2;
+	
+	/**
+	 * Phone number of clinic
+	 */
+	public String phone;
+	
+	/**
+	 * Mobile phone number of clinic
+	 */
+	public String mobile;
 	
 	public static void add(HealthcareProvider provider) throws InternalServerException {
 		Model.insert(collection, provider);

@@ -26,6 +26,33 @@
             <form-group name="description" label="provider_organization.description" :path="errors.description">
                 <textarea class="form-control" id="description" :readonly="!isMasterUser()" name="description" rows="5" v-validate v-model="org.description" required></textarea>
             </form-group>
+            
+            	<form-group name="address1" label="registration.address" :path="errors.address1">
+            <input type="text" class="form-control" id="address1" :readonly="!isMasterUser()" name="address1" v-model="org.address1" v-validate>
+        </form-group>
+		<form-group name="address2" label="common.empty" :path="errors.address2">
+            <input type="text" class="form-control" id="address2" :readonly="!isMasterUser()" name="address2" v-model="org.address2" v-validate>
+        </form-group>
+		<form-group name="city" label="registration.city" :path="errors.city">
+            <input type="text" class="form-control" id="city" :readonly="!isMasterUser()" name="city" v-model="org.city" v-validate>
+        </form-group>
+		<form-group name="zip" label="registration.zip" :path="errors.zip">
+            <input type="text" class="form-control" id="zip" :readonly="!isMasterUser()" name="zip" v-model="org.zip" v-validate>
+        </form-group>
+		<form-group name="country" label="registration.country" :path="errors.country">
+            <select class="form-control" id="country" name="country" :readonly="!isMasterUser()" v-model="org.country" required v-validate>
+                <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
+                <option value="CH" v-t="'enum.country.CH'"></option>
+            </select>
+        </form-group>
+                        
+        <form-group name="phone" label="registration.phone" :path="errors.phone">
+            <input type="text" class="form-control" id="phone" :readonly="!isMasterUser()" name="phone" v-model="org.phone" v-validate>
+        </form-group>
+        <form-group name="mobile" label="registration.mobile_phone" :path="errors.mobile">
+            <input type="text" class="form-control" id="mobile" :readonly="!isMasterUser()" name="mobile" v-model="org.mobile" v-validate>
+        </form-group>
+            
             <form-group name="status" label="provider_organization.status" :path="errors.status">
                 <p class="form-control-plaintext" v-t="'enum.userstatus.'+org.status"></p>
             </form-group>

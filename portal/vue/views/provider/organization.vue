@@ -22,8 +22,21 @@
 	    
 	    <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="editorg()" role="form">
 	        <div v-for="org in orgs" :key="org._id">
-		        <form-group name="name" label="provider_organization.name" :path="errors.name"> 
-			        <p class="form-control-plaintext">{{org.name}}</p>		    
+	           <form-group name="name" label="provider_organization.name" :path="errors.name"> 
+			        <p class="form-control-plaintext">{{org.name}}<br>
+			        </p>
+			   </form-group>
+		        <form-group name="name" label="provider_organization.address" :path="errors.address"> 
+			        <p class="form-control-plaintext">
+			            <address>                                      
+		    {{ org.address1 }}<br>
+			{{ org.address2 }}<br>
+			{{ org.zip }} {{ org.city }}<br>
+			{{ org.country }}<br><br>			
+			<span v-if="org.phone"><span v-t="'common.user.phone'"></span>: {{ org.phone }}</span>
+		                </address>
+			        
+			        </p>		    
 	            </form-group>
 	            <form-group name="description" label="provider_organization.description" :path="errors.description">
 	                <p class="form-control-plaintext" >{{org.description}}</p>

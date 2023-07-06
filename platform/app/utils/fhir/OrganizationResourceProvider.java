@@ -23,14 +23,18 @@ import java.util.List;
 import java.util.Set;
 
 import org.hl7.fhir.instance.model.api.IBaseExtension;
+import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.Endpoint;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Type;
+import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -289,6 +293,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CHANGED).withActorUser(info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
 			HealthcareProvider hp = HealthcareProvider.getByIdAlsoDeleted(record._id, HealthcareProvider.ALL);
 			hp.name = theResource.getName();
+			extractAddress(theResource, hp);
 			MidataId oldParent = hp.parent;
 			if (theResource.hasPartOf()) {
 			   Reference parentRef = theResource.getPartOf();
@@ -328,7 +333,9 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			  HealthcareProvider hp = new HealthcareProvider();
 			  hp.name = theOrganization.getName();
 			  hp._id = record._id;
+			  extractAddress(theOrganization, hp);
 			  OrganizationTools.prepareModel(info(), hp, null);
+			  record.mapped = hp;
 		  } else {						
 			  record.content = "Organization";
 			  record.code = Collections.singleton("http://midata.coop Organization");
@@ -380,7 +387,8 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			   Reference parentRef = theResource.getPartOf();
 			   parent =  MidataId.parse(parentRef.getId());
 			}
-		   HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), "", parent, true, false);		  		
+		   HealthcareProvider provider = (HealthcareProvider) record.mapped;
+		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), provider, parent, true, false);		  		
 		   UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
 		   
 		   
@@ -502,6 +510,22 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			org.setActive(true);
 		}
 		
+		Address adr = new Address();
+		adr.setCity(healthProvider.city);
+		adr.setPostalCode(healthProvider.zip);
+		adr.setCountry(healthProvider.country);
+		List<StringType> lines = new ArrayList<StringType>(2);
+		if (healthProvider.address1 != null) lines.add(new StringType(healthProvider.address1));
+		if (healthProvider.address2 != null) lines.add(new StringType(healthProvider.address2));
+		adr.setLine(lines);
+		org.getAddress().clear();
+		org.addAddress(adr);
+		
+		if (healthProvider.phone != null && healthProvider.phone.length() > 0) {
+			org.getTelecom().clear();
+			org.addTelecom().setSystem(ContactPointSystem.PHONE).setValue(healthProvider.phone);
+		}
+		
 		provider.addSecurityTag(oldRecord, org, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		if (doupdate) {
 		  provider.updateRecord(oldRecord, org, provider.getAttachments(org));
@@ -512,6 +536,24 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 	}
    
+   private void extractAddress(Organization theResource, HealthcareProvider prov) {
+	   if (theResource.hasAddress()) {
+		   Address adr = theResource.getAddressFirstRep();		   
+		   prov.city = adr.getCity();
+		   prov.zip = adr.getPostalCode();
+		   prov.country = adr.getCountry();
+		   List<StringType> lines = adr.getLine();
+		   if (lines != null && lines.size() > 0) prov.address1 = lines.get(0).getValue();
+		   if (lines != null && lines.size() > 1) prov.address2 = lines.get(1).getValue();
+		   
+		   for (ContactPoint cp : theResource.getTelecom()) {
+			  if (cp.getSystem() == ContactPointSystem.PHONE) {
+				  prov.phone = cp.getValue();
+			  }
+		   }
+	   } 
+	   
+   }
    
    
 

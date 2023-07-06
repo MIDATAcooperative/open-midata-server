@@ -233,9 +233,9 @@ public class ContextManager {
 		return use(new SessionAccessContext(getCache(RuntimeConstants.instance.publicUser), UserRole.ANY, null, null, RuntimeConstants.instance.publicUser).forAccount());
 	}
 	
-	public AccessContext createRootPublicGroupContext() throws AppException {
+	public AccessContext createAdminRootPublicGroupContext() throws AppException {
 		AccessLog.log("[session] Start PUBLIC Group Session");
-		return use(new SessionAccessContext(getCache(RuntimeConstants.instance.publicUser), UserRole.ANY, null, null, RuntimeConstants.instance.publicUser).forPublic());
+		return use(new SessionAccessContext(getCache(RuntimeConstants.instance.publicUser), UserRole.ADMIN, null, null, RuntimeConstants.instance.publicUser).forPublic());
 	}
 
 	public AccessContext upgradeSessionForApp(AccessContext tempContext, MobileAppInstance appInstance) throws AppException {
