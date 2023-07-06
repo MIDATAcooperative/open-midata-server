@@ -787,7 +787,7 @@ public class ProcessingTools {
 		private Query query;
 		private String path;
 		private Feature next;
-		private int limit = 1;
+		private int limit = 100;
 		private Map<String, Object> properties;
 		private DBIterator<DBRecord> current;
 		private DBIterator<DBRecord> input;
