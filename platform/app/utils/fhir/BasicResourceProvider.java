@@ -119,7 +119,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     @History()
 	public List<Basic> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
 	   Integer count = (theCount != null) ? theCount : 2000;
-	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc").mapNotEmpty("limit", theCount), RecordManager.COMPLETE_DATA);
+	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc").mapNotEmpty("limit", count), RecordManager.COMPLETE_DATA);
 			   
 	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
 	   
