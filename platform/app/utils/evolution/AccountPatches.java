@@ -52,6 +52,7 @@ import utils.OrganizationTools;
 import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -351,6 +352,7 @@ public class AccountPatches {
 				System.out.println("update provider: "+provider.name);
 				provider = OrganizationTools.updateModel(session, provider);
 				OrganizationResourceProvider.updateFromHP(session, provider);
+				AuditManager.instance.success();
 			}
 		}
 
