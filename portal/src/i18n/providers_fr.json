@@ -26,12 +26,54 @@
 
     "provider_organization" : {
         "title" : "Organisation",
+
+        // TODO NEW: You are not part of an organization.
+        "empty" : "You are not part of an organization.",
         "name" : "Nom",
+
+        // TODO NEW: Address
+        "address" : "Address",
         "description" : "Description",
         "url" : "URL de la page d'accueil",
+
+        // TODO NEW: Status
+        "status" : "Status",
         "members" : "Tous les membres de votre organisation",
         "addprovider" : "Inscrire un nouveau membre",
-        "master_user" : "Vous devez être un utilisateur maître pour mettre à jour votre organisation ou inscrire de nouveaux utilisateurs pour l'organisation. Veuillez contacter @SUPPORT si vous pensez que vous devriez avoir les permissions de l'utilisateur maître."
+
+        // TODO NEW: Edit Organization
+        "edit_btn" : "Edit Organization",
+        "master_user" : "Vous devez être un utilisateur maître pour mettre à jour votre organisation ou inscrire de nouveaux utilisateurs pour l'organisation. Veuillez contacter @SUPPORT si vous pensez que vous devriez avoir les permissions de l'utilisateur maître.",
+
+        // TODO NEW: Part of Organization
+        "parent" : "Part of Organization",
+
+        // TODO NEW: Select
+        "select_btn" : "Select",
+
+        // TODO NEW: Organization Manager
+        "managerType" : "Organization Manager",
+        "managers" : {
+
+            // TODO NEW: Add yourself as manager only
+            "ME" : "Add yourself as manager only",
+
+            // TODO NEW: Add yourself as member and manager
+            "ME2" : "Add yourself as member and manager",
+
+            // TODO NEW: Organization is managed by parent organization
+            "PARENT" : "Organization is managed by parent organization",
+
+            // TODO NEW: Add another practitioner as member and manager
+            "OTHERMEMBER" : "Add another practitioner as member and manager",
+
+            // TODO NEW: Add another practitioner as manager
+            "EXTERNALUSER" : "Add another practitioner as manager"
+        },
+
+        // TODO NEW: eMail of Manager
+        "manager" : "eMail of Manager"
+
     },
 
     "addprovider" : {
@@ -70,6 +112,9 @@
     "provider_usergroups" : {
         "title" : "Teams",
         "name" : "Team",
+
+        // TODO NEW: Type
+        "type" : "Type",
         "status" : "État",
         "searchable" : "Publique",
         "empty" : "Vous ne faites pas partie d'un team."
@@ -88,7 +133,88 @@
         "status" : "État",
         "searchable" : "Trouvable par les titulaires de compte",
         "startDate" : "Membre depuis",
-        "endDate" : "Membre jusqu'au"
+        "endDate" : "Membre jusqu'au",
+
+        // TODO NEW: Selected Member
+        "selected" : "Selected Member",
+
+        // TODO NEW: Permissions
+        "rights" : "Permissions",
+
+        // TODO NEW: This team does not (yet) exist.
+        "notexists" : "This team does not (yet) exist.",
+
+        "right" : {
+
+            // TODO NEW: Read data
+            "readData" : "Read data",
+
+            // TODO NEW: Write data
+            "writeData" : "Write data",
+
+            // TODO NEW: Change team
+            "changeTeam" : "Change team",
+
+            // TODO NEW: Change organization
+            "setup" : "Change organization",
+
+            // TODO NEW: Manage applications
+            "applications" : "Manage applications"
+        },
+
+        // TODO NEW: Update
+        "update_btn" : "Update"
+    },
+
+    "provider_editgroups" : {
+
+        // TODO NEW: Edit Sub-Entities
+        "title" : "Edit Sub-Entities",
+
+
+        // TODO NEW: Entity Name
+        "entityName" : "Entity Name",
+
+        // TODO NEW: Entity Type
+        "entityType" : "Entity Type",
+
+        // TODO NEW: Role
+        "roleName" : "Role",
+        "role" : {
+
+            // TODO NEW: Managing Organization
+            "MANAGER" : "Managing Organization",
+
+            // TODO NEW: Sub-Organization
+            "SUBORGANIZATION" : "Sub-Organization",
+
+            // TODO NEW: Other
+            "HC" : "Other"
+        },
+
+        // TODO NEW: Member From
+        "startDate" : "Member From",
+
+        // TODO NEW: Member Until
+        "endDate" : "Member Until",
+
+        // TODO NEW: No sub-entities found.
+        "empty" : "No sub-entities found.",
+
+        // TODO NEW: Create Sub-Organization
+        "add_organization_btn" : "Create Sub-Organization",
+
+        // TODO NEW: Link other Organization
+        "add_organization2_btn" : "Link other Organization",
+
+        // TODO NEW: Add API Access
+        "add_broker_btn" : "Add API Access",
+
+        // TODO NEW: Add other Team
+        "add_group_btn" : "Add other Team",
+
+        // TODO NEW: Former Sub-Entities
+        "former_members" : "Former Sub-Entities"
     },
 
     "provider_memberdetails" : {

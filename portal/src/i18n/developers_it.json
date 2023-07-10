@@ -65,7 +65,14 @@
             "CONSENT_CONFIRM_OWNER" : "Conferma del consenso (Concedente)",
             "CONSENT_CONFIRM_AUTHORIZED" : "Conferma del consenso (Beneficiario)",
             "CONSENT_REJECT_OWNER" : "Rifiuto del consenso (Concedente)",
+
+            // TODO CHANGED
+            // OLD: Consent rejection (Grantee)
+            // NEW: Consent rejection (Proposed Consent, Grantee)
             "CONSENT_REJECT_AUTHORIZED" : "Rifiuto del consenso (Beneficiario)",
+
+            // TODO NEW: Consent rejection (Active Consent, Grantee)
+            "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Consent rejection (Active Consent, Grantee)",
             "ACCOUNT_UNLOCK" : "Account sbloccato dall'amministratore",
             "EMAIL_CHANGED_OLDADDRESS" : "E-mail di accesso modificata (inviare al vecchio indirizzo e-mail)",
             "EMAIL_CHANGED_NEWADDRESS" : "E-mail di accesso modificata (inviare al nuovo indirizzo e-mail)",
@@ -143,6 +150,10 @@
         "not_reviewed" : "Non ancora recensito",
         "ACCEPTED" : "Recensito",
         "NEEDS_FIXING" : "Necessità di correzione",
+
+        // TODO CHANGED
+        // OLD: Display Location
+        // NEW: Display Under
         "default_context" : "Mostra sotto",
         "default_context_me" : "Dashboard / Timeline",
         "default_context_config" : "Configurazione /  Importazioni",
@@ -239,6 +250,10 @@
         "oauth_login" : "OAuth Login",
         "device" : "Device",
         "refresh_token" : "Refresh Token",
+
+        // TODO CHANGED
+        // OLD: Serverside Scripts
+        // NEW: Server-side Scripts
         "backend_services" : "Scripts lato server",
         "portal_username" : "Nome utente",
         "portal_password" : "Password",
@@ -293,6 +308,10 @@
         "trigger" : "Trigger",
         "triggerDetail" : "FHIR Resource",
         "action" : "Azione",
+
+        // TODO CHANGED
+        // OLD: URL / Filename
+        // NEW: URL / Filename/ Target
         "params" : "URL / Nome del file",
         "triggers" : {
             "fhir_Consent" : "Modifiche di consenso",
@@ -362,6 +381,10 @@
         "repository_url" : "URL del repository",
         "repository_dir" : "(Opzionale) Sottodirectory nel repository",
         "repository_token" : "Access Token",
+
+        // TODO CHANGED
+        // OLD: Serverside code
+        // NEW: Server-side code
         "has_scripts" : "Codice lato server",
         "has_scripts2" : "Questo repository contiene script che devono essere eseguiti sul server.",
         "repository_date" : "Ultimo dispiegato al",
@@ -475,6 +498,10 @@
         "repositoryAuditDate" : "Controllato il",
         "repositoryRisks" : "Rischi per la sicurezza",
         "repo_btn" : "Installazione",
+
+        // TODO CHANGED
+        // OLD: Deploy ready
+        // NEW: Deploy ready plugins
         "deploy_ready_btn" : "Distribuire i plugin pronti",
         "deploy_all_btn" : "Reinstallare tutti",
         "audit_btn" : "Controlla tutti",

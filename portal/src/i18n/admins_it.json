@@ -3,6 +3,9 @@
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Utenti",
+
+        // TODO NEW: Organizations
+        "organizations" : "Organizations",
         "auditlog" : "Audit log",
         "news" : "Notizie",
         "mails" : "E-Mail",
@@ -35,6 +38,25 @@
         "midata_id" : "@PRODUCT ID",
         "empty" : "Non è stato trovato alcun utente corrispondente."
     },
+
+    "admin_organizations" : {
+
+        // TODO NEW: Organizations
+        "title" : "Organizations",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: No matching organizations found.
+        "empty" : "No matching organizations found.",
+
+        // TODO NEW: show members
+        "members_btn" : "show members"
+    },
+
 
     "admin_address" : {
         "title" : "Profilo utente",

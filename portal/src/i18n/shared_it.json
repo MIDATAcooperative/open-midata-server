@@ -89,7 +89,13 @@
             "entity_type" : "Tipo di entità non valida",
             "joincode" : "Il codice di partecipazione fornito non è accettato.",
             "usePreconfirmed" : "La preconferma del consenso e la condivisione con terzi non sono consentite allo stesso tempo.",
-            "csvmapping" : "Mappatura non valida fornita."
+            "csvmapping" : "Mappatura non valida fornita.",
+
+            // TODO NEW: Invalid identifier
+            "id" : "Invalid identifier",
+
+            // TODO NEW: You must be member of this user group to perform this action.
+            "usergroup" : "You must be member of this user group to perform this action."
         },
 
         "missing" : {
@@ -111,7 +117,10 @@
             "access_query" : "Nessun dati selezionato",
             "plugin" : "Questo plugin non esiste nel suo account.",
             "auth_type" : "L'autenticazione a due fattori è necessaria per il suo tipo di account.",
-            "licence" : "Per utilizzare questa applicazione è necessaria una licenza valida."
+            "licence" : "Per utilizzare questa applicazione è necessaria una licenza valida.",
+
+            // TODO NEW: You must grant someone else manager permissions before removing this entity from the group.
+            "manager" : "You must grant someone else manager permissions before removing this entity from the group."
         },
 
         "unknown" : {
@@ -251,8 +260,20 @@
             "ES" : "Spagna",
             "SW" : "Svezia",
             "GB" : "Regno Unito",
+
+            // TODO CHANGED
+            // OLD: undefined
+            // NEW: Liechtenstein
             "LI" : "Liechtenstein",
+
+            // TODO CHANGED
+            // OLD: undefined
+            // NEW: Norway
             "NO" : "Norvegia",
+
+            // TODO CHANGED
+            // OLD: undefined
+            // NEW: Iceland
             "IS" : "Islanda"
         },
         "eventtype" : {
@@ -337,6 +358,15 @@
             "vread" : "Versione della risorsa letta",
             "history" : "Storia della risorsa letta",
             "search" : "Ricerca di risorse",
+
+            // TODO NEW: Organization updated
+            "organization-updated" : "Organization updated",
+
+            // TODO NEW: Organization created
+            "organization-created" : "Organization created",
+
+            // TODO NEW: Organization deleted
+            "organization-deleted" : "Organization deleted",
             "added-as-team-member" : "Aggiunto come membro del team",
             "updated-role-in-team" : "Ruolo aggiornato nel team",
             "removed-from-team" : "Rimosso dal team",
@@ -556,6 +586,9 @@
             "mobile" : "Applicazione (Smartphone, Web)",
             "external" : "Servizio esterno",
             "analyzer" : "Analizzatore di progetto",
+
+            // TODO NEW: Data broker
+            "broker" : "Data broker",
             "endpoint" : "FHIR endpoint"
         },
         "infos" : {
@@ -585,7 +618,24 @@
         "entitytype" : {
             "USER" : "Utente",
             "USERGROUP" : "Team",
-            "ORGANIZATION" : "Organizzazione"
+            "ORGANIZATION" : "Organizzazione",
+
+            // TODO NEW: Data Broker
+            "SERVICES" : "Data Broker"
+        },
+        "usergrouptype" : {
+
+            // TODO NEW: Organization
+            "ORGANIZATION" : "Organization",
+
+            // TODO NEW: Care Team
+            "CARETEAM" : "Care Team",
+
+            // TODO NEW: Halthcare Service
+            "HEALTHCARESERVICE" : "Halthcare Service",
+
+            // TODO NEW: Research
+            "RESEARCHTEAM" : "Research"
         },
         "bulkmailtype" : {
             "MARKETING" : "Marketing - Titolari di un account",
@@ -682,6 +732,9 @@
         "sign_up_btn" : "Crea account",
         "unlock_code" : "Codice di sblocco",
         "already_have_account" : "Ho già un account",
+
+        // TODO NEW: If this is your own account click here to go to the login page.
+        "already_have_account2" : "If this is your own account click here to go to the login page.",
         "more" : "Ha ancora qualche secondo? Saremmo lieti se poteste fornirci maggiori dettagli su di lei ☺️️",
         "generous" : "Mi sento generoso oggi, mi mostrano i campi!",
         "hide_optional" : "Nascondi campi opzionali",
@@ -975,6 +1028,9 @@
         "set_owner_btn" : "Selezionare la persona che condivide i propri dati",
         "add_yourself_btn" : "Aggiungi se stesso",
         "add_person_btn" : "Aggiungi una nuova persona",
+
+        // TODO NEW: Add New Organization
+        "add_organization_btn" : "Add New Organization",
         "add_usergroup_btn" : "Aggiungi un nuovo team",
         "writes" : "Scrivi l'autorizzazione",
         "writes2" : "Le persone autorizzate da questo consenso possono creare o aggiornare dati nel suo account incluso nel consenso suddetto.",
@@ -1316,6 +1372,33 @@
         "add_group_btn" : "Aggiungi come team da modificare al consenso"
     },
 
+    "organizationsearch" : {
+
+        // TODO NEW: Search for Organizations
+        "title" : "Search for Organizations",
+
+        // TODO NEW: Organization Name
+        "name" : "Organization Name",
+
+        // TODO NEW: City or zip code
+        "city_or_zip" : "City or zip code",
+
+        // TODO NEW: No matching organizations found.
+        "empty_result" : "No matching organizations found."
+    },
+
+    "databrokersearch" : {
+
+        // TODO NEW: Search Data Brokers (APIs)
+        "title" : "Search Data Brokers (APIs)",
+
+        // TODO NEW: Data broker name
+        "name" : "Data broker name",
+
+        // TODO NEW: No matching data brokers found.
+        "empty_result" : "No matching data brokers found."
+    },
+
     "confirm" : {
         "title" : "Confermi?",
         "cancel" : "Annulla"
@@ -1408,6 +1491,15 @@
         "reason2" : "Le saremmo grati se volesse comunicarci perché sta cancellando il suo account. Siamo costantemente impegnati a migliorare @PLATFORM.",
         "wipe_btn" : "Chiudi e cancella account @PRODUCT",
         "error" : "La password non è corretta. L'account non è stato eliminato."
+    },
+
+    "service" : {
+
+        // TODO NEW: Token-Link service for @PRODUCT
+        "title" : "Token-Link service for @PRODUCT",
+
+        // TODO NEW: Your token-link has been processed. You can now close this window.
+        "success" : "Your token-link has been processed. You can now close this window."
     },
 
     "serviceleave" : {
