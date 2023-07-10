@@ -170,7 +170,7 @@ public class UserGroupTools {
 		}
 		
 		 
-		Set<User> members = User.getAllUser(CMaps.map("provider", organizationId), User.ALL_USER);
+		Set<User> members = User.getAllUser(CMaps.map("provider", organizationId).map("status", User.NON_DELETED), User.ALL_USER);
 		User owner = null;
 		if (addAccessor) {
 			if (context.getAccessorEntityType() == EntityType.USER) {

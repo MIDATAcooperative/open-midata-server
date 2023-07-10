@@ -344,12 +344,15 @@ public class AccountPatches {
 			OrganizationResourceProvider.updateFromResearch(session, research);
 		}*/
 		
-		/*Set<HealthcareProvider> hps = HealthcareProvider.getAll(CMaps.map(), HealthcareProvider.ALL);
+		Set<HealthcareProvider> hps = HealthcareProvider.getAll(CMaps.map(), HealthcareProvider.ALL);
 		for (HealthcareProvider provider : hps) {
 			//RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", provider._id).map("format","fhir/Organization"));
-			provider = OrganizationTools.updateModel(session, provider);
-			OrganizationResourceProvider.updateFromHP(session, provider);
-		}*/
+			if (provider.status == UserStatus.NEW && UserGroup.getById(provider._id, Sets.create("_id")) == null && provider.parent == null) {
+				System.out.println("update provider: "+provider.name);
+				provider = OrganizationTools.updateModel(session, provider);
+				OrganizationResourceProvider.updateFromHP(session, provider);
+			}
+		}
 
 
 		AccessLog.logEnd("end fix organization records");
