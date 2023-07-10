@@ -89,7 +89,8 @@
        "joincode" : "The provided participation code is not accepted.",
        "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
        "csvmapping" : "Invalid mapping provided.",
-       "id" : "Invalid identifier"
+       "id" : "Invalid identifier",
+       "usergroup" : "You must be member of this user group to perform this action."
      },
 
      "missing" : {
@@ -337,7 +338,10 @@
        "read" : "Resource read",
        "vread" : "Resource version read",
        "history" : "Resource history read",
-       "search" : "Searched for resources",          
+       "search" : "Searched for resources",   
+       "organization-updated" : "Organization updated",     
+       "organization-created" : "Organization created",
+       "organization-deleted" : "Organization deleted",
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
 	   "removed-from-team" : "Removed from team",

@@ -73,6 +73,8 @@ public enum AuditEventType {
 
 	ORGANIZATION_CHANGED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "organization-updated", "Organization updated"), AuditEventAction.U),
 	
+	ORGANIZATION_DELETED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "organization-deleted", "Organization deleted"), AuditEventAction.D),
+	
 	APP_FIRST_USE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "app-first-use", "First use of application"), AuditEventAction.E),
 	
 	APP_REJECTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "app-rejected", "Application rejected"), AuditEventAction.E),
