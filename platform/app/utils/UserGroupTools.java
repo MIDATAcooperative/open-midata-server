@@ -41,6 +41,7 @@ import models.enums.EntityType;
 import models.enums.Permission;
 import models.enums.ResearcherRole;
 import models.enums.UserGroupType;
+import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
@@ -161,7 +162,7 @@ public class UserGroupTools {
 				if (infos.mobile != null) provider.mobile = infos.mobile;					
 			}
 			provider.parent = parent;
-			provider.status = UserStatus.ACTIVE;
+			//provider.status = UserStatus.ACTIVE;
 			provider.setMultiple(Sets.create("name", "description", "parent", "status","city","zip","country","address1","address2","phone","mobile"));
 			if (oldParent != null && oldParent.equals(parent)) {
 				// No change
@@ -179,18 +180,20 @@ public class UserGroupTools {
 			} 
 		}
 		
-		if (members.isEmpty() && owner == null && parent==null && context.getAccessorEntityType() != EntityType.SERVICES) {
-			//return provider;
-		} else {
-			UserGroup userGroup = createUserGroup(context, UserGroupType.ORGANIZATION, organizationId, provider.name);
-			if (owner != null) ProjectTools.addToUserGroup(context, accessorFullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), organizationId, EntityType.USER, owner._id);
-			for (User user : members) {
-				ProjectTools.addToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.USER, user._id);
-			}			
-			RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
+		if (existing == null) {
+			if (members.isEmpty() && owner == null && parent==null && context.getAccessorEntityType() != EntityType.SERVICES) {
+				//return provider;
+			} else {
+				UserGroup userGroup = createUserGroup(context, UserGroupType.ORGANIZATION, organizationId, provider.name);
+				if (owner != null) ProjectTools.addToUserGroup(context, accessorFullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), organizationId, EntityType.USER, owner._id);
+				for (User user : members) {
+					ProjectTools.addToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.USER, user._id);
+				}			
+				RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
+			}
+				
+			if (context.getAccessorEntityType() == EntityType.SERVICES) ProjectTools.addToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.SERVICES, context.getAccessor());
 		}
-		
-		if (context.getAccessorEntityType() == EntityType.SERVICES) ProjectTools.addToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.SERVICES, context.getAccessor());
 		if (parent != null) ProjectTools.addToUserGroup(context.forUserGroup(parent, Permission.SETUP), ResearcherRole.SUBORGANIZATION(), parent, EntityType.ORGANIZATION, organizationId);
 		if (oldParent != null) UserGroupTools.removeMemberFromUserGroup(context.forUserGroup(oldParent, Permission.SETUP), organizationId, oldParent);
 		
@@ -294,9 +297,9 @@ public class UserGroupTools {
 		AccessLog.logBegin("BEGIN deleteUserGroup groupId="+groupId.toString());
 		try {
 			List<UserGroupMember> path = context.getCache().getByGroupAndActiveMember(groupId, context.getAccessor(), Permission.SETUP);		
-			if (path == null) throw new BadRequestException("error.invalid.usergroup", "Only members may delete a group");
+			if (path == null && context.getAccessorRole() != UserRole.ADMIN) throw new BadRequestException("error.invalid.usergroup", "Only members may delete a group");
 			
-			context = context.forUserGroup(path);
+			if (path != null) context = context.forUserGroup(path);
 			
 			UserGroup userGroup = UserGroup.getById(groupId, UserGroup.FHIR);
 			if (!force && userGroup.type != UserGroupType.CARETEAM) throw new BadRequestException("error.unsupported", "No group deletion for entities.");

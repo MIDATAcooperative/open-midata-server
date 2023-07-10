@@ -654,7 +654,10 @@ public class Administration extends APIController {
 		UserStatus oldstatus = provider.status;
 		
 		//if (status == UserStatus.PRECREATED && oldstatus != UserStatus.PRECREATED) throw new BadRequestException("error.invalid.status_transition", "Invalid status change");
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CHANGED).withActorUser(context.getActor()).withMessage(provider.name));
+		AuditEventType type = AuditEventType.ORGANIZATION_CHANGED;
+		if (status == UserStatus.DELETED) type = AuditEventType.ORGANIZATION_DELETED;
+		
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(type).withActorUser(context.getActor()).withMessage(provider.name));
 		provider.status = status;
 		provider.set("status", provider.status);		
 		OrganizationTools.updateModel(context, provider);
