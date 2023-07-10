@@ -45,6 +45,7 @@ import utils.collections.RequestCache;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.ActionTokenAccessContext;
+import utils.context.AppAccessContext;
 import utils.context.ContextManager;
 import utils.context.SpaceAccessContext;
 import utils.exceptions.AppException;
@@ -236,6 +237,8 @@ public class ExecutionInfo {
 			} else {
 				OAuth2.invalidToken();
 			}
+		} else if (plugin.type.equals("broker")) {
+			((AppAccessContext) session).restricted();
 		}
 		
 		if (authToken.restrictedResourceId != null) {

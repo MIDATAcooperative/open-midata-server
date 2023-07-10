@@ -185,7 +185,7 @@ public class AccountManagementTools {
 	
 	public static Member checkNoExistingConsents(AccessContext context, Member user) throws AppException {
 		 if (user == null) return null;
-		 Set<Consent> exist = Consent.getAllWriteableByAuthorizedAndOwners(context.getLegacyOwner(), Collections.singleton(user._id));
+		 Set<Consent> exist = Circles.getAllWriteableByAuthorizedAndOwner(context, user._id);
 			if (!exist.isEmpty())
 				throw new UnprocessableEntityException("Already exists and consent is already given. Use search instead.");
 		return user;

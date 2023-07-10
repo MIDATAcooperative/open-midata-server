@@ -82,6 +82,7 @@ public class Query {
 		this.fields = fields;
 		this.cache = cache;
 		this.apsId = apsId;
+		if (context == null) throw new NullPointerException();
 		this.context = context;
 		if (extra != null) {
 		  AccessLog.log(path," : ",extra);
@@ -99,6 +100,7 @@ public class Query {
 		this.fields = fields;
 		this.cache = cache;
 		this.apsId = apsId;
+		if (context == null) throw new NullPointerException();
 		this.context = context;			
 	}
 	
@@ -111,7 +113,8 @@ public class Query {
 		this.properties.putAll(properties);
 		this.fields = q.getFields();
 		this.cache = q.getCache();
-		this.apsId = aps;			
+		this.apsId = aps;
+		if (context == null) throw new NullPointerException();
 		this.context = context;
 		this.prev = q;
 		this.path = path;
@@ -131,6 +134,7 @@ public class Query {
 		this.cache = q.getCache();
 		this.apsId = q.getApsId();			
 		this.context = q.getContext();
+		if (context == null) throw new NullPointerException();
 		this.prev = q;
 		this.path = path;
 		process();

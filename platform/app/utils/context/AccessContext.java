@@ -131,6 +131,10 @@ public abstract class AccessContext {
 		throw new InternalServerException("error.internal", "Unknown restriction");
 	}
 	
+	public Map<String, Object> getAccessRestrictions() throws AppException {
+		if (parent != null) return parent.getAccessRestrictions(); else return null;
+	}
+	
 	/**
 	 * create history records during updates with this context?
 	 * @return

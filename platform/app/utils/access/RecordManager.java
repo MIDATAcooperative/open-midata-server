@@ -275,22 +275,22 @@ public class RecordManager {
 	public void share(AccessContext context, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
 			Set<MidataId> records, boolean withOwnerInformation)
 			throws AppException {
-		share(context.getAccessor(), context.getCache(), fromAPS, toAPS, toAPSOwner, records, withOwnerInformation);
+		share(context.getAccessor(), context.forAccountReshare(), fromAPS, toAPS, toAPSOwner, records, withOwnerInformation);
 	}
 	
-	protected void share(MidataId who, APSCache cache, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
+	protected void share(MidataId who, AccessContext context, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
 			Set<MidataId> records, boolean withOwnerInformation)
 			throws AppException {
 		if (fromAPS.equals(toAPS)) return;
         AccessLog.logBegin("begin share: who=",who.toString()," from=",fromAPS.toString()," to=",toAPS.toString()," count=",(records!=null ? Integer.toString(records.size()) : "?"));
-		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
+		APS apswrapper = context.getCache().getAPS(toAPS, toAPSOwner);
 		
 		List<DBRecord> recordEntries = null;
 		
 		if (records != null) {
 			boolean failed = false;
 			for (MidataId id : records) {
-				DBRecord target = cache.lookupRecordInCache(id);
+				DBRecord target = context.getCache().lookupRecordInCache(id);
 				if (target != null) {
 					if (recordEntries == null) recordEntries = new ArrayList<DBRecord>();
 					recordEntries.add(target);
@@ -301,15 +301,15 @@ public class RecordManager {
 		}
 		
 		if (recordEntries == null) {
-			recordEntries = QueryEngine.listInternal(cache, fromAPS, new DummyAccessContext(cache),
+			recordEntries = QueryEngine.listInternal(context.getCache(), fromAPS, new DummyAccessContext(context.getCache()),
 					records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
 					RecordManager.SHARING_FIELDS);
 		}
 		
-		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);
+		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(context, toAPS, recordEntries);
 		AccessLog.log("to-share: ", Integer.toString(recordEntries.size()), " already=", Integer.toString(alreadyContained.size()));
 		
-		shareUnchecked(cache, recordEntries, alreadyContained, apswrapper, withOwnerInformation);
+		shareUnchecked(context.getCache(), recordEntries, alreadyContained, apswrapper, withOwnerInformation);
         
         AccessLog.logEnd("end share");
 	}
@@ -330,7 +330,7 @@ public class RecordManager {
 		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, fromContext.getTargetAps(), fromContext,
 				CMaps.map(query).map("owner", fromContext.getOwner()),	RecordManager.SHARING_FIELDS);
 		
-		share(cache, toAPS, toAPSOwner, recordEntries, withOwnerInformation);
+		share(fromContext, toAPS, toAPSOwner, recordEntries, withOwnerInformation);
 		
 		return recordEntries.size();
 	}
@@ -343,21 +343,22 @@ public class RecordManager {
 		List<DBRecord> recordEntries = QueryEngine.listInternal(fromcache, fromAPS, context.internal(),
 				CMaps.map("streams", "true").map("flat", "true"), RecordManager.SHARING_FIELDS);
 		
-		share(tocache, toAPS, toAPSOwner, recordEntries, false);
+		share(new DummyAccessContext(tocache), toAPS, toAPSOwner, recordEntries, false);
 		
 		return recordEntries.size();
 	}
 	
 	
-	public void share(APSCache cache, MidataId toAPS, MidataId toAPSOwner,
+	public void share(AccessContext context, MidataId toAPS, MidataId toAPSOwner,
 			List<DBRecord> recordEntries, boolean withOwnerInformation)
 			throws AppException {		
         if (recordEntries.isEmpty()) return;
+        APSCache cache = context.getCache();
         
 		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
 		
 		AccessLog.log("check if contained in target aps");
-		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);		
+		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(context, toAPS, recordEntries);		
 		
 		shareUnchecked(cache, recordEntries, alreadyContained, apswrapper, withOwnerInformation);
         
@@ -1059,7 +1060,7 @@ public class RecordManager {
 		if (pair.getRight() != null) {
 			AccessLog.logBegin("SINGLE RECORDS");
 			List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), sourceaps, context, CMaps.map(pair.getRight()).map("owner", context.getSelf()), RecordManager.SHARING_FIELDS);			
-			RecordManager.instance.share(context.getCache(), targetaps, null, recs, ownerInformation);
+			RecordManager.instance.share(context.forAccountReshare(), targetaps, null, recs, ownerInformation);
 		}
 		if (pair.getLeft() != null) {
 			if (!targetIsEmpty) {
@@ -1075,7 +1076,7 @@ public class RecordManager {
 			
 			AccessLog.log("SHARE QUALIFIED STREAMS:", Integer.toString(records.size()));
 			if (records.size() > 0) {				
-				RecordManager.instance.share(context.getCache(), targetaps, null, records, ownerInformation);
+				RecordManager.instance.share(context, targetaps, null, records, ownerInformation);
 			}
 			
 			if (!targetIsEmpty) {

@@ -262,7 +262,7 @@ public class ApplicationTools {
 		
 		if (serviceInstance.studyRelatedOnly) query.put("study-related", "true");
 		
-		if (app.type.equals("broker")) query.put("usergroup", serviceInstance.executorAccount.toString());
+		//if (app.type.equals("broker")) query.put("usergroup", serviceInstance.executorAccount.toString());
 
 		appInstance.sharingQuery = query;
 		

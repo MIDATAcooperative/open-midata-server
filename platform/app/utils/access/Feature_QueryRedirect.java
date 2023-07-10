@@ -89,10 +89,13 @@ public class Feature_QueryRedirect extends Feature {
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		APS target = q.getCache().getAPS(q.getApsId());
-		BasicBSONObject query = target.getMeta(APS.QUERY);    	
+		BasicBSONObject query1 = target.getMeta(APS.QUERY);  
+		Map<String, Object> query = (query1 != null) ? query1 : q.getContext().getAccessRestrictions();
     	// Ignores queries in main APS 
-		if (query != null && !q.getApsId().equals(q.getCache().getAccountOwner())) {			
-			return new RedirectIterator(target, query, next, q);						
+		if (query != null /* && !q.getApsId().equals(q.getCache().getAccountOwner()) */) {
+			
+			MidataId redirectApsId = (query1 != null) ? MidataId.from(query1.get("aps")) : q.getApsId();			
+			return new RedirectIterator(target, redirectApsId, query, next, q);						
 		}
 		
 		return next.iterator(q);	
@@ -101,12 +104,14 @@ public class Feature_QueryRedirect extends Feature {
 	static class RedirectIterator extends Feature.MultiSource<Integer> {
 
 		private APS target;
-		private BasicBSONObject requery;
+		private MidataId redirectApsId;
+		private Map<String, Object> requery;
 		private Feature next;	
 		private boolean redirect;
 		
-		RedirectIterator(APS target, BasicBSONObject query, Feature next, Query q) throws AppException {			
+		RedirectIterator(APS target, MidataId redirectApsId, Map<String, Object> query, Feature next, Query q) throws AppException {			
 			this.target = target;
+			this.redirectApsId = redirectApsId;
 			this.requery = query;
 			this.next = next;
 			this.query = q;
@@ -128,8 +133,7 @@ public class Feature_QueryRedirect extends Feature {
             } else if (step == 2) {
             	redirect = true;
             	if (!query.restrictedBy("ignore-redirect")) {
-            		Object targetAPSId = requery.get("aps");
-            		return QueryEngine.combineIterator(new Query(query, "redirect-base", CMaps.map(), MidataId.from(targetAPSId), new AccountAccessContext(query.getCache(), query.getContext())).setFromRecord(query.getFromRecord()), "redirect", requery.toMap(), next);            				    			
+            		return QueryEngine.combineIterator(new Query(query, "redirect-base", CMaps.map(), redirectApsId, new AccountAccessContext(query.getCache(), query.getContext())).setFromRecord(query.getFromRecord()), "redirect", requery, next);            				    			
     			}
             	return ProcessingTools.empty();
             }

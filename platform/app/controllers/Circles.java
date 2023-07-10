@@ -302,6 +302,18 @@ public class Circles extends APIController {
 		return Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(members, owner);
 	}
 	
+   public static Set<Consent> getAllWriteableByAuthorizedAndOwner(AccessContext context, MidataId owner) throws InternalServerException {
+		
+		Set<UserGroupMember> grps = context.usesUserGroupsForQueries() ? getAllWritableActiveByMember(new HashSet<MidataId>(), Collections.singleton(context.getAccessor())) : Collections.emptySet();
+		Set<MidataId> members = null;
+		if (grps.isEmpty()) members = Collections.singleton(context.getAccessor()); else {
+			members = new HashSet<MidataId>();
+			members.add(context.getAccessor());
+			for (UserGroupMember ugm : grps) members.add(ugm.userGroup);
+		}
+		return Consent.getAllWriteableByAuthorizedAndOwner(members, owner);
+	}
+	
 	private static Set<UserGroupMember> getAllWritableActiveByMember(Set<MidataId> alreadyFound, Set<MidataId> members) throws InternalServerException {
 		Set<UserGroupMember> results = UserGroupMember.getAllActiveByMember(members);
 		Set<UserGroupMember> results1 = UserGroupMember.getAllActiveByMember(members);

@@ -114,6 +114,11 @@ public class PublicAccessContext extends AccessContext {
 	public AccessContext forPublic() throws AppException {
 		return this;
 	}
+	
+	@Override
+	public boolean isUserGroupContext() {		
+		return false;
+	}
 		
 	
 
