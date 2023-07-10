@@ -174,7 +174,7 @@
 {"_id":{"$oid":"57d7cad6aed64511e8f4d444"},"system":"http://loinc.org","code":"68472-0","display":"Cardiology Hospital Progress note","content":"documents/cardiology-progress-note"}
 {"_id":{"$oid":"57d7cad6aed64511e8f4d445"},"system":"http://loinc.org","code":"34126-3","display":"Intensive care unit progress note","content":"documents/intensive-care-progress-note"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d44c"},"system":"http://loinc.org","code":"55110-1","display":"Conclusions (interpretation) document","content":"documents/conclusions"}
-{"_id":{"$oid":"57d7cc3aaed64511e8f4d44d"},"system":"http://loinc.org","code":"72170-4","display":"Photographic image (Unspecified body)","content":"documents/image"}
+{"_id":{"$oid":"57d7cc3aaed64511e8f4d44d"},"system":"http://loinc.org","code":"72170-4","display":"Photographic image","content":"documents/image"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d44e"},"system":"http://loinc.org","code":"18726-0","display":"Radiology studies","content":"documents/radiology"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d44f"},"system":"http://loinc.org","code":"71230-7","display":"Birth certificate","content":"documents/birth-certificate"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d450"},"system":"http://loinc.org","code":"53247-3","display":"Eligibility acknowledgement","content":"documents/eligibility-acknowledgement"}
@@ -476,3 +476,6 @@
 {"_id":{"$oid":"63d7e2a8ee2c0a65c3e75532"},"system":"http://midata.coop","code":"support-needs","display":"Need for support","content":"support-needs"}
 {"_id":{"$oid":"63d7e143f4df477d87ac976e"},"system":"http://midata.coop","code":"promis-questionnaire","display":"PROMIS Questionnaire","content":"promis-questionnaire"}
 {"_id":{"$oid":"63edeba32695845b1140b6a4"},"system":"http://midata.coop","code":"unit-non-response","display":"Non response reasons","content":"unit-non-response"}
+{"_id":{"$oid":"645e05230b8cfe03731b2ff8"},"system":"http://loinc.org","code":"11348-0","display":"History of Past illness Narrative","content":"document/pastillnesses"}
+{"_id":{"$oid":"645e00210b8cfe03731b2ff5"},"system":"http://snomed.info/sct","code":"41000179103","display":"Immunization record (record artifact)","content":"snomed/41000179103"}
+{"_id":{"$oid":"645e03c2bef10907d5e521e7"},"system":"http://snomed.info/sct","code":"723394009","display":"Photographic image record (record artifact)","content":"documents/image"}
