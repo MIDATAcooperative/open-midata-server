@@ -226,10 +226,10 @@ public class AccountWiper extends AbstractActor {
 			if (user.role == UserRole.PROVIDER) {
 				HPUser hp = HPUser.getById(userId, Sets.create("provider"));
 				user.delete();
-				if (!User.exists(CMaps.map("provider", hp.provider).map("status", User.NON_DELETED))) {
+				/*if (hp.provider != null && !User.exists(CMaps.map("provider", hp.provider).map("status", User.NON_DELETED))) {
 					OrganizationResourceProvider.deleteOrganization(context, hp.provider);
 					HealthcareProvider.delete(hp.provider);
-				}			
+				}*/			
 			} else
 			if (user.role == UserRole.RESEARCH) {
 				ResearchUser ru = ResearchUser.getById(userId, Sets.create("organization"));

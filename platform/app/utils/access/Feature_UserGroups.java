@@ -29,6 +29,7 @@ import org.bson.BasicBSONObject;
 
 import models.MidataId;
 import models.UserGroupMember;
+import models.enums.Permission;
 import models.enums.ResearcherRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
@@ -47,32 +48,6 @@ public class Feature_UserGroups extends Feature {
 		this.next = next;
 	}
 	
-	/*
-	@Override
-	protected List<DBRecord> query(Query q) throws AppException {
-		if (q.restrictedBy("usergroup")) {
-			MidataId usergroup = q.getMidataIdRestriction("usergroup").iterator().next();
-			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndMember(usergroup, q.getCache().getAccountOwner());
-			if (isMemberOfGroup == null) throw new InternalServerException("error.internal", "Not member of provided user group");
-			return doQueryAsGroup(isMemberOfGroup, q);					
-		}
-		
-		if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
-			
-			if (!q.isRestrictedToSelf()) {
-				Set<UserGroupMember> isMemberOfGroups = q.getCache().getAllActiveByMember();
-				if (!isMemberOfGroups.isEmpty()) {
-					List<DBRecord> results = next.query(q);
-					for (UserGroupMember ugm : isMemberOfGroups) {
-						results = QueryEngine.combine(results, doQueryAsGroup(ugm, q));
-					}
-					return results;
-				}
-			}
-		}
-		return next.query(q);
-	}
-	*/
 	
 	
 	@Override
@@ -81,7 +56,7 @@ public class Feature_UserGroups extends Feature {
 			MidataId usergroup = q.getMidataIdRestriction("usergroup").iterator().next();
 			
 			if (usergroup.equals(q.getCache().getAccountOwner())) return next.iterator(q);
-			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndActiveMember(usergroup, q.getCache().getAccountOwner());
+			List<UserGroupMember> isMemberOfGroup = q.getCache().getByGroupAndActiveMember(usergroup, q.getCache().getAccessor(), Permission.READ_DATA);
 			if (isMemberOfGroup == null) throw new InternalServerException("error.internal", "Not member of provided user group");
 			return doQueryAsGroup(isMemberOfGroup, q);					
 		}
@@ -89,7 +64,7 @@ public class Feature_UserGroups extends Feature {
 		if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
 			
 			if (!q.isRestrictedToSelf()) {
-				Set<UserGroupMember> isMemberOfGroups = q.getCache().getAllActiveByMember();
+				Set<UserGroupMember> isMemberOfGroups = q.getContext().getAllActiveByMember();
 				if (!isMemberOfGroups.isEmpty()) {
 					q.setFromRecord(null);
 					List<UserGroupMember> members = new ArrayList<UserGroupMember>(isMemberOfGroups);
@@ -114,7 +89,9 @@ public class Feature_UserGroups extends Feature {
 		public DBIterator<DBRecord> advance(UserGroupMember usergroup) throws AppException {
 			
 			if (usergroup == null) return next.iterator(query);
-			return doQueryAsGroup(usergroup, query);
+			List<UserGroupMember> path = query.getCache().getByGroupAndActiveMember(usergroup, query.getContext().getAccessor(), Permission.READ_DATA);
+			if (path == null || path.isEmpty()) return ProcessingTools.empty();
+			return doQueryAsGroup(path, query);
 			
 		}
 
@@ -129,32 +106,48 @@ public class Feature_UserGroups extends Feature {
 		
 	}
 
-	protected DBIterator<DBRecord> doQueryAsGroup(UserGroupMember ugm, Query q) throws AppException {		
-		MidataId group = ugm.userGroup;
-		//AccessLog.logBegin("start user group query for group="+group.toString());
-		BasicBSONObject obj = q.getCache().getAPS(ugm._id, ugm.member).getMeta("_usergroup");
-		KeyManager.instance.unlock(group, ugm._id, (byte[]) obj.get("aliaskey"));
+	protected DBIterator<DBRecord> doQueryAsGroup(List<UserGroupMember> ugms, Query q) throws AppException {
+		if (ugms.isEmpty()) throw new InternalServerException("error.internal", "doQueryAsGroup requires UserGroup");
+		MidataId group = null;
+		APSCache subcache = q.getCache();
+	    UserGroupMember lastUgm = null;
+	    UserGroupMember firstUgm = null;
+	    boolean mayExportData = true;
+	    boolean pseudonymizeAccess = false;
+	    boolean mayReadData = true;
+	    AccessContext context = q.getContext();
+		for (UserGroupMember ugm : ugms) {
+			if (firstUgm==null) firstUgm = ugm;
+			group = ugm.userGroup;	
+			lastUgm = ugm;			
+			subcache = readySubCache(q.getCache(), subcache,  ugm);
+			if (ugm.role == null) ugm.role = ResearcherRole.HC();
+			mayExportData = mayExportData && ugm.role.mayExportData();
+			mayReadData = mayReadData && ugm.role.mayReadData();
+			pseudonymizeAccess = pseudonymizeAccess || ugm.role.pseudonymizedAccess();
+			context = new UserGroupAccessContext(ugm, subcache, context);
+			//AccessLog.log("QUERY AS GROUP pA="+pseudonymizeAccess+" context="+context.toString());
+		}
+		
 		Map<String, Object> newprops = new HashMap<String, Object>();
 		newprops.putAll(q.getProperties());
-		newprops.put("usergroup", ugm.userGroup);		
-		APSCache subcache = q.getCache().getSubCache(group); 
-		if (ugm.role == null) ugm.role = ResearcherRole.HC();
-		
+		newprops.put("usergroup", lastUgm.userGroup);		
+		 				
 		if (q.restrictedBy("export")) {
-			if (!ugm.role.mayExportData()) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");
-			if (!ugm.role.pseudonymizedAccess()) {
-				if (q.getStringRestriction("export").equals("pseudonymized")) { ugm.role.pseudo = true; }
+			if (!mayExportData) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");
+			if (!pseudonymizeAccess) {
+				if (q.getStringRestriction("export").equals("pseudonymized")) { pseudonymizeAccess = true; }
 			}
 		}
 		
-		if (!ugm.role.mayReadData()) return ProcessingTools.empty();		
+		if (!mayReadData) return ProcessingTools.empty();		
 				
 		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal		 
-		MidataId aps = (q.getApsId().equals(ugm.member) /*|| q.getContext() instanceof DummyAccessContext */) ? group : q.getApsId();
+		MidataId aps = (q.getApsId().equals(firstUgm.member) /*|| q.getContext() instanceof DummyAccessContext */) ? group : q.getApsId();
 		
-		AccessLog.logBeginPath("ug("+ugm.userGroup+")", null);
-		Query qnew = new Query("ug","ug="+ugm.userGroup,newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext()),q).setFromRecord(q.getFromRecord());
-		if (ugm.role.pseudonymizedAccess()) {
+		AccessLog.logBeginPath("ug("+lastUgm.userGroup+")", null);
+		Query qnew = new Query("ug","ug="+lastUgm.userGroup,newprops, q.getFields(), subcache, aps, context ,q).setFromRecord(q.getFromRecord());
+		if (pseudonymizeAccess) {
 			 AccessLog.log("do pseudonymized");
 			 if (!Feature_Pseudonymization.pseudonymizedIdRestrictions(qnew, next, group, newprops)) {
 				 AccessLog.logEndPath("cannot unpseudonymize");
@@ -165,11 +158,10 @@ public class Feature_UserGroups extends Feature {
 			AccessLog.log("is not pseudonymized");
 		}
 		
-		DBIterator<DBRecord> result = next.iterator(qnew);
-		//AccessLog.logEnd("end user group query for group="+group.toString());
+		DBIterator<DBRecord> result = next.iterator(qnew);	
 		AccessLog.logEndPath("inited hasNext="+result.hasNext());
 		return result;
-	}
+	}		
 	
 	protected static MidataId identifyUserGroup(APSCache cache, MidataId targetAps) throws AppException {
 		UserGroupMember ugm = identifyUserGroupMember(cache, targetAps);
@@ -203,10 +195,21 @@ public class Feature_UserGroups extends Feature {
 	
 	public static APSCache findApsCacheToUse(APSCache cache, UserGroupMember ugm) throws AppException {		
 		if (ugm == null) return cache;		
-		
-		BasicBSONObject obj = cache.getAPS(ugm._id, ugm.member).getMeta("_usergroup");
-		if (!cache.hasSubCache(ugm.userGroup)) KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));		
+				
+		if (!cache.hasSubCache(ugm.userGroup)) {
+			APSCache subcache = cache;
+			List<UserGroupMember> ugms = cache.getByGroupAndActiveMember(ugm, cache.getAccessor(), Permission.ANY);
+			for (UserGroupMember ugmx : ugms) subcache = readySubCache(cache, subcache, ugmx);					
+		}
 		return cache.getSubCache(ugm.userGroup);				
+	}
+	
+	
+			
+	public static APSCache readySubCache(APSCache cache, APSCache subcache, UserGroupMember ugm) throws AppException {
+		BasicBSONObject obj = subcache.getAPS(ugm._id, ugm.member).getMeta("_usergroup");
+		KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));
+		return cache.getSubCache(ugm.userGroup);
 	}
 
 	public static void loadKey(AccessContext context, UserGroupMember ugm) throws AppException {				

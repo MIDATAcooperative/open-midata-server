@@ -75,6 +75,7 @@ import models.enums.ConsentStatus;
 import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.QueryTagTools;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -130,7 +131,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 		IParser parser = ctx().newJsonParser();
 		//AccessLog.log(groupToConvert.fhirGroup.toString());
 		Group p = parser.parseResource(getResourceType(), groupToConvert.fhirGroup.toString());
-				
+	    addSecurityTag(p, QueryTagTools.SECURITY_PLATFORM_MAPPED);	
 		if (addMembers) {
 			Set<UserGroupMember> members = UserGroups.listUserGroupMembers(groupToConvert._id);
 			for (UserGroupMember member : members) {

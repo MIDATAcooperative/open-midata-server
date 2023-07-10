@@ -34,6 +34,7 @@ import utils.access.Feature_FormatGroups;
 import utils.access.Feature_Pseudonymization;
 import utils.access.QueryEngine;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class ConsentAccessContext extends AccessContext{
 
@@ -80,7 +81,7 @@ public class ConsentAccessContext extends AccessContext{
 	}
 
 	@Override
-	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) throws InternalServerException {
 		
 		if (consent.writes == null) return false;
 		if (!consent.writes.isUpdateAllowed()) return false;

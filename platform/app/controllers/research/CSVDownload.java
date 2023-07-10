@@ -172,7 +172,7 @@ public class CSVDownload extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, executorId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.role.mayExportData())
+		if (!self.getRole().mayExportData())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to export data.");
 
 		final String handle = PortalSessionToken.session().handle;
@@ -207,7 +207,7 @@ public class CSVDownload extends APIController {
 		
 
 		if (initialInf.mayAccess("Practitioner", "fhir/Practitioner")) {
-			Set<UserGroupMember> ugms = UserGroupMember.getAllByGroup(study._id);
+			Set<UserGroupMember> ugms = UserGroupMember.getAllUserByGroup(study._id);
 			Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
 			for (UserGroupMember member : ugms)
 				idmap.put(member.member, member);

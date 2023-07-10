@@ -313,7 +313,7 @@ public class OAuth2 extends Controller {
     		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.LOGIN);
         } else throw new BadRequestException("error.internal", "Unknown grant_type");
                											
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user != null ? user.role : UserRole.ANY);
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user != null ? user.role : UserRole.ANY, null);
 		
         OAuthRefreshToken refresh = createRefreshToken(tempContext, appInstance, aeskey);
         

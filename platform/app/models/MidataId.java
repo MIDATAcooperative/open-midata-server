@@ -155,7 +155,8 @@ public class MidataId implements Comparable<MidataId>, Serializable {
 		if (o instanceof ObjectId) return new MidataId((ObjectId) o);
 		if (o instanceof MidataId) return (MidataId) o;
 		return new MidataId(o.toString());
-	}	
+
+	}
 	
 	public static MidataId parse(Object o) throws BadRequestException {
 		if (o == null) return null;

@@ -24,12 +24,22 @@ package models.enums;
 public enum UserGroupType {
 
 	/**
-	 * A group of healthcare providers
+	 * A group of healthcare providers. Mapped to a FHIR "Group" resource.
 	 */
 	CARETEAM,
 	
 	/**
-	 * A group of researchers having access to a study
+	 * A group of researchers having access to a study. (Belonging to a ResearchStudy resource)
 	 */
-	RESEARCHTEAM
+	RESEARCHTEAM,
+	
+	/**
+	 * People belonging to one organization (Belonging to an Organization resource)
+	 */
+	ORGANIZATION,
+	
+	/**
+	 * Healthcare providers working for one HealthcareService (Belonging to a HealthcareService resource)
+	 */
+	HEALTHCARESERVICE
 }

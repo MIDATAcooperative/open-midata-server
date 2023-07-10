@@ -321,7 +321,7 @@ public class PluginsAPI extends APIController {
 						
 		AccessContext inf = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		Stats.setPlugin(inf.getUsedPlugin());
-		UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.GET);
+		UsageStatsRecorder.protokoll(inf, UsageAction.GET);
 		
 		Collection<Record> records = getRecords(inf, properties, fields);
 				
@@ -460,7 +460,7 @@ public class PluginsAPI extends APIController {
 		AccessContext authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 		Stats.setPlugin(authToken.getUsedPlugin());
 		if (authToken.getSingleReadableRecord() != null) throw new BadRequestException("error.internal", "This view is readonly.");
-		UsageStatsRecorder.protokoll(authToken.getUsedPlugin(), UsageAction.POST);	
+		UsageStatsRecorder.protokoll(authToken, UsageAction.POST);	
 		
 		String data = JsonValidation.getJsonString(json, "data");
 		String name = JsonValidation.getString(json, "name");
@@ -538,11 +538,11 @@ public class PluginsAPI extends APIController {
 				MidataId groupId = MidataId.from(query.get("link-study"));
                 UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(groupId, inf.getAccessor());
                 if (ugm != null) context = context.forUserGroup(ugm);
-				consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(groupId, record.owner);
+				consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(Collections.singleton(groupId), record.owner);
 				
 			} else {
-				
-			    consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(inf.getAccessor(), record.owner);
+			
+			    consent = Circles.getHealthcareOrResearchActiveByAuthorizedAndOwner(inf, record.owner);
 			}
 									
 			if (consent == null || consent.isEmpty()) {
@@ -555,7 +555,8 @@ public class PluginsAPI extends APIController {
 			AccessContext contextWithConsent = null;
 			AccessContext lastTried = null;
 			for (Consent c : consent) {
-				ConsentAccessContext cac = new ConsentAccessContext(c, context);
+				
+				AccessContext cac = context.forConsent(c);								
 				
 				if (cac.mayCreateRecord(dbrecord)) {				
 					contextWithConsent = cac;
@@ -711,7 +712,7 @@ public class PluginsAPI extends APIController {
 		AccessContext authToken = ExecutionInfo.checkSpaceToken(request, json.get("authToken").asText());
 				
 		if (authToken.getSingleReadableRecord() != null) throw new BadRequestException("error.internal", "This view is readonly.");
-		UsageStatsRecorder.protokoll(authToken.getUsedPlugin(), UsageAction.PUT);				
+		UsageStatsRecorder.protokoll(authToken, UsageAction.PUT);				
 		
 		String data = JsonValidation.getJsonString(json, "data");
 		

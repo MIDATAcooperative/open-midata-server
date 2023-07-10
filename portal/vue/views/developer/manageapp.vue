@@ -306,6 +306,7 @@ export default {
             { value : "mobile", label : "Mobile App" },
             { value : "external", label : "External Service" },
             { value : "analyzer", label : "Project analyzer" },
+            { value : "broker", label : "Data broker" },
             { value : "endpoint", label : "FHIR endpoint" }
 	    ],
 	    tags : [

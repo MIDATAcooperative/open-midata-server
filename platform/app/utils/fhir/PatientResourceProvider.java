@@ -555,6 +555,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (record.name == null || record.name.length() == 0)
 			record.name = thePatient.getName().get(0).getText();
 		thePatient.getMeta().setExtension(null);
+		addSecurityTag(record, thePatient, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 	}
 
 	public void processResource(Record record, Patient resource) throws AppException {
@@ -569,6 +570,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		  List<Study> studies = AccountManagementTools.determineProjectsFromUsedApp(info(), info().getLegacyOwner().equals(record.owner));
 		  populateIdentifiers(record.owner, resource, studies);		  		 
 		}
+		
+		addSecurityTag(record, resource, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 					
 	}
 	

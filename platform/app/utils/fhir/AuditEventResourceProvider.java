@@ -70,6 +70,7 @@ import models.Study;
 import models.User;
 import models.UserGroupMember;
 import models.enums.ConsentType;
+import models.enums.Permission;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.access.op.AndCondition;
@@ -480,13 +481,13 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		  query.putDataCondition(new AndCondition(CMaps.map("authorized", info.getAccessor())).optimize());
 		  authrestricted = true;
 		} else if (!current.role.equals(UserRole.ADMIN)) {
-		  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(info().getAccessor());
+		  Set<UserGroupMember> ugms = info.getCache().getAllActiveByMember();
 		  if (ugms.isEmpty()) {
 		    query.putDataCondition(new AndCondition(CMaps.map("authorized", info.getAccessor())).optimize());
 		  } else {
 			Set<MidataId> allowedIds = new HashSet<MidataId>();
 			allowedIds.add(info.getAccessor());
-			for (UserGroupMember ugm : ugms) if (ugm.getRole().auditLogAccess()) allowedIds.add(ugm.userGroup);
+			for (UserGroupMember ugm : ugms) if (info.getCache().getByGroupAndActiveMember(ugm, info.getAccessor(), Permission.AUDIT_LOG) != null) allowedIds.add(ugm.userGroup);
 			query.putDataCondition(new AndCondition(CMaps.map("authorized", CMaps.map("$in", allowedIds))).optimize());
 			//query.putAccount("authorized", allowedIds);
 		  }

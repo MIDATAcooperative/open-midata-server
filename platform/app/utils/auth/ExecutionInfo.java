@@ -19,6 +19,7 @@ package utils.auth;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -31,7 +32,9 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.Space;
 import models.User;
+import models.UserGroupMember;
 import models.enums.ConsentStatus;
+import models.enums.Permission;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
@@ -42,6 +45,7 @@ import utils.collections.RequestCache;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.ActionTokenAccessContext;
+import utils.context.AppAccessContext;
 import utils.context.ContextManager;
 import utils.context.SpaceAccessContext;
 import utils.exceptions.AppException;
@@ -51,7 +55,7 @@ import utils.exceptions.InternalServerException;
 public class ExecutionInfo {
 		
 	public static AccessContext checkToken(Request request, String token, boolean allowInactive, boolean allowRestricted) throws AppException {
-		String plaintext = TokenCrypto.decryptToken(token);
+		String plaintext = TokenCrypto.decryptToken(MobileAppSessionToken.noExtra(token));
 		if (plaintext == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");	
 		JsonNode json = Json.parse(plaintext);
 		if (json == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
@@ -61,7 +65,7 @@ public class ExecutionInfo {
 		} else if (json.has("action"))  {
 			return checkActionToken(request, token);
 		} else {
-			return checkMobileToken(request, MobileAppSessionToken.decrypt(json), allowInactive, allowRestricted);
+			return checkMobileToken(request, MobileAppSessionToken.decrypt(json, MobileAppSessionToken.parseExtra(token)), allowInactive, allowRestricted);
 		}
 	}
 	
@@ -95,7 +99,7 @@ public class ExecutionInfo {
 						
 			session = ContextManager.instance.createSession(authToken.executorId, authToken.role, null, authToken.userId, null);
 			 		
-			Consent consent = Circles.getConsentById(session, authToken.spaceId, Consent.ALL);
+			Consent consent = Circles.getConsentById(session, authToken.spaceId, Consent.ALL);			
 			if (consent != null) {
 			  session = session.forConsent(consent); 
 			} else {
@@ -223,6 +227,19 @@ public class ExecutionInfo {
 		}
 				
 		AccessContext session = ContextManager.instance.upgradeSessionForApp(tempContext, appInstance);
+		
+		String group = authToken.getExtra().get("grp");
+		if (group != null) {
+			MidataId groupId = MidataId.parse(group);
+			List<UserGroupMember> ugms = session.getCache().getByGroupAndActiveMember(groupId, session.getAccessor(), Permission.READ_DATA);			
+			if (ugms != null) {
+				session = session.forUserGroup(ugms);
+			} else {
+				OAuth2.invalidToken();
+			}
+		} else if (plugin.type.equals("broker")) {
+			((AppAccessContext) session).restricted();
+		}
 		
 		if (authToken.restrictedResourceId != null) {
 			if (allowRestricted) {

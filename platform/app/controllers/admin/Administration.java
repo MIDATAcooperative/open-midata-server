@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hl7.fhir.r4.model.Organization;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,6 +40,7 @@ import controllers.Users;
 import models.Admin;
 import models.Consent;
 import models.Developer;
+import models.HealthcareProvider;
 import models.Member;
 import models.MidataAuditEvent;
 import models.MidataId;
@@ -66,7 +69,9 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
+import utils.OrganizationTools;
 import utils.RuntimeConstants;
+import utils.UserGroupTools;
 import utils.access.DBRecord;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
@@ -82,6 +87,7 @@ import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
+import utils.collections.NChainedMap;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.ContextManager;
@@ -89,6 +95,8 @@ import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.FHIRServlet;
+import utils.fhir.OrganizationResourceProvider;
 import utils.fhir.PatientResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -595,6 +603,66 @@ public class Administration extends APIController {
 		obj.put("servicekey", ServiceHandler.keyAvailable());
 		obj.set("cluster", memberinfo);
 		return ok(obj);
+	}
+	
+	/**
+	 * healthcare provider search for MIDATA members by MIDATAID and birthday.
+	 * @return Member and list of consents
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@Security.Authenticated(AdminSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public Result searchOrganization(Request request) throws JsonValidationException, AppException {
+	
+		JsonNode json = request.body().asJson();
+		String name = JsonValidation.getStringOrNull(json, "name");
+		String city = JsonValidation.getStringOrNull(json, "city");
+		
+		UserStatus status = (JsonValidation.getStringOrNull(json, "status") != null) ? JsonValidation.getEnum(json, "status", UserStatus.class) : null;
+		
+		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.getProvider("Organization")); 
+		List<Organization> orgs = provider.search(portalContext(request), name, city, false);
+	
+		Map<MidataId, Organization> orgsById = new HashMap<MidataId, Organization>();
+		for (Organization org : orgs) orgsById.put(MidataId.from(org.getIdElement().getIdPart()), org);		
+		NChainedMap<String, Object> properties = CMaps.map("_id", orgsById.keySet());	
+		properties = properties.mapNotEmpty("status", status);
+	    Set<HealthcareProvider> providers = HealthcareProvider.getAll(properties, HealthcareProvider.ALL);
+	    
+	    return ok(JsonOutput.toJson(providers, "HealthcareProvider", HealthcareProvider.ALL));
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public Result changeOrganizationStatus(Request request) throws JsonValidationException, AppException {
+		// validate json
+		JsonNode json = request.body().asJson();
+		AccessContext context = portalContext(request);
+		JsonValidation.validate(json, "organization", "status");
+		requireSubUserRole(request, SubUserRole.USERADMIN);
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
+		MidataId providerId = JsonValidation.getMidataId(json, "organization");
+		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
+		
+		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(providerId, HealthcareProvider.ALL);
+						
+		if (provider == null) throw new BadRequestException("error.unknown.provider", "Unknown HealthcareProvider");
+		
+		UserStatus oldstatus = provider.status;
+		
+		//if (status == UserStatus.PRECREATED && oldstatus != UserStatus.PRECREATED) throw new BadRequestException("error.invalid.status_transition", "Invalid status change");
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CHANGED).withActorUser(context.getActor()).withMessage(provider.name));
+		provider.status = status;
+		provider.set("status", provider.status);		
+		OrganizationTools.updateModel(context, provider);
+		UserGroupTools.changeUserGroupStatus(providerId, provider.status);
+		OrganizationResourceProvider.updateFromHP(context, provider);
+						
+		AuditManager.instance.success();
+		return ok();
 	}
 	
 }

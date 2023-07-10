@@ -28,10 +28,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Reference;
@@ -59,6 +61,7 @@ import models.MidataId;
 import models.Model;
 import models.Record;
 import utils.ErrorReporter;
+import utils.QueryTagTools;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.collections.CMaps;
@@ -440,6 +443,18 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	
 	protected int getProcessingOrder() {
 		return 2;
+	}
+	
+	public boolean addSecurityTag(T theResource, String tag) {
+		Pair<String, String> coding = QueryTagTools.getSystemCodeForTag(tag);
+		if (theResource.getMeta().hasSecurity()) {
+			List<Coding> codes = theResource.getMeta().getSecurity();
+			for (Coding c : codes) {
+			    if (coding.getLeft().equals(c.getSystem()) && coding.getRight().equals(c.getCode())) return false;			    
+			}
+		}
+		theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
+		return true;
 	}
 	
 	

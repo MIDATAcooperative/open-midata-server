@@ -210,6 +210,8 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public BSONObject data; 
 	
 	public AccessContext context;
+	
+	public @NotMaterialized Object mapped;
 		
 	
 	//public Set<MidataId> dependencies;

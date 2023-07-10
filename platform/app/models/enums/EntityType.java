@@ -41,5 +41,11 @@ public enum EntityType {
 	/**
 	 * Services
 	 */
-	SERVICES
+	SERVICES;
+	
+	public Permission getChangePermission() {
+		if (this == SERVICES) return Permission.APPLICATIONS;
+		else if (this == ORGANIZATION) return Permission.SETUP;
+		return Permission.CHANGE_TEAM;
+	}
 }

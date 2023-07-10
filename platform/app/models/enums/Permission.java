@@ -18,37 +18,17 @@
 package models.enums;
 
 /**
- * Security level of a user account
+ * Permissions for roles 
  *
  */
-public enum AccountSecurityLevel {
-	/**
-	 *  Account is not protected by keypair
-	 */
-	NONE,            
-	
-	/**
-	 * Account is protected by key in keystore
-	 */
-	KEY,             
-	
-	/**
-	 * Account is protected by key in keystore and passphrase
-	 */
-	KEY_PASSPHRASE,  
-	
-	/**
-	 * Account is protected by externally stored keyfile (currently not supported)
-	 */
-	KEY_FILE,
-	
-	/**
-	 * Account is protected by only externally available password
-	 */
-	KEY_EXT_PASSWORD,
-	
-	/**
-	 * Single sign on; not supported at the moment
-	 */
-	KEY_SSO
+public enum Permission {
+	READ_DATA,	
+	WRITE_DATA,	
+	CHANGE_TEAM,
+	EXPORT, 
+	AUDIT_LOG,
+	PARTICIPANTS,
+	SETUP,
+	APPLICATIONS,
+	ANY
 }

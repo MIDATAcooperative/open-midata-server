@@ -49,6 +49,7 @@ import models.enums.AuditEventType;
 import models.enums.Gender;
 import models.enums.UserRole;
 import utils.AccessLog;
+import utils.QueryTagTools;
 import utils.RuntimeConstants;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
@@ -95,6 +96,7 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	public Person personFromMidataUser(User userToConvert) throws AppException {
 		Person p = new Person();
 		p.setId(userToConvert._id.toString());
+		addSecurityTag(p, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		
 		if (userToConvert.searchable || userToConvert._id.equals(info().getAccessor())) {
 			p.addName().setFamily(userToConvert.lastname).addGiven(userToConvert.firstname);

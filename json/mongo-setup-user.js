@@ -26,7 +26,8 @@ db.instancestats.createIndex({ "date" : 1 });
 db.studyapplink.createIndex({ "studyId" : 1 });
 db.studyapplink.createIndex({ "appId" : 1 });
 
-db.usagestats.createIndex({ "date" : 1, "object" : 1, "action" : 1 }, { "unique" : true });
+db.usagestats.dropIndexes();
+db.usagestats.createIndex({ "date" : 1, "object" : 1, "detail" : 1, "action" : 1 }, { "unique" : true });
 
 db.users.update({ emailLC : "development@midata.coop", role : "DEVELOPER" }, { $set : { email : "developers@midata.coop", emailLC : "developers@midata.coop" }})
 db.plugins.find({ creator : ObjectId("55eff624e4b0b767e88f92b9") }).forEach(function(e) { db.plugins.update({ _id : e._id }, { $set : { creatorLogin : "developers@midata.coop" }})});
@@ -44,3 +45,5 @@ db.studies.find({ type : { $exists : false}}).forEach(function(e) { db.studies.u
 db.plugins.find({ linkedStudy : { $ne : null } }).forEach(function(e) { db.studyapplink.insert({ studyId : e.linkedStudy, appId : e._id, type : (e.mustParticipateInStudy ? ["OFFER_P","REQUIRE_P"] : ["OFFER_P"] ), usePeriod:["RUNNING","FINISHED","PRE"], validationDeveloper : "VALIDATED", validationResearch : "VALIDATED", active : true }); db.plugins.update({ _id : e._id }, { $unset : { linkedStudy : 1, mustParticipateInStudy : 1 } }); });
 
 db.studyapplink.find({ linkTargetType : { $exists : false } }).forEach(function(e) { db.studyapplink.update({ _id : e._id}, { $set : { linkTargetType : "STUDY" } }); });
+
+db.providers.find({ status : { $exists : false } }).forEach(function(e) { db.providers.update({ _id : e._id}, { $set : { status : "NEW" } }); });

@@ -32,7 +32,7 @@
 		    <tr>
 		      <td v-t="'manageapp.type'"></td>
 			  <td><b>{{ $t('enum.plugintype.' + app.type) }}</b>
-			  <span v-if="app.type=='external' || app.type=='endpoint'"> - 
+			  <span v-if="app.type=='external' || app.type=='endpoint' || app.type=='broker'"> - 
 			  <router-link :to="{ path : './servicekeys' }" v-t="'manageapp.manageyourkeys'"></router-link>
 			  </span>
 			  </td>
@@ -169,7 +169,7 @@
 				<div v-t="'manageapp.usagestats_help'"></div>																
 			  </td>
 			</tr>	
-			<tr v-if="allowExport && (app.type=='analyzer' || app.type=='external' || app.type=='endpoint')">
+			<tr v-if="allowExport && (app.type=='analyzer' || app.type=='external' || app.type=='endpoint' || app.type=='broker')">
 			  <td @click="go('services')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
 				<div><b v-t="'manageapp.services_btn'"></b></div>
@@ -243,6 +243,7 @@ export default {
             { value : "oauth2", label : "OAuth 2 Import" },
             { value : "mobile", label : "Mobile App" },
             { value : "external", label : "External Service" },
+            { value : "broker", label : "Data Broker" },
             { value : "analyzer", label : "Project analyzer" },
             { value : "endpoint", label : "FHIR endpoint" }
 	    ],

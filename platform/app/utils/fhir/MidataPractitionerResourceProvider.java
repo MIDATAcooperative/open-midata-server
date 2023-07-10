@@ -47,6 +47,7 @@ import models.MidataId;
 import models.User;
 import models.enums.Gender;
 import models.enums.UserRole;
+import utils.QueryTagTools;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -99,6 +100,7 @@ public class MidataPractitionerResourceProvider extends ResourceProvider<Practit
 		p.addAddress().setCity(userToConvert.city).setCountry(userToConvert.country).setPostalCode(userToConvert.zip).addLine(userToConvert.address1).addLine(userToConvert.address2);
 			
 		p.getMeta().addSecurity("http://midata.coop/codesystems/security", "generated", "Generated Resource");
+		p.getMeta().addSecurity("http://midata.coop/codesystems/security", "platform-mapped", "Platform mapped");
 		return p;
 	}
 	
@@ -149,7 +151,7 @@ public class MidataPractitionerResourceProvider extends ResourceProvider<Practit
 
 	@Override
 	public void processResource(User record, Practitioner resource) throws AppException {
-		
+		addSecurityTag(resource, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		
 	}
 

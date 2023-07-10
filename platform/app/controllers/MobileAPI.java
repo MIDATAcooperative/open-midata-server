@@ -298,7 +298,7 @@ public class MobileAPI extends Controller {
 	 */
 	public static Result authResult(AccessContext context1, UserRole role, MobileAppInstance appInstance, String phrase, boolean deprecated) throws AppException {
 		AccessContext context = context1;
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, role); 
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, role, null); 
         OAuthRefreshToken refresh = OAuth2.createRefreshToken(context, appInstance, phrase);
 		        
         BSONObject q = RecordManager.instance.getMeta(context, appInstance._id, "_query");
@@ -352,7 +352,7 @@ public class MobileAPI extends Controller {
 		if (inf == null) OAuth2.invalidToken(); 
 							
         Stats.setPlugin(inf.getUsedPlugin());
-        UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.GET);
+        UsageStatsRecorder.protokoll(inf, UsageAction.GET);
         
         if (!((AppAccessContext) inf).getAppInstance().status.equals(ConsentStatus.ACTIVE)) {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields)).as("application/json");
@@ -432,7 +432,7 @@ public class MobileAPI extends Controller {
 		
 		AccessContext inf = ExecutionInfo.checkMobileToken(request, json.get("authToken").asText(), false, false);
 		Stats.setPlugin(inf.getUsedPlugin());	
-		UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.POST);	
+		UsageStatsRecorder.protokoll(inf, UsageAction.POST);	
 		
 		String data = JsonValidation.getJsonString(json, "data");
 		String name = JsonValidation.getString(json, "name");
@@ -498,7 +498,7 @@ public class MobileAPI extends Controller {
 		
 		AccessContext inf = ExecutionInfo.checkMobileToken(request, json.get("authToken").asText(), false, false);
 		Stats.setPlugin(inf.getUsedPlugin());	
-		UsageStatsRecorder.protokoll(inf.getUsedPlugin(), UsageAction.PUT);
+		UsageStatsRecorder.protokoll(inf, UsageAction.PUT);
 		
         String data = JsonValidation.getJsonString(json, "data");
 						
@@ -734,7 +734,7 @@ public class MobileAPI extends Controller {
 	          Stats.setPlugin(info.getUsedPlugin());
 	          String id = request.queryString("_id").orElseThrow();
 	         
-	          MobileAppSessionToken tk = new MobileAppSessionToken(authToken.appInstanceId, authToken.aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_IMAGE_EXPIRATION_TIME, authToken.role, MidataId.from(id));
+	          MobileAppSessionToken tk = new MobileAppSessionToken(authToken.appInstanceId, authToken.aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_IMAGE_EXPIRATION_TIME, authToken.role, MidataId.from(id), authToken.getExtra());
 	          try {
 				return ok("https://"+InstanceConfig.getInstance().getPlatformServer()+request.uri()+"&access_token="+URLEncoder.encode(tk.encrypt(), "UTF-8")).as("text/plain");
 			  } catch (UnsupportedEncodingException e) {

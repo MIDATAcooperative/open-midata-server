@@ -59,6 +59,7 @@ import models.enums.ConsentType;
 import models.enums.EntityType;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
+import models.enums.Permission;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
@@ -181,7 +182,7 @@ public class Circles extends APIController {
 			consents = (c!=null) ? Collections.singletonList(c) : Collections.<Consent>emptyList();
 		} else if (properties.containsKey("member")) {
 		  properties.remove("member");
-		  consents = new ArrayList<Consent>(getConsentsAuthorized(owner, properties, Consent.ALL));
+		  consents = new ArrayList<Consent>(getConsentsAuthorized(context, properties, Consent.ALL));
 		} else {
 		  consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, Consent.ALL, RETURNED_CONSENT_LIMIT));
 		}
@@ -237,7 +238,7 @@ public class Circles extends APIController {
 			for (Consent consent : consents) {
 				if (consent.isActive()) {
 				  try {
-				    Collection<RecordsInfo> summary = RecordManager.instance.info(UserRole.ANY, consent._id, new ConsentAccessContext(consent, context), all, AggregationType.ALL);
+				    Collection<RecordsInfo> summary = RecordManager.instance.info(UserRole.ANY, consent._id, context.forConsent(consent), all, AggregationType.ALL);
 				    if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
 				  } catch (RequestTooLargeException e) { consent.records = -1; }
 				  catch (AppException e) {
@@ -280,13 +281,55 @@ public class Circles extends APIController {
 								
 	}
 	
-	public static Collection<Consent> getConsentsAuthorized(MidataId user, Map<String, Object> properties, Set<String> fields) throws AppException {
-		Set<UserGroupMember> groups = UserGroupMember.getAllActiveByMember(user);
+	public static Collection<Consent> getConsentsAuthorized(AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
+		Set<UserGroupMember> groups = context.getAllActiveByMember();
 		Set<MidataId> auth = new HashSet<MidataId>();
-		auth.add(user);
-		for (UserGroupMember group : groups) auth.add(group.userGroup);
+		auth.add(context.getAccessor());
+		for (UserGroupMember group : groups) if (context.getCache().getByGroupAndActiveMember(group, context.getAccessor(), Permission.READ_DATA)!=null) auth.add(group.userGroup);
 		Collection<Consent> consents = Consent.getAllByAuthorized(auth, properties, fields, RETURNED_CONSENT_LIMIT);
 		return consents;
+	}
+	
+	public static Set<Consent> getHealthcareOrResearchActiveByAuthorizedAndOwner(AccessContext context, MidataId owner) throws InternalServerException {
+		
+		Set<UserGroupMember> grps = context.usesUserGroupsForQueries() ? getAllWritableActiveByMember(new HashSet<MidataId>(), Collections.singleton(context.getAccessor())) : Collections.emptySet();
+		Set<MidataId> members = null;
+		if (grps.isEmpty()) members = Collections.singleton(context.getAccessor()); else {
+			members = new HashSet<MidataId>();
+			members.add(context.getAccessor());
+			for (UserGroupMember ugm : grps) members.add(ugm.userGroup);
+		}
+		return Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(members, owner);
+	}
+	
+   public static Set<Consent> getAllWriteableByAuthorizedAndOwner(AccessContext context, MidataId owner) throws InternalServerException {
+		
+		Set<UserGroupMember> grps = context.usesUserGroupsForQueries() ? getAllWritableActiveByMember(new HashSet<MidataId>(), Collections.singleton(context.getAccessor())) : Collections.emptySet();
+		Set<MidataId> members = null;
+		if (grps.isEmpty()) members = Collections.singleton(context.getAccessor()); else {
+			members = new HashSet<MidataId>();
+			members.add(context.getAccessor());
+			for (UserGroupMember ugm : grps) members.add(ugm.userGroup);
+		}
+		return Consent.getAllWriteableByAuthorizedAndOwner(members, owner);
+	}
+	
+	private static Set<UserGroupMember> getAllWritableActiveByMember(Set<MidataId> alreadyFound, Set<MidataId> members) throws InternalServerException {
+		Set<UserGroupMember> results = UserGroupMember.getAllActiveByMember(members);
+		Set<UserGroupMember> results1 = UserGroupMember.getAllActiveByMember(members);
+		Set<MidataId> recursion = new HashSet<MidataId>();
+		for (UserGroupMember ugm : results1) {
+			if (!alreadyFound.contains(ugm.userGroup) && ugm.getRole().mayWriteData()) {
+				recursion.add(ugm.userGroup);
+				alreadyFound.add(ugm.userGroup);
+				results.add(ugm);
+			}
+		}
+		if (!recursion.isEmpty()) {
+			Set<UserGroupMember> inner = getAllWritableActiveByMember(alreadyFound, recursion);
+			results.addAll(inner);
+		}
+		return results;
 	}
 	
 	public static Consent getConsentById(AccessContext context, MidataId consentId, Set<String> fields) throws AppException {
@@ -305,7 +348,7 @@ public class Circles extends APIController {
 		if (observerId != null && consent.observers != null && consent.observers.contains(observerId)) return consent;
 		if (consent.owner != null && ApplicationTools.actAsRepresentative(context, consent.owner, false) != null) return consent;
 		
-		Set<UserGroupMember> groups = UserGroupMember.getAllActiveByMember(context.getAccessor());
+		Set<UserGroupMember> groups = context.getAllActiveByMember();
 		for (UserGroupMember group : groups) if (consent.authorized.contains(group.userGroup)) return consent;
 		return null;							
 	}
@@ -1000,10 +1043,11 @@ public class Circles extends APIController {
 					replacementsExt.putAll(replacements);
 					User user = User.getById(target, Sets.create("email"));
 					if (user != null) {
-				    		replacementsExt.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(user.email != null ? ("&login="+URLEncoder.encode(user.email, "UTF-8")) : ""));
-				    		replacementsExt.put("reject-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(user.email != null ? ("&login="+URLEncoder.encode(user.email, "UTF-8")) : ""));
-				
-						Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, Collections.singleton(target), language, replacementsExt);
+
+					    replacementsExt.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(user.email != null ? ("&login="+URLEncoder.encode(user.email, "UTF-8")) : ""));
+					    replacementsExt.put("reject-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(user.email != null ? ("&login="+URLEncoder.encode(user.email, "UTF-8")) : ""));
+					
+					    Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, Collections.singleton(target), language, replacementsExt);
 					}
 				}
 				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_OWNER, category, Collections.singleton(consent.owner), language, replacements);			

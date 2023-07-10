@@ -89,13 +89,21 @@ public class LicenceChecker {
 		if (plugin.licenceDef.allowedEntities.contains(EntityType.ORGANIZATION)) {
 			AccessLog.log("check org licence");
 			HPUser user = HPUser.getById(userId, Sets.create("provider"));
+			// Backwards compatible
 			if (user != null && user.provider != null) {
 				Licence lic = Licence.getActiveLicenceByLicenseeAndApp(user.provider, EntityType.ORGANIZATION, plugin._id);
 				if (isValid(userId, lic)) return lic._id;
 			}
+			
+			Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(userId);
+			for (UserGroupMember ugm : ugms) {
+				Licence lic = Licence.getActiveLicenceByLicenseeAndApp(ugm.userGroup, EntityType.ORGANIZATION, plugin._id);				
+				if (isValid(userId, lic)) return lic._id;
+			}			
+
 		}
 		if (plugin.licenceDef.allowedEntities.contains(EntityType.USERGROUP)) {
-			AccessLog.log("check usergroup licence");
+			AccessLog.log("check usergroup/org licence");
 			Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(userId);
 			for (UserGroupMember ugm : ugms) {
 				Licence lic = Licence.getActiveLicenceByLicenseeAndApp(ugm.userGroup, EntityType.USERGROUP, plugin._id);				

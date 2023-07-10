@@ -17,12 +17,14 @@
 
 package utils.context;
 
+import java.util.List;
 import java.util.Map;
 
 import models.Consent;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.UserGroupMember;
+import models.enums.Permission;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
@@ -199,10 +201,9 @@ public class ContextManager {
 		AccessContext context = new AccountAccessContext(cache, null);
 		if (context1.getAccessor().equals(aps)) return context;
 		
-		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(aps, context1.getAccessor());
-		if (ugm!=null) {
-			cache = Feature_UserGroups.findApsCacheToUse(cache, ugm);
-			return new UserGroupAccessContext(ugm, cache, context);
+		List<UserGroupMember> ugms = cache.getByGroupAndActiveMember(aps, context1.getAccessor(), Permission.READ_DATA);
+		if (ugms!=null) {
+			return context.forUserGroup(ugms);			
 		}
 	
 		
@@ -232,9 +233,9 @@ public class ContextManager {
 		return use(new SessionAccessContext(getCache(RuntimeConstants.instance.publicUser), UserRole.ANY, null, null, RuntimeConstants.instance.publicUser).forAccount());
 	}
 	
-	public AccessContext createRootPublicGroupContext() throws AppException {
+	public AccessContext createAdminRootPublicGroupContext() throws AppException {
 		AccessLog.log("[session] Start PUBLIC Group Session");
-		return use(new SessionAccessContext(getCache(RuntimeConstants.instance.publicUser), UserRole.ANY, null, null, RuntimeConstants.instance.publicUser).forPublic());
+		return use(new SessionAccessContext(getCache(RuntimeConstants.instance.publicUser), UserRole.ADMIN, null, null, RuntimeConstants.instance.publicUser).forPublic());
 	}
 
 	public AccessContext upgradeSessionForApp(AccessContext tempContext, MobileAppInstance appInstance) throws AppException {

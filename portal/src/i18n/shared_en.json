@@ -88,7 +88,8 @@
        "entity_type" : "Invalid entity type",
        "joincode" : "The provided participation code is not accepted.",
        "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
-       "csvmapping" : "Invalid mapping provided."
+       "csvmapping" : "Invalid mapping provided.",
+       "id" : "Invalid identifier"
      },
 
      "missing" : {
@@ -110,7 +111,8 @@
        "access_query" : "No data selected",
        "plugin" : "This plugin does not exist in your account.",
        "auth_type" : "Two factor authentication is required for your type of account.",
-       "licence" : "A valid license is required to use this application."
+       "licence" : "A valid license is required to use this application.",
+       "manager" : "You must grant someone else manager permissions before removing this entity from the group." 
      },
 
      "unknown" : {
@@ -555,6 +557,7 @@
 	   "mobile" : "Application (Smartphone, Web)",
 	   "external": "External Service",
 	   "analyzer" : "Project analyzer",
+	   "broker" : "Data broker",
 	   "endpoint" : "FHIR endpoint"
 	 },
 	 "infos" : {
@@ -583,8 +586,15 @@
 	 },
 	 "entitytype" : {
 	   "USER" : "User",
-	   "USERGROUP" : "Team",
-	   "ORGANIZATION" : "Organization"
+	   "USERGROUP" : "Team",	  
+	   "ORGANIZATION" : "Organization",
+	   "SERVICES" : "Data Broker"
+	 },
+	 "usergrouptype" : {
+	   "ORGANIZATION" : "Organization",
+	   "CARETEAM" : "Care Team",
+	   "HEALTHCARESERVICE" : "Halthcare Service",
+	   "RESEARCHTEAM" : "Research"
 	 },
 	 "bulkmailtype" : {
 	   "MARKETING" : "Marketing - Account Holders",
@@ -975,6 +985,7 @@
     "set_owner_btn" : "Select person that shares its data",
     "add_yourself_btn" : "Add yourself",
     "add_person_btn" : "Add New Person",
+    "add_organization_btn" : "Add New Organization",
     "add_usergroup_btn" : "Add New Team",
     "writes" : "Write Permission",
     "writes2" : "The persons authorized by this consent may create or update data in your account covered by this consent.",
@@ -1314,6 +1325,19 @@
      "empty_result" : "No matching teams found.",
      "add_individuals_btn" : "Add As Individual People To Consent",
      "add_group_btn" : "Add As Changing Team To Consent"
+  },
+  
+  "organizationsearch" : {
+     "title" : "Search for Organizations",
+     "name" : "Organization Name",
+     "city_or_zip" : "City or zip code",
+     "empty_result" : "No matching organizations found."
+  },
+  
+  "databrokersearch" : {
+    "title" : "Search Data Brokers (APIs)",
+    "name" : "Data broker name",
+    "empty_result" : "No matching data brokers found."
   },
   
   "confirm" : {
