@@ -1056,15 +1056,16 @@ public class RecordManager {
 		AccessLog.logBegin("BEGIN APPLY QUERY");
 		MidataId userId = context.getCache().getAccessor();
 		AccessContext targetContext = context.forConsent(target);
+		AccessContext sourceContext = context.forAccountReshare();
 		boolean targetIsEmpty = targetContext.getCache().getAPS(targetaps).hasNoDirectEntries();
 		if (pair.getRight() != null) {
 			AccessLog.logBegin("SINGLE RECORDS");
-			List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), sourceaps, context, CMaps.map(pair.getRight()).map("owner", context.getSelf()), RecordManager.SHARING_FIELDS);			
-			RecordManager.instance.share(context.forAccountReshare(), targetaps, null, recs, ownerInformation);
+			List<DBRecord> recs = QueryEngine.listInternal(sourceContext.getCache(), sourceaps, sourceContext, CMaps.map(pair.getRight()).map("owner", context.getSelf()), RecordManager.SHARING_FIELDS);			
+			RecordManager.instance.share(sourceContext, targetaps, null, recs, ownerInformation);
 		}
 		if (pair.getLeft() != null) {
 			if (!targetIsEmpty) {
-				List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), targetaps, targetContext, CMaps.map(pair.getLeft()).map("flat", "true").map("owner", context.getSelf()), Sets.create("_id"));
+				List<DBRecord> recs = QueryEngine.listInternal(targetContext.getCache(), targetaps, targetContext, CMaps.map(pair.getLeft()).map("flat", "true").map("owner", context.getSelf()), Sets.create("_id"));
 				Set<MidataId> remove = new HashSet<MidataId>();
 				for (DBRecord r : recs) remove.add(r._id);
 				AccessLog.log("REMOVE DUPLICATES:", Integer.toString(remove.size()));
@@ -1072,18 +1073,18 @@ public class RecordManager {
 			}
 			
 			Map<String, Object> selectionQuery = CMaps.map(pair.getLeft()).map("streams", "true").map("flat", "true").map("owner", context.getSelf());		
-			List<DBRecord> records = QueryEngine.listInternal(context.getCache(), sourceaps, context, selectionQuery, RecordManager.SHARING_FIELDS);
+			List<DBRecord> records = QueryEngine.listInternal(sourceContext.getCache(), sourceaps, sourceContext, selectionQuery, RecordManager.SHARING_FIELDS);
 			
 			AccessLog.log("SHARE QUALIFIED STREAMS:", Integer.toString(records.size()));
 			if (records.size() > 0) {				
-				RecordManager.instance.share(context, targetaps, null, records, ownerInformation);
+				RecordManager.instance.share(sourceContext, targetaps, null, records, ownerInformation);
 			}
 			
 			if (!targetIsEmpty) {
-				List<DBRecord> streams = QueryEngine.listInternal(context.getCache(), targetaps, targetContext, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
+				List<DBRecord> streams = QueryEngine.listInternal(targetContext.getCache(), targetaps, targetContext, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
 				AccessLog.log("UNSHARE STREAMS CANDIDATES = ", Integer.toString(streams.size()));
 				
-				List<DBRecord> stillOkay = QueryEngine.listFromMemory(context, pair.getLeft(), streams);
+				List<DBRecord> stillOkay = QueryEngine.listFromMemory(targetContext, pair.getLeft(), streams);
 				streams.removeAll(stillOkay);		
 				Set<MidataId> remove = new HashSet<MidataId>();
 				for (DBRecord stream : streams) {
