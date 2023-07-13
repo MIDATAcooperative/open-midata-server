@@ -316,13 +316,15 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	@Override
-	public Record fetchCurrent(IIdType theId, T resource)  {
+	public Record fetchCurrent(IIdType theId, T resource, boolean versioned)  {
 		try {
 			if (theId == null) throw new UnprocessableEntityException("id missing");
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
 			if (!isLocalId(theId)) throw new UnprocessableEntityException("Not a valid id for the platform.");
 			
-			Record record = RecordManager.instance.fetch(info().getAccessorRole(), info(), new MidataId(theId.getIdPart()), getRecordFormat());
+			String version = versioned ? theId.getVersionIdPart() : null;
+						
+			Record record = RecordManager.instance.fetch(info().getAccessorRole(), info(), new MidataId(theId.getIdPart()), getRecordFormat(), version);
 			
 			if (record == null) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" not found."); 
 			if (!record.format.equals("fhir/"+theId.getResourceType())) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" has wrong resource type."); 

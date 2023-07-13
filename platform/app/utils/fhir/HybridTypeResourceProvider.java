@@ -144,18 +144,18 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 	}
 
 	@Override
-	public Model fetchCurrent(IIdType theId, T resource) throws AppException {
+	public Model fetchCurrent(IIdType theId, T resource, boolean versioned) throws AppException {
 		if (resource == null) {
 			try {
-			  M1 m1 = first.fetchCurrent(theId, resource);
+			  M1 m1 = first.fetchCurrent(theId, resource, versioned);
 			  if (m1 == null) throw new ResourceNotFoundException(theId);
 			  return m1;
 			} catch (ResourceNotFoundException e) {
-			  return second.fetchCurrent(theId, resource);
+			  return second.fetchCurrent(theId, resource, versioned);
 			}			
 		}
-		if (handleWithFirstProvider(resource)) return first.fetchCurrent(theId, resource);
-		return second.fetchCurrent(theId, resource);
+		if (handleWithFirstProvider(resource)) return first.fetchCurrent(theId, resource, versioned);
+		return second.fetchCurrent(theId, resource, versioned);
 	}
 
 	@Override

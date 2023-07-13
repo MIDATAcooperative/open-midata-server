@@ -88,7 +88,7 @@ public class Transactions {
 				 Model existing = null;
 				 if (id != null && MidataId.isValid(id)) {
 					 try {
-					   existing = provider.fetchCurrent(res.getIdElement(), (DomainResource) res);
+					   existing = provider.fetchCurrent(res.getIdElement(), (DomainResource) res, false);
 					 } catch (AppException e) {
 					   existing = null;
 					 }					 

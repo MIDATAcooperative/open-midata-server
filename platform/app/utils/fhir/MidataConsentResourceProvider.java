@@ -933,7 +933,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 	}
 
 	@Override
-	public Consent fetchCurrent(IIdType theId, org.hl7.fhir.r4.model.Consent resource) throws AppException {
+	public Consent fetchCurrent(IIdType theId, org.hl7.fhir.r4.model.Consent resource, boolean versioned) throws AppException {		
 		return Circles.getConsentById(info(), MidataId.parse(theId.getIdPart()), info().getUsedPlugin(), Consent.FHIR);	
 	}
 

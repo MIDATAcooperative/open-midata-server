@@ -177,7 +177,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	
 	
 	@Override
-	public Record fetchCurrent(IIdType theId, Patient theResource)  {
+	public Record fetchCurrent(IIdType theId, Patient theResource, boolean versioned)  {
 		try {
 			if (theId == null) throw new UnprocessableEntityException("id missing");
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
@@ -185,7 +185,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			
 			AccessContext info = info();
 			MidataId targetId = MidataId.from(theId.getIdPart());
-			List<Record> allRecs = RecordManager.instance.list(info.getAccessorRole(), info, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
+			String version = versioned ? theId.getVersionIdPart() : null;
+			List<Record> allRecs = RecordManager.instance.list(info.getAccessorRole(), info, CMaps.map("owner", targetId).map("format", "fhir/Patient").mapNotEmpty("version", version).map("data", CMaps.map("id", targetId.toString())),
 					RecordManager.COMPLETE_DATA);
 
 			if (allRecs == null || allRecs.size() == 0)

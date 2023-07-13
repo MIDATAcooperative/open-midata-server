@@ -296,7 +296,7 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 		if (type == null) throw new UnprocessableEntityException("No resource type in target reference for provenance");
 		String id = iid.getIdPart();
 		if (id == null) throw new UnprocessableEntityException("No resource id in target reference for provenance");		
-		Model model = FHIRServlet.getProvider(type).fetchCurrent(iid, null);		
+		Model model = FHIRServlet.getProvider(type).fetchCurrent(iid, null, true);		
 		if (model==null) throw new BadRequestException("error.internal", "Referenced Record not found");
 		if (model instanceof Consent) {
 			if (!iid.hasVersionIdPart()) ref.setReferenceElement(iid.withVersion(MidataConsentResourceProvider.getInstance().getVersion((Consent) model)));
