@@ -184,10 +184,14 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 	}
 	
 	@History()
-	public List<T> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {		
-		List<T> result = first.getHistory(theId, theCount);
-		if (result != null) return result;
-		return second.getHistory(theId, theCount);
+	public List<T> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
+		try {
+			List<T> result = first.getHistory(theId, theCount);
+		    if (result == null || result.isEmpty()) throw new ResourceNotFoundException(theId);
+		    return result;
+		} catch (ResourceNotFoundException e) {
+			return second.getHistory(theId, theCount);	
+		}		
 	}
 
 	@Override
