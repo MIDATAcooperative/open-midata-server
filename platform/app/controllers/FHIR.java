@@ -192,8 +192,7 @@ public class FHIR extends Controller {
 		if (valid != null && valid.equals("SUCCESS")) {
 		   String serial = cert_direct ? req.getHeader("X-Client-Serial") : req.getHeader("X-Client-Serial-LB");
   		  
-		   if (serial!=null) {
-			   AccessLog.log("ser="+serial+";");
+		   if (serial!=null) {			   
 			   serial = serial.replace("\\", "");
 			   String[] serial2 = serial.split(",");
 			   MidataId instance = null;
