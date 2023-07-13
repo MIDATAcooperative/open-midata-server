@@ -145,7 +145,7 @@ public class MidataPractitionerResourceProvider extends ResourceProvider<Practit
  
 	
 	@Override
-	public User fetchCurrent(IIdType theId, Practitioner r) throws AppException {
+	public User fetchCurrent(IIdType theId, Practitioner r, boolean versioned) throws AppException {
 		return HPUser.getById(MidataId.parse(theId.getIdPart()), User.ALL_USER);	
 	}
 

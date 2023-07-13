@@ -1400,9 +1400,13 @@ public class RecordManager {
 	 * @return the record to be returned
 	 * @throws AppException
 	 */
-	public Record fetch(UserRole role, AccessContext context, MidataId recordId, String format)
+	public Record fetch(UserRole role, AccessContext context, MidataId recordId, String format) throws AppException {
+		return fetch(role, context, recordId, format, null);
+	}
+	
+	public Record fetch(UserRole role, AccessContext context, MidataId recordId, String format, String version)
 			throws AppException {
-		List<Record> result = list(role, context, CMaps.map("_id", recordId).mapNotEmpty("format", format),
+		List<Record> result = list(role, context, CMaps.map("_id", recordId).mapNotEmpty("format", format).mapNotEmpty("version", version),
 				RecordManager.COMPLETE_DATA);
 		if (result.isEmpty())
 			return null;

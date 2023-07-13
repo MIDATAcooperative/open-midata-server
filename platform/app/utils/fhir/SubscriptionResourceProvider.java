@@ -435,7 +435,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	}
 
 	@Override
-	public SubscriptionData fetchCurrent(IIdType theId, Subscription resource) throws AppException {
+	public SubscriptionData fetchCurrent(IIdType theId, Subscription resource, boolean versioned) throws AppException {
 		return SubscriptionData.getByIdAndOwner(MidataId.parse(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
 	}
 

@@ -285,7 +285,7 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	} 	
 
 	@Override
-	public User fetchCurrent(IIdType theId, Person p) throws AppException {
+	public User fetchCurrent(IIdType theId, Person p, boolean versioned) throws AppException {
 		return User.getById(MidataId.parse(theId.getIdPart()), User.ALL_USER);
 	}
 

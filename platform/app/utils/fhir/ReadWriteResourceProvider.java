@@ -130,7 +130,7 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 	 */
 	final
 	protected MethodOutcome update(IdType theId, T theResource) throws AppException {
-		M record = fetchCurrent(theId, theResource);
+		M record = fetchCurrent(theId, theResource, false);
 		if (record == null) throw new ResourceNotFoundException(theId);
 		updatePrepare(record, theResource);	
 		AccessLog.logBegin("begin update for resource ", getResourceType().getSimpleName());

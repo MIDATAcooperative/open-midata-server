@@ -126,7 +126,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	}
 
 	
-	public abstract M fetchCurrent(IIdType theId, T resource) throws AppException;
+	public abstract M fetchCurrent(IIdType theId, T resource, boolean versioned) throws AppException;
 	
 	public abstract void processResource(M record, T resource) throws AppException;
 			
