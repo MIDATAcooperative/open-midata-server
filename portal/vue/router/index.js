@@ -383,6 +383,16 @@ const routes = [
     }
   },
   {
+    base : ["provider", "admin"],
+    path : "addorganization",
+    component: () => import(/* webpackChunkName: "research" */ 'views/provider/editorg.vue'),   
+  },
+  {
+    base : ["provider", "admin"],
+    path : "updateorganization",
+    component: () => import(/* webpackChunkName: "research" */ 'views/provider/editorg.vue'),   
+  },
+  {
     base : ["admin"],
     path : "registration",
     component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),
@@ -396,7 +406,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "provider" */ 'views/provider/usergroups.vue')    
   },
   {
-    base : ["provider"],
+    base : ["provider", "admin"],
     path : "editusergroup",
     component: () => import(/* webpackChunkName: "provider" */ 'views/provider/editusergroup.vue')    
   },
@@ -517,6 +527,11 @@ const routes = [
     base : ["admin"],
     path : "members",
     component: () => import(/* webpackChunkName: "admin" */ 'views/admin/members.vue')
+  },
+  {
+    base : ["admin"],
+    path : "organizations",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/organizations.vue')
   },
   {
     base : ["admin"],

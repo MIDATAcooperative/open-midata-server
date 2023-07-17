@@ -18,20 +18,39 @@
     <panel :title="$t('provider_organization.title')" :busy="isBusy">	 
         <error-box :error="error"></error-box>
 	    <p v-if="!isMasterUser()" class="alert alert-info" v-t="'provider_organization.master_user'"></p>
+	    <p v-if="!orgs.length" v-t="'provider_organization.empty'"></p>
+	    
 	    <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="editorg()" role="form">
-	        <form-group name="name" label="provider_organization.name" :path="errors.name"> 
-		        <input type="text" class="form-control" id="name" :readonly="!isMasterUser()" name="name" v-validate v-model="org.name" required>		    
-            </form-group>
-            <form-group name="description" label="provider_organization.description" :path="errors.description">
-                <textarea class="form-control" id="description" :readonly="!isMasterUser()" name="description" rows="5" v-validate v-model="org.description" required></textarea>
-            </form-group>
-            <form-group name="x" label="common.empty">
-                <button type="submit" :disabled="!isMasterUser() || action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
-                <success :finished="finished" action="update" msg="common.save_ok"></success>                
-            </form-group>
+	        <div v-for="org in orgs" :key="org._id">
+	           <form-group name="name" label="provider_organization.name" :path="errors.name"> 
+			        <p class="form-control-plaintext">{{org.name}}<br>
+			        </p>
+			   </form-group>
+		        <form-group name="name" label="provider_organization.address" :path="errors.address"> 
+			        <p class="form-control-plaintext">
+			            <address>                                      
+		    {{ org.address1 }}<br>
+			{{ org.address2 }}<br>
+			{{ org.zip }} {{ org.city }}<br>
+			{{ org.country }}<br><br>			
+			<span v-if="org.phone"><span v-t="'common.user.phone'"></span>: {{ org.phone }}</span>
+		                </address>
+			        
+			        </p>		    
+	            </form-group>
+	            <form-group name="description" label="provider_organization.description" :path="errors.description">
+	                <p class="form-control-plaintext" >{{org.description}}</p>
+	            </form-group>
+	            <form-group name="x" label="common.empty">
+	                <button type="button" class="btn btn-default mr-1" @click="editOrg(org)" v-t="'provider_organization.edit_btn'"></button>
+                    <button type="button" class="btn btn-default" @click="editGroup(org)" v-t="'provider_organization.members'"></button>	                            
+	            </form-group>
+	            <hr>
+            </div>
+            <button type="button" class="btn btn-primary" @click="addOrg()" v-t="'common.create_btn'"></button>
         </form>	
     </panel>     
-    <panel :title="$t('provider_organization.members')" :busy="isBusy">	 
+   <!-- <panel :title="$t('provider_organization.members')" :busy="isBusy">	 
         <pagination v-model="persons" search="search"></pagination>
 	    <table class="table table-striped" v-if="persons.filtered.length">
 	        <tr>
@@ -47,7 +66,7 @@
 	    </table>
 	  
 	    <button class="btn btn-default" :disabled="!isMasterUser()" @click="add()" v-t="'provider_organization.addprovider'"></button>	  
-    </panel>
+    </panel> -->
 </template>
 <script>
 
@@ -56,11 +75,12 @@ import Panel from "components/Panel.vue"
 import server from "services/server.js"
 import session from "services/session.js"
 import users from "services/users.js"
+import usergroups from "services/usergroups.js"
 import { rl, status, ErrorBox, FormGroup, Success } from 'basic-vue3-components'
 
 export default {
     data: () => ({	
-        org : null,
+        orgs : [],
         persons : null
     }),
 
@@ -72,22 +92,41 @@ export default {
         reload() {
             const { $data } = this, me = this;
 
+/*
             me.doBusy(users.getMembers({  role : "PROVIDER", provider : session.org }, users.MINIMAL )
 		    .then(function(data) {
                 for (let user of data.data)	user.search = user.firstname+" "+user.lastname;
 			    $data.persons = me.process(data.data, { filter : { search : "" }});
 		    }));
+*/
+			me.doBusy(usergroups.search({ "member" : true, type : "ORGANIZATION", active : true, setup : true }, usergroups.ALLPUBLIC )
+    	    .then(function(results) {
+		        $data.orgs = [];
+				for (let grp of results.data) {
+					me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization(grp._id).url)
+		    		.then(function(data) { 	               
+		        		$data.orgs.push(data.data);												
+		    		}));	   
+				}
+    	    }));
 
-		    me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization(session.org).url)
-		    .then(function(data) { 	               
-		        $data.org = data.data;												
-		    }));
+		    
 				    				
 	    },
 	
-	    editorg() {									
+	    editOrg(org) {									
             const { $data } = this, me = this;
-	        me.doAction("update", server.post(server.post(jsRoutes.controllers.providers.Providers.updateOrganization(session.org).url, $data.org)));			
+            this.$router.push({ path : './updateorganization', query : { orgId : org._id } });		
+	    },
+	    
+	    editGroup(org) {									
+            const { $data } = this, me = this;
+            this.$router.push({ path : './editusergroup', query : { groupId : org._id } });		
+	    },
+	    
+	    addOrg() {									
+            const { $data } = this, me = this;
+            this.$router.push({ path : './addorganization' });		
 	    },
 	
 	    isMasterUser() {

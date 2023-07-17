@@ -64,7 +64,6 @@ import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
-import models.enums.WritePermissionType;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -149,9 +148,10 @@ public class OAuth2 extends Controller {
       				Plugin checkedPlugin = Plugin.getById(mai.applicationId); 
       				if (checkedPlugin == null || mai.appVersion != checkedPlugin.pluginVersion) {
       					AccessLog.log("linked service outdated");
-      					if (context != null) {	      					
+      					// Actively removing service will cause trouble with email notifications and subscriptions.
+      					/*if (context != null) {	      					
 	      					ApplicationTools.removeAppInstance(context, mai.owner, mai);
-      					}
+      					}*/
       					c = null;
       				}
       			  }
@@ -313,7 +313,7 @@ public class OAuth2 extends Controller {
     		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.LOGIN);
         } else throw new BadRequestException("error.internal", "Unknown grant_type");
                											
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user != null ? user.role : UserRole.ANY);
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user != null ? user.role : UserRole.ANY, null);
 		
         OAuthRefreshToken refresh = createRefreshToken(tempContext, appInstance, aeskey);
         
@@ -861,8 +861,7 @@ public class OAuth2 extends Controller {
 			}
 		}
 	}
-	
-	
+				
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public Result login(Request request) throws AppException {
@@ -1012,6 +1011,7 @@ public class OAuth2 extends Controller {
 		} else {
 			String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken");
 			if (sessionToken == null && user.security.equals(AccountSecurityLevel.KEY_EXT_PASSWORD)) {
+				
 				AccessLog.log("[login] returning login challenge");
 				return Application.loginChallenge(token, user);
 			}

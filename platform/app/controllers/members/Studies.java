@@ -536,6 +536,7 @@ public class Studies extends APIController {
 		participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);		
 		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
 		Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
+		Circles.sendConsentNotifications(context.getAccessor(), participation, ConsentStatus.REJECTED, false);
 		controllers.research.Studies.leaveSharing(context, studyId, userId);
 		AuditManager.instance.success();
 		
@@ -569,12 +570,13 @@ public class Studies extends APIController {
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) throw new BadRequestException("error.blocked.participation", "Member does not participate in study.");
-		
+		boolean wasActive = participation.isActive();
 		if (participation.pstatus == ParticipationStatus.REQUEST || participation.pstatus == ParticipationStatus.MATCH || participation.pstatus == ParticipationStatus.CODE) {
 			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_MEMBER_REJECTED, userId, participation, study);			
 			
 			participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);				
 			Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
+			Circles.sendConsentNotifications(context.getAccessor(), participation, ConsentStatus.REJECTED, wasActive);
 		} else {
 		
 		   AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_MEMBER_RETREAT, userId, participation, study);		   
@@ -588,6 +590,7 @@ public class Studies extends APIController {
 		   } else {
 			 Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);
 		   }
+		   Circles.sendConsentNotifications(context.getAccessor(), participation, ConsentStatus.REJECTED, wasActive);
 		}
 		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
 						

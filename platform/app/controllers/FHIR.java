@@ -192,7 +192,8 @@ public class FHIR extends Controller {
 		if (valid != null && valid.equals("SUCCESS")) {
 		   String serial = cert_direct ? req.getHeader("X-Client-Serial") : req.getHeader("X-Client-Serial-LB");
   		  
-		   if (serial!=null) {
+		   if (serial!=null) {			   
+			   serial = serial.replace("\\", "");
 			   String[] serial2 = serial.split(",");
 			   MidataId instance = null;
 			   String key = null;
@@ -210,7 +211,7 @@ public class FHIR extends Controller {
 				   }
 			   }
 			   if (key != null && instance != null) {
-				   MobileAppSessionToken tk = new MobileAppSessionToken(instance, key, System.currentTimeMillis()+60000, UserRole.ANY);
+				   MobileAppSessionToken tk = new MobileAppSessionToken(instance, key, System.currentTimeMillis()+60000, UserRole.ANY, MobileAppSessionToken.parseExtra(req.getHeader("Authorization")));
 				   AccessContext inf = ExecutionInfo.checkMobileToken(request, tk, false, false);
 				   Stats.setPlugin(inf.getUsedPlugin());
 			       ResourceProvider.setAccessContext(inf);
@@ -264,7 +265,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
 		AccessContext info = getExecutionInfo(request, req);
-        if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.GET);		        
+        if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info, UsageAction.GET);		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		switch(getFhirVersion(request)) {
 		  case 4:servlet_r4.doGet(req, res);break;
@@ -314,7 +315,7 @@ public class FHIR extends Controller {
 		AccessContext session = ContextManager.instance.upgradeSessionForApp(tempContext, instance, baseURL);	
 		ResourceProvider.setAccessContext(session);
 										
-        if (session.getUsedPlugin() != null) UsageStatsRecorder.protokoll(session.getUsedPlugin(), UsageAction.GET);		        
+        if (session.getUsedPlugin() != null) UsageStatsRecorder.protokoll(session, UsageAction.GET);		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		switch(getFhirVersion(request)) {
 		  case 3:servlet_stu3.doGet(req, res);break;
@@ -376,7 +377,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
 		AccessContext info = getExecutionInfo(request, req);
-		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.POST);   
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info, UsageAction.POST);   
 		
 		AccessLog.logBegin("begin FHIR post request: "+req.getRequestURI());
 		switch(getFhirVersion(request)) {
@@ -421,7 +422,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 			
 		AccessContext info = getExecutionInfo(request, req);
-		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.PUT);        
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info, UsageAction.PUT);        
 		
 		AccessLog.log(req.getRequestURI());
 		switch(getFhirVersion(request)) {
@@ -465,7 +466,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
 		AccessContext info = getExecutionInfo(request, req);		
-		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.DELETE);
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info, UsageAction.DELETE);
 		
 		AccessLog.log(req.getRequestURI());
 		switch(getFhirVersion(request)) {

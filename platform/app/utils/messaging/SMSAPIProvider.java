@@ -19,8 +19,14 @@ package utils.messaging;
 
 import java.util.concurrent.CompletionStage;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
+import utils.AccessLog;
+import utils.ErrorReporter;
+import utils.ServerTools;
+import utils.exceptions.InternalServerException;
 
 public class SMSAPIProvider implements SMSProvider {
 
@@ -45,9 +51,18 @@ public class SMSAPIProvider implements SMSProvider {
 		holder.addQueryParameter("format", "json");
 		//holder.addQueryParameter("test", "1");
 		return holder.get().thenApply(response -> {
-			if (response.getStatus() != 200) {		
-				System.out.println(response.asJson().toString());
-				return new MessageStatus(response.getStatus(), response.asJson().toString());
+			JsonNode result = response.asJson();
+			if (response.getStatus() != 200 || result.hasNonNull("error")) {		
+				try {
+					String msg = response.getStatus()+" "+response.asJson().toString();
+					throw new InternalServerException("error.internal", msg);
+				} catch (InternalServerException e) {
+					ErrorReporter.report("SMSAPI Sender", null, e);
+					AccessLog.logException("SMSAPI Sender Error", e);
+				} finally {
+					ServerTools.endRequest();
+				}
+				return new MessageStatus(response.getStatus(), response.asJson().toString());								
 			} else {
 				System.out.println(response.asJson().toString());
 			}

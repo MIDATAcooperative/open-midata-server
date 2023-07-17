@@ -17,12 +17,18 @@
 
 package utils.context;
 
+import java.util.List;
+
 import models.MidataId;
 import models.Record;
 import models.UserGroupMember;
+import models.enums.EntityType;
+import models.enums.Permission;
 import utils.access.APSCache;
 import utils.access.DBRecord;
+import utils.access.Feature_UserGroups;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class UserGroupAccessContext extends AccessContext {
 
@@ -43,7 +49,7 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion)  throws InternalServerException {
 		return ugm.getRole().mayWriteData() && parent.mayUpdateRecord(stored, newVersion);
 	}
 	
@@ -91,7 +97,7 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 	@Override
 	public boolean mayAccess(String content, String format) throws AppException {
-		return false;
+		return parent.mayAccess(content, format);
 	}
 	
 	@Override
@@ -105,7 +111,7 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 	@Override
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
-		return null;
+		return parent.getAccessRestriction(content, format, field);
 	}
 	@Override
 	public String getContextName() {
@@ -116,4 +122,21 @@ public class UserGroupAccessContext extends AccessContext {
 	public boolean isUserGroupContext() {		
 		return true;
 	}
+	
+	@Override
+	public EntityType getAccessorEntityType() throws InternalServerException {
+		return EntityType.USERGROUP;
+	}
+	
+	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
+		if (ugm != null && ugm.userGroup.equals(this.ugm.userGroup)) return this;
+		return super.forUserGroup(ugm);
+	}
+	
+	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
+		if (userGroup.equals(ugm.userGroup)) return this;
+		return super.forUserGroup(userGroup, permission);		
+	}
+	
+	
 }

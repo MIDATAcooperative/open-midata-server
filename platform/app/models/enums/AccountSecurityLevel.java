@@ -45,5 +45,10 @@ public enum AccountSecurityLevel {
 	/**
 	 * Account is protected by only externally available password
 	 */
-	KEY_EXT_PASSWORD
+	KEY_EXT_PASSWORD,
+	
+	/**
+	 * Single sign on; not supported at the moment
+	 */
+	KEY_SSO
 }

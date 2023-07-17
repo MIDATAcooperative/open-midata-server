@@ -39,7 +39,11 @@ import oauth from './oauth';
 					params.loginToken = result.data.sessionToken;
 					if (result.data.tryrecover) {
 						params.sessionToken = crypto.keyChallengeLocal(result.data.userid, result.data.recoverKey, result.data.challenge);
-						if (!params.sessionToken) return { data : { requirements : ["KEYRECOVERY"] , status : "BLOCKED" } };
+						if (!params.sessionToken) {
+							params.sessionToken="no-recovery";
+							func(params);
+							return { data : { requirements : ["KEYRECOVERY"] , status : "BLOCKED" } };
+						}
 						return session.performLogin(func, params, pw);
 					} else {
 						params.sessionToken = crypto.keyChallenge(result.data.keyEncrypted, pw, result.data.challenge);

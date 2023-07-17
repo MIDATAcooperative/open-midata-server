@@ -38,6 +38,7 @@ import org.bson.BasicBSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
+import controllers.research.AutoJoiner;
 import models.Circle;
 import models.Consent;
 import models.HCRelated;
@@ -58,6 +59,7 @@ import models.enums.ConsentType;
 import models.enums.EntityType;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
+import models.enums.Permission;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
@@ -78,6 +80,7 @@ import utils.access.Feature_Streams;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
+import utils.auth.ActionToken;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
@@ -101,6 +104,7 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
 
 /**
@@ -178,7 +182,7 @@ public class Circles extends APIController {
 			consents = (c!=null) ? Collections.singletonList(c) : Collections.<Consent>emptyList();
 		} else if (properties.containsKey("member")) {
 		  properties.remove("member");
-		  consents = new ArrayList<Consent>(getConsentsAuthorized(owner, properties, Consent.ALL));
+		  consents = new ArrayList<Consent>(getConsentsAuthorized(context, properties, Consent.ALL));
 		} else {
 		  consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, Consent.ALL, RETURNED_CONSENT_LIMIT));
 		}
@@ -234,7 +238,7 @@ public class Circles extends APIController {
 			for (Consent consent : consents) {
 				if (consent.isActive()) {
 				  try {
-				    Collection<RecordsInfo> summary = RecordManager.instance.info(UserRole.ANY, consent._id, new ConsentAccessContext(consent, context), all, AggregationType.ALL);
+				    Collection<RecordsInfo> summary = RecordManager.instance.info(UserRole.ANY, consent._id, context.forConsent(consent), all, AggregationType.ALL);
 				    if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
 				  } catch (RequestTooLargeException e) { consent.records = -1; }
 				  catch (AppException e) {
@@ -277,13 +281,55 @@ public class Circles extends APIController {
 								
 	}
 	
-	public static Collection<Consent> getConsentsAuthorized(MidataId user, Map<String, Object> properties, Set<String> fields) throws AppException {
-		Set<UserGroupMember> groups = UserGroupMember.getAllActiveByMember(user);
+	public static Collection<Consent> getConsentsAuthorized(AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
+		Set<UserGroupMember> groups = context.getAllActiveByMember();
 		Set<MidataId> auth = new HashSet<MidataId>();
-		auth.add(user);
-		for (UserGroupMember group : groups) auth.add(group.userGroup);
+		auth.add(context.getAccessor());
+		for (UserGroupMember group : groups) if (context.getCache().getByGroupAndActiveMember(group, context.getAccessor(), Permission.READ_DATA)!=null) auth.add(group.userGroup);
 		Collection<Consent> consents = Consent.getAllByAuthorized(auth, properties, fields, RETURNED_CONSENT_LIMIT);
 		return consents;
+	}
+	
+	public static Set<Consent> getHealthcareOrResearchActiveByAuthorizedAndOwner(AccessContext context, MidataId owner) throws InternalServerException {
+		
+		Set<UserGroupMember> grps = context.usesUserGroupsForQueries() ? getAllWritableActiveByMember(new HashSet<MidataId>(), Collections.singleton(context.getAccessor())) : Collections.emptySet();
+		Set<MidataId> members = null;
+		if (grps.isEmpty()) members = Collections.singleton(context.getAccessor()); else {
+			members = new HashSet<MidataId>();
+			members.add(context.getAccessor());
+			for (UserGroupMember ugm : grps) members.add(ugm.userGroup);
+		}
+		return Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(members, owner);
+	}
+	
+   public static Set<Consent> getAllWriteableByAuthorizedAndOwner(AccessContext context, MidataId owner) throws InternalServerException {
+		
+		Set<UserGroupMember> grps = context.usesUserGroupsForQueries() ? getAllWritableActiveByMember(new HashSet<MidataId>(), Collections.singleton(context.getAccessor())) : Collections.emptySet();
+		Set<MidataId> members = null;
+		if (grps.isEmpty()) members = Collections.singleton(context.getAccessor()); else {
+			members = new HashSet<MidataId>();
+			members.add(context.getAccessor());
+			for (UserGroupMember ugm : grps) members.add(ugm.userGroup);
+		}
+		return Consent.getAllWriteableByAuthorizedAndOwner(members, owner);
+	}
+	
+	private static Set<UserGroupMember> getAllWritableActiveByMember(Set<MidataId> alreadyFound, Set<MidataId> members) throws InternalServerException {
+		Set<UserGroupMember> results = UserGroupMember.getAllActiveByMember(members);
+		Set<UserGroupMember> results1 = UserGroupMember.getAllActiveByMember(members);
+		Set<MidataId> recursion = new HashSet<MidataId>();
+		for (UserGroupMember ugm : results1) {
+			if (!alreadyFound.contains(ugm.userGroup) && ugm.getRole().mayWriteData()) {
+				recursion.add(ugm.userGroup);
+				alreadyFound.add(ugm.userGroup);
+				results.add(ugm);
+			}
+		}
+		if (!recursion.isEmpty()) {
+			Set<UserGroupMember> inner = getAllWritableActiveByMember(alreadyFound, recursion);
+			results.addAll(inner);
+		}
+		return results;
 	}
 	
 	public static Consent getConsentById(AccessContext context, MidataId consentId, Set<String> fields) throws AppException {
@@ -302,7 +348,7 @@ public class Circles extends APIController {
 		if (observerId != null && consent.observers != null && consent.observers.contains(observerId)) return consent;
 		if (consent.owner != null && ApplicationTools.actAsRepresentative(context, consent.owner, false) != null) return consent;
 		
-		Set<UserGroupMember> groups = UserGroupMember.getAllActiveByMember(context.getAccessor());
+		Set<UserGroupMember> groups = context.getAllActiveByMember();
 		for (UserGroupMember group : groups) if (consent.authorized.contains(group.userGroup)) return consent;
 		return null;							
 	}
@@ -449,7 +495,12 @@ public class Circles extends APIController {
 			if (externalAuthorized.isEmpty()) consent.externalAuthorized = null;
 			else {
 				consent.externalAuthorized = externalAuthorized;
-				consent.status = ConsentStatus.UNCONFIRMED;
+				if (consent.status == ConsentStatus.ACTIVE) {
+					consent.status = ConsentStatus.UNCONFIRMED;
+					if (context.getAccessor().equals(consent.owner)) {
+					  consent.autoConfirmHandle = ServiceHandler.encrypt(KeyManager.instance.currentHandle(context.getAccessor()));
+					}
+				}
 			}
 		}
 		
@@ -479,11 +530,11 @@ public class Circles extends APIController {
 		
 										
 		if (consent.status == ConsentStatus.UNCONFIRMED) {
-			sendConsentNotifications(context.getAccessor(), consent, consent.status);
+			sendConsentNotifications(context.getAccessor(), consent, consent.status, false);
 		} else if (consent.status == ConsentStatus.ACTIVE) {
-			sendConsentNotifications(context.getAccessor(), consent, consent.status);
+			sendConsentNotifications(context.getAccessor(), consent, consent.status, false);
 		} else if (consent.status == ConsentStatus.PRECONFIRMED) {
-			sendConsentNotifications(context.getAccessor(), consent, consent.status);
+			sendConsentNotifications(context.getAccessor(), consent, consent.status, false);
 		}
 				
 		AuditManager.instance.success();
@@ -631,13 +682,16 @@ public class Circles extends APIController {
 		switch (consent.type) {
 		case API:
 			ApplicationTools.leaveInstalledService(context, circleId, false);
+			break;
 		case EXTERNALSERVICE:
-			AuditManager.instance.addAuditEvent(AuditEventType.APP_DELETED, userId, consent);break;
+			AuditManager.instance.addAuditEvent(AuditEventType.APP_DELETED, userId, consent);
+			break;
 		default: AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_DELETE, userId, consent);break;
 		}
 		
+		boolean wasActive = consent.isActive();
 		consentStatusChange(context, consent, ConsentStatus.EXPIRED);
-		
+		sendConsentNotifications(context.getAccessor(), consent, ConsentStatus.EXPIRED, wasActive);
 				
 		// delete circle		
 		switch (consent.type) {
@@ -767,9 +821,10 @@ public class Circles extends APIController {
 	
 	public static void consentExpired(AccessContext context, MidataId consentId) throws AppException {
 		Consent consent = getConsentById(context, consentId, Consent.FHIR);
-		if (consent != null && !consent.status.equals(ConsentStatus.EXPIRED)) {			
+		if (consent != null && !consent.status.equals(ConsentStatus.EXPIRED)) {
+			boolean wasActive = consent.isActive();
 			consentStatusChange(context, consent, ConsentStatus.EXPIRED);
-			
+			sendConsentNotifications(context.getAccessor(), consent, ConsentStatus.EXPIRED, wasActive);			
 		}
 	}
 	/**
@@ -925,10 +980,10 @@ public class Circles extends APIController {
 		SubscriptionManager.resourceChange(context, consent);
 	}
 	
-	public static void sendConsentNotifications(MidataId executorId, Consent consent, ConsentStatus reason) throws AppException {
+	public static void sendConsentNotifications(MidataId executorId, Consent consent, ConsentStatus reason, boolean wasActive) throws AppException {
 		MidataId sourcePlugin = consent.creatorApp != null ? consent.creatorApp : RuntimeConstants.instance.portalPlugin;
 		Map<String, String> replacements = new HashMap<String, String>();
-		Set<Object> targets = new HashSet<Object>();
+		Set<MidataId> targets = new HashSet<MidataId>();
 		targets.addAll(consent.authorized);
 		targets.remove(executorId);
 						
@@ -971,18 +1026,43 @@ public class Circles extends APIController {
 			replacements.put("consent-name", consent.name);		
 		    String language = sender != null ? sender.language : InstanceConfig.getInstance().getDefaultLanguage();
 			if (reason == ConsentStatus.UNCONFIRMED) {
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_INVITED, category, consent.externalAuthorized, language, replacements);
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_EXISTING, category, targets, language, replacements);
+				if (consent.externalAuthorized != null && !consent.externalAuthorized.isEmpty()) {
+				   for (String targetMail : consent.externalAuthorized) {
+					   Map<String, String> replacementsExt = new HashMap<String, String>();
+					   replacementsExt.putAll(replacements);
+					   replacementsExt.put("reject-url", InstanceConfig.getInstance().getServiceURL()+"?token="+URLEncoder.encode(new ActionToken(null, consent._id, targetMail, AuditEventType.CONSENT_REJECTED, -1).encrypt(), "UTF-8"));		
+				       Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_INVITED, category, Collections.singleton(targetMail), language, replacementsExt);
+				   }
+				}
+				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_EXISTING, category, targets, language, replacements);						
 				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_INVITED, category, Collections.singleton(consent.externalOwner), language, replacements);
 				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_EXISTING, category, Collections.singleton(consent.owner), language, replacements);
 			} else if (reason == ConsentStatus.ACTIVE) {
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, targets, language, replacements);
+				for (MidataId target : targets) {
+					Map<String, String> replacementsExt = new HashMap<String, String>();
+					replacementsExt.putAll(replacements);
+					User user = User.getById(target, Sets.create("email"));
+					if (user != null) {
+
+					    replacementsExt.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(user.email != null ? ("&login="+URLEncoder.encode(user.email, "UTF-8")) : ""));
+					    replacementsExt.put("reject-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(user.email != null ? ("&login="+URLEncoder.encode(user.email, "UTF-8")) : ""));
+					
+					    Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, Collections.singleton(target), language, replacementsExt);
+					}
+				}
 				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_OWNER, category, Collections.singleton(consent.owner), language, replacements);			
 			} else if (reason == ConsentStatus.PRECONFIRMED) {
 				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_PRECONFIRMED_OWNER, category, Collections.singleton(consent.owner), language, replacements);				
 			} else if (reason == ConsentStatus.REJECTED) {
-				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_AUTHORIZED, category, targets, language, replacements);
-				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), language, replacements);
+				
+				if (!executorId.equals(consent.owner)) {
+					Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), language, replacements);					
+				} 
+				if (wasActive) {
+					Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_ACTIVE_AUTHORIZED, category, targets, language, replacements);	
+				} else {
+					Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_AUTHORIZED, category, targets, language, replacements);
+				}																 
 			}
 		} catch (UnsupportedEncodingException e) {}
 		
@@ -997,6 +1077,8 @@ public class Circles extends APIController {
 			Consent.set(consent._id, "externalAuthorized", consent.externalAuthorized);
 			
 			persistConsentMetadataChange(context, consent, false);
+			
+			if (consent.externalAuthorized.isEmpty() && consent.status==ConsentStatus.UNCONFIRMED) AutoJoiner.autoConfirm(consent._id);
 		}
 		
 		consents = Consent.getByExternalOwnerEmail(emailLC);

@@ -115,7 +115,7 @@ public class Feature_Stats extends Feature {
 			}
 			
 			AccessLog.logBegin("stats count local");
-			if (!q.getContext().isUserGroupContext()) {
+			if (!q.getContext().isUserGroupContext() || !(q.getApsId().equals(q.getContext().getAccessor()))) {
 				for (StatsIndexKey inf : countConsent(qloc, next, Feature_Indexes.getContextForAps(q, q.getApsId()))) {
 					map.put(getKey(inf), inf);
 					//AccessLog.log("REG: "+getKey(inf)+"="+inf.count);

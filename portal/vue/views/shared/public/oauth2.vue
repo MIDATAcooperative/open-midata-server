@@ -171,7 +171,7 @@ export default {
 	   showRegister() {
 		  const { $route, $router } = this;
 		  let params = JSON.parse(JSON.stringify($route.query));
-		  params.login = params.email;
+		  if (params.email) params.login = params.email;
 		  $router.push({ path : "./registration", query : params }); 		  
 	   },
 	

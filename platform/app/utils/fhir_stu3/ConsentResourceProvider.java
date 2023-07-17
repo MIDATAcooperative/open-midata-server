@@ -144,7 +144,11 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		if (EntityType.USERGROUP.equals(consentToConvert.entityType)) {
 			for (MidataId auth : consentToConvert.authorized) {
 			   p.addActor().setReference(new Reference("Group/"+auth.toString()));
-			}			
+			}		
+		} else if (EntityType.ORGANIZATION.equals(consentToConvert.entityType)) {
+			for (MidataId auth : consentToConvert.authorized) {
+			   p.addActor().setReference(new Reference("Organization/"+auth.toString()));
+			}		
 		} else {
 			for (MidataId auth : consentToConvert.authorized) {
 				try {

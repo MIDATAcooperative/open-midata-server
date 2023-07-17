@@ -1,11 +1,12 @@
 {
   "name": "midata-portal",
-  "version": "2.1.13",
+  "version": "2.2.1",
   "description": "Midata Portal",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:server": "webpack-dev-server --open --config webpack.development.config.js",
+    "dev:box": "webpack-dev-server --open --config webpack.development.config.js --host 0.0.0.0 --port 9002 --no-https",
     "dev:build": "webpack --config webpack.development.config.js",
     "build": "webpack --config webpack.production.config.js",
     "prod:build": "webpack --config webpack.production.config.js",

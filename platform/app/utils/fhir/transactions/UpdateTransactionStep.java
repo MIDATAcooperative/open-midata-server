@@ -54,7 +54,7 @@ public class UpdateTransactionStep extends TransactionStep {
 	
 	@Override
     public void init() throws AppException {
-		if (record == null) record = provider.fetchCurrent(resource.getIdElement(), resource);
+		if (record == null) record = provider.fetchCurrent(resource.getIdElement(), resource, false);
     }
 	
 	@Override

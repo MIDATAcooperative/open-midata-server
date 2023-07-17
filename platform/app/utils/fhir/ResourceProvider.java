@@ -28,10 +28,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Reference;
@@ -55,10 +57,14 @@ import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.util.FhirTerser;
 import ca.uhn.fhir.util.UrlUtil;
+import models.MidataId;
 import models.Model;
 import models.Record;
 import utils.ErrorReporter;
+import utils.QueryTagTools;
+import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
+import utils.collections.CMaps;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -115,12 +121,12 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	public abstract Class<T> getResourceType();
 	
 	
-	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
+	public List<T> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {		
 		return null;
 	}
 
 	
-	public abstract M fetchCurrent(IIdType theId, T resource) throws AppException;
+	public abstract M fetchCurrent(IIdType theId, T resource, boolean versioned) throws AppException;
 	
 	public abstract void processResource(M record, T resource) throws AppException;
 			
@@ -377,7 +383,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	
 			
 	protected static boolean isLocalId(IIdType theId) {
-		if (theId.getBaseUrl() == null) return true;
+		if (theId.getBaseUrl() == null && MidataId.isValid(theId.getIdPart())) return true;
 		return false;
 	}
 		
@@ -434,5 +440,22 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		if (!info.mayAccess(getResourceType().getSimpleName(), "fhir/"+getResourceType().getSimpleName())) return false;
 		return true;
 	}
-
+	
+	protected int getProcessingOrder() {
+		return 2;
+	}
+	
+	public boolean addSecurityTag(T theResource, String tag) {
+		Pair<String, String> coding = QueryTagTools.getSystemCodeForTag(tag);
+		if (theResource.getMeta().hasSecurity()) {
+			List<Coding> codes = theResource.getMeta().getSecurity();
+			for (Coding c : codes) {
+			    if (coding.getLeft().equals(c.getSystem()) && coding.getRight().equals(c.getCode())) return false;			    
+			}
+		}
+		theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
+		return true;
+	}
+	
+	
 }

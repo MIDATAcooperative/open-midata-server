@@ -255,7 +255,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	/**
 	 * the type of the plugin
 	 * 
-	 * type can be one of: visualization, service, oauth1, oauth2, mobile, external, analyzer
+	 * type can be one of: visualization, service, oauth1, oauth2, mobile, external, analyzer, broker
 	 */
 	public String type;
 	

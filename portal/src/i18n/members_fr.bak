@@ -42,7 +42,7 @@
   
   "accountdata" : {
      "midata_id" : "@PRODUCT ID:",
-     "birthday" : "Date of birth:",
+     "birthday" : "Birthdate:",
      "change_btn" : "Change"
   },
   
@@ -77,7 +77,7 @@
 	"confirmation_date" : "Confirmation Date",
     "confirm_btn" : "confirm",
     "reject_btn" : "reject",
-    "empty" : "You have not registered any contacts as a healthcare professional." 
+    "empty" : "You have not registered any contacts as a health professional." 
   },
   
   "smallstudies" : {

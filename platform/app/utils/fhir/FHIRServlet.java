@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import utils.InstanceConfig;
 import utils.context.AccessContext;
 
@@ -51,6 +52,12 @@ public class FHIRServlet extends RestfulServer {
     	if (inf!=null && inf.getOverrideBaseUrl()!=null) return "https://"+InstanceConfig.getInstance().getPlatformServer()+inf.getOverrideBaseUrl();
     	
     	return "https://"+InstanceConfig.getInstance().getPlatformServer()+"/fhir";
+    }
+    
+    public static ResourceProvider getProvider(String type) {
+    	ResourceProvider result = myProviders.get(type);
+    	if (result == null) throw new UnprocessableEntityException("Unknown resource type '"+type+"'");
+    	return result;
     }
     /**
      * The initialize method is automatically called when the servlet is starting up, so it can

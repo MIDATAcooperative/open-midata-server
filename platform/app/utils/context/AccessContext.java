@@ -22,16 +22,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import models.Consent;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Plugin;
 import models.Record;
 import models.ServiceInstance;
 import models.Space;
 import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
+import models.enums.EntityType;
+import models.enums.Permission;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
@@ -76,7 +80,7 @@ public abstract class AccessContext {
 	 * @param newVersion new version of record
 	 * @return
 	 */
-	public abstract boolean mayUpdateRecord(DBRecord stored, Record newVersion);
+	public abstract boolean mayUpdateRecord(DBRecord stored, Record newVersion) throws InternalServerException;
 	
 	/**
 	 * Must records be pseudonymized in the current context?
@@ -125,6 +129,10 @@ public abstract class AccessContext {
 		if (result instanceof List) return (List<String>) result;
 		if (result instanceof Collection) return new ArrayList<String>((Collection) result);
 		throw new InternalServerException("error.internal", "Unknown restriction");
+	}
+	
+	public Map<String, Object> getAccessRestrictions() throws AppException {
+		if (parent != null) return parent.getAccessRestrictions(); else return null;
 	}
 	
 	/**
@@ -230,6 +238,14 @@ public abstract class AccessContext {
 		return cache.getAccessor();
 	}
 	
+	public EntityType getAccessorEntityType() throws InternalServerException {
+		if (parent != null) return parent.getAccessorEntityType();
+		
+		Plugin pl = Plugin.getById(getUsedPlugin());
+		if (pl.type.equals("external") || pl.type.equals("broker") || pl.type.equals("endpoint")) return EntityType.SERVICES;
+		return EntityType.USER;
+	}
+	
 	/**
 	 * what is the user role of the accessor?
 	 * This is used for handling security tags
@@ -298,8 +314,20 @@ public abstract class AccessContext {
 	 * @return
 	 * @throws AppException
 	 */
-	public AccessContext forConsent(Consent consent) throws AppException {		
-		return new ConsentAccessContext(consent, getCache(), this);
+	public AccessContext forConsent(Consent consent) throws AppException {
+		if (consent.owner != null && consent.owner.equals(getAccessor())) return new ConsentAccessContext(consent, getCache(), this);
+		if (consent.authorized != null && consent.authorized.contains(getAccessor())) return new ConsentAccessContext(consent, getCache(), this);
+		
+		if (consent.authorized != null && consent.entityType != EntityType.USER) {
+		   for (MidataId id : consent.authorized) {
+			   List<UserGroupMember> ugms = getCache().getByGroupAndActiveMember(id, getAccessor(), Permission.ANY);			   
+			   if (ugms != null) {
+				   AccessContext result = forUserGroup(ugms);				   
+				   return new ConsentAccessContext(consent, result.getCache(), result); 
+			   }
+		   }
+		}
+		throw new InternalServerException("error.internal", "Consent context not createable");
 	}
 	
 	/**
@@ -374,7 +402,7 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public AccessContext forServiceInstance(ServiceInstance instance) throws AppException {
-		return new ServiceInstanceAccessContext(getCache(), instance);
+		return new ServiceInstanceAccessContext(getCache(), getRequestCache(), instance);
 	}
 	
 	/**
@@ -385,6 +413,30 @@ public abstract class AccessContext {
 	 */
 	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
 		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(getCache(), ugm), this);
+	}
+	
+	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
+		List<UserGroupMember> ugms = cache.getByGroupAndActiveMember(userGroup, cache.getAccessor(), permission);
+		return forUserGroup(ugms);		
+	}
+	
+	public UserGroupAccessContext forUserGroup(List<UserGroupMember> ugms) throws AppException {				
+		APSCache cache = getCache();
+		APSCache subcache = cache;			
+		for (UserGroupMember ugmx : ugms) subcache = Feature_UserGroups.readySubCache(cache, subcache, ugmx);
+		UserGroupMember ugm = ugms.get(ugms.size()-1);
+		return new UserGroupAccessContext(ugm, subcache, this);
+	}
+	
+	public boolean usesUserGroupsForQueries() throws InternalServerException {
+		if (getAccessorEntityType() == EntityType.SERVICES) return false;
+		if (getAccessorEntityType() == EntityType.USER && getAccessorRole() == UserRole.MEMBER) return false;
+		return true;
+	}
+	
+	public Set<UserGroupMember> getAllActiveByMember() throws AppException {
+		if (!usesUserGroupsForQueries()) return Collections.emptySet();
+		return getCache().getAllActiveByMember();
 	}
 	
 	/**
@@ -407,8 +459,8 @@ public abstract class AccessContext {
           if (space != null) return new SpaceAccessContext(space, getCache(), null, space.owner);
           
           
-          UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(aps, getAccessor());
-          if (ugm != null)  return forUserGroup(ugm);
+          List<UserGroupMember> ugms = getCache().getByGroupAndActiveMember(aps, getAccessor(), Permission.READ_DATA);
+          if (ugms != null)  return forUserGroup(ugms);
          
 		}
 		

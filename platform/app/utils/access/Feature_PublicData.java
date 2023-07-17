@@ -108,7 +108,7 @@ public class Feature_PublicData extends Feature {
 		    }
 		}
 		AccessLog.logBeginPath("do-public", null);
-		APSCache subcache = getPublicAPSCache(q.getCache());
+		APSCache subcache = getPublicAPSCache(q.getContext().getRootCache());
 		
 		Map<String, Object> newprops = new HashMap<String, Object>();
 		newprops.putAll(q.getProperties());

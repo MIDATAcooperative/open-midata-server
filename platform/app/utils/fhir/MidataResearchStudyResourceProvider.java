@@ -62,6 +62,7 @@ import models.Study;
 import models.StudyGroup;
 import models.enums.InfoType;
 import models.enums.StudyValidationStatus;
+import utils.QueryTagTools;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.collections.CMaps;
@@ -151,6 +152,8 @@ public class MidataResearchStudyResourceProvider extends RecordBasedResourceProv
 	    record.code = Collections.singleton("http://midata.coop ResearchStudy");
 		record.owner = RuntimeConstants.instance.publicUser;	
 		record._id = MidataId.from(theResearchStudy.getId());
+		
+		addSecurityTag(record, theResearchStudy, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
 		clean(theResearchStudy);
  
@@ -162,6 +165,7 @@ public class MidataResearchStudyResourceProvider extends RecordBasedResourceProv
 	public void processResource(Record record, ResearchStudy p) throws AppException {
 		// Add _id field and meta section
 		super.processResource(record, p);
+		addSecurityTag(p, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 				
 	}
 
@@ -279,7 +283,7 @@ public class MidataResearchStudyResourceProvider extends RecordBasedResourceProv
 						
 		researchStudy.setPeriod(period);		
 		if (!doupdate) researchStudy.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
-		
+				
 		if (doupdate) {
 		  provider.updateRecord(oldRecord, researchStudy, provider.getAttachments(researchStudy));
 		} else {

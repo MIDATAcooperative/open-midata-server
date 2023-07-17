@@ -47,6 +47,7 @@ import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Consent;
 import models.ContentInfo;
 import models.MidataId;
@@ -260,43 +261,55 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 		record.name = "Provenance";
 		
 		theProvenance.setRecorded(new Date());
-		
-		MidataId owner = null;
 		List<Reference> refs = theProvenance.getTarget();
+		boolean ownerCandidate = false;
 		for (Reference ref : refs) {
 			if (ref.hasReference()) {
 				IBaseResource res = ref.getResource();
 				if (res != null) {
 					throw new UnsupportedOperationException("Not implemented");
 				} else {
-					IIdType iid = ref.getReferenceElement();
-					MidataId recOwner = getOwner(iid);
-					AccessLog.log("got owner = "+recOwner);
-					if (owner == null) owner = recOwner;
-					else if (recOwner == null) { }
-					else if (!owner.equals(recOwner)) {
-						throw new BadRequestException("error.internal", "Cannot determine data owner");
-					}
+					checkTargetReference(ref);
+					ownerCandidate = true;
 				}
 			}
 		}
-		if (owner == null) throw new BadRequestException("error.internal", "Cannot determine data owner");
-		record.owner = owner;
+		if (!ownerCandidate) throw new BadRequestException("error.internal", "Cannot determine data owner");
 			
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
 		clean(theProvenance);
  
 	}
 	
-	private MidataId getOwner(IIdType iid) throws AppException {
+	private void checkTargetReference(Reference ref) throws AppException {
+		IIdType iid = ref.getReferenceElement();
 		String type = iid.getResourceType();
-		String id = iid.getIdPart();		
-		Model model = FHIRServlet.myProviders.get(type).fetchCurrent(iid, null);
+		if (type == null) throw new UnprocessableEntityException("No resource type in target reference for provenance");
+		String id = iid.getIdPart();
+		if (id == null) throw new UnprocessableEntityException("No resource id in target reference for provenance");		
+		FHIRServlet.getProvider(type);				
+	}
+	
+	private MidataId getOwnerAndSetVersion(Reference ref) throws AppException {
+		IIdType iid = ref.getReferenceElement();
+		String type = iid.getResourceType();
+		if (type == null) throw new UnprocessableEntityException("No resource type in target reference for provenance");
+		String id = iid.getIdPart();
+		if (id == null) throw new UnprocessableEntityException("No resource id in target reference for provenance");		
+		Model model = FHIRServlet.getProvider(type).fetchCurrent(iid, null, true);		
 		if (model==null) throw new BadRequestException("error.internal", "Referenced Record not found");
-		if (model instanceof Consent) return ((Consent) model).owner;
-		if (model instanceof Record) return ((Record) model).owner;
+		if (model instanceof Consent) {
+			if (!iid.hasVersionIdPart()) ref.setReferenceElement(iid.withVersion(MidataConsentResourceProvider.getInstance().getVersion((Consent) model)));
+			return ((Consent) model).owner;
+		}
+		if (model instanceof Record) {
+			if (!iid.hasVersionIdPart()) ref.setReferenceElement(iid.withVersion(((Record) model).version));
+			return ((Record) model).owner;
+		}
 		return null;
 	}
+	
+	
  
 	// Prepare a FHIR resource for output to the user
 	// Basically re-add the stuff that was taken away by prepare
@@ -309,11 +322,44 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 	}
 	
 
+	@Override
+	public Provenance createExecute(Record record, Provenance theResource) throws AppException {
+		
+		MidataId owner = null;
+		List<Reference> refs = theResource.getTarget();
+		for (Reference ref : refs) {
+			if (ref.hasReference()) {
+				IBaseResource res = ref.getResource();
+				if (res != null) {
+					throw new UnsupportedOperationException("Not implemented");
+				} else {					
+					MidataId recOwner = getOwnerAndSetVersion(ref);
+					AccessLog.log("got owner = "+recOwner);
+					if (owner == null) owner = recOwner;
+					else if (recOwner == null) { }
+					else if (!owner.equals(recOwner)) {
+						throw new BadRequestException("error.internal", "Cannot determine data owner");
+					}
+				}
+			}
+		}
+		if (owner == null) throw new BadRequestException("error.internal", "Cannot determine data owner");
+		record.owner = owner;
+		
+		return super.createExecute(record, theResource);
+	}
 
 	@Override
 	protected void convertToR4(Object in) {
 		
 	}
+
+	// Late processing for target reference
+	@Override
+	protected int getProcessingOrder() {
+		return 3;
+	}
 	
 
+	
 }

@@ -302,6 +302,7 @@ export default {
 	getLinkName(link) {
 		if (link.study) return link.study.name;
 		if (link.provider) return link.provider.name;
+		if (link.userLogin) return link.userLogin;
 		if (link.serviceApp) 
 			return (link.serviceApp.i18n[getLocale()] && link.serviceApp.i18n[getLocale()].name) ? link.serviceApp.i18n[getLocale()].name : link.serviceApp.name;
 		return "???";
@@ -551,13 +552,13 @@ export default {
 					if (link.formatted.length==0) {	
 						if (link.study)	{
 							link.formatted  = [ link.study.description ];
-							} else {
+							} else if (link.serviceApp) {
 								if (link.serviceApp.i18n[getLocale()]) {
 								link.formatted  = [ link.serviceApp.i18n[getLocale()].description ];
 								} else {
 								link.formatted  = [ link.serviceApp.description ];
 								}
-							}
+							} 
 					}
 			
 					if (me.getMultiPage()) {					

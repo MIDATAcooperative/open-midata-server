@@ -107,7 +107,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 			List<Record> result = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
 			record = result.isEmpty() ? null : result.get(0);
 		} else {
-		    record = RecordManager.instance.fetch(info().getAccessorRole(), info(), new MidataId(theId.getIdPart()), null);
+		    record = RecordManager.instance.fetch(info().getAccessorRole(), info(), MidataId.parse(theId.getIdPart()), null);
 		}
 		if (record == null) throw new ResourceNotFoundException(theId);		
     	    	
@@ -117,8 +117,10 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     }
     
     @History()
-	public List<Basic> getHistory(@IdParam IIdType theId) throws AppException {
-	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	public List<Basic> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
+	   Integer count = (theCount != null) ? theCount : 2000;
+	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc").mapNotEmpty("limit", count), RecordManager.COMPLETE_DATA);
+			   
 	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
 	   
 	   //AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_HISTORY, records.get(0).context.getOwner());

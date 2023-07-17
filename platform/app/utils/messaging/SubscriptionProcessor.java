@@ -220,13 +220,16 @@ public class SubscriptionProcessor extends AbstractActor {
 		Map<String,String> replacements = new HashMap<String, String>();
 		if (triggered.getParams()!=null) replacements.putAll(triggered.getParams());
 		AccessLog.log("process email type="+triggered.getType()+"  "+triggered.getEventCode());
+		Set targets = Collections.singleton(subscription.owner);
+		String endpoint = channel.getEndpoint();
+		if (endpoint!=null && endpoint.trim().length()>0) targets = Collections.singleton(endpoint); 
 		if (triggered.getType().equals("fhir/MessageHeader")) {
 		  String ev = triggered.getEventCode();
 		  //if (ev.indexOf(":")>=0) ev = ev.substring(0,ev.indexOf(":"));
 		  AccessLog.log("send ev="+ev+" ow="+subscription.owner+" app="+subscription.app);		  
-		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, Collections.singleton(subscription.owner), null, replacements);			
+		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, targets, null, replacements);			
 		} else {
-		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), Collections.singleton(subscription.owner), null, replacements);
+		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), targets, null, replacements);
 		}
 		getSender().tell(new MessageResponse(null,0,"internal:mail"), getSelf());
 	}
@@ -235,12 +238,15 @@ public class SubscriptionProcessor extends AbstractActor {
 		Map<String,String> replacements = new HashMap<String, String>();
 		if (triggered.getParams()!=null) replacements.putAll(triggered.getParams());
 		AccessLog.log("process sms type="+triggered.getType()+"  "+triggered.getEventCode());
+		Set targets = Collections.singleton(subscription.owner);
+		String endpoint = channel.getEndpoint();
+		if (endpoint!=null && endpoint.trim().length()>0) targets = Collections.singleton(endpoint); 
 		if (triggered.getType().equals("fhir/MessageHeader")) {
 		  String ev = triggered.getEventCode();
-		  if (ev.indexOf(":")>=0) ev = ev.substring(0,ev.indexOf(":"));
-		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, Collections.singleton(subscription.owner), null, replacements, MessageChannel.SMS);			
+		  //if (ev.indexOf(":")>=0) ev = ev.substring(0,ev.indexOf(":"));
+		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, targets, null, replacements, MessageChannel.SMS);			
 		} else {
-		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), Collections.singleton(subscription.owner), null, replacements, MessageChannel.SMS);
+		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), targets, null, replacements, MessageChannel.SMS);
 		}
 		getSender().tell(new MessageResponse(null,0,"internal:sms"), getSelf());
 	}

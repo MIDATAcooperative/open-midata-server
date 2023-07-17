@@ -22,6 +22,8 @@ import java.util.Date;
 
 import org.bson.types.ObjectId;
 
+import utils.exceptions.BadRequestException;
+
 /**
  * id for any resource stored in MIDATA
  *
@@ -153,6 +155,16 @@ public class MidataId implements Comparable<MidataId>, Serializable {
 		if (o instanceof ObjectId) return new MidataId((ObjectId) o);
 		if (o instanceof MidataId) return (MidataId) o;
 		return new MidataId(o.toString());
-	}		
+
+	}
+	
+	public static MidataId parse(Object o) throws BadRequestException {
+		if (o == null) return null;
+		if (o instanceof ObjectId) return new MidataId((ObjectId) o);
+		if (o instanceof MidataId) return (MidataId) o;
+		String inp = o.toString();
+		if (!isValid(inp)) throw new BadRequestException("error.invalid.id", "Error invalid MidataId '"+inp+"'.");
+		return new MidataId(o.toString());
+	}	
 		
 }

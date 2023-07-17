@@ -93,7 +93,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	 */
 	public abstract String getRecordFormat();
 	
-	public Record init(T theResource) { return newRecord(getRecordFormat()); }
+	public Record init(T theResource) throws AppException { return newRecord(getRecordFormat()); }
 	
 	/**
 	 * Default implementation to retrieve a FHIR resource by id.
@@ -105,10 +105,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public T getResourceById(@IdParam IIdType theId) throws AppException {
 		Record record;
 		if (theId.hasVersionIdPart()) {
-			List<Record> result = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
+			List<Record> result = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", MidataId.parse(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
 			record = result.isEmpty() ? null : result.get(0);
 		} else {
-		    record = RecordManager.instance.fetch(info().getAccessorRole(), info(), new MidataId(theId.getIdPart()), getRecordFormat());
+		    record = RecordManager.instance.fetch(info().getAccessorRole(), info(), MidataId.parse(theId.getIdPart()), getRecordFormat());
 		}
 		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);
 		
@@ -122,8 +122,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	@History()
-	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
-	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	public List<T> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
+		Integer count = (theCount != null) ? theCount : 2000;
+	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc").mapNotEmpty("limit", count), RecordManager.COMPLETE_DATA);
 	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
 	   
 	   List<T> result = new ArrayList<T>(records.size());
@@ -205,7 +206,16 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		prepareTags(record, theResource);
 	}
 	
-	private final static Set<String> alwaysAllowedTags = Sets.create("security:public", "security:generated");
+	private final static Set<String> alwaysAllowedTagsFull = Sets.create("security:public", "security:generated", "security:platform-mapped");
+	
+	private final static Set<String> alwaysAllowedTagsSmall = Sets.create("security:public");
+	private final static Set<String> extendedFormats = Sets.create("fhir/Patient", "fhir/Organization", "fhir/Consent" ,"fhir/ResearchStudy", "fhir/Group", "fhir/Practitioner", "fhir/Person");
+	
+	private Set<String> alwaysAllowedTags(String format) {
+	    if (extendedFormats.contains(format)) return alwaysAllowedTagsFull;
+		return alwaysAllowedTagsSmall;
+		
+	}
 	
 	public void prepareTags(Record record, T theResource) throws AppException {
 		//boolean hiddenTagFound = false;
@@ -228,7 +238,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		List<String> allowTags = info.getAccessRestrictionList(record.content, record.format, "allow-tag");
 		if (record.tags != null) {
 			for (String usedTag : record.tags) {			   
-			   if (usedTag.startsWith("security:") && !alwaysAllowedTags.contains(usedTag) && !allowTags.contains(usedTag) && !addTags.contains(usedTag) && !oldTags.contains(usedTag)) throw new PluginException(info.getUsedPlugin(), "error.plugin", "Not allowed security tag used: '"+usedTag+"'");	
+			   if (usedTag.startsWith("security:") && !alwaysAllowedTags(record.format).contains(usedTag) && !allowTags.contains(usedTag) && !addTags.contains(usedTag) && !oldTags.contains(usedTag)) throw new PluginException(info.getUsedPlugin(), "error.plugin", "Not allowed security tag used: '"+usedTag+"'");	
 			}
 		}
 		
@@ -306,13 +316,15 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	@Override
-	public Record fetchCurrent(IIdType theId, T resource)  {
+	public Record fetchCurrent(IIdType theId, T resource, boolean versioned)  {
 		try {
 			if (theId == null) throw new UnprocessableEntityException("id missing");
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
-			if (!isLocalId(theId)) throw new UnprocessableEntityException("id is not local resource");
+			if (!isLocalId(theId)) throw new UnprocessableEntityException("Not a valid id for the platform.");
 			
-			Record record = RecordManager.instance.fetch(info().getAccessorRole(), info(), new MidataId(theId.getIdPart()), getRecordFormat());
+			String version = versioned ? theId.getVersionIdPart() : null;
+						
+			Record record = RecordManager.instance.fetch(info().getAccessorRole(), info(), new MidataId(theId.getIdPart()), getRecordFormat(), version);
 			
 			if (record == null) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" not found."); 
 			if (!record.format.equals("fhir/"+theId.getResourceType())) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" has wrong resource type."); 
@@ -372,7 +384,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 				
 		if (!owner.equals(inf.getAccessor())) {
 			Consent consent = Circles.getOrCreateMessagingConsent(inf, inf.getAccessor(), owner, owner, false);
-			insertRecord(record, resource, attachments, new ConsentAccessContext(consent, info()));
+			insertRecord(record, resource, attachments, info().forConsent(consent));
 			shareFrom = consent._id;
 		} else {
 			insertRecord(record, resource, attachments, info());
@@ -576,8 +588,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	public void addSecurityTag(Record record, DomainResource theResource, String tag) {
-		  record.addTag(tag);
+		  if (record != null) record.addTag(tag);
 		  Pair<String, String> coding = QueryTagTools.getSystemCodeForTag(tag);
-		  theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
+		  if (!theResource.getMeta().hasSecurity() || theResource.getMeta().getSecurity(coding.getLeft(), coding.getRight())==null) {
+		    theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
+		  }
 	}
 }

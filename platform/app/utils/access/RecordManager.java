@@ -275,22 +275,22 @@ public class RecordManager {
 	public void share(AccessContext context, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
 			Set<MidataId> records, boolean withOwnerInformation)
 			throws AppException {
-		share(context.getAccessor(), context.getCache(), fromAPS, toAPS, toAPSOwner, records, withOwnerInformation);
+		share(context.getAccessor(), context.forAccountReshare(), fromAPS, toAPS, toAPSOwner, records, withOwnerInformation);
 	}
 	
-	protected void share(MidataId who, APSCache cache, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
+	protected void share(MidataId who, AccessContext context, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
 			Set<MidataId> records, boolean withOwnerInformation)
 			throws AppException {
 		if (fromAPS.equals(toAPS)) return;
         AccessLog.logBegin("begin share: who=",who.toString()," from=",fromAPS.toString()," to=",toAPS.toString()," count=",(records!=null ? Integer.toString(records.size()) : "?"));
-		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
+		APS apswrapper = context.getCache().getAPS(toAPS, toAPSOwner);
 		
 		List<DBRecord> recordEntries = null;
 		
 		if (records != null) {
 			boolean failed = false;
 			for (MidataId id : records) {
-				DBRecord target = cache.lookupRecordInCache(id);
+				DBRecord target = context.getCache().lookupRecordInCache(id);
 				if (target != null) {
 					if (recordEntries == null) recordEntries = new ArrayList<DBRecord>();
 					recordEntries.add(target);
@@ -301,15 +301,15 @@ public class RecordManager {
 		}
 		
 		if (recordEntries == null) {
-			recordEntries = QueryEngine.listInternal(cache, fromAPS, new DummyAccessContext(cache),
+			recordEntries = QueryEngine.listInternal(context.getCache(), fromAPS, new DummyAccessContext(context.getCache()),
 					records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
 					RecordManager.SHARING_FIELDS);
 		}
 		
-		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);
+		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(context, toAPS, recordEntries);
 		AccessLog.log("to-share: ", Integer.toString(recordEntries.size()), " already=", Integer.toString(alreadyContained.size()));
 		
-		shareUnchecked(cache, recordEntries, alreadyContained, apswrapper, withOwnerInformation);
+		shareUnchecked(context.getCache(), recordEntries, alreadyContained, apswrapper, withOwnerInformation);
         
         AccessLog.logEnd("end share");
 	}
@@ -330,7 +330,7 @@ public class RecordManager {
 		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, fromContext.getTargetAps(), fromContext,
 				CMaps.map(query).map("owner", fromContext.getOwner()),	RecordManager.SHARING_FIELDS);
 		
-		share(cache, toAPS, toAPSOwner, recordEntries, withOwnerInformation);
+		share(fromContext, toAPS, toAPSOwner, recordEntries, withOwnerInformation);
 		
 		return recordEntries.size();
 	}
@@ -343,21 +343,22 @@ public class RecordManager {
 		List<DBRecord> recordEntries = QueryEngine.listInternal(fromcache, fromAPS, context.internal(),
 				CMaps.map("streams", "true").map("flat", "true"), RecordManager.SHARING_FIELDS);
 		
-		share(tocache, toAPS, toAPSOwner, recordEntries, false);
+		share(new DummyAccessContext(tocache), toAPS, toAPSOwner, recordEntries, false);
 		
 		return recordEntries.size();
 	}
 	
 	
-	public void share(APSCache cache, MidataId toAPS, MidataId toAPSOwner,
+	public void share(AccessContext context, MidataId toAPS, MidataId toAPSOwner,
 			List<DBRecord> recordEntries, boolean withOwnerInformation)
 			throws AppException {		
         if (recordEntries.isEmpty()) return;
+        APSCache cache = context.getCache();
         
 		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
 		
 		AccessLog.log("check if contained in target aps");
-		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);		
+		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(context, toAPS, recordEntries);		
 		
 		shareUnchecked(cache, recordEntries, alreadyContained, apswrapper, withOwnerInformation);
         
@@ -782,6 +783,12 @@ public class RecordManager {
 		while (it.hasNext()) {
 	   	   DBRecord record = it.next();			
 	       if (record.meta.getString("content").equals("Patient")) it.remove();
+	       else {
+		       Set<String> tags = RecordConversion.instance.getTags(record);
+		       if (tags != null && tags.contains(QueryTagTools.SECURITY_PLATFORM_MAPPED)) it.remove();
+			   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
+			   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
+	       }
 		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
 		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
 		}
@@ -897,7 +904,8 @@ public class RecordManager {
 	       if (record.meta.getString("content").equals("Patient")) it.remove();
 	       Set<String> tags = RecordConversion.instance.getTags(record);
 	       if (tags != null && tags.contains(QueryTagTools.SECURITY_NODELETE)) it.remove();
-	       
+	       if (tags != null && tags.contains(QueryTagTools.SECURITY_PLATFORM_MAPPED)) it.remove();
+	       	       
 		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
 		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
 		}
@@ -1047,16 +1055,17 @@ public class RecordManager {
 				
 		AccessLog.logBegin("BEGIN APPLY QUERY");
 		MidataId userId = context.getCache().getAccessor();
-		AccessContext targetContext = new ConsentAccessContext(target, context);
+		AccessContext targetContext = context.forConsent(target);
+		AccessContext sourceContext = context.forAccountReshare();
 		boolean targetIsEmpty = targetContext.getCache().getAPS(targetaps).hasNoDirectEntries();
 		if (pair.getRight() != null) {
 			AccessLog.logBegin("SINGLE RECORDS");
-			List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), sourceaps, context, CMaps.map(pair.getRight()).map("owner", context.getSelf()), RecordManager.SHARING_FIELDS);			
-			RecordManager.instance.share(context.getCache(), targetaps, null, recs, ownerInformation);
+			List<DBRecord> recs = QueryEngine.listInternal(sourceContext.getCache(), sourceaps, sourceContext, CMaps.map(pair.getRight()).map("owner", context.getSelf()), RecordManager.SHARING_FIELDS);			
+			RecordManager.instance.share(sourceContext, targetaps, null, recs, ownerInformation);
 		}
 		if (pair.getLeft() != null) {
 			if (!targetIsEmpty) {
-				List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), targetaps, targetContext, CMaps.map(pair.getLeft()).map("flat", "true").map("owner", context.getSelf()), Sets.create("_id"));
+				List<DBRecord> recs = QueryEngine.listInternal(targetContext.getCache(), targetaps, targetContext, CMaps.map(pair.getLeft()).map("flat", "true").map("owner", context.getSelf()), Sets.create("_id"));
 				Set<MidataId> remove = new HashSet<MidataId>();
 				for (DBRecord r : recs) remove.add(r._id);
 				AccessLog.log("REMOVE DUPLICATES:", Integer.toString(remove.size()));
@@ -1064,18 +1073,18 @@ public class RecordManager {
 			}
 			
 			Map<String, Object> selectionQuery = CMaps.map(pair.getLeft()).map("streams", "true").map("flat", "true").map("owner", context.getSelf());		
-			List<DBRecord> records = QueryEngine.listInternal(context.getCache(), sourceaps, context, selectionQuery, RecordManager.SHARING_FIELDS);
+			List<DBRecord> records = QueryEngine.listInternal(sourceContext.getCache(), sourceaps, sourceContext, selectionQuery, RecordManager.SHARING_FIELDS);
 			
 			AccessLog.log("SHARE QUALIFIED STREAMS:", Integer.toString(records.size()));
 			if (records.size() > 0) {				
-				RecordManager.instance.share(context.getCache(), targetaps, null, records, ownerInformation);
+				RecordManager.instance.share(sourceContext, targetaps, null, records, ownerInformation);
 			}
 			
 			if (!targetIsEmpty) {
-				List<DBRecord> streams = QueryEngine.listInternal(context.getCache(), targetaps, targetContext, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
+				List<DBRecord> streams = QueryEngine.listInternal(targetContext.getCache(), targetaps, targetContext, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
 				AccessLog.log("UNSHARE STREAMS CANDIDATES = ", Integer.toString(streams.size()));
 				
-				List<DBRecord> stillOkay = QueryEngine.listFromMemory(context, pair.getLeft(), streams);
+				List<DBRecord> stillOkay = QueryEngine.listFromMemory(targetContext, pair.getLeft(), streams);
 				streams.removeAll(stillOkay);		
 				Set<MidataId> remove = new HashSet<MidataId>();
 				for (DBRecord stream : streams) {
@@ -1391,9 +1400,13 @@ public class RecordManager {
 	 * @return the record to be returned
 	 * @throws AppException
 	 */
-	public Record fetch(UserRole role, AccessContext context, MidataId recordId, String format)
+	public Record fetch(UserRole role, AccessContext context, MidataId recordId, String format) throws AppException {
+		return fetch(role, context, recordId, format, null);
+	}
+	
+	public Record fetch(UserRole role, AccessContext context, MidataId recordId, String format, String version)
 			throws AppException {
-		List<Record> result = list(role, context, CMaps.map("_id", recordId).mapNotEmpty("format", format),
+		List<Record> result = list(role, context, CMaps.map("_id", recordId).mapNotEmpty("format", format).mapNotEmpty("version", version),
 				RecordManager.COMPLETE_DATA);
 		if (result.isEmpty())
 			return null;
@@ -1621,7 +1634,7 @@ public class RecordManager {
 		result.numConsentsOwner = Consent.count(userId);
 		Set<MidataId> auth = new HashSet<MidataId>();
 		auth.add(userId);
-		for (UserGroupMember ugm : UserGroupMember.getAllActiveByMember(userId)) {
+		for (UserGroupMember ugm : context.getAllActiveByMember()) {
 			auth.add(ugm.userGroup);
 			result.numUserGroups++;
 		}

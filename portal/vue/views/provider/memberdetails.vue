@@ -24,7 +24,7 @@
 	        <span v-if="member.zip||member.city">{{ member.zip }} {{ member.city }}<br></span>
 	        {{ member.country }}<br>
 	        <span v-if="member.phone"><span v-t="'common.user.phone'"></span>: {{ member.phone }}<br></span>
-	        <span v-if="member.mobile"><span v-t="'common.user.mobile'"></span>: {{ member.mobile }}<br></span>	  
+	        <span v-if="member.mobile"><span v-t="'common.user.mobile_phone'"></span>: {{ member.mobile }}<br></span>	  
 	        <span v-if="member.email"><span v-t="'common.user.email'"></span>: {{ member.email }}<br></span>
         </address>
         <p v-t="'provider_memberdetails.pick_consent'">Pick consent:</p>
