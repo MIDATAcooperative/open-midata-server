@@ -38,6 +38,7 @@ import models.RecordGroup;
 import models.Study;
 import utils.AccessLog;
 import utils.PluginLoginCache;
+import utils.RuntimeConstants;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -45,6 +46,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
+import utils.stats.Stats;
 
 /**
  * parameters for a single query for records
@@ -591,7 +593,10 @@ public class Query {
 				 if (!MidataId.isValid(app.toString())) {
 					 Plugin p = PluginLoginCache.getByFilename(app.toString());					 
 					 if (p!=null) resolved.add(p._id.toString());
-					 else throw new PluginException(context.getUsedPlugin(), "error.internal", "Queried for unknown app in access filter with name '"+app.toString()+"'.");
+					 else {
+						 Stats.addComment("Queried for unknown app in access filter with name '"+app.toString()+"'.");
+						 resolved.add(RuntimeConstants.instance.commonPlugin.toString());
+					 }
 				 } else resolved.add(app.toString());
 			 }
 			 properties.put("app", resolved);
@@ -603,7 +608,9 @@ public class Query {
 				 if (!MidataId.isValid(app.toString())) {
 					 Plugin p = PluginLoginCache.getByFilename(app.toString());					 
 					 if (p!=null) resolved.add(p._id.toString());
-					 else throw new PluginException(context.getUsedPlugin(), "error.internal", "Queried for unknown app as observer with name '"+app.toString()+"'.");
+					 else {
+						 Stats.addComment("Queried for unknown app as observer with name '"+app.toString()+"'.");
+					 }
 				 } else resolved.add(app.toString());
 			 }
 			 properties.put("observer", resolved);
