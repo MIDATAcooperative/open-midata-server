@@ -44,28 +44,33 @@ private static ActorSystem system;
 	public static void init(WSClient ws1, ActorSystem system1) {
 		system = system1;	
 		ws = ws1;
-								
-		ActorRef localBuildContainer = system.actorOf(Props.create(FirejailBuildContainer.class).withDispatcher("pinned-dispatcher"), "pluginBuilder");
-		ActorRef localCDNContainer = system.actorOf(Props.create(FilesystemCDNContainer.class).withDispatcher("pinned-dispatcher"), "pluginCDN");
-		ActorRef localScriptContainer = system.actorOf(Props.create(FirejailScriptContainer.class).withDispatcher("pinned-dispatcher"), "pluginScripts");
 		
-		ActorRef globalCDNContainer = system.actorOf(MultiServerContainer.props(MultiServerContainer.class, localCDNContainer), "globalCDN");
-		ActorRef globalScriptContainer = system.actorOf(MultiServerContainer.props(MultiServerContainer.class, localScriptContainer), "globalScripts");
-		
-		deployer = system.actorOf(DeployCoordinator.props(localBuildContainer, globalScriptContainer, globalCDNContainer).withDispatcher("medium-work-dispatcher"), "pluginDeployment");
-		
-		/*final ClusterSingletonManagerSettings settings =
-				  ClusterSingletonManagerSettings.create(Instances.system());
-	
-		
-		ActorRef deployerSingleton = Instances.system().actorOf(ClusterSingletonManager.props(DeployCoordinator.props(localBuildContainer, globalScriptContainer, globalCDNContainer).withDispatcher("medium-work-dispatcher"), PoisonPill.getInstance(),
-				settings), "deployer");
-		
-		final ClusterSingletonProxySettings proxySettings =
-			    ClusterSingletonProxySettings.create(Instances.system());
-		
-		deployer = Instances.system().actorOf(ClusterSingletonProxy.props("/user/deployer", proxySettings).withDispatcher("medium-work-dispatcher"), "deployer-Consumer");			
-			*/   		
+		ActorRef buildContainer = null;
+		ActorRef CDNContainer = null;
+		ActorRef scriptContainer = null;
+				
+	    if (InstanceConfig.getInstance().getInternalBuilderUrl()!=null) {
+	    	buildContainer = system.actorOf(Props.create(ExternBuildContainer.class).withDispatcher("pinned-dispatcher"), "pluginBuilder");
+	    } else {
+	    	buildContainer = system.actorOf(Props.create(FirejailBuildContainer.class).withDispatcher("pinned-dispatcher"), "pluginBuilder");	
+	    }
+
+	    if (InstanceConfig.getInstance().getInternalCDNUrl()!=null) {
+	    	CDNContainer = system.actorOf(Props.create(ExternCDNContainer.class).withDispatcher("pinned-dispatcher"), "pluginCDN");
+	    } else {
+	    	ActorRef localCDNContainer = system.actorOf(Props.create(FilesystemCDNContainer.class).withDispatcher("pinned-dispatcher"), "pluginCDN");
+	    	CDNContainer = system.actorOf(MultiServerContainer.props(MultiServerContainer.class, localCDNContainer), "globalCDN");
+	    }
+
+	    if (InstanceConfig.getInstance().getInternalScriptingUrl()!=null) {
+	    	scriptContainer = system.actorOf(Props.create(ExternScriptContainer.class).withDispatcher("pinned-dispatcher"), "pluginScripts");
+	    } else {
+	    	ActorRef localScriptContainer = system.actorOf(Props.create(FirejailScriptContainer.class).withDispatcher("pinned-dispatcher"), "pluginScripts");
+	    	scriptContainer = system.actorOf(MultiServerContainer.props(MultiServerContainer.class, localScriptContainer), "globalScripts");
+	    }
+										
+		deployer = system.actorOf(DeployCoordinator.props(buildContainer, scriptContainer, CDNContainer).withDispatcher("medium-work-dispatcher"), "pluginDeployment");
+					
 	}
 	
 	public static WSClient getWsClient() {

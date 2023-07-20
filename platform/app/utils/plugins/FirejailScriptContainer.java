@@ -35,7 +35,7 @@ import utils.InstanceConfig;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class FirejailScriptContainer extends AbstractScriptContainer {
+public class FirejailScriptContainer extends AbstractLocalContainer {
 
 	 private String globalBaseDirectory;
 		

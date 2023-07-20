@@ -42,7 +42,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.stats.ActionRecorder;
 
-public class FirejailBuildContainer extends AbstractBuildContainer {
+public class FirejailBuildContainer extends AbstractLocalContainer {
 
 		
 	private String globalBuildBaseDirectory;
