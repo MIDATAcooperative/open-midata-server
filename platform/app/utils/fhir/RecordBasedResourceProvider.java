@@ -38,9 +38,11 @@ import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Base64BinaryType;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Reference;
 
 import com.mongodb.BasicDBObject;
 
@@ -486,17 +488,28 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public void processResource(Record record, T resource) throws AppException {
 		resource.setId(new IdType(resource.fhirType(), record._id.toString(), record.version));
 		resource.getMeta().setVersionId(record.version);
-		if (record.lastUpdated == null) resource.getMeta().setLastUpdated(record.created);
-		else resource.getMeta().setLastUpdated(record.lastUpdated);
 		
 		Extension meta = new Extension("http://midata.coop/extensions/metadata");
 		
+		if (record.lastUpdated == null || record.lastUpdated.equals(record.created)) {
+			resource.getMeta().setLastUpdated(record.created);
+		} else {
+			resource.getMeta().setLastUpdated(record.lastUpdated);
+			meta.addExtension("createdAt", new DateTimeType(record.created));
+		}
+						
 		if (record.app != null) {
 		  Plugin creatorApp = Plugin.getById(record.app);		
 		  if (creatorApp != null) meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
-		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToCreator(record));
-		if (record.modifiedBy != null && !record.version.equals("0")) meta.addExtension("modifiedBy", FHIRTools.getReferenceToModifiedBy(record));
+		if (record.creator != null) {
+			Reference creatorRef = FHIRTools.getReferenceToCreator(record);
+			if (creatorRef != null) meta.addExtension("creator", creatorRef);
+		}
+		if (record.modifiedBy != null && !record.version.equals("0")) {
+			Reference modifiedByRef = FHIRTools.getReferenceToModifiedBy(record);
+			if (modifiedByRef != null) meta.addExtension("modifiedBy", modifiedByRef);
+		}
 				
 		resource.getMeta().addExtension(meta);
 		processAttachments(record, resource);

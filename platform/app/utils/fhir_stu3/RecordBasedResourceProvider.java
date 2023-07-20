@@ -39,9 +39,11 @@ import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
+import org.hl7.fhir.dstu3.model.DateTimeType;
 
 import com.mongodb.BasicDBObject;
 
+import ca.uhn.fhir.model.primitive.DateTimeDt;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.History;
@@ -355,10 +357,15 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public void processResource(Record record, T resource) throws AppException {
 		resource.setId(new IdType(resource.fhirType(), record._id.toString(), record.version));
 		resource.getMeta().setVersionId(record.version);
-		if (record.lastUpdated == null) resource.getMeta().setLastUpdated(record.created);
-		else resource.getMeta().setLastUpdated(record.lastUpdated);
 		
-		Extension meta = new Extension("http://midata.coop/extensions/metadata");
+        Extension meta = new Extension("http://midata.coop/extensions/metadata");
+		
+		if (record.lastUpdated == null || record.lastUpdated.equals(record.created)) {
+			resource.getMeta().setLastUpdated(record.created);
+		} else {
+			resource.getMeta().setLastUpdated(record.lastUpdated);
+			meta.addExtension("createdAt", new DateTimeType(record.created));
+		}
 		
 		if (record.app != null) {
 		  Plugin creatorApp = Plugin.getById(record.app);		
