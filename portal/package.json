@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:server": "webpack-dev-server --open --config webpack.development.config.js",
-    "dev:box": "webpack-dev-server --open --config webpack.development.config.js --host 0.0.0.0 --port 9002 --no-https",
+    "dev:box": "webpack-dev-server --open --config webpack.cnt.config.js --host 0.0.0.0 --port 9002 --client-web-socket-url ws://127.0.0.1:9002/ws --no-https --no-devtool",
     "dev:build": "webpack --config webpack.development.config.js",
     "build": "webpack --config webpack.production.config.js",
     "prod:build": "webpack --config webpack.production.config.js",
