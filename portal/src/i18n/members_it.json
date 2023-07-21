@@ -43,7 +43,7 @@
 
     "accountdata" : {
         "midata_id" : "@PRODUCT ID:",
-        "birthday" : "Compleanno:",
+        "birthday" : "Data di nascita:",
         "change_btn" : "Modifica"
     },
 

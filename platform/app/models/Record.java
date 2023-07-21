@@ -211,6 +211,9 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	
 	public AccessContext context;
 	
+	public @NotMaterialized Object mapped;
+		
+	
 	//public Set<MidataId> dependencies;
 
 	@Override

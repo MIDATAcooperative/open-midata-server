@@ -88,6 +88,7 @@ import models.MemberKey;
 import models.MidataId;
 import models.Plugin;
 import models.Record;
+import models.RecordWithMeta;
 import models.Study;
 import models.StudyAppLink;
 import models.StudyParticipation;
@@ -119,6 +120,7 @@ import utils.RuntimeConstants;
 import utils.access.DBIterator;
 import utils.access.Feature_Pseudonymization;
 import utils.access.RecordManager;
+import utils.access.VersionedDBRecord;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditHeaderTool;
 import utils.audit.AuditManager;
@@ -155,7 +157,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	public Patient getResourceById(@IdParam IIdType theId) throws AppException {
 
 		String id = theId.getIdPart();
-		MidataId targetId = new MidataId(id);
+		MidataId targetId = MidataId.parse(id);
 
 		AccessContext info = info();
 		List<Record> allRecs = RecordManager.instance.list(info.getAccessorRole(), info, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
@@ -175,7 +177,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	
 	
 	@Override
-	public Record fetchCurrent(IIdType theId, Patient theResource)  {
+	public Record fetchCurrent(IIdType theId, Patient theResource, boolean versioned)  {
 		try {
 			if (theId == null) throw new UnprocessableEntityException("id missing");
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
@@ -183,7 +185,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			
 			AccessContext info = info();
 			MidataId targetId = MidataId.from(theId.getIdPart());
-			List<Record> allRecs = RecordManager.instance.list(info.getAccessorRole(), info, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
+			String version = versioned ? theId.getVersionIdPart() : null;
+			List<Record> allRecs = RecordManager.instance.list(info.getAccessorRole(), info, CMaps.map("owner", targetId).map("format", "fhir/Patient").mapNotEmpty("version", version).map("data", CMaps.map("id", targetId.toString())),
 					RecordManager.COMPLETE_DATA);
 
 			if (allRecs == null || allRecs.size() == 0)
@@ -214,12 +217,14 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	@History()
 	@Override
-	public List<Patient> getHistory(@IdParam IIdType theId) throws AppException {
+	public List<Patient> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
+		Integer count = (theCount != null) ? theCount : 2000;
+		
 		String id = theId.getIdPart();
 		MidataId targetId = new MidataId(id);
 
 		List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(),
-				CMaps.map("owner", targetId).map("format", "fhir/Patient").map("history", true).map("sort", "lastUpdated desc"), RecordManager.COMPLETE_DATA);
+				CMaps.map("owner", targetId).map("format", "fhir/Patient").map("history", true).map("sort", "lastUpdated desc").mapNotEmpty("limit", count), RecordManager.COMPLETE_DATA);
 		if (records.isEmpty())
 			throw new ResourceNotFoundException(theId);
 
@@ -551,6 +556,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (record.name == null || record.name.length() == 0)
 			record.name = thePatient.getName().get(0).getText();
 		thePatient.getMeta().setExtension(null);
+		addSecurityTag(record, thePatient, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 	}
 
 	public void processResource(Record record, Patient resource) throws AppException {
@@ -565,6 +571,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		  List<Study> studies = AccountManagementTools.determineProjectsFromUsedApp(info(), info().getLegacyOwner().equals(record.owner));
 		  populateIdentifiers(record.owner, resource, studies);		  		 
 		}
+		
+		addSecurityTag(record, resource, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 					
 	}
 	
@@ -649,58 +657,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	@Override
 	public void createPrepare(Record record, Patient thePatient) throws AppException {
-		if (!thePatient.hasName()) throw new UnprocessableEntityException("Name required for patient");
-		boolean nameFound = false;
-		for (HumanName name : thePatient.getName()) {
-			if (name.getPeriod() == null || !name.getPeriod().hasEnd()) {
-				if (name.getGivenAsSingleString()!=null && 
-					name.getGivenAsSingleString().trim().length()>0 &&
-					name.getFamily()!=null &&
-					name.getFamily().trim().length()>0) nameFound = true;
-				
-			}
-		}
-		if (!nameFound) throw new UnprocessableEntityException("Name required for patient");
-		if (!thePatient.hasGender()) throw new UnprocessableEntityException("Gender required for patient");
-		if (!thePatient.hasBirthDate()) throw new UnprocessableEntityException("Birth date required for patient");
-		if (!thePatient.hasAddress()) throw new UnprocessableEntityException("Country required for patient");
-		
-		// At least email or full address required
-		boolean foundMinimal = false;
-		boolean foundCountry = false;
-		for (ContactPoint point : thePatient.getTelecom()) {
-			if (!point.hasPeriod() || !point.getPeriod().hasEnd()) {
-				if (point.hasValue()) {
-					if (ContactPointSystem.EMAIL.equals(point.getSystem())) {
-						foundMinimal = true;
-						String mail = point.getValue();
-						if (mail.indexOf("@")<=0) throw new UnprocessableEntityException("Valid email address required.");
-					} /*else if (ContactPointSystem.PHONE.equals(point.getSystem())) {
-						foundMinimal = true;
-					} else if (ContactPointSystem.SMS.equals(point.getSystem())) {
-						foundMinimal = true;
-					}*/
-				}
-			}
-		}
 	
-		for (Address address : thePatient.getAddress()) {
-			if (!address.hasPeriod() || !address.getPeriod().hasEnd()) {
-				if (address.hasPostalCode() && address.hasLine()) {
-					foundMinimal = true;
-				}
-				if (address.hasCountry()) foundCountry = true;
-			}
-		}
-		if (!foundMinimal) throw new UnprocessableEntityException("Email or complete address required for account creation.");
-		if (!foundCountry) throw new UnprocessableEntityException("Country required for patient");
-		
-		for (Identifier identifier : thePatient.getIdentifier()) {
-			if ("http://midata.coop/identifier/patient-login".equals(identifier.getSystem()) && identifier.hasValue()) {
-				if (identifier.getValue().indexOf("@")<=0) throw new UnprocessableEntityException("Email must be valid."); 
-			}
-		}	
-		
 		super.createPrepare(record, thePatient);
 	}
 
@@ -806,20 +763,22 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		AccessContext info = info();				
 		AccessContext tempContext = info();
 				
-		// Prepare a new user based on the FHIR resource
-		FHIRPatientHolder fhirPatient = new FHIRPatientHolderR4(thePatient);		
+		// Prepare a new user based on the FHIR resource			
 		Member user = buildMemberFromPatient(thePatient);
 		user.initialApp = info().getUsedPlugin();
 	
 		AccountManagementTools.validateUserAccountFilledOut(user);
-			
+	
+		// Is there already a matching user account?
+		Member existing = AccountManagementTools.checkNoExistingConsents(info(), ((RecordWithMeta) record).attached);
+					
+		FHIRPatientHolder fhirPatient = new FHIRPatientHolderR4(thePatient);
+		
 		// Determine projects the given user should participate in
         Set<MidataId> projectsToParticipate = AccountManagementTools.getProjectIdsFromPatient(fhirPatient);					
 		thePatient.getExtension().clear();		
 		
-        // Is there already a matching user account?
-		Member existing = AccountManagementTools.checkNoExistingConsents(info(), AccountManagementTools.identifyExistingAccount(info, user));
-		
+     	
 		// If no user is existing, create a new user		
 		if (existing == null) {
 
@@ -889,5 +848,99 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		// Nothing to do
 		
 	}
+
+	@Override
+	public Record init(Patient thePatient) throws AppException {
+		RecordWithMeta record = new RecordWithMeta();
+		record._id = new MidataId();
+		record.creator = info().getActor();
+		record.modifiedBy = record.creator;
+		record.format = getRecordFormat();
+		record.app = info().getUsedPlugin();
+		record.created = record._id.getCreationDate();
+		record.code = new HashSet<String>();
+		record.owner = info().getLegacyOwner();
+		record.version = VersionedDBRecord.INITIAL_VERSION;
+		
+		if (!thePatient.hasName()) throw new UnprocessableEntityException("Name required for patient");
+		boolean nameFound = false;
+		for (HumanName name : thePatient.getName()) {
+			if (name.getPeriod() == null || !name.getPeriod().hasEnd()) {
+				if (name.getGivenAsSingleString()!=null && 
+					name.getGivenAsSingleString().trim().length()>0 &&
+					name.getFamily()!=null &&
+					name.getFamily().trim().length()>0) nameFound = true;
+				
+			}
+		}
+		if (!nameFound) throw new UnprocessableEntityException("Name required for patient");
+		if (!thePatient.hasGender()) throw new UnprocessableEntityException("Gender required for patient");
+		if (!thePatient.hasBirthDate()) throw new UnprocessableEntityException("Birth date required for patient");
+		if (!thePatient.hasAddress()) throw new UnprocessableEntityException("Country required for patient");
+		
+		// At least email or full address required
+		boolean foundMinimal = false;
+		boolean foundCountry = false;
+		for (ContactPoint point : thePatient.getTelecom()) {
+			if (!point.hasPeriod() || !point.getPeriod().hasEnd()) {
+				if (point.hasValue()) {
+					if (ContactPointSystem.EMAIL.equals(point.getSystem())) {
+						foundMinimal = true;
+						String mail = point.getValue();
+						if (mail.indexOf("@")<=0) throw new UnprocessableEntityException("Valid email address required.");
+					} /*else if (ContactPointSystem.PHONE.equals(point.getSystem())) {
+						foundMinimal = true;
+					} else if (ContactPointSystem.SMS.equals(point.getSystem())) {
+						foundMinimal = true;
+					}*/
+				}
+			}
+		}
+	
+		for (Address address : thePatient.getAddress()) {
+			if (!address.hasPeriod() || !address.getPeriod().hasEnd()) {
+				if (address.hasPostalCode() && address.hasLine()) {
+					foundMinimal = true;
+				}
+				if (address.hasCountry()) foundCountry = true;
+			}
+		}
+		if (!foundMinimal) throw new UnprocessableEntityException("Email or complete address required for account creation.");
+		if (!foundCountry) throw new UnprocessableEntityException("Country required for patient");
+		
+		for (Identifier identifier : thePatient.getIdentifier()) {
+			if ("http://midata.coop/identifier/patient-login".equals(identifier.getSystem()) && identifier.hasValue()) {
+				if (identifier.getValue().indexOf("@")<=0) throw new UnprocessableEntityException("Email must be valid."); 
+			}
+		}	
+		
+		// Prepare a new user based on the FHIR resource			
+		Member user = buildMemberFromPatient(thePatient);
+		user.initialApp = info().getUsedPlugin();
+	
+		AccountManagementTools.validateUserAccountFilledOut(user);
+	
+		// Is there already a matching user account?
+		Member existing = AccountManagementTools.identifyExistingAccount(info(), user);
+		
+		if (existing != null) {
+			record._id = existing._id;
+			record.attached = existing;
+		}
+		
+		return record;
+		
+		
+	}
+
+	// Early processing
+	@Override
+	protected int getProcessingOrder() {
+		return 1;
+	}
+	
+	
+	
+	
 
 }

@@ -75,6 +75,7 @@ import models.enums.ConsentStatus;
 import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.QueryTagTools;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -107,7 +108,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	@Read()
 	public Group getResourceById(@IdParam IIdType theId) throws AppException {
 		if (checkAccessible()) {
-			UserGroup group = UserGroup.getById(MidataId.from(theId.getIdPart()), UserGroup.FHIR);	
+			UserGroup group = UserGroup.getById(MidataId.parse(theId.getIdPart()), UserGroup.FHIR);	
 			if (group != null) return readGroupFromMidataUserGroup(group, true);
 		}
 		return super.getResourceById(theId);		
@@ -115,7 +116,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	
     @History()
     @Override
-	public List<Group> getHistory(@IdParam IIdType theId) throws AppException {
+	public List<Group> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
     	throw new ResourceNotFoundException("No history kept for Group resource"); 
     }
     
@@ -130,7 +131,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 		IParser parser = ctx().newJsonParser();
 		//AccessLog.log(groupToConvert.fhirGroup.toString());
 		Group p = parser.parseResource(getResourceType(), groupToConvert.fhirGroup.toString());
-				
+	    addSecurityTag(p, QueryTagTools.SECURITY_PLATFORM_MAPPED);	
 		if (addMembers) {
 			Set<UserGroupMember> members = UserGroups.listUserGroupMembers(groupToConvert._id);
 			for (UserGroupMember member : members) {

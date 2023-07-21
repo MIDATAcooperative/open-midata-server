@@ -49,6 +49,7 @@ import models.enums.AuditEventType;
 import models.enums.Gender;
 import models.enums.UserRole;
 import utils.AccessLog;
+import utils.QueryTagTools;
 import utils.RuntimeConstants;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
@@ -81,7 +82,7 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	@Read()
 	public Person getResourceById(@IdParam IIdType theId) throws AppException {
 		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
-		User member = User.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
+		User member = User.getById(MidataId.parse(theId.getIdPart()), User.ALL_USER);	
 		if (member == null) return null;
 		return personFromMidataUser(member);
 	}		
@@ -95,6 +96,7 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	public Person personFromMidataUser(User userToConvert) throws AppException {
 		Person p = new Person();
 		p.setId(userToConvert._id.toString());
+		addSecurityTag(p, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		
 		if (userToConvert.searchable || userToConvert._id.equals(info().getAccessor())) {
 			p.addName().setFamily(userToConvert.lastname).addGiven(userToConvert.firstname);
@@ -283,8 +285,8 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 	} 	
 
 	@Override
-	public User fetchCurrent(IIdType theId, Person p) throws AppException {
-		return User.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);
+	public User fetchCurrent(IIdType theId, Person p, boolean versioned) throws AppException {
+		return User.getById(MidataId.parse(theId.getIdPart()), User.ALL_USER);
 	}
 
 	@Override

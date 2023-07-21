@@ -27,11 +27,17 @@ import play.libs.ws.WSClient;
 public class SMSUtils {
 
 	private SMSProvider smsClient;
-	
+	private SMSProvider smsAltClient;	
 	
 	@Inject
 	public SMSUtils(SMSProvider smsClient) {
-		this.smsClient = smsClient;		
+		this.smsClient = smsClient;	
+		this.smsAltClient = smsClient;
+	}
+	
+	public SMSUtils(SMSProvider smsClient, SMSProvider smsAltClient) {
+		this.smsClient = smsClient;	
+		this.smsAltClient = smsAltClient;
 	}
 	
 	private static SMSUtils instance;
@@ -51,6 +57,15 @@ public class SMSUtils {
 			  String clientsecret = token.substring(p+1);
 			  instance = new SMSUtils(new SMSSwisscomProvider(ws, clientid, clientsecret, config.getString("sms.from")));
 			}
+		} else if (provider.equals("swisscom+smsapi")) {
+			String token = config.getString("sms.token");
+			if (token != null && token.length()>0 && !token.equals("SMS_OAUTH_TOKEN")) {
+			  String[] parts = token.split(":");			                 			  
+			  instance = new SMSUtils(
+					  new SMSSwisscomProvider(ws, parts[0], parts[1], config.getString("sms.from")),
+					  new SMSAPIProvider(ws, parts[2], config.getString("sms.from"))
+			  );
+			}
 		}
 	}
 	
@@ -60,7 +75,12 @@ public class SMSUtils {
 	
 	public static void sendSMS(String phone, String text) {
 		if (instance == null) throw new NullPointerException("SMSUtils not initialized");
-		instance.smsClient.sendSMS(normalizePhone(phone), text);
+		phone = normalizePhone(phone);
+		if (phone.startsWith("0041")) {
+		   instance.smsClient.sendSMS(normalizePhone(phone), text);
+		} else {
+		   instance.smsAltClient.sendSMS(normalizePhone(phone), text);
+		}
 	}
 	
 	public static String normalizePhone(String phone) {

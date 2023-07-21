@@ -47,6 +47,7 @@ import models.MidataId;
 import models.User;
 import models.enums.Gender;
 import models.enums.UserRole;
+import utils.QueryTagTools;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -71,7 +72,7 @@ public class MidataPractitionerResourceProvider extends ResourceProvider<Practit
 	@Read()
 	public Practitioner getResourceById(@IdParam IIdType theId) throws AppException {
 		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
-		HPUser member = HPUser.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
+		HPUser member = HPUser.getById(MidataId.parse(theId.getIdPart()), User.ALL_USER);	
 		if (member == null) return null;
 		return practitionerFromMidataUser(member);
 	}
@@ -99,6 +100,7 @@ public class MidataPractitionerResourceProvider extends ResourceProvider<Practit
 		p.addAddress().setCity(userToConvert.city).setCountry(userToConvert.country).setPostalCode(userToConvert.zip).addLine(userToConvert.address1).addLine(userToConvert.address2);
 			
 		p.getMeta().addSecurity("http://midata.coop/codesystems/security", "generated", "Generated Resource");
+		p.getMeta().addSecurity("http://midata.coop/codesystems/security", "platform-mapped", "Platform mapped");
 		return p;
 	}
 	
@@ -143,13 +145,13 @@ public class MidataPractitionerResourceProvider extends ResourceProvider<Practit
  
 	
 	@Override
-	public User fetchCurrent(IIdType theId, Practitioner r) throws AppException {
-		return HPUser.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
+	public User fetchCurrent(IIdType theId, Practitioner r, boolean versioned) throws AppException {
+		return HPUser.getById(MidataId.parse(theId.getIdPart()), User.ALL_USER);	
 	}
 
 	@Override
 	public void processResource(User record, Practitioner resource) throws AppException {
-		
+		addSecurityTag(resource, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		
 	}
 

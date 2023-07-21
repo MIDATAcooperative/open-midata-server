@@ -32,6 +32,8 @@ import models.MidataId;
 import models.StudyRelated;
 import models.UserGroupMember;
 import models.enums.APSSecurityLevel;
+import models.enums.EntityType;
+import models.enums.Permission;
 import utils.AccessLog;
 import utils.access.index.ConsentToKeyIndexRoot;
 import utils.access.index.StatsIndexRoot;
@@ -262,11 +264,73 @@ public class APSCache {
 	}
 	
 	public Set<UserGroupMember> getAllActiveByMember() throws InternalServerException {
-		if (userGroupMember != null) return userGroupMember;
-		
-		userGroupMember = UserGroupMember.getAllActiveByMember(getAccountOwner());
+		if (userGroupMember != null) return userGroupMember;		
+		userGroupMember = getAllActiveByMember(new HashSet<MidataId>(), Collections.singleton(getAccountOwner()));						
 		return userGroupMember;
 	}
+	
+	private Set<UserGroupMember> getAllActiveByMember(Set<MidataId> alreadyFound, Set<MidataId> members) throws InternalServerException {
+		Set<UserGroupMember> results = UserGroupMember.getAllActiveByMember(members);
+		Set<MidataId> recursion = new HashSet<MidataId>();
+		for (UserGroupMember ugm : results) {
+			if (!alreadyFound.contains(ugm.userGroup)) {
+				recursion.add(ugm.userGroup);
+				alreadyFound.add(ugm.userGroup);
+			}
+		}
+		if (!recursion.isEmpty()) {
+			Set<UserGroupMember> inner = getAllActiveByMember(alreadyFound, recursion);
+			results.addAll(inner);
+		}
+		return results;
+	}
+	
+	public List<UserGroupMember> getByGroupAndActiveMember(UserGroupMember ugm, MidataId member, Permission permission) throws InternalServerException {
+		if (ugm.member.equals(member) && ugm.getRole().may(permission)) return Collections.singletonList(ugm);
+		return getByGroupAndActiveMember(ugm.userGroup, member, permission);
+	}
+	
+	public List<UserGroupMember> getByGroupAndActiveMember(MidataId userGroup, MidataId member, Permission permission) throws InternalServerException {
+		if (userGroupMember == null && member.equals(getAccountOwner())) {
+			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndActiveMember(userGroup, member);
+			if (isMemberOfGroup != null && isMemberOfGroup.getRole().may(permission)) return Collections.singletonList(isMemberOfGroup);
+		}
+		
+		List<UserGroupMember> result = new ArrayList<UserGroupMember>();
+		Set<MidataId> tested = new HashSet<MidataId>();
+		if (getByGroupAndActiveMember(tested, result, userGroup, member, permission)) {
+			AccessLog.log("getByGroupAndActiveMember grp=",userGroup.toString()," permission=",permission.toString()," tested=",tested.toString()," r=true");
+			return result;
+		} else {
+			AccessLog.log("getByGroupAndActiveMember grp=",userGroup.toString()," permission=",permission.toString()," tested=",tested.toString()," r=false");
+			return null;
+		}
+
+	}
+	
+	private boolean getByGroupAndActiveMember(Set<MidataId> tested, List<UserGroupMember> result, MidataId userGroup, MidataId member, Permission permission) throws InternalServerException  {		
+	    Set<UserGroupMember> all = getAllActiveByMember();
+	    for (UserGroupMember ugm : all) {
+	    	if (tested.contains(ugm._id)) continue;	    	
+	    	
+	    	if (ugm.userGroup.equals(userGroup)) {
+	    		tested.add(ugm._id);
+	    		
+	    		if (ugm.member.equals(member) && ugm.getRole().may(permission)) {
+	    			result.add(ugm);
+	    			return true;
+	    		} else if (ugm.entityType == EntityType.USERGROUP || ugm.entityType == EntityType.ORGANIZATION) {
+		    	   if (ugm.getRole().may(permission) && getByGroupAndActiveMember(tested, result, ugm.member, member, permission)) {
+		    		   result.add(ugm);		    		   
+		    		   return true;
+		    	   }
+		    	}
+	    	} 
+	    }	    
+	    return false;
+	}
+	
+	
 	
 	public Collection<Consent> getAllActiveConsentsByAuthorized(long limit) throws InternalServerException {
 		if (consentLimit != -1 && limit >= consentLimit) {

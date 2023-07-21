@@ -34,7 +34,7 @@
             "name" : "Istanza di test",
             "intro" : "Questa è un'istanza di test di @PLATFORM.",
             "purpose" : "Questa istanza può essere utilizzata per sviluppare e testare nuove applicazioni in un ambiente sicuro. È inoltre utilizzata per testare nuove versioni del portale e il backend prima che altre istanze siano aggiornate.",
-            "access" : "Registrare il proprio account di sviluppatore. Dopo la convalida di un amministratore, è possibile registrare utenti di test, ricercatori e fornitori di prestazioni sanitarie senza un'ulteriore convalida.",
+            "access" : "Registrare il proprio account di sviluppatore. Dopo la convalida di un amministratore, è possibile registrare utenti di test, ricercatori e professionisti sanitari senza un'ulteriore convalida.",
             "uptime" : "La disponibilità non è garantita. Attendere che gli aggiornamenti dell'istanza avvengano secondo le esigenze. Ove possibile, gli aggiornamenti sono eseguiti tra le 12:00 e le 13:00 ora dell'Europa centrale, tuttavia potrebbero avvenire più di una volta al giorno se si verificano dei problemi.",
             "data" : "Su questa istanza memorizzare solo dati di test. Se necessario, i dati possono essere rimossi e gli account eliminati. I record potrebbero danneggiarsi a causa di anomalie. Non esiste un backup dei dati."
         },

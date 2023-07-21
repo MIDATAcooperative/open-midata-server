@@ -258,7 +258,9 @@
         "terms_of_use_hint" : "Wenn die Allgemeine Geschäftsbedingungen des Projektes vom Benutzer gelesen und akzeptiert werden müssen, bitte senden Sie den Text an einen Plattformadministrator. Wir werden den Text im richtigen Format hochladen und Ihnen die ID mitteilen, die Sie hier eingeben müssen.",
         "consent_observers" : "Externe Zustimmungs-Observers",
         "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",
-        "requirements" : "Anforderungen"
+        "requirements" : "Anforderungen",
+        "security" : "Sicherheit",
+        "forceClientCertificate" : "Verwendung von Client-Zertifikaten für Projektanalysatoren erzwingen"
     },
 
     "addresearcher" : {
@@ -289,7 +291,8 @@
             "changeTeam" : "Team ändern",
             "auditLog" : "Audit Log anschauen",
             "participants" : "Teilnehmer verwalten",
-            "setup" : "Einrichtung des Projektes"
+            "setup" : "Einrichtung des Projektes",
+            "applications" : "Verknüpfte Applikationen verwalten"
         }
     },
 

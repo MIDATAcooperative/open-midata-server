@@ -45,6 +45,7 @@ import models.TypedMidataId;
 import models.User;
 import models.UserGroup;
 import models.enums.UserRole;
+import models.enums.UserStatus;
 import utils.RuntimeConstants;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -132,6 +133,7 @@ public class FHIRTools {
 		case PROVIDER : type = "Practitioner";break;
 		case RESEARCH : type = "Practitioner";break;
 		}
+		if (user.status.isDeleted()) return new Reference().setReference(type+"/"+user._id.toString());
 		return new Reference().setDisplay(user.firstname+" "+user.lastname).setReference(type+"/"+user._id.toString());		
 	}
 	

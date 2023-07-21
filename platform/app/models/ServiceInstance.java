@@ -33,7 +33,7 @@ public class ServiceInstance extends Model {
 	private static final String collection = "serviceinstances";
 	
 	public @NotMaterialized final static Set<String> ALL = 
-			 Sets.create("_id", "name", "endpoint", "appId", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey", "studyRelatedOnly", "status");
+			 Sets.create("_id", "name", "endpoint", "appId", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey", "studyRelatedOnly", "restrictReadToGroup", "status");
    
 	public @NotMaterialized final static Set<String> LIMITED = 
 			 Sets.create("_id", "name", "endpoint", "appId", "linkedStudy", "managerAccount","status");
@@ -72,6 +72,8 @@ public class ServiceInstance extends Model {
     
     
     public boolean studyRelatedOnly;
+    
+    public boolean restrictReadToGroup;
         
     /**
      * if of user who manages this service instance

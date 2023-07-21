@@ -34,6 +34,8 @@ public class AuditExtraInfo {
 	String purposeCoding;
 	String purposeName;
 	
+	String externalUser;
+	
 	public boolean isUsed() {
 		return practitionerReference != null
 				|| practitionerName != null
@@ -75,6 +77,14 @@ public class AuditExtraInfo {
 
 	public String getPurposeName() {
 		return purposeName;
+	}
+	
+	public void setExternalUser(String name) {
+		externalUser = name;
+	}
+	
+	public String getExternalUser() {
+		return externalUser;
 	}
 	
 	

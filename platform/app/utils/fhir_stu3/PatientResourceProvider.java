@@ -212,7 +212,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		MidataId targetId = new MidataId(id);
 
 		List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(),
-				CMaps.map("owner", targetId).map("format", "fhir/Patient").map("history", true).map("sort", "lastUpdated desc"), RecordManager.COMPLETE_DATA);
+				CMaps.map("owner", targetId).map("format", "fhir/Patient").map("history", true).map("sort", "lastUpdated desc").map("limit",2000), RecordManager.COMPLETE_DATA);
 		if (records.isEmpty())
 			throw new ResourceNotFoundException(theId);
 

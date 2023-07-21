@@ -220,13 +220,16 @@ public class SubscriptionProcessor extends AbstractActor {
 		Map<String,String> replacements = new HashMap<String, String>();
 		if (triggered.getParams()!=null) replacements.putAll(triggered.getParams());
 		AccessLog.log("process email type="+triggered.getType()+"  "+triggered.getEventCode());
+		Set targets = Collections.singleton(subscription.owner);
+		String endpoint = channel.getEndpoint();
+		if (endpoint!=null && endpoint.trim().length()>0) targets = Collections.singleton(endpoint); 
 		if (triggered.getType().equals("fhir/MessageHeader")) {
 		  String ev = triggered.getEventCode();
 		  //if (ev.indexOf(":")>=0) ev = ev.substring(0,ev.indexOf(":"));
 		  AccessLog.log("send ev="+ev+" ow="+subscription.owner+" app="+subscription.app);		  
-		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, Collections.singleton(subscription.owner), null, replacements);			
+		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, targets, null, replacements);			
 		} else {
-		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), Collections.singleton(subscription.owner), null, replacements);
+		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), targets, null, replacements);
 		}
 		getSender().tell(new MessageResponse(null,0,"internal:mail"), getSelf());
 	}
@@ -235,12 +238,15 @@ public class SubscriptionProcessor extends AbstractActor {
 		Map<String,String> replacements = new HashMap<String, String>();
 		if (triggered.getParams()!=null) replacements.putAll(triggered.getParams());
 		AccessLog.log("process sms type="+triggered.getType()+"  "+triggered.getEventCode());
+		Set targets = Collections.singleton(subscription.owner);
+		String endpoint = channel.getEndpoint();
+		if (endpoint!=null && endpoint.trim().length()>0) targets = Collections.singleton(endpoint); 
 		if (triggered.getType().equals("fhir/MessageHeader")) {
 		  String ev = triggered.getEventCode();
-		  if (ev.indexOf(":")>=0) ev = ev.substring(0,ev.indexOf(":"));
-		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, Collections.singleton(subscription.owner), null, replacements, MessageChannel.SMS);			
+		  //if (ev.indexOf(":")>=0) ev = ev.substring(0,ev.indexOf(":"));
+		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, targets, null, replacements, MessageChannel.SMS);			
 		} else {
-		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), Collections.singleton(subscription.owner), null, replacements, MessageChannel.SMS);
+		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), targets, null, replacements, MessageChannel.SMS);
 		}
 		getSender().tell(new MessageResponse(null,0,"internal:sms"), getSelf());
 	}
@@ -316,6 +322,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
 			
 			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
+			
 		} else if (plugin.type.equals("oauth2")) {
 			System.out.println("NEW OAUTH2 - 1");
 			try {
@@ -369,7 +376,67 @@ public class SubscriptionProcessor extends AbstractActor {
 		}
 	}	
 	
+	private void runProcessExternal(ActorRef sender, Plugin plugin, SubscriptionTriggered triggered, SubscriptionData subscription, User user, String token, String endpoint) {
+  		String type = triggered.getType();
+		if (type.startsWith("fhir/")) type = type.substring("fhir/".length());
+	
+	   final String lang = (user != null && user.language != null) ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
+	   final String id = triggered.getResourceId() != null ? type+"/"+triggered.getResourceId().toString()+"/_history/"+triggered.resourceVersion : "-";
+	   WSRequest request = SubscriptionManager.ws.url(InstanceConfig.getInstance().getInternalScriptingUrl());
+	   
+	   request.addQueryParameter("token", token);
+	   request.addQueryParameter("lang", lang);
+	   request.addQueryParameter("backend", "http://localhost:9001");
+	   request.addQueryParameter("owner", subscription.owner.toString());
+	   request.addQueryParameter("id", id);
+	   		   
+	   AccessLog.log("Calling Rest Hook");
+	   //final MidataId eventId = AuditManager.instance.convertLastEventToAsync();
+	   CompletionStage<WSResponse> response = request.execute("POST");
+	   response.whenComplete((out, exception) -> {
+		   
+		   String error = null;
+		   if (out != null && out.getStatus() >= 400) {
+			   error = "status "+out.getStatus();
+		   }
+		   if (exception != null) {
+			   if (exception instanceof CompletionException) exception = exception.getCause();
+			   error = exception.toString();
+		   }
+		   
+		   if (error != null) {
+			   try {
+				   SubscriptionData.setError(subscription._id, new Date().toString()+": "+error);
+				   AuditManager.instance.fail(400, error, "error.plugin");
+			   } catch (Exception e) {
+				   AccessLog.logException("Error during Subscription.setError", e);				   
+				   ErrorReporter.report("SubscriptionManager", null, e);
+			   } finally {
+				   ServerTools.endRequest();
+			   }
+		   } else {
+			   Stats.finishRequest(TRIGGER, triggered.getDescription(), null, "0", Collections.emptySet());
+			   String r = out.getBody();
+			   if (r != null && r.length() >0) {
+				 sender.tell(new MessageResponse(r, 0, plugin.filename), getSelf());  
+			   } else {
+					  
+					  /*if (p.exitValue()==1) {
+						  response = "Script not found";
+						  AuditManager.instance.fail(400, "Script error", "error.plugin");
+					  }*/
+					 sender.tell(new MessageResponse("", 0, plugin.filename), getSelf());
+				  } 
+		   }
+	   });
+	}
+
 	private void runProcess(ActorRef sender, Plugin plugin, SubscriptionTriggered triggered, SubscriptionData subscription, User user, String token, String endpoint) {
+		boolean testing = InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable() && (plugin.status.equals(PluginStatus.DEVELOPMENT) || plugin.status.equals(PluginStatus.BETA));
+		if (!testing && InstanceConfig.getInstance().getInternalScriptingUrl() != null) {
+			runProcessExternal(sender, plugin, triggered, subscription, user, token, endpoint);
+			return;
+		} 
 		try {
 		String cmd = endpoint.substring("node://".length());
 		String visDir = InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/scripts";
@@ -381,7 +448,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		
 		final String id = triggered.getResourceId() != null ? type+"/"+triggered.getResourceId().toString()+"/_history/"+triggered.resourceVersion : "-";
 		final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
-		boolean testing = InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable() && (plugin.status.equals(PluginStatus.DEVELOPMENT) || plugin.status.equals(PluginStatus.BETA));
+		
 		//System.out.println("prcApp5");
 		if (testing) {
 			plugin = Plugin.getById(plugin._id, Plugin.ALL_DEVELOPER);

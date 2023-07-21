@@ -27,9 +27,13 @@ import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import models.MidataId;
 import models.Model;
+import models.Record;
 import scala.NotImplementedError;
 import utils.AccessLog;
+import utils.access.RecordManager;
+import utils.collections.CMaps;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 
@@ -93,7 +97,7 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 	}
 
 	@Override
-	public Model init(T theResource) {
+	public Model init(T theResource) throws AppException {
 		if (handleWithFirstProvider(theResource)) return first.init(theResource);
 		if (secondRW!=null) {
 		  return secondRW.init(theResource);
@@ -140,18 +144,18 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 	}
 
 	@Override
-	public Model fetchCurrent(IIdType theId, T resource) throws AppException {
+	public Model fetchCurrent(IIdType theId, T resource, boolean versioned) throws AppException {
 		if (resource == null) {
 			try {
-			  M1 m1 = first.fetchCurrent(theId, resource);
+			  M1 m1 = first.fetchCurrent(theId, resource, versioned);
 			  if (m1 == null) throw new ResourceNotFoundException(theId);
 			  return m1;
 			} catch (ResourceNotFoundException e) {
-			  return second.fetchCurrent(theId, resource);
+			  return second.fetchCurrent(theId, resource, versioned);
 			}			
 		}
-		if (handleWithFirstProvider(resource)) return first.fetchCurrent(theId, resource);
-		return second.fetchCurrent(theId, resource);
+		if (handleWithFirstProvider(resource)) return first.fetchCurrent(theId, resource, versioned);
+		return second.fetchCurrent(theId, resource, versioned);
 	}
 
 	@Override
@@ -180,10 +184,14 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 	}
 	
 	@History()
-	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
-		List<T> result = first.getHistory(theId);
-		if (result != null) return result;
-		return second.getHistory(theId);
+	public List<T> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
+		try {
+			List<T> result = first.getHistory(theId, theCount);
+		    if (result == null || result.isEmpty()) throw new ResourceNotFoundException(theId);
+		    return result;
+		} catch (ResourceNotFoundException e) {
+			return second.getHistory(theId, theCount);	
+		}		
 	}
 
 	@Override

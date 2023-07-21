@@ -40,12 +40,30 @@ import server from "./server";
 		return server.post(jsRoutes.controllers.UserGroups.listUserGroupMembers().url, data);
 	};
 	
+	service.listUserGroupGroups = function(groupId) {
+		var data = {"usergroup": groupId };
+		return server.post(jsRoutes.controllers.UserGroups.listUserGroupGroups().url, data);
+	};
+	
+	
 	service.createUserGroup = function(usergroup) {		
 		return server.post(jsRoutes.controllers.UserGroups.createUserGroup().url, usergroup);
 	};
 	
 	service.addMembersToUserGroup = function(group, members, role) {
 		var data = {"group": group, "members" : members };
+		if (role) for (let prop in role) data[prop] = role[prop];
+		return server.post(jsRoutes.controllers.UserGroups.addMembersToUserGroup().url, data);
+	};
+	
+	service.addGroupsToUserGroup = function(group, members, role) {
+		var data = {"group": group, "members" : members, "type" : "usergroup" };
+		if (role) for (let prop in role) data[prop] = role[prop];
+		return server.post(jsRoutes.controllers.UserGroups.addMembersToUserGroup().url, data);
+	};
+	
+	service.addBrokerToUserGroup = function(group, members, role) {
+		var data = {"group": group, "members" : members, "type" : "services" };
 		if (role) for (let prop in role) data[prop] = role[prop];
 		return server.post(jsRoutes.controllers.UserGroups.addMembersToUserGroup().url, data);
 	};

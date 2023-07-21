@@ -172,7 +172,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 */
 	public @NotMaterialized boolean isReadOnly;
 	
-	public Object attached;
+	public @NotMaterialized Object attached;
 	
 	public DBRecord() { meta = new BasicBSONObject(); }			
 	

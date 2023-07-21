@@ -39,9 +39,11 @@ import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
+import org.hl7.fhir.dstu3.model.DateTimeType;
 
 import com.mongodb.BasicDBObject;
 
+import ca.uhn.fhir.model.primitive.DateTimeDt;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.History;
@@ -112,7 +114,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@History()
 	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
-	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc").map("limit",2000), RecordManager.COMPLETE_DATA);
 	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
 	   
 	   List<T> result = new ArrayList<T>(records.size());
@@ -276,7 +278,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		MidataId owner = record.owner;
 		if (!owner.equals(inf.getAccessor())) {
 			Consent consent = Circles.getOrCreateMessagingConsent(inf, inf.getAccessor(), owner, owner, false);
-			insertRecord(record, resource, new ConsentAccessContext(consent, info()));
+			insertRecord(record, resource, info().forConsent(consent));
 			shareFrom = consent._id;
 		} else {
 			insertRecord(record, resource);
@@ -355,10 +357,15 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public void processResource(Record record, T resource) throws AppException {
 		resource.setId(new IdType(resource.fhirType(), record._id.toString(), record.version));
 		resource.getMeta().setVersionId(record.version);
-		if (record.lastUpdated == null) resource.getMeta().setLastUpdated(record.created);
-		else resource.getMeta().setLastUpdated(record.lastUpdated);
 		
-		Extension meta = new Extension("http://midata.coop/extensions/metadata");
+        Extension meta = new Extension("http://midata.coop/extensions/metadata");
+		
+		if (record.lastUpdated == null || record.lastUpdated.equals(record.created)) {
+			resource.getMeta().setLastUpdated(record.created);
+		} else {
+			resource.getMeta().setLastUpdated(record.lastUpdated);
+			meta.addExtension("createdAt", new DateTimeType(record.created));
+		}
 		
 		if (record.app != null) {
 		  Plugin creatorApp = Plugin.getById(record.app);		

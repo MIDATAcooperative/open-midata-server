@@ -29,6 +29,11 @@ import server from './server';
 		return server.post(jsRoutes.controllers.admin.Administration.changeStatus().url, data);
 	};
 	
+	service.changeOrganizationStatus = function(orgId, status) {
+		var data = { organization : orgId, status : status };		
+		return server.post(jsRoutes.controllers.admin.Administration.changeOrganizationStatus().url, data);
+	};
+	
 	service.addComment = function(userId, comment) {
 		var data = { user : userId, comment : comment };		
 		return server.post(jsRoutes.controllers.admin.Administration.addComment().url, data);

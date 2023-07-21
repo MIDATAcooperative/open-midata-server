@@ -69,6 +69,21 @@ public class ResearcherRole implements JsonSerializable {
 		return applications;
 	}
 	
+	public boolean may(Permission permission) {
+		switch(permission) {
+		case READ_DATA: return readData;	
+		case WRITE_DATA: return writeData;	
+		case CHANGE_TEAM: return changeTeam;
+		case EXPORT: return export; 
+		case AUDIT_LOG: return auditLog;
+		case PARTICIPANTS: return participants;
+		case SETUP: return setup;
+		case APPLICATIONS: return applications;
+		case ANY: return true;
+		}
+		return false;
+	}
+	
 	public static ResearcherRole SPONSOR() {
 		ResearcherRole result = new ResearcherRole();
 		result.changeTeam = true;
@@ -108,10 +123,42 @@ public class ResearcherRole implements JsonSerializable {
 		result.participants = false;
 		result.pseudo = false;
 		result.export = false;
-		result.setup = false;
+		result.setup = true;
 		result.applications = true;
 		result.roleName = "HC";
 		result.id = "HC";
+		return result;
+	}
+	
+	public static ResearcherRole MANAGER() {
+		ResearcherRole result = new ResearcherRole();
+		result.changeTeam = true;
+		result.auditLog = true;
+		result.readData = false;
+		result.writeData = false;
+		result.participants = false;
+		result.pseudo = false;
+		result.export = false;
+		result.setup = true;
+		result.applications = true;
+		result.roleName = "MANAGER";
+		result.id = "MANAGER";
+		return result;
+	}
+	
+	public static ResearcherRole SUBORGANIZATION() {
+		ResearcherRole result = new ResearcherRole();
+		result.changeTeam = false;
+		result.auditLog = true;
+		result.readData = true;
+		result.writeData = true;
+		result.participants = false;
+		result.pseudo = false;
+		result.export = false;
+		result.setup = false;
+		result.applications = false;
+		result.roleName = "SUBORGANIZATION";
+		result.id = "SUBORGANIZATION";
 		return result;
 	}
 }

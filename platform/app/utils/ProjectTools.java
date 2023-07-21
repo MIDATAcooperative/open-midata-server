@@ -28,7 +28,10 @@ import models.MidataId;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
+import models.enums.EntityType;
+import models.enums.Permission;
 import models.enums.ResearcherRole;
+import utils.access.Feature_UserGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.KeyManager;
@@ -43,22 +46,23 @@ import utils.exceptions.InternalServerException;
  */
 public class ProjectTools {
 
-    public static void addToUserGroup(AccessContext context, UserGroupMember self, ResearcherRole role, Set<MidataId> targetUserIds) throws AppException {
-        BSONObject meta = RecordManager.instance.getMeta(context, self._id, "_usergroup");
-        byte[] key = (byte[]) meta.get("aliaskey");
+    public static void addToUserGroup(AccessContext context, UserGroupMember self, ResearcherRole role, EntityType type, Set<MidataId> targetUserIds) throws AppException {
+    	
+    	context = context.forUserGroup(self.userGroup, type.getChangePermission());
+    	    
         MidataId groupId = self.userGroup;
-		KeyManager.instance.unlock(groupId, self._id, key);
+	
 		
 		for (MidataId targetUserId : targetUserIds) {
 			UserGroupMember old = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
 			if (old == null) {	
-				addToUserGroup(context, role, groupId, targetUserId);
+				addToUserGroup(context, role, groupId, type, targetUserId);
 			} else {
 								
 				AuditManager.instance.addAuditEvent(AuditEventType.UPDATED_ROLE_IN_TEAM, null, context.getActor(), targetUserId, null, groupId);
 				
 				if (old.member.equals(self.member)) {
-					int size = UserGroupMember.getAllActiveByGroup(self.userGroup).size();
+					int size = UserGroupMember.getAllActiveUserByGroup(self.userGroup).size();
 					if (size > 1) throw new BadRequestException("error.notauthorized.action", "You may only change your rights as long as you are sole member.");
 					
 					if (!role.mayChangeTeam()) throw new BadRequestException("error.notauthorized.action", "You may not remove team management feature from yourself.");
@@ -77,7 +81,7 @@ public class ProjectTools {
 				
     }
 
-    public static void addToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, MidataId targetUserId)
+    public static void addToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId)
             throws AppException, AuthException, InternalServerException {
         AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, context.getActor(), targetUserId, null, groupId);
         
@@ -85,6 +89,7 @@ public class ProjectTools {
         member._id = new MidataId();
         member.member = targetUserId;
         member.userGroup = groupId;
+        member.entityType = type;
         member.status = ConsentStatus.ACTIVE;
         member.startDate = new Date();
         member.role = role;

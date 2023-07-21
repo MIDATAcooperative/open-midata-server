@@ -27,7 +27,9 @@ import java.util.Map;
 import java.util.Set;
 
 import models.MidataId;
+import utils.AccessLog;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class Feature_Versioning extends Feature {
 
@@ -56,39 +58,96 @@ public class Feature_Versioning extends Feature {
 	}
 	
 	class HistoryIterator extends Feature.MultiSource<DBRecord> {
-
-		private List<DBRecord> currentlist;
+		
+		private boolean reverse = false;	
 		
 		HistoryIterator(DBIterator<DBRecord> input, Query q) throws AppException {
 			this.query = q;
-			currentlist = new ArrayList<DBRecord>();
+			
+			if (q.restrictedBy("sort")) {
+				String sortBy = q.getStringRestriction("sort");
+				if (sortBy.equals("lastUpdated asc")) {					
+					reverse = false;
+				} else if (sortBy.equals("lastUpdated desc")) {					
+					reverse = true;					
+				}
+			} 
+			
 			init(input);
 		}
 		
 		@Override
 		public DBIterator<DBRecord> advance(DBRecord record) throws AppException {
-			currentlist.clear();
-			Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(record._id, query.getFieldsFromDB());
-			for (VersionedDBRecord rec : recs) {				
-				rec.merge(record);
-				
-				RecordEncryption.decryptRecord(rec);
-				rec.meta.put("ownerName", record.meta.get("ownerName"));
-				
-                currentlist.add(rec);
-			}
-			
-			currentlist.add(record);
-			
-			return ProcessingTools.dbiterator("history()", currentlist.iterator());
+			DBIterator<VersionedDBRecord> it = VersionedDBRecord.getAllByIdCursor(record._id, query.getFieldsFromDB(), "_id.version", reverse ? -1 : 1);
+			if (!it.hasNext()) {				
+				return ProcessingTools.singleton(record);
+			} else {
+				return new InnerHistoryIterator(record, it, reverse);
+			}									
 		}
 
 		@Override
 		public String toString() {
 			return "history(["+passed+"] "+chain.toString()+")";
+		}				
+		
+	}
+	
+	class InnerHistoryIterator implements DBIterator<DBRecord> {
+
+		private DBIterator<VersionedDBRecord> versions;
+		private DBRecord current;
+		private DBRecord toMerge;
+		private boolean reverse;
+		
+		InnerHistoryIterator(DBRecord current, DBIterator<VersionedDBRecord> versions, boolean reverse) {
+			this.versions = versions;
+			this.current = current;
+			this.reverse = reverse;
+			this.toMerge = current;
 		}
 		
+		@Override
+		public DBRecord next() throws AppException {
+			if (reverse && current != null) {
+				DBRecord result = current;
+				current = null;			
+				return result;
+			}
+			
+			if (versions.hasNext()) {
+				VersionedDBRecord rec = versions.next();			
+                rec.merge(toMerge);				
+				RecordEncryption.decryptRecord(rec);
+				if (rec.meta != null) {
+					rec.meta.put("ownerName", toMerge.meta.get("ownerName"));
+				}
+				return rec;
+			}
+						
+			if (!reverse && current != null) {
+				DBRecord result = current;
+				current = null;
+				return result;
+			}
+			
+			throw new InternalServerException("error.internal","Read past end");
+		}
+
+		@Override
+		public boolean hasNext() throws AppException {
+			return current != null || versions.hasNext();
+		}
+
+		@Override
+		public void close() {
+			versions.close();			
+		}
 		
+		@Override
+		public String toString() {
+			return "versions(rec="+toMerge._id+")";
+		}		
 		
 	}
 
@@ -123,14 +182,16 @@ public class Feature_Versioning extends Feature {
 				rec.merge(record);
 				
 				RecordEncryption.decryptRecord(rec);
-				rec.meta.put("ownerName", record.meta.get("ownerName"));
+				if (rec.meta != null) rec.meta.put("ownerName", record.meta.get("ownerName"));
 				
                 next = rec;
 			} else {
 				QueryEngine.fetchFromDB(q, record);
 				RecordEncryption.decryptRecord(record);
-				String vers = record.meta.getString("version", VersionedDBRecord.INITIAL_VERSION);
-				if (vers.equals(version)) next = record;
+				if (record.meta != null) {
+					String vers = record.meta.getString("version", VersionedDBRecord.INITIAL_VERSION);
+					if (vers.equals(version)) next = record;
+				}
 			}
 			}
 			return result;
@@ -147,8 +208,7 @@ public class Feature_Versioning extends Feature {
 		public void close() {
 			chain.close();			
 		}
-		
-		
+	
     	
     }
 
@@ -300,6 +360,7 @@ public class Feature_Versioning extends Feature {
 					DBRecord next = fetchIds.get(rec._id);
                     rec.merge(next);					
 					RecordEncryption.decryptRecord(rec);
+					if (rec.meta == null) continue;
 					Date vlastUpdate = rec.meta.getDate("lastUpdated");
 					if (vlastUpdate == null) vlastUpdate = next._id.getCreationDate();
 					if (!vlastUpdate.after(historyDate)) {
@@ -343,6 +404,8 @@ public class Feature_Versioning extends Feature {
 		public void close() {
 			chain.close();			
 		}
+
+	
 
 	}
 	

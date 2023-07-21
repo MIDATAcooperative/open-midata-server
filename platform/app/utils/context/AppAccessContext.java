@@ -18,22 +18,29 @@
 package utils.context;
 
 import java.util.Collections;
+import java.util.Map;
+
+import org.bson.BasicBSONObject;
 
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
 import models.enums.WritePermissionType;
+import utils.access.APS;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.access.Feature_FormatGroups;
 import utils.access.QueryEngine;
+import utils.collections.CMaps;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class AppAccessContext extends AccessContext {
 
 	private MobileAppInstance instance;
 	private Plugin plugin;
+	private boolean restricted;
 		
 	public AppAccessContext(MobileAppInstance instance, Plugin plugin, APSCache cache, AccessContext parent) {
 		super(cache, parent);
@@ -52,7 +59,7 @@ public class AppAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) throws InternalServerException {
 		if (instance.writes == null) return true;
 		if (!instance.writes.isUpdateAllowed()) return false;
 		if (parent != null) return parent.mayUpdateRecord(stored, newVersion);
@@ -120,6 +127,12 @@ public class AppAccessContext extends AccessContext {
 		return Feature_FormatGroups.getAccessRestriction(instance.sharingQuery, content, format, field);
 	}
 	
+	public Map<String, Object> getAccessRestrictions() throws AppException {
+		BasicBSONObject query = getCache().getAPS(getTargetAps()).getMeta(APS.QUERY);
+		if (query != null) return query.toMap();
+		return null;
+	}
+	
     public MobileAppInstance getAppInstance() {
     	return instance;
     }
@@ -142,7 +155,7 @@ public class AppAccessContext extends AccessContext {
 	
 	@Override
 	public String toString() {
-		return "app("+instance._id+" "+parentString()+")";
+		return "app(instance="+instance._id+" "+parentString()+")";
 	}
 
 	@Override
@@ -155,6 +168,7 @@ public class AppAccessContext extends AccessContext {
 		case "oauth2" : result="Importer";break;
 		case "mobile" : result="Application";break;
 		case "external" : result="External Service (API-Side)";break;
+		case "broker" : result="Data broker";break;
 		case "analyzer" : result="Project Aggregator";break;
 		}
 		result += " '"+plugin.name+"'";
@@ -164,6 +178,18 @@ public class AppAccessContext extends AccessContext {
 		}
 		return result;
 	}
+	
+	public void restricted() {
+		this.restricted = true;
+	}
+
+	@Override
+	public Map<String, Object> getQueryRestrictions() {
+		if (restricted) return CMaps.map("force-local", true);
+		return super.getQueryRestrictions();
+	}
+	
+	
 
 	
 }

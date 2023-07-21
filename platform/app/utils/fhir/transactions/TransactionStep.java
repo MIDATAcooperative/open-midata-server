@@ -143,7 +143,7 @@ public abstract class TransactionStep {
 		result.setResponse(response);
 	}
 	
-	public OperationOutcome outcomeFromException(Exception e) {
+	public static OperationOutcome outcomeFromException(Exception e) {
 		OperationOutcome result = new OperationOutcome();
 		if (e instanceof PluginException) {		
 			result.addIssue()

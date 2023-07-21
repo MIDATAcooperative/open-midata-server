@@ -258,7 +258,9 @@
         "terms_of_use_hint" : "Se i Condizioni generali di contratto del progetto devono essere letti e accettati dall'utente, si prega di inviare il testo ad un amministratore di piattaforma. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.",
         "consent_observers" : "Observers esterni di consenso",
         "show_terms" : "Mostra Condizioni generali di contratto",
-        "requirements" : "Requisiti"
+        "requirements" : "Requisiti",
+        "security" : "Sicurezza",
+        "forceClientCertificate" : "Forzare l'uso dei certificati client per gli analizzatori di progetto."
     },
 
     "addresearcher" : {
@@ -289,7 +291,8 @@
             "changeTeam" : "Modifica il team",
             "auditLog" : "Mostra il audit log",
             "participants" : "Gestisci i partecipanti",
-            "setup" : "Configura progetto"
+            "setup" : "Configura progetto",
+            "applications" : "Gestire le applicazioni collegate"
         }
     },
 

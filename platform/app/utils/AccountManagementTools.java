@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import org.bson.BSONObject;
 
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Application;
 import controllers.Circles;
@@ -48,12 +49,14 @@ import models.Study;
 import models.StudyAppLink;
 import models.StudyParticipation;
 import models.User;
+import models.UserGroup;
 import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EMailStatus;
+import models.enums.EntityType;
 import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
@@ -62,6 +65,8 @@ import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
+import utils.access.Feature_FormatGroups;
+import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
@@ -71,9 +76,11 @@ import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.AccountCreationAccessContext;
 import utils.context.AppAccessContext;
+import utils.context.UserGroupAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 import utils.messaging.Messager;
 
 public class AccountManagementTools {
@@ -178,7 +185,7 @@ public class AccountManagementTools {
 	
 	public static Member checkNoExistingConsents(AccessContext context, Member user) throws AppException {
 		 if (user == null) return null;
-		 Set<Consent> exist = Consent.getAllWriteableByAuthorizedAndOwners(context.getLegacyOwner(), Collections.singleton(user._id));
+		 Set<Consent> exist = Circles.getAllWriteableByAuthorizedAndOwner(context, user._id);
 			if (!exist.isEmpty())
 				throw new UnprocessableEntityException("Already exists and consent is already given. Use search instead.");
 		return user;
@@ -212,11 +219,11 @@ public class AccountManagementTools {
 	
 	public static Consent createHPConsent(AccessContext info, Member user, HPUser hpuser, boolean active) throws AppException {
 		String consentName = hpuser.firstname + " " + hpuser.lastname;
-		if (hpuser.provider != null) {
+		/*if (hpuser.provider != null) {
 			HealthcareProvider prov = HealthcareProvider.getById(hpuser.provider, HealthcareProvider.ALL);
 			if (prov != null)
 				consentName = prov.name;
-		}
+		}*/
 		
 		Plugin plugin = Plugin.getById(info.getUsedPlugin());
 	
@@ -233,6 +240,36 @@ public class AccountManagementTools {
 		consent.sharingQuery.put("app", plugin.filename);
 		
 		Circles.addConsent(info, consent, false, null, true);
+		return consent;
+	}
+	
+	public static Consent createDataBrokerConsent(AccessContext context, Member user, boolean active) throws AppException {
+		
+		if (context.getAccessorEntityType() != EntityType.USERGROUP) throw new PluginException(context.getUsedPlugin(), "error.plugin", "Data broker cannot directly create patient resources.");
+		
+		AccessContext ac = context;
+		while (ac != null && !(ac instanceof UserGroupAccessContext)) ac = ac.getParent();
+		
+		UserGroup userGroup = UserGroup.getById(ac.getAccessor(), UserGroup.ALL);
+		if (userGroup == null) throw new InternalServerException("error.internal", "User group for data broker not found.");
+
+		String consentName = userGroup.name;				
+		Plugin app = Plugin.getById(context.getUsedPlugin());
+	
+		Consent consent = new MemberKey();
+		consent.writes = app.writes;
+		consent.owner = user._id;
+		consent.name = consentName;
+		consent.creatorApp = context.getUsedPlugin();
+		consent.authorized = new HashSet<MidataId>();
+		consent.status = active ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
+		consent.authorized.add(ac.getAccessor());
+		consent.entityType = context.getAccessorEntityType();
+		
+		Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
+		consent.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);	
+				
+		Circles.addConsent(context, consent, true, null, true);
 		return consent;
 	}
 	
@@ -273,7 +310,8 @@ public class AccountManagementTools {
 	}
 	
 	public static Consent createAnalyzerConsent(AccessContext info, Member user, FHIRPatientHolder fhirPatient, boolean active) throws AppException {		
-		MidataId linkedProject = getProjectForAnalyzerFromContext(info);		
+		MidataId linkedProject = getProjectForAnalyzerFromContext(info);	
+		ApplicationTools.sendFirstUseMessage(user, Plugin.getById(info.getUsedPlugin()));
 		return participateToProject(info, user, fhirPatient, linkedProject, active, JoinMethod.API);
 	}
 	
@@ -285,6 +323,8 @@ public class AccountManagementTools {
 	        	return createExternalServiceConsent(context, user, existing == null || plugin.usePreconfirmed);
 	        } else if (plugin.type.equals("analyzer") || plugin.targetUserRole.equals(UserRole.RESEARCH)) {
 	        	return createAnalyzerConsent(context, user, fhirPatient, existing == null || plugin.usePreconfirmed);
+	        } else if (plugin.type.equals("broker")) {	        	
+	        	return createDataBrokerConsent(context, user, existing == null || plugin.usePreconfirmed);
 	        } 
 			HPUser hpuser = HPUser.getById(context.getLegacyOwner(), Sets.create("provider", "firstname", "lastname"));
 			if (hpuser != null) {
@@ -393,8 +433,32 @@ public class AccountManagementTools {
 		str1 = str1.trim().toLowerCase();
 		str2 = str2.trim().toLowerCase();
 		if (str2.length() == 0 && matchIfEmpty) return true;
-		
+		str1 = soundsSimilar(str1);
+		str2 = soundsSimilar(str2);
 		return str1.equals(str2);
+	}
+	
+	private static String soundsSimilar(String str) {
+		str = str.replace(".", " ").replace("/", " ").replace("-", " ").replace("  ", " ");		
+		str = str.replace("ß", "s").replace("ss","s");
+		str = str.replace("ll", "l").replace("rr", "r");
+		str = str.replace("d", "t").replace("tt", "t");
+		str = str.replace("v", "f");
+		str = str.replace("ñ", "n");
+		str = str.replace("b", "p").replace("pp", "p").replace("pf", "f");
+		str = str.replace("g", "k").replace("c", "k").replace("kk", "k");
+		str = str.replace("ê", "e").replace("â","a").replace("ô", "o").replace("î","i");
+		str = str.replace("é", "e").replace("á","a").replace("ó", "o").replace("í","i");
+		str = str.replace("è", "e").replace("à","a").replace("ò", "o").replace("ì","i");
+		str = str.replace("ă", "a");
+		str = str.replace("ë", "e").replace("ï","i");
+		str = str.replace("õ", "o");
+		str = str.replace("æ", "ae").replace("œ", "oe").replace("ç", "c").replace("ę", "e").replace("ą", "a");
+		str = str.replace("ee", "e").replace("aa", "a").replace("oo", "o").replace("ii", "i");
+		str = str.replace("eh", "e").replace("ah", "a").replace("oh", "o").replace("ih", "i");				
+		str = str.replace("ü", "ue").replace("ä", "ae").replace("ö", "oe");
+		
+		return str;
 	}
 	
 	public static boolean nonEmpty(String str) {

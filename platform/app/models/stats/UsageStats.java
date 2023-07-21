@@ -41,7 +41,7 @@ public class UsageStats extends Model {
 	/**
 	 * constant set containing all fields of this class
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "version", "date", "object", "objectName", "action", "count");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "version", "date", "object", "objectName", "detail", "action", "count");
 
 	public long version;
 	
@@ -51,6 +51,11 @@ public class UsageStats extends Model {
 	 * ID of object
 	 */
 	public MidataId object;
+	
+	/**
+	 * ID of detail-object or null
+	 */
+	public MidataId detail;
 	
 	/**
 	 * Name of object
@@ -69,8 +74,8 @@ public class UsageStats extends Model {
 	public int count;
 	
 		
-	public static UsageStats get(String date, MidataId object, UsageAction action) throws InternalServerException {
-		return Model.get(UsageStats.class, collection, CMaps.map("date", date).map("object",object).map("action", action), ALL);
+	public static UsageStats get(String date, MidataId object, MidataId detail, UsageAction action) throws InternalServerException {
+		return Model.get(UsageStats.class, collection, CMaps.map("date", date).map("object",object).map("detail",detail).map("action", action), ALL);
 	}
 	
 	public static List<UsageStats> getByDate(String date) throws InternalServerException {
@@ -87,7 +92,7 @@ public class UsageStats extends Model {
 	
 	public void add() throws InternalServerException {		
 		try {
-			UsageStats fromDB = UsageStats.get(this.date, this.object, this.action);
+			UsageStats fromDB = UsageStats.get(this.date, this.object, this.detail, this.action);
 			if (fromDB != null) {
 				fromDB.count+=this.count;
 				DBLayer.secureUpdate(fromDB, collection, "version", "count");
