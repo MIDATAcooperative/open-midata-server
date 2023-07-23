@@ -90,12 +90,8 @@
             "joincode" : "Il codice di partecipazione fornito non è accettato.",
             "usePreconfirmed" : "La preconferma del consenso e la condivisione con terzi non sono consentite allo stesso tempo.",
             "csvmapping" : "Mappatura non valida fornita.",
-
-            // TODO NEW: Invalid identifier
-            "id" : "Invalid identifier",
-
-            // TODO NEW: You must be member of this user group to perform this action.
-            "usergroup" : "You must be member of this user group to perform this action."
+            "id" : "Identificatore non valido",
+            "usergroup" : "Per eseguire questa azione è necessario essere membri di questo gruppo di utenti."
         },
 
         "missing" : {
@@ -118,9 +114,7 @@
             "plugin" : "Questo plugin non esiste nel suo account.",
             "auth_type" : "L'autenticazione a due fattori è necessaria per il suo tipo di account.",
             "licence" : "Per utilizzare questa applicazione è necessaria una licenza valida.",
-
-            // TODO NEW: You must grant someone else manager permissions before removing this entity from the group.
-            "manager" : "You must grant someone else manager permissions before removing this entity from the group."
+            "manager" : "Prima di rimuovere questa entità dal gruppo, è necessario concedere a qualcun altro le autorizzazioni di manager."
         },
 
         "unknown" : {
@@ -260,20 +254,8 @@
             "ES" : "Spagna",
             "SW" : "Svezia",
             "GB" : "Regno Unito",
-
-            // TODO CHANGED
-            // OLD: undefined
-            // NEW: Liechtenstein
             "LI" : "Liechtenstein",
-
-            // TODO CHANGED
-            // OLD: undefined
-            // NEW: Norway
             "NO" : "Norvegia",
-
-            // TODO CHANGED
-            // OLD: undefined
-            // NEW: Iceland
             "IS" : "Islanda"
         },
         "eventtype" : {
@@ -358,15 +340,9 @@
             "vread" : "Versione della risorsa letta",
             "history" : "Storia della risorsa letta",
             "search" : "Ricerca di risorse",
-
-            // TODO NEW: Organization updated
-            "organization-updated" : "Organization updated",
-
-            // TODO NEW: Organization created
-            "organization-created" : "Organization created",
-
-            // TODO NEW: Organization deleted
-            "organization-deleted" : "Organization deleted",
+            "organization-updated" : "Organizzazione aggiornata",
+            "organization-created" : "Organizzazione creata",
+            "organization-deleted" : "Organizzazione cancellata",
             "added-as-team-member" : "Aggiunto come membro del team",
             "updated-role-in-team" : "Ruolo aggiornato nel team",
             "removed-from-team" : "Rimosso dal team",
@@ -586,8 +562,6 @@
             "mobile" : "Applicazione (Smartphone, Web)",
             "external" : "Servizio esterno",
             "analyzer" : "Analizzatore di progetto",
-
-            // TODO NEW: Data broker
             "broker" : "Data broker",
             "endpoint" : "FHIR endpoint"
         },
@@ -619,23 +593,13 @@
             "USER" : "Utente",
             "USERGROUP" : "Team",
             "ORGANIZATION" : "Organizzazione",
-
-            // TODO NEW: Data Broker
-            "SERVICES" : "Data Broker"
+            "SERVICES" : "Data broker"
         },
         "usergrouptype" : {
-
-            // TODO NEW: Organization
-            "ORGANIZATION" : "Organization",
-
-            // TODO NEW: Care Team
-            "CARETEAM" : "Care Team",
-
-            // TODO NEW: Halthcare Service
-            "HEALTHCARESERVICE" : "Halthcare Service",
-
-            // TODO NEW: Research
-            "RESEARCHTEAM" : "Research"
+            "ORGANIZATION" : "Organizzazione",
+            "CARETEAM" : "Team di assistenza",
+            "HEALTHCARESERVICE" : "Servizio sanitario",
+            "RESEARCHTEAM" : "Ricerca"
         },
         "bulkmailtype" : {
             "MARKETING" : "Marketing - Titolari di un account",
@@ -732,9 +696,7 @@
         "sign_up_btn" : "Crea account",
         "unlock_code" : "Codice di sblocco",
         "already_have_account" : "Ho già un account",
-
-        // TODO NEW: If this is your own account click here to go to the login page.
-        "already_have_account2" : "If this is your own account click here to go to the login page.",
+        "already_have_account2" : "Se si tratta del proprio account, fare clic qui per accedere alla pagina di login.",
         "more" : "Ha ancora qualche secondo? Saremmo lieti se poteste fornirci maggiori dettagli su di lei ☺️️",
         "generous" : "Mi sento generoso oggi, mi mostrano i campi!",
         "hide_optional" : "Nascondi campi opzionali",
@@ -1026,12 +988,10 @@
         "who_is_owner" : "Chi sta condividendo i dati?",
         "which_persons" : "Con quale persona/e sono condivisi i dati?",
         "set_owner_btn" : "Selezionare la persona che condivide i propri dati",
-        "add_yourself_btn" : "Aggiungi se stesso",
-        "add_person_btn" : "Aggiungi una nuova persona",
-
-        // TODO NEW: Add New Organization
-        "add_organization_btn" : "Add New Organization",
-        "add_usergroup_btn" : "Aggiungi un nuovo team",
+        "add_yourself_btn" : "Aggiungere se stesso",
+        "add_person_btn" : "Aggiungere una nuova persona",
+        "add_organization_btn" : "Aggiungere una nuova organizzazione",
+        "add_usergroup_btn" : "Aggiungere un nuovo team",
         "writes" : "Scrivi l'autorizzazione",
         "writes2" : "Le persone autorizzate da questo consenso possono creare o aggiornare dati nel suo account incluso nel consenso suddetto.",
         "reshare" : "Accesso di terzi?",
@@ -1335,8 +1295,8 @@
     "spacesummary" : {
         "records_to_view" : "Record da visualizzare.",
         "last_entry_at" : "Ultimi dati immessi alle",
-        "no_entries_yet" : "Non sono stati ancora immessi dati",
-        "newest_entry_from" : "Dati più recenti immessi da",
+        "no_entries_yet" : "Non ci sono ancora dati",
+        "newest_entry_from" : "Dati più recenti da",
         "view_btn" : "Visualizzazione",
         "add_btn" : "Aggiungi"
     },
@@ -1373,30 +1333,16 @@
     },
 
     "organizationsearch" : {
-
-        // TODO NEW: Search for Organizations
-        "title" : "Search for Organizations",
-
-        // TODO NEW: Organization Name
-        "name" : "Organization Name",
-
-        // TODO NEW: City or zip code
-        "city_or_zip" : "City or zip code",
-
-        // TODO NEW: No matching organizations found.
-        "empty_result" : "No matching organizations found."
+        "title" : "Ricerca di organizzazioni",
+        "name" : "Nome dell'organizzazione",
+        "city_or_zip" : "Città o codice postale",
+        "empty_result" : "Nessuna organizzazione corrispondente trovata."
     },
 
     "databrokersearch" : {
-
-        // TODO NEW: Search Data Brokers (APIs)
-        "title" : "Search Data Brokers (APIs)",
-
-        // TODO NEW: Data broker name
-        "name" : "Data broker name",
-
-        // TODO NEW: No matching data brokers found.
-        "empty_result" : "No matching data brokers found."
+        "title" : "Ricerca di data brokers (APIs)",
+        "name" : "Nome del data broker",
+        "empty_result" : "Nessun data broker corrispondente trovato."
     },
 
     "confirm" : {
@@ -1494,12 +1440,8 @@
     },
 
     "service" : {
-
-        // TODO NEW: Token-Link service for @PRODUCT
-        "title" : "Token-Link service for @PRODUCT",
-
-        // TODO NEW: Your token-link has been processed. You can now close this window.
-        "success" : "Your token-link has been processed. You can now close this window."
+        "title" : "Servizio Token-Link per @PRODOTTO",
+        "success" : "Il vostro token-link è stato elaborato. Ora è possibile chiudere questa finestra."
     },
 
     "serviceleave" : {

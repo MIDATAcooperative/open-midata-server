@@ -3,9 +3,7 @@
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Utilisateurs",
-
-        // TODO NEW: Organizations
-        "organizations" : "Organizations",
+        "organizations" : "Organisations",
         "auditlog" : "Audit log",
         "news" : "News",
         "mails" : "E-Mails",
@@ -40,23 +38,12 @@
     },
 
     "admin_organizations" : {
-
-        // TODO NEW: Organizations
-        "title" : "Organizations",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: No matching organizations found.
-        "empty" : "No matching organizations found.",
-
-        // TODO NEW: show members
-        "members_btn" : "show members"
+        "title" : "Organisations",
+        "name" : "Nom",
+        "status" : "État",
+        "empty" : "Aucune organisation correspondante n'a été trouvée.",
+        "members_btn" : "afficher les membres"
     },
-
 
     "admin_address" : {
         "title" : "Profil de l'utilisateur",
@@ -258,7 +245,7 @@
         "myid" : "Mon id de récupération",
         "instr1" : "Cliquez sur un share pour copier le share crypté dans le presse-papiers.",
         "instr2" : "Décrypter le share sous UBUNTU: (cliquez sur la ligne pour la copier dans le presse-papiers)",
-        "instr3" : "Décrypter le share sous MAC OS: (cliquez sur la ligne pour la copier dans le presse-papiers)"
+        "instr3" : "Décrypter le share sous macOS (bash shell): (cliquez sur la ligne pour la copier dans le presse-papiers)"
     },
 
     "admin_licenses" : {

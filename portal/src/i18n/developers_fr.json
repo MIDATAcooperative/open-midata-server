@@ -65,14 +65,8 @@
             "CONSENT_CONFIRM_OWNER" : "Confirmation de consentement (cédant)",
             "CONSENT_CONFIRM_AUTHORIZED" : "Confirmation de consentement (bénéficiaire)",
             "CONSENT_REJECT_OWNER" : "Refus de consentement (cédant)",
-
-            // TODO CHANGED
-            // OLD: Consent rejection (Grantee)
-            // NEW: Consent rejection (Proposed Consent, Grantee)
-            "CONSENT_REJECT_AUTHORIZED" : "Refus de consentement (bénéficiaire)",
-
-            // TODO NEW: Consent rejection (Active Consent, Grantee)
-            "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Consent rejection (Active Consent, Grantee)",
+            "CONSENT_REJECT_AUTHORIZED" : "Refus de consentement (consentement proposé, bénéficiaire)",
+            "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Refus de consentement (consentement actif, bénéficiaire)",
             "ACCOUNT_UNLOCK" : "Compte validé par l'administrateur",
             "EMAIL_CHANGED_OLDADDRESS" : "Adresse e-mail changée (envoyer à l'ancienne adresse e-mail)",
             "EMAIL_CHANGED_NEWADDRESS" : "Adresse e-mail changée (envoyer à la nouvelle adresse e-mail)",
@@ -150,17 +144,13 @@
         "not_reviewed" : "Pas encore revu",
         "ACCEPTED" : "Revu",
         "NEEDS_FIXING" : "Correction requise",
-
-        // TODO CHANGED
-        // OLD: Display Location
-        // NEW: Display Under
         "default_context" : "Affichage sous",
         "default_context_me" : "Dashboard / Timeline",
         "default_context_config" : "Configuration / Importations",
         "default_context_extern" : "Plugin autonome",
         "deploy_status" : "État du déploiement",
         "info" : {
-            "filename" : "Ce nom est utilisé (en interne) pour identifier votre application. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
+            "filename" : "Ce nom est utilisé (en interne) pour identifier votre application. Il doit s'agir d'un identifiant valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Votre application est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
             "loginTemplate" : "À quoi doit ressembler le processus de connexion? Certaines configurations nécessitent l'approbation d'un administrateur",
             "loginButtonsTemplate" : "Comment disposer les boutons?",
@@ -250,10 +240,6 @@
         "oauth_login" : "OAuth Login",
         "device" : "Device",
         "refresh_token" : "Refresh Token",
-
-        // TODO CHANGED
-        // OLD: Serverside Scripts
-        // NEW: Server-side Scripts
         "backend_services" : "Scripts côté serveur",
         "portal_username" : "Nom d'utilisateur",
         "portal_password" : "Mot de passe",
@@ -308,11 +294,7 @@
         "trigger" : "Trigger",
         "triggerDetail" : "FHIR Resource",
         "action" : "Action",
-
-        // TODO CHANGED
-        // OLD: URL / Filename
-        // NEW: URL / Filename/ Target
-        "params" : "URL / Nom du fichier",
+        "params" : "URL / Nom du fichier / Cible",
         "triggers" : {
             "fhir_Consent" : "Modifications de consentement",
             "fhir_MessageHeader" : "Message FHIR",
@@ -381,10 +363,6 @@
         "repository_url" : "URL du repository",
         "repository_dir" : "( Optionnel) Sous-répertoire dans le repository",
         "repository_token" : "Access Token",
-
-        // TODO CHANGED
-        // OLD: Serverside code
-        // NEW: Server-side code
         "has_scripts" : "Code côté serveur",
         "has_scripts2" : "Ce repository contient des scripts qui doivent être exécutés sur le serveur.",
         "repository_date" : "Dernier déploiement le",
@@ -498,10 +476,6 @@
         "repositoryAuditDate" : "Vérifié le",
         "repositoryRisks" : "Risques pour la sécurité",
         "repo_btn" : "Déploiement",
-
-        // TODO CHANGED
-        // OLD: Deploy ready
-        // NEW: Deploy ready plugins
         "deploy_ready_btn" : "Déployer les plugins prêts",
         "deploy_all_btn" : "Tout redéployer",
         "audit_btn" : "Tout vérifier",

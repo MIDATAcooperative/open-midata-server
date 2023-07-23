@@ -65,14 +65,8 @@
             "CONSENT_CONFIRM_OWNER" : "Zustimmungsannahme (Geber)",
             "CONSENT_CONFIRM_AUTHORIZED" : "Zustimmungsannahme (Empfänger)",
             "CONSENT_REJECT_OWNER" : "Zustimmungsablehnung (Geber)",
-
-            // TODO CHANGED
-            // OLD: Consent rejection (Grantee)
-            // NEW: Consent rejection (Proposed Consent, Grantee)
-            "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (Empfänger)",
-
-            // TODO NEW: Consent rejection (Active Consent, Grantee)
-            "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Consent rejection (Active Consent, Grantee)",
+            "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (vorgeschlagene Zustimmung, Empfänger)",
+            "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Zustimmungsablehnung (aktive Zustimmung, Empfänger)",
             "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet",
             "EMAIL_CHANGED_OLDADDRESS" : "E-Mail-Adresse geändert (an alte E-Mail-Adresse senden)",
             "EMAIL_CHANGED_NEWADDRESS" : "E-Mail-Adresse geändert (an neue E-Mail-Adresse senden)",
@@ -150,10 +144,6 @@
         "not_reviewed" : "Noch nicht überprüft",
         "ACCEPTED" : "Überprüft",
         "NEEDS_FIXING" : "Korrektur erforderlich",
-
-        // TODO CHANGED
-        // OLD: Display Location
-        // NEW: Display Under
         "default_context" : "Anzeige unter",
         "default_context_me" : "Dashboard / Timeline",
         "default_context_config" : "Konfiguration / Importe",
@@ -250,10 +240,6 @@
         "oauth_login" : "OAuth Login",
         "device" : "Device",
         "refresh_token" : "Refresh Token",
-
-        // TODO CHANGED
-        // OLD: Serverside Scripts
-        // NEW: Server-side Scripts
         "backend_services" : "Serverseitige Skripte",
         "portal_username" : "Benutzername",
         "portal_password" : "Passwort",
@@ -308,11 +294,7 @@
         "trigger" : "Trigger",
         "triggerDetail" : "FHIR Ressource",
         "action" : "Aktion",
-
-        // TODO CHANGED
-        // OLD: URL / Filename
-        // NEW: URL / Filename/ Target
-        "params" : "URL / Dateiname",
+        "params" : "URL / Dateiname / Ziel",
         "triggers" : {
             "fhir_Consent" : "Zustimmungsänderungen",
             "fhir_MessageHeader" : "FHIR-Nachricht",
@@ -381,10 +363,6 @@
         "repository_url" : "Repository URL",
         "repository_dir" : "(Optional) Unterverzeichnis im Repository",
         "repository_token" : "Access Token",
-
-        // TODO CHANGED
-        // OLD: Serverside code
-        // NEW: Server-side code
         "has_scripts" : "Serverseitiger Code",
         "has_scripts2" : "Dieses Repository enthält Skripte, die auf dem Server ausgeführt werden müssen.",
         "repository_date" : "Zuletzt bereitgestellt am",
@@ -498,10 +476,6 @@
         "repositoryAuditDate" : "Geprüft am",
         "repositoryRisks" : "Sicherheitsrisiken",
         "repo_btn" : "Installation",
-
-        // TODO CHANGED
-        // OLD: Deploy ready
-        // NEW: Deploy ready plugins
         "deploy_ready_btn" : "Bereitgestellte Plugins installieren",
         "deploy_all_btn" : "Alle reinstallieren",
         "audit_btn" : "Alle prüfen",

@@ -3,9 +3,7 @@
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Utenti",
-
-        // TODO NEW: Organizations
-        "organizations" : "Organizations",
+        "organizations" : "Organizzazioni",
         "auditlog" : "Audit log",
         "news" : "Notizie",
         "mails" : "E-Mail",
@@ -40,23 +38,12 @@
     },
 
     "admin_organizations" : {
-
-        // TODO NEW: Organizations
-        "title" : "Organizations",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: No matching organizations found.
-        "empty" : "No matching organizations found.",
-
-        // TODO NEW: show members
-        "members_btn" : "show members"
+        "title" : "Organizzazioni",
+        "name" : "Nome",
+        "status" : "Stato",
+        "empty" : "Nessuna organizzazione corrispondente trovata.",
+        "members_btn" : "mostra i membri"
     },
-
 
     "admin_address" : {
         "title" : "Profilo utente",
@@ -258,7 +245,7 @@
         "myid" : "Il mio id di recupero",
         "instr1" : "Fare clic su un share per copiare il share criptato negli appunti.",
         "instr2" : "Decriptare il share su UBUNTU: (cliccare sulla linea per copiarla negli appunti)",
-        "instr3" : "Decriptare il share su MAC OS: (cliccare sulla linea per copiarla negli appunti)"
+        "instr3" : "Decriptare il share su macOS (bash shell): (cliccare sulla linea per copiarla negli appunti)"
     },
 
     "admin_licenses" : {
@@ -267,7 +254,7 @@
         "licenseeType" : "Tipo di licenziatario",
         "licenseeName" : "Licenziatario",
         "expireDate" : "Scade",
-        "empty" : "Non sono state trovate licenze corrispondenti."
+        "empty" : "Nessuna licenza corrispondente trovata."
     },
 
     "admin_addlicence" : {

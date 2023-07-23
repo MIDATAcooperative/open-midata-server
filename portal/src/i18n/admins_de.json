@@ -3,9 +3,7 @@
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Benutzer",
-
-        // TODO NEW: Organizations
-        "organizations" : "Organizations",
+        "organizations" : "Organisationen",
         "auditlog" : "Audit Log",
         "news" : "News",
         "mails" : "E-Mails",
@@ -40,23 +38,12 @@
     },
 
     "admin_organizations" : {
-
-        // TODO NEW: Organizations
-        "title" : "Organizations",
-
-        // TODO NEW: Name
+        "title" : "Organisationen",
         "name" : "Name",
-
-        // TODO NEW: Status
         "status" : "Status",
-
-        // TODO NEW: No matching organizations found.
-        "empty" : "No matching organizations found.",
-
-        // TODO NEW: show members
-        "members_btn" : "show members"
+        "empty" : "Keine passende Organisation gefunden.",
+        "members_btn" : "Mitglieder anzeigen"
     },
-
 
     "admin_address" : {
         "title" : "Benutzerprofil",
@@ -258,7 +245,7 @@
         "myid" : "Meine Wiederherstellungs-ID",
         "instr1" : "Klicken Sie auf einen Share, um den verschlüsselten Share in die Zwischenablage zu kopieren.",
         "instr2" : "Share unter UBUNTU entschlüsseln: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)",
-        "instr3" : "Share unter MAC OS entschlüsseln: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)"
+        "instr3" : "Share unter macOS (bash shell) entschlüsseln: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)"
     },
 
     "admin_licenses" : {

@@ -90,12 +90,8 @@
             "joincode" : "Le code de participation fourni n'est pas accepté.",
             "usePreconfirmed" : "La préconfirmation du consentement et le partage à un tiers ne sont pas autorisés en même temps.",
             "csvmapping" : "Mappage non valide fourni.",
-
-            // TODO NEW: Invalid identifier
-            "id" : "Invalid identifier",
-
-            // TODO NEW: You must be member of this user group to perform this action.
-            "usergroup" : "You must be member of this user group to perform this action."
+            "id" : "Identifiant non valide",
+            "usergroup" : "Vous devez être membre de ce groupe d'utilisateurs pour effectuer cette action."
         },
 
         "missing" : {
@@ -118,9 +114,7 @@
             "plugin" : "Ce plugin n'existe pas dans votre compte.",
             "auth_type" : "Une authentification à deux facteurs est requise pour votre type de compte.",
             "licence" : "Une licence valide est requise pour utiliser cette application.",
-
-            // TODO NEW: You must grant someone else manager permissions before removing this entity from the group.
-            "manager" : "You must grant someone else manager permissions before removing this entity from the group."
+            "manager" : "Vous devez accorder les droits de manager à quelqu'un d'autre avant de supprimer cette entité du groupe."
         },
 
         "unknown" : {
@@ -260,20 +254,8 @@
             "ES" : "Espagne",
             "SW" : "Suède",
             "GB" : "Royaume-Uni",
-
-            // TODO CHANGED
-            // OLD: undefined
-            // NEW: Liechtenstein
             "LI" : "Liechtenstein",
-
-            // TODO CHANGED
-            // OLD: undefined
-            // NEW: Norway
             "NO" : "Norvège",
-
-            // TODO CHANGED
-            // OLD: undefined
-            // NEW: Iceland
             "IS" : "Islande"
         },
         "eventtype" : {
@@ -358,15 +340,9 @@
             "vread" : "Version de la ressource lue",
             "history" : "Historique de la ressource lue",
             "search" : "Recherche de ressources",
-
-            // TODO NEW: Organization updated
-            "organization-updated" : "Organization updated",
-
-            // TODO NEW: Organization created
-            "organization-created" : "Organization created",
-
-            // TODO NEW: Organization deleted
-            "organization-deleted" : "Organization deleted",
+            "organization-updated" : "Organisation mise à jour",
+            "organization-created" : "Organisation créée",
+            "organization-deleted" : "Organisation supprimée",
             "added-as-team-member" : "Ajouté comme membre d'un team",
             "updated-role-in-team" : "Rôle dans le team modifié",
             "removed-from-team" : "Supprimé du team",
@@ -459,7 +435,7 @@
         "joinmethod" : {
             "APP" : "Le participant utilise l'application liée",
             "PORTAL" : "Le participant s'inscrit sur le portail @PRODUCT",
-            "RESEARCHER" : "Le participant est enrôlé manuellement par un membre de l'équipe de recherche",
+            "RESEARCHER" : "Le participant est enrôlé manuellement par un membre du team de recherche",
             "API" : "Le participant est enrôlé par un logiciel externe",
             "ALGORITHM" : "Le participant a été proposé par un algorithme (non supporté)",
             "CODE" : "Le participant peut s'inscrire en saisissant un code (non supporté)",
@@ -586,8 +562,6 @@
             "mobile" : "Application (Smartphone, Web)",
             "external" : "Service externe",
             "analyzer" : "Analyseur de projet",
-
-            // TODO NEW: Data broker
             "broker" : "Data broker",
             "endpoint" : "FHIR endpoint"
         },
@@ -619,23 +593,13 @@
             "USER" : "Utilisateur",
             "USERGROUP" : "Team",
             "ORGANIZATION" : "Organisation",
-
-            // TODO NEW: Data Broker
-            "SERVICES" : "Data Broker"
+            "SERVICES" : "Data broker"
         },
         "usergrouptype" : {
-
-            // TODO NEW: Organization
-            "ORGANIZATION" : "Organization",
-
-            // TODO NEW: Care Team
-            "CARETEAM" : "Care Team",
-
-            // TODO NEW: Halthcare Service
-            "HEALTHCARESERVICE" : "Halthcare Service",
-
-            // TODO NEW: Research
-            "RESEARCHTEAM" : "Research"
+            "ORGANIZATION" : "Organisation",
+            "CARETEAM" : "Équipe de soins",
+            "HEALTHCARESERVICE" : "Service de santé",
+            "RESEARCHTEAM" : "Recherche"
         },
         "bulkmailtype" : {
             "MARKETING" : "Marketing - Titulaires de comptes",
@@ -732,9 +696,7 @@
         "sign_up_btn" : "Créer un compte",
         "unlock_code" : "Code de déverrouillage",
         "already_have_account" : "J'ai déjà un compte",
-
-        // TODO NEW: If this is your own account click here to go to the login page.
-        "already_have_account2" : "If this is your own account click here to go to the login page.",
+        "already_have_account2" : "S'il s'agit de votre propre compte, cliquez ici pour accéder à la page de connexion.",
         "more" : "Vous avez encore quelques secondes? Nous serions heureux si vous pouviez nous donner un peu plus de détails sur vous ☺️️",
         "generous" : "Je me sens généreux aujourd'hui, montrez-moi les champs!",
         "hide_optional" : "Masquer les champs facultatifs",
@@ -1028,10 +990,8 @@
         "set_owner_btn" : "Choisir la personne qui partage ses données",
         "add_yourself_btn" : "S'ajouter soi-même",
         "add_person_btn" : "Ajouter une nouvelle personne",
-
-        // TODO NEW: Add New Organization
-        "add_organization_btn" : "Add New Organization",
-        "add_usergroup_btn" : "Ajouter une nouvelle équipe",
+        "add_organization_btn" : "Ajouter une nouvelle organisation",
+        "add_usergroup_btn" : "Ajouter un nouveau team",
         "writes" : "Droits en écriture",
         "writes2" : "Les personnes autorisées par ce consentement peuvent enregistrer ou mettre à jour des données correspondant à ce consentement.",
         "reshare" : "Accès aux tiers?",
@@ -1057,7 +1017,7 @@
         "people" : "Avec quelle(s) personne(s) désirez-vous partager des données?",
         "external" : "Personnes sans compte @PRODUCT",
         "add_people_btn" : "Ajouter d'autres personnes",
-        "add_usergroup_btn" : "Ajouter une équipe",
+        "add_usergroup_btn" : "Ajouter un team",
         "reshare" : "@:newconsent.reshare",
         "reshare2" : "@:newconsent.reshare2",
         "writes" : "Droits en écriture",
@@ -1284,7 +1244,7 @@
         "providers_teaser" : "Recherchez des professionnels de la santé et ajoutez les à votre liste, afin de pouvoir partager des données avec eux.",
         "providersearch" : "Rechercher des professionnels de la santé",
         "providersearch_text" : "Fonction de recherche de professionnels de la santé.",
-        "usergroupsearch" : "Rechercher une équipe",
+        "usergroupsearch" : "Rechercher un team",
         "hcrecords" : "Nouvelles données provenant de vos professionnels de la santé",
         "records" : "Données",
         "share" : "Partager",
@@ -1366,37 +1326,23 @@
     },
 
     "usergroupsearch" : {
-        "name" : "Nom de l'équipe",
-        "empty_result" : "Aucune équipe ne correspond à votre recherche.",
+        "name" : "Nom du team",
+        "empty_result" : "Aucun team ne correspond à votre recherche.",
         "add_individuals_btn" : "Ajouter à ce consentement en tant que personnes individuelles",
-        "add_group_btn" : "Ajouter à ce consentement en tant qu'équipe modifiable"
+        "add_group_btn" : "Ajouter à ce consentement en tant que team modifiable"
     },
 
     "organizationsearch" : {
-
-        // TODO NEW: Search for Organizations
-        "title" : "Search for Organizations",
-
-        // TODO NEW: Organization Name
-        "name" : "Organization Name",
-
-        // TODO NEW: City or zip code
-        "city_or_zip" : "City or zip code",
-
-        // TODO NEW: No matching organizations found.
-        "empty_result" : "No matching organizations found."
+        "title" : "Recherche d'organisations",
+        "name" : "Nom de l'organisation",
+        "city_or_zip" : "Ville ou code postal",
+        "empty_result" : "Aucune organisation correspondante trouvée."
     },
 
     "databrokersearch" : {
-
-        // TODO NEW: Search Data Brokers (APIs)
-        "title" : "Search Data Brokers (APIs)",
-
-        // TODO NEW: Data broker name
-        "name" : "Data broker name",
-
-        // TODO NEW: No matching data brokers found.
-        "empty_result" : "No matching data brokers found."
+        "title" : "Recherche de data brokers (APIs)",
+        "name" : "Nom du data broker",
+        "empty_result" : "Aucun data broker correspondant trouvé."
     },
 
     "confirm" : {
@@ -1494,12 +1440,8 @@
     },
 
     "service" : {
-
-        // TODO NEW: Token-Link service for @PRODUCT
-        "title" : "Token-Link service for @PRODUCT",
-
-        // TODO NEW: Your token-link has been processed. You can now close this window.
-        "success" : "Your token-link has been processed. You can now close this window."
+        "title" : "Service Token-Link pour @PRODUCT",
+        "success" : "Votre token-link a été traité. Vous pouvez maintenant fermer cette fenêtre."
     },
 
     "serviceleave" : {
@@ -1577,7 +1519,7 @@
         "ask" : {
             "AuditEvent" : "Accès à l'aidit log",
             "Consent" : "Accès aux consentements de l'utilisateur de l'application avec d'autres utilisateurs ou applications",
-            "Group" : "Accès aux définitions des groupes (équipes de professionnels de la santé ou de chercheurs ainsi que groupes propres aux projets)",
+            "Group" : "Accès aux définitions des groupes (teams de professionnels de la santé ou de chercheurs ainsi que groupes propres aux projets)",
             "Patient" : "Données patients: nom, courriel, adresse électronique, adresse des titulaires de comptes",
             "PseudonymizedPatient" : "Données patients: pseudonyme, année de naissance, pays des participants au projet de recherche",
             "Practitioner" : "Ressource Practitioner: recherche de professionnels de la santé ou de chercheurs",
