@@ -654,7 +654,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		for (IBaseResource res : partResult) {
 			BundleEntryComponent cmp = retVal.addEntry();
 			cmp.setResource((Resource) res);
-			cmp.addExtension("http://midata.coop/Extensions/total-count", new IntegerType(count));
+			cmp.addExtension("http://midata.coop/extensions/total-count", new IntegerType(count));
 		}		
 		return partResult.size();
 	}

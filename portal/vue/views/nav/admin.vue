@@ -36,9 +36,9 @@
 							data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span v-t="'admin_navbar.admin'"></span><span
 								class="caret"></span></a>
 							<div class="dropdown-menu">
-								<div class="dropdown-header" v-if="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN')" v-t="'admin_navbar.user_admin'"></div>
+								<div class="dropdown-header" v-if="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN') || hasSubRole('KEYRECOVERY')" v-t="'admin_navbar.user_admin'"></div>
 								<router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('USERADMIN')" :to="{ path : './members' }" v-t="'admin_navbar.members'"></router-link><router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('USERADMIN')" :to="{ path : './organizations' }" v-t="'admin_navbar.organizations'"></router-link><router-link data-toggle="collapse" data-target=".navbar-collapse.show"
-									class="dropdown-item" v-if="hasSubRole('USERADMIN')" :to="{ path : './pwrecover' }" v-t="'admin_pwrecover.menu'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show"
+									class="dropdown-item" v-if="hasSubRole('KEYRECOVERY')" :to="{ path : './pwrecover' }" v-t="'admin_pwrecover.menu'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show"
 									class="dropdown-item" v-if="hasSubRole('USERADMIN')" :to="{ path : './auditlog' }" v-t="'admin_navbar.auditlog'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show"
 									class="dropdown-item" v-if="hasSubRole('SUPERADMIN')" :to="{ path : './registration' }" v-t="'admin_navbar.registration'"></router-link>
 								<div role="separator" class="dropdown-divider" v-if="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN')"></div>

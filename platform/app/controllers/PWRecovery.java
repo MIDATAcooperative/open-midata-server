@@ -43,6 +43,7 @@ import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.MessageReason;
+import models.enums.SubUserRole;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -101,6 +102,7 @@ public class PWRecovery extends APIController {
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
 	public Result storeRecoveryShare(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.KEYRECOVERY);
 		
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "_id", "shares");	
@@ -120,6 +122,7 @@ public class PWRecovery extends APIController {
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
 	public Result finishRecovery(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.KEYRECOVERY);
 		
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "_id", "session");
@@ -289,7 +292,9 @@ public class PWRecovery extends APIController {
     
     @APICall
 	@Security.Authenticated(AdminSecured.class)
-    public Result getUnfinished() throws AppException {
+    public Result getUnfinished(Request request) throws AppException {
+    	requireSubUserRole(request, SubUserRole.KEYRECOVERY);
+    	
     	Set<KeyRecoveryProcess> open = KeyRecoveryProcess.getUnfinished();
     	
     	return ok(JsonOutput.toJson(open, "KeyRecoveryProcess", KeyRecoveryProcess.ALL)).as("application/json");
