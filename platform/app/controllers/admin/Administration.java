@@ -574,6 +574,7 @@ public class Administration extends APIController {
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
 	public Result getUsageStats(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.PLUGINADMIN);
 		JsonNode json = request.body().asJson();					
 		JsonValidation.validate(json, "properties");
 		

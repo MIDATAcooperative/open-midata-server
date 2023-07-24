@@ -346,7 +346,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			aeec.setReference(new Reference("ResearchStudy/"+study._id.toString()));
 			aeec.setName(study.name);
 			aeec.setIdentifier(new Identifier().setValue(study.code));
-			aeec.addExtension("http://midata.coop/extension/research-type", new CodeType(study.type.toString()));
+			aeec.addExtension("http://midata.coop/extensions/research-type", new CodeType(study.type.toString()));
 		}
 				
 		

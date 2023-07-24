@@ -155,7 +155,7 @@ public class Market extends APIController {
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 		
 		app.version = JsonValidation.getLong(json, "version");				
 		
@@ -510,7 +510,7 @@ public class Market extends APIController {
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 		
 		app.version = JsonValidation.getLong(json, "version");	
 		app.pluginVersion = System.currentTimeMillis();
@@ -1082,7 +1082,7 @@ public class Market extends APIController {
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-        if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+        if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
    
 		List<PluginDevStats> stats = new ArrayList<PluginDevStats>(PluginDevStats.getByPlugin(pluginId, PluginDevStats.ALL));
 		
@@ -1092,14 +1092,14 @@ public class Market extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
 	public Result deletePluginStats(Request request, String pluginIdStr) throws JsonValidationException, AppException {
-		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		
 		MidataId pluginId = new MidataId(pluginIdStr);
         MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-        if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+        if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
    
 		PluginDevStats.deleteByPlugin(pluginId);
 		
@@ -1156,7 +1156,7 @@ public class Market extends APIController {
 					
 			Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 			if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");			
-			if (!app.isDeveloper(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+			if (!app.isDeveloper(userId) && !hasAdminRole(request, SubUserRole.PLUGINADMIN)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 		
 			
 			// extract file from data
@@ -1226,7 +1226,7 @@ public class Market extends APIController {
 					
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");			
-		if (!app.isDeveloper(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!app.isDeveloper(userId) && !hasAdminRole(request, SubUserRole.PLUGINADMIN)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 				
 		PluginIcon.delete(app.filename, use);
 				
@@ -1528,7 +1528,7 @@ public class Market extends APIController {
 		Plugin plugin = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 	    if (plugin == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!getRole().equals(UserRole.ADMIN) && !plugin.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !plugin.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 					
 		if (plugin.debugHandle != null) {
 			TestPluginCall.delete(plugin.debugHandle);
@@ -1559,12 +1559,13 @@ public class Market extends APIController {
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)	
 	public Result getReviews(Request request, String pluginIdStr) throws AppException {
+		
 		MidataId pluginId = new MidataId(pluginIdStr);
         MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-        if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+        if (!hasAdminRole(request, SubUserRole.PLUGINADMIN)  && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
    
 		List<PluginReview> reviews = PluginReview.getReviews(pluginId);
 		
@@ -1714,7 +1715,7 @@ public class Market extends APIController {
 		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "hasScripts"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 
 		if (app.repositoryUrl != null && !app.repositoryUrl.equals(repo) && action==null) {
 			if (DeploymentManager.hasUserDeployment(pluginId)) throw new BadRequestException("error.notauthorized.remove_first", "Remove existing deployment first.");
@@ -1781,7 +1782,7 @@ public class Market extends APIController {
 		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "repositoryDirectory", "hasScripts"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 
 		DeploymentReport report = DeploymentReport.getById(pluginId);
 		

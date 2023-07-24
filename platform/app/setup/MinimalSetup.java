@@ -67,7 +67,7 @@ public class MinimalSetup {
 			admin.flags = EnumSet.of(AccountActionFlags.CHANGE_PASSWORD);
 			
 			admin.role = UserRole.ADMIN;
-			admin.subroles = EnumSet.of(SubUserRole.SUPERADMIN, SubUserRole.CONTENTADMIN, SubUserRole.NEWSWRITER, SubUserRole.PLUGINADMIN, SubUserRole.STUDYADMIN, SubUserRole.USERADMIN);
+			admin.subroles = EnumSet.of(SubUserRole.SUPERADMIN, SubUserRole.CONTENTADMIN, SubUserRole.NEWSWRITER, SubUserRole.PLUGINADMIN, SubUserRole.STUDYADMIN, SubUserRole.USERADMIN, SubUserRole.KEYRECOVERY);
 			admin.status = UserStatus.ACTIVE;
 			admin.contractStatus = ContractStatus.SIGNED;	
 			admin.agbStatus = ContractStatus.SIGNED;

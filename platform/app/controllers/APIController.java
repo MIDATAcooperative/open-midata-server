@@ -32,6 +32,7 @@ import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.ContextManager;
 import utils.context.SessionAccessContext;
+import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 
@@ -82,6 +83,12 @@ public abstract class APIController extends Controller {
 		MidataId userId = new MidataId(request.attrs().get(Security.USERNAME));
 		User user = User.getById(userId, Sets.create("subroles"));
 		if (!user.subroles.contains(subUserRole)) throw new AuthException("error.notauthorized.action", "You need to have subrole '"+subUserRole.toString()+"' for this action.", subUserRole);
+	}
+	
+	public static boolean hasAdminRole(Request request, SubUserRole subUserRole) throws InternalServerException {
+		MidataId userId = new MidataId(request.attrs().get(Security.USERNAME));
+		User user = User.getById(userId, Sets.create("role", "subroles"));
+		return (user.role == UserRole.ADMIN && user.subroles.contains(subUserRole));
 	}
 	
 	public static void requireUserFeature(Request request, UserFeature feature) throws AuthException, InternalServerException {

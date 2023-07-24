@@ -128,7 +128,7 @@ export default {
 	countries : languages.countries,	
 	flags : { optional : false },
     genders : ["FEMALE","MALE","OTHER"],  
-    subroles : ["SUPERADMIN", "USERADMIN", "STUDYADMIN", "CONTENTADMIN", "PLUGINADMIN", "NEWSWRITER"],
+    subroles : ["SUPERADMIN", "USERADMIN", "KEYRECOVERY", "STUDYADMIN", "CONTENTADMIN", "PLUGINADMIN", "NEWSWRITER"],
     mode : null,
     study : null
   }),

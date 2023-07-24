@@ -108,10 +108,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	    
     
 	/**
-	 * Convert a MIDATA User object into a FHIR person object
-	 * @param userToConvert user to be converted into a FHIR object
-	 * @return FHIR person
-	 * @throws AppException
+	 * Convert a MIDATA AuditEvent object into a FHIR AuditEvent object	 
 	 */
 	public AuditEvent readAuditEventFromMidataAuditEvent(MidataAuditEvent mae) throws AppException {
 		
@@ -367,7 +364,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			aeec.setWhat(new Reference("ResearchStudy/"+study._id.toString()).setDisplay(study.code));
 			aeec.setName(study.name);
 			//aeec.setIdentifier(new Identifier().setValue(study.code));
-			aeec.addExtension("http://midata.coop/extension/research-type", new CodeType(study.type.toString()));
+			aeec.addExtension("http://midata.coop/extensions/research-type", new CodeType(study.type.toString()));
 		}
 				
 		

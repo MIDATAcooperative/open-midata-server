@@ -268,7 +268,7 @@ POST    /api/admins/wipeaccount                          controllers.admin.Admin
 POST    /api/admin/stats                                 controllers.admin.Administration.getStats(request: Request)
 POST    /api/admin/usage                                 controllers.admin.Administration.getUsageStats(request: Request)
 GET     /api/admin/health                                controllers.admin.Administration.getSystemHealth()
-GET		/api/admins/pwrecovery                           controllers.PWRecovery.getUnfinished()
+GET		/api/admins/pwrecovery                           controllers.PWRecovery.getUnfinished(request: Request)
 POST	/api/admins/pwrecovery                           controllers.PWRecovery.storeRecoveryShare(request: Request)
 POST	/api/admins/pwrecovery/finish                    controllers.PWRecovery.finishRecovery(request: Request)
 POST	/api/admins/pwrecovery/servicekey                controllers.PWRecovery.requestServiceKeyRecovery(request: Request)
