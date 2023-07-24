@@ -26,12 +26,27 @@
 
     "provider_organization" : {
         "title" : "Organizzazione",
+        "empty" : "Non fate parte di un'organizzazione.",
         "name" : "Nome",
+        "address" : "Indirizzo",
         "description" : "Descrizione",
         "url" : "URL della homepage",
+        "status" : "Stato",
         "members" : "Tutti i membri della sua organizzazione",
         "addprovider" : "Iscrivere nuovo membro",
-        "master_user" : "Devi essere un utente master per aggiornare la propria organizzazione o iscrivere nuovi utenti per l'organizzazione. Si prega di contattare @SUPPORT se si pensa che si dovrebbero avere le autorizzazioni di utente master."
+        "edit_btn" : "Modificare l'organizzazione",
+        "master_user" : "Devi essere un utente master per aggiornare la propria organizzazione o iscrivere nuovi utenti per l'organizzazione. Si prega di contattare @SUPPORT se si pensa che si dovrebbero avere le autorizzazioni di utente master.",
+        "parent" : "Parte dell'organizzazione",
+        "select_btn" : "Selezionare",
+        "managerType" : "Manager dell'organizzazione",
+        "managers" : {
+            "ME" : "Aggiungersi solo come manager",
+            "ME2" : "Aggiungersi come membro e manager",
+            "PARENT" : "L'organizzazione è gestita dall'organizzazione madre",
+            "OTHERMEMBER" : "Aggiungere un altro professionista sanitario come membro e manager",
+            "EXTERNALUSER" : "Aggiungere un altro professionista sanitario come manager"
+        },
+        "manager" : "E-mail del manager"
     },
 
     "addprovider" : {
@@ -47,7 +62,7 @@
 
     "provider_patientsearch" : {
         "title" : "Ricerca paziente",
-        "email" : "e-mail",
+        "email" : "E-mail",
         "or" : "o",
         "midataid" : "@PRODUCT ID",
         "birthday" : "Data di nascita",
@@ -70,6 +85,7 @@
     "provider_usergroups" : {
         "title" : "Team",
         "name" : "Team",
+        "type" : "Tipo",
         "status" : "Stato",
         "searchable" : "Pubblico",
         "empty" : "Non fai parte di un team."
@@ -88,7 +104,38 @@
         "status" : "Stato",
         "searchable" : "Trovabile dai titolari di un account",
         "startDate" : "Membro da",
-        "endDate" : "Membro fino a"
+        "endDate" : "Membro fino a",
+        "selected" : "Membro selezionato",
+        "rights" : "Autorizzazioni",
+        "notexists" : "Questo team non esiste (ancora).",
+        "right" : {
+            "readData" : "Leggere dati",
+            "writeData" : "Scrivere dati",
+            "changeTeam" : "Cambiare il team",
+            "setup" : "Cambiare l'organizzazione",
+            "applications" : "Gestire le applicazioni"
+        },
+        "update_btn" : "Aggiornare"
+    },
+
+    "provider_editgroups" : {
+        "title" : "Modificare le sotto-entità",
+        "entityName" : "Nome dell'entità",
+        "entityType" : "Tipo di entità",
+        "roleName" : "Ruolo",
+        "role" : {
+            "MANAGER" : "Organizzazione di gestione",
+            "SUBORGANIZATION" : "Sotto-organizzazione",
+            "HC" : "Altro"
+        },
+        "startDate" : "Membro da",
+        "endDate" : "Membro fino al",
+        "empty" : "Nessuna sotto-entità trovata.",
+        "add_organization_btn" : "Creare una sotto-organizzazione",
+        "add_organization2_btn" : "Collegamento con un'altra organizzazione",
+        "add_broker_btn" : "Aggiungere l'accesso all'API",
+        "add_group_btn" : "Aggiungere un'altra team",
+        "former_members" : "Precedenti sotto-entità"
     },
 
     "provider_memberdetails" : {

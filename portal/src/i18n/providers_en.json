@@ -42,11 +42,10 @@
       "ME" : "Add yourself as manager only",
       "ME2" : "Add yourself as member and manager",
       "PARENT" : "Organization is managed by parent organization",
-      "OTHERMEMBER" : "Add another practitioner as member and manager",
-      "EXTERNALUSER" : "Add another practitioner as manager"
+      "OTHERMEMBER" : "Add another health professional as member and manager",
+      "EXTERNALUSER" : "Add another health professional as manager"
     },
-    "manager" : "eMail of Manager"
-    
+    "manager" : "Email of Manager"
   },
   
   "addprovider" : {
@@ -62,7 +61,7 @@
   
   "provider_patientsearch" : {
      "title" : "Patient Search",
-     "email" : "email",
+     "email" : "Email",
      "or" : "or",
      "midataid" : "@PRODUCT ID",
      "birthday" : "Birthdate",
@@ -108,7 +107,6 @@
     "selected" : "Selected Member",
     "rights" : "Permissions",
     "notexists" : "This team does not (yet) exist.",
-   
     "right" : {
       "readData" : "Read data",
       "writeData" : "Write data",
@@ -121,7 +119,6 @@
   
   "provider_editgroups" : {
     "title" : "Edit Sub-Entities",
-   
     "entityName" : "Entity Name",    
     "entityType" : "Entity Type",
     "roleName" : "Role",
@@ -134,9 +131,9 @@
     "endDate" : "Member Until",
     "empty" : "No sub-entities found.",
     "add_organization_btn" : "Create Sub-Organization",
-    "add_organization2_btn" : "Link other Organization",
+    "add_organization2_btn" : "Link to another Organization",
     "add_broker_btn" : "Add API Access",
-    "add_group_btn" : "Add other Team",
+    "add_group_btn" : "Add another Team",
     "former_members" : "Former Sub-Entities"
   },
   

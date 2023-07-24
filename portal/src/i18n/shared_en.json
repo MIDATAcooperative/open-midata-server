@@ -555,11 +555,11 @@
 	 },
 	 "plugintype" : {
 	   "visualization" : "Plugin",
-	   "service" : "Internal Service",
+	   "service" : "Internal service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
 	   "mobile" : "Application (Smartphone, Web)",
-	   "external": "External Service",
+	   "external": "External service",
 	   "analyzer" : "Project analyzer",
 	   "broker" : "Data broker",
 	   "endpoint" : "FHIR endpoint"
@@ -592,12 +592,12 @@
 	   "USER" : "User",
 	   "USERGROUP" : "Team",	  
 	   "ORGANIZATION" : "Organization",
-	   "SERVICES" : "Data Broker"
+	   "SERVICES" : "Data broker"
 	 },
 	 "usergrouptype" : {
 	   "ORGANIZATION" : "Organization",
 	   "CARETEAM" : "Care Team",
-	   "HEALTHCARESERVICE" : "Halthcare Service",
+	   "HEALTHCARESERVICE" : "Healthcare Service",
 	   "RESEARCHTEAM" : "Research"
 	 },
 	 "bulkmailtype" : {

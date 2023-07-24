@@ -3,6 +3,7 @@
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Utilisateurs",
+        "organizations" : "Organisations",
         "auditlog" : "Audit log",
         "news" : "News",
         "mails" : "E-Mails",
@@ -34,6 +35,14 @@
         "status" : "État",
         "midata_id" : "@PRODUCT ID",
         "empty" : "Aucun utilisateur correspondant trouvé."
+    },
+
+    "admin_organizations" : {
+        "title" : "Organisations",
+        "name" : "Nom",
+        "status" : "État",
+        "empty" : "Aucune organisation correspondante n'a été trouvée.",
+        "members_btn" : "afficher les membres"
     },
 
     "admin_address" : {
@@ -236,7 +245,7 @@
         "myid" : "Mon id de récupération",
         "instr1" : "Cliquez sur un share pour copier le share crypté dans le presse-papiers.",
         "instr2" : "Décrypter le share sous UBUNTU: (cliquez sur la ligne pour la copier dans le presse-papiers)",
-        "instr3" : "Décrypter le share sous MAC OS: (cliquez sur la ligne pour la copier dans le presse-papiers)"
+        "instr3" : "Décrypter le share sous macOS (bash shell): (cliquez sur la ligne pour la copier dans le presse-papiers)"
     },
 
     "admin_licenses" : {

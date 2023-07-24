@@ -26,12 +26,27 @@
 
     "provider_organization" : {
         "title" : "Organisation",
+        "empty" : "Sie gehören zu keiner Organisation.",
         "name" : "Name",
+        "address" : "Adresse",
         "description" : "Beschreibung",
         "url" : "Homepage URL",
+        "status" : "Status",
         "members" : "Alle Mitglieder Ihrer Organisation",
         "addprovider" : "Neues Mitglied registrieren",
-        "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an @SUPPORT, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten."
+        "edit_btn" : "Organisation bearbeiten",
+        "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an @SUPPORT, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten.",
+        "parent" : "Teil der Organisation",
+        "select_btn" : "Auswählen",
+        "managerType" : "Manager der Organisation",
+        "managers" : {
+            "ME" : "Sich nur als Manager hinzufügen",
+            "ME2" : "Sich als Mitglied und Manager hinzufügen",
+            "PARENT" : "Die Organisation wird von der Mutterorganisation geleitet",
+            "OTHERMEMBER" : "Eine weitere Gesundheitsfachperson als Mitglied und Manager hinzufügen",
+            "EXTERNALUSER" : "Eine weitere Gesundheitsfachperson als Manager hinzufügen"
+        },
+        "manager" : "E-Mail des Managers"
     },
 
     "addprovider" : {
@@ -70,6 +85,7 @@
     "provider_usergroups" : {
         "title" : "Teams",
         "name" : "Team",
+        "type" : "Typ",
         "status" : "Status",
         "searchable" : "Öffentlich",
         "empty" : "Sie sind nicht Mitglied eines Teams."
@@ -88,7 +104,38 @@
         "status" : "Status",
         "searchable" : "Auffindbar für Kontoinhaber",
         "startDate" : "Mitglied seit",
-        "endDate" : "Mitglied bis"
+        "endDate" : "Mitglied bis",
+        "selected" : "Ausgewähltes Mitglied",
+        "rights" : "Berechtigungen",
+        "notexists" : "Dieses Team gibt es (noch) nicht.",
+        "right" : {
+            "readData" : "Daten lesen",
+            "writeData" : "Daten schreiben",
+            "changeTeam" : "Team wechseln",
+            "setup" : "Organisation wechseln",
+            "applications" : "Applikationen verwalten"
+        },
+        "update_btn" : "Aktualisieren"
+    },
+
+    "provider_editgroups" : {
+        "title" : "Unterentitäten bearbeiten",
+        "entityName" : "Name der Entität",
+        "entityType" : "Typ der Entität",
+        "roleName" : "Rolle",
+        "role" : {
+            "MANAGER" : "Verwaltungsorganisation",
+            "SUBORGANIZATION" : "Unterorganisation",
+            "HC" : "Andere"
+        },
+        "startDate" : "Mitglied von",
+        "endDate" : "Mitglied bis",
+        "empty" : "Keine Unterentität gefunden.",
+        "add_organization_btn" : "Sub-Organisation erstellen",
+        "add_organization2_btn" : "Mit einer anderen Organisation verknüpfen",
+        "add_broker_btn" : "API-Zugang hinzufügen",
+        "add_group_btn" : "Weiteres Team hinzufügen",
+        "former_members" : "Ehemalige Unterentitäten"
     },
 
     "provider_memberdetails" : {

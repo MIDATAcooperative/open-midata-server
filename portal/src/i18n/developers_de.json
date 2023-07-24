@@ -65,7 +65,8 @@
             "CONSENT_CONFIRM_OWNER" : "Zustimmungsannahme (Geber)",
             "CONSENT_CONFIRM_AUTHORIZED" : "Zustimmungsannahme (Empfänger)",
             "CONSENT_REJECT_OWNER" : "Zustimmungsablehnung (Geber)",
-            "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (Empfänger)",
+            "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (vorgeschlagene Zustimmung, Empfänger)",
+            "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Zustimmungsablehnung (aktive Zustimmung, Empfänger)",
             "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet",
             "EMAIL_CHANGED_OLDADDRESS" : "E-Mail-Adresse geändert (an alte E-Mail-Adresse senden)",
             "EMAIL_CHANGED_NEWADDRESS" : "E-Mail-Adresse geändert (an neue E-Mail-Adresse senden)",
@@ -293,7 +294,7 @@
         "trigger" : "Trigger",
         "triggerDetail" : "FHIR Ressource",
         "action" : "Aktion",
-        "params" : "URL / Dateiname",
+        "params" : "URL / Dateiname / Ziel",
         "triggers" : {
             "fhir_Consent" : "Zustimmungsänderungen",
             "fhir_MessageHeader" : "FHIR-Nachricht",

@@ -89,7 +89,9 @@
             "entity_type" : "Ungültiger Entitätstyp",
             "joincode" : "Der angegebene Teilnahme-Code wird nicht akzeptiert.",
             "usePreconfirmed" : "Die Vorabbestätigung der Zustimmung und die Weitergabe an Dritte ist nicht gleichzeitig zulässig.",
-            "csvmapping" : "Ungültiges Mapping angegeben."
+            "csvmapping" : "Ungültiges Mapping angegeben.",
+            "id" : "Ungültiger Identifikator",
+            "usergroup" : "Sie müssen Mitglied dieser Benutzergruppe sein, um diese Aktion durchführen zu können."
         },
 
         "missing" : {
@@ -111,7 +113,8 @@
             "access_query" : "Keine Daten ausgewählt",
             "plugin" : "Dieses Plugin existiert nicht in Ihrem Konto.",
             "auth_type" : "Für Ihren Kontotyp ist eine Zwei-Faktor-Authentifizierung erforderlich.",
-            "licence" : "Für die Nutzung dieser Applikation ist eine gültige Lizenz erforderlich."
+            "licence" : "Für die Nutzung dieser Applikation ist eine gültige Lizenz erforderlich.",
+            "manager" : "Sie müssen einer anderen Person Managerberechtigungen erteilen, bevor Sie diese Entität aus der Gruppe entfernen."
         },
 
         "unknown" : {
@@ -337,6 +340,9 @@
             "vread" : "Ressource Version gelesen",
             "history" : "Ressource Historie lesen",
             "search" : "Nach Ressourcen gesucht",
+            "organization-updated" : "Organisation aktualisiert",
+            "organization-created" : "Organisation erstellt",
+            "organization-deleted" : "Organisation gelöscht",
             "added-as-team-member" : "Hinzugefügt als Teammitglied",
             "updated-role-in-team" : "Rolle im Team aktualisiert",
             "removed-from-team" : "Aus Team entfernt",
@@ -556,6 +562,7 @@
             "mobile" : "Applikation (Smartphone, Web)",
             "external" : "Externer Dienst",
             "analyzer" : "Projekt-Analysator",
+            "broker" : "Data broker",
             "endpoint" : "FHIR endpoint"
         },
         "infos" : {
@@ -585,7 +592,14 @@
         "entitytype" : {
             "USER" : "Benutzer",
             "USERGROUP" : "Team",
-            "ORGANIZATION" : "Organisation"
+            "ORGANIZATION" : "Organisation",
+            "SERVICES" : "Data broker"
+        },
+        "usergrouptype" : {
+            "ORGANIZATION" : "Organisation",
+            "CARETEAM" : "Pflegeteam",
+            "HEALTHCARESERVICE" : "Gesundheitsdienst",
+            "RESEARCHTEAM" : "Forschung"
         },
         "bulkmailtype" : {
             "MARKETING" : "Marketing - Kontoinhabende",
@@ -682,6 +696,7 @@
         "sign_up_btn" : "Konto erstellen",
         "unlock_code" : "Freischaltcode",
         "already_have_account" : "Ich habe bereits ein Konto",
+        "already_have_account2" : "Wenn dies Ihr eigenes Konto ist, klicken Sie hier, um zur Anmeldeseite zu gelangen.",
         "more" : "Haben Sie noch ein paar Sekunden Zeit? Wir wären froh, wenn Sie uns noch ein paar Details über sich verraten könnten ☺️",
         "generous" : "Ich bin heute grosszügig, zeigen Sie mir die Eingabefelder!",
         "hide_optional" : "Optionale Felder verstecken",
@@ -975,6 +990,7 @@
         "set_owner_btn" : "Person auswählen, die ihre Daten teilt",
         "add_yourself_btn" : "Sich selbst hinzufügen",
         "add_person_btn" : "Neue Person hinzufügen",
+        "add_organization_btn" : "Neue Organisation hinzufügen",
         "add_usergroup_btn" : "Neues Team hinzufügen",
         "writes" : "Schreibrechte",
         "writes2" : "Die durch diese Zustimmung ermächtigten Personen dürfen Daten, die dieser Zustimmung unterstellt sind, in Ihrem Konto speichern oder aktualisieren.",
@@ -1316,6 +1332,19 @@
         "add_group_btn" : "Als veränderliches Team der Zustimmung hinzufügen"
     },
 
+    "organizationsearch" : {
+        "title" : "Suche nach Organisationen",
+        "name" : "Name der Organisation",
+        "city_or_zip" : "Ort oder Postleitzahl",
+        "empty_result" : "Keine passende Organisation gefunden."
+    },
+
+    "databrokersearch" : {
+        "title" : "Suche nach Data Brokers (APIs)",
+        "name" : "Name des Data brokers",
+        "empty_result" : "Keinen passenden Data broker gefunden."
+    },
+
     "confirm" : {
         "title" : "Sind Sie wirklich sicher?",
         "cancel" : "Abbrechen"
@@ -1408,6 +1437,11 @@
         "reason2" : "Wir wären Ihnen dankbar, wenn Sie uns mitteilen könnten, warum Sie Ihr Konto löschen. Wir sind ständig bemüht, @PLATFORM zu verbessern.",
         "wipe_btn" : "@PRODUCT Konto schliessen und löschen",
         "error" : "Passwort nicht korrekt. Das Konto wurde nicht gelöscht."
+    },
+
+    "service" : {
+        "title" : "Token-Link-Dienst für @PRODUCT",
+        "success" : "Ihr Token-Link wurde verarbeitet. Sie können dieses Fenster nun schließen."
     },
 
     "serviceleave" : {

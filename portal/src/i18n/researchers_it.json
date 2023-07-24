@@ -377,7 +377,7 @@
         "recruiter" : "Reclutatore",
         "status" : "Stato",
         "created_at" : "Creato alle",
-        "empty" : "Non sono stati generati codici di partecipazione.",
+        "empty" : "Nessun codice di partecipazione generato.",
         "showcreate_btn" : "Aggiungere nuovi codici",
         "new_title" : "Creare nuovi codici",
         "number_of_codes" : "Numero di codici",

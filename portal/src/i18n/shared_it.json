@@ -89,7 +89,9 @@
             "entity_type" : "Tipo di entità non valida",
             "joincode" : "Il codice di partecipazione fornito non è accettato.",
             "usePreconfirmed" : "La preconferma del consenso e la condivisione con terzi non sono consentite allo stesso tempo.",
-            "csvmapping" : "Mappatura non valida fornita."
+            "csvmapping" : "Mappatura non valida fornita.",
+            "id" : "Identificatore non valido",
+            "usergroup" : "Per eseguire questa azione è necessario essere membri di questo gruppo di utenti."
         },
 
         "missing" : {
@@ -111,7 +113,8 @@
             "access_query" : "Nessun dati selezionato",
             "plugin" : "Questo plugin non esiste nel suo account.",
             "auth_type" : "L'autenticazione a due fattori è necessaria per il suo tipo di account.",
-            "licence" : "Per utilizzare questa applicazione è necessaria una licenza valida."
+            "licence" : "Per utilizzare questa applicazione è necessaria una licenza valida.",
+            "manager" : "Prima di rimuovere questa entità dal gruppo, è necessario concedere a qualcun altro le autorizzazioni di manager."
         },
 
         "unknown" : {
@@ -337,6 +340,9 @@
             "vread" : "Versione della risorsa letta",
             "history" : "Storia della risorsa letta",
             "search" : "Ricerca di risorse",
+            "organization-updated" : "Organizzazione aggiornata",
+            "organization-created" : "Organizzazione creata",
+            "organization-deleted" : "Organizzazione cancellata",
             "added-as-team-member" : "Aggiunto come membro del team",
             "updated-role-in-team" : "Ruolo aggiornato nel team",
             "removed-from-team" : "Rimosso dal team",
@@ -556,6 +562,7 @@
             "mobile" : "Applicazione (Smartphone, Web)",
             "external" : "Servizio esterno",
             "analyzer" : "Analizzatore di progetto",
+            "broker" : "Data broker",
             "endpoint" : "FHIR endpoint"
         },
         "infos" : {
@@ -585,7 +592,14 @@
         "entitytype" : {
             "USER" : "Utente",
             "USERGROUP" : "Team",
-            "ORGANIZATION" : "Organizzazione"
+            "ORGANIZATION" : "Organizzazione",
+            "SERVICES" : "Data broker"
+        },
+        "usergrouptype" : {
+            "ORGANIZATION" : "Organizzazione",
+            "CARETEAM" : "Team di assistenza",
+            "HEALTHCARESERVICE" : "Servizio sanitario",
+            "RESEARCHTEAM" : "Ricerca"
         },
         "bulkmailtype" : {
             "MARKETING" : "Marketing - Titolari di un account",
@@ -682,6 +696,7 @@
         "sign_up_btn" : "Crea account",
         "unlock_code" : "Codice di sblocco",
         "already_have_account" : "Ho già un account",
+        "already_have_account2" : "Se si tratta del proprio account, fare clic qui per accedere alla pagina di login.",
         "more" : "Ha ancora qualche secondo? Saremmo lieti se poteste fornirci maggiori dettagli su di lei ☺️️",
         "generous" : "Mi sento generoso oggi, mi mostrano i campi!",
         "hide_optional" : "Nascondi campi opzionali",
@@ -973,9 +988,10 @@
         "who_is_owner" : "Chi sta condividendo i dati?",
         "which_persons" : "Con quale persona/e sono condivisi i dati?",
         "set_owner_btn" : "Selezionare la persona che condivide i propri dati",
-        "add_yourself_btn" : "Aggiungi se stesso",
-        "add_person_btn" : "Aggiungi una nuova persona",
-        "add_usergroup_btn" : "Aggiungi un nuovo team",
+        "add_yourself_btn" : "Aggiungere se stesso",
+        "add_person_btn" : "Aggiungere una nuova persona",
+        "add_organization_btn" : "Aggiungere una nuova organizzazione",
+        "add_usergroup_btn" : "Aggiungere un nuovo team",
         "writes" : "Scrivi l'autorizzazione",
         "writes2" : "Le persone autorizzate da questo consenso possono creare o aggiornare dati nel suo account incluso nel consenso suddetto.",
         "reshare" : "Accesso di terzi?",
@@ -1279,8 +1295,8 @@
     "spacesummary" : {
         "records_to_view" : "Record da visualizzare.",
         "last_entry_at" : "Ultimi dati immessi alle",
-        "no_entries_yet" : "Non sono stati ancora immessi dati",
-        "newest_entry_from" : "Dati più recenti immessi da",
+        "no_entries_yet" : "Non ci sono ancora dati",
+        "newest_entry_from" : "Dati più recenti da",
         "view_btn" : "Visualizzazione",
         "add_btn" : "Aggiungi"
     },
@@ -1314,6 +1330,19 @@
         "empty_result" : "Non è stato trovato alcun team corrispondente.",
         "add_individuals_btn" : "Aggiungi come singola persona al consenso",
         "add_group_btn" : "Aggiungi come team da modificare al consenso"
+    },
+
+    "organizationsearch" : {
+        "title" : "Ricerca di organizzazioni",
+        "name" : "Nome dell'organizzazione",
+        "city_or_zip" : "Città o codice postale",
+        "empty_result" : "Nessuna organizzazione corrispondente trovata."
+    },
+
+    "databrokersearch" : {
+        "title" : "Ricerca di data brokers (APIs)",
+        "name" : "Nome del data broker",
+        "empty_result" : "Nessun data broker corrispondente trovato."
     },
 
     "confirm" : {
@@ -1408,6 +1437,11 @@
         "reason2" : "Le saremmo grati se volesse comunicarci perché sta cancellando il suo account. Siamo costantemente impegnati a migliorare @PLATFORM.",
         "wipe_btn" : "Chiudi e cancella account @PRODUCT",
         "error" : "La password non è corretta. L'account non è stato eliminato."
+    },
+
+    "service" : {
+        "title" : "Servizio Token-Link per @PRODOTTO",
+        "success" : "Il vostro token-link è stato elaborato. Ora è possibile chiudere questa finestra."
     },
 
     "serviceleave" : {

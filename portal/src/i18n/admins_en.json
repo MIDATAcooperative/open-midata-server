@@ -44,7 +44,6 @@
     "members_btn" : "show members"
   },
 
-
   "admin_address" : {
     "title" : "User profile",
     "show_apps_created" : "Show the applications created by this developer",
@@ -245,7 +244,7 @@
      "myid" : "My recovery id",
      "instr1" : "Click on a share to copy the encrypted share into the clipboard.",
      "instr2" : "Decrypt share on UBUNTU: (click line to copy it to clipboard)",
-     "instr3" : "Decrypt share on MAC OS: (click line to copy it to clipboard)"     
+     "instr3" : "Decrypt share on macOS (bash shell): (click line to copy it to clipboard)"     
    },
    
    "admin_licenses" : {

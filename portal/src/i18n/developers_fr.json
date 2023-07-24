@@ -65,7 +65,8 @@
             "CONSENT_CONFIRM_OWNER" : "Confirmation de consentement (cédant)",
             "CONSENT_CONFIRM_AUTHORIZED" : "Confirmation de consentement (bénéficiaire)",
             "CONSENT_REJECT_OWNER" : "Refus de consentement (cédant)",
-            "CONSENT_REJECT_AUTHORIZED" : "Refus de consentement (bénéficiaire)",
+            "CONSENT_REJECT_AUTHORIZED" : "Refus de consentement (consentement proposé, bénéficiaire)",
+            "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Refus de consentement (consentement actif, bénéficiaire)",
             "ACCOUNT_UNLOCK" : "Compte validé par l'administrateur",
             "EMAIL_CHANGED_OLDADDRESS" : "Adresse e-mail changée (envoyer à l'ancienne adresse e-mail)",
             "EMAIL_CHANGED_NEWADDRESS" : "Adresse e-mail changée (envoyer à la nouvelle adresse e-mail)",
@@ -149,7 +150,7 @@
         "default_context_extern" : "Plugin autonome",
         "deploy_status" : "État du déploiement",
         "info" : {
-            "filename" : "Ce nom est utilisé (en interne) pour identifier votre application. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
+            "filename" : "Ce nom est utilisé (en interne) pour identifier votre application. Il doit s'agir d'un identifiant valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Votre application est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
             "loginTemplate" : "À quoi doit ressembler le processus de connexion? Certaines configurations nécessitent l'approbation d'un administrateur",
             "loginButtonsTemplate" : "Comment disposer les boutons?",
@@ -293,7 +294,7 @@
         "trigger" : "Trigger",
         "triggerDetail" : "FHIR Resource",
         "action" : "Action",
-        "params" : "URL / Nom du fichier",
+        "params" : "URL / Nom du fichier / Cible",
         "triggers" : {
             "fhir_Consent" : "Modifications de consentement",
             "fhir_MessageHeader" : "Message FHIR",
