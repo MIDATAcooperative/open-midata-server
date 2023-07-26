@@ -59,7 +59,7 @@ import ENV from "config";
 
 export default {
     data: () => ({	       
-        baseurl : ENV.baseurl,
+        baseurl : ENV.apiurl,
         calls : [],
         app : null,
         userId : null
