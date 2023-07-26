@@ -307,10 +307,10 @@ public class Spaces extends APIController {
 		  throw new InternalServerException("error.internal", "No space with this id exists.");
 		}
 		
-		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters","licenceDef"));
-
+		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters", "licenceDef", "developerTeam"));		
+	
 		boolean testing = visualization.isDeveloper(PortalSessionToken.session().getDeveloperId()) || visualization.isDeveloper(userId); 
-
+		AccessLog.log("get url devid="+PortalSessionToken.session().getDeveloperId()+" userid="+userId+" testing="+testing);
 		if (!testing && LicenceChecker.licenceRequired(visualization)) {
 			LicenceChecker.checkSpace(userId, visualization, space);
 		}
