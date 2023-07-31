@@ -329,9 +329,9 @@ public class BulkMails extends APIController {
 			if (title == null) return false;
 			
 			String link;
-			if (study!=null) {
+			if (study!=null && user.role != UserRole.ADMIN) {
 				StudyParticipation sp = StudyParticipation.getByStudyAndMember(study, targetUser, Sets.create("_id","status"));
-				if (! sp.isActive()) return false;
+				if (sp == null || ! sp.isActive()) return false;
 				
 				link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.consentToken(sp._id);
 			} else link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.userToken(targetUser);
