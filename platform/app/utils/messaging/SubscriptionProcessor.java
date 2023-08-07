@@ -386,7 +386,7 @@ public class SubscriptionProcessor extends AbstractActor {
 	   
 	   request.addQueryParameter("token", token);
 	   request.addQueryParameter("lang", lang);
-	   request.addQueryParameter("backend", "http://localhost:9001");
+	   request.addQueryParameter("backend", "https://"+InstanceConfig.getInstance().getPlatformServer()); //"http://localhost:9001");
 	   request.addQueryParameter("owner", subscription.owner.toString());
 	   request.addQueryParameter("id", id);
 	   		   

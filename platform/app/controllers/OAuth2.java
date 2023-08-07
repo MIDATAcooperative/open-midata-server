@@ -58,6 +58,7 @@ import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
+import models.enums.RejoinPolicy;
 import models.enums.SecondaryAuthType;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
@@ -173,7 +174,14 @@ public class OAuth2 extends Controller {
 				    if ( 
 						sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
 						sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED)) {
-							throw new BadRequestException("error.blocked.projectconsent", "Research consent expired or blocked.");
+				    	    Study project = Study.getById(sp.study, Sets.create("rejoinPolicy"));
+				    	    if (project != null && project.rejoinPolicy == RejoinPolicy.NO_REJOIN) {
+							   throw new BadRequestException("error.blocked.projectconsent", "Research consent expired or blocked.");
+				    	    } else {
+				    	    	AccessLog.log("remove instance due to retreted from project: "+sal.studyId);
+		        			    if (context != null) ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
+			                   	return false;
+				    	    }
 					}
 				    if (sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
 							throw new BadRequestException("error.blocked.participation", "Research consent expired or blocked.");
