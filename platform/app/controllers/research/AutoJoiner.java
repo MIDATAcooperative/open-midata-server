@@ -170,7 +170,7 @@ class AutoJoinerActor extends AbstractActor {
 						
 						AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_APPROVED).withActorUser(RuntimeConstants.instance.backendService).withModifiedUser(consent.owner).withConsent(consent));
 						Circles.consentStatusChange(context, consent, ConsentStatus.ACTIVE);
-						Circles.sendConsentNotifications(context.getAccessor(), consent, ConsentStatus.ACTIVE, false);
+						Circles.sendConsentNotifications(context, consent, ConsentStatus.ACTIVE, false);
 						
 						Consent.set(consent._id, "autoConfirmHandle", null);
 						consent.autoConfirmHandle = null;
