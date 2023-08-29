@@ -110,4 +110,6 @@ id0117	10.07.2023	a.kreutz	F	Changes to Organizations	Organizations may have a p
 id0118	10.07.2023	a.kreutz	F	New application type Data Broker	There is a new application type "Data Broker". The data broker is like an external service but may not directly access any patient data. Instead the data broker may be added as member to UserGroups. A group may be added to the authorization token which allows the data broker to act as this group (with the given permissions). The data broker may create or update Organizations and UserGroups using the API.
 id0119	13.07.2023	a.kreutz	I	Allow use of national and separate international SMS service
 id0120	20.07.2023	a.kreutz	I	Updated resources now contain their initial creation time	In the MIDATA meta block extension a new valueDateTime extension with name "createAt" with the initial creation time of the resource is available for all resources that have been updated.
+id0121	29.08.2023	a.kreutz	I	Added grantee variables to consent notification emails
+id0122	29.08.2023	a.kreutz	I	Added sender-user extension to FHIR message headers
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

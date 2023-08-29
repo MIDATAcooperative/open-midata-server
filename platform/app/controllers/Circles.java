@@ -530,11 +530,11 @@ public class Circles extends APIController {
 		
 										
 		if (consent.status == ConsentStatus.UNCONFIRMED) {
-			sendConsentNotifications(context.getAccessor(), consent, consent.status, false);
+			sendConsentNotifications(context, consent, consent.status, false);
 		} else if (consent.status == ConsentStatus.ACTIVE) {
-			sendConsentNotifications(context.getAccessor(), consent, consent.status, false);
+			sendConsentNotifications(context, consent, consent.status, false);
 		} else if (consent.status == ConsentStatus.PRECONFIRMED) {
-			sendConsentNotifications(context.getAccessor(), consent, consent.status, false);
+			sendConsentNotifications(context, consent, consent.status, false);
 		}
 				
 		AuditManager.instance.success();
@@ -691,7 +691,7 @@ public class Circles extends APIController {
 		
 		boolean wasActive = consent.isActive();
 		consentStatusChange(context, consent, ConsentStatus.EXPIRED);
-		sendConsentNotifications(context.getAccessor(), consent, ConsentStatus.EXPIRED, wasActive);
+		sendConsentNotifications(context, consent, ConsentStatus.EXPIRED, wasActive);
 				
 		// delete circle		
 		switch (consent.type) {
@@ -824,7 +824,7 @@ public class Circles extends APIController {
 		if (consent != null && !consent.status.equals(ConsentStatus.EXPIRED)) {
 			boolean wasActive = consent.isActive();
 			consentStatusChange(context, consent, ConsentStatus.EXPIRED);
-			sendConsentNotifications(context.getAccessor(), consent, ConsentStatus.EXPIRED, wasActive);			
+			sendConsentNotifications(context, consent, ConsentStatus.EXPIRED, wasActive);			
 		}
 	}
 	/**
@@ -980,49 +980,64 @@ public class Circles extends APIController {
 		SubscriptionManager.resourceChange(context, consent);
 	}
 	
-	public static void sendConsentNotifications(MidataId executorId, Consent consent, ConsentStatus reason, boolean wasActive) throws AppException {
+	public static void sendConsentNotifications(AccessContext context, Consent consent, ConsentStatus reason, boolean wasActive) throws AppException {
 		MidataId sourcePlugin = consent.creatorApp != null ? consent.creatorApp : RuntimeConstants.instance.portalPlugin;
 		Map<String, String> replacements = new HashMap<String, String>();
 		Set<MidataId> targets = new HashSet<MidataId>();
 		targets.addAll(consent.authorized);
-		targets.remove(executorId);
+		targets.remove(context.getActor());
 						
 		String category = consent.categoryCode;
 		if (category == null) category = consent.type.toString();
-		
-		User sender = User.getByIdAlsoDeleted(executorId, Sets.create("firstname", "lastname", "role", "email", "language"));
-		if (sender != null) {
-			replacements.put("executor-firstname", sender.firstname);
-			replacements.put("executor-lastname", sender.lastname);
-			replacements.put("executor-email", sender.email != null ? sender.email : "none");
-		} else {
-			replacements.put("executor-firstname", "-");
-			replacements.put("executor-lastname", "-");
-			replacements.put("executor-email", "none");
+		User sender = context.getActor() != null ? context.getRequestCache().getUserById(context.getActor(), true) : null;
+		User grantor = consent.owner != null ? context.getRequestCache().getUserById(consent.owner, true) : null;
+		User grantee = null;
+		if (consent.authorized.size() == 1) {
+			grantee = context.getRequestCache().getUserById(consent.authorized.iterator().next());
 		}
+		
 		try {
-			if (executorId.equals(consent.owner)) {
-				if (sender != null) {
-				   replacements.put("grantor-firstname", sender.firstname);
-				   replacements.put("grantor-lastname", sender.lastname);
-				   replacements.put("grantor-email", sender.email != null ? sender.email : "none");
-				} else {
-					replacements.put("grantor-firstname", "-");
-					replacements.put("grantor-lastname", "-");
-					replacements.put("grantor-email", "none");
-				}
-			} else if (consent.owner != null) {
-				User owner = User.getByIdAlsoDeleted(consent.owner, Sets.create("firstname", "lastname", "role", "email", "language"));
-				replacements.put("grantor-firstname", owner.firstname);
-				replacements.put("grantor-lastname", owner.lastname);
-				replacements.put("grantor-email", owner.email != null ? owner.email : "none");
-				replacements.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(owner.email != null ? ("&login="+URLEncoder.encode(owner.email, "UTF-8")) : ""));
+			if (sender != null) {
+				replacements.put("executor-firstname", sender.firstname);
+				replacements.put("executor-lastname", sender.lastname);
+				replacements.put("executor-email", sender.email != null ? sender.email : "none");
 			} else {
-				replacements.put("grantor-firstname", "");
-				replacements.put("grantor-lastname", "");
-				replacements.put("grantor-email", consent.externalOwner);
+				replacements.put("executor-firstname", "-");
+				replacements.put("executor-lastname", "-");
+				replacements.put("executor-email", "none");
+			}
+		
+			if (grantor != null) {				
+				   replacements.put("grantor-firstname", grantor.firstname);
+				   replacements.put("grantor-lastname", grantor.lastname);
+				   replacements.put("grantor-email", grantor.email != null ? grantor.email : "none");
+			} else {
+			  	   replacements.put("grantor-firstname", "-");
+				   replacements.put("grantor-lastname", "-");								   
+				   replacements.put("grantor-email", consent.externalOwner != null ? consent.externalOwner : "none");
+			}
+			
+			if (grantee != null) {				
+				   replacements.put("grantee-firstname", grantee.firstname);
+				   replacements.put("grantee-lastname", grantee.lastname);
+				   replacements.put("grantee-email", grantee.email != null ? grantee.email : "none");
+			} else {
+			  	   replacements.put("grantee-firstname", "");
+				   replacements.put("grantee-lastname", "");	
+				   if (consent.externalAuthorized != null && consent.externalAuthorized.size() == 1) {
+					 replacements.put("grantee-email", consent.externalAuthorized.iterator().next());
+				   } else {
+				     replacements.put("grantee-email", "-");
+				   }
+			}
+			
+			if (grantor != null) {				
+				replacements.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(grantor.email != null ? ("&login="+URLEncoder.encode(grantor.email, "UTF-8")) : ""));
+			} else {			
 				replacements.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+"&isnew=true&login="+URLEncoder.encode(consent.externalOwner, "UTF-8"));
 			}
+			
+			
 			replacements.put("consent-name", consent.name);		
 		    String language = sender != null ? sender.language : InstanceConfig.getInstance().getDefaultLanguage();
 			if (reason == ConsentStatus.UNCONFIRMED) {
@@ -1036,7 +1051,7 @@ public class Circles extends APIController {
 				}
 				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_EXISTING, category, targets, language, replacements);						
 				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_INVITED, category, Collections.singleton(consent.externalOwner), language, replacements);
-				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_EXISTING, category, Collections.singleton(consent.owner), language, replacements);
+				if (!context.getActor().equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_EXISTING, category, Collections.singleton(consent.owner), language, replacements);
 			} else if (reason == ConsentStatus.ACTIVE) {
 				for (MidataId target : targets) {
 					Map<String, String> replacementsExt = new HashMap<String, String>();
@@ -1050,12 +1065,12 @@ public class Circles extends APIController {
 					    Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, Collections.singleton(target), language, replacementsExt);
 					}
 				}
-				if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_OWNER, category, Collections.singleton(consent.owner), language, replacements);			
+				if (!context.getActor().equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_OWNER, category, Collections.singleton(consent.owner), language, replacements);			
 			} else if (reason == ConsentStatus.PRECONFIRMED) {
 				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_PRECONFIRMED_OWNER, category, Collections.singleton(consent.owner), language, replacements);				
 			} else if (reason == ConsentStatus.REJECTED) {
 				
-				if (!executorId.equals(consent.owner)) {
+				if (!context.getActor().equals(consent.owner)) {
 					Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), language, replacements);					
 				} 
 				if (wasActive) {

@@ -77,7 +77,7 @@ public class TokenActions extends Controller {
 				Consent.set(consent._id, "lastUpdated", consent.lastUpdated);	
 				if (consent.externalAuthorized.isEmpty() && consent.authorized.isEmpty()) {
 					Circles.consentStatusChange(context, consent, ConsentStatus.REJECTED);
-					Circles.sendConsentNotifications(context.getAccessor(), consent, ConsentStatus.REJECTED, wasActive);
+					Circles.sendConsentNotifications(context, consent, ConsentStatus.REJECTED, wasActive);
 				} else {
 					Circles.persistConsentMetadataChange(context, consent, false);
 				}

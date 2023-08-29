@@ -536,7 +536,7 @@ public class Studies extends APIController {
 		participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);		
 		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
 		Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
-		Circles.sendConsentNotifications(context.getAccessor(), participation, ConsentStatus.REJECTED, false);
+		Circles.sendConsentNotifications(context, participation, ConsentStatus.REJECTED, false);
 		controllers.research.Studies.leaveSharing(context, studyId, userId);
 		AuditManager.instance.success();
 		
@@ -576,7 +576,7 @@ public class Studies extends APIController {
 			
 			participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);				
 			Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
-			Circles.sendConsentNotifications(context.getAccessor(), participation, ConsentStatus.REJECTED, wasActive);
+			Circles.sendConsentNotifications(context, participation, ConsentStatus.REJECTED, wasActive);
 		} else {
 		
 		   AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_MEMBER_RETREAT, userId, participation, study);		   
@@ -590,7 +590,7 @@ public class Studies extends APIController {
 		   } else {
 			 Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);
 		   }
-		   Circles.sendConsentNotifications(context.getAccessor(), participation, ConsentStatus.REJECTED, wasActive);
+		   Circles.sendConsentNotifications(context, participation, ConsentStatus.REJECTED, wasActive);
 		}
 		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
 						

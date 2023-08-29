@@ -264,12 +264,13 @@ public class BulkMails extends APIController {
 			return ids;
 		} else if (mailItem.type == BulkMailType.APP) {				
 			Set<MobileAppInstance> parts = MobileAppInstance.getByApplication(mailItem.appId, Sets.create("owner"));
-			List<MidataId> ids = new ArrayList<MidataId>();
+			Set<MidataId> ids = new HashSet<MidataId>();
 			if (mailItem.progressId != null) {
 				for (MobileAppInstance part : parts) if (part.owner.compareTo(mailItem.progressId) > 0) ids.add(part.owner);
 			} else for (MobileAppInstance part : parts) ids.add(part.owner);
-		    Collections.sort(ids);		
-			return ids;			
+			List<MidataId> idsSorted = new ArrayList<MidataId>(ids);
+		    Collections.sort(idsSorted);		
+			return idsSorted;			
 		} else {
 			Set<User> users = User.getAllUser(CMaps.map("role",UserRole.MEMBER).map("status",User.NON_DELETED).mapNotEmpty("country", mailItem.country), Sets.create("_id","marketingEmail"));
 			Set<MidataId> ids = new HashSet<MidataId>(users.size());

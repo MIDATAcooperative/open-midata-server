@@ -181,7 +181,7 @@ public class HealthProvider extends APIController {
 			}
 			target.setConfirmDate(new Date());			
 			Circles.consentStatusChange(context, target, ConsentStatus.ACTIVE);
-			Circles.sendConsentNotifications(context.getAccessor(), target, ConsentStatus.ACTIVE, false);
+			Circles.sendConsentNotifications(context, target, ConsentStatus.ACTIVE, false);
 		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");		
 		
 		
@@ -226,7 +226,7 @@ public class HealthProvider extends APIController {
 			if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE) || target.status.equals(ConsentStatus.PRECONFIRMED) || target.status.equals(ConsentStatus.INVALID)) {
 				target.setConfirmDate(new Date());			
 				Circles.consentStatusChange(context, target, ConsentStatus.REJECTED);
-				Circles.sendConsentNotifications(userId, target, ConsentStatus.REJECTED, wasActive);
+				Circles.sendConsentNotifications(context, target, ConsentStatus.REJECTED, wasActive);
 			} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");
 		}
 		AuditManager.instance.success();
@@ -248,7 +248,7 @@ public class HealthProvider extends APIController {
 			   RecordManager.instance.unshareAPSRecursive(contextConsent, consent._id, Collections.singleton(userId));
 		   } else Circles.consentStatusChange(context, consent, ConsentStatus.REJECTED);
 		   
-		   Circles.sendConsentNotifications(userId, consent, ConsentStatus.REJECTED, wasActive);
+		   Circles.sendConsentNotifications(context, consent, ConsentStatus.REJECTED, wasActive);
 	   } else {
 		   Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(userId);
 		   for (UserGroupMember ugm : ugms) {
@@ -260,7 +260,7 @@ public class HealthProvider extends APIController {
 					   Consent.set(consent._id, "lastUpdated", new Date());				
 					   RecordManager.instance.unshareAPSRecursive(contextConsent, consent._id, Collections.singleton(ugm.userGroup));
 				   } else Circles.consentStatusChange(context, consent, ConsentStatus.REJECTED);
-				   Circles.sendConsentNotifications(userId, consent, ConsentStatus.REJECTED, wasActive);
+				   Circles.sendConsentNotifications(context, consent, ConsentStatus.REJECTED, wasActive);
 			   }
 		   }
 	   }
