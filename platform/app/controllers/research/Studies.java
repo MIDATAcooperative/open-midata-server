@@ -122,6 +122,7 @@ import utils.access.Feature_Pseudonymization;
 import utils.access.Feature_QueryRedirect;
 import utils.access.Query;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.CodeGenerator;
@@ -361,42 +362,45 @@ public class Studies extends APIController {
 		final String handle = PortalSessionToken.session().handle;
 		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session()).forAccount();
 
-		return downloadFHIR(context, handle, studyid, role, startDate, endDate, studyGroup, mode);
+		return downloadFHIR(context, handle, null, studyid, role, startDate, endDate, null, studyGroup, mode);
 	}
 
-	public static Result downloadFHIR(AccessContext initialInf, final String handle, final MidataId studyid, final UserRole role, final Date startDate, final Date endDate, final String studyGroup,
+	public static Result downloadFHIR(AccessContext initialInf, final String handle, final MidataId exportUserIdOrNull, final MidataId studyIdOrNull, final UserRole role, final Date startDateOrNull, final Date endDateOrNull, final Date minCreatedOrNull, final String studyGroupOrNull,
 			final String mode) throws AppException, IOException {
 		final MidataId executorId = initialInf.getAccessor();
-		final Study study = Study.getById(studyid, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "validationStatus", "owner", "groups", "createdBy", "code"));
 
-		if (study == null)
-			throw new BadRequestException("error.unknown.study", "Unknown Study");
+		final Study study = studyIdOrNull != null ? Study.getById(studyIdOrNull, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "validationStatus", "owner", "groups", "createdBy", "code")) : null;
 
-		AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId, null, study);
-		
+		if (studyIdOrNull != null && study == null) {									
+				throw new BadRequestException("error.unknown.study", "Unknown Project");
+		}
+
 		StringBuffer out = new StringBuffer();
-
-		AccessLog.log("exeId=" + executorId);
+		out.append("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
+		boolean first = true;
+		
 		KeyManager.instance.continueSession(handle, executorId);
 		ResourceProvider.setAccessContext(initialInf);
-		out.append("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
 
-		boolean first = true;
-
-		if (initialInf.mayAccess("Practitioner", "fhir/Practitioner")) {
-			Set<UserGroupMember> ugms = UserGroupMember.getAllUserByGroup(study._id);
-			Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
-			for (UserGroupMember member : ugms)
-				idmap.put(member.member, member);
-			Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()).map("role", UserRole.RESEARCH), User.ALL_USER);
-
-			ResourceProvider<DomainResource, Model> pprov = FHIRServlet.myProviders.get("Practitioner");
-			for (User user : users) {
-				String location = FHIRServlet.getBaseUrl() + "/" + pprov.getResourceType().getSimpleName() + "/" + user._id.toString();
-				String ser = pprov.serialize(MidataPractitionerResourceProvider.practitionerFromMidataUser(user));
-				out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
-				first = false;
+		if (study != null) {
+			AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId, null, study);	
+			if (initialInf.mayAccess("Practitioner", "fhir/Practitioner")) {
+				Set<UserGroupMember> ugms = UserGroupMember.getAllUserByGroup(study._id);
+				Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
+				for (UserGroupMember member : ugms)
+					idmap.put(member.member, member);
+				Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()).map("role", UserRole.RESEARCH), User.ALL_USER);
+	
+				ResourceProvider<DomainResource, Model> pprov = FHIRServlet.myProviders.get("Practitioner");
+				for (User user : users) {
+					String location = FHIRServlet.getBaseUrl() + "/" + pprov.getResourceType().getSimpleName() + "/" + user._id.toString();
+					String ser = pprov.serialize(MidataPractitionerResourceProvider.practitionerFromMidataUser(user));
+					out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
+					first = false;
+				}
 			}
+		} else {
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.DATA_EXPORT).withActorUser(executorId).withModifiedUser(exportUserIdOrNull));			
 		}
 
 		final boolean firstWritten = first;
@@ -412,7 +416,7 @@ public class Studies extends APIController {
 					AccessContext context = ContextManager.instance.createSessionForDownloadStream(executorId, role);
 					ResourceProvider.setAccessContext(context);
 					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, initialInf,
-							CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after", startDate).mapNotEmpty("updated-before", endDate),
+							CMaps.map("export", mode).mapNotEmpty("study", studyIdOrNull).mapNotEmpty("study-group", studyGroupOrNull).mapNotEmpty("shared-after", startDateOrNull).mapNotEmpty("created-after", minCreatedOrNull).mapNotEmpty("updated-before", endDateOrNull).mapNotEmpty("owner", exportUserIdOrNull),
 							RecordManager.COMPLETE_DATA);
 					
 					return new RecIterator(allRecords);
@@ -537,7 +541,7 @@ public class Studies extends APIController {
 
 		// Serves this stream with 200 OK
 		Result result = ok().chunked(outstream).as("application/json+fhir");
-		return setAttachmentContentDisposition(result, "study.json");				
+		return setAttachmentContentDisposition(result, "export.json");				
 	}
 
 	/**

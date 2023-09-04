@@ -38,11 +38,13 @@ import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
+import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.r4.model.StringType;
@@ -55,6 +57,8 @@ import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
+import ca.uhn.fhir.rest.annotation.Operation;
+import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
@@ -939,8 +943,24 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		return 1;
 	}
 	
+	@Operation(name="$everything", idempotent=true)
+	public Bundle everything(	
+			@IdParam IdType thePatientId,
+			@OperationParam(name="start") DateType theStart,
+			@OperationParam(name="end") DateType theEnd,
+			@OperationParam(name="_since") DateType theSince) {
+	    // This is a mock only. The request will be handeled by play and not by HAPI
+		return null;
+	}
 	
-	
+	@Operation(name="$everything", idempotent=true)
+	public Bundle everything(				
+			@OperationParam(name="start") DateType theStart,
+			@OperationParam(name="end") DateType theEnd,
+			@OperationParam(name="_since") DateType theSince) {
+	    // This is a mock only. The request will be handeled by play and not by HAPI
+		return null;
+	}
 	
 
 }
