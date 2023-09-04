@@ -589,16 +589,21 @@ public class Records extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result downloadAccountData(Request request) throws AppException, IOException {
 
+		
+		
+		
 		final MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         final UserRole role = getRole();
-		AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId);
+		
 	
 		final String handle = PortalSessionToken.session().handle;
-
 		KeyManager.instance.continueSession(handle);
 		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session()).forAccount();
 		ResourceProvider.setAccessContext(context);
-		String headerStr = "{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ";
+		
+		return controllers.research.Studies.downloadFHIR(context, handle, executorId, null, role, null, null, null, null, "original");
+		
+		/*String headerStr = "{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ";
 
 		boolean first = true;
 
@@ -707,7 +712,8 @@ public class Records extends APIController {
 
 		// Serves this stream with 200 OK
 		Result result = ok().chunked(outstream).as("application/json+fhir");
-		return setAttachmentContentDisposition(result, "yourdata.json");				
+		return setAttachmentContentDisposition(result, "yourdata.json");	
+		*/			
 	}
 	
 	@APICall

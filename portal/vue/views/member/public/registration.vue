@@ -385,6 +385,9 @@ export default {
 	   const { $route, $router } = this;
 	   let query = $route.query || {};	 
 	   let params = JSON.parse(JSON.stringify(query));
+	   
+	   delete params.isnew;
+	    
 	   params.login = this.$data.registration.email;
 		if (query.client_id) {
 		  $router.push({ path : "./oauth2", query : params });

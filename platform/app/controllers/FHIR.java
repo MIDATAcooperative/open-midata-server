@@ -168,7 +168,7 @@ public class FHIR extends Controller {
         	} catch (ca.uhn.fhir.parser.DataFormatException e) {
         		throw new BadRequestException("error.invalid", e.getMessage());
         	}
-        	return controllers.research.Studies.downloadFHIR(info, handle, studyId, info.getAccessorRole(), from, to, studyGroup, mode);
+        	return controllers.research.Studies.downloadFHIR(info, handle, null, studyId, info.getAccessorRole(), from, to, null, studyGroup, mode);
         }
 		
 		//Stats.finishRequest(request, String.valueOf(res.getStatus()));
@@ -178,6 +178,77 @@ public class FHIR extends Controller {
 		
 		
 		
+	}
+	
+	/**
+	 * GET $everything operation without patient id
+	 * @return
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public Result export(Request request, String p) throws AppException, IOException, ServletException {
+		return exportPatient(request, null, null);
+	}
+		
+	/**
+	 * GET $everything operation with patient id
+	 * @return
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public Result exportPatient(Request request, String id, String p) throws AppException, IOException, ServletException {
+						
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request);					
+		AccessContext info = getExecutionInfo(request, req);
+        if (info != null && info.getUsedPlugin() != null) {
+		
+        	Plugin plug = Plugin.getById(info.getUsedPlugin());
+        	if (plug == null) throw new BadRequestException("error.invalid.plugin", "Wrong plugin type");
+        	String mode = plug.pseudonymize ? "pseudonymized" : "original";
+        	
+        	MidataId patientId = id!=null ? MidataId.parse(id) : null;
+        	MidataId projectId = null;
+        	String projectGroup = null;
+        	Date from = null;
+        	Date to = null;
+        	Date startFrom = null;
+        	
+            BSONObject query = RecordManager.instance.getMeta(info, info.getTargetAps(), "_query");
+            if (query != null) {        	
+	        	Object st = query.get("study");
+	        	if (st instanceof Collection) st = ((Collection) st).iterator().next(); 
+	        	projectId = MidataId.from(st);        	
+	        	projectGroup = (String) query.get("study-group");
+            }
+        	
+        	String handle = KeyManager.instance.currentHandle(info.getAccessor());
+        	        	
+        	try {
+	        	String since = req.getParameter("_since");
+	        	String end = req.getParameter("end");
+	        	String start = req.getParameter("start");
+        		
+	        	if (end != null) {
+	        		to = new DateParam(end).getValue();
+	        	}
+	        	if (since != null) {
+	        		from = new DateParam(since).getValue();
+	        	}	        	
+	        	if (start != null) {
+	        		startFrom = new DateParam(start).getValue();
+	        	}
+	        	
+        	} catch (ca.uhn.fhir.parser.DataFormatException e) {
+        		throw new BadRequestException("error.invalid", e.getMessage());
+        	}
+        	return controllers.research.Studies.downloadFHIR(info, handle, patientId, projectId, info.getAccessorRole(), from, to, startFrom, projectGroup, mode);
+        } else return unauthorized("Client unauthorized");				       						
 	}
 	
 	
