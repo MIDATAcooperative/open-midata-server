@@ -291,9 +291,9 @@ public class Market extends APIController {
 			
 			app.i18n = new HashMap<String, Plugin_i18n>();
 			
-			if (app.resharesData && app.usePreconfirmed) {
+			/*if (app.resharesData && app.usePreconfirmed) {
 				throw new JsonValidationException("error.invalid.usePreconfirmed", "usePreconfirmed", "invalid", "Data reshare and preconfirmation not allowed together.");
-			}
+			}*/
 			
 			if (getRole().equals(UserRole.ADMIN) && withLogout) {
 				/*String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
@@ -749,9 +749,9 @@ public class Market extends APIController {
 			plugin.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
 		} else plugin.pseudonymize = false;
 		
-		if (plugin.resharesData && plugin.usePreconfirmed) {
+		/*if (plugin.resharesData && plugin.usePreconfirmed) {
 			throw new JsonValidationException("error.invalid.usePreconfirmed", "usePreconfirmed", "invalid", "Data reshare and preconfirmation not allowed together.");
-		}
+		}*/
 		
 		try {
 		    Query.validate(plugin.defaultQuery, plugin.type.equals("mobile") || plugin.type.equals("service"));

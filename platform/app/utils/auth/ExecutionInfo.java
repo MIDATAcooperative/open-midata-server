@@ -39,6 +39,7 @@ import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
+import utils.OrganizationTools;
 import utils.access.RecordManager;
 import utils.collections.CMaps;
 import utils.collections.RequestCache;
@@ -230,7 +231,8 @@ public class ExecutionInfo {
 		
 		String group = authToken.getExtra().get("grp");
 		if (group != null) {
-			MidataId groupId = MidataId.parse(group);
+			MidataId groupId = OrganizationTools.resolve(session, group);
+			if (groupId == null) OAuth2.invalidToken();
 			List<UserGroupMember> ugms = session.getCache().getByGroupAndActiveMember(groupId, session.getAccessor(), Permission.READ_DATA);			
 			if (ugms != null) {
 				session = session.forUserGroup(ugms);
