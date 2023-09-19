@@ -28,6 +28,8 @@ import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.FHIRServlet;
+import utils.fhir.FHIRTools;
 import utils.json.JsonValidation.JsonValidationException;
 
 public class OrganizationTools {
@@ -66,5 +68,14 @@ public class OrganizationTools {
 			 midataResource = UserGroupTools.createOrUpdateOrganizationUserGroup(context, midataResource._id, midataResource.name, midataResource, midataResource.parent, false, false);
 		 }
          return midataResource;
+	}
+	
+	public static MidataId resolve(AccessContext context, String ref) throws AppException {
+		if (ref==null) return null;
+		if (ref.indexOf('|') < 0) {
+			return MidataId.parse(ref);
+		}
+		FHIRServlet.getProvider("Organization").setAccessContext(context);
+		return FHIRTools.resolveUniqueIdentifierToId("Organization", ref);
 	}
 }

@@ -21,9 +21,11 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r4.model.CanonicalType;
 import org.hl7.fhir.r4.model.CodeableConcept;
@@ -36,6 +38,7 @@ import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Type;
 
 import ca.uhn.fhir.rest.param.ReferenceParam;
+import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.HPUser;
 import models.Member;
@@ -46,6 +49,7 @@ import models.User;
 import models.UserGroup;
 import models.enums.UserRole;
 import models.enums.UserStatus;
+import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -240,6 +244,20 @@ public class FHIRTools {
 				target = HPUser.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
 				type = "Practitioner";
 			}
+			
+			if (type == null && ref.hasType()) {
+				try {
+					IBaseResource res = resolveUniqueIdentifier(ref.getType(), ref.getIdentifier().getSystem(), ref.getIdentifier().getValue());
+					if (res != null) {
+						ref.setReference(ref.getType()+"/"+res.getIdElement().getIdPart());
+						ref.setIdentifier(null);
+						return ref;
+					}
+				} catch (AppException e) {
+					AccessLog.logException("resolve reference", e);
+				}												
+			}
+			
 			if (type == null) return ref;
 			
 			if (target == null) throw new UnprocessableEntityException("References: Referenced person not found");
@@ -249,6 +267,39 @@ public class FHIRTools {
 		}		
 		
 		return ref;
+	}
+	
+	public static IBaseResource resolveUniqueIdentifier(String resourceType, String systemValue) throws AppException {
+		if (systemValue == null || resourceType == null) return null;
+        int p = systemValue.indexOf('|');
+        if (p > 0) {
+        	return resolveUniqueIdentifier(resourceType, systemValue.substring(0, p), systemValue.substring(p+1));
+        }
+        return null;
+	}
+	
+	public static MidataId resolveUniqueIdentifierToId(String resourceType, String systemValue) throws AppException {
+		if (systemValue == null || resourceType == null) return null;
+        int p = systemValue.indexOf('|');
+        if (p > 0) {
+        	IBaseResource result = resolveUniqueIdentifier(resourceType, systemValue.substring(0, p), systemValue.substring(p+1));
+        	if (result != null) return MidataId.parse(result.getIdElement().getIdPart());
+        }
+        return null;
+	}
+	
+	public static IBaseResource resolveUniqueIdentifier(String resourceType, String system, String value) throws AppException {
+		if (resourceType == null || system == null || value == null || system.trim().length() == 0 || value.trim().length() == 0) return null;
+		
+		ResourceProvider provider = FHIRServlet.getProvider(resourceType);
+		SearchParameterMap map = new SearchParameterMap();
+		map.add("identifier", new TokenParam(system, value));
+		map.setCount(2);
+		List<IBaseResource> resources = provider.search(map);
+		if (resources.size() == 1) {
+			return resources.get(0);
+		}
+		return null;
 	}
 	
 	/**
