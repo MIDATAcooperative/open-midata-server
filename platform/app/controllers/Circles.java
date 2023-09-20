@@ -391,6 +391,7 @@ public class Circles extends APIController {
 		
 		Date validUntil = JsonValidation.getDate(json, "validUntil");
 		Date createdBefore = JsonValidation.getDate(json, "createdBefore");
+		Date createdAfter = JsonValidation.getDate(json, "createdAfter");
 		boolean patientRecord = false;
 		Consent consent;
 		switch (type) {
@@ -442,6 +443,7 @@ public class Circles extends APIController {
 		consent.status = (userId!=null && userId.equals(executorId)) ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
 		consent.validUntil = validUntil;
 		consent.createdBefore = createdBefore;
+		consent.createdAfter = createdAfter;
 		if (json.has("writes")) {
 		  consent.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 		}
@@ -855,12 +857,14 @@ public class Circles extends APIController {
 		  wasActive = false;
 		  if (!context.canCreateActiveConsents() && consent.status == ConsentStatus.ACTIVE) {
 			  consent.status = ConsentStatus.PRECONFIRMED;
+			  consent.createdAfter = new Date();
 		      preconfirmed = true;	  
 		      AccessLog.log("using preconfirmation for new consent");
 		  }
 		} else {
 		  if (!context.canCreateActiveConsents() && newStatus == ConsentStatus.ACTIVE) {
 			  newStatus = ConsentStatus.PRECONFIRMED;
+			  consent.createdAfter = new Date();
 			  preconfirmed = true;
 			  AccessLog.log("using preconfirmation for existing consent");
 		  }

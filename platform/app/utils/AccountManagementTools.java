@@ -377,6 +377,25 @@ public class AccountManagementTools {
 		return result;
 	}
 	
+	public static Set<MidataId> getProjectIdsFromUsedApp(AccessContext context) throws AppException {
+		MidataId pluginId = context.getUsedPlugin();
+		if (pluginId == null) return null;
+		
+		Plugin plugin = Plugin.getById(pluginId);
+		if (plugin != null && plugin.type.equals("broker")) {
+			Set<StudyAppLink> sals = StudyAppLink.getByApp(pluginId);
+			if (sals.isEmpty()) return Collections.emptySet();
+			Set<MidataId> studies = new HashSet<MidataId>();
+			for (StudyAppLink sal : sals) {
+				if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
+					studies.add(sal.studyId);
+				}
+			}
+			return studies;
+		}
+		return Collections.emptySet();
+	}
+	
 	public static List<Study> determineProjectsFromUsedApp(AccessContext context, boolean fromLinks) throws AppException {
 		MidataId pluginId = context.getUsedPlugin();
 		if (pluginId == null) return null;

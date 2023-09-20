@@ -206,8 +206,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		if (consentToConvert.validUntil != null) {
 		  c.setPeriod(new Period().setEnd(consentToConvert.validUntil));	
 		}
-		if (consentToConvert.createdBefore != null) {
-		  c.setDataPeriod(new Period().setEnd(consentToConvert.createdBefore));
+		if (consentToConvert.createdBefore != null || consentToConvert.createdAfter != null) {
+		  c.setDataPeriod(new Period().setEnd(consentToConvert.createdBefore).setStart(consentToConvert.createdAfter));
 		}
 		if (consentToConvert.dateOfCreation != null) {
 		  c.setDateTime(consentToConvert.dateOfCreation);
@@ -475,6 +475,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			
 		if (theResource.getDataPeriod() != null) {
 		  consent.createdBefore = theResource.getPeriod().getEnd();
+		  consent.createdAfter = theResource.getPeriod().getStart();
 		}
 			
         consent.type = ConsentType.valueOf(theResource.getPurposeFirstRep().getCode());

@@ -725,7 +725,7 @@ export default {
                                         .then(function(result2) {                                            
                                             account.apps = result2.data;
 
-                                            return postWithSession(account.sessionToken, jsRoutes.controllers.Circles.listConsents().url, { properties : {}, fields : ["type", "status","writes", "validUntil", "createdBefore","authorized", "entityType"] })
+                                            return postWithSession(account.sessionToken, jsRoutes.controllers.Circles.listConsents().url, { properties : {}, fields : ["type", "status","writes", "validUntil", "createdBefore","createdAfter", "authorized", "entityType"] })
                                             .then(function (result3) {
                                                 account.consents = result3.data;
                                                 $data.usedAccounts.push(account);

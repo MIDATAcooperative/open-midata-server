@@ -224,6 +224,7 @@ public class UserGroupTools {
 				if (value instanceof IBaseReference) {
 					IIdType ref = ((IBaseReference) value).getReferenceElement();
 					TypedMidataId mref = FHIRTools.getMidataIdFromReference(ref);
+					if (mref == null) throw new BadRequestException("error.invalid.manager", "Cannot resolve group manager", 400);
 					String resourceType = mref.getType();
 					MidataId resourceId = mref.getMidataId();
 					
@@ -269,9 +270,9 @@ public class UserGroupTools {
 						
 			Set<UserGroupMember> others = UserGroupMember.getAllActiveByGroup(groupId);
 			boolean foundManager = false;
-			boolean foundChangeTeam = false;
-			for (UserGroupMember other : others) {
-				if (other.getRole().manageParticipants() && !targetUserId.equals(other.member)) foundChangeTeam = true;
+			boolean foundChangeTeam = false;			
+			for (UserGroupMember other : others) {				
+				if (other.getRole().mayChangeTeam() && !targetUserId.equals(other.member)) foundChangeTeam = true;
 				if (other.getRole().maySetup() && !targetUserId.equals(other.member)) foundManager = true;
 			}
 			if (!foundManager || !foundChangeTeam) throw new BadRequestException("error.missing.manager", "No manager left");

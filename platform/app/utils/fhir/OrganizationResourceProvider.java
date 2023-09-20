@@ -29,6 +29,7 @@ import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.Endpoint;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Reference;
@@ -70,6 +71,7 @@ import models.enums.AuditEventType;
 import models.enums.EntityType;
 import models.enums.ResearcherRole;
 import models.enums.UserStatus;
+import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.OrganizationTools;
 import utils.QueryTagTools;
@@ -358,8 +360,13 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 		for (Extension ext : theOrganization.getExtensionsByUrl("http://midata.coop/extensions/managed-by")) {
 			Type t = ext.getValue();
-			if (t instanceof Reference) t = FHIRTools.resolve((Reference) t);
+			if (t instanceof Reference) t = FHIRTools.resolve((Reference) t);		
 			ext.setValue(t);
+		}
+		
+		for (Identifier id : theOrganization.getIdentifier()) {
+			MidataId existing = FHIRTools.resolveUniqueIdentifierToId("Organization", id.getSystem(), id.getValue());
+			if (existing != null && !existing.equals(record._id)) throw new InvalidRequestException("Identifier is not unique");
 		}
 		
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
@@ -388,12 +395,16 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			   parent =  MidataId.parse(parentRef.getId());
 			}
 		   HealthcareProvider provider = (HealthcareProvider) record.mapped;
-		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), provider, parent, true, false);		  		
-		   UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), provider, parent, true, false);
+		   try {
+		       UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+		       return super.createExecute(record, theResource);
+		   } catch (AppException e) {
+			   HealthcareProvider.delete(provider._id);
+			   throw e;
+		   }
 		   
-		   
-		}
-		
+		}		
 		return super.createExecute(record, theResource);
 		
 	}

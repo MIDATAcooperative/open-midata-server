@@ -52,9 +52,9 @@ public class Consent extends Model implements Comparable<Consent> {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator");
 	
-	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "writes", "dataupdate", "lastUpdated");
+	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "writes", "dataupdate", "lastUpdated");
 	
 	/**
 	 * constant for all FHIR fields of a consent
@@ -162,7 +162,12 @@ public class Consent extends Model implements Comparable<Consent> {
 	/**
 	 * Exclude all data created after this date
 	 */
-	public Date createdBefore;		
+	public Date createdBefore;
+	
+	/**
+	 * Exclude all data created before this date
+	 */
+	public Date createdAfter;
 	
 	/**
 	 * FHIR representation of Consent
@@ -299,7 +304,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	public void setStatus(ConsentStatus status) throws InternalServerException {
 		this.status = status;	
 		this.lastUpdated = new Date();
-		this.setMultiple(collection, Sets.create("status", "lastUpdated"));		
+		if (this.createdAfter != null) {
+		   this.setMultiple(collection, Sets.create("status", "createdAfter", "lastUpdated"));
+		} else {
+		   this.setMultiple(collection, Sets.create("status", "lastUpdated"));
+		}
 	}
 	
 	public void updateMetadata() throws InternalServerException {

@@ -102,6 +102,7 @@ import models.enums.JoinMethod;
 import models.enums.WritePermissionType;
 import utils.AccessLog;
 import utils.ApplicationTools;
+import utils.ConsentQueryTools;
 import utils.ErrorReporter;
 import utils.PluginLoginCache;
 import utils.QueryTagTools;
@@ -477,8 +478,8 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		if (consentToConvert.validUntil != null) {
 		  c.getProvision().setPeriod(new Period().setEnd(consentToConvert.validUntil));	
 		}
-		if (consentToConvert.createdBefore != null) {
-		  c.getProvision().setDataPeriod(new Period().setEnd(consentToConvert.createdBefore));
+		if (consentToConvert.createdBefore != null || consentToConvert.createdAfter != null) {
+		  c.getProvision().setDataPeriod(new Period().setStart(consentToConvert.createdAfter).setEnd(consentToConvert.createdBefore));
 		}
 		if (consentToConvert.dateOfCreation != null) {
 		  c.setDateTime(consentToConvert.dateOfCreation);
@@ -687,6 +688,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			
 		if (theResource.getProvision().getDataPeriod() != null) {
 		  consent.createdBefore = theResource.getProvision().getDataPeriod().getEnd();
+		  consent.createdAfter = theResource.getProvision().getDataPeriod().getStart();
 		}
 			
 		ConsentType type = null;
@@ -762,7 +764,13 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		
 		Map<String, Object> query = new HashMap<String, Object>();
 		createQuery(theResource.getProvision(), query);
-		Feature_FormatGroups.convertQueryToContents(query);	
+				
+		if (query.isEmpty()) {			
+			query = ConsentQueryTools.filterQueryForUseInConsent(info().getAccessRestrictions());
+			if (query == null) query = ConsentQueryTools.getEmptyQuery();
+		}
+		
+		Feature_FormatGroups.convertQueryToContents(query);
 		
 		consent.sharingQuery = query;
         
