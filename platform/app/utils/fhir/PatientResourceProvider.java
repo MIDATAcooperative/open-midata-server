@@ -779,7 +779,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		FHIRPatientHolder fhirPatient = new FHIRPatientHolderR4(thePatient);
 		
 		// Determine projects the given user should participate in
-        Set<MidataId> projectsToParticipate = AccountManagementTools.getProjectIdsFromPatient(fhirPatient);					
+        Set<MidataId> projectsFromPatient = AccountManagementTools.getProjectIdsFromPatient(fhirPatient);
+        Set<MidataId> projectsFromApp = AccountManagementTools.getProjectIdsFromUsedApp(info);
+        Set<MidataId> projectsToParticipate = new HashSet<MidataId>();
+        projectsToParticipate.addAll(projectsFromPatient);
+        projectsToParticipate.addAll(projectsFromApp);
 		thePatient.getExtension().clear();		
 		
      	

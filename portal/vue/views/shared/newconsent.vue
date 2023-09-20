@@ -263,8 +263,8 @@
                 <div class="extraspace"></div>
                 <p><b class="text-primary" v-t="'editconsent.restrictions'"></b></p>
                 <p>{{ $t('enum.writepermissiontype.'+(consent.writes || 'NONE')) }}</p>
-                <p v-if="consent.createdBefore"><span v-t="'editconsent.created_before'"></span>:{{ $filters.date(consent.createdBefore) }} 
-            </p>
+                <p v-if="consent.createdAfter"><span v-t="'editconsent.created_after'"></span>:{{ $filters.date(consent.createdAfter) }}</p>
+                <p v-if="consent.createdBefore"><span v-t="'editconsent.created_before'"></span>:{{ $filters.date(consent.createdBefore) }}</p>
         
         </div>
             
@@ -295,6 +295,10 @@
             
             <form-group name="validUntil" label="newconsent.expiration_date">        
                 <input id="validUntil" type="date" class="form-control" v-validate v-date="consent.validUntil" v-model="consent.validUntil" >              
+            </form-group>
+
+            <form-group name="createdAfter" label="newconsent.created_after">	  
+                <input id="createdAfter" type="date" class="form-control" v-validate v-date="consent.createdAfter" v-model="consent.createdAfter"  />              
             </form-group>
 
             <form-group name="createdBefore" label="newconsent.created_before">	  
@@ -455,7 +459,7 @@ export default {
 			$data.isSimple = true;
 			$data.consentId = $route.query.consentId;
 			
-			me.doBusy(circles.listConsents({ "_id" : $route.query.consentId }, ["name", "type", "status", "owner", "ownerName", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ])
+			me.doBusy(circles.listConsents({ "_id" : $route.query.consentId }, ["name", "type", "status", "owner", "ownerName", "authorized", "entityType", "createdBefore", "createdAfter", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ])
 			.then(function(data) {
 				if (!data.data || !data.data.length) {
 					$data.consent = null;

@@ -18,6 +18,7 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -214,6 +215,30 @@ public class ConsentQueryTools {
 		Consent c = Consent.getByIdUnchecked(consentId, Consent.SMALL);
 		
 		return getSharingQuery(c, true);
+	}
+	
+	public static Map<String, Object> filterQueryForUseInConsent(Map<String, Object> query) {		
+		if (query.containsKey("$or")) {
+			Map<String, Object> out = new HashMap<String, Object>();
+			out.putAll(query);
+		    List<Map<String, Object>> outOr = new ArrayList<Map<String, Object>>();
+		    out.put("$or", outOr);
+			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) query.get("$or");
+			for (Map<String, Object> part : parts) {
+				Map<String, Object> filtered = filterQueryForUseInConsent(part);
+				if (filtered != null) outOr.add(filtered);
+			}
+			return out;
+		}
+		
+		if ("only".equals(query.get("public"))) return null;
+		
+		Map<String, Object> copy = new HashMap<String, Object>(query);
+		copy.remove("add-tag");
+		copy.remove("public");
+		copy.remove("owner");
+		
+		return copy;
 	}
 	
 }

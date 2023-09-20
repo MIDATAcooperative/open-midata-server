@@ -186,7 +186,7 @@ public class FHIRTools {
 		if (ref == null) return null;
 		String rt = ref.getResourceType();
 		if (rt == null) return null;
-		if (rt.equals("Group")) {
+		if (rt.equals("Group") || rt.equals("Organization")) {
 			MidataId result = getUserGroupIdFromReference(ref);
 			return result != null ? new TypedMidataId(result, rt) : null; 
 		} else {
@@ -288,14 +288,23 @@ public class FHIRTools {
         return null;
 	}
 	
+	public static MidataId resolveUniqueIdentifierToId(String resourceType, String system, String value) throws AppException {	
+    	IBaseResource result = resolveUniqueIdentifier(resourceType, system, value);
+    	if (result != null) return MidataId.parse(result.getIdElement().getIdPart());
+    
+        return null;
+	}
+	
 	public static IBaseResource resolveUniqueIdentifier(String resourceType, String system, String value) throws AppException {
 		if (resourceType == null || system == null || value == null || system.trim().length() == 0 || value.trim().length() == 0) return null;
 		
+		AccessLog.logBegin("begin resolve unique identifier type=",resourceType," system/value=",system+"|"+value);
 		ResourceProvider provider = FHIRServlet.getProvider(resourceType);
 		SearchParameterMap map = new SearchParameterMap();
 		map.add("identifier", new TokenParam(system, value));
-		map.setCount(2);
+		map.setCount(3);
 		List<IBaseResource> resources = provider.search(map);
+		AccessLog.logEnd("end resolve unique identifier #=",Integer.toString(resources.size()));
 		if (resources.size() == 1) {
 			return resources.get(0);
 		}
