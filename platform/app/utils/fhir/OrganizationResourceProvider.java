@@ -405,7 +405,9 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		   }
 		   
 		}		
-		return super.createExecute(record, theResource);
+		Organization result = super.createExecute(record, theResource);
+		AuditManager.instance.success();
+		return result;
 		
 	}
 

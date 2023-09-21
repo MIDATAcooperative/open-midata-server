@@ -479,3 +479,4 @@
 {"_id":{"$oid":"645e05230b8cfe03731b2ff8"},"system":"http://loinc.org","code":"11348-0","display":"History of Past illness Narrative","content":"document/pastillnesses"}
 {"_id":{"$oid":"645e00210b8cfe03731b2ff5"},"system":"http://snomed.info/sct","code":"41000179103","display":"Immunization record (record artifact)","content":"snomed/41000179103"}
 {"_id":{"$oid":"645e03c2bef10907d5e521e7"},"system":"http://snomed.info/sct","code":"723394009","display":"Photographic image record (record artifact)","content":"documents/image"}
+{"_id":{"$oid":"650c44d1e208de70eb19e269"},"system":"http://midata.coop","code":"promis-encounter","display":"Encounter (Promis)","content":"promis-encounter"}
