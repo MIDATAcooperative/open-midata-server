@@ -437,3 +437,4 @@
 {"_id":{"$oid":"63edeba32695845b1140b6a5"},"system":"v1","name":"assessment","content":"unit-non-response"}
 {"_id":{"$oid":"645e05ee0b8cfe03731b2ffa"},"system":"v1","name":"healthdocuments","content":"document/pastillnesses"}
 {"_id":{"$oid":"645e00210b8cfe03731b2ff6"},"system":"v1","name":"vaccination","content":"snomed/41000179103"}
+{"_id":{"$oid":"650c44d1e208de70eb19e26b"},"system":"v1","name":"encounters","content":"promis-encounter"}

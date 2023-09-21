@@ -41,6 +41,7 @@ import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.HPUser;
+import models.HealthcareProvider;
 import models.Member;
 import models.MidataId;
 import models.Record;
@@ -243,8 +244,17 @@ public class FHIRTools {
 			} else if (system.equals("http://midata.coop/identifier/practitioner-login")) {
 				target = HPUser.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
 				type = "Practitioner";
+			} else if (system.equals("http://midata.coop/identifier/organization-name")) {
+				HealthcareProvider hp = HealthcareProvider.getByName(value);
+				if (hp == null) throw new UnprocessableEntityException("References: Referenced organization not found");
+				ref.setReference("Organization/"+hp._id.toString());
+				ref.setIdentifier(null);
+				ref.setDisplay(hp.name);
+				return ref;
+			} else if (system.equals("http://midata.coop/identifier/organization-identifier")) {
+				ref.setType("Organization");
+				type = null;
 			}
-			
 			if (type == null && ref.hasType()) {
 				try {
 					IBaseResource res = resolveUniqueIdentifier(ref.getType(), ref.getIdentifier().getSystem(), ref.getIdentifier().getValue());

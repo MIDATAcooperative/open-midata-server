@@ -109,6 +109,10 @@ public class HealthcareProvider extends Model {
 	   return Model.exists(HealthcareProvider.class, collection, CMaps.map("name", name).map("status", NON_DELETED));
     }
     
+    public static HealthcareProvider getByName(String name) throws InternalServerException {
+ 	   return Model.get(HealthcareProvider.class, collection, CMaps.map("name", name).map("status", NON_DELETED), ALL);
+     }
+    
     public static boolean existsByName(String name, MidataId exclude) throws InternalServerException {
     	 HealthcareProvider r = Model.get(HealthcareProvider.class, collection, CMaps.map("name", name).map("status", NON_DELETED), Sets.create("_id"));
 		 return r != null && !r._id.equals(exclude);

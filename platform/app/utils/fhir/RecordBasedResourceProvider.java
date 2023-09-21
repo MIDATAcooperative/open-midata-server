@@ -525,6 +525,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	  return setRecordCodeByCodings(record, cc != null ? cc.getCoding() : null, defaultContent);
 	}
 	
+	protected String setRecordCodeByCoding(Record record, Coding coding, String defaultContent) throws InternalServerException {
+       return setRecordCodeByCodings(record, coding != null ? Collections.singletonList(coding) : null, defaultContent);
+	}
+	
 	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent) throws InternalServerException {
 		  record.code = new HashSet<String>(); 
 		  String display = null;
