@@ -85,7 +85,7 @@ public class LinkTools {
 	public static Map<String, Object> convertAppQueryToConsent(Map<String, Object> properties) throws AppException {
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("content", new HashSet<String>());
-		convertAppQueryToConsent(result, properties);
+		convertAppQueryToConsent(result, ConsentQueryTools.filterQueryForUseInConsent(properties));
 		if (properties.containsKey("$or")) {
 			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");
     		for (Map<String, Object> part : parts) convertAppQueryToConsent(result, part);

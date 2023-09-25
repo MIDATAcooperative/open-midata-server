@@ -20,6 +20,7 @@ package utils.audit;
 import java.util.Date;
 import java.util.HashSet;
 
+import models.Actor;
 import models.Consent;
 import models.MidataAuditEvent;
 import models.MidataId;
@@ -35,12 +36,9 @@ public class AuditManager {
 	
 	private ThreadLocal<MidataAuditEvent> running = new ThreadLocal<MidataAuditEvent>();
 
-	public void addAuditEvent(AuditEventType type, MidataId who) throws AppException {		
-		addAuditEvent(AuditEventBuilder.withType(type).withActorUser(who));
-	}
 	
-	public void addAuditEvent(AuditEventType type, User who) throws AppException {
-		addAuditEvent(AuditEventBuilder.withType(type).withActorUser(who));
+	public void addAuditEvent(AuditEventType type, Actor who) throws AppException {
+		addAuditEvent(AuditEventBuilder.withType(type).withActor(who));
 	}
 	
 	/*public void addAuditEvent(AuditEventType type, User who, String message) throws AppException {
@@ -83,21 +81,21 @@ public class AuditManager {
 	}
 	
 	public void addAuditEvent(AuditEventBuilder builder) throws AppException {
-		addAuditEvent(builder.getType(), builder.getApp(), builder.getActorUser(), builder.getModifiedUser(), builder.getConsent(), builder.getMessage(), builder.getStudy(), builder.getExtraInfo());
+		addAuditEvent(builder.getType(), builder.getApp(), builder.getActor(), builder.getModifiedUser(), builder.getConsent(), builder.getMessage(), builder.getStudy(), builder.getExtraInfo());
 	}
 	
-	public void addAuditEvent(AuditEventType type, MidataId app, User who, User modifiedUser, Consent consent, String message, Study study) throws AppException {
+	public void addAuditEvent(AuditEventType type, MidataId app, Actor who, User modifiedUser, Consent consent, String message, Study study) throws AppException {
 	    addAuditEvent(type, app, who, modifiedUser, consent, message, study, null);	
 	}
 	
-	public void addAuditEvent(AuditEventType type, MidataId app, User who, User modifiedUser, Consent consent, String message, Study study, AuditExtraInfo extra) throws AppException {
+	public void addAuditEvent(AuditEventType type, MidataId app, Actor who, User modifiedUser, Consent consent, String message, Study study, AuditExtraInfo extra) throws AppException {
 		MidataAuditEvent mae = new MidataAuditEvent();
 		mae._id = new MidataId();
 		mae.event = type;
 		mae.timestamp = new Date();
 		mae.status = 12;
 		mae.authorized = new HashSet<MidataId>();
-		if (who != null) mae.authorized.add(who._id);
+		if (who != null) mae.authorized.add(who.getId());
 		if (modifiedUser != null) {
 			mae.authorized.add(modifiedUser._id);
 			mae.about = modifiedUser._id;

@@ -470,7 +470,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		}
 		
 		if (consentToConvert.owner != null) {
-		  c.setPatient(FHIRTools.getReferenceToUser(User.getByIdAlsoDeleted(consentToConvert.owner, Sets.create("role", "firstname", "lastname", "email", "status"))));
+		  c.setPatient(FHIRTools.getReferenceToActor(User.getByIdAlsoDeleted(consentToConvert.owner, Sets.create("role", "firstname", "lastname", "email", "status"))));
 		} else if (consentToConvert.externalOwner != null) {
 		  c.setPatient(new Reference().setIdentifier(new Identifier().setSystem("http://midata.coop/identifier/patient-login-or-invitation").setValue(consentToConvert.externalOwner)));
 		}

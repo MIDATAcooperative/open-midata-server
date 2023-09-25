@@ -62,6 +62,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import models.Actor;
 import models.Consent;
 import models.MidataAuditEvent;
 import models.MidataId;
@@ -294,7 +295,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	
 	 	
 			
-	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, User actorUser, User modifiedUser, Consent affectedConsent, String message, Study study, AuditExtraInfo extra) throws AppException {
+	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, Actor actor0, User modifiedUser, Consent affectedConsent, String message, Study study, AuditExtraInfo extra) throws AppException {
 		AuditEvent ae = new AuditEvent();
 
 		ae.setId(mae._id.toString());
@@ -310,22 +311,19 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			//}
 		}
 		
-		if (actorUser != null) {
+		if (actor0 != null) {
 			AuditEventAgentComponent actor = ae.addAgent();
-			actor.addRole().addCoding().setSystem("http://midata.coop/codesystems/user-role").setCode(actorUser.role.toString());
+			actor.addRole().addCoding().setSystem("http://midata.coop/codesystems/user-role").setCode(actor0.getUserRole().toString());
 			actor.setRequestor(true);
 			
-			if (anonymize != null && actorUser._id.equals(anonymize)) {
+			if (anonymize != null && actor0.getId().equals(anonymize)) {
 				actor.setName(affectedConsent.getOwnerName());
 				actor.setWho(new Reference("Patient/"+affectedConsent._id.toString()));
 			} else {
-				if (actorUser.role.equals(UserRole.MEMBER)) {
-					actor.setWho(new Reference("Patient/"+actorUser._id.toString()));
-				} else if (actorUser.role.equals(UserRole.PROVIDER)) {
-					actor.setWho(new Reference("Practitioner/"+actorUser._id.toString()));
-				}
-				actor.setName(actorUser.firstname+" "+actorUser.lastname);
-				actor.setAltId(actorUser.getPublicIdentifier());
+				actor.setWho(new Reference(actor0.getLocalReference()));
+				
+				actor.setName(actor0.getDisplayName());
+				actor.setAltId(actor0.getPublicIdentifier());
 			}
 		}
 		if (modifiedUser != null) {

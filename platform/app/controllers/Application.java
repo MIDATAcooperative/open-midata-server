@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
 import models.AccessPermissionSet;
+import models.Actor;
 import models.Admin;
 import models.Developer;
 import models.HPUser;
@@ -148,7 +149,7 @@ public class Application extends APIController {
 		default: break;		
 		}
 		if (user != null) {				
-		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, user._id);
+		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, Actor.getActor(null, user._id));
 		  if (user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
 		  
 		  if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.USER_PASSWORD_CHANGE_REQUEST, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
@@ -211,12 +212,12 @@ public class Application extends APIController {
 	 * Helper function to send welcome mail
 	 * @param user user record which sould receive the mail
 	 */
-	public static void sendWelcomeMail(User user, User executingUser) throws AppException {
+	public static void sendWelcomeMail(User user, Actor executingUser) throws AppException {
 		sendWelcomeMail(RuntimeConstants.instance.portalPlugin, user, executingUser);
 	}
 	
 	
-	public static void sendWelcomeMail(MidataId sourcePlugin, User user, User executingUser) throws AppException {
+	public static void sendWelcomeMail(MidataId sourcePlugin, User user, Actor executingUser) throws AppException {
 	   if (user.developer == null) {		
 		   
 		   if (user.email == null || user.email.trim().length()==0) return;
@@ -238,19 +239,25 @@ public class Application extends APIController {
 		   replacements.put("token", token.token);
 		   
 		   if (executingUser != null) {
-			   replacements.put("executor-firstname", executingUser.firstname);
-			   replacements.put("executor-lastname", executingUser.lastname);
-			   replacements.put("executor-email", executingUser.email);
+			   String name[] = executingUser.getDisplayName().split("\\s");
+			   if (name.length == 2) {
+				   replacements.put("executor-firstname", name[0]);
+				   replacements.put("executor-lastname", name[1]);
+			   } else {
+				   replacements.put("executor-firstname", "");
+				   replacements.put("executor-lastname", executingUser.getDisplayName());
+			   }
+			   replacements.put("executor-email", executingUser.getPublicIdentifier());
 		   }
 		   
 		   AccessLog.log("send welcome mail: ", user.email);
 		   if (executingUser == null) {
-			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(user._id));
+			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActor(null, user._id));
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
 				   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, user.role.toString(), Collections.singleton(user._id), null, replacements);
 			   }	  	   
 		   } else {
-			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(executingUser).withModifiedUser(user._id));
+			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActor(executingUser).withModifiedUser(user._id));
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, null, Collections.singleton(user._id), null, replacements)) {
 				   if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, user.role.toString(), Collections.singleton(user._id), null, replacements)) {
 					   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
@@ -354,7 +361,7 @@ public class Application extends APIController {
 		if (user == null)  throw new BadRequestException("error.unknown.user", "User not found");
 				
 		if (user!=null && password != null) {				
-			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, userId);
+			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, Actor.getActor(null, userId));
 			 
 			 boolean tokenOk = (token != null && user.resettoken != null 		    		    
 		    		   && user.resettoken.equals(token)
@@ -589,7 +596,7 @@ public class Application extends APIController {
 		String oldPassphrase = JsonValidation.getStringOrNull(json, "oldPassphrase");
 		String passphrase = JsonValidation.getPassword(json, "passphrase");
 		
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSPHRASE_CHANGE, userId);
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSPHRASE_CHANGE, Actor.getActor(null, userId));
 		
 		KeyManager.instance.unlock(userId, oldPassphrase);
 		

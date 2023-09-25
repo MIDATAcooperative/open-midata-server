@@ -456,6 +456,7 @@ public class Administration extends APIController {
 	@Security.Authenticated(AdminSecured.class)
 	public Result adminWipeAccount(Request request) throws JsonValidationException, AppException {
 		requireSubUserRole(request, SubUserRole.USERADMIN);
+		AccessContext context = portalContext(request);
 		
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "user");
@@ -466,9 +467,9 @@ public class Administration extends APIController {
 		User selected = User.getByIdAlsoDeleted(userId, User.ALL_USER);
 		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
 		
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActorUser(executorId).withModifiedUser(selected));
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActor(context, context.getActor()).withModifiedUser(selected));
 		
-		SubscriptionManager.accountWipe(portalContext(request), userId);
+		SubscriptionManager.accountWipe(context, userId);
 						
 		return ok();
 	}
@@ -658,7 +659,7 @@ public class Administration extends APIController {
 		AuditEventType type = AuditEventType.ORGANIZATION_CHANGED;
 		if (status == UserStatus.DELETED) type = AuditEventType.ORGANIZATION_DELETED;
 		
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(type).withActorUser(context.getActor()).withMessage(provider.name));
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(type).withActor(context, context.getActor()).withMessage(provider.name));
 		provider.status = status;
 		provider.set("status", provider.status);		
 		OrganizationTools.updateModel(context, provider);
