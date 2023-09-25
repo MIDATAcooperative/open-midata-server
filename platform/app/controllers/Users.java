@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import models.AccessPermissionSet;
 import models.AccountStats;
+import models.Actor;
 import models.Circle;
 import models.Consent;
 import models.Developer;
@@ -120,7 +121,7 @@ public class Users extends APIController {
 		// validate json
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "properties", "fields");
-		
+		AccessContext context = portalContext(request);
 		// get parameters
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));		
 		ObjectIdConversion.convertMidataIds(properties, "_id", "developer", "organization", "provider");
@@ -205,7 +206,7 @@ public class Users extends APIController {
 					AuditManager.instance.addAuditEvent(
 							AuditEventBuilder
 							.withType(AuditEventType.USER_SEARCHED)
-							.withActorUser(PortalSessionToken.session().ownerId)					
+							.withActor(context, context.getActor())					
 					        .withModifiedUser(result._id));
 				}
 			}
@@ -244,7 +245,7 @@ public class Users extends APIController {
 	public Result search(Request request, String query) throws AppException {
 		
 		requireUserFeature(request, UserFeature.EMAIL_VERIFIED);
-		
+		AccessContext context = portalContext(request);
 		Set<String> fields =  Sets.create("firstname", "lastname", "name", "role");
 		Set<Member> result = Member.getAll(CMaps.map("emailLC", query.toLowerCase()).map("searchable", true).map("status", User.NON_DELETED).map("role", UserRole.MEMBER), fields);
 		
@@ -258,7 +259,7 @@ public class Users extends APIController {
 				AuditManager.instance.addAuditEvent(
 						AuditEventBuilder
 						.withType(AuditEventType.USER_SEARCHED)
-						.withActorUser(PortalSessionToken.session().ownerId)					
+						.withActor(context, context.getActor())					
 				        .withModifiedUser(user._id));
 			}
 		}
@@ -569,7 +570,7 @@ public class Users extends APIController {
 			throw new BadRequestException("accountwipe.error",  "Invalid password.");
 		}
 		
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, userId);
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, Actor.getActor(null, userId));
 		
 		SubscriptionManager.accountWipe(portalContext(request), userId);
 		

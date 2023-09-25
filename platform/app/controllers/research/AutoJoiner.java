@@ -168,7 +168,7 @@ class AutoJoinerActor extends AbstractActor {
 						AccessContext context = ContextManager.instance.createSessionForDownloadStream(consent.owner, UserRole.ANY);
 						ContextManager.instance.setAccountOwner(consent.owner, consent.owner);							
 						
-						AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_APPROVED).withActorUser(RuntimeConstants.instance.backendService).withModifiedUser(consent.owner).withConsent(consent));
+						AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_APPROVED).withActor(context, RuntimeConstants.instance.backendService).withModifiedUser(consent.owner).withConsent(consent));
 						Circles.consentStatusChange(context, consent, ConsentStatus.ACTIVE);
 						Circles.sendConsentNotifications(context, consent, ConsentStatus.ACTIVE, false);
 						

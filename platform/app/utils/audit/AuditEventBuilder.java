@@ -17,17 +17,20 @@
 
 package utils.audit;
 
+import models.Actor;
 import models.Consent;
 import models.MidataId;
 import models.Study;
 import models.User;
 import models.enums.AuditEventType;
+import utils.context.AccessContext;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 public class AuditEventBuilder {
 	private AuditEventType type;
 	private MidataId app;
-	private User who;
+	private Actor who;
 	private User modifiedUser;
 	private Consent consent;
 	private String message;
@@ -48,7 +51,7 @@ public class AuditEventBuilder {
 		return this;
 	}
 	
-	public User getActorUser() {
+	public Actor getActor() {
 		return who;
 	}
 	
@@ -57,8 +60,13 @@ public class AuditEventBuilder {
 		return this;
 	}
 	
-	public AuditEventBuilder withActorUser(MidataId who) throws InternalServerException {		
-		this.who = User.getById(who, User.ALL_USER);
+	public AuditEventBuilder withActor(Actor who) {
+		this.who = who;
+		return this;
+	}
+	
+	public AuditEventBuilder withActor(AccessContext context, MidataId who) throws AppException {		
+		this.who = Actor.getActor(context, who);
 		return this;
 	}
 	

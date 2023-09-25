@@ -40,6 +40,7 @@ import org.hl7.fhir.r4.model.Type;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import models.Actor;
 import models.HPUser;
 import models.HealthcareProvider;
 import models.Member;
@@ -122,24 +123,17 @@ public class FHIRTools {
 	    if (RuntimeConstants.instance.publicUser.equals(id)) return null;
 		if (defName != null) return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());				
 		
-		User user = ResourceProvider.hasInfo() ? ResourceProvider.info().getRequestCache().getUserById(id) : User.getById(id, User.PUBLIC);
-		if (user == null) {
+		Actor actor = Actor.getActor(ResourceProvider.hasInfo() ? ResourceProvider.info() : null, id);
+		if (actor == null) {
 			return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
 			//throw new InternalServerException("error.internal", "Person not found "+id.toString());
 		}
-        return getReferenceToUser(user);		
+        return getReferenceToActor(actor);		
 	}
 	
-	public static Reference getReferenceToUser(User user) throws AppException {
-		if (user==null) return null;
-		String type = "RelatedPerson";
-		switch (user.role) {
-		case MEMBER : type = "Patient";break;
-		case PROVIDER : type = "Practitioner";break;
-		case RESEARCH : type = "Practitioner";break;
-		}
-		if (user.status.isDeleted()) return new Reference().setReference(type+"/"+user._id.toString());
-		return new Reference().setDisplay(user.firstname+" "+user.lastname).setReference(type+"/"+user._id.toString());		
+	public static Reference getReferenceToActor(Actor actor) throws AppException {
+		if (actor==null) return null;		
+		return new Reference().setDisplay(actor.getDisplayName()).setReference(actor.getLocalReference());		
 	}
 	
 	/**

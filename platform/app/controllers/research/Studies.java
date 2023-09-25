@@ -400,7 +400,7 @@ public class Studies extends APIController {
 				}
 			}
 		} else {
-			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.DATA_EXPORT).withActorUser(executorId).withModifiedUser(exportUserIdOrNull));			
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.DATA_EXPORT).withActor(initialInf, executorId).withModifiedUser(exportUserIdOrNull));			
 		}
 
 		final boolean firstWritten = first;

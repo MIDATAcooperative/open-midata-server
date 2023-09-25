@@ -83,6 +83,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Application;
 import controllers.Circles;
+import models.Actor;
 import models.Circle;
 import models.Consent;
 import models.HPUser;
@@ -635,7 +636,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		   AuditManager.instance.addAuditEvent(
 				   AuditEventBuilder
 				     .withType(AuditEventType.USER_EMAIL_CHANGE)
-				     .withActorUser(info().getRequestCache().getUserById(info().getAccessor()))
+				     .withActor(info(), info().getActor())
 				     .withModifiedUser(user)
 				     .withApp(info().getUsedPlugin())
 		   );
@@ -654,7 +655,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			updatePatientForAccount(info(), user._id);
 		}
 		if (welcome) {
-			Application.sendWelcomeMail(info().getUsedPlugin(), user, info().getRequestCache().getUserById(info().getAccessor()));
+			Application.sendWelcomeMail(info().getUsedPlugin(), user, Actor.getActor(info(), info().getActor()));
 		}
 		AuditManager.instance.success();
 	}

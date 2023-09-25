@@ -371,7 +371,7 @@ public class BulkMails extends APIController {
 				User user = User.getById(tk.getUserId(), Sets.create(User.ALL_USER,"marketingEmail"));
 				if (user!=null) {
 					if (user.marketingEmail == CommunicationChannelUseStatus.FORBIDDEN) throw new BadRequestException("error.already_done.unsubscribed", "Already unsubscribed.");
-					AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.COMMUNICATION_REJECTED).withActorUser(user).withMessage("email-link"));
+					AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.COMMUNICATION_REJECTED).withActor(user).withMessage("email-link"));
 					user.set("marketingEmail", CommunicationChannelUseStatus.FORBIDDEN);
 				}
 			}
@@ -379,7 +379,7 @@ public class BulkMails extends APIController {
 				StudyParticipation part = StudyParticipation.getById(tk.getConsentId(), Sets.create("_id","owner","study","projectEmails"));
 				if (part!=null) {
 					if (part.projectEmails == CommunicationChannelUseStatus.FORBIDDEN) throw new BadRequestException("error.already_done.unsubscribed", "Already unsubscribed.");
-					AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.COMMUNICATION_REJECTED).withActorUser(part.owner).withStudy(part.study).withMessage("email-link"));
+					AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.COMMUNICATION_REJECTED).withActor(null, part.owner).withStudy(part.study).withMessage("email-link"));
 					part.set(part._id, "projectEmails", CommunicationChannelUseStatus.FORBIDDEN);
 				}
 			}

@@ -476,7 +476,7 @@ public class Circles extends APIController {
 		consent.lastUpdated = consent.dateOfCreation;
 		consent.dataupdate = System.currentTimeMillis();
 			
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_CREATE).withActorUser(context.getActor()).withModifiedUser(consent.owner).withConsent(consent));
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_CREATE).withActor(context, context.getActor()).withModifiedUser(consent.owner).withConsent(consent));
 		
 		if (consent.externalOwner != null) {
 			Member member = Member.getByEmail(consent.externalOwner, Sets.create("_id"));
@@ -767,7 +767,7 @@ public class Circles extends APIController {
 		
 		consent.authorized.addAll(newMemberIds);
 		if (!consent.type.equals(ConsentType.STUDYRELATED)) {
-		  AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_PERSONS_CHANGE).withActorUser(baseContext.getActor()).withModifiedUser(consent.owner).withConsent(consent));
+		  AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_PERSONS_CHANGE).withActor(baseContext, baseContext.getActor()).withModifiedUser(consent.owner).withConsent(consent));
 		}
 		Consent.set(consent._id, "authorized", consent.authorized);
 		Consent.set(consent._id, "lastUpdated", new Date());

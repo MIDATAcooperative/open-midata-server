@@ -36,6 +36,7 @@ import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Application;
 import controllers.Circles;
+import models.Actor;
 import models.Circle;
 import models.Consent;
 import models.HPUser;
@@ -210,9 +211,8 @@ public class AccountManagementTools {
 		AccessContext tempContext = new AccountCreationAccessContext(context, user._id);									
 		user.myaps = RecordManager.instance.createPrivateAPS(tempContext.getCache(), user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
-	
-		User executorUser = context.getRequestCache().getUserById(context.getLegacyOwner());		
-		if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(context.getUsedPlugin(), user, executorUser);			
+				
+		if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(context.getUsedPlugin(), user, Actor.getActor(context, context.getActor()));			
 		
 		return tempContext;
 	}

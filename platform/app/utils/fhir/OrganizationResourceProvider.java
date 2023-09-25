@@ -292,7 +292,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	@Override
 	public void updatePrepare(Record record, Organization theResource) throws AppException {
 		if (theResource.getUserData("source")==null && record.content.equals("Organization/HP")) {
-			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CHANGED).withActorUser(info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CHANGED).withActor(info(), info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
 			HealthcareProvider hp = HealthcareProvider.getByIdAlsoDeleted(record._id, HealthcareProvider.ALL);
 			hp.name = theResource.getName();
 			extractAddress(theResource, hp);
@@ -387,7 +387,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 
 	@Override
 	public Organization createExecute(Record record, Organization theResource) throws AppException {
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CREATED).withActorUser(info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CREATED).withActor(info(), info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
 		if (record.content.equals("Organization/HP") && theResource.getUserData("source")==null) {
 			MidataId parent = null;
 			if (theResource.hasPartOf()) {

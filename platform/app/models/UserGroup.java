@@ -25,6 +25,7 @@ import org.bson.BSONObject;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
+import models.enums.EntityType;
 import models.enums.UserGroupType;
 import models.enums.UserStatus;
 import utils.collections.CMaps;
@@ -38,7 +39,7 @@ import utils.exceptions.InternalServerException;
  *
  */
 @JsonFilter("UserGroup")
-public class UserGroup extends Model {
+public class UserGroup extends Model implements Actor {
 
 	protected static final @NotMaterialized String collection = "usergroups";
 	public static final @NotMaterialized Set<String> ALL = Sets.create("name", "registeredAt", "status", "type", "creator");
@@ -150,5 +151,37 @@ public class UserGroup extends Model {
 	
 	public static long count() throws AppException {
 		return Model.count(UserGroup.class, collection, CMaps.map());
+	}
+
+	@Override
+	public byte[] getPublicKey() {
+		return publicKey;
+	}
+
+	@Override
+	public MidataId getId() {
+		return _id;
+	}
+
+	@Override
+	public String getResourceType() {
+		if (this.type == UserGroupType.ORGANIZATION) return "Organization";
+		return "Group";
+	}
+
+	@Override
+	public EntityType getEntityType() {
+		if (this.type == UserGroupType.ORGANIZATION) return EntityType.ORGANIZATION;
+		return EntityType.USERGROUP;
+	}
+
+	@Override
+	public String getDisplayName() {
+		return name;
+	}
+
+	@Override
+	public String getPublicIdentifier() {
+		return "#"+_id.toString();
 	}
 }

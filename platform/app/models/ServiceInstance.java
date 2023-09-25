@@ -21,6 +21,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
+import models.enums.EntityType;
 import models.enums.UserStatus;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -28,7 +29,7 @@ import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 @JsonFilter("ServiceInstance")
-public class ServiceInstance extends Model {
+public class ServiceInstance extends Model implements Actor {
 
 	private static final String collection = "serviceinstances";
 	
@@ -124,6 +125,36 @@ public class ServiceInstance extends Model {
 
 	public static void delete(MidataId instanceId) throws InternalServerException {				
 		Model.delete(ServiceInstance.class, collection, CMaps.map("_id", instanceId));		
+	}
+
+	@Override
+	public byte[] getPublicKey() {
+		return publicKey;
+	}
+
+	@Override
+	public MidataId getId() {
+		return _id;
+	}
+
+	@Override
+	public String getResourceType() {
+		return "Device";
+	}
+
+	@Override
+	public EntityType getEntityType() {
+		return EntityType.SERVICES;
+	}
+
+	@Override
+	public String getDisplayName() {
+		return name;
+	}
+
+	@Override
+	public String getPublicIdentifier() {
+		return "#"+_id.toString();
 	}
 		
 }

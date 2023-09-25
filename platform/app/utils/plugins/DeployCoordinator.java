@@ -127,7 +127,7 @@ public class DeployCoordinator extends AbstractContainer {
 			status.tasks.add(DeployPhase.DELETE);	
 			status.tasks.add(DeployPhase.FINISHED);
 		    status.report.planned.addAll(status.tasks);
-		    AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_DEPLOYED).withActorUser(action.userId).withApp(action.pluginId));
+		    AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_DEPLOYED).withActor(null, action.userId).withApp(action.pluginId));
 		    Plugin.set(action.pluginId, "deployStatus", DeploymentStatus.RUNNING);
 		    status.auditEvent = AuditManager.instance.convertLastEventToAsync();
 			scedule(action, status);
@@ -139,7 +139,7 @@ public class DeployCoordinator extends AbstractContainer {
 			status.tasks.add(DeployPhase.DELETE);	
 			status.tasks.add(DeployPhase.FINISH_AUDIT);
 			status.report.planned.addAll(status.tasks);
-			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_UNDEPLOYED).withActorUser(action.userId).withApp(action.pluginId).withMessage("delete"));			
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_UNDEPLOYED).withActor(null, action.userId).withApp(action.pluginId).withMessage("delete"));			
 		    status.auditEvent = AuditManager.instance.convertLastEventToAsync();
 		    scedule(action, status);
 			break;
@@ -171,7 +171,7 @@ public class DeployCoordinator extends AbstractContainer {
 			status.tasks.add(DeployPhase.FINISHED);
 			status.report.planned.addAll(status.tasks);
 			Plugin.set(action.pluginId, "deployStatus", DeploymentStatus.RUNNING);
-			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_DEPLOYED).withActorUser(action.userId).withApp(action.pluginId).withMessage("deploy only"));
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_DEPLOYED).withActor(null, action.userId).withApp(action.pluginId).withMessage("deploy only"));
 		    status.auditEvent = AuditManager.instance.convertLastEventToAsync();
 		    scedule(action, status);
 			break;
@@ -182,7 +182,7 @@ public class DeployCoordinator extends AbstractContainer {
 			status.tasks.add(DeployPhase.DELETE);	
 			status.tasks.add(DeployPhase.FINISH_AUDIT);
 			status.report.planned.addAll(status.tasks);
-			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_DEPLOYED).withActorUser(action.userId).withApp(action.pluginId).withMessage("wipe"));
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.PLUGIN_DEPLOYED).withActor(null, action.userId).withApp(action.pluginId).withMessage("wipe"));
 			Plugin.set(action.pluginId, "deployStatus", DeploymentStatus.READY);
 		    status.auditEvent = AuditManager.instance.convertLastEventToAsync();
 		    scedule(action, status);
