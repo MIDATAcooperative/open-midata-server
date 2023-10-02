@@ -38,7 +38,7 @@ import utils.exceptions.InternalServerException;
 public class UserGroupMember extends Model implements Comparable<Model> {
 	
 	protected static final @NotMaterialized String collection = "groupmember";
-	public static final @NotMaterialized Set<String> ALL = Sets.create("userGroup", "member", "entityType", "status", "user", "entityName", "startDate", "endDate", "role");
+	public static final @NotMaterialized Set<String> ALL = Sets.create("userGroup", "member", "entityType", "status", "user", "entityName", "startDate", "endDate", "role", "confirmedUntil");
 
 	/**
 	 * Id of user group a group member belongs to
@@ -71,14 +71,29 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 	public Date endDate;
 	
 	/**
+	 * Membership is confirmed until which date; required for protected user groups
+	 */
+	public Date confirmedUntil;
+	
+	/**
+	 * Who confirmed the membership; required for protected user groups
+	 */
+	public MidataId confirmedBy; 
+	
+	/**
 	 * Role for study access
 	 */
 	public ResearcherRole role;
 	
-	public ResearcherRole getRole() {
+	public ResearcherRole getRole() {	    
 		if (role != null) return role;
 		role = ResearcherRole.HC();		
 		return role;
+	}
+	
+	public ResearcherRole getConfirmedRole() {
+	    if (confirmedUntil != null && confirmedUntil.before(new Date(System.currentTimeMillis()))) return ResearcherRole.UNCONFIRMED();
+		return getRole();
 	}
 	
 	
@@ -87,7 +102,10 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 	
 	@NotMaterialized
 	public String entityName;
-		
+	
+	public static UserGroupMember getById(MidataId id) throws InternalServerException {
+		return Model.get(UserGroupMember.class, collection, CMaps.map("_id", id), ALL);
+	}
 			
 	public static Set<UserGroupMember> getAllByMember(MidataId member) throws InternalServerException {
 		return Model.getAll(UserGroupMember.class, collection, CMaps.map("member", member), ALL);

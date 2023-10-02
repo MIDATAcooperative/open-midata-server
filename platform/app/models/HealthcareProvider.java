@@ -19,6 +19,8 @@ package models;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,6 +55,11 @@ public class HealthcareProvider extends Model {
 	public MidataId managerId;
 	public EntityType managerType;
 	public UserStatus status;
+	
+	/**
+	 * additional identifiers
+	 */
+	@NotMaterialized public List<String> identifiers;
 	
 	/**
 	 * City of clinic address

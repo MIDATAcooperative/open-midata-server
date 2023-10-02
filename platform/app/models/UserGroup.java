@@ -42,7 +42,7 @@ import utils.exceptions.InternalServerException;
 public class UserGroup extends Model implements Actor {
 
 	protected static final @NotMaterialized String collection = "usergroups";
-	public static final @NotMaterialized Set<String> ALL = Sets.create("name", "registeredAt", "status", "type", "creator");
+	public static final @NotMaterialized Set<String> ALL = Sets.create("name", "registeredAt", "status", "type", "creator", "searchable", "protection");
 	public static final @NotMaterialized Set<String> FHIR = Sets.create("fhirGroup");
 
 	
@@ -80,6 +80,16 @@ public class UserGroup extends Model implements Actor {
 	 * Group may be found by a group search function
 	 */
 	public boolean searchable;
+	
+	/**
+	 * Use of group membership requires confirmation by second member 
+	 */
+	public boolean protection;
+	
+	/**
+	 * for protected
+	 */
+	@NotMaterialized public Date currentUserAccessUntil;
 	
 	/**
 	 * If set : This is a test group registered by this developer

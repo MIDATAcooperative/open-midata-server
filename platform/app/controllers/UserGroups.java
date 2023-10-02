@@ -17,6 +17,9 @@
 
 package controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import actions.APICall;
 import models.Consent;
 import models.HealthcareProvider;
+import models.MessageDefinition;
 import models.MidataId;
 import models.Plugin;
 import models.ServiceInstance;
@@ -39,6 +43,8 @@ import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
+import models.enums.MessageChannel;
+import models.enums.MessageReason;
 import models.enums.Permission;
 import models.enums.ResearcherRole;
 import models.enums.SubUserRole;
@@ -49,10 +55,14 @@ import play.mvc.BodyParser;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.InstanceConfig;
 import utils.ProjectTools;
+import utils.RuntimeConstants;
 import utils.UserGroupTools;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
+import utils.auth.ActionToken;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
 import utils.auth.Rights;
@@ -63,10 +73,13 @@ import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 import utils.fhir.GroupResourceProvider;
+import utils.fhir.OrganizationResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
+import utils.messaging.Messager;
 
 /**
  * Management functions of user groups
@@ -359,5 +372,100 @@ public class UserGroups extends APIController {
 		AuditManager.instance.success();
 		return ok();
 	}
+	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public Result getUserGroup(Request request, String id) throws AppException {
+			
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		MidataId providerid = MidataId.parse(id);
+						
+		UserGroup provider = UserGroup.getById(providerid, UserGroup.ALL);
+		if (provider == null) return notFound();	
+				
+		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(providerid, executorId);
+		//if (provider == null || (ugm == null && !provider.searchable)) return notFound();
+		
+		provider.currentUserAccessUntil = ugm != null ? ugm.confirmedUntil : null;
+						
+		return ok(JsonOutput.toJson(provider, "UserGroup", Sets.create(UserGroup.ALL,"currentUserAccessUntil")));		
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public Result requestConfirmation(Request request) throws AppException  {
+		JsonNode json = request.body().asJson();		
+		JsonValidation.validate(json, "group");
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
+		
+		MidataId groupId = JsonValidation.getMidataId(json, "group");
+		String reason = JsonValidation.getStringOrNull(json, "reason");
+		
+		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
+		if (ugm == null) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");		
+		
+		UserGroup group = UserGroup.getById(groupId, UserGroup.ALL);
+		if (!group.protection) return ok();
+		
+		User requestor = context.getRequestCache().getUserById(executorId);
+		Set<UserGroupMember> allMembers = UserGroupMember.getAllActiveUserByGroup(groupId);
+		
+		boolean mailSent = false;
+		
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ACCESS_CONFIRMATION_REQUEST).withActor(requestor));
+		
+		for (UserGroupMember member : allMembers) {
+			if (!member.member.equals(executorId)) {
+				
+				String token = new ActionToken(member.member, ugm._id, null, AuditEventType.ACCESS_CONFIRMATION, System.currentTimeMillis() + 1000l * 60l * 10l).encrypt(); 
+				Map<String, String> replacements = new HashMap<String, String>();
+				try {
+				  replacements.put("token", InstanceConfig.getInstance().getServiceURL()+"?token="+URLEncoder.encode(token, "UTF-8"));
+				} catch (UnsupportedEncodingException e) {}
+				replacements.put("reason", reason);
+				replacements.put("group-name", group.name);
+				replacements.put("requestor-firstname", requestor.firstname);
+				replacements.put("requestor-lastname", requestor.lastname);
+				replacements.put("requestor-email", requestor.email);
+				
+				MessageDefinition def = new MessageDefinition();
+				def.reason = MessageReason.ACCESS_CONFIRMATION_REQUEST;
+				def.title = new HashMap<String, String>();
+				def.title.put(InstanceConfig.getInstance().getDefaultLanguage(), "Group Access request");
+				def.text = new HashMap<String, String>();
+				def.text.put(InstanceConfig.getInstance().getDefaultLanguage(), "Dear <firstname> <lastname>,\nthe user <requestor-firstname> <requestor-lastname> with email <requestor-email>\nhas requested access for the protected group <group-name>.\n\nGiven reason: <reason>.\n\nClick here to grant access for one hour:\n<token>\n\nRegards, your Midata Instance.");
+				
+				Messager.sendMessage(def, Collections.emptyMap(), User.getById(member.member, User.ALL_USER), replacements, MessageChannel.EMAIL, null);
+								
+				mailSent = true;
+			}
+		}
+		
+		// If there is no one to confirm, allow self confirmation
+		if (!mailSent) confirmation(executorId, ugm._id);
+		
+		AuditManager.instance.success();
+		return ok();
+	}
+	
+	public static void confirmation(MidataId executor, MidataId userGroupMemberId) throws AppException {
+		UserGroupMember ugm = UserGroupMember.getById(userGroupMemberId);
+		if (ugm == null) throw new InternalServerException("error.internal", "User Group does not exist");
+		
+		UserGroupMember checkExecutor = UserGroupMember.getByGroupAndActiveMember(ugm.userGroup, executor);
+		if (checkExecutor == null) throw new InternalServerException("error.internal", "Executor not member of group");
+		
+		ugm.confirmedUntil = new Date(System.currentTimeMillis() + 1000l * 60l * 60l);
+		ugm.confirmedBy = executor;
+		
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ACCESS_CONFIRMATION).withActor(null, executor).withModifiedUser(ugm.member));
+		
+		UserGroupMember.set(ugm._id, "confirmedBy", ugm.confirmedBy);
+		UserGroupMember.set(ugm._id, "confirmedUntil", ugm.confirmedUntil);
+		
+	}
+
 		
 }

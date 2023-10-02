@@ -241,6 +241,10 @@ public enum AuditEventType {
 	
 	UPDATED_ROLE_IN_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "updated-role-in-team", "Updated role in team"), AuditEventAction.U),
 	
+	ACCESS_CONFIRMATION_REQUEST(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "access-confirmation-request", "Access confirmation request"), AuditEventAction.E),
+	
+	ACCESS_CONFIRMATION(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "access-confirmation", "Access confirmation"), AuditEventAction.E),
+	
 	REMOVED_FROM_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "removed-from-team", "Removed from team"), AuditEventAction.D),
 	
 	APP_DEFINITION_CHANGED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "app-definition-changed", "App Definition Changed"), AuditEventAction.U),

@@ -1172,7 +1172,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().maySetup())
+		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 		closeStudy(context, study);
@@ -1424,7 +1424,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().mayUseApplications() && !self.getRole().maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+		if (!self.getConfirmedRole().mayUseApplications() && !self.getConfirmedRole().maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 		// validate json
 		JsonNode json = request.body().asJson();
@@ -1493,7 +1493,7 @@ public class Studies extends APIController {
 
 		} else {
 			
-			if (!self.getRole().mayUseApplications()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+			if (!self.getConfirmedRole().mayUseApplications()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 			
 			if (shareBack) {
 
@@ -1671,13 +1671,13 @@ public class Studies extends APIController {
 		if (ugm == null)
 			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 
-		if (study.requiredInformation != InformationType.DEMOGRAPHIC && ugm.getRole().pseudonymizedAccess()) {
+		if (study.requiredInformation != InformationType.DEMOGRAPHIC && ugm.getConfirmedRole().pseudonymizedAccess()) {
 			return ok(JsonOutput.toJson(Collections.emptyList(), "Consent", Sets.create()));
 		}
 		Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "status", "partName");
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		List<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, properties, fields, 1000);
-		if (!ugm.getRole().pseudonymizedAccess() && study.requiredInformation != InformationType.DEMOGRAPHIC) {
+		if (!ugm.getConfirmedRole().pseudonymizedAccess() && study.requiredInformation != InformationType.DEMOGRAPHIC) {
 			for (StudyParticipation part : participants) {
 				part.partName = Feature_Pseudonymization.pseudonymizeUser(context, part).getRight();
 				part.ownerName = null;
@@ -1757,7 +1757,7 @@ public class Studies extends APIController {
 		if (participation.pstatus == ParticipationStatus.CODE || participation.pstatus == ParticipationStatus.MATCH || participation.pstatus == ParticipationStatus.MEMBER_REJECTED)
 			throw new BadRequestException("error.unknown.participant", "Member does not participate in study");
 
-		if (!ugm.getRole().pseudonymizedAccess() && study.requiredInformation != InformationType.DEMOGRAPHIC) {
+		if (!ugm.getConfirmedRole().pseudonymizedAccess() && study.requiredInformation != InformationType.DEMOGRAPHIC) {
 			participation.partName = Feature_Pseudonymization.pseudonymizeUser(context, participation).getRight();
 			participation.ownerName = null;
 		}
@@ -1774,7 +1774,7 @@ public class Studies extends APIController {
 		ObjectNode obj = Json.newObject();
 		obj.put("participation", JsonOutput.toJsonNode(participation, "Consent", participationFields));
 
-		if (!study.anonymous && (study.requiredInformation == InformationType.DEMOGRAPHIC || !ugm.getRole().pseudonymizedAccess())) {
+		if (!study.anonymous && (study.requiredInformation == InformationType.DEMOGRAPHIC || !ugm.getConfirmedRole().pseudonymizedAccess())) {
 			Set<String> memberFields = Sets.create("_id", "firstname", "lastname", "address1", "address2", "city", "zip", "country", "email", "phone", "mobile");
 			Member member = Member.getById(participation.owner, memberFields);
 			if (member == null)
@@ -1831,7 +1831,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().manageParticipants())
+		if (!self.getConfirmedRole().manageParticipants())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 
 		autoApprove(null, study, portalContext(request), participation.group, Collections.singletonList(participation));
@@ -1861,7 +1861,7 @@ public class Studies extends APIController {
 			UserGroupMember ugmm = UserGroupMember.getByGroupAndActiveMember(study._id, userId);
 			if (ugmm == null)
 				throw new BadRequestException("error.notauthorized.study", "Not member of study team");
-			if (!ugmm.getRole().manageParticipants())
+			if (!ugmm.getConfirmedRole().manageParticipants())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 		} else auditUser = RuntimeConstants.instance.backendService;
 		Set<UserGroupMember> ugms = UserGroupMember.getAllActiveUserByGroup(study._id);
@@ -1871,7 +1871,7 @@ public class Studies extends APIController {
 
 			controllers.research.Studies.joinSharing(context, study._id, study, group, true, participants);
 			for (UserGroupMember ugm : ugms) {
-				if (ugm.getRole().manageParticipants()) {
+				if (ugm.getConfirmedRole().manageParticipants()) {
 					controllers.research.Studies.joinSharing(context, ugm.member, study, group, true, participants);
 				}
 			}
@@ -1963,7 +1963,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().manageParticipants())
+		if (!self.getConfirmedRole().manageParticipants())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 
 		// participation.addHistory(new
@@ -2018,7 +2018,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().manageParticipants())
+		if (!self.getConfirmedRole().manageParticipants())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 
 		participation.group = JsonValidation.getString(json, "group");
@@ -2078,7 +2078,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().maySetup())
+		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 		if (study.validationStatus != StudyValidationStatus.DRAFT)
@@ -2089,7 +2089,7 @@ public class Studies extends APIController {
 
 		if (anonymous) {
 			for (UserGroupMember member : UserGroupMember.getAllActiveByGroup(study._id)) {
-				if (!member.getRole().pseudonymizedAccess())
+				if (!member.getConfirmedRole().pseudonymizedAccess())
 					throw new BadRequestException("error.invalid.anonymous", "Anonymous can only be set if no team member may access unpseudonymized.");
 			}
 		}
@@ -2127,7 +2127,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().maySetup())
+		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 		if (study.validationStatus != StudyValidationStatus.DRAFT)
 			throw new BadRequestException("error.no_alter.study", "Setup can only be changed as long as study is in draft phase.");
@@ -2253,7 +2253,7 @@ public class Studies extends APIController {
 		}
 
 		if (json.has("autoJoinGroup")) {
-			if (!self.getRole().manageParticipants())
+			if (!self.getConfirmedRole().manageParticipants())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 			String grp = JsonValidation.getStringOrNull(json, "autoJoinGroup");
 
@@ -2282,7 +2282,7 @@ public class Studies extends APIController {
 			}
 		}
 		if (json.has("infos")) {
-			if (!self.getRole().maySetup())
+			if (!self.getConfirmedRole().maySetup())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 			JsonNode infos = json.get("infos");
@@ -2297,7 +2297,7 @@ public class Studies extends APIController {
 			study.setInfos(result);
 		}
 		if (json.has("infosPart")) {
-			if (!self.getRole().maySetup())
+			if (!self.getConfirmedRole().maySetup())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 			JsonNode infos = json.get("infosPart");
@@ -2312,7 +2312,7 @@ public class Studies extends APIController {
 			study.setInfosPart(result);
 		}
 		if (json.has("infosInternal")) {
-			if (!self.getRole().maySetup())
+			if (!self.getConfirmedRole().maySetup())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 			JsonNode infos = json.get("infosInternal");
@@ -2361,7 +2361,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().maySetup())
+		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 		deleteStudy(context, study._id, false);
@@ -2456,7 +2456,7 @@ public class Studies extends APIController {
 		Set<UserGroupMember> members = UserGroupMember.getAllActiveUserByGroup(oldGroup);
 
 		for (UserGroupMember member : members) {
-			ProjectTools.addToUserGroup(context, member.getRole(), userGroup._id, EntityType.USER, member.member);
+			ProjectTools.addToUserGroup(context, member.getConfirmedRole(), userGroup._id, EntityType.USER, member.member);
 		}
 
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
@@ -2752,7 +2752,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().maySetup())
+		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 		if (study.executionStatus != StudyExecutionStatus.PRE && study.executionStatus != StudyExecutionStatus.RUNNING) {
 			throw new BadRequestException("error.notauthorized.action", "Groups can only be added as long as project is running.");

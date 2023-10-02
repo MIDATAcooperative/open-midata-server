@@ -213,6 +213,10 @@
      "nomatch" : {
        "birthdate" : "Birthdate does not match",
        "email" : "Different email address provided"
+     },
+     
+     "not_unique" : {
+        "identifier" : "A provided identifier is not unique"
      }
    },
 
@@ -357,7 +361,9 @@
 	   "resthook-called" : "Resthook called",
 	   "script-invocation" : "Script invoked",
 	   "plugin-deployed" : "Plugin deployed",
-	   "plugin-undeployed" : "Plugin undeployed"	   	   
+	   "plugin-undeployed" : "Plugin undeployed",
+	   "access-confirmation" : "Access confirmation",
+	   "access-confirmation-request" : "Access confirmation request"	   	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -1018,6 +1024,7 @@
     "people" : "With which persons(s) do you want to share data?",
     "external" : "Non @PRODUCT account holder",
     "add_people_btn" : "Add More People",
+    "add_hp_btn" : "Add Practitioner",
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
     "reshare2" : "@:newconsent.reshare2",
@@ -1316,6 +1323,7 @@
   },
   
   "addusers" : {
+    "title" : "User Search",
     "contacts" : "Existing contacts:",
     "all_users" : "All users",
     "no_contacts_to_add" : "No contacts can be added to this circle.",

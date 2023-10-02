@@ -250,7 +250,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 																		
 		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
-		//query.putAccount("public", "also");
+		query.putAccount("public", "also");
 		// At last execute the constructed query
 		return query;
 	}
@@ -365,8 +365,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		}
 		
 		for (Identifier id : theOrganization.getIdentifier()) {
-			MidataId existing = FHIRTools.resolveUniqueIdentifierToId("Organization", id.getSystem(), id.getValue());
-			if (existing != null && !existing.equals(record._id)) throw new InvalidRequestException("Identifier is not unique");
+			OrganizationTools.checkIdentifier(record, id.getSystem(), id.getValue());			
 		}
 		
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
@@ -476,6 +475,28 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 	}
 	
+	public static List<String> getIdentifiers(AccessContext context, HealthcareProvider healthProvider) throws AppException {
+		try {
+			info();
+		} catch (AuthenticationException e) {					
+			OrganizationResourceProvider.setAccessContext(context);
+		}
+		
+        OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.myProviders.get("Organization")); 
+				 
+		List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id",healthProvider._id).map("format","fhir/Organization").map("public","only").map("content","Organization/HP"), RecordManager.COMPLETE_DATA); 
+		if (!records.isEmpty()) {
+			Organization org = provider.parse(records.get(0), Organization.class);
+			List<String> result = new ArrayList<String>();
+			for (Identifier id : org.getIdentifier()) {
+				result.add(id.getSystem()+"|"+id.getValue());
+			}
+			return result;
+		}
+				
+		return null;
+	}
+	
    public static void updateFromHP(AccessContext context, HealthcareProvider healthProvider) throws AppException {
 		
 		try {
@@ -521,6 +542,22 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			org.setActive(false);
 		} else {
 			org.setActive(true);
+		}
+		
+		if (healthProvider.identifiers != null) {
+			List<Identifier> ids = new ArrayList<Identifier>();
+			for (String identifierStr : healthProvider.identifiers) {
+				String parts[] = identifierStr.split("[\\s\\|]");
+				Identifier identifier = new Identifier();				
+				if (parts.length==1) identifier.setValue(parts[0]);
+				else if (parts.length>=2) identifier.setSystem(parts[0]).setValue(parts[1]);
+				for (Identifier oldId : org.getIdentifier()) {
+					if (oldId.getValue().equals(identifier.getValue()) && oldId.getSystem() != null && oldId.getSystem().equals(identifier.getSystem())) identifier = oldId;
+				}
+				ids.add(identifier);
+			}
+			
+			org.setIdentifier(ids);
 		}
 		
 		Address adr = new Address();

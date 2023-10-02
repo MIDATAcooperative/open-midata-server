@@ -36,6 +36,8 @@
     "edit_btn" : "Edit Organization",
     "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions.",
     "parent" : "Part of Organization",
+    "identifiers" : "Identifier",
+    "identifiers_info" : "Enter all external organization identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired.",
     "select_btn" : "Select",
     "managerType" : "Organization Manager",
     "managers" : {
@@ -45,12 +47,22 @@
       "OTHERMEMBER" : "Add another health professional as member and manager",
       "EXTERNALUSER" : "Add another health professional as manager"
     },
-    "manager" : "Email of Manager"
+    "manager" : "Email of Manager",
+    "protection" : "Access protection",
+    "protection2" : "A second user must always confirm any use of this organization.", 
+    "request_btn" : "Request Access"
   },
   
   "addprovider" : {
     "sign_up" : "Register health professional",
     "success" : "User successfully registered"
+  },
+  
+  "provider_requestaccess" : {
+     "title" : "Request Access",
+     "reason" : "Reason",
+     "wait" : "Please wait until your request is confirmed...",
+     "retry_btn" : "Retry now"
   },
   
   "addpatient" : {

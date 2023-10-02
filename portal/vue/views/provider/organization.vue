@@ -104,9 +104,11 @@ export default {
 		        $data.orgs = [];
 				for (let grp of results.data) {
 					me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization(grp._id).url)
-		    		.then(function(data) { 	               
-		        		$data.orgs.push(data.data);												
-		    		}));	   
+		    		.then(function(data) { 	 
+		    		    if (data.data) {              
+		        		   $data.orgs.push(data.data);
+		        		}												
+		    		}, function(err) {}));	   
 				}
     	    }));
 

@@ -377,7 +377,7 @@ const routes = [
   {
     base : ["provider"],
     path : "addprovider",
-    component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),
+    component: () => import(/* webpackChunkName: "provider" */ 'views/shared/registerother.vue'),
     meta : {
       mode : "provider"
     }
@@ -385,12 +385,17 @@ const routes = [
   {
     base : ["provider", "admin"],
     path : "addorganization",
-    component: () => import(/* webpackChunkName: "research" */ 'views/provider/editorg.vue'),   
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/editorg.vue'),   
   },
   {
     base : ["provider", "admin"],
     path : "updateorganization",
-    component: () => import(/* webpackChunkName: "research" */ 'views/provider/editorg.vue'),   
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/editorg.vue'),   
+  },
+  {
+    base : ["provider", "admin"],
+    path : "requestaccess",
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/requestaccess.vue'),   
   },
   {
     base : ["admin"],

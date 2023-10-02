@@ -55,6 +55,7 @@ import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
 public class FHIRTools {
@@ -311,6 +312,8 @@ public class FHIRTools {
 		AccessLog.logEnd("end resolve unique identifier #=",Integer.toString(resources.size()));
 		if (resources.size() == 1) {
 			return resources.get(0);
+		} else if (resources.size() > 1) {
+			throw new BadRequestException("error.not_unique.identifier", "A provided identifier is not unique");
 		}
 		return null;
 	}
