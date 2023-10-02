@@ -319,7 +319,7 @@ public class Circles extends APIController {
 		Set<UserGroupMember> results1 = UserGroupMember.getAllActiveByMember(members);
 		Set<MidataId> recursion = new HashSet<MidataId>();
 		for (UserGroupMember ugm : results1) {
-			if (!alreadyFound.contains(ugm.userGroup) && ugm.getRole().mayWriteData()) {
+			if (!alreadyFound.contains(ugm.userGroup) && ugm.getConfirmedRole().mayWriteData()) {
 				recursion.add(ugm.userGroup);
 				alreadyFound.add(ugm.userGroup);
 				results.add(ugm);

@@ -40,7 +40,7 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		return ugm.getRole().mayWriteData() && parent.mayCreateRecord(record);
+		return ugm.getConfirmedRole().mayWriteData() && parent.mayCreateRecord(record);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class UserGroupAccessContext extends AccessContext {
 
 	@Override
 	public boolean mayUpdateRecord(DBRecord stored, Record newVersion)  throws InternalServerException {
-		return ugm.getRole().mayWriteData() && parent.mayUpdateRecord(stored, newVersion);
+		return ugm.getConfirmedRole().mayWriteData() && parent.mayUpdateRecord(stored, newVersion);
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public class UserGroupAccessContext extends AccessContext {
 	
 	@Override
 	public boolean mustPseudonymize() {
-		return ugm.getRole().pseudonymizedAccess();
+		return ugm.getConfirmedRole().pseudonymizedAccess();
 	}
 	
 	@Override

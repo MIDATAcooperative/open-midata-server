@@ -286,14 +286,14 @@ public class APSCache {
 	}
 	
 	public List<UserGroupMember> getByGroupAndActiveMember(UserGroupMember ugm, MidataId member, Permission permission) throws InternalServerException {
-		if (ugm.member.equals(member) && ugm.getRole().may(permission)) return Collections.singletonList(ugm);
+		if (ugm.member.equals(member) && ugm.getConfirmedRole().may(permission)) return Collections.singletonList(ugm);
 		return getByGroupAndActiveMember(ugm.userGroup, member, permission);
 	}
 	
 	public List<UserGroupMember> getByGroupAndActiveMember(MidataId userGroup, MidataId member, Permission permission) throws InternalServerException {
 		if (userGroupMember == null && member.equals(getAccountOwner())) {
 			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndActiveMember(userGroup, member);
-			if (isMemberOfGroup != null && isMemberOfGroup.getRole().may(permission)) return Collections.singletonList(isMemberOfGroup);
+			if (isMemberOfGroup != null && isMemberOfGroup.getConfirmedRole().may(permission)) return Collections.singletonList(isMemberOfGroup);
 		}
 		
 		List<UserGroupMember> result = new ArrayList<UserGroupMember>();
@@ -316,11 +316,11 @@ public class APSCache {
 	    	if (ugm.userGroup.equals(userGroup)) {
 	    		tested.add(ugm._id);
 	    		
-	    		if (ugm.member.equals(member) && ugm.getRole().may(permission)) {
+	    		if (ugm.member.equals(member) && ugm.getConfirmedRole().may(permission)) {
 	    			result.add(ugm);
 	    			return true;
 	    		} else if (ugm.entityType == EntityType.USERGROUP || ugm.entityType == EntityType.ORGANIZATION) {
-		    	   if (ugm.getRole().may(permission) && getByGroupAndActiveMember(tested, result, ugm.member, member, permission)) {
+		    	   if (ugm.getConfirmedRole().may(permission) && getByGroupAndActiveMember(tested, result, ugm.member, member, permission)) {
 		    		   result.add(ugm);		    		   
 		    		   return true;
 		    	   }

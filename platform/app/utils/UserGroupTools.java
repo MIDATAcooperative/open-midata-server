@@ -141,7 +141,8 @@ public class UserGroupTools {
 					if (infos.address1 != null) provider.address1 = infos.address1;
 					if (infos.address2 != null) provider.address2 = infos.address2;
 					if (infos.phone != null) provider.phone = infos.phone;
-					if (infos.mobile != null) provider.mobile = infos.mobile;					
+					if (infos.mobile != null) provider.mobile = infos.mobile;
+					if (infos.identifiers != null) provider.identifiers = infos.identifiers;
 				}
 				
 				provider.parent = parent;
@@ -159,7 +160,8 @@ public class UserGroupTools {
 				if (infos.address1 != null) provider.address1 = infos.address1;
 				if (infos.address2 != null) provider.address2 = infos.address2;
 				if (infos.phone != null) provider.phone = infos.phone;
-				if (infos.mobile != null) provider.mobile = infos.mobile;					
+				if (infos.mobile != null) provider.mobile = infos.mobile;
+				if (infos.identifiers != null) provider.identifiers = infos.identifiers;
 			}
 			provider.parent = parent;
 			//provider.status = UserStatus.ACTIVE;

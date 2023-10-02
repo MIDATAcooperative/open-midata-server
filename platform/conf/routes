@@ -158,7 +158,7 @@ POST    /api/research/login                              controllers.research.Re
 GET     /api/shared/org/:id                              controllers.research.Researchers.getOrganization(id: String)
 POST    /api/shared/org/:id                              controllers.research.Researchers.updateOrganization(request: Request,id: String)
 
-GET     /api/shared/hp/:id                              controllers.providers.Providers.getOrganization(id: String)
+GET     /api/shared/hp/:id                              controllers.providers.Providers.getOrganization(request: Request, id: String)
 PUT     /api/shared/hp/:id                               controllers.providers.Providers.updateOrganization(request: Request,id: String)
 POST    /api/shared/hp                                   controllers.providers.Providers.createOrganization(request: Request)
 POST    /api/provider/addprovider                       controllers.providers.Providers.registerOther(request: Request)
@@ -247,6 +247,7 @@ POST    /api/providers/usevisualization                  controllers.providers.P
 GET     /api/providers/member/:member                    controllers.providers.Providers.getMember(request: Request, member: String)    
 
 POST    /api/shared/usergroups/search                     controllers.UserGroups.search(request: Request)
+GET     /api/shared/usergroups/get/:id                    controllers.UserGroups.getUserGroup(request: Request, id : String)
 POST    /api/shared/usergroups/members                    controllers.UserGroups.listUserGroupMembers(request: Request)
 POST    /api/shared/usergroups/groups                     controllers.UserGroups.listUserGroupGroups(request: Request)
 POST    /api/shared/usergroups/create                     controllers.UserGroups.createUserGroup(request: Request)
@@ -254,6 +255,7 @@ POST    /api/shared/usergroups/delete/:group              controllers.UserGroups
 POST    /api/shared/usergroups/edit/:group                controllers.UserGroups.editUserGroup(request: Request,group: String)
 POST    /api/shared/usergroups/adduser                    controllers.UserGroups.addMembersToUserGroup(request: Request)
 POST    /api/shared/usergroups/removeuser                 controllers.UserGroups.deleteUserGroupMembership(request: Request)
+POST    /api/shared/usergroups/confirm                    controllers.UserGroups.requestConfirmation(request: Request)
 
 # Developers
 POST    /api/developers/register                          controllers.Developers.register(request: Request)

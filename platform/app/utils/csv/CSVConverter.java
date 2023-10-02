@@ -326,16 +326,33 @@ public class CSVConverter {
 		
 	}
 	
+	public String processMappingExtr(JsonNode base, JsonNode data, JsonNode field) {
+		this.all = data;
+		String value = this.extract(data, path(field), field);
+		this.all = null;
+		return value;
+	}
+	
 	public void processMapping(JsonNode base, JsonNode data, JsonNode map) {
 		//System.out.println("mapping="+data.toString());
 		List<String> out = new ArrayList<String>();
 		for (JsonNode field : map.path("fields")) {
-			this.all = data;			
-			String value = this.extract(data, path(field), field);			
-			this.all = null;
-			
-						
-			out.add(value);
+					
+			if (field.has("firstOf")) {
+				boolean found = false;
+				for (JsonNode subField : field) {					
+					String value = processMappingExtr(base, data, subField);
+					if (!value.equals(globalMissing)) {
+						out.add(value);
+						found = true;
+						break;
+					}					
+				}
+				if (!found) out.add(globalMissing);
+			} else {
+				String value = processMappingExtr(base, data, field);											
+				out.add(value);
+			}
 		}
 		write(out);
 	}

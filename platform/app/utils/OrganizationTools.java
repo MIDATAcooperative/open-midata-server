@@ -17,9 +17,13 @@
 
 package utils;
 
+import org.hl7.fhir.r4.model.Identifier;
+
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import controllers.UserGroups;
 import models.HealthcareProvider;
 import models.MidataId;
+import models.Model;
 import models.enums.EntityType;
 import models.enums.Permission;
 import models.enums.ResearcherRole;
@@ -30,6 +34,7 @@ import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.FHIRTools;
+import utils.fhir.ResourceProvider;
 import utils.json.JsonValidation.JsonValidationException;
 
 public class OrganizationTools {
@@ -42,6 +47,25 @@ public class OrganizationTools {
 				throw new BadRequestException("error.notauthorized.action", "Tried to change other healthcare provider organization!");
 			}	
 		}
+		if (midataResource.identifiers != null) {
+			if (!ResourceProvider.hasInfo()) ResourceProvider.setAccessContext(context);
+			for (String ids : midataResource.identifiers) {
+				checkIdentifier(midataResource, ids);
+			}
+		}
+	}
+	
+	public static void checkIdentifier(Model record, String systemValue) throws AppException {
+		String parts[] = systemValue.split("[\\s\\|]");
+		
+		if (parts.length==1) checkIdentifier(record, null, parts[0]);
+		else if (parts.length>=2) checkIdentifier(record, parts[0], parts[1]);	    
+	}
+	
+	public static void checkIdentifier(Model record, String system, String value) throws AppException {		
+		MidataId existing = FHIRTools.resolveUniqueIdentifierToId("Organization", system, value);
+		if (existing != null && !existing.equals(record._id)) throw new BadRequestException("error.not_unique.identifier", "Identifier is not unique");
+		
 	}
 	
 	public static void createModel(AccessContext context, HealthcareProvider midataResource) throws AppException {

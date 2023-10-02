@@ -79,6 +79,7 @@ export default {
         organizations : null,
         setup : { sort : "email", filter : { search : "" }, ignoreCase : true},
         dateLimit: null
+        
     }),
 
     components: {  Panel, ErrorBox, FormGroup },

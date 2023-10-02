@@ -221,9 +221,14 @@ public class Feature_QueryRedirect extends Feature {
 							AccessLog.log("empty (val/col): ", key, " val1=", val1.toString()," val2=", val2.toString());
 							return null;
 						}
-					} else {					
-						AccessLog.log("empty (val/val): ", key);
-						return null;
+					} else {	
+						if (key.equals("public")) {
+							if ("also".equals(val1)) combined.put(key, val2);
+							else if ("also".equals(val2)) combined.put(key, val1);
+						} else {
+						   AccessLog.log("empty (val/val): ", key);
+						   return null;
+						}
 					}
 				}
 				

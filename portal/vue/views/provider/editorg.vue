@@ -68,6 +68,10 @@
                 <p class="form-control-plaintext"><span class="mr-1" v-if="parentOrg">{{ (parentOrg || {}).name }}</span><button type="button" @click="selectParent()" class="btn btn-sm btn-default" v-t="'provider_organization.select_btn'"></button></p>
                 
             </form-group>
+            <form-group name="identifier" label="provider_organization.identifiers" :path="errors.identifier">
+                <textarea class="form-control" id="identifiers" name="identifiers" rows="5" v-validate v-model="org.identifiersStr"></textarea>
+                <p class="form-text text-muted" v-t="'provider_organization.identifiers_info'"></p>               
+            </form-group>
             <form-group v-if="!org._id" name="managerType" label="provider_organization.managerType" :path="errors.managerType">
                 <select name="managerType" class="form-control" v-validate v-model="org.managerTypeExt">
                   <option v-for="m in managers" :key="m" :value="m">{{ $t('provider_organization.managers.'+m) }}</option>
@@ -76,9 +80,15 @@
             <form-group v-if="!org._id && (org.managerTypeExt=='OTHERMEMBER' || org.managerTypeExt=='EXTERNALUSER')" name="manager" label="provider_organization.manager" :path="errors.manager"> 
 		        <input type="text" class="form-control" id="manager" name="manager" v-validate v-model="org.manager" required>		    
             </form-group>
+            <form-group name="protection" label="provider_organization.protection" :path="errors.protection"> 
+		         <check-box v-model="usergroup.protection" name="protection" :disabled="org._id">
+                    <span v-t="'provider_organization.protection2'"></span>
+                </check-box>
+            </form-group>
             <form-group name="x" label="common.empty">
                 <button type="submit" :disabled="!isMasterUser() || action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
                 <button v-if="org._id" type="button" :disabled="!isMasterUser() || action!=null" class="btn btn-default ml-1" v-t="'common.delete_btn'" @click="deleteOrg()"></button>
+                <button v-if="org._id && usergroup.protection" type="button" :disabled="!isMasterUser() || action!=null || (usergroup.currentUserAccessUntil && usergroup.currentUserAccessUntil > now)" class="btn btn-primary ml-1" v-t="'provider_organization.request_btn'" @click="requestAccess()"></button> 
                 <success :finished="finished" action="update" msg="common.save_ok"></success>                
             </form-group>          
         </form>	
@@ -120,7 +130,7 @@ import usergroups from "services/usergroups.js"
 import editusergroup from "views/provider/editusergroup.vue"
 import editgroups from "views/provider/editgroups.vue"
 import OrganizationSearch from "components/tiles/OrganizationSearch.vue"
-import { rl, status, ErrorBox, FormGroup, Success, Modal } from 'basic-vue3-components'
+import { rl, status, ErrorBox, FormGroup, Success, Modal, CheckBox } from 'basic-vue3-components'
 
 export default {
     data: () => ({	
@@ -130,11 +140,12 @@ export default {
         currentUser : null,
         parentOrg : null,
         persons : null,
+        now : new Date(),
         managers : ["ME", "ME2", "PARENT", "OTHERMEMBER", "EXTERNALUSER"],
         setupOrganizationSearch : null
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, Success, editgroups, editusergroup, OrganizationSearch, Modal },
+    components: {  Panel, ErrorBox, FormGroup, CheckBox, Success, editgroups, editusergroup, OrganizationSearch, Modal },
 
     mixins : [ status, rl ],
     
@@ -149,20 +160,15 @@ export default {
     methods : {
         reload() {
             const { $data, $route } = this, me = this;
-
-/*
-            me.doBusy(users.getMembers({  role : "PROVIDER", provider : session.org }, users.MINIMAL )
-		    .then(function(data) {
-                for (let user of data.data)	user.search = user.firstname+" "+user.lastname;
-			    $data.persons = me.process(data.data, { filter : { search : "" }});
-		    }));
-*/
 		
 		    if ($data.orgId) {
 				me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization($data.orgId).url)
 	    		.then(function(data) { 	               
-	        		$data.org = data.data;	
-	        		
+	
+	        		let org = data.data;
+	        		if (org.identifiers) org.identifiersStr = org.identifiers.join("\n");
+
+	        		$data.org = org;	        		
 	        		if ($data.org.parent) {
 	        		   me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization($data.org.parent).url)
 	    		       .then(function(data2) { 	               
@@ -171,13 +177,18 @@ export default {
 	        		}											
 	    		}));
 	    		
-	    		me.doBusy(usergroups.search({ "_id" : $data.orgId }, ["name", "status", "searchable" ])
+	    		me.doBusy(server.get(jsRoutes.controllers.UserGroups.getUserGroup($data.orgId).url)
+    		    .then(function(data) { 	               		        		
+        		   $data.usergroup = data.data;	        		        		   
+    		    }));
+	    		
+	    		/*me.doBusy(usergroups.search({ "_id" : $data.orgId }, ["name", "status", "searchable" ])
 				.then(function(data) {		
 				    if (data.data.length) $data.usergroup = data.data[0]; else $data.usergroup = null;								                						
-				}));	   
+				}));*/	   
     		} else {
     		   $data.org = { parent : $route.query.parentId, status : "ACTIVE" };
-    		   $data.usergroup = null;
+    		   $data.usergroup = { protection : false };
     		   if ($route.query.parentId) {
 		      	
         		   me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization($route.query.parentId).url)
@@ -195,10 +206,17 @@ export default {
 	
 	    editorg() {									
             const { $data } = this, me = this;
+            
+            if ($data.org.identifiersStr) {
+		      $data.org.identifiers = $data.org.identifiersStr.split(/\s*\n\s*/);
+		    } else {
+		      $data.org.identifiers = [];
+		    }
+            
             if ($data.orgId) { 
 	       		me.doAction("update", server.put(jsRoutes.controllers.providers.Providers.updateOrganization($data.org._id).url, $data.org)
-	       		.then((res) => {
-	       		  $data.orgId = res.data._id;	       		  
+	       		.then((res) => {	       		  	
+	       		  me.reload();      		  
 	       		}));
 	       	} else {
 	       	    switch($data.org.managerTypeExt) {
@@ -226,7 +244,9 @@ export default {
 	       	        $data.org.fullAccess = false;
 	       	        break;
 	       	    }
-  	       	    me.doAction("update", server.post(jsRoutes.controllers.providers.Providers.createOrganization().url, $data.org))
+	       	    let org = $data.org;
+	       	    org.protection = $data.usergroup.protection;
+  	       	    me.doAction("update", server.post(jsRoutes.controllers.providers.Providers.createOrganization().url, org))
   	       	    .then((res) => {
 	       		  me.$router.back();		  
 	       		});
@@ -247,11 +267,15 @@ export default {
 	
 	
 	    isMasterUser() {
-		    return session.hasSubRole('MASTER');
+		    return session.hasSubRole('MASTER') || session.user.role == "ADMIN";
 	    },
 
         add() {
             this.$router.push({ path : './addprovider' });
+        },
+        
+        requestAccess() {
+            this.$router.push({ path : './requestaccess', query : { orgId : this.$data.orgId } });
         },
         
         edit() {	
@@ -274,7 +298,7 @@ export default {
             if (parentOrg.length) parentOrg = parentOrg[0];					
 		    $data.org.parent = parentOrg._id || parentOrg.id;
 		    $data.parentOrg = parentOrg;		    		
-        },
+        }
 	
     },
 

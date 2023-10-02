@@ -54,11 +54,11 @@ public class Rights {
 		allowed = new HashMap<String, Map<UserRole, Set<String>>>();
 		
 		action("Users.get");
-		role(UserRole.MEMBER, "_id", "role", "firstname", "lastname", "name", "status", "email");
-		role(UserRole.RESEARCH, "_id", "role", "firstname", "lastname", "name", "status", "email");
-		role(UserRole.DEVELOPER, "_id", "role", "firstname", "lastname", "name", "email", "developer", "status");
+		role(UserRole.MEMBER, "_id", "role", "firstname", "lastname", "name", "status", "email","searchable");
+		role(UserRole.RESEARCH, "_id", "role", "firstname", "lastname", "name", "status", "email", "searchable");
+		role(UserRole.DEVELOPER, "_id", "role", "firstname", "lastname", "name", "email", "developer", "status", "searchable");
 		role(UserRole.ADMIN, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "registeredAt", "role", "subroles", "security", "status", "zip", "midataID", "birthday", "confirmationCode", "emailStatus", "mobileStatus", "confirmedAt", "reason", "coach", "developer", "language", "searchable", "authType", "notifications", "marketingEmail");
-		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "role", "subroles", "status", "zip", "midataID", "birthday");
+		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "role", "subroles", "status", "zip", "midataID", "birthday", "searchable");
 		
 		action("Users.getPROVIDER");
 		role(UserRole.MEMBER  , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "phone", "mobile", "name", "role", "subroles", "status", "zip");

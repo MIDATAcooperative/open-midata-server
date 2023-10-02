@@ -142,5 +142,10 @@ public enum MessageReason {
 	/**
 	 * A FHIR message should be processed
 	 */
-	PROCESS_MESSAGE
+	PROCESS_MESSAGE,
+	
+	/**
+	 * Request for access confirmation for protected user group
+	 */
+	ACCESS_CONFIRMATION_REQUEST
 }
