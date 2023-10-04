@@ -394,7 +394,7 @@ public class Feature_AccountQuery extends Feature {
 	}
 	
 	protected static boolean allApsIncluded(Query q) throws BadRequestException {
-		if (!q.restrictedBy("owner") && /* XXXXXXX !q.restrictedBy("study-group") &&*/ !q.restrictedBy("consent-type-exclude")) return true;
+		if (!q.restrictedBy("owner") && !q.restrictedBy("consent-type-exclude")) return true;
 		return false;
 	}
 	
