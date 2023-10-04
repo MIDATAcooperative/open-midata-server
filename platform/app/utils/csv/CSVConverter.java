@@ -59,6 +59,16 @@ public class CSVConverter {
 		this.outBuffer = new StringBuilder();
 	}
 	
+	public JsonNode path(JsonNode in, String field, int idx) {
+		if (in.path(field).isArray()) return in.path(field).path(idx);
+		return in.path(field);
+	}
+	
+	public int length(JsonNode in, String field) {
+		if (in.path(field).isMissingNode()) return 0;
+		if (in.path(field).isArray()) return in.path(field).size();
+		return 1;
+	}
 		
 	public void prepareMapping() throws BadRequestException {
 		if (!mapping.isArray()) throw new BadRequestException("error.invalid.csvmapping", "Not an array");
@@ -119,9 +129,14 @@ public class CSVConverter {
 		if (map.hasNonNull("group")) {			
 			_group = new HashMap<String, ObjectNode>();
 			
-			for (JsonNode group : map.path("group")) {		
-	          if (!group.hasNonNull("key") || !group.path("key").hasNonNull("fhir")) throw new BadRequestException("error.invalid.csvmapping", "Missing group key definition");
-	          if (!group.path("as").isTextual()) throw new BadRequestException("error.invalid.csvmapping", "Missing group 'as' definition");
+			for (JsonNode group : map.path("group")) {	
+			   int keyLen = length(group, "key");
+			   int asLen = length(group, "as");
+	          if (keyLen==0 || keyLen != asLen) throw new BadRequestException("error.invalid.csvmapping", "Missing group key or 'as' definition");
+	          for (int i=0;i<keyLen;i++) {
+	        	  if (!path(group, "as", i).isTextual() || !path(group, "key", i).path("fhir").isTextual()) throw new BadRequestException("error.invalid.csvmapping", "Bad group key or 'as' definition");	        		 
+	          }
+	         
 		  }
 		}
 	}
@@ -237,22 +252,43 @@ public class CSVConverter {
 	
 	public void processGrouping(JsonNode base, JsonNode data, JsonNode map, boolean grouping) {
 		if (grouping) {
-		   this.all = data;		   
-		   String keyValue = extract(data, path(map.path("key")), map.path("key"));      
-           this.all = null;
+			
+		   ObjectNode group = null;
+		   int l = length(map, "key");
+		   
+		   for (int grpPart = 0;grpPart < l; grpPart++) {
+			   this.all = data;	
+			   JsonNode key = path(map, "key", grpPart);
+			   String keyValue = extract(data, path(key), key);      
+	           this.all = null;
+	           
+	           String name = path(map, "as", grpPart).asText();
+	           
+	           if (grpPart == 0 && base.path("sorted").asBoolean() && !keyValue.equals(_keyValue)) {
+	 	          flushGroup(base);
+	               _keyValue = keyValue;
+	           }  	           	           
 
-		   JsonNode fixedData = data.deepCopy();
-	       String name = map.path("as").asText();
-
-           if (base.path("sorted").asBoolean() && !keyValue.equals(_keyValue)) {
-	          flushGroup(base);
-              _keyValue = keyValue;
-           }           
-
-           if (!_group.containsKey(keyValue)) _group.put(keyValue, Json.newObject());
-           JsonNode group = _group.get(keyValue);
-           if (!group.has(name)) ((ObjectNode) group).set(name, Json.newArray());
-           ((ArrayNode) group.path(name)).add(fixedData);
+		       if (grpPart==0) {
+		    	   if (!_group.containsKey(keyValue)) _group.put(keyValue, Json.newObject());
+		           group = _group.get(keyValue); 	   
+		       } else {
+		    	   if (!group.has(keyValue)) group.set(keyValue, Json.newObject());
+		    	   group = (ObjectNode) group.get(keyValue);
+		       }
+		       
+		       if (grpPart < l-1) {
+		    	   if (!group.has(name)) group.set(name, Json.newObject());
+		    	   group = (ObjectNode) group.path(name);
+		       } else {
+		    	   JsonNode fixedData = data.deepCopy();		           
+		           if (!group.has(name)) group.set(name, Json.newArray());
+		           ((ArrayNode) group.path(name)).add(fixedData); 	   
+		       }
+		   }	                            
+           
+           
+           
                       
 		} else {		
 		   this.processMapping(base, data,map);
@@ -310,10 +346,26 @@ public class CSVConverter {
 		}
 	}
 	
+	public void flatten(ObjectNode in) {		
+		Iterator<String> k = in.fieldNames();
+		while (k.hasNext()) {
+			String key = k.next();			
+			if (in.path(key).isObject()) {
+				ObjectNode submap = (ObjectNode) in.path(key);				
+				ArrayNode out = Json.newArray();
+				for (JsonNode v : submap) {
+					if (v.isObject()) flatten((ObjectNode) v);
+					out.add(v);
+				}
+				in.set(key, out);
+			}
+		}		
+	}
+	
 	public void flushGroup(JsonNode base) {
 		if (!_group.isEmpty()) {
-			for (ObjectNode v : _group.values()) {
-			//System.out.println("---------------GROUP:"+v.toString());
+			for (ObjectNode v : _group.values()) {			
+			   flatten(v);
 			   processSortAndLimit(base, v);
 			   preprocessMapping(base, v, base, v, base, false);                                  
 			}
@@ -340,7 +392,7 @@ public class CSVConverter {
 					
 			if (field.has("firstOf")) {
 				boolean found = false;
-				for (JsonNode subField : field) {					
+				for (JsonNode subField : field.get("firstOf")) {					
 					String value = processMappingExtr(base, data, subField);
 					if (!value.equals(globalMissing)) {
 						out.add(value);
@@ -357,21 +409,18 @@ public class CSVConverter {
 		write(out);
 	}
 	
-	public String extract(JsonNode data, String[] path, JsonNode field) {
-		//System.out.println("extract="+path+" data="+data);		
+	public String extract(JsonNode data, String[] path, JsonNode field) {			
 		return extractFromList(extract(data, path, 0, field), field);
 	}
 	
-	public List<String> extractPlain(JsonNode data, String[] path, JsonNode field) {
-		//System.out.println("extractPlain="+path+" data="+data);		
+	public List<String> extractPlain(JsonNode data, String[] path, JsonNode field) {		
 		return extract(data, path, 0, field);
 	}
 	
 	public List<String> extract(JsonNode data, String[] path, int idx, JsonNode field) {		
 		//System.out.println("extract pathlen="+path.length+" idx="+idx);
 		if (idx < path.length) {
-			JsonNode dataold = data;
-			//System.out.println("datapath="+path[idx]);
+			JsonNode dataold = data;			
 			data = data.path(path[idx]);						
 			return handleArrays(data, path, idx, field, dataold, path[idx]);			
 		} else return handleArraysFinal(data, field, null, null);
