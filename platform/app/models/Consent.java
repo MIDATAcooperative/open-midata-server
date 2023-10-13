@@ -20,6 +20,8 @@ package models;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +54,7 @@ public class Consent extends Model implements Comparable<Consent> {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator", "externals");
 	
 	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "writes", "dataupdate", "lastUpdated");
 	
@@ -123,6 +125,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	 * the email of a non midata consent owner
 	 */
 	public String externalOwner;
+	
+	/**
+	 * extra information about external entities
+	 */
+	public Map<String, ConsentExternalEntity> externals;
 	
 	/**
 	 * Type of entity that is authorized
@@ -393,5 +400,24 @@ public class Consent extends Model implements Comparable<Consent> {
 	
 	public boolean isWriteable() {
 		return this.status == ConsentStatus.ACTIVE || this.status == ConsentStatus.PRECONFIRMED;
+	}
+	
+	public void addExternalAuthorized(String email, String display) {
+		if (externalAuthorized == null) externalAuthorized = new HashSet<String>();
+		externalAuthorized.add(email.toLowerCase());
+		if (display != null) {
+			if (externals == null) externals = new HashMap<String, ConsentExternalEntity>();
+			ConsentExternalEntity entity = new ConsentExternalEntity();
+			entity.name = display;
+			externals.put(email.toLowerCase(), entity);
+		}
+	}
+	
+	public ConsentExternalEntity getExternal(String email) {
+		if (externals == null || email == null) return null;
+		ConsentExternalEntity result = externals.get(email.toLowerCase());
+		if (result != null) return result;
+		result = externals.get(email.replace(".","[dot]").toLowerCase());
+		return result;
 	}
 }

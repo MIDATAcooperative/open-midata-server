@@ -61,12 +61,12 @@ public class Messager {
 	}
 	
 	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId) {	
-		AccessLog.log("trigger send text mail to="+email);		
+		AccessLog.log("trigger send text mail to="+email+" subject="+subject);		
 		mailSender.tell(new Message(email, fullname, subject, content, eventId), ActorRef.noSender());
 	}
 	
 	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId, MailSenderType type) {	
-		AccessLog.log("trigger send text mail to="+email);
+		AccessLog.log("trigger send text mail to="+email+" subject="+subject);
 		mailSender.tell(new Message(type, email, fullname, subject, content, eventId), ActorRef.noSender());
 	}
 	
@@ -81,7 +81,7 @@ public class Messager {
 	
 	public static boolean sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel) throws AppException {
 		if (targets == null || targets.isEmpty()) {
-			AccessLog.log("no email targets");
+			AccessLog.log("no email targets reason="+reason.toString());
 			return false;
 		}
 		Plugin plugin = Plugin.getById(sourcePlugin, Sets.create("predefinedMessages", "name"));
@@ -90,7 +90,7 @@ public class Messager {
 		  replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
 		  return sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements, channel, sourcePlugin);
 		}
-		AccessLog.log("no predefined messages");
+		AccessLog.log("no predefined messages for reason="+reason.toString());
 		return false;
 	}
 	

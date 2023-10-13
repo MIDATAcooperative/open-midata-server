@@ -41,6 +41,7 @@ import actions.APICall;
 import controllers.research.AutoJoiner;
 import models.Circle;
 import models.Consent;
+import models.ConsentExternalEntity;
 import models.HCRelated;
 import models.Member;
 import models.MemberKey;
@@ -1004,33 +1005,51 @@ public class Circles extends APIController {
 			if (sender != null) {
 				replacements.put("executor-firstname", sender.firstname);
 				replacements.put("executor-lastname", sender.lastname);
+				replacements.put("executor-name", sender.getDisplayName());
 				replacements.put("executor-email", sender.email != null ? sender.email : "none");
 			} else {
 				replacements.put("executor-firstname", "-");
 				replacements.put("executor-lastname", "-");
+				replacements.put("executor-name", "-");
 				replacements.put("executor-email", "none");
 			}
 		
 			if (grantor != null) {				
 				   replacements.put("grantor-firstname", grantor.firstname);
 				   replacements.put("grantor-lastname", grantor.lastname);
+				   replacements.put("grantor-name", grantor.getDisplayName());
 				   replacements.put("grantor-email", grantor.email != null ? grantor.email : "none");
+			} else if (consent.externalOwner != null) {
+				   ConsentExternalEntity entity = consent.getExternal(consent.externalOwner);
+				   replacements.put("grantor-firstname", entity != null? entity.getFirstname() : "");
+				   replacements.put("grantor-lastname", entity != null? entity.getLastname() : "");
+				   replacements.put("grantor-name", entity != null? entity.getName() : consent.externalOwner);								   
+				   replacements.put("grantor-email", consent.externalOwner);
 			} else {
-			  	   replacements.put("grantor-firstname", "-");
+				   replacements.put("grantor-firstname", "-");
 				   replacements.put("grantor-lastname", "-");								   
-				   replacements.put("grantor-email", consent.externalOwner != null ? consent.externalOwner : "none");
+				   replacements.put("grantor-name", "-");
+				   replacements.put("grantor-email", "none");
 			}
 			
 			if (grantee != null) {				
 				   replacements.put("grantee-firstname", grantee.firstname);
 				   replacements.put("grantee-lastname", grantee.lastname);
+				   replacements.put("grantee-name", grantee.getDisplayName());
 				   replacements.put("grantee-email", grantee.email != null ? grantee.email : "none");
 			} else {
-			  	   replacements.put("grantee-firstname", "");
-				   replacements.put("grantee-lastname", "");	
+			  	   	
 				   if (consent.externalAuthorized != null && consent.externalAuthorized.size() == 1) {
-					 replacements.put("grantee-email", consent.externalAuthorized.iterator().next());
+					  String email = consent.externalAuthorized.iterator().next();
+					  ConsentExternalEntity entity = consent.getExternal(email);
+					  replacements.put("grantee-firstname", entity != null? entity.getFirstname() : "");
+				      replacements.put("grantee-lastname", entity != null? entity.getLastname() : "");
+					  replacements.put("grantee-name", entity != null? entity.getName() : email);
+					  replacements.put("grantee-email", email);
 				   } else {
+					 replacements.put("grantee-firstname", "");
+					 replacements.put("grantee-lastname", "");
+					 replacements.put("grantee-name", "");
 				     replacements.put("grantee-email", "-");
 				   }
 			}
