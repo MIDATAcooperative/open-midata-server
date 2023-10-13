@@ -712,11 +712,9 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			TypedMidataId mid = FHIRTools.getMidataIdFromReference(ref.getReferenceElement());
 			if (mid == null) {
 			  String login = FHIRTools.getMidataLoginFromReference(ref);
+			  String display = ref.getDisplay();
 			  if (login != null) {
-				  if (consent.externalAuthorized == null) {
-					  consent.externalAuthorized = new HashSet<String>();
-				  }
-				  consent.externalAuthorized.add(login);
+				  consent.addExternalAuthorized(login, display);				  
 			  }
 			} else {
 			  if (mid.getType().equals("Group")) {

@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.regex.Pattern;
 
+import org.hazlewood.connor.bottema.emailaddress.EmailAddressParser;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.MidataId;
@@ -153,7 +155,7 @@ public class JsonValidation {
 	  if (email==null || !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) return false;
 	  return true;
 	}	
-	
+		
 	public static Date getDate(JsonNode json, String field) throws JsonValidationException {
 		JsonNode dateNode = json.path(field);
 		if (dateNode.isNumber()) {
