@@ -562,6 +562,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	@Override
 	public void createPrepare(Record record, Patient thePatient) throws AppException {
+		if (!info().mayAccess("Patient", "fhir/Patient")) throw new UnprocessableEntityException("Patient resource not in access filter.");
 		if (!thePatient.hasName()) throw new UnprocessableEntityException("Name required for patient");
 		boolean nameFound = false;
 		for (HumanName name : thePatient.getName()) {

@@ -661,8 +661,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	}
 
 	@Override
-	public void createPrepare(Record record, Patient thePatient) throws AppException {
-	
+	public void createPrepare(Record record, Patient thePatient) throws AppException {	
 		super.createPrepare(record, thePatient);
 	}
 
@@ -860,6 +859,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	@Override
 	public Record init(Patient thePatient) throws AppException {
+		if (!info().mayAccess("Patient", "fhir/Patient")) throw new UnprocessableEntityException("Patient resource not in access filter.");
 		RecordWithMeta record = new RecordWithMeta();
 		record._id = new MidataId();
 		record.creator = info().getActor();
