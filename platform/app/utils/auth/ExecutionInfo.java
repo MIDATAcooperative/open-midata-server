@@ -20,6 +20,7 @@ package utils.auth;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -227,12 +228,21 @@ public class ExecutionInfo {
 			appInstance.sharingQuery = RecordManager.instance.getMeta(tempContext, authToken.appInstanceId, "_query").toMap();
 		}
 				
+		Map<String, Object> appobj = (plugin.type.equals("broker")) ? (RecordManager.instance.getMeta(tempContext, appInstance._id, "_app").toMap()) : null;
 		AccessContext session = ContextManager.instance.upgradeSessionForApp(tempContext, appInstance);
 		
-		String group = authToken.getExtra().get("grp");
-		if (group != null) {
-			MidataId groupId = OrganizationTools.resolve(session, group);
-			if (groupId == null) OAuth2.invalidToken();
+		MidataId groupId = null;
+		if (appobj != null && appobj.containsKey("group")) {
+			groupId = MidataId.from(appobj.get("group"));
+		} else {
+		   String group = authToken.getExtra().get("grp");		
+		
+			if (group != null) {
+				groupId = OrganizationTools.resolve(session, group);
+				if (groupId == null) OAuth2.invalidToken();
+			}
+		}
+		if (groupId != null) {
 			List<UserGroupMember> ugms = session.getCache().getByGroupAndActiveMember(groupId, session.getAccessor(), Permission.READ_DATA);			
 			if (ugms != null) {
 				session = session.forUserGroup(ugms);

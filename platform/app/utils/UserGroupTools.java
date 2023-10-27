@@ -114,7 +114,7 @@ public class UserGroupTools {
 	}
 	
 	public static HealthcareProvider createOrUpdateOrganizationUserGroup(AccessContext context, MidataId organizationId, String name, HealthcareProvider infos, MidataId parent, boolean addAccessor, boolean accessorFullAccess) throws AppException {
-		if (parent != null && !accessorIsMemberOfGroup(context, parent, Permission.SETUP)) throw new BadRequestException("error.notauthorized.action", "You are not authorized to manage parent organization.");
+		if (parent != null && !accessorIsMemberOfGroup(context, parent, Permission.SETUP) && context.getAccessorRole() != UserRole.ADMIN) throw new BadRequestException("error.notauthorized.action", "You are not authorized to manage parent organization.");
 		AccessLog.logBegin("begin createOrUpdateOrganizationUserGroup org="+organizationId.toString()+" name="+name+" addAccessor="+addAccessor);
 		try {
 		MidataId oldParent = null;

@@ -61,7 +61,7 @@ public class ProjectTools {
 				addToUserGroup(context, role, groupId, type, targetUserId);
 			} else {
 								
-				AuditManager.instance.addAuditEvent(AuditEventType.UPDATED_ROLE_IN_TEAM, null, context.getActor(), targetUserId, null, groupId);
+				AuditManager.instance.addAuditEvent(AuditEventType.UPDATED_ROLE_IN_TEAM, context, null, context.getActor(), targetUserId, null, groupId);
 				
 				if (old.member.equals(self.member)) {
 					int size = UserGroupMember.getAllActiveUserByGroup(self.userGroup).size();
@@ -85,7 +85,7 @@ public class ProjectTools {
 
     public static void addToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId)
             throws AppException, AuthException, InternalServerException {
-        AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, context.getActor(), targetUserId, null, groupId);
+        AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, context, null, context.getActor(), targetUserId, null, groupId);
         
         UserGroup ug = UserGroup.getById(groupId, UserGroup.ALL);
         if (ug == null) throw new InternalServerException("error.internal", "UserGroup not found");

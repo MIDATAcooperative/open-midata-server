@@ -41,7 +41,17 @@
 		        <check-box v-for="req in requirements" :key="req" :checked="app.requirements.indexOf(req)>=0" :name="'chk_'+req" @click="toggle(app.requirements, req);requireLogout();">
                     <span>{{ $t('enum.userfeature.'+req) }}</span>
 		        </check-box>		        
-		    </form-group>		  		  
+		    </form-group>	
+		    <form-group name="decentral" label="manageapp.decentral" v-if="app.type=='broker'">
+                <check-box name="decentral" v-model="app.decentral" :path="errors.decentral">		    
+		            <span v-t="'manageapp.info.decentral'"></span>
+                </check-box>		    		    
+		    </form-group>
+		    <form-group name="organizationKeys" label="manageapp.organizationKeys" v-if="app.type=='broker'">
+                <check-box name="organizationKeys" v-model="app.organizationKeys" :path="errors.organizationKeys">		    
+		            <span v-t="'manageapp.info.organizationKeys'"></span>
+                </check-box>		    		    
+		    </form-group>	  		  
 		    <hr>
 		    <form-group name="name" label="Name" :path="errors.name">
 		        <input type="text" id="name" name="name" class="form-control" placeholder="Name" v-validate v-model="app.name" required>
@@ -225,7 +235,8 @@
 		         <input type="checkbox" id="codeChallenge" name="codeChallenge" class="form-check-input" v-validate v-model="app.codeChallenge">
 		         <label for="codeChallenge" class="form-check-label">{{ $t('manageapp.info.code_challenge') }}</label>
 		      </div>		    
-		  </form-group>
+		  </form-group>		
+		  
 		   <form-group name="sendReports" label="manageapp.send_reports" :path="errors.sendReports">
 		      <div class="form-check">
 		         <input type="checkbox" id="sendReports" name="sendReports" class="form-check-input" v-validate v-model="app.sendReports">
@@ -340,7 +351,7 @@ export default {
                 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys"])
 		    .then(function(data) { 
                 let app = data.data[0];	
 				

@@ -83,6 +83,7 @@ public class OrganizationTools {
 
 	
 	public static HealthcareProvider updateModel(AccessContext context, HealthcareProvider midataResource) throws AppException {
+		 AccessLog.logBegin("Begin update organization model");
 		 if (midataResource.status == UserStatus.DELETED) {
 			 UserGroupTools.deleteUserGroup(context, midataResource._id, true);
 			 midataResource.set("status", UserStatus.DELETED);
@@ -91,6 +92,7 @@ public class OrganizationTools {
 		 } else {
 			 midataResource = UserGroupTools.createOrUpdateOrganizationUserGroup(context, midataResource._id, midataResource.name, midataResource, midataResource.parent, false, false);
 		 }
+		 AccessLog.logEnd("End update organization model");
          return midataResource;
 	}
 	

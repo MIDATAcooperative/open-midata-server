@@ -360,7 +360,7 @@ public class Providers extends APIController {
 	}
 	
 	/**
-	 * healthcare provider search for MIDATA members by MIDATAID and birthday.
+	 * healthcare provider search for organizations
 	 * @return Member and list of consents
 	 * @throws JsonValidationException
 	 * @throws InternalServerException
@@ -370,19 +370,45 @@ public class Providers extends APIController {
 	@APICall
 	public Result searchOrganization(Request request) throws JsonValidationException, AppException {
 	
+		AccessContext context = portalContext(request);
 		JsonNode json = request.body().asJson();
 		String name = JsonValidation.getStringOrNull(json, "name");
 		String city = JsonValidation.getStringOrNull(json, "city");
+		MidataId serviceId = JsonValidation.getMidataId(json, "serviceId");
+		
+		Set<MidataId> orgIds = new HashSet<MidataId>();
+		
+		if (serviceId != null) {
+			Set<UserGroupMember> ugms = UserGroupMember.getAllByMember(serviceId);
+			for (UserGroupMember ugm : ugms) orgIds.add(ugm.userGroup);
+		} else {
+			AccessLog.logBegin("Start search for organization membership");			
+			Set<UserGroupMember> memberOf = context.getCache().getAllActiveByMember();		
+			for (UserGroupMember ugm : memberOf) orgIds.add(ugm.userGroup);
+			AccessLog.logEnd("End search for org membership #size=",Integer.toString(orgIds.size()));		
+		}
+		
+		AccessLog.logBegin("Start search for organizations");
 		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.getProvider("Organization")); 
-		List<Organization> orgs = provider.search(portalContext(request), name, city, true);
-	
-		Map<MidataId, Organization> orgsById = new HashMap<MidataId, Organization>();
+		List<Organization> orgs = provider.search(context, name, city, true);
+	    AccessLog.logEnd("End search for organizations #size=",Integer.toString(orgs.size()));
+		
+	    Map<MidataId, Organization> orgsById = new HashMap<MidataId, Organization>();
 		for (Organization org : orgs) orgsById.put(MidataId.from(org.getIdElement().getIdPart()), org);		
-		Map<String, Object> properties = CMaps.map("searchable", true).map("_id", orgsById.keySet());				
-	    Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, Sets.create("_id"));
+	    
+	    if (serviceId == null) {
+			AccessLog.logBegin("Verify accessible");			
+			Map<String, Object> properties = CMaps.map("searchable", true).map("_id", orgsById.keySet());				
+		    Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, Sets.create("_id"));
+		    for (UserGroup grp : groups) orgIds.add(grp._id);
+		    AccessLog.logEnd("End verify accessible");
+	    }
 	    
 	    orgs.clear();
-	    for (UserGroup grp : groups) orgs.add(orgsById.get(grp._id));
+	    for (MidataId orgId : orgIds) {
+	    	Organization org = orgsById.get(orgId); 
+	    	if (org != null) orgs.add(org);
+	    }
 
 		
 		StringBuffer out = new StringBuffer("[");

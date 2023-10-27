@@ -207,7 +207,7 @@ public class Users extends APIController {
 							AuditEventBuilder
 							.withType(AuditEventType.USER_SEARCHED)
 							.withActor(context, context.getActor())					
-					        .withModifiedUser(result._id));
+					        .withModifiedActor(context, result._id));
 				}
 			}
 			AuditManager.instance.success();
@@ -260,7 +260,7 @@ public class Users extends APIController {
 						AuditEventBuilder
 						.withType(AuditEventType.USER_SEARCHED)
 						.withActor(context, context.getActor())					
-				        .withModifiedUser(user._id));
+				        .withModifiedActor(context, user._id));
 			}
 		}
 		AuditManager.instance.success();

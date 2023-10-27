@@ -363,7 +363,11 @@
 	   "plugin-deployed" : "Plugin deployed",
 	   "plugin-undeployed" : "Plugin undeployed",
 	   "access-confirmation" : "Access confirmation",
-	   "access-confirmation-request" : "Access confirmation request"	   	   
+	   "access-confirmation-request" : "Access confirmation request",
+	   "apikey-created" : "API-Key created",
+       "apikey-deleted" : "API-Key deleted",
+       "service-instance-created" : "Service-Instance created",
+       "service-instance-deleted" : "Service-Instance deleted"	   	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -392,11 +396,12 @@
 	   "EXPIRED" : "Expired",
 	   "REJECTED" : "Rejected",
 	   "UNCONFIRMED" : "Unconfirmed",
-	   "FROZEN" : "Frozen"
+	   "FROZEN" : "Frozen",
+	   "INVALID" : "Invalid"
 	 },
 	 "consenttype" : {
 	   "CIRCLE" : "Other Account Holders",
-     "REPRESENTATIVE" : "Representative",
+       "REPRESENTATIVE" : "Representative",
 	   "EXTERNALSERVICE" : "External Application",
 	   "API" : "External Service",
 	   "HCRELATED" : "Healthcare",
@@ -1351,7 +1356,8 @@
   "databrokersearch" : {
     "title" : "Search Data Brokers (APIs)",
     "name" : "Data broker name",
-    "empty_result" : "No matching data brokers found."
+    "empty_result" : "No matching data brokers found.",
+    "new_btn" : "Create new instance"
   },
   
   "confirm" : {
@@ -1554,8 +1560,10 @@
   "apikeys" : {
     "title" : "API Key Management",
     "empty" : "This account does not manage any services with API keys.",
+    "managedby" : "managed by",
     "add_btn" : "Add Key",
     "delete_btn" : "Remove Analyzer",
+    "delete_service_btn" : "Remove Service",
     "delete_endpoint_btn" : "Remove Endpoint",
     "show_btn" : "Show Keys",  
     "revoke_btn" : "Revoke this key",
@@ -1567,6 +1575,7 @@
     "common_name" : "OU (organization unit) and CN (common name) for CSR (certificate request)",
     "instructions_common_name" : "For certificate based authentication create a CSR with the given OU and CN fields. Send the CSR to @SUPPORT",
     "date" : "Date of creation",
+    "restrictions" : "Restrictions", 
     "status" : "Status",
     "ACTIVE" : "Active",
     "FROZEN" : "Old version",

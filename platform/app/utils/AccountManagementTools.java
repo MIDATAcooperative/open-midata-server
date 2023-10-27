@@ -175,7 +175,7 @@ public class AccountManagementTools {
 				AuditEventBuilder
 				   .withType(used ? AuditEventType.NON_PERFECT_ACCOUNT_MATCH : AuditEventType.TRIED_USER_REREGISTRATION)
 				   .withApp(context.getUsedPlugin())
-				   .withModifiedUser(existing)
+				   .withModifiedActor(existing)
 		);
 		Set targets = new HashSet();
 		if (existing.email != null) targets.add(existing._id);

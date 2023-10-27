@@ -192,6 +192,7 @@ public class UserGroup extends Model implements Actor {
 
 	@Override
 	public String getPublicIdentifier() {
-		return "#"+_id.toString();
+		if (this.type == UserGroupType.ORGANIZATION) return "org#"+_id.toString();
+		return "grp#"+_id.toString();
 	}
 }

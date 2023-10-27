@@ -196,6 +196,8 @@ public class Market extends APIController {
 			
 			app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
 			app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");			
+			app.decentral = JsonValidation.getBoolean(json, "decentral");
+			app.organizationKeys = JsonValidation.getBoolean(json, "organizationKeys");
 			
 			if (withLogout) {
 				Map<String, Object> oldDefaultQuery = app.defaultQuery;
@@ -249,7 +251,7 @@ public class Market extends APIController {
 				if (app.type.equals("external") || app.type.equals("broker")) {
 															
 					Set<ServiceInstance> si = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
-					if (si.isEmpty() && userId.equals(app.creator)) {
+					if (si.isEmpty() && userId.equals(app.creator) && !app.decentral) {
 						ApplicationTools.createServiceInstance(context, app, userId);
 					}
 					for (ServiceInstance instance : si) {
@@ -736,6 +738,8 @@ public class Market extends APIController {
 		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		plugin.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
 		plugin.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
+		plugin.decentral = JsonValidation.getBoolean(json, "decentral");
+		plugin.organizationKeys = JsonValidation.getBoolean(json, "organizationKeys");
 		plugin.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");		
 		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		plugin.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
@@ -871,6 +875,8 @@ public class Market extends APIController {
 		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
 		app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
+		app.decentral = JsonValidation.getBoolean(json, "decentral");
+		app.organizationKeys = JsonValidation.getBoolean(json, "organizationKeys");
 		app.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");
 		app.consentObserving = JsonValidation.getBoolean(json, "consentObserving");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
@@ -996,7 +1002,7 @@ public class Market extends APIController {
 
 		if (DeploymentManager.hasUserDeployment(pluginId)) throw new BadRequestException("error.notauthorized.remove_first", "Remove existing deployment first.");
 		
-		if (app.type.equals("mobile") || app.type.equals("service") || app.type.equals("external") || app.type.equals("analyzer")) {
+		if (app.type.equals("mobile") || app.type.equals("service") || app.type.equals("external") || app.type.equals("analyzer") || app.type.equals("broker")) {
 			Set<MobileAppInstance> installations =  MobileAppInstance.getByApplication(pluginId, Sets.create("_id", "owner"));
 			for (MobileAppInstance inst : installations) {				
 				KeyManager.instance.deleteKey(inst._id);
@@ -1008,7 +1014,7 @@ public class Market extends APIController {
 				Space.delete(inst.owner, inst._id);
 			}
 		}	
-		if (app.type.equals("external") || app.type.equals("analyzer")) {
+		if (app.type.equals("external") || app.type.equals("analyzer") || app.type.equals("broker")) {
 			Set<ServiceInstance> instances = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
 			for (ServiceInstance inst : instances) {
 				ApplicationTools.deleteServiceInstance(context, inst);
@@ -1666,9 +1672,11 @@ public class Market extends APIController {
 
 		String endpoint = null;
 		if (service) {
-			for (ServiceInstance inst :  ServiceInstance.getByApp(plugin._id, ServiceInstance.ALL)) {
-				if (endpoint==null && inst.endpoint!=null) endpoint = inst.endpoint;
-				ApplicationTools.deleteServiceInstance(context, inst);
+			if (!plugin.decentral) {
+				for (ServiceInstance inst :  ServiceInstance.getByApp(plugin._id, ServiceInstance.ALL)) {
+					if (endpoint==null && inst.endpoint!=null) endpoint = inst.endpoint;
+					ApplicationTools.deleteServiceInstance(context, inst);
+				}
 			}
 			
 			ApplicationTools.createServiceInstance(context, plugin, licence.licenseeId, endpoint);

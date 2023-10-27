@@ -71,6 +71,7 @@ import models.Study;
 import models.User;
 import models.UserGroupMember;
 import models.enums.ConsentType;
+import models.enums.EntityType;
 import models.enums.Permission;
 import models.enums.UserRole;
 import utils.AccessLog;
@@ -295,7 +296,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	
 	 	
 			
-	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, Actor actor0, User modifiedUser, Consent affectedConsent, String message, Study study, AuditExtraInfo extra) throws AppException {
+	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, Actor actor0, Actor modifiedUser, Consent affectedConsent, String message, Study study, AuditExtraInfo extra) throws AppException {
 		AuditEvent ae = new AuditEvent();
 
 		ae.setId(mae._id.toString());
@@ -328,20 +329,18 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		}
 		if (modifiedUser != null) {
 			AuditEventEntityComponent aeec = ae.addEntity();
-			aeec.setType(new Coding().setSystem("http://midata.coop/codesystems/user-role").setCode(modifiedUser.role.toString()));
+			if (modifiedUser.getEntityType() == EntityType.USER) {
+			  aeec.setType(new Coding().setSystem("http://midata.coop/codesystems/user-role").setCode(modifiedUser.getUserRole().toString()));
+			}
 			
-			if (anonymize != null && modifiedUser._id.equals(anonymize)) {
+			if (anonymize != null && modifiedUser.getId().equals(anonymize)) {
 				aeec.setName(affectedConsent.getOwnerName());
 				aeec.setWhat(new Reference("Patient/"+affectedConsent._id.toString()));
 			} else {
-				if (modifiedUser.role == UserRole.PROVIDER) {			   
-				   aeec.setWhat(new Reference("Practitioner/"+modifiedUser._id.toString()).setDisplay(modifiedUser.getPublicIdentifier()));
-				} else {			   
-				   aeec.setWhat(new Reference("Patient/"+modifiedUser._id.toString()).setDisplay(modifiedUser.getPublicIdentifier()));
-				}
+				aeec.setWhat(new Reference(modifiedUser.getLocalReference()).setDisplay(modifiedUser.getPublicIdentifier()));				
 			}
 			
-			aeec.setName(modifiedUser.firstname+" "+modifiedUser.lastname);
+			aeec.setName(modifiedUser.getDisplayName());
 			
 			//aeec.setIdentifier(new Identifier().setValue(modifiedUser.getPublicIdentifier()));
 		}

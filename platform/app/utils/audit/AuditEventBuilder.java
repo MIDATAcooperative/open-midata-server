@@ -31,7 +31,7 @@ public class AuditEventBuilder {
 	private AuditEventType type;
 	private MidataId app;
 	private Actor who;
-	private User modifiedUser;
+	private Actor modifiedActor;
 	private Consent consent;
 	private String message;
 	private Study study;
@@ -70,17 +70,17 @@ public class AuditEventBuilder {
 		return this;
 	}
 	
-	public User getModifiedUser() {
-		return modifiedUser;
+	public Actor getModifiedActor() {
+		return modifiedActor;
 	}
 	
-	public AuditEventBuilder withModifiedUser(User modifiedUser) {
-		this.modifiedUser = modifiedUser;
+	public AuditEventBuilder withModifiedActor(Actor modifiedUser) {
+		this.modifiedActor = modifiedUser;
 		return this;
 	}
 	
-	public AuditEventBuilder withModifiedUser(MidataId modifiedUser) throws InternalServerException {		
-		if (modifiedUser!=null) this.modifiedUser = User.getById(modifiedUser, User.ALL_USER);
+	public AuditEventBuilder withModifiedActor(AccessContext context, MidataId modifiedUser) throws InternalServerException {		
+		if (modifiedUser!=null) this.modifiedActor = Actor.getActor(context, modifiedUser);
 		return this;
 	}
 	

@@ -253,7 +253,15 @@ public enum AuditEventType {
 	
 	PLUGIN_UNDEPLOYED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "plugin-undeployed", "Plugin undeployed"), AuditEventAction.U),
 	
-	SIGNATURE_FAILURE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "signature-failure", "Signature failure"), AuditEventAction.E);
+	SIGNATURE_FAILURE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "signature-failure", "Signature failure"), AuditEventAction.E),
+	
+	APIKEY_CREATED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "apikey-created", "API-Key created"), AuditEventAction.C),
+	
+	APIKEY_DELETED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "apikey-deleted", "API-Key deleted"), AuditEventAction.D),
+	
+    SERVICE_INSTANCE_CREATED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "service-instance-created", "Service-Instance created"), AuditEventAction.C),
+	
+	SERVICE_INSTANCE_DELETED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "service-instance-deleted", "Service-Instance deleted"), AuditEventAction.D);
 	
 	private AuditEventAction action;
 	private Coding type;

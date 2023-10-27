@@ -498,7 +498,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	}
 	
    public static void updateFromHP(AccessContext context, HealthcareProvider healthProvider) throws AppException {
-		
+		AccessLog.logBegin("begin update organization resource from model");
 		try {
 			info();
 		} catch (AuthenticationException e) {					
@@ -583,7 +583,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
  		  //RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", healthProvider._id).map("format","fhir/Organization"));
 		  provider.createResource(org);
 		}
-		
+		AccessLog.logEnd("end update organization from model");
 	}
    
    private void extractAddress(Organization theResource, HealthcareProvider prov) {

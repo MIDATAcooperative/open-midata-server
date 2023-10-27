@@ -296,7 +296,7 @@ GET     /api/plugins/:id/url            controllers.Plugins.getUrl(id: String)
 
 # Services
 GET     /api/servicesproject/:studyId   controllers.Services.listServiceInstancesStudy(request: Request, studyId: String)
-GET     /api/services                   controllers.Services.listServiceInstances(request: Request)
+POST     /api/services                   controllers.Services.listServiceInstances(request: Request)
 GET     /api/endpoints                  controllers.Services.listEndpoints(request: Request)
 GET     /api/services/:appId/app        controllers.Services.listServiceInstancesApp(request: Request, appId: String)
 DELETE  /api/services/:instanceId       controllers.Services.removeServiceInstance(request: Request, instanceId: String)

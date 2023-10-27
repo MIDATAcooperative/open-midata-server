@@ -97,7 +97,7 @@
       <editgroups></editgroups>
       <editusergroup></editusergroup>
     </div>      
-    <modal id="parentOrganizationSearch" full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
+    <modal id="parentOrganizationSearch" :full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
 	   <organization-search :setup="parentOrganizationSearch" @add="setParent"></organization-search>
 	</modal>
     
@@ -151,7 +151,7 @@ export default {
     
     watch : {
 		$route(to, from) { 						
-			if (to.path.indexOf("addorganization") < 0) return;
+			if (to.path.indexOf("addorganization") < 0 && to.path.indexOf("updateorganization") < 0) return;
 		    this.$data.orgId = this.$route.query.orgId;        
             this.reload();	    
 		}

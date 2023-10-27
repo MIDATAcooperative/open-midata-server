@@ -467,7 +467,7 @@ public class Administration extends APIController {
 		User selected = User.getByIdAlsoDeleted(userId, User.ALL_USER);
 		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
 		
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActor(context, context.getActor()).withModifiedUser(selected));
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActor(context, context.getActor()).withModifiedActor(selected));
 		
 		SubscriptionManager.accountWipe(context, userId);
 						

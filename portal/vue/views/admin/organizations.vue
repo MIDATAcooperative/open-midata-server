@@ -39,13 +39,14 @@
         <pagination v-model="organizations" search="name"></pagination>
 					
 		<table class="table table-striped" v-if="organizations.filtered.length">
-
+              <thead>
 				<tr>
 					<Sorter sortby="name" v-model="organizations" v-t="'admin_organizations.name'"></Sorter>					
 					<Sorter sortby="status" v-model="organizations" v-t="'admin_organizations.status'"></Sorter>
 					<th></th>
 				</tr>
-								
+			  </thead>
+			<tbody>		
 				<tr v-for="member in organizations.filtered" :key="member._id" >
 					<td><router-link :to="{ path : './updateorganization', query :  { orgId : member._id } }">{{ member.name || 'none' }}</router-link></td>					
 					<td><select @change="changeOrganization(member);" v-model="member.status" class="form-control">
@@ -53,6 +54,7 @@
                         </select></td>
                     <td><router-link :to="{ path : './editusergroup', query :  { groupId : member._id } }" class="btn btn-sm btn-default">{{ $t('admin_organizations.members_btn') }}</router-link></td>                    
 				</tr>
+			</tbody>
 		</table>
 
         <p v-if="organizations.filtered.length === 0" v-t="'admin_organizations.empty'"></p>

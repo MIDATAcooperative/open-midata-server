@@ -25,6 +25,7 @@ import models.User;
 import models.enums.UserStatus;
 import utils.buffer.StudyPublishBuffer;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 import utils.messaging.SubscriptionBuffer;
 
 public class RequestCache {
@@ -33,11 +34,11 @@ public class RequestCache {
 	private StudyPublishBuffer studyPublishBuffer;
 	private SubscriptionBuffer subscriptionBuffer;
 	
-	public User getUserById(MidataId userId) throws AppException {
+	public User getUserById(MidataId userId) throws InternalServerException {
 		return getUserById(userId, false);
 	}
 	
-	public User getUserById(MidataId userId, boolean alsoDeleted) throws AppException {
+	public User getUserById(MidataId userId, boolean alsoDeleted) throws InternalServerException {
 		User result = null;
 		if (userCache == null) {
 			userCache = new HashMap<MidataId, User>();
