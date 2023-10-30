@@ -276,7 +276,7 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 						.withType(AuditEventType.USER_SEARCHED)
 						.withActor(info(), info().getActor())
 						.withApp(info().getUsedPlugin())
-				        .withModifiedUser(result));
+				        .withModifiedActor(result));
 			}
 		}
 		AuditManager.instance.success();

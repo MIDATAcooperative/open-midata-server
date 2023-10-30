@@ -121,7 +121,7 @@ public class SubscriptionProcessor extends AbstractActor {
 					
 					//System.out.println("type="+channel.getType().toString());
 					if (channel.getType().equals(SubscriptionChannelType.RESTHOOK)) {
-						AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.RESTHOOK).withActor(null, subscription.owner).withModifiedUser(triggered.getSourceOwner()).withApp(subscription.app));
+						AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.RESTHOOK).withActor(null, subscription.owner).withModifiedActor(null, triggered.getSourceOwner()).withApp(subscription.app));
 						processRestHook(subscription._id, triggered, channel);
 					} else if (channel.getType().equals(SubscriptionChannelType.MESSAGE)) {
 						String endpoint = channel.getEndpoint();
@@ -259,7 +259,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			subscription.disable();
 			return false;
 		}
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SCRIPT_INVOCATION).withActor(null, subscription.owner).withModifiedUser(triggered.getSourceOwner()).withApp(subscription.app));
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SCRIPT_INVOCATION).withActor(null, subscription.owner).withModifiedActor(null, triggered.getSourceOwner()).withApp(subscription.app));
 		//System.out.println("prcApp2");
 		String endpoint = channel.getEndpoint();		
 		

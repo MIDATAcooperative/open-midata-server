@@ -26,6 +26,7 @@
                 <Sorter v-t="'provider_editgroups.entityType'" sortby="entityType" v-model="members"></Sorter>                                
                 <Sorter v-t="'provider_editgroups.roleName'" sortby="role.roleName" v-model="members"></Sorter>
                 <th></th>
+                <th></th>
                 <th></th>   
             </tr>
             <tr class="clickable" @click="select(member)" v-for="member in members.filtered" :key="member._id">
@@ -33,6 +34,9 @@
                 <td>{{ $t('enum.entitytype.'+member.entityType) }}</td>
                 <td>{{ $t('provider_editgroups.role.'+member.role.roleName) }}</td>
                 <td>{{ matrix(member.role) }}</td>
+                <td width="20">
+                  <a v-if="member.entityType=='SERVICES'" href="javascript:" @click="manageKeys(member)"><i class="fas fa-key"></i></a>
+                </td>
                 <td>
                     <button type="button" v-if="member.member != user._id" @click="removeGroup(member)" :disabled="action!=null" class="close" aria-label="Delete">
                         <span aria-hidden="true">&times;</span>
@@ -49,7 +53,7 @@
                <p class="form-control-static">{{ add.entityName }}</p>
             </form-group>
             <form-group name="rights" label="provider_editusergroup.rights">
-                <check-box v-for="req in rights" :name="req" :key="req" v-model="add.role[req]" :disabled="!mayChangeTeam()">
+                <check-box v-for="req in rights" :name="req+'_1'" :key="req" v-model="add.role[req]" :disabled="!mayChangeTeam()">
                     <span>{{ $t('provider_editusergroup.right.'+req) }}</span>
                 </check-box>		 
             </form-group>                         
@@ -86,15 +90,15 @@
     </panel>
     </div>
 
-    <modal id="providerSearch" full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('usergroupsearch.title')">
+    <modal id="providerSearch" :full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('usergroupsearch.title')">
 	   <user-group-search :setup="setupProvidersearch" @add="addGroup"></user-group-search>
 	</modal>
 	
-	<modal id="organizationSearch" full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
+	<modal id="organizationSearch" :full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
 	   <organization-search :setup="setupOrganizationSearch" @add="addGroup"></organization-search>
 	</modal>
 	
-	<modal id="databrokerSearch" full-width="true" @close="setupBrokerSearch=null" :open="setupBrokerSearch!=null" :title="$t('databrokersearch.title')">
+	<modal id="databrokerSearch" :full-width="true" @close="setupBrokerSearch=null" :open="setupBrokerSearch!=null" :title="$t('databrokersearch.title')">
 	   <data-broker-search :setup="setupBrokerSearch" @add="addGroup"></data-broker-search>
 	</modal>
 	
@@ -227,6 +231,10 @@ export default {
 	        const { $data, $route, $router } = this, me = this;		                     		
 		    $data.setupBrokerSearch = {};
 	    },
+	    
+	    manageKeys(ugm) {
+	       this.$router.push({ path : "./servicekeys", query : { groupId : ugm.userGroup, serviceId : ugm.member } }); 
+	    },
 
         addGroup(groups) {	
 		    const { $data, $route, $router } = this, me = this;
@@ -241,7 +249,7 @@ export default {
 		    let isService = false;
             for (let p of groups) {
                if (p.email) isPeople = true;
-               if (p.filename) isService = true;
+               if (p.filename || p.executorAccount) isService = true;
                groupsIds.push(p._id || p.id);
             }
 		

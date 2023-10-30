@@ -34,7 +34,7 @@ public class ServiceInstance extends Model implements Actor {
 	private static final String collection = "serviceinstances";
 	
 	public @NotMaterialized final static Set<String> ALL = 
-			 Sets.create("_id", "name", "endpoint", "appId", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey", "studyRelatedOnly", "restrictReadToGroup", "status");
+			 Sets.create("_id", "name", "endpoint", "appId", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey", "studyRelatedOnly", "restrictReadToGroup", "status", "managerName");
    
 	public @NotMaterialized final static Set<String> LIMITED = 
 			 Sets.create("_id", "name", "endpoint", "appId", "linkedStudy", "managerAccount","status");
@@ -43,6 +43,7 @@ public class ServiceInstance extends Model implements Actor {
      * name of service
     */
     public String name;
+        
     
     /**
      * pubish fhir endpoint 
@@ -77,9 +78,14 @@ public class ServiceInstance extends Model implements Actor {
     public boolean restrictReadToGroup;
         
     /**
-     * if of user who manages this service instance
+     * id of entity who manages this service instance
      */
     public MidataId managerAccount;
+    
+    /**
+     * name of entity who manages this service instance
+     */
+    public String managerName;
 
     /**
      * public key if no other executor exists
@@ -105,6 +111,14 @@ public class ServiceInstance extends Model implements Actor {
   
   public static Set<ServiceInstance> getByManagerAndApp(MidataId managerId, MidataId appId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId).map("appId", appId), fields);
+}
+  
+  public static Set<ServiceInstance> getByManagersAndApp(Set<MidataId> managerId, MidataId appId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId).map("appId", appId), fields);
+  }
+  
+  public static Set<ServiceInstance> getByManagersAndId(Set<MidataId> managerId, MidataId serviceId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId).map("_id", serviceId), fields);
 }
 
   public static Set<ServiceInstance> getByManager(Set<MidataId> managerId, Set<String> fields) throws InternalServerException {

@@ -55,6 +55,7 @@ import play.mvc.BodyParser;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.ApplicationTools;
 import utils.InstanceConfig;
 import utils.ProjectTools;
 import utils.RuntimeConstants;
@@ -307,15 +308,20 @@ public class UserGroups extends APIController {
 					targetUserIds.add(targetUserId);
 				} else if (!pl.type.equals("broker")) throw new BadRequestException("error.notexists.plugin", "Target data broker does not exist.");
 				else {
-					Set<ServiceInstance> si = ServiceInstance.getByApp(targetUserId, ServiceInstance.LIMITED);
-					boolean found = false;
-					for (ServiceInstance s : si) {
-						if (s.status == UserStatus.ACTIVE) {
-							targetUserIds.add(s._id);
-							found = true;
+					if (pl.decentral) {
+						ServiceInstance si = ApplicationTools.createServiceInstance(context, pl, groupId);
+						targetUserIds.add(si._id);
+					} else {
+						Set<ServiceInstance> si = ServiceInstance.getByApp(targetUserId, ServiceInstance.LIMITED);
+						boolean found = false;
+						for (ServiceInstance s : si) {
+							if (s.status == UserStatus.ACTIVE) {
+								targetUserIds.add(s._id);
+								found = true;
+							}
 						}
+						if (!found) throw new BadRequestException("error.notexists.plugin", "Target data broker does not exist.");
 					}
-					if (!found) throw new BadRequestException("error.notexists.plugin", "Target data broker does not exist.");
 				}
 		
 			}
@@ -363,7 +369,7 @@ public class UserGroups extends APIController {
 		MidataId groupId = JsonValidation.getMidataId(json, "group");
 		MidataId targetUserId = JsonValidation.getMidataId(json, "member");
 		
-		AuditManager.instance.addAuditEvent(AuditEventType.REMOVED_FROM_TEAM, null, executorId, targetUserId, null, groupId);
+		AuditManager.instance.addAuditEvent(AuditEventType.REMOVED_FROM_TEAM, context, null, executorId, targetUserId, null, groupId);
 		
 		if (targetUserId.equals(executorId)) throw new BadRequestException("error.invalid.user", "You cannot remove yourself from group.");
 		
@@ -460,7 +466,7 @@ public class UserGroups extends APIController {
 		ugm.confirmedUntil = new Date(System.currentTimeMillis() + 1000l * 60l * 60l);
 		ugm.confirmedBy = executor;
 		
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ACCESS_CONFIRMATION).withActor(null, executor).withModifiedUser(ugm.member));
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ACCESS_CONFIRMATION).withActor(null, executor).withModifiedActor(null, ugm.member));
 		
 		UserGroupMember.set(ugm._id, "confirmedBy", ugm.confirmedBy);
 		UserGroupMember.set(ugm._id, "confirmedUntil", ugm.confirmedUntil);

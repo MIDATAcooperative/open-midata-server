@@ -637,7 +637,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 				   AuditEventBuilder
 				     .withType(AuditEventType.USER_EMAIL_CHANGE)
 				     .withActor(info(), info().getActor())
-				     .withModifiedUser(user)
+				     .withModifiedActor(user)
 				     .withApp(info().getUsedPlugin())
 		   );
 		}

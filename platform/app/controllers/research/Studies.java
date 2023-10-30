@@ -251,7 +251,7 @@ public class Studies extends APIController {
 
 		MidataResearchStudyResourceProvider.updateFromStudy(context, study);
 
-		AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, userId, userId, null, study._id);
+		AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, context, null, userId, userId, null, study._id);
 		AuditManager.instance.success();
 
 		return ok(JsonOutput.toJson(study, "Study", Study.ALL)).as("application/json");
@@ -400,7 +400,7 @@ public class Studies extends APIController {
 				}
 			}
 		} else {
-			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.DATA_EXPORT).withActor(initialInf, executorId).withModifiedUser(exportUserIdOrNull));			
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.DATA_EXPORT).withActor(initialInf, executorId).withModifiedActor(initialInf, exportUserIdOrNull));			
 		}
 
 		final boolean firstWritten = first;

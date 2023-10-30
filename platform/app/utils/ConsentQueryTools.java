@@ -84,7 +84,7 @@ public class ConsentQueryTools {
 		if (consent.isActive() && verify && consent.status != ConsentStatus.PRECONFIRMED) {
 			if (!verifyIntegrity(consent)) {
 				consent.setStatus(ConsentStatus.INVALID);
-				AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SIGNATURE_FAILURE).withModifiedUser(consent.owner).withConsent(consent));
+				AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SIGNATURE_FAILURE).withModifiedActor(null, consent.owner).withConsent(consent));
 				MailUtils.sendTextMailAsync(MailSenderType.STATUS, InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail"), InstanceConfig.getInstance().getConfig().getString("errorreports.targetname"), "Consent signature failure "+consent._id+" of "+consent.owner, "Consent signature failure: type="+consent.type+" creation="+consent.dateOfCreation+" lastUpdate="+consent.lastUpdated);
 				return getEmptyQuery();
 			}

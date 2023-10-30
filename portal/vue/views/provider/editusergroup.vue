@@ -111,11 +111,11 @@
     </panel>
     </div>
 
-    <modal id="provSearch" full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('providersearch.title')">
+    <modal id="provSearch" :full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('providersearch.title')">
 	   <provider-search :setup="setupProvidersearch" @add="addPerson"></provider-search>
 	</modal>
 	
-	<modal id="anyUserSearch" full-width="true" @close="setupAnyUserSearch=null" :open="setupAnyUserSearch!=null" :title="$t('addusers.title')">
+	<modal id="anyUserSearch" :full-width="true" @close="setupAnyUserSearch=null" :open="setupAnyUserSearch!=null" :title="$t('addusers.title')">
 	   <add-any-user :setup="setupAnyUserSearch" @add="addPerson"></add-any-user>
 	</modal>
 </div>

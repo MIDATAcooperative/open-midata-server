@@ -22,6 +22,7 @@ import models.enums.EntityType;
 import models.enums.UserRole;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 /**
  * Interface for all entities that may be actor on the platform
@@ -74,7 +75,7 @@ public interface Actor {
 		return getResourceType()+"/"+getId();
 	}
 	
-	public static Actor getActor(AccessContext context, MidataId target) throws AppException {
+	public static Actor getActor(AccessContext context, MidataId target) throws InternalServerException {
 		User user = context != null ? context.getRequestCache().getUserById(target) : User.getById(target, User.ALL_USER);
 		if (user != null) return user;
 		

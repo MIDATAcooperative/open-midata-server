@@ -65,7 +65,7 @@ public class AuditHeaderTool {
 			AuditManager.instance.addAuditEvent(
 				AuditEventBuilder
 				  .withType(type)
-				  .withModifiedUser(targetUserId)
+				  .withModifiedActor(context, targetUserId)
 				  .withApp(context.getUsedPlugin())
 				  .withExtraInfo(extra)
 			 );
