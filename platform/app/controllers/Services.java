@@ -163,6 +163,8 @@ public class Services extends APIController {
         ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(context, instanceId, true, AuditEventType.SERVICE_INSTANCE_DELETED);        
 
         ApplicationTools.deleteServiceInstance(context, instance);
+        
+        AuditManager.instance.success();
         return ok();
     }
 
@@ -219,7 +221,7 @@ public class Services extends APIController {
         		AuditEventBuilder.withType(AuditEventType.APIKEY_CREATED)
         		.withActor(context, context.getActor())
         		.withModifiedActor(serviceInstance)
-        		.withStudy(study));
+        		.withStudy(study._id));
         
         MobileAppInstance appInstance = ApplicationTools.createServiceApiKey(context, serviceInstance, group);
         

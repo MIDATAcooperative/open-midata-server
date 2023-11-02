@@ -326,7 +326,7 @@ public class ApplicationTools {
         	ServiceInstance old = ServiceInstance.getByEndpoint(endpoint, ServiceInstance.ALL);
         	if (old != null) throw new BadRequestException("error.exists.endpoint", "Endpoint already exists.");
         }
-        
+                      
 		ServiceInstance si = new ServiceInstance();
 		si._id = new MidataId();
 		si.appId = app._id;
@@ -346,6 +346,8 @@ public class ApplicationTools {
 		}
 		si.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(si._id, null);
 		si.add();
+		
+		 AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SERVICE_INSTANCE_CREATED).withActor(context, context.getActor()).withModifiedActor(si).withStudy(study._id));
 
 		// Create service instance APS and store key
 		RecordManager.instance.createAnonymizedAPS(si.executorAccount, si.managerAccount, si._id, false, false, true);
