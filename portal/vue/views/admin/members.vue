@@ -101,7 +101,7 @@ import { status, rl, ErrorBox, FormGroup } from 'basic-vue3-components'
 export default {
     data: () => ({	
         roles : [ "MEMBER", "PROVIDER", "RESEARCH", "DEVELOPER", "ADMIN"],
-	    stati : [ "NEW", "ACTIVE", "BLOCKED", "DELETED" ],
+	    stati : [ "NEW", "ACTIVE", "BLOCKED", "FAKE", "DELETED" ],
 	    searches : [ 
             { 
                 name : "admin_members.contract_required",

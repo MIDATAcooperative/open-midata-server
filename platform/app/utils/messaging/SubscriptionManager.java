@@ -131,10 +131,12 @@ public class SubscriptionManager {
 	public static void accountWipe(AccessContext context, MidataId userId) throws AppException {
 		User user = User.getByIdAlsoDeleted(userId, User.ALL_USER_INTERNAL);
 		if (user != null) {
-			user.status = UserStatus.DELETED;
-			user.set("status", user.status);
+			if (!user.status.isDeleted()) {
+			  user.status = UserStatus.DELETED;
+			  user.set("status", user.status);
+			}
 			
-			accountWiper.tell(new AccountWipeMessage(userId, KeyManager.instance.currentHandle(context.getAccessor()), context.getAccessor(), 0, AuditManager.instance.convertLastEventToAsync()), ActorRef.noSender());
+			accountWiper.tell(new AccountWipeMessage(userId, KeyManager.instance.currentHandle(context.getAccessor()), context.getAccessor(), 0, AuditManager.instance.convertLastEventToAsync(), user.status == UserStatus.FAKE), ActorRef.noSender());
 		}
 	}
 	

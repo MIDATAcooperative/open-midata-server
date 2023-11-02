@@ -49,7 +49,7 @@ public class RequestCache {
 			result = User.getByIdAlsoDeleted(userId, User.PUBLIC);
 			userCache.put(userId, result);
 		}
-		if (!alsoDeleted && result != null && result.status == UserStatus.DELETED) return null;
+		if (!alsoDeleted && result != null && result.status.isDeleted()) return null;
 		return result;
 	}
 	

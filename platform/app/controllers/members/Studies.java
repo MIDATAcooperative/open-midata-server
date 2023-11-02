@@ -57,6 +57,7 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
@@ -556,13 +557,13 @@ public class Studies extends APIController {
 		AccessContext context = portalContext(request);
 		MidataId studyId = new MidataId(id);
 		
-		retreatParticipation(context, userId, studyId);		
+		retreatParticipation(context, userId, studyId, false);		
 		
 		AuditManager.instance.success();
 		return ok();
 	}
 	
-	public static void retreatParticipation(AccessContext context, MidataId userId, MidataId studyId) throws JsonValidationException, AppException {
+	public static void retreatParticipation(AccessContext context, MidataId userId, MidataId studyId, boolean isFakeAccount) throws JsonValidationException, AppException {
 				
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA);		
@@ -578,19 +579,23 @@ public class Studies extends APIController {
 			Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
 			Circles.sendConsentNotifications(context, participation, ConsentStatus.REJECTED, wasActive);
 		} else {
-		
-		   AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_MEMBER_RETREAT, userId, participation, study);		   
+		   AuditEventBuilder bld = AuditEventBuilder.withType(AuditEventType.STUDY_PARTICIPATION_MEMBER_RETREAT).withActor(context, userId).withStudy(study).withConsent(participation);
+		   if (isFakeAccount) bld = bld.withMessage("fake account");
+		   AuditManager.instance.addAuditEvent(bld);		   
 		   if (participation.pstatus != ParticipationStatus.ACCEPTED) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");		   
 		   participation.setPStatus(ParticipationStatus.MEMBER_RETREATED);
-		   if (study.leavePolicy == null || study.leavePolicy == ProjectLeavePolicy.FREEZE) {
-		     Circles.consentStatusChange(context, participation, ConsentStatus.FROZEN);
-		   } else if (study.leavePolicy == ProjectLeavePolicy.REJECT) {
-			   AccessLog.log("CCCC");
-			 Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
+		   if (isFakeAccount) {
+			   Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);
 		   } else {
-			 Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);
+			   if (study.leavePolicy == null || study.leavePolicy == ProjectLeavePolicy.FREEZE) {		   
+			     Circles.consentStatusChange(context, participation, ConsentStatus.FROZEN);
+			   } else if (study.leavePolicy == ProjectLeavePolicy.REJECT) {			  
+				 Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
+			   } else {
+				 Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);
+			   }
+			   Circles.sendConsentNotifications(context, participation, ConsentStatus.REJECTED, wasActive);
 		   }
-		   Circles.sendConsentNotifications(context, participation, ConsentStatus.REJECTED, wasActive);
 		}
 		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
 						
