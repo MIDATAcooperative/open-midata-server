@@ -604,7 +604,8 @@ public class User extends Model implements Comparable<User>, Actor {
 
 	@Override
 	public String getDisplayName() {
-		return status.isDeleted() ? null : firstname+" "+lastname;
+		// for fake account we may return the user name
+		return (status == UserStatus.WIPED || status == UserStatus.DELETED) ? null : firstname+" "+lastname;
 	}
 	
 }

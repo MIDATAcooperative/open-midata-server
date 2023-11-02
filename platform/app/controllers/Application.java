@@ -674,7 +674,7 @@ public class Application extends APIController {
 	*/
 	
 	public static Set<UserFeature> loginHelperPreconditionsFailed(User user, Set<UserFeature> required) throws AppException {
-        if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
+        if (user.status.equals(UserStatus.BLOCKED) || user.status.isDeleted()) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION)) && !InstanceConfig.getInstance().getInstanceType().disableEMailValidation()) {
 			user.status = UserStatus.TIMEOUT;			

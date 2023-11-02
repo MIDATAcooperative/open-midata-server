@@ -94,7 +94,7 @@
 			</tr>
 		</table>
 		<router-link :to="{ path : './members' }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
-		<button v-if="member.status == 'DELETED'" class="btn btn-danger mr-1" :disabled="action!=null" @click="wipe()" v-t="'admin_address.wipe_btn'"></button>
+		<button v-if="member.status == 'DELETED' || member.status == 'FAKE'" class="btn btn-danger mr-1" :disabled="action!=null" @click="wipe()" v-t="'admin_address.wipe_btn'"></button>
     </panel>
     <panel :title="$t('admin_address.history')" :busy="isBusy">
 	
@@ -120,7 +120,7 @@ import { status, rl, ErrorBox, FormGroup } from 'basic-vue3-components'
 export default {
     data: () => ({	
         criteria : null,
-	    stati : [ "NEW", "ACTIVE", "BLOCKED", "DELETED" ],
+	    stati : [ "NEW", "ACTIVE", "BLOCKED", "FAKE", "DELETED" ],
 	    contractStati : [ "NEW", "REQUESTED", "PRINTED", "SIGNED" ],
 	    authTypes : ["NONE", "SMS"],
         comment : ""

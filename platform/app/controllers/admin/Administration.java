@@ -129,7 +129,8 @@ public class Administration extends APIController {
 		
 		JsonValidation.validate(json, "user", "status");
 		requireSubUserRole(request, SubUserRole.USERADMIN);
-		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
@@ -160,6 +161,11 @@ public class Administration extends APIController {
 		  
 		if (user.status != oldstatus && user.status == UserStatus.DELETED) {
 			AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, null, executorId, user);
+			User.set(user._id, "searchable", false);			
+		}
+		
+		if (user.status != oldstatus && user.status == UserStatus.FAKE) {
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActor(context, executorId).withModifiedActor(user).withMessage("fake account"));
 			User.set(user._id, "searchable", false);			
 		}
 		
@@ -465,7 +471,7 @@ public class Administration extends APIController {
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		User selected = User.getByIdAlsoDeleted(userId, User.ALL_USER);
-		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
+		if (!selected.status.isDeleted()) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
 		
 		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActor(context, context.getActor()).withModifiedActor(selected));
 		

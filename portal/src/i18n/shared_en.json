@@ -519,6 +519,7 @@
 	   "ACTIVE" : "Active",
 	   "BLOCKED" : "Blocked",
 	   "DELETED" : "Deleted",
+	   "FAKE" : "Fake Account",
 	   "NEW" : "New"
 	 },
 	 "frequency" : {

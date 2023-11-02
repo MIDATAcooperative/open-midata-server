@@ -285,7 +285,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		if (!plugin.type.equals("analyzer") && !plugin.type.equals("external") && !plugin.type.equals("endpoint")) {
 			user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
 			//System.out.println("prcApp4");
-			if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) {
+			if (user==null || user.status.isDeleted() || user.status.equals(UserStatus.BLOCKED)) {
 				subscription.disable();
 				AuditManager.instance.fail(400, "Subscription owner bad status", "error.unknown.user");
 				return false;

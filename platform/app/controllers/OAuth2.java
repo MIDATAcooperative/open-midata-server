@@ -307,7 +307,7 @@ public class OAuth2 extends Controller {
     		obj.put("state", tk.state);
     		
     		user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
-    		if (user == null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) throw new BadRequestException("error.internal", "invalid_grant");
+    		if (user == null || user.status.isDeleted() || user.status.equals(UserStatus.BLOCKED)) throw new BadRequestException("error.internal", "invalid_grant");
     		
     		//This check can be disabled: both phrase and appInstance._id come from authorization "code" which has been validated										
     		//if (appInstance.passcode != null && !User.phraseValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");

@@ -37,14 +37,16 @@ public class AccountWipeMessage implements Serializable {
 	 private MidataId accountToWipe;
 	 private MidataId executorId;
 	 private MidataId audit;
+	 private boolean fakeAccount;
 	 private int phase;
 	 
-	 public AccountWipeMessage(MidataId accountToWipe, String handle, MidataId executorId, int phase, MidataId audit) {
+	 public AccountWipeMessage(MidataId accountToWipe, String handle, MidataId executorId, int phase, MidataId audit, boolean fakeAccount) {
 		 this.handle = handle;
 		 this.accountToWipe = accountToWipe;
 		 this.executorId = executorId;
 		 this.phase = phase;
 		 this.audit = audit;
+		 this.fakeAccount = fakeAccount;
 	 }
 
 	public String getHandle() {
@@ -65,6 +67,12 @@ public class AccountWipeMessage implements Serializable {
 	
 	public MidataId getAudit() {
 		return audit;
-	}	 	 
+	}
+
+	public boolean isFakeAccount() {
+		return fakeAccount;
+	}	 
+	
+	
 	 
 }

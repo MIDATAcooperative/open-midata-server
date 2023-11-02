@@ -337,11 +337,10 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 				aeec.setName(affectedConsent.getOwnerName());
 				aeec.setWhat(new Reference("Patient/"+affectedConsent._id.toString()));
 			} else {
+				aeec.setName(modifiedUser.getDisplayName());		
 				aeec.setWhat(new Reference(modifiedUser.getLocalReference()).setDisplay(modifiedUser.getPublicIdentifier()));				
 			}
-			
-			aeec.setName(modifiedUser.getDisplayName());
-			
+									
 			//aeec.setIdentifier(new Identifier().setValue(modifiedUser.getPublicIdentifier()));
 		}
 				

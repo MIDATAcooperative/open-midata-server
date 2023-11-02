@@ -922,7 +922,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			if (theResource.getStatus()==ConsentState.REJECTED || theResource.getStatus()==ConsentState.INACTIVE) {
 				if (consent.type == ConsentType.STUDYPARTICIPATION) {
 					   StudyParticipation part = StudyParticipation.getById(consent._id, Sets.create("study"));
-					   Studies.retreatParticipation(context, context.getAccessor(), part.study);
+					   Studies.retreatParticipation(context, context.getAccessor(), part.study, false);
 				} else {
 				       HealthProvider.rejectConsent(context, context.getAccessor(), consent._id);
 				}
