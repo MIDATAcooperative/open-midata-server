@@ -221,7 +221,7 @@ public class Services extends APIController {
         		AuditEventBuilder.withType(AuditEventType.APIKEY_CREATED)
         		.withActor(context, context.getActor())
         		.withModifiedActor(serviceInstance)
-        		.withStudy(study._id));
+        		.withStudy(study != null ? study._id : null));
         
         MobileAppInstance appInstance = ApplicationTools.createServiceApiKey(context, serviceInstance, group);
         
