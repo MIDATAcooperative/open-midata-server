@@ -47,6 +47,7 @@ import models.User;
 import models.enums.LoginTemplate;
 import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
+import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
@@ -91,6 +92,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.SubscriptionManager;
 import utils.stats.Stats;
+import utils.stats.UsageStatsRecorder;
 
 /**
  * functions for managing MIDATA plugins
@@ -223,9 +225,9 @@ public class Plugins extends APIController {
 		Plugin visualization = null;
 		if (MidataId.isValid(visualizationIdString)) {
 			visualizationId = new MidataId(visualizationIdString);
-			visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions", "licenceDef"));
+			visualization = Plugin.getById(visualizationId, Sets.create("name", "filename", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions", "licenceDef"));
 		} else {
-			visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions", "licenceDef"));
+			visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "filename", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions", "licenceDef"));
 		}
 
 		if (visualization == null)
@@ -326,6 +328,9 @@ public class Plugins extends APIController {
 				RecordManager.instance.setMeta(userId, space._id, "_config", config);
 			}*/
 			SubscriptionManager.activateSubscriptions(userId, visualization, space._id, false);
+			
+			UsageStatsRecorder.protokoll(visualization._id, visualization.filename, UsageAction.INSTALL);
+			
 			return space;
 		} 		
 
@@ -825,7 +830,7 @@ public class Plugins extends APIController {
 					  
 					  Set<Space> spaces = Space.getByOwnerVisualization(userId, appId, Sets.create("context"));
 					  if (spaces.isEmpty()) {
-						  Plugin visualization = Plugin.getById(appId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions","licenceDef"));
+						  Plugin visualization = Plugin.getById(appId, Sets.create("name", "filename", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions","licenceDef"));
 						  AccessLog.log("add plugins: "+appId.toString());
 						  install(context, userId, visualization, null, null, null);
 					  }
