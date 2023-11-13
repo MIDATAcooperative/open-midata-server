@@ -1209,7 +1209,7 @@ public class Studies extends APIController {
 			consent.writes = WritePermissionType.UPDATE_EXISTING;
 			consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 
-			RecordManager.instance.createAnonymizedAPS(ownerId, context.getAccessor(), consent._id, true, true, true);
+			RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, context.getAccessor(), consent._id, true, true, true);
 			Circles.persistConsentMetadataChange(context, consent, true);
 			Circles.addUsers(context, ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
@@ -1235,7 +1235,7 @@ public class Studies extends APIController {
 		consent.status = ConsentStatus.ACTIVE;
 		consent.writes = WritePermissionType.NONE;
 
-		RecordManager.instance.createAnonymizedAPS(ownerId, study._id, consent._id, true, true, true);
+		RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, study._id, consent._id, true, true, true);
 		Circles.persistConsentMetadataChange(context, consent, true);
 
 		RecordManager.instance.copyAPS(context, reference._id, consent._id, ownerId);
@@ -1264,7 +1264,7 @@ public class Studies extends APIController {
 			consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 			consent.noBackshare = true;
 
-			RecordManager.instance.createAnonymizedAPS(ownerId, context.getAccessor(), consent._id, true, true, true);
+			RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, context.getAccessor(), consent._id, true, true, true);
 			Circles.persistConsentMetadataChange(context, consent, true);
 			Circles.addUsers(context, ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
@@ -1749,7 +1749,7 @@ public class Studies extends APIController {
 		if (ugm == null)
 			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 
-		Set<String> participationFields = Sets.create("pstatus", "status", "group", "ownerName", "owner", "partName", "records");
+		Set<String> participationFields = Sets.create("pstatus", "status", "group", "ownerName", "owner", "partName", "records", "authorized");
 		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, participationFields);
 
 		if (participation == null)

@@ -1037,6 +1037,7 @@
     "writes" : "Write Permission",
     "expiration_date" : "Consent expiration date:",
     "created_before" : "Does not share data created after:",
+    "created_after" :"Only data created after:",
     "what_is_shared" : "What data is shared?",
     "consent_empty" : "This consent does not share any data at the moment.",
     "type_circle" : "This consent shares data with other @PRODUCT account holders.",
@@ -1065,7 +1066,16 @@
     "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.",
     "you" : "You",
     "restrictions" : "Further restrictions?",
-    "project" : "Project"
+    "project" : "Project",
+    "source" : "Source of this consent",
+    "based_on" : "Link to base consent used",
+    "base_created_at" : "Base consent created at",
+    "allowed_reshares" : "If required data may be reshared to these 3rd parties",
+    "reshare_service" : "3rd parties using the service",
+    "reshare_usergroup" : "Team or project",
+    "reshare_user" : "Single user",
+    "reshare_project" : "Project"
+    
   },
   
   "editconsent2" : {

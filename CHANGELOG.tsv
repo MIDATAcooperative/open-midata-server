@@ -112,4 +112,5 @@ id0119	13.07.2023	a.kreutz	I	Allow use of national and separate international SM
 id0120	20.07.2023	a.kreutz	I	Updated resources now contain their initial creation time	In the MIDATA meta block extension a new valueDateTime extension with name "createAt" with the initial creation time of the resource is available for all resources that have been updated.
 id0121	29.08.2023	a.kreutz	I	Added grantee variables to consent notification emails
 id0122	29.08.2023	a.kreutz	I	Added sender-user extension to FHIR message headers
+id0123	14.11.2023	a.kreutz	F	Consent chaining	Consents may allow to reshare data with 3rd parties.
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

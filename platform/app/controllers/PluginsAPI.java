@@ -587,11 +587,11 @@ public class PluginsAPI extends APIController {
 		
 		Set<MidataId> records = Collections.singleton(record._id);
 								    				
-		AccessContext myContext = context;		
-		
+		AccessContext myContext = context;				
 		if (inf.getAccessor().equals(inf.getLegacyOwner())) {
 			while (myContext != null) {
 				if (!myContext.isIncluded(dbrecord)) {
+					AccessLog.log("share new record to parent context="+context.toString());
 					RecordManager.instance.share(inf, inf.getLegacyOwner(), myContext.getTargetAps(), records, !myContext.getOwner().equals(dbrecord.owner));
 				}
 				myContext = myContext.getParent();
@@ -600,7 +600,8 @@ public class PluginsAPI extends APIController {
 			
 			myContext = myContext.getParent();			
 			while (myContext != null) {
-				if (!myContext.isIncluded(dbrecord)) {
+				if (!myContext.isIncluded(dbrecord)) {					
+					AccessLog.log("share new record to parent context="+context.toString());
 					RecordManager.instance.share(inf, context.getTargetAps(), myContext.getTargetAps(), records, !myContext.getOwner().equals(dbrecord.owner));
 				}
 				myContext = myContext.getParent();

@@ -480,30 +480,6 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		patientProvider.updatePatientForAccount(member);
 	}
 
-	public static Patient generatePatientForStudyParticipation(StudyParticipation part, Member member) {
-
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(member.birthday);
-		cal.set(Calendar.MONTH, 0);
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-
-		Patient p = new Patient();
-		p.setId(part._id.toString());
-		p.addName().setText(part.ownerName);
-		p.setBirthDate(cal.getTime());
-		if (member.gender != null) p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
-
-		p.addIdentifier(new Identifier().setValue(part.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
-		p.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
-
-		return p;
-	}
-	
-
 	public void prepare(Record record, Patient thePatient) {
 		record.content = "Patient";
 		record.name = thePatient.getName().get(0).getNameAsSingleString();
@@ -773,10 +749,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
         	fhirPatient.addServiceUrl(user, consent);
         } else if (consent != null && consent.status==ConsentStatus.PRECONFIRMED) {
         	insertRecord(tempContext.forConsentReshare(consent), record, thePatient);
+        	tempContext = tempContext.forConsent(consent);
         }
 		        
         // Have user participate to requested projects
-		AccountManagementTools.participateToProjects(tempContext, user, fhirPatient, projectsToParticipate, existing == null);	
+		AccountManagementTools.participateToProjects(tempContext, user, fhirPatient, projectsToParticipate, tempContext.canCreateActiveConsentsFor(user._id));	
 		ContextManager.instance.clearCache(); //Is this needed??
 
 		// Cleanup

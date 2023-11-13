@@ -350,7 +350,7 @@ public class ApplicationTools {
 		 AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SERVICE_INSTANCE_CREATED).withActor(context, context.getActor()).withModifiedActor(si).withStudy(study._id));
 
 		// Create service instance APS and store key
-		RecordManager.instance.createAnonymizedAPS(si.executorAccount, si.managerAccount, si._id, false, false, true);
+		RecordManager.instance.createAnonymizedAPS(context.getCache(), si.executorAccount, si.managerAccount, si._id, false, false, true);
 		MidataId keyId = new MidataId();
 		byte[] splitKey = KeyManager.instance.generateAlias(si._id, keyId);
 		Map<String, Object> obj = new HashMap<String, Object>();
@@ -406,7 +406,7 @@ public class ApplicationTools {
 		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SERVICE_INSTANCE_CREATED).withActor(context, context.getActor()).withModifiedActor(si));
 		RecordManager.instance.getMeta(context, context.getAccessor(), "_");
 		// Create service instance APS and store key
-		RecordManager.instance.createAnonymizedAPS(si._id, managerId, si._id, false, false, true);
+		RecordManager.instance.createAnonymizedAPS(context.getCache(), si._id, managerId, si._id, false, false, true);
 		MidataId keyId = new MidataId();
 		byte[] splitKey = KeyManager.instance.generateAlias(si._id, keyId);
 		Map<String, Object> obj = new HashMap<String, Object>();
@@ -504,7 +504,7 @@ public class ApplicationTools {
 		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);						   
 		} else appInstance.sharingQuery = ConsentQueryTools.getEmptyQuery();
 		
-		RecordManager.instance.createAnonymizedAPS(appInstance.owner, context.getAccessor(), appInstance._id, true);
+		RecordManager.instance.createAnonymizedAPS(context.getCache(), appInstance.owner, context.getAccessor(), appInstance._id, true);
 		
 		//Circles.addConsent(context, appInstance, true, null, false);
 		
@@ -515,7 +515,7 @@ public class ApplicationTools {
 			MobileAppInstance appInstance) throws AppException, JsonValidationException {
 		AccessLog.log("create new app instance APS id="+appInstance._id);
 		// create APS *				
-		RecordManager.instance.createAnonymizedAPS(owner, appInstance._id, appInstance._id, true);
+		RecordManager.instance.createAnonymizedAPS(context.getCache(), owner, appInstance._id, appInstance._id, true);
 		
 		// Write phrase into APS *
 		Map<String, Object> meta = new HashMap<String, Object>();
@@ -644,7 +644,8 @@ public class ApplicationTools {
 	public static AccessContext actAsRepresentative(AccessContext context, MidataId targetUser, boolean useOriginalContextOnFail) throws AppException {
 		
 		
-		if (context.getAccessor().equals(targetUser)) return context;
+		if (context.getAccessor().equals(targetUser)) return context;	
+		if (context.canCreateActiveConsentsFor(targetUser)) return context;
 		if (context.getCache().hasSubCache(targetUser)) return new RepresentativeAccessContext(context.getCache().getSubCache(targetUser), context);
 		
 		Consent consent = Consent.getRepresentativeActiveByAuthorizedAndOwner(context.getActor(), targetUser);

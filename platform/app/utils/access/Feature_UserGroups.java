@@ -139,7 +139,7 @@ public class Feature_UserGroups extends Feature {
 				if (q.getStringRestriction("export").equals("pseudonymized")) { pseudonymizeAccess = true; }
 			}
 		}
-		
+						
 		if (!mayReadData) return ProcessingTools.empty();		
 				
 		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal		 
@@ -149,6 +149,7 @@ public class Feature_UserGroups extends Feature {
 		Query qnew = new Query("ug","ug="+lastUgm.userGroup,newprops, q.getFields(), subcache, aps, context ,q).setFromRecord(q.getFromRecord());
 		if (pseudonymizeAccess) {
 			 AccessLog.log("do pseudonymized");
+			 lastUgm.role.pseudo = true;
 			 if (!Feature_Pseudonymization.pseudonymizedIdRestrictions(qnew, next, group, newprops)) {
 				 AccessLog.logEndPath("cannot unpseudonymize");
 				 return ProcessingTools.empty();
@@ -168,7 +169,7 @@ public class Feature_UserGroups extends Feature {
 		return ugm == null ? null : ugm.userGroup;		
 	}
 	
-	protected static UserGroupMember identifyUserGroupMember(APSCache cache, MidataId targetAps) throws AppException {
+	protected static UserGroupMember identifyUserGroupMember(APSCache cache, MidataId targetAps) throws InternalServerException {
 		APS target = cache.getAPS(targetAps);
 		if (target.isAccessible()) {
 			return null;
@@ -185,7 +186,7 @@ public class Feature_UserGroups extends Feature {
 		return null;
 	}
 	
-	protected static APSCache findApsCacheToUse(APSCache cache, MidataId targetAps) throws AppException {
+	protected static APSCache findApsCacheToUse(APSCache cache, MidataId targetAps) throws InternalServerException {
 		APS target = cache.getAPS(targetAps);
 		if (target.hasAccess(RuntimeConstants.instance.publicGroup)) return Feature_PublicData.getPublicAPSCache(cache);
 		
@@ -193,7 +194,7 @@ public class Feature_UserGroups extends Feature {
 		return findApsCacheToUse(cache, ugm);			
 	}
 	
-	public static APSCache findApsCacheToUse(APSCache cache, UserGroupMember ugm) throws AppException {		
+	public static APSCache findApsCacheToUse(APSCache cache, UserGroupMember ugm) throws InternalServerException {		
 		if (ugm == null) return cache;		
 				
 		if (!cache.hasSubCache(ugm.userGroup)) {
@@ -206,7 +207,7 @@ public class Feature_UserGroups extends Feature {
 	
 	
 			
-	public static APSCache readySubCache(APSCache cache, APSCache subcache, UserGroupMember ugm) throws AppException {
+	public static APSCache readySubCache(APSCache cache, APSCache subcache, UserGroupMember ugm) throws InternalServerException {
 		BasicBSONObject obj = subcache.getAPS(ugm._id, ugm.member).getMeta("_usergroup");
 		KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));
 		return cache.getSubCache(ugm.userGroup);

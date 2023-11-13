@@ -138,5 +138,16 @@ public class UserGroupAccessContext extends AccessContext {
 		return super.forUserGroup(userGroup, permission);		
 	}
 	
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
+		if (owner.equals(ugm.userGroup)) return true;
+		return super.canCreateActiveConsentsFor(owner);
+	}
+	
+	@Override
+	protected AccessContext getRootContext() {	
+		if (parent == null) return this;
+		return new UserGroupAccessContext(this.ugm, cache, parent.getRootContext());
+	}
+	
 	
 }

@@ -87,9 +87,9 @@ public class Query {
 		if (context == null) throw new NullPointerException();
 		this.context = context;
 		if (extra != null) {
-		  AccessLog.log(path," : ",extra);
+		  AccessLog.log("init query: ", path," : ",extra);
 		} else {
-		  AccessLog.log(path);
+		  AccessLog.log("init query: ",path);
 		}
 		//AccessLog.logQuery(apsId, properties, fields);
 		process();

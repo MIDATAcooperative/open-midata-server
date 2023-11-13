@@ -39,6 +39,7 @@ import controllers.Circles;
 import models.Actor;
 import models.Circle;
 import models.Consent;
+import models.ConsentEntity;
 import models.HPUser;
 import models.HealthcareProvider;
 import models.Member;
@@ -265,6 +266,30 @@ public class AccountManagementTools {
 		consent.status = active ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
 		consent.authorized.add(ac.getAccessor());
 		consent.entityType = context.getAccessorEntityType();
+		
+		if (app.resharesData) {
+			consent.allowedReshares = new ArrayList<ConsentEntity>();
+			ConsentEntity ce = new ConsentEntity();
+			ce.type = EntityType.SERVICES;
+			ce.id = app._id;
+			ce.name = app.name;
+			consent.allowedReshares.add(ce);
+			
+			Set<StudyAppLink> sals = StudyAppLink.getByApp(app._id);			
+			for (StudyAppLink sal : sals) {
+				if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+					ce = new ConsentEntity();
+					ce.type = EntityType.USERGROUP;
+					ce.id = sal.studyId;
+					Study study = Study.getById(sal.studyId, Sets.create("code", "name"));
+					if (study != null) {
+						ce.name = study.code+" ("+study.name+")";
+						consent.allowedReshares.add(ce);
+					}
+				}
+			}
+				
+		}
 		
 		Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
 		consent.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);	

@@ -206,7 +206,7 @@ public class MinimalSetup {
 			ug.status = UserStatus.ACTIVE;
 			ug.add();
 			
-			RecordManager.instance.createAnonymizedAPS(publicUser._id, ug._id, publicUser._id, false);
+			RecordManager.instance.createAnonymizedAPS(null, publicUser._id, ug._id, publicUser._id, false);
 			RecordManager.instance.createPrivateAPS(null, ug._id, ug._id);
 		}
 		

@@ -82,7 +82,7 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 
 	@Override
 	public T createExecute(Model record, T theResource) throws AppException {
-		AccessLog.logBegin("begin create for resource ", getResourceType().getSimpleName());
+		AccessLog.logBegin("begin create for hybrid resource ", getResourceType().getSimpleName());
 		try {
 			if (handleWithFirstProvider(theResource)) {
 				return first.createExecute((M1) record, theResource);
@@ -91,7 +91,7 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 				else throw new BadRequestException("error.nowrite", "Cannot write this resource.");
 			} 
 		} finally {
-			AccessLog.logEnd("end create for resource");
+			AccessLog.logEnd("end create for hybrid resource");
 		}
 		
 	}

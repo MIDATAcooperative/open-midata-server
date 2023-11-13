@@ -73,7 +73,7 @@
                 <p class="form-text text-muted" v-t="'provider_organization.identifiers_info'"></p>               
             </form-group>
             <form-group v-if="!org._id" name="managerType" label="provider_organization.managerType" :path="errors.managerType">
-                <select name="managerType" class="form-control" v-validate v-model="org.managerTypeExt">
+                <select name="managerType" class="form-control" v-validate v-model="org.managerTypeExt" required>
                   <option v-for="m in managers" :key="m" :value="m">{{ $t('provider_organization.managers.'+m) }}</option>
                 </select>                
             </form-group>
@@ -86,7 +86,7 @@
                 </check-box>
             </form-group>
             <form-group name="x" label="common.empty">
-                <button type="submit" :disabled="!isMasterUser() || action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
+                <button type="submit" v-submit :disabled="!isMasterUser() || action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
                 <button v-if="org._id" type="button" :disabled="!isMasterUser() || action!=null" class="btn btn-default ml-1" v-t="'common.delete_btn'" @click="deleteOrg()"></button>
                 <button v-if="org._id && usergroup.protection" type="button" :disabled="!isMasterUser() || action!=null || (usergroup.currentUserAccessUntil && usergroup.currentUserAccessUntil > now)" class="btn btn-primary ml-1" v-t="'provider_organization.request_btn'" @click="requestAccess()"></button> 
                 <success :finished="finished" action="update" msg="common.save_ok"></success>                

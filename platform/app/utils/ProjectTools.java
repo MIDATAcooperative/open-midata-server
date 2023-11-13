@@ -105,7 +105,7 @@ public class ProjectTools {
         																					
         Map<String, Object> accessData = new HashMap<String, Object>();
         accessData.put("aliaskey", KeyManager.instance.generateAlias(groupId, member._id));
-        RecordManager.instance.createAnonymizedAPS(targetUserId, context.getAccessor(), member._id, false);
+        RecordManager.instance.createAnonymizedAPS(context.getCache(), targetUserId, context.getAccessor(), member._id, false);
         RecordManager.instance.setMeta(context, member._id, "_usergroup", accessData);
         
         member.add();

@@ -47,6 +47,7 @@ import javax.crypto.NoSuchPaddingException;
 import org.bson.BSONObject;
 
 import akka.japi.Pair;
+import models.ConsentReshare;
 import models.KeyInfo;
 import models.KeyInfoExtern;
 import models.MidataId;
@@ -208,7 +209,7 @@ public class KeyManager implements KeySession {
 		current.backupKeyInAps(context, target);
 	}
 	
-	public boolean recoverKeyFromAps(AccessContext context, MidataId target) throws AppException {
+	public boolean recoverKeyFromAps(AccessContext context, MidataId target) throws InternalServerException {
 		KeyManagerSession current = session.get();
 		return current.recoverKeyFromAps(context, target);
 	}
@@ -535,6 +536,13 @@ public class KeyManager implements KeySession {
 				return si.publicKey;
 			}
 			
+			ConsentReshare cr = ConsentReshare.getById(target, Sets.create("publicKey"));
+			if (cr != null) {
+				if (cr.publicKey == null) throw new EncryptionNotSupportedException("No public key");	
+				publicKeyCache.put(target, cr.publicKey);
+				return cr.publicKey;
+			}
+			
 			throw new EncryptionNotSupportedException("No public key");	
 
 		}
@@ -697,6 +705,7 @@ public class KeyManager implements KeySession {
 		 * @throws InternalServerException
 		 */
 		public void unlock(MidataId target, MidataId source, byte[] splitkey) throws InternalServerException {
+			if (pks.keys.containsKey(target.toString())) return;
 			KeyInfo inf = KeyInfo.getById(source);
 			if (inf == null) {			
 				throw new InternalServerException("error.internal", "Private key info not found.");
@@ -754,7 +763,7 @@ public class KeyManager implements KeySession {
 			RecordManager.instance.setMeta(context, target, "_pk", CMaps.map("key", pks.getKey(target.toString())));
 		}
 		
-		public boolean recoverKeyFromAps(AccessContext context, MidataId target) throws AppException {
+		public boolean recoverKeyFromAps(AccessContext context, MidataId target) throws InternalServerException {
 			BSONObject o = RecordManager.instance.getMeta(context, target, "_pk");
 			if (o != null) {
 				byte[] key = (byte[]) o.get("key");

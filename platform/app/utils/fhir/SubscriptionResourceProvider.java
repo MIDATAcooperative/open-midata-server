@@ -63,6 +63,7 @@ import models.MidataId;
 import models.Plugin;
 import models.SubscriptionData;
 import utils.AccessLog;
+import utils.ConsentQueryTools;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
 import utils.auth.KeyManager;
@@ -302,11 +303,11 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	private static void mayShare(MidataId pluginId, String format, String content) throws AppException {
 		Plugin plugin = Plugin.getById(pluginId);
 		if (plugin == null || !plugin.resharesData) throw new ForbiddenOperationException("Plugin is not allowed to share data.");
-		if (!isSubQuery(plugin.defaultQuery, CMaps.map("format", format).mapNotEmpty("content", content))) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");				
+		if (!ConsentQueryTools.isSubQuery(plugin.defaultQuery, CMaps.map("format", format).mapNotEmpty("content", content))) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");				
 	}
 	
 	
-	private static boolean isSubQuery(Map<String, Object> masterQuery, Map<String, Object> subQuery) throws AppException {
+	/*private static boolean isSubQuery(Map<String, Object> masterQuery, Map<String, Object> subQuery) throws AppException {
 		
 		if (masterQuery.containsKey("$or")) {
 			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) masterQuery.get("$or");			
@@ -334,7 +335,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	    	if (!master.containsAll(sub)) return false;	    	
 	    }
 		return true;
-	}
+	}*/
 		
 
 	@Override

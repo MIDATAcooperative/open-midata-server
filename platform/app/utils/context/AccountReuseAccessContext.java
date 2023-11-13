@@ -37,7 +37,7 @@ public class AccountReuseAccessContext extends AccountCreationAccessContext {
 	}
 	
 	@Override
-	public boolean canCreateActiveConsents() {
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
 		return false;
 	}
 		
@@ -64,6 +64,12 @@ public class AccountReuseAccessContext extends AccountCreationAccessContext {
 	@Override
 	public boolean isUserGroupContext() {
 		return false;
+	}
+	
+	@Override
+	protected AccessContext getRootContext() {	
+		if (parent == null) return this;
+		return new AccountReuseAccessContext(cache, parent.getRootContext());
 	}
 
 }

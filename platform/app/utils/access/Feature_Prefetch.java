@@ -99,7 +99,7 @@ public class Feature_Prefetch extends Feature {
 		    	// This "study" section is just a hack to fetch researcher shared data faster until a general solution is found
 		    	if (partResult == null && q.restrictedBy("study") && !q.restrictedBy("owner"))	{
 		    		//AccessLog.log("study related variant");
-		    		partResult = QueryEngine.combine(q, "lookup-studyrelated", CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("study-related", true).mapNotEmpty("format", record.getFormatOrNull()).map("quick",  record), next);
+		    		partResult = QueryEngine.combine(q, "lookup-studyrelated", CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("study-related", "true").mapNotEmpty("format", record.getFormatOrNull()).map("quick",  record), next);
 		    		if (partResult.isEmpty()) partResult = null;
 		    	}
 		    	

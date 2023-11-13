@@ -32,8 +32,8 @@ import utils.exceptions.AppException;
  */
 public class CreateParticipantContext extends ConsentAccessContext {
 
-	public CreateParticipantContext(Consent consent, APSCache cache) throws AppException {
-		super(consent, cache, null);
+	public CreateParticipantContext(Consent consent, APSCache cache, AccessContext parent) throws AppException {
+		super(consent, cache, parent);
 	}
 		
 

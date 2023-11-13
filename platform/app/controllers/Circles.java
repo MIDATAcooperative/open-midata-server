@@ -42,6 +42,7 @@ import controllers.research.AutoJoiner;
 import models.Circle;
 import models.Consent;
 import models.ConsentExternalEntity;
+import models.ConsentReshare;
 import models.HCRelated;
 import models.Member;
 import models.MemberKey;
@@ -172,6 +173,8 @@ public class Circles extends APIController {
 		
 		Rights.chk("Circles.listConsents", getRole(), properties, fields);
 		
+		if (fields.contains("basedOn")) fields.add("querySignature");
+		
 		List<Consent> consents = null;
 	
 		MidataId owner = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
@@ -276,6 +279,14 @@ public class Circles extends APIController {
 					}
 					
 				}		
+			}
+		}
+		
+		if (fields.contains("basedOn")) {
+			for (Consent consent : consents) {
+				if (consent.querySignature != null && consent.querySignature.basedOn != null) {
+					consent.basedOn = Consent.getByIdAndOwner(consent.querySignature.basedOn, consent.owner, fields);
+				}
 			}
 		}
 					
@@ -514,7 +525,17 @@ public class Circles extends APIController {
 		}		
 		
 		if (consent.owner != null) {
-			RecordManager.instance.createAnonymizedAPS(consent.owner, context.getAccessor(), consent._id, true);
+			RecordManager.instance.createAnonymizedAPS(context.getCache(), consent.owner, context.getAccessor(), consent._id, true);
+			
+			if (consent.allowedReshares != null) {
+				byte[] signkey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(consent._id, null);
+				ConsentReshare reshare = new ConsentReshare();
+				reshare._id = consent._id;
+				reshare.publicKey = signkey;
+				KeyManager.instance.backupKeyInAps(context, consent._id);
+				reshare.add();
+				
+			}
 			
 			if (passcode != null) {			  
 				  byte[] pubkey = KeyManager.instance.generateKeypairAndReturnPublicKey(consent._id, passcode);
@@ -595,15 +616,20 @@ public class Circles extends APIController {
 	//}
 	
 	
-	public static void autosharePatientRecord(AccessContext executorContext, Consent consent) throws AppException {
-		if (!executorContext.canCreateActiveConsents()) {
-			RecordManager.instance.share(executorContext, executorContext.getOwner(), consent._id, consent.owner, Collections.singleton(executorContext.getPatientRecordId()), true);
-            return;
+	public static void autosharePatientRecord(AccessContext executorContext, Consent consent) throws AppException {		
+		AccessLog.logBegin("start autoshare patient record");
+		try {
+			if (!executorContext.canCreateActiveConsentsFor(consent.owner)) {
+				RecordManager.instance.share(executorContext, executorContext.getOwner(), consent._id, consent.owner, Collections.singleton(executorContext.getPatientRecordId()), true);
+	            return;
+			}
+			
+			AccessContext context = ContextManager.instance.createSharingContext(executorContext, consent.owner);
+			int recs = RecordManager.instance.share(context, consent._id, consent.owner, CMaps.map("owner", consent.owner).map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), true);
+			if (recs == 0) throw new InternalServerException("error.internal", "Patient Record not found!");
+		} finally {
+			AccessLog.logEnd("end autoshare patient record");
 		}
-		
-		AccessContext context = ContextManager.instance.createSharingContext(executorContext, consent.owner);
-		int recs = RecordManager.instance.share(context, consent._id, consent.owner, CMaps.map("owner", consent.owner).map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), true);
-		if (recs == 0) throw new InternalServerException("error.internal", "Patient Record not found!");
 	}
 	
 	/**
@@ -856,14 +882,15 @@ public class Circles extends APIController {
 		
 		if (isNew) {
 		  wasActive = false;
-		  if (!context.canCreateActiveConsents() && consent.status == ConsentStatus.ACTIVE) {
+		  if (!context.canCreateActiveConsentsFor(consent.owner) && consent.status == ConsentStatus.ACTIVE) {
 			  consent.status = ConsentStatus.PRECONFIRMED;
 			  consent.createdAfter = new Date();
 		      preconfirmed = true;	  
+		      AccessLog.log("context="+context.toString()+" co owner="+consent.owner);
 		      AccessLog.log("using preconfirmation for new consent");
 		  }
 		} else {
-		  if (!context.canCreateActiveConsents() && newStatus == ConsentStatus.ACTIVE) {
+		  if (!context.canCreateActiveConsentsFor(consent.owner) && newStatus == ConsentStatus.ACTIVE) {
 			  newStatus = ConsentStatus.PRECONFIRMED;
 			  consent.createdAfter = new Date();
 			  preconfirmed = true;
@@ -1079,7 +1106,7 @@ public class Circles extends APIController {
 				for (MidataId target : targets) {
 					Map<String, String> replacementsExt = new HashMap<String, String>();
 					replacementsExt.putAll(replacements);
-					User user = User.getById(target, Sets.create("email"));
+					User user = context.getRequestCache().getUserById(target);
 					if (user != null) {
 
 					    replacementsExt.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+(user.email != null ? ("&login="+URLEncoder.encode(user.email, "UTF-8")) : ""));
@@ -1125,7 +1152,7 @@ public class Circles extends APIController {
 			consent.owner = context.getAccessor();
 			consent.externalOwner = null;
 			
-			RecordManager.instance.createAnonymizedAPS(consent.owner, context.getAccessor(), consent._id, true);
+			RecordManager.instance.createAnonymizedAPS(context.getCache(), consent.owner, context.getAccessor(), consent._id, true);
 			
 			Consent.set(consent._id, "owner", consent.owner);
 			Consent.set(consent._id, "externalOwner", consent.externalOwner);

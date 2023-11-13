@@ -25,6 +25,7 @@ import org.bson.BSONObject;
 import models.MidataId;
 import models.Record;
 import models.Space;
+import utils.ConsentQueryTools;
 import utils.RuntimeConstants;
 import utils.access.APSCache;
 import utils.access.DBRecord;
@@ -141,6 +142,14 @@ public class SpaceAccessContext extends AccessContext {
 	@Override
 	public String getContextName() {
 		return "Plugin-Space '"+space.name+"'";
+	}
+	
+	public boolean hasAccessToAllOf(Map<String, Object> targetFilter) throws AppException {
+		loadSharingQuery();
+		if (ConsentQueryTools.isSubQuery(space.query, targetFilter)) {
+			if (parent != null) return parent.hasAccessToAllOf(targetFilter);
+			return true;
+		} else return false;
 	}
 
 }
