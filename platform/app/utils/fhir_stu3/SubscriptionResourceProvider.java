@@ -63,6 +63,7 @@ import models.MidataId;
 import models.Plugin;
 import models.SubscriptionData;
 import utils.AccessLog;
+import utils.ConsentQueryTools;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
 import utils.auth.KeyManager;
@@ -305,41 +306,9 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	private static void mayShare(MidataId pluginId, String format, String content) throws AppException {
 		Plugin plugin = Plugin.getById(pluginId);
 		if (plugin == null || !plugin.resharesData) throw new ForbiddenOperationException("Plugin is not allowed to share data.");
-		if (!isSubQuery(plugin.defaultQuery, CMaps.map("format", format).mapNotEmpty("content", content))) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");				
+		if (!ConsentQueryTools.isSubQuery(plugin.defaultQuery, CMaps.map("format", format).mapNotEmpty("content", content))) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");				
 	}
-	
-	
-	private static boolean isSubQuery(Map<String, Object> masterQuery, Map<String, Object> subQuery) throws AppException {
-		
-		if (masterQuery.containsKey("$or")) {
-			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) masterQuery.get("$or");			
-			for (Map<String, Object> part :parts) {
-				boolean match = isSubQuery(part, subQuery);
-				if (match) return true;
-			}
-		}
-		
-		masterQuery = new HashMap<String, Object>(masterQuery);
-		subQuery = new HashMap<String, Object>(subQuery);
-								
-		Feature_FormatGroups.convertQueryToContents(masterQuery);		
-		Feature_FormatGroups.convertQueryToContents(subQuery);
-		
-		masterQuery.remove("group-system");
-		subQuery.remove("group-system");
-		AccessLog.log("newtest:");
-	    for (Map.Entry<String, Object> entry : masterQuery.entrySet()) {
-	    	AccessLog.log("test subquery:"+entry.getKey());
-	    	if (!subQuery.containsKey(entry.getKey())) return false;
-	    	Set<String> master = utils.access.Query.getRestriction(entry.getValue(), entry.getKey());
-	    	Set<String> sub = utils.access.Query.getRestriction(subQuery.get(entry.getKey()), entry.getKey());
-	    	AccessLog.log("master="+master.toString()+" sub="+sub.toString());
-	    	if (!master.containsAll(sub)) return false;	    	
-	    }
-		return true;
-	}
-		
-
+			
 	@Override
 	public void createPrepare(SubscriptionData subscriptionData, Subscription theResource) throws AppException {
 		if (!info().mayAccess("Subscription", "fhir/Subscription")) throw new ForbiddenOperationException("Plugin is not allowed to create subscriptions (Access Query)."); 

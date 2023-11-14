@@ -158,7 +158,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 
 	public boolean flush() throws InternalServerException, LostUpdateException {
 		if (changed) {
-			AccessLog.log("Flushing index page");
+			//AccessLog.log("Flushing index page");
 			encrypt();
 			model.update();			
 			changed = false;

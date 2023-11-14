@@ -381,6 +381,7 @@ public class Providers extends APIController {
 		if (serviceId != null) {
 			Set<UserGroupMember> ugms = UserGroupMember.getAllByMember(serviceId);
 			for (UserGroupMember ugm : ugms) orgIds.add(ugm.userGroup);
+			AccessLog.log("orgsIds:",orgIds.toString());
 		} else {
 			AccessLog.logBegin("Start search for organization membership");			
 			Set<UserGroupMember> memberOf = context.getCache().getAllActiveByMember();		
@@ -407,7 +408,11 @@ public class Providers extends APIController {
 	    orgs.clear();
 	    for (MidataId orgId : orgIds) {
 	    	Organization org = orgsById.get(orgId); 
-	    	if (org != null) orgs.add(org);
+	    	if (org != null) {
+	    		orgs.add(org);
+	    	} else {
+	    		AccessLog.log("not found org=",orgId.toString());
+	    	}
 	    }
 
 		

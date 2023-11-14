@@ -27,6 +27,7 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
 import models.enums.WritePermissionType;
+import utils.ConsentQueryTools;
 import utils.access.APS;
 import utils.access.APSCache;
 import utils.access.DBRecord;
@@ -189,7 +190,19 @@ public class AppAccessContext extends AccessContext {
 		return super.getQueryRestrictions();
 	}
 	
+	@Override
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
+		if (owner.equals(instance._id)) return true;
+		return super.canCreateActiveConsentsFor(owner);		
+	}
 	
+	@Override
+	public boolean hasAccessToAllOf(Map<String, Object> targetFilter) throws AppException {
+		if (plugin.resharesData && ConsentQueryTools.isSubQuery(instance.sharingQuery, targetFilter)) {
+			if (parent != null) return parent.hasAccessToAllOf(targetFilter);
+			return true;
+		} else return false;
+	}
 
 	
 }

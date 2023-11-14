@@ -115,7 +115,8 @@ public class AccountCreationAccessContext extends AccessContext {
 	
 	@Override
 	protected AccessContext getRootContext() {	
-		return this;
+		if (parent == null) return this;
+		return new AccountCreationAccessContext(cache, parent.getRootContext());
 	}
 	
 	@Override
@@ -137,6 +138,11 @@ public class AccountCreationAccessContext extends AccessContext {
 	@Override
 	public boolean isUserGroupContext() {		
 		return false;
+	}
+	
+	@Override
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
+		return owner.equals(cache.getAccountOwner()) || (parent != null && parent.canCreateActiveConsentsFor(owner));
 	}
 
 }

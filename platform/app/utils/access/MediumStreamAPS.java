@@ -55,7 +55,7 @@ public class MediumStreamAPS extends APS {
 		return apsId;
 	}
 	
-	public boolean isAccessible() throws AppException {
+	public boolean isAccessible() throws InternalServerException {
 		return true;
 	}
 	
@@ -106,7 +106,7 @@ public class MediumStreamAPS extends APS {
 		throw new NullPointerException();
 	}
 
-	public BasicBSONObject getMeta(String key) throws AppException {
+	public BasicBSONObject getMeta(String key) throws InternalServerException {
 		throw new NullPointerException();
 	}
 	

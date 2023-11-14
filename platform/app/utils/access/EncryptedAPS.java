@@ -239,7 +239,7 @@ public class EncryptedAPS {
 		return aps.keys.containsKey(name);
 	}
 	
-	public Map<String, Object> getPermissions() throws AppException {
+	public Map<String, Object> getPermissions() throws InternalServerException {
 		if (acc_aps != aps) return acc_aps.permissions;
 		//if (owner!=null && !isAccessable()) return getPermissions(owner);
 		if (!isValidated) validate();	
@@ -255,7 +255,7 @@ public class EncryptedAPS {
 		subEncryptionKey = subeaps.getLocalAPSKey();
 	}
 	
-	protected boolean findAndselectAccessibleSubset() throws AppException {
+	protected boolean findAndselectAccessibleSubset() throws InternalServerException {
 		if (isAccessable()) {			
 			return true;
 		}
@@ -273,7 +273,7 @@ public class EncryptedAPS {
 		return false;
 	}
 	
-	protected List<EncryptedAPS> getAllUnmerged() throws AppException {
+	protected List<EncryptedAPS> getAllUnmerged() throws InternalServerException {
 		List<EncryptedAPS> result = new ArrayList<EncryptedAPS>();
 		for (AccessPermissionSet subaps : aps.unmerged) {				
 		   EncryptedAPS encsubaps = new EncryptedAPS(subaps, who);
@@ -299,7 +299,7 @@ public class EncryptedAPS {
 		notStored = false;
 	}
 	
-	public void savePermissions() throws AppException, LostUpdateException {
+	public void savePermissions() throws InternalServerException, LostUpdateException {
 		if (!isLoaded()) return;
 		
 		if (!aps.security.equals(APSSecurityLevel.NONE)) {
@@ -351,7 +351,7 @@ public class EncryptedAPS {
 		isValidated = false;
 	}
 				
-	private void validate() throws AppException {
+	private void validate() throws InternalServerException {
 		if (!isLoaded()) load();		
 		AccessLog.apsAccess(aps._id, who, aps.security);
 		if (aps.keys == null) { isValidated = true; return;} // Old version support
@@ -392,14 +392,15 @@ public class EncryptedAPS {
 		
 		} catch (AuthException e) {
 			AccessLog.decryptFailure(e);
-			throw e;
+			throw new InternalServerException("error.internal", e);
 		}
 	}
 	
 	public boolean isAccessable() throws InternalServerException {
 		if (who.equals(owner)) return true;
-		if (apsId.equals(who)) return true;
+		if (apsId.equals(who)) return true;		
 		if (!isLoaded()) load();	
+		if (keyProvided) return true;
 		if (aps.keys.containsKey(who.toString())) return true;
 		if (owner == null) {
 			if (!isValidated && !keyProvided) {
@@ -426,7 +427,7 @@ public class EncryptedAPS {
 		} else return false;
 	}
 	
-	protected void doKeyUpgrade() throws AppException  {
+	protected void doKeyUpgrade() throws InternalServerException  {
 		
 		AccessLog.logBegin("begin key upgrade:",getId().toString());
 		if (!isValidated) validate();

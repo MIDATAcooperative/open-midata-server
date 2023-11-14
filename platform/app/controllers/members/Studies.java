@@ -312,7 +312,7 @@ public class Studies extends APIController {
 		part.authorized.add(study._id);
 		part.sharingQuery = study.recordQuery;
 		
-		RecordManager.instance.createAnonymizedAPS(member._id, study._id, part._id, true);
+		RecordManager.instance.createAnonymizedAPS(context.getCache(), member._id, study._id, part._id, true);
 		
 		Circles.consentStatusChange(context, part, null);
 		
@@ -410,9 +410,7 @@ public class Studies extends APIController {
 		}
 				
 		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;
-		
-		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_REQUESTED, userId, participation, study);
-		
+				
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
 			if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
 				if (participation.status != ConsentStatus.DELETED) {
@@ -422,6 +420,8 @@ public class Studies extends APIController {
 			} else throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		}
 		
+		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_REQUESTED, userId, participation, study);
+				
 		participation.setPStatus(ParticipationStatus.REQUEST, joinMethod);	
 		
 		//participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));

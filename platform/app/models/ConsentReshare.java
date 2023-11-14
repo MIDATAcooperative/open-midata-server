@@ -17,25 +17,26 @@
 
 package models;
 
-public class ConsentExternalEntity implements JsonSerializable {
+import java.util.Set;
 
-	public String name;
+import utils.collections.CMaps;
+import utils.db.NotMaterialized;
+import utils.exceptions.InternalServerException;
+
+public class ConsentReshare extends Model {
+
+	protected @NotMaterialized static final String collection = "consentreshare";
 	
-	public String getFirstname() {
-		if (name == null) return "";
-	    int i = name.lastIndexOf(' ');
-	    if (i>0) return name.substring(0, i); else return "";		
+	/**
+	 * public key for consent signatures for consent chaining
+	 */
+	public byte[] publicKey;
+
+	public static ConsentReshare getById(MidataId consentId, Set<String> fields) throws InternalServerException {
+		return Model.get(ConsentReshare.class, collection, CMaps.map("_id", consentId), fields);
 	}
 	
-	public String getLastname() {
-		if (name == null) return "";
-	    int i = name.lastIndexOf(' ');
-	    if (i>0) return name.substring(i+1); else return name;		
+	public void add() throws InternalServerException {
+		Model.insert(collection, this);
 	}
-	
-	public String getName() {
-		if (name == null) return "";
-	    return name;		
-	}
-	
 }

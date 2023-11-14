@@ -27,6 +27,6 @@ public class Schema {
 	    DBLayer.setCollectionsForDatabase(DBLayer.DB_USER, new String[] {"users", "researchusers", "hpusers", "admins", "providers", "research", "studykeywords", "tags", "plugins", "pluginreviews", "news", "studies", "codes", "formatinfo", "contentinfo", "formatgroups", "groupcontent", "coding", "loinc", "usergroups", "devstats", "termsofuse", "pluginicons", "instancestats", "studyapplink", "usagestats", "changelog", "bulkmails", "deployreport", "ratelimited", "csvdef"});
 	    DBLayer.setCollectionsForDatabase(DBLayer.DB_MAPPING, new String[] {"aps", "apslist", "apsextra", "apshistory", "sessions", "securitytokens" });
 	    DBLayer.setCollectionsForDatabase(DBLayer.DB_RECORD, new String[] {"records", "messages", "tasks", "vrecords", "indexes", "unlinkedbinaries"});
-	    DBLayer.setCollectionsForDatabase(DBLayer.DB_ACCESS, new String[] {"circles", "spaces", "participation", "keys", "keysext", "keyrecover", "keyprocess", "futurelogins", "consents", "vconsents", "groupmember", "auditevents", "subscriptions", "testcalls", "licenses", "serviceinstances", "usedcodes"});
+	    DBLayer.setCollectionsForDatabase(DBLayer.DB_ACCESS, new String[] {"circles", "spaces", "participation", "keys", "keysext", "keyrecover", "keyprocess", "futurelogins", "consents", "vconsents", "consentreshare", "groupmember", "auditevents", "subscriptions", "testcalls", "licenses", "serviceinstances", "usedcodes"});
 	}
 }

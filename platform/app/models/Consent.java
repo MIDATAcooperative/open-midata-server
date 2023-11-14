@@ -54,7 +54,7 @@ public class Consent extends Model implements Comparable<Consent> {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator", "externals");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator", "externals", "allowedReshares");
 	
 	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "writes", "dataupdate", "lastUpdated");
 	
@@ -207,6 +207,16 @@ public class Consent extends Model implements Comparable<Consent> {
 	 * Internal timestamp of last data change for faster queries
 	 */
 	public long dataupdate;
+	
+	/**
+	 * list of entities that may also granted access to data from this consent (reshare)
+	 */
+	public List<ConsentEntity> allowedReshares;
+	
+	/**
+	 * Resharing consent that was used to create the signature for this consent
+	 */
+	public @NotMaterialized Consent basedOn;
 	
 	public static Consent getByIdUnchecked(MidataId consentId, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("status", NOT_DELETED), fields);

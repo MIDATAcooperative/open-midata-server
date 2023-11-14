@@ -265,7 +265,27 @@
                 <p>{{ $t('enum.writepermissiontype.'+(consent.writes || 'NONE')) }}</p>
                 <p v-if="consent.createdAfter"><span v-t="'editconsent.created_after'"></span>:{{ $filters.date(consent.createdAfter) }}</p>
                 <p v-if="consent.createdBefore"><span v-t="'editconsent.created_before'"></span>:{{ $filters.date(consent.createdBefore) }}</p>
+                       
+        </div>
         
+        <div v-if="consent.basedOn">
+           <div class="extraspace"></div>
+           <p><b class="text-primary" v-t="'editconsent.source'"></b></p>
+           <p><span v-t="'editconsent.based_on'"></span>: <router-link :to="{ path : './editconsent', query : { consentId : consent.basedOn._id }}">{{ consent.basedOn.name }}</router-link></p>
+           <p><span v-t="'editconsent.base_created_at'"></span>: {{ $filters.date(consent.basedOn.dateOfCreation) }}</p>
+        </div>
+        
+        <div v-if="consent.allowedReshares">
+           <div class="extraspace"></div>
+           <p><b class="text-primary" v-t="'editconsent.allowed_reshares'"></b></p>
+           <ul>
+           <li v-for="reshare in consent.allowedReshares">
+              <span v-if="reshare.type=='SERVICES'"><span v-t="'editconsent.reshare_service'"></span>: {{ reshare.name }}</span>
+              <span v-if="reshare.type=='USERGROUP'"><span v-t="'editconsent.reshare_usergroup'"></span>: {{ reshare.name }}</span>
+              <span v-if="reshare.type=='USER'"><span v-t="'editconsent.reshare_user'"></span>: {{ reshare.name }}</span>
+              <span v-if="reshare.type=='PROJECT'"><span v-t="'editconsent.reshare_project'"></span>: {{ reshare.name }}</span>
+           </li>
+           </ul>
         </div>
             
         <div v-if="options.advanced" class="margin-top">
@@ -459,7 +479,7 @@ export default {
 			$data.isSimple = true;
 			$data.consentId = $route.query.consentId;
 			
-			me.doBusy(circles.listConsents({ "_id" : $route.query.consentId }, ["name", "type", "status", "owner", "ownerName", "authorized", "entityType", "createdBefore", "createdAfter", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ])
+			me.doBusy(circles.listConsents({ "_id" : $route.query.consentId }, ["name", "type", "status", "owner", "ownerName", "authorized", "entityType", "createdBefore", "createdAfter", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes", "allowedReshares", "basedOn" ])
 			.then(function(data) {
 				if (!data.data || !data.data.length) {
 					$data.consent = null;

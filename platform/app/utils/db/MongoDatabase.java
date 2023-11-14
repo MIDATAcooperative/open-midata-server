@@ -416,7 +416,7 @@ public class MongoDatabase extends Database {
 	    while (true) {
 	        try {
 	            clientSession.commitTransaction();
-	            AccessLog.logDB("commit");
+	            // AccessLog.logDB("commit");
 	            break;
 	        } catch (MongoException e) {
 	            // can retry commit
@@ -436,8 +436,7 @@ public class MongoDatabase extends Database {
 	 */
 	public <T extends Model> void secureUpdate(ClientSession clientSession, T model, String collection, String timestampField, String[] fields) throws LostUpdateException, DatabaseException {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
-		try {
-			if (logQueries) AccessLog.logDB("secure update ",collection," ",model.to_db_id().toString());
+		try {			
 			BasicDBObject query = new BasicDBObject();
 			query.put("_id", model.to_db_id());
 			
@@ -452,6 +451,8 @@ public class MongoDatabase extends Database {
 			updateContent.put(timestampField, ts);
 			BasicDBObject update = new BasicDBObject("$set", updateContent);
 		
+			if (logQueries) AccessLog.logDB("secure update ",collection," ",model.to_db_id().toString(), "; ", Objects.toString(oldTimeStamp), " -> ", Long.toString(ts));
+						
 			DBObject result;
 			if (clientSession != null) {
 				result = getCollection(collection).findOneAndUpdate(clientSession, query, update);
@@ -463,8 +464,7 @@ public class MongoDatabase extends Database {
 				throw new LostUpdateException();
 			}
 			
-			model.getClass().getField(timestampField).set(model, ts);
-			if (logQueries) AccessLog.log("secure updated: ", Objects.toString(oldTimeStamp), " -> ", Long.toString(ts));
+			model.getClass().getField(timestampField).set(model, ts);			
 		    return;									
 		} catch (MongoException e) {
 			if (e.hasErrorLabel(MongoException.TRANSIENT_TRANSACTION_ERROR_LABEL)) {

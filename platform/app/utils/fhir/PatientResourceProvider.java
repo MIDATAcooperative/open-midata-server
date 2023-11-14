@@ -535,8 +535,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	}
 
 	public static void createPatientForStudyParticipation(AccessContext inf, Study study, StudyParticipation part, Member member) throws AppException {
-
-		AccessContext context = inf.forAccountReshare().forConsentReshare(part);//Manager.instance.createSharingContext(inf, part.owner);
+		AccessLog.logBegin("start patient for study participation");
+		AccessContext context = ContextManager.instance.createSharingContext(inf, part.owner).forConsentReshare(part);
+		//AccessLog.log("BEFORE="+inf.toString());
+		//AccessLog.log("AFTER="+context.toString());
 		PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
 		PatientResourceProvider.setAccessContext(inf);
 		String userName = "P-" + CodeGenerator.nextUniqueCode();			
@@ -552,7 +554,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		Feature_Pseudonymization.addPseudonymization(context, part._id, pseudo, userName);
 		RecordManager.instance.share(context, member._id, part._id, Collections.singleton(record._id), false);
-	
+		AccessLog.logEnd("end patient for study participation");
 	}
 
 	public void prepare(Record record, Patient thePatient) {
@@ -826,10 +828,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
         	fhirPatient.addServiceUrl(user, consent);
         } else if (consent != null && consent.status==ConsentStatus.PRECONFIRMED) {
         	insertRecord(tempContext.forConsentReshare(consent), record, thePatient);
+        	tempContext = tempContext.forConsent(consent);
         }
 		        
         // Have user participate to requested projects
-		AccountManagementTools.participateToProjects(tempContext, user, fhirPatient, projectsToParticipate, existing == null);	
+		AccountManagementTools.participateToProjects(tempContext, user, fhirPatient, projectsToParticipate, tempContext.canCreateActiveConsentsFor(user._id));	
 		ContextManager.instance.clearCache(); //Is this needed??
 
 		// Cleanup
@@ -933,7 +936,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		Member existing = AccountManagementTools.identifyExistingAccount(info(), user);
 		
 		if (existing != null) {
-			record._id = existing._id;
+			//record._id = existing._id;
 			record.attached = existing;
 		}
 		

@@ -35,6 +35,11 @@ public class Signed implements JsonSerializable, Serializable {
 	public MidataId signedBy;
 	
 	/**
+	 * signature is not done using the owners key but is based on another consent
+	 */
+	public MidataId basedOn;
+	
+	/**
 	 * owner of data for this signature (same as signedBy unless done by representative)
 	 */
 	public MidataId signedFor;
@@ -42,7 +47,11 @@ public class Signed implements JsonSerializable, Serializable {
 	public Signed() {}
 	
 	public Signed(MidataId objectId, String message, MidataId signedFor, MidataId signedBy, long date) throws InternalServerException, AuthException {
-		createSignature(objectId, message, signedFor, signedBy, date);
+		createSignature(objectId, message, signedFor, signedBy, null, date);
+	}
+	
+	public Signed(MidataId objectId, String message, MidataId signedFor, MidataId signedBy, MidataId basedOn, long date) throws InternalServerException, AuthException {
+		createSignature(objectId, message, signedFor, signedBy, basedOn, date);
 	}
 	
 	/**
@@ -54,13 +63,14 @@ public class Signed implements JsonSerializable, Serializable {
 	 * @throws InternalServerException
 	 * @throws AuthException
 	 */
-	public void createSignature(MidataId objectId, String message, MidataId signedFor, MidataId signedBy, long date) throws InternalServerException, AuthException {
+	public void createSignature(MidataId objectId, String message, MidataId signedFor, MidataId signedBy, MidataId basedOn, long date) throws InternalServerException, AuthException {
 		this.signedAt = date;
 		this.signedBy = signedBy;
 		this.signedFor = signedFor;
+		this.basedOn = basedOn;
 		byte[] msg = createMessageToSign(objectId, message);
 		//byte[] hash = createHash(msg);
-		this.signature = KeyManager.instance.encryptHash(signedFor, msg);
+		this.signature = KeyManager.instance.encryptHash(basedOn!=null ? basedOn : signedFor, msg);
 	}
 	
 	/**
@@ -81,7 +91,7 @@ public class Signed implements JsonSerializable, Serializable {
 	private boolean checkSignature(MidataId objectId, String message) throws InternalServerException {
 		byte[] msg = createMessageToSign(objectId, message);
 		//byte[] hash = createHash(msg);
-		return KeyManager.instance.verifyHash(this.signedFor, this.signature, msg);
+		return KeyManager.instance.verifyHash(this.basedOn != null ? this.basedOn : this.signedFor, this.signature, msg);
 		//return Arrays.equals(hash, compare);
 	}
 	
@@ -91,6 +101,7 @@ public class Signed implements JsonSerializable, Serializable {
 		build.append(this.signedBy.toString());
 		build.append(this.signedFor.toString());
 		build.append(Long.toHexString(this.signedAt));
+		if (this.basedOn != null) build.append(this.basedOn.toString());
 		build.append(message.trim());
 		try {
 			return build.toString().getBytes("UTF-8");

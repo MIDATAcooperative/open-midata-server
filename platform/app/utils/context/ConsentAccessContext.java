@@ -18,6 +18,7 @@
 package utils.context;
 
 import java.util.Collections;
+import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -28,11 +29,13 @@ import models.Record;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.WritePermissionType;
+import utils.ConsentQueryTools;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.access.Feature_FormatGroups;
 import utils.access.Feature_Pseudonymization;
 import utils.access.QueryEngine;
+import utils.auth.KeyManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -44,20 +47,20 @@ public class ConsentAccessContext extends AccessContext{
 	private MidataId ownerpseudoId;
 	//private final Set<String> reqfields = Sets.create("sharingQuery", "createdBefore", "validUntil");
 	
-	public ConsentAccessContext(Consent consent, APSCache cache, AccessContext parent) throws AppException {
+	public ConsentAccessContext(Consent consent, APSCache cache, AccessContext parent) {
 		super(cache, parent);
 		this.consent = consent;
 		setStudyOwnerName();
 		
 	}
 	
-	public ConsentAccessContext(Consent consent, AccessContext parent) throws AppException {
+	public ConsentAccessContext(Consent consent, AccessContext parent)  {
 		super(parent.getCache(), parent);
 		this.consent = consent;
 		setStudyOwnerName();
 	}
 	
-	private void setStudyOwnerName() throws AppException {
+	private void setStudyOwnerName()  {
 		if (consent.type.equals(ConsentType.STUDYRELATED) && consent.ownerName == null) {
 			consent.ownerName = consent.name;
 			if (consent.ownerName != null && consent.ownerName.startsWith("Study:")) consent.ownerName = consent.ownerName.substring("Study:".length());
@@ -214,8 +217,36 @@ public class ConsentAccessContext extends AccessContext{
 		return r;
 	}
 	
+	@Override
 	public AccessContext forConsent(Consent consent) throws AppException {
 		if (this.consent._id == consent._id) return this;
 		return super.forConsent(consent);
+	}
+	
+	@Override
+	public AccessContext forAccountReshare() {
+		if (getAccessor().equals(consent.owner)) return super.forAccountReshare();
+		AccessContext p = super.forAccountReshare();
+		return new ConsentAccessContext(consent, p.getCache(), p);		
+	}
+
+	@Override
+	public MidataId getConsentSigner() throws InternalServerException {
+		KeyManager.instance.recoverKeyFromAps(this, consent._id);
+		return consent._id;
 	}	
+	
+	@Override
+	public boolean canCreateActiveConsentsFor(MidataId owner) {		
+		return (consent.allowedReshares != null && owner.equals(consent.owner)) || parent.canCreateActiveConsentsFor(owner);
+	}
+	
+	public boolean hasAccessToAllOf(Map<String, Object> targetFilter) throws AppException {
+		loadSharingQuery();
+		if (consent.allowedReshares != null && ConsentQueryTools.isSubQuery(consent.sharingQuery, targetFilter)) {
+			if (parent != null) return parent.hasAccessToAllOf(targetFilter);
+			return true;
+		} else return false;
+	}
+		
 }

@@ -79,7 +79,7 @@ public class Feature_InMemoryQuery extends APS {
 	}
 
 	@Override
-	public boolean isAccessible() throws AppException {
+	public boolean isAccessible() throws InternalServerException {
 		return true;
 	}
 
@@ -129,7 +129,7 @@ public class Feature_InMemoryQuery extends APS {
 	}
 
 	@Override
-	public BasicBSONObject getMeta(String key) throws AppException {		
+	public BasicBSONObject getMeta(String key) throws InternalServerException {		
 		return null;
 	}
 	

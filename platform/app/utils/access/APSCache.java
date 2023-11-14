@@ -295,6 +295,10 @@ public class APSCache {
 			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndActiveMember(userGroup, member);
 			if (isMemberOfGroup != null && isMemberOfGroup.getConfirmedRole().may(permission)) return Collections.singletonList(isMemberOfGroup);
 		}
+		if (!member.equals(getAccountOwner())) {
+			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndActiveMember(userGroup, member);
+			if (isMemberOfGroup != null && isMemberOfGroup.getConfirmedRole().may(permission)) return Collections.singletonList(isMemberOfGroup);
+		}
 		
 		List<UserGroupMember> result = new ArrayList<UserGroupMember>();
 		Set<MidataId> tested = new HashSet<MidataId>();
@@ -326,7 +330,9 @@ public class APSCache {
 		    	   }
 		    	}
 	    	} 
-	    }	    
+	    		    	
+	    }	
+	    
 	    return false;
 	}
 	
