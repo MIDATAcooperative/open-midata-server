@@ -2247,6 +2247,8 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
+		
+		context = context.forUserGroup(self);
 
 		if (json.has("processFlags")) {
 			study.setProcessFlags(JsonExtraction.extractStringSet(json.get("processFlags")));

@@ -234,7 +234,7 @@ public class Feature_Pseudonymization extends Feature {
 	}
 	
 	public static void addPseudonymization(AccessContext context, MidataId consentId, MidataId pseudoId, String pseudoName) throws AppException {
-		AccessLog.log("ADD PSEUDONYMIZATION context="+context.toString()+" consent="+consentId+" pseudoName="+pseudoName); // XXXXXX
+		AccessLog.log("add pseudonymization");
 		RecordManager.instance.setMeta(context, consentId, "_patient", CMaps.map("id", pseudoId.toString()).map("name", pseudoName));		
 	}
 	   
