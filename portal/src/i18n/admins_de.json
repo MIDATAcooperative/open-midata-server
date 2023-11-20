@@ -245,6 +245,10 @@
         "myid" : "Meine Wiederherstellungs-ID",
         "instr1" : "Klicken Sie auf einen Share, um den verschlüsselten Share in die Zwischenablage zu kopieren.",
         "instr2" : "Share unter UBUNTU entschlüsseln: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)",
+
+        // TODO CHANGED
+        // OLD: Decrypt share on MAC OS: (click line to copy it to clipboard)
+        // NEW: Decrypt share on macOS (bash shell): (click line to copy it to clipboard)
         "instr3" : "Share unter macOS (bash shell) entschlüsseln: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)"
     },
 

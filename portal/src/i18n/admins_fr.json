@@ -245,6 +245,10 @@
         "myid" : "Mon id de récupération",
         "instr1" : "Cliquez sur un share pour copier le share crypté dans le presse-papiers.",
         "instr2" : "Décrypter le share sous UBUNTU: (cliquez sur la ligne pour la copier dans le presse-papiers)",
+
+        // TODO CHANGED
+        // OLD: Decrypt share on MAC OS: (click line to copy it to clipboard)
+        // NEW: Decrypt share on macOS (bash shell): (click line to copy it to clipboard)
         "instr3" : "Décrypter le share sous macOS (bash shell): (cliquez sur la ligne pour la copier dans le presse-papiers)"
     },
 

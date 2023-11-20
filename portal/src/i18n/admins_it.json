@@ -245,6 +245,10 @@
         "myid" : "Il mio id di recupero",
         "instr1" : "Fare clic su un share per copiare il share criptato negli appunti.",
         "instr2" : "Decriptare il share su UBUNTU: (cliccare sulla linea per copiarla negli appunti)",
+
+        // TODO CHANGED
+        // OLD: Decrypt share on MAC OS: (click line to copy it to clipboard)
+        // NEW: Decrypt share on macOS (bash shell): (click line to copy it to clipboard)
         "instr3" : "Decriptare il share su macOS (bash shell): (cliccare sulla linea per copiarla negli appunti)"
     },
 

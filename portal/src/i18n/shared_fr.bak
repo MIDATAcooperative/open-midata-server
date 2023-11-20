@@ -213,6 +213,10 @@
      "nomatch" : {
        "birthdate" : "Birthdate does not match",
        "email" : "Different email address provided"
+     },
+     
+     "not_unique" : {
+        "identifier" : "A provided identifier is not unique"
      }
    },
 
@@ -357,7 +361,13 @@
 	   "resthook-called" : "Resthook called",
 	   "script-invocation" : "Script invoked",
 	   "plugin-deployed" : "Plugin deployed",
-	   "plugin-undeployed" : "Plugin undeployed"	   	   
+	   "plugin-undeployed" : "Plugin undeployed",
+	   "access-confirmation" : "Access confirmation",
+	   "access-confirmation-request" : "Access confirmation request",
+	   "apikey-created" : "API-Key created",
+       "apikey-deleted" : "API-Key deleted",
+       "service-instance-created" : "Service-Instance created",
+       "service-instance-deleted" : "Service-Instance deleted"	   	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -386,11 +396,12 @@
 	   "EXPIRED" : "Expired",
 	   "REJECTED" : "Rejected",
 	   "UNCONFIRMED" : "Unconfirmed",
-	   "FROZEN" : "Frozen"
+	   "FROZEN" : "Frozen",
+	   "INVALID" : "Invalid"
 	 },
 	 "consenttype" : {
 	   "CIRCLE" : "Other Account Holders",
-     "REPRESENTATIVE" : "Representative",
+       "REPRESENTATIVE" : "Representative",
 	   "EXTERNALSERVICE" : "External Application",
 	   "API" : "External Service",
 	   "HCRELATED" : "Healthcare",
@@ -484,6 +495,7 @@
 	   "MONITOR" : "Monitor",
 	   "MASTER" : "Master User",
 	   "USERADMIN" : "User Admin",
+	   "KEYRECOVERY" : "Key Recoveries",
 	   "STUDYADMIN" : "Project Admin",
 	   "CONTENTADMIN" : "Content Admin",
 	   "PLUGINADMIN" : "Application Admin",
@@ -507,6 +519,7 @@
 	   "ACTIVE" : "Active",
 	   "BLOCKED" : "Blocked",
 	   "DELETED" : "Deleted",
+	   "FAKE" : "Fake Account",
 	   "NEW" : "New"
 	 },
 	 "frequency" : {
@@ -555,11 +568,11 @@
 	 },
 	 "plugintype" : {
 	   "visualization" : "Plugin",
-	   "service" : "Internal Service",
+	   "service" : "Internal service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
 	   "mobile" : "Application (Smartphone, Web)",
-	   "external": "External Service",
+	   "external": "External service",
 	   "analyzer" : "Project analyzer",
 	   "broker" : "Data broker",
 	   "endpoint" : "FHIR endpoint"
@@ -592,12 +605,12 @@
 	   "USER" : "User",
 	   "USERGROUP" : "Team",	  
 	   "ORGANIZATION" : "Organization",
-	   "SERVICES" : "Data Broker"
+	   "SERVICES" : "Data broker"
 	 },
 	 "usergrouptype" : {
 	   "ORGANIZATION" : "Organization",
 	   "CARETEAM" : "Care Team",
-	   "HEALTHCARESERVICE" : "Halthcare Service",
+	   "HEALTHCARESERVICE" : "Healthcare Service",
 	   "RESEARCHTEAM" : "Research"
 	 },
 	 "bulkmailtype" : {
@@ -996,6 +1009,7 @@
     "reshare" : "3rd party access?",
     "reshare2" : "The persons authorized by this consent may reshare the data I gave them access to.",
     "expiration_date" : "Consent expiration date:",
+    "created_after" : "Only includes data created after:",
     "created_before" : "Do not share data created after:",
     "share_what" : "What data do you want to share?",
     "consent_empty" : "This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.",
@@ -1016,12 +1030,14 @@
     "people" : "With which persons(s) do you want to share data?",
     "external" : "Non @PRODUCT account holder",
     "add_people_btn" : "Add More People",
+    "add_hp_btn" : "Add Practitioner",
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
     "reshare2" : "@:newconsent.reshare2",
     "writes" : "Write Permission",
     "expiration_date" : "Consent expiration date:",
     "created_before" : "Does not share data created after:",
+    "created_after" :"Only data created after:",
     "what_is_shared" : "What data is shared?",
     "consent_empty" : "This consent does not share any data at the moment.",
     "type_circle" : "This consent shares data with other @PRODUCT account holders.",
@@ -1050,7 +1066,16 @@
     "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.",
     "you" : "You",
     "restrictions" : "Further restrictions?",
-    "project" : "Project"
+    "project" : "Project",
+    "source" : "Source of this consent",
+    "based_on" : "Link to base consent used",
+    "base_created_at" : "Base consent created at",
+    "allowed_reshares" : "If required data may be reshared to these 3rd parties",
+    "reshare_service" : "3rd parties using the service",
+    "reshare_usergroup" : "Team or project",
+    "reshare_user" : "Single user",
+    "reshare_project" : "Project"
+    
   },
   
   "editconsent2" : {
@@ -1314,6 +1339,7 @@
   },
   
   "addusers" : {
+    "title" : "User Search",
     "contacts" : "Existing contacts:",
     "all_users" : "All users",
     "no_contacts_to_add" : "No contacts can be added to this circle.",
@@ -1341,7 +1367,8 @@
   "databrokersearch" : {
     "title" : "Search Data Brokers (APIs)",
     "name" : "Data broker name",
-    "empty_result" : "No matching data brokers found."
+    "empty_result" : "No matching data brokers found.",
+    "new_btn" : "Create new instance"
   },
   
   "confirm" : {
@@ -1544,8 +1571,10 @@
   "apikeys" : {
     "title" : "API Key Management",
     "empty" : "This account does not manage any services with API keys.",
+    "managedby" : "managed by",
     "add_btn" : "Add Key",
     "delete_btn" : "Remove Analyzer",
+    "delete_service_btn" : "Remove Service",
     "delete_endpoint_btn" : "Remove Endpoint",
     "show_btn" : "Show Keys",  
     "revoke_btn" : "Revoke this key",
@@ -1557,6 +1586,7 @@
     "common_name" : "OU (organization unit) and CN (common name) for CSR (certificate request)",
     "instructions_common_name" : "For certificate based authentication create a CSR with the given OU and CN fields. Send the CSR to @SUPPORT",
     "date" : "Date of creation",
+    "restrictions" : "Restrictions", 
     "status" : "Status",
     "ACTIVE" : "Active",
     "FROZEN" : "Old version",

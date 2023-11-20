@@ -181,7 +181,13 @@
             "code_challenge" : "Beim OAuth2-Login muss die aufrufende Applikation den PKCE-Standard (Proof Key for Code Exchange) verwenden",
             "createendpoint" : "Nicht projektbezogene Instanz des Endpoint erstellen. Nur ankreuzen, wenn Sie diesen Endpoint NICHT mit einem Projekt verwenden wollen.",
             "endpoint" : "Der Pfad dieses nicht projektbezogenen FHIR-Endpoint lautet /opendata/endpointname/fhir",
-            "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen."
+            "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen.",
+
+            // TODO NEW: Access keys will be managed by multiple different organizations.
+            "decentral" : "Access keys will be managed by multiple different organizations.",
+
+            // TODO NEW: API keys are directly bound to a single organization.
+            "organizationKeys" : "API keys are directly bound to a single organization."
         },
         "status" : {
             "title" : "Applikationsstatus",
@@ -212,7 +218,13 @@
         "publisher" : "Herausgeber",
         "developerTeam" : "Entwicklungsteam",
         "reviews" : "Überprüfungen",
-        "manageyourkeys" : "Verwalten Sie Ihre API-Schlüssel"
+        "manageyourkeys" : "Verwalten Sie Ihre API-Schlüssel",
+
+        // TODO NEW: Decentral Management
+        "decentral" : "Decentral Management",
+
+        // TODO NEW: API-Keys per Organizations
+        "organizationKeys" : "API-Keys per Organizations"
     },
 
     "appstats" : {

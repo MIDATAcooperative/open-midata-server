@@ -31,27 +31,38 @@
     "description" : "Description",
     "url" : "Homepage URL",
     "status" : "Status",
-    "members" : "All members of your organization",
+    "members" : "Organization members",
     "addprovider" : "Register New Member",
     "edit_btn" : "Edit Organization",
     "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions.",
     "parent" : "Part of Organization",
+    "identifiers" : "Identifier",
+    "identifiers_info" : "Enter all external organization identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired.",
     "select_btn" : "Select",
     "managerType" : "Organization Manager",
     "managers" : {
       "ME" : "Add yourself as manager only",
       "ME2" : "Add yourself as member and manager",
       "PARENT" : "Organization is managed by parent organization",
-      "OTHERMEMBER" : "Add another practitioner as member and manager",
-      "EXTERNALUSER" : "Add another practitioner as manager"
+      "OTHERMEMBER" : "Add another health professional as member and manager",
+      "EXTERNALUSER" : "Add another health professional as manager"
     },
-    "manager" : "eMail of Manager"
-    
+    "manager" : "Email of Manager",
+    "protection" : "Access protection",
+    "protection2" : "A second user must always confirm any use of this organization.", 
+    "request_btn" : "Request Access"
   },
   
   "addprovider" : {
     "sign_up" : "Register health professional",
     "success" : "User successfully registered"
+  },
+  
+  "provider_requestaccess" : {
+     "title" : "Request Access",
+     "reason" : "Reason",
+     "wait" : "Please wait until your request is confirmed...",
+     "retry_btn" : "Retry now"
   },
   
   "addpatient" : {
@@ -62,7 +73,7 @@
   
   "provider_patientsearch" : {
      "title" : "Patient Search",
-     "email" : "email",
+     "email" : "Email",
      "or" : "or",
      "midataid" : "@PRODUCT ID",
      "birthday" : "Birthdate",
@@ -108,7 +119,6 @@
     "selected" : "Selected Member",
     "rights" : "Permissions",
     "notexists" : "This team does not (yet) exist.",
-   
     "right" : {
       "readData" : "Read data",
       "writeData" : "Write data",
@@ -121,7 +131,6 @@
   
   "provider_editgroups" : {
     "title" : "Edit Sub-Entities",
-   
     "entityName" : "Entity Name",    
     "entityType" : "Entity Type",
     "roleName" : "Role",
@@ -134,9 +143,9 @@
     "endDate" : "Member Until",
     "empty" : "No sub-entities found.",
     "add_organization_btn" : "Create Sub-Organization",
-    "add_organization2_btn" : "Link other Organization",
+    "add_organization2_btn" : "Link to another Organization",
     "add_broker_btn" : "Add API Access",
-    "add_group_btn" : "Add other Team",
+    "add_group_btn" : "Add another Team",
     "former_members" : "Former Sub-Entities"
   },
   

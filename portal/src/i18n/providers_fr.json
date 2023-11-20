@@ -32,26 +32,72 @@
         "description" : "Description",
         "url" : "URL de la page d'accueil",
         "status" : "État",
+
+        // TODO CHANGED
+        // OLD: All members of your organization
+        // NEW: Organization members
         "members" : "Tous les membres de votre organisation",
         "addprovider" : "Inscrire un nouveau membre",
         "edit_btn" : "Modifier l'organisation",
         "master_user" : "Vous devez être un utilisateur maître pour mettre à jour votre organisation ou inscrire de nouveaux utilisateurs pour l'organisation. Veuillez contacter @SUPPORT si vous pensez que vous devriez avoir les permissions de l'utilisateur maître.",
         "parent" : "Fait partie de l'organisation",
+
+        // TODO NEW: Identifier
+        "identifiers" : "Identifier",
+
+        // TODO NEW: Enter all external organization identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired.
+        "identifiers_info" : "Enter all external organization identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired.",
         "select_btn" : "Sélectionner",
         "managerType" : "Manager de l'organisation",
         "managers" : {
             "ME" : "S'ajouter en tant que manager uniquement",
             "ME2" : "S'ajouter en tant que membre et manager",
             "PARENT" : "L'organisation est gérée par l'organisation mère",
+
+            // TODO CHANGED
+            // OLD: Add another practitioner as member and manager
+            // NEW: Add another health professional as member and manager
             "OTHERMEMBER" : "Ajouter un autre professionnel de la santé en tant que membre et manager",
+
+            // TODO CHANGED
+            // OLD: Add another practitioner as manager
+            // NEW: Add another health professional as manager
             "EXTERNALUSER" : "Ajouter un autre professionnel de la santé en tant que manager"
         },
-        "manager" : "E-mail du manager"
+
+        // TODO CHANGED
+        // OLD: eMail of Manager
+        // NEW: Email of Manager
+        "manager" : "E-mail du manager",
+
+        // TODO NEW: Access protection
+        "protection" : "Access protection",
+
+        // TODO NEW: A second user must always confirm any use of this organization.
+        "protection2" : "A second user must always confirm any use of this organization.",
+
+        // TODO NEW: Request Access
+        "request_btn" : "Request Access"
     },
 
     "addprovider" : {
         "sign_up" : "Inscrire un professionnel de la santé",
         "success" : "Utilisateur inscrit avec succès"
+    },
+
+    "provider_requestaccess" : {
+
+        // TODO NEW: Request Access
+        "title" : "Request Access",
+
+        // TODO NEW: Reason
+        "reason" : "Reason",
+
+        // TODO NEW: Please wait until your request is confirmed...
+        "wait" : "Please wait until your request is confirmed...",
+
+        // TODO NEW: Retry now
+        "retry_btn" : "Retry now"
     },
 
     "addpatient" : {
@@ -62,6 +108,10 @@
 
     "provider_patientsearch" : {
         "title" : "Rechercher un patient",
+
+        // TODO CHANGED
+        // OLD: email
+        // NEW: Email
         "email" : "E-mail",
         "or" : "ou",
         "midataid" : "@PRODUCT ID",
@@ -132,8 +182,16 @@
         "endDate" : "Membre jusqu'au",
         "empty" : "Aucune sous-entité trouvée.",
         "add_organization_btn" : "Créer une sous-organisation",
+
+        // TODO CHANGED
+        // OLD: Link other Organization
+        // NEW: Link to another Organization
         "add_organization2_btn" : "Lier à une autre organisation",
         "add_broker_btn" : "Ajouter l'accès à l'API",
+
+        // TODO CHANGED
+        // OLD: Add other Team
+        // NEW: Add another Team
         "add_group_btn" : "Ajouter un autre team",
         "former_members" : "Sous-entités antérieures"
     },

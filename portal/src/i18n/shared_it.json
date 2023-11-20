@@ -214,6 +214,12 @@
         "nomatch" : {
             "birthdate" : "La data di nascita non corrisponde",
             "email" : "Indirizzo e-mail diverso da quello fornito"
+        },
+
+        "not_unique" : {
+
+            // TODO NEW: A provided identifier is not unique
+            "identifier" : "A provided identifier is not unique"
         }
     },
 
@@ -358,7 +364,25 @@
             "resthook-called" : "Resthook chiamato",
             "script-invocation" : "Script invocato",
             "plugin-deployed" : "Plugin installato",
-            "plugin-undeployed" : "Plugin non installato"
+            "plugin-undeployed" : "Plugin non installato",
+
+            // TODO NEW: Access confirmation
+            "access-confirmation" : "Access confirmation",
+
+            // TODO NEW: Access confirmation request
+            "access-confirmation-request" : "Access confirmation request",
+
+            // TODO NEW: API-Key created
+            "apikey-created" : "API-Key created",
+
+            // TODO NEW: API-Key deleted
+            "apikey-deleted" : "API-Key deleted",
+
+            // TODO NEW: Service-Instance created
+            "service-instance-created" : "Service-Instance created",
+
+            // TODO NEW: Service-Instance deleted
+            "service-instance-deleted" : "Service-Instance deleted"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
@@ -387,7 +411,10 @@
             "EXPIRED" : "Scaduto",
             "REJECTED" : "Rifiutato",
             "UNCONFIRMED" : "Non confermato",
-            "FROZEN" : "Congelato"
+            "FROZEN" : "Congelato",
+
+            // TODO NEW: Invalid
+            "INVALID" : "Invalid"
         },
         "consenttype" : {
             "CIRCLE" : "Altri titolari di un account",
@@ -485,6 +512,9 @@
             "MONITOR" : "Supervisore",
             "MASTER" : "Utente master",
             "USERADMIN" : "Gestione utenti",
+
+            // TODO NEW: Key Recoveries
+            "KEYRECOVERY" : "Key Recoveries",
             "STUDYADMIN" : "Gestione dei progetti",
             "CONTENTADMIN" : "Gestione dei tipi di dati",
             "PLUGINADMIN" : "Gestione applicazioni",
@@ -508,6 +538,9 @@
             "ACTIVE" : "Attivo",
             "BLOCKED" : "Bloccato",
             "DELETED" : "Eliminato",
+
+            // TODO NEW: Fake Account
+            "FAKE" : "Fake Account",
             "NEW" : "Nuovo"
         },
         "frequency" : {
@@ -556,10 +589,18 @@
         },
         "plugintype" : {
             "visualization" : "Plugin",
+
+            // TODO CHANGED
+            // OLD: Internal Service
+            // NEW: Internal service
             "service" : "Servizio interno",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
             "mobile" : "Applicazione (Smartphone, Web)",
+
+            // TODO CHANGED
+            // OLD: External Service
+            // NEW: External service
             "external" : "Servizio esterno",
             "analyzer" : "Analizzatore di progetto",
             "broker" : "Data broker",
@@ -593,11 +634,19 @@
             "USER" : "Utente",
             "USERGROUP" : "Team",
             "ORGANIZATION" : "Organizzazione",
+
+            // TODO CHANGED
+            // OLD: Data Broker
+            // NEW: Data broker
             "SERVICES" : "Data broker"
         },
         "usergrouptype" : {
             "ORGANIZATION" : "Organizzazione",
             "CARETEAM" : "Team di assistenza",
+
+            // TODO CHANGED
+            // OLD: Halthcare Service
+            // NEW: Healthcare Service
             "HEALTHCARESERVICE" : "Servizio sanitario",
             "RESEARCHTEAM" : "Ricerca"
         },
@@ -997,6 +1046,9 @@
         "reshare" : "Accesso di terzi?",
         "reshare2" : "Le persone autorizzate da questo consenso possono ri-condividere i dati ai quali ho consentito loro di accedere.",
         "expiration_date" : "Data di scadenza del consenso:",
+
+        // TODO NEW: Only includes data created after:
+        "created_after" : "Only includes data created after:",
         "created_before" : "Non condividere dati creati dopo:",
         "share_what" : "Quali dati desideri condividere?",
         "consent_empty" : "Questo consenso è inizialmente vuoto. È possibile selezionare in seguito i dati che si desiderano condividere con questo consenso.",
@@ -1017,12 +1069,18 @@
         "people" : "Con quale/i persona/e si desidera condividere i dati?",
         "external" : "Titolare di un account non appartenente a @PRODUCT",
         "add_people_btn" : "Aggiungi altre persone",
+
+        // TODO NEW: Add Practitioner
+        "add_hp_btn" : "Add Practitioner",
         "add_usergroup_btn" : "Aggiungi un team",
         "reshare" : "@:nuovoconsenso.ricondividi",
         "reshare2" : "@:nuovoconsenso.ricondividi2",
         "writes" : "Scrivi l'autorizzazione",
         "expiration_date" : "Data di scadenza del consenso:",
         "created_before" : "Non condividere i dati creati dopo:",
+
+        // TODO NEW: Only data created after:
+        "created_after" : "Only data created after:",
         "what_is_shared" : "Quali dati sono condivisi?",
         "consent_empty" : "Attualmente questo consenso non condivide alcun dato.",
         "type_circle" : "Questo consenso condivide dati con altri titolari di un account @PRODUCT.",
@@ -1051,7 +1109,32 @@
         "please_review2b" : "Si prega di rivedere il consenso esistente. Clicca su 'Salta (nessuna modifica)' per lasciare questa pagina senza modifiche. Clicca su 'Rifiuta questo consenso' se non sei più d'accordo.",
         "you" : "Lei",
         "restrictions" : "Altre restrizioni?",
-        "project" : "Progetto"
+        "project" : "Progetto",
+
+        // TODO NEW: Source of this consent
+        "source" : "Source of this consent",
+
+        // TODO NEW: Link to base consent used
+        "based_on" : "Link to base consent used",
+
+        // TODO NEW: Base consent created at
+        "base_created_at" : "Base consent created at",
+
+        // TODO NEW: If required data may be reshared to these 3rd parties
+        "allowed_reshares" : "If required data may be reshared to these 3rd parties",
+
+        // TODO NEW: 3rd parties using the service
+        "reshare_service" : "3rd parties using the service",
+
+        // TODO NEW: Team or project
+        "reshare_usergroup" : "Team or project",
+
+        // TODO NEW: Single user
+        "reshare_user" : "Single user",
+
+        // TODO NEW: Project
+        "reshare_project" : "Project"
+
     },
 
     "editconsent2" : {
@@ -1315,6 +1398,9 @@
     },
 
     "addusers" : {
+
+        // TODO NEW: User Search
+        "title" : "User Search",
         "contacts" : "Contatti esistenti:",
         "all_users" : "Tutti gli utenti",
         "no_contacts_to_add" : "Non è possibile aggiungere alcun contatto a questa cerchia.",
@@ -1342,7 +1428,10 @@
     "databrokersearch" : {
         "title" : "Ricerca di data brokers (APIs)",
         "name" : "Nome del data broker",
-        "empty_result" : "Nessun data broker corrispondente trovato."
+        "empty_result" : "Nessun data broker corrispondente trovato.",
+
+        // TODO NEW: Create new instance
+        "new_btn" : "Create new instance"
     },
 
     "confirm" : {
@@ -1545,8 +1634,14 @@
     "apikeys" : {
         "title" : "Gestione delle chiavi API",
         "empty" : "Questo account non gestisce alcun servizio con chiavi API.",
+
+        // TODO NEW: managed by
+        "managedby" : "managed by",
         "add_btn" : "Aggiungi chiave",
         "delete_btn" : "Rimuovere l'analizzatore",
+
+        // TODO NEW: Remove Service
+        "delete_service_btn" : "Remove Service",
         "delete_endpoint_btn" : "Rimuovere l'endpoint",
         "show_btn" : "Mostra i chiavi",
         "revoke_btn" : "Revocare questa chiave",
@@ -1558,6 +1653,9 @@
         "common_name" : "OU (organization unit) e CN (common name) per il CSR (certificate request)",
         "instructions_common_name" : "Per l'autenticazione basata su certificato, create un CSR con i campi OU e CN indicati. Inviate il CSR a @SUPPORT",
         "date" : "Data di creazione",
+
+        // TODO NEW: Restrictions
+        "restrictions" : "Restrictions",
         "status" : "Stato",
         "ACTIVE" : "Attiva",
         "FROZEN" : "Vecchia versione",
