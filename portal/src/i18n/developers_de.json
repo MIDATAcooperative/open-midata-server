@@ -182,12 +182,8 @@
             "createendpoint" : "Nicht projektbezogene Instanz des Endpoint erstellen. Nur ankreuzen, wenn Sie diesen Endpoint NICHT mit einem Projekt verwenden wollen.",
             "endpoint" : "Der Pfad dieses nicht projektbezogenen FHIR-Endpoint lautet /opendata/endpointname/fhir",
             "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen.",
-
-            // TODO NEW: Access keys will be managed by multiple different organizations.
-            "decentral" : "Access keys will be managed by multiple different organizations.",
-
-            // TODO NEW: API keys are directly bound to a single organization.
-            "organizationKeys" : "API keys are directly bound to a single organization."
+            "decentral" : "Die API-Schlüssel werden von mehreren verschiedenen Organisationen verwaltet.",
+            "organizationKeys" : "Die API-Schlüssel sind direkt an eine einzelne Organisation gebunden."
         },
         "status" : {
             "title" : "Applikationsstatus",
@@ -219,12 +215,8 @@
         "developerTeam" : "Entwicklungsteam",
         "reviews" : "Überprüfungen",
         "manageyourkeys" : "Verwalten Sie Ihre API-Schlüssel",
-
-        // TODO NEW: Decentral Management
-        "decentral" : "Decentral Management",
-
-        // TODO NEW: API-Keys per Organizations
-        "organizationKeys" : "API-Keys per Organizations"
+        "decentral" : "Dezentrale Verwaltung",
+        "organizationKeys" : "API-Schlüssel pro Organisation"
     },
 
     "appstats" : {

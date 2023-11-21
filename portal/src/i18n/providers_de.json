@@ -32,52 +32,26 @@
         "description" : "Beschreibung",
         "url" : "Homepage URL",
         "status" : "Status",
-
-        // TODO CHANGED
-        // OLD: All members of your organization
-        // NEW: Organization members
-        "members" : "Alle Mitglieder Ihrer Organisation",
+        "members" : "Mitglieder der Organisation",
         "addprovider" : "Neues Mitglied registrieren",
         "edit_btn" : "Organisation bearbeiten",
         "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an @SUPPORT, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten.",
         "parent" : "Teil der Organisation",
-
-        // TODO NEW: Identifier
-        "identifiers" : "Identifier",
-
-        // TODO NEW: Enter all external organization identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired.
-        "identifiers_info" : "Enter all external organization identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired.",
+        "identifiers" : "Identifikator",
+        "identifiers_info" : "Geben Sie hier alle externen Organisationsidentifikatoren ein. Geben Sie eine Identifikator pro Zeile ein. Verwenden Sie '|', um Codesystem und Wert zu trennen, falls gewünscht.",
         "select_btn" : "Auswählen",
         "managerType" : "Manager der Organisation",
         "managers" : {
             "ME" : "Sich nur als Manager hinzufügen",
             "ME2" : "Sich als Mitglied und Manager hinzufügen",
             "PARENT" : "Die Organisation wird von der Mutterorganisation geleitet",
-
-            // TODO CHANGED
-            // OLD: Add another practitioner as member and manager
-            // NEW: Add another health professional as member and manager
             "OTHERMEMBER" : "Eine weitere Gesundheitsfachperson als Mitglied und Manager hinzufügen",
-
-            // TODO CHANGED
-            // OLD: Add another practitioner as manager
-            // NEW: Add another health professional as manager
             "EXTERNALUSER" : "Eine weitere Gesundheitsfachperson als Manager hinzufügen"
         },
-
-        // TODO CHANGED
-        // OLD: eMail of Manager
-        // NEW: Email of Manager
         "manager" : "E-Mail des Managers",
-
-        // TODO NEW: Access protection
-        "protection" : "Access protection",
-
-        // TODO NEW: A second user must always confirm any use of this organization.
-        "protection2" : "A second user must always confirm any use of this organization.",
-
-        // TODO NEW: Request Access
-        "request_btn" : "Request Access"
+        "protection" : "Schutz des Zugangs",
+        "protection2" : "Jede Nutzung dieser Organisation muss immer von einem zweiten Benutzer bestätigt werden.",
+        "request_btn" : "Zugang anfordern"
     },
 
     "addprovider" : {
@@ -86,18 +60,10 @@
     },
 
     "provider_requestaccess" : {
-
-        // TODO NEW: Request Access
-        "title" : "Request Access",
-
-        // TODO NEW: Reason
-        "reason" : "Reason",
-
-        // TODO NEW: Please wait until your request is confirmed...
-        "wait" : "Please wait until your request is confirmed...",
-
-        // TODO NEW: Retry now
-        "retry_btn" : "Retry now"
+        "title" : "Zugang anfordern",
+        "reason" : "Grund",
+        "wait" : "Bitte warten Sie, bis Ihre Anfrage bestätigt ist...",
+        "retry_btn" : "Jetzt erneut versuchen"
     },
 
     "addpatient" : {
@@ -108,10 +74,6 @@
 
     "provider_patientsearch" : {
         "title" : "Patient suchen",
-
-        // TODO CHANGED
-        // OLD: email
-        // NEW: Email
         "email" : "E-Mail",
         "or" : "oder",
         "midataid" : "@PRODUCT ID",
@@ -182,16 +144,8 @@
         "endDate" : "Mitglied bis",
         "empty" : "Keine Unterentität gefunden.",
         "add_organization_btn" : "Sub-Organisation erstellen",
-
-        // TODO CHANGED
-        // OLD: Link other Organization
-        // NEW: Link to another Organization
         "add_organization2_btn" : "Mit einer anderen Organisation verknüpfen",
         "add_broker_btn" : "API-Zugang hinzufügen",
-
-        // TODO CHANGED
-        // OLD: Add other Team
-        // NEW: Add another Team
         "add_group_btn" : "Weiteres Team hinzufügen",
         "former_members" : "Ehemalige Unterentitäten"
     },
