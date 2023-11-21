@@ -107,10 +107,10 @@ public class AccountManagementTools {
 		
 			 if (result != null) {
 				 // compare name
-				 if (!isSimilar(user.firstname, result.firstname, false)) {
+				 if (!isSimilar(user.firstname, result.firstname, false, false)) {
 					 throw new UnprocessableEntityException("Possible candidate has no match in person given name.");
 				 }
-				 boolean nameOk = isSimilar(user.lastname, result.lastname, false);					 
+				 boolean nameOk = isSimilar(user.lastname, result.lastname, false, false);					 
 				 boolean birthdateOk = compareBirthdate(user.birthday, result.birthday, true);				
 				 boolean addressOk = compareAddress(user, result);
 					 
@@ -471,19 +471,41 @@ public class AccountManagementTools {
 		return part;
 	}
 	
-	public static boolean isSimilar(String str1, String str2, boolean matchIfEmpty) {
+	public static boolean isSimilar(String str1, String str2, boolean matchIfEmpty, boolean isStreet) {
 		if (str1 == null) str1 = "";
 		if (str2 == null) str2 = "";
 		str1 = str1.trim().toLowerCase();
 		str2 = str2.trim().toLowerCase();
 		if (str2.length() == 0 && matchIfEmpty) return true;
-		str1 = soundsSimilar(str1);
-		str2 = soundsSimilar(str2);
+		str1 = soundsSimilar(str1, isStreet);
+		str2 = soundsSimilar(str2, isStreet);
 		return str1.equals(str2);
 	}
 	
-	private static String soundsSimilar(String str) {
-		str = str.replace(".", " ").replace("/", " ").replace("-", " ").replace("  ", " ");		
+	public static String replStart(String str, String start, String repl) {
+		if (str.startsWith(start)) str = str.replace(start, repl);
+		return str;
+	}
+	
+	private static String soundsSimilar(String str, boolean isStreet) {
+		str = str.replace(".", " ").replace("/", " ").replace("-", " ").replace("  ", " ");
+		if (isStreet) {
+			str = str.replace(" ","");
+			str = replStart(str, "avenue", "av");
+			str = replStart(str, "boulevard", "bd");
+			str = replStart(str, "chemin", "ch");
+			str = replStart(str, "esplanade", "espl");
+			str = replStart(str, "impasse", "imp");
+			str = replStart(str, "passage", "pass");
+			str = replStart(str, "promenade", "prom");
+			str = replStart(str, "route", "rte");
+			str = replStart(str, "ruelle", "rle");
+			str = replStart(str, "sentier", "sent");
+			str = str.replace("street","st").replace("straße","str").replace("strasse","str").replace("platz","pl");
+			str = str.replace("avenue","ave").replace("boulevard","blvd").replace("lane","ln").replace("road","rd").replace("drive","dr");
+			str = str.replace("crescent","cres").replace("court","ct").replace("place","pl").replace("square","sq");
+			str = str.replace("sankt","st");						
+		}
 		str = str.replace("ß", "s").replace("ss","s");
 		str = str.replace("ll", "l").replace("rr", "r");
 		str = str.replace("d", "t").replace("tt", "t");
@@ -518,9 +540,9 @@ public class AccountManagementTools {
 	}
 	
 	public static boolean compareAddress(User user1, User user2) {
-		if (!isSimilar(user1.country, user2.country, true)) return false;
-		if (!isSimilar(user1.address1, user2.address1, true)) return false;
-		if (!isSimilar(user1.city, user2.city, true) && !isSimilar(user1.zip, user2.zip, true)) return false;
+		if (!isSimilar(user1.country, user2.country, true, false)) return false;
+		if (!isSimilar(user1.address1, user2.address1, true, true)) return false;
+		if (!isSimilar(user1.city, user2.city, true, false) && !isSimilar(user1.zip, user2.zip, true, false)) return false;
 		return true;		
 	}
 		
