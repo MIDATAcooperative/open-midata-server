@@ -214,6 +214,10 @@
         "nomatch" : {
             "birthdate" : "La data di nascita non corrisponde",
             "email" : "Indirizzo e-mail diverso da quello fornito"
+        },
+
+        "not_unique" : {
+            "identifier" : "Un identificatore fornito non è univoco"
         }
     },
 
@@ -358,7 +362,13 @@
             "resthook-called" : "Resthook chiamato",
             "script-invocation" : "Script invocato",
             "plugin-deployed" : "Plugin installato",
-            "plugin-undeployed" : "Plugin non installato"
+            "plugin-undeployed" : "Plugin non installato",
+            "access-confirmation" : "Conferma d'accesso",
+            "access-confirmation-request" : "Richiesta di conferma d'accesso",
+            "apikey-created" : "Chiave API creata",
+            "apikey-deleted" : "Chiave API cancellata",
+            "service-instance-created" : "Istanza di servizio creata",
+            "service-instance-deleted" : "Istanza di servizio cancellata"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
@@ -387,7 +397,8 @@
             "EXPIRED" : "Scaduto",
             "REJECTED" : "Rifiutato",
             "UNCONFIRMED" : "Non confermato",
-            "FROZEN" : "Congelato"
+            "FROZEN" : "Congelato",
+            "INVALID" : "Non valido"
         },
         "consenttype" : {
             "CIRCLE" : "Altri titolari di un account",
@@ -485,6 +496,7 @@
             "MONITOR" : "Supervisore",
             "MASTER" : "Utente master",
             "USERADMIN" : "Gestione utenti",
+            "KEYRECOVERY" : "Recupero della chiave",
             "STUDYADMIN" : "Gestione dei progetti",
             "CONTENTADMIN" : "Gestione dei tipi di dati",
             "PLUGINADMIN" : "Gestione applicazioni",
@@ -508,6 +520,7 @@
             "ACTIVE" : "Attivo",
             "BLOCKED" : "Bloccato",
             "DELETED" : "Eliminato",
+            "FAKE" : "Conto falso",
             "NEW" : "Nuovo"
         },
         "frequency" : {
@@ -997,7 +1010,8 @@
         "reshare" : "Accesso di terzi?",
         "reshare2" : "Le persone autorizzate da questo consenso possono ri-condividere i dati ai quali ho consentito loro di accedere.",
         "expiration_date" : "Data di scadenza del consenso:",
-        "created_before" : "Non condividere dati creati dopo:",
+        "created_after" : "Include solo i dati creati dopo il:",
+        "created_before" : "Non condividere i dati creati dopo il:",
         "share_what" : "Quali dati desideri condividere?",
         "consent_empty" : "Questo consenso è inizialmente vuoto. È possibile selezionare in seguito i dati che si desiderano condividere con questo consenso.",
         "create_btn" : "Creare e selezionare i dati",
@@ -1017,12 +1031,14 @@
         "people" : "Con quale/i persona/e si desidera condividere i dati?",
         "external" : "Titolare di un account non appartenente a @PRODUCT",
         "add_people_btn" : "Aggiungi altre persone",
+        "add_hp_btn" : "Aggiungi un professionista sanitario",
         "add_usergroup_btn" : "Aggiungi un team",
         "reshare" : "@:nuovoconsenso.ricondividi",
         "reshare2" : "@:nuovoconsenso.ricondividi2",
         "writes" : "Scrivi l'autorizzazione",
         "expiration_date" : "Data di scadenza del consenso:",
         "created_before" : "Non condividere i dati creati dopo:",
+        "created_after" : "Solo i dati creati dopo il:",
         "what_is_shared" : "Quali dati sono condivisi?",
         "consent_empty" : "Attualmente questo consenso non condivide alcun dato.",
         "type_circle" : "Questo consenso condivide dati con altri titolari di un account @PRODUCT.",
@@ -1051,7 +1067,15 @@
         "please_review2b" : "Si prega di rivedere il consenso esistente. Clicca su 'Salta (nessuna modifica)' per lasciare questa pagina senza modifiche. Clicca su 'Rifiuta questo consenso' se non sei più d'accordo.",
         "you" : "Lei",
         "restrictions" : "Altre restrizioni?",
-        "project" : "Progetto"
+        "project" : "Progetto",
+        "source" : "Fonte di questo consenso",
+        "based_on" : "Link al consenso di base utilizzato",
+        "base_created_at" : "Consenso di base creato il",
+        "allowed_reshares" : "Se necessario, i dati possono essere condivisi con queste terze parti",
+        "reshare_service" : "Terze parti che utilizzano il servizio",
+        "reshare_usergroup" : "Team o progetto",
+        "reshare_user" : "Utente singolo",
+        "reshare_project" : "Progetto"
     },
 
     "editconsent2" : {
@@ -1315,6 +1339,7 @@
     },
 
     "addusers" : {
+        "title" : "Ricerca utente",
         "contacts" : "Contatti esistenti:",
         "all_users" : "Tutti gli utenti",
         "no_contacts_to_add" : "Non è possibile aggiungere alcun contatto a questa cerchia.",
@@ -1342,7 +1367,8 @@
     "databrokersearch" : {
         "title" : "Ricerca di data brokers (APIs)",
         "name" : "Nome del data broker",
-        "empty_result" : "Nessun data broker corrispondente trovato."
+        "empty_result" : "Nessun data broker corrispondente trovato.",
+        "new_btn" : "Crea una nuova istanza"
     },
 
     "confirm" : {
@@ -1522,7 +1548,7 @@
             "Group" : "Accesso alle definizioni dei gruppi (teams di professionisti sanitari or ricercatori e gruppi specifici di progetto)",
             "Patient" : "Dati paziente: nome, e-mail, indirizzo dei titolari di un account",
             "PseudonymizedPatient" : "Dati paziente: pseudonimo, anno di nascita, paese dei partecipanti al progetto di ricerca",
-            "Practitioner" : "Risorsa Practitioner: ricerca di fornitori di assistenza sanitaria o ricercatori",
+            "Practitioner" : "Risorsa Practitioner: ricerca di professionisti sanitari o ricercatori",
             "Subscription" : "Accedere e gestire gli abbonamenti a un sistema esterno"
         }
     },
@@ -1545,8 +1571,10 @@
     "apikeys" : {
         "title" : "Gestione delle chiavi API",
         "empty" : "Questo account non gestisce alcun servizio con chiavi API.",
+        "managedby" : "gestito da",
         "add_btn" : "Aggiungi chiave",
         "delete_btn" : "Rimuovere l'analizzatore",
+        "delete_service_btn" : "Rimuovere il servizio",
         "delete_endpoint_btn" : "Rimuovere l'endpoint",
         "show_btn" : "Mostra i chiavi",
         "revoke_btn" : "Revocare questa chiave",
@@ -1558,6 +1586,7 @@
         "common_name" : "OU (organization unit) e CN (common name) per il CSR (certificate request)",
         "instructions_common_name" : "Per l'autenticazione basata su certificato, create un CSR con i campi OU e CN indicati. Inviate il CSR a @SUPPORT",
         "date" : "Data di creazione",
+        "restrictions" : "Limitazioni",
         "status" : "Stato",
         "ACTIVE" : "Attiva",
         "FROZEN" : "Vecchia versione",

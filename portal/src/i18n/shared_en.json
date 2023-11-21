@@ -495,7 +495,7 @@
 	   "MONITOR" : "Monitor",
 	   "MASTER" : "Master User",
 	   "USERADMIN" : "User Admin",
-	   "KEYRECOVERY" : "Key Recoveries",
+	   "KEYRECOVERY" : "Key Recovery",
 	   "STUDYADMIN" : "Project Admin",
 	   "CONTENTADMIN" : "Content Admin",
 	   "PLUGINADMIN" : "Application Admin",
@@ -1075,7 +1075,6 @@
     "reshare_usergroup" : "Team or project",
     "reshare_user" : "Single user",
     "reshare_project" : "Project"
-    
   },
   
   "editconsent2" : {

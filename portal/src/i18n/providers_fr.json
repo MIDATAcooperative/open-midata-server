@@ -32,11 +32,13 @@
         "description" : "Description",
         "url" : "URL de la page d'accueil",
         "status" : "État",
-        "members" : "Tous les membres de votre organisation",
+        "members" : "Membres de l'organisation",
         "addprovider" : "Inscrire un nouveau membre",
         "edit_btn" : "Modifier l'organisation",
         "master_user" : "Vous devez être un utilisateur maître pour mettre à jour votre organisation ou inscrire de nouveaux utilisateurs pour l'organisation. Veuillez contacter @SUPPORT si vous pensez que vous devriez avoir les permissions de l'utilisateur maître.",
         "parent" : "Fait partie de l'organisation",
+        "identifiers" : "Identifiant",
+        "identifiers_info" : "Indiquez ici tous les identifiants de l'organisation externe. Saisissez un identifiant par ligne. Utilisez '|' pour séparer le système de code et la valeur si vous le souhaitez.",
         "select_btn" : "Sélectionner",
         "managerType" : "Manager de l'organisation",
         "managers" : {
@@ -46,12 +48,22 @@
             "OTHERMEMBER" : "Ajouter un autre professionnel de la santé en tant que membre et manager",
             "EXTERNALUSER" : "Ajouter un autre professionnel de la santé en tant que manager"
         },
-        "manager" : "E-mail du manager"
+        "manager" : "E-mail du manager",
+        "protection" : "Protection de l'accès",
+        "protection2" : "Un deuxième utilisateur doit toujours confirmer toute utilisation de cette organisation.",
+        "request_btn" : "Demande d'accès"
     },
 
     "addprovider" : {
         "sign_up" : "Inscrire un professionnel de la santé",
         "success" : "Utilisateur inscrit avec succès"
+    },
+
+    "provider_requestaccess" : {
+        "title" : "Demande d'accès",
+        "reason" : "Raison",
+        "wait" : "Veuillez patienter jusqu'à ce que votre demande soit confirmée...",
+        "retry_btn" : "Réessayer maintenant"
     },
 
     "addpatient" : {

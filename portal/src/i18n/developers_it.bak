@@ -180,7 +180,9 @@
        "code_challenge" : "During OAuth2 login, the calling application must use PKCE (Proof Key for Code Exchange) standard",
        "createendpoint" : "Create a non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.",
        "endpoint" : "The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir",
-       "endpoint2" : "Do not forget: to activate the endpoint you need to add an API key afterwards."
+       "endpoint2" : "Do not forget: to activate the endpoint you need to add an API key afterwards.",
+       "decentral" : "Access keys will be managed by multiple different organizations.",
+       "organizationKeys" : "API keys are directly bound to a single organization."
     },
     "status" : {
       "title" : "Application Status",
@@ -211,7 +213,9 @@
     "publisher" : "Publisher",
     "developerTeam" : "Developer Team",
     "reviews" : "Reviews",
-    "manageyourkeys" : "Manage your API keys"
+    "manageyourkeys" : "Manage your API keys",
+    "decentral" : "Decentral Management",
+    "organizationKeys" : "API-Keys per Organizations"
   },
   
   "appstats" : {
