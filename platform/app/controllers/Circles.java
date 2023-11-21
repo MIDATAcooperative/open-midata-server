@@ -1013,6 +1013,10 @@ public class Circles extends APIController {
 	}
 	
 	public static void sendConsentNotifications(AccessContext context, Consent consent, ConsentStatus reason, boolean wasActive) throws AppException {
+		sendConsentNotifications(context, consent, reason, wasActive, null);
+	}
+	
+	public static void sendConsentNotifications(AccessContext context, Consent consent, ConsentStatus reason, boolean wasActive, MessageReason additional) throws AppException {
 		MidataId sourcePlugin = consent.creatorApp != null ? consent.creatorApp : RuntimeConstants.instance.portalPlugin;
 		Map<String, String> replacements = new HashMap<String, String>();
 		Set<MidataId> targets = new HashSet<MidataId>();
@@ -1090,7 +1094,12 @@ public class Circles extends APIController {
 			
 			replacements.put("consent-name", consent.name);		
 		    String language = sender != null ? sender.language : InstanceConfig.getInstance().getDefaultLanguage();
-			if (reason == ConsentStatus.UNCONFIRMED) {
+		    if (additional == MessageReason.CONSENT_VERIFIED_OWNER || additional == MessageReason.CONSENT_VERIFIED_AUTHORIZED) {
+		    	if (!context.getActor().equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_VERIFIED_OWNER, category, Collections.singleton(consent.owner), language, replacements);						
+		    	for (MidataId target : targets) {									
+		    		if (!context.getActor().equals(target)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_VERIFIED_AUTHORIZED, category, Collections.singleton(target), language, replacements);
+				}
+		    } else if (reason == ConsentStatus.UNCONFIRMED) {
 				if (consent.externalAuthorized != null && !consent.externalAuthorized.isEmpty()) {
 				   for (String targetMail : consent.externalAuthorized) {
 					   Map<String, String> replacementsExt = new HashMap<String, String>();
