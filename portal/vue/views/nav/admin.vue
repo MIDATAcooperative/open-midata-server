@@ -40,7 +40,7 @@
 								<router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('USERADMIN')" :to="{ path : './members' }" v-t="'admin_navbar.members'"></router-link><router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('USERADMIN')" :to="{ path : './organizations' }" v-t="'admin_navbar.organizations'"></router-link><router-link data-toggle="collapse" data-target=".navbar-collapse.show"
 									class="dropdown-item" v-if="hasSubRole('KEYRECOVERY')" :to="{ path : './pwrecover' }" v-t="'admin_pwrecover.menu'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show"
 									class="dropdown-item" v-if="hasSubRole('USERADMIN')" :to="{ path : './auditlog' }" v-t="'admin_navbar.auditlog'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show"
-									class="dropdown-item" v-if="hasSubRole('SUPERADMIN')" :to="{ path : './registration' }" v-t="'admin_navbar.registration'"></router-link>
+									class="dropdown-item" v-if="hasSubRole('SUPERADMIN')" :to="{ path : './adminregistration' }" v-t="'admin_navbar.registration'"></router-link>
 								<div role="separator" class="dropdown-divider" v-if="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN')"></div>
 								<div class="dropdown-header" v-if="hasSubRole('PLUGINADMIN') || hasSubRole('CONTENTADMIN')" v-t="'admin_navbar.plugin_admin'"></div>
 								<router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './yourapps' }" v-t="'admin_navbar.plugins'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show" 

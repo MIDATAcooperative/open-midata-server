@@ -127,8 +127,10 @@ public class OAuth2 extends Controller {
         if (!appInstance.owner.equals(ownerId)) throw new InternalServerException("error.invalid.token", "Wrong app instance owner!");
         if (!appInstance.applicationId.equals(applicationId)) throw new InternalServerException("error.invalid.token", "Wrong app for app instance!");
         
-        if (!appInstance.status.isSharingData()) 
+        if (!appInstance.status.isSharingData()) {
+        	AccessLog.log("appInstance not sharing data");
         	throw new BadRequestException("error.blocked.consent", "Consent expired or blocked.");
+        }
         
         Plugin app = Plugin.getById(appInstance.applicationId);
         
@@ -363,18 +365,22 @@ public class OAuth2 extends Controller {
 
 	public static Pair<User, MobileAppInstance> useRefreshToken(String refresh_token) throws AppException {
 		OAuthRefreshToken refreshToken = OAuthRefreshToken.decrypt(refresh_token);
-		if (refreshToken == null) throw new BadRequestException("error.internal", "Bad refresh_token.");
+		if (refreshToken == null) {
+			throw new BadRequestException("error.internal", "Bad refresh_token.");
+		}
 		
 		MidataId appInstanceId = refreshToken.appInstanceId;
 		
 		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
 		
 		if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) {
+			AccessLog.log("Refresh token has expired at "+(refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME)+" now="+System.currentTimeMillis());
 			// Begin: Allow expired refresh tokens for key recovery
 		    boolean isInvalid = true;
 			if (appInstance != null && appInstance.owner != null) {
 			  User checkuser = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
 			  if (checkuser != null && checkuser.flags != null && checkuser.flags.contains(AccountActionFlags.KEY_RECOVERY)) {
+				  AccessLog.log("Refresh token expired becuase key recovery required.");
 				  isInvalid = false;
 			  }
 			}
@@ -385,15 +391,25 @@ public class OAuth2 extends Controller {
 		if (!verifyAppInstance(null, appInstance, refreshToken.ownerId, refreshToken.appId, null)) throw new BadRequestException("error.internal", "Bad refresh token.");
 		
 		Plugin app = Plugin.getById(appInstance.applicationId);
-		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");			
-		if (!app.type.equals("mobile") && !app.type.equals("analyzer") && !app.type.equals("external")) throw new InternalServerException("error.internal", "Wrong app type");
+		if (app == null) {
+			AccessLog.log("refresh token: unknown app");
+			throw new BadRequestException("error.unknown.app", "Unknown app");			
+		}
+		if (!app.type.equals("mobile") && !app.type.equals("analyzer") && !app.type.equals("external")) {
+			AccessLog.log("refresh token: wrong application type");
+			throw new InternalServerException("error.internal", "Wrong app type");
+		}
 	
 		User user = null;
 		if (!app.type.equals("external") && !app.type.equals("analyzer")) {
 			user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
-			if (user == null) invalidToken();
+			if (user == null) {
+				AccessLog.log("refresh token: user does not exist");
+				invalidToken();
+			}
 			
 			if (!LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
+				AccessLog.log("refresh token: licence not valid");
 				invalidToken();
 			}
 								
@@ -401,16 +417,21 @@ public class OAuth2 extends Controller {
 			if (app.requirements != null) req.addAll(app.requirements);
 			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);
 			if (notok != null) {
+				AccessLog.log("refresh token: login preconditions failed: "+notok.toString());
 				invalidToken();
 			}                       
 		}
 		
-		if (KeyManager.instance.unlock(appInstance._id, refreshToken.phrase) == KeyManager.KEYPROTECTION_FAIL) invalidToken();
+		if (KeyManager.instance.unlock(appInstance._id, refreshToken.phrase) == KeyManager.KEYPROTECTION_FAIL) {
+			AccessLog.log("refresh token: could not unlock account");
+			invalidToken();
+		}
 		
 		AccessContext temp = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role, appInstance);
 		Map<String, Object> meta = RecordManager.instance.getMeta(temp, appInstance._id, "_app").toMap();
 					
 		if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
+			AccessLog.log("refresh token: created for a different application version");
 			invalidToken();
 		}
 

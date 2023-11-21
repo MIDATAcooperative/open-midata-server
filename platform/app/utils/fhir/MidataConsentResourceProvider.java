@@ -101,6 +101,7 @@ import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EntityType;
 import models.enums.JoinMethod;
+import models.enums.MessageReason;
 import models.enums.Permission;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
@@ -950,9 +951,17 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		AccessContext info = resolveSource(consent, theResource, null);
 		AccessContext context = ApplicationTools.actAsRepresentative(info, consent.owner, true);
 		ConsentState state = theResource.getStatus();
+		
+		org.hl7.fhir.r4.model.Consent oldResource = readConsentFromMidataConsent(context, consent, false);
+		boolean wasVerified = oldResource.hasVerification() && oldResource.getVerificationFirstRep().getVerified();		
 		MidataConsentResourceProvider.updateMidataConsent(consent, theResource);				
 		Consent.set(consent._id, "fhirConsent", consent.fhirConsent);		
 		SubscriptionManager.resourceChange(info(), consent);
+		boolean isVerified = theResource.hasVerification() && theResource.getVerificationFirstRep().getVerified();
+		if (isVerified && !wasVerified) {
+			Circles.sendConsentNotifications(context, consent, consent.status, consent.isActive(), MessageReason.CONSENT_VERIFIED_OWNER);
+		}
+		
 		theResource.setStatus(state);
 						
 		switch(consent.status) {		

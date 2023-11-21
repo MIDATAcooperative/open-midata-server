@@ -1,6 +1,6 @@
 {
   "name": "midata-portal",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Midata Portal",
   "main": "index.js",
   "scripts": {
