@@ -63,6 +63,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.ConsentQueryTools;
 import utils.InstanceConfig;
+import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.APS;
 import utils.access.DBIterator;
@@ -574,10 +575,19 @@ public class Records extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result fixAccount(Request request) throws AppException {
 
-		List<String> messages = RecordManager.instance.fixAccount(portalContext(request));
-
+		List<String> messages = new ArrayList<String>();
+						
+		messages.addAll(RecordManager.instance.fixAccount(portalContext(request)));
+				
 		if (getRole().equals(UserRole.ADMIN)) {
-			messages.addAll(RecordManager.instance.fixAccount(portalContext(request).forPublic()));
+			ContextManager.instance.clear();
+			
+			KeyManager.instance.login(60000l, false);
+	        KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
+	        AccessContext tempContext = ContextManager.instance.createRootPublicUserContext();
+			
+			messages.addAll(RecordManager.instance.fixAccount(tempContext));			
+			
 		}
 		
 		ArrayNode result = Json.newArray();

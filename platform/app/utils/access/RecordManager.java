@@ -1480,7 +1480,7 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public List<String> fixAccount(AccessContext context) throws AppException {
-		MidataId userId = context.getAccessor();
+		MidataId userId = context.getCache().getAccountOwner();
 		List<String> msgs = new ArrayList<String>();
 		msgs.add(IndexManager.instance.clearIndexes(context.getCache(), context.getAccessor()));
 		
@@ -1514,8 +1514,10 @@ public class RecordManager {
 		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Sets.create("_id"), Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			try {
+				AccessLog.log("check owned consent:"+consent._id.toString());
 				cache.getAPS(consent._id, userId).getStoredOwner();					
 			} catch (Exception e) {
+				msgs.add("delete inaccessible consent "+consent._id.toString());
 				Consent.delete(userId, consent._id);
 				continue;
 			}
@@ -1526,6 +1528,13 @@ public class RecordManager {
 		AccessLog.logBegin("start searching for missing records in authorized consents");		
 		consents = Consent.getAllActiveByAuthorized(userId);
 		for (Consent consent : consents) {
+						
+			try {
+				AccessLog.log("check auth consent:"+consent._id.toString());
+				cache.getAPS(consent._id, consent.owner).getStoredOwner();					
+			} catch (Exception e) {
+				AccessLog.log("ERROR CONSENT: "+consent._id);
+			}
 			checkRecordsInAPS(context, consent._id, false, "consent "+consent._id.toString()+": ",msgs);
 		}
 		AccessLog.logEnd("end searching for missing records in authorized consents");
@@ -1571,7 +1580,7 @@ public class RecordManager {
 	public void checkRecordsInAPS(AccessContext context, MidataId apsId, boolean instreams, String prefix, List<String> results) throws AppException {		
 		APSCache cache = context.getCache();
 		AccessLog.logBegin("check records in APS:",apsId.toString());
-		List<DBRecord> recs = QueryEngine.listInternal(cache, apsId, context, CMaps.map("owner", "self").map("streams", "only").map("flat", "true"), Sets.create("_id"));
+		List<DBRecord> recs = QueryEngine.listInternal(cache, apsId, context, CMaps.map("owner", "self").map("streams", "only").map("flat", "true").map("ignore-redirect", "true"), Sets.create("_id"));
 		Set<String> idOnly = Sets.create("_id");
 		for (DBRecord rec : recs) {
 			if (DBRecord.getById(rec._id, idOnly) == null) {				
@@ -1587,7 +1596,7 @@ public class RecordManager {
 			}			
 		}
 		
-		recs = QueryEngine.listInternal(cache, apsId, context, CMaps.map("owner", "self"), Sets.create("_id"));		
+		recs = QueryEngine.listInternal(cache, apsId, context, CMaps.map("owner", "self").map("ignore-redirect", "true"), Sets.create("_id"));		
 		for (DBRecord rec : recs) {
 			if (DBRecord.getById(rec._id, idOnly) == null) {
 				if (instreams && rec.stream != null) cache.getAPS(rec.stream, rec.owner).removePermission(rec);
