@@ -670,7 +670,7 @@ public class Administration extends APIController {
 		provider.set("status", provider.status);		
 		OrganizationTools.updateModel(context, provider);
 		UserGroupTools.changeUserGroupStatus(providerId, provider.status);
-		OrganizationResourceProvider.updateFromHP(context, provider);
+		OrganizationResourceProvider.updateFromHP(context.forPublic(), provider);
 						
 		AuditManager.instance.success();
 		return ok();
