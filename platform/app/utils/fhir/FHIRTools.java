@@ -54,6 +54,7 @@ import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -171,7 +172,7 @@ public class FHIRTools {
 		String rt = userRef.getResourceType();
 		MidataId id = MidataId.from(userRef.getIdPart());
 		
-		UserGroup usergroup = UserGroup.getById(id, Sets.create("name"));
+		UserGroup usergroup = ResourceProvider.hasInfo() ? ResourceProvider.info().getRequestCache().getUserGroupById(id) : UserGroup.getById(id, UserGroup.ALL);
 		if (usergroup == null) throw new UnprocessableEntityException("Invalid Group Reference");
 		
 		return id;

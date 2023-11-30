@@ -67,7 +67,7 @@ import utils.fhir.PatientResourceProvider;
 
 public class AccountPatches {
 
-	public static final int currentAccountVersion = 20200221;
+	public static final int currentAccountVersion = 20231130;
 	
 	public static boolean check(AccessContext context, User user) throws AppException {
 		boolean isold = user.accountVersion < currentAccountVersion;
@@ -79,6 +79,7 @@ public class AccountPatches {
 		if (user.accountVersion < 20171206) { formatPatch20171206(context, user); }
 		if (user.accountVersion < 20190206) { formatPatch20190206(context, user); }
 		if (user.accountVersion < 20200221) { formatPatch20200221(context,user); }
+		if (user.accountVersion < 20231130) { formatPatch20231130(context,user); }
 		//if (user.accountVersion < 20180130) { formatPatch20180130(user); }
 		//if (user.accountVersion < 20170206) { formatPatch20170206(user); }
 		
@@ -132,7 +133,7 @@ public class AccountPatches {
 		
 		RecordManager.instance.fixAccount(context);
 		if (user.role.equals(UserRole.MEMBER)) {
-		  PatientResourceProvider.updatePatientForAccount(context, user._id);
+		  PatientResourceProvider.updatePatientForAccount(context, user._id, false);
 		}
 		
 		/*Set<Consent> consents = Consent.getAllByOwner(user._id, CMaps.map("type", ), Consent.ALL);
@@ -258,7 +259,7 @@ public class AccountPatches {
 		      RecordManager.instance.getMeta(context, user._id, "test");
 			} catch (APSNotExistingException e) {
 			  RecordManager.instance.createPrivateAPS(context.getCache(), user._id, user._id);
-			  PatientResourceProvider.updatePatientForAccount(context, user._id);
+			  //PatientResourceProvider.updatePatientForAccount(context, user._id);
 			}
 			makeCurrent(user, 20190206);
 		}
@@ -325,11 +326,22 @@ public class AccountPatches {
 		AccessLog.logBegin("start patch 2020 02 21");
 		
 		if (user.role.equals(UserRole.MEMBER)) {
-		  PatientResourceProvider.updatePatientForAccount(context, user._id);
+		  PatientResourceProvider.updatePatientForAccount(context, user._id, false);
 		}
 							
 		makeCurrent(user, 20200221);
 		AccessLog.logEnd("end patch 2020 02 21");
+	}
+	
+	public static void formatPatch20231130(AccessContext context, User user) throws AppException {
+		AccessLog.logBegin("start patch 2023 11 30");
+		
+		if (user.role.equals(UserRole.MEMBER)) {
+		  PatientResourceProvider.updatePatientForAccount(context, user._id, false);
+		}
+							
+		makeCurrent(user, 20231130);
+		AccessLog.logEnd("end patch 2023 11 30");
 	}
 	
 	public static void fixOrgs() throws AppException {

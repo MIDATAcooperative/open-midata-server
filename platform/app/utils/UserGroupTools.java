@@ -115,11 +115,11 @@ public class UserGroupTools {
 	
 	public static HealthcareProvider createOrUpdateOrganizationUserGroup(AccessContext context, MidataId organizationId, String name, HealthcareProvider infos, MidataId parent, boolean addAccessor, boolean accessorFullAccess) throws AppException {
 		if (parent != null && !accessorIsMemberOfGroup(context, parent, Permission.SETUP) && context.getAccessorRole() != UserRole.ADMIN) throw new BadRequestException("error.notauthorized.action", "You are not authorized to manage parent organization.");
-		AccessLog.logBegin("begin createOrUpdateOrganizationUserGroup org="+organizationId.toString()+" name="+name+" addAccessor="+addAccessor);
+		AccessLog.logBegin("begin createOrUpdateOrganizationUserGroup org="+organizationId.toString()+" name="+name+" addAccessor="+addAccessor+" parent="+parent);
 		try {
 		MidataId oldParent = null;
 		
-		UserGroup existing = UserGroup.getById(organizationId, UserGroup.ALL);
+		UserGroup existing = context.getRequestCache().getUserGroupById(organizationId);
 		if (existing != null) {
 			if (name != null && !existing.name.equals(name)) {
 				existing.name = name;
@@ -305,6 +305,12 @@ public class UserGroupTools {
 			if (path != null) context = context.forUserGroup(path);
 			
 			UserGroup userGroup = UserGroup.getById(groupId, UserGroup.FHIR);
+			
+			if (userGroup == null) {
+				AccessLog.log("userGroup does not exist.");
+				return;
+			}
+			
 			if (!force && userGroup.type != UserGroupType.CARETEAM) throw new BadRequestException("error.unsupported", "No group deletion for entities.");
 			
 			Set<Consent> consents = Consent.getAllByAuthorized(groupId);
@@ -352,7 +358,7 @@ public class UserGroupTools {
 		}
 	}
 	
-	public static void changeUserGroupStatus(MidataId groupId, UserStatus target) throws AppException {
+	public static void changeUserGroupStatus(AccessContext context, MidataId groupId, UserStatus target) throws AppException {
 		AccessLog.logBegin("BEGIN changeUserGroupStatus groupId="+groupId.toString()+" status="+target);
 		try {
 			ConsentStatus status = (target == UserStatus.BLOCKED || target == UserStatus.NEW) ? ConsentStatus.INVALID : ConsentStatus.ACTIVE;
@@ -365,7 +371,8 @@ public class UserGroupTools {
 				}				
 			} 					
 			userGroup.status = target;			
-			UserGroup.set(userGroup._id, "status", userGroup.status);			
+			UserGroup.set(userGroup._id, "status", userGroup.status);
+			context.getRequestCache().update(userGroup);
 			GroupResourceProvider.updateMidataUserGroup(userGroup);							
 			
 		} finally {

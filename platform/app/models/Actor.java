@@ -82,10 +82,10 @@ public interface Actor {
 		//MobileAppInstance mai = MobileAppInstance.getById(target, MobileAppInstance.APPINSTANCE_ALL);
 		//if (mai != null) return mai;
 					
-		UserGroup ug = UserGroup.getById(target, UserGroup.ALL);
+		UserGroup ug = context != null ? context.getRequestCache().getUserGroupById(target) : UserGroup.getById(target, UserGroup.ALL);
 		if (ug != null) return ug;
 
-		ServiceInstance si = ServiceInstance.getById(target, ServiceInstance.ALL);
+		ServiceInstance si = context != null ? context.getRequestCache().getServiceInstanceById(target) : ServiceInstance.getById(target, ServiceInstance.ALL);
 		if (si != null) return si;
 		
 		return null;

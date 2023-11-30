@@ -199,14 +199,24 @@ public class ContextManager {
 		
 		APSCache cache = context1.getCache();
 		AccessContext context = new AccountAccessContext(cache, null);
-		if (context1.getAccessor().equals(aps)) return context;		
-		if (context1.getOwner().equals(aps)) return context1.forAccountReshare();		
+		if (context1.getAccessor().equals(aps)) {
+			AccessLog.log("same accessor");
+			return context;		
+		}
+		if (context1.getOwner().equals(aps)) {
+			AccessLog.log("owner aps selected");
+			return context1.forAccountReshare();		
+		}
 		List<UserGroupMember> ugms = cache.getByGroupAndActiveMember(aps, context1.getAccessor(), Permission.READ_DATA);
 		if (ugms!=null) {
+			AccessLog.log("via user group");
 			return context.forUserGroup(ugms);			
 		}		
 		
-		if (context.getCache().hasSubCache(aps)) return new RepresentativeAccessContext(context.getCache().getSubCache(aps), context);
+		if (context.getCache().hasSubCache(aps)) {
+			AccessLog.log("via representative (cached)");
+			return new RepresentativeAccessContext(context.getCache().getSubCache(aps), context);
+		}
 		
 		Consent consent = Consent.getRepresentativeActiveByAuthorizedAndOwner(context1.getAccessor(), aps);
 		

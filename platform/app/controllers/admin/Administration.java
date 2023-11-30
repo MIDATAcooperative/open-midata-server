@@ -446,11 +446,11 @@ public class Administration extends APIController {
 			user.birthday = birthDay;
 			User.set(user._id, "birthday", user.birthday);	
 										
-			if (!executorId.equals(userId)) {
-			   user.addFlag(AccountActionFlags.UPDATE_FHIR);
-			} else {
-		       PatientResourceProvider.updatePatientForAccount(context, user._id);
-			}
+			//if (!executorId.equals(userId)) {
+			//   user.addFlag(AccountActionFlags.UPDATE_FHIR);
+			//} else {
+		       PatientResourceProvider.updatePatientForAccount(context, user._id, false);
+			//}
 		    AuditManager.instance.success();
 		
 		}
@@ -669,7 +669,7 @@ public class Administration extends APIController {
 		provider.status = status;
 		provider.set("status", provider.status);		
 		OrganizationTools.updateModel(context, provider);
-		UserGroupTools.changeUserGroupStatus(providerId, provider.status);
+		UserGroupTools.changeUserGroupStatus(context, providerId, provider.status);
 		OrganizationResourceProvider.updateFromHP(context.forPublic(), provider);
 						
 		AuditManager.instance.success();

@@ -193,6 +193,19 @@ public class AccountManagementTools {
 		return user;
 	}
 	
+	public static void precheckRegistration(AccessContext context) throws AppException {
+		
+		 Plugin plugin = Plugin.getById(context.getUsedPlugin());
+	     if (plugin.type.equals("external")) {
+	       // Nothing yet
+	     } else if (plugin.type.equals("analyzer") || plugin.targetUserRole.equals(UserRole.RESEARCH)) {
+	       // Nothing yet
+	     } else if (plugin.type.equals("broker")) {	        	
+	    	if (context.getAccessorEntityType() != EntityType.USERGROUP) throw new PluginException(context.getUsedPlugin(), "error.plugin", "Data broker cannot directly create patient resources.");   
+	     } 							
+
+	}
+	
 	public static AccessContext registerUserAccount(AccessContext context, Member user) throws AppException {
 		Application.registerSetDefaultFields(user, false);
 		
@@ -240,8 +253,14 @@ public class AccountManagementTools {
 		consent.sharingQuery.put("owner", "self");
 		consent.sharingQuery.put("app", plugin.filename);
 		
-		Circles.addConsent(info, consent, false, null, true);
-		return consent;
+		List<Consent> existing = LinkTools.findConsentAlreadyExists(info, consent);
+		
+		if (existing.isEmpty()) {		
+			Circles.addConsent(info, consent, false, null, true);
+			return consent;
+		} else {
+			return null;
+		}
 	}
 	
 	public static Consent createDataBrokerConsent(AccessContext context, Member user, boolean active) throws AppException {
@@ -251,7 +270,7 @@ public class AccountManagementTools {
 		AccessContext ac = context;
 		while (ac != null && !(ac instanceof UserGroupAccessContext)) ac = ac.getParent();
 		
-		UserGroup userGroup = UserGroup.getById(ac.getAccessor(), UserGroup.ALL);
+		UserGroup userGroup = context.getRequestCache().getUserGroupById(ac.getAccessor());
 		if (userGroup == null) throw new InternalServerException("error.internal", "User group for data broker not found.");
 
 		String consentName = userGroup.name;				
@@ -290,12 +309,19 @@ public class AccountManagementTools {
 			}
 				
 		}
-		
+		//convertAppQueryToConsent
 		Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
-		consent.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);	
+		consent.sharingQuery = LinkTools.convertAppQueryToConsent(app.defaultQuery);	
 				
-		Circles.addConsent(context, consent, true, null, true);
-		return consent;
+		List<Consent> existing = LinkTools.findConsentAlreadyExists(context, consent);
+		
+		if (existing.isEmpty()) {		
+		    Circles.addConsent(context, consent, true, null, true);
+		    return consent;
+		} else {
+			return null;
+		}
+		
 	}
 	
 	public static Consent createRepresentativeConsent(AccessContext context, User executorUser, MidataId targetUser, boolean active) throws AppException {
@@ -460,7 +486,7 @@ public class AccountManagementTools {
 			part = controllers.members.Studies.match(context, user._id, projectId, context.getUsedPlugin(), method);
 		}
 		
-		if (part != null) {
+		if (part != null && context.getCache().getAPS(part._id).isAccessible()) {
 			if (part.ownerName != null && !part.ownerName.equals("???")) {
 				Study study = Study.getById(projectId, Sets.create("_id","code","name"));
 				fhirPatient.populateIdentifier(context, study, part);							

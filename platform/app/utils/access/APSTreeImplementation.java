@@ -233,6 +233,7 @@ public class APSTreeImplementation extends APSImplementation {
 	protected void merge() throws InternalServerException {
 		try {
 		if (eaps.needsMerge()) {
+			noupdateToNewVersion = true; 
 			ready();
 			try (DBSession session = DBLayer.startTransaction("aps")) {
 			

@@ -368,6 +368,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			OrganizationTools.checkIdentifier(record, id.getSystem(), id.getValue());			
 		}
 		
+		theOrganization.setPartOf(FHIRTools.resolve(theOrganization.getPartOf()));		
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
 		clean(theOrganization);
  
@@ -385,27 +386,31 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	
 
 	@Override
-	public Organization createExecute(Record record, Organization theResource) throws AppException {
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CREATED).withActor(info(), info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
+	public Organization createExecute(Record record, Organization theResource) throws AppException {	
 		if (record.content.equals("Organization/HP") && theResource.getUserData("source")==null) {
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CREATED).withActor(info(), info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
 			MidataId parent = null;
 			if (theResource.hasPartOf()) {
 			   Reference parentRef = theResource.getPartOf();
-			   parent =  MidataId.parse(parentRef.getId());
+			   if (parentRef.hasReference()) {
+			     parent =  MidataId.parse(parentRef.getReferenceElement().getIdPart());
+			   }
 			}
 		   HealthcareProvider provider = (HealthcareProvider) record.mapped;
 		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), provider, parent, true, false);
 		   try {
 		       UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
-		       return super.createExecute(record, theResource);
+		       Organization result = super.createExecute(record, theResource);
+			   AuditManager.instance.success();
+		       return result;
 		   } catch (AppException e) {
-			   HealthcareProvider.delete(provider._id);
+			   HealthcareProvider.delete(provider._id);			   
 			   throw e;
 		   }
 		   
 		}		
 		Organization result = super.createExecute(record, theResource);
-		AuditManager.instance.success();
+
 		return result;
 		
 	}

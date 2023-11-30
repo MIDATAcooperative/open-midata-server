@@ -56,6 +56,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
+import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
@@ -310,7 +311,7 @@ public class Studies extends APIController {
 		part.entityType = EntityType.USERGROUP;
 		part.authorized = new HashSet<MidataId>();		
 		part.authorized.add(study._id);
-		part.sharingQuery = study.recordQuery;
+		part.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(null, study.recordQuery);
 		
 		RecordManager.instance.createAnonymizedAPS(context.getCache(), member._id, study._id, part._id, true);
 		
@@ -318,7 +319,7 @@ public class Studies extends APIController {
 		
 		// Query can only be applied if patient is doing it himself
 		if (context.getAccessor().equals(member._id)) {
-		  RecordManager.instance.applyQuery(context, study.recordQuery, member._id, part, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
+		  RecordManager.instance.applyQuery(context, part.sharingQuery, member._id, part, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
 		}
 		AccessLog.logEnd("end create project participation");
 		return part;
@@ -408,7 +409,7 @@ public class Studies extends APIController {
 			Set<MidataId> observers = ApplicationTools.getObserversForApp(usingApp);
 			participation = createStudyParticipation(context, study, user, code, observers, joinMethod);
 		}
-				
+			
 		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;
 				
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
@@ -465,7 +466,10 @@ public class Studies extends APIController {
 			Set<MidataId> observers = ApplicationTools.getObserversForApp(usingApp);
 			participation = createStudyParticipation(context, study, user, null, observers, joinMethod);
 		} else {
-			if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
+			if (participation.pstatus != ParticipationStatus.CODE && 
+			    participation.pstatus != ParticipationStatus.MATCH && 
+			    participation.pstatus != ParticipationStatus.ACCEPTED &&
+			    participation.pstatus != ParticipationStatus.REQUEST) {
 				if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
 					if (participation.status != ConsentStatus.DELETED) {
 						Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);	

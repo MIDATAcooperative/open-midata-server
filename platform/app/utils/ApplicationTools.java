@@ -259,7 +259,7 @@ public class ApplicationTools {
 		Map<String, Object> meta = new HashMap<String, Object>();
 		meta.put("phrase", phrase);	
 		if (group != null) {			
-			UserGroup grp = UserGroup.getById(group, UserGroup.ALL);
+			UserGroup grp = context.getRequestCache().getUserGroupById(group);
 			if (grp != null) {
 				meta.put("group", group.toString());
 				appInstance.comment = grp.name;

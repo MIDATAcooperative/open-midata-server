@@ -47,6 +47,7 @@ import setup.MinimalSetup;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.access.PatientRecordTool;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
@@ -207,6 +208,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		
 		try {
 			   AccountPatches.fixOrgs();
+			   PatientRecordTool.patchMissingPatientRecords();
 		} catch (AppException e) {
 				e.printStackTrace();
 				System.exit(-1);

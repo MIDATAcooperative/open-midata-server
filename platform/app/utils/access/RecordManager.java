@@ -1055,6 +1055,7 @@ public class RecordManager {
 		if (target.status == ConsentStatus.PRECONFIRMED) return;
 		
 		MidataId targetaps = target._id;
+				
 		Pair<Map<String, Object>, Map<String, Object>> pair = Feature_Streams.convertToQueryPair(query);
 								
 		AccessContext targetContext = context.forConsentReshare(target);

@@ -87,7 +87,7 @@ public class ProjectTools {
             throws AppException, AuthException, InternalServerException {
         AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, context, null, context.getActor(), targetUserId, null, groupId);
         
-        UserGroup ug = UserGroup.getById(groupId, UserGroup.ALL);
+        UserGroup ug = context.getRequestCache().getUserGroupById(groupId);
         if (ug == null) throw new InternalServerException("error.internal", "UserGroup not found");
         
         UserGroupMember member = new UserGroupMember();

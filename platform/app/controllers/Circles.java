@@ -79,6 +79,7 @@ import utils.RuntimeConstants;
 import utils.access.APS;
 import utils.access.APSCache;
 import utils.access.Feature_Streams;
+import utils.access.PatientRecordTool;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
@@ -617,16 +618,10 @@ public class Circles extends APIController {
 	
 	
 	public static void autosharePatientRecord(AccessContext executorContext, Consent consent) throws AppException {		
-		AccessLog.logBegin("start autoshare patient record");
-		try {
-			if (!executorContext.canCreateActiveConsentsFor(consent.owner)) {
-				RecordManager.instance.share(executorContext, executorContext.getOwner(), consent._id, consent.owner, Collections.singleton(executorContext.getPatientRecordId()), true);
-	            return;
-			}
+		AccessLog.logBegin("start autoshare patient record context=", executorContext.toString()," targetConsent="+consent._id.toString());
 			
-			AccessContext context = ContextManager.instance.createSharingContext(executorContext, consent.owner);
-			int recs = RecordManager.instance.share(context, consent._id, consent.owner, CMaps.map("owner", consent.owner).map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), true);
-			if (recs == 0) throw new InternalServerException("error.internal", "Patient Record not found!");
+		try {
+			PatientRecordTool.sharePatientRecord(executorContext, consent);						
 		} finally {
 			AccessLog.logEnd("end autoshare patient record");
 		}

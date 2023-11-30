@@ -887,7 +887,7 @@ public class Application extends APIController {
 		  user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 		  Member.set(user._id, "myaps", user.myaps);		  
 			
-		  PatientResourceProvider.updatePatientForAccount(context, user._id);
+		  PatientResourceProvider.updatePatientForAccount(context, user._id, true);
 		  		  		  		  
 		} else {
 		  handle = registerCreateUser(context, user);		
@@ -957,7 +957,7 @@ public class Application extends APIController {
 		user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
 		
-		PatientResourceProvider.updatePatientForAccount(context, user._id);
+		PatientResourceProvider.updatePatientForAccount(context, user._id, true);
 		
 		return handle;
 	}

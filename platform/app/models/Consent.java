@@ -65,11 +65,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	
 	public @NotMaterialized final static Set<ConsentStatus> NOT_DELETED = Collections.unmodifiableSet(EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.DRAFT, ConsentStatus.EXPIRED, ConsentStatus.FROZEN, ConsentStatus.REJECTED, ConsentStatus.INVALID, ConsentStatus.UNCONFIRMED, ConsentStatus.PRECONFIRMED));
 	
-	protected @NotMaterialized final static Set<ConsentStatus> ACTIVE_STATUS = Collections.unmodifiableSet(Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.PRECONFIRMED));
+	public @NotMaterialized final static Set<ConsentStatus> ACTIVE_STATUS = Collections.unmodifiableSet(Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.PRECONFIRMED));
 	
 	protected @NotMaterialized final static Set<ConsentStatus> SHARING_STATUS = Collections.unmodifiableSet(Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN, ConsentStatus.PRECONFIRMED));
 	
-	protected @NotMaterialized final static Set<ConsentStatus> WRITEABLE_STATUS = Collections.unmodifiableSet(Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.PRECONFIRMED));
+	public @NotMaterialized final static Set<ConsentStatus> WRITEABLE_STATUS = Collections.unmodifiableSet(Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.PRECONFIRMED));
 	/**
 	 * When this consent was created
 	 */
