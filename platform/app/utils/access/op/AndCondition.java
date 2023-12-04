@@ -43,6 +43,7 @@ public class AndCondition implements Condition, Serializable {
 	 */
 	private static final long serialVersionUID = 7999329976231518887L;
 	protected List<Condition> checks;
+	private boolean isIndexExpression;
 
     public static Condition and(Condition cond1, Condition cond2) {
     	if (cond1 == null) return cond2;
@@ -125,6 +126,8 @@ public class AndCondition implements Condition, Serializable {
 		boolean allFieldAccess = true;	
 		String commonField = null;
 		
+		List<Condition> resultChecks = new ArrayList<Condition>(checks.size());
+		
 		for (int i=0;i<checks.size();i++) {
 			Condition c = checks.get(i).optimize();
 			if (c instanceof FieldAccess) {
@@ -138,18 +141,19 @@ public class AndCondition implements Condition, Serializable {
 				}
 			} else  {
 				allFieldAccess = false;			
-			} 
-			checks.set(i, c);
+			}
+			resultChecks.add(c);
+			//checks.set(i, c);
 		}
 		
-		if (allFieldAccess && commonField!=null) {
-			for (int i=0;i<checks.size();i++) {
-				checks.set(i, ((FieldAccess) checks.get(i)).getCondition());
+		if (!isIndexExpression && allFieldAccess && commonField!=null) {
+			for (int i=0;i<resultChecks.size();i++) {
+				resultChecks.set(i, ((FieldAccess) resultChecks.get(i)).getCondition());
 			}		    
-			return (new FieldAccess(commonField, this)).optimize();		    
+			return (new FieldAccess(commonField, createAndOfThisType(resultChecks))).optimize();		    
 		}
 						
-		return this;
+		return createAndOfThisType(resultChecks);
 	}
 	
 	/**
@@ -213,6 +217,9 @@ public class AndCondition implements Condition, Serializable {
 				Condition indexAccess = cond.indexExpression();
 				result = AndCondition.and(result, indexAccess);				
 			}
+		}
+		if (result instanceof AndCondition) {
+			((AndCondition) result).isIndexExpression = true;
 		}
 		return result;
 	}
