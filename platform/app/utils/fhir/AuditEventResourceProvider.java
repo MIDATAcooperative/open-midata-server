@@ -31,6 +31,7 @@ import org.hl7.fhir.r4.model.AuditEvent.AuditEventEntityComponent;
 import org.hl7.fhir.r4.model.AuditEvent.AuditEventOutcome;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeType;
+import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
@@ -61,6 +62,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import models.Actor;
 import models.Consent;
 import models.MidataAuditEvent;
 import models.MidataId;
@@ -69,9 +71,12 @@ import models.Study;
 import models.User;
 import models.UserGroupMember;
 import models.enums.ConsentType;
+import models.enums.EntityType;
+import models.enums.Permission;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.access.op.AndCondition;
+import utils.audit.AuditExtraInfo;
 import utils.collections.CMaps;
 import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
@@ -98,17 +103,14 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	@Read()
 	public AuditEvent getResourceById(@IdParam IIdType theId) throws AppException {
 		if (!checkAccessible()) throw new ResourceNotFoundException(theId);
-		MidataAuditEvent mae = MidataAuditEvent.getById(MidataId.from(theId.getIdPart()));	
+		MidataAuditEvent mae = MidataAuditEvent.getById(MidataId.parse(theId.getIdPart()));	
 		if (mae != null) return readAuditEventFromMidataAuditEvent(mae);
 		throw new ResourceNotFoundException(theId);		
 	}
 	    
     
 	/**
-	 * Convert a MIDATA User object into a FHIR person object
-	 * @param userToConvert user to be converted into a FHIR object
-	 * @return FHIR person
-	 * @throws AppException
+	 * Convert a MIDATA AuditEvent object into a FHIR AuditEvent object	 
 	 */
 	public AuditEvent readAuditEventFromMidataAuditEvent(MidataAuditEvent mae) throws AppException {
 		
@@ -294,7 +296,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	
 	 	
 			
-	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, User actorUser, User modifiedUser, Consent affectedConsent, String message, Study study) throws AppException {
+	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, Actor actor0, Actor modifiedUser, Consent affectedConsent, String message, Study study, AuditExtraInfo extra) throws AppException {
 		AuditEvent ae = new AuditEvent();
 
 		ae.setId(mae._id.toString());
@@ -310,41 +312,35 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			//}
 		}
 		
-		if (actorUser != null) {
+		if (actor0 != null) {
 			AuditEventAgentComponent actor = ae.addAgent();
-			actor.addRole().addCoding().setSystem("http://midata.coop/codesystems/user-role").setCode(actorUser.role.toString());
+			actor.addRole().addCoding().setSystem("http://midata.coop/codesystems/user-role").setCode(actor0.getUserRole().toString());
 			actor.setRequestor(true);
 			
-			if (anonymize != null && actorUser._id.equals(anonymize)) {
+			if (anonymize != null && actor0.getId().equals(anonymize)) {
 				actor.setName(affectedConsent.getOwnerName());
 				actor.setWho(new Reference("Patient/"+affectedConsent._id.toString()));
 			} else {
-				if (actorUser.role.equals(UserRole.MEMBER)) {
-					actor.setWho(new Reference("Patient/"+actorUser._id.toString()));
-				} else if (actorUser.role.equals(UserRole.PROVIDER)) {
-					actor.setWho(new Reference("Practitioner/"+actorUser._id.toString()));
-				}
-				actor.setName(actorUser.firstname+" "+actorUser.lastname);
-				actor.setAltId(actorUser.getPublicIdentifier());
+				actor.setWho(new Reference(actor0.getLocalReference()));
+				
+				actor.setName(actor0.getDisplayName());
+				actor.setAltId(actor0.getPublicIdentifier());
 			}
 		}
 		if (modifiedUser != null) {
 			AuditEventEntityComponent aeec = ae.addEntity();
-			aeec.setType(new Coding().setSystem("http://midata.coop/codesystems/user-role").setCode(modifiedUser.role.toString()));
+			if (modifiedUser.getEntityType() == EntityType.USER) {
+			  aeec.setType(new Coding().setSystem("http://midata.coop/codesystems/user-role").setCode(modifiedUser.getUserRole().toString()));
+			}
 			
-			if (anonymize != null && modifiedUser._id.equals(anonymize)) {
+			if (anonymize != null && modifiedUser.getId().equals(anonymize)) {
 				aeec.setName(affectedConsent.getOwnerName());
 				aeec.setWhat(new Reference("Patient/"+affectedConsent._id.toString()));
 			} else {
-				if (modifiedUser.role == UserRole.PROVIDER) {			   
-				   aeec.setWhat(new Reference("Practitioner/"+modifiedUser._id.toString()).setDisplay(modifiedUser.getPublicIdentifier()));
-				} else {			   
-				   aeec.setWhat(new Reference("Patient/"+modifiedUser._id.toString()).setDisplay(modifiedUser.getPublicIdentifier()));
-				}
+				aeec.setName(modifiedUser.getDisplayName());		
+				aeec.setWhat(new Reference(modifiedUser.getLocalReference()).setDisplay(modifiedUser.getPublicIdentifier()));				
 			}
-			
-			aeec.setName(modifiedUser.firstname+" "+modifiedUser.lastname);
-			
+									
 			//aeec.setIdentifier(new Identifier().setValue(modifiedUser.getPublicIdentifier()));
 		}
 				
@@ -364,7 +360,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			aeec.setWhat(new Reference("ResearchStudy/"+study._id.toString()).setDisplay(study.code));
 			aeec.setName(study.name);
 			//aeec.setIdentifier(new Identifier().setValue(study.code));
-			aeec.addExtension("http://midata.coop/extension/research-type", new CodeType(study.type.toString()));
+			aeec.addExtension("http://midata.coop/extensions/research-type", new CodeType(study.type.toString()));
 		}
 				
 		
@@ -383,12 +379,80 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			}
 		}
 		
+		if (extra != null) {
+			AuditEventAgentComponent actor = ae.addAgent();
+			boolean practitionerSet = false;
+
+			if (extra.getPurposeName() != null || extra.getPurposeCoding() != null) {
+				if (extra.getPurposeCoding() != null) {
+					int p = extra.getPurposeCoding().indexOf("|");
+					String code = extra.getPurposeCoding();
+					String system = null;
+					if (p>0) {
+						system = code.substring(0, p);
+						code = code.substring(p+1);
+					}					
+					actor.addPurposeOfUse().addCoding()
+					  .setDisplay(extra.getPurposeName())
+					  .setSystem(system)
+					  .setCode(code);
+				} else {
+					actor.addPurposeOfUse().setText(extra.getPurposeName());
+				}
+				
+			}
+			
+			if (extra.getPractitionerName() != null || extra.getPractitionerReference() != null) {
+				Reference pRef = new Reference();
+				if (extra.getPractitionerName() != null) {
+					pRef.setDisplay(extra.getPractitionerName());
+					actor.setName(extra.getPractitionerName());
+				}
+				if (extra.getPractitionerReference() != null) pRef.setReference(extra.getPractitionerReference());
+				actor.setWho(pRef);
+				
+				actor.setType(new CodeableConcept(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/extra-security-role-type").setCode("humanuser").setDisplay("human user")));
+				
+				practitionerSet = true;
+			}
+			
+			if (extra.getExternalUser() != null) {
+				actor.setWho(new Reference().setDisplay(extra.getExternalUser()));
+				actor.setName(extra.getExternalUser());
+				actor.setType(new CodeableConcept(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/extra-security-role-type").setCode("humanuser").setDisplay("human user")));
+			}
+			
+			if (extra.getOrganizationName() != null || extra.getOrganizationReference() != null) {
+				if (practitionerSet) {
+					actor = ae.addAgent();
+				}
+				Reference orgRef = new Reference();
+				if (extra.getOrganizationName() != null) {
+					orgRef.setDisplay(extra.getOrganizationName());
+					actor.setName(extra.getOrganizationName());
+				}
+				if (extra.getOrganizationReference() != null) orgRef.setReference(extra.getOrganizationReference());
+				actor.setWho(orgRef);
+				
+				//actor.setType(new CodeableConcept(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/extra-security-role-type").setCode("humanuser").setDisplay("human user")));
+			}
+									
+			if (extra.getLocationName() != null || extra.getLocationReference() != null) {
+				Reference locRef = new Reference();
+				if (extra.getLocationName() != null) locRef.setDisplay(extra.getLocationName());
+				if (extra.getLocationReference() != null) locRef.setReference(extra.getLocationReference());
+				locRef.setReference(extra.getLocationReference());
+				actor.setLocation(locRef);
+			}
+			
+		}
+		
 		String encoded = ctx.newJsonParser().encodeResourceToString(ae);		
 		mae.fhirAuditEvent = BasicDBObject.parse(encoded);				
 	}
 
 	@Override
-	public MidataAuditEvent fetchCurrent(IIdType theId) throws AppException {
+	public MidataAuditEvent fetchCurrent(IIdType theId, AuditEvent r, boolean versioned) throws AppException {
 		return MidataAuditEvent.getById(MidataId.from(theId.getIdPart()));
 	}
 
@@ -410,13 +474,13 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		  query.putDataCondition(new AndCondition(CMaps.map("authorized", info.getAccessor())).optimize());
 		  authrestricted = true;
 		} else if (!current.role.equals(UserRole.ADMIN)) {
-		  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(info().getAccessor());
+		  Set<UserGroupMember> ugms = info.getCache().getAllActiveByMember();
 		  if (ugms.isEmpty()) {
 		    query.putDataCondition(new AndCondition(CMaps.map("authorized", info.getAccessor())).optimize());
 		  } else {
 			Set<MidataId> allowedIds = new HashSet<MidataId>();
 			allowedIds.add(info.getAccessor());
-			for (UserGroupMember ugm : ugms) if (ugm.getRole().auditLogAccess()) allowedIds.add(ugm.userGroup);
+			for (UserGroupMember ugm : ugms) if (info.getCache().getByGroupAndActiveMember(ugm, info.getAccessor(), Permission.AUDIT_LOG) != null) allowedIds.add(ugm.userGroup);
 			query.putDataCondition(new AndCondition(CMaps.map("authorized", CMaps.map("$in", allowedIds))).optimize());
 			//query.putAccount("authorized", allowedIds);
 		  }

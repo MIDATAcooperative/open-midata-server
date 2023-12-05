@@ -18,8 +18,7 @@
 <template>
     <div  class="midata-overlay borderless">
         <panel :title="getTitle()" :busy="isBusy">
-        <error-box :error="error"></error-box>
-				
+        				
 		<p v-t="'content.intro'"></p>
 		<div class="row">
 		<div class="col-sm-8 mt-1">
@@ -42,10 +41,11 @@
 		  <tr v-for="choice in newentry.choices" :key="JSON.stringify(choice)">
 		    <td><a href="javascript:" @click="addContent(choice)">{{ choice.display }}</a>
 		      <span v-if="choice.group" class="text-muted">(Group)</span>
+		      <span v-else class="text-muted">(Content)</span>
 		    </td>
 		    <td>
-		      <div v-for="code in choice.codes" :key="JSON.stringify(code)"><a href="javascript:" @click="addContent(choice, code)">{{ code.system }} {{ code.code }}</a></div>
-		      <div v-for="content in choice.contents" :key="JSON.stringify(content)"><a href="javascript:" @click="addContent(content);">{{ content.display }}</a><span v-if="content.content" class="text-muted">(Content)</span></div>
+		      <div v-for="code in choice.codes" :key="JSON.stringify(code)"><a href="javascript:" @click="addContent(choice, code)">{{ code.system }} {{ code.code }}</a> <span class="text-muted">(Code)</span></div>
+		      <div v-for="content in orderDisplay(choice.contents)" :key="JSON.stringify(content)"><a href="javascript:" @click="addContent(content);">{{ content.display }}</a><span v-if="content.content" class="text-muted">(Content)</span><span v-else>(Group)</span></div>
 		    </td> 
 		  </tr>
 		</table>
@@ -72,7 +72,7 @@
 			   <form-group v-if="currentContent.isNew" label="common.empty"><strong v-t="'content.new_content'">Edit Midata Content-Type</strong></form-group>
 			   <form-group v-else label="common.empty"><strong v-t="'content.edit_content'">Edit Midata Content-Type</strong></form-group>
                <form-group name="content" label="content.content">
-	             <input class="form-control" type="text" v-validate v-model="currentContent.content">
+	             <input class="form-control" name="content" type="text" v-validate v-model="currentContent.content">
 	           </form-group>
                <div v-for="lang in langs" :key="lang">
 	           <form-group name="label" :label="'Label '+lang">                   
@@ -80,27 +80,27 @@
 	           </form-group>
                </div>
 	           <form-group name="security" label="content.security">
-	             <select class="form-control" type="text" v-validate v-model="currentContent.security">
+	             <select class="form-control" name="security" v-validate v-model="currentContent.security">
                      <option value="MEDIUM" v-t="'content.medium'">MEDIUM</option>
                      <option value="HIGH" v-t="'content.high'">HIGH</option>
                  </select>
 	           </form-group>
               <form-group name="group" label="content.group">
 	             <select class="form-control" v-validate v-model="currentContent.currentGroup">
-                     <option v-for="group in groups" :key="group._id" :value="group.name">{{ group.name }}</option>
+                     <option v-for="group in orderedGroups" :key="group.name" :value="group.name">{{ group.label[lang] }}</option>
                   </select>
 	           </form-group>
 			   <form-group name="defaultCode" label="content.defaultCode">
-	              <input class="form-control" type="text" v-validate v-model="currentContent.defaultCode">
+	              <input class="form-control" name="defaultCode" type="text" v-validate v-model="currentContent.defaultCode">
 				  <button class="btn btn-sm btn-primary" type="button" @click="makeDefault()">Make current code default</button>
 	           </form-group>
 	           <form-group name="resourceType" label="content.resource_type">
-	             <typeahead class="form-control" v-model="currentContent.resourceType" :suggestions="formats" field="format"></typeahead>
+	             <typeahead class="form-control" name="resourceType" v-model="currentContent.resourceType" :suggestions="formats" field="format"></typeahead>
 	           </form-group>
 	          
 	          
 	          <form-group name="source" label="Source">
-	             <input type="text" class="form-control" v-validate v-model="currentContent.source">
+	             <input type="text" class="form-control" name="source" v-validate v-model="currentContent.source">
 	           </form-group>
 
 			   <form-group label="common.empty">
@@ -114,20 +114,20 @@
 			<form-group label="common.empty" v-if="currentGroup.isNew"><strong v-t="'content.new_group'">Edit Group</strong></form-group>	 
 			<form-group label="common.empty" v-else><strong v-t="'content.edit_group'">Edit Group</strong></form-group>	 
                 <form-group name="name" label="content.group_name">
-	             <input class="form-control" type="text" v-validate v-model="currentGroup.name">
+	             <input class="form-control" name="name" type="text" v-validate v-model="currentGroup.name">
 	           </form-group>
 	           <div v-for="lang in langs" :key="lang">
 	           <form-group name="label" :label="'Label '+lang">                   
-	               <input class="form-control" type="text" v-validate v-model="currentGroup.label[lang]">                   
+	               <input class="form-control" type="text" name="label" v-validate v-model="currentGroup.label[lang]">                   
 	           </form-group>
                </div>
 	           <form-group name="parent" label="content.parent_group">
-	             <select class="form-control" type="text" v-validate v-model="currentGroup.parent">
-				   <option v-for="grp in groups" :key="grp.name" :value="grp.name">{{ grp.label[lang] }}</option>
+	             <select class="form-control" v-validate v-model="currentGroup.parent">
+				   <option v-for="grp in orderedGroups" :key="grp.name" :value="grp.name">{{ grp.label[lang] }}</option>
 				 </select>
 	           </form-group>
 	           <form-group name="system" label="content.group_system">
-	             <input class="form-control" type="text" v-validate v-model="currentGroup.system">
+	             <input class="form-control" type="text" name="system" v-validate v-model="currentGroup.system">
 	           </form-group>
 			   <form-group label="common.empty">
 				  <button class="btn btn-primary mr-1" type="submit" v-submit :disabled="action!=null" v-t="'content.save_group_btn'">Save Group</button>
@@ -135,6 +135,8 @@
 			   </form-group>
 		</div>
 		</form>
+		
+		<error-box :error="error"></error-box>
  		     
         </panel>	    
     </div>
@@ -155,10 +157,11 @@ var lookupCodes = function(entry) {
 		entry.codes = [];
 		return formats.searchCodes({ content : entry.content },["_id", "code","system","version","display","content"])
 		.then(function(result) {			
-		    entry.codes = [];
-			for (var i=0;i<result.data.length;i++) {
-				entry.codes.push(result.data[i]);
+		    let codes = [];		    
+			for (var i=0;i<result.data.length;i++) {			    
+				codes.push(result.data[i]);
 			}
+			entry.codes = _.orderBy(codes, ["system", "code"], ["asc", "asc"]);
 			return entry;
 		});
 	};
@@ -187,17 +190,32 @@ export default {
        groups : [],
        formats : [],
        systems : ["http://loinc.org","http://snomed.info/sct","http://hl7.org/fhir/sid/icd-10","http://midata.coop"]
-	}),				
+	}),		
+	
+	computed: {
+       orderedGroups: function () {         
+         return _.orderBy(this.$data.groups, (x) => x.label[this.$data.lang]);
+       }
+    },		
 
 	components : { ErrorBox, Panel, FormGroup, Typeahead },
 
     mixins : [ status ],
 
     methods : {
+    
+        orderDisplay(inp) {
+          return _.orderBy(inp, ["display"],["asc"]);
+        },
+        
         getTitle() {
             const { $data, $t } = this;
             return "Content Editor";
             
+        },
+        
+        reloadDelayed() {
+           setTimeout(() => this.reload(), 1000);
         },
 
 		reload() {
@@ -207,8 +225,8 @@ export default {
 			$data.currentCode = null;
 			$data.currentContent = null;
 			$data.currentGroup = null;
-            me.doBusy(formats.listGroups().then((result) => $data.groups = _.orderBy(result.data, ["name"], ["asc"])));
-            me.doBusy(formats.listFormats().then((result) => $data.formats = _.orderBy(result.data, ["format"], ["asc"])));
+            me.doBusy(formats.listGroups().then((result) => { $data.groups = result.data; } ));
+            me.doBusy(formats.listFormats().then((result) => { $data.formats = _.orderBy(result.data, ["format"], ["asc"]) }));
 		},
 	
 			
@@ -249,7 +267,8 @@ export default {
         createNew() {
             const { $data } = this;
             $data.currentContent = { content : "", defaultCode : "", security : "MEDIUM", label : {}, "resourceType" : "", isNew : true };
-            $data.currentCode = { system : "", version : "", code:"", display : "", content:"", isNew : true };                        
+            $data.currentCode = { system : "", version : "", code:"", display : "", content:"", isNew : true };
+            $data.currentGroup = null;                        
         },
 
 		createGroup() {
@@ -262,7 +281,9 @@ export default {
 		getGroup(system, contentName) {
 			const { $data } = this;
 			for (let grp of $data.groups) {
-				if (grp.system == system && grp.contents && grp.contents.indexOf(contentName)>=0) return grp;
+				if (grp.system == system && grp.contents && grp.contents.indexOf(contentName)>=0) {				  
+				  return grp;
+				}
 			}
 			return null;
 		},
@@ -359,9 +380,9 @@ export default {
 			}
 
 			if ($data.currentGroup) {
-				me.doAction("save", saveGroup().then(done).then(me.reload));
+				me.doAction("save", saveGroup().then(done).then(me.reloadDelayed));
 			} else {
-				me.doAction("save", updateCode().then(updateContent).then(updateGroup).then(done));
+				me.doAction("save", updateCode().then(updateContent).then(updateGroup).then(done).then(me.reloadDelayed));
 			}
 			
 		},
@@ -389,19 +410,18 @@ export default {
 
 			function deleteContent() {
 				if (withContent && $data.currentContent && !$data.currentContent.isNew) {
-					return me.removeFromGroups($data.currentContent.oldName)
-					.then(() => { formats.deleteContent($data.currentContent)});
+					return formats.deleteContent($data.currentContent);
 				} else return Promise.resolve();
 			}
 
-			me.doAction("delete", deleteCode().then(deleteContent).then(me.reload));			
+			me.doAction("delete", deleteCode().then(deleteContent).then(me.reloadDelayed));			
 		},
 
 		deleteGroup() {
 			const { $data } = this, me = this;
 			
 			if ($data.currentGroup && !$data.currentGroup.isNew) {
-				me.doAction("delete", formats.deleteGroup($data.currentGroup).then(me.reload));				
+				me.doAction("delete", formats.deleteGroup($data.currentGroup).then(me.reloadDelayed));				
 			}	
 			
 		},
@@ -411,38 +431,38 @@ export default {
 			return new Promise((resolve, reject) => {
 				let waitFor = [];
 				let waitFor2 = [];
-				var searchresult = [];
-				var already = {};
+				let searchresult = [];
+				let already = {};
 				
-				var add = function(entry) {
+				let add = function(entry) {				    				    
 					if (!already[entry.key]) { searchresult.push(entry); already[entry.key] = entry; return true; }
 					return false;
 				};
 				
-				var lookup = function(content) {
+				let lookup = function(content) {
 					return lookupCodes(content);		      
 				};
 				
-				var addgroup = function(dat) {
-					var grp = { key : "grp "+dat.name, group : dat.name, system : dat.system, display : dat.label[getLocale()] || dat.label.en || dat.name, contents:[] };
-					var addgrp = function(what) {				
+				let addgroup = function(dat) {
+					let grp = { key : "grp_"+dat.name, group : dat.name, system : dat.system, display : dat.label[getLocale()] || dat.label.en || dat.name, contents:[] };
+					let addgrp = function(what) {				
 						grp.contents.push(what); 
 					};
-					var recproc = function(dat) {
-						if (dat.contents && dat.contents.length > 1) {
-							for (var i2=0;i2<dat.contents.length;i2++) {
+					let recproc = function(dat) {
+						if (dat.contents && dat.contents.length > 0) {
+							for (let i2=0;i2<dat.contents.length;i2++) {
 								waitFor2.push(lookupContent(dat.contents[i2]).then(addgrp));
 							}
 						}
 						if (dat.children) {
-							for (var i3=0;i3<dat.children.length;i3++) {
+							for (let i3=0;i3<dat.children.length;i3++) {
 								
 								let grp = me.getGroupByGroupname(dat.children[i3].system, dat.children[i3].name);
-								addgrp({ key : "grp "+grp.name, group : grp.name, system : grp.system, display : grp.label[getLocale()] || grp.label.en || grp.name, contents:[] });					    
+								addgrp({ key : "grp_"+grp.name, group : grp.name, system : grp.system, display : grp.label[getLocale()] || grp.label.en || grp.name, contents:[] });					    
 							}
 						}
 					};
-					if (dat.contents && dat.contents.length == 1) return;
+					//if (dat.contents && dat.contents.length == 1 && (!dat.children || dat.children.length==0)) return;
 					if (add(grp)) {
 						recproc(dat);
 					}
@@ -450,41 +470,41 @@ export default {
 			
 				waitFor.push(formats.listCodes()
 				.then(function(result) {
-					var l = result.data.length;		
-					for (var i=0;i<l;i++) {
-						var dat = result.data[i];
-						//console.log(dat.code);
+					let l = result.data.length;		
+					for (let i=0;i<l;i++) {
+						let dat = result.data[i];						
 						if (dat.code.toLowerCase() == what) {
 							waitFor2.push(lookupContent(dat.content)
 							.then(lookup).then(add));
 						}
-					}
-					//console.log(searchresult);
+					}					
 				}));
 			
 				waitFor.push(formats.listContents()
 				.then(function(result) {
-					var l = result.data.length;		
-					for (var i=0;i<l;i++) {
-						var dat = result.data[i];
-						for (var lang in dat.label) {
+					let l = result.data.length;		
+					for (let i=0;i<l;i++) {
+						let dat = result.data[i];
+						for (let lang in dat.label) {
 						if (dat.label[lang].toLowerCase().indexOf(what) >= 0) {					 
 							waitFor2.push(lookupCodes({ key : dat.content, content : dat.content, display : dat.label[getLocale()] || dat.label.en || dat.content, format : dat.resourceType })
 							.then(add));					
 						}
 						}
 					}
-					//console.log(searchresult);
+				
 				}));	
 			
 			
 				waitFor.push(formats.listGroups()
 				.then(function(result) {
-					var l = result.data.length; 		
-					for (var i2=0;i2<l;i2++) { 
-						var dat = result.data[i2];
-						for (var lang in dat.label) {					
-						if (dat.label[lang].toLowerCase().indexOf(what) >= 0 || dat.name.toLowerCase().indexOf(what) >= 0) {					 
+					let l = result.data.length; 		
+					for (let i2=0;i2<l;i2++) { 
+						let dat = result.data[i2];
+						for (let lang in dat.label) {	
+									
+						if (dat.label[lang].toLowerCase().indexOf(what) >= 0 || dat.name.toLowerCase().indexOf(what) >= 0) {
+						    console.log(dat);							    					
 							addgroup(dat);
 							
 						}
@@ -495,7 +515,7 @@ export default {
 				waitFor.push(apps.getApps({ filename : what}, ["defaultQuery"])
 				.then(function(r) {
 					if (r.data && r.data.length == 1) {
-						var q = r.data[0].defaultQuery;
+						let q = r.data[0].defaultQuery;
 						if (q.content) {
 							
 						}
@@ -511,8 +531,8 @@ export default {
 		search() {
 			const { $data, $route, $router } = this, me = this;
 			//$data.newentry.choices = [];
-			var what = $data.newentry.search.toLowerCase();
-			me.doBusy(me.fullTextSearch(what).then((result) => $data.newentry.choices=result));
+			let what = $data.newentry.search.toLowerCase();
+			me.doBusy(me.fullTextSearch(what).then((result) => $data.newentry.choices=_.orderBy(result, ["display"],["asc"])));
 		},
 
         exporter() {

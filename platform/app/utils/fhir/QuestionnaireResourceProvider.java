@@ -69,11 +69,7 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 		
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
-			StringAndListParam theId, 
-			  
-			@Description(shortDefinition="The resource language")
-			@OptionalParam(name="_language")
-			StringAndListParam theResourceLanguage, 
+			StringAndListParam theId, 			  			
 			
   			@Description(shortDefinition="A code that corresponds to one of its items in the questionnaire")
   			@OptionalParam(name="code")
@@ -176,8 +172,7 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 		
 		paramMap.add("code", theCode);
 		paramMap.add("context", theContext);

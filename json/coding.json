@@ -1,6 +1,6 @@
-{"_id":{"$oid":"5666a53faa4c3cbdf82292bd"},"system":"http://midata.coop","display":"Calories Intake","code":"food/calories-in","content":"food/calories-in"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292bd"},"system":"http://midata.coop","code":"food/calories-in","display":"Calories intake","content":"food/calories-in"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292be"},"system":"http://midata.coop","display":"Water Consumption","code":"food/water","content":"food/water"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292bf"},"system":"http://midata.coop","display":"Calories Burned","code":"activities/calories","content":"activities/calories"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292bf"},"system":"http://midata.coop","code":"activities/calories","display":"Calories burned","content":"activities/calories"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c0"},"system":"http://midata.coop","display":"Steps","code":"activities/steps","content":"activities/steps"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c1"},"system":"http://midata.coop","display":"Distance","code":"activities/distance","content":"activities/distance"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c2"},"system":"http://midata.coop","display":"Floors Climbed","code":"activities/floors","content":"activities/floors"}
@@ -9,7 +9,7 @@
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c5"},"system":"http://midata.coop","display":"Minutes Lightly Active","code":"activities/minutes-lightly-active","content":"activities/minutes-lightly-active"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c6"},"system":"http://midata.coop","display":"Minutes Fairly Active","code":"activities/minutes-fairly-active","content":"activities/minutes-fairly-active"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c7"},"system":"http://midata.coop","display":"Minutes Very Active","code":"activities/minutes-very-active","content":"activities/minutes-very-active"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c8"},"system":"http://midata.coop","display":"Calories Burned in Activities","code":"activities/activity-calories","content":"activities/activity-calories"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c8"},"system":"http://midata.coop","code":"activities/activity-calories","display":"Calories burned in activities","content":"activities/activity-calories"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292c9"},"system":"http://midata.coop","display":"Time in Bed","code":"sleep/time-in-bed","content":"sleep/time-in-bed"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292ca"},"system":"http://midata.coop","display":"Minutes Asleep","code":"sleep/minutes-asleep","content":"sleep/minutes-asleep"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292cb"},"system":"http://midata.coop","display":"Minutes Awake","code":"sleep/minutes-awake","content":"sleep/minutes-awake"}
@@ -18,7 +18,7 @@
 {"_id":{"$oid":"5666a53faa4c3cbdf82292ce"},"system":"http://midata.coop","display":"Weight","code":"body/weight","content":"body/weight"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292cf"},"system":"http://midata.coop","display":"BMI","code":"body/bmi","content":"body/bmi"}
 {"_id":{"$oid":"5666a53faa4c3cbdf82292d0"},"system":"http://midata.coop","display":"Fat","code":"body/fat","content":"body/fat"}
-{"_id":{"$oid":"56fb890b1911127c0c2cc641"},"system":"http://loinc.org","code":"3141-9","display":"Body Weight","content":"body/weight"}
+{"_id":{"$oid":"56fb890b1911127c0c2cc641"},"system":"http://loinc.org","code":"3141-9","display":"Body weight Measured","content":"body/weight"}
 {"_id":{"$oid":"56fb890b1911127c0c2cc643"},"system":"http://loinc.org","code":"61150-9","display":"Patient Diary","content":"diary"}
 {"_id":{"$oid":"56fba579116010661a49ad2c"},"system":"http://midata.coop","display":"Subjective Condition","code":"subjective-condition","content":"subjective-condition"}
 {"_id":{"$oid":"56fba579116010661a49ad2d"},"system":"http://midata.coop","display":"Height","code":"body/height","content":"body/height"}
@@ -124,7 +124,7 @@
 {"_id":{"$oid":"5718ec14aed645098e8cee1b"},"system":"http://midata.coop","code":"DataElement","display":"DataElement","content":"DataElement"}
 {"_id":{"$oid":"5718ec14aed645098e8cee1c"},"system":"http://midata.coop","code":"Conformance","display":"Conformance","content":"Conformance"}
 {"_id":{"$oid":"5718ec14aed645098e8cee1d"},"system":"http://midata.coop","code":"Device","display":"Device","content":"Device"}
-{"_id":{"$oid":"57837400aed6450bf92d095e"},"system":"http://loinc.org","code":"55417-0","display":"Blood Pressure","content":"body/bloodpressure"}
+{"_id":{"$oid":"57837400aed6450bf92d095e"},"system":"http://loinc.org","code":"55417-0","display":"Short blood pressure panel","content":"body/bloodpressure"}
 {"_id":{"$oid":"57ac268caed645128457f61f"},"system":"http://loinc.org","code":"8302-2","display":"Body Height","content":"body/height"}
 {"_id":{"$oid":"57c55b8baed6450e7affb2d9"},"system":"http://loinc.org","code":"11502-2","display":"Laboratory Report","content":"health/laboratory"}
 {"_id":{"$oid":"57ce804aaed6451b4abd172a"},"system":"http://loinc.org","code":"41982-0","display":"Percentage of body fat measured","content":"body/fat"}
@@ -174,13 +174,13 @@
 {"_id":{"$oid":"57d7cad6aed64511e8f4d444"},"system":"http://loinc.org","code":"68472-0","display":"Cardiology Hospital Progress note","content":"documents/cardiology-progress-note"}
 {"_id":{"$oid":"57d7cad6aed64511e8f4d445"},"system":"http://loinc.org","code":"34126-3","display":"Intensive care unit progress note","content":"documents/intensive-care-progress-note"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d44c"},"system":"http://loinc.org","code":"55110-1","display":"Conclusions (interpretation) document","content":"documents/conclusions"}
-{"_id":{"$oid":"57d7cc3aaed64511e8f4d44d"},"system":"http://loinc.org","code":"72170-4","display":"Photographic image (Unspecified body)","content":"documents/image"}
+{"_id":{"$oid":"57d7cc3aaed64511e8f4d44d"},"system":"http://loinc.org","code":"72170-4","display":"Photographic image","content":"documents/image"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d44e"},"system":"http://loinc.org","code":"18726-0","display":"Radiology studies","content":"documents/radiology"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d44f"},"system":"http://loinc.org","code":"71230-7","display":"Birth certificate","content":"documents/birth-certificate"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d450"},"system":"http://loinc.org","code":"53247-3","display":"Eligibility acknowledgement","content":"documents/eligibility-acknowledgement"}
 {"_id":{"$oid":"583d69dcaed6451303c0586e"},"system":"http://midata.coop","code":"Task","display":"Task","content":"Task"}
-{"_id":{"$oid":"5857a6bfaed6456bcd027ada"},"system":"http://loinc.org","code":"6690-2","display":"Leukocytes in blood by automated count","content":"lab/leukocytes-in-blood"}
-{"_id":{"$oid":"5857a714aed6456bcd027adc"},"system":"http://loinc.org","code":"26515-7","display":"Platelets in blood","content":"lab/platelets-in-blood"}
+{"_id":{"$oid":"5857a6bfaed6456bcd027ada"},"system":"http://loinc.org","code":"6690-2","display":"Leukocytes [#/volume] in blood by automated count","content":"lab/leukocytes-in-blood"}
+{"_id":{"$oid":"5857a714aed6456bcd027adc"},"system":"http://loinc.org","code":"26515-7","display":"Platelets [#/volume] in blood","content":"lab/platelets-in-blood"}
 {"_id":{"$oid":"5857a759aed6456bcd027ade"},"system":"http://loinc.org","code":"718-7","display":"Hemoglobin in blood","content":"lab/hemoglobin-in-blood"}
 {"_id":{"$oid":"5857a86faed6456bcd027ae0"},"system":"http://loinc.org","code":"1988-5","display":"C reactive protein in serum or plasma","content":"lab/c-protein-in-serum-or-plasma"}
 {"_id":{"$oid":"5857a8efaed6456bcd027ae1"},"system":"http://loinc.org","code":"15189-4","display":"Immunoglobulin light chains.kappa/lambda in serum","content":"lab/loinc-15189-4"}
@@ -191,7 +191,7 @@
 {"_id":{"$oid":"5877408faed645135829ffbf"},"system":"http://snomed.info/sct","code":"160786009","display":"Personal Milestones","content":"milestones"}
 {"_id":{"$oid":"587e0783aed6452205545ffc"},"system":"http://loinc.org","code":"72514-3","display":"Pain severity - 0-10 verbal numeric rating","content":"survey/pain-severity"}
 {"_id":{"$oid":"587f4ed4aed645217a8c1a33"},"system":"http://loinc.org","code":"41950-7","display":"Steps [24 hour]","content":"activities/steps"}
-{"_id":{"$oid":"587f4ed4aed645217a8c1a34"},"system":"http://loinc.org","code":"29463-7","display":"Body Weight","content":"body/weight"}
+{"_id":{"$oid":"587f4ed4aed645217a8c1a34"},"system":"http://loinc.org","code":"29463-7","display":"Body weight","content":"body/weight"}
 {"_id":{"$oid":"587f507daed645217a8c1a35"},"system":"http://hl7.org/fhir/sid/icd-10","code":"C91.0","display":"Acute lymphocytic leukemia","content":"condition/icd-10-c9x"}
 {"_id":{"$oid":"587f507daed645217a8c1a36"},"system":"http://hl7.org/fhir/sid/icd-10","code":"C92.0","display":"Acute myelogenous leukemia","content":"condition/icd-10-c9x"}
 {"_id":{"$oid":"587f53fdaed645217a8c1a39"},"system":"http://midata.coop","code":"FieldOfOccupation","display":"Field Of Occupation","content":"work/field-of-occupation"}
@@ -257,7 +257,7 @@
 {"_id":{"$oid":"5c054f0faed6451e85cebdcb"},"system":"http://midata.coop","code":"MSMotTestDotDetails","display":"MS Motoriktest Punkte bewegen - Details pro Punkt pro Durchgang","content":"MSMotTestDotDetail"}
 {"_id":{"$oid":"5c078b16aed64512e74a4ea0"},"system":"http://snomed.info/sct","code":"364645004","display":"Eating feeding / drinking observable","content":"snomed/364645004"}
 {"_id":{"$oid":"5c078b65aed64512e74a4ea2"},"system":"http://snomed.info/sct","code":"248254009","display":"Quality of sleep","content":"snomed/248254009"}
-{"_id":{"$oid":"5c078c58aed64512e74a4ea4"},"system":"http://hl7.org/fhir/sid/icd-10","code":"G43","display":"Migräne","content":"condition/icd-10-g43"}
+{"_id":{"$oid":"5c078c58aed64512e74a4ea4"},"system":"http://hl7.org/fhir/sid/icd-10","code":"G43","display":"Migraine","content":"condition/icd-10-g43"}
 {"_id":{"$oid":"5c0a3764aed6450b0383214d"},"system":"http://snomed.info/sct","code":"167641001","display":"Feces: bacteria present","content":"snomed/167641001"}
 {"_id":{"$oid":"5c0a37e0aed6450b03832150"},"system":"http://snomed.info/sct","code":"119339001","display":"Stool specimen","content":"snomed/119339001"}
 {"_id":{"$oid":"5c0a3830aed6450b03832151"},"system":"http://snomed.info/sct","code":"409822003","display":"Superkingdom Bacteria (organism)","content":"snomed/409822003"}
@@ -288,8 +288,8 @@
 {"_id":{"$oid":"5cc853caaed6452c8c5214eb"},"system":"http://snomed.info/sct","code":"86290005","display":"Respiratory rate","content":"loinc/9279-1"}
 {"_id":{"$oid":"5cc8541aaed6452c8c5214ed"},"system":"http://loinc.org","code":"8637-1","display":"R-R interval","content":"loinc/8637-1"}
 {"_id":{"$oid":"5cc85472aed6452c8c5214ee"},"system":"http://snomed.info/sct","code":"251833007","display":"Energy Expenditure","content":"snomed/251833007"}
-{"_id":{"$oid":"5cc854bfaed6452c8c5214f0"},"system":"http://snomed.info/sct","code":"229819007","display":"Tobacco use and exposure","content":"loinc/63582-1"}
-{"_id":{"$oid":"5cc85f5aaed6452c8c5214f2"},"system":"http://snomed.info/sct","code":"230056004","display":"Cigarette consumption","content":"loinc/63582-1"}
+{"_id":{"$oid":"5cc854bfaed6452c8c5214f0"},"system":"http://snomed.info/sct","code":"229819007","display":"Tobacco use and exposure (observable entity)","content":"loinc/63582-1"}
+{"_id":{"$oid":"5cc85f5aaed6452c8c5214f2"},"system":"http://snomed.info/sct","code":"230056004","display":"Cigarette consumption (observable entity)","content":"loinc/63582-1"}
 {"_id":{"$oid":"5cc86322aed64535da11812e"},"system":"http://snomed.info/sct","code":"276361009","display":"Waist circumference","content":"snomed/276361009"}
 {"_id":{"$oid":"5cc86374aed64535da118130"},"system":"http://snomed.info/sct","code":"58314002","display":"Ulnar pulse","content":"snomed/58314002"}
 {"_id":{"$oid":"5cc8644baed64535da118132"},"system":"http://www.stroke.usz.ch","code":"reuse","display":"REUSE Questionnaire","content":"reuse"}
@@ -339,7 +339,7 @@
 {"_id":{"$oid":"5ebc1038aed6453267473719"},"system":"http://snomed.info/sct","code":"193462001","display":"Insomnia","content":"snomed/193462001"}
 {"_id":{"$oid":"5ebc106baed645326747371b"},"system":"http://snomed.info/sct","code":"404640003","display":"Dizziness","content":"snomed/404640003"}
 {"_id":{"$oid":"5ebc10b6aed645326747371d"},"system":"http://snomed.info/sct","code":"60119000","display":"Exhaustion","content":"snomed/60119000"}
-{"_id":{"$oid":"5ee7398faed64514ac528de8"},"system":"http://midata.coop","code":"ResearchStudy","display":"Research Study","content":"ResearchStudy"}
+{"_id":{"$oid":"5ee7398faed64514ac528de8"},"system":"http://midata.coop","code":"ResearchStudy","display":"Projects on Midata","content":"ResearchStudy"}
 {"_id":{"$oid":"5fac0700aed6452079bc3352"},"system":"http://loinc.org","code":"10197-2","display":"Physical findings of Eye Narrative","content":"loinc/10197-2"}
 {"_id":{"$oid":"5fb39da4aed64513b2abccd0"},"system":"http://midata.coop","code":"bodysway-test","display":"Bodysway Test","content":"bodysway-test"}
 {"_id":{"$oid":"5fb39e25aed64513b2abccd2"},"system":"http://midata.coop","code":"fear-of-falls-one-question","display":"Fear of falls (One Question)","content":"fear-of-falls"}
@@ -352,3 +352,157 @@
 {"_id":{"$oid":"61efb9a4c2841c36d6227d7a"},"system":"http://midata.coop","code":"app/config","display":"Application Configuration","content":"app/config"}
 {"_id":{"$oid":"61f3fbcee8d4223bfafd55ec"},"system":"http://midata.coop","code":"Organization/HP","display":"Organization on Midata (Healthcare Provider)","content":"Organization/HP"}
 {"_id":{"$oid":"61f3fc14e8d4223bfafd55ef"},"system":"http://midata.coop","code":"Organization/Research","display":"Organization on Midata (Research)","content":"Organization/Research"}
+{"_id":{"$oid":"628957096020a06279c0ce54"},"system":"http://snomed.info/sct","code":"230112002","display":"Fast food intake (observable entity)","content":"snomed/230112002"}
+{"_id":{"$oid":"6288d29802da8556e91f79e4"},"system":"http://snomed.info/sct","code":"224363007","display":"Employed (finding)","content":"snomed/224363007"}
+{"_id":{"$oid":"628958da02da8556e91f7a15"},"system":"http://snomed.info/sct","code":"1208604004","display":"Caffeine intake (observable entity)","content":"snomed/1208604004"}
+{"_id":{"$oid":"628a532f6020a06279c0cf5f"},"system":"http://snomed.info/sct","code":"75367002","display":"Blood pressure (observable entity)","content":"body/bloodpressure"}
+{"_id":{"$oid":"6288e52f02da8556e91f79ec"},"system":"http://snomed.info/sct","code":"226456006","display":"Nuts and seeds intake (observable entity)","content":"snomed/226456006"}
+{"_id":{"$oid":"628954b46020a06279c0ce49"},"system":"http://snomed.info/sct","code":"226443004","display":"Fatty fish intake (observable entity)","content":"snomed/226443004"}
+{"_id":{"$oid":"628a53d16020a06279c0cf66"},"system":"http://snomed.info/sct","code":"271650006","display":"Diastolic blood pressure (observable entity)","content":"body/blood/diastolic"}
+{"_id":{"$oid":"628a55806020a06279c0cf69"},"system":"http://snomed.info/sct","code":"103228002","display":"Hemoglobin saturation with oxygen (observable entity)","content":"body/oxygen-saturation"}
+{"_id":{"$oid":"628958006020a06279c0ce56"},"system":"http://snomed.info/sct","code":"226448008","display":"Vegetable intake (observable entity)","content":"snomed/226448008"}
+{"_id":{"$oid":"628a52186020a06279c0cf5e"},"system":"http://snomed.info/sct","code":"364075005","display":"Heart rate (observable entity)","content":"activities/heartrate"}
+{"_id":{"$oid":"6288e46902da8556e91f79ea"},"system":"http://snomed.info/sct","code":"226452008","display":"Fruit intake (observable entity)","content":"snomed/226452008"}
+{"_id":{"$oid":"628a54ab6020a06279c0cf68"},"system":"http://snomed.info/sct","code":"386725007","display":"Body temperature (observable entity)","content":"body/temperature"}
+{"_id":{"$oid":"6289553602da8556e91f7a0d"},"system":"http://snomed.info/sct","code":"226427006","display":"Red meat intake (observable entity)","content":"snomed/226427006"}
+{"_id":{"$oid":"6289627d02da8556e91f7a19"},"system":"http://snomed.info/sct","code":"897148007","display":"Alcoholic beverage intake (observable entity)","content":"snomed/897148007"}
+{"_id":{"$oid":"628965ed6020a06279c0ce70"},"system":"http://snomed.info/sct","code":"1137437005","display":"Adequate sleep (finding)","content":"snomed/1137437005"}
+{"_id":{"$oid":"628959bd6020a06279c0ce59"},"system":"http://snomed.info/sct","code":"226458007","display":"Sugary food intake (observable entity)","content":"snomed/226458007"}
+{"_id":{"$oid":"628961106020a06279c0ce62"},"system":"http://snomed.info/sct","code":"1144674006","display":"Adequately hydrated (finding)","content":"snomed/1144674006"}
+{"_id":{"$oid":"6288e3126020a06279c0cdd2"},"system":"http://snomed.info/sct","code":"876831004","display":"Plant fiber intake (observable entity)","content":"snomed/876831004"}
+{"_id":{"$oid":"62895feb6020a06279c0ce61"},"system":"http://snomed.info/sct","code":"226354008","display":"Water intake (observable entity)","content":"food/water"}
+{"_id":{"$oid":"6289540b6020a06279c0ce47"},"system":"http://snomed.info/sct","code":"874875003","display":"Protein and/or protein derivative intake (observable entity)","content":"snomed/874875003"}
+{"_id":{"$oid":"6289566102da8556e91f7a11"},"system":"http://snomed.info/sct","code":"230094004","display":"Spicy food intake (observable entity)","content":"snomed/230094004"}
+{"_id":{"$oid":"628a543c6020a06279c0cf67"},"system":"http://snomed.info/sct","code":"271649006","display":"Systolic blood pressure (observable entity)","content":"body/blood/systolic"}
+{"_id":{"$oid":"628dcb71c343d84593f56864"},"system":"http://snomed.info/sct","code":"408864009","display":"Vaccination status (observable entity)","content":"snomed/408864009"}
+{"_id":{"$oid":"628d45bbc343d84593f567d9"},"system":"http://snomed.info/sct","code":"27113001","display":"Body weight (observable entity)","content":"body/weight"}
+{"_id":{"$oid":"628dce8ec343d84593f5686f"},"system":"http://snomed.info/sct","code":"11609002","display":"Relaxation exercise (regime/therapy)","content":"snomed/11609002"}
+{"_id":{"$oid":"628d160ec343d84593f567a7"},"system":"http://snomed.info/sct","code":"170833002","display":"Blood disorder treatment started (situation)","content":"snomed/170833002"}
+{"_id":{"$oid":"628d3d7fcf4e953049df44b7"},"system":"http://loinc.org","code":"59408-5","display":"Oxygen saturation in Arterial blood by Pulse oximetry","content":"body/oxygen-saturation"}
+{"_id":{"$oid":"628cfa31c343d84593f56746"},"system":"http://midata.coop/prisms","code":"selfAssessment","display":"Self-assessment of the suicidal urge and the personal meaning of this urge by the affected person using the PRISM-S method","content":"prisms/selfAssessment"}
+{"_id":{"$oid":"628bb80489a676219ac40350"},"system":"http://snomed.info/sct","code":"444107005","display":"Exposure to communicable disease (event)","content":"snomed/444107005"}
+{"_id":{"$oid":"628beedd89a676219ac40360"},"system":"http://snomed.info/sct","code":"39104002","display":"Illness (finding)","content":"snomed/39104002"}
+{"_id":{"$oid":"628d44eacf4e953049df44b9"},"system":"http://snomed.info/sct","code":"50373000","display":"Body height measure (observable entity)","content":"body/height"}
+{"_id":{"$oid":"628bf60289a676219ac40366"},"system":"http://snomed.info/sct","code":"248536006","display":"Finding of functional performance and activity (finding)","content":"snomed/248536006"}
+{"_id":{"$oid":"628d18b8cf4e953049df44b3"},"system":"http://snomed.info/sct","code":"764444002","display":"Erythrocyte alloimmunization (disorder)","content":"snomed/764444002"}
+{"_id":{"$oid":"628dc96fc343d84593f56862"},"system":"http://snomed.info/sct","code":"105421008","display":"Educational achievement (observable entity)","content":"snomed/105421008"}
+{"_id":{"$oid":"628d17aecf4e953049df44b1"},"system":"http://snomed.info/sct","code":"82423001","display":"Chronic pain (finding)","content":"snomed/82423001"}
+{"_id":{"$oid":"628befd089a676219ac40362"},"system":"http://snomed.info/sct","code":"769167005","display":"Vaso-occlusive pain co-occurrent and due to sickle cell disease (disorder)","content":"snomed/769167005"}
+{"_id":{"$oid":"628bba212db7632e9c1d331c"},"system":"http://snomed.info/sct","code":"12994004","display":"Asphyxiation by environmental oxygen lack","content":"snomed/12994004"}
+{"_id":{"$oid":"628bf2bb2db7632e9c1d3357"},"system":"http://snomed.info/sct","code":"365092005","display":"Finding related to ability to mobilize (finding)","content":"snomed/365092005"}
+{"_id":{"$oid":"628bf4572db7632e9c1d3359"},"system":"http://snomed.info/sct","code":"365178001","display":"Finding related to ability to perform personal care activity (finding)","content":"snomed/365178001"}
+{"_id":{"$oid":"628d3d51c343d84593f567d2"},"system":"http://loinc.org","code":"2708-6","display":"Oxygen saturation in Arterial blood","content":"body/oxygen-saturation"}
+{"_id":{"$oid":"628bb8e92db7632e9c1d3312"},"system":"http://snomed.info/sct","code":"1004049005","display":"Exposure to extreme temperature (event)","content":"snomed/1004049005"}
+{"_id":{"$oid":"628d46b9c343d84593f567da"},"system":"http://loinc.org","code":"85354-9","display":"Blood pressure panel with all children optional","content":"body/bloodpressure"}
+{"_id":{"$oid":"628bb95f2db7632e9c1d3314"},"system":"http://snomed.info/sct","code":"102420004","display":"Exposure to pollution","content":"snomed/102420004"}
+{"_id":{"$oid":"628ddd22cf4e953049df4520"},"system":"http://snomed.info/sct","code":"226463006","display":"Sweets intake (observable entity)","content":"snomed/226463006"}
+{"_id":{"$oid":"628ddc02c343d84593f56899"},"system":"http://snomed.info/sct","code":"226382001","display":"Coffee intake (observable entity)","content":"snomed/226382001"}
+{"_id":{"$oid":"628d1957c343d84593f567ac"},"system":"http://snomed.info/sct","code":"124134002","display":"Deficiency of glucose-6-phosphate dehydrogenase (disorder)","content":"snomed/124134002"}
+{"_id":{"$oid":"62bb62cb9b71d13efff85ef7"},"system":"http://snomed.info/sct","code":"397724004","display":"Demonstrates knowledge of pain management (finding)","content":"snomed/397724004"}
+{"_id":{"$oid":"62bb63729b71d13efff85ef8"},"system":"http://snomed.info/sct","code":"704414005","display":"At risk of sleep impairment (finding)","content":"snomed/704414005"}
+{"_id":{"$oid":"62bb5dd89b71d13efff85eed"},"system":"http://snomed.info/sct","code":"365632008","display":"Finding of platelet count (finding)","content":"lab/platelets-in-blood"}
+{"_id":{"$oid":"62bb64e29df13005066e635e"},"system":"http://snomed.info/sct","code":"93831000119104","display":"Adjustment to life threatening illness (finding)","content":"snomed/93831000119104"}
+{"_id":{"$oid":"62bb62199b71d13efff85ef5"},"system":"http://snomed.info/sct","code":"429038000","display":"Pain onset during sleep (finding)","content":"snomed/429038000"}
+{"_id":{"$oid":"62bb654d9df13005066e6360"},"system":"http://snomed.info/sct","code":"1172456003","display":"Able to modify behavior and lifestyle to support a change in circumstance (finding)","content":"snomed/1172456003"}
+{"_id":{"$oid":"62bb4d2b9b71d13efff85edb"},"system":"http://snomed.info/sct","code":"161615003","display":"History of surgery (situation)","content":"snomed/161615003"}
+{"_id":{"$oid":"62bb56619df13005066e634f"},"system":"http://loinc.org","code":"26464-8","display":"Leukocytes [#/volume] in blood","content":"lab/leukocytes-in-blood"}
+{"_id":{"$oid":"628e1b6684cf0e5f516da4cb"},"system":"http://snomed.info/sct","code":"68130003","display":"Physical activity (observable entity)","content":"snomed/68130003"}
+{"_id":{"$oid":"62bb56159df13005066e634e"},"system":"http://snomed.info/sct","code":"365630000","display":"Finding of white blood cell number (finding)","content":"lab/leukocytes-in-blood"}
+{"_id":{"$oid":"62aa154a2b02d94c9b4f9435"},"system":"http://snomed.info/sct","code":"609328004","display":"Allergic disposition (finding)","content":"snomed/609328004"}
+{"_id":{"$oid":"62bb644c9df13005066e635c"},"system":"http://snomed.info/sct","code":"733903006","display":"Psychological resilience (finding)","content":"snomed/733903006"}
+{"_id":{"$oid":"62bb50ba9b71d13efff85edd"},"system":"http://snomed.info/sct","code":"365611000","display":"Finding of mean cell hemoglobin level (finding)","content":"snomed/365611000"}
+{"_id":{"$oid":"628e3f43f91349166cef4fad"},"system":"http://snomed.info/sct","code":"406127006","display":"Pain intensity (observable entity)","content":"snomed/406127006"}
+{"_id":{"$oid":"62bb4aa69b71d13efff85ed3"},"system":"http://snomed.info/sct","code":"165452003","display":"Mean corpuscular volume - normal (finding)","content":"snomed/165452003"}
+{"_id":{"$oid":"62bb56ea9df13005066e6351"},"system":"http://loinc.org","code":"804-5","display":"Leukocytes [#/volume] in blood by manual count","content":"lab/leukocytes-in-blood"}
+{"_id":{"$oid":"62bb584e9df13005066e6352"},"system":"http://snomed.info/sct","code":"365786009","display":"Finding of bilirubin level (finding)","content":"snomed/365786009"}
+{"_id":{"$oid":"628e4067f91349166cef4faf"},"system":"http://snomed.info/sct","code":"364633008","display":"Sensory dimension of pain (observable entity)","content":"snomed/364633008"}
+{"_id":{"$oid":"62bb56ba9df13005066e6350"},"system":"http://loinc.org","code":"49498-9","display":"Leukocytes [#/volume] in blood by estimate","content":"lab/leukocytes-in-blood"}
+{"_id":{"$oid":"62bb60469df13005066e6356"},"system":"http://snomed.info/sct","code":"716417006","display":"Able to manage generalized pain (finding)","content":"snomed/716417006"}
+{"_id":{"$oid":"628e2ce784cf0e5f516da4e4"},"system":"http://snomed.info/sct","code":"364626008","display":"Characteristic of pain at anatomical site (observable entity)","content":"snomed/364626008"}
+{"_id":{"$oid":"62bb65f99b71d13efff85efd"},"system":"http://snomed.info/sct","code":"286839000","display":"Character trait finding of ability to learn from adverse experience (finding)","content":"snomed/286839000"}
+{"_id":{"$oid":"62cd2fa55d0d6215c274e067"},"system":"http://trevor.hug.ch","code":"mostEffectiveDrug","display":"Most effective drug","content":"trevor/mostEffectiveDrug"}
+{"_id":{"$oid":"62cd61dd5d0d6215c274e234"},"system":"http://trevor.hug.ch","code":"mostEffectiveRelaxingTherapy","display":"Most effective relaxing therapy","content":"trevor/mostEffectiveRelaxingTherapy"}
+{"_id":{"$oid":"62c73bb3c6c1481c61ff5c7e"},"system":"http://snomed.info/sct","code":"298060002","display":"Number of admissions (observable entity)","content":"snomed/298060002"}
+{"_id":{"$oid":"62cc4a3d199f0e5d32daa30a"},"system":"http://snomed.info/sct","code":"866145009","display":"General patient record note (record artifact)","content":"snomed/866145009"}
+{"_id":{"$oid":"62cbd10f199f0e5d32daa080"},"system":"http://snomed.info/sct","code":"365616005","display":"Finding of hematocrit (finding)","content":"snomed/365616005"}
+{"_id":{"$oid":"62c7f2e7d1fdf8118fb098e3"},"system":"http://snomed.info/sct","code":"247322000","display":"Abnormal sensation (finding)","content":"snomed/247322000"}
+{"_id":{"$oid":"62c81cc45d0d6215c274d0c0"},"system":"http://snomed.info/sct","code":"64113006","display":"Exhaustion due to excessive exertion (finding)","content":"snomed/64113006"}
+{"_id":{"$oid":"62cd86a55d0d6215c274e57d"},"system":"http://trevor.hug.ch","code":"treatmentFrequency","display":"Treatment frequency","content":"trevor/treatmentFrequency"}
+{"_id":{"$oid":"62cd5f835d0d6215c274e231"},"system":"http://trevor.hug.ch","code":"herbalTherapyFrequency","display":"Herbal therapy frequency","content":"trevor/herbalTherapyFrequency"}
+{"_id":{"$oid":"62cd6021199f0e5d32daa769"},"system":"http://trevor.hug.ch","code":"relaxingTherapyFrequency","display":"Relaxing therapy frequency","content":"trevor/relaxingTherapyFrequency"}
+{"_id":{"$oid":"62cc4690199f0e5d32daa304"},"system":"http://snomed.info/sct","code":"289163007","display":"Appetite problem (finding)","content":"snomed/289163007"}
+{"_id":{"$oid":"62cd85e0199f0e5d32daaa9b"},"system":"http://trevor.hug.ch","code":"preventiveTreatmentFrequency","display":"Preventive treatment frequency","content":"trevor/preventiveTreatmentFrequency"}
+{"_id":{"$oid":"62c84c6b5d0d6215c274d25f"},"system":"http://snomed.info/sct","code":"225791005","display":"Empowered (finding)","content":"snomed/225791005"}
+{"_id":{"$oid":"62c846865d0d6215c274d257"},"system":"http://snomed.info/sct","code":"64572001","display":"Disease (disorder)","content":"snomed/64572001"}
+{"_id":{"$oid":"62cc3eb55d0d6215c274de68"},"system":"http://snomed.info/sct","code":"39565009","display":"Pain crisis (finding)","content":"snomed/39565009"}
+{"_id":{"$oid":"62cc48aa5d0d6215c274df14"},"system":"http://snomed.info/sct","code":"720001001","display":"Dark yellow urine (finding)","content":"snomed/720001001"}
+{"_id":{"$oid":"62cc3f5a199f0e5d32daa271"},"system":"http://snomed.info/sct","code":"224974006","display":"Feeling stressed (finding)","content":"snomed/224974006"}
+{"_id":{"$oid":"62cd2cf95d0d6215c274e050"},"system":"http://trevor.hug.ch","code":"mostEffectiveAnalgesic","display":"Most effective analgesic","content":"trevor/mostEffectiveAnalgesic"}
+{"_id":{"$oid":"62cd299a199f0e5d32daa500"},"system":"http://trevor.hug.ch","code":"mostEffectiveTreatment","display":"Most effective treatment","content":"trevor/mostEffectiveTreatment"}
+{"_id":{"$oid":"62c74486d1fdf8118fb09863"},"system":"http://snomed.info/sct","code":"20361002","display":"Alteration in comfort: pain (finding)","content":"snomed/20361002"}
+{"_id":{"$oid":"62cd2c75199f0e5d32daa51f"},"system":"http://trevor.hug.ch","code":"mostEffectiveAntiInflammatory","display":"Most effective antiInflammatory","content":"trevor/mostEffectiveAntiInflammatory"}
+{"_id":{"$oid":"62cd2b2a199f0e5d32daa50a"},"system":"http://trevor.hug.ch","code":"mostEffectivePreventiveTreatment","display":"Most effective preventive treatment","content":"trevor/mostEffectivePreventiveTreatment"}
+{"_id":{"$oid":"62cd12b85d0d6215c274df50"},"system":"http://trevor.hug.ch","code":"earlyPainPrediction","display":"Early pain prediction","content":"trevor/earlyPainPrediction"}
+{"_id":{"$oid":"62cc4736199f0e5d32daa306"},"system":"http://snomed.info/sct","code":"17173007","display":"Excessive thirst (finding)","content":"snomed/17173007"}
+{"_id":{"$oid":"62c84547199f0e5d32da9307"},"system":"http://snomed.info/sct","code":"266918002","display":"Tobacco smoking consumption (observable entity)","content":"loinc/63582-1"}
+{"_id":{"$oid":"62c7d99fc6c1481c61ff5dcc"},"system":"http://snomed.info/sct","code":"816065002","display":"Normal sensation of pain (finding)","content":"snomed/816065002"}
+{"_id":{"$oid":"62c81a4a199f0e5d32da9147"},"system":"http://snomed.info/sct","code":"106131003","display":"Mood finding (finding)","content":"snomed/106131003"}
+{"_id":{"$oid":"62cd5f005d0d6215c274e22f"},"system":"http://trevor.hug.ch","code":"alternativeTherapyFrequency","display":"Alternative therapy frequency","content":"trevor/alternativeTherapyFrequency"}
+{"_id":{"$oid":"62c74750c6c1481c61ff5cd0"},"system":"http://snomed.info/sct","code":"736535009","display":"EuroQol visual analogue score (observable entity)","content":"snomed/736535009"}
+{"_id":{"$oid":"62c7db2cc6c1481c61ff5dce"},"system":"http://snomed.info/sct","code":"401207004","display":"Medication side effects present (finding)","content":"snomed/401207004"}
+{"_id":{"$oid":"62c81722199f0e5d32da9127"},"system":"http://snomed.info/sct","code":"405159006","display":"Comfort level (observable entity)","content":"snomed/405159006"}
+{"_id":{"$oid":"62cd2bcd199f0e5d32daa519"},"system":"http://trevor.hug.ch","code":"otherHelpfulDrug","display":"Other helpful drug","content":"trevor/otherHelpfulDrug"}
+{"_id":{"$oid":"62cd164d199f0e5d32daa41d"},"system":"http://trevor.hug.ch","code":"mostEffectiveNutritionalSupplement","display":"Most effective nutritional supplement","content":"trevor/mostEffectiveNutritionalSupplement"}
+{"_id":{"$oid":"62cc47c35d0d6215c274df12"},"system":"http://snomed.info/sct","code":"248549001","display":"Labored breathing (finding)","content":"snomed/248549001"}
+{"_id":{"$oid":"62cd5d015d0d6215c274e1ea"},"system":"http://snomed.info/sct","code":"513881000000106","display":"Current medication as reported by patient (observable entity)","content":"snomed/513881000000106"}
+{"_id":{"$oid":"62c74537c6c1481c61ff5ca9"},"system":"http://snomed.info/sct","code":"198288003","display":"Anxiety state (finding)","content":"snomed/198288003"}
+{"_id":{"$oid":"62ce9284199f0e5d32daadbc"},"system":"http://trevor.hug.ch","code":"hasRegularBloodTreatment","display":"Has regular blood treatment","content":"trevor/hasRegularBloodTreatment"}
+{"_id":{"$oid":"62c7f038d1fdf8118fb098e1"},"system":"http://snomed.info/sct","code":"284545001","display":"Ability to perform activities of everyday life (observable entity)","content":"snomed/284545001"}
+{"_id":{"$oid":"62cd5e38199f0e5d32daa75f"},"system":"http://trevor.hug.ch","code":"nutritionalSupplementFrequency","display":"Nutritional supplement frequency","content":"trevor/nutritionalSupplementFrequency"}
+{"_id":{"$oid":"62cd1196199f0e5d32daa3fe"},"system":"http://trevor.hug.ch","code":"hasConsumedOpioid","display":"Has consumed opioid","content":"trevor/hasConsumedOpioid"}
+{"_id":{"$oid":"62cd138a199f0e5d32daa40b"},"system":"http://trevor.hug.ch","code":"mostEffectiveHerbalTherapy","display":"Most effective herbal therapy","content":"trevor/mostEffectiveHerbalTherapy"}
+{"_id":{"$oid":"62cd15ae199f0e5d32daa41b"},"system":"http://trevor.hug.ch","code":"mostEffectiveAlternativeTherapy","display":"Most effective alternative therapy","content":"trevor/mostEffectiveAlternativeTherapy"}
+{"_id":{"$oid":"62c7d8b8d1fdf8118fb098dd"},"system":"http://snomed.info/sct","code":"308540004","display":"Inpatient stay (finding)","content":"snomed/308540004"}
+{"_id":{"$oid":"62d01828d030f500a7c46e15"},"system":"http://midata.coop","code":"Practitioner/Extern","display":"Practitioner","content":"Practitioner/Extern"}
+{"_id":{"$oid":"62d539b295d2885306321564"},"system":"http://snomed.info/sct","code":"185278000","display":"Seen by general practitioner (finding)","content":"snomed/185278000"}
+{"_id":{"$oid":"62d6c64395d2885306321af1"},"system":"http://trevor.hug.ch","code":"sickleCellDiseaseSelfEfficacyScore","display":"Sickle cell disease self-efficacy score","content":"trevor/sickleCellDiseaseSelfEfficacyScore"}
+{"_id":{"$oid":"62d6c6c38152f823627a9076"},"system":"http://trevor.hug.ch","code":"sickleCellDiseaseEQ5DScore","display":"Sickle cell disease EQ-5D score","content":"trevor/sickleCellDiseaseEQ5DScore"}
+{"_id":{"$oid":"62d538fc8152f823627a8be9"},"system":"http://snomed.info/sct","code":"185265000","display":"Seen in emergency clinic (finding)","content":"snomed/185265000"}
+{"_id":{"$oid":"6331a1c2597dd11d84950082"},"system":"http://midata.coop","code":"ExternalResearchStudy","display":"External research study","content":"ExternalResearchStudy"}
+{"_id":{"$oid":"638bb3197c2d224aef2ecc59"},"system":"http://snomed.info/sct","code":"23560001","display":"Asperger's syndrome","content":"condition/icd-10-f84.5"}
+{"_id":{"$oid":"638bb28e7c2d224aef2ecc57"},"system":"http://hl7.org/fhir/sid/icd-10","code":"F84.5","display":"Asperger's syndrome","content":"condition/icd-10-f84.5"}
+{"_id":{"$oid":"638bb3a287721075a246e5f3"},"system":"http://snomed.info/sct","code":"37796009","display":"Migraine","content":"condition/icd-10-g43"}
+{"_id":{"$oid":"6397322f87721075a246ffe5"},"system":"http://midata.coop","code":"external-patient-id","display":"External Patient ID","content":"external-patient-id"}
+{"_id":{"$oid":"63d7e2a8ee2c0a65c3e75532"},"system":"http://midata.coop","code":"support-needs","display":"Need for support","content":"support-needs"}
+{"_id":{"$oid":"63d7e143f4df477d87ac976e"},"system":"http://midata.coop","code":"promis-questionnaire","display":"PROMIS Questionnaire","content":"promis-questionnaire"}
+{"_id":{"$oid":"63edeba32695845b1140b6a4"},"system":"http://midata.coop","code":"unit-non-response","display":"Non response reasons","content":"unit-non-response"}
+{"_id":{"$oid":"645e05230b8cfe03731b2ff8"},"system":"http://loinc.org","code":"11348-0","display":"History of Past illness Narrative","content":"document/pastillnesses"}
+{"_id":{"$oid":"645e00210b8cfe03731b2ff5"},"system":"http://snomed.info/sct","code":"41000179103","display":"Immunization record (record artifact)","content":"snomed/41000179103"}
+{"_id":{"$oid":"645e03c2bef10907d5e521e7"},"system":"http://snomed.info/sct","code":"723394009","display":"Photographic image record (record artifact)","content":"documents/image"}
+{"_id":{"$oid":"650c44d1e208de70eb19e269"},"system":"http://midata.coop","code":"promis-encounter","display":"Encounter (Promis)","content":"promis-encounter"}
+{"_id":{"$oid":"6548c24bbd916879dba88c3e"},"system":"http://form.brightfish.com","code":"eortc-qlq-c30","display":"Quality of life after tumor","content":"eortc-qlq-c30"}
+{"_id":{"$oid":"6548c75fbd916879dba88c89"},"system":"http://form.brightfish.com","code":"promis-physical-function-short-form-4a","display":"Promis physical function short form 4a","content":"promis-questionnaire"}
+{"_id":{"$oid":"6548befffa96471011cf8ca3"},"system":"http://form.brightfish.com","code":"whodas-20","display":"Disability Assessment Schedule","content":"whodas-20"}
+{"_id":{"$oid":"6548c861bd916879dba88c8e"},"system":"http://form.brightfish.com","code":"saq-7","display":"Seattle Angina Questionnaire","content":"saq-7"}
+{"_id":{"$oid":"6548b6dafa96471011cf8c84"},"system":"http://form.brightfish.com","code":"phq-2-eq-5d-vas","display":"PHQ2 + EQ-5D-VAS Questionnaire","content":"phq-2-eq-5d-vas"}
+{"_id":{"$oid":"6548b21bbd916879dba88be1"},"system":"http://form.brightfish.com","code":"algemene-vragen-baseline-2","display":"General questions baseline (breast cancer)","content":"general-questions-baseline-2"}
+{"_id":{"$oid":"6548c2a6fa96471011cf8cc3"},"system":"http://form.brightfish.com","code":"epic-26","display":"Expanded Prostate Cancer Index Composite","content":"epic-26"}
+{"_id":{"$oid":"6548beb8bd916879dba88c18"},"system":"http://form.brightfish.com","code":"rose-dyspnea-scale","display":"Rose Dyspnea Scale","content":"rose-dyspnea-scale"}
+{"_id":{"$oid":"6548b26cfa96471011cf8c73"},"system":"http://form.brightfish.com","code":"breast-qtm-preoperative","display":"Breast-Q Pre-op","content":"breast-qtm-preoperative"}
+{"_id":{"$oid":"6548b2d5bd916879dba88be8"},"system":"http://form.brightfish.com","code":"breast-q-lumpectomie","display":"Breast-Q lumpectomy","content":"breast-q-lumpectomie"}
+{"_id":{"$oid":"6548b61ebd916879dba88bfa"},"system":"http://form.brightfish.com","code":"enkele-vraag-over-behandeling","display":"Questions about treatment","content":"treatment-questions"}
+{"_id":{"$oid":"6548c808fa96471011cf8d04"},"system":"http://form.brightfish.com","code":"phq-2","display":"Patient Health Questionnaire PHQ-2","content":"phq-2"}
+{"_id":{"$oid":"6548c20cbd916879dba88c3a"},"system":"http://form.brightfish.com","code":"eq-5d-5l-euroqol","display":"EQ-5D-5L","content":"eq-5d-5l-euroqol"}
+{"_id":{"$oid":"6548c1d0bd916879dba88c37"},"system":"http://form.brightfish.com","code":"comorbiditiessacq","display":"Self-administered co-morbidity index","content":"comorbiditiessacq"}
+{"_id":{"$oid":"6548b037fa96471011cf8c6a"},"system":"http://form.brightfish.com","code":"gebruik-van-seksuele-medicijnenapparaten","display":"Utilization of Sexual Medications/Devices","content":"use-of-sexual-medicine-devices"}
+{"_id":{"$oid":"6548b198fa96471011cf8c6f"},"system":"http://form.brightfish.com","code":"algemene-vragen-follow-up","display":"General questions follow up (advanced prostate cancer)","content":"general-questions-follow-up"}
+{"_id":{"$oid":"6548b2a8bd916879dba88be6"},"system":"http://form.brightfish.com","code":"breast-qtm-reconstruction","display":"Breast-Q Reconstruction","content":"breast-qtm-reconstruction"}
+{"_id":{"$oid":"6548c925fa96471011cf8d07"},"system":"http://form.brightfish.com","code":"vr-12","display":"Veterans RAND 12-Item Health Survey","content":"vr-12"}
+{"_id":{"$oid":"6548b306bd916879dba88bea"},"system":"http://form.brightfish.com","code":"breast-qtm-mastectomy","display":"Breast-Q Mastectomy","content":"breast-qtm-mastectomy"}
+{"_id":{"$oid":"6548c643fa96471011cf8cdc"},"system":"http://form.brightfish.com","code":"eortc-qlq-br45","display":"ORTC QLQ-Breast Cancer Module BR 45","content":"eortc-qlq-br45"}
+{"_id":{"$oid":"6548bc50fa96471011cf8c96"},"system":"http://form.brightfish.com","code":"kccq12","display":"KCCQ12","content":"kccq12"}
+{"_id":{"$oid":"6548bbd6bd916879dba88c03"},"system":"http://form.brightfish.com","code":"demografische-factoren","display":"Demographic factors (Heart faillure)","content":"demographic-factors"}
+{"_id":{"$oid":"6548c789bd916879dba88c8c"},"system":"http://form.brightfish.com","code":"promis-v12-global-health","display":"Promis v1.2 global health","content":"promis-questionnaire"}
+{"_id":{"$oid":"6548bb5dfa96471011cf8c94"},"system":"http://form.brightfish.com","code":"informed-consent","display":"Informed consent","content":"documents/patient-consent"}
+{"_id":{"$oid":"6548b0d7bd916879dba88bd6"},"system":"http://form.brightfish.com","code":"algemene-vragen-baseline","display":"General questions baseline (advanced prostate cancer)","content":"general-questions-baseline"}
+{"_id":{"$oid":"6548bf41bd916879dba88c1e"},"system":"http://form.brightfish.com","code":"idcv","display":"Impact on mental health and daily activities","content":"idcv"}

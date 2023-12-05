@@ -41,6 +41,7 @@ import models.enums.BulkMailType;
 import models.enums.CommunicationChannelUseStatus;
 import models.enums.ConsentStatus;
 import models.enums.EMailStatus;
+import models.enums.SubUserRole;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -68,7 +69,7 @@ import utils.messaging.MailSenderType;
 import utils.messaging.MailUtils;
 import utils.stats.ActionRecorder;
 
-public class BulkMails extends Controller {
+public class BulkMails extends APIController {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
@@ -100,8 +101,9 @@ public class BulkMails extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result add(Request request) throws JsonValidationException, InternalServerException {
+	public Result add(Request request) throws JsonValidationException, AppException {
 		// validate json
+		requireSubUserRole(request, SubUserRole.NEWSWRITER);
 		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "name");
@@ -128,7 +130,8 @@ public class BulkMails extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result update(Request request) throws JsonValidationException, InternalServerException {
+	public Result update(Request request) throws JsonValidationException, AppException {
+		requireSubUserRole(request, SubUserRole.NEWSWRITER);
 		// validate json
 		JsonNode json = request.body().asJson();
 		
@@ -177,8 +180,8 @@ public class BulkMails extends Controller {
 	 */
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result delete(String mailItemIdString) throws AppException {
-			
+	public Result delete(Request request, String mailItemIdString) throws AppException {
+		requireSubUserRole(request, SubUserRole.NEWSWRITER);
 		MidataId mailItemId = MidataId.from(mailItemIdString);
 				
 		BulkMail mailCampaign = BulkMail.getById(mailItemId, BulkMail.ALL);
@@ -193,8 +196,8 @@ public class BulkMails extends Controller {
 	
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public Result send(String mailItemIdString) throws AppException {
-		
+	public Result send(Request request, String mailItemIdString) throws AppException {
+		requireSubUserRole(request, SubUserRole.NEWSWRITER);
 		MidataId mailItemId = MidataId.from(mailItemIdString);
 		
 		BulkMail mailCampaign = BulkMail.getById(mailItemId, BulkMail.ALL);
@@ -232,7 +235,7 @@ public class BulkMails extends Controller {
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
     public Result test(Request request, String mailItemIdString) throws AppException {
-		
+		requireSubUserRole(request, SubUserRole.NEWSWRITER);
 		MidataId mailItemId = MidataId.from(mailItemIdString);
 		
 		BulkMail mailCampaign = BulkMail.getById(mailItemId, BulkMail.ALL);
@@ -261,12 +264,13 @@ public class BulkMails extends Controller {
 			return ids;
 		} else if (mailItem.type == BulkMailType.APP) {				
 			Set<MobileAppInstance> parts = MobileAppInstance.getByApplication(mailItem.appId, Sets.create("owner"));
-			List<MidataId> ids = new ArrayList<MidataId>();
+			Set<MidataId> ids = new HashSet<MidataId>();
 			if (mailItem.progressId != null) {
 				for (MobileAppInstance part : parts) if (part.owner.compareTo(mailItem.progressId) > 0) ids.add(part.owner);
 			} else for (MobileAppInstance part : parts) ids.add(part.owner);
-		    Collections.sort(ids);		
-			return ids;			
+			List<MidataId> idsSorted = new ArrayList<MidataId>(ids);
+		    Collections.sort(idsSorted);		
+			return idsSorted;			
 		} else {
 			Set<User> users = User.getAllUser(CMaps.map("role",UserRole.MEMBER).map("status",User.NON_DELETED).mapNotEmpty("country", mailItem.country), Sets.create("_id","marketingEmail"));
 			Set<MidataId> ids = new HashSet<MidataId>(users.size());
@@ -326,9 +330,9 @@ public class BulkMails extends Controller {
 			if (title == null) return false;
 			
 			String link;
-			if (study!=null) {
+			if (study!=null && user.role != UserRole.ADMIN) {
 				StudyParticipation sp = StudyParticipation.getByStudyAndMember(study, targetUser, Sets.create("_id","status"));
-				if (sp==null || sp.status != ConsentStatus.ACTIVE) return false;
+				if (sp == null || ! sp.isActive()) return false;
 				
 				link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.consentToken(sp._id);
 			} else link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.userToken(targetUser);
@@ -367,7 +371,7 @@ public class BulkMails extends Controller {
 				User user = User.getById(tk.getUserId(), Sets.create(User.ALL_USER,"marketingEmail"));
 				if (user!=null) {
 					if (user.marketingEmail == CommunicationChannelUseStatus.FORBIDDEN) throw new BadRequestException("error.already_done.unsubscribed", "Already unsubscribed.");
-					AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.COMMUNICATION_REJECTED).withActorUser(user).withMessage("email-link"));
+					AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.COMMUNICATION_REJECTED).withActor(user).withMessage("email-link"));
 					user.set("marketingEmail", CommunicationChannelUseStatus.FORBIDDEN);
 				}
 			}
@@ -375,7 +379,7 @@ public class BulkMails extends Controller {
 				StudyParticipation part = StudyParticipation.getById(tk.getConsentId(), Sets.create("_id","owner","study","projectEmails"));
 				if (part!=null) {
 					if (part.projectEmails == CommunicationChannelUseStatus.FORBIDDEN) throw new BadRequestException("error.already_done.unsubscribed", "Already unsubscribed.");
-					AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.COMMUNICATION_REJECTED).withActorUser(part.owner).withStudy(part.study).withMessage("email-link"));
+					AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.COMMUNICATION_REJECTED).withActor(null, part.owner).withStudy(part.study).withMessage("email-link"));
 					part.set(part._id, "projectEmails", CommunicationChannelUseStatus.FORBIDDEN);
 				}
 			}

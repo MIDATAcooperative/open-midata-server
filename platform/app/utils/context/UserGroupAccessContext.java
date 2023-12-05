@@ -17,12 +17,18 @@
 
 package utils.context;
 
+import java.util.List;
+
 import models.MidataId;
 import models.Record;
 import models.UserGroupMember;
+import models.enums.EntityType;
+import models.enums.Permission;
 import utils.access.APSCache;
 import utils.access.DBRecord;
+import utils.access.Feature_UserGroups;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class UserGroupAccessContext extends AccessContext {
 
@@ -34,7 +40,7 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		return ugm.getRole().mayWriteData() && parent.mayCreateRecord(record);
+		return ugm.getConfirmedRole().mayWriteData() && parent.mayCreateRecord(record);
 	}
 
 	@Override
@@ -43,18 +49,18 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
-		return ugm.getRole().mayWriteData() && parent.mayUpdateRecord(stored, newVersion);
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion)  throws InternalServerException {
+		return ugm.getConfirmedRole().mayWriteData() && parent.mayUpdateRecord(stored, newVersion);
 	}
 	
 	@Override
 	public String getAccessInfo(DBRecord rec) throws AppException {
-		return "[ allowWrite="+ugm.getRole().mayWriteData()+" ]";
+		return "\n -Is current user role allowed to write data? ["+ugm.getRole().mayWriteData()+"]";
 	}
 	
 	@Override
 	public boolean mustPseudonymize() {
-		return ugm.getRole().pseudonymizedAccess();
+		return ugm.getConfirmedRole().pseudonymizedAccess();
 	}
 	
 	@Override
@@ -71,13 +77,19 @@ public class UserGroupAccessContext extends AccessContext {
 	public String getOwnerName() throws AppException {		
 		return parent.getOwnerName();
 	}
+	
+	@Override
+	public String getOwnerType() {		
+		return "Group";
+	}
+	
 	@Override
 	public MidataId getOwner() {
-		return parent.getOwner();
+		return getAccessor();// parent.getOwner();
 	}
 	@Override
 	public MidataId getOwnerPseudonymized() throws AppException {
-		return parent.getOwnerPseudonymized();
+		return getAccessor();//  parent.getOwnerPseudonymized();
 	}
 	@Override
 	public MidataId getSelf() {
@@ -85,7 +97,7 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 	@Override
 	public boolean mayAccess(String content, String format) throws AppException {
-		return false;
+		return parent.mayAccess(content, format);
 	}
 	
 	@Override
@@ -99,11 +111,43 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 	@Override
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
-		return null;
+		return parent.getAccessRestriction(content, format, field);
 	}
 	@Override
 	public String getContextName() {
-		return "User Group/Project";
+		return "User Group/Project access with role '"+ugm.getRole().roleName+"'";
 	}
-
+	
+	@Override
+	public boolean isUserGroupContext() {		
+		return true;
+	}
+	
+	@Override
+	public EntityType getAccessorEntityType() throws InternalServerException {
+		return EntityType.USERGROUP;
+	}
+	
+	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
+		if (ugm != null && ugm.userGroup.equals(this.ugm.userGroup)) return this;
+		return super.forUserGroup(ugm);
+	}
+	
+	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
+		if (userGroup.equals(ugm.userGroup)) return this;
+		return super.forUserGroup(userGroup, permission);		
+	}
+	
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
+		if (owner.equals(ugm.userGroup)) return true;
+		return super.canCreateActiveConsentsFor(owner);
+	}
+	
+	@Override
+	protected AccessContext getRootContext() {	
+		if (parent == null) return this;
+		return new UserGroupAccessContext(this.ugm, cache, parent.getRootContext());
+	}
+	
+	
 }

@@ -48,7 +48,7 @@ public class ImmunizationRecommendationResourceProvider extends RecordBasedResou
 		
 		registerSearches("ImmunizationRecommendation", getClass(), "getImmunizationRecommendation");
 
-		FhirPseudonymizer.forR4().reset("ImmunizationRecommendation");
+		FhirPseudonymizer.forR4().reset("ImmunizationRecommendation").hideIfPseudonymized("ImmunizationRecommendation", "text");
 	}
 
 	@Override
@@ -58,9 +58,7 @@ public class ImmunizationRecommendationResourceProvider extends RecordBasedResou
 
 	@Search()
 	public Bundle getImmunizationRecommendation(@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+			
 			@Description(shortDefinition="Date recommendation(s) created")
  			@OptionalParam(name="date")
 			DateAndListParam theDate, 
@@ -112,8 +110,7 @@ public class ImmunizationRecommendationResourceProvider extends RecordBasedResou
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);		
 				
 		paramMap.add("date", theDate);
 		paramMap.add("identifier", theIdentifier);
@@ -229,7 +226,7 @@ public class ImmunizationRecommendationResourceProvider extends RecordBasedResou
 
 		// Add subject field from record owner field if it is not already there
 		if (p.getPatient().isEmpty()) {
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setPatient(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

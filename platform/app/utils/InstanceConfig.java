@@ -37,6 +37,8 @@ public class InstanceConfig {
 	private String adminEmail;
 	private String portalOriginUrl;
 	private String internalBuilderUrl;
+	private String internalScriptingUrl;
+	private String internalCDNUrl;
 	
 	private String defaultLanguage;
 	private List<String> countries;
@@ -101,6 +103,14 @@ public class InstanceConfig {
 		return internalBuilderUrl;
 	}
 	
+	public String getInternalScriptingUrl() {
+		return internalScriptingUrl;
+	}
+	
+	public String getInternalCDNUrl() {
+		return internalCDNUrl;
+	}
+	
 	/**
 	 * returns domain of backend
 	 * @return
@@ -125,13 +135,6 @@ public class InstanceConfig {
 		return defaultLanguage;
 	}
 
-	/**
-	 * returns the list of supported countries for this platform
-	 * @return
-	 */
-	/*public List<String> getCountries() {
-		return countries;
-	}*/
 	
 	public Config getConfig() {
 		return config;
@@ -140,39 +143,50 @@ public class InstanceConfig {
 	public void init() {
 		try {
 
-		String instanceTypeStr = config.getString("instanceType");	
-		if (instanceTypeStr.equals("local")) instanceType = InstanceType.LOCAL;
-		else if (instanceTypeStr.equals("demo")) instanceType = InstanceType.DEMO;
-		else if (instanceTypeStr.equals("test")) instanceType = InstanceType.TEST;
-		else if (instanceTypeStr.equals("prod")) instanceType = InstanceType.PROD;
-		else if (instanceTypeStr.equals("perftest")) instanceType = InstanceType.PERFTEST;
-		
-		if (instanceType.disableCORSProtection()) {
-		  defaultHost = "*";
-		} else {
-		  defaultHost = config.getString("portal.originUrl");
-		}
-		
-		portalOriginUrl = config.getString("portal.originUrl");
-		
-		pluginServerDomain = config.getString("visualizations.server");
-		if (pluginServerDomain.endsWith("/plugin")) pluginServerDomain = pluginServerDomain.substring(0, pluginServerDomain.length()-"/plugin".length());
-		
-		portalServerDomain = config.getString("portal.server");
-		
-		platformServer = config.getString("platform.server");
-		
-		adminEmail = config.getString("emails.admin");
-		
-		defaultLanguage = config.getString("default.language");
-		
-		if (config.hasPath("platform.builder")) {
-		  internalBuilderUrl = config.getString("platform.builder");
-		} else {
-		  internalBuilderUrl = null;
-		}
-		
-		//countries = config.getStringList("default.countries");
+			String instanceTypeStr = config.getString("instanceType");	
+			if (instanceTypeStr.equals("local")) instanceType = InstanceType.LOCAL;
+			else if (instanceTypeStr.equals("demo")) instanceType = InstanceType.DEMO;
+			else if (instanceTypeStr.equals("test")) instanceType = InstanceType.TEST;
+			else if (instanceTypeStr.equals("prod")) instanceType = InstanceType.PROD;
+			else if (instanceTypeStr.equals("perftest")) instanceType = InstanceType.PERFTEST;
+			
+			if (instanceType.disableCORSProtection()) {
+			  defaultHost = "*";
+			} else {
+			  defaultHost = config.getString("portal.originUrl");
+			}
+			
+			portalOriginUrl = config.getString("portal.originUrl");
+			
+			pluginServerDomain = config.getString("visualizations.server");
+			if (pluginServerDomain.endsWith("/plugin")) pluginServerDomain = pluginServerDomain.substring(0, pluginServerDomain.length()-"/plugin".length());
+			
+			portalServerDomain = config.getString("portal.server");
+			
+			platformServer = config.getString("platform.server");
+			
+			adminEmail = config.getString("emails.admin");
+			
+			defaultLanguage = config.getString("default.language");
+			
+			if (config.hasPath("platform.builder")) {
+			    internalBuilderUrl = config.getString("platform.builder");		
+			} else {
+			    internalBuilderUrl = null;
+			}
+			
+			if (config.hasPath("platform.scripting")) {			  
+			    internalScriptingUrl = config.getString("platform.scripting");			  
+			} else {
+				internalScriptingUrl = null;
+			}
+			
+			if (config.hasPath("platform.cdn")) {			  
+				internalCDNUrl = config.getString("platform.cdn");
+			} else {
+				internalCDNUrl = null;
+			}
+					
 		} catch (ConfigException e) {
 			System.out.println(e.toString());
 			throw e;
@@ -184,7 +198,7 @@ public class InstanceConfig {
 	 * @return
 	 */
 	public String getTermsOfUse(UserRole role) {	
-	  //if (role == UserRole.PROVIDER) return "midata-terms-of-use-hp--" + (config.hasPath("versions.midata-terms-of-use-hp") ? config.getString("versions.midata-terms-of-use-hp") : "1.0");
+	  if (role == UserRole.PROVIDER) return "midata-terms-of-use-hp--" + (config.hasPath("versions.midata-terms-of-use-hp") ? config.getString("versions.midata-terms-of-use-hp") : "1.0");
 	  return "midata-terms-of-use--" + (config.hasPath("versions.midata-terms-of-use") ? config.getString("versions.midata-terms-of-use") : "1.0");
 	}
 	
@@ -193,7 +207,7 @@ public class InstanceConfig {
 	 * @return
 	 */
 	public String getPrivacyPolicy(UserRole role) {
-	   //if (role == UserRole.PROVIDER) return "midata-privacy-policy-hp--" + (config.hasPath("versions.midata-privacy-policy-hp") ? config.getString("versions.midata-privacy-policy-hp") : "1.0");
+	   if (role == UserRole.PROVIDER) return "midata-privacy-policy-hp--" + (config.hasPath("versions.midata-privacy-policy-hp") ? config.getString("versions.midata-privacy-policy-hp") : "1.0");
 	   return "midata-privacy-policy--" + (config.hasPath("versions.midata-privacy-policy") ? config.getString("versions.midata-privacy-policy") : "1.0");		
 	}
 }

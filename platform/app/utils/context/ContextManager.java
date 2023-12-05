@@ -17,18 +17,21 @@
 
 package utils.context;
 
+import java.util.List;
 import java.util.Map;
 
 import models.Consent;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.UserGroupMember;
+import models.enums.Permission;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.access.APSCache;
 import utils.access.Feature_UserGroups;
 import utils.access.RecordManager;
+import utils.auth.ActionToken;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.exceptions.AppException;
@@ -143,6 +146,17 @@ public class ContextManager {
 	}
 	
 	/**
+	 * Create AccessContext for an request that only uses an action token
+	 * @param token
+	 * @return
+	 * @throws InternalServerException
+	 */
+	public ActionTokenAccessContext createActionTokenSession(ActionToken token) throws InternalServerException {
+		AccessLog.log("[session] Action-token context for ", token.action.toString());
+		return (ActionTokenAccessContext) use(new ActionTokenAccessContext(token));
+	}
+	
+	/**
 	 * Create AccessContext for an already running action that is done by multiple Threads
 	 * @param executorId
 	 * @param role
@@ -160,9 +174,9 @@ public class ContextManager {
 	 * @return
 	 * @throws InternalServerException
 	 */
-	public AccessContext createLoginOnlyContext(MidataId executorId, UserRole role) throws InternalServerException {
+	public AccessContext createLoginOnlyContext(MidataId executorId, MidataId usedApp, UserRole role) throws InternalServerException {
 		AccessLog.log("[session] Login-context for ", executorId.toString());
-		return use(new PreLoginAccessContext(getCache(executorId), role).forAccount());
+		return use(new PreLoginAccessContext(getCache(executorId), role, usedApp).forAccount());
 	}
 	
 	/**
@@ -175,22 +189,22 @@ public class ContextManager {
 	 */
 	public AccessContext createLoginOnlyContext(MidataId executorId, UserRole role, MobileAppInstance appInstance) throws AppException {
 		AccessLog.log("[session] Login-context for ", executorId.toString());
-		return use(new PreLoginAccessContext(getCache(executorId), role).forApp(appInstance));
+		return use(new PreLoginAccessContext(getCache(executorId), role, appInstance.applicationId).forApp(appInstance));
 	}
 			
 	
 	public AccessContext createSharingContext(AccessContext context1, MidataId aps) throws AppException {
-		AccessLog.log("create sharing context user=", context1.getAccessor().toString(), " source aps=", aps.toString());
+		AccessLog.log("create sharing context ctx=", context1.toString(), " source aps=", aps.toString());
+		//if (!context1.canCreateActiveConsents() && context1.getOwner().equals(aps)) return context1;
+		
 		APSCache cache = context1.getCache();
 		AccessContext context = new AccountAccessContext(cache, null);
-		if (context1.getAccessor().equals(aps)) return context;
-		
-		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(aps, context1.getAccessor());
-		if (ugm!=null) {
-			cache = Feature_UserGroups.findApsCacheToUse(cache, ugm);
-			return new UserGroupAccessContext(ugm, cache, context);
-		}
-	
+		if (context1.getAccessor().equals(aps)) return context;		
+		if (context1.getOwner().equals(aps)) return context1.forAccountReshare();		
+		List<UserGroupMember> ugms = cache.getByGroupAndActiveMember(aps, context1.getAccessor(), Permission.READ_DATA);
+		if (ugms!=null) {
+			return context.forUserGroup(ugms);			
+		}		
 		
 		if (context.getCache().hasSubCache(aps)) return new RepresentativeAccessContext(context.getCache().getSubCache(aps), context);
 		
@@ -218,9 +232,9 @@ public class ContextManager {
 		return use(new SessionAccessContext(getCache(RuntimeConstants.instance.publicUser), UserRole.ANY, null, null, RuntimeConstants.instance.publicUser).forAccount());
 	}
 	
-	public AccessContext createRootPublicGroupContext() throws AppException {
+	public AccessContext createAdminRootPublicGroupContext() throws AppException {
 		AccessLog.log("[session] Start PUBLIC Group Session");
-		return use(new SessionAccessContext(getCache(RuntimeConstants.instance.publicUser), UserRole.ANY, null, null, RuntimeConstants.instance.publicUser).forPublic());
+		return use(new SessionAccessContext(getCache(RuntimeConstants.instance.publicUser), UserRole.ADMIN, null, null, RuntimeConstants.instance.publicUser).forPublic());
 	}
 
 	public AccessContext upgradeSessionForApp(AccessContext tempContext, MobileAppInstance appInstance) throws AppException {

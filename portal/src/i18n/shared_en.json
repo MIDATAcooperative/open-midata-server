@@ -2,7 +2,7 @@
    "footer" : {       
      "for_members" : "For Account Holders",
 	 "for_researchers" : "For Research Organizations",
-	 "for_providers" : "For Healthcare Providers",
+	 "for_providers" : "For Health Professionals",
 	 "for_developers" : "For Developers"
    },
 
@@ -38,6 +38,8 @@
      "relogin" : "Please relogin",
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
+     "failed" : "Action failed",
+     "timeout" : "Timeout",
      "notrialuser_title" : "Full membership required!",
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "@OPERATOR membership required!",
@@ -84,7 +86,11 @@
        "url" : "Invalid URL",
        "consent_members" : "This consent may only be confirmed once all external persons have joined the platform.",
        "entity_type" : "Invalid entity type",
-       "joincode" : "The provided participation code is not accepted."       
+       "joincode" : "The provided participation code is not accepted.",
+       "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
+       "csvmapping" : "Invalid mapping provided.",
+       "id" : "Invalid identifier",
+       "usergroup" : "You must be member of this user group to perform this action."
      },
 
      "missing" : {
@@ -106,7 +112,8 @@
        "access_query" : "No data selected",
        "plugin" : "This plugin does not exist in your account.",
        "auth_type" : "Two factor authentication is required for your type of account.",
-       "licence" : "A valid license is required to use this application."
+       "licence" : "A valid license is required to use this application.",
+       "manager" : "You must grant someone else manager permissions before removing this entity from the group." 
      },
 
      "unknown" : {
@@ -121,18 +128,23 @@
        "record" : "Unknown record",
        "user" : "User does not exist",      
        "participation" : "Research project participation not found.",
-       "organization" : "Organization does not exist."
+       "organization" : "Organization does not exist.",
+       "service" : "Service does not exist."
      },
 
      "exists" : {
        "user" : "A person with this email is already registered.",
        "member" : "A person with this email is already registered.",
-       "provider" : "A healthcare provider with this name already exists.",
+       "provider" : "A health professional with this name already exists.",
        "organization" : "An organization with this name already exists.",
        "passcode" : "Please choose a different passcode!",
        "plugin" : "An application with the same name already exists.",
        "study" : "A research project with this name already exists.",
-       "endpoint" : "An endpoint with this URL already exists"
+       "endpoint" : "An endpoint with this URL already exists",
+       "content" : "A content type with this name already exists.",
+       "group" : "A content group with this name already exists.",
+       "projectgroup" : "A project group with this name already exists.",
+       "code" : "A code with this code and codesystem already exists."
      },
 
      "blocked" : {
@@ -180,7 +192,8 @@
 
      "already_done" : {
        "email_verification" : "Email has already been verified.",
-       "unsubscribed" : "You have already unsubscribed from this communication channel."
+       "unsubscribed" : "You have already unsubscribed from this communication channel.",
+       "validation" : "Project has already been validated."
      },
 
      "no_alter" : {
@@ -195,6 +208,15 @@
      
      "notrequired" : {
        "licence" : "No license is required for this application"
+     },
+     
+     "nomatch" : {
+       "birthdate" : "Birthdate does not match",
+       "email" : "Different email address provided"
+     },
+     
+     "not_unique" : {
+        "identifier" : "A provided identifier is not unique"
      }
    },
 
@@ -206,10 +228,38 @@
        "UNKNOWN" : "not provided"
      },
      "country" : {
-       "CH" : "Switzerland",
-       "DE" : "Germany",
-       "NL" : "Netherlands",
-       "GB" : "United Kingdom"
+       "CH" : "Switzerland",       
+	    "AT" : "Austria",
+	    "BE" : "Belgium",
+	    "BG" : "Bulgaria",
+	    "HR" : "Croatia",
+	    "CY" : "Cyprus",
+	    "CZ" : "Czech Republic",
+	    "DK" : "Denmark",
+	    "EE" : "Estonia",
+	    "FI" : "Finland",
+	    "FR" : "France",
+	    "DE" : "Germany",
+	    "GR" : "Greece",
+	    "HU" : "Hungary",
+	    "IE" : "Ireland",
+	    "IT" : "Italy",
+	    "LV" : "Latvia",
+	    "LT" : "Lithuania",
+	    "LU" : "Luxembourg",
+	    "MT" : "Malta",
+	    "NL" : "Netherlands",
+	    "PL" : "Poland",
+	    "PT" : "Portugal",
+	    "RO" : "Romania",
+	    "SK" : "Slovakia",
+	    "SI" : "Slovenia",
+	    "ES" : "Spain",
+	    "SW" : "Sweden",          
+	    "GB" : "United Kingdom",
+	    "LI" : "Liechtenstein",
+	    "NO" : "Norway",
+	    "IS" : "Iceland"
      },
      "eventtype" : {
        "CODE_ENTERED" : "Code entered",
@@ -245,8 +295,8 @@
 	   "user-phone-change" :"User's phone number changed",
 	   "user-settings-change" :"User's settings changed",
 	   "user-email-change" :"User's email changed",
-	   "user-birthday-change" : "User's date of birth changed",
-	   "user-gender-change" : "User's gender information updated",
+	   "user-birthday-change" : "User's birthdate changed",
+	   "user-gender-change" : "User's gender changed",
 	   "user-status-change-active" : "User account unlocked",
 	   "user-status-change-blocked" : "User account blocked",
 	   "user-email-confirmed" : "Email confirmed by user",
@@ -285,7 +335,17 @@
        "contract-send" : "Contract send to user",
        "internal-comment" : "Administrator's comment",
        "user-terms-of-use-agreed" : "Agreed to General Terms and Conditions",
-       "audit-log-used" : "Audit log consulted",	   
+       "user-terms-of-use-noted" : "Took note of General Terms and Conditions",
+       "audit-log-used" : "Audit log consulted",	
+       "create" : "Resource created",
+	   "update" : "Resource updated",
+       "read" : "Resource read",
+       "vread" : "Resource version read",
+       "history" : "Resource history read",
+       "search" : "Searched for resources",   
+       "organization-updated" : "Organization updated",     
+       "organization-created" : "Organization created",
+       "organization-deleted" : "Organization deleted",
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
 	   "removed-from-team" : "Removed from team",
@@ -294,7 +354,20 @@
 	   "user-searched" : "Search for user",
 	   "welcome-sent" : "Welcome email sent",
 	   "tried-user-reregistration" : "Attempted user re-registration",
-	   "signature-failure" : "Consent validation failed"	   
+	   "non-perfect-account-match" : "Non perfect account match during access from 3rd party",
+	   "signature-failure" : "Consent validation failed",
+	   "email-sent" : "Email sent",
+	   "sms-sent" : "SMS sent",
+	   "resthook-called" : "Resthook called",
+	   "script-invocation" : "Script invoked",
+	   "plugin-deployed" : "Plugin deployed",
+	   "plugin-undeployed" : "Plugin undeployed",
+	   "access-confirmation" : "Access confirmation",
+	   "access-confirmation-request" : "Access confirmation request",
+	   "apikey-created" : "API-Key created",
+       "apikey-deleted" : "API-Key deleted",
+       "service-instance-created" : "Service-Instance created",
+       "service-instance-deleted" : "Service-Instance deleted"	   	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -307,7 +380,7 @@
 	   "PASSPORT_VERIFIED" : "ID card of users must have been verified",
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
 	   "ADMIN_VERIFIED" : "Account must have been unlocked by an administrator",
-	   "BIRTHDAY_SET" : "The date of birth of the user must be known",
+	   "BIRTHDAY_SET" : "The birthdate of the user must be known",
 	   "GENDER_SET" : "The gender of the user must be known",
 	   "APP_UNLOCK_CODE" : "The application requires an unlock code"
 	 },
@@ -319,14 +392,16 @@
 	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",
+	   "PRECONFIRMED" : "Active (Preconfirmed)",
 	   "EXPIRED" : "Expired",
 	   "REJECTED" : "Rejected",
 	   "UNCONFIRMED" : "Unconfirmed",
-	   "FROZEN" : "Frozen"
+	   "FROZEN" : "Frozen",
+	   "INVALID" : "Invalid"
 	 },
 	 "consenttype" : {
 	   "CIRCLE" : "Other Account Holders",
-     "REPRESENTATIVE" : "Representative",
+       "REPRESENTATIVE" : "Representative",
 	   "EXTERNALSERVICE" : "External Application",
 	   "API" : "External Service",
 	   "HCRELATED" : "Healthcare",
@@ -364,7 +439,8 @@
 	 "studytype" : {
 	   "CLINICAL" : "Clinical Study",
 	   "CITIZENSCIENCE" : "Citizen Science Project",
-	   "COMMUNITY" : "Community"
+	   "COMMUNITY" : "Community",
+	   "REGISTRY" : "Registry"
 	 },
 	 "joinmethod" : {
 	   "APP" : "Participant uses the linked application",
@@ -409,7 +485,7 @@
 	   "ANY" : "Any Role",
 	   "DEVELOPER" : "Developer",
 	   "MEMBER" : "Account Holder",
-	   "PROVIDER" : "Healthcare provider",
+	   "PROVIDER" : "Health professional",
 	   "RESEARCH" : "Researcher"	  
 	 },
 	 "subuserrole" : {
@@ -419,6 +495,7 @@
 	   "MONITOR" : "Monitor",
 	   "MASTER" : "Master User",
 	   "USERADMIN" : "User Admin",
+	   "KEYRECOVERY" : "Key Recovery",
 	   "STUDYADMIN" : "Project Admin",
 	   "CONTENTADMIN" : "Content Admin",
 	   "PLUGINADMIN" : "Application Admin",
@@ -442,6 +519,7 @@
 	   "ACTIVE" : "Active",
 	   "BLOCKED" : "Blocked",
 	   "DELETED" : "Deleted",
+	   "FAKE" : "Fake Account",
 	   "NEW" : "New"
 	 },
 	 "frequency" : {
@@ -490,12 +568,13 @@
 	 },
 	 "plugintype" : {
 	   "visualization" : "Plugin",
-	   "service" : "Internal Service",
+	   "service" : "Internal service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
 	   "mobile" : "Application (Smartphone, Web)",
-	   "external": "External Service",
+	   "external": "External service",
 	   "analyzer" : "Project analyzer",
+	   "broker" : "Data broker",
 	   "endpoint" : "FHIR endpoint"
 	 },
 	 "infos" : {
@@ -524,8 +603,15 @@
 	 },
 	 "entitytype" : {
 	   "USER" : "User",
-	   "USERGROUP" : "Team",
-	   "ORGANIZATION" : "Organization"
+	   "USERGROUP" : "Team",	  
+	   "ORGANIZATION" : "Organization",
+	   "SERVICES" : "Data broker"
+	 },
+	 "usergrouptype" : {
+	   "ORGANIZATION" : "Organization",
+	   "CARETEAM" : "Care Team",
+	   "HEALTHCARESERVICE" : "Healthcare Service",
+	   "RESEARCHTEAM" : "Research"
 	 },
 	 "bulkmailtype" : {
 	   "MARKETING" : "Marketing - Account Holders",
@@ -536,6 +622,13 @@
 	   "ALLOWED" : "Allowed",
 	   "FORBIDDEN" : "Forbidden",
 	   "NULL" : "Undefined"
+	 },
+	 "deploymentstatus" : {
+	    "NONE" : "None",
+	    "READY" : "Ready",
+	    "RUNNING" : "Building",
+	    "FAILED" : "Failed",
+	    "DONE" : "Done"
 	 }
    },
 
@@ -574,9 +667,11 @@
   "registration" : {
     "sign_up" : "Sign Up",
     "mandantory_fields" : "Please fill in the information below, fields marked with an asterisk (*) are mandatory.",
+    "mandantory_fields2" : "Please fill in your email address and password.",
     "password_policy" : "The password must be at least 8 characters long and contain one letter and one digit.",
     "password_policy2" : "The password must be at least 12 characters long and contain one letter, one digit and a special character.",
-    "email" : "EMail",
+    "personal_details" : "Personal Details",
+    "email" : "Email",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
     "secure" : "Account Protection",
@@ -584,8 +679,8 @@
     "firstname" : "First Name",
     "lastname" : "Surname",
     "gender" : "Gender",
-    "birthday" : "Date of birth",
-    "birthday2" : "Date of birth (format: 31.12.1999)",
+    "birthday" : "Birthdate",
+    "birthday2" : "Birthdate (format: 31.12.1999)",
     "language" : "Preferred Language",
     "day" : "Day",
     "month" : "Month",
@@ -613,6 +708,7 @@
     "sign_up_btn" : "Create Account",
     "unlock_code" : "Unlock Code",
     "already_have_account" : "I already have an account",
+    "already_have_account2" : "If this is your own account click here to go to the login page.",
     "more" : "Have a few more seconds to spare? We'd be happy if you could give us a bit more details about you ☺️",
     "generous" : "I'm feeling generous today, show me the fields!",
     "hide_optional" : "Hide optional fields",
@@ -685,11 +781,11 @@
     "email_success" : "Thank you for confirming your email address.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
-    "birthday_entered" : "A valid date of birth is required to use this service. Please add your date of birth to your account information. (Format example: 31.12.1999)",
-    "gender_entered" : "Information about your gender is required to use this service. Please provide your gender.",
+    "birthday_entered" : "A valid birthdate is required to use this service. Please add your birthdate to your account information. (Format example: 31.12.1999)",
+    "gender_entered" : "Your gender must be provided to use this service. Please indicate your gender.",
     "admin_verified" : "Your account must be unlocked by an administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact @SUPPORT.",
-    "terms_agreed" : "The General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
-    "privacy_policy_agreed" : "The Privacy Policy has been updated. Please confirm that you agree to the new version.",
+    "terms_agreed" : "The General Terms and Conditions have been updated. Please confirm that you have taken note of the new version.",
+    "privacy_policy_agreed" : "The Privacy Policy has been updated. Please confirm that you have taken note of the new version.",
     "auth2factor" : "An authorization code has been send to your phone. Please enter it.",
     "securityToken" : "Code",
     "securityToken_btn" : "Send",
@@ -703,6 +799,7 @@
     "emailnotify" : "Notifications",
     "emailnotify2" : "Please send me an email everytime I log into the @PRODUCT portal at {{domain}}.",
     "agree_btn" : "I agree",
+    "noted_btn" : "I took note of it",
     "keyrecovery" : {
       "intro" : "The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:",
       "way1" : "Do you have any application using @PRODUCT where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.",
@@ -762,11 +859,11 @@
   },
 
   "providersearch" : {
-    "title" : "Provider search",
+    "title" : "Health professional search",
     "name" : "Name",
     "city_or_zip" : "City / Zip",
-    "only_with_contact" : "Search only healthcare providers you already had contact with.",
-    "empty_result" : "No providers found.",
+    "only_with_contact" : "Search only health professionals you already had contact with.",
+    "empty_result" : "No health professional found.",
     "add_consent_btn" : "Add Consent"
   },
 
@@ -775,6 +872,7 @@
     "name" :"Name:",
 	"owned_by" : "Owned by:",
 	"created_by" : "Created by:",
+	"modified_by" : "Last modified by:",
     "created_with" : "Created with:",
     "created_on" : "Created at:",
     "content" : "@PRODUCT content type:",
@@ -790,7 +888,7 @@
   "studydetails" : {
     "study" : "Research project",    
     "organization" : "Organization performing the project:",
-    "providers_monitoring" : "Healthcare professionals monitoring the project",
+    "providers_monitoring" : "Health professionals monitoring the project",
     "no_providers" : "None",
     "provider_remove_btn" : "Remove",
     "provider_add_btn" : "Add",
@@ -798,7 +896,7 @@
     "information_that_needs_sharing" : "Required data",
     "information_restricted" : "Your gender, year of birth and country of residence",
     "information_none" : "A pseudonym",
-    "information_demographic" : "Your complete demographic data (name, date of birth, address, ...)",
+    "information_demographic" : "Your complete demographic data (name, birthdate, address, ...)",
     "records_with_format" : "Records that have format:",
     "records_with_content" : "Records that have content:",
     "records_with_group" : "Records that belong to group:",
@@ -829,7 +927,7 @@
     "user" : "User",
     "name" : "Name:",
     "email" : "Email:",
-    "birthday" : "Date of birth:",
+    "birthday" : "Birthdate:",
     "midataID" : "@PRODUCT ID:",
     "action" : "More...",
     "change_password_btn" : "Change Password",
@@ -842,6 +940,7 @@
 	"export_btn" : "Export your data",
 	"delete_records_btn" : "Delete Records",
 	"wipe_account_btn" : "Delete Account",
+	"cancel_btn" : "Back to application",
 	"metrics_btn" : "Calculate Account Metrics",
 	"servicekeys_btn" : "Manage API Keys",
 	"account_repaired" : "Your account has been repaired.",
@@ -903,12 +1002,14 @@
     "set_owner_btn" : "Select person that shares its data",
     "add_yourself_btn" : "Add yourself",
     "add_person_btn" : "Add New Person",
+    "add_organization_btn" : "Add New Organization",
     "add_usergroup_btn" : "Add New Team",
     "writes" : "Write Permission",
     "writes2" : "The persons authorized by this consent may create or update data in your account covered by this consent.",
     "reshare" : "3rd party access?",
     "reshare2" : "The persons authorized by this consent may reshare the data I gave them access to.",
     "expiration_date" : "Consent expiration date:",
+    "created_after" : "Only includes data created after:",
     "created_before" : "Do not share data created after:",
     "share_what" : "What data do you want to share?",
     "consent_empty" : "This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.",
@@ -929,23 +1030,26 @@
     "people" : "With which persons(s) do you want to share data?",
     "external" : "Non @PRODUCT account holder",
     "add_people_btn" : "Add More People",
+    "add_hp_btn" : "Add Practitioner",
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
     "reshare2" : "@:newconsent.reshare2",
     "writes" : "Write Permission",
     "expiration_date" : "Consent expiration date:",
     "created_before" : "Does not share data created after:",
+    "created_after" :"Only data created after:",
     "what_is_shared" : "What data is shared?",
     "consent_empty" : "This consent does not share any data at the moment.",
     "type_circle" : "This consent shares data with other @PRODUCT account holders.",
     "type_representative" : "This consent authorizes another person to use your account. All data of the account owner is shared with the representative.",
-    "type_healthcare" : "This consent shares data with healthcare professionals.",
+    "type_healthcare" : "This consent shares data with health professionals.",
     "type_studyparticipation" : "This consent shares data with a research project.",
     "type_studyrelated" : "This consent shares data with a project participant.",
     "type_externalservice" : "This consent shares data with an application.",
     "type_api" : "This consent shares data with an external service.",
     "type_implicit" : "This implicitely created consent shares messages with their receivers.",
     "status_active" : "This consent is active.",
+    "status_preconfirmed" : "This consent has been externally confirmed and is active.",
     "status_expired" : "This consent is expired. Data is no longer shared.",
     "status_unconfirmed" : "This consent needs confirmation by its owner.",
     "status_rejected" : "This consent has been rejected by its owner.",
@@ -962,13 +1066,22 @@
     "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.",
     "you" : "You",
     "restrictions" : "Further restrictions?",
-    "project" : "Project"
+    "project" : "Project",
+    "source" : "Source of this consent",
+    "based_on" : "Link to base consent used",
+    "base_created_at" : "Base consent created at",
+    "allowed_reshares" : "If required data may be reshared to these 3rd parties",
+    "reshare_service" : "3rd parties using the service",
+    "reshare_usergroup" : "Team or project",
+    "reshare_user" : "Single user",
+    "reshare_project" : "Project"
   },
   
   "editconsent2" : {
     "date_of_creation" : "created at",
     "valid_until" : "expires at",
     "status_active" : "Active now",
+    "status_preconfirmed" : "Active now (Preconfirmed)",
     "status_expired" : "Expired",
     "status_unconfirmed" : "Needs confirmation",
     "status_rejected" : "Rejected",
@@ -982,7 +1095,7 @@
 
   "consents" : {
     "title" : "Consents",
-    "description" : "Using consents you can grant others (healthcare professionals, friends, researchers, ...) access to some of your data. Use this page to manage your consents and create new ones.",
+    "description" : "Using consents you can grant others (health professionals, friends, researchers, ...) access to some of your data. Use this page to manage your consents and create new ones.",
     "count" : "You have {{ count }} consent(s):",
     "where_owner" : "Show consents where you share data with someone else",
     "where_authorized" : "Show consents where data is shared with you",
@@ -1099,6 +1212,8 @@
     "link_ORGANIZATION_optional" : "You may share data with this third party:", 
     "link_CLINICAL_required" : "In order to use this application you need to participate in a clinical study:",
     "link_CLINICAL_optional" : "Additionally you may participate in a clinical study:",
+    "link_REGISTRY_required" : "In order to use this application you need to share data with a registry:",
+    "link_REGISTRY_optional" : "Additionally you may share data with a registry:",
     "link_CITIZENSCIENCE_required" : "In order to use this application you must participate in a citizen science project:",
     "link_CITIZENSCIENCE_optional" : "Additionally you may participate in a citizen science project:",
     "link_COMMUNITY_required" : "In order to use this application you must participate in a community project:",
@@ -1149,11 +1264,11 @@
 	  "circles2" : "Your Circles",
 	  "circles2_teaser" : "Create Circles to share your data with others. Share with friends, family or others.",
 	  "providers" : "Your Health Consents",
-	  "providers_teaser" : "Search for healthcare providers and add them to your list in order to share data with them.",
-	  "providersearch" : "Search for Health Providers",
-	  "providersearch_text" : "Search function for healthcare providers.",
+	  "providers_teaser" : "Search for health professionals and add them to your list in order to share data with them.",
+	  "providersearch" : "Search for Health Professionals",
+	  "providersearch_text" : "Search function for health professionals.",
 	  "usergroupsearch" : "Search for Teams",
-	  "hcrecords" : "Newest records from your healthcare providers",
+	  "hcrecords" : "Newest records from your health professionals",
 	  "records" : "Records",
     "share" : "Share",
     "details" : "Details",
@@ -1223,6 +1338,7 @@
   },
   
   "addusers" : {
+    "title" : "User Search",
     "contacts" : "Existing contacts:",
     "all_users" : "All users",
     "no_contacts_to_add" : "No contacts can be added to this circle.",
@@ -1238,6 +1354,20 @@
      "empty_result" : "No matching teams found.",
      "add_individuals_btn" : "Add As Individual People To Consent",
      "add_group_btn" : "Add As Changing Team To Consent"
+  },
+  
+  "organizationsearch" : {
+     "title" : "Search for Organizations",
+     "name" : "Organization Name",
+     "city_or_zip" : "City or zip code",
+     "empty_result" : "No matching organizations found."
+  },
+  
+  "databrokersearch" : {
+    "title" : "Search Data Brokers (APIs)",
+    "name" : "Data broker name",
+    "empty_result" : "No matching data brokers found.",
+    "new_btn" : "Create new instance"
   },
   
   "confirm" : {
@@ -1267,9 +1397,9 @@
     "EXTERNALSERVICE" : "Application",
     "API" : "Service",
     "STUDYPARTICIPATION" : "Participation",
-    "HEALTHCARE" : "Consent (Health Provider)",
+    "HEALTHCARE" : "Consent (Health Professional)",
     "MEMBER" : "Account",
-    "PROVIDER" : "Account (Health Provider)",
+    "PROVIDER" : "Account (Health Professional)",
     "HCRELATED" : "Account (Account Holder)",
     "RESEARCH" : "Account (Researcher)",
     "ADMIN" : "Account (Administrator)",
@@ -1334,14 +1464,17 @@
     "error" : "Password not correct. The account has not been deleted."
   },
   
+  "service" : {
+     "title" : "Token-Link service for @PRODUCT",
+     "success" : "Your token-link has been processed. You can now close this window."
+  },
+  
   "serviceleave" : {
-    "title" : "Did you finish your session?",
-    "thankyou" : "Thank you for your help!",
-    "continue" : "Please use the top menu to continue your session or log out.",
+    "title" : "You are leaving @PRODUCT",
+    "thankyou" : "Thank you for your help!",    
     "logout_btn" : "Log out",
     "goodbye_btn" : "End session and close window",
-    "logoutreturn" : "You will be redirected to the calling page.",
-    "return_btn" : "Log out and continue"
+    "logoutreturn" : "You are now leaving the @PRODUCT account management portal."    
   },
   
   "queryeditor" : {
@@ -1385,6 +1518,18 @@
     "observer" : "Only with this observer (optional)",
     "category" : "Category (optional)",
     "custom_filter" : "User Defined Filter (JSON)",
+    "security_tags" : "Security Tags",
+    "tag" : "Tag",
+    "require" : "Require for read",
+    "allow" : "Allow write",
+    "add" : "Auto-Add",
+    "tags" : {
+      "reliable" : "Reliable",
+      "no_delete" : "No delete",
+      "read_only" : "Read only",
+      "hidden" : "Hide from patient",
+      "not_pseudonymisable" : "Not pseudonymisable"
+    },
     "remove_btn" : "Remove",
     "apply_btn" : "Apply",
     "newentry" : "Enter name, code, resource type or (part of) description of data type to add:",
@@ -1425,8 +1570,10 @@
   "apikeys" : {
     "title" : "API Key Management",
     "empty" : "This account does not manage any services with API keys.",
+    "managedby" : "managed by",
     "add_btn" : "Add Key",
     "delete_btn" : "Remove Analyzer",
+    "delete_service_btn" : "Remove Service",
     "delete_endpoint_btn" : "Remove Endpoint",
     "show_btn" : "Show Keys",  
     "revoke_btn" : "Revoke this key",
@@ -1435,9 +1582,10 @@
     "instructions_key" : "Use this key directly in the authorization header of the service as bearer token.",
     "refresh" : "Refresh token for OAuth",
     "instructions_refresh" : "For improved security, exchange this refresh token against a new pair of access token and refresh token.",
-    "common_name" : "CN (common name) for CSR (certificate request)",
-    "instructions_common_name" : "For certificate based authentication create a CSR with the given CN field. Send the CSR to @SUPPORT",
+    "common_name" : "OU (organization unit) and CN (common name) for CSR (certificate request)",
+    "instructions_common_name" : "For certificate based authentication create a CSR with the given OU and CN fields. Send the CSR to @SUPPORT",
     "date" : "Date of creation",
+    "restrictions" : "Restrictions", 
     "status" : "Status",
     "ACTIVE" : "Active",
     "FROZEN" : "Old version",

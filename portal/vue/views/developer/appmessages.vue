@@ -117,7 +117,7 @@ export default {
         app : null,
 
         languages : languages.array,
-        reasons : ['REGISTRATION', 'REGISTRATION_BY_OTHER_PERSON', 'FIRSTUSE_ANYUSER', 'FIRSTUSE_EXISTINGUSER', 'LOGIN', 'ACCOUNT_UNLOCK', 'CONSENT_REQUEST_OWNER_INVITED', 'CONSENT_REQUEST_OWNER_EXISTING', 'CONSENT_REQUEST_AUTHORIZED_INVITED', 'CONSENT_REQUEST_AUTHORIZED_EXISTING', 'CONSENT_CONFIRM_OWNER', 'CONSENT_CONFIRM_AUTHORIZED', 'CONSENT_REJECT_OWNER', 'CONSENT_REJECT_AUTHORIZED', 'EMAIL_CHANGED_OLDADDRESS', 'EMAIL_CHANGED_NEWADDRESS', 'PASSWORD_FORGOTTEN', 'USER_PRIVATE_KEY_RECOVERED', 'RESOURCE_CHANGE', 'PROCESS_MESSAGE' ],
+        reasons : ['REGISTRATION', 'REGISTRATION_BY_OTHER_PERSON', 'FIRSTUSE_ANYUSER', 'FIRSTUSE_EXISTINGUSER', 'LOGIN', 'SERVICE_WITHDRAW', 'ACCOUNT_UNLOCK', 'CONSENT_REQUEST_OWNER_INVITED', 'CONSENT_REQUEST_OWNER_EXISTING', 'CONSENT_REQUEST_AUTHORIZED_INVITED', 'CONSENT_REQUEST_AUTHORIZED_EXISTING', 'CONSENT_CONFIRM_OWNER', 'CONSENT_CONFIRM_AUTHORIZED', 'CONSENT_REJECT_OWNER', 'CONSENT_REJECT_AUTHORIZED', 'CONSENT_REJECT_ACTIVE_AUTHORIZED', 'CONSENT_VERIFIED_OWNER', 'CONSENT_VERIFIED_AUTHORIZED', 'EMAIL_CHANGED_OLDADDRESS', 'EMAIL_CHANGED_NEWADDRESS', 'PASSWORD_FORGOTTEN', 'USER_PRIVATE_KEY_RECOVERED', 'RESOURCE_CHANGE', 'PROCESS_MESSAGE', 'NON_PERFECT_ACCOUNT_MATCH', 'TRIED_USER_REREGISTRATION' ],
 	    sel : { lang : 'en' },
         selmsg : null,
         messages : [],
@@ -125,23 +125,29 @@ export default {
             'REGISTRATION': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
             'REGISTRATION_BY_OTHER_PERSON': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "executor-firstname", "executor-lastname", "executor-email", "plugin-name", "midata-portal-url"],
             'FIRSTUSE_ANYUSER' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+            'SERVICE_WITHDRAW' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
             'LOGIN' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
             'FIRSTUSE_EXISTINGUSER' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
             'EMAIL_CHANGED_OLDADDRESS' : ["firstname", "lastname", "old-email", "new-email", "midata-portal-url", "reject-url"],
             'EMAIL_CHANGED_NEWADDRESS' : ["firstname", "lastname", "old-email", "new-email", "midata-portal-url", "confirm-url"],
             'ACCOUNT_UNLOCK' : ["firstname", "lastname", "email", "midata-portal-url"],
-            'CONSENT_REQUEST_OWNER_EXISTING' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url", "confirm-url"],
-            'CONSENT_REQUEST_AUTHORIZED_EXISTING' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name","firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-            'CONSENT_CONFIRM_OWNER' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-            'CONSENT_CONFIRM_AUTHORIZED' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-            'CONSENT_REJECT_OWNER' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name","firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-            'CONSENT_REJECT_AUTHORIZED' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-            'CONSENT_REQUEST_OWNER_INVITED' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-email", "consent-name", "email", "plugin-name", "midata-portal-url", "confirm-url"],
-            'CONSENT_REQUEST_AUTHORIZED_INVITED' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name", "email", "plugin-name", "midata-portal-url"],
+            'CONSENT_REQUEST_OWNER_EXISTING' : ["executor-firstname", "executor-lastname", "executor-name", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-name", "grantor-email", "grantee-firstname", "grantee-lastname", "grantee-name", "grantee-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url", "confirm-url"],
+            'CONSENT_REQUEST_AUTHORIZED_EXISTING' : ["executor-firstname", "executor-lastname", "executor-name", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-name", "grantor-email", "grantee-firstname", "grantee-lastname", "grantee-name", "grantee-email", "consent-name","firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+            'CONSENT_CONFIRM_OWNER' : ["executor-firstname", "executor-lastname", "executor-name", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-name", "grantor-email", "grantee-firstname", "grantee-lastname", "grantee-name", "grantee-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+            'CONSENT_CONFIRM_AUTHORIZED' : ["executor-firstname", "executor-lastname", "executor-name", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-name", "grantor-email", "grantee-firstname", "grantee-lastname", "grantee-name", "grantee-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url", "reject-url"],
+            'CONSENT_REJECT_OWNER' : ["executor-firstname", "executor-lastname", "executor-name", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-name", "grantor-email", "grantee-firstname", "grantee-lastname", "grantee-name", "grantee-email", "consent-name","firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+            'CONSENT_REJECT_AUTHORIZED' : ["executor-firstname", "executor-lastname", "executor-name", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-name", "grantor-email", "grantee-firstname", "grantee-lastname", "grantee-name", "grantee-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+            'CONSENT_REJECT_ACTIVE_AUTHORIZED' : ["executor-firstname", "executor-lastname", "executor-name", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-name", "grantor-email", "grantee-firstname", "grantee-lastname", "grantee-name", "grantee-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+            'CONSENT_REQUEST_OWNER_INVITED' : ["executor-firstname", "executor-lastname", "executor-name", "executor-email", "grantor-name", "grantor-email", "grantee-firstname", "grantee-lastname", "grantee-name", "grantee-email", "consent-name", "email", "plugin-name", "midata-portal-url", "confirm-url"],
+            'CONSENT_REQUEST_AUTHORIZED_INVITED' : ["executor-firstname", "executor-lastname", "executor-name", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-name", "grantor-email", "grantee-name", "grantee-email", "consent-name", "email", "plugin-name", "midata-portal-url", "reject-url"],
+            'CONSENT_VERIFIED_OWNER': ["executor-firstname", "executor-lastname", "executor-name", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-name", "grantor-email", "grantee-firstname", "grantee-lastname", "grantee-name", "grantee-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+            'CONSENT_VERIFIED_AUTHORIZED': ["executor-firstname", "executor-lastname", "executor-name", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-name", "grantor-email", "grantee-firstname", "grantee-lastname", "grantee-name", "grantee-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
             'PASSWORD_FORGOTTEN' : [ "site", "password-link", "firstname", "lastname", "email" ],
             'RESOURCE_CHANGE' : [ "midata-portal-url", "plugin-name", "firstname", "lastname", "email" ],
             'PROCESS_MESSAGE' : [ "midata-portal-url", "plugin-name", "firstname", "lastname", "email" ],
-            'USER_PRIVATE_KEY_RECOVERED' : [ "firstname", "lastname", "email", "site" ]
+            'USER_PRIVATE_KEY_RECOVERED' : [ "firstname", "lastname", "email", "site" ],
+            'NON_PERFECT_ACCOUNT_MATCH' : [ "plugin-name", "firstname", "lastname", "email", "site" ],
+            'TRIED_USER_REREGISTRATION' : [ "plugin-name", "firstname", "lastname", "email", "site" ]
         }
     }),
 
@@ -158,7 +164,7 @@ export default {
 
         loadApp(appId) {
             const { $data } = this, me = this;
-            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "predefinedMessages", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "loginTemplate", "loginButtonsTemplate"])
+            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "predefinedMessages", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys"])
             .then(function(data) { 
                 let app = data.data[0];
                 if (!app.predefinedMessages) app.predefinedMessages = {};

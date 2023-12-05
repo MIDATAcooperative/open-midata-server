@@ -71,9 +71,7 @@ public class ValueSetResourceProvider extends RecordBasedResourceProvider<ValueS
 	@Search()
 	public Bundle getValueSet(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+			
 			@Description(shortDefinition="This special parameter searches for codes in the value set.")
   			@OptionalParam(name="code")
   			TokenAndListParam theCode, 
@@ -172,8 +170,7 @@ public class ValueSetResourceProvider extends RecordBasedResourceProvider<ValueS
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
     
         paramMap.add("code", theCode);
         paramMap.add("context", theContext);

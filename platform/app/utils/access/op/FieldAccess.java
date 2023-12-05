@@ -26,6 +26,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 import org.bson.types.BasicBSONList;
 
+import utils.AccessLog;
+
 /**
  * Field access operator for mongo conditions
  *
@@ -116,30 +118,29 @@ public class FieldAccess implements Condition, Serializable {
 	public Condition indexExpression() {
 		String path = field;
 		Condition c = cond;
-		 
+				
 		while (c instanceof FieldAccess) {
 			path += "."+((FieldAccess) c).field;
 			c = ((FieldAccess) c).cond;
 		}
-		c = c.indexValueExpression();
-		if (c == null) {
-			if (cond instanceof AndCondition) {
+		Condition c2 = c.indexValueExpression();
+		if (c2 == null) {
+			if (c instanceof AndCondition) {
 				Condition r = null;
-				for (Condition part : ((AndCondition) cond).getParts()) {
+				for (Condition part : ((AndCondition) c).getParts()) {
 					r = AndCondition.and(r, new FieldAccess(path, part));
 				}
 				return r == null ? null : r.indexExpression();
-			} else if (cond instanceof OrCondition) {
+			} else if (c instanceof OrCondition) {
 				Condition r = null;
-				for (Condition part : ((OrCondition) cond).getParts()) {
+				for (Condition part : ((OrCondition) c).getParts()) {
 					r = OrCondition.or(r, new FieldAccess(path, part));
 				}
 				return r == null ? null : r.indexExpression();
-			} 
+			}			
 			return null;
-		}
-		
-		return new FieldAccess(path, c); 
+		}		
+		return new FieldAccess(path, c2); 
 	}
 
 	@Override

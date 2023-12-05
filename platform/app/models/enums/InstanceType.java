@@ -217,19 +217,19 @@ public enum InstanceType {
 		if (this == PERFTEST) return EnumSet.of(UserFeature.EMAIL_ENTERED);
 		if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.AUTH2FACTORSETUP, UserFeature.AUTH2FACTOR , UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED);
 		if (this == TEST || this == DEMO) {
-		   return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED, UserFeature.AUTH2FACTORSETUP, UserFeature.AUTH2FACTOR);
+		   return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED, UserFeature.AUTH2FACTORSETUP, UserFeature.AUTH2FACTOR, UserFeature.BIRTHDAY_SET);
 		}
-		if (this == PROD) return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED, UserFeature.AUTH2FACTORSETUP, UserFeature.AUTH2FACTOR, UserFeature.GENDER_SET);
-		return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED/*, UserFeature.AUTH2FACTORSETUP, UserFeature.AUTH2FACTOR*/);
+		if (this == PROD) return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED, UserFeature.AUTH2FACTORSETUP, UserFeature.AUTH2FACTOR, UserFeature.BIRTHDAY_SET);
+		return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED, UserFeature.BIRTHDAY_SET/*, UserFeature.AUTH2FACTORSETUP, UserFeature.AUTH2FACTOR*/);
 	}
 	
     public Set<UserFeature> defaultRequirementsOAuthLogin(UserRole role) {
     	if (this == PERFTEST) return EnumSet.of(UserFeature.EMAIL_ENTERED);
     	if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED);
     	if (this == TEST || this == DEMO) {
- 		   return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED);
+ 		   return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED, UserFeature.BIRTHDAY_SET);
  		}
-    	return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED, UserFeature.GENDER_SET);
+    	return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED, UserFeature.BIRTHDAY_SET);
 	}
     
     public boolean is2FAMandatory(UserRole role) {    	

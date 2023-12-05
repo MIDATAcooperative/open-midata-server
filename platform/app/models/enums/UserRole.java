@@ -62,6 +62,17 @@ public enum UserRole {
 	   return UserRole.ANY;
    }
    
+   public String toPublicString() {
+	   switch (this) {
+	   case MEMBER: return "Patient";
+	   case RESEARCH: return "Person";
+	   case DEVELOPER: return "Person";
+	   case ADMIN: return "Person";
+	   case PROVIDER: return "Practitioner";
+	   default: return "Person";
+	   }
+   }
+   
    public String toShortString() {
 	   switch (this) {
 	   case MEMBER: return "m";

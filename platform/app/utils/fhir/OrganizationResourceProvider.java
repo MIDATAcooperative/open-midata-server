@@ -17,20 +17,33 @@
 
 package utils.fhir;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.instance.model.api.IBaseExtension;
+import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.Endpoint;
+import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Organization;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.Type;
+import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
+import ca.uhn.fhir.rest.annotation.Operation;
+import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
@@ -41,18 +54,32 @@ import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
+import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
+import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.exceptions.ForbiddenOperationException;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import models.HealthcareProvider;
 import models.MidataId;
 import models.Record;
 import models.Research;
+import models.enums.AuditEventType;
+import models.enums.EntityType;
+import models.enums.ResearcherRole;
+import models.enums.UserStatus;
+import utils.AccessLog;
+import utils.ApplicationTools;
+import utils.OrganizationTools;
+import utils.QueryTagTools;
 import utils.RuntimeConstants;
+import utils.UserGroupTools;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
+import utils.audit.AuditManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -88,9 +115,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	@Search()
 	public Bundle getOrganization(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+			
 			@Description(shortDefinition="Is the Organization record active")
   			@OptionalParam(name="active")
   			TokenAndListParam theActive,
@@ -160,8 +185,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 						
 		paramMap.add("active", theActive);		
 		paramMap.add("address", theAddress);		
@@ -210,7 +234,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
         // type would be TYPE_DATETIME and path would be "effectiveDateTime" instead										
 		
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
-		builder.restriction("name", true, QueryBuilder.TYPE_STRING, "name");
+		builder.restrictionMany("name", true, QueryBuilder.TYPE_STRING, "name", "alias");
 		builder.restriction("phonetic", true, QueryBuilder.TYPE_STRING, "name");
 		builder.restriction("partof", true, "Organization", "partOf");				
 		builder.restriction("type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "type");
@@ -226,9 +250,25 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 																		
 		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
-		//query.putAccount("public", "only");
+		query.putAccount("public", "also");
 		// At last execute the constructed query
 		return query;
+	}
+	
+	public List<Organization> search(AccessContext context, String name, String city, boolean onlyActive) throws AppException {
+		SearchParameterMap params = new SearchParameterMap();
+		if (name != null) params.add("name", new StringParam(name));		
+		if (city != null) params.add("address-city", new StringParam(city));
+		if (onlyActive) params.add("active", new TokenParam("true"));
+		Query query = new Query();		
+		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Organization");
+		builder.restrictionMany("name", true, QueryBuilder.TYPE_STRING, "name", "alias");
+		builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "address.city");
+		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
+		query.putAccount("public", "only");
+		query.putAccount("content", "Organization/HP");
+		List<Record> result = query.execute(context);
+		return parse(result, getResourceType());
 	}
 	
 		
@@ -251,12 +291,63 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	
 	@Override
 	public void updatePrepare(Record record, Organization theResource) throws AppException {
-		if (record.tags != null && record.tags.contains("security:generated")) {
+		if (theResource.getUserData("source")==null && record.content.equals("Organization/HP")) {
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CHANGED).withActor(info(), info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
+			HealthcareProvider hp = HealthcareProvider.getByIdAlsoDeleted(record._id, HealthcareProvider.ALL);
+			hp.name = theResource.getName();
+			extractAddress(theResource, hp);
+			MidataId oldParent = hp.parent;
+			if (theResource.hasPartOf()) {
+			   Reference parentRef = theResource.getPartOf();
+			   hp.parent =  MidataId.parse(parentRef.getId());
+			} else hp.parent = null;
+			OrganizationTools.prepareModel(info(), hp, oldParent);
+			record.mapped = hp;
+			
+		}
+		if (!record.content.equals("Organization/HP") && record.tags != null && record.tags.contains("security:generated")) {
 			if (theResource.getUserData("source") == null) throw new ForbiddenOperationException("Update not allowed on generated resources");
 		}
 		super.updatePrepare(record, theResource);		
 	}
+	
+	
 			
+	@Override
+	public void createPrepare(Record record, Organization theOrganization) throws AppException {
+		
+		Object source = theOrganization.getUserData("source");
+		if (source != null && source.equals("HP")) {
+		  record.content = "Organization/HP";			
+		  record.code = Collections.singleton("http://midata.coop Organization/HP");
+		  record._id = MidataId.from(theOrganization.getId());
+		  addSecurityTag(record, theOrganization, QueryTagTools.SECURITY_PLATFORM_MAPPED);
+		} else if (source != null && source.equals("Research")) {
+		  record.content = "Organization/Research";
+		  record.code = Collections.singleton("http://midata.coop Organization/Research");
+		  record._id = MidataId.from(theOrganization.getId());
+		  addSecurityTag(record, theOrganization, QueryTagTools.SECURITY_PLATFORM_MAPPED);
+		} else {
+		
+		  if (theOrganization.getMeta().getSecurity("http://midata.coop/codesystems/security", "platform-mapped") != null) {
+			  record.content = "Organization/HP";			
+			  record.code = Collections.singleton("http://midata.coop Organization/HP");
+			  HealthcareProvider hp = new HealthcareProvider();
+			  hp.name = theOrganization.getName();
+			  hp._id = record._id;
+			  extractAddress(theOrganization, hp);
+			  OrganizationTools.prepareModel(info(), hp, null);
+			  record.mapped = hp;
+		  } else {						
+			  record.content = "Organization";
+			  record.code = Collections.singleton("http://midata.coop Organization");
+		  }
+		}			   
+		record.owner = RuntimeConstants.instance.publicUser;	
+		
+		super.createPrepare(record, theOrganization);
+	}
+
 	// Prepare a Midata record to be written into the database. Tasks:
 	// a) Each record must have syntactical type "format" set and semantical type "content" set. 
 	// b) Each record must have a "name" that will be shown to the user in the record tree.
@@ -267,20 +358,15 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		String display = theOrganization.getName();	
 		record.name = display;	
 		
-		Object source = theOrganization.getUserData("source");
-		if (source != null && source.equals("HP")) {
-		  record.content = "Organization/HP";			
-		  record.code = Collections.singleton("http://midata.coop Organization/HP");
-		  record._id = MidataId.from(theOrganization.getId());
-		} else if (source != null && source.equals("Research")) {
-		  record.content = "Organization/Research";
-		  record.code = Collections.singleton("http://midata.coop Organization/Research");
-		  record._id = MidataId.from(theOrganization.getId());
-		} else {
-		  record.content = "Organization";
-		  record.code = Collections.singleton("http://midata.coop Organization");
-		}			   
-		record.owner = RuntimeConstants.instance.publicUser;	
+		for (Extension ext : theOrganization.getExtensionsByUrl("http://midata.coop/extensions/managed-by")) {
+			Type t = ext.getValue();
+			if (t instanceof Reference) t = FHIRTools.resolve((Reference) t);		
+			ext.setValue(t);
+		}
+		
+		for (Identifier id : theOrganization.getIdentifier()) {
+			OrganizationTools.checkIdentifier(record, id.getSystem(), id.getValue());			
+		}
 		
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
 		clean(theOrganization);
@@ -295,6 +381,34 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		super.processResource(record, p);
 				
 	}
+	
+	
+
+	@Override
+	public Organization createExecute(Record record, Organization theResource) throws AppException {
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CREATED).withActor(info(), info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
+		if (record.content.equals("Organization/HP") && theResource.getUserData("source")==null) {
+			MidataId parent = null;
+			if (theResource.hasPartOf()) {
+			   Reference parentRef = theResource.getPartOf();
+			   parent =  MidataId.parse(parentRef.getId());
+			}
+		   HealthcareProvider provider = (HealthcareProvider) record.mapped;
+		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), provider, parent, true, false);
+		   try {
+		       UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+		       return super.createExecute(record, theResource);
+		   } catch (AppException e) {
+			   HealthcareProvider.delete(provider._id);
+			   throw e;
+		   }
+		   
+		}		
+		Organization result = super.createExecute(record, theResource);
+		AuditManager.instance.success();
+		return result;
+		
+	}
 
 	@Override
 	protected void convertToR4(Object in) {
@@ -307,7 +421,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	}
 	
 	public static void updateFromHP(AccessContext context, MidataId orgId) throws AppException {
-		HealthcareProvider provider = HealthcareProvider.getById(orgId, HealthcareProvider.ALL);
+		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(orgId, HealthcareProvider.ALL);
 		updateFromHP(context, provider);
 	}
 	
@@ -346,20 +460,45 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 		if (!doupdate) {
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
-			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");
-		}
+			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");			
+		}				
+		
+		provider.addSecurityTag(oldRecord, org, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		
 		if (doupdate) {
+		  provider.updatePrepare(oldRecord, org);
 		  provider.updateRecord(oldRecord, org, provider.getAttachments(org));
 		} else {
-		  //RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", research._id).map("format","fhir/Organization"));
+		  //RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", research._id).map("format","fhir/Organization"));		  
 		  provider.createResource(org);
 		}
 		
 	}
 	
-   public static void updateFromHP(AccessContext context, HealthcareProvider healthProvider) throws AppException {
+	public static List<String> getIdentifiers(AccessContext context, HealthcareProvider healthProvider) throws AppException {
+		try {
+			info();
+		} catch (AuthenticationException e) {					
+			OrganizationResourceProvider.setAccessContext(context);
+		}
 		
+        OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.myProviders.get("Organization")); 
+				 
+		List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id",healthProvider._id).map("format","fhir/Organization").map("public","only").map("content","Organization/HP"), RecordManager.COMPLETE_DATA); 
+		if (!records.isEmpty()) {
+			Organization org = provider.parse(records.get(0), Organization.class);
+			List<String> result = new ArrayList<String>();
+			for (Identifier id : org.getIdentifier()) {
+				result.add(id.getSystem()+"|"+id.getValue());
+			}
+			return result;
+		}
+				
+		return null;
+	}
+	
+   public static void updateFromHP(AccessContext context, HealthcareProvider healthProvider) throws AppException {
+		AccessLog.logBegin("begin update organization resource from model");
 		try {
 			info();
 		} catch (AuthenticationException e) {					
@@ -387,18 +526,112 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		org.setName(healthProvider.name);
 		org.setUserData("source", "HP");
 		
+		if (healthProvider.parent != null) {
+			HealthcareProvider prov = HealthcareProvider.getByIdAlsoDeleted(healthProvider.parent, HealthcareProvider.ALL);
+			if (prov != null) {
+			  org.setPartOf(new Reference("Organization/"+healthProvider.parent).setDisplay(prov.name));
+			}
+		} else org.setPartOf(null);
+		
 		if (!doupdate) {
 			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("public");
-			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");
+			org.getMeta().addSecurity().setSystem("http://midata.coop/codesystems/security").setCode("generated");			
 		}
 		
+		if (healthProvider.status != null && (healthProvider.status.isDeleted() || healthProvider.status == UserStatus.NEW)) {
+			org.setActive(false);
+		} else {
+			org.setActive(true);
+		}
+		
+		if (healthProvider.identifiers != null) {
+			List<Identifier> ids = new ArrayList<Identifier>();
+			for (String identifierStr : healthProvider.identifiers) {
+				String parts[] = identifierStr.split("[\\s\\|]");
+				Identifier identifier = new Identifier();				
+				if (parts.length==1) identifier.setValue(parts[0]);
+				else if (parts.length>=2) identifier.setSystem(parts[0]).setValue(parts[1]);
+				for (Identifier oldId : org.getIdentifier()) {
+					if (oldId.getValue().equals(identifier.getValue()) && oldId.getSystem() != null && oldId.getSystem().equals(identifier.getSystem())) identifier = oldId;
+				}
+				ids.add(identifier);
+			}
+			
+			org.setIdentifier(ids);
+		}
+		
+		Address adr = new Address();
+		adr.setCity(healthProvider.city);
+		adr.setPostalCode(healthProvider.zip);
+		adr.setCountry(healthProvider.country);
+		List<StringType> lines = new ArrayList<StringType>(2);
+		if (healthProvider.address1 != null) lines.add(new StringType(healthProvider.address1));
+		if (healthProvider.address2 != null) lines.add(new StringType(healthProvider.address2));
+		adr.setLine(lines);
+		org.getAddress().clear();
+		org.addAddress(adr);
+		
+		if (healthProvider.phone != null && healthProvider.phone.length() > 0) {
+			org.getTelecom().clear();
+			org.addTelecom().setSystem(ContactPointSystem.PHONE).setValue(healthProvider.phone);
+		}
+		
+		provider.addSecurityTag(oldRecord, org, QueryTagTools.SECURITY_PLATFORM_MAPPED);
 		if (doupdate) {
 		  provider.updateRecord(oldRecord, org, provider.getAttachments(org));
 		} else {
  		  //RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", healthProvider._id).map("format","fhir/Organization"));
 		  provider.createResource(org);
 		}
-		
+		AccessLog.logEnd("end update organization from model");
 	}
+   
+   private void extractAddress(Organization theResource, HealthcareProvider prov) {
+	   if (theResource.hasAddress()) {
+		   Address adr = theResource.getAddressFirstRep();		   
+		   prov.city = adr.getCity();
+		   prov.zip = adr.getPostalCode();
+		   prov.country = adr.getCountry();
+		   List<StringType> lines = adr.getLine();
+		   if (lines != null && lines.size() > 0) prov.address1 = lines.get(0).getValue();
+		   if (lines != null && lines.size() > 1) prov.address2 = lines.get(1).getValue();
+		   
+		   for (ContactPoint cp : theResource.getTelecom()) {
+			  if (cp.getSystem() == ContactPointSystem.PHONE) {
+				  prov.phone = cp.getValue();
+			  }
+		   }
+	   } 
+	   
+   }
+   
+   
+
+	@Override
+	public void updateExecute(Record record, Organization theResource) throws AppException {
 		
+		super.updateExecute(record, theResource);
+		if (theResource.getUserData("Source")==null) {	
+			HealthcareProvider hp = (HealthcareProvider) record.mapped;
+			if (!theResource.getActive() && (hp.status == null || !hp.status.isDeleted())) {
+				hp.status = UserStatus.DELETED;
+			}
+			
+			OrganizationTools.updateModel(info(), hp);   						
+			UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+		}
+	}
+	
+
+	@Operation(name="$register-local", idempotent=false)
+	public Organization registerLocal(				  
+	   @OperationParam(name="org") Organization theResource	  
+	   ) throws AppException {
+		  AccessContext context = info();
+		  if (context.getAccessorEntityType() != EntityType.SERVICES) throw new InvalidRequestException("Wrong application type.");
+		  MidataId resourceId = new MidataId();
+		  theResource.setId(resourceId.toString());
+		  ApplicationTools.createDataBrokerGroup(info(), resourceId , theResource.getName());
+		  return theResource;
+	}
 }

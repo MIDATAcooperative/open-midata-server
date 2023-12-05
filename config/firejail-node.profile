@@ -22,7 +22,7 @@ shell none
 disable-mnt
 private-dev
 private-tmp
-rlimit-as 2147483648
+#rlimit-as 2147483648
 rlimit-cpu 600
 timeout 00:10:00
 

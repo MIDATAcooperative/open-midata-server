@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-    <study-nav page="study.actions"></study-nav>
+    <study-nav page="study.actions" :study="study"></study-nav>
     <tab-panel :busy="isBusy">
 	
         <error-box :error="error"></error-box>
@@ -134,7 +134,10 @@ export default {
         crit : { group : "" },
         types : studies.linktypes,
 	    periods : studies.executionStati,
-	    selection : undefined       
+	    selection : undefined,
+	    study : null,
+	    links : [],
+	    apps : []       
     }),
 
     components: {  Panel, TabPanel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, RadioBox, StudyActions2, Typeahead },

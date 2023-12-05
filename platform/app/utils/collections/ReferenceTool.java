@@ -67,6 +67,22 @@ public class ReferenceTool {
 					}
 				}
 				record.creatorName = name;
+				
+				if (record.modifiedBy != null) {
+					String mkey = record.modifiedBy.toString();
+					String mname = members.get(mkey);
+					if (mname == null && record.owner != null && record.owner.equals(record.modifiedBy)) {
+						mname = record.ownerName;
+					}
+					if (mname == null) {
+						Member member = Member.getById(record.modifiedBy, fullName);
+						if (member != null) {
+							mname = member.lastname + ", " + member.firstname;
+							members.put(mkey, mname);
+						}
+					}
+					record.modifiedByName = mname;
+				}
 			}
 		}
 	}

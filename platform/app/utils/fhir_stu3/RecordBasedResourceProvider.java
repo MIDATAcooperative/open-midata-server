@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
@@ -38,9 +39,11 @@ import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
+import org.hl7.fhir.dstu3.model.DateTimeType;
 
 import com.mongodb.BasicDBObject;
 
+import ca.uhn.fhir.model.primitive.DateTimeDt;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.History;
@@ -58,11 +61,15 @@ import models.MidataId;
 import models.Plugin;
 import models.Record;
 import models.TypedMidataId;
+import models.enums.AuditEventType;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.QueryTagTools;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
+import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.CMaps;
 import utils.context.AccessContext;
 import utils.context.ConsentAccessContext;
@@ -100,22 +107,29 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);					
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(record.data));
-		processResource(record, p);		
+		processResource(record, p);	
+		//AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_READ, record.context.getOwner());
 		return p;
 	}
 	
 	@History()
 	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
-	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc").map("limit",2000), RecordManager.COMPLETE_DATA);
 	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
 	   
 	   List<T> result = new ArrayList<T>(records.size());
 	   IParser parser = ctx().newJsonParser();
+	   //boolean audited = false;
 	   for (Record record : records) {	
 		    if (record.data == null || !record.data.containsField("resourceType")) continue;
 			T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(record.data));
 			processResource(record, p);
 			result.add(p);
+			
+			/*if (!audited) {
+				AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_HISTORY, record.context.getOwner());
+				audited = true;
+			}*/
 	   }
 	   
 	   return result;
@@ -129,12 +143,15 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@Override
 	public void createExecute(Record record, T theResource) throws AppException {
-		insertRecord(record, theResource);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		insertRecord(record, theResource);		
+		if (audit) AuditManager.instance.success();
 	}
 	
 	@Override
 	public void updatePrepare(Record record, T theResource) throws AppException {
 		record.creator = info().getActor();
+		record.modifiedBy = record.creator;
 		prepare(record, theResource);	
 		prepareTags(record, theResource);
 	}
@@ -152,6 +169,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 					tags.add("security:public");				
 				} else if (c.getSystem().equals("http://midata.coop/codesystems/security") && c.getCode().equals("public")) {
 					tags.add("security:public");
+				} else if (c.getSystem().equals("http://midata.coop/codesystems/security") && c.getCode().equals("generated")) {
+					tags.add("security:generated");
 				}
 			}
 		}
@@ -166,7 +185,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@Override
 	public void updateExecute(Record record, T theResource) throws AppException {
-		updateRecord(record, theResource);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
+		updateRecord(record, theResource);		
+		if (audit) AuditManager.instance.success();
 	}
 	
 	@Override
@@ -194,6 +215,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		Record record = new Record();
 		record._id = new MidataId();
 		record.creator = info().getActor();
+		record.modifiedBy = record.creator;
 		record.format = format;
 		record.app = info().getUsedPlugin();
 		record.created = record._id.getCreationDate();
@@ -256,7 +278,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		MidataId owner = record.owner;
 		if (!owner.equals(inf.getAccessor())) {
 			Consent consent = Circles.getOrCreateMessagingConsent(inf, inf.getAccessor(), owner, owner, false);
-			insertRecord(record, resource, new ConsentAccessContext(consent, info()));
+			insertRecord(record, resource, info().forConsent(consent));
 			shareFrom = consent._id;
 		} else {
 			insertRecord(record, resource);
@@ -335,17 +357,23 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public void processResource(Record record, T resource) throws AppException {
 		resource.setId(new IdType(resource.fhirType(), record._id.toString(), record.version));
 		resource.getMeta().setVersionId(record.version);
-		if (record.lastUpdated == null) resource.getMeta().setLastUpdated(record.created);
-		else resource.getMeta().setLastUpdated(record.lastUpdated);
 		
-		Extension meta = new Extension("http://midata.coop/extensions/metadata");
+        Extension meta = new Extension("http://midata.coop/extensions/metadata");
+		
+		if (record.lastUpdated == null || record.lastUpdated.equals(record.created)) {
+			resource.getMeta().setLastUpdated(record.created);
+		} else {
+			resource.getMeta().setLastUpdated(record.lastUpdated);
+			meta.addExtension("createdAt", new DateTimeType(record.created));
+		}
 		
 		if (record.app != null) {
 		  Plugin creatorApp = Plugin.getById(record.app);		
 		  if (creatorApp != null) meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
 		if (record.creator != null && !record.creator.equals(record.app)) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, record.creator.equals(record.owner) ? record.ownerName : null ));
-				
+		if (record.modifiedBy != null && !record.version.equals("0")) meta.addExtension("modifiedBy", FHIRTools.getReferenceToUser(record.modifiedBy, record.modifiedBy.equals(record.owner) ? record.ownerName : null ));	
+		
 		resource.getMeta().addExtension(meta);
 	}
 	
@@ -357,6 +385,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	 */
 	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent) throws InternalServerException {
 	  return setRecordCodeByCodings(record, cc != null ? cc.getCoding() : null, defaultContent);
+	}
+	
+	protected String setRecordCodeByCoding(Record record, Coding coding, String defaultContent) throws InternalServerException {
+	  return setRecordCodeByCodings(record, coding != null ? Collections.singletonList(coding) : null, defaultContent);
 	}
 	
 	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent) throws InternalServerException {
@@ -413,5 +445,11 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public Date getLastUpdated(Record record) {
 		return record.lastUpdated != null ? record.lastUpdated : record.created;
+	}
+	
+	public void addSecurityTag(Record record, DomainResource theResource, String tag) {
+		  record.addTag(tag);
+		  Pair<String, String> coding = QueryTagTools.getSystemCodeForTag(tag);
+		  theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
 	}
 }

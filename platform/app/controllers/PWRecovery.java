@@ -43,12 +43,14 @@ import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.MessageReason;
+import models.enums.SubUserRole;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
@@ -100,6 +102,7 @@ public class PWRecovery extends APIController {
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
 	public Result storeRecoveryShare(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.KEYRECOVERY);
 		
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "_id", "shares");	
@@ -119,6 +122,7 @@ public class PWRecovery extends APIController {
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
 	public Result finishRecovery(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.KEYRECOVERY);
 		
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "_id", "session");
@@ -149,7 +153,7 @@ public class PWRecovery extends APIController {
 		if (sessionToken != null) KeyManager.instance.unlock(user._id, sessionToken, proc.nextPublicExtKey);		
 		
 		if (user.email.equals(RuntimeConstants.BACKEND_SERVICE)) {
-			AccessContext context = ContextManager.instance.createLoginOnlyContext(user._id, user.role);
+			AccessContext context = ContextManager.instance.createLoginOnlyContext(user._id, null, user.role);
 			provideServiceKey(context, user);
 			proc.nextPassword = null;
 		}
@@ -288,11 +292,21 @@ public class PWRecovery extends APIController {
     
     @APICall
 	@Security.Authenticated(AdminSecured.class)
-    public Result getUnfinished() throws AppException {
+    public Result getUnfinished(Request request) throws AppException {
+    	requireSubUserRole(request, SubUserRole.KEYRECOVERY);
+    	
     	Set<KeyRecoveryProcess> open = KeyRecoveryProcess.getUnfinished();
     	
     	return ok(JsonOutput.toJson(open, "KeyRecoveryProcess", KeyRecoveryProcess.ALL)).as("application/json");
     }
+    
+    public static void sendAdminRecoveryRequiredMail() throws InternalServerException {
+
+		String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
+		AccessLog.log("send admin notification mail (password recovery): ");
+		Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "Key Recovery", "Dear Midata Admin,\n\na key recovery is required on "+site+"\n\nRegards,\nyour Midata instance", null);
+
+	}
     
     public static Result checkAuthentication(PortalSessionToken token, User user, String password, String sessionToken) throws AppException {
     	try {
@@ -304,6 +318,7 @@ public class PWRecovery extends APIController {
 	    		} else {
 	    			KeyRecoveryProcess rec = KeyRecoveryProcess.getById(user._id);	    			
 		    		if (PasswordHash.validatePassword(password, rec.nextPassword)) {
+		    		     
 		    			if (sessionToken == null) {		    			
 			    			ObjectNode obj = Json.newObject();
 			    			
@@ -315,6 +330,12 @@ public class PWRecovery extends APIController {
 			    			obj.put("tryrecover", true);
 			    			obj.put("sessionToken", token.encrypt());
 			    			return ok(obj);
+		    			} else if (sessionToken.equals("no-recovery")) {
+							KeyRecoveryProcess krp = KeyRecoveryProcess.getById(user._id);
+							if (!rec.ready) {
+								sendAdminRecoveryRequiredMail();								
+							}
+							return ok();							
 		    			} else {
 		    				KeyManager.instance.login(60000, false);
 		    				finishRecovery(user, rec, sessionToken);
@@ -359,7 +380,7 @@ public class PWRecovery extends APIController {
   	      }
   	      autorun.password = null;
   	      User.set(autorun._id, "password", null);
-		  provideServiceKey(ContextManager.instance.createLoginOnlyContext(autorun._id, UserRole.ANY), autorun);
+		  provideServiceKey(ContextManager.instance.createLoginOnlyContext(autorun._id, null, UserRole.ANY), autorun);
   	    }
       	
       	return ok();

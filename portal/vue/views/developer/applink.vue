@@ -34,7 +34,7 @@
                         <th></th>
                     </tr>
                     <tr v-for="link in links" :key="link._id">
-                        <td @click="select(link);">{{ (link.study || {}).code }} {{ (link.study || {}).name }} {{ (link.provider || {}).name }} {{ (link.serviceApp || {}).name }}<span v-if="link.userLogin">({{ link.userLogin }})</span></td>
+                        <td @click="select(link);">{{ (link.study || {}).code }} {{ (link.study || {}).name }} {{ (link.provider || {}).name }} {{ (link.serviceApp || {}).name }}<span v-if="link.userLogin">{{ link.userLogin }}</span></td>
                         <td>
                             <div v-for="type in link.type" :key="type">{{ $t('studyactions.types_short.'+type) }}</div>
                         </td>
@@ -178,6 +178,7 @@ import Panel from "components/Panel.vue"
 import TabPanel from "components/TabPanel.vue"
 import server from "services/server.js"
 import apps from "services/apps.js"
+import terms from "services/terms.js"
 import studies from "services/studies.js"
 import { status, ErrorBox, Success, CheckBox, RadioBox, FormGroup, Typeahead } from 'basic-vue3-components'
 import _ from "lodash";
@@ -192,7 +193,8 @@ export default {
 	    selection : undefined,
         apps : [],
         studies : [],
-        app : null
+        app : null,
+        terms : []
     }),
 
     components: {  Panel, TabPanel, ErrorBox, FormGroup, Success, CheckBox, RadioBox, Typeahead },
@@ -330,7 +332,12 @@ export default {
     created() {
         const { $data, $route } = this, me = this;
         $data.appId = $route.query.appId;
-        me.reload();
+        
+        me.doBusy(terms.search({}, ["name", "version", "language", "title"])
+        .then(function(result) {
+		    $data.terms = result.data;
+            me.reload();
+        }));
         
     }
 }

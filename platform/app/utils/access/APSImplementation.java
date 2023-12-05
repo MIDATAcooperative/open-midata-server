@@ -68,7 +68,7 @@ class APSImplementation extends APS {
 		return eaps.getId();
 	}
 	
-	public boolean isAccessible() throws AppException {
+	public boolean isAccessible() throws InternalServerException {
 		return eaps.isAccessable();
 	}
 	
@@ -246,7 +246,7 @@ class APSImplementation extends APS {
 		}
 	}
 
-	public BasicBSONObject getMeta(String key) throws AppException {
+	public BasicBSONObject getMeta(String key) throws InternalServerException {
 		merge();
 		return (BasicBSONObject) eaps.getPermissions().get(key);
 	}
@@ -262,7 +262,7 @@ class APSImplementation extends APS {
 	}
 	
 	
-	private DBIterator<DBRecord> queryInternal(Query q) throws AppException {		
+	protected DBIterator<DBRecord> queryInternal(Query q) throws AppException {		
 		merge();		 
 		// AccessLog.logLocalQuery(eaps.getId(), q.getProperties(),
 		// q.getFields() );
@@ -483,7 +483,7 @@ class APSImplementation extends APS {
 		return record;
 	}
 
-	private void addPermissionInternal(DBRecord record, boolean withOwner) throws AppException {
+	protected void addPermissionInternal(DBRecord record, boolean withOwner) throws AppException, LostUpdateException {
 
 		if (record.key == null && !record.security.equals(APSSecurityLevel.NONE))
 			throw new InternalServerException("error.internal", "Record with NULL key: Record:" + record._id.toString() + "/" + record.isStream);
@@ -551,7 +551,7 @@ class APSImplementation extends APS {
 		}
 	}
 
-	private void recoverFromLostUpdate() throws InternalServerException {
+	protected void recoverFromLostUpdate() throws InternalServerException {
 		try {
 			Stats.reportConflict();
 			Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
@@ -562,7 +562,7 @@ class APSImplementation extends APS {
 		eaps.reload();
 	}
 
-	private boolean removePermissionInternal(DBRecord record) throws AppException {
+	protected boolean removePermissionInternal(DBRecord record) throws AppException, LostUpdateException {
 
 		// resolve Format
 		BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, false);
@@ -595,6 +595,7 @@ class APSImplementation extends APS {
 	}
 
 	public void removePermission(Collection<DBRecord> records) throws AppException {
+		if (records.isEmpty()) return;
 		try {
 			boolean updated = false;
 			for (DBRecord record : records)
@@ -652,7 +653,7 @@ class APSImplementation extends APS {
 		AccessLog.logEnd("end creating accessible subset");
 	}
 	
-	protected void merge() throws AppException {
+	protected void merge() throws InternalServerException {
 		try {
 		if (eaps.needsMerge()) {
 			AccessLog.logBegin("begin merge:",eaps.getId().toString());
@@ -679,7 +680,7 @@ class APSImplementation extends APS {
 		return eaps.isLoaded();
 	}
 	
-	private void addHistory(MidataId recordId, APSSecurityLevel isStream, boolean isRemove) throws AppException {
+	protected void addHistory(MidataId recordId, APSSecurityLevel isStream, boolean isRemove) throws AppException, LostUpdateException {
 		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
 		if (history != null) {
 			
@@ -704,7 +705,7 @@ class APSImplementation extends APS {
 		}
 	}
 	
-	private void mergeHistory(EncryptedAPS subaps) throws AppException {
+	protected void mergeHistory(EncryptedAPS subaps) throws InternalServerException {
 		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
 		BasicBSONList history2 = (BasicBSONList) subaps.getPermissions().get("_history");
 		if (history != null && history2 != null) {
@@ -732,8 +733,15 @@ class APSImplementation extends APS {
 	
 	public boolean hasNoDirectEntries() throws AppException {
 	   merge();
-	   return ((BasicBSONList) eaps.getPermissions().get("p")).isEmpty();
+	   BasicBSONList lst = (BasicBSONList) eaps.getPermissions().get("p");
+	   return lst != null && lst.isEmpty();
 	}
 
+	@Override
+	public void reload() throws InternalServerException {
+		eaps.reload();		
+	}
+
+	
 
 }

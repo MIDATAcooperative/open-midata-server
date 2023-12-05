@@ -50,9 +50,12 @@ import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
+import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.param.UriParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import models.Record;
+import utils.AccessLog;
 import utils.access.pseudo.FhirPseudonymizer;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -85,6 +88,7 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 		
 		FhirPseudonymizer.forR4()
 		  .reset("QuestionnaireResponse")
+		  .hideIfPseudonymized("QuestionnaireResponse", "text")
 		  .pseudonymizeReference("QuestionnaireResponse", "source")
 		  .pseudonymizeReference("QuestionnaireResponse", "author");
 	}
@@ -100,10 +104,7 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
-			  
-			@Description(shortDefinition="The resource language")
-			@OptionalParam(name="_language")
-			StringAndListParam theResourceLanguage, 
+			  		
 			/*
 			@Description(shortDefinition="Return resources linked to by the given target")
 			@OptionalParam(name="_has")
@@ -186,8 +187,7 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 		
 		// paramMap.add("_has", theHas);
 		paramMap.add("author", theAuthor);
@@ -267,15 +267,29 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 			  codings.add(coding);
 		}
 		if (codings.isEmpty()) {
-			IIdType questions = FHIRTools.convertToId(theQuestionnaireResponse.getQuestionnaireElement());
-			if (questions != null && !questions.isEmpty()) {				
-				Questionnaire q = (Questionnaire) FHIRServlet.myProviders.get("Questionnaire").getResourceById(questions);
-				codings = q.getCode();
-				if (codings != null) {
-				  for (Coding c : codings) {			
-					theQuestionnaireResponse.addExtension().setUrl("http://midata.coop/extensions/response-code").setValue(c);
-				  }
+			String questionnaire = theQuestionnaireResponse.getQuestionnaire();
+			if (questionnaire != null) {
+				AccessLog.logBegin("begin resolve questionaire url=",questionnaire);
+				SearchParameterMap sp = new SearchParameterMap();
+				int p = questionnaire.indexOf('|');
+				if (p>0) {
+				  sp.add("url", new UriParam(questionnaire.substring(0, p)));
+				  sp.add("version", new TokenParam(questionnaire.substring(p+1)));
+				} else {
+					sp.add("url", new UriParam(questionnaire));
 				}
+				List<Questionnaire> result = FHIRServlet.myProviders.get("Questionnaire").search(sp);
+				AccessLog.logEnd("end resolve questionaire #=",Integer.toString(result.size()));
+				if (!result.isEmpty()) {
+					Questionnaire q = result.get(0);
+													
+					codings = q.getCode();
+					if (codings != null) {
+					  for (Coding c : codings) {			
+						theQuestionnaireResponse.addExtension().setUrl("http://midata.coop/extensions/response-code").setValue(c);
+					  }
+					}
+				} else throw new InvalidRequestException("Could not resolve questionnaire using url");
 			}
 		}
 		
@@ -299,7 +313,7 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 	public void processResource(Record record, QuestionnaireResponse p) throws AppException {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

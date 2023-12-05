@@ -32,7 +32,7 @@
             
             <div class="form-group col-4">
                 <label for="until">Until:</label>            
-                <input type="date" id="date" @input="recalc()" class="form-control" autofocus v-model="criteria.to">				  
+                <input type="date" id="date" @input="recalc()" class="form-control" autofocus v-date="criteria.to" v-model="criteria.to">				  
             </div>
               	    	    
         </form>           
@@ -120,7 +120,7 @@ export default {
                 var bykey = {};                
                 var list = [];
                 for (let r of result.data) {
-                    var k = r.date+r.object;
+                    var k = r.date+r.object+r.detail;
                     var grp = bykey[k];
                     if (!grp) {
                         bykey[k] = grp = { object : r.object, date : r.date, objectName : r.objectName, actions : {} };
@@ -137,7 +137,7 @@ export default {
 
     created() {
         const { $data, $route } = this, me = this;
-        $data.criteria.to = this.$filters.usDate(new Date());
+        $data.criteria.to = this.$filters.usDate(new Date());   
         if ($route.query.appId) {
             $data.criteria.days = 30;
             me.loadApp($route.query.appId);

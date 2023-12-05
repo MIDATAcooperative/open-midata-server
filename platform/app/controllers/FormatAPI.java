@@ -74,7 +74,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	public Result listGroups() throws AppException {
 	    Collection<RecordGroup> groups = RecordGroup.getAll();
-	    return ok(Json.toJson(groups));
+	    return ok(Json.toJson(groups)).as("application/json");
 	}
 	
 	/**
@@ -85,7 +85,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	public Result listFormats() throws InternalServerException {
 	    Collection<FormatInfo> formats = FormatInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("format", "comment", "visName"));
-	    return ok(Json.toJson(formats));
+	    return ok(Json.toJson(formats)).as("application/json");
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	public Result listContents() throws InternalServerException {
 	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), Sets.create("content", "security", "comment", "label", "defaultCode", "resourceType", "subType", "defaultUnit", "category", "source"));
-	    return ok(Json.toJson(contents));
+	    return ok(Json.toJson(contents)).as("application/json");
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	public Result listCodes() throws InternalServerException {
 	    Collection<ContentCode> codes = ContentCode.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), Sets.create("system", "code", "display", "content"));
-	    return ok(Json.toJson(codes));
+	    return ok(Json.toJson(codes)).as("application/json");
 	}
 	
 	/**
@@ -120,6 +120,7 @@ public class FormatAPI extends Controller {
 	@Security.Authenticated(AdminSecured.class)
 	public Result createCode(Request request) throws AppException {
 		JsonNode json = request.body().asJson();
+		JsonValidation.validate(json, "code", "content", "system", "display");
 		ContentCode cc = new ContentCode();
 		MidataId id = JsonValidation.getMidataId(json, "_id");
 		cc._id = id != null ? id : new MidataId();		
@@ -129,6 +130,7 @@ public class FormatAPI extends Controller {
 		cc.display = JsonValidation.getString(json, "display");
 		cc.system = JsonValidation.getString(json, "system");
 		cc.lastUpdated = System.currentTimeMillis();
+		if (cc.exists()) throw new BadRequestException("error.exists.code", "Code already exists");		
 		ContentCode.add(cc);
 		
 		return ok();
@@ -153,6 +155,7 @@ public class FormatAPI extends Controller {
 		cc.display = JsonValidation.getString(json, "display");
 		cc.system = JsonValidation.getString(json, "system");
 		cc.lastUpdated = System.currentTimeMillis();
+		if (cc.exists()) throw new BadRequestException("error.exists.code", "Code already exists");	
 		ContentCode.upsert(cc);
 		
 		return ok();
@@ -181,6 +184,7 @@ public class FormatAPI extends Controller {
 	@Security.Authenticated(AdminSecured.class)
 	public Result createContent(Request request) throws AppException {
 		JsonNode json = request.body().asJson();
+		JsonValidation.validate(json, "content", "security");
 		ContentInfo cc = new ContentInfo();
 		MidataId id = JsonValidation.getMidataId(json, "_id");
 		cc._id = id != null ? id : new MidataId();
@@ -194,6 +198,7 @@ public class FormatAPI extends Controller {
 		cc.category = JsonValidation.getStringOrNull(json,  "category");
 		cc.source = JsonValidation.getStringOrNull(json,  "source");
 		cc.lastUpdated = System.currentTimeMillis();
+		if (cc.exists()) throw new BadRequestException("error.exists.content", "Content type already exists");
 		ContentInfo.add(cc);
 		Instances.cacheClear("content", null);
 		
@@ -223,6 +228,7 @@ public class FormatAPI extends Controller {
 		cc.category = JsonValidation.getStringOrNull(json,  "category");
 		cc.source = JsonValidation.getStringOrNull(json,  "source");
 		cc.lastUpdated = System.currentTimeMillis();
+		if (cc.exists()) throw new BadRequestException("error.exists.content", "Content type already exists");
 		ContentInfo.upsert(cc);
 		Instances.cacheClear("content", null);
 		
@@ -238,7 +244,14 @@ public class FormatAPI extends Controller {
 	@APICall	
 	@Security.Authenticated(AdminSecured.class)
 	public Result deleteContent(String id) throws AppException {
-		ContentInfo.delete(new MidataId(id));				
+		ContentInfo inf = ContentInfo.getById(MidataId.from(id));
+		if (inf == null) throw new BadRequestException("error.notfound", "Content-Type not found.");
+		Set<GroupContent> groupContents = GroupContent.getByContent(inf.content);
+		for (GroupContent gc : groupContents) {
+			gc.delete();
+		}
+		
+		ContentInfo.delete(inf._id);				
 		return ok();
 	}
 	
@@ -249,6 +262,7 @@ public class FormatAPI extends Controller {
 		JsonNode json = request.body().asJson();
 		RecordGroup cc = new RecordGroup();
 		MidataId id = JsonValidation.getMidataId(json, "_id");
+		JsonValidation.validate(json, "name", "parent", "system");
 		cc._id = id != null ? id : new MidataId();		
 		cc.name = JsonValidation.getString(json, "name");
 		cc.system = JsonValidation.getString(json, "system");
@@ -256,6 +270,8 @@ public class FormatAPI extends Controller {
 		//cc.contents = JsonExtraction.extractStringSet(json.get("contents"));
 		cc.label = JsonExtraction.extractStringMap(json.get("label"));
 		cc.lastUpdated = System.currentTimeMillis();
+		if (cc.name.equals(cc.parent)) throw new JsonValidationException("error.internal", "Groups may not be circular");
+		if (cc.exists()) throw new BadRequestException("error.exists.group", "A group with this name already exists.");
 		RecordGroup.add(cc);
 		Instances.cacheClear("content", null);
 		
@@ -269,12 +285,14 @@ public class FormatAPI extends Controller {
 		JsonNode json = request.body().asJson();
 		RecordGroup cc = new RecordGroup();
 		cc._id = new MidataId(id);
+		JsonValidation.validate(json, "name", "parent", "system");
 		cc.name = JsonValidation.getString(json, "name");
 		cc.system = JsonValidation.getString(json, "system");
 		cc.parent = JsonValidation.getStringOrNull(json, "parent");
 		//cc.contents = JsonExtraction.extractStringSet(json.get("contents"));
 		cc.label = JsonExtraction.extractStringMap(json.get("label"));
 		cc.lastUpdated = System.currentTimeMillis();
+		if (cc.exists()) throw new BadRequestException("error.exists.group", "A group with this name already exists.");
 		RecordGroup.upsert(cc);
 		Instances.cacheClear("content", null);
 		return ok();
@@ -346,12 +364,12 @@ public class FormatAPI extends Controller {
 			  code.display = loinc.LONG_COMMON_NAME;
 			  results.add(code);
 		  }
-		  return ok(Json.toJson(results));
+		  return ok(Json.toJson(results)).as("application/json");
 		} else {		
 	      Collection<ContentCode> contents = ContentCode.getAll(CMaps.map(properties).map("deleted", CMaps.map("$ne", true)), fields);
 	      
 	      
-	      return ok(Json.toJson(contents));
+	      return ok(Json.toJson(contents)).as("application/json");
 		}
 	}
 	
@@ -375,7 +393,7 @@ public class FormatAPI extends Controller {
 				
 	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map(properties).map("deleted", CMaps.map("$ne", true)), fields);
 	      	      
-	    return ok(Json.toJson(contents));		
+	    return ok(Json.toJson(contents)).as("application/json");		
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -392,7 +410,7 @@ public class FormatAPI extends Controller {
 				
 	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map(properties).map("deleted", CMaps.map("$ne", true)), fields);
 	      	      
-	    return ok(Json.toJson(contents));		
+	    return ok(Json.toJson(contents)).as("application/json");		
 	}
 	
 	@APICall
@@ -410,7 +428,7 @@ public class FormatAPI extends Controller {
 		obj.set("formatgroups", JsonOutput.toJsonNode(rg, "RecordGroup", RecordGroup.ALL));
 		obj.set("groupcontent", JsonOutput.toJsonNode(gc, "GroupContent", GroupContent.ALL));
 		
-		return ok(obj);
+		return ok(obj).as("application/json");
 		
 	}
 	
@@ -420,7 +438,7 @@ public class FormatAPI extends Controller {
 	public Result importChanges(Request request) throws AppException {
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "base64");
-		String base64 = JsonValidation.getString(json, "base64");
+		String base64 = JsonValidation.getJsonString(json, "base64");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayNode contentinfo = null;

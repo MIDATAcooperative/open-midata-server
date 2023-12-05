@@ -34,6 +34,8 @@
         "study_name" : "Name des Forschungsprojektes",
         "study_type" : "Forschungsart",
         "study_description" : "Projektbeschreibung",
+        "study_identifiers" : "Identifikatoren",
+        "study_identifiers_info" : "Geben Sie hier alle Projektidentifikatoren von externen Institutionen ein. Geben Sie einen Identifikator pro Zeile ein. Verwenden Sie '|', um Codesystem und Wert zu trennen, falls gewünscht. Die Identifikatoren werden auf den Projektseiten des Portals nicht angezeigt.",
         "developer_nostart" : "Achtung!",
         "developer_nostart2" : "Als Entwickler können Sie ein Projekt nur einrichten, aber nicht durchführen. Als Entwickler ist es nicht möglich, die Teilnehmersuche zu starten."
     },
@@ -232,8 +234,12 @@
         "group" : "Datengruppe",
         "number_of_records" : "# Einträge",
         "download_btn" : "Herunterladen",
-        "fhir_download_btn" : "FHIR Bundle herunterladen",
-        "fhir_download_original_btn" : "Nicht pseudonymisiert herunterladen"
+        "fhir_download_btn" : "Bundle herunterladen",
+        "fhir_download_original_btn" : "Nicht pseudonymisiert herunterladen",
+        "file" : "Datei exportieren",
+        "file_fhir" : "FHIR-Format",
+        "csvdef" : "Expertenfunktion: JSON-Mapping von FHIR nach CSV hier einfügen.",
+        "add_csvdef_btn" : "CSV-Export Definition hochladen"
     },
 
     "studyrules" : {
@@ -243,6 +249,7 @@
         "endDate" : "Offizielles Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "sharing_query" : "Data Access Filter",
+        "sharing_query_empty" : "Das Projekt benötigt KEINE Daten von @PRODUCT.",
         "join_methods" : "Erlaubte Teilnahmeverfahren",
         "leavePolicy" : "Rücktrittsrecht der Teilnehmer",
         "rejoinPolicy" : "Wiedereinstiegsrecht der Teilnehmer",
@@ -251,7 +258,9 @@
         "terms_of_use_hint" : "Wenn die Allgemeine Geschäftsbedingungen des Projektes vom Benutzer gelesen und akzeptiert werden müssen, bitte senden Sie den Text an einen Plattformadministrator. Wir werden den Text im richtigen Format hochladen und Ihnen die ID mitteilen, die Sie hier eingeben müssen.",
         "consent_observers" : "Externe Zustimmungs-Observers",
         "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",
-        "requirements" : "Anforderungen"
+        "requirements" : "Anforderungen",
+        "security" : "Sicherheit",
+        "forceClientCertificate" : "Verwendung von Client-Zertifikaten für Projektanalysatoren erzwingen"
     },
 
     "addresearcher" : {
@@ -282,7 +291,8 @@
             "changeTeam" : "Team ändern",
             "auditLog" : "Audit Log anschauen",
             "participants" : "Teilnehmer verwalten",
-            "setup" : "Einrichtung des Projektes"
+            "setup" : "Einrichtung des Projektes",
+            "applications" : "Verknüpfte Applikationen verwalten"
         }
     },
 
@@ -346,7 +356,7 @@
     },
 
     "researcher_sharing" : {
-        "description" : "Datensätze von Ihrem Konto mit Gruppen von Projektteilnehmern teilen oder nicht mehr teilen",
+        "description" : "Datensätze aus Ihrem Konto mit Gruppen von Projektteilnehmern teilen oder nicht mehr teilen",
         "source" : "Quelle",
         "me" : "Daten aus meinem Konto",
         "project" : "Daten vom Analysator",

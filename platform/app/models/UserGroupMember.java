@@ -23,6 +23,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import models.enums.ConsentStatus;
+import models.enums.EntityType;
 import models.enums.ResearcherRole;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -37,7 +38,7 @@ import utils.exceptions.InternalServerException;
 public class UserGroupMember extends Model implements Comparable<Model> {
 	
 	protected static final @NotMaterialized String collection = "groupmember";
-	public static final @NotMaterialized Set<String> ALL = Sets.create("userGroup", "member", "status", "user", "startDate", "endDate", "role");
+	public static final @NotMaterialized Set<String> ALL = Sets.create("userGroup", "member", "entityType", "status", "user", "entityName", "startDate", "endDate", "role", "confirmedUntil");
 
 	/**
 	 * Id of user group a group member belongs to
@@ -48,6 +49,11 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 	 * Id of member who belongs to the user group
 	 */
 	public MidataId member;
+	
+	/**
+	 * Type of member: user or service
+	 */
+	public EntityType entityType;
 	
 	/**
 	 * Status of membership
@@ -65,20 +71,41 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 	public Date endDate;
 	
 	/**
+	 * Membership is confirmed until which date; required for protected user groups
+	 */
+	public Date confirmedUntil;
+	
+	/**
+	 * Who confirmed the membership; required for protected user groups
+	 */
+	public MidataId confirmedBy; 
+	
+	/**
 	 * Role for study access
 	 */
 	public ResearcherRole role;
 	
-	public ResearcherRole getRole() {
+	public ResearcherRole getRole() {	    
 		if (role != null) return role;
 		role = ResearcherRole.HC();		
 		return role;
 	}
 	
+	public ResearcherRole getConfirmedRole() {
+	    if (confirmedUntil != null && confirmedUntil.before(new Date(System.currentTimeMillis()))) return ResearcherRole.UNCONFIRMED();
+		return getRole();
+	}
+	
 	
 	@NotMaterialized
 	public User user;
-		
+	
+	@NotMaterialized
+	public String entityName;
+	
+	public static UserGroupMember getById(MidataId id) throws InternalServerException {
+		return Model.get(UserGroupMember.class, collection, CMaps.map("_id", id), ALL);
+	}
 			
 	public static Set<UserGroupMember> getAllByMember(MidataId member) throws InternalServerException {
 		return Model.getAll(UserGroupMember.class, collection, CMaps.map("member", member), ALL);
@@ -88,12 +115,28 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 		return Model.getAll(UserGroupMember.class, collection, CMaps.map("member", member).map("status", ConsentStatus.ACTIVE), ALL);
 	}
 	
+	public static Set<UserGroupMember> getAllActiveByMember(Set<MidataId> members) throws InternalServerException {
+		return Model.getAll(UserGroupMember.class, collection, CMaps.map("member", members).map("status", ConsentStatus.ACTIVE), ALL);
+	}
+	
 	public static Set<UserGroupMember> getAllByGroup(MidataId group) throws InternalServerException {
 		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group), ALL);
 	}
 	
+	public static Set<UserGroupMember> getAllByGroup(MidataId group, Set<EntityType> type) throws InternalServerException {
+		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("entityType", type), ALL);
+	}
+	
+	public static Set<UserGroupMember> getAllUserByGroup(MidataId group) throws InternalServerException {
+		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("entityType", Sets.create(EntityType.USER, null)), ALL);
+	}
+	
 	public static Set<UserGroupMember> getAllActiveByGroup(MidataId group) throws InternalServerException {
 		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("status", ConsentStatus.ACTIVE), ALL);
+	}
+	
+	public static Set<UserGroupMember> getAllActiveUserByGroup(MidataId group) throws InternalServerException {
+		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("status", ConsentStatus.ACTIVE).map("entityType", Sets.create(EntityType.USER, null)), ALL);
 	}
 	
 	public static UserGroupMember getByGroupAndMember(MidataId group, MidataId member) throws InternalServerException {

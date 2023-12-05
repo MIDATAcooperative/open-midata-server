@@ -30,6 +30,7 @@ import java.util.Set;
 
 import models.MidataId;
 import scala.NotImplementedError;
+import utils.AccessLog;
 
 /**
  * "And" operator for mongo expressions
@@ -45,9 +46,13 @@ public class AndCondition implements Condition, Serializable {
 
     public static Condition and(Condition cond1, Condition cond2) {
     	if (cond1 == null) return cond2;
-    	if (cond2 == null) return cond1;
+    	if (cond2 == null) return cond1;    	
     	if (cond1 instanceof AndCondition) {
-    		((AndCondition) cond1).checks.add(cond2);
+    		if (cond1.getClass()==cond2.getClass()) {
+    		  ((AndCondition) cond1).checks.addAll(((AndCondition) cond2).checks);
+    		} else {
+    		  ((AndCondition) cond1).checks.add(cond2);
+    		}
     		return (AndCondition) cond1;
     	} else if (cond2 instanceof AndCondition) {
     		((AndCondition) cond2).checks.add(cond1);
@@ -93,7 +98,11 @@ public class AndCondition implements Condition, Serializable {
 		   } else if (accessKey.equals("$in")) {			   
 			  checks.add(new InCondition(makeSet(value)));
 		   } else if (accessKey.equals("$or")) {			   
-			  checks.add(new OrCondition(makeSet(value)));		   
+			  checks.add(new OrCondition(makeSet(value)));
+		   } else if (accessKey.equals("$not")) {			   
+			  checks.add(new NotCondition(parseRemaining(value)));
+		   } else if (accessKey.equals("$nin")) {			   
+			  checks.add(new NotInCondition(makeSet(value)));	
 		   } else if (accessKey.equals("$and")) {			   
 			  for (Object obj : makeSet(value)) {
 				  checks.add(parseRemaining(obj));
@@ -120,7 +129,7 @@ public class AndCondition implements Condition, Serializable {
 			Condition c = checks.get(i).optimize();
 			if (c instanceof FieldAccess) {
 				Condition c2 = ((FieldAccess) c).getCondition();
-				if (c2 instanceof ElemMatchCondition || c2 instanceof CompareCaseInsensitive || c2 instanceof EqualsSingleValueCondition) {
+				if (c2 instanceof ElemMatchCondition || c2 instanceof CompareCaseInsensitive || c2 instanceof EqualsSingleValueCondition || c2 instanceof NotInCondition) {
 					allFieldAccess = false;
 				} else {
 				   String field = ((FieldAccess) c).getField();
@@ -153,12 +162,16 @@ public class AndCondition implements Condition, Serializable {
 		if (fragment instanceof String) {	    	   
 	       return new EqualsSingleValueCondition((Comparable) fragment);
 	    } else if (fragment instanceof Map) {
-	       return new AndCondition((Map<String,Object>) fragment); 
+	       return new AndCondition((Map<String,Object>) fragment);
+	    } else if (fragment instanceof Set) {
+		    return new InCondition((Set) fragment); 
 	    } else if (fragment instanceof Condition) {
 	    	return (Condition) fragment;
 	    } else if (fragment instanceof MidataId) {
 	    	return new EqualsSingleValueCondition((Comparable) fragment);
 	    } else {
+	    	AccessLog.log("NOT IMPL:"+fragment.getClass().getName());
+	    	AccessLog.log("NOT IMPL:"+fragment.toString());
 	       throw new NotImplementedError();
 	    }
 	}
@@ -226,7 +239,7 @@ public class AndCondition implements Condition, Serializable {
 	@Override
 	public Map<String, Object> asMongoQuery() {
 		Map<String, Object> result = new HashMap<String, Object>();		
-		List<Object> parts = new ArrayList<Object>();
+		
 		for (Condition check : checks) {
 			Map<String, Object> part = (Map<String, Object>) check.asMongoQuery(); 
 			result.putAll(part); 						
@@ -257,6 +270,10 @@ public class AndCondition implements Condition, Serializable {
 			parts.add(c);
 		}
         if (mustConvert) return new ComplexMongoCondition(ComplexMongoCondition.MODE_AND, parts).mongoCompatible();
+		return createAndOfThisType(parts);
+	}
+	
+	public AndCondition createAndOfThisType(List<Condition> parts) {
 		return new AndCondition(parts);
 	}
 

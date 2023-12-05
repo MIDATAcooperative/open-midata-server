@@ -71,6 +71,7 @@ import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AppReviewChecklist;
 import models.enums.ConsentStatus;
+import models.enums.DeploymentStatus;
 import models.enums.EntityType;
 import models.enums.IconUse;
 import models.enums.JoinMethod;
@@ -84,6 +85,7 @@ import models.enums.ReviewStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
+import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -153,7 +155,7 @@ public class Market extends APIController {
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 		
 		app.version = JsonValidation.getLong(json, "version");				
 		
@@ -192,6 +194,10 @@ public class Market extends APIController {
 			  app.name = JsonValidation.getString(json, "name");
 			}
 			
+			app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
+			app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");			
+			app.decentral = JsonValidation.getBoolean(json, "decentral");
+			app.organizationKeys = JsonValidation.getBoolean(json, "organizationKeys");
 			
 			if (withLogout) {
 				Map<String, Object> oldDefaultQuery = app.defaultQuery;
@@ -205,6 +211,7 @@ public class Market extends APIController {
 					app.loginTemplateApprovedByEmail = null;
 					app.loginTemplateApprovedById = null;
 					app.loginTemplateApprovedDate = null;
+					markReviewObsolete(pluginId, AppReviewChecklist.TERMS_OF_USE_MATCH_QUERY);
 				}
 				app.defaultQuery = query;
 												
@@ -223,7 +230,7 @@ public class Market extends APIController {
 					markReviewObsolete(app._id, AppReviewChecklist.ACCESS_FILTER);
 				}
 				
-				app.consentObserving = app.type.equals("external") && Feature_FormatGroups.mayAccess(app.defaultQuery, "Consent", "fhir/Consent");
+				app.consentObserving = (app.type.equals("external") || app.type.equals("broker")) && Feature_FormatGroups.mayAccess(app.defaultQuery, "Consent", "fhir/Consent");
 
 				if (json.has("loginTemplate")) {
 				  LoginTemplate template = JsonValidation.getEnum(json, "loginTemplate", LoginTemplate.class); 
@@ -237,11 +244,14 @@ public class Market extends APIController {
 				if (json.has("loginButtonsTemplate")) {
 				  app.loginButtonsTemplate = JsonValidation.getEnum(json, "loginButtonsTemplate", LoginButtonsTemplate.class);
 				}
+				if (json.has("allowedIPs")) {
+					app.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");
+				}
 				
-				if (app.type.equals("external")) {
+				if (app.type.equals("external") || app.type.equals("broker")) {
 															
 					Set<ServiceInstance> si = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
-					if (si.isEmpty() && userId.equals(app.creator)) {
+					if (si.isEmpty() && userId.equals(app.creator) && !app.decentral) {
 						ApplicationTools.createServiceInstance(context, app, userId);
 					}
 					for (ServiceInstance instance : si) {
@@ -251,7 +261,7 @@ public class Market extends APIController {
 							if (!appInstances.isEmpty()) {
 								String subject = InstanceConfig.getInstance().getPortalServerDomain()+": API Keys expired";
 								String content = "Dear "+manager.firstname+" "+manager.lastname+",\n\nthe definition for the service '"+app.name+"' has been updated. The existing API keys for that service have expired. You are managing at least one API keys for this service.\n\nPlease generate a new API key if required.\n\nThis is an automated mail.";
-								Messager.sendTextMail(manager.email, manager.firstname+" "+manager.lastname, subject, content);
+								Messager.sendTextMail(manager.email, manager.firstname+" "+manager.lastname, subject, content, null);
 							}
 						}
 					}
@@ -283,6 +293,9 @@ public class Market extends APIController {
 			
 			app.i18n = new HashMap<String, Plugin_i18n>();
 			
+			/*if (app.resharesData && app.usePreconfirmed) {
+				throw new JsonValidationException("error.invalid.usePreconfirmed", "usePreconfirmed", "invalid", "Data reshare and preconfirmation not allowed together.");
+			}*/
 			
 			if (getRole().equals(UserRole.ADMIN) && withLogout) {
 				/*String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
@@ -339,6 +352,7 @@ public class Market extends APIController {
 				} else if (app.type.equals("oauth2")) {
 					app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
 					app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
+					app.refreshTkExchangeParams = JsonValidation.getStringOrNull(json, "refreshTkExchangeParams");
 				}
 			}
 			if (app.type.equals("mobile") || app.type.equals("service")) {
@@ -486,7 +500,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)	
-	public Result updateDefaultSubscriptions(Request request, String pluginIdStr) throws JsonValidationException, AppException {
+	public Result updateDefaultSubscriptions(Request request, String pluginIdStr) throws JsonValidationException, AppException, LostUpdateException {
 		//if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		// validate json
 		JsonNode json = request.body().asJson();
@@ -498,9 +512,10 @@ public class Market extends APIController {
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 		
-		app.version = JsonValidation.getLong(json, "version");				
+		app.version = JsonValidation.getLong(json, "version");	
+		app.pluginVersion = System.currentTimeMillis();
 		
 		parseSubscriptions(app, json);
 						
@@ -531,7 +546,7 @@ public class Market extends APIController {
 		
 		String json = JsonOutput.toJson(mixed, mapping);
 		//String base64 = Base64.getEncoder().encodeToString(json.getBytes());
-		return ok(json);
+		return ok(json).as("application/json");
 	}
 	
 	@APICall
@@ -580,7 +595,13 @@ public class Market extends APIController {
 		app.repositoryUrl = JsonValidation.getStringOrNull(pluginJson, "repositoryUrl");
 		app.repositoryDirectory = JsonValidation.getStringOrNull(pluginJson, "repositoryDirectory");
 		app.repositoryToken = JsonValidation.getStringOrNull(pluginJson, "repositoryToken");
+		app.hasScripts = JsonValidation.getBoolean(pluginJson, "hasScripts");
 		app.repositoryDate = 0;
+		if (app.repositoryUrl != null && app.repositoryUrl.trim().length()>0) {
+		   app.deployStatus = DeploymentStatus.READY;
+		} else {
+		   app.deployStatus = DeploymentStatus.NONE;
+		}
 		
 		try {
 		List<PluginIcon> icons = new ArrayList<PluginIcon>();
@@ -660,6 +681,8 @@ public class Market extends APIController {
 			JsonValidation.validate(json, "filename", "name", "description", "url");
 		} else if (type.equals("external")) {
 			JsonValidation.validate(json, "filename", "name", "description");
+		} else if (type.equals("broker")) {
+			JsonValidation.validate(json, "filename", "name", "description");
 		} else if (type.equals("analyzer") || type.equals("endpoint")) {
 			JsonValidation.validate(json, "filename", "name", "description");
 		} else {
@@ -713,6 +736,11 @@ public class Market extends APIController {
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		plugin.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
+		plugin.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
+		plugin.decentral = JsonValidation.getBoolean(json, "decentral");
+		plugin.organizationKeys = JsonValidation.getBoolean(json, "organizationKeys");
+		plugin.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");		
 		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		plugin.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		plugin.codeChallenge = JsonValidation.getBoolean(json, "codeChallenge");
@@ -724,6 +752,10 @@ public class Market extends APIController {
 		if (plugin.type.equals("analyzer") || plugin.type.equals("endpoint")) {
 			plugin.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
 		} else plugin.pseudonymize = false;
+		
+		/*if (plugin.resharesData && plugin.usePreconfirmed) {
+			throw new JsonValidationException("error.invalid.usePreconfirmed", "usePreconfirmed", "invalid", "Data reshare and preconfirmation not allowed together.");
+		}*/
 		
 		try {
 		    Query.validate(plugin.defaultQuery, plugin.type.equals("mobile") || plugin.type.equals("service"));
@@ -771,6 +803,7 @@ public class Market extends APIController {
 			} else if (plugin.type.equals("oauth2")) {
 				plugin.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
 				plugin.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
+				plugin.refreshTkExchangeParams = JsonValidation.getStringOrNull(json, "refreshTkExchangeParams");
 			}
 		}
 		if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
@@ -781,7 +814,7 @@ public class Market extends APIController {
 			
 		Plugin.add(plugin);
 
-		if (plugin.type.equals("service")) {
+		if (plugin.type.equals("external") || plugin.type.equals("broker")) {
 			ApplicationTools.createServiceInstance(context, plugin, userId);
 		}
 		String endpoint = JsonValidation.getStringOrNull(json, "endpoint");
@@ -840,6 +873,11 @@ public class Market extends APIController {
 		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
+		app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
+		app.decentral = JsonValidation.getBoolean(json, "decentral");
+		app.organizationKeys = JsonValidation.getBoolean(json, "organizationKeys");
+		app.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");
 		app.consentObserving = JsonValidation.getBoolean(json, "consentObserving");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
@@ -860,6 +898,7 @@ public class Market extends APIController {
 			  app.loginTemplateApprovedByEmail = null;
 			  app.loginTemplateApprovedById = null;
 			  app.loginTemplateApprovedDate = null;
+			  markReviewObsolete(app._id, AppReviewChecklist.TERMS_OF_USE_MATCH_QUERY);
 		  }
 		}
 		if (json.has("loginButtonsTemplate")) {
@@ -900,6 +939,7 @@ public class Market extends APIController {
 			} else if (app.type.equals("oauth2")) {
 				app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
 				app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
+				app.refreshTkExchangeParams = JsonValidation.getStringOrNull(json, "refreshTkExchangeParams");
 			}
 		}
 		if (app.type.equals("mobile") || app.type.equals("service")) {
@@ -945,16 +985,16 @@ public class Market extends APIController {
 	 */	
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public Result deletePlugin(String pluginIdStr) throws JsonValidationException, AppException {		
+	public Result deletePlugin(Request request, String pluginIdStr) throws JsonValidationException, AppException {		
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
-		
-		deletePlugin(pluginId);
+		AccessContext context = portalContext(request);
+		deletePlugin(context, pluginId);
 		
 		return ok();
 	}
 	
-	private static void deletePlugin(MidataId pluginId) throws JsonValidationException, AppException {
+	private static void deletePlugin(AccessContext context, MidataId pluginId) throws JsonValidationException, AppException {
 		
 		
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
@@ -962,7 +1002,7 @@ public class Market extends APIController {
 
 		if (DeploymentManager.hasUserDeployment(pluginId)) throw new BadRequestException("error.notauthorized.remove_first", "Remove existing deployment first.");
 		
-		if (app.type.equals("mobile") || app.type.equals("service")) {
+		if (app.type.equals("mobile") || app.type.equals("service") || app.type.equals("external") || app.type.equals("analyzer") || app.type.equals("broker")) {
 			Set<MobileAppInstance> installations =  MobileAppInstance.getByApplication(pluginId, Sets.create("_id", "owner"));
 			for (MobileAppInstance inst : installations) {				
 				KeyManager.instance.deleteKey(inst._id);
@@ -973,7 +1013,13 @@ public class Market extends APIController {
 			for (Space inst : installations) {
 				Space.delete(inst.owner, inst._id);
 			}
-		}		 
+		}	
+		if (app.type.equals("external") || app.type.equals("analyzer") || app.type.equals("broker")) {
+			Set<ServiceInstance> instances = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
+			for (ServiceInstance inst : instances) {
+				ApplicationTools.deleteServiceInstance(context, inst);
+			}
+		}
 		app.status = PluginStatus.DELETED;
 		app.spotlighted = false;
 		String filename = app.filename;
@@ -1002,13 +1048,14 @@ public class Market extends APIController {
         // validate request     
         MidataId pluginId = new MidataId(pluginIdStr);
         MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext(request);
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
         if (!app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
         if (app.status != PluginStatus.DEVELOPMENT && app.status != PluginStatus.BETA) throw new BadRequestException("error.auth", "Plugin may not be deleted. Ask an admin.");
               
-        deletePlugin(pluginId);        
+        deletePlugin(context, pluginId);        
         
         return ok();
     }
@@ -1041,7 +1088,7 @@ public class Market extends APIController {
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-        if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+        if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
    
 		List<PluginDevStats> stats = new ArrayList<PluginDevStats>(PluginDevStats.getByPlugin(pluginId, PluginDevStats.ALL));
 		
@@ -1051,14 +1098,14 @@ public class Market extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
 	public Result deletePluginStats(Request request, String pluginIdStr) throws JsonValidationException, AppException {
-		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		
 		MidataId pluginId = new MidataId(pluginIdStr);
         MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-        if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+        if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
    
 		PluginDevStats.deleteByPlugin(pluginId);
 		
@@ -1115,7 +1162,7 @@ public class Market extends APIController {
 					
 			Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 			if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");			
-			if (!app.isDeveloper(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+			if (!app.isDeveloper(userId) && !hasAdminRole(request, SubUserRole.PLUGINADMIN)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 		
 			
 			// extract file from data
@@ -1185,7 +1232,7 @@ public class Market extends APIController {
 					
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");			
-		if (!app.isDeveloper(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!app.isDeveloper(userId) && !hasAdminRole(request, SubUserRole.PLUGINADMIN)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 				
 		PluginIcon.delete(app.filename, use);
 				
@@ -1328,10 +1375,10 @@ public class Market extends APIController {
 		if (link.linkTargetType == LinkTargetType.ORGANIZATION) {
 			JsonValidation.validate(json, "userLogin");
 			HPUser user = HPUser.getByEmail(JsonValidation.getString(json, "userLogin"), Sets.create("status","provider"));
-			if (user == null || user.status != UserStatus.ACTIVE) throw new JsonValidationException("error.invalid.user", "User not found or not active");
-			HealthcareProvider prov = HealthcareProvider.getById(user.provider, HealthcareProvider.ALL);
+			if (user == null || user.status != UserStatus.ACTIVE) throw new JsonValidationException("error.invalid.user", "User not found or not active");					
+			/*HealthcareProvider prov = HealthcareProvider.getById(user.provider, HealthcareProvider.ALL);
 			if (prov == null) throw new JsonValidationException("error.invalid.user", "User not found or not active");
-			link.providerId = prov._id;
+			link.providerId = prov._id;*/
 			link.userId = user._id;
 		} else {
 			JsonValidation.validate(json, "serviceAppId");
@@ -1402,7 +1449,7 @@ public class Market extends APIController {
 			UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(link.studyId, userId);
 			if (self == null)
 				throw new AuthException("error.notauthorized.study", "User not member of study group");
-			if (!self.role.maySetup())
+			if (!self.getConfirmedRole().maySetup())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 	        link.validationResearch = StudyValidationStatus.VALIDATED;
 		} else if (role.equals(UserRole.ADMIN)) {
@@ -1487,7 +1534,7 @@ public class Market extends APIController {
 		Plugin plugin = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 	    if (plugin == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!getRole().equals(UserRole.ADMIN) && !plugin.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !plugin.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 					
 		if (plugin.debugHandle != null) {
 			TestPluginCall.delete(plugin.debugHandle);
@@ -1507,10 +1554,10 @@ public class Market extends APIController {
 		
 		Plugin.set(plugin._id, "debugHandle", plugin.debugHandle);
 		
-		return ok(JsonOutput.toJson(plugin, "Plugin", Sets.create("debugHandle")));
+		return ok(JsonOutput.toJson(plugin, "Plugin", Sets.create("debugHandle"))).as("application/json");
 	}
 	
-	public void markReviewObsolete(MidataId pluginId, AppReviewChecklist check) throws AppException {
+	public static void markReviewObsolete(MidataId pluginId, AppReviewChecklist check) throws AppException {
 		List<PluginReview> reviews = PluginReview.getReviews(pluginId, check);
 		for (PluginReview review : reviews) review.markObsolete();
 	}
@@ -1518,12 +1565,13 @@ public class Market extends APIController {
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)	
 	public Result getReviews(Request request, String pluginIdStr) throws AppException {
+		
 		MidataId pluginId = new MidataId(pluginIdStr);
         MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-        if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+        if (!hasAdminRole(request, SubUserRole.PLUGINADMIN)  && !app.isDeveloper(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
    
 		List<PluginReview> reviews = PluginReview.getReviews(pluginId);
 		
@@ -1558,8 +1606,7 @@ public class Market extends APIController {
 			} else {
 			  unapproveLoginTemplate(review.pluginId, userId);
 			}
-		}
-		
+		}		
 		
 		return ok();
 	}
@@ -1625,9 +1672,11 @@ public class Market extends APIController {
 
 		String endpoint = null;
 		if (service) {
-			for (ServiceInstance inst :  ServiceInstance.getByApp(plugin._id, ServiceInstance.ALL)) {
-				if (endpoint==null && inst.endpoint!=null) endpoint = inst.endpoint;
-				ApplicationTools.deleteServiceInstance(context, inst);
+			if (!plugin.decentral) {
+				for (ServiceInstance inst :  ServiceInstance.getByApp(plugin._id, ServiceInstance.ALL)) {
+					if (endpoint==null && inst.endpoint!=null) endpoint = inst.endpoint;
+					ApplicationTools.deleteServiceInstance(context, inst);
+				}
 			}
 			
 			ApplicationTools.createServiceInstance(context, plugin, licence.licenseeId, endpoint);
@@ -1669,26 +1718,66 @@ public class Market extends APIController {
 		
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
-		boolean doDelete = JsonValidation.getBoolean(json, "doDelete");
+		String action  = JsonValidation.getStringOrNull(json, "action");
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl"));
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "hasScripts"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 
-		if (app.repositoryUrl != null && !app.repositoryUrl.equals(repo) && !doDelete) {
+		if (app.repositoryUrl != null && !app.repositoryUrl.equals(repo) && action==null) {
 			if (DeploymentManager.hasUserDeployment(pluginId)) throw new BadRequestException("error.notauthorized.remove_first", "Remove existing deployment first.");
 		}
-		if (!doDelete) {
+		if (action==null) {
 			app.repositoryUrl = repo;
 		    if (token != null) app.repositoryToken = token;
 		    app.repositoryDirectory = directory;
+		    app.hasScripts = JsonValidation.getBoolean(json, "hasScripts");
+		    app.deployStatus = DeploymentStatus.RUNNING;
 		    app.updateRepo();
 		}
 	    	 
-	    DeploymentReport report = DeploymentManager.deploy(app._id, userId, doDelete);
+	    DeploymentReport report = DeploymentManager.deploy(app._id, userId, action);
 		
 	    return ok(JsonOutput.toJson(report, "DeploymentReport", DeploymentReport.ALL)).as("application/json");
+		
+	}
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public Result globalRepoAction(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.PLUGINADMIN);
+		JsonNode json = request.body().asJson();
+		JsonValidation.validate(json, "action");		
+		String action = JsonValidation.getString(json, "action");
+		
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+
+		if ("deploy-ready".equals(action)) {
+			// Deploy ready and failed
+			Set<Plugin> plugins = Plugin.getAll(CMaps.map("deployStatus", Sets.createEnum(DeploymentStatus.READY, DeploymentStatus.FAILED)), Sets.create("_id"));
+			for (Plugin plugin : plugins) {
+				Plugin.set(plugin._id, "deployStatus", DeploymentStatus.RUNNING);
+				DeploymentManager.deploy(plugin._id, userId, null);
+			}
+		}		    
+		else if ("deploy-all".equals(action)) {
+			// Deploy all available
+			Set<Plugin> plugins = Plugin.getAll(CMaps.map("deployStatus", Sets.createEnum(DeploymentStatus.READY, DeploymentStatus.DONE, DeploymentStatus.FAILED)), Sets.create("_id"));
+			for (Plugin plugin : plugins) {
+				Plugin.set(plugin._id, "deployStatus", DeploymentStatus.RUNNING);
+				DeploymentManager.deploy(plugin._id, userId, null);
+			}
+		} else if ("audit-all".equals(action)) {
+  		    // Audit all ready and deployed
+			Set<Plugin> plugins = Plugin.getAll(CMaps.map("deployStatus", Sets.createEnum(DeploymentStatus.READY, DeploymentStatus.DONE, DeploymentStatus.FAILED)), Sets.create("_id"));
+			for (Plugin plugin : plugins) {
+				Plugin.set(plugin._id, "repositoryRisks", "Waiting for audit...");
+				DeploymentManager.deploy(plugin._id, userId, "audit");
+			}
+		}
+	    return ok();
 		
 	}
 	
@@ -1698,10 +1787,10 @@ public class Market extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "repositoryDirectory"));
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl", "repositoryDirectory", "hasScripts"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+		if (!hasAdminRole(request, SubUserRole.PLUGINADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
 
 		DeploymentReport report = DeploymentReport.getById(pluginId);
 		

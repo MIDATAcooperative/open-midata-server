@@ -21,7 +21,7 @@
 		<form class="form" v-if="role!='RESEARCH'">            
 		    <div class="form-check">
 		      <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="consenttype" value="option1" @click="changeView()"> <span class="margin-left" v-t="'consents.where_owner'"></span> 
+                <input class="form-check-input" type="radio" name="consenttype" value="option1" v-model="consenttype" @click="changeView()"> <span class="margin-left" v-t="'consents.where_owner'"></span> 
               </label>
             </div>
             <div class="form-check">
@@ -43,6 +43,7 @@
 
 			<tr>
                 <Sorter sortby="ownerName" v-model="consents" v-t="'consents.ownerName'"></Sorter>
+                <Sorter class="d-none d-sm-table-cell" sortby="dateOfCreation" v-model="consents" v-t="'consents.date_of_creation'"></Sorter>
 				<Sorter class="d-none d-md-table-cell" sortby="name" v-model="consents" v-t="'consents.name'"></Sorter>				
 				<Sorter sortby="type" v-model="consents" v-t="'consents.type'"></Sorter>
 				<Sorter class="d-none d-sm-table-cell" sortby="status" v-model="consents" v-t="'consents.status'"></Sorter>				
@@ -50,6 +51,7 @@
 			</tr>
 			<tr v-for="consent in consents.filtered" :key="consent._id" :class="{ 'table-warning' : consent.status == 'UNCONFIRMED' }">
 				<td><a @click="editConsent(consent);" href="javascript:">{{ consent.ownerName || consent.externalOwner }}</a></td>
+				<td class="d-none d-sm-table-cell">{{ $filters.date(consent.dateOfCreation) }}</td> 
                 <td class="d-none d-md-table-cell">{{ consent.name }}</td>				
 				<td>{{ $t('enum.consenttype.'+consent.type) }}</td>
 				<td class="d-none d-sm-table-cell">{{ $t('enum.consentstatus.'+consent.status) }}</td>				
@@ -74,7 +76,8 @@ import ENV from 'config';
 export default {
   
     data: () => ({
-        consents : []
+        consents : [],
+        consenttype : "option2"
 	}),	
 		
 
@@ -86,9 +89,9 @@ export default {
 
         loadConsents(userId) {	
             const { $data, $route } = this,me=this;		    
-		    me.doBusy(circles.listConsents({ member : true }, [ "name", "authorized", "type", "status", "records", "owner", "ownerName", "externalOwner" ])
+		    me.doBusy(circles.listConsents({ member : true }, [ "name", "authorized", "type", "status", "records", "owner", "ownerName", "externalOwner", "dateOfCreation" ])
 		    .then(function(data) {
-                $data.consents = me.process(data.data, { filter : { name : "" } });						
+                $data.consents = me.process(data.data, { filter : { name : "" }, ignoreCase : true, sort : "-dateOfCreation" });						
                
 		    }));
 	    },
@@ -112,6 +115,7 @@ export default {
     },
 
     created() {
+        this.$data.consenttype = "option2";
         this.init();
     }
    

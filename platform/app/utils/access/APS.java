@@ -42,7 +42,7 @@ public abstract class APS extends Feature {
 	
 	public abstract boolean isReady() throws AppException;
 	
-	public abstract boolean isAccessible() throws AppException;
+	public abstract boolean isAccessible() throws InternalServerException;
 	
 	public abstract boolean isUsable() throws AppException;
 	
@@ -70,7 +70,7 @@ public abstract class APS extends Feature {
 	
 	public abstract MidataId getStoredOwner() throws AppException;
 		
-	public abstract BasicBSONObject getMeta(String key) throws AppException;
+	public abstract BasicBSONObject getMeta(String key) throws InternalServerException;
 				
 							
 	public abstract void addPermission(DBRecord record, boolean withOwner) throws AppException;
@@ -89,5 +89,7 @@ public abstract class APS extends Feature {
 	public abstract boolean hasNoDirectEntries() throws AppException;
 	
 	public abstract void provideAPSKeyAndOwner(byte[] unlock, MidataId owner);
+	
+	public abstract void reload() throws InternalServerException;
 					
 }

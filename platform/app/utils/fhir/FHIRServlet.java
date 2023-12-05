@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import utils.InstanceConfig;
 import utils.context.AccessContext;
 
@@ -52,6 +53,12 @@ public class FHIRServlet extends RestfulServer {
     	
     	return "https://"+InstanceConfig.getInstance().getPlatformServer()+"/fhir";
     }
+    
+    public static ResourceProvider getProvider(String type) {
+    	ResourceProvider result = myProviders.get(type);
+    	if (result == null) throw new UnprocessableEntityException("Unknown resource type '"+type+"'");
+    	return result;
+    }
     /**
      * The initialize method is automatically called when the servlet is starting up, so it can
      * be used to configure the servlet to define resource providers, or set up
@@ -63,7 +70,7 @@ public class FHIRServlet extends RestfulServer {
 	   //String serverBaseUrl = getBaseUrl();	
 	   
        setServerAddressStrategy(new ServerAddressStrategy());
-       this.setServerConformanceProvider(new MidataConformanceProvider());
+       this.setServerConformanceProvider(new MidataConformanceProvider(this));
        // ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());       
        
       /*
@@ -134,7 +141,10 @@ public class FHIRServlet extends RestfulServer {
       
       setPlainProviders(plainProviders);
       //setPagingProvider(new VirtualPaging());
-      ResourceProvider.addPathWithVersion("Bundle.entry.fullUrl");
+      
+      //Against FHIR spec:
+      //ResourceProvider.addPathWithVersion("Bundle.entry.fullUrl");
+      
       ResourceProvider.addPathWithVersion("Bundle.entry.response.location");
       getFhirContext().getParserOptions().setDontStripVersionsFromReferencesAtPaths(ResourceProvider.pathesWithVersion);
       

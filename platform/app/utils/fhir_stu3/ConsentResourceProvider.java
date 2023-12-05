@@ -76,15 +76,21 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import controllers.Circles;
 import controllers.members.HealthProvider;
 import models.Consent;
+import models.ConsentEntity;
 import models.MidataId;
 import models.Plugin;
+import models.ServiceInstance;
+import models.Study;
 import models.TypedMidataId;
 import models.User;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EntityType;
+import models.enums.Permission;
+import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import utils.AccessLog;
+import utils.ConsentQueryTools;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
 import utils.audit.AuditManager;
@@ -144,7 +150,11 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		if (EntityType.USERGROUP.equals(consentToConvert.entityType)) {
 			for (MidataId auth : consentToConvert.authorized) {
 			   p.addActor().setReference(new Reference("Group/"+auth.toString()));
-			}			
+			}		
+		} else if (EntityType.ORGANIZATION.equals(consentToConvert.entityType)) {
+			for (MidataId auth : consentToConvert.authorized) {
+			   p.addActor().setReference(new Reference("Organization/"+auth.toString()));
+			}		
 		} else {
 			for (MidataId auth : consentToConvert.authorized) {
 				try {
@@ -180,6 +190,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		c.setId(consentToConvert._id.toString());
 		
 		switch (consentToConvert.status) {
+		case PRECONFIRMED:
 		case ACTIVE:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.ACTIVE);break;
 		case UNCONFIRMED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.PROPOSED);break;
 		case REJECTED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.REJECTED);break;
@@ -201,8 +212,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		if (consentToConvert.validUntil != null) {
 		  c.setPeriod(new Period().setEnd(consentToConvert.validUntil));	
 		}
-		if (consentToConvert.createdBefore != null) {
-		  c.setDataPeriod(new Period().setEnd(consentToConvert.createdBefore));
+		if (consentToConvert.createdBefore != null || consentToConvert.createdAfter != null) {
+		  c.setDataPeriod(new Period().setEnd(consentToConvert.createdBefore).setStart(consentToConvert.createdAfter));
 		}
 		if (consentToConvert.dateOfCreation != null) {
 		  c.setDateTime(consentToConvert.dateOfCreation);
@@ -417,44 +428,16 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	}
 				
 	
-	private static void mayShare(MidataId pluginId, Map<String, Object> query) throws AppException {
-		Plugin plugin = Plugin.getById(pluginId);
-		if (plugin == null || !plugin.resharesData) throw new ForbiddenOperationException("Plugin is not allowed to share data.");
-		if (!isSubQuery(plugin.defaultQuery, query)) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");
+	private static void mayShare(AccessContext context, Map<String, Object> query) throws AppException {		
+		if (!context.hasAccessToAllOf(query)) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");
 				
 	}
-	
-	private static boolean isSubQuery(Map<String, Object> masterQuery, Map<String, Object> subQuery) throws AppException {
-		
-		if (masterQuery.containsKey("$or")) {
-			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) masterQuery.get("$or");			
-			for (Map<String, Object> part :parts) {
-				boolean match = isSubQuery(part, subQuery);
-				if (match) return true;
-			}
-		}
-		
-		masterQuery = new HashMap<String, Object>(masterQuery);
-		subQuery = new HashMap<String, Object>(subQuery);
-								
-		Feature_FormatGroups.convertQueryToContents(masterQuery);		
-		Feature_FormatGroups.convertQueryToContents(subQuery);
-		
-		masterQuery.remove("group-system");
-		subQuery.remove("group-system");
-		
-	    for (Map.Entry<String, Object> entry : masterQuery.entrySet()) {
-	    	if (!subQuery.containsKey(entry.getKey())) return false;
-	    	Set<String> master = utils.access.Query.getRestriction(entry.getValue(), entry.getKey());
-	    	Set<String> sub = utils.access.Query.getRestriction(subQuery.get(entry.getKey()), entry.getKey());
-	    	if (!master.containsAll(sub)) return false;	    	
-	    }
-		return true;
-	}
-		
+			
 
 	@Override
 	public void createPrepare(Consent consent, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
+		
+		
         consent.categoryCode = theResource.getCategoryFirstRep().getCodingFirstRep().getCode();
 		
 		consent.name = theResource.getCategoryFirstRep().getText();
@@ -470,12 +453,13 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			
 		if (theResource.getDataPeriod() != null) {
 		  consent.createdBefore = theResource.getPeriod().getEnd();
+		  consent.createdAfter = theResource.getPeriod().getStart();
 		}
 			
         consent.type = ConsentType.valueOf(theResource.getPurposeFirstRep().getCode());
 		consent.owner = info().getLegacyOwner();
 		consent.writes = WritePermissionType.UPDATE_AND_CREATE;
-		
+						
 		for (ConsentActorComponent cac : theResource.getActor()) {
 			Reference ref = FHIRTools.resolve(cac.getReference());
 			TypedMidataId mid = FHIRTools.getMidataIdFromReference(ref.getReferenceElement());
@@ -498,7 +482,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			  consent.authorized.add(mid.getMidataId());
 			}
 		}
-		
+				
 		Reference patient = theResource.getPatient();
 		if (patient != null) {
 			patient = FHIRTools.resolve(patient);
@@ -529,9 +513,11 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		if (!contents.isEmpty()) query.put("content", contents);
 		consent.sharingQuery = query;
         
+		AccessContext info = resolveSource(consent, theResource, null);		
+		
 		if (theResource.getStatus() == ConsentState.ACTIVE) {
-			mayShare(info().getUsedPlugin(), consent.sharingQuery);
-			if (!info().getAccessor().equals(consent.owner)) throw new InvalidRequestException("Only consent owner may create active consents");
+			mayShare(info, consent.sharingQuery);
+			if (!info.getAccessor().equals(consent.owner)) throw new InvalidRequestException("Only consent owner may create active consents");
 			consent.status = ConsentStatus.ACTIVE;
 		} else if (theResource.getStatus() != ConsentState.PROPOSED) {
 			throw new ForbiddenOperationException("consent status not supported for creation.");
@@ -540,10 +526,70 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		if (consent.type == ConsentType.IMPLICIT) throw new ForbiddenOperationException("consent type not supported for creation.");
 		
 	}
+	
+	/**
+	 * resolve source reference and check validity.
+	 * @param consent
+	 * @param theResource
+	 * @param optionalProject project needs only to be provided for consents not yet written to DB (if a project exists).
+	 * @return
+	 * @throws AppException
+	 */
+	private AccessContext resolveSource(Consent consent, org.hl7.fhir.dstu3.model.Consent theResource, Study optionalProject) throws AppException {
+		AccessContext info = info();
+		if (theResource.hasSourceReference()) {
+			Reference ref = theResource.getSourceReference();
+			IIdType type = ref.getReferenceElement();
+			if (type != null && type.getResourceType().equals("Consent")) {
+				MidataId baseConsentId = MidataId.parse(type.getIdPart());
+				AccessLog.log("resolve and verify source consent id=",baseConsentId.toString());
+				Consent base = Consent.getByIdAndOwner(baseConsentId, consent.owner, Consent.ALL);
+				if (base != null && base.allowedReshares != null && base.isActive()) {
+					// if (!base.isActive()) throw new UnprocessableEntityException("sourceReference consent is not active");
+				    // Is reshare allowed for party
+					boolean isValid = true;
+					if (optionalProject != null) {
+						isValid = false;
+						for (ConsentEntity allowedEntity : base.allowedReshares) {
+							if (allowedEntity.type == EntityType.USERGROUP && allowedEntity.id.equals(optionalProject._id)) {
+								isValid = true;
+							}
+						}
+						AccessLog.log("verified access for project:",optionalProject._id.toString()," success=",Boolean.toString(isValid));
+					} else {
+						for (MidataId auth : consent.authorized) {					
+							boolean partValid = false;
+							if (auth.equals(consent.owner)) partValid = true;
+							else {
+								for (ConsentEntity allowedEntity : base.allowedReshares) {
+									if (allowedEntity.id.equals(auth)) partValid = true;
+									else if (allowedEntity.type == EntityType.SERVICES && (consent.entityType == EntityType.USERGROUP || consent.entityType == EntityType.ORGANIZATION)) {
+										Set<ServiceInstance> insts = ServiceInstance.getByApp(allowedEntity.id, Sets.create("_id", "status"));
+										if (!insts.isEmpty()) {
+											for (ServiceInstance si : insts) {
+												if (si.status == UserStatus.ACTIVE && info.getCache().getByGroupAndActiveMember(auth, si._id, Permission.READ_DATA) != null) partValid = true; 
+											}
+										}										
+									}
+								}	
+							}
+							AccessLog.log("verified access for ",auth.toString()," success=",Boolean.toString(partValid));
+							if (!partValid) isValid = false;
+						}
+					}
+					if (!isValid) throw new InvalidRequestException("sourceReference does not allow to create this consent.");
+					AccessLog.log("verify source consent successful");	
+					info = info.forConsentReshare(base); 
+				}
+			}
+		}
+        return info;
+	}
 
 	@Override
 	public void createExecute(Consent consent, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
-        Circles.addConsent(info(), consent, true, null, false);        
+		AccessContext info = resolveSource(consent, theResource, null);
+        Circles.addConsent(info, consent, true, null, false);        
 		theResource.setDateTime(consent.dateOfCreation);		
 	}
 
@@ -563,7 +609,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	public void updatePrepare(Consent consent, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
         		
 		if ((theResource.getStatus() == ConsentState.ACTIVE || theResource.getStatus() == ConsentState.REJECTED) && consent.status == ConsentStatus.UNCONFIRMED) {
-			mayShare(info().getUsedPlugin(), consent.sharingQuery);  
+			mayShare(info(), consent.sharingQuery);  
 			if (theResource.getStatus() == ConsentState.ACTIVE && !info().getAccessor().equals(consent.owner)) throw new InvalidRequestException("Only consent owner may change consents to active consents");
 		}
 		

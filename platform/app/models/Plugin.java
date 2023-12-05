@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
+import models.enums.DeploymentStatus;
 import models.enums.IconUse;
 import models.enums.LoginButtonsTemplate;
 import models.enums.LoginTemplate;
@@ -65,9 +66,9 @@ public class Plugin extends Model implements Comparable<Plugin> {
 			 Sets.create("_id", "version", "creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
-	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams",
+	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams", "refreshTkExchangeParams",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports", "licenceDef", "pseudonymize", "consentObserving", "repositoryUrl", "repositoryDirectory", "repositoryDate", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports", "licenceDef", "pseudonymize", "consentObserving", "repositoryUrl", "repositoryDirectory", "repositoryDate", "repositoryAuditDate", "repositoryRisks", "hasScripts", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "deployStatus", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -77,7 +78,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "pluginVersion",
-	                     "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "licenceDef", "pseudonymize", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail");
+	                     "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "licenceDef", "pseudonymize", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys");
 	
 	public @NotMaterialized final static Set<String> FOR_LOGIN =
 			Sets.create("_id", "filename", "type", "name", "secret", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef", "codeChallenge",
@@ -181,6 +182,26 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 */
 	public boolean consentObserving;
 	
+	/**
+	 * App creates preconfirmed consents if required
+	 */
+	public boolean usePreconfirmed;
+	
+	/**
+	 * account email addresses from this service have been validated before
+	 */
+	public boolean accountEmailsValidated;
+	
+	/**
+	 * this data broker may have multiple instances
+	 */
+	public boolean decentral;
+	
+	/**
+	 * API keys for this data broker are always bound to an organization
+	 */
+	public boolean organizationKeys;
+	
 			
 	/**
 	 * set of tags that determine for which categories this plugin should be displayed in the market
@@ -244,7 +265,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	/**
 	 * the type of the plugin
 	 * 
-	 * type can be one of: visualization, service, oauth1, oauth2, mobile, external, analyzer
+	 * type can be one of: visualization, service, oauth1, oauth2, mobile, external, analyzer, broker
 	 */
 	public String type;
 	
@@ -297,6 +318,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * for OAUTH 2.0 : how to obtain token
 	 */
 	public String tokenExchangeParams;
+	
+	/**
+	 * for OAUTH 2.0 : how to obtain new refresh token
+	 */
+	public String refreshTkExchangeParams;
 	
 	/**
 	 * for mobile apps : secret needed for "init" request
@@ -364,6 +390,26 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public long repositoryDate;
 	
 	/**
+	 * Last npm audit from repository
+	 */
+	public long repositoryAuditDate;
+	
+	/**
+	 * Risks found
+	 */
+	public String repositoryRisks;
+	
+	/**
+	 * Server side scripts present
+	 */
+	public boolean hasScripts;
+	
+	/**
+	 * Status of code deployment
+	 */
+	public DeploymentStatus deployStatus;
+	
+	/**
 	 * how should the login page look like?
 	 */
 	public LoginTemplate loginTemplate;
@@ -392,6 +438,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * Require login with code_challenge and code_verifier
 	 */
 	public boolean codeChallenge;
+	
+	/**
+	 * List of allowed IP ranges in CIDR notation
+	 */
+	public String allowedIPs;
 
 	@Override
 	public int compareTo(Plugin other) {
@@ -442,7 +493,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "apiUrl", "noUpdateHistory", "sendReports", "pseudonymize", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail" );
+		   DBLayer.secureUpdate(this, collection, "version", "creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "apiUrl", "noUpdateHistory", "sendReports", "pseudonymize", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys");
 		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
@@ -450,7 +501,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	}
 	
 	public void updateRepo() throws InternalServerException {				
-	   setMultiple(collection, Sets.create("repositoryUrl", "repositoryDirectory", "repositoryToken"));
+	   setMultiple(collection, Sets.create("repositoryUrl", "repositoryDirectory", "repositoryToken", "deployStatus", "hasScripts"));
 	   Instances.cacheClear("plugin",  _id);		
 	}
 	
@@ -469,10 +520,14 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		Instances.cacheClear("plugin",  _id);
 	}
 	
-	public void updateDefaultSubscriptions(List<SubscriptionData> subscriptions) throws InternalServerException {
+	public void updateDefaultSubscriptions(List<SubscriptionData> subscriptions) throws InternalServerException, LostUpdateException {
         this.defaultSubscriptions = subscriptions;
-        Model.set(Plugin.class, collection, _id, "defaultSubscriptions", subscriptions);
-        Instances.cacheClear("plugin",  _id);
+        try {
+	        DBLayer.secureUpdate(this, collection, "version", "defaultSubscriptions", "pluginVersion");
+			Instances.cacheClear("plugin",  _id);
+        } catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}   
 	}
 
 

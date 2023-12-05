@@ -45,7 +45,11 @@ public class InCondition implements Condition, Serializable {
 	public InCondition(Set<Object> val) {
 		this.val = val;
 	}
-	
+		
+	public Set<Object> getValues() {
+		return val;
+	}
+
 	@Override
 	public boolean satisfiedBy(Object obj) {
 		return val.contains(obj);

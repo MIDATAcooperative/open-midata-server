@@ -49,6 +49,8 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.AccessLog;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -98,6 +100,10 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		searchParamNameToTypeMap.put("Encounter:subject", Sets.create("Group", "Patient"));
 
 		registerSearches("Encounter", getClass(), "getEncounter");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("Encounter")	
+		  .hideIfPseudonymized("Encounter", "text");		  
 	}
 
 	@Override
@@ -108,9 +114,7 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 	@Search()
 	public Bundle getEncounter(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+		
   			@Description(shortDefinition="The set of accounts that may be used for billing for this Encounter")
 			@OptionalParam(name="account", targetTypes={  } )
 			ReferenceAndListParam theAccount, 
@@ -242,8 +246,7 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);	
 		paramMap.add("account", theAccount);
 		paramMap.add("appointment", theAppointment);
 		paramMap.add("based-on", theBased_on);
@@ -355,8 +358,8 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 	// representation
 	public void prepare(Record record, Encounter theEncounter) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a
-		// fixed value or something else useful)
-		String display = setRecordCodeByCodeableConcept(record, null, "Encounter"); 
+		// fixed value or something else useful)		
+		String display = setRecordCodeByCoding(record, theEncounter.getClass_(), "Encounter"); 
 
 		// Task b : Create record name
 		String date = "No time";
@@ -390,7 +393,7 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 
 		// Add subject field from record owner field if it is not already there
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

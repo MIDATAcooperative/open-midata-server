@@ -106,10 +106,10 @@
         </div>
         <p v-else v-t="'workspace.add_something'"></p>
         <div class="mt-3">
-            <button class="btn btn-primary mr-1" type="button" @click="showAddApp" v-t="'workspace.newapp_btn'"></button>
-            <button class="btn btn-primary mr-1" type="button" @click="showAddProject" v-t="'workspace.newproject_btn'"></button>
-            <button class="btn btn-primary mr-1" type="button" @click="showAddUser" v-t="'workspace.newuser_btn'"></button>
-            <button class="btn btn-primary mr-1" type="button" @click="reset()" v-t="'workspace.reset_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="showAddApp" v-t="'workspace.newapp_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="showAddProject" v-t="'workspace.newproject_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="showAddUser" v-t="'workspace.newuser_btn'"></button>
+            <button class="btn btn-primary mr-1 mb-1" type="button" @click="reset()" v-t="'workspace.reset_btn'"></button>
         </div>
     </panel>
     
@@ -165,7 +165,7 @@
 
     </panel>
 
-    <modal id="addapp" full-width="true" :open="addApp.open" @close="addApp.open = false" :title="$t('workspace.add_app')">
+    <modal id="addapp" :full-width="true" :open="addApp.open" @close="addApp.open = false" :title="$t('workspace.add_app')">
          <div class="body">
         <form name="myform" ref="myform" @submit.prevent="submitAddApp">
             <form-group name="appname" label="workspace.appname" :path="errors.appname">
@@ -178,7 +178,7 @@
          </div>
     </modal>
 
-     <modal id="adduser" full-width="true" :open="addUser.open" @close="addUser.open = false" :title="$t('workspace.add_user')">
+     <modal id="adduser" :full-width="true" :open="addUser.open" @close="addUser.open = false" :title="$t('workspace.add_user')">
          <div class="body">
             <p class="alert alert-warning" v-t="'workspace.testusers_only'"></p>
             <form name="myform" ref="myform" @submit.prevent="submitAddUser">
@@ -200,7 +200,7 @@
          </div>
     </modal>
 
-    <modal id="addproject" full-width="true" :open="addProject.open" @close="addProject.open = false" :title="$t('workspace.add_project')">
+    <modal id="addproject" :full-width="true" :open="addProject.open" @close="addProject.open = false" :title="$t('workspace.add_project')">
         <div class="body">
             <form name="myform" ref="myform" @submit.prevent="submitAddProject">
                 <form-group name="projectname" label="workspace.projectname" :path="errors.projectname">
@@ -639,7 +639,7 @@ export default {
             .then((st) => { $data.availableProjects = st.data }));
             for (let entry of $data.setup) {
                 if (entry.type == "app") {
-                    waitFor.push(apps.getApps({ filename : entry.name }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate"])
+                    waitFor.push(apps.getApps({ filename : entry.name }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys"])
                     .then(function(result) {
                         if (result.data.length==0) {
                             me.addError("workspace.error.app_no_exist", entry.name);
@@ -725,7 +725,7 @@ export default {
                                         .then(function(result2) {                                            
                                             account.apps = result2.data;
 
-                                            return postWithSession(account.sessionToken, jsRoutes.controllers.Circles.listConsents().url, { properties : {}, fields : ["type", "status","writes", "validUntil", "createdBefore","authorized", "entityType"] })
+                                            return postWithSession(account.sessionToken, jsRoutes.controllers.Circles.listConsents().url, { properties : {}, fields : ["type", "status","writes", "validUntil", "createdBefore","createdAfter", "authorized", "entityType"] })
                                             .then(function (result3) {
                                                 account.consents = result3.data;
                                                 $data.usedAccounts.push(account);

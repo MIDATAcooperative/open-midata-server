@@ -75,6 +75,7 @@
         
       
         				<span class="lead text-success" v-if="consent.status == 'ACTIVE'" v-t="'editconsent2.status_active'"></span>
+        				<span class="lead text-success" v-if="consent.status == 'PRECONFIRMED'" v-t="'editconsent2.status_preconfirmed'"></span>
         				<span class="lead text-danger" v-if="consent.status == 'EXPIRED'" v-t="'editconsent2.status_expired'"></span>
         				<span class="lead text-warning" v-if="consent.status == 'UNCONFIRMED'" v-t="'editconsent2.status_unconfirmed'"></span>    
         				<span class="lead text-danger" v-if="consent.status == 'REJECTED'" v-t="'editconsent2.status_rejected'"></span>
@@ -197,10 +198,17 @@
 					<div v-for="usergroup in authteams" :key="usergroup._id">
 						<div class="card-body">
 							<button type="button" :disabled="action!=null" v-if="mayChangeUsers()" @click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
-							<img :src="getIconRole('team')" class="float-left consenticon">
+							<img :src="getIconRole(usergroup.type=='ORGANIZATION' ? 'organization' : 'team')" class="float-left consenticon">
 							<div class="iconspace">
-								<div v-t="'editconsent2.team'"></div>	
+								<div v-t="'enum.usergrouptype.'+usergroup.type"></div>	
 								<strong>{{ usergroup.name }}</strong>
+								 <address v-if="usergroup.org">                                      
+		    {{ usergroup.org.address1 }}<br>
+			{{ usergroup.org.address2 }}<br>
+			{{ usergroup.org.zip }} {{ usergroup.org.city }}<br>
+			{{ usergroup.org.country }}<br><br>			
+			<span v-if="usergroup.org.phone"><span v-t="'common.user.phone'"></span>: {{ usergroup.org.phone }}</span>
+		                </address>
 							</div>
 						</div>
 					</div>
@@ -225,6 +233,7 @@
 					<div class="margin-top" v-if="mayAddPeople()">
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" @click="addYourself();" v-t="'newconsent.add_yourself_btn'"></button>
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addOrganization();" v-t="'newconsent.add_organization_btn'"></button>
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
 					</div>
 					<div class="extraspace"></div>
@@ -248,15 +257,35 @@
 						<span v-t="'editconsent2.exclude'"></span>: {{ groupExcludeLabels.join(", ") }}
 					</div>
 				</div>
-                <p v-if="sharing.records.length == 0 && !sharing.query.group.length" v-t="'editconsent.consent_empty'"></p>
-                <p v-if="sharing.records.length">{{ $t('editconsent.shares_records', { count : sharing.records.length }) }}</p>
+                <p v-if="(!sharing.records || sharing.records.length == 0) && !sharing.query.group.length" v-t="'editconsent.consent_empty'"></p>
+                <p v-if="sharing.records && sharing.records.length">{{ $t('editconsent.shares_records', { count : sharing.records.length }) }}</p>
 				
                 <div class="extraspace"></div>
                 <p><b class="text-primary" v-t="'editconsent.restrictions'"></b></p>
                 <p>{{ $t('enum.writepermissiontype.'+(consent.writes || 'NONE')) }}</p>
-                <p v-if="consent.createdBefore"><span v-t="'editconsent.created_before'"></span>:{{ $filters.date(consent.createdBefore) }} 
-            </p>
+                <p v-if="consent.createdAfter"><span v-t="'editconsent.created_after'"></span>:{{ $filters.date(consent.createdAfter) }}</p>
+                <p v-if="consent.createdBefore"><span v-t="'editconsent.created_before'"></span>:{{ $filters.date(consent.createdBefore) }}</p>
+                       
+        </div>
         
+        <div v-if="consent.basedOn">
+           <div class="extraspace"></div>
+           <p><b class="text-primary" v-t="'editconsent.source'"></b></p>
+           <p><span v-t="'editconsent.based_on'"></span>: <router-link :to="{ path : './editconsent', query : { consentId : consent.basedOn._id }}">{{ consent.basedOn.name }}</router-link></p>
+           <p><span v-t="'editconsent.base_created_at'"></span>: {{ $filters.date(consent.basedOn.dateOfCreation) }}</p>
+        </div>
+        
+        <div v-if="consent.allowedReshares">
+           <div class="extraspace"></div>
+           <p><b class="text-primary" v-t="'editconsent.allowed_reshares'"></b></p>
+           <ul>
+           <li v-for="reshare in consent.allowedReshares">
+              <span v-if="reshare.type=='SERVICES'"><span v-t="'editconsent.reshare_service'"></span>: {{ reshare.name }}</span>
+              <span v-if="reshare.type=='USERGROUP'"><span v-t="'editconsent.reshare_usergroup'"></span>: {{ reshare.name }}</span>
+              <span v-if="reshare.type=='USER'"><span v-t="'editconsent.reshare_user'"></span>: {{ reshare.name }}</span>
+              <span v-if="reshare.type=='PROJECT'"><span v-t="'editconsent.reshare_project'"></span>: {{ reshare.name }}</span>
+           </li>
+           </ul>
         </div>
             
         <div v-if="options.advanced" class="margin-top">
@@ -285,11 +314,15 @@
             </form-group>    
             
             <form-group name="validUntil" label="newconsent.expiration_date">        
-                <input id="validUntil" type="date" class="form-control" v-validate v-model="consent.validUntil" >              
+                <input id="validUntil" type="date" class="form-control" v-validate v-date="consent.validUntil" v-model="consent.validUntil" >              
+            </form-group>
+
+            <form-group name="createdAfter" label="newconsent.created_after">	  
+                <input id="createdAfter" type="date" class="form-control" v-validate v-date="consent.createdAfter" v-model="consent.createdAfter"  />              
             </form-group>
 
             <form-group name="createdBefore" label="newconsent.created_before">	  
-                <input id="createdBefore" type="date" class="form-control" v-validate v-model="consent.createdBefore"  />              
+                <input id="createdBefore" type="date" class="form-control" v-validate v-date="consent.createdBefore" v-model="consent.createdBefore"  />              
             </form-group>
 
             <form-group name="name" label="newconsent.name">
@@ -343,19 +376,23 @@
         </form>
     </panel>
 	
-	<modal id="provSearch" full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('providersearch.title')">
+	<modal id="provSearch" :full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('providersearch.title')">
 	   <provider-search :setup="setupProvidersearch" @add="addPerson"></provider-search>
 	</modal>
 	
-	<modal id="setupUser" full-width="true" @close="setupAdduser=null" :open="setupAdduser!=null" :title="$t('dashboard.addusers')">
+	<modal id="organizationSearch" :full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
+	   <organization-search :setup="setupOrganizationSearch" @add="addPerson"></organization-search>
+	</modal>
+	
+	<modal id="setupUser" :full-width="true" @close="setupAdduser=null" :open="setupAdduser!=null" :title="$t('dashboard.addusers')">
 	  <add-users :setup="setupAdduser" @close="setupAdduser=null" @add="addPerson"></add-users>
 	</modal>
 
-	<modal id="addOwner" full-width="true" @close="setupAddowner=null" :open="setupAddowner!=null" :title="$t('dashboard.addusers')">
+	<modal id="addOwner" :full-width="true" @close="setupAddowner=null" :open="setupAddowner!=null" :title="$t('dashboard.addusers')">
 	  <add-users :setup="setupAddowner" @close="setupAddowner=null" @add="setOwnerPerson"></add-users>
 	</modal>
 
-	<modal id="searchGroup" full-width="true" @close="setupSearchGroup=null" :open="setupSearchGroup!=null" :title="$t('dashboard.usergroupsearch')">
+	<modal id="searchGroup" :full-width="true" @close="setupSearchGroup=null" :open="setupSearchGroup!=null" :title="$t('dashboard.usergroupsearch')">
 	  <user-group-search :setup="setupSearchGroup" @close="setupSearchGroup=null" @add="addPerson"></user-group-search>
 	</modal>
 
@@ -373,6 +410,7 @@ import users from 'services/users';
 import hc from 'services/hc';
 import { getLocale } from 'services/lang';
 import ProviderSearch from "components/tiles/ProviderSearch.vue"
+import OrganizationSearch from "components/tiles/OrganizationSearch.vue"
 import Panel from "components/Panel.vue"
 import AddUsers from "components/tiles/AddUsers.vue"
 import UserGroupSearch from "components/tiles/UserGroupSearch.vue"
@@ -406,12 +444,13 @@ export default {
         sharing : {},
 		owner : null,
 		setupProvidersearch : null,
+		setupOrganizationSearch : null,
 		setupAdduser : null,
 		setupAddowner : null,
 		setupSearchGroup : null
 	}),		
     
-    components: { ErrorBox, CheckBox, Panel, FormGroup, ProviderSearch, AddUsers, Modal, UserGroupSearch },
+    components: { ErrorBox, CheckBox, Panel, FormGroup, ProviderSearch, OrganizationSearch, AddUsers, Modal, UserGroupSearch },
 
     mixins : [ status ],
 
@@ -440,7 +479,7 @@ export default {
 			$data.isSimple = true;
 			$data.consentId = $route.query.consentId;
 			
-			me.doBusy(circles.listConsents({ "_id" : $route.query.consentId }, ["name", "type", "status", "owner", "ownerName", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ])
+			me.doBusy(circles.listConsents({ "_id" : $route.query.consentId }, ["name", "type", "status", "owner", "ownerName", "authorized", "entityType", "createdBefore", "createdAfter", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes", "allowedReshares", "basedOn" ])
 			.then(function(data) {
 				if (!data.data || !data.data.length) {
 					$data.consent = null;
@@ -450,18 +489,20 @@ export default {
 				$data.consent = data.data[0];
 				
 				if ($data.consent.type == "CIRCLE") $data.isSimple = false;
-				
-				if ($data.consent.status === "ACTIVE" || $data.consent.owner === $data.userId) {
-				  //views.setView("records_shared", { aps : $route.query.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : false, allowAdd : false, type : "circles" });
-				} else {
-				  //views.disableView("records_shared");
-				}
-
+								
 				if ($data.consent.entityType == "USERGROUP") {
-					me.doBusy(usergroups.search({ "_id" : $data.consent.authorized }, ["name"]))
+					me.doBusy(usergroups.search({ "_id" : $data.consent.authorized }, ["name", "status", "type"]))
 					.then(function(data2) {
 						for (let userGroup of data2.data) {
-							$data.authteams.push(userGroup);
+						    userGroup.org = null;
+						    $data.authteams.push(userGroup);
+						    if (userGroup.type == "ORGANIZATION") {
+						       me.doBusy(hc.getOrganization(userGroup._id).
+						       then(function(data3) {
+						          userGroup.org = data3.data; 
+						       }
+						       ));					        
+						    } 
 						}
 					});
 				} else {
@@ -650,16 +691,29 @@ export default {
 	
 	addPerson(person, isTeam) {	
 		const { $data, $route, $router } = this, me = this;
-		
+		console.log(person);
 		if (person.members) isTeam = true;
+		if (person.resourceType == "Organization") isTeam = true;
 		$data.setupProvidersearch = null;
+		$data.setupOrganizationSearch = null;
 		$data.setupAdduser = null;
 		$data.setupSearchGroup = null;
 		$data.setupAddowner = null;
 
 		if (isTeam) {
+		    if (person.id) {
+		        person.org = null;
+		        person.type = "ORGANIZATION";
+		        me.doBusy(hc.getOrganization(person.id).
+				then(function(data3) {
+					person.org = data3.data; 
+				}));	
+		    } else {
+		        if (!person.type) person.type = "CARETEAM";
+		    }
+		
 			$data.authteams.push(person);
-			$data.consent.authorized.push(person._id);
+			$data.consent.authorized.push(person._id || person.id);
 			$data.consent.entityType = "USERGROUP";
 			if (!$data.consent.name) $data.consent.name = me.getName(person);
 		} else {
@@ -727,7 +781,10 @@ export default {
 		$data.setupSearchGroup= {};		
 	},
 	
-	
+	addOrganization() {
+		const { $data, $route, $router } = this, me = this;	
+		$data.setupOrganizationSearch = {};		
+	},
 	
 	addYourself() {
         const { $data, $route, $router } = this, me = this;
@@ -768,14 +825,14 @@ export default {
         const { $data, $route, $router } = this, me = this;
 		if (! $data.consent) return false;
 		//if ($scope.consent.owner !== $scope.userId) return false;
-		return ($data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID' || $data.consent.status == 'ACTIVE') && $data.consent.type != 'STUDYPARTICIPATION';
+		return ($data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID' || $data.consent.status == 'ACTIVE' || $data.consent.status == 'PRECONFIRMED') && $data.consent.type != 'STUDYPARTICIPATION';
 	},
 	
 	mayConfirm() {
 		const { $data, $route, $router } = this, me = this;
 		if (! $data.consent) return false;
 		if ($data.consent.owner !== $data.userId) return false;
-		return $data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID';
+		return $data.consent.status == 'UNCONFIRMED' || $data.consent.status == 'INVALID' || $data.consent.status == 'PRECONFIRMED';
 	},
 	
 	mayDelete() {
@@ -783,7 +840,7 @@ export default {
 		if (! $data.consent) return false;
 		if ($data.consent.owner !== $data.userId) return false;
 		
-		return ($data.consent.status == 'ACTIVE' || $data.consent.status == 'REJECTED' || $data.consent.status == 'EXPIRED' || $data.consent.status == 'INVALID') && ($data.consent.type != 'STUDYPARTICIPATION' && $data.consent.type != 'HEALTHCARE');
+		return ($data.consent.status == 'ACTIVE' || $data.consent.status == 'REJECTED' || $data.consent.status == 'EXPIRED' || $data.consent.status == 'INVALID' || $data.consent.status == 'PRECONFIRMED') && ($data.consent.type != 'STUDYPARTICIPATION' && $data.consent.type != 'HEALTHCARE');
 	},
 	
 	mayChangeUsers() {
@@ -860,6 +917,7 @@ export default {
 	getIconRole(item) {
 		if (!item) return "/images/account.jpg";
 		if (item == "team") return "/images/team.jpeg";
+		if (item == "organization") return "/images/team.jpeg";
 		if (item == "app") return "/images/app.jpg";
 		if (item == "community") return "/images/community.jpeg";
 		if (item == "external") return "/images/question.jpeg";

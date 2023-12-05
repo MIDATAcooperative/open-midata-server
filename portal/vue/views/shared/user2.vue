@@ -40,7 +40,7 @@
 			    <router-link class="btn col-12 btn-primary col-xl-2 mt-1 mr-1" :to="{ path : './changepassword', query : { actions : actions } }" v-t="'user.change_password_btn'"></router-link>
                 <router-link class="btn col-12 btn-primary col-xl-2 mt-1 mr-1" :to="{ path : './auditlog', query : { actions : actions } }" v-t="'user.auditlog_btn'"></router-link>
 			    <router-link class="btn col-12 btn-primary col-xl-2 mt-1 mr-1" v-show="user.role!='ADMIN'" :to="{ path : './accountwipe', query : { actions : actions } }" v-t="'user.wipe_account_btn'"></router-link>                
-                <button type="button" class="btn col-12 btn-default col-xl-2 mt-1" @click="skip()" v-t="'common.cancel_btn'"></button>
+                <button type="button" class="btn col-12 btn-default col-xl-2 mt-1" @click="skip()" v-t="'user.cancel_btn'"></button>
               </div>
             </div>			
 		</panel>				   				

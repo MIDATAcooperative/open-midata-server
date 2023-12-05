@@ -74,6 +74,11 @@ public enum SubUserRole {
    NEWSWRITER,
    
    /**
+    * the user with UserRole ADMIN is allowed to do keyrecoveries
+    */
+   KEYRECOVERY,
+   
+   /**
     * the user with UserRole ADMIN may create and manage administrator accounts
     */
    SUPERADMIN,

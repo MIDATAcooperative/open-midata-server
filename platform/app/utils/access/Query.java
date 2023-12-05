@@ -37,12 +37,16 @@ import models.Plugin;
 import models.RecordGroup;
 import models.Study;
 import utils.AccessLog;
+import utils.PluginLoginCache;
+import utils.RuntimeConstants;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
+import utils.stats.Stats;
 
 /**
  * parameters for a single query for records
@@ -80,11 +84,12 @@ public class Query {
 		this.fields = fields;
 		this.cache = cache;
 		this.apsId = apsId;
+		if (context == null) throw new NullPointerException();
 		this.context = context;
 		if (extra != null) {
-		  AccessLog.log(path," : ",extra);
+		  AccessLog.log("init query: ", path," : ",extra);
 		} else {
-		  AccessLog.log(path);
+		  AccessLog.log("init query: ",path);
 		}
 		//AccessLog.logQuery(apsId, properties, fields);
 		process();
@@ -97,6 +102,7 @@ public class Query {
 		this.fields = fields;
 		this.cache = cache;
 		this.apsId = apsId;
+		if (context == null) throw new NullPointerException();
 		this.context = context;			
 	}
 	
@@ -109,7 +115,8 @@ public class Query {
 		this.properties.putAll(properties);
 		this.fields = q.getFields();
 		this.cache = q.getCache();
-		this.apsId = aps;			
+		this.apsId = aps;
+		if (context == null) throw new NullPointerException();
 		this.context = context;
 		this.prev = q;
 		this.path = path;
@@ -129,6 +136,7 @@ public class Query {
 		this.cache = q.getCache();
 		this.apsId = q.getApsId();			
 		this.context = q.getContext();
+		if (context == null) throw new NullPointerException();
 		this.prev = q;
 		this.path = path;
 		process();
@@ -140,11 +148,30 @@ public class Query {
 		//AccessLog.logQuery(apsId, properties, fields);
 	}	
 	
+	public Query() throws AppException {
+		this.properties = new HashMap<String, Object>();		
+		this.fields = Sets.create(APSEntry.groupingFields,"_id","created","owner");
+		this.cache = null;
+		this.apsId = null;			
+		this.context = null;
+		this.prev = null;
+		this.path = null;
+		process();		
+	}
+	
 	public Query withoutTime() throws AppException {
 		Query r = new Query(properties, fields, cache, apsId, context, true);
 		r.path = this.path;
 		r.properties.remove("shared-after");
 		r.properties.remove("index-ts-provider");
+		r.process();
+		return r;
+	}
+	
+	public Query onlyRestrictions(Set<String> allowed) throws AppException {
+		Query r = new Query(properties, fields, cache, apsId, context, true);
+		r.path = this.path;
+	    r.properties.keySet().retainAll(allowed);
 		r.process();
 		return r;
 	}
@@ -300,6 +327,10 @@ public class Query {
 		return properties.get(field) != null;
 	}		
 	
+	public boolean restrictedToOtherAps(String field) throws BadRequestException {
+		return restrictedBy(field) && !getMidataIdRestriction(field).contains(getApsId());
+	}
+	
 	public boolean returns(String field) {
 		return fields.contains(field);
 	}
@@ -342,6 +373,11 @@ public class Query {
 	
 	public long getMinCreatedTimestamp() {
 		if (minDateCreated != null) return minDateCreated.getTime();
+		return 0;
+	}
+	
+	public long getMaxCreatedTimestamp() {
+		if (maxDateCreated != null) return maxDateCreated.getTime();
 		return 0;
 	}
 	
@@ -465,6 +501,7 @@ public class Query {
 	              properties.containsKey("creator") ||
 	              properties.containsKey("data") ||
 	              properties.containsKey("code") ||
+	              properties.containsKey("tag") ||
 	              properties.containsKey("name");
 		 
 		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("created-before") || properties.containsKey("updated-after") || properties.containsKey("shared-after") || properties.containsKey("updated-before") || properties.containsKey("history-date");
@@ -554,9 +591,12 @@ public class Query {
 			 Set<String> resolved = new HashSet<String>();
 			 for (Object app : apps) {
 				 if (!MidataId.isValid(app.toString())) {
-					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
+					 Plugin p = PluginLoginCache.getByFilename(app.toString());					 
 					 if (p!=null) resolved.add(p._id.toString());
-					 else throw new BadRequestException("error.internal", "Queried for unknown app.");
+					 else {
+						 Stats.addComment("Queried for unknown app in access filter with name '"+app.toString()+"'.");
+						 resolved.add(RuntimeConstants.instance.commonPlugin.toString());
+					 }
 				 } else resolved.add(app.toString());
 			 }
 			 properties.put("app", resolved);
@@ -566,9 +606,11 @@ public class Query {
 			 Set<String> resolved = new HashSet<String>();
 			 for (Object app : apps) {
 				 if (!MidataId.isValid(app.toString())) {
-					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
+					 Plugin p = PluginLoginCache.getByFilename(app.toString());					 
 					 if (p!=null) resolved.add(p._id.toString());
-					 else throw new BadRequestException("error.internal", "Queried for unknown app.");
+					 else {
+						 Stats.addComment("Queried for unknown app as observer with name '"+app.toString()+"'.");
+					 }
 				 } else resolved.add(app.toString());
 			 }
 			 properties.put("observer", resolved);
@@ -581,7 +623,7 @@ public class Query {
 				 if (!MidataId.isValid(study.toString())) {
 					 Study s = Study.getByCodeFromMember(study.toString(), Sets.create("_id"));					 
 					 if (s!=null) resolved.add(s._id.toString());
-					 else throw new BadRequestException("error.internal", "Queried for unknown study.");
+					 else throw new BadRequestException("error.internal", "Queried for unknown study in access filter.");
 				 } else resolved.add(study.toString());
 			 }
 			 properties.put("study", resolved);

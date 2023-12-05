@@ -45,6 +45,7 @@ import play.mvc.BodyParser;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.ApplicationTools;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
@@ -180,7 +181,7 @@ public class HealthProvider extends APIController {
 			}
 			target.setConfirmDate(new Date());			
 			Circles.consentStatusChange(context, target, ConsentStatus.ACTIVE);
-			Circles.sendConsentNotifications(context.getAccessor(), target, ConsentStatus.ACTIVE);
+			Circles.sendConsentNotifications(context, target, ConsentStatus.ACTIVE, false);
 		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");		
 		
 		
@@ -217,18 +218,17 @@ public class HealthProvider extends APIController {
 			return;
 		}
 		
-		if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
-		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_REJECTED).withActorUser(context.getActor()).withModifiedUser(userId).withConsent(target));
+		if (target.type.equals(ConsentType.EXTERNALSERVICE) || target.type.equals(ConsentType.API)) {
+		   ApplicationTools.leaveInstalledService(context, consentId, true);		   
 		} else {
-		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_REJECTED).withActorUser(context.getActor()).withModifiedUser(userId).withConsent(target));
+		    AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_REJECTED).withActor(context, context.getActor()).withModifiedActor(context, userId).withConsent(target));
+			boolean wasActive = target.isActive();
+			if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE) || target.status.equals(ConsentStatus.PRECONFIRMED) || target.status.equals(ConsentStatus.INVALID)) {
+				target.setConfirmDate(new Date());			
+				Circles.consentStatusChange(context, target, ConsentStatus.REJECTED);
+				Circles.sendConsentNotifications(context, target, ConsentStatus.REJECTED, wasActive);
+			} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");
 		}
-		
-		if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE) || target.status.equals(ConsentStatus.INVALID)) {
-			target.setConfirmDate(new Date());			
-			Circles.consentStatusChange(context, target, ConsentStatus.REJECTED);
-			Circles.sendConsentNotifications(userId, target, ConsentStatus.REJECTED);
-		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");
-	
 		AuditManager.instance.success();
 	}
     
@@ -237,27 +237,30 @@ public class HealthProvider extends APIController {
 	   if (consent == null) throw new BadRequestException("error.notfound.consent", "Consent not found");
 	   
 	   AccessContext contextConsent = context.forConsent(consent);
-	   if (consent.status != ConsentStatus.ACTIVE) return;
-	   AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_REJECTED, userId, consent);
+	   if (!consent.isActive()) return;
+	   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_REJECTED).withActor(context, userId).withModifiedActor(context, consent.owner).withConsent(consent));
 	   if (consent.authorized.contains(userId)) {
-		   
+		   boolean wasActive = consent.isActive();
 		   if (consent.authorized.size() > 1) {
 			   consent.authorized.remove(userId);		   		   		   
 			   Consent.set(consent._id, "authorized", consent.authorized);
 			   Consent.set(consent._id, "lastUpdated", new Date());				
 			   RecordManager.instance.unshareAPSRecursive(contextConsent, consent._id, Collections.singleton(userId));
 		   } else Circles.consentStatusChange(context, consent, ConsentStatus.REJECTED);
+		   
+		   Circles.sendConsentNotifications(context, consent, ConsentStatus.REJECTED, wasActive);
 	   } else {
 		   Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(userId);
 		   for (UserGroupMember ugm : ugms) {
 			   if (consent.authorized.contains(ugm.userGroup)) {
-				   
+				   boolean wasActive = consent.isActive();
 				   if (consent.authorized.size() > 1) {
 					   consent.authorized.remove(ugm.userGroup);
 					   Consent.set(consent._id, "authorized", consent.authorized);
 					   Consent.set(consent._id, "lastUpdated", new Date());				
 					   RecordManager.instance.unshareAPSRecursive(contextConsent, consent._id, Collections.singleton(ugm.userGroup));
 				   } else Circles.consentStatusChange(context, consent, ConsentStatus.REJECTED);
+				   Circles.sendConsentNotifications(context, consent, ConsentStatus.REJECTED, wasActive);
 			   }
 		   }
 	   }

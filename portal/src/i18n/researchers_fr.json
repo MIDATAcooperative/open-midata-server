@@ -34,6 +34,8 @@
         "study_name" : "Nom du projet",
         "study_type" : "Type de recherche",
         "study_description" : "Description du projet",
+        "study_identifiers" : "Identifiants",
+        "study_identifiers_info" : "Saisissez ici tous les identifiants du projet provenant d'institutions externes. Saisissez un identifiant par ligne. Utilisez '|' pour séparer le système de code et la valeur si vous le souhaitez. Les identifiants ne seront pas affichés sur les pages du projet dans le portail.",
         "developer_nostart" : "Attention!",
         "developer_nostart2" : "En tant que développeur, vous pouvez seulement mettre en place un projet mais pas le mener. En tant que développeur, il n'est pas possible de lancer la recherche de participants."
     },
@@ -46,10 +48,10 @@
         "actions" : "Applications",
         "participants" : "Participants",
         "codes" : "Codes",
-        "records" : "Enregistrements",
+        "records" : "Données",
         "results" : "Résultats",
         "team" : "Team",
-        "sharing" : "Enregistrements publiés"
+        "sharing" : "Données publiées"
     },
 
     "studies" : {
@@ -68,7 +70,7 @@
         "empty" : "Aucune application n'est liée au projet",
         "aggregator_apps" : "Ajouter une application de recherche à utiliser avec VOTRE compte",
         "datalink" : "Agrégateurs, applications d'analyse et d'interprétation",
-        "description" : "Une fois le projet validé, vous pouvez y associer des applications telles que des plugins et des services externes de traitement de données. Ces applications doivent se connecter à la plateforme en utilisant les identifiants d'un des membres de l'équipe de recherche ayant des droits suffisants.",
+        "description" : "Une fois le projet validé, vous pouvez y associer des applications telles que des plugins et des services externes de traitement de données. Ces applications doivent se connecter à la plateforme en utilisant les identifiants d'un des membres du team de recherche ayant des droits suffisants.",
         "select_group_btn" : "Sélectionnez un groupe",
         "allgroups" : "<Tous les groupes>",
         "plugin" : "Application vouée à la recherche",
@@ -197,7 +199,7 @@
         "country" : "Pays:",
         "status" : "État:",
         "group" : "Groupe:",
-        "shared_records" : "Enregistrements partagés",
+        "shared_records" : "Données partagées",
         "history" : "Historique de participation"
     },
 
@@ -230,10 +232,14 @@
         "startDate" : "Date de début de l'exportation (optionnel)",
         "endDate" : "Date de fin de l'exportation (optionnel)",
         "group" : "Groupe de données",
-        "number_of_records" : "# enregistrements",
+        "number_of_records" : "# données",
         "download_btn" : "Télécharger",
-        "fhir_download_btn" : "Télécharger le FHIR Bundle",
-        "fhir_download_original_btn" : "Télécharger non pseudonymisé"
+        "fhir_download_btn" : "Télécharger le Bundle",
+        "fhir_download_original_btn" : "Télécharger non pseudonymisé",
+        "file" : "Exporter le fichier",
+        "file_fhir" : "Format FHIR",
+        "csvdef" : "Fonction expert: collez ici le mappage JSON de FHIR vers CSV.",
+        "add_csvdef_btn" : "Télécharger la définition de l'export CSV"
     },
 
     "studyrules" : {
@@ -243,6 +249,7 @@
         "endDate" : "Date de fin officielle",
         "dataCreatedBefore" : "Données figées dès le",
         "sharing_query" : "Data Access Filter",
+        "sharing_query_empty" : "Le projet ne requiert PAS de données de @PRODUCT.",
         "join_methods" : "Procédures de participation autorisées",
         "leavePolicy" : "Conditions de retrait des participants",
         "rejoinPolicy" : "Conditions de réintégration des participants",
@@ -251,7 +258,9 @@
         "terms_of_use_hint" : "Si les conditions générales du projet doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à un administrateur de la plateforme. Nous téléchargerons le texte au bon format et vous fournirons l'ID que vous devez saisir ici.",
         "consent_observers" : "Observers externes de consentements",
         "show_terms" : "Afficher les conditions générales",
-        "requirements" : "Exigences"
+        "requirements" : "Exigences",
+        "security" : "Sécurité",
+        "forceClientCertificate" : "Forcer l'utilisation de certificats clients pour les analyseurs de projets."
     },
 
     "addresearcher" : {
@@ -271,7 +280,7 @@
         "role" : "Rôle",
         "rolehint" : "Rôle (cliquer sur une rangée pour voir les détails)",
         "roleName" : "Nom du rôle",
-        "defineself" : "Vous pouvez modifier vos propres droits en vous rajoutant à l'équipe avec des droits différents. Vous ne pouvez le faire que si vous êtes le seul membre de l'équipe. Vous ne pouvez pas vous retirer le droit de gérer l'équipe.",
+        "defineself" : "Vous pouvez modifier vos propres droits en vous rajoutant au team avec des droits différents. Vous ne pouvez le faire que si vous êtes le seul membre du team. Vous ne pouvez pas vous retirer le droit de gérer le team.",
         "addperson_btn" : "Ajouter une personne",
         "rights" : "Droits",
         "right" : {
@@ -282,7 +291,8 @@
             "changeTeam" : "Modifier le team",
             "auditLog" : "Afficher l'audit log",
             "participants" : "Gérer les participants",
-            "setup" : "Configuration du projet"
+            "setup" : "Configuration du projet",
+            "applications" : "Gérer les applications liées"
         }
     },
 
@@ -291,7 +301,7 @@
         "phase1_help" : "Ébauche",
         "name" : "Nom et description du projet définis",
         "name_help" : "Le nom du projet sera affiché aux participants. La description est affichée sur le portail, ainsi que lors de la connexion via une application.",
-        "teamsetup" : "Configuration de l'équipe de chercheurs",
+        "teamsetup" : "Configuration du team de chercheurs",
         "teamsetup_help" : "Si davantage de personnes participent à la réalisation du projet, indiquez toutes les personnes concernées et leur rôle. Tant que vous n'avez pas ajouté d'autres personnes, vous pouvez changer votre propre rôle en vous ajoutant à nouveau avec un autre rôle.",
         "information" : "Informations publiques sur vos recherches",
         "information_help" : "L'information publique aidera les titulaires de comptes à évaluer si vos recherches sont pertinentes pour eux.",
@@ -310,7 +320,7 @@
         "phase2" : "Phase 2 : Préparation",
         "phase2_help" : "Préparation",
         "applications" : "Application de recherche associée",
-        "applications_help" : "Vous pouvez lier des applications telles que des plugins et des services externes de traitement de données à votre projet. Celles-ci peuvent lire les données des participants et/ou partager des données agrégées avec les participants. Ces applications doivent se connecter à la plateforme en utilisant les identifiants d'un des membres de l'équipe de recherche ayant des droits suffisants.",
+        "applications_help" : "Vous pouvez lier des applications telles que des plugins et des services externes de traitement de données à votre projet. Celles-ci peuvent lire les données des participants et/ou partager des données agrégées avec les participants. Ces applications doivent se connecter à la plateforme en utilisant les identifiants d'un des membres du team de recherche ayant des droits suffisants.",
         "applinked" : "Une application a été liée au projet",
         "applinked_help" : "Afin de lier une application à votre projet, veuillez envoyer le code de votre projet et le nom de l'application que vous souhaitez lier à un administrateur de la plateforme.",
         "partsearchstart" : "Recherche de participants lancée",
@@ -346,7 +356,7 @@
     },
 
     "researcher_sharing" : {
-        "description" : "Partager ou supprimer le partage d'enregistrements de votre compte avec des groupes de participants au projet",
+        "description" : "Partager ou non les données de votre compte avec des groupes de participants au projet",
         "source" : "Source",
         "me" : "Données de mon compte",
         "project" : "Données de l'analyseur",

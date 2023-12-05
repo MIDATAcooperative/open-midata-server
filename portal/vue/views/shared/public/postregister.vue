@@ -68,7 +68,7 @@
 					<p v-t="'postregister.auth2factor'"></p>					
 					<form ref="myform" name="myform" @submit.prevent="setSecurityToken()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
-							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate autofocus>
+							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
 						</form-group>							  
 						<div class="extraspace"></div>
 						<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'postregister.securityToken_btn'"></button>
@@ -91,14 +91,7 @@
 						</form-group>
 						<form-group name="passwordnew" label="setpw.new_password_repeat" :path="errors.passwordnew">
 							<password class="form-control" name="passwordnew" v-model="setpw.passwordRepeat" style="margin-bottom:5px;" required />
-						</form-group>
-						<div class="dynheight">
-							<form-group name="secure" label="registration.secure">
-                                <check-box v-model="setpw.secure" name="secure" disabled> 			
-							      <span v-t="'registration.secure2'"></span>
-                                </check-box>							    
-							</form-group>
-						</div>
+						</form-group>						
 						<div class="extraspace"></div>
 						<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'setpw.set_new_btn'"></button>
 						<div class="extraspace"></div>
@@ -116,7 +109,7 @@
 						  <a @click="showTerms({which : progress.termsOfUse});" href="javascript:" v-t="'registration.agb3'"></a>
 						</p>
 						<div class="extraspace"></div>
-						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.termsOfUse);" v-t="'postregister.agree_btn'"></button>
+						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.termsOfUse);" v-t="'postregister.noted_btn'"></button>
 						<div class="extraspace"></div>
 						<error-box :error="error"></error-box>
 					</div>
@@ -128,7 +121,7 @@
 						  <a @click="showTerms({which : progress.privacyPolicy});" href="javascript:" v-t="'registration.privacypolicy3'"></a>
 						</p>
 						<div class="extraspace"></div>
-						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.privacyPolicy);" v-t="'postregister.agree_btn'"></button>
+						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.privacyPolicy);" v-t="'postregister.noted_btn'"></button>
 						<div class="extraspace"></div>
 						<error-box :error="error"></error-box>
 					</div>
@@ -612,6 +605,10 @@ export default {
         		$data.registration = JSON.parse(JSON.stringify($data.registration));
 				$data.registration.firstname = $data.registration.lastname = $data.registration.gender = $data.registration.city = $data.registration.zip = $data.registration.country = $data.registration.address1 = undefined;			
         	}
+        	if (!this.phoneNeeded()) {
+        	    $data.registration = JSON.parse(JSON.stringify($data.registration));
+				$data.registration.phone = $data.registration.mobile = undefined;
+        	}
         	$data.registration.authType = undefined;
 					
 			$data.registration.user = $data.registration._id;									
@@ -700,6 +697,12 @@ export default {
 		}
 	},
 
+    mounted() {
+       if (this.$data.progress && (this.$data.progress.AUTH2FACTOR || this.$data.progress.PHONE_VERIFIED)) {                
+         this.$refs.tokenInput.focus();
+       }
+    },
+    
 	created() {
 		this.prepare();
 	}

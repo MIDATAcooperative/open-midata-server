@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
 import models.AccessPermissionSet;
+import models.Actor;
 import models.Admin;
 import models.Developer;
 import models.HPUser;
@@ -47,6 +48,7 @@ import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
+import models.enums.EntityType;
 import models.enums.Gender;
 import models.enums.MessageReason;
 import models.enums.ParticipationInterest;
@@ -148,7 +150,7 @@ public class Application extends APIController {
 		default: break;		
 		}
 		if (user != null) {				
-		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, user._id);
+		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, Actor.getActor(null, user._id));
 		  if (user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
 		  
 		  if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.USER_PASSWORD_CHANGE_REQUEST, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
@@ -176,7 +178,7 @@ public class Application extends APIController {
 		  replacements.put("password-link", url);
 		   				
 		  if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.PASSWORD_FORGOTTEN, null, Collections.singleton(user._id), null, replacements)) {			  		  		 
-		    Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString());
+		    Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString(), AuditManager.instance.convertLastEventToAsync());
 		  }		
 		  AuditManager.instance.success();
 		}
@@ -211,18 +213,20 @@ public class Application extends APIController {
 	 * Helper function to send welcome mail
 	 * @param user user record which sould receive the mail
 	 */
-	public static void sendWelcomeMail(User user, User executingUser) throws AppException {
+	public static void sendWelcomeMail(User user, Actor executingUser) throws AppException {
 		sendWelcomeMail(RuntimeConstants.instance.portalPlugin, user, executingUser);
 	}
 	
 	
-	public static void sendWelcomeMail(MidataId sourcePlugin, User user, User executingUser) throws AppException {
-	   if (user.developer == null) {
+	public static void sendWelcomeMail(MidataId sourcePlugin, User user, Actor executingUser) throws AppException {
+	   if (user.developer == null) {		
+		   
+		   if (user.email == null || user.email.trim().length()==0) return;
+		   
 		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
 			   throw new InternalServerException("error.ratelimit", "Rate limit hit");
 		   }
 		   
-		   if (user.email == null) return;
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
 		   user.set("resettoken", token.token);
 		   user.set("resettokenTs", System.currentTimeMillis());
@@ -236,27 +240,38 @@ public class Application extends APIController {
 		   replacements.put("token", token.token);
 		   
 		   if (executingUser != null) {
-			   replacements.put("executor-firstname", executingUser.firstname);
-			   replacements.put("executor-lastname", executingUser.lastname);
-			   replacements.put("executor-email", executingUser.email);
+			   String name[] = executingUser.getDisplayName().split("\\s");
+			   if (name.length == 2) {
+				   replacements.put("executor-firstname", name[0]);
+				   replacements.put("executor-lastname", name[1]);
+			   } else {
+				   replacements.put("executor-firstname", "");
+				   replacements.put("executor-lastname", executingUser.getDisplayName());
+			   }
+			   replacements.put("executor-email", executingUser.getPublicIdentifier());
 		   }
 		   
 		   AccessLog.log("send welcome mail: ", user.email);
 		   if (executingUser == null) {
-			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(user._id));
+			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActor(null, user._id));			   	  	  
+		   } else {
+			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActor(executingUser).withModifiedActor(null, user._id));			   	  	  
+		   }
+		   
+		   if (executingUser == null || executingUser.getEntityType() != EntityType.USER) {
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
 				   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, user.role.toString(), Collections.singleton(user._id), null, replacements);
-			   }	  	   
+			   }
 		   } else {
-			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(executingUser).withModifiedUser(user._id));
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, null, Collections.singleton(user._id), null, replacements)) {
 				   if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, user.role.toString(), Collections.singleton(user._id), null, replacements)) {
 					   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
 						   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, user.role.toString(), Collections.singleton(user._id), null, replacements);
 					   }	
 				   }
-			   }	  	   
+			   }
 		   }
+		   
 		   AuditManager.instance.success();
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
@@ -275,7 +290,7 @@ public class Application extends APIController {
 		   String role = user.role.toString();
 		   
 		   AccessLog.log("send admin notification mail: ", user.getPublicIdentifier());	   
-	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "New MIDATA User", adminnotify.render(site, email, role).toString());
+	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "New MIDATA User", adminnotify.render(site, email, role).toString(), null);
 	   }
 	}
 			
@@ -352,7 +367,7 @@ public class Application extends APIController {
 		if (user == null)  throw new BadRequestException("error.unknown.user", "User not found");
 				
 		if (user!=null && password != null) {				
-			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, userId);
+			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, Actor.getActor(null, userId));
 			 
 			 boolean tokenOk = (token != null && user.resettoken != null 		    		    
 		    		   && user.resettoken.equals(token)
@@ -587,7 +602,7 @@ public class Application extends APIController {
 		String oldPassphrase = JsonValidation.getStringOrNull(json, "oldPassphrase");
 		String passphrase = JsonValidation.getPassword(json, "passphrase");
 		
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSPHRASE_CHANGE, userId);
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSPHRASE_CHANGE, Actor.getActor(null, userId));
 		
 		KeyManager.instance.unlock(userId, oldPassphrase);
 		
@@ -665,7 +680,7 @@ public class Application extends APIController {
 	*/
 	
 	public static Set<UserFeature> loginHelperPreconditionsFailed(User user, Set<UserFeature> required) throws AppException {
-        if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
+        if (user.status.equals(UserStatus.BLOCKED) || user.status.isDeleted()) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION)) && !InstanceConfig.getInstance().getInstanceType().disableEMailValidation()) {
 			user.status = UserStatus.TIMEOUT;			
@@ -1100,9 +1115,13 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.getAdmin(),
 				controllers.research.routes.javascript.Studies.update(),
 				controllers.research.routes.javascript.Studies.updateNonSetup(),
+				controllers.research.routes.javascript.Studies.addGroup(),
 				controllers.research.routes.javascript.Studies.updateParticipation(),
 				controllers.research.routes.javascript.Studies.download(),
 				controllers.research.routes.javascript.Studies.downloadFHIR(),
+				controllers.research.routes.javascript.CSVDownload.updateCSVDef(),
+				controllers.research.routes.javascript.CSVDownload.getCSVDef(),
+				controllers.research.routes.javascript.CSVDownload.downloadCSV(),
 				controllers.research.routes.javascript.Studies.listCodes(),
 				controllers.research.routes.javascript.Studies.generateCodes(),
 				controllers.research.routes.javascript.Studies.startValidation(),
@@ -1142,12 +1161,14 @@ public class Application extends APIController {
 				controllers.providers.routes.javascript.Providers.register(),
 				controllers.providers.routes.javascript.Providers.login(),
 				controllers.providers.routes.javascript.Providers.search(),
+				controllers.providers.routes.javascript.Providers.searchOrganization(),
 				controllers.providers.routes.javascript.Providers.list(),
 				controllers.providers.routes.javascript.Providers.getMember(),
 				controllers.providers.routes.javascript.Providers.getVisualizationToken(),
 				controllers.providers.routes.javascript.Providers.registerOther(),				
 				controllers.providers.routes.javascript.Providers.getOrganization(),
 				controllers.providers.routes.javascript.Providers.updateOrganization(),
+				controllers.providers.routes.javascript.Providers.createOrganization(),
 								
 				// Developers
 				controllers.routes.javascript.Developers.register(),
@@ -1164,6 +1185,8 @@ public class Application extends APIController {
 				controllers.admin.routes.javascript.Administration.getStats(),
 				controllers.admin.routes.javascript.Administration.getUsageStats(),
 				controllers.admin.routes.javascript.Administration.getSystemHealth(),
+				controllers.admin.routes.javascript.Administration.searchOrganization(),
+				controllers.admin.routes.javascript.Administration.changeOrganizationStatus(),
 				controllers.routes.javascript.PWRecovery.getUnfinished(),
 				controllers.routes.javascript.PWRecovery.storeRecoveryShare(),
 				controllers.routes.javascript.PWRecovery.finishRecovery(),
@@ -1195,6 +1218,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.searchLicenses(),
 				controllers.routes.javascript.Market.updateFromRepository(),
 				controllers.routes.javascript.Market.getDeployStatus(),
+				controllers.routes.javascript.Market.globalRepoAction(),
 
 				// Services
 				controllers.routes.javascript.Services.listServiceInstancesStudy(),
@@ -1208,12 +1232,15 @@ public class Application extends APIController {
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),
+				controllers.routes.javascript.UserGroups.getUserGroup(),
 				controllers.routes.javascript.UserGroups.createUserGroup(),
 				controllers.routes.javascript.UserGroups.deleteUserGroup(), 
 				controllers.routes.javascript.UserGroups.editUserGroup(),
-				controllers.routes.javascript.UserGroups.addMembersToUserGroup(),
+				controllers.routes.javascript.UserGroups.addMembersToUserGroup(),				
 				controllers.routes.javascript.UserGroups.deleteUserGroupMembership(),
 				controllers.routes.javascript.UserGroups.listUserGroupMembers(),
+				controllers.routes.javascript.UserGroups.listUserGroupGroups(),
+				controllers.routes.javascript.UserGroups.requestConfirmation(),
 				
 				controllers.routes.javascript.Terms.get(),
 				controllers.routes.javascript.Terms.search(),
@@ -1228,6 +1255,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.BulkMails.send(),
 				controllers.routes.javascript.BulkMails.test(),
 				controllers.routes.javascript.BulkMails.unsubscribe(),
+				
+				controllers.routes.javascript.TokenActions.action(),
 				
 		        // Portal
 		        controllers.routes.javascript.PortalConfig.getConfig(),

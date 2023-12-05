@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hl7.fhir.r4.model.Organization;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,6 +40,7 @@ import controllers.Users;
 import models.Admin;
 import models.Consent;
 import models.Developer;
+import models.HealthcareProvider;
 import models.Member;
 import models.MidataAuditEvent;
 import models.MidataId;
@@ -66,7 +69,9 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
+import utils.OrganizationTools;
 import utils.RuntimeConstants;
+import utils.UserGroupTools;
 import utils.access.DBRecord;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
@@ -82,6 +87,7 @@ import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
+import utils.collections.NChainedMap;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.ContextManager;
@@ -89,6 +95,8 @@ import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.FHIRServlet;
+import utils.fhir.OrganizationResourceProvider;
 import utils.fhir.PatientResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -96,6 +104,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
 import utils.messaging.ServiceHandler;
+import utils.messaging.SubscriptionManager;
 import utils.stats.UsageStatsRecorder;
 import utils.sync.Instances;
 
@@ -119,8 +128,9 @@ public class Administration extends APIController {
 		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "user", "status");
-				
-		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
+		requireSubUserRole(request, SubUserRole.USERADMIN);
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
@@ -151,6 +161,11 @@ public class Administration extends APIController {
 		  
 		if (user.status != oldstatus && user.status == UserStatus.DELETED) {
 			AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, null, executorId, user);
+			User.set(user._id, "searchable", false);			
+		}
+		
+		if (user.status != oldstatus && user.status == UserStatus.FAKE) {
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActor(context, executorId).withModifiedActor(user).withMessage("fake account"));
 			User.set(user._id, "searchable", false);			
 		}
 		
@@ -411,7 +426,7 @@ public class Administration extends APIController {
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");			
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		AccessContext context = ContextManager.instance.createLoginOnlyContext(userId, getRole());
+		AccessContext context = ContextManager.instance.createLoginOnlyContext(userId, null, getRole());
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
 		  requireSubUserRole(request, SubUserRole.USERADMIN);
@@ -447,6 +462,7 @@ public class Administration extends APIController {
 	@Security.Authenticated(AdminSecured.class)
 	public Result adminWipeAccount(Request request) throws JsonValidationException, AppException {
 		requireSubUserRole(request, SubUserRole.USERADMIN);
+		AccessContext context = portalContext(request);
 		
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "user");
@@ -455,18 +471,12 @@ public class Administration extends APIController {
 		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		User selected = User.getByIdAlsoDeleted(userId, User.ALL_USER);
-		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
+		if (!selected.status.isDeleted()) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
 		
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActorUser(executorId).withModifiedUser(selected));
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActor(context, context.getActor()).withModifiedActor(selected));
 		
-		Users.doAccountWipe(portalContext(request), userId);
-		
-		AuditManager.instance.success();
-		
-			/*if (!User.exists(CMaps.map("organization", PortalSessionToken.session().org))) {
-			  Research.delete(PortalSessionToken.session().org);			
-		}*/
-		
+		SubscriptionManager.accountWipe(context, userId);
+						
 		return ok();
 	}
 	
@@ -502,11 +512,11 @@ public class Administration extends APIController {
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
 	public Result deleteStudy(Request request, String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 		AccessContext context = portalContext(request);
-		
+		requireSubUserRole(request, SubUserRole.STUDYADMIN);
 		
 		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "createdBy", "code"));
 		
@@ -571,6 +581,7 @@ public class Administration extends APIController {
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
 	public Result getUsageStats(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.PLUGINADMIN);
 		JsonNode json = request.body().asJson();					
 		JsonValidation.validate(json, "properties");
 		
@@ -600,6 +611,69 @@ public class Administration extends APIController {
 		obj.put("servicekey", ServiceHandler.keyAvailable());
 		obj.set("cluster", memberinfo);
 		return ok(obj);
+	}
+	
+	/**
+	 * healthcare provider search for MIDATA members by MIDATAID and birthday.
+	 * @return Member and list of consents
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@Security.Authenticated(AdminSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public Result searchOrganization(Request request) throws JsonValidationException, AppException {
+	
+		JsonNode json = request.body().asJson();
+		String name = JsonValidation.getStringOrNull(json, "name");
+		String city = JsonValidation.getStringOrNull(json, "city");
+		
+		UserStatus status = (JsonValidation.getStringOrNull(json, "status") != null) ? JsonValidation.getEnum(json, "status", UserStatus.class) : null;
+		
+		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.getProvider("Organization")); 
+		List<Organization> orgs = provider.search(portalContext(request), name, city, false);
+	
+		Map<MidataId, Organization> orgsById = new HashMap<MidataId, Organization>();
+		for (Organization org : orgs) orgsById.put(MidataId.from(org.getIdElement().getIdPart()), org);		
+		NChainedMap<String, Object> properties = CMaps.map("_id", orgsById.keySet());	
+		properties = properties.mapNotEmpty("status", status);
+	    Set<HealthcareProvider> providers = HealthcareProvider.getAll(properties, HealthcareProvider.ALL);
+	    
+	    return ok(JsonOutput.toJson(providers, "HealthcareProvider", HealthcareProvider.ALL));
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public Result changeOrganizationStatus(Request request) throws JsonValidationException, AppException {
+		// validate json
+		JsonNode json = request.body().asJson();
+		AccessContext context = portalContext(request);
+		JsonValidation.validate(json, "organization", "status");
+		requireSubUserRole(request, SubUserRole.USERADMIN);
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
+		MidataId providerId = JsonValidation.getMidataId(json, "organization");
+		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
+		
+		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(providerId, HealthcareProvider.ALL);
+						
+		if (provider == null) throw new BadRequestException("error.unknown.provider", "Unknown HealthcareProvider");
+		
+		UserStatus oldstatus = provider.status;
+		
+		//if (status == UserStatus.PRECREATED && oldstatus != UserStatus.PRECREATED) throw new BadRequestException("error.invalid.status_transition", "Invalid status change");
+		AuditEventType type = AuditEventType.ORGANIZATION_CHANGED;
+		if (status == UserStatus.DELETED) type = AuditEventType.ORGANIZATION_DELETED;
+		
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(type).withActor(context, context.getActor()).withMessage(provider.name));
+		provider.status = status;
+		provider.set("status", provider.status);		
+		OrganizationTools.updateModel(context, provider);
+		UserGroupTools.changeUserGroupStatus(providerId, provider.status);
+		OrganizationResourceProvider.updateFromHP(context.forPublic(), provider);
+						
+		AuditManager.instance.success();
+		return ok();
 	}
 	
 }

@@ -43,10 +43,13 @@ public class FhirPseudonymizer {
 	private static FhirPseudonymizer stu3 = new FhirPseudonymizer();
 	private static FhirPseudonymizer r4 = new FhirPseudonymizer();
 	
+	private static PseudonymizeOperation subject = new PseudonymizeOperation(new String[] { "subject" }, PseudonymizeAction.REFERENCE);
+	private static PseudonymizeOperation patient = new PseudonymizeOperation(new String[] { "patient" }, PseudonymizeAction.REFERENCE);
+	
 	Map<String, List<PseudonymizeOperation>> catalog = new HashMap<String, List<PseudonymizeOperation>>();
 			
 	public FhirPseudonymizer reset(String resource) {
-		getResource(resource).clear();
+		getResource(resource).clear();		
 		return this;
 	}
 	
@@ -72,11 +75,43 @@ public class FhirPseudonymizer {
 	public void pseudonymize(DBRecord rec) throws AppException {
 		String format = (String) rec.meta.get("format");
 		List<PseudonymizeOperation> ops = catalog.get(format);
-		if (ops != null && rec.data != null && rec.data instanceof BasicBSONObject) {
-			for (PseudonymizeOperation op : ops) {
-				apply(rec, rec.data, op, 0);
+		if (rec.data != null && rec.data instanceof BasicBSONObject) {
+			if (ops != null) {			
+				for (PseudonymizeOperation op : ops) {
+					apply(rec, rec.data, op, 0);
+				}			
 			}
+		  
+			pseudonymizeContained(rec, (BasicBSONObject) rec.data);
 		}
+		
+		
+	}
+	
+	public void pseudonymizeContained(DBRecord rec, BasicBSONObject base) throws AppException {
+		Object allContained = base.get("contained");
+		if (allContained != null && allContained instanceof BasicBSONList) {
+			BasicBSONList lst = (BasicBSONList) allContained;
+			for (int i=0;i<lst.size();i++) {
+				Object entry = lst.get(i);
+				if (entry instanceof BasicBSONObject) {
+					BasicBSONObject obj = (BasicBSONObject) entry;
+					String type = obj.getString("resourceType");
+					if (type != null) {
+						apply(rec, obj, FhirPseudonymizer.patient, 0);
+						apply(rec, obj, FhirPseudonymizer.subject, 0);
+						List<PseudonymizeOperation> ops = catalog.get("fhir/"+type);
+						if (ops != null) {			
+							for (PseudonymizeOperation op : ops) {
+								apply(rec, obj, op, 0);
+							}			
+						}
+					}
+					
+					pseudonymizeContained(rec, obj);
+				}
+			}
+		}		
 	}
 	
 	public BasicBSONObject replaceReference(DBRecord rec, BasicBSONObject ref) throws AppException {		

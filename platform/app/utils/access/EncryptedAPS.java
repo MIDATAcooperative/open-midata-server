@@ -50,13 +50,14 @@ public class EncryptedAPS {
 	private MidataId apsId;
 	private MidataId who;
 	private MidataId owner;
-	private byte[] encryptionKey;	
+	private byte[] encryptionKey;		
 	private boolean isValidated = false;
 	private boolean keyProvided = false;
 	private boolean notStored = false;
 	private boolean unmergedSubAPS = false;
 	private List<EncryptedAPS> sublists;
-	private AccessPermissionSet acc_aps;		
+	private AccessPermissionSet acc_aps;
+	private byte[] subEncryptionKey; //To be used with acc_aps
 		
 	public EncryptedAPS(MidataId apsId, MidataId who) throws InternalServerException {
 		this(apsId, who, null);
@@ -101,7 +102,7 @@ public class EncryptedAPS {
 		aps.security = lvl;
 		aps.consent = consent;
 		aps.permissions = new HashMap<String, Object>();
-		aps.permissions.put("p", new BasicBSONList());
+		//aps.permissions.put("p", new BasicBSONList());
 		aps.permissions.put("owner", owner.toString());
 		aps.keys = new HashMap<String, byte[]>();		
 		
@@ -180,6 +181,11 @@ public class EncryptedAPS {
 		return encryptionKey;
 	}
 	
+	protected byte[] getLocalAPSKey() {		
+		if (acc_aps != aps) return subEncryptionKey;
+		return encryptionKey;
+	}
+	
 	protected byte[] exportAPSKey() throws AppException {
 		if (!keyProvided && !isValidated) validate();
 		if (encryptionKey != null && !keyProvided && needsKeyUpgrade()) doKeyUpgrade();
@@ -233,7 +239,7 @@ public class EncryptedAPS {
 		return aps.keys.containsKey(name);
 	}
 	
-	public Map<String, Object> getPermissions() throws AppException {
+	public Map<String, Object> getPermissions() throws InternalServerException {
 		if (acc_aps != aps) return acc_aps.permissions;
 		//if (owner!=null && !isAccessable()) return getPermissions(owner);
 		if (!isValidated) validate();	
@@ -246,9 +252,10 @@ public class EncryptedAPS {
 		subeaps.unmergedSubAPS = true;
 		sublists.add(subeaps);
 		acc_aps = subeaps.aps;
+		subEncryptionKey = subeaps.getLocalAPSKey();
 	}
 	
-	protected boolean findAndselectAccessibleSubset() throws AppException {
+	protected boolean findAndselectAccessibleSubset() throws InternalServerException {
 		if (isAccessable()) {			
 			return true;
 		}
@@ -266,7 +273,7 @@ public class EncryptedAPS {
 		return false;
 	}
 	
-	protected List<EncryptedAPS> getAllUnmerged() throws AppException {
+	protected List<EncryptedAPS> getAllUnmerged() throws InternalServerException {
 		List<EncryptedAPS> result = new ArrayList<EncryptedAPS>();
 		for (AccessPermissionSet subaps : aps.unmerged) {				
 		   EncryptedAPS encsubaps = new EncryptedAPS(subaps, who);
@@ -311,6 +318,12 @@ public class EncryptedAPS {
 			encodeAPS();
 			aps.updateEncrypted();
 			if (aps.consent) Consent.touch(apsId, aps.version);
+			// If we are using an accessible sublist permissions are null now, we need to restore them
+			if (acc_aps != aps) {
+				acc_aps = aps;
+				subEncryptionKey = null;
+				findAndselectAccessibleSubset();
+			}
 		} else {
 			aps.updatePermissions();
 			if (aps.consent) Consent.touch(apsId, aps.version);
@@ -334,10 +347,11 @@ public class EncryptedAPS {
 			throw new APSNotExistingException(this.apsId, "APS does not exist:"+this.apsId.toString());						
 		}
 		this.acc_aps = this.aps;
+		this.subEncryptionKey = null;
 		isValidated = false;
 	}
 				
-	private void validate() throws AppException {
+	private void validate() throws InternalServerException {
 		if (!isLoaded()) load();		
 		AccessLog.apsAccess(aps._id, who, aps.security);
 		if (aps.keys == null) { isValidated = true; return;} // Old version support
@@ -378,14 +392,15 @@ public class EncryptedAPS {
 		
 		} catch (AuthException e) {
 			AccessLog.decryptFailure(e);
-			throw e;
+			throw new InternalServerException("error.internal", e);
 		}
 	}
 	
 	public boolean isAccessable() throws InternalServerException {
 		if (who.equals(owner)) return true;
-		if (apsId.equals(who)) return true;
+		if (apsId.equals(who)) return true;		
 		if (!isLoaded()) load();	
+		if (keyProvided) return true;
 		if (aps.keys.containsKey(who.toString())) return true;
 		if (owner == null) {
 			if (!isValidated && !keyProvided) {
@@ -407,12 +422,12 @@ public class EncryptedAPS {
 	
 	public boolean needsKeyUpgrade() throws InternalServerException {
 		if (isLoaded() && isAccessable() && aps.security == APSSecurityLevel.HIGH && owner != null &&
-				(apsId.equals(owner) || aps.consent) && !unmergedSubAPS) {			
+				(apsId.equals(owner) || aps.consent) && !unmergedSubAPS && (acc_aps.permissions != null && !acc_aps.permissions.containsKey("idxEnc"))) {			
 			return EncryptionUtils.isDeprecatedKey(encryptionKey);
 		} else return false;
 	}
 	
-	protected void doKeyUpgrade() throws AppException  {
+	protected void doKeyUpgrade() throws InternalServerException  {
 		
 		AccessLog.logBegin("begin key upgrade:",getId().toString());
 		if (!isValidated) validate();

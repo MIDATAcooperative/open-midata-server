@@ -62,8 +62,10 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.MidataId;
 import models.Record;
+import models.enums.AuditEventType;
 import utils.access.RecordManager;
 import utils.access.pseudo.FhirPseudonymizer;
+import utils.audit.AuditHeaderTool;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -105,19 +107,23 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 			List<Record> result = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
 			record = result.isEmpty() ? null : result.get(0);
 		} else {
-		    record = RecordManager.instance.fetch(info().getAccessorRole(), info(), new MidataId(theId.getIdPart()), null);
+		    record = RecordManager.instance.fetch(info().getAccessorRole(), info(), MidataId.parse(theId.getIdPart()), null);
 		}
 		if (record == null) throw new ResourceNotFoundException(theId);		
     	    	
 		Basic p = parse(Collections.singletonList(record), Basic.class).get(0);
-		
+		//AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_READ, record.context.getOwner());
 		return p;    	
     }
     
     @History()
-	public List<Basic> getHistory(@IdParam IIdType theId) throws AppException {
-	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	public List<Basic> getHistory(@IdParam IIdType theId, @ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
+	   Integer count = (theCount != null) ? theCount : 2000;
+	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc").mapNotEmpty("limit", count), RecordManager.COMPLETE_DATA);
+			   
 	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
+	   
+	   //AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_HISTORY, records.get(0).context.getOwner());
 	   
 	   return parse(records, Basic.class);	   	  
 	}
@@ -151,7 +157,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 		    	  }
 	    	  }
 	    	  
-	    	  basic.setAuthor(new Reference("Patient/"+rec.creator.toString()));
+	    	  basic.setAuthor(new Reference("Patient/"+rec.modifiedBy.toString()));
 	    	  basic.setSubject(new Reference("Patient/"+rec.owner.toString()));
 	    	  
 	    	  basic.addExtension().setUrl("http://midata.coop/extensions/format-codes/"+rec.format).setValue(new StringType(JsonOutput.toJsonString(rec.data)));
@@ -311,20 +317,24 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 				throw new UnprocessableEntityException("Cannot process created");
 			}
 		}
-		record.name = display != null ? (display + " / " + date) : date;		
+		record.name = display != null ? (display + " / " + date) : date;	
 			
-		 clean(theBasic);
+		Reference subjectRef = theBasic.getSubject();
+		if (cleanAndSetRecordOwner(record, subjectRef)) theBasic.setSubject(null);
+					
+		clean(theBasic);
     }
     
     public void processResource(Record record, Basic resource) throws AppException {
     	super.processResource(record, resource);
     	if (resource.getSubject().isEmpty()) {
-    		resource.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+    		resource.setSubject(FHIRTools.getReferenceToOwner(record));
  
 		}		
 	}
 
-    public Record init() { return newRecord("fhir/Basic"); }
+    @Override
+    public Record init(Basic resource) { return newRecord("fhir/Basic"); }
 
 	@Override
 	public String getRecordFormat() {		

@@ -31,6 +31,7 @@ import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.Model;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -102,9 +103,14 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 	 */
 	final
 	protected MethodOutcome create(T theResource) throws AppException {
-		M record = init();			
+		M record = init(theResource);			
 		createPrepare(record, theResource);
-		theResource = createExecute(record, theResource);		
+		AccessLog.logBegin("begin create for resource ", getResourceType().getSimpleName());
+		try {
+		  theResource = createExecute(record, theResource);
+		} finally {
+		  AccessLog.logEnd("end create resource");
+		}
 		processResource(record, theResource);						
 		return outcome(theResource.getResourceType().name(), theResource);				
 	}
@@ -113,7 +119,7 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 	
 	public abstract T createExecute(M record, T theResource) throws AppException;
 	
-	public abstract M init();
+	public abstract M init(T theResource) throws AppException;
 	
 	/**
 	 * Default implementation for update
@@ -124,10 +130,15 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 	 */
 	final
 	protected MethodOutcome update(IdType theId, T theResource) throws AppException {
-		M record = fetchCurrent(theId);
+		M record = fetchCurrent(theId, theResource, false);
 		if (record == null) throw new ResourceNotFoundException(theId);
-		updatePrepare(record, theResource);		
-		updateExecute(record, theResource);	
+		updatePrepare(record, theResource);	
+		AccessLog.logBegin("begin update for resource ", getResourceType().getSimpleName());
+		try {
+		   updateExecute(record, theResource);	
+		} finally {
+		   AccessLog.logEnd("end update resource");
+		}
 		processResource(record, theResource);		
 		return outcome(theResource.getResourceType().name(), theResource);				
 	}

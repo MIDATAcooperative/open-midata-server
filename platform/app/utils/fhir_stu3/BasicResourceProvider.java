@@ -55,7 +55,9 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.MidataId;
 import models.Record;
+import models.enums.AuditEventType;
 import utils.access.RecordManager;
+import utils.audit.AuditHeaderTool;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -98,14 +100,16 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 		if (record == null) throw new ResourceNotFoundException(theId);		
     	    	
 		Basic p = parse(Collections.singletonList(record), Basic.class).get(0);
-		
+		//AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_READ, record.context.getOwner());
 		return p;    	
     }
     
     @History()
 	public List<Basic> getHistory(@IdParam IIdType theId) throws AppException {
-	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc").map("limit",2000), RecordManager.COMPLETE_DATA);
 	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
+	   
+	   //AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_HISTORY, records.get(0).context.getOwner());		 
 	   
 	   return parse(records, Basic.class);	   	  
 	}
@@ -139,7 +143,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 		    	  }
 	    	  }
 	    	  
-	    	  basic.setAuthor(new Reference("Patient/"+rec.creator.toString()));
+	    	  basic.setAuthor(new Reference("Patient/"+rec.modifiedBy.toString()));
 	    	  basic.setSubject(new Reference("Patient/"+rec.owner.toString()));
 	    	  
 	    	  basic.addExtension().setUrl("http://midata.coop/extensions/format-codes/"+rec.format).setValue(new StringType(rec.data.toString()));
@@ -291,6 +295,9 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 		String date = theBasic.getCreatedElement().toHumanDisplay();
 		
 		record.name = display != null ? (display + " / " + date) : date;   
+		
+		Reference subjectRef = theBasic.getSubject();
+		if (cleanAndSetRecordOwner(record, subjectRef)) theBasic.setSubject(null);
 		
 		clean(theBasic);
     }

@@ -93,6 +93,10 @@ public class SingleRecordAccessContext extends AccessContext {
 	public MidataId getOwner() {
         return parent.getOwner();
 	}
+	
+	public String getOwnerType() {
+		return parent.getOwnerType();
+	}
 
 	@Override
 	public MidataId getOwnerPseudonymized() throws AppException {
@@ -106,7 +110,7 @@ public class SingleRecordAccessContext extends AccessContext {
 
 	@Override
 	public String getContextName() {
-		return "single-record";
+		return "Single record access only for record id '"+recordId.toString()+"'";
 	}
 	
 	public MidataId getSingleReadableRecord() {

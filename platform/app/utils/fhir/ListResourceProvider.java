@@ -76,7 +76,8 @@ public class ListResourceProvider extends RecordBasedResourceProvider<ListResour
 		registerSearches("List", getClass(), "getListResource");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("List")		
+		  .reset("List")
+		  .hideIfPseudonymized("List", "text")
 		  .pseudonymizeReference("List", "source")
 		  .pseudonymizeReference("List", "entry", "item")
 		  .pseudonymizeReference("List", "note", "authorReference");
@@ -97,9 +98,7 @@ public class ListResourceProvider extends RecordBasedResourceProvider<ListResour
 	@Search()
 	public Bundle getListResource(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+		
 			@Description(shortDefinition="What the purpose of this list is")
   			@OptionalParam(name="code")
   			TokenAndListParam theCode,
@@ -179,8 +178,7 @@ public class ListResourceProvider extends RecordBasedResourceProvider<ListResour
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 	
 	    paramMap.add("code", theCode);
 		paramMap.add("date", theDate);
@@ -305,7 +303,7 @@ public class ListResourceProvider extends RecordBasedResourceProvider<ListResour
 		
 		// Add subject field from record owner field if it is not already there		
 		if (p.getSubject().isEmpty()) {			
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 		

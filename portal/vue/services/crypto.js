@@ -188,22 +188,26 @@ import Axios from 'axios';
 		var key = hash.digest().toHex();
 		var rec = localStorage["recover_"+key];
 		if (rec) {
-			var parsed = JSON.parse(rec);
-			if (parsed.encrypted && parsed.iv) {
-				var decipher = forge.cipher.createDecipher('AES-CBC', forge.util.decode64(recoverKey));	
-				decipher.start({iv: forge.util.decode64(parsed.iv) });
-				decipher.update(forge.util.createBuffer(forge.util.decode64(parsed.encrypted)));	
-				var result = decipher.finish(); // check 'result' for true/false
-				if (!result) return null;
-			    var pkstr = decipher.output.toString();			   
-				var pk = forge.pki.privateKeyFromPem(pkstr);
-				var challenge = forge.util.decode64(challenge);	
-				return forge.util.encode64(pk.decrypt(challenge, "RSA-OAEP", {
-					  md: forge.md.sha256.create(),
-					  mgf1: {
-					    md: forge.md.sha1.create()
-					  }
-				}));				
+			try {
+				var parsed = JSON.parse(rec);
+				if (parsed.encrypted && parsed.iv) {
+					var decipher = forge.cipher.createDecipher('AES-CBC', forge.util.decode64(recoverKey));	
+					decipher.start({iv: forge.util.decode64(parsed.iv) });
+					decipher.update(forge.util.createBuffer(forge.util.decode64(parsed.encrypted)));	
+					var result = decipher.finish(); // check 'result' for true/false
+					if (!result) return null;
+				    var pkstr = decipher.output.toString();			   
+					var pk = forge.pki.privateKeyFromPem(pkstr);
+					var challenge = forge.util.decode64(challenge);	
+					return forge.util.encode64(pk.decrypt(challenge, "RSA-OAEP", {
+						  md: forge.md.sha256.create(),
+						  mgf1: {
+						    md: forge.md.sha1.create()
+						  }
+					}));				
+				}
+			} catch (e) {
+				console.log("Local recovery failed");
 			}
 		}
 		return null;
@@ -219,5 +223,14 @@ import Axios from 'axios';
 		if (! /[a-zA-Z]/.test(pw)) return false;
 		return true;
 	};
+	
+	service.createVerifier = function() {
+		return forge.util.encode64(forge.random.getBytesSync(32));
+	};
+	
+	service.createChallenge = function(verifier) {		
+		let dg = forge.sha256.create().update(verifier).digest().data;		
+		return forge.util.encode64(dg);
+	}
 		
 export default service;

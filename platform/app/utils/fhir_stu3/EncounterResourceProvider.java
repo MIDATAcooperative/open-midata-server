@@ -278,7 +278,7 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 	public void prepare(Record record, Encounter theEncounter) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a
 		// fixed value or something else useful)
-		String display = setRecordCodeByCodeableConcept(record, null, "Encounter"); 
+		String display = setRecordCodeByCoding(record, theEncounter.getClass_(), "Encounter"); 
 
 		// Task b : Create record name
 		String date = "No time";

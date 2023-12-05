@@ -24,6 +24,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import play.libs.Json;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
+import utils.AccessLog;
+import utils.ErrorReporter;
+import utils.ServerTools;
+import utils.exceptions.InternalServerException;
 
 public class SMSSwisscomProvider implements SMSProvider {
 
@@ -56,7 +60,15 @@ public class SMSSwisscomProvider implements SMSProvider {
 					    
 		return holder.post(body).thenApply(response -> {
 			if (response.getStatus() != 201) {		
-				System.out.println(response.asJson().toString());
+				try {
+					String msg = response.getStatus()+" "+response.asJson().toString();
+					throw new InternalServerException("error.internal", msg);
+				} catch (InternalServerException e) {
+					ErrorReporter.report("SwisscomSMS Sender", null, e);
+					AccessLog.logException("SwisscomSMS Sender Error", e);
+				} finally {
+					ServerTools.endRequest();
+				}
 				return new MessageStatus(response.getStatus(), response.asJson().toString());
 			} 
 			return new MessageStatus(); 

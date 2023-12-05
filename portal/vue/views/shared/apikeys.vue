@@ -24,10 +24,11 @@
             <pagination v-model="services"></pagination>
             <div v-for="service in services.filtered" :key="service._id">
                 <div class="row extraspace">
-                    <div class="col-8"><b>{{ service.name }}</b></div>
+                    <div class="col-8"><b>{{ service.name }}</b> <i v-if="service.managerName">{{ $t('apikeys.managedby') }} {{ service.managerName }}</i></div>
                     <div class="col-4">
                         <button type="button" class="btn btn-default space" v-t="'apikeys.add_btn'" :disabled="action!=null" @click="addKey(service)"></button>                            
                         <button type="button" class="btn btn-danger space" v-t="'apikeys.delete_btn'" v-if="service.linkedStudy" :disabled="action!=null" @click="deleteService(service);"></button>
+                        <!-- <button type="button" class="btn btn-danger space" v-t="'apikeys.delete_service_btn'" v-if="service.app.decentral" :disabled="action!=null" @click="deleteService(service);"></button> -->
                         <button type="button" class="btn btn-danger space" v-t="'apikeys.delete_endpoint_btn'" v-else-if="service.endpoint" :disabled="action!=null" @click="deleteService(service);"></button>
                     </div>
                 </div>
@@ -36,12 +37,16 @@
                         <table class="table table-sm table-bordered">
                             <tr>
                                 <th v-t="'apikeys.date'"></th>
+                                <th v-t="'apikeys.restrictions'"></th>
                                 <th v-t="'apikeys.status'"></th>
                                 <th></th>
                             </tr>
-                            <tr v-for="key in service.keys" :key="key._id">                        
+                            <tr v-for="key in service.keys" :key="key._id" :class="{ 'table-danger' : key.status!='ACTIVE' }">                        
                                 <td>
                                     {{ $filters.dateTime(key.dateOfCreation) }}
+                                </td>
+                                <td>
+                                   {{ key.comment }}
                                 </td>
                                 <td>
                                     <span>{{ $t('apikeys.'+key.status) }}</span>
@@ -62,37 +67,65 @@
         <div class="body">
             <div v-t="'apikeys.instructions'"></div>
             <hr>
+            <div v-if="showkey.access_token">
             <div><b v-t="'apikeys.key'"></b></div>
             <div v-t="'apikeys.instructions_key'"></div>
-            <input type="text" class="form-control" readonly @click="copyToClip($event)" v-model="showkey.access_token">
+            <input type="text" class="form-control mt-1" readonly @click="copyToClip($event)" v-model="showkey.access_token">
             <hr>
+            </div>
+            <div v-if="showkey.refresh_token">
             <div><b v-t="'apikeys.refresh'"></b></div>
             <div v-t="'apikeys.instructions_refresh'"></div>
-            <input type="text" class="form-control" readonly @click="copyToClip($event)" v-model="showkey.refresh_token">
+            <input type="text" class="form-control mt-1" readonly @click="copyToClip($event)" v-model="showkey.refresh_token">
             <hr>
+            </div>
             <div><b v-t="'apikeys.common_name'"></b></div>
             <div v-t="'apikeys.instructions_common_name'"></div>
-            <input type="text" class="form-control" readonly @click="copyToClip($event)" v-model="showkey.cn">
+            <div class="row">
+            <div class="input-group col-lg-4 col-12 mb-1 mt-1">
+               <div class="input-group-prepend">
+                  <span class="input-group-text">OU</span>
+                </div>            
+                <input type="text" class="form-control" readonly @click="copyToClip($event)" v-model="showkey.ou">
+            </div>
+            
+            <div class="input-group col-lg-8 col-12 mb-1 mt-1">
+               <div class="input-group-prepend">
+                  <span class="input-group-text">CN</span>
+               </div>
+               <input type="text" class="form-control" readonly @click="copyToClip($event)" v-model="showkey.cn">
+            </div>
+            </div>
         </div>
     </modal>
+    
+    <modal id="organizationSearch" :full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
+	   <organization-search :setup="setupOrganizationSearch" @add="addKeyWithGroup"></organization-search>
+	</modal>
 </div>
 </template>
 <script>
 
 import session from "services/session.js"
 import Panel from "components/Panel.vue"
+import OrganizationSearch from "components/tiles/OrganizationSearch.vue"
 import services from "services/services.js"
 import { status, rl, ErrorBox, Modal } from 'basic-vue3-components'
 
 export default {
   
     data: () => ({
+        appId : null,
+        groupId : null,
+        serviceId : null,
         services : null,
-        showkey : null
+        showkey : null,
+        setupOrganizationSearch : null,
+        selectedService : null
 	}),	
 		
 
-    components: {  Panel, Modal, ErrorBox },
+    components: {  Panel, Modal, ErrorBox, OrganizationSearch },
 
     mixins : [ status, rl ],
   
@@ -107,7 +140,11 @@ export default {
                     
                 }));
             } else {
-                me.doBusy(services.list()
+                let crit = {};
+                if ($data.groupId) crit.group = $data.groupId;
+                if ($data.appId) crit.app = $data.appId;
+                if ($data.serviceId) crit.service = $data.serviceId;
+                me.doBusy(services.list(crit)
                 .then(function(data) {
                     for (let service of data.data) { service.keys = []; me.showKeys(service) };
                     $data.services = me.process(data.data);						                    
@@ -122,6 +159,24 @@ export default {
             .then(function(result) {
                 $data.showkey = result.data;                
                 me.showKeys(service);
+            }, function(result) {
+            
+              if (result.response && result.response.data && result.response.data.field==="group") {
+                $data.setupOrganizationSearch = { serviceId : service._id };
+                $data.selectedService = service;
+              }              
+              
+            }));
+        },
+        
+        addKeyWithGroup(group) {
+            const { $data } = this, me = this;
+            $data.setupOrganizationSearch = null;
+            
+            me.doAction("add", services.addApiKey($data.selectedService._id, group._id || group.id)
+            .then(function(result) {
+                $data.showkey = result.data;                
+                me.showKeys($data.selectedService);
             }));
         },
 
@@ -159,7 +214,10 @@ export default {
     },
 
     created() {
-        const { $route } = this, me = this;
+        const { $route, $data } = this, me = this;
+        if ($route.query.groupId) $data.groupId = $route.query.groupId;
+        if ($route.query.appId) $data.appId = $route.query.appId;
+        if ($route.query.serviceId) $data.serviceId = $route.query.serviceId;  
         session.currentUser.then(function(userId) { me.loadServices($route.query.studyId); });
     }
    

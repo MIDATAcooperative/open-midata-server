@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-    <study-nav page="study.overview"></study-nav>
+    <study-nav page="study.overview" :study="study"></study-nav>
     <tab-panel :busy="isBusy || study==null">
 	
         <error-box :error="error"></error-box>
@@ -109,15 +109,15 @@
     </panel>
 
     <div v-if="!isBusy && study!=null">
-        <router-link class="btn btn-default space" :to="{ path : './studies' }" v-t="'common.back_btn'"></router-link>
-        <button class="btn btn-default space" @click="clone(false)" v-t="'studyoverview.clone_study_btn'"></button>
-        <button v-if="readyForValidation()" class="btn btn-primary space" @click="startValidation()" v-t="'studyoverview.start_validation_btn'"></button>
-        <button v-if="readyForParticipantSearch()" class="btn btn-primary space" :disabled="role!='research'" @click="startParticipantSearch()" v-t="'studyoverview.start_participant_search_btn'"></button>
-        <button v-if="readyForEndParticipantSearch()" class="btn btn-primary space" @click="endParticipantSearch()" v-t="'studyoverview.end_participant_search_btn'"></button>
-        <button v-if="readyForStartExecution()" class="btn btn-primary space" @click="startExecution()" v-t="'studyoverview.start_study_execution_btn'"></button>
-        <button v-if="readyForFinishExecution()" class="btn btn-primary space" @click="finishExecution()" v-t="'studyoverview.finish_study_btn'"></button>
-        <button v-if="readyForDelete()" class="btn btn-danger space" @click="dodelete()" v-t="'studyoverview.delete_study_btn'"></button>
-        <button v-if="readyForAbort()" class="btn btn-danger space" @click="abortExecution()" v-t="'studyoverview.abort_study_btn'"></button>   
+        <router-link class="btn btn-default space mb-1" :to="{ path : './studies' }" v-t="'common.back_btn'"></router-link>
+        <button class="btn btn-default space mb-1" @click="clone(false)" v-t="'studyoverview.clone_study_btn'"></button>
+        <button v-if="readyForValidation()" class="btn btn-primary space mb-1" @click="startValidation()" v-t="'studyoverview.start_validation_btn'"></button>
+        <button v-if="readyForParticipantSearch()" class="btn btn-primary space mb-1" :disabled="role!='research'" @click="startParticipantSearch()" v-t="'studyoverview.start_participant_search_btn'"></button>
+        <button v-if="readyForEndParticipantSearch()" class="btn btn-primary space mb-1" @click="endParticipantSearch()" v-t="'studyoverview.end_participant_search_btn'"></button>
+        <button v-if="readyForStartExecution()" class="btn btn-primary space mb-1" @click="startExecution()" v-t="'studyoverview.start_study_execution_btn'"></button>
+        <button v-if="readyForFinishExecution()" class="btn btn-primary space mb-1" @click="finishExecution()" v-t="'studyoverview.finish_study_btn'"></button>
+        <button v-if="readyForDelete()" class="btn btn-danger space mb-1" @click="dodelete()" v-t="'studyoverview.delete_study_btn'"></button>
+        <button v-if="readyForAbort()" class="btn btn-danger space mb-1" @click="abortExecution()" v-t="'studyoverview.abort_study_btn'"></button>   
     </div>
                                 
     <modal id ="studyinf" :full-width="true" :open="confirm" @close="cancel()" :title="(study || {}).name">
@@ -128,13 +128,13 @@
             <div class="extraspace"></div>
         </div>
         <template v-slot:footer>      
-            <button v-if="confirm.id=='validation'" class="btn btn-primary space" @click="startValidation(true)" v-t="'studyoverview.start_validation_btn'"></button>      
-            <button v-if="confirm.id=='end_participant_search'" class="btn btn-primary space" @click="endParticipantSearch(true)" v-t="'studyoverview.end_participant_search_btn'"></button>      
-            <button v-if="confirm.id=='finish_execution'" class="btn btn-primary space" @click="finishExecution(true)" v-t="'studyoverview.finish_study_btn'"></button>
-            <button v-if="confirm.id=='delete'" :disabled="action!=null" class="btn btn-danger space" @click="dodelete(true)" v-t="'studyoverview.delete_study_btn'"></button>
-            <button v-if="confirm.id=='abort'" class="btn btn-danger space" @click="abortExecution(true)" v-t="'studyoverview.abort_study_btn'"></button>            
-            <button v-if="confirm.id=='clone'" class="btn btn-default space" @click="clone(true)" v-t="'studyoverview.clone_study_btn'"></button>
-            <button class="btn btn-default space" v-t="'common.cancel_btn'" @click="cancel()"></button>
+            <button v-if="confirm.id=='validation'" class="btn btn-primary space mb-1" @click="startValidation(true)" v-t="'studyoverview.start_validation_btn'"></button>      
+            <button v-if="confirm.id=='end_participant_search'" class="btn btn-primary space mb-1" @click="endParticipantSearch(true)" v-t="'studyoverview.end_participant_search_btn'"></button>      
+            <button v-if="confirm.id=='finish_execution'" class="btn btn-primary space mb-1" @click="finishExecution(true)" v-t="'studyoverview.finish_study_btn'"></button>
+            <button v-if="confirm.id=='delete'" :disabled="action!=null" class="btn btn-danger space mb-1" @click="dodelete(true)" v-t="'studyoverview.delete_study_btn'"></button>
+            <button v-if="confirm.id=='abort'" class="btn btn-danger space mb-1" @click="abortExecution(true)" v-t="'studyoverview.abort_study_btn'"></button>            
+            <button v-if="confirm.id=='clone'" class="btn btn-default space mb-1" @click="clone(true)" v-t="'studyoverview.clone_study_btn'"></button>
+            <button class="btn btn-default space mb-1" v-t="'common.cancel_btn'" @click="cancel()"></button>
         </template>
     </modal>
 </div>

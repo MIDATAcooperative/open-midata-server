@@ -32,5 +32,10 @@ public enum StudyType {
 	/**
 	 * Only automated services with backsharing. Data only used by the participants.
 	 */
-	COMMUNITY
+	COMMUNITY,
+	
+	/**
+	 * Data gathering for registry
+	 */
+	REGISTRY
 }

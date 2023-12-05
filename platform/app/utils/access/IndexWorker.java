@@ -102,15 +102,13 @@ public class IndexWorker extends AbstractActor {
 			
 				if (!((IndexMsg) message).getExecutor().equals(executor)) throw new InternalServerException("error.internal", "Wrong executor for index update:"+executor.toString()+" vs "+((IndexMsg) message).getExecutor());
 				KeyManager.instance.continueSession(handle, executor);
-				if (cache == null) {
-					cache = ContextManager.instance.createSessionForDownloadStream(executor, UserRole.ANY).getCache();			
-				}
+				//if (cache == null) { // No reuse of cache possible; it might contain outdated entries
+				cache = ContextManager.instance.createSessionForDownloadStream(executor, UserRole.ANY).getCache();			
+				//}
 				if (idx == null) idx = IndexManager.instance.findIndex(pseudo, indexId);
 				if (idx == null) return;
 				if (root == null) {
-					if (idx.formats.contains("_streamIndex")) {
-					   root = new StreamIndexRoot(pseudo.getKey(), idx, false);
-					} else if (idx.formats.contains("_statsIndex")) {
+					if (idx.formats.contains("_statsIndex")) {
 					   root = new StatsIndexRoot(pseudo.getKey(), idx, false);
 					} else {
 					   root = new IndexRoot(pseudo.getKey(), idx, false);

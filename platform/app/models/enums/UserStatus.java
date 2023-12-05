@@ -48,7 +48,16 @@ public enum UserStatus {
   DELETED,
   
   /**
+   * This user account has been marked as fake account
+   */
+  FAKE,
+  
+  /**
    * This user account has been deleted and access keys have been destroyed
    */
-  WIPED
+  WIPED;
+  
+  public boolean isDeleted() {
+	  return this == DELETED || this == WIPED || this == FAKE;
+  }
 }

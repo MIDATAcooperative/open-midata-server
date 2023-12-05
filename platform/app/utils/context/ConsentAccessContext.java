@@ -18,6 +18,7 @@
 package utils.context;
 
 import java.util.Collections;
+import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -25,14 +26,18 @@ import controllers.Circles;
 import models.Consent;
 import models.MidataId;
 import models.Record;
+import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.WritePermissionType;
+import utils.ConsentQueryTools;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.access.Feature_FormatGroups;
 import utils.access.Feature_Pseudonymization;
 import utils.access.QueryEngine;
+import utils.auth.KeyManager;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class ConsentAccessContext extends AccessContext{
 
@@ -42,20 +47,20 @@ public class ConsentAccessContext extends AccessContext{
 	private MidataId ownerpseudoId;
 	//private final Set<String> reqfields = Sets.create("sharingQuery", "createdBefore", "validUntil");
 	
-	public ConsentAccessContext(Consent consent, APSCache cache, AccessContext parent) throws AppException {
+	public ConsentAccessContext(Consent consent, APSCache cache, AccessContext parent) {
 		super(cache, parent);
 		this.consent = consent;
 		setStudyOwnerName();
 		
 	}
 	
-	public ConsentAccessContext(Consent consent, AccessContext parent) throws AppException {
+	public ConsentAccessContext(Consent consent, AccessContext parent)  {
 		super(parent.getCache(), parent);
 		this.consent = consent;
 		setStudyOwnerName();
 	}
 	
-	private void setStudyOwnerName() throws AppException {
+	private void setStudyOwnerName()  {
 		if (consent.type.equals(ConsentType.STUDYRELATED) && consent.ownerName == null) {
 			consent.ownerName = consent.name;
 			if (consent.ownerName != null && consent.ownerName.startsWith("Study:")) consent.ownerName = consent.ownerName.substring("Study:".length());
@@ -66,6 +71,7 @@ public class ConsentAccessContext extends AccessContext{
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
 		if (consent.writes == null) return parent==null || parent.mayCreateRecord(record);
 		if (!consent.writes.isCreateAllowed()) return false;
+		if (!consent.isWriteable()) return false;
 		if (consent.writes.isUnrestricted()) return parent==null || parent.mayCreateRecord(record);
 		
 		if (!sharingQuery && consent.sharingQuery == null) {
@@ -78,11 +84,11 @@ public class ConsentAccessContext extends AccessContext{
 	}
 
 	@Override
-	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) throws InternalServerException {
 		
 		if (consent.writes == null) return false;
 		if (!consent.writes.isUpdateAllowed()) return false;
-		
+		if (!consent.isWriteable()) return false;
 		if (consent.type.equals(ConsentType.STUDYRELATED)) {			
 			if (parent != null && parent instanceof UserGroupAccessContext && parent.parent != null) {				
 				return parent.parent.mayUpdateRecord(stored, newVersion);
@@ -96,8 +102,8 @@ public class ConsentAccessContext extends AccessContext{
 	public String getAccessInfo(DBRecord rec) throws AppException {
 		WritePermissionType wt = consent.writes;
 		if (wt==null) wt = WritePermissionType.NONE;
-		boolean inFilter = consent.sharingQuery != null && !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(rec)).isEmpty();
-		return "[ recordPassesFilter="+inFilter+" allowCreate="+wt.isCreateAllowed()+" allowUpdate="+wt.isUpdateAllowed()+" ]";
+		boolean inFilter = consent.sharingQuery != null && !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(rec)).isEmpty();		
+		return "\n- Does the record pass the access filter? ["+inFilter+"]\n- Is record creation allowed in general? ["+wt.isCreateAllowed()+"]\n- Is update of records allowed in general? ["+wt.isUpdateAllowed()+"]"+"]\n- Has consent a status that allows writing? ["+consent.isWriteable()+"]";
 	}
 
 	@Override
@@ -119,10 +125,7 @@ public class ConsentAccessContext extends AccessContext{
 	public boolean isIncluded(DBRecord record) throws AppException {
 		if (consent.writes == null) return false;
 		
-		if (!sharingQuery && consent.sharingQuery == null) {
-			  consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
-			  sharingQuery = true;
-		}
+		loadSharingQuery();
 		
 		if (consent.sharingQuery == null) return false;
 		return !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(record)).isEmpty();
@@ -142,6 +145,11 @@ public class ConsentAccessContext extends AccessContext{
 		return ownerName;
 		
 	}
+	
+	public String getOwnerType() {
+		if (consent.type.equals(ConsentType.STUDYRELATED)) return "Group";
+		return null;
+	}
 
 	@Override
 	public MidataId getOwner() {
@@ -150,6 +158,7 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public MidataId getOwnerPseudonymized() throws AppException {
+		if (consent.type.equals(ConsentType.STUDYRELATED)) return consent.owner;
 		if (ownerpseudoId!=null) return ownerpseudoId;
 		Pair<MidataId,String> p = Feature_Pseudonymization.pseudonymizeUser(getCache(), consent);
 		if (p!=null) {
@@ -166,12 +175,15 @@ public class ConsentAccessContext extends AccessContext{
 	
 	@Override
 	public boolean mayAccess(String content, String format) throws AppException {
+		loadSharingQuery();		
+		return Feature_FormatGroups.mayAccess(consent.sharingQuery, content, format);		
+	}
+	
+	private void loadSharingQuery() throws AppException {
 		if (!sharingQuery && consent.sharingQuery == null) {
 			  consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
 			  sharingQuery = true;
 		}
-		
-		return Feature_FormatGroups.mayAccess(consent.sharingQuery, content, format);		
 	}
 	
 	@Override
@@ -186,6 +198,7 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {
+		loadSharingQuery();
 		return Feature_FormatGroups.getAccessRestriction(consent.sharingQuery, content, format, field);
 		
 	}
@@ -197,13 +210,43 @@ public class ConsentAccessContext extends AccessContext{
 		switch (consent.type) {
 		case STUDYRELATED : result = "Project backchannel";break;
 		case HCRELATED : result = "Healthcare provider backchannel";break;
-		case API: result = "External service use";break;		
+		case API: result = "External service use (Patient side)";break;		
 		}
-		return "Consent of type '"+result+"'";
+		String r = "Consent of type '"+result+"'";
+		if (consent.dateOfCreation!=null) r+=", created at "+consent.dateOfCreation.toGMTString();
+		return r;
 	}
 	
+	@Override
 	public AccessContext forConsent(Consent consent) throws AppException {
 		if (this.consent._id == consent._id) return this;
 		return super.forConsent(consent);
+	}
+	
+	@Override
+	public AccessContext forAccountReshare() {
+		if (getAccessor().equals(consent.owner)) return super.forAccountReshare();
+		AccessContext p = super.forAccountReshare();
+		return new ConsentAccessContext(consent, p.getCache(), p);		
+	}
+
+	@Override
+	public MidataId getConsentSigner() throws InternalServerException {
+		KeyManager.instance.recoverKeyFromAps(this, consent._id);
+		return consent._id;
 	}	
+	
+	@Override
+	public boolean canCreateActiveConsentsFor(MidataId owner) {		
+		return (consent.allowedReshares != null && owner.equals(consent.owner)) || parent.canCreateActiveConsentsFor(owner);
+	}
+	
+	public boolean hasAccessToAllOf(Map<String, Object> targetFilter) throws AppException {
+		loadSharingQuery();
+		if (consent.allowedReshares != null && ConsentQueryTools.isSubQuery(consent.sharingQuery, targetFilter)) {
+			if (parent != null) return parent.hasAccessToAllOf(targetFilter);
+			return true;
+		} else return false;
+	}
+		
 }

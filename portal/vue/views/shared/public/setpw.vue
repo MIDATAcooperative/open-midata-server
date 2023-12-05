@@ -83,7 +83,7 @@ export default {
 	 
      submit() {
                   
-        const { $data } = this;
+        const { $data } = this;      
 		var pwvalid = crypto.isValidPassword($data.setpw.password, $data.role != "member");         
         if (!pwvalid) {
         	$data.error = { code : (($data.role != "member") ? "error.tooshort.password2" : "error.tooshort.password") };

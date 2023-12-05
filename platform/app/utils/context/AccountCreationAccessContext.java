@@ -29,6 +29,10 @@ public class AccountCreationAccessContext extends AccessContext {
 	    super(new APSCache(newAccountId, newAccountId), parent);
 	}
 	
+	protected AccountCreationAccessContext(APSCache cache, AccessContext parent) /*throws AppException*/ {
+	    super(cache, parent);
+	}
+	
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
 		return true;
@@ -96,7 +100,7 @@ public class AccountCreationAccessContext extends AccessContext {
 
 	@Override
 	public String getContextName() {
-		return "New account";
+		return "New user account";
 	}
 
 	@Override
@@ -109,13 +113,36 @@ public class AccountCreationAccessContext extends AccessContext {
 		return getCache().getAccessor();
 	}
 	
-	public void close() throws AppException {
-		getCache().finishTouch();
+	@Override
+	protected AccessContext getRootContext() {	
+		if (parent == null) return this;
+		return new AccountCreationAccessContext(cache, parent.getRootContext());
 	}
+	
+	@Override
+	public APSCache getRootCache() {	
+		return getCache();
+	}
+	
+	@Override
+	public AccessContext forAccountReshare() {
+		return new AccountCreationAccessContext(getCache(), null);		
+	}
+		
 	
 	@Override
 	public String toString() {
 		return "account-create("+cache.getAccessor()+","+parentString()+")";
+	}
+	
+	@Override
+	public boolean isUserGroupContext() {		
+		return false;
+	}
+	
+	@Override
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
+		return owner.equals(cache.getAccountOwner()) || (parent != null && parent.canCreateActiveConsentsFor(owner));
 	}
 
 }

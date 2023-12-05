@@ -63,6 +63,7 @@ import models.MidataId;
 import models.Plugin;
 import models.SubscriptionData;
 import utils.AccessLog;
+import utils.ConsentQueryTools;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
 import utils.auth.KeyManager;
@@ -96,7 +97,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	@Read()
 	public Subscription getResourceById(@IdParam IIdType theId) throws AppException {
 		if (!info().mayAccess("Subscription", "fhir/Subscription")) return null;
-		SubscriptionData subscription = SubscriptionData.getByIdAndOwner(MidataId.from(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
+		SubscriptionData subscription = SubscriptionData.getByIdAndOwner(MidataId.parse(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
 		if (subscription == null) return null;
 		return readSubscriptionFromMidataSubscription(subscription);
 	}
@@ -113,7 +114,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		convertToR4(subscriptionToConvert, data);
 		IParser parser = ctx().newJsonParser();		
 		Subscription result = parser.parseResource(getResourceType(), data.toString());
-				
+		result.setId(subscriptionToConvert._id.toString());		
 		return result;
 	}
 	
@@ -175,11 +176,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	    		@Description(shortDefinition="The ID of the resource")
 	  			@OptionalParam(name="_id")
 	  			TokenAndListParam the_id, 
-	    
-	  			@Description(shortDefinition="The language of the resource")
-	  			@OptionalParam(name="_language")
-	  			StringAndListParam the_language, 
-	    
+	    	  			    
 	  			@Description(shortDefinition="A tag to be added to the resource matching the criteria")
 	  			@OptionalParam(name="add-tag")
 	  			TokenAndListParam theAdd_tag, 
@@ -229,8 +226,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	    	
 	    	SearchParameterMap paramMap = new SearchParameterMap();
 	    		    	
-	    	paramMap.add("_id", the_id);
-	    	paramMap.add("_language", the_language);
+	    	paramMap.add("_id", the_id);	    	
 	    	paramMap.add("add-tag", theAdd_tag);
 	    	paramMap.add("contact", theContact);
 	    	paramMap.add("criteria", theCriteria);
@@ -307,11 +303,11 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	private static void mayShare(MidataId pluginId, String format, String content) throws AppException {
 		Plugin plugin = Plugin.getById(pluginId);
 		if (plugin == null || !plugin.resharesData) throw new ForbiddenOperationException("Plugin is not allowed to share data.");
-		if (!isSubQuery(plugin.defaultQuery, CMaps.map("format", format).mapNotEmpty("content", content))) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");				
+		if (!ConsentQueryTools.isSubQuery(plugin.defaultQuery, CMaps.map("format", format).mapNotEmpty("content", content))) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");				
 	}
 	
 	
-	private static boolean isSubQuery(Map<String, Object> masterQuery, Map<String, Object> subQuery) throws AppException {
+	/*private static boolean isSubQuery(Map<String, Object> masterQuery, Map<String, Object> subQuery) throws AppException {
 		
 		if (masterQuery.containsKey("$or")) {
 			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) masterQuery.get("$or");			
@@ -339,7 +335,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	    	if (!master.containsAll(sub)) return false;	    	
 	    }
 		return true;
-	}
+	}*/
 		
 
 	@Override
@@ -398,7 +394,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		          subscriptionData.content = null;
 		        } else {
 	              subscriptionData.format = "fhir/"+crit;
-	              subscriptionData.content = crit;
+	              subscriptionData.content = null;
 		        }
 	           
 	        }
@@ -412,7 +408,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	}
 
 	@Override
-	public SubscriptionData init() {
+	public SubscriptionData init(Subscription theResource) {
 		SubscriptionData subscriptionData = new SubscriptionData();
 		subscriptionData._id = new MidataId();
 		subscriptionData.owner = info().getLegacyOwner();
@@ -440,8 +436,8 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	}
 
 	@Override
-	public SubscriptionData fetchCurrent(IIdType theId) throws AppException {
-		return SubscriptionData.getByIdAndOwner(MidataId.from(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
+	public SubscriptionData fetchCurrent(IIdType theId, Subscription resource, boolean versioned) throws AppException {
+		return SubscriptionData.getByIdAndOwner(MidataId.parse(theId.getIdPart()), info().getLegacyOwner(), SubscriptionData.ALL);	
 	}
 
 	@Override

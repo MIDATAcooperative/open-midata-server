@@ -50,7 +50,10 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.MidataId;
 import models.Record;
+import models.enums.AuditEventType;
 import utils.access.pseudo.FhirPseudonymizer;
+import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -75,6 +78,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Task")
+		  .hideIfPseudonymized("Task", "text")
 		  .pseudonymizeReference("Task", "for")
 		  .pseudonymizeReference("Task", "focus")
 		  .pseudonymizeReference("Task", "requester")
@@ -93,10 +97,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
-			  
-			@Description(shortDefinition="The resource language")
-			@OptionalParam(name="_language")
-			StringAndListParam theResourceLanguage, 
+			  		
 			 /* 
 			@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
@@ -227,8 +228,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);	
 		
 	    //paramMap.add("_has", theHas);
 		paramMap.add("authored-on", theAuthored_on);
@@ -310,7 +310,9 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	@Override
 	public Task createExecute(Record record, Task theTask) throws AppException {
 		MidataId consent = insertMessageRecord(record, theTask);
-        shareRecord(record, theTask, consent);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+        shareRecord(record, theTask, consent);        
+        if (audit) AuditManager.instance.success();
         return theTask;
 	}	
 	
@@ -349,8 +351,10 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 	
 	@Override
 	public void updateExecute(Record record, Task theTask) throws AppException {
-		updateRecord(record, theTask, getAttachments(theTask));
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
+		updateRecord(record, theTask, getAttachments(theTask));		
 		shareRecord(record, theTask, info().getAccessor()); // XXX To be checked
+		if (audit) AuditManager.instance.success();
 	}
 
 	public void prepare(Record record, Task theTask) throws AppException {
@@ -377,7 +381,7 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 		super.processResource(record, p);
 		
 		if (p.getFor().isEmpty()) {			
-			p.setFor(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setFor(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

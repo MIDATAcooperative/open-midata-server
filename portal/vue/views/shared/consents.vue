@@ -20,12 +20,12 @@
 		<form class="form" v-if="role!='research'">            
 		    <div class="form-check">
 		      <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="consenttype" value="option1" checked="checked"> <span class="margin-left" v-t="'consents.where_owner'"></span> 
+               <input class="form-check-input" type="radio" name="consenttype" value="option1" checked="checked"> <span class="margin-left" v-t="'consents.where_owner'"></span> 
               </label>
             </div>
             <div class="form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="consenttype" value="option2" @click="changeView()"> <span class="margin-left" v-t="'consents.where_authorized'"></span>
+                <input class="form-check-input" type="radio" name="consenttype" value="option2" v-model="consenttype" @click="changeView()"> <span class="margin-left" v-t="'consents.where_authorized'"></span>
               </label>
             </div>
         </form>
@@ -56,9 +56,8 @@
 				<td class="d-none d-lg-table-cell">{{ consent.authorized.length }}</td>
 				<td class="d-none d-lg-table-cell">{{ consent.records }}</td>
 			</tr>
-		</table>
-
-		<button class="btn btn-primary" @click="addConsent();" v-if="role!='RESEARCH'" v-t="'consents.add_new_btn'"></button>
+		</table>  
+		<button class="btn btn-primary" @click="addConsent();" v-if="role!='research' && role!='provider'" v-t="'consents.add_new_btn'"></button>
 		
     </panel>	
 </div>
@@ -77,7 +76,8 @@ export default {
   
     data: () => ({
         consents : [],
-        role : null
+        role : null,
+        consenttype : "option1"
 	}),	
 		
 
@@ -93,7 +93,7 @@ export default {
 		    if ($route.meta.types) prop = { type : $route.meta.types };
 		    me.doBusy(circles.listConsents(prop, [ "name", "authorized", "type", "status", "records", "dateOfCreation" ])
 		    .then(function(data) {
-                $data.consents = me.process(data.data, { filter : { name : "" } });						
+                $data.consents = me.process(data.data, { filter : { name : "" }, ignoreCase : true, sort : "-dateOfCreation" });						
                
 		    }));
 	    },
@@ -118,6 +118,7 @@ export default {
 
     created() {
         this.$data.role = this.$route.meta.role;
+        this.$data.consenttype ="option1";
         this.init();
     }
    

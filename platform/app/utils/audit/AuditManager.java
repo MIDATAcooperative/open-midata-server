@@ -20,12 +20,14 @@ package utils.audit;
 import java.util.Date;
 import java.util.HashSet;
 
+import models.Actor;
 import models.Consent;
 import models.MidataAuditEvent;
 import models.MidataId;
 import models.Study;
 import models.User;
 import models.enums.AuditEventType;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.fhir.AuditEventResourceProvider;
 
@@ -35,12 +37,9 @@ public class AuditManager {
 	
 	private ThreadLocal<MidataAuditEvent> running = new ThreadLocal<MidataAuditEvent>();
 
-	public void addAuditEvent(AuditEventType type, MidataId who) throws AppException {		
-		addAuditEvent(AuditEventBuilder.withType(type).withActorUser(who));
-	}
 	
-	public void addAuditEvent(AuditEventType type, User who) throws AppException {
-		addAuditEvent(AuditEventBuilder.withType(type).withActorUser(who));
+	public void addAuditEvent(AuditEventType type, Actor who) throws AppException {
+		addAuditEvent(AuditEventBuilder.withType(type).withActor(who));
 	}
 	
 	/*public void addAuditEvent(AuditEventType type, User who, String message) throws AppException {
@@ -75,28 +74,32 @@ public class AuditManager {
 		addAuditEvent(type, app, executingUser, null, consent, null, study);
 	}
 
-	public void addAuditEvent(AuditEventType type, MidataId app, MidataId who, MidataId modifiedUser, String message, MidataId userGroupId) throws AppException {
-		User executingUser = User.getById(who, User.ALL_USER);
-		User modifiedUserObj = User.getById(modifiedUser, User.ALL_USER);
+	public void addAuditEvent(AuditEventType type, AccessContext context, MidataId app, MidataId who, MidataId modifiedUser, String message, MidataId userGroupId) throws AppException {
+		Actor executingUser = Actor.getActor(context, userGroupId);
+		Actor modifiedUserObj = Actor.getActor(context, modifiedUser);
 		Study study = Study.getById(userGroupId, Study.ALL);		
 		addAuditEvent(type, app, executingUser, modifiedUserObj, null, message, study);
 	}
 	
 	public void addAuditEvent(AuditEventBuilder builder) throws AppException {
-		addAuditEvent(builder.getType(), builder.getApp(), builder.getActorUser(), builder.getModifiedUser(), builder.getConsent(), builder.getMessage(), builder.getStudy());
+		addAuditEvent(builder.getType(), builder.getApp(), builder.getActor(), builder.getModifiedActor(), builder.getConsent(), builder.getMessage(), builder.getStudy(), builder.getExtraInfo());
 	}
 	
-	public void addAuditEvent(AuditEventType type, MidataId app, User who, User modifiedUser, Consent consent, String message, Study study) throws AppException {
+	public void addAuditEvent(AuditEventType type, MidataId app, Actor who, Actor modifiedUser, Consent consent, String message, Study study) throws AppException {
+	    addAuditEvent(type, app, who, modifiedUser, consent, message, study, null);	
+	}
+	
+	public void addAuditEvent(AuditEventType type, MidataId app, Actor who, Actor modifiedUser, Consent consent, String message, Study study, AuditExtraInfo extra) throws AppException {
 		MidataAuditEvent mae = new MidataAuditEvent();
 		mae._id = new MidataId();
 		mae.event = type;
 		mae.timestamp = new Date();
 		mae.status = 12;
 		mae.authorized = new HashSet<MidataId>();
-		if (who != null) mae.authorized.add(who._id);
+		if (who != null) mae.authorized.add(who.getId());
 		if (modifiedUser != null) {
-			mae.authorized.add(modifiedUser._id);
-			mae.about = modifiedUser._id;
+			mae.authorized.add(modifiedUser.getId());
+			mae.about = modifiedUser.getId();
 		}
 		if (study != null) {
 			mae.about = study._id;
@@ -111,7 +114,7 @@ public class AuditManager {
 			if (consent.owner != null) mae.authorized.add(consent.owner);
 			if (consent.authorized != null) mae.authorized.addAll(consent.authorized);
 		}
-		AuditEventResourceProvider.updateMidataAuditEvent(mae, app, who, modifiedUser, consent, message, study);
+		AuditEventResourceProvider.updateMidataAuditEvent(mae, app, who, modifiedUser, consent, message, study, extra);
 		addAuditEvent(mae);
 	}
 	
@@ -123,6 +126,28 @@ public class AuditManager {
 		
 		running.set(event);
 		event.add();
+	}
+	
+	public MidataId convertLastEventToAsync() {
+		MidataAuditEvent old = running.get();
+		if (old != null) {
+			MidataId result = old._id;			
+			running.set(old.next);
+			return result;
+		}
+		return null;
+	}
+	
+	public void resumeAsyncEvent(MidataId eventId) {
+		if (eventId==null) return;
+		MidataAuditEvent resumed = new MidataAuditEvent();
+		resumed._id = eventId;
+		MidataAuditEvent old = running.get();
+		if (old != null) {
+			resumed.next = old;
+		}
+		
+		running.set(resumed);
 	}
 	
 	public void success() throws AppException {
@@ -152,5 +177,7 @@ public class AuditManager {
 	public void clear() {				
 		running.remove();
 	}
+	
+	
 	
 }

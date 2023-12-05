@@ -20,14 +20,20 @@ package controllers.providers;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Organization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import controllers.APIController;
 import controllers.Application;
 import controllers.Circles;
@@ -42,13 +48,18 @@ import models.Member;
 import models.MemberKey;
 import models.MidataId;
 import models.User;
+import models.UserGroup;
+import models.UserGroupMember;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
+import models.enums.EntityType;
 import models.enums.Gender;
+import models.enums.Permission;
+import models.enums.ResearcherRole;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -57,7 +68,10 @@ import play.mvc.BodyParser;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.OrganizationTools;
+import utils.UserGroupTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -74,6 +88,8 @@ import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.FHIRServlet;
+import utils.fhir.FHIRTools;
 import utils.fhir.OrganizationResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -97,20 +113,21 @@ public class Providers extends APIController {
 	public Result register(Request request) throws AppException {
 		JsonNode json = request.body().asJson();
 		
-		JsonValidation.validate(json, "name", "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "pub", "priv_pw", "recovery");
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "pub", "priv_pw", "recovery");
 					
-		String name = JsonValidation.getString(json, "name");
-		if (HealthcareProvider.existsByName(name)) return inputerror("name", "exists", "A healthcare provider with this name already exists.");
+		String name = JsonValidation.getStringOrNull(json, "name");
+		if (name != null && HealthcareProvider.existsByName(name)) return inputerror("name", "exists", "A healthcare provider with this name already exists.");
 		
 		String email = JsonValidation.getEMail(json, "email");
 		if (HPUser.existsByEMail(email)) return inputerror("email", "exists", "A user with this email address already exists.");
 		
-		HealthcareProvider provider = new HealthcareProvider();
+		/*HealthcareProvider provider = new HealthcareProvider();
 		
 		provider._id = new MidataId();
 		provider.name = name;
 		provider.description = JsonValidation.getStringOrNull(json, "description");
 		provider.url = JsonValidation.getStringOrNull(json, "url");
+		*/
 		//research.description = JsonValidation.getString(json, "description");
 		
 		HPUser user = new HPUser(email);
@@ -158,9 +175,7 @@ public class Providers extends APIController {
 			  
 		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
-		
-		HealthcareProvider.add(provider);		
-		user.provider = provider._id;
+				
 		HPUser.add(user);
 			  
 		KeyManager.instance.newFutureLogin(user);	
@@ -168,7 +183,12 @@ public class Providers extends APIController {
 				
 		RecordManager.instance.createPrivateAPS(null, user._id, user._id);		
 		
-		OrganizationResourceProvider.updateFromHP(context, provider);
+		if (name != null) {
+		   HealthcareProvider provider = new HealthcareProvider();
+		   provider.description = JsonValidation.getStringOrNull(json, "description"); 
+		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, provider, null, true, true);		
+		   OrganizationResourceProvider.updateFromHP(context, provider);
+		}
 		
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
@@ -204,9 +224,8 @@ public class Providers extends APIController {
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
 		if (provider != null) {
-			HealthcareProvider.add(provider);
-		    user.provider = provider._id;
-		    OrganizationResourceProvider.updateFromHP(context, provider);
+			provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, provider.name, provider, null, true, true);		
+			OrganizationResourceProvider.updateFromHP(context, provider);			
 		}
 		HPUser.add(user);
 					
@@ -229,6 +248,8 @@ public class Providers extends APIController {
 		
 		requireSubUserRole(request, SubUserRole.MASTER);
 		
+		throw new InternalServerException("error.notimplemented", "Function no longer supported");
+		/*
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language");
 							
@@ -254,15 +275,13 @@ public class Providers extends APIController {
 		user.provider = PortalSessionToken.session().orgId;
 		if (user.provider == null) throw new InternalServerException("error.internal", "No organization in session for register provider!");
 		user.status = UserStatus.ACTIVE;
-		
-		//user.authType = SecondaryAuthType.SMS;
-						
+								
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request.attrs().get(play.mvc.Security.USERNAME)), user);
 		AccessContext context = portalContext(request);
 		register(context, user ,null, executingUser);
 			
 		AuditManager.instance.success();
-		return ok();		
+		return ok();	*/	
 	}
 	
 	/**
@@ -296,6 +315,7 @@ public class Providers extends APIController {
 	@APICall
 	public Result search(Request request) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		JsonNode json = request.body().asJson();
 		
 		Member result = null;
@@ -319,12 +339,12 @@ public class Providers extends APIController {
 		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "lastname", "email"));
 		
 		//MemberKeys.getOrCreate(hpuser, result);
-		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(userId, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", result._id), Consent.ALL);
+		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(context, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", result._id), Consent.ALL);
 		//if (memberKeys.isEmpty() && removeIfNoConsents) return ok();
 				
 		boolean activeConsent = false;
 		for (Consent consent : memberKeys) {
-			if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) activeConsent = true;
+			if (consent.isSharingData()) activeConsent = true;
 		}
 		
 		memberFields = activeConsent 
@@ -337,6 +357,73 @@ public class Providers extends APIController {
 		obj.set("consents", JsonOutput.toJsonNode(memberKeys, "Consent", Consent.ALL));
 		
 		return ok(Json.toJson(obj));
+	}
+	
+	/**
+	 * healthcare provider search for organizations
+	 * @return Member and list of consents
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@Security.Authenticated(AnyRoleSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public Result searchOrganization(Request request) throws JsonValidationException, AppException {
+	
+		AccessContext context = portalContext(request);
+		JsonNode json = request.body().asJson();
+		String name = JsonValidation.getStringOrNull(json, "name");
+		String city = JsonValidation.getStringOrNull(json, "city");
+		MidataId serviceId = JsonValidation.getMidataId(json, "serviceId");
+		
+		Set<MidataId> orgIds = new HashSet<MidataId>();
+		
+		if (serviceId != null) {
+			Set<UserGroupMember> ugms = UserGroupMember.getAllByMember(serviceId);
+			for (UserGroupMember ugm : ugms) orgIds.add(ugm.userGroup);
+			AccessLog.log("orgsIds:",orgIds.toString());
+		} else {
+			AccessLog.logBegin("Start search for organization membership");			
+			Set<UserGroupMember> memberOf = context.getCache().getAllActiveByMember();		
+			for (UserGroupMember ugm : memberOf) orgIds.add(ugm.userGroup);
+			AccessLog.logEnd("End search for org membership #size=",Integer.toString(orgIds.size()));		
+		}
+		
+		AccessLog.logBegin("Start search for organizations");
+		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.getProvider("Organization")); 
+		List<Organization> orgs = provider.search(context, name, city, true);
+	    AccessLog.logEnd("End search for organizations #size=",Integer.toString(orgs.size()));
+		
+	    Map<MidataId, Organization> orgsById = new HashMap<MidataId, Organization>();
+		for (Organization org : orgs) orgsById.put(MidataId.from(org.getIdElement().getIdPart()), org);		
+	    
+	    if (serviceId == null) {
+			AccessLog.logBegin("Verify accessible");			
+			Map<String, Object> properties = CMaps.map("searchable", true).map("_id", orgsById.keySet());				
+		    Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, Sets.create("_id"));
+		    for (UserGroup grp : groups) orgIds.add(grp._id);
+		    AccessLog.logEnd("End verify accessible");
+	    }
+	    
+	    orgs.clear();
+	    for (MidataId orgId : orgIds) {
+	    	Organization org = orgsById.get(orgId); 
+	    	if (org != null) {
+	    		orgs.add(org);
+	    	} else {
+	    		AccessLog.log("not found org=",orgId.toString());
+	    	}
+	    }
+
+		
+		StringBuffer out = new StringBuffer("[");
+		boolean first = true;
+		for (Organization org : orgs) {
+		   if (first) first=false; else out.append(",");			  
+		   out.append(provider.serialize(org));
+		}
+		out.append("]");
+		return ok(out.toString()).as("application/json");
 	}
 	
     /**
@@ -371,16 +458,17 @@ public class Providers extends APIController {
 	@APICall
 	public Result getMember(Request request, String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		AccessContext context = portalContext(request);
 		MidataId memberId = MidataId.from(id);
 		
-		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(userId, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", memberId), Consent.ALL);		
+		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(context, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", memberId), Consent.ALL);		
 		if (memberKeys.isEmpty()) throw new BadRequestException("error.notauthorized.account", "You are not authorized.");
 		
 		Set<HCRelated> backconsent = HCRelated.getByAuthorizedAndOwner(memberId,  userId);
 		
 		boolean activeConsent = false;
 		for (Consent consent : memberKeys) {
-			if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) activeConsent = true;
+			if (consent.isSharingData()) activeConsent = true;
 		}
 		
 		Set<String> memberFields = activeConsent 
@@ -422,48 +510,158 @@ public class Providers extends APIController {
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result getOrganization(String id) throws AppException {
+	public Result getOrganization(Request request, String id) throws AppException {
 			
-		//MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
-		MidataId providerid = MidataId.from(id);
+		MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		MidataId providerid = MidataId.parse(id);
 						
-		HealthcareProvider provider = HealthcareProvider.getById(providerid, HealthcareProvider.ALL);
-		if (provider == null) return notFound();						
+		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(providerid, HealthcareProvider.ALL);
+		if (provider == null) return notFound();	
+		
+		provider.identifiers = OrganizationResourceProvider.getIdentifiers(portalContext(request), provider);
+				
+		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(providerid, executorId);
+		
 		return ok(JsonOutput.toJson(provider, "HealthcareProvider", HealthcareProvider.ALL));		
 	}
 
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(ProviderSecured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public Result updateOrganization(Request request, String id) throws AppException {
-		requireSubUserRole(request, SubUserRole.MASTER);
-		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		requireSubUserRoleForRole(request, SubUserRole.MASTER, UserRole.PROVIDER);
+		
 		AccessContext context = portalContext(request);
 		JsonNode json = request.body().asJson();
 		
 		JsonValidation.validate(json, "_id", "name");
 					
-		String name = JsonValidation.getString(json, "name");				
+		String name = JsonValidation.getString(json, "name");
+		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
+		MidataId providerid = MidataId.parse(id);
 		//String description = JsonValidation.getString(json, "description");
 				
-		MidataId providerid = PortalSessionToken.session().getOrgId();
+		if (!UserGroupTools.accessorIsMemberOfGroup(context, providerid, Permission.SETUP)) {
+			throw new BadRequestException("error.notauthorized.action", "Tried to change other healthcare provider organization!");
+		}
 		
-		if (!providerid.equals(JsonValidation.getMidataId(json, "_id"))) throw new InternalServerException("error.internal", "Tried to change other healthcare provider organization!");
+		// Checked on prepareModel
+		//if (status != UserStatus.DELETED) {
+		//	if (HealthcareProvider.existsByName(name, providerid)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider organization with this name already exists.");
+		//}
+									
 		
-		if (HealthcareProvider.existsByName(name, providerid)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider organization with this name already exists.");			
-		
-		HealthcareProvider provider = HealthcareProvider.getById(providerid, HealthcareProvider.ALL);
+		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(providerid, HealthcareProvider.ALL);
 
 		if (provider == null) throw new InternalServerException("error.internal", "Healthcare provider organization not found.");
 		
-		provider.name = name;	
-		provider.description = JsonValidation.getStringOrNull(json, "description");
-		provider.url = JsonValidation.getStringOrNull(json, "url");
-		provider.setMultiple(Sets.create("name", "description", "url"));
-		OrganizationResourceProvider.updateFromHP(context, provider);		
+		MidataId parent = JsonValidation.getMidataId(json, "parent");
 		
+		if (parent != null && !parent.equals(provider.parent)) {
+			if (!UserGroupTools.accessorIsMemberOfGroup(context, parent, Permission.SETUP)) {
+				throw new BadRequestException("error.notauthorized.action", "Tried to change other healthcare provider organization!");
+			}	
+		}
+		
+		provider.name = JsonValidation.getString(json, "name");
+		provider.description = JsonValidation.getStringOrNull(json, "description");
+		provider.city = JsonValidation.getStringOrNull(json, "city");
+		provider.zip = JsonValidation.getStringOrNull(json, "zip");
+		provider.country = JsonValidation.getStringOrNull(json, "country");
+		provider.address1 = JsonValidation.getStringOrNull(json, "address1");
+		provider.address2 = JsonValidation.getStringOrNull(json, "address2");
+		provider.phone = JsonValidation.getStringOrNull(json, "phone");
+		provider.mobile = JsonValidation.getStringOrNull(json, "mobile");
+		provider.identifiers = JsonExtraction.extractStringList(json.get("identifiers"));
+ 				
+		if (status == UserStatus.DELETED) {
+			provider.status = UserStatus.DELETED;
+			provider.set("status", UserStatus.DELETED);
+			OrganizationResourceProvider.updateFromHP(context, provider);
+			UserGroupTools.deleteUserGroup(context, provider._id, true);						
+		} else {
+		   OrganizationTools.prepareModel(context, provider, parent);			   
+		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, name, provider, parent, false, false);		   
+		   OrganizationResourceProvider.updateFromHP(context, provider);			   
+		}
 		return ok();		
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(ProviderSecured.class)
+	public Result createOrganization(Request request) throws AppException {
+		requireSubUserRole(request, SubUserRole.MASTER);
+		
+		AccessContext context = portalContext(request);
+		JsonNode json = request.body().asJson();
+		
+		JsonValidation.validate(json, "name");
+					
+		String name = JsonValidation.getString(json, "name");
+		
+		HealthcareProvider provider = new HealthcareProvider();
+		
+		provider.description = JsonValidation.getStringOrNull(json, "description");
+		provider.city = JsonValidation.getStringOrNull(json, "city");
+		provider.zip = JsonValidation.getStringOrNull(json, "zip");
+		provider.country = JsonValidation.getStringOrNull(json, "country");
+		provider.address1 = JsonValidation.getStringOrNull(json, "address1");
+		provider.address2 = JsonValidation.getStringOrNull(json, "address2");
+		provider.phone = JsonValidation.getStringOrNull(json, "phone");
+		provider.mobile = JsonValidation.getStringOrNull(json, "mobile");
+		provider.identifiers = JsonExtraction.extractStringList(json.get("identifiers"));
+		boolean protection = JsonValidation.getBoolean(json, "protection");
+		
+		String manager = JsonValidation.getStringOrNull(json, "manager");
+		EntityType managerType = JsonValidation.getEnum(json, "managerType", EntityType.class);
+		boolean fullAccess = JsonValidation.getBoolean(json, "fullAccess");
+		MidataId managerId = null;
+		
+		MidataId parent = JsonValidation.getMidataId(json, "parent");
+		
+		// Checked below
+		//if (HealthcareProvider.existsByName(name)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider organization with this name already exists.");			
+		
+		OrganizationTools.prepareModel(context, provider, null);
+		
+		if (managerType == EntityType.ORGANIZATION) {
+			  managerId = parent;
+			  if (parent == null) throw new BadRequestException("error.unknown.organization", "Parent is empty.");
+		} else if (managerType == EntityType.USER) {
+			if (manager == null) {
+				managerId = context.getAccessor();
+			} else {
+			    HPUser user = HPUser.getByEmail(manager, Sets.create("_id"));
+			    if (user == null) throw new JsonValidationException("error.unknown.user", "manager", "unknown", "No practitioner with this name exists.");
+			    managerId = user._id;
+			}
+		}
+		
+		
+		
+		provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, provider, parent, managerId.equals(context.getAccessor()), fullAccess);
+						
+		if (!managerId.equals(context.getAccessor())) UserGroupTools.createUserGroupMember(context, managerId, managerType, fullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), provider._id);
+		
+		OrganizationResourceProvider.updateFromHP(context, provider);
+		
+		if (protection) {
+			UserGroup ug = UserGroup.getById(provider._id, UserGroup.ALL);
+			ug.protection = true;
+			UserGroup.set(ug._id, "protection", true);
+			Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByGroup(ug._id);
+			for (UserGroupMember ugm : ugms) {
+				ugm.confirmedBy = context.getActor();
+				ugm.confirmedUntil = ugm.member.equals(context.getActor()) ? new Date(System.currentTimeMillis() + 1000l * 60l * 60l) : new Date(System.currentTimeMillis() + 1000l * 10l);
+				UserGroupMember.set(ugm._id, "confirmedBy", ugm.confirmedBy);
+				UserGroupMember.set(ugm._id, "confirmedUntil", ugm.confirmedUntil);
+			}
+		}
+		
+		
+		return ok(JsonOutput.toJson(provider, "HealthcareProvider", HealthcareProvider.ALL)).as("application/json");		
 	}
 	
 }

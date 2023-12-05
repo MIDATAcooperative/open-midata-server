@@ -3,10 +3,12 @@
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Utenti",
+        "organizations" : "Organizzazioni",
         "auditlog" : "Audit log",
         "news" : "Notizie",
         "mails" : "E-Mail",
         "plugins" : "Applicazioni",
+        "updplugins" : "Installazione dei plugin",
         "usagestats" : "Statistiche sull'uso dell'applicazione",
         "content" : "Tipi di contenuto",
         "studies" : "Progetti",
@@ -33,6 +35,14 @@
         "status" : "Stato",
         "midata_id" : "@PRODUCT ID",
         "empty" : "Non è stato trovato alcun utente corrispondente."
+    },
+
+    "admin_organizations" : {
+        "title" : "Organizzazioni",
+        "name" : "Nome",
+        "status" : "Stato",
+        "empty" : "Nessuna organizzazione corrispondente trovata.",
+        "members_btn" : "mostra i membri"
     },
 
     "admin_address" : {
@@ -212,7 +222,7 @@
         "appCount" : "Applicazioni",
         "languages" : "Lingue dell'utente",
         "runningStudyCount" : "Progetti in esecuzione",
-        "groupCount" : "Team (Assistenza sanitaria e Ricerca)",
+        "groupCount" : "Team (sistema sanitario e ricerca)",
         "auditEventCount" : "Audit events",
         "users" : "Account utente attivi",
         "consents" : "Consensi",
@@ -235,7 +245,7 @@
         "myid" : "Il mio id di recupero",
         "instr1" : "Fare clic su un share per copiare il share criptato negli appunti.",
         "instr2" : "Decriptare il share su UBUNTU: (cliccare sulla linea per copiarla negli appunti)",
-        "instr3" : "Decriptare il share su MAC OS: (cliccare sulla linea per copiarla negli appunti)"
+        "instr3" : "Decriptare il share su macOS (bash shell): (cliccare sulla linea per copiarla negli appunti)"
     },
 
     "admin_licenses" : {
@@ -244,7 +254,7 @@
         "licenseeType" : "Tipo di licenziatario",
         "licenseeName" : "Licenziatario",
         "expireDate" : "Scade",
-        "empty" : "Non sono state trovate licenze corrispondenti."
+        "empty" : "Nessuna licenza corrispondente trovata."
     },
 
     "admin_addlicence" : {
@@ -354,7 +364,7 @@
     },
 
     "admin_services" : {
-        "endpoints" : "Endpoints",
+        "endpoints" : "FHIR Endpoints",
         "name" : "Istanza di servizio",
         "endpoint" : "FHIR endpoint",
         "status" : "Stato",

@@ -1,6 +1,24 @@
+/*
+ * This file is part of the Open MIDATA Server.
+ *
+ * The Open MIDATA Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * The Open MIDATA Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +43,7 @@ import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.UserRole;
 import play.libs.Json;
+import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
@@ -63,11 +82,11 @@ public class ConsentQueryTools {
 		if (query == null) query = Circles.getQueries(consent.owner, consent._id);	
 		consent.sharingQuery = query;
 		
-		if (consent.status == ConsentStatus.ACTIVE && verify) {
+		if (consent.isActive() && verify && consent.status != ConsentStatus.PRECONFIRMED) {
 			if (!verifyIntegrity(consent)) {
 				consent.setStatus(ConsentStatus.INVALID);
-				AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SIGNATURE_FAILURE).withModifiedUser(consent.owner).withConsent(consent));
-				MailUtils.sendTextMail(MailSenderType.STATUS, InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail"), InstanceConfig.getInstance().getConfig().getString("errorreports.targetname"), "Consent signature failure "+consent._id+" of "+consent.owner, "Consent signature failure: type="+consent.type+" creation="+consent.dateOfCreation+" lastUpdate="+consent.lastUpdated);
+				AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SIGNATURE_FAILURE).withModifiedActor(null, consent.owner).withConsent(consent));
+				MailUtils.sendTextMailAsync(MailSenderType.STATUS, InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail"), InstanceConfig.getInstance().getConfig().getString("errorreports.targetname"), "Consent signature failure "+consent._id+" of "+consent.owner, "Consent signature failure: type="+consent.type+" creation="+consent.dateOfCreation+" lastUpdate="+consent.lastUpdated);
 				return getEmptyQuery();
 			}
 		}
@@ -87,6 +106,7 @@ public class ConsentQueryTools {
 		consent.sharingQuery = query;
 		consent.lastUpdated = new Date();
 		if (consent.status == ConsentStatus.FROZEN) throw new InternalServerException("error.internal", "Query cannot be changed for frozen consents");		
+		// TODO PRECONFIRMED
 		if (consent.status == ConsentStatus.ACTIVE) {
 			AccessContext validAccessContext = ApplicationTools.actAsRepresentative(context, consent.owner, false);
 			updateSignature(validAccessContext, consent);
@@ -108,6 +128,8 @@ public class ConsentQueryTools {
 	}
 	
 	private static void executeDataSharing(AccessContext context, Consent consent, boolean removeOld) throws AppException {
+		if (consent.status == ConsentStatus.PRECONFIRMED) return;
+		
 		Map<String, Object> query = getSharingQuery(consent, false);
 		
 		if (query!=null) {
@@ -123,6 +145,9 @@ public class ConsentQueryTools {
 			  RecordManager.instance.shareByQuery(context, consent._id, query);				  
 			} else {
 			  Circles.setQuery(context, consent.owner, consent._id, query);
+			  
+			  if (!context.getOwner().equals(consent.owner)) throw new InternalServerException("error.internal", "Owner problem");
+			  
 			  RecordManager.instance.applyQuery(context, query, consent.owner, consent, true);
 			}
 		}
@@ -159,12 +184,25 @@ public class ConsentQueryTools {
 		return true;
 	}
 	
+	private static boolean verifyConsent(MidataId consentId, MidataId requiredOwner) throws InternalServerException {
+		Consent consent = Consent.getByIdAndOwner(consentId, requiredOwner, Consent.ALL);
+		if (consent == null) return false;
+		if (consent.status != ConsentStatus.ACTIVE) return true;
+		// verify longer chains?
+		return verifyIntegrity(consent);
+	}
+	
 	public static void updateSignature(AccessContext validAccessContext, Consent consent) throws InternalServerException, AuthException {
 		AccessLog.log("update consent signature consent="+consent._id);
-		if (!validAccessContext.getAccessor().equals(consent.owner)) throw new InternalServerException("error.internal", "Accessor is not consent owner");
+		MidataId consentSigner = validAccessContext.getConsentSigner();
+		if (consentSigner != null) {
+		    if (!verifyConsent(consentSigner, consent.owner)) throw new InternalServerException("error.internal", "Source consent is not valid.");
+		} else if (!validAccessContext.getAccessor().equals(consent.owner)) {			
+			throw new InternalServerException("error.internal", "Accessor is not consent owner");
+		}
 		String query = getSharingQueryString(consent);
 		//AccessLog.log("CREATE Sign ow="+consent.owner.toString()+" lu="+consent.lastUpdated.getTime()+" qu="+query);
-		consent.querySignature = new Signed(consent._id, query, consent.owner, validAccessContext.getActor(), consent.lastUpdated.getTime());
+		consent.querySignature = new Signed(consent._id, query, consent.owner, validAccessContext.getActor(), consentSigner, consent.lastUpdated.getTime());
 	}
 	
 	public static void temporarySignature(Consent consent) throws InternalServerException, AuthException {				
@@ -194,6 +232,72 @@ public class ConsentQueryTools {
 		Consent c = Consent.getByIdUnchecked(consentId, Consent.SMALL);
 		
 		return getSharingQuery(c, true);
+	}
+	
+	public static Map<String, Object> filterQueryForUseInConsent(Map<String, Object> query) {		
+		if (query.containsKey("$or")) {
+			Map<String, Object> out = new HashMap<String, Object>();
+			out.putAll(query);
+		    List<Map<String, Object>> outOr = new ArrayList<Map<String, Object>>();
+		    out.put("$or", outOr);
+			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) query.get("$or");
+			for (Map<String, Object> part : parts) {
+				Map<String, Object> filtered = filterQueryForUseInConsent(part);
+				if (filtered != null) outOr.add(filtered);
+			}
+			return out;
+		}
+		
+		if ("only".equals(query.get("public"))) return null;
+		
+		Map<String, Object> copy = new HashMap<String, Object>(query);
+		copy.remove("add-tag");
+		copy.remove("allow-tag");
+		copy.remove("public");
+		copy.remove("owner");
+		
+		return copy;
+	}
+	
+    public static boolean isSubQuery(Map<String, Object> masterQuery, Map<String, Object> subQuery) throws AppException {
+		AccessLog.log("IS SUB-QUERY MASTER=:"+masterQuery.toString());
+		AccessLog.log("IS SUB-QUERY SUB=:"+subQuery.toString());
+		if (masterQuery.containsKey("$or")) {
+			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) masterQuery.get("$or");			
+			for (Map<String, Object> part :parts) {
+				boolean match = isSubQuery(part, subQuery);
+				if (match) return true;
+			}
+		}
+		
+		if (subQuery.containsKey("$or")) {
+			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) subQuery.get("$or");
+			for (Map<String, Object> part :parts) {
+				boolean match = isSubQuery(masterQuery, part);
+				if (match) return true;
+			}
+			return false;
+		}
+		
+		masterQuery = new HashMap<String, Object>(masterQuery);
+		subQuery = new HashMap<String, Object>(subQuery);
+								
+		Feature_FormatGroups.convertQueryToContents(masterQuery);		
+		Feature_FormatGroups.convertQueryToContents(subQuery);
+		
+		masterQuery.remove("group-system");
+		subQuery.remove("group-system");
+		
+	    for (Map.Entry<String, Object> entry : masterQuery.entrySet()) {
+	    	if (entry.getKey().equals("owner")) continue;
+	    	if (entry.getKey().equals("allow-tag")) continue;
+	    	if (entry.getKey().equals("add-tag")) continue;	    	
+	    	if (!subQuery.containsKey(entry.getKey())) return false;
+	    	Set<String> master = utils.access.Query.getRestriction(entry.getValue(), entry.getKey());
+	    	Set<String> sub = utils.access.Query.getRestriction(subQuery.get(entry.getKey()), entry.getKey());
+	    	if (!master.containsAll(sub)) return false;	    	
+	    }
+		return true;
 	}
 	
 }

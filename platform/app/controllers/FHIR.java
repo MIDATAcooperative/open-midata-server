@@ -27,6 +27,8 @@ import javax.servlet.ServletException;
 
 import org.bson.BSONObject;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import actions.MobileCall;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.ParamPrefixEnum;
@@ -38,12 +40,14 @@ import models.enums.ConsentStatus;
 import models.enums.UsageAction;
 import models.enums.UserRole;
 import models.enums.UserStatus;
+import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ConsentQueryTools;
+import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
@@ -164,7 +168,7 @@ public class FHIR extends Controller {
         	} catch (ca.uhn.fhir.parser.DataFormatException e) {
         		throw new BadRequestException("error.invalid", e.getMessage());
         	}
-        	return controllers.research.Studies.downloadFHIR(info, handle, studyId, info.getAccessorRole(), from, to, studyGroup, mode);
+        	return controllers.research.Studies.downloadFHIR(info, handle, null, studyId, info.getAccessorRole(), from, to, null, studyGroup, mode);
         }
 		
 		//Stats.finishRequest(request, String.valueOf(res.getStatus()));
@@ -174,6 +178,77 @@ public class FHIR extends Controller {
 		
 		
 		
+	}
+	
+	/**
+	 * GET $everything operation without patient id
+	 * @return
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public Result export(Request request, String p) throws AppException, IOException, ServletException {
+		return exportPatient(request, null, null);
+	}
+		
+	/**
+	 * GET $everything operation with patient id
+	 * @return
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public Result exportPatient(Request request, String id, String p) throws AppException, IOException, ServletException {
+						
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request);					
+		AccessContext info = getExecutionInfo(request, req);
+        if (info != null && info.getUsedPlugin() != null) {
+		
+        	Plugin plug = Plugin.getById(info.getUsedPlugin());
+        	if (plug == null) throw new BadRequestException("error.invalid.plugin", "Wrong plugin type");
+        	String mode = plug.pseudonymize ? "pseudonymized" : "original";
+        	
+        	MidataId patientId = id!=null ? MidataId.parse(id) : null;
+        	MidataId projectId = null;
+        	String projectGroup = null;
+        	Date from = null;
+        	Date to = null;
+        	Date startFrom = null;
+        	
+            BSONObject query = RecordManager.instance.getMeta(info, info.getTargetAps(), "_query");
+            if (query != null) {        	
+	        	Object st = query.get("study");
+	        	if (st instanceof Collection) st = ((Collection) st).iterator().next(); 
+	        	projectId = MidataId.from(st);        	
+	        	projectGroup = (String) query.get("study-group");
+            }
+        	
+        	String handle = KeyManager.instance.currentHandle(info.getAccessor());
+        	        	
+        	try {
+	        	String since = req.getParameter("_since");
+	        	String end = req.getParameter("end");
+	        	String start = req.getParameter("start");
+        		
+	        	if (end != null) {
+	        		to = new DateParam(end).getValue();
+	        	}
+	        	if (since != null) {
+	        		from = new DateParam(since).getValue();
+	        	}	        	
+	        	if (start != null) {
+	        		startFrom = new DateParam(start).getValue();
+	        	}
+	        	
+        	} catch (ca.uhn.fhir.parser.DataFormatException e) {
+        		throw new BadRequestException("error.invalid", e.getMessage());
+        	}
+        	return controllers.research.Studies.downloadFHIR(info, handle, patientId, projectId, info.getAccessorRole(), from, to, startFrom, projectGroup, mode);
+        } else return unauthorized("Client unauthorized");				       						
 	}
 	
 	
@@ -188,28 +263,38 @@ public class FHIR extends Controller {
 		if (valid != null && valid.equals("SUCCESS")) {
 		   String serial = cert_direct ? req.getHeader("X-Client-Serial") : req.getHeader("X-Client-Serial-LB");
   		  
-		   if (serial!=null) {
+		   if (serial!=null) {			   
+			   serial = serial.replace("\\", "");
 			   String[] serial2 = serial.split(",");
-			   MidataId instance;
-			   for (String k : serial2) if (k.startsWith("CN=")) {
-				   int p = k.indexOf(".");
-				   if (p<0) break;
-				   instance = MidataId.from(k.substring(3,p));
-				   if (instance == null) break;
-				   String key = k.substring(p+1);
-				   MobileAppSessionToken tk = new MobileAppSessionToken(instance, key, System.currentTimeMillis()+60000, UserRole.ANY);
-				   AccessContext inf = ExecutionInfo.checkMobileToken(tk, false);
+			   MidataId instance = null;
+			   String key = null;
+			   for (String k : serial2) {
+				   if (k.startsWith("CN=")) {			   
+					   int p = k.indexOf(".");
+				       if (p<0) key = k.substring(3);
+				       else {
+				    	   instance = MidataId.from(k.substring(3,p));
+				    	   if (instance == null) break;
+				    	   key = k.substring(p+1);
+				       }
+				   } else if (k.startsWith("OU=")) {
+					   if (instance==null && MidataId.isValid(k.substring(3))) instance = MidataId.from(k.substring(3));
+				   }
+			   }
+			   if (key != null && instance != null) {
+				   MobileAppSessionToken tk = new MobileAppSessionToken(instance, key, System.currentTimeMillis()+60000, UserRole.ANY, MobileAppSessionToken.parseExtra(req.getHeader("Authorization")));
+				   AccessContext inf = ExecutionInfo.checkMobileToken(request, tk, false, false);
 				   Stats.setPlugin(inf.getUsedPlugin());
 			       ResourceProvider.setAccessContext(inf);
 			       return inf;
-			   }
+			   }			   
 		   }
 		}
 		
 		String param = req.getHeader("Authorization");
 		
 		if (param != null && param.startsWith("Bearer ")) {
-	          AccessContext info = ExecutionInfo.checkToken(request, param.substring("Bearer ".length()), false);
+	          AccessContext info = ExecutionInfo.checkToken(request, param.substring("Bearer ".length()), false, false);
 	          Stats.setPlugin(info.getUsedPlugin());
 	          ResourceProvider.setAccessContext(info);
 	          return info;
@@ -251,7 +336,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
 		AccessContext info = getExecutionInfo(request, req);
-        if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.GET);		        
+        if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info, UsageAction.GET);		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		switch(getFhirVersion(request)) {
 		  case 4:servlet_r4.doGet(req, res);break;
@@ -301,7 +386,7 @@ public class FHIR extends Controller {
 		AccessContext session = ContextManager.instance.upgradeSessionForApp(tempContext, instance, baseURL);	
 		ResourceProvider.setAccessContext(session);
 										
-        if (session.getUsedPlugin() != null) UsageStatsRecorder.protokoll(session.getUsedPlugin(), UsageAction.GET);		        
+        if (session.getUsedPlugin() != null) UsageStatsRecorder.protokoll(session, UsageAction.GET);		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		switch(getFhirVersion(request)) {
 		  case 3:servlet_stu3.doGet(req, res);break;
@@ -363,7 +448,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
 		AccessContext info = getExecutionInfo(request, req);
-		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.POST);   
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info, UsageAction.POST);   
 		
 		AccessLog.logBegin("begin FHIR post request: "+req.getRequestURI());
 		switch(getFhirVersion(request)) {
@@ -408,7 +493,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 			
 		AccessContext info = getExecutionInfo(request, req);
-		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.PUT);        
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info, UsageAction.PUT);        
 		
 		AccessLog.log(req.getRequestURI());
 		switch(getFhirVersion(request)) {
@@ -452,7 +537,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse();
 				
 		AccessContext info = getExecutionInfo(request, req);		
-		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), UsageAction.DELETE);
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info, UsageAction.DELETE);
 		
 		AccessLog.log(req.getRequestURI());
 		switch(getFhirVersion(request)) {
@@ -509,4 +594,34 @@ public class FHIR extends Controller {
 		
 		return created().withHeader("Location", url);
 	}
+	
+	@MobileCall
+	public Result wellknownSmartConfiguration() {
+		ObjectNode obj = Json.newObject();
+		obj.put("authorization_endpoint", InstanceConfig.getInstance().getPortalOriginUrl()+"/authservice");
+		obj.put("token_endpoint", "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/token");
+		obj.putArray("token_endpoint_auth_methods_supported").add("client_secret_basic");
+        obj.putArray("grant_types_supported").add("authorization_code");
+		obj.putArray("scopes_supported").add("launch/patient").add("launch/practitioner").add("patient/*.crus").add("user/*.crus").add("offline_access");
+		obj.putArray("response_types_supported").add("code");
+		obj.put("management_endpoint", InstanceConfig.getInstance().getPortalOriginUrl());
+		obj.put("introspection_endpoint", "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/introspect"); // TODO change
+		//	  "revocation_endpoint": "https://ehr.example.com/user/revoke",
+		obj.putArray("code_challenge_methods_supported").add("S256");
+		obj.putArray("capabilities")
+		   .add("launch-standalone")
+		   .add("client-public")
+		   .add("client-confidential-symmetric")
+		   .add("context-standalone-patient")
+		   .add("permission-patient")
+		   .add("permission-user")		   
+		   .add("permission-offline")		
+		   .add("permission-v1")
+		   .add("permission-v2");
+		   		  
+		   //"sso-openid-connect"
+			  
+		return ok(obj).as("application/json");
+	}
+		
 }

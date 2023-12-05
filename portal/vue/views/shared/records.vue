@@ -433,7 +433,7 @@ export default {
                 
             } else {
             
-                circles.listConsents({ "member": userId, "status" : ["ACTIVE","FROZEN"] }, ["name","owner", "ownerName", "type"])
+                circles.listConsents({ "member": userId, "status" : ["PRECONFIRMED", "ACTIVE","FROZEN"] }, ["name","owner", "ownerName", "type"])
                 .then(function(results) {
                     
                     for (let circle of results.data) { 

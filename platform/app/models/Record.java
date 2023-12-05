@@ -26,6 +26,7 @@ import org.bson.BSONObject;
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.NotMaterialized;
 
 /**
@@ -44,7 +45,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 			"app", "creator", "created", "name", "format", "content", "code", "description", "data", "group");
 
 	public @NotMaterialized final static Set<String> ALL_PUBLIC_WITHNAMES = Sets.create("_id", "id", "version", "owner", "ownerName",
-			"app", "creator", "creatorName", "created", "name", "format", "content", "code", "description", "data", "group");
+			"app", "creator", "creatorName", "modifiedBy", "modifiedByName", "created", "name", "format", "content", "code", "description", "data", "group");
 
 		
 	
@@ -82,12 +83,25 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public String ownerName;
 	
 	/**
+	 * the type of owner. May also be a group
+	 */
+	public String ownerType;
+	
+	/**
 	 * firstname lastname of the creator of this record
 	 * 
 	 * This field is neither stored in the database nor contained in the encrypted part of the record.
 	 * This field is computed upon request from the creator field
 	 */
 	public String creatorName;
+	
+	/**
+	 * firstname lastname of the last modifier of this record
+	 * 
+	 * This field is neither stored in the database nor contained in the encrypted part of the record.
+	 * This field is computed upon request from the modifiedBy field
+	 */
+	public String modifiedByName;
 			
 	/**
 	 * The format of the records data.
@@ -145,6 +159,14 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public  MidataId creator; 
 	
 	/**
+	 * the id of the user that last changed this record
+	 * 
+	 * The contents of this field is stored in the encrypted part of this record.
+	 * If the person is the same as the owner the person is not stored
+	 */
+	public MidataId modifiedBy;
+	
+	/**
 	 * record creation timestamp
 	 * 
 	 * The contents of this field is stored in the encrypted part of this record
@@ -187,6 +209,10 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 */
 	public BSONObject data; 
 	
+	public AccessContext context;
+	
+	public @NotMaterialized Object mapped;
+		
 	
 	//public Set<MidataId> dependencies;
 

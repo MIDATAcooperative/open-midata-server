@@ -58,6 +58,7 @@ import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
+import models.enums.RejoinPolicy;
 import models.enums.SecondaryAuthType;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
@@ -98,6 +99,8 @@ import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
+import utils.fhir.FHIRServlet;
+import utils.fhir.ReadWriteResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -124,8 +127,10 @@ public class OAuth2 extends Controller {
         if (!appInstance.owner.equals(ownerId)) throw new InternalServerException("error.invalid.token", "Wrong app instance owner!");
         if (!appInstance.applicationId.equals(applicationId)) throw new InternalServerException("error.invalid.token", "Wrong app for app instance!");
         
-        if (!appInstance.status.isSharingData()) 
+        if (!appInstance.status.isSharingData()) {
+        	AccessLog.log("appInstance not sharing data");
         	throw new BadRequestException("error.blocked.consent", "Consent expired or blocked.");
+        }
         
         Plugin app = Plugin.getById(appInstance.applicationId);
         
@@ -146,9 +151,10 @@ public class OAuth2 extends Controller {
       				Plugin checkedPlugin = Plugin.getById(mai.applicationId); 
       				if (checkedPlugin == null || mai.appVersion != checkedPlugin.pluginVersion) {
       					AccessLog.log("linked service outdated");
-      					if (context != null) {	      					
+      					// Actively removing service will cause trouble with email notifications and subscriptions.
+      					/*if (context != null) {	      					
 	      					ApplicationTools.removeAppInstance(context, mai.owner, mai);
-      					}
+      					}*/
       					c = null;
       				}
       			  }
@@ -170,7 +176,14 @@ public class OAuth2 extends Controller {
 				    if ( 
 						sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
 						sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED)) {
-							throw new BadRequestException("error.blocked.projectconsent", "Research consent expired or blocked.");
+				    	    Study project = Study.getById(sp.study, Sets.create("rejoinPolicy"));
+				    	    if (project != null && project.rejoinPolicy == RejoinPolicy.NO_REJOIN) {
+							   throw new BadRequestException("error.blocked.projectconsent", "Research consent expired or blocked.");
+				    	    } else {
+				    	    	AccessLog.log("remove instance due to retreted from project: "+sal.studyId);
+		        			    if (context != null) ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
+			                   	return false;
+				    	    }
 					}
 				    if (sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
 							throw new BadRequestException("error.blocked.participation", "Research consent expired or blocked.");
@@ -193,7 +206,7 @@ public class OAuth2 extends Controller {
 		Optional<String> param = request.header("Authorization");
 		if (!param.isPresent() || !param.get().startsWith("Bearer ")) OAuth2.invalidToken();
 		String token = param.get().substring("Bearer ".length());
-	    AccessContext inf = ExecutionInfo.checkToken(request, token, false);
+	    AccessContext inf = ExecutionInfo.checkToken(request, token, false, false);
 	    User user = User.getById(inf.getAccessor(), User.ALL_USER);
 	    ObjectNode obj = Json.newObject();	 
 	    
@@ -265,7 +278,8 @@ public class OAuth2 extends Controller {
     		
             if (client_id == null) throw new BadRequestException("error.internal", "Missing client_id");
             
-    		ExtendedSessionToken tk = ExtendedSessionToken.decrypt(code);
+    		ExtendedSessionToken tk = ExtendedSessionToken.decrypt(code);    		
+    		
     		if (tk == null || tk.ownerId != null) throw new BadRequestException("error.internal", "invalid_grant");
     		if (tk.created + OAUTH_CODE_LIFETIME < System.currentTimeMillis()) throw new BadRequestException("error.internal", "invalid_grant");
     		//AccessLog.log("cs:"+tk.codeChallenge);
@@ -295,21 +309,22 @@ public class OAuth2 extends Controller {
     		obj.put("state", tk.state);
     		
     		user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
-    		if (user == null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) throw new BadRequestException("error.internal", "invalid_grant");
+    		if (user == null || user.status.isDeleted() || user.status.equals(UserStatus.BLOCKED)) throw new BadRequestException("error.internal", "invalid_grant");
     		
     		//This check can be disabled: both phrase and appInstance._id come from authorization "code" which has been validated										
     		//if (appInstance.passcode != null && !User.phraseValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");
     		
     		if (KeyManager.instance.unlock(appInstance._id, aeskey != null ? aeskey : phrase) == KeyManager.KEYPROTECTION_FAIL) throw new BadRequestException("error.internal", "invalid_grant");
     	
-    		tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role);
+    		tempContext = ContextManager.instance.createLoginOnlyContext(appInstance._id, appInstance.applicationId, user.role);
     		meta = RecordManager.instance.getMeta(tempContext, appInstance._id, "_app").toMap();							
     		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
     		
     		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.LOGIN);
         } else throw new BadRequestException("error.internal", "Unknown grant_type");
                											
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user != null ? user.role : UserRole.ANY); 
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user != null ? user.role : UserRole.ANY, null);
+		
         OAuthRefreshToken refresh = createRefreshToken(tempContext, appInstance, aeskey);
         
         BSONObject q = RecordManager.instance.getMeta(tempContext, appInstance._id, "_query");
@@ -330,29 +345,42 @@ public class OAuth2 extends Controller {
 											
 		obj.put("access_token", session.encrypt());
 		obj.put("token_type", "Bearer");
-		obj.put("scope", "user/*.*");
+		obj.put("scope", "openid fhirUser offline_access user/*.crus");
 		
 		obj.put("expires_in", MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME / 1000l);
+		if (user != null) {
+			obj.put("role", user.role.toPublicString());
+			obj.put("fhirUser", getFhirUser(user));
+		} 		
 		obj.put("patient", appInstance.owner.toString());
+		
 		obj.put("refresh_token", refresh.encrypt());	
 						
 		return ok(obj).withHeader("Cache-Control", "no-store").withHeader("Pragma", "no-cache");
 	}
+	
+	public static String getFhirUser(User user) {
+		return user.role.toPublicString()+"/"+user._id.toString();
+	}
 
 	public static Pair<User, MobileAppInstance> useRefreshToken(String refresh_token) throws AppException {
 		OAuthRefreshToken refreshToken = OAuthRefreshToken.decrypt(refresh_token);
-		if (refreshToken == null) throw new BadRequestException("error.internal", "Bad refresh_token.");
+		if (refreshToken == null) {
+			throw new BadRequestException("error.internal", "Bad refresh_token.");
+		}
 		
 		MidataId appInstanceId = refreshToken.appInstanceId;
 		
 		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
 		
 		if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) {
+			AccessLog.log("Refresh token has expired at "+(refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME)+" now="+System.currentTimeMillis());
 			// Begin: Allow expired refresh tokens for key recovery
 		    boolean isInvalid = true;
 			if (appInstance != null && appInstance.owner != null) {
 			  User checkuser = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
 			  if (checkuser != null && checkuser.flags != null && checkuser.flags.contains(AccountActionFlags.KEY_RECOVERY)) {
+				  AccessLog.log("Refresh token expired becuase key recovery required.");
 				  isInvalid = false;
 			  }
 			}
@@ -363,15 +391,25 @@ public class OAuth2 extends Controller {
 		if (!verifyAppInstance(null, appInstance, refreshToken.ownerId, refreshToken.appId, null)) throw new BadRequestException("error.internal", "Bad refresh token.");
 		
 		Plugin app = Plugin.getById(appInstance.applicationId);
-		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");			
-		if (!app.type.equals("mobile") && !app.type.equals("analyzer") && !app.type.equals("external")) throw new InternalServerException("error.internal", "Wrong app type");
+		if (app == null) {
+			AccessLog.log("refresh token: unknown app");
+			throw new BadRequestException("error.unknown.app", "Unknown app");			
+		}
+		if (!app.type.equals("mobile") && !app.type.equals("analyzer") && !app.type.equals("external")) {
+			AccessLog.log("refresh token: wrong application type");
+			throw new InternalServerException("error.internal", "Wrong app type");
+		}
 	
 		User user = null;
 		if (!app.type.equals("external") && !app.type.equals("analyzer")) {
 			user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
-			if (user == null) invalidToken();
+			if (user == null) {
+				AccessLog.log("refresh token: user does not exist");
+				invalidToken();
+			}
 			
 			if (!LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
+				AccessLog.log("refresh token: licence not valid");
 				invalidToken();
 			}
 								
@@ -379,16 +417,21 @@ public class OAuth2 extends Controller {
 			if (app.requirements != null) req.addAll(app.requirements);
 			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);
 			if (notok != null) {
+				AccessLog.log("refresh token: login preconditions failed: "+notok.toString());
 				invalidToken();
 			}                       
 		}
 		
-		if (KeyManager.instance.unlock(appInstance._id, refreshToken.phrase) == KeyManager.KEYPROTECTION_FAIL) invalidToken();
+		if (KeyManager.instance.unlock(appInstance._id, refreshToken.phrase) == KeyManager.KEYPROTECTION_FAIL) {
+			AccessLog.log("refresh token: could not unlock account");
+			invalidToken();
+		}
 		
 		AccessContext temp = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role, appInstance);
 		Map<String, Object> meta = RecordManager.instance.getMeta(temp, appInstance._id, "_app").toMap();
 					
 		if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
+			AccessLog.log("refresh token: created for a different application version");
 			invalidToken();
 		}
 
@@ -847,8 +890,7 @@ public class OAuth2 extends Controller {
 			}
 		}
 	}
-	
-	
+				
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public Result login(Request request) throws AppException {
@@ -915,7 +957,7 @@ public class OAuth2 extends Controller {
 		PortalSessionToken tk = PortalSessionToken.session();
 		if (tk instanceof ExtendedSessionToken) {
 			ExtendedSessionToken token = (ExtendedSessionToken) tk;
-			token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, tk.userRole);
+			token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, null, tk.userRole);
 			JsonNode json = Json.newObject();
 			Plugin app = token.appId != null ? validatePlugin(token, json) : null;
 			return loginHelper(request, token, json, app, token.currentContext);
@@ -928,7 +970,7 @@ public class OAuth2 extends Controller {
             token.handle = tk.handle;			
 			token.created = tk.created;
             token.remoteAddress = tk.remoteAddress;
-            token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, tk.userRole);
+            token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, null, tk.userRole);
             token.setPortal();
             JsonNode json = Json.newObject();
             return loginHelper(request, token, json, null, token.currentContext);
@@ -992,18 +1034,19 @@ public class OAuth2 extends Controller {
 		if (token.handle != null) {			
 			if (token.currentContext == null) {
 				KeyManager.instance.continueSession(token.handle);
-				token.currentContext = ContextManager.instance.createLoginOnlyContext(token.ownerId, user.role);
+				token.currentContext = ContextManager.instance.createLoginOnlyContext(token.ownerId, token.appId, user.role );
 			}
 			keyType = KeyManager.KEYPROTECTION_NONE;
 		} else {
 			String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken");
 			if (sessionToken == null && user.security.equals(AccountSecurityLevel.KEY_EXT_PASSWORD)) {
+				
 				AccessLog.log("[login] returning login challenge");
 				return Application.loginChallenge(token, user);
 			}
 			token.handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true); // TODO Check lifetime
 			keyType = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey); 
-			token.currentContext = ContextManager.instance.createLoginOnlyContext(user._id, user.role);
+			token.currentContext = ContextManager.instance.createLoginOnlyContext(user._id, token.appId, user.role);
 		}		
 		AccessLog.log("Using context="+token.currentContext.toString());
 		appInstance = checkExistingAppInstance(token, token.currentContext, json, links);
@@ -1041,14 +1084,14 @@ public class OAuth2 extends Controller {
 		  
 		  return Application.loginHelperResult(request, token, user, notok);
 		}
-			
+		
 		checkJoinWithCode(token, links);
 				
 		long ts4 = System.currentTimeMillis();
 		AccessLog.log("[login] do, time=", Long.toString(ts4-ts3));
 		
 		if (app != null) {
-			token.currentContext = keyType == KeyManager.KEYPROTECTION_NONE ? ContextManager.instance.createLoginOnlyContext(user._id, user.role) : null;
+			token.currentContext = keyType == KeyManager.KEYPROTECTION_NONE ? ContextManager.instance.createLoginOnlyContext(user._id, app._id, user.role) : null;
 				
 			appInstance = loginAppInstance(token, appInstance, user, keyType == KeyManager.KEYPROTECTION_NONE, links);
 			
@@ -1065,6 +1108,7 @@ public class OAuth2 extends Controller {
 			AuditManager.instance.success();
 					
 			long ts5 = System.currentTimeMillis();
+            token.currentContext.clearCache();
 			AccessLog.log("[login] done app, time=", Long.toString(ts5-ts4));
 			return ok(obj);
 		} else {
@@ -1093,9 +1137,68 @@ public class OAuth2 extends Controller {
 			AuditManager.instance.success();
 			
 			long ts5 = System.currentTimeMillis();
+			token.currentContext.clearCache();
 			AccessLog.log("[login] done, time=", Long.toString(ts5-ts4));
 			return ok(obj).as("application/json");
 		}
+	}
+	
+	@BodyParser.Of(BodyParser.FormUrlEncoded.class)
+	@MobileCall
+	public Result tokenIntrospect(Request request) throws AppException {
+					
+	    Map<String, String[]> data = request.body().asFormUrlEncoded();
+	    String[] tk = data.get("token");
+	    if (tk==null) throw new BadRequestException("error.internal", "Missing token parameter");
+	    if (tk.length != 1) throw new BadRequestException("error.internal", "Exactly one token parameter required");
+	    String token = tk[0];
+	    ObjectNode obj = Json.newObject();
+	    
+	    try {
+	    	
+	    	MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
+			if (authToken != null) {				
+			   AccessContext context = ExecutionInfo.checkMobileToken(request, authToken, false, true);	
+	    		 
+		       User user = User.getById(context.getOwner(), User.FOR_LOGIN);
+		       Plugin plugin = Plugin.getById(context.getUsedPlugin());
+		       obj.put("active", true);
+			   obj.put("client_id", plugin.filename);		
+			   obj.put("scope", getScope(plugin, context) /*"patient/*.read openid fhirUser" */);				
+			   obj.put("fhirUser", getFhirUser(user));
+			   obj.put("exp", authToken.expiration / 1000l);
+		   } else {
+			   obj.put("active", false);
+		   }
+			
+	    } catch (AppException e) {
+	       obj.put("active", false);
+	    }					
+						
+		return ok(obj).as("application/json");
+	}
+	
+	public String getScope(Plugin plugin, AccessContext context) throws AppException {
+		StringBuilder result = new StringBuilder();
+		result.append("offline_access openid fhirUser");
+		String add = ".rs";
+		switch (plugin.writes) {
+		case CREATE_SHARED: add = ".crs";break;
+		case UPDATE_AND_CREATE: add = ".crus";break;
+		case UPDATE_EXISTING: add = ".rus";break;
+		case WRITE_ANY: add = ".crus";break;
+		}
+		for (String type : FHIRServlet.myProviders.keySet()) {
+			if (context.mayAccess(null, type)) {
+				if (FHIRServlet.myProviders.get(type) instanceof ReadWriteResourceProvider) {
+				  result.append(" "+"user/"+type+add);
+				} else {
+				  result.append(" "+"user/"+type+".rs");
+				}
+			}
+		}
+		
+		return result.toString();
 	}
 	
 }

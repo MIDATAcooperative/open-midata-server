@@ -33,6 +33,8 @@
     "study_name" : "Project name",
     "study_type" : "Type of research",
     "study_description" : "Project description",
+    "study_identifiers" : "Identifiers",
+    "study_identifiers_info" : "Enter all project identifiers from external institutions here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.",
     "developer_nostart" : "Attention!",
     "developer_nostart2" : "As developer you can only setup a project but not conduct it. As developer it is not possible to start the participant search."    
   },
@@ -133,7 +135,7 @@
     "anonymous" : "Anonymous Participation",
     "anonymous2" : ", the pseudonymization mapping may not be accessed.",
     "not_anonymous1" : "Not pseudonymized",
-    "not_anonymous2" : ", requests member to share full name, date of birth and contact Information (address, phone, email)",
+    "not_anonymous2" : ", requests member to share full name, birthdate and contact information (address, phone, email)",
     "assistance" : "Assistance",
     "no_assistance1" : "None",
     "no_assistance2" : " - the account holder participates alone.",
@@ -231,8 +233,12 @@
     "group" : "Data Group",
     "number_of_records" : "# Records",
     "download_btn" : "Download",
-    "fhir_download_btn" : "Download FHIR Bundle",
-    "fhir_download_original_btn" : "Download not pseudonymized"
+    "fhir_download_btn" : "Download Bundle",
+    "fhir_download_original_btn" : "Download not pseudonymized",
+    "file" : "Export file",
+    "file_fhir" : "FHIR Format",
+    "csvdef" : "Expert Feature: Paste JSON mapping from FHIR to CSV here.",
+    "add_csvdef_btn" : "Upload CSV-Export Definition"
   },
   
   "studyrules" : {
@@ -242,6 +248,7 @@
     "endDate" : "Official end date",
     "dataCreatedBefore" : "Data freeze date",
     "sharing_query" : "Data Access Filter",
+    "sharing_query_empty" : "Project does NOT require any data from @PRODUCT.",
     "join_methods" : "Allowed Participation Procedures",
     "leavePolicy" : "Participant withdrawal policy",
     "rejoinPolicy" : "Participant rejoin policy",
@@ -250,7 +257,9 @@
     "terms_of_use_hint" : "If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to a platform administrator. We will upload the text in the correct format and provide you with the ID you need to enter here.",
     "consent_observers" : "External Consent Observers",
     "show_terms" : "Show General Terms and Conditions",
-    "requirements" : "Requirements"
+    "requirements" : "Requirements",
+    "security" : "Security",
+    "forceClientCertificate" : "Force the use of client certificates for project analyzers."
   },
   
   "addresearcher" : {
@@ -281,7 +290,8 @@
       "changeTeam" : "Change team",
       "auditLog" : "View audit log",
       "participants" : "Manage participants",
-      "setup" : "Setup Project"
+      "setup" : "Setup Project",
+      "applications" : "Manage linked applications"
     }
   },
   

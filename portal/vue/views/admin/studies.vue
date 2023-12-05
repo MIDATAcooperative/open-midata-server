@@ -121,7 +121,7 @@ export default {
             me.doBusy(server.post(jsRoutes.controllers.research.Studies.listAdmin().url, $data.searches[$data.selection.criteria])
             .then(function(data) {
                     for (let st of data.data) st.codeName = st.name+" "+st.code;
-                    $data.results = me.process(data.data, { filter : { codeName : "" }});	
+                    $data.results = me.process(data.data, { filter : { codeName : "" }, ignoreCase : true, sort : "-createdAt" });	
             }));
 	    }
     },

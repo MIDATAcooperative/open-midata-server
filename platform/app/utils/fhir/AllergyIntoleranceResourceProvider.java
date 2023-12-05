@@ -65,6 +65,7 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 		
 		FhirPseudonymizer.forR4()
 		  .reset("AllergyIntolerance")
+		  .hideIfPseudonymized("AllergyIntolerance", "text")
 		  .pseudonymizeReference("AllergyIntolerance", "asserter")
 		  .pseudonymizeReference("AllergyIntolerance", "recorder")
 		  .pseudonymizeReference("AllergyIntolerance", "reaction", "note", "authorReference");
@@ -79,9 +80,6 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 	public Bundle getAllergyIntolerance(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
 
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
-		
   			@Description(shortDefinition="Source of the information about the allergy")
   			@OptionalParam(name="asserter", targetTypes={  } )
   			ReferenceAndListParam theAsserter, 
@@ -175,8 +173,7 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 	
 		paramMap.add("asserter", theAsserter);
 		paramMap.add("category", theCategory);
@@ -273,7 +270,7 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 		super.processResource(record, p);
 		
 		if (p.getPatient().isEmpty()) {			
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setPatient(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

@@ -31,6 +31,10 @@
 				<div class="col-md-8 col-lg-10 main-col">{{record.creatorName}}</div>
 			</div>
 			<div class="row mt-1">
+				<div class="col-md-4 col-lg-2" v-t="'recorddetail.modified_by'"></div>
+				<div class="col-md-8 col-lg-10 main-col">{{record.modifiedByName}}</div>
+			</div>
+			<div class="row mt-1">
 				<div class="col-md-4 col-lg-2" v-t="'recorddetail.created_with'"></div>
 				<div class="col-md-8 col-lg-10 main-col">{{record.app}}</div>
 			</div>
@@ -40,7 +44,7 @@
 			</div>
 			<div class="row mt-1">
 				<div class="col-md-4 col-lg-2" v-t="'recorddetail.id'"></div>
-				<div class="col-md-8 col-lg-10 main-col">{{record._id}}</div>
+				<div class="col-md-8 col-lg-10 main-col">{{recordId}}</div>
 			</div>		
 			<div v-if="record.format && record.format.startsWith('fhir/')" class="row mt-1">
 				<div class="col-md-4 col-lg-2" v-t="'enum.codesystems.fhir'"></div>
@@ -80,12 +84,14 @@ import session from 'services/session.js';
 import server from 'services/server.js';
 import { status, ErrorBox } from 'basic-vue3-components';
 import { getLocale } from 'services/lang.js';
+import ENV from "config";
 
 export default {
     data: () => ({       
         record: {},
         url : null,
-        userId : null
+        userId : null,
+        recordId : null
 		
 	}),				
 
@@ -103,6 +109,12 @@ export default {
 	        .then(function(records1) {
 			    let record = records1.data;
 			    
+			    if (record.content=="PseudonymizedPatient" || record.content=="Patient" ) {
+			      $data.recordId = record.data.id;
+			    } else {
+			      $data.recordId = record._id;
+			    }
+			    
 			    me.doBusy(records.getUrl(recordId)).
 	               then(function(results) {
 		           if (results.data) {
@@ -116,7 +128,7 @@ export default {
 			    let data = {"properties": {"_id": record.app}, "fields": ["name"]};
 		        me.doBusy(server.post(jsRoutes.controllers.Plugins.get().url, data).
 			    then(function(apps) { 
-                    record.app = apps.data[0].name; 
+                    record.app = (apps.data && apps.data.length) ? apps.data[0].name : "-"; 
                     $data.record = record;
                 }));
 		    });

@@ -31,3 +31,6 @@ db.auditevents.createIndex({ "about" : 1, "authorized" : 1 });
 db.auditevents.createIndex({ "timestamp" : 1, "event" : 1 });
 db.auditevents.createIndex({ "timestamp" : 1 });
 db.subscriptions.createIndex({ "owner" : 1, "format" : 1 });
+
+db.consents.find({ "type" : "API", "dataupdate" : NumberLong(0), "status":"ACTIVE" }).forEach(function(e) { db.consents.update({ _id : e._id }, { $set : { dataupdate : new NumberLong(Date.now()) }})});
+

@@ -290,7 +290,7 @@ public class Feature_FormatGroups extends Feature {
 			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");
 			boolean found = false;
 			for (Map<String, Object> part : parts) {
-				if (mayAccess(part, content, format)) found = true;;
+				if (mayAccess(part, content, format)) found = true;
 			}
 			if (!found) return false;
 		}
@@ -312,9 +312,10 @@ public class Feature_FormatGroups extends Feature {
 	}
 	
 	public static Object getAccessRestriction(Map<String, Object> properties, String content, String format, String restriction) throws AppException {
+		if (properties == null) return null;
+		
 		if (properties.containsKey("$or")) {
-			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");
-			boolean found = false;
+			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");			
 			for (Map<String, Object> part : parts) {
 				if (mayAccess(part, content, format)) {
 				  return getAccessRestriction(part, content, format, restriction);

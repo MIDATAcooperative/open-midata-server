@@ -48,9 +48,11 @@ import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.AccessLog;
+import utils.OrganizationTools;
 import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -58,7 +60,7 @@ import utils.context.AccessContext;
 import utils.context.ConsentAccessContext;
 import utils.context.ContextManager;
 import utils.exceptions.AppException;
-import utils.fhir.ConsentResourceProvider;
+import utils.fhir.MidataConsentResourceProvider;
 import utils.fhir.GroupResourceProvider;
 import utils.fhir.OrganizationResourceProvider;
 import utils.fhir.PatientResourceProvider;
@@ -313,7 +315,7 @@ public class AccountPatches {
 		    List<Consent> consents = Consent.getBroken();
 		    if (consents.size() == 0) foundSome = false;
 			for (Consent consent : consents) {				
-				ConsentResourceProvider.updateMidataConsent(consent, null);		
+				MidataConsentResourceProvider.updateMidataConsent(consent, null);		
 				Consent.set(consent._id, "fhirConsent", consent.fhirConsent);
 			}
 		}
@@ -331,22 +333,30 @@ public class AccountPatches {
 	}
 	
 	public static void fixOrgs() throws AppException {
+
 		AccessLog.logBegin("start fix organization records");
 		KeyManager.instance.login(1000l*60l*60l, false);
 		KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
 		MidataId executor = RuntimeConstants.instance.publicUser;
-		AccessContext session = ContextManager.instance.createRootPublicGroupContext();
-		Set<Research> res = Research.getAll(CMaps.map(), Research.ALL);
+		AccessContext session = ContextManager.instance.createAdminRootPublicGroupContext();
+		/*Set<Research> res = Research.getAll(CMaps.map(), Research.ALL);
 		for (Research research : res) {
 			RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", research._id).map("format","fhir/Organization"));
 			OrganizationResourceProvider.updateFromResearch(session, research);
-		}
+		}*/
 		
 		Set<HealthcareProvider> hps = HealthcareProvider.getAll(CMaps.map(), HealthcareProvider.ALL);
 		for (HealthcareProvider provider : hps) {
-			RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", provider._id).map("format","fhir/Organization"));
-			OrganizationResourceProvider.updateFromHP(session, provider);
+			//RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", provider._id).map("format","fhir/Organization"));
+			if (provider.status == UserStatus.NEW && UserGroup.getById(provider._id, Sets.create("_id")) == null && provider.parent == null) {
+				System.out.println("update provider: "+provider.name);
+				provider = OrganizationTools.updateModel(session, provider);
+				OrganizationResourceProvider.updateFromHP(session, provider);
+				AuditManager.instance.success();
+			}
 		}
+
+
 		AccessLog.logEnd("end fix organization records");
 		ServerTools.endRequest();
 	}

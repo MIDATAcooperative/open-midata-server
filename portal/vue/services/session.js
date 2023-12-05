@@ -39,7 +39,11 @@ import oauth from './oauth';
 					params.loginToken = result.data.sessionToken;
 					if (result.data.tryrecover) {
 						params.sessionToken = crypto.keyChallengeLocal(result.data.userid, result.data.recoverKey, result.data.challenge);
-						if (!params.sessionToken) return { data : { requirements : ["KEYRECOVERY"] , status : "BLOCKED" } };
+						if (!params.sessionToken) {
+							params.sessionToken="no-recovery";
+							func(params);
+							return { data : { requirements : ["KEYRECOVERY"] , status : "BLOCKED" } };
+						}
 						return session.performLogin(func, params, pw);
 					} else {
 						params.sessionToken = crypto.keyChallenge(result.data.keyEncrypted, pw, result.data.challenge);
@@ -128,6 +132,7 @@ import oauth from './oauth';
 					var userId = result.user;
 					if (requiredRole && result.role != requiredRole.toUpperCase()) {
 						console.log("Wrong role "+result.role+" vs "+requiredRole.toUpperCase());
+						sessionStorage.token = undefined;
 						document.location.href="/#/public/login";
 						return;
 					}
@@ -144,6 +149,7 @@ import oauth from './oauth';
 					});																					
 				}, function() {
 					console.log("session.login error branch");
+					sessionStorage.token = undefined;
 					document.location.href="/#/public/login"; 
 				});		
 			});
@@ -156,7 +162,7 @@ import oauth from './oauth';
 						
 			session.progress = null;	
 			session.currentUser = null;
-			sessionStorage.token = null;
+			sessionStorage.token = undefined;
 			session.org = null;
 			session.cache = {};
 			actions.logout();

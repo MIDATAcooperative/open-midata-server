@@ -52,7 +52,10 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.ContentInfo;
 import models.Record;
+import models.enums.AuditEventType;
 import utils.access.pseudo.FhirPseudonymizer;
+import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -241,8 +244,11 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 
 	@Override
 	public void createExecute(Record record, Appointment theAppointment) throws AppException {
-		insertRecord(record, theAppointment);
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
+		insertRecord(record, theAppointment);		
 		shareRecord(record, theAppointment);
+		if (audit) AuditManager.instance.success();
+		
 	}		
 	
 	@Update
@@ -254,8 +260,10 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	
 	@Override
 	public void updateExecute(Record record, Appointment theAppointment) throws AppException {
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
 		updateRecord(record, theAppointment);			
 		shareRecord(record, theAppointment);
+		if (audit) AuditManager.instance.success();
 	}
 			
 	public void shareRecord(Record record, Appointment theAppointment) throws AppException {

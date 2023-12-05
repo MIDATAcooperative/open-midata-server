@@ -49,7 +49,10 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.ContentInfo;
 import models.Record;
+import models.enums.AuditEventType;
 import utils.access.pseudo.FhirPseudonymizer;
+import utils.audit.AuditHeaderTool;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -74,6 +77,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Appointment")
+		  .hideIfPseudonymized("Appointment", "text")
 		  .pseudonymizeReference("Appointment", "participant", "actor");
 	}
 	
@@ -88,9 +92,6 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
 			  
-			@Description(shortDefinition="The resource language")
-			@OptionalParam(name="_language")
-			StringAndListParam theResourceLanguage, 
   			@Description(shortDefinition="Any one of the individuals participating in the appointment")
   			@OptionalParam(name="actor", targetTypes={  } )
   			ReferenceAndListParam theActor, 
@@ -191,8 +192,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 		
 		paramMap.add("actor", theActor);
 		paramMap.add("appointment-type", theAppointment_type);
@@ -258,9 +258,11 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	
 
 	@Override
-	public Appointment createExecute(Record record, Appointment theAppointment) throws AppException {
+	public Appointment createExecute(Record record, Appointment theAppointment) throws AppException {		
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_CREATE, record.owner);
 		insertRecord(record, theAppointment);
 		shareRecord(record, theAppointment);
+		if (audit) AuditManager.instance.success();
 		return theAppointment;
 	}		
 	
@@ -273,8 +275,10 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	
 	@Override
 	public void updateExecute(Record record, Appointment theAppointment) throws AppException {
-		updateRecord(record, theAppointment, getAttachments(theAppointment));			
+		boolean audit = AuditHeaderTool.createAuditEntryFromHeaders(info(), AuditEventType.REST_UPDATE, record.owner);
+		updateRecord(record, theAppointment, getAttachments(theAppointment));		
 		shareRecord(record, theAppointment);
+		if (audit) AuditManager.instance.success();
 	}
 			
 	public void shareRecord(Record record, Appointment theAppointment) throws AppException {

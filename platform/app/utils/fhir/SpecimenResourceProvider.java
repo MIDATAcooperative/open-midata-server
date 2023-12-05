@@ -76,7 +76,8 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 		registerSearches("Specimen", getClass(), "getSpecimen");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("Specimen")				 
+		  .reset("Specimen")	
+		  .hideIfPseudonymized("Specimen", "text")
 		  .pseudonymizeReference("Specimen", "note", "authorReference");
 	}
 	
@@ -95,17 +96,11 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 	@Search()
 	public Bundle getSpecimen(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
-		
+				
 			@Description(shortDefinition="The ID of the resource")
   			@OptionalParam(name="_id")
   			TokenAndListParam the_id,
-    
-  			@Description(shortDefinition="The language of the resource")
-  			@OptionalParam(name="_language")
-  			StringAndListParam the_language, 
+      			
     
  			@Description(shortDefinition="The accession number associated with the specimen")
   			@OptionalParam(name="accession")
@@ -184,11 +179,8 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
-	
-		paramMap.add("_language", theResourceLanguage);
-	
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+			
+		paramMap.add("_id", the_id);		
 		paramMap.add("accession", theAccession);
 		paramMap.add("bodysite", theBodysite);
 		paramMap.add("collected", theCollected);
@@ -318,7 +310,7 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 		
 		// Add subject field from record owner field if it is not already there
 		if (p.getSubject().isEmpty()) {			
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

@@ -54,11 +54,11 @@ public class Rights {
 		allowed = new HashMap<String, Map<UserRole, Set<String>>>();
 		
 		action("Users.get");
-		role(UserRole.MEMBER, "_id", "role", "firstname", "lastname", "name", "status", "email");
-		role(UserRole.RESEARCH, "_id", "role", "firstname", "lastname", "name", "status", "email");
-		role(UserRole.DEVELOPER, "_id", "role", "firstname", "lastname", "name", "email", "developer", "status");
+		role(UserRole.MEMBER, "_id", "role", "firstname", "lastname", "name", "status", "email","searchable");
+		role(UserRole.RESEARCH, "_id", "role", "firstname", "lastname", "name", "status", "email", "searchable");
+		role(UserRole.DEVELOPER, "_id", "role", "firstname", "lastname", "name", "email", "developer", "status", "searchable");
 		role(UserRole.ADMIN, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "registeredAt", "role", "subroles", "security", "status", "zip", "midataID", "birthday", "confirmationCode", "emailStatus", "mobileStatus", "confirmedAt", "reason", "coach", "developer", "language", "searchable", "authType", "notifications", "marketingEmail");
-		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "role", "subroles", "status", "zip", "midataID", "birthday");
+		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "role", "subroles", "status", "zip", "midataID", "birthday", "searchable");
 		
 		action("Users.getPROVIDER");
 		role(UserRole.MEMBER  , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "phone", "mobile", "name", "role", "subroles", "status", "zip");
@@ -69,14 +69,14 @@ public class Rights {
 		action("Users.getRESEARCH");
 		role(UserRole.MEMBER, "_id", "role", "firstname", "lastname", "name", "status", "email", "searchable");
 		role(UserRole.RESEARCH, "_id", "role", "firstname", "lastname", "name", "status", "email", "organization", "searchable");
-		role(UserRole.DEVELOPER, "_id", "role", "firstname", "lastname", "name", "status", "email", "searchable");		
+		role(UserRole.DEVELOPER, "_id", "role", "firstname", "lastname", "name", "status", "email", "searchable", "developer");		
 		
 		action("Users.getSelf");
 		role(UserRole.MEMBER, "_id", "address1", "address2", "apps", "city", "emailStatus", "mobileStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "birthday", "midataID", "news", "partInterest", "ssn", "language", "searchable", "confirmedAt", "developer", "authType", "notifications", "marketingEmail", "flags", "termsAgreed");
 		role(UserRole.RESEARCH, "_id", "address1", "address2", "apps", "city", "emailStatus", "mobileStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "birthday", "midataID", "language", "searchable", "confirmedAt", "organization", "developer", "authType", "notifications", "marketingEmail", "flags", "termsAgreed"); // TODO Remove midataID 
 		role(UserRole.PROVIDER, "_id", "address1", "address2", "apps", "city", "emailStatus", "mobileStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "birthday", "midataID", "language", "searchable", "confirmedAt", "developer", "authType", "notifications", "marketingEmail", "flags", "termsAgreed"); // TODO Remove midataID
 		role(UserRole.DEVELOPER, "_id", "address1", "address2", "apps", "city", "emailStatus", "mobileStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "birthday", "midataID", "language", "searchable", "confirmedAt", "developer", "authType", "notifications", "marketingEmail", "flags", "termsAgreed"); // TODO Remove midataID
-		role(UserRole.ADMIN, "_id", "address1", "address2", "apps", "city", "emailStatus", "mobileStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "birthday", "midataID", "language", "searchable", "confirmedAt", "developer", "authType", "notifications", "marketingEmail", "flags", "termsAgreed"); // TODO Remove midataID
+		role(UserRole.ADMIN, "_id", "address1", "address2", "apps", "city", "emailStatus", "mobileStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "birthday", "midataID", "language", "searchable", "confirmedAt", "developer", "authType", "notifications", "marketingEmail", "flags", "termsAgreed", "confirmationCode"); // TODO Remove midataID
 		
 		action("HealthProvider.search");
 		role(UserRole.MEMBER  , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "mobile", "name", "role", "status", "zip");
@@ -94,10 +94,10 @@ public class Rights {
 		role(UserRole.ANY, "_id", "id", "owner" , "ownerName", "creatorName", "format", "subformat", "content", "code", "group", "app", "creator", "created", "lastUpdated", "version", "name", "description", "tags", "data", "created-after", "created-before", "max-age", "group-strict", "group-exclude", "limit");
 		
 		action("Circles.listConsents");
-		role(UserRole.RESEARCH, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes");
-		role(UserRole.DEVELOPER, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes");
-		role(UserRole.ADMIN, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes");
-		role(UserRole.ANY, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "writes", "applicationId");		
+		role(UserRole.RESEARCH, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "createdAfter", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes", "allowedReshares", "querySignature", "basedOn");
+		role(UserRole.DEVELOPER, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "createdAfter", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes", "allowedReshares", "querySignature", "basedOn");
+		role(UserRole.ADMIN, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "createdAfter", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes", "allowedReshares", "querySignature", "basedOn");
+		role(UserRole.ANY, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "createdAfter", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "writes", "applicationId","allowedReshares", "querySignature", "basedOn");		
 		
 		action("Plugins.get");
 		role(UserRole.ANY, Plugin.ALL_PUBLIC);
@@ -105,10 +105,10 @@ public class Rights {
 		role(UserRole.ADMIN, Plugin.ALL_DEVELOPER);
 		
 		action("UserGroups.search");
-		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member", "role");
+		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member", "role", "setup");
 
 		action("UserGroups.searchOwn");
-		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member", "role", "active");
+		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member", "role", "active", "setup");
 	}
 	
 	public static void chk(String action, UserRole role, Map<String, Object> props, Set<String> fields) throws InternalServerException, AuthException {

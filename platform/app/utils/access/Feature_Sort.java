@@ -17,6 +17,7 @@
 
 package utils.access;
 
+import utils.AccessLog;
 import utils.exceptions.AppException;
 
 public class Feature_Sort extends Feature {
@@ -32,6 +33,12 @@ public class Feature_Sort extends Feature {
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.restrictedBy("sort")) {
 			q.setFromRecord(null);
+			
+			if (q.restrictedBy("_id") && q.restrictedBy("history") && q.getRestrictionOrNull("_id").size()==1 && q.getStringRestriction("sort").equals("lastUpdated desc")) {
+				AccessLog.log("Result is already sorted by lastUpdated.");
+				return next.iterator(q); 
+			}
+			
 			return ProcessingTools.sort(q.getProperties(), next.iterator(q));
 			
 		} else return next.iterator(q);		

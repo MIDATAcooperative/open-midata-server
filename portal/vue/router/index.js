@@ -47,7 +47,7 @@ const baseRoutes = [
     path : '/public_provider',
     name: 'public_provider',
     component: PublicNav,
-    meta : { role : "provider" }
+    meta : { role : "provider", termsRole : "provider" }
   },
   {
     path : '/public_developer',
@@ -65,7 +65,7 @@ const baseRoutes = [
     path : '/provider',
     name: 'provider',
     component: () => import(/* webpackChunkName: "provider" */ 'views/nav/provider.vue'),
-    meta : { role : "provider", keep : true }
+    meta : { role : "provider", termsRole : "provider", keep : true }
   },
   {
     path : '/research',
@@ -106,7 +106,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/oauth2.vue')
   },
   {
-    base : ['public', 'oauth', "developer", "public_research", "public_developer", "public_provider"],
+    base : ['public', 'oauth', "developer", "admin", "public_research", "public_developer", "public_provider"],
     path : 'registration',
     name: 'registration',
     component: () => import(/* webpackChunkName: "oauth" */ 'views/member/public/registration.vue')
@@ -137,7 +137,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "public" */ 'views/shared/public/termsPage.vue')
   },
   {
-    base : ["oauth", "public", "public_provider", "public_research", "public_developer"],
+    base : ["oauth", "public", "public_provider", "public_research", "public_developer","member", "research", "developer", "provider", "admin"],
     path : "postregister",
     meta : { keep : true },
     component: postRegister
@@ -157,7 +157,7 @@ const routes = [
     component: postRegister
   },
   {
-    base : ["member", "research", "developer", "provider"],
+    base : ["member", "research", "developer", "provider", "admin"],
     path : "upgrade",
     component: postRegister
   },
@@ -213,7 +213,8 @@ const routes = [
   {
     base : ["member", "developer", "admin", "research", "provider"],
     path : "user2",
-    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/user2.vue')
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/user2.vue'),
+    meta : { locked : true }
   },
   {
     base : ["member", "developer", "admin", "research", "provider"],
@@ -292,7 +293,8 @@ const routes = [
   {
     base : ["member", "provider", "research", "developer", "admin"],
     path : "serviceleave",
-    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/serviceleave.vue')
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/serviceleave.vue'),
+    meta : { lock : true }
   },
   {
     base : ["member", "provider", "research", "developer", "admin"],
@@ -375,14 +377,29 @@ const routes = [
   {
     base : ["provider"],
     path : "addprovider",
-    component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),
+    component: () => import(/* webpackChunkName: "provider" */ 'views/shared/registerother.vue'),
     meta : {
       mode : "provider"
     }
   },
   {
+    base : ["provider", "admin"],
+    path : "addorganization",
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/editorg.vue'),   
+  },
+  {
+    base : ["provider", "admin"],
+    path : "updateorganization",
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/editorg.vue'),   
+  },
+  {
+    base : ["provider", "admin"],
+    path : "requestaccess",
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/requestaccess.vue'),   
+  },
+  {
     base : ["admin"],
-    path : "registration",
+    path : "adminregistration",
     component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),
     meta : {
       mode : "admin"
@@ -394,7 +411,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "provider" */ 'views/provider/usergroups.vue')    
   },
   {
-    base : ["provider"],
+    base : ["provider", "admin"],
     path : "editusergroup",
     component: () => import(/* webpackChunkName: "provider" */ 'views/provider/editusergroup.vue')    
   },
@@ -518,6 +535,11 @@ const routes = [
   },
   {
     base : ["admin"],
+    path : "organizations",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/organizations.vue')
+  },
+  {
+    base : ["admin"],
     path : "address",
     component: () => import(/* webpackChunkName: "admin" */ 'views/admin/address.vue')
   },
@@ -530,6 +552,11 @@ const routes = [
     base : ["admin"],
     path : "yourapps",
     component: () => import(/* webpackChunkName: "admin" */ 'views/admin/plugins.vue')
+  },
+  {
+    base : ["admin"],
+    path : "updplugins",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/developer/updplugins.vue')
   },
   {
     base : ["admin"],

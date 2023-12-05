@@ -32,6 +32,8 @@ import models.Consent;
 import models.MidataId;
 import models.enums.ConsentStatus;
 import utils.AccessLog;
+import utils.QueryTagTools;
+import utils.access.ProcessingTools.FilterIterator;
 import utils.access.op.CompareCaseInsensitive;
 import utils.access.op.Condition;
 import utils.access.op.FieldAccess;
@@ -104,7 +106,12 @@ public class Feature_Pseudonymization extends Feature {
 			BasicBSONList tags = (BasicBSONList) r.meta.get("tags");
 			boolean r4 = false;
 			if (tags != null) {		
-				r4 = tags.contains("fhir:r4");							
+				r4 = tags.contains("fhir:r4");	
+				if (tags.contains(QueryTagTools.SECURITY_NOT_PSEUDONYMISABLE)) {
+					r.data = null; 
+					r.meta = null;
+					return;
+				}
 			}
 			if (r4) FhirPseudonymizer.forR4().pseudonymize(r);
 			else FhirPseudonymizer.forSTU3().pseudonymize(r);
@@ -131,14 +138,17 @@ public class Feature_Pseudonymization extends Feature {
 		@Override
 		public DBRecord next() throws AppException {
 			DBRecord r = chain.next();
+			
 			if (r.context != null) {
 				if (r.context.mustPseudonymize() || r.context.mustRename()) {
+			
 					if (r.meta != null) {
 						r.owner = r.context.getOwnerPseudonymized();
-		
+			
 						String name = r.context.getOwnerName();
 						if (oname && name != null) {															
 							r.meta.put("ownerName", name);
+							r.ownerType = r.context.getOwnerType();
 						}
 		
 						// Bugfix for older records
@@ -158,6 +168,7 @@ public class Feature_Pseudonymization extends Feature {
 				} else {		
 					if (!r.context.mayContainRecordsFromMultipleOwners() || r.owner==null) {
 					  r.owner = r.context.getOwner();
+					  r.ownerType = r.context.getOwnerType();
 					} 
 				}
 			}
@@ -181,14 +192,14 @@ public class Feature_Pseudonymization extends Feature {
 	
 	public static Pair<MidataId,String> pseudonymizeUser(AccessContext context, Consent consent) throws AppException {
 		if (consent.getOwnerName() != null && !consent.getOwnerName().equals("?")) return Pair.of(consent._id,consent.ownerName);
-		if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN) return Pair.of(consent._id, "???");
+		if (!consent.isSharingData()) return Pair.of(consent._id, "???");
 		BasicBSONObject patient = (BasicBSONObject) RecordManager.instance.getMeta(context, consent._id, "_patient");
 		if (patient != null) {
 			MidataId pseudoId = new MidataId(patient.getString("id"));
 			String pseudoName = patient.getString("name");
 			return Pair.of(pseudoId, pseudoName);
 		}
-		
+		//return Pair.of(new MidataId(), "ERROR!");
 		throw new InternalServerException("error.internal", "Cannot pseudonymize");
 	}
 	
@@ -202,6 +213,8 @@ public class Feature_Pseudonymization extends Feature {
 			return Pair.of(pseudoId, pseudoName);
 		}
 		AccessLog.log(consent._id.toString()," ow=",consent.owner.toString()," executor=",cache.getAccessor().toString()," acowner=",cache.getAccountOwner().toString());
+		
+		//return Pair.of(new MidataId(), "ERROR!");
 		throw new InternalServerException("error.internal", "Cannot pseudonymize");
 	}
 	
@@ -221,7 +234,9 @@ public class Feature_Pseudonymization extends Feature {
 	}
 	
 	public static void addPseudonymization(AccessContext context, MidataId consentId, MidataId pseudoId, String pseudoName) throws AppException {
+		AccessLog.log("add pseudonymization");
 		RecordManager.instance.setMeta(context, consentId, "_patient", CMaps.map("id", pseudoId.toString()).map("name", pseudoName));		
 	}
+	   
 
 }

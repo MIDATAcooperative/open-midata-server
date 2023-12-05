@@ -26,6 +26,7 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import com.mongodb.DBObject;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.typesafe.config.Config;
 
@@ -272,7 +273,28 @@ public class DBLayer {
 	 */
 	public static <T extends Model> void secureUpdate(T model, String collection, String timestampField, String... fields) throws LostUpdateException, DatabaseException {
 		Stats.reportDb("update 1", collection);
-		getDatabaseForCollection(collection).secureUpdate(model, collection, timestampField, fields);
+		getDatabaseForCollection(collection).secureUpdate(null, model, collection, timestampField, fields);
+	}
+	
+	public static <T extends Model> void secureUpdate(ClientSession session, T model, String collection, String timestampField, String... fields) throws LostUpdateException, DatabaseException {
+		Stats.reportDb("update 1", collection);
+		getDatabaseForCollection(collection).secureUpdate(session, model, collection, timestampField, fields);
+	}
+	
+	private static ThreadLocal<ClientSession> clientSession = new ThreadLocal<ClientSession>();
+	
+	public static DBSession startTransaction(String collection) {
+		ClientSession session = getDatabaseForCollection(collection).startSession(); 
+		clientSession.set(session);
+		return new DBSession(session, collection);
+	}
+	
+	public static void clearSession() {
+		clientSession.set(null);
+	}
+	
+	public static void commitTransaction(String collection) {
+		getDatabaseForCollection(collection).commitWithRetry(clientSession.get());		
 	}
 
 	public static com.mongodb.client.MongoDatabase getFSDB() {

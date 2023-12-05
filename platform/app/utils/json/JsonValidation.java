@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.regex.Pattern;
 
+import org.hazlewood.connor.bottema.emailaddress.EmailAddressParser;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.MidataId;
@@ -35,6 +37,7 @@ import utils.exceptions.BadRequestException;
 public class JsonValidation {
 
 	public final static int MAX_STRING_LENGTH = 10000;
+	public final static int MAX_UNBOUND_STRING_LENGTH = 1024*1024*16;
 	private final static int MAX_EMAIL_LENGTH = 254;
 	
 	/**
@@ -65,6 +68,13 @@ public class JsonValidation {
 		String res = json.path(field).asText();
 		if (res != null) res = res.trim();
 		if (res != null && res.length() > MAX_STRING_LENGTH) throw new JsonValidationException("error.toolong.field", "Request parameter '" + field + "' is too long.");
+		return res;
+	}
+	
+	public static String getUnboundString(JsonNode json, String field) throws JsonValidationException  {
+		String res = json.path(field).asText();
+		if (res != null) res = res.trim();
+		if (res != null && res.length() > MAX_UNBOUND_STRING_LENGTH) throw new JsonValidationException("error.toolong.field", "Request parameter '" + field + "' is too long.");
 		return res;
 	}
 		
@@ -145,7 +155,7 @@ public class JsonValidation {
 	  if (email==null || !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) return false;
 	  return true;
 	}	
-	
+		
 	public static Date getDate(JsonNode json, String field) throws JsonValidationException {
 		JsonNode dateNode = json.path(field);
 		if (dateNode.isNumber()) {

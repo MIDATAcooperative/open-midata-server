@@ -131,6 +131,31 @@ select option[value=""] {
 	margin-left: 15px;
 }
 
+.form-check { 
+  @include media-breakpoint-down(sm) {
+     padding-left: 3rem;
+     min-height: 35px;
+     margin-bottom: 10px;
+  } 
+}
+.form-check-input {
+  @include media-breakpoint-down(sm) {
+     margin-left: -3rem;
+     min-height: 25px;
+     min-width: 25px;
+  }
+}
+.form-check-label {
+  @include media-breakpoint-down(sm) {     
+     min-height: 25px;        
+  }
+}
+.form-check-label .margin-left {
+   @include media-breakpoint-down(sm) {
+	  margin-left: 0px;
+   }
+}
+
 
 iframe { border:none; margin:none; padding:none }
 
@@ -788,12 +813,14 @@ body.demo {
 }
 
 .terms {
-   h1,h2,h3,h4 { text-align:center; }
+   h1,h2,h3 { text-align:center; }
+   h4 { text-align: left; }
 
    @media (max-width: 767px) { 
 	 h1 { font-size: 1.5rem }
      h2 { font-size: 1.2rem }
-     h3 { font-size: 1.1rem } 
+     h3 { font-size: 1.1rem }
+     h4 { font-size: 1.0rem; font-weight:bold; } 
    }
 
 

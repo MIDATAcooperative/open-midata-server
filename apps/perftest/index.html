@@ -52,11 +52,16 @@
 		      <label for="numBulk">Records per Transaction:</label>
 		      <input type="text" ng-model="setup.numBulk" >
 		    </div>
+		    <div class="form-group"> 
+		      <label for="apiKey">API Key:</label>
+		      <input type="text" ng-model="setup.apiKey" >
+		    </div>
 		    <button class="btn btn-primary" ng-click="executeCreateUsers()">Create Users</button>
 		    <button class="btn btn-primary" ng-click="executeCreateRecords()">Create Records (single)</button>
 		    <button class="btn btn-primary" ng-click="executeCreateBulk()">Create Records (fhir transaction)</button>
 		    <button class="btn btn-primary" ng-click="executeWipeUsers()">Wipe Users</button>
 		    <button class="btn btn-primary" ng-click="executeCreateUsersAPI()">Create Users via API</button>
+            <button class="btn btn-primary" ng-click="executeCreateRecordsParallel()">Create Records parallel</button>
 		    <div class="form-group"> 
 		      <label for="study">Study-ID</label>
 		      <input type="text" ng-model="setup.study" >

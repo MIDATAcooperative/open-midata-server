@@ -32,8 +32,8 @@
 		    <tr>
 		      <td v-t="'manageapp.type'"></td>
 			  <td><b>{{ $t('enum.plugintype.' + app.type) }}</b>
-			  <span v-if="app.type=='external' || app.type=='endpoint'"> - 
-			  <router-link :to="{ path : './servicekeys' }" v-t="'manageapp.manageyourkeys'"></router-link>
+			  <span v-if="app.type=='external' || app.type=='endpoint' || app.type=='broker'"> - 
+			  <router-link :to="{ path : './servicekeys', query : { appId : app._id } }" v-t="'manageapp.manageyourkeys'"></router-link>
 			  </span>
 			  </td>
 		    </tr><tr>
@@ -42,7 +42,11 @@
             </tr><tr>
               <td v-t="'manageapp.status.title'"></td>
               <td><b>{{ $t('manageapp.status.'+app.status) }}</b></td>
-            </tr>           
+            </tr>
+            <tr>
+              <td v-t="'manageapp.deploy_status'"></td>
+              <td><b>{{ $t('enum.deploymentstatus.'+(app.deployStatus || 'NONE')) }}</b></td>
+            </tr>            
             <tr>
               <td v-t="'manageapp.creator'"></td>
               <td>
@@ -144,7 +148,7 @@
 																	
 			  </td>
 			</tr>
-			<tr  v-if="!(app.type=='analyzer' || app.type=='external' || app.type=='endpoint')">
+			<tr  v-if="!(app.type=='endpoint')">
 			  <td @click="go('appmessages')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/mail.jpg"></div>														   
 				<div><b v-t="'manageapp.messages_btn'"></b><span class="badge" style="margin-left:10px">{{ keyCount(app.predefinedMessages) }} <span v-t="'manageapp.defined'"></span></span> <span class="badge" :class="{ 'badge-success' : reviews.MAILS=='ACCEPTED', 'badge-danger' : reviews.MAILS=='NEEDS_FIXING', 'badge-light' : !reviews.MAILS }" style="margin-left:10px"><span v-if="reviews.MAILS">{{ $t('manageapp.'+reviews.MAILS) }}</span><span v-if="!reviews.MAILS" v-t="'manageapp.not_reviewed'"></span></span></div>
@@ -165,7 +169,7 @@
 				<div v-t="'manageapp.usagestats_help'"></div>																
 			  </td>
 			</tr>	
-			<tr v-if="allowExport && (app.type=='analyzer' || app.type=='external' || app.type=='endpoint')">
+			<tr v-if="allowExport && (app.type=='analyzer' || app.type=='external' || app.type=='endpoint' || app.type=='broker')">
 			  <td @click="go('services')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
 				<div><b v-t="'manageapp.services_btn'"></b></div>
@@ -239,6 +243,7 @@ export default {
             { value : "oauth2", label : "OAuth 2 Import" },
             { value : "mobile", label : "Mobile App" },
             { value : "external", label : "External Service" },
+            { value : "broker", label : "Data Broker" },
             { value : "analyzer", label : "Project analyzer" },
             { value : "endpoint", label : "FHIR endpoint" }
 	    ],
@@ -270,7 +275,7 @@ export default {
 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "deployStatus"])
 		    .then(function(data) { 
                 let app = data.data[0];	
 				

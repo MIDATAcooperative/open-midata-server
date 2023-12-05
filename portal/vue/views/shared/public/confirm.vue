@@ -124,7 +124,7 @@
 							<input id="appAgb" name="appAgb" class="form-check-input" type="checkbox" v-model="login.appAgb" />
 							
 							<label for="appAgb" class="form-check-label">
-						   		<span v-t="'registration.app_agb2'"></span>
+						   		<span v-t="'registration.app_agb2'"></span>&nbsp;
 						   		<a @click="showTerms(app.termsOfUse)" href="javascript:" v-t="'registration.app_agb3'"></a>
 						 	</label>							 					
 						 
@@ -288,7 +288,7 @@ export default {
 			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_service";
 			return "oauth2.confirm_service_opt";
 		} 
-		if (link.study.type == "CLINICAL") {
+		if (link.study.type == "CLINICAL" || link.study.type == "REGISTRY") {
 			if (link.type.indexOf("REQUIRE_P") >= 0 /*&& !(link.type.indexOf("OFFER_EXTRA_PAGE") >=0)*/) return "oauth2.confirm_study";
 			return "oauth2.confirm_study_opt";
 		}
@@ -302,6 +302,7 @@ export default {
 	getLinkName(link) {
 		if (link.study) return link.study.name;
 		if (link.provider) return link.provider.name;
+		if (link.userLogin) return link.userLogin;
 		if (link.serviceApp) 
 			return (link.serviceApp.i18n[getLocale()] && link.serviceApp.i18n[getLocale()].name) ? link.serviceApp.i18n[getLocale()].name : link.serviceApp.name;
 		return "???";
@@ -551,13 +552,13 @@ export default {
 					if (link.formatted.length==0) {	
 						if (link.study)	{
 							link.formatted  = [ link.study.description ];
-							} else {
+							} else if (link.serviceApp) {
 								if (link.serviceApp.i18n[getLocale()]) {
 								link.formatted  = [ link.serviceApp.i18n[getLocale()].description ];
 								} else {
 								link.formatted  = [ link.serviceApp.description ];
 								}
-							}
+							} 
 					}
 			
 					if (me.getMultiPage()) {					

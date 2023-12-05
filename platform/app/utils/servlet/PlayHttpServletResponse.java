@@ -102,8 +102,10 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void reset() {
-		if (true) throw new NotImplementedError();
-		
+		this.responseStream = null;
+		this.responseWriter = null;
+		headers.clear();
+		status = 200;		
 	}
 
 	@Override
@@ -203,12 +205,12 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public String getHeader(String arg0) {
-		throw new NotImplementedError();		
+		return headers.get(arg0);		
 	}
 
 	@Override
 	public Collection<String> getHeaderNames() {
-		throw new NotImplementedError();		
+		return headers.keySet();		
 	}
 
 	@Override

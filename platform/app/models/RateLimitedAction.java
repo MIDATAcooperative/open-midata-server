@@ -52,12 +52,14 @@ public class RateLimitedAction extends Model {
 			return true;
 		} 
 		if (System.currentTimeMillis() - ac.lastDone.getTime() < minDistance) return false;
-						
-		if (ac.count >= maxCounter) {
 			
-			if (ac.counterStartedAt != null && System.currentTimeMillis() - ac.counterStartedAt.getTime() < counterTimeFrame) return false;
+		if (ac.counterStartedAt == null || System.currentTimeMillis() - ac.counterStartedAt.getTime() > counterTimeFrame) {
 			ac.count = 0;
-			ac.counterStartedAt = new Date();
+			ac.counterStartedAt = new Date();	
+		}
+		
+		if (ac.count >= maxCounter) {
+			return false;			
 		}
 		
 		ac.lastDone = new Date();

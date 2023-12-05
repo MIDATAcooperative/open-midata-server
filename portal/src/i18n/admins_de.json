@@ -3,10 +3,12 @@
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Benutzer",
+        "organizations" : "Organisationen",
         "auditlog" : "Audit Log",
         "news" : "News",
         "mails" : "E-Mails",
         "plugins" : "Applikationen",
+        "updplugins" : "Installation von Plugins",
         "usagestats" : "Statistik der Applikationsnutzung",
         "content" : "Inhaltstypen",
         "studies" : "Projekte",
@@ -33,6 +35,14 @@
         "status" : "Status",
         "midata_id" : "@PRODUCT ID",
         "empty" : "Kein passender Benutzer gefunden."
+    },
+
+    "admin_organizations" : {
+        "title" : "Organisationen",
+        "name" : "Name",
+        "status" : "Status",
+        "empty" : "Keine passende Organisation gefunden.",
+        "members_btn" : "Mitglieder anzeigen"
     },
 
     "admin_address" : {
@@ -235,7 +245,7 @@
         "myid" : "Meine Wiederherstellungs-ID",
         "instr1" : "Klicken Sie auf einen Share, um den verschlüsselten Share in die Zwischenablage zu kopieren.",
         "instr2" : "Share unter UBUNTU entschlüsseln: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)",
-        "instr3" : "Share unter MAC OS entschlüsseln: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)"
+        "instr3" : "Share unter macOS (bash shell) entschlüsseln: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)"
     },
 
     "admin_licenses" : {
@@ -354,7 +364,7 @@
     },
 
     "admin_services" : {
-        "endpoints" : "Endpoints",
+        "endpoints" : "FHIR Endpoints",
         "name" : "Service-Instanz",
         "endpoint" : "FHIR Endpoint",
         "status" : "Status",

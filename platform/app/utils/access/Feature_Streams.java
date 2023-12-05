@@ -165,6 +165,7 @@ public class Feature_Streams extends Feature {
 		public DBRecord next() throws AppException {
 			DBRecord result = in.next();
 			result.owner = stream.owner;
+			result.ownerType = stream.ownerType;
 			fromStream(stream, result, medium);
 			
 			return result;
@@ -334,19 +335,15 @@ public class Feature_Streams extends Feature {
 						
 		result.stream = null;			
 		result.direct = false;
-		
-		AccessLog.log("adding permission");
-														
+																	
 		DBRecord unecrypted = result.clone();
 				
 		RecordEncryption.encryptRecord(result);		
 	    DBRecord.add(result);
 	    
 	    if (targetAPS != null) context.getCache().changeWatches().addWatchingAps(result, targetAPS);
-
-	    AccessLog.log("create aps for stream");
-	    
-		RecordManager.instance.createAPSForRecord(context.getCache().getAccessor(), unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
+	    	   
+		RecordManager.instance.createAPSForRecord(context.getCache(), context.getCache().getAccessor(), unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
 		
 		apswrapper.addPermission(unecrypted, targetAPS != null && !targetAPS.equals(unecrypted.owner));
 		

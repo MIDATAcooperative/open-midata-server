@@ -32,10 +32,14 @@ import akka.actor.Cancellable;
 import akka.actor.Props;
 import models.MidataId;
 import models.Plugin;
+import models.UserGroup;
+import models.enums.EntityType;
 import models.enums.UsageAction;
 import models.stats.UsageStats;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.InternalServerException;
 
 public class UsageStatsRecorder {
@@ -49,14 +53,28 @@ public class UsageStatsRecorder {
 		statsRecorder = system.actorOf(Props.create(UsageStatsActor.class).withDispatcher("medium-work-dispatcher"), "usageStatsActor");
 	}
 
+	public static void protokoll(MidataId object, MidataId detail, String objectName, UsageAction action) {
+		if (object==null) return;
+		statsRecorder.tell(new UsageStatsMessage(object, objectName, detail, action), ActorRef.noSender());
+	}
+	
 	public static void protokoll(MidataId object, String objectName, UsageAction action) {
 		if (object==null) return;
-		statsRecorder.tell(new UsageStatsMessage(object, objectName, action), ActorRef.noSender());
+		statsRecorder.tell(new UsageStatsMessage(object, objectName, null, action), ActorRef.noSender());
 	}
 
 	public static void protokoll(MidataId object, UsageAction action) {
 		if (object==null) return;
-		statsRecorder.tell(new UsageStatsMessage(object, null, action), ActorRef.noSender());
+		statsRecorder.tell(new UsageStatsMessage(object, null, null, action), ActorRef.noSender());
+	}
+	
+	public static void protokoll(AccessContext context, UsageAction action) throws InternalServerException {
+		MidataId plugin = context.getUsedPlugin();
+		MidataId detail = null;
+		if (context.getAccessorEntityType() == EntityType.USERGROUP) {
+			 detail = context.getAccessor();
+		}
+		statsRecorder.tell(new UsageStatsMessage(plugin, null, detail, action), ActorRef.noSender());
 	}
 	
 	public static void flush() {
@@ -109,16 +127,22 @@ class UsageStatsActor extends AbstractActor {
 	public void updateStats(UsageStatsMessage msg) throws Exception {
 		String path = "UsageStatsRecorder/updateStats";
 		long st = ActionRecorder.start(path);
-		String key = msg.getObject() + "/" + msg.getAction().toString();
+		String key = msg.getObject() + "/" + msg.getDetail() + "/" + msg.getAction().toString();
 		UsageStats stats = cache.get(key);
 		if (stats == null) {
 			stats = new UsageStats();
 			stats.object = MidataId.from(msg.getObject());
+			stats.detail = MidataId.from(msg.getDetail());
 			stats.objectName = msg.getObjectName();
 			if (stats.objectName == null) {
 				Plugin p = Plugin.getById(stats.object);
-				if (p != null)
+				if (p != null) {
 					stats.objectName = p.filename;
+					if (stats.detail != null) {
+						UserGroup grp = UserGroup.getById(stats.detail, Sets.create("name"));
+						if (grp != null) stats.objectName += " / "+grp.name;
+					}
+				} 				
 			}
 			stats.action = msg.getAction();
 			cache.put(key, stats);
@@ -164,11 +188,13 @@ class UsageStatsMessage implements Serializable {
 
 	public final String object;
 	public final String objectName;
+	public final String detail;
 	public final UsageAction action;
 
-	public UsageStatsMessage(MidataId object, String objectName, UsageAction action) {
+	public UsageStatsMessage(MidataId object, String objectName, MidataId detail, UsageAction action) {
 		this.object = object.toString();
 		this.objectName = objectName;
+		this.detail = detail != null ? detail.toString() : null;
 		this.action = action;
 	}
 
@@ -178,6 +204,10 @@ class UsageStatsMessage implements Serializable {
 
 	public String getObjectName() {
 		return objectName;
+	}
+	
+	public String getDetail() {
+		return detail;
 	}
 
 	public UsageAction getAction() {

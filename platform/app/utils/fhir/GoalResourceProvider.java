@@ -62,6 +62,7 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Goal")	
+		  .hideIfPseudonymized("Goal", "text")
 		  .pseudonymizeReference("Goal", "expressedBy")
 		  .pseudonymizeReference("Goal", "note", "authorReference");
 	}
@@ -73,10 +74,7 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 
 	@Search()
 	public Bundle getGoal(
-			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,		
 			
   			@Description(shortDefinition="in-progress | improving | worsening | no-change | achieved | sustaining | not-achieved | no-progress | not-attainable")
   			@OptionalParam(name="achievement-status")
@@ -139,8 +137,7 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);	
 		
 		paramMap.add("achievement-status", theAchievement_status);
 		paramMap.add("category", theCategory);
@@ -222,7 +219,7 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 		super.processResource(record, p);
 		
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

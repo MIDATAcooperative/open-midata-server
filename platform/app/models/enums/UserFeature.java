@@ -21,6 +21,7 @@ import java.util.Date;
 
 import models.Member;
 import models.User;
+import utils.AccessLog;
 import utils.InstanceConfig;
 
 /**
@@ -154,7 +155,7 @@ public enum UserFeature {
 			case GENDER_SET:
 				return user.gender != null && user.gender != Gender.UNKNOWN;
 			case NEWEST_TERMS_AGREED:
-				InstanceConfig ic = InstanceConfig.getInstance();
+				InstanceConfig ic = InstanceConfig.getInstance();			
 				return user.termsAgreed != null && user.termsAgreed.contains(ic.getTermsOfUse(user.role));
 			case NEWEST_PRIVACY_POLICY_AGREED:
 				ic = InstanceConfig.getInstance();

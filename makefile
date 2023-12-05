@@ -72,7 +72,7 @@ stop-mongo:
 	@echo 'Shutting down MongoDB...'
 	if [ -e switches/local-mongo ]; then pkill mongod; fi
 
-update: tasks/check-config tasks/install-packages tasks/install-node tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform conf/config.js tasks/setup-nginx start
+update: tasks/check-config tasks/check-plugins tasks/install-packages tasks/install-node tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform conf/config.js tasks/setup-nginx start
 
 test: tasks/build-portal tasks/build-platform
 	
@@ -119,16 +119,25 @@ $(CERTIFICATE_DIR)/dhparams.pem:
 	mkdir -p $(CERTIFICATE_DIR)
 	openssl dhparam -out $(CERTIFICATE_DIR)/dhparams.pem 2048	
 
-tasks/check-plugins: $(PLUGINS_DIR)/plugins $(PLUGINS_DIR)/plugin_active visualizations
+tasks/check-plugins: $(PLUGINS_DIR)/plugins $(PLUGINS_DIR)/staging $(PLUGINS_DIR)/web $(PLUGINS_DIR)/scripts visualizations
 
 $(PLUGINS_DIR)/plugins:
 	mkdir -p $(PLUGINS_DIR)/plugins
 
-$(PLUGINS_DIR)/plugin_active:
-	mkdir -p $(PLUGINS_DIR)/plugin_active
+$(PLUGINS_DIR)/staging:
+	mkdir -p $(PLUGINS_DIR)/staging	
+
+$(PLUGINS_DIR)/web:
+	mkdir -p $(PLUGINS_DIR)/web
+	cp -r $(PLUGINS_DIR)/plugins/* $(PLUGINS_DIR)/web
+	chmod -R 755 $(PLUGINS_DIR)/web		
+
+$(PLUGINS_DIR)/scripts:
+	mkdir -p $(PLUGINS_DIR)/scripts
+	cp -r $(PLUGINS_DIR)/plugins/* $(PLUGINS_DIR)/scripts
 
 visualizations:
-	ln -s $(PLUGINS_DIR)/plugins visualizations 		
+	ln -s $(PLUGINS_DIR) visualizations 		
 
 tasks/prepare-local:
 	touch switches/use-run
@@ -141,8 +150,6 @@ tasks/install-packages: trigger/install-packages
 	$(info Installing Packages... )
 	$(info ------------------------------)
 	sudo apt-get install git curl openssl openjdk-11-jdk mcrypt unzip ruby-sass software-properties-common clamav-daemon firejail
-	sudo add-apt-repository ppa:nginx/stable
-	sudo apt-get update
 	sudo apt-get install nginx
 	sudo service clamav-daemon stop
 	sudo service clamav-freshclam stop
@@ -261,6 +268,7 @@ platform/conf/application.conf: platform/conf/application.conf.template conf/set
 	$(eval CLUSTERX:=$(call join-with,$(komma),$(CLUSTERSERVERS))) 
 	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' platform/conf/application.conf
 	sed -i 's|PLUGINS_SERVER|$(DOMAIN)/plugin|' platform/conf/application.conf
+	sed -i 's|PLUGINS_DIR|$(PLUGINS_DIR)|' platform/conf/application.conf
 	sed -i 's|DOMAIN|$(DOMAIN)|' platform/conf/application.conf	
 	sed -i 's|PLATFORM_HOSTNAME|$(HOSTNAME)|' platform/conf/application.conf
 	sed -i 's|CLUSTER_SERVER|$(CLUSTERX)|' platform/conf/application.conf
@@ -363,7 +371,7 @@ nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf
 	sed -i 's|DHPARAMS|$(CERTIFICATE_DIR)/dhparams.pem|' nginx/sites-available/$*
 	sed -i 's|PLATFORM_INTERNAL_PORT|9001|' nginx/sites-available/$*
 	sed -i 's|ROOTDIR|$(abspath .)|' nginx/sites-available/$*
-	sed -i 's|PLUGINS_DIR|$(PLUGINS_DIR)/plugin_active|' nginx/sites-available/$*
+	sed -i 's|PLUGINS_DIR|$(PLUGINS_DIR)/web|' nginx/sites-available/$*
 	sed -i 's|RUNDIR|$(abspath running)|' nginx/sites-available/$* 
 	
 tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages nginx/conf.d/noversion.conf $(CERTIFICATE_PEM) $(CERTIFICATE_DIR)/dhparams.pem

@@ -19,7 +19,7 @@ import server from "./server";
 
 	var service = {};
 	
-	service.studytypes = ["CLINICAL", "CITIZENSCIENCE", "COMMUNITY"];
+	service.studytypes = ["CLINICAL", "CITIZENSCIENCE", "COMMUNITY", "REGISTRY"];
 	service.joinmethods = ["APP", "PORTAL", "RESEARCHER", "API", "APP_CODE", "ALGORITHM", "CODE", "TRANSFER"];
 	service.linktypes = ["OFFER_P", "REQUIRE_P", "RECOMMEND_A", "AUTOADD_A"];
 	service.executionStati = ["PRE", "RUNNING", "FINISHED", "ABORTED"];
@@ -36,7 +36,8 @@ import server from "./server";
 		  changeTeam : true,
 		  auditLog : true,
 		  participants : true,
-		  setup : true
+		  setup : true,
+          applications : true
 		},
 		{ id :"INVESTIGATOR",
 			  roleName : "Investigator",

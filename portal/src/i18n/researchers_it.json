@@ -34,6 +34,8 @@
         "study_name" : "Nome progetto",
         "study_type" : "Tipo di ricerca",
         "study_description" : "Descrizione progetto",
+        "study_identifiers" : "Identificatori",
+        "study_identifiers_info" : "Inserire qui tutti gli identificatori dei progetti delle istituzioni esterne. Inserire un identificatore per riga. Se si desidera, usare '|' per separare il sistema di codici dal valore. Gli identificatori non saranno visualizzati nelle pagine del progetto nel portale.",
         "developer_nostart" : "Attenzione!",
         "developer_nostart2" : "Come sviluppatore puoi solo impostare un progetto ma non condurlo. Come sviluppatore non è possibile avviare la ricerca dei partecipanti."
     },
@@ -232,8 +234,12 @@
         "group" : "Gruppo di dati",
         "number_of_records" : "# record",
         "download_btn" : "Scarica",
-        "fhir_download_btn" : "Scarica bundle FHIR",
-        "fhir_download_original_btn" : "Download senza pseudonimo"
+        "fhir_download_btn" : "Scarica bundle",
+        "fhir_download_original_btn" : "Download senza pseudonimo",
+        "file" : "Esportare il file",
+        "file_fhir" : "Formato FHIR",
+        "csvdef" : "Funzione esperti: incolla qui la mappatura JSON da FHIR a CSV.",
+        "add_csvdef_btn" : "Scarica la definizione di esportazione CSV"
     },
 
     "studyrules" : {
@@ -243,6 +249,7 @@
         "endDate" : "Data di fine ufficiale",
         "dataCreatedBefore" : "Data di congelamento dei dati",
         "sharing_query" : "Data Access Filter",
+        "sharing_query_empty" : "Il progetto NON richiede dati da @PRODUCT.",
         "join_methods" : "Procedure di partecipazione ammesse",
         "leavePolicy" : "Condizioni di ritiro dei partecipanti",
         "rejoinPolicy" : "Condizioni di reintegrazione dei partecipanti",
@@ -251,7 +258,9 @@
         "terms_of_use_hint" : "Se i Condizioni generali di contratto del progetto devono essere letti e accettati dall'utente, si prega di inviare il testo ad un amministratore di piattaforma. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.",
         "consent_observers" : "Observers esterni di consenso",
         "show_terms" : "Mostra Condizioni generali di contratto",
-        "requirements" : "Requisiti"
+        "requirements" : "Requisiti",
+        "security" : "Sicurezza",
+        "forceClientCertificate" : "Forzare l'uso dei certificati client per gli analizzatori di progetto."
     },
 
     "addresearcher" : {
@@ -282,7 +291,8 @@
             "changeTeam" : "Modifica il team",
             "auditLog" : "Mostra il audit log",
             "participants" : "Gestisci i partecipanti",
-            "setup" : "Configura progetto"
+            "setup" : "Configura progetto",
+            "applications" : "Gestire le applicazioni collegate"
         }
     },
 
@@ -346,7 +356,7 @@
     },
 
     "researcher_sharing" : {
-        "description" : "Condividi o non condividi i record del suo account con gruppi di partecipanti al progetto",
+        "description" : "Condividere o non condividere i record del proprio account con gruppi di partecipanti al progetto",
         "source" : "Fonte",
         "me" : "Dati del mio account",
         "project" : "Dati dall'analizzatore",
@@ -367,7 +377,7 @@
         "recruiter" : "Reclutatore",
         "status" : "Stato",
         "created_at" : "Creato alle",
-        "empty" : "Non sono stati generati codici di partecipazione.",
+        "empty" : "Nessun codice di partecipazione generato.",
         "showcreate_btn" : "Aggiungere nuovi codici",
         "new_title" : "Creare nuovi codici",
         "number_of_codes" : "Numero di codici",

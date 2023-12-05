@@ -74,6 +74,7 @@ public class QueryBuilder {
 	public final static String TYPE_DATETIME = "DateTime";
 	
 	public final static String TYPE_PERIOD = "Period";
+	public final static String TYPE_PERIOD_ENDONLY = "PeriodEnd";
 	public final static String TYPE_DATETIME_OR_PERIOD = "DateTime|Period";
 	public final static String TYPE_DATETIME_OR_PERIOD_OR_INSTANT = "DateTime|Period|Instant";
 
@@ -418,6 +419,7 @@ public class QueryBuilder {
 			  String val = tokenParam.getValue();
 			  if (val == null) return;
 			  boolean isText = tokenParam.isText();
+			  TokenParamModifier modifier = tokenParam.getModifier();			  
 			  if (type.equals(TYPE_CODEABLE_CONCEPT)) {
 				if (isText) {
 				  bld.add(
@@ -473,6 +475,7 @@ public class QueryBuilder {
 					  bld.addEq(path, value, CompareCaseInsensitiveOperator.EQUALS);
 					}
 			  }
+			  if (modifier == TokenParamModifier.NOT) bld.notBlock();
 			} else if (param instanceof StringParam) {
 			  StringParam stringParam = (StringParam) param;
 			  
@@ -573,6 +576,9 @@ public class QueryBuilder {
 				} else if (type.equals(TYPE_PERIOD)) {
 					lPath = path+".start|null";
 					hPath = path+".end|null";
+				} else if (type.equals(TYPE_PERIOD_ENDONLY)) {
+					lPath = "null";
+					hPath = path;
 				} else if (type.equals(TYPE_DATETIME_OR_PERIOD)) {
 					lPath = path+"DateTime|"+path+"Period.start|null";
 					hPath = path+"DateTime|"+path+"Period.end|null";
@@ -582,7 +588,7 @@ public class QueryBuilder {
 				} else throw new NullPointerException();
 				
 				if (prefix==null) prefix = ParamPrefixEnum.EQUAL;
-				AccessLog.log("prefix="+prefix);
+				//AccessLog.log("prefix="+prefix);
 				Object lDate1 = lDate;
 				Object hDate1 = hDate;
 				
@@ -637,6 +643,7 @@ public class QueryBuilder {
 				String units = quantityParam.getUnits();
 				String system = quantityParam.getSystem();
 				BigDecimal val = quantityParam.getValue();               
+                if (val==null) throw new InvalidRequestException("Quantity-type restriction needs a numeric value.");
                 
                 String lPath = null;
 				String hPath = null;
@@ -790,10 +797,10 @@ public class QueryBuilder {
                            String rt = r.getResourceType();
                            if (rt == null) throw new BadRequestException("error.internal", "Target resource type for chaining not known.");
                            params.add(r.getChain(), ResourceProvider.asQueryParameter(rt, r.getChain(), r));
-                           resultList = FHIRServlet.myProviders.get(rt).search(params);
+                           resultList = FHIRServlet.getProvider(rt).search(params);
                         } else {
                            params.add(r.getChain(), ResourceProvider.asQueryParameter(targetType, r.getChain(), r));
-                           resultList = FHIRServlet.myProviders.get(targetType).search(params);
+                           resultList = FHIRServlet.getProvider(targetType).search(params);
                         }
                         for (BaseResource br : resultList) {
                         	ReferenceParam rp = new ReferenceParam(br.getId());                        	

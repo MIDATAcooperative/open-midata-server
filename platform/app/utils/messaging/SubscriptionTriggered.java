@@ -57,6 +57,11 @@ public class SubscriptionTriggered {
 	final MidataId resourceId;
 	
 	/**
+	 * The version of the resource
+	 */
+	final String resourceVersion;
+	
+	/**
 	 * Optional event code
 	 */
 	final String eventCode;
@@ -70,8 +75,13 @@ public class SubscriptionTriggered {
      * FHIR version of resource
      */
     final String fhirVersion;
+    
+    /**
+     * ID of user who is owner of the event that triggered the subscription
+     */
+    final MidataId sourceOwner;
 	
-	public SubscriptionTriggered(MidataId affected, MidataId app, String type, String eventCode, String fhirVersion, String resource, MidataId resourceId, Map<String, String> params) {
+	public SubscriptionTriggered(MidataId affected, MidataId app, String type, String eventCode, String fhirVersion, String resource, MidataId resourceId, Map<String, String> params, MidataId sourceOwner, String resourceVersion) {
 		this.affected = affected;
 		this.app = app;
 		this.type = type;
@@ -81,9 +91,11 @@ public class SubscriptionTriggered {
 		this.resourceId = resourceId;
 		this.params = params;
 		this.byId = null;
+		this.sourceOwner = sourceOwner;
+		this.resourceVersion = resourceVersion;
 	}
 	
-	public SubscriptionTriggered(MidataId id, MidataId affected, MidataId app, String type, String eventCode, String fhirVersion, String resource, MidataId resourceId, Map<String, String> params) {
+	public SubscriptionTriggered(MidataId id, MidataId affected, MidataId app, String type, String eventCode, String fhirVersion, String resource, MidataId resourceId, Map<String, String> params, MidataId sourceOwner, String resourceVersion) {
 		this.affected = affected;
 		this.app = app;
 		this.type = type;
@@ -93,6 +105,8 @@ public class SubscriptionTriggered {
 		this.resourceId = resourceId;
 		this.params = params;
 		this.byId = id;
+		this.sourceOwner = sourceOwner;
+		this.resourceVersion = resourceVersion;
 	}
 
 	public MidataId getAffected() {
@@ -118,6 +132,10 @@ public class SubscriptionTriggered {
 	public MidataId getResourceId() {
 		return resourceId;
 	}
+	
+	public MidataId getSourceOwner() {
+		return sourceOwner;
+	}
 
 	public String getEventCode() {
 		return eventCode;
@@ -134,6 +152,10 @@ public class SubscriptionTriggered {
 
 	public String getFhirVersion() {
 		return fhirVersion;
+	}	
+
+	public String getResourceVersion() {
+		return resourceVersion;
 	}
 
 	public String toString() {

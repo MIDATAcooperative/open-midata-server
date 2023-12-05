@@ -48,16 +48,24 @@
                     <option v-for="action in actions" :key="action" :value="action">{{ $t('appsubscriptions.actions.'+action) }}</option>
                     </select>
                 </td>
-		        <td><input class="form-control" type="text" v-if="subscription.action!='email'" v-validate v-model="subscription.parameter"></td>
+		        <td><input class="form-control" type="text" v-validate v-model="subscription.parameter"></td>
 		        <td><button class="btn btn-sm btn-default" @click="delete1(subscription)" v-t="'common.delete_btn'"></button></td>
 		      </tr>
 		    </table>
+		    		   		   
 		    <form-group name="x" label="common.empty">
 		      <router-link class="btn btn-default mr-1" :to="{ path : './manageapp', query : { appId : appId }}" v-t="'common.back_btn'"></router-link>
 		
 		      <button class="btn btn-default mr-1" type="button" @click="add()" v-t="'common.add_btn'"></button>
 		      <button class="btn btn-primary mr-1" type="submit" v-submit v-t="'common.submit_btn'"></button>
 		    </form-group>
+		    
+		     <div v-if="app._id" class="alert alert-warning">
+		      <strong v-t="'manageapp.important'"></strong>
+		      <p v-if="app.type=='external'" v-t="'manageapp.servicewarning'"></p>
+		      <p v-else-if="app.type=='analyzer'" v-t="'manageapp.researchwarning'"></p>
+		      <p v-else v-t="'manageapp.logoutwarning'"></p>		    
+		    </div>  
 		</form>
 	</panel>
 
@@ -105,7 +113,7 @@ export default {
         loadApp(appId) {
             const { $data } = this, me = this;
             $data.appId=appId;
-            me.doBusy(apps.getApps({ "_id" : appId }, ["version", "creator", "filename", "name", "description", "defaultSubscriptions", "debugHandle" ])
+            me.doBusy(apps.getApps({ "_id" : appId }, ["version", "type", "creator", "filename", "name", "description", "defaultSubscriptions", "debugHandle" ])
             .then(function(data) { 
                 let app = data.data[0];
                 var subscriptions = app.defaultSubscriptions;
@@ -132,6 +140,10 @@ export default {
                         
                         if (subscription.fhirSubscription.channel.type === "email") {
                             subscription.action = "email";
+                            subscription.parameter = subscription.fhirSubscription.channel.endpoint;
+                        } else if (subscription.fhirSubscription.channel.type === "sms") {
+                            subscription.action = "sms";
+                            subscription.parameter = subscription.fhirSubscription.channel.endpoint;
                         } else if (subscription.fhirSubscription.channel.type === "rest-hook") {
                             subscription.action = "rest-hook";
                             subscription.parameter = subscription.fhirSubscription.channel.endpoint;
@@ -204,7 +216,12 @@ export default {
                     subscription.fhirSubscription.channel.endpoint = subscription.parameter;
                     break;
                 case "email":
-                    subscription.fhirSubscription.channel.type = "email";    			
+                    subscription.fhirSubscription.channel.type = "email";    
+                    subscription.fhirSubscription.channel.endpoint = subscription.parameter;			
+                    break;
+                case "sms":
+                    subscription.fhirSubscription.channel.type = "sms";    
+                    subscription.fhirSubscription.channel.endpoint = subscription.parameter;			
                     break;
                 case "nodejs":
                     subscription.fhirSubscription.channel.type = "message";

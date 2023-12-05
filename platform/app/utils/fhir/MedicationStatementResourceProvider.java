@@ -69,6 +69,7 @@ public class MedicationStatementResourceProvider extends RecordBasedResourceProv
 		
 		FhirPseudonymizer.forR4()
 		  .reset("MedicationStatement")		
+		  .hideIfPseudonymized("MedicationStatement", "text")
 		  .pseudonymizeReference("MedicationStatement", "informationSource")
 		  .pseudonymizeReference("MedicationStatement", "note", "authorReference");		  
 	}
@@ -81,9 +82,6 @@ public class MedicationStatementResourceProvider extends RecordBasedResourceProv
 	@Search()
 	public Bundle getMedicationStatement(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
 		
  			@Description(shortDefinition="Returns statements of this category of medicationstatement")
   			@OptionalParam(name="category")
@@ -161,8 +159,7 @@ public class MedicationStatementResourceProvider extends RecordBasedResourceProv
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);	
 	
 		paramMap.add("category", theCategory);
 		paramMap.add("code", theCode);
@@ -257,7 +254,7 @@ public class MedicationStatementResourceProvider extends RecordBasedResourceProv
 		super.processResource(record, p);
 		
 		if (p.getSubject().isEmpty()) {			
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

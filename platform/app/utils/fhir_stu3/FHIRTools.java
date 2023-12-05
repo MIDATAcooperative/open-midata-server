@@ -51,9 +51,10 @@ public class FHIRTools {
 
 	private static Set<String> PERSON = Sets.create("person");
 	private static Set<String> REFERENCE = Sets.create("role", "firstname", "lastname");
-	public final static String BASE64_PLACEHOLDER_FOR_STREAMING = "RKNS56'LP";
+	public final static String BASE64_PLACEHOLDER_FOR_STREAMING = "JiFQTEFDRcKnSE9MREVSISEz";
 	
 	private static DateTimeFormatter titleTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+	private static DateTimeFormatter titleDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	
 /*
 	public static Person getPersonRecordOfUser(String id) throws InternalServerException {
@@ -71,11 +72,47 @@ public class FHIRTools {
 	 * @return
 	 * @throws InternalServerException
 	 */
+	public static Reference getReferenceToOwner(Record record) throws AppException {
+		if (record == null) return null;
+		if (record.ownerType != null) return new Reference().setDisplay(record.ownerName); //.setReference(record.ownerType+"/"+record.owner.toString());	   
+        return getReferenceToUser(record.owner, record.ownerName);		
+	}
+	
+	/**
+	 * Returns a FHIR reference to the specified creator. Automatically chooses Patient, Practitioner or RelatedPerson
+	 * @param id
+	 * @return
+	 * @throws InternalServerException
+	 */
+	public static Reference getReferenceToCreator(Record record) throws AppException {
+		if (record == null) return null;
+		if (record.owner.equals(record.creator)) {
+			if (record.ownerType != null) return new Reference().setDisplay(record.ownerName).setReference(record.ownerType+"/"+record.owner.toString());
+			return getReferenceToUser(record.owner, record.ownerName);
+		}
+        return getReferenceToUser(record.creator, record.creatorName);		
+	}
+	
+	public static Reference getReferenceToModifiedBy(Record record) throws AppException {
+		if (record == null) return null;
+		if (record.owner.equals(record.modifiedBy)) {
+			if (record.ownerType != null) return new Reference().setDisplay(record.ownerName).setReference(record.ownerType+"/"+record.owner.toString());
+			return getReferenceToUser(record.owner, record.ownerName);
+		}
+        return getReferenceToUser(record.modifiedBy, record.modifiedByName);		
+	}
+	
+	/**
+	 * Returns a FHIR reference to the specified user. Automatically chooses Patient, Practitioner or RelatedPerson
+	 * @param id
+	 * @return
+	 * @throws InternalServerException
+	 */
 	public static Reference getReferenceToUser(MidataId id, String defName) throws AppException {
 	    if (RuntimeConstants.instance.publicUser.equals(id)) return null;
 		if (defName != null) return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());				
 		
-		User user = ResourceProvider.info().getRequestCache().getUserById(id);
+		User user = ResourceProvider.hasInfo() ? ResourceProvider.info().getRequestCache().getUserById(id) : User.getById(id, User.PUBLIC);
 		if (user == null) {
 			return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
 			//throw new InternalServerException("error.internal", "Person not found "+id.toString());
@@ -84,6 +121,7 @@ public class FHIRTools {
 	}
 	
 	public static Reference getReferenceToUser(User user) throws AppException {
+		if (user==null) return null;
 		String type = "RelatedPerson";
 		switch (user.role) {
 		case MEMBER : type = "Patient";break;
@@ -106,7 +144,7 @@ public class FHIRTools {
 		if (!MidataId.isValid(idpart)) throw new UnprocessableEntityException("Invalid reference to person. Maybe this is an id from another platform or a placeholder?");
 		MidataId id = MidataId.from(idpart);
 		
-		User user = User.getByIdAlsoDeleted(id, Sets.create("role"));
+		User user = ResourceProvider.hasInfo() ? ResourceProvider.info().getRequestCache().getUserById(id, true) : User.getByIdAlsoDeleted(id, Sets.create("role"));
 		if (user == null) throw new UnprocessableEntityException("Invalid Person Reference");
 		if (rt != null) {
 				if (rt.equals("Patient") && user.role != UserRole.MEMBER) throw new UnprocessableEntityException("Invalid Patient reference");
@@ -198,7 +236,7 @@ public class FHIRTools {
 			}
 			if (type == null) return ref;
 			
-			if (target == null) throw new UnprocessableEntityException("References Patient not found");
+			if (target == null) throw new UnprocessableEntityException("References: Referenced person not found");
 			ref.setReference(type+"/"+target._id.toString());
 			ref.setIdentifier(null);
 			ref.setDisplay(target.firstname+" "+target.lastname);

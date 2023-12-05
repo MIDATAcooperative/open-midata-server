@@ -92,6 +92,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 		
 		FhirPseudonymizer.forR4()
 		  .reset("Composition")
+		  .hideIfPseudonymized("Composition", "text")
 		  .pseudonymizeReference("Composition", "attester", "party")
 		  .pseudonymizeReference("Composition", "author")
 		  .pseudonymizeReference("Composition", "relatesTo", "targetReference");
@@ -112,9 +113,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 	@Search()
 	public Bundle getComposition(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
+		
  			@Description(shortDefinition="Who attested the composition")
   			@OptionalParam(name="attester", targetTypes={  } )
   			ReferenceAndListParam theAttester, 
@@ -221,8 +220,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 			
 		paramMap.add("attester", theAttester);
 		paramMap.add("author", theAuthor);
@@ -362,7 +360,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 		
 		// Add subject field from record owner field if it is not already there
 		if (p.getSubject().isEmpty()) {			
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 	

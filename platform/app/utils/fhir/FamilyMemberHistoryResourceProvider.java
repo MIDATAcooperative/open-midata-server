@@ -49,6 +49,7 @@ import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -65,6 +66,10 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 		searchParamNameToTypeMap.put("FamilyMemberHistory:patient", Sets.create("Patient"));
 
 		registerSearches("FamilyMemberHistory", getClass(), "getFamilyMemberHistory");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("FamilyMemberHistory")	
+		  .hideIfPseudonymized("FamilyMemberHistory", "text");
 	}
 
 	@Override
@@ -75,9 +80,7 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 	@Search()
 	public Bundle getFamilyMemberHistory(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+			
  			@Description(shortDefinition="A search by a condition code")
   			@OptionalParam(name="code")
   			TokenAndListParam theCode,
@@ -142,8 +145,7 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);	
 		paramMap.add("code", theCode);
 		paramMap.add("date", theDate);
 		paramMap.add("identifier", theIdentifier);
@@ -256,7 +258,7 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 
 		// Add subject field from record owner field if it is not already there
 		if (p.getPatient().isEmpty()) {
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName)); // TODO is it currect to use patient?
+			p.setPatient(FHIRTools.getReferenceToOwner(record)); // TODO is it currect to use patient?
 		}
 	}
 

@@ -17,16 +17,25 @@
 
 package utils.context;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import models.Consent;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Plugin;
 import models.Record;
 import models.ServiceInstance;
 import models.Space;
+import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
+import models.enums.EntityType;
+import models.enums.Permission;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
@@ -71,7 +80,7 @@ public abstract class AccessContext {
 	 * @param newVersion new version of record
 	 * @return
 	 */
-	public abstract boolean mayUpdateRecord(DBRecord stored, Record newVersion);
+	public abstract boolean mayUpdateRecord(DBRecord stored, Record newVersion) throws InternalServerException;
 	
 	/**
 	 * Must records be pseudonymized in the current context?
@@ -111,7 +120,20 @@ public abstract class AccessContext {
 	 * @return
 	 * @throws AppException
 	 */
-	public abstract Object getAccessRestriction(String content, String format, String field) throws AppException; 
+	public abstract Object getAccessRestriction(String content, String format, String field) throws AppException;
+	
+	public List<String> getAccessRestrictionList(String content, String format, String field) throws AppException {
+		Object result = getAccessRestriction(content, format, field);
+		if (result == null) return Collections.emptyList();
+		if (result instanceof String) return Collections.singletonList((String) result);
+		if (result instanceof List) return (List<String>) result;
+		if (result instanceof Collection) return new ArrayList<String>((Collection) result);
+		throw new InternalServerException("error.internal", "Unknown restriction");
+	}
+	
+	public Map<String, Object> getAccessRestrictions() throws AppException {
+		if (parent != null) return parent.getAccessRestrictions(); else return null;
+	}
 	
 	/**
 	 * create history records during updates with this context?
@@ -152,6 +174,10 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public abstract String getOwnerName() throws AppException;
+	
+	public String getOwnerType() {
+		return null;
+	}
 	
 	/**
 	 * return restrictions that must be added to query during query processing
@@ -212,6 +238,14 @@ public abstract class AccessContext {
 		return cache.getAccessor();
 	}
 	
+	public EntityType getAccessorEntityType() throws InternalServerException {
+		if (parent != null) return parent.getAccessorEntityType();
+		
+		Plugin pl = Plugin.getById(getUsedPlugin());
+		if (pl.type.equals("external") || pl.type.equals("broker") || pl.type.equals("endpoint")) return EntityType.SERVICES;
+		return EntityType.USER;
+	}
+	
 	/**
 	 * what is the user role of the accessor?
 	 * This is used for handling security tags
@@ -256,7 +290,7 @@ public abstract class AccessContext {
 	 */
 	public String getMayUpdateReport(DBRecord stored, Record newVersion) throws AppException {
 		boolean result = mayUpdateRecord(stored, newVersion);
-		String report = getContextName()+" "+getAccessInfo(stored)+": result mayUpdate="+result;
+		String report = getContextName()+getAccessInfo(stored)+"\n- Conclusion: is update allowed for this entry of the chain? ["+result+"]\n";
 		if (parent != null) return parent.getMayUpdateReport(stored, newVersion)+"\n"+report;
 		return report;
 	}
@@ -269,7 +303,7 @@ public abstract class AccessContext {
 	 */
 	public String getMayCreateRecordReport(DBRecord record) throws AppException {
 		boolean result = mayCreateRecord(record);
-		String report = getContextName()+" "+getAccessInfo(record)+": result mayCreate="+result;
+		String report = getContextName()+getAccessInfo(record)+"\n- Conclusion: is creation allowed for this entry of the chain? ["+result+"]\n";
 		if (parent != null) return parent.getMayCreateRecordReport(record)+"\n"+report;
 		return report;
 	}
@@ -280,8 +314,22 @@ public abstract class AccessContext {
 	 * @return
 	 * @throws AppException
 	 */
-	public AccessContext forConsent(Consent consent) throws AppException {		
-		return new ConsentAccessContext(consent, getCache(), this);
+	public AccessContext forConsent(Consent consent) throws AppException {
+		if (consent.owner != null && consent.owner.equals(getAccessor())) return new ConsentAccessContext(consent, getCache(), this);
+		if (consent.authorized != null && consent.authorized.contains(getAccessor())) return new ConsentAccessContext(consent, getCache(), this);
+		
+		if (consent.authorized != null && consent.entityType != EntityType.USER) {
+		   for (MidataId id : consent.authorized) {
+			   List<UserGroupMember> ugms = getCache().getByGroupAndActiveMember(id, getAccessor(), Permission.ANY);			   
+			   if (ugms != null) {
+				   AccessContext result = forUserGroup(ugms);				   
+				   return new ConsentAccessContext(consent, result.getCache(), result); 
+			   }
+		   }
+		}
+		
+		AccessLog.log("context="+toString()+" consent="+consent._id);
+		throw new InternalServerException("error.internal", "Consent context not createable");
 	}
 	
 	/**
@@ -291,7 +339,7 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public AccessContext forConsentReshare(Consent consent) throws AppException {
-		return new ConsentAccessContext(consent, getCache(), null);
+		return new CreateParticipantContext(consent, getCache(), getRootContext());		
 	}
 	
 	/**
@@ -356,7 +404,7 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public AccessContext forServiceInstance(ServiceInstance instance) throws AppException {
-		return new ServiceInstanceAccessContext(getCache(), instance);
+		return new ServiceInstanceAccessContext(getCache(), getRequestCache(), instance);
 	}
 	
 	/**
@@ -367,6 +415,30 @@ public abstract class AccessContext {
 	 */
 	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
 		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(getCache(), ugm), this);
+	}
+	
+	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
+		List<UserGroupMember> ugms = cache.getByGroupAndActiveMember(userGroup, cache.getAccessor(), permission);
+		return forUserGroup(ugms);		
+	}
+	
+	public UserGroupAccessContext forUserGroup(List<UserGroupMember> ugms) throws AppException {				
+		APSCache cache = getCache();
+		APSCache subcache = cache;			
+		for (UserGroupMember ugmx : ugms) subcache = Feature_UserGroups.readySubCache(cache, subcache, ugmx);
+		UserGroupMember ugm = ugms.get(ugms.size()-1);
+		return new UserGroupAccessContext(ugm, subcache, this);
+	}
+	
+	public boolean usesUserGroupsForQueries() throws InternalServerException {
+		if (getAccessorEntityType() == EntityType.SERVICES) return false;
+		if (getAccessorEntityType() == EntityType.USER && getAccessorRole() == UserRole.MEMBER) return false;
+		return true;
+	}
+	
+	public Set<UserGroupMember> getAllActiveByMember() throws AppException {
+		if (!usesUserGroupsForQueries()) return Collections.emptySet();
+		return getCache().getAllActiveByMember();
 	}
 	
 	/**
@@ -381,12 +453,17 @@ public abstract class AccessContext {
 		else {
           Consent consent = Consent.getByIdUnchecked(aps, Consent.ALL);
           if (consent != null) {
-        	  if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN && !consent.owner.equals(getAccessor())) throw new InternalServerException("error.internal",  "Consent-Context creation not possible");
+        	  if (!consent.isSharingData() && !consent.owner.equals(getAccessor())) throw new InternalServerException("error.internal",  "Consent-Context creation not possible");
         	  return forConsent(consent);
           }
           
           Space space = Space.getByIdAndOwner(aps, getOwner(), Space.ALL);
           if (space != null) return new SpaceAccessContext(space, getCache(), null, space.owner);
+          
+          
+          List<UserGroupMember> ugms = getCache().getByGroupAndActiveMember(aps, getAccessor(), Permission.READ_DATA);
+          if (ugms != null)  return forUserGroup(ugms);
+         
 		}
 		
 		throw new InternalServerException("error.internal",  "Consent creation not possible");
@@ -472,6 +549,48 @@ public abstract class AccessContext {
 	 */
 	public void cleanup() {
 		if (parent != null) parent.cleanup();
+	}
+	
+	/**
+	 * finished use of context
+	 * @throws AppException
+	 */
+	public void close() throws AppException {
+		getCache().finishTouch();
+	}
+	
+	/**
+	 * Is it possible to create active consents for accessor with this context?
+	 * @return
+	 */
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
+		if (parent != null) return parent.canCreateActiveConsentsFor(owner);
+		return cache.getAccountOwner().equals(owner) || owner.equals(getAccessor());
+	}
+	
+	/**
+	 * Is it possible to access all data listed in the given filter?
+	 * @param targetFilter
+	 * @return
+	 */
+	public boolean hasAccessToAllOf(Map<String, Object> targetFilter) throws AppException {
+		if (parent != null) return parent.hasAccessToAllOf(targetFilter);
+		return true;
+	}
+	
+	public MidataId getPatientRecordId() {
+		if (parent != null) return parent.getPatientRecordId();
+		return cache.getAccountOwner();
+	}
+	
+	public boolean isUserGroupContext() {
+		if (parent != null) return parent.isUserGroupContext();
+		return false;
+	}
+	
+	public MidataId getConsentSigner() throws InternalServerException {
+		if (parent != null) return parent.getConsentSigner();
+		return null;
 	}
 	
 }

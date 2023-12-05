@@ -32,6 +32,8 @@ import models.MidataId;
 import models.StudyRelated;
 import models.UserGroupMember;
 import models.enums.APSSecurityLevel;
+import models.enums.EntityType;
+import models.enums.Permission;
 import utils.AccessLog;
 import utils.access.index.ConsentToKeyIndexRoot;
 import utils.access.index.StatsIndexRoot;
@@ -116,10 +118,14 @@ public class APSCache {
 		return result.isReady();
 	}
 	
+	public APS aps(EncryptedAPS eaps) {
+		return new APSTreeImplementation(eaps);
+	}
+	
 	public APS getAPS(MidataId apsId) throws InternalServerException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) {
-			result = new APSImplementation(new EncryptedAPS(apsId, accessorId));
+			result = aps(new EncryptedAPS(apsId, accessorId));
 			cache.put(apsId.toString(), result);
 		}
 		return result;
@@ -128,7 +134,7 @@ public class APSCache {
 	public APS getAPS(MidataId apsId, MidataId owner) throws InternalServerException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) {
-			result = new APSImplementation(new EncryptedAPS(apsId, accessorId, owner));
+			result = aps(new EncryptedAPS(apsId, accessorId, owner));
 			cache.put(apsId.toString(), result);
 		}	
 		return result;
@@ -137,7 +143,7 @@ public class APSCache {
 	public APS getAPS(MidataId apsId, byte[] unlockKey, MidataId owner) throws AppException, EncryptionNotSupportedException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
-			result = new APSImplementation(new EncryptedAPS(apsId, accessorId, unlockKey, owner));
+			result = aps(new EncryptedAPS(apsId, accessorId, unlockKey, owner));
 			if (!result.isAccessible()) {
 				AccessLog.log("Adding missing access for ",accessorId.toString()," APS:",apsId.toString());
 				result.addAccess(Collections.<MidataId>singleton(accessorId));
@@ -152,7 +158,7 @@ public class APSCache {
 	public APS getAPS(MidataId apsId, byte[] unlockKey, MidataId owner, AccessPermissionSet set, boolean addIfMissing) throws AppException, EncryptionNotSupportedException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
-			result = new APSImplementation(new EncryptedAPS(apsId, accessorId, unlockKey, owner, set));
+			result = aps(new EncryptedAPS(apsId, accessorId, unlockKey, owner, set));
 			if (!result.isAccessible() && addIfMissing) result.addAccess(Collections.<MidataId>singleton(accessorId));
 			cache.put(apsId.toString(), result);
 		}
@@ -258,11 +264,79 @@ public class APSCache {
 	}
 	
 	public Set<UserGroupMember> getAllActiveByMember() throws InternalServerException {
-		if (userGroupMember != null) return userGroupMember;
-		
-		userGroupMember = UserGroupMember.getAllActiveByMember(getAccountOwner());
+		if (userGroupMember != null) return userGroupMember;		
+		userGroupMember = getAllActiveByMember(new HashSet<MidataId>(), Collections.singleton(getAccountOwner()));						
 		return userGroupMember;
 	}
+	
+	private Set<UserGroupMember> getAllActiveByMember(Set<MidataId> alreadyFound, Set<MidataId> members) throws InternalServerException {
+		Set<UserGroupMember> results = UserGroupMember.getAllActiveByMember(members);
+		Set<MidataId> recursion = new HashSet<MidataId>();
+		for (UserGroupMember ugm : results) {
+			if (!alreadyFound.contains(ugm.userGroup)) {
+				recursion.add(ugm.userGroup);
+				alreadyFound.add(ugm.userGroup);
+			}
+		}
+		if (!recursion.isEmpty()) {
+			Set<UserGroupMember> inner = getAllActiveByMember(alreadyFound, recursion);
+			results.addAll(inner);
+		}
+		return results;
+	}
+	
+	public List<UserGroupMember> getByGroupAndActiveMember(UserGroupMember ugm, MidataId member, Permission permission) throws InternalServerException {
+		if (ugm.member.equals(member) && ugm.getConfirmedRole().may(permission)) return Collections.singletonList(ugm);
+		return getByGroupAndActiveMember(ugm.userGroup, member, permission);
+	}
+	
+	public List<UserGroupMember> getByGroupAndActiveMember(MidataId userGroup, MidataId member, Permission permission) throws InternalServerException {
+		if (userGroupMember == null && member.equals(getAccountOwner())) {
+			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndActiveMember(userGroup, member);
+			if (isMemberOfGroup != null && isMemberOfGroup.getConfirmedRole().may(permission)) return Collections.singletonList(isMemberOfGroup);
+		}
+		if (!member.equals(getAccountOwner())) {
+			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndActiveMember(userGroup, member);
+			if (isMemberOfGroup != null && isMemberOfGroup.getConfirmedRole().may(permission)) return Collections.singletonList(isMemberOfGroup);
+		}
+		
+		List<UserGroupMember> result = new ArrayList<UserGroupMember>();
+		Set<MidataId> tested = new HashSet<MidataId>();
+		if (getByGroupAndActiveMember(tested, result, userGroup, member, permission)) {
+			AccessLog.log("getByGroupAndActiveMember grp=",userGroup.toString()," permission=",permission.toString()," tested=",tested.toString()," r=true");
+			return result;
+		} else {
+			AccessLog.log("getByGroupAndActiveMember grp=",userGroup.toString()," permission=",permission.toString()," tested=",tested.toString()," r=false");
+			return null;
+		}
+
+	}
+	
+	private boolean getByGroupAndActiveMember(Set<MidataId> tested, List<UserGroupMember> result, MidataId userGroup, MidataId member, Permission permission) throws InternalServerException  {		
+	    Set<UserGroupMember> all = getAllActiveByMember();
+	    for (UserGroupMember ugm : all) {
+	    	if (tested.contains(ugm._id)) continue;	    	
+	    	
+	    	if (ugm.userGroup.equals(userGroup)) {
+	    		tested.add(ugm._id);
+	    		
+	    		if (ugm.member.equals(member) && ugm.getConfirmedRole().may(permission)) {
+	    			result.add(ugm);
+	    			return true;
+	    		} else if (ugm.entityType == EntityType.USERGROUP || ugm.entityType == EntityType.ORGANIZATION) {
+		    	   if (ugm.getConfirmedRole().may(permission) && getByGroupAndActiveMember(tested, result, ugm.member, member, permission)) {
+		    		   result.add(ugm);		    		   
+		    		   return true;
+		    	   }
+		    	}
+	    	} 
+	    		    	
+	    }	
+	    
+	    return false;
+	}
+	
+	
 	
 	public Collection<Consent> getAllActiveConsentsByAuthorized(long limit) throws InternalServerException {
 		if (consentLimit != -1 && limit >= consentLimit) {
@@ -392,11 +466,11 @@ public class APSCache {
 		return newRecordCache.get(id);
 	}
 	
-	public StreamIndexRoot getStreamIndexRoot() throws AppException {
+	/*public StreamIndexRoot getStreamIndexRoot() throws AppException {
 		if (streamIndexRoot != null) return streamIndexRoot;
 		streamIndexRoot = IndexManager.instance.getStreamIndex(this, getAccountOwner());
 		return streamIndexRoot;
-	}
+	}*/
 	
 	public StatsIndexRoot getStatsIndexRoot(boolean pseudonymized) throws AppException {
 		if (pseudonymized) {

@@ -5,6 +5,7 @@ import models.Record;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class RepresentativeAccessContext extends AccessContext {
 
@@ -24,7 +25,7 @@ public class RepresentativeAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) throws InternalServerException {
 		return parent.mayUpdateRecord(stored, newVersion);
 	}
 	
@@ -85,7 +86,15 @@ public class RepresentativeAccessContext extends AccessContext {
 	}
 	@Override
 	public String getContextName() {
-		return "Representative Access";
+		return "Representative Access for other person";
 	}
+
+	@Override
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
+		if (owner.equals(cache.getAccountOwner())) return true;
+		return super.canCreateActiveConsentsFor(owner);
+	}
+	
+	
 
 }

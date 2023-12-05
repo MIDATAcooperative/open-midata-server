@@ -84,7 +84,8 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 		registerSearches("MedicationAdministration", getClass(), "getMedicationAdministration");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("MedicationAdministration")		
+		  .reset("MedicationAdministration")	
+		  .hideIfPseudonymized("MedicationAdministration", "text")
 		  .pseudonymizeReference("MedicationAdministration", "performer", "actor")
 		  .pseudonymizeReference("MedicationAdministration", "note", "authorReference");		  
 	}
@@ -97,7 +98,7 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 	@Search()
 	public Bundle getMedicationAdministration(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
+			
  			@Description(shortDefinition="Return administrations of this medication code")
   			@OptionalParam(name="code")
   			TokenAndListParam theCode,
@@ -183,8 +184,7 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);		
 		paramMap.add("code", theCode);
 		paramMap.add("context", theContext);
 		paramMap.add("device", theDevice);
@@ -317,7 +317,7 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 
 		// Add subject field from record owner field if it is not already there
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

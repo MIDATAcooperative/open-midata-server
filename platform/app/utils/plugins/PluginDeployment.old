@@ -346,11 +346,3 @@ public class PluginDeployment extends AbstractActor {
 	}
 }
 
-class DeployStatus {
-	public Plugin plugin;
-	public DeploymentReport report;
-	public int numStarted;
-	public int numReady;
-	public int numFinished;
-	public int numFailed;
-}

@@ -24,17 +24,24 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import controllers.Circles;
+import models.Consent;
 import models.MidataId;
 import models.Study;
 import models.StudyParticipation;
+import models.enums.AuditEventType;
+import models.enums.ConsentStatus;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
 import models.enums.StudyExecutionStatus;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
+import utils.audit.AuditManager;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -63,10 +70,14 @@ private static ActorSystem system;
   
     
     public static void approve(AccessContext context, Study theStudy, MidataId participant, MidataId app, String group) throws AppException {    	
-	    Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");	    
+	    Set<String> fields = StudyParticipation.STUDY_EXTRA;	    
 		List<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(theStudy._id, CMaps.map("pstatus", ParticipationStatus.REQUEST).map("owner", participant), fields, 0);
 		
 		Studies.autoApprove(app, theStudy, context, theStudy.autoJoinGroup, participants);			
+    }
+    
+    public static void autoConfirm(MidataId consentId) {
+    	autoJoiner.tell(new AutoConfirmMessage(consentId), ActorRef.noSender());
     }
 	
 }
@@ -79,7 +90,8 @@ class AutoJoinerActor extends AbstractActor {
 	@Override
 	public Receive createReceive() {
 	    return receiveBuilder()
-	      .match(JoinMessage.class, this::join)	      
+	      .match(JoinMessage.class, this::join)	   
+	      .match(AutoConfirmMessage.class, this::autoconfirm)
 	      .build();
 	}
 	
@@ -135,4 +147,66 @@ class AutoJoinerActor extends AbstractActor {
 		}
 	}
 	
+	public void autoconfirm(AutoConfirmMessage message) throws Exception {
+		 long st = ActionRecorder.start("AutoJoiner/autoconfirm");
+			try {
+			    AccessLog.logStart("jobs", message.toString());
+				
+			    Consent consent = Consent.getByIdUnchecked(message.getConsentId(), Sets.create(Consent.FHIR, "autoConfirmHandle"));
+			    							
+				if (consent != null && consent.autoConfirmHandle != null && consent.owner != null && consent.status == ConsentStatus.UNCONFIRMED) {
+																	
+					AccessLog.log("START AUTOCONFIRM");		
+					try {
+						String handle = ServiceHandler.decrypt(consent.autoConfirmHandle);
+						
+						if (handle == null) { // Main background service key not valid anymore								
+							return;
+						}
+						
+						KeyManager.instance.continueSession(handle, consent.owner);	
+						AccessContext context = ContextManager.instance.createSessionForDownloadStream(consent.owner, UserRole.ANY);
+						ContextManager.instance.setAccountOwner(consent.owner, consent.owner);							
+						
+						AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_APPROVED).withActor(context, RuntimeConstants.instance.backendService).withModifiedActor(context, consent.owner).withConsent(consent));
+						Circles.consentStatusChange(context, consent, ConsentStatus.ACTIVE);
+						Circles.sendConsentNotifications(context, consent, ConsentStatus.ACTIVE, false);
+						
+						Consent.set(consent._id, "autoConfirmHandle", null);
+						consent.autoConfirmHandle = null;
+						
+						AuditManager.instance.success();
+						AccessLog.log("END AUTOCONFIRM");
+					} finally {
+						
+					    KeyManager.instance.logout();
+					    //ServerTools.endRequest();
+					}
+				
+																						
+				}
+						
+			} catch (Exception e) {
+				ErrorReporter.report("AutoJoiner", null, e);	
+				throw e;
+			} finally {
+				ServerTools.endRequest();
+				ActionRecorder.end("AutoJoiner/autoconfirm", st);
+			}
+	}
+	
+}
+
+class AutoConfirmMessage {	
+	private final MidataId consentId;
+	
+    AutoConfirmMessage(MidataId consentId) {
+    	this.consentId = consentId;
+    }
+
+	public MidataId getConsentId() {
+		return consentId;
+	}
+    
+    
 }

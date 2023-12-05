@@ -18,38 +18,50 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
+import models.PluginIcon;
 import models.ServiceInstance;
 import models.Study;
 import models.UserGroupMember;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
+import models.enums.Permission;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
+import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
+import utils.audit.AuditEventBuilder;
+import utils.audit.AuditExtraInfo;
+import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.DeveloperSecured;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
 import utils.auth.OAuthRefreshToken;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonOutput;
+import utils.json.JsonValidation;
 
 /**
  * Services
@@ -77,16 +89,53 @@ public class Services extends APIController {
     }
     
 	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
     public Result listServiceInstances(Request request) throws AppException {
 
-        MidataId managerId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));     
-        Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(managerId);
-        Set<MidataId> managers = new HashSet<MidataId>();
-        managers.add(managerId);
-        for (UserGroupMember ugm : ugms) managers.add(ugm.userGroup);
-        Set<ServiceInstance> instances = ServiceInstance.getByManager(managers, ServiceInstance.ALL);
-        return ok(JsonOutput.toJson(instances, "ServiceInstance", ServiceInstance.ALL)).as("application/json");
+		AccessContext context = portalContext(request);
+		JsonNode json = request.body().asJson();
+		
+		MidataId appRestriction = JsonValidation.getMidataId(json, "app");
+		MidataId groupRestriction = JsonValidation.getMidataId(json, "group");
+		MidataId serviceRestriction = JsonValidation.getMidataId(json, "service");
+		
+		Set<MidataId> managers = new HashSet<MidataId>();		
+        MidataId managerId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+        
+        if (groupRestriction != null) {
+        	if (context.getCache().getByGroupAndActiveMember(groupRestriction, managerId, Permission.APPLICATIONS) != null) {
+        		managers.add(groupRestriction);
+        	};
+        } else {
+	        Set<UserGroupMember> ugms = context.getCache().getAllActiveByMember();        
+	        managers.add(managerId);
+	        
+	        for (UserGroupMember ugm : ugms) {
+	        	if (context.getCache().getByGroupAndActiveMember(ugm, context.getAccessor(), Permission.SETUP)!=null) {
+	        	  managers.add(ugm.userGroup);
+	        	}
+	        }
+        }
+        
+        Set<ServiceInstance> instances = null;
+        
+        
+        
+        instances = serviceRestriction != null ?
+        		ServiceInstance.getByManagersAndId(managers, serviceRestriction, ServiceInstance.ALL)
+        		: appRestriction != null ? 
+        		ServiceInstance.getByManagersAndApp(managers, appRestriction, ServiceInstance.ALL)
+        		: ServiceInstance.getByManager(managers, ServiceInstance.ALL);
+        
+        for (ServiceInstance sal : instances) {
+			sal.app = Plugin.getById(sal.appId);
+		}
+        Map<String, Set<String>> mapping = new HashMap<String, Set<String>>();
+		mapping.put("ServiceInstance",  Sets.create(ServiceInstance.ALL, "app"));
+		mapping.put("Plugin", Plugin.ALL_PUBLIC);
+		
+        return ok(JsonOutput.toJson(instances, mapping)).as("application/json");
     }
 	
 	@APICall
@@ -111,9 +160,11 @@ public class Services extends APIController {
         AccessContext context = portalContext(request);
         MidataId instanceId = MidataId.from(instanceIdStr);
         
-        ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);        
+        ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(context, instanceId, true, AuditEventType.SERVICE_INSTANCE_DELETED);        
 
         ApplicationTools.deleteServiceInstance(context, instance);
+        
+        AuditManager.instance.success();
         return ok();
     }
 
@@ -126,7 +177,7 @@ public class Services extends APIController {
         AccessContext context = portalContext(request);
         MidataId instanceId = MidataId.from(serviceIdStr);
         
-        ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);        
+        ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(context, instanceId, true, null);        
         Plugin app = Plugin.getById(instance.appId);
         
         Set<MobileAppInstance> instances = MobileAppInstance.getByService(instance._id, MobileAppInstance.APPINSTANCE_ALL);
@@ -137,6 +188,7 @@ public class Services extends APIController {
     }
     
 	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
     public Result addApiKey(Request request, String serviceIdStr) throws AppException {
         AccessLog.log("add api key!");
@@ -145,21 +197,51 @@ public class Services extends APIController {
         AccessContext context = portalContext(request);
         MidataId instanceId = MidataId.from(serviceIdStr);
         
-        ServiceInstance serviceInstance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);  
+        ServiceInstance serviceInstance = ApplicationTools.checkServiceInstanceOwner(context, instanceId, false, null);  
         
-        MobileAppInstance appInstance = ApplicationTools.createServiceApiKey(context, serviceInstance);
+        boolean forceClientCertificate = false;
+        Study study = null;
+        if (serviceInstance.linkedStudy != null) {
+        	study = Study.getById(serviceInstance.linkedStudy, Sets.create("forceClientCertificate"));
+        	if (study == null) throw new InternalServerException("error.internal", "Related project not found.");
+        	forceClientCertificate = study.forceClientCertificate;
+        }
+        
+        Plugin app = Plugin.getById(serviceInstance.appId);
+        if (app == null) throw new BadRequestException("error.unknown.app", "Unknown service");
+        
+        MidataId group = null;
+        if (app.organizationKeys) {
+        	JsonNode json = request.body().asJson();
+        	JsonValidation.validate(json, "group");
+        	group = JsonValidation.getMidataId(json, "group");
+        }
+        
+        AuditManager.instance.addAuditEvent(
+        		AuditEventBuilder.withType(AuditEventType.APIKEY_CREATED)
+        		.withActor(context, context.getActor())
+        		.withModifiedActor(serviceInstance)
+        		.withStudy(study != null ? study._id : null));
+        
+        MobileAppInstance appInstance = ApplicationTools.createServiceApiKey(context, serviceInstance, group);
         
         String aeskey = KeyManager.instance.newAESKey(appInstance._id);	
 
-        MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + SERVICE_EXPIRATION_TIME, UserRole.ANY); 
+        MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + SERVICE_EXPIRATION_TIME, UserRole.ANY, null); 
         OAuthRefreshToken refresh = OAuth2.createRefreshToken(context, appInstance, aeskey);
+        
+        AuditManager.instance.success();
         
         ObjectNode obj = Json.newObject();	 
 
-        obj.put("access_token", session.encrypt());		
-		obj.put("expires_in", SERVICE_EXPIRATION_TIME / 1000l);		
-		obj.put("refresh_token", refresh.encrypt());
-		obj.put("cn", appInstance._id+"."+aeskey);
+        if (!forceClientCertificate) {
+	        obj.put("access_token", session.encrypt());		
+			obj.put("expires_in", SERVICE_EXPIRATION_TIME / 1000l);		
+			obj.put("refresh_token", refresh.encrypt());
+        }
+		
+		obj.put("ou", appInstance._id.toString());
+		obj.put("cn", aeskey);
 						
 		return ok(obj)
 				.as("application/json")
@@ -175,12 +257,14 @@ public class Services extends APIController {
         MidataId instanceId = MidataId.from(serviceIdStr);
         MidataId apikeyId = MidataId.from(apikeyIdStr);
         
-        ServiceInstance serviceInstance = ApplicationTools.checkServiceInstanceOwner(context, instanceId);          
+        ServiceInstance serviceInstance = ApplicationTools.checkServiceInstanceOwner(context, instanceId, true, AuditEventType.APIKEY_DELETED);          
         MobileAppInstance appInstance = MobileAppInstance.getById(apikeyId, MobileAppInstance.APPINSTANCE_ALL);
 
         if (appInstance == null || appInstance.serviceId == null || !appInstance.serviceId.equals(serviceInstance._id)) throw new InternalServerException("error.internal", "User not authorized to do action.");
 
         ApplicationTools.removeAppInstance(context, managerId, appInstance);
+        
+        AuditManager.instance.success();
         return ok();
     }
 }

@@ -47,6 +47,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -67,6 +68,10 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 		searchParamNameToTypeMap.put("EpisodeOfCare:patient" , Sets.create("Patient"));
 		
 		registerSearches("EpisodeOfCare", getClass(), "getEpisodeOfCare");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("EpisodeOfCare")	
+		  .hideIfPseudonymized("EpisodeOfCare", "text");	
 	}
 	
 	@Override
@@ -79,11 +84,7 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 			@Description(shortDefinition="The ID of the resource")
 			@OptionalParam(name="_id")
 			TokenAndListParam the_id, 
-			   
-			@Description(shortDefinition="The language of the resource")
-			@OptionalParam(name="_language")
-			StringAndListParam the_language, 
-			    
+			   					    
 			@Description(shortDefinition="Care manager/care coordinator for the patient")
   			@OptionalParam(name="care-manager", targetTypes={  } )
   			ReferenceAndListParam theCare_manager, 
@@ -151,8 +152,7 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);		
 		paramMap.add("care-manager", theCare_manager);
 		paramMap.add("condition", theCondition);
 		paramMap.add("date", theDate);
@@ -241,7 +241,7 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 		super.processResource(record, p);
 		
 		if (p.getPatient().isEmpty()) {			
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setPatient(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

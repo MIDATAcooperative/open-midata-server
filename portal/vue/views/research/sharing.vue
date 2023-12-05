@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-    <study-nav page="study.sharing"></study-nav>
+    <study-nav page="study.sharing" :study="study"></study-nav>
     <tab-panel :busy="isBusy">
 	
 	    <p v-t="'researcher_sharing.description'"></p>
@@ -110,7 +110,9 @@ export default {
         contents : [],
         apps : [],
         formats : [],
-        found : 0
+        found : 0,
+        study : null,
+        studyGroups : []
     }),
 
     components: {  TabPanel, Panel, ErrorBox, FormGroup, StudyNav, Success, CheckBox },
@@ -124,10 +126,12 @@ export default {
             me.doBusy(records.getInfos(userId, { }, "ALL").
             then(function(results) {
                 $data.tooManyConsents = results.status == 202;
-                $data.infos = results.data;              
-                $data.contents = results.data[0].contents;
-                $data.apps = results.data[0].apps;
-                $data.formats = results.data[0].formats;
+                $data.infos = results.data;        
+                if (results.data && results.data.length) {
+	                $data.contents = results.data[0].contents;
+	                $data.apps = results.data[0].apps;
+	                $data.formats = results.data[0].formats;
+                }
                 
                 me.doBusy(apps.getApps({ _id : $data.apps },["_id","name"]).then(function(result) {
                     let appNames = {};
@@ -173,7 +177,7 @@ export default {
             properties["force-local"] = undefined;
             properties.study = $data.studyid;
             properties["study-group"] = $data.crit.studyGroup;
-            properties["study-related"] = true;
+            properties["study-related"] = "public";
             properties.owner = undefined;
             return properties;
 	    },
@@ -231,7 +235,7 @@ export default {
         unshare() {         
             const { $data } = this, me = this;
             var data = {
-                    "properties" : sharingQuery(), 
+                    "properties" : me.sharingQuery(), 
                     "target-study" : $data.studyid, 
                     "target-study-group" : $data.crit.studyGroup
                 };

@@ -78,7 +78,8 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 		registerSearches("ImagingStudy", getClass(), "getImagingStudy");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("ImagingStudy")		
+		  .reset("ImagingStudy")	
+		  .hideIfPseudonymized("ImagingStudy", "text")
 		  .pseudonymizeReference("ImagingStudy", "series", "performer", "actor")
 		  .pseudonymizeReference("ImagingStudy", "note", "authorReference");
 	}
@@ -91,9 +92,7 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 	@Search()
 	public Bundle getImagingStudy(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+		
   			@Description(shortDefinition="The order for the image")
   			@OptionalParam(name="basedon", targetTypes={  } )
   			ReferenceAndListParam theBasedon, 
@@ -196,8 +195,7 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);	
 		paramMap.add("basedon", theBasedon);
 		paramMap.add("bodysite", theBodysite);
 		paramMap.add("dicom-class", theDicom_class);
@@ -325,7 +323,7 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 
 		// Add subject field from record owner field if it is not already there
 		if (p.getSubject().isEmpty()) {  // TODO correct to use patient?
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

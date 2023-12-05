@@ -24,7 +24,7 @@
 	        <span v-if="member.zip||member.city">{{ member.zip }} {{ member.city }}<br></span>
 	        {{ member.country }}<br>
 	        <span v-if="member.phone"><span v-t="'common.user.phone'"></span>: {{ member.phone }}<br></span>
-	        <span v-if="member.mobile"><span v-t="'common.user.mobile'"></span>: {{ member.mobile }}<br></span>	  
+	        <span v-if="member.mobile"><span v-t="'common.user.mobile_phone'"></span>: {{ member.mobile }}<br></span>	  
 	        <span v-if="member.email"><span v-t="'common.user.email'"></span>: {{ member.email }}<br></span>
         </address>
         <p v-t="'provider_memberdetails.pick_consent'">Pick consent:</p>
@@ -99,7 +99,7 @@ export default {
                 $data.backwards = data.backwards;
                 
                 $data.activeFound = false;
-                for (let consent of $data.consents) { if (consent.status=="ACTIVE" || consent.status=="FROZEN") $data.activeFound = true; }
+                for (let consent of $data.consents) { if (consent.status=="ACTIVE" || consent.status=="FROZEN" || consent.status=="PRECONFIRMED") $data.activeFound = true; }
                 
                 
                 if (data.memberkey) {
@@ -116,7 +116,7 @@ export default {
             $data.hideAdd = false;
             $data.consent = _.filter($data.consents, (x) => x._id == consent)[0];
             
-            if ($data.consent != null && ($data.consent.status=="ACTIVE" || $data.consent.status=="FROZEN")) {
+            if ($data.consent != null && ($data.consent.status=="ACTIVE" || $data.consent.status=="FROZEN" || $data.consent.status=="PRECONFIRMED")) {
                 $data.setup = { aps : $data.consent._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : false, type : "memberkeys" };
             } else {
                 $data.setup = null;

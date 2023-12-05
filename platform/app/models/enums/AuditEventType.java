@@ -28,6 +28,8 @@ public enum AuditEventType {
 	
 	TRIED_USER_REREGISTRATION(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "tried-user-reregistration", "Attempted User reregistration"), AuditEventAction.E),
 	
+	NON_PERFECT_ACCOUNT_MATCH(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "non-perfect-account-match", "Non perfect account match during access from 3rd party"), AuditEventAction.E),
+	
 	USER_AUTHENTICATION(new Coding(System.DCM,"110114","User Authentication"), new Coding(System.DCM, "110122", "Login"), AuditEventAction.E),
 	
 	USER_PASSWORD_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-password-change", "Password changed"), AuditEventAction.U),
@@ -67,6 +69,11 @@ public enum AuditEventType {
 	 */
 	USER_ACCOUNT_DELETED(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-account-deleted", "User account deleted"), AuditEventAction.D),
 	
+	ORGANIZATION_CREATED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "organization-created", "Organization created"), AuditEventAction.C),
+
+	ORGANIZATION_CHANGED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "organization-updated", "Organization updated"), AuditEventAction.U),
+	
+	ORGANIZATION_DELETED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "organization-deleted", "Organization deleted"), AuditEventAction.D),
 	
 	APP_FIRST_USE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "app-first-use", "First use of application"), AuditEventAction.E),
 	
@@ -199,7 +206,21 @@ public enum AuditEventType {
 	 */
 	USER_TERMS_OF_USE_AGREED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "user-terms-of-use-agreed", "Agreed to terms of use"), AuditEventAction.E),
 	
+	USER_TERMS_OF_USE_NOTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "user-terms-of-use-noted", "Noted terms of use"), AuditEventAction.E),
+	
 	AUDIT_LOG_USE(new Coding(System.DCM,"110101","Audit Log Used"), new Coding(System.MIDATA, "audit-log-used", "Audit Log Used"), AuditEventAction.R),
+	
+	REST_CREATE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.HL7REST, "create", "Resource created"), AuditEventAction.C),
+	
+	REST_UPDATE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.HL7REST, "update", "Resource updated"), AuditEventAction.U),
+	
+    REST_READ(new Coding(System.DCM,"110112","Query"), new Coding(System.HL7REST, "read", "Resource read"), AuditEventAction.R),
+    
+    REST_VREAD(new Coding(System.DCM,"110112","Query"), new Coding(System.HL7REST, "vread", "Resource version read"), AuditEventAction.R),
+    
+    REST_HISTORY(new Coding(System.DCM,"110112","Query"), new Coding(System.HL7REST, "history", "Resource history read"), AuditEventAction.R),
+    
+    REST_SEARCH(new Coding(System.DCM,"110112","Query"), new Coding(System.HL7REST, "search", "Searched for resources"), AuditEventAction.R),
 	
 	/**
 	 * a user has searched for the Person record of another user
@@ -208,15 +229,39 @@ public enum AuditEventType {
 	
 	WELCOME_SENT(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "welcome-sent", "Welcome mail sent"), AuditEventAction.E),
 	
+	EMAIL_SENT(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "email-sent", "Email sent"), AuditEventAction.E),
+	
+	SMS_SENT(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "sms-sent", "SMS sent"), AuditEventAction.E),
+	
+	RESTHOOK(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "resthook-called", "Resthook called"), AuditEventAction.E),
+	
+	SCRIPT_INVOCATION(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "script-invocation", "Script invoced"), AuditEventAction.E),
+	
 	ADDED_AS_TEAM_MEMBER(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "added-as-team-member", "Added as team member"), AuditEventAction.C),
 	
 	UPDATED_ROLE_IN_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "updated-role-in-team", "Updated role in team"), AuditEventAction.U),
+	
+	ACCESS_CONFIRMATION_REQUEST(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "access-confirmation-request", "Access confirmation request"), AuditEventAction.E),
+	
+	ACCESS_CONFIRMATION(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "access-confirmation", "Access confirmation"), AuditEventAction.E),
 	
 	REMOVED_FROM_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "removed-from-team", "Removed from team"), AuditEventAction.D),
 	
 	APP_DEFINITION_CHANGED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "app-definition-changed", "App Definition Changed"), AuditEventAction.U),
 	
-	SIGNATURE_FAILURE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "signature-failure", "Signature failure"), AuditEventAction.E);
+	PLUGIN_DEPLOYED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "plugin-deployed", "Plugin deployed"), AuditEventAction.U),
+	
+	PLUGIN_UNDEPLOYED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "plugin-undeployed", "Plugin undeployed"), AuditEventAction.U),
+	
+	SIGNATURE_FAILURE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "signature-failure", "Signature failure"), AuditEventAction.E),
+	
+	APIKEY_CREATED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "apikey-created", "API-Key created"), AuditEventAction.C),
+	
+	APIKEY_DELETED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "apikey-deleted", "API-Key deleted"), AuditEventAction.D),
+	
+    SERVICE_INSTANCE_CREATED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "service-instance-created", "Service-Instance created"), AuditEventAction.C),
+	
+	SERVICE_INSTANCE_DELETED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "service-instance-deleted", "Service-Instance deleted"), AuditEventAction.D);
 	
 	private AuditEventAction action;
 	private Coding type;
@@ -243,5 +288,6 @@ public enum AuditEventType {
 	private static class System {
 		public final static String DCM = "http://dicom.nema.org/resources/ontology/DCM";
 		public final static String MIDATA = "http://midata.coop/codesystems/event-types";
+		public final static String HL7REST = "http://hl7.org/fhir/restful-interaction";
     }
 }

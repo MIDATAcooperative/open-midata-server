@@ -132,6 +132,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 */
 	public @NotMaterialized MidataId owner; // person the record is about
 			
+	/**
+	 * the type of the owner. 
+	 * THe owner may also be a group instead of a person
+	 */
+	public @NotMaterialized String ownerType;
 	
 	/**
 	 * The AES key that is used to encrypt/decrypt this record
@@ -167,7 +172,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 */
 	public @NotMaterialized boolean isReadOnly;
 	
-	public Object attached;
+	public @NotMaterialized Object attached;
 	
 	public DBRecord() { meta = new BasicBSONObject(); }			
 	
@@ -267,6 +272,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		String format = meta.getString("format");
 		String content = meta.getString("content");
 		return "Record('"+format+"','"+content+"')";
+	}
+	
+	public String getFormatOrNull() {
+		if (meta == null) return null;
+		return meta.getString("format");
 	}
 
 }

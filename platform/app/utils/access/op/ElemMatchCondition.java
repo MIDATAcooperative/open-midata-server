@@ -19,6 +19,7 @@ package utils.access.op;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ElemMatchCondition extends AndCondition {
@@ -30,6 +31,10 @@ public class ElemMatchCondition extends AndCondition {
 
 	public ElemMatchCondition(Map<String, Object> restrictions) {
 		super(restrictions);
+	}
+	
+	public ElemMatchCondition(List<Condition> parts) {
+		super(parts);
 	}
 	
 	@Override
@@ -59,4 +64,23 @@ public class ElemMatchCondition extends AndCondition {
     		return result;
     	}
     }
+
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder("{ $elemMatch : { ");
+		boolean first = true;
+		for (Condition check : checks) {
+			if (first) first=false; else result.append(", ");
+			result.append(check.toString());
+		}
+		result.append("} }");
+		return result.toString();
+	}
+	
+	@Override
+	public AndCondition createAndOfThisType(List<Condition> parts) {
+		return new ElemMatchCondition(parts);
+	}
+	
+	
 }

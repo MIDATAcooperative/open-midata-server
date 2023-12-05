@@ -60,7 +60,8 @@ public class RiskAssessmentResourceProvider extends RecordBasedResourceProvider<
 		registerSearches("RiskAssessment", getClass(), "getRiskAssessment");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("RiskAssessment")		
+		  .reset("RiskAssessment")	
+		  .hideIfPseudonymized("RiskAssessment", "text")
 		  .pseudonymizeReference("RiskAssessment", "performer")
 		  .pseudonymizeReference("RiskAssessment", "note", "authorReference")
 		  ;		  
@@ -81,10 +82,7 @@ public class RiskAssessmentResourceProvider extends RecordBasedResourceProvider<
 	@Search()
 	public Bundle getRiskAssessment(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
-
-			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
-
-																		
+																			
 			@Description(shortDefinition="Condition assessed")
   			@OptionalParam(name="condition", targetTypes={  } )
   			ReferenceAndListParam theCondition, 
@@ -156,8 +154,7 @@ public class RiskAssessmentResourceProvider extends RecordBasedResourceProvider<
 		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
+		paramMap.add("_id", theId);		
 	
 		paramMap.add("condition", theCondition);
 		paramMap.add("date", theDate);
@@ -286,7 +283,7 @@ public class RiskAssessmentResourceProvider extends RecordBasedResourceProvider<
 		
 		// Add subject field from record owner field if it is not already there
 		if (p.getSubject().isEmpty()) {			
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 	

@@ -16,7 +16,7 @@
 -->
 <template>
 <div>
-    <study-nav page="study.rules"></study-nav>
+    <study-nav page="study.rules" :study="study"></study-nav>
     <tab-panel :busy="isBusy">
 	        
         <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="submit()" role="form">		
@@ -26,20 +26,25 @@
             <form-group name="recordQuery" label="studyrules.sharing_query">
                 <access-query :query="study.recordQuery" :details="true"></access-query>	  
                 <div class="margin-top">   
-                    <router-link :to="{ path : './study.query', query : { studyId : studyid } }" class="btn btn-default" v-t="'studyrules.queryeditor_btn'"></router-link>
+                    <router-link :to="{ path : './study.query', query : { studyId : studyid } }" class="btn btn-default" v-t="'studyrules.queryeditor_btn'"></router-link>                    
+                </div>
+                <div class="margin-top">
+                    <check-box name="emptyQuery" :disabled="studyLocked()" :checked="queryIsEmpty()" @click="toggleQueryEmpty()">
+                      <span class="margin-left" v-t="'studyrules.sharing_query_empty'"></span>
+                    </check-box>                  
                 </div>
             </form-group>
 
             <form-group name="startDate" label="studyrules.startDate" :path="errors.startDate">	    
-                <input id="startDate" name="startDate" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.startDate"  />                 
+                <input id="startDate" name="startDate" type="date" class="form-control" :disabled="studyLocked()" v-date="study.startDate" v-validate v-model="study.startDate"  />                 
             </form-group>
     
             <form-group name="endDate" label="studyrules.endDate" :path="errors.endDate">	    
-                <input id="endDate" name="endDate" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.endDate" />                  
+                <input id="endDate" name="endDate" type="date" class="form-control" :disabled="studyLocked()" v-date="study.endDate" v-validate v-model="study.endDate" />                  
             </form-group>
     
             <form-group name="dataCreatedBefore" label="studyrules.dataCreatedBefore" :path="errors.dataCreatedBefore">	    
-                <input id="dataCreatedBefore" name="dataCreatedBefore" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.dataCreatedBefore"/>        
+                <input id="dataCreatedBefore" name="dataCreatedBefore" type="date" class="form-control" :disabled="studyLocked()" v-date="study.dataCreatedBefore" v-validate v-model="study.dataCreatedBefore"/>        
             </form-group>
         
             <form-group name="termsOfUse" label="studyrules.terms_of_use" :path="errors.termsOfUse">	    
@@ -61,6 +66,12 @@
             <form-group name="requirements" label="studyrules.requirements" :path="errors.requirements">
                 <check-box v-for="req in requirements" :key="req" :name="req" :disabled="studyLocked()" :checked="study.requirements.indexOf(req)>=0" @click="toggle(study.requirements, req);">
                     <span class="margin-left" v-t="'enum.userfeature.'+req"></span>
+                </check-box>		 
+            </form-group>
+            
+            <form-group name="security" label="studyrules.security" :path="errors.security">
+                <check-box name="forceClientCertificate" :disabled="studyLocked()" v-model="study.forceClientCertificate">
+                    <span class="margin-left" v-t="'studyrules.forceClientCertificate'"></span>
                 </check-box>		 
             </form-group>
 
@@ -110,7 +121,8 @@ export default {
         leavePolicies : studies.leavePolicies,
         rejoinPolicies : studies.rejoinPolicies,
         terms : [],
-        observers : null
+        observers : null,
+        undoInfo : {}
     }),
 
     components: {  TabPanel, Panel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, RadioBox, AccessQuery, Typeahead },
@@ -151,7 +163,8 @@ export default {
                 $data.study.consentObserverNames = plugins;
             } else $data.study.consentObserverNames = [];
                         
-            let data = { joinMethods : $data.study.joinMethods, termsOfUse : $data.study.termsOfUse, requirements: $data.study.requirements, startDate : $data.study.startDate, endDate : $data.study.endDate, dataCreatedBefore : $data.study.dataCreatedBefore, consentObserverNames : $data.study.consentObserverNames, leavePolicy : $data.study.leavePolicy, rejoinPolicy : $data.study.rejoinPolicy };
+            let data = { joinMethods : $data.study.joinMethods, termsOfUse : $data.study.termsOfUse, requirements: $data.study.requirements, startDate : $data.study.startDate, endDate : $data.study.endDate, dataCreatedBefore : $data.study.dataCreatedBefore, consentObserverNames : $data.study.consentObserverNames, leavePolicy : $data.study.leavePolicy, rejoinPolicy : $data.study.rejoinPolicy, forceClientCertificate : $data.study.forceClientCertificate };
+            if ($data.study.recordQuery) data.recordQuery = $data.study.recordQuery;
             me.doAction("change", server.put(jsRoutes.controllers.research.Studies.update($data.studyid).url, data)
             .then(function(data) { 				
                 me.reload();            
@@ -166,6 +179,29 @@ export default {
         toggle(array,itm) {		
 		    var pos = array.indexOf(itm);
 		    if (pos < 0) array.push(itm); else array.splice(pos, 1);
+        },
+               
+        
+        /*queryIsNonEmpty() {
+           const { $data } = this;
+           const ne = function(x) { return x && x.length; };
+           let q = $data.study.recordQuery;
+           return q && (q.$or || ne(q.group) || ne(q.content) || ne(q.app));
+        },*/ 
+        
+        queryIsEmpty() {
+           const { $data } = this;
+           let q = $data.study.recordQuery;
+           return q && !q.$or && !q.group && q.content && q.content.length == 0; 
+        },
+        
+        toggleQueryEmpty() {
+           const { $data } = this;
+           if (!this.queryIsEmpty()) {
+             $data.undoInfo = $data.study.recordQuery; 
+             $data.study.recordQuery = { content : [] };
+           } 
+           else $data.study.recordQuery = $data.undoInfo;
         }
            
     },

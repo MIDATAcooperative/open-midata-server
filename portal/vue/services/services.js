@@ -22,8 +22,8 @@ import server from "./server";
         return server.get(jsRoutes.controllers.Services.listServiceInstancesStudy(id).url);
     };
 
-    service.list = function() {
-        return server.get(jsRoutes.controllers.Services.listServiceInstances().url);
+    service.list = function(crit) {	          
+        return server.post(jsRoutes.controllers.Services.listServiceInstances().url, crit || {});
     };
     
     service.removeService = function(instanceId) {
@@ -34,8 +34,10 @@ import server from "./server";
         return server.get(jsRoutes.controllers.Services.listApiKeys(instanceId).url);
     };
 
-    service.addApiKey = function(instanceId) {
-        return server.post(jsRoutes.controllers.Services.addApiKey(instanceId).url);
+    service.addApiKey = function(instanceId, optionalOrgId) {
+	    let p = {};
+        if (optionalOrgId) p.group = optionalOrgId;
+        return server.post(jsRoutes.controllers.Services.addApiKey(instanceId).url, p);
     };
     
     service.removeApiKey = function(instanceId, keyId) {

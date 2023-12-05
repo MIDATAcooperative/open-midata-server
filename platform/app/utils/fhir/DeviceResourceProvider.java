@@ -64,7 +64,8 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 		registerSearches("Device", getClass(), "getDevice");
 		
 		FhirPseudonymizer.forR4()
-		  .reset("Device")		  
+		  .reset("Device")	
+		  .hideIfPseudonymized("Device", "text")
 		  .pseudonymizeReference("Device", "note", "authorReference");
 	}
 	
@@ -243,7 +244,7 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 	public void processResource(Record record, Device p) throws AppException {
 		super.processResource(record, p);
 		if (p.getPatient().isEmpty()) {
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setPatient(FHIRTools.getReferenceToOwner(record));
 		}
 	}
 

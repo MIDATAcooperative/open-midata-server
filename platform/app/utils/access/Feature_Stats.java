@@ -115,8 +115,11 @@ public class Feature_Stats extends Feature {
 			}
 			
 			AccessLog.logBegin("stats count local");
-			for (StatsIndexKey inf : countConsent(qloc, next, Feature_Indexes.getContextForAps(q, q.getApsId()))) {
-				map.put(getKey(inf), inf);
+			if (!q.getContext().isUserGroupContext() || !(q.getApsId().equals(q.getContext().getAccessor()))) {
+				for (StatsIndexKey inf : countConsent(qloc, next, Feature_Indexes.getContextForAps(q, q.getApsId()))) {
+					map.put(getKey(inf), inf);
+					//AccessLog.log("REG: "+getKey(inf)+"="+inf.count);
+				}
 			}
 			AccessLog.logEnd("stats count local");
 						
@@ -148,6 +151,7 @@ public class Feature_Stats extends Feature {
 				for (Consent consent : consents) {
 					for (StatsIndexKey inf : countConsent(qloc, next, Feature_Indexes.getContextForAps(q, consent._id))) {
 					  map.put(getKey(inf), inf);
+					  //AccessLog.log("REG-C: "+getKey(inf)+"="+inf.count);
 					}
 				}
 			}
@@ -163,8 +167,10 @@ public class Feature_Stats extends Feature {
 				if (!q.getApsId().equals(q.getCache().getAccountOwner())) lookup.setAps(q.getApsId());
 				Collection<StatsIndexKey> matches = index.lookup(lookup);										
 				
-				for (StatsIndexKey inf : matches) {									
+				for (StatsIndexKey inf : matches) {		
+					if (q.getContext().isUserGroupContext() && inf.aps.equals(q.getApsId())) continue;
 					map.putIfAbsent(getKey(inf), inf);
+					//AccessLog.log("REG-I: "+getKey(inf)+"="+inf.count);
 				}
 				
 				IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getAccessor(), q.getApsId(), true);
@@ -215,6 +221,8 @@ public class Feature_Stats extends Feature {
 		String groupSystem = q.getStringRestriction("group-system");
 		APS myaps = q.getCache().getAPS(stream, owner);
 		if (!myaps.isAccessible()) return null;
+		Date calculated = new Date();
+		
 		BasicBSONObject obj = myaps.getMeta("_info");		
 		if (cached && obj != null && obj.containsField("apps")) { // Check for apps for compatibility with old versions 						
 			inf.count = obj.getInt("count");				
@@ -251,17 +259,19 @@ public class Feature_Stats extends Feature {
 			}			 													
 		}		
 		
-		if (cached && recs.size()>0 && inf.app!=null && !q.restrictedBy("deleted")) {			
-			BasicBSONObject r = new BasicBSONObject();			
-			r.put("formats", inf.format);
-			r.put("contents", inf.content);
-			r.put("apps", inf.app.toString());
-			r.put("count", inf.count);
-			r.put("newest", new Date(inf.newest));
-			r.put("oldest", new Date(inf.oldest));
-			r.put("newestRecord", inf.newestRecord.toString());
-			r.put("calculated", new Date());
-			myaps.setMeta("_info", r);			
+		if (cached && recs.size()>0 && inf.app!=null && !q.restrictedBy("deleted")) {	
+			if (myaps.getLastChanged() < calculated.getTime() - 1000) {
+				BasicBSONObject r = new BasicBSONObject();			
+				r.put("formats", inf.format);
+				r.put("contents", inf.content);
+				r.put("apps", inf.app.toString());
+				r.put("count", inf.count);
+				r.put("newest", new Date(inf.newest));
+				r.put("oldest", new Date(inf.oldest));
+				r.put("newestRecord", inf.newestRecord.toString());
+				r.put("calculated", calculated);
+				myaps.setMeta("_info", r);			
+			}
 		}
 		return inf;
 	}

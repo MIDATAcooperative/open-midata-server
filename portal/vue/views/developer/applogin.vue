@@ -52,6 +52,11 @@
                     <option v-for="template in loginButtonsTemplates" :key="template" :value="template">{{ $t('enum.loginbuttonstemplate.'+template) }}</option>
                 </select>		        
 		    </form-group>	
+
+            <form-group label="applogin.urlParams">
+		        <input type="text" class="form-control" v-model="urlParams" @keypress="refresh()">
+                <p class="form-text">{{ $t('applogin.urlParams2') }}</p>
+		    </form-group>	
 		  
 		   <form-group name="withLogout" label="manageapp.logout" v-if="app._id">
 		     <check-box name="withLogout" v-model="app.withLogout" :path="errors.withLogout" :required="logoutRequired">		      
@@ -100,7 +105,7 @@
                 </div>
             
                 <div class="previewtile" >
-                    <Registration :preview="app" :previewlinks="links"></Registration>
+                    <Registration :preview="app" :previewlinks="links" :query="convertParams(urlParams)"></Registration>
                 </div>
             </div>
 
@@ -145,6 +150,17 @@
             
                 <div class="previewtile" >
                     <postregister :preview="{ requirement : 'BIRTHDAY_SET' }"></postregister>
+                </div>
+            </div>
+            
+             <div class="outerpreview" v-if="hasRequirement('GENDER_SET') && previewType == 'EXISTING'">
+                <div class="alert alert-info m-2">
+                    <strong v-t="'applogin.step.gender_set'">Test</strong>
+                    <div class="preview-req" v-t="'applogin.optional'">Required</div>
+                </div>
+            
+                <div class="previewtile" >
+                    <postregister :preview="{ requirement : 'GENDER_SET' }"></postregister>
                 </div>
             </div>
 
@@ -321,7 +337,8 @@ export default {
 		query : {},		
 		terms : [],
         links : [],
-        logoutRequired : false
+        logoutRequired : false,
+        urlParams : ""
     }),
 
     components: {  OAuth2, Registration, Confirm, Postregister, Panel, ErrorBox, FormGroup, CheckBox, Typeahead, AccessQuery },
@@ -338,7 +355,7 @@ export default {
 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys"])
 		    .then(function(data) { 
                 let app = data.data[0];					
                 if (!app.requirements) { app.requirements = []; }				                                
@@ -401,6 +418,12 @@ export default {
             if (!$data.app || !$data.app.redirectUri) return "";
             return "/oauth.html#/portal/oauth2?response_type=code&client_id="+encodeURIComponent($data.app.filename)+"&redirect_uri="+encodeURIComponent($data.app.redirectUri.split(" ")[0]);
 	    },
+
+        convertParams(inp) {
+           if (!inp || inp == "") return navigator;
+           let obj = Object.fromEntries(new URLSearchParams(inp));
+           return obj;
+        },
 	
 	    keyCount(obj) {
 			const { $data, $route, $router } = this, me = this;
@@ -432,7 +455,15 @@ export default {
 											
 			me.doAction('submit', apps.updatePlugin($data.app))
 			.then(function() { $router.push({ path : "./manageapp", query : { appId : $route.query.appId } }); });			
-		}				
+		},
+        
+        refresh() {
+           let p = this.$data.previewType;
+           if (p) {
+            this.$data.previewType = "";
+            window.setTimeout(() => { this.$data.previewType = p },100);
+           }
+        }
     },
 
     created() {

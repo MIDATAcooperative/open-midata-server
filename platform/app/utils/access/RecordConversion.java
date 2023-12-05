@@ -23,8 +23,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 
 import models.MidataId;
@@ -39,17 +41,27 @@ public class RecordConversion {
 		Record record = new Record();
 		
 		record._id = dbrecord._id;
+		record.context = dbrecord.context;
 		record.format = (String) dbrecord.meta.get("format");		
 		if (record.format != null) {
 		  record.app = MidataId.from(dbrecord.meta.get("app"));
+		  record.version = (String) dbrecord.meta.get("version");
+		  
 		  Object creator = dbrecord.meta.get("creator");
 		  if (creator != null) record.creator = MidataId.from(creator); else record.creator = dbrecord.owner;
+		  
+		  Object modifiedBy = dbrecord.meta.get("modifiedBy");
+		  if (modifiedBy != null) {
+			  if ("O".equals(modifiedBy)) record.modifiedBy = dbrecord.owner;
+			  else record.modifiedBy = MidataId.from(modifiedBy); 
+		  } else record.modifiedBy = record.creator;
+		  
 		  record.name = (String) dbrecord.meta.get("name");				
 		  record.created = (Date) dbrecord.meta.get("created");
 		  record.lastUpdated = (Date) dbrecord.meta.get("lastUpdated");
 		  if (record.lastUpdated == null) record.lastUpdated = record.created;
 		  record.description = (String) dbrecord.meta.get("description");
-		  record.version = (String) dbrecord.meta.get("version");
+		  
 		  if (record.version == null) record.version = VersionedDBRecord.INITIAL_VERSION;
 						
 		  record.content = (String) dbrecord.meta.get("content");
@@ -57,17 +69,12 @@ public class RecordConversion {
 		  if (code != null) {
 		    record.code = (code instanceof String) ? Collections.singleton((String) code) : new HashSet((Collection) code);
 		  }
-		  Object tags = dbrecord.meta.get("tags");
-		  if (tags != null) {
-			  record.tags = new HashSet<String>();
-			  for (Object o : ((BasicBSONList) tags)) {
-				  record.tags.add(o.toString());				  
-			  }
-		  }			
+		  record.tags = getTags(dbrecord);		  	
 		}
 		
 		record.owner = dbrecord.owner;
-		record.ownerName = (String) dbrecord.meta.get("ownerName");						
+		record.ownerName = (String) dbrecord.meta.get("ownerName");
+		record.ownerType = dbrecord.ownerType;
 		record.group = dbrecord.group;
 		record.id = dbrecord.id;
 		record.isStream = dbrecord.isStream!=null;
@@ -87,16 +94,29 @@ public class RecordConversion {
 		return result;
 	}
 	
-
+	public Set<String> getTags(DBRecord dbrecord) {
+		 Object tags = dbrecord.meta.get("tags");
+		 if (tags != null) {
+			  Set<String> tagSet = new HashSet<String>();
+			  for (Object o : ((BasicBSONList) tags)) {
+				  tagSet.add(o.toString());					  
+			  }			  
+			  return tagSet;
+		 } else return null;		 
+	}
+	
 	
 	public DBRecord toDB(Record record) {
 		DBRecord dbrecord = new DBRecord();
-		dbrecord._id = record._id;
-		dbrecord.data = record.data;
+		dbrecord._id = record._id;		
 		dbrecord.owner = record.owner;
 		BSONObject meta = dbrecord.meta;		
 		meta.put("app", record.app !=null ? record.app.toDb() : null);
 		meta.put("creator", (record.creator != null && !record.creator.equals(record.owner)) ? record.creator.toDb() : null);
+		if (record.modifiedBy != null && !record.modifiedBy.equals(record.creator)) {
+		  meta.put("modifiedBy", !record.modifiedBy.equals(record.owner) ? record.modifiedBy.toDb() : "O");
+		}		  
+						
 		meta.put("name", record.name);
 		meta.put("created", record.created);
 		if (record.lastUpdated != null) meta.put("lastUpdated", record.lastUpdated);
@@ -111,6 +131,7 @@ public class RecordConversion {
 		   meta.put("code", record.code);
 		}
 		dbrecord.data = record.data;
+		if (record.data==null) dbrecord.data = new BasicBSONObject();
 		return dbrecord;
 	}
 	

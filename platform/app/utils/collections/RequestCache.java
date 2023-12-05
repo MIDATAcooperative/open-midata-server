@@ -22,15 +22,23 @@ import java.util.Map;
 
 import models.MidataId;
 import models.User;
+import models.enums.UserStatus;
 import utils.buffer.StudyPublishBuffer;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
+import utils.messaging.SubscriptionBuffer;
 
 public class RequestCache {
 
 	private Map<MidataId, User> userCache;
 	private StudyPublishBuffer studyPublishBuffer;
+	private SubscriptionBuffer subscriptionBuffer;
 	
-	public User getUserById(MidataId userId) throws AppException {
+	public User getUserById(MidataId userId) throws InternalServerException {
+		return getUserById(userId, false);
+	}
+	
+	public User getUserById(MidataId userId, boolean alsoDeleted) throws InternalServerException {
 		User result = null;
 		if (userCache == null) {
 			userCache = new HashMap<MidataId, User>();
@@ -38,9 +46,10 @@ public class RequestCache {
 			result = userCache.get(userId);
 		}
 		if (result == null) {
-			result = User.getById(userId, User.PUBLIC);
+			result = User.getByIdAlsoDeleted(userId, User.PUBLIC);
 			userCache.put(userId, result);
 		}
+		if (!alsoDeleted && result != null && result.status.isDeleted()) return null;
 		return result;
 	}
 	
@@ -51,8 +60,18 @@ public class RequestCache {
 		return studyPublishBuffer;
 	}
 	
+	public void bufferResourceChanges() {
+		if (subscriptionBuffer == null) subscriptionBuffer = new SubscriptionBuffer();
+	}
+	
+	public SubscriptionBuffer getSubscriptionBuffer() {
+		return subscriptionBuffer;
+	}
+	
 	public void save() throws AppException {
 		if (studyPublishBuffer != null) studyPublishBuffer.save();
 		studyPublishBuffer = null;
+		if (subscriptionBuffer != null) subscriptionBuffer.flush();
+		subscriptionBuffer = null;
 	}
 }

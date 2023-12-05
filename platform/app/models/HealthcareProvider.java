@@ -19,9 +19,13 @@ package models;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.EntityType;
+import models.enums.UserStatus;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
@@ -36,8 +40,10 @@ public class HealthcareProvider extends Model {
 	
 	private static final String collection = "providers";
 	
+	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString(), null));
+	
 	@NotMaterialized
-	 public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "name","description","url")); 
+	 public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "name","description","url","parent","status","city", "zip", "country", "address1", "address2", "phone", "mobile")); 
 		
 	/**
 	 * the name of the healthcare provider (clinic)
@@ -45,6 +51,50 @@ public class HealthcareProvider extends Model {
 	public String name;
 	public String description;
 	public String url;
+	public MidataId parent;
+	public MidataId managerId;
+	public EntityType managerType;
+	public UserStatus status;
+	
+	/**
+	 * additional identifiers
+	 */
+	@NotMaterialized public List<String> identifiers;
+	
+	/**
+	 * City of clinic address
+	 */
+	public String city;	 
+	
+	/**
+	 * Zip code of clinic address
+	 */
+	public String zip;	 
+	
+	/**
+	 * Country of clinic address
+	 */
+	public String country;
+	
+	/**
+	 * Address line 1 (Street) of clinic address
+	 */
+	public String address1;
+	
+	/**
+	 * Address line 2 of clinic address
+	 */
+	public String address2;
+	
+	/**
+	 * Phone number of clinic
+	 */
+	public String phone;
+	
+	/**
+	 * Mobile phone number of clinic
+	 */
+	public String mobile;
 	
 	public static void add(HealthcareProvider provider) throws InternalServerException {
 		Model.insert(collection, provider);
@@ -55,15 +105,23 @@ public class HealthcareProvider extends Model {
     }
  
 	public static HealthcareProvider getById(MidataId id, Set<String> fields) throws InternalServerException {
+		return Model.get(HealthcareProvider.class, collection, CMaps.map("_id", id).map("status", NON_DELETED), fields);
+	}
+	
+	public static HealthcareProvider getByIdAlsoDeleted(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(HealthcareProvider.class, collection, CMaps.map("_id", id), fields);
 	}
 	
     public static boolean existsByName(String name) throws InternalServerException {
-	   return Model.exists(HealthcareProvider.class, collection, CMaps.map("name", name));
+	   return Model.exists(HealthcareProvider.class, collection, CMaps.map("name", name).map("status", NON_DELETED));
     }
     
+    public static HealthcareProvider getByName(String name) throws InternalServerException {
+ 	   return Model.get(HealthcareProvider.class, collection, CMaps.map("name", name).map("status", NON_DELETED), ALL);
+     }
+    
     public static boolean existsByName(String name, MidataId exclude) throws InternalServerException {
-    	HealthcareProvider r = Model.get(HealthcareProvider.class, collection, CMaps.map("name", name), Sets.create("_id"));
+    	 HealthcareProvider r = Model.get(HealthcareProvider.class, collection, CMaps.map("name", name).map("status", NON_DELETED), Sets.create("_id"));
 		 return r != null && !r._id.equals(exclude);
 	 }
     

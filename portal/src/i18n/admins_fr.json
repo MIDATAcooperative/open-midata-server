@@ -3,10 +3,12 @@
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Utilisateurs",
+        "organizations" : "Organisations",
         "auditlog" : "Audit log",
         "news" : "News",
         "mails" : "E-Mails",
         "plugins" : "Applications",
+        "updplugins" : "Déploiement des plugins",
         "usagestats" : "Statistiques d'utilisation des applications",
         "content" : "Types de contenu",
         "studies" : "Projets",
@@ -33,6 +35,14 @@
         "status" : "État",
         "midata_id" : "@PRODUCT ID",
         "empty" : "Aucun utilisateur correspondant trouvé."
+    },
+
+    "admin_organizations" : {
+        "title" : "Organisations",
+        "name" : "Nom",
+        "status" : "État",
+        "empty" : "Aucune organisation correspondante n'a été trouvée.",
+        "members_btn" : "afficher les membres"
     },
 
     "admin_address" : {
@@ -206,8 +216,8 @@
         "value" : "Nombre total",
         "diff_yesterday" : "Diff. sur 1 jour",
         "diff_week" : "Diff. sur 7 jours",
-        "recordCount" : "Enregistrements dans la BD",
-        "vRecordCount" : "Enregistrements archivés",
+        "recordCount" : "Données dans la BD",
+        "vRecordCount" : "Données archivées",
         "indexPageCount" : "Pages index BD",
         "appCount" : "Applications",
         "languages" : "Langues utilisateur",
@@ -235,7 +245,7 @@
         "myid" : "Mon id de récupération",
         "instr1" : "Cliquez sur un share pour copier le share crypté dans le presse-papiers.",
         "instr2" : "Décrypter le share sous UBUNTU: (cliquez sur la ligne pour la copier dans le presse-papiers)",
-        "instr3" : "Décrypter le share sous MAC OS: (cliquez sur la ligne pour la copier dans le presse-papiers)"
+        "instr3" : "Décrypter le share sous macOS (bash shell): (cliquez sur la ligne pour la copier dans le presse-papiers)"
     },
 
     "admin_licenses" : {
@@ -332,7 +342,7 @@
         "content" : "Type de contenu @PRODUCT",
         "security" : "Clés d'encryption des données",
         "medium" : "Réutiliser les clés pour les données de même type de la même personne",
-        "high" : "Utiliser une nouvelle clé pour chaque enregistrement",
+        "high" : "Utiliser une nouvelle clé pour chaque donnée",
         "group" : "Groupe dans l'arborescence des données",
         "defaultCode" : "Code par défaut",
         "resource_type" : "Type de ressource FHIR par défaut",
@@ -354,7 +364,7 @@
     },
 
     "admin_services" : {
-        "endpoints" : "Endpoints",
+        "endpoints" : "FHIR Endpoints",
         "name" : "Instance de service",
         "endpoint" : "FHIR endpoint",
         "status" : "État",

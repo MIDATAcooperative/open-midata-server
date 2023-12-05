@@ -39,6 +39,8 @@
         "relogin" : "Melden Sie sich bitte erneut an",
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
         "unsupported" : "Operation nicht unterstützt",
+        "failed" : "Aktion fehlgeschlagen",
+        "timeout" : "Timeout",
         "notrialuser_title" : "Vollständige Mitgliedschaft notwendig!",
         "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung der Allgemeinen Geschäftsbedingungen und senden Sie diese unterschrieben an @OPERATOR zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "mustbemember_title" : "Mitgliedschaft bei @OPERATOR erforderlich!",
@@ -85,7 +87,11 @@
             "url" : "Ungültige URL",
             "consent_members" : "Diese Zustimmung kann erst bestätigt werden, wenn alle externen Personen der Plattform beigetreten sind.",
             "entity_type" : "Ungültiger Entitätstyp",
-            "joincode" : "Der angegebene Teilnahme-Code wird nicht akzeptiert."
+            "joincode" : "Der angegebene Teilnahme-Code wird nicht akzeptiert.",
+            "usePreconfirmed" : "Die Vorabbestätigung der Zustimmung und die Weitergabe an Dritte ist nicht gleichzeitig zulässig.",
+            "csvmapping" : "Ungültiges Mapping angegeben.",
+            "id" : "Ungültiger Identifikator",
+            "usergroup" : "Sie müssen Mitglied dieser Benutzergruppe sein, um diese Aktion durchführen zu können."
         },
 
         "missing" : {
@@ -107,7 +113,8 @@
             "access_query" : "Keine Daten ausgewählt",
             "plugin" : "Dieses Plugin existiert nicht in Ihrem Konto.",
             "auth_type" : "Für Ihren Kontotyp ist eine Zwei-Faktor-Authentifizierung erforderlich.",
-            "licence" : "Für die Nutzung dieser Applikation ist eine gültige Lizenz erforderlich."
+            "licence" : "Für die Nutzung dieser Applikation ist eine gültige Lizenz erforderlich.",
+            "manager" : "Sie müssen einer anderen Person Managerberechtigungen erteilen, bevor Sie diese Entität aus der Gruppe entfernen."
         },
 
         "unknown" : {
@@ -122,7 +129,8 @@
             "record" : "Unbekannter Datensatz",
             "user" : "Dieser Benutzer existiert nicht",
             "participation" : "Teilnahme an Forschungsprojekt nicht gefunden.",
-            "organization" : "Die Organisation existiert nicht."
+            "organization" : "Die Organisation existiert nicht.",
+            "service" : "Der Dienst existiert nicht."
         },
 
         "exists" : {
@@ -133,7 +141,11 @@
             "passcode" : "Wählen Sie bitte einen anderen Zugangscode!",
             "plugin" : "Eine Applikation mit diesem Namen existiert bereits.",
             "study" : "Ein Forschungsprojekt mit diesem Namen existiert bereits.",
-            "endpoint" : "Ein Endpoint mit dieser URL existiert bereits"
+            "endpoint" : "Ein Endpoint mit dieser URL existiert bereits",
+            "content" : "Ein Inhaltstyp mit diesem Namen existiert bereits.",
+            "group" : "Eine Inhaltsgruppe mit diesem Namen existiert bereits.",
+            "projectgroup" : "Eine Projektgruppe mit diesem Namen existiert bereits.",
+            "code" : "Ein Code mit diesem Code und Codesystem existiert bereits."
         },
 
         "blocked" : {
@@ -181,7 +193,8 @@
 
         "already_done" : {
             "email_verification" : "Die E-Mail-Adresse wurde bereits verifiziert.",
-            "unsubscribed" : "Sie haben sich bereits von diesem Kommunikationskanal abgemeldet."
+            "unsubscribed" : "Sie haben sich bereits von diesem Kommunikationskanal abgemeldet.",
+            "validation" : "Das Projekt wurde bereits validiert."
         },
 
         "no_alter" : {
@@ -196,6 +209,15 @@
 
         "notrequired" : {
             "licence" : "Für diese Applikation ist keine Lizenz erforderlich"
+        },
+
+        "nomatch" : {
+            "birthdate" : "Das Geburtsdatum stimmt nicht überein",
+            "email" : "Abweichende E-Mail-Adresse angegeben"
+        },
+
+        "not_unique" : {
+            "identifier" : "Ein angegebener Identifikator ist nicht eindeutig"
         }
     },
 
@@ -203,13 +225,42 @@
         "gender" : {
             "MALE" : "männlich",
             "FEMALE" : "weiblich",
-            "OTHER" : "anderes"
+            "OTHER" : "anderes",
+            "UNKNOWN" : "nicht angegeben"
         },
         "country" : {
             "CH" : "Schweiz",
+            "AT" : "Österreich",
+            "BE" : "Belgien",
+            "BG" : "Bulgarien",
+            "HR" : "Kroatien",
+            "CY" : "Zypern",
+            "CZ" : "Tschechische Republik",
+            "DK" : "Dänemark",
+            "EE" : "Estland",
+            "FI" : "Finnland",
+            "FR" : "Frankreich",
             "DE" : "Deutschland",
+            "GR" : "Griechenland",
+            "HU" : "Ungarn",
+            "IE" : "Irland",
+            "IT" : "Italien",
+            "LV" : "Lettland",
+            "LT" : "Litauen",
+            "LU" : "Luxemburg",
+            "MT" : "Malta",
             "NL" : "Niederlande",
-            "GB" : "Großbritannien"
+            "PL" : "Polen",
+            "PT" : "Portugal",
+            "RO" : "Rumänien",
+            "SK" : "Slowakei",
+            "SI" : "Slowenien",
+            "ES" : "Spanien",
+            "SW" : "Schweden",
+            "GB" : "Grossbritannien",
+            "LI" : "Liechtenstein",
+            "NO" : "Norwegen",
+            "IS" : "Island"
         },
         "eventtype" : {
             "CODE_ENTERED" : "Code eingegeben",
@@ -246,6 +297,7 @@
             "user-settings-change" : "Benutzereinstellungen geändert",
             "user-email-change" : "E-Mail des Benutzers geändert",
             "user-birthday-change" : "Geburtsdatum des Benutzers geändert",
+            "user-gender-change" : "Geschlecht des Benutzers geändert",
             "user-status-change-active" : "Benutzerkonto entsperrt",
             "user-status-change-blocked" : "Benutzerkonto gesperrt",
             "user-email-confirmed" : "E-Mail bestätigt durch Benutzer",
@@ -284,7 +336,17 @@
             "contract-send" : "Vertrag an Benutzer versandt",
             "internal-comment" : "Anmerkung Administrator",
             "user-terms-of-use-agreed" : "Allgemeine Geschäftsbedingungen angenommen",
+            "user-terms-of-use-noted" : "Allgemeine Geschäftsbedingungen zur Kenntnis genommen",
             "audit-log-used" : "Audit Log angeschaut",
+            "create" : "Ressource erstellt",
+            "update" : "Ressource aktualisiert",
+            "read" : "Ressource gelesen",
+            "vread" : "Ressource Version gelesen",
+            "history" : "Ressource Historie lesen",
+            "search" : "Nach Ressourcen gesucht",
+            "organization-updated" : "Organisation aktualisiert",
+            "organization-created" : "Organisation erstellt",
+            "organization-deleted" : "Organisation gelöscht",
             "added-as-team-member" : "Hinzugefügt als Teammitglied",
             "updated-role-in-team" : "Rolle im Team aktualisiert",
             "removed-from-team" : "Aus Team entfernt",
@@ -293,7 +355,20 @@
             "user-searched" : "Suche nach Benutzer",
             "welcome-sent" : "Willkommens-E-Mail gesendet",
             "tried-user-reregistration" : "Versuchte Neuregistrierung des Benutzers",
-            "signature-failure" : "Zustimmungsvalidierung fehlgeschlagen"
+            "non-perfect-account-match" : "Nicht perfekte Kontenübereinstimmung beim Zugriff von einem Drittanbieter",
+            "signature-failure" : "Zustimmungsvalidierung fehlgeschlagen",
+            "email-sent" : "E-Mail gesendet",
+            "sms-sent" : "SMS gesendet",
+            "resthook-called" : "Resthook aufgerufen",
+            "script-invocation" : "Skript aufgerufen",
+            "plugin-deployed" : "Plugin installiert",
+            "plugin-undeployed" : "Plugin nicht installiert",
+            "access-confirmation" : "Zugangsbestätigung",
+            "access-confirmation-request" : "Anfrage auf Zugangsbestätigung",
+            "apikey-created" : "API-Schlüssel erstellt",
+            "apikey-deleted" : "API-Schlüssel gelöscht",
+            "service-instance-created" : "Service-Instanz erstellt",
+            "service-instance-deleted" : "Service-Instanz gelöscht"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "Die E-Mail-Adresse des Benutzers muss der Plattform bekannt sein",
@@ -307,6 +382,7 @@
             "MIDATA_COOPERATIVE_MEMBER" : "Der Benutzer muss Mitglied der Genossenschaft sein",
             "ADMIN_VERIFIED" : "Das Konto muss von einem Administrator freigeschaltet worden sein",
             "BIRTHDAY_SET" : "Das Geburtsdatum des Benutzers muss bekannt sein",
+            "GENDER_SET" : "Das Geschlecht des Benutzers muss bekannt sein",
             "APP_UNLOCK_CODE" : "Die Applikation benötigt einen Freischaltcode"
         },
         "writepermissiontype" : {
@@ -317,10 +393,12 @@
         },
         "consentstatus" : {
             "ACTIVE" : "Aktiv",
+            "PRECONFIRMED" : "Aktiv (vorbestätigt)",
             "EXPIRED" : "Abgelaufen",
             "REJECTED" : "Verworfen",
             "UNCONFIRMED" : "Nicht bestätigt",
-            "FROZEN" : "Eingefroren"
+            "FROZEN" : "Eingefroren",
+            "INVALID" : "Ungültig"
         },
         "consenttype" : {
             "CIRCLE" : "Andere Kontoinhabende",
@@ -362,7 +440,8 @@
         "studytype" : {
             "CLINICAL" : "Klinische Studie",
             "CITIZENSCIENCE" : "Citizen Science Projekt",
-            "COMMUNITY" : "Community"
+            "COMMUNITY" : "Community",
+            "REGISTRY" : "Register"
         },
         "joinmethod" : {
             "APP" : "Der Teilnehmer nutzt die verknüpfte Applikation",
@@ -417,6 +496,7 @@
             "MONITOR" : "Aufsichtsperson",
             "MASTER" : "Master-Benutzer",
             "USERADMIN" : "Verwaltung der Benutzer",
+            "KEYRECOVERY" : "Schlüssel-Wiederherstellung",
             "STUDYADMIN" : "Verwaltung der Projekte",
             "CONTENTADMIN" : "Verwaltung der Datentypen",
             "PLUGINADMIN" : "Verwaltung der Applikationen",
@@ -440,6 +520,7 @@
             "ACTIVE" : "Aktiv",
             "BLOCKED" : "Gesperrt",
             "DELETED" : "Gelöscht",
+            "FAKE" : "Gefälschtes Konto",
             "NEW" : "Neu"
         },
         "frequency" : {
@@ -494,6 +575,7 @@
             "mobile" : "Applikation (Smartphone, Web)",
             "external" : "Externer Dienst",
             "analyzer" : "Projekt-Analysator",
+            "broker" : "Data broker",
             "endpoint" : "FHIR endpoint"
         },
         "infos" : {
@@ -523,7 +605,14 @@
         "entitytype" : {
             "USER" : "Benutzer",
             "USERGROUP" : "Team",
-            "ORGANIZATION" : "Organisation"
+            "ORGANIZATION" : "Organisation",
+            "SERVICES" : "Data broker"
+        },
+        "usergrouptype" : {
+            "ORGANIZATION" : "Organisation",
+            "CARETEAM" : "Pflegeteam",
+            "HEALTHCARESERVICE" : "Gesundheitsdienst",
+            "RESEARCHTEAM" : "Forschung"
         },
         "bulkmailtype" : {
             "MARKETING" : "Marketing - Kontoinhabende",
@@ -534,6 +623,13 @@
             "ALLOWED" : "Erlaubt",
             "FORBIDDEN" : "Nicht erlaubt",
             "NULL" : "Undefiniert"
+        },
+        "deploymentstatus" : {
+            "NONE" : "None",
+            "READY" : "Ready",
+            "RUNNING" : "Building",
+            "FAILED" : "Failed",
+            "DONE" : "Done"
         }
     },
 
@@ -572,8 +668,10 @@
     "registration" : {
         "sign_up" : "Registrierung",
         "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder.",
+        "mandantory_fields2" : "Bitte geben Sie Ihre E-Mail-Adresse und Ihr Passwort ein.",
         "password_policy" : "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Ziffer enthalten.",
         "password_policy2" : "Das Passwort muss mindestens 12 Zeichen lang sein und einen Buchstaben, eine Ziffer und ein Sonderzeichen enthalten.",
+        "personal_details" : "Personalien",
         "email" : "E-Mail",
         "password" : "Passwort",
         "password_repetition" : "Passwort wiederholen",
@@ -611,6 +709,7 @@
         "sign_up_btn" : "Konto erstellen",
         "unlock_code" : "Freischaltcode",
         "already_have_account" : "Ich habe bereits ein Konto",
+        "already_have_account2" : "Wenn dies Ihr eigenes Konto ist, klicken Sie hier, um zur Anmeldeseite zu gelangen.",
         "more" : "Haben Sie noch ein paar Sekunden Zeit? Wir wären froh, wenn Sie uns noch ein paar Details über sich verraten könnten ☺️",
         "generous" : "Ich bin heute grosszügig, zeigen Sie mir die Eingabefelder!",
         "hide_optional" : "Optionale Felder verstecken",
@@ -684,9 +783,10 @@
         "address_entered" : "Geben Sie bitte Ihre Postadresse ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "phone_entered" : "Geben Sie bitte Ihre Mobiltelefonnummer ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "birthday_entered" : "Für die Nutzung dieses Dienstes ist ein gültiges Geburtsdatum erforderlich. Bitte fügen Sie Ihr Geburtsdatum zu Ihren Kontoinformationen hinzu. (Formatbeispiel: 31.12.1999)",
+        "gender_entered" : "Ihr Geschlecht muss angegeben werden, um diesen Dienst nutzen zu können. Bitte geben Sie Ihr Geschlecht an.",
         "admin_verified" : "Ihr Konto muss durch einen Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte @SUPPORT.",
-        "terms_agreed" : "Die Allgemeine Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
-        "privacy_policy_agreed" : "Die Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
+        "terms_agreed" : "Die Allgemeinen Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie die neue Fassung zur Kenntnis genommen haben.",
+        "privacy_policy_agreed" : "Die Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie die neue Fassung zur Kenntnis genommen haben.",
         "auth2factor" : "Ein Autorisierungscode wurde an Ihr Telefon gesendet. Bitte geben Sie ihn ein.",
         "securityToken" : "Code",
         "securityToken_btn" : "Senden",
@@ -700,6 +800,7 @@
         "emailnotify" : "Benachrichtigungen",
         "emailnotify2" : "Bitte senden Sie mir jedes Mal eine E-Mail, wenn ich mich im @PRODUCT Portal unter {{domain}} anmelde.",
         "agree_btn" : "Ich stimme zu",
+        "noted_btn" : "Ich habe es zur Kenntnis genommen",
         "keyrecovery" : {
             "intro" : "Der private Schlüssel, der zur Verschlüsselung Ihrer Daten verwendet wird, muss wiederhergestellt werden. Um Ihren Schlüssel wiederherzustellen, versuchen Sie eine dieser Optionen:",
             "way1" : "Haben Sie eine Applikation die @PRODUCT benutzt, bei der Sie noch angemeldet sind? Wenn ja, öffnen Sie diese Applikation und Ihr Schlüssel wird wiederhergestellt. Versuchen Sie anschliessend, sich erneut anzumelden.",
@@ -771,7 +872,8 @@
         "meta" : "Meta-Informationen",
         "name" : "Name:",
         "owned_by" : "Im Besitz von:",
-        "created_by" : "Erstellt durch:",
+        "created_by" : "Erstellt von:",
+        "modified_by" : "Zuletzt geändert von:",
         "created_with" : "Erstellt mit:",
         "created_on" : "Erstellt am:",
         "content" : "@PRODUCT-Inhaltstyp:",
@@ -839,6 +941,7 @@
         "export_btn" : "Export Ihrer Daten",
         "delete_records_btn" : "Datensätze löschen",
         "wipe_account_btn" : "Konto löschen",
+        "cancel_btn" : "Zurück zur Applikation",
         "metrics_btn" : "Account-Metriken berechnen",
         "servicekeys_btn" : "API-Schlüssel verwalten",
         "account_repaired" : "Ihr Konto wurde repariert.",
@@ -900,13 +1003,15 @@
         "set_owner_btn" : "Person auswählen, die ihre Daten teilt",
         "add_yourself_btn" : "Sich selbst hinzufügen",
         "add_person_btn" : "Neue Person hinzufügen",
+        "add_organization_btn" : "Neue Organisation hinzufügen",
         "add_usergroup_btn" : "Neues Team hinzufügen",
         "writes" : "Schreibrechte",
         "writes2" : "Die durch diese Zustimmung ermächtigten Personen dürfen Daten, die dieser Zustimmung unterstellt sind, in Ihrem Konto speichern oder aktualisieren.",
         "reshare" : "Zugriff für Drittpartei?",
         "reshare2" : "Die durch diese Zustimmung ermächtigten Personen dürfen die entsprechenden Daten weiter teilen.",
         "expiration_date" : "Ablaufdatum der Zustimmung:",
-        "created_before" : "Daten nicht teilen, die erstellt wurden nach dem:",
+        "created_after" : "Umfasst nur Daten, die erstellt wurden nach dem:",
+        "created_before" : "Keine Daten teilen, die erstellt wurden nach dem:",
         "share_what" : "Welche Daten wollen Sie teilen?",
         "consent_empty" : "Diese Zustimmung teilt zu Beginn keine Daten. Sie können die Daten, die Sie darüber teilen wollen, später wählen.",
         "create_btn" : "Erstellen und Daten wählen",
@@ -926,12 +1031,14 @@
         "people" : "Mit welcher Person/welchen Personen wollen Sie Daten teilen?",
         "external" : "Personen ohne @PRODUCT Konto",
         "add_people_btn" : "Andere Personen hinzufügen",
+        "add_hp_btn" : "Gesundheitsfachperson hinzufügen",
         "add_usergroup_btn" : "Team hinzufügen",
         "reshare" : "@:newconsent.reshare",
         "reshare2" : "@:newconsent.reshare2",
         "writes" : "Schreibrechte",
         "expiration_date" : "Ablaufdatum der Zustimmung:",
         "created_before" : "Teilt keine Daten, die erstellt wurden nach dem:",
+        "created_after" : "Nur Daten, die erstellt wurden nach dem:",
         "what_is_shared" : "Welche Daten sind geteilt?",
         "consent_empty" : "Diese Zustimmung teilt momentan keine Daten.",
         "type_circle" : "Diese Zustimmung teilt Daten mit anderen @PRODUCT Kontoinhabenden.",
@@ -943,6 +1050,7 @@
         "type_api" : "Diese Zustimmung teilt Daten mit einem externen Dienst.",
         "type_implicit" : "Diese implizit erstellte Zustimmung erteilt den Empfängern Zugriff auf die für sie bestimmten Meldungen.",
         "status_active" : "Diese Zustimmung ist aktiv.",
+        "status_preconfirmed" : "Diese Zustimmung wurde von extern bestätigt und ist aktiv.",
         "status_expired" : "Diese Zustimmung ist abgelaufen. Daten werden nicht mehr geteilt.",
         "status_unconfirmed" : "Diese Zustimmung benötigt eine Bestätigung durch ihren Besitzer.",
         "status_rejected" : "Diese Zustimmung wurde durch ihren Besitzer verworfen.",
@@ -959,13 +1067,22 @@
         "please_review2b" : "Bitte überprüfen Sie diese bestehende Zustimmung. Klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)', um diese Seite ohne Änderungen zu verlassen. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht mehr einverstanden sind.",
         "you" : "Sie",
         "restrictions" : "Weitere Einschränkungen?",
-        "project" : "Projekt"
+        "project" : "Projekt",
+        "source" : "Quelle dieser Zustimmung",
+        "based_on" : "Link zur verwendeten Basiszustimmung",
+        "base_created_at" : "Basiszustimmung erstellt am",
+        "allowed_reshares" : "Bei Bedarf können die Daten an diese Dritten weitergegeben werden",
+        "reshare_service" : "Dritte Parteien, die den Dienst nutzen",
+        "reshare_usergroup" : "Team oder Projekt",
+        "reshare_user" : "Einzelner Benutzer",
+        "reshare_project" : "Projekt"
     },
 
     "editconsent2" : {
         "date_of_creation" : "erstellt am",
         "valid_until" : "verfällt am",
         "status_active" : "Jetzt aktiv",
+        "status_preconfirmed" : "Jetzt aktiv (vorbestätigt)",
         "status_expired" : "Verfallen",
         "status_unconfirmed" : "Benötigt Bestätigung",
         "status_rejected" : "Verworfen",
@@ -1096,6 +1213,8 @@
         "link_ORGANIZATION_optional" : "Sie können Daten mit dieser Drittpartei teilen:",
         "link_CLINICAL_required" : "Um diese Applikation nutzen zu können, müssen Sie an einer klinischen Studie teilnehmen:",
         "link_CLINICAL_optional" : "Zusätzlich können Sie an einer klinischen Studie teilnehmen:",
+        "link_REGISTRY_required" : "Um diese Applikation nutzen zu können, müssen Sie Daten mit einem Register teilen:",
+        "link_REGISTRY_optional" : "Darüber hinaus können Sie Daten mit einem Register teilen:",
         "link_CITIZENSCIENCE_required" : "Um diese Applikation nutzen zu können, müssen Sie an einem Citizen Science Projekt teilnehmen:",
         "link_CITIZENSCIENCE_optional" : "Zusätzlich können Sie an einem Citizen Science Projekt teilnehmen:",
         "link_COMMUNITY_required" : "Um diese Applikation nutzen zu können, müssen Sie an einem Gemeinschaftsprojekt teilnehmen:",
@@ -1220,6 +1339,7 @@
     },
 
     "addusers" : {
+        "title" : "Benutzersuche",
         "contacts" : "Vorhandene Kontakte",
         "all_users" : "Alle Benutzer",
         "no_contacts_to_add" : "Keine Kontakte können diesem Circle hinzugefügt werden.",
@@ -1235,6 +1355,20 @@
         "empty_result" : "Kein passendes Team gefunden.",
         "add_individuals_btn" : "Als individuellen Personen der Zustimmung hinzufügen",
         "add_group_btn" : "Als veränderliches Team der Zustimmung hinzufügen"
+    },
+
+    "organizationsearch" : {
+        "title" : "Suche nach Organisationen",
+        "name" : "Name der Organisation",
+        "city_or_zip" : "Ort oder Postleitzahl",
+        "empty_result" : "Keine passende Organisation gefunden."
+    },
+
+    "databrokersearch" : {
+        "title" : "Suche nach Data Brokers (APIs)",
+        "name" : "Name des Data brokers",
+        "empty_result" : "Keinen passenden Data broker gefunden.",
+        "new_btn" : "Neue Instanz erstellen"
     },
 
     "confirm" : {
@@ -1331,14 +1465,17 @@
         "error" : "Passwort nicht korrekt. Das Konto wurde nicht gelöscht."
     },
 
+    "service" : {
+        "title" : "Token-Link-Dienst für @PRODUCT",
+        "success" : "Ihr Token-Link wurde verarbeitet. Sie können dieses Fenster nun schließen."
+    },
+
     "serviceleave" : {
-        "title" : "Haben Sie Ihre Session beendet?",
+        "title" : "Sie verlassen @PRODUCT",
         "thankyou" : "Danke für Ihre Hilfe!",
-        "continue" : "Bitte benutzen Sie das Hauptmenü, um Ihre Session fortzusetzen oder sich abzumelden.",
         "logout_btn" : "Abmelden",
         "goodbye_btn" : "Session beenden und Fenster schliessen",
-        "logoutreturn" : "Sie werden zur aufrufenden Seite weitergeleitet.",
-        "return_btn" : "Abmelden und fortfahren"
+        "logoutreturn" : "Sie verlassen jetzt das @PRODUCT-Kontoverwaltungsportal."
     },
 
     "queryeditor" : {
@@ -1382,6 +1519,18 @@
         "observer" : "Nur mit diesem Observer (optional)",
         "category" : "Kategorie (optional)",
         "custom_filter" : "Benutzerdefinierte Filter (JSON)",
+        "security_tags" : "Sicherheits-Tags",
+        "tag" : "Tag",
+        "require" : "Erforderlich zum Lesen",
+        "allow" : "Schreiben zulassen",
+        "add" : "Automatisch hinzufügen",
+        "tags" : {
+            "reliable" : "Zuverlässig",
+            "no_delete" : "Kein Löschen",
+            "read_only" : "Nur lesen",
+            "hidden" : "Vor dem Patienten verstecken",
+            "not_pseudonymisable" : "Nicht pseudonymisierbar"
+        },
         "remove_btn" : "Entfernen",
         "apply_btn" : "Anwenden",
         "newentry" : "Geben Sie Name, Code, Ressourcentyp oder (Teil-)Beschreibung des Datentyps ein, den Sie hinzufügen möchten:",
@@ -1422,8 +1571,10 @@
     "apikeys" : {
         "title" : "API-Schlüsselverwaltung",
         "empty" : "Dieses Konto verwaltet keine Dienste mit API-Schlüsseln.",
+        "managedby" : "verwaltet von",
         "add_btn" : "Schlüssel hinzufügen",
         "delete_btn" : "Analysator entfernen",
+        "delete_service_btn" : "Dienst entfernen",
         "delete_endpoint_btn" : "Endpoint entfernen",
         "show_btn" : "Schlüssel anzeigen",
         "revoke_btn" : "Diesen Schlüssel widerrufen",
@@ -1432,9 +1583,10 @@
         "instructions_key" : "Verwenden Sie diesen Schlüssel direkt im Autorisierungs-Header des Dienstes als bearer token.",
         "refresh" : "Refresh token für OAuth",
         "instructions_refresh" : "Um die Sicherheit zu erhöhen, tauschen Sie dieses refresh token gegen ein neues Paar aus access token und refresh token aus.",
-        "common_name" : "CN (common name) für CSR (certificate request)",
-        "instructions_common_name" : "Für zertifikatsbasierte Authentifizierung erstellen Sie eine CSR mit dem angegebenen CN-Feld. Senden Sie den CSR an @SUPPORT",
+        "common_name" : "OU (organization unit) und CN (common name) für das CSR (certificate request)",
+        "instructions_common_name" : "Für zertifikatsbasierte Authentifizierung erstellen Sie eine CSR mit den angegebenen OU- und CN-Feldern. Senden Sie den CSR an @SUPPORT",
         "date" : "Erstellungsdatum",
+        "restrictions" : "Beschränkungen",
         "status" : "Status",
         "ACTIVE" : "Aktiv",
         "FROZEN" : "Alte Version",

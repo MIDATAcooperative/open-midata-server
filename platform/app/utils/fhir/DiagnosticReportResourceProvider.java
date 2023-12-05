@@ -47,6 +47,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -83,6 +84,10 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 		searchParamNameToTypeMap.put("DiagnosticReport:subject", Sets.create("Group", "Device", "Patient", "Location"));
 
 		registerSearches("DiagnosticReport", getClass(), "getDiagnosticReport");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("DiagnosticReport")
+		  .hideIfPseudonymized("DiagnosticReport", "text");		  
 	}
 
 	@Override
@@ -93,9 +98,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 	@Search()
 	public Bundle getDiagnosticReport(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
-
-			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-
+			
 			@Description(shortDefinition="Reference to the service request.")
   			@OptionalParam(name="based-on", targetTypes={  } )
   			ReferenceAndListParam theBased_on, 
@@ -192,8 +195,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
-		paramMap.add("_id", the_id);
-		paramMap.add("_language", the_language);
+		paramMap.add("_id", the_id);		
 		paramMap.add("based-on", theBased_on);
 		paramMap.add("category", theCategory);
 		paramMap.add("code", theCode);
@@ -331,7 +333,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 
 		// Add subject field from record owner field if it is not already there
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+			p.setSubject(FHIRTools.getReferenceToOwner(record));
 		}
 										
 	}

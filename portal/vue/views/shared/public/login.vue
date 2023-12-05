@@ -63,7 +63,7 @@
 					<form name="myform" ref="myform" class="form" @submit.prevent="dologin()" role="form" v-if="!offline">
 						<div class="form-group">
 							<input type="email" class="form-control" :placeholder="$t('login.email_address')" required v-validate v-model="login.email" style="margin-bottom:5px;" autofocus>
-							<password class="form-control" :placeholder="$t('login.password')" required v-model="login.password" style="margin-bottom:5px;"></password>
+							<password class="form-control" :placeholder="$t('login.password')" required v-model="login.password" style="margin-bottom:5px;" ref="pwField"></password>
 							<select class="form-control" v-if="!fixedRole" v-model="login.role" v-validate required>
 							    <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                                 <option v-for="role in roles" :key="role.value" :value="role.value">{{ $t(role.name) }}</option>
@@ -98,7 +98,7 @@ import ENV from "config";
 
 export default {
     data: () => ({
-        login : { role : "MEMBER" },
+        login : { role : "MEMBER", email : "", password : "" },
         actions : null,
         offline : false,
         notPublic : ENV.instanceType == "prod",
@@ -164,6 +164,14 @@ export default {
 		    return " - "+$data.app.name;
         }
     },
+    
+    mounted() {
+       const { $data, $refs } = this;
+       if ($data.login.email != "") {
+          //console.log($refs.pwField);
+         $refs.pwField.$el.querySelector('input').focus();
+       }
+    },
 
     created() {
         const { $data, $route } = this, me = this;
@@ -172,7 +180,9 @@ export default {
 		
 		if ($route.query.language) {		
 		   setLocale($route.query.language);
-	    }
+	    } else if ($route.query.lang) {		
+		   setLocale($route.query.lang);
+	    } 
 
         $data.actions = $route.query.actions;
 	    $data.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);	

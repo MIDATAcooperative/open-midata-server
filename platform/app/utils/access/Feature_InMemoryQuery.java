@@ -50,6 +50,10 @@ public class Feature_InMemoryQuery extends APS {
 		this.storedOwner = storedOwner;
 		this.contents = contents;
 	}
+	
+	public void setContent(List<DBRecord> recs) {
+		contents = recs;
+	}
 				
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
@@ -75,7 +79,7 @@ public class Feature_InMemoryQuery extends APS {
 	}
 
 	@Override
-	public boolean isAccessible() throws AppException {
+	public boolean isAccessible() throws InternalServerException {
 		return true;
 	}
 
@@ -125,7 +129,7 @@ public class Feature_InMemoryQuery extends APS {
 	}
 
 	@Override
-	public BasicBSONObject getMeta(String key) throws AppException {		
+	public BasicBSONObject getMeta(String key) throws InternalServerException {		
 		return null;
 	}
 	
@@ -189,6 +193,11 @@ public class Feature_InMemoryQuery extends APS {
 	@Override
 	public Set<MidataId> getAccess() throws AppException {		
 		return null;
+	}
+
+	@Override
+	public void reload() throws InternalServerException {
+        // No operation				
 	}
 	
 	

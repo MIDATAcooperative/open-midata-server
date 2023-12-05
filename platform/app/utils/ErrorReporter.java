@@ -20,8 +20,12 @@ package utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import models.Developer;
 import models.MidataId;
 import models.Plugin;
+import models.RateLimitedAction;
+import models.enums.AuditEventType;
+import models.enums.UserStatus;
 import play.mvc.Http.Request;
 import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
@@ -40,6 +44,8 @@ public class ErrorReporter {
 	private static String bugReportEmail = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
 	private static String bugReportName = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
 	private static volatile long lastReport = 0;
+	public final static long PER_DAY = 1000l * 60l * 60l * 24l;
+	public final static String PLUGIN_PREFIX =  "PluginProblem:";
 	
 	/**
 	 * Report an exception
@@ -63,7 +69,7 @@ public class ErrorReporter {
 		String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
 		if (e!=null) AccessLog.logException("Uncatched Exception:", e);
 		String txt = "Instance: "+InstanceConfig.getInstance().getPortalServerDomain()+"\nTime:"+timeStamp+"\nInterface: "+fromWhere+"\nPortal Session: "+user+"\nPath: "+path+"\n\n"+AccessLog.getReport();
-		MailUtils.sendTextMail(MailSenderType.STATUS, bugReportEmail, bugReportName, "Error Report: "+path, txt);
+		MailUtils.sendTextMailAsync(MailSenderType.STATUS, bugReportEmail, bugReportName, "Error Report: "+path, txt);
 		if (e!=null) Stats.addComment("Error: "+e.getClass().getName()+": "+e.getMessage());
 	}
 	
@@ -75,7 +81,7 @@ public class ErrorReporter {
 				return;
 			}
 			
-			Plugin plg = Plugin.getById(pluginId, Sets.create("creatorLogin", "name", "filename", "sendReports"));
+			Plugin plg = Plugin.getById(pluginId, Sets.create("creatorLogin", "name", "filename", "sendReports", "developerTeam"));
 			if (plg==null || plg.creatorLogin==null) {
 				report(fromWhere, request, e);
 				return;
@@ -84,11 +90,22 @@ public class ErrorReporter {
 			String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
 			String txt = "Dear Developer,\n\non "+timeStamp+"\nthe plugin/app called '"+plg.name+"' (internal: '"+plg.filename+"')\non the MIDATA instance at '"+InstanceConfig.getInstance().getPortalServerDomain()+"'\nhas caused this error:\n\n"+e.getMessage()+"\n\nThis is an automated email send by the MIDATA platform.\nYou can turn off reporting for this application in the application settings.";				
 			
-			if (plg.sendReports) {						
-				MailUtils.sendTextMail(MailSenderType.STATUS, plg.creatorLogin, plg.creatorLogin, "Error Report: ["+plg.name+"] "+InstanceConfig.getInstance().getPortalServerDomain(), txt);
-			} 
-			
-			MailUtils.sendTextMail(MailSenderType.STATUS, bugReportEmail, bugReportName, "Error Report: ["+plg.name+"] "+InstanceConfig.getInstance().getPortalServerDomain(), txt);
+			if (RateLimitedAction.doRateLimited(PLUGIN_PREFIX+plg._id.toString(), AuditEventType.EMAIL_SENT, 0, 30, PER_DAY)) {
+				if (plg.sendReports) {						
+					MailUtils.sendTextMailAsync(MailSenderType.STATUS, plg.creatorLogin, plg.creatorLogin, "Error Report: ["+plg.name+"] "+InstanceConfig.getInstance().getPortalServerDomain(), txt);
+					
+					if (plg.developerTeam != null) {
+						for (MidataId teamMember : plg.developerTeam) {
+							Developer dev = Developer.getById(teamMember, Developer.ALL_USER);
+							if (dev != null && (dev.status == UserStatus.ACTIVE || dev.status == UserStatus.NEW)) {
+								MailUtils.sendTextMailAsync(MailSenderType.STATUS, dev.email, dev.email, "Error Report: ["+plg.name+"] "+InstanceConfig.getInstance().getPortalServerDomain(), txt);
+							}
+						}
+					}
+				} 
+							
+				MailUtils.sendTextMailAsync(MailSenderType.STATUS, bugReportEmail, bugReportName, "Error Report: ["+plg.name+"] "+InstanceConfig.getInstance().getPortalServerDomain(), txt);
+			}
 			Stats.addComment("Error: "+e.getClass().getName()+": "+e.getMessage());
 		} catch (InternalServerException e2) {
 			report(fromWhere, request, e2);
@@ -111,6 +128,6 @@ public class ErrorReporter {
 		String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss").format(new Date());
 		
 		String txt = "Instance: "+InstanceConfig.getInstance().getPortalServerDomain()+"\nTime:"+timeStamp+"\nInterface: "+fromWhere+"\nPortal Session: "+user+"\nPath: "+path+"\nExecution Time: "+duration+"ms\n\n"+AccessLog.getReport();
-		MailUtils.sendTextMail(MailSenderType.STATUS, bugReportEmail, bugReportName, "Bad Performance: "+path, txt);		
+		MailUtils.sendTextMailAsync(MailSenderType.STATUS, bugReportEmail, bugReportName, "Bad Performance: "+path, txt);		
 	}
 }

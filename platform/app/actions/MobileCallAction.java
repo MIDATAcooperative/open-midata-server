@@ -49,7 +49,7 @@ public class MobileCallAction extends Action<MobileCall> {
 	    	          .withHeader("Allow", "*")
 	    	          .withHeader("Access-Control-Allow-Credentials", "true")
 	    	          .withHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH")
-	    	          .withHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, Authorization, Prefer, Location, IfMatch, ETag, LastModified, Pragma, Cache-Control, X-Session-Token, X-Filename")
+	    	          .withHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, Authorization, Prefer, Location, IfMatch, ETag, LastModified, Pragma, Cache-Control, X-Session-Token, X-Filename, X-MIDATA-AUDIT-PRACTITIONER-REFERENCE, X-MIDATA-AUDIT-PRACTITIONER-NAME, X-MIDATA-AUDIT-ORGANIZATION-NAME, X-MIDATA-AUDIT-ORGANIZATION-REFERENCE, X-MIDATA-AUDIT-LOCATION-NAME, X-MIDATA-AUDIT-LOCATION-REFERENCE, X-MIDATA-AUDIT-PURPOSE-CODING, X-MIDATA-AUDIT-PURPOSE-NAME")
 	    	          .withHeader("Pragma", "no-cache")
 	    	          .withHeader("Cache-Control", "no-cache, no-store");
 	    	  
