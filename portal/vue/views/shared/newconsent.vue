@@ -232,7 +232,7 @@
 			
 					<div class="margin-top" v-if="mayAddPeople()">
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" @click="addYourself();" v-t="'newconsent.add_yourself_btn'"></button>
-						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP' && consent.entityType!='ORGANIZATION'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addOrganization();" v-t="'newconsent.add_organization_btn'"></button>
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
 					</div>
@@ -490,7 +490,7 @@ export default {
 				
 				if ($data.consent.type == "CIRCLE") $data.isSimple = false;
 								
-				if ($data.consent.entityType == "USERGROUP") {
+				if ($data.consent.entityType == "USERGROUP" || $data.consent.entityType == "ORGANIZATION") {
 					me.doBusy(usergroups.search({ "_id" : $data.consent.authorized }, ["name", "status", "type"]))
 					.then(function(data2) {
 						for (let userGroup of data2.data) {
@@ -670,14 +670,14 @@ export default {
 		    me.doAction("delete", server.delete(jsRoutes.controllers.Circles.removeMember($data.consent._id, person._id).url).
 			then(function() {
 				$data.consent.authorized.splice($data.consent.authorized.indexOf(person._id), 1);
-				if ($data.consent.entityType == "USERGROUP") {
+				if ($data.consent.entityType == "USERGROUP" || $data.consent.entityType == "ORGANIZATION") {
 				  $data.authteams.splice($data.authteams.indexOf(person), 1);
 				} else {
 				  $data.authpersons.splice($data.authpersons.indexOf(person), 1);
 				}
 			}));
 		} else {
-			if ($data.consent.entityType == "USERGROUP") {
+			if ($data.consent.entityType == "USERGROUP" || $data.consent.entityType == "ORGANIZATION") {
 				  $data.authteams.splice($data.authteams.indexOf(person), 1);
 				  $data.consent.authorized.splice($data.consent.authorized.indexOf(person._id), 1);
 			} else {

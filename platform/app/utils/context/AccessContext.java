@@ -374,7 +374,8 @@ public abstract class AccessContext {
 	 * @return
 	 */
 	public AccessContext forAccountReshare() {
-		return new AccountAccessContext(getRootCache(), getRootContext());		
+		AccessContext rootContext = getRootContext();
+		return new AccountAccessContext(rootContext.getCache(), getRootContext());		
 	}
 	
 	/**

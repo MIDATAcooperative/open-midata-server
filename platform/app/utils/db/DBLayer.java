@@ -284,7 +284,9 @@ public class DBLayer {
 	private static ThreadLocal<ClientSession> clientSession = new ThreadLocal<ClientSession>();
 	
 	public static DBSession startTransaction(String collection) {
-		ClientSession session = getDatabaseForCollection(collection).startSession(); 
+		ClientSession running = clientSession.get();
+		if (running != null) throw new NullPointerException();
+		ClientSession session = getDatabaseForCollection(collection).startSession(); 		
 		clientSession.set(session);
 		return new DBSession(session, collection);
 	}

@@ -35,6 +35,7 @@ import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.AccountAccessContext;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 
 /**
@@ -303,7 +304,11 @@ public class Feature_QueryRedirect extends Feature {
 	 */
     public static Map<String, Object> simplifyAccessFilter(MidataId pluginId, Map<String, Object> in) throws AppException {
     	//AccessLog.log("simplifyAccessFilter");
-    	if (in == null) throw new PluginException(pluginId, "error.plugin", "No access filter defined for plugin.");
+    	if (in == null) {
+    		if (pluginId != null) {
+    			throw new PluginException(pluginId, "error.plugin", "No access filter defined for plugin.");
+    		} else throw new InternalServerException("error.internal", "No access filter defined for project.");
+    	}
     	if (!in.containsKey("$or")) return in;
     	Map<String, Object> out = new HashMap<String, Object>();
     	Set<String> ignore = Sets.create("code","content");

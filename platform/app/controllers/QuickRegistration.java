@@ -208,7 +208,7 @@ public class QuickRegistration extends APIController {
 			  user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 			  Member.set(user._id, "myaps", user.myaps);
 				
-			  PatientResourceProvider.updatePatientForAccount(context, user._id);
+			  PatientResourceProvider.updatePatientForAccount(context, user._id, true);
 		} else {
 		      handle = Application.registerCreateUser(context, user);
 		}

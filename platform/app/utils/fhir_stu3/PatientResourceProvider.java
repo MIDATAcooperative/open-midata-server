@@ -732,11 +732,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			Plugin plugin = Plugin.getById(info.getUsedPlugin());
 			if (plugin.usePreconfirmed) {
 				thePatient.setId(user._id.toString());
-				addSecurityTag(record, thePatient, QueryTagTools.SECURITY_LOCALCOPY);
+				/*addSecurityTag(record, thePatient, QueryTagTools.SECURITY_LOCALCOPY);
 				addSecurityTag(record, thePatient, QueryTagTools.SECURITY_GENERATED);
-				prepare(record, thePatient);
+				prepare(record, thePatient);*/
 				
-			    tempContext = new AccountReuseAccessContext(info, user._id, record);
+			    tempContext = new AccountReuseAccessContext(info, user._id);
 			} else {
 			  tempContext = info;
 			}

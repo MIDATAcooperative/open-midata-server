@@ -426,11 +426,11 @@ public class Users extends APIController {
 		AccessContext context = ContextManager.instance.createLoginOnlyContext(user._id, null, user.role);
 		if (user.role.equals(UserRole.MEMBER)) {	
 			
-			if (!executorId.equals(userId)) {
-			   user.addFlag(AccountActionFlags.UPDATE_FHIR);
-			} else {
-			   PatientResourceProvider.updatePatientForAccount(context, user._id);
-			}
+			//if (!executorId.equals(userId)) {
+			//   user.addFlag(AccountActionFlags.UPDATE_FHIR);
+			//} else {
+			   PatientResourceProvider.updatePatientForAccount(context, user._id, false);
+			//}
 					  
 		}
 		
@@ -481,7 +481,7 @@ public class Users extends APIController {
 		User.set(user._id, "notifications", sendMail);
 					
 		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session());
-		PatientResourceProvider.updatePatientForAccount(context, userId);
+		PatientResourceProvider.updatePatientForAccount(context, userId, false);
 		
 		if (authType.equals(SecondaryAuthType.SMS)) {
 			requireUserFeature(request, UserFeature.PHONE_ENTERED);

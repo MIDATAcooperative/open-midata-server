@@ -109,6 +109,7 @@ import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ConsentQueryTools;
 import utils.ErrorReporter;
+import utils.LinkTools;
 import utils.PluginLoginCache;
 import utils.QueryTagTools;
 import utils.access.Feature_FormatGroups;
@@ -769,7 +770,11 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		AccessContext info = resolveSource(consent, theResource, study);
         
 		if (theResource.getStatus() == ConsentState.ACTIVE) {			
-			if (ApplicationTools.actAsRepresentative(info, consent.owner, false)==null) throw new InvalidRequestException("Only consent owner or representative may create active consents");
+			if (ApplicationTools.actAsRepresentative(info, consent.owner, false)==null) {
+				
+				Plugin plugin = Plugin.getById(info.getUsedPlugin());
+				if (!plugin.usePreconfirmed) throw new InvalidRequestException("Only consent owner or representative may create active consents");
+			}
 			
 			if (consent.type == ConsentType.STUDYPARTICIPATION) {
 				mayShare(info, study.recordQuery);
@@ -828,30 +833,19 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 						}
 						AccessLog.log("verified access for project:",optionalProject._id.toString()," success=",Boolean.toString(isValid));
 					} else {
-						for (MidataId auth : consent.authorized) {					
-							boolean partValid = false;
-							if (auth.equals(consent.owner)) partValid = true;
-							else {
-								for (ConsentEntity allowedEntity : base.allowedReshares) {
-									if (allowedEntity.id.equals(auth)) partValid = true;
-									else if (allowedEntity.type == EntityType.SERVICES && (consent.entityType == EntityType.USERGROUP || consent.entityType == EntityType.ORGANIZATION)) {
-										Set<ServiceInstance> insts = ServiceInstance.getByApp(allowedEntity.id, Sets.create("_id", "status"));
-										if (!insts.isEmpty()) {
-											for (ServiceInstance si : insts) {
-												if (si.status == UserStatus.ACTIVE && info.getCache().getByGroupAndActiveMember(auth, si._id, Permission.READ_DATA) != null) partValid = true; 
-											}
-										}										
-									}
-								}	
-							}
-							AccessLog.log("verified access for ",auth.toString()," success=",Boolean.toString(partValid));
-							if (!partValid) isValid = false;
-						}
+						isValid = LinkTools.checkReshareToEntitiesAllowed(info, base, consent);												
 					}
 					if (!isValid) throw new InvalidRequestException("sourceReference does not allow to create this consent.");
 					AccessLog.log("verify source consent successful");	
 					info = info.forConsentReshare(base); 
 				}
+			}
+		} else if (consent.isActive() && !info.canCreateActiveConsentsFor(consent.owner)) {
+			List<Consent> candidates = LinkTools.findConsentsForResharing(info, consent);
+			if (!candidates.isEmpty()) {
+				Consent base = candidates.get(0);
+				theResource.setSource(new Reference("Consent/"+base._id));
+				info = info.forConsentReshare(base);
 			}
 		}
         return info;
@@ -884,7 +878,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			AccessContext info = resolveSource(consent, theResource, null);
 			String encoded = ctx.newJsonParser().encodeResourceToString(theResource);		
 			consent.fhirConsent = BasicDBObject.parse(encoded);		 
-	        Circles.addConsent(info, consent, true, null, false);   
+	        Circles.addConsent(info, consent, true, null, true);   
 	        if (consent.status == ConsentStatus.UNCONFIRMED && theResource.getStatus() == ConsentState.ACTIVE) theResource.setStatus(ConsentState.PROPOSED);
 			theResource.setDateTime(consent.dateOfCreation);
 			theResource.setId(consent._id.toString());

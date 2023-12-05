@@ -77,7 +77,7 @@ export default {
 			let crit = {};
 			if ($data.criteria.name) crit.name = $data.criteria.name;
 			if ($data.criteria.city) crit.city = $data.criteria.city;
-			if (me.setup.serviceId) crit.serviceId = me.setup.serviceId;	
+			if (me.setup && me.setup.serviceId) crit.serviceId = me.setup.serviceId;	
 			$data.organizations = null;		
     		me.doBusy(hc.searchOrganization(crit))
     		.then(function(data) {

@@ -60,7 +60,10 @@ public class ExecutionInfo {
 		String plaintext = TokenCrypto.decryptToken(MobileAppSessionToken.noExtra(token));
 		if (plaintext == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");	
 		JsonNode json = Json.parse(plaintext);
-		if (json == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+		if (json == null) {
+			AccessLog.log("no json in token");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+		}
 		
 		if (json.has("instanceId")) {
 			return checkSpaceToken(SpaceToken.decrypt(request, json));
