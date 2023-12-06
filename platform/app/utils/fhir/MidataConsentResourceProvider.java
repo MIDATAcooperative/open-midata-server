@@ -367,7 +367,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			
 			if (p.hasProvision()) {
 				ArrayList<Map<String, Object>> subqueries = new ArrayList<Map<String, Object>>();
-				query.put("$or", subqueries);
+				
 				for (provisionComponent prov : p.getProvision()) {
 					Map<String, Object> subquery = new HashMap<String, Object>();
 					createQuery(prov, subquery);
@@ -375,35 +375,41 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 					  subqueries.add(subquery);
 					}
 				}
+				
+				if (!subqueries.isEmpty()) query.put("$or", subqueries);
 			}
 		}
 	}
 	
-	private void processDataSharing(Consent consent, org.hl7.fhir.r4.model.Consent p) throws AppException {
+	private void processDataSharing(Consent consent, org.hl7.fhir.r4.model.Consent p) throws AppException {		
 		if (consent.status != ConsentStatus.ACTIVE) return;
-		if (info().getAccessor().equals(consent.owner)) processDataSharing(consent, p.getProvision());
+		/*if (info().getAccessor().equals(consent.owner))*/ 
+		processDataSharing(consent, p.getProvision());
 	}
 	
-	private void processDataSharing(Consent consent, provisionComponent prov) throws AppException {		
-		if (prov.getType() != org.hl7.fhir.r4.model.Consent.ConsentProvisionType.DENY) {
+	private void processDataSharing(Consent consent, provisionComponent prov) throws AppException {
+		
+		if (prov.getType() != org.hl7.fhir.r4.model.Consent.ConsentProvisionType.DENY) {			
 			Set<MidataId> share = new HashSet<MidataId>();
 			if (prov.hasData()) {
+				AccessLog.log("Process data sharing using provision.data");
 				for (provisionDataComponent entry : prov.getData()) {
 					if (entry.hasMeaning() && !entry.getMeaning().equals(ConsentDataMeaning.INSTANCE)) {
 						throw new UnprocessableEntityException("Unsupported value for 'meaning'");
 					}
 					if (entry.hasReference()) {
-						Reference ref = entry.getReference();
-						if (ref.hasReference()) {
-							if (!ref.getReferenceElement().isAbsolute()) {
+						Reference ref = entry.getReference();						
+						if (ref.hasReference()) {						
+							if (!ref.getReferenceElement().isAbsolute()) {						
 								String id = ref.getReferenceElement().getIdPart();
 								share.add(MidataId.from(id));
 							}
 						}
 					}
 				}
-			}
+			}			
 			if (!share.isEmpty()) {
+				AccessLog.log("Single record sharing #=",Integer.toString(share.size()));
 				RecordManager.instance.share(info(), info().getTargetAps(), consent._id, share, false);
 			}
 		}
@@ -752,9 +758,13 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		Map<String, Object> query = new HashMap<String, Object>();
 		createQuery(theResource.getProvision(), query);
 				
-		if (query.isEmpty()) {			
-			query = ConsentQueryTools.filterQueryForUseInConsent(info().getAccessRestrictions());
-			if (query == null) query = ConsentQueryTools.getEmptyQuery();
+		if (query.isEmpty()) {
+			if (theResource.getProvision().hasData() || theResource.getProvision().hasProvision()) {
+				query = ConsentQueryTools.getEmptyQuery();
+			} else {
+			    query = ConsentQueryTools.filterQueryForUseInConsent(info().getAccessRestrictions());
+			    if (query == null) query = ConsentQueryTools.getEmptyQuery();
+			}
 		}
 		
 		Feature_FormatGroups.convertQueryToContents(query);
@@ -882,7 +892,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 	        if (consent.status == ConsentStatus.UNCONFIRMED && theResource.getStatus() == ConsentState.ACTIVE) theResource.setStatus(ConsentState.PROPOSED);
 			theResource.setDateTime(consent.dateOfCreation);
 			theResource.setId(consent._id.toString());
-			processDataSharing(consent, theResource);
+			processDataSharing(consent, theResource);			
 			addQueryToConsent(consent, theResource);			
 			addActorsToConsent(consent, theResource);
 			return theResource;
