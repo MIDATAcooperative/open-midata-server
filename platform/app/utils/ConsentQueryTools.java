@@ -288,6 +288,8 @@ public class ConsentQueryTools {
 		masterQuery.remove("group-system");
 		subQuery.remove("group-system");
 		
+		if (subQuery.containsKey("content") && utils.access.Query.getRestriction(subQuery.get("content"), "content").isEmpty()) return true;
+		
 	    for (Map.Entry<String, Object> entry : masterQuery.entrySet()) {
 	    	if (entry.getKey().equals("owner")) continue;
 	    	if (entry.getKey().equals("allow-tag")) continue;

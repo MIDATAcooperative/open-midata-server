@@ -85,7 +85,7 @@ public class PatientRecordTool {
 	private static boolean recoverPatientRecordKey(MidataId targetUser) {
 		try {
 			Member user = Member.getById(targetUser, Sets.create(User.ALL_USER_INTERNAL, "status", "role", "security", "patientRecordKey", "patientRecordId"));			
-			if (user.role == UserRole.MEMBER && user.security == AccountSecurityLevel.KEY) {
+			if (user.role == UserRole.MEMBER && user.security == AccountSecurityLevel.KEY && !user._id.equals(RuntimeConstants.instance.publicUser)) {
 				KeyManager.instance.login(1000l*60l*60l, false);
 				KeyManager.instance.unlock(targetUser, null);
 				AccessContext temp = ContextManager.instance.createInitialSession(targetUser, UserRole.MEMBER, RuntimeConstants.instance.portalPlugin).forAccount();
