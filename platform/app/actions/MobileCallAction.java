@@ -50,6 +50,7 @@ public class MobileCallAction extends Action<MobileCall> {
 	    	          .withHeader("Access-Control-Allow-Credentials", "true")
 	    	          .withHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH")
 	    	          .withHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, Authorization, Prefer, Location, IfMatch, ETag, LastModified, Pragma, Cache-Control, X-Session-Token, X-Filename, X-MIDATA-AUDIT-PRACTITIONER-REFERENCE, X-MIDATA-AUDIT-PRACTITIONER-NAME, X-MIDATA-AUDIT-ORGANIZATION-NAME, X-MIDATA-AUDIT-ORGANIZATION-REFERENCE, X-MIDATA-AUDIT-LOCATION-NAME, X-MIDATA-AUDIT-LOCATION-REFERENCE, X-MIDATA-AUDIT-PURPOSE-CODING, X-MIDATA-AUDIT-PURPOSE-NAME")
+	    	          .withHeader("Access-Control-Expose-Headers", "Location")
 	    	          .withHeader("Pragma", "no-cache")
 	    	          .withHeader("Cache-Control", "no-cache, no-store");
 	    	  
@@ -71,7 +72,7 @@ public class MobileCallAction extends Action<MobileCall> {
       		  if (ex.getCause() != null) throw (Exception) ex.getCause(); else throw ex;
       	  }
     	} catch (JsonValidationException e) {
-    		if (Stats.enabled) Stats.finishRequest(request, "400");
+    		Stats.finishRequest(request, "400");
     		if (e.getField() != null) {
     		  return withHeaders(CompletableFuture.completedFuture((Result) badRequest(
     				    Json.newObject().put("field", e.getField())
@@ -81,25 +82,25 @@ public class MobileCallAction extends Action<MobileCall> {
     		  return withHeaders(CompletableFuture.completedFuture((Result) badRequest(e.getMessage())));
     		}
     	} catch (BadRequestException e3) {
-    		if (Stats.enabled) Stats.finishRequest(request, e3.getStatusCode()+"");
+    		Stats.finishRequest(request, e3.getStatusCode()+"");
     		AuditManager.instance.fail(400, e3.getMessage(), e3.getLocaleKey());
     		return withHeaders(CompletableFuture.completedFuture((Result) status(e3.getStatusCode(), e3.getMessage())));
     	} catch (RequestTooLargeException e4) {
-    		if (Stats.enabled) Stats.finishRequest(request, "202");
+    		Stats.finishRequest(request, "202");
     		return withHeaders(CompletableFuture.completedFuture((Result) status(202, e4.getMessage())));
     	} catch (PluginException e5) {
     		ErrorReporter.reportPluginProblem("Mobile API", request, e5);
-    		if (Stats.enabled) Stats.finishRequest(request, "400");
+    		Stats.finishRequest(request, "400");
 			AuditManager.instance.fail(400, e5.getMessage(), e5.getLocaleKey());
 			return withHeaders(CompletableFuture.completedFuture((Result) status(400, e5.getMessage())));
     	} catch (InternalServerException e4) {			
 			ErrorReporter.report("Mobile API", request, e4);
-			if (Stats.enabled) Stats.finishRequest(request, "500");
+			Stats.finishRequest(request, "500");
 			AuditManager.instance.fail(500, e4.getMessage(), null);
 			return withHeaders(CompletableFuture.completedFuture((Result) internalServerError("err:"+e4.getMessage())));		
 		} catch (Exception e2) {			
 			ErrorReporter.report("Mobile API", request, e2);
-			if (Stats.enabled) Stats.finishRequest(request, "500");
+			Stats.finishRequest(request, "500");
 			AuditManager.instance.fail(500, e2.getMessage(), null);
 			return withHeaders(CompletableFuture.completedFuture((Result) internalServerError("an internal error occured")));			
 		} finally {

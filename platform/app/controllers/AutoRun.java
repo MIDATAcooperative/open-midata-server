@@ -454,13 +454,13 @@ public class AutoRun extends APIController {
 		public void preStart() throws Exception {			
 			super.preStart();
 			
-			importer = getContext().system().scheduler().schedule(
+			importer = getContext().system().scheduler().scheduleAtFixedRate(
 	                Duration.ofSeconds(nextExecutionInSeconds(4, 0)),
 	                Duration.ofHours(24),
 	                manager, new StartImport(),
 	                Instances.system().dispatcher(), null);
 				
-			intradayImporter = getContext().system().scheduler().schedule(
+			intradayImporter = getContext().system().scheduler().scheduleAtFixedRate(
 	                Duration.ofSeconds(nextExecution30InSeconds()),
 	                Duration.ofMinutes(30),
 	                manager, new StartIntradayImport(),

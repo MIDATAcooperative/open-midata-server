@@ -276,6 +276,8 @@
       "LOGIN" : "Login",
       "REFRESH" : "Session",
       "INSTALL" : "Activation",
+      "ERROR" : "Error",
+      "FAILURE" : "Failure",
       "GET" : "Read",
       "POST" : "Write",
       "PUT" : "Update",

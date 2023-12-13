@@ -50,6 +50,8 @@
 		        <Sorter sortby="actions.POST.count" v-model="result" v-t="'usagestats.POST'"></Sorter>
 		        <Sorter sortby="actions.PUT.count" v-model="result" v-t="'usagestats.PUT'"></Sorter>
 		        <Sorter sortby="actions.DELETE.count" v-model="result" v-t="'usagestats.DELETE'"></Sorter>		      
+		        <Sorter sortby="actions.ERROR.count" v-model="result" v-t="'usagestats.ERROR'"></Sorter>
+		        <Sorter sortby="actions.FAILURE.count" v-model="result" v-t="'usagestats.FAILURE'"></Sorter>
 		    </tr>
 		    <tr v-for="(entry,idx) in result.filtered" :key="idx">
 		        <td>{{ entry.date }}</td>
@@ -73,7 +75,7 @@ export default {
     data: () => ({	
         now : new Date(),
         criteria : { from: null, to : null, days:7  },
-        actions : ["REGISTRATION","LOGIN","REFRESH","INSTALL","GET","POST","PUT","DELETE"],
+        actions : ["REGISTRATION","LOGIN","REFRESH","INSTALL","GET","POST","PUT","DELETE","ERROR","FAILURE"],
         result : null
     }),
 

@@ -15,27 +15,14 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package models.enums;
+package models.stats;
 
-public enum UsageAction {
+public enum MonitoringType {
 
-	LOGIN,
+	HIGH_USE,
 	
-	REFRESH,
+	LOW_USE,
 	
-	INSTALL,
+	HIGH_ERROR_RATE
 	
-	REGISTRATION,
-	
-	GET,
-	
-	POST,
-	
-	PUT,
-	
-	DELETE,
-	
-	FAILURE,
-	
-	ERROR
 }
