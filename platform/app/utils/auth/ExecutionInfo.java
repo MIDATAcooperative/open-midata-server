@@ -53,6 +53,7 @@ import utils.context.SpaceAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.stats.Stats;
 
 public class ExecutionInfo {
 		
@@ -116,7 +117,7 @@ public class ExecutionInfo {
 		} else if (authToken.pluginId == null) {							
 			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.autoimport ? authToken.userId : authToken.executorId, Sets.create("visualization", "app", "aps", "autoShare", "sharingQuery", "writes", "owner", "name"));
 			if (space == null) throw new BadRequestException("error.unknown.space", "The current space does no longer exist.");
-							
+			Stats.setPlugin(space.visualization);			
 			MidataId ownerId = authToken.userId;
 			
 			
@@ -209,7 +210,8 @@ public class ExecutionInfo {
 		
 		AccessLog.logBegin("begin check 'mobile' type session token");
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
-        if (appInstance == null) OAuth2.invalidToken(); 
+        if (appInstance == null) OAuth2.invalidToken();
+        Stats.setPlugin(appInstance.applicationId);
         if (appInstance.status.equals(ConsentStatus.REJECTED) || appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.FROZEN)) OAuth2.invalidToken();
         
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");

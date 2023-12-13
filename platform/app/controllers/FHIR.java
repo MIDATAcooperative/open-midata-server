@@ -344,7 +344,7 @@ public class FHIR extends Controller {
 		}
 		AccessLog.logEnd("end FHIR get request");
 			
-		
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), res.getStatus());
 		Stats.finishRequest(request, String.valueOf(res.getStatus()));
 							
 		return res.asPlayResult();
@@ -457,6 +457,7 @@ public class FHIR extends Controller {
 		}
 		AccessLog.logEnd("end FHIR post request");
 		
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), res.getStatus());
 		Stats.finishRequest(request, String.valueOf(res.getStatus()));
 		
 		return res.asPlayResult();
@@ -501,6 +502,7 @@ public class FHIR extends Controller {
 		  default: servlet_stu3.doPut(req, res);
 		}
 		
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), res.getStatus());
 		Stats.finishRequest(request, String.valueOf(res.getStatus()));
 				
 		return res.asPlayResult();
@@ -545,6 +547,7 @@ public class FHIR extends Controller {
 		  default: servlet_stu3.doDelete(req, res);
 		}
 		
+		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), res.getStatus());
 		Stats.finishRequest(request, String.valueOf(res.getStatus()));
 				
 		return res.asPlayResult();

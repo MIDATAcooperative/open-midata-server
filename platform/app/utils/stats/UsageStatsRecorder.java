@@ -62,6 +62,11 @@ public class UsageStatsRecorder {
 		if (object==null) return;
 		statsRecorder.tell(new UsageStatsMessage(object, objectName, null, action), ActorRef.noSender());
 	}
+	
+	public static void protokoll(MidataId object, int httpStatus) {
+		if (httpStatus >= 400 && httpStatus < 500) protokoll(object, UsageAction.ERROR);
+		else if (httpStatus >= 500) protokoll(object, UsageAction.FAILURE);
+	}
 
 	public static void protokoll(MidataId object, UsageAction action) {
 		if (object==null) return;
@@ -104,7 +109,7 @@ class UsageStatsActor extends AbstractActor {
 		modcount = 0;
 		today = today();
 
-		dayChange = getContext().system().scheduler().schedule(Duration.ofMinutes(5), Duration.ofMinutes(5), getSelf(), new FlushMessage(),
+		dayChange = getContext().system().scheduler().scheduleWithFixedDelay(Duration.ofMinutes(5), Duration.ofMinutes(5), getSelf(), new FlushMessage(),
 				getContext().system().dispatcher(), null);
 
 	}

@@ -69,6 +69,7 @@ import utils.messaging.SubscriptionManager;
 import utils.plugins.DeploymentManager;
 import utils.servlet.PlayHttpServletConfig;
 import utils.stats.ActionRecorder;
+import utils.stats.RequestMonitoring;
 import utils.stats.Stats;
 import utils.stats.UsageStatsRecorder;
 import utils.sync.Instances;
@@ -195,6 +196,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		System.out.println("Statistiks");
 		Stats.init(system);
 		UsageStatsRecorder.init(Instances.system());
+		RequestMonitoring.init(Instances.system());
 						
 		System.out.println("Service Handler");
 		ServiceHandler.startup();
