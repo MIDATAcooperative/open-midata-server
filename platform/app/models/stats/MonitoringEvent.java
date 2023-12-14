@@ -73,7 +73,7 @@ public class MonitoringEvent extends Model {
 		case LOW_USE: m = "not enough requests ";break;		 
 		}
 		int min = avg-var;
-		int max = avg+var;
+		int max = avg+var * 2;
 		if (min < 0) min = 0;
 		return ("".equals(pluginName) ? "Platform total" : pluginName)+getTs()+(action!=null?" with action "+action:"")+": "+m+count+", expected "+min+" to "+max;
 				  
