@@ -126,6 +126,6 @@ public class MonitoringStats extends Model {
 	}
 	
 	public boolean isUnused() {
-		return requestsAvg < 0.1;
+		return timeslot==-1 ? (requestsAvg < 0.004 && requestsVar < 1) : (requestsAvg < 0.1 && requestsVar < 1);
 	}
 }

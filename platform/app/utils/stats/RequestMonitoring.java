@@ -407,7 +407,7 @@ class MonitoringReporterActor extends AbstractActor {
 	    if ((stats.timeslot >= 0 || stats.action==null) && stats.generation < 2) return null;
 		if (stats.requestsCurrent > 0) {
 			int errorRate = stats.errorsCurrent;// * 100 / stats.requestsCurrent;
-			if (errorRate > stats.errorsAvg + stats.errorsVar) {
+			if (errorRate > stats.errorsAvg + stats.errorsVar * 2) {
 				MonitoringEvent result = new MonitoringEvent(stats);
 				result.type = MonitoringType.HIGH_ERROR_RATE;
 				result.count = stats.errorsCurrent;
@@ -419,7 +419,7 @@ class MonitoringReporterActor extends AbstractActor {
 		}
 		
 		
-		if (stats.requestsCurrent > stats.requestsAvg + stats.requestsVar) {
+		if (stats.requestsCurrent > stats.requestsAvg + stats.requestsVar * 2) {
 			MonitoringEvent result = new MonitoringEvent(stats);
 			result.type = MonitoringType.HIGH_USE;
 			result.count = stats.requestsCurrent;
