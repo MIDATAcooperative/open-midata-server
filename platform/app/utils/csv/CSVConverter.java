@@ -534,6 +534,12 @@ public class CSVConverter {
 		if (name == null) name = "map";
 		switch(name) {
 		case "dateOnly" : return data.isTextual() ? data.asText().split("T")[0] : null;
+		case "timeOnly" : 
+			if (data.isTextual()) {
+				String[] t = data.asText().split("T");
+				if (t.length>1) return t[1].split(".")[0];
+			}
+			return null;	
 		case "map" : 
 			if (!(data.isValueNode()) || data.isNull()) return null;
 			String v = use.path(data.asText()).asText();
