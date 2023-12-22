@@ -783,8 +783,18 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	
 		// Is there already a matching user account?
 		Member existing = ((RecordWithMeta) record).attached;
+		Patient existingPatient = null;
+		Patient resultPatient = thePatient;
+		
+		if (existing != null) {
+			Record existingRecord = PatientRecordTool.getPatientRecord(info(), existing._id);
+			if (existingRecord != null) {
+				existingPatient = parse(existingRecord, Patient.class);	
+				resultPatient = existingPatient;
+			}
+		}
 					
-		FHIRPatientHolder fhirPatient = new FHIRPatientHolderR4(thePatient);
+		FHIRPatientHolder fhirPatient = new FHIRPatientHolderR4(thePatient, existingPatient);
 		
 		// Determine projects the given user should participate in
         Set<MidataId> projectsFromPatient = AccountManagementTools.getProjectIdsFromPatient(fhirPatient);
@@ -792,7 +802,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
         Set<MidataId> projectsToParticipate = new HashSet<MidataId>();
         projectsToParticipate.addAll(projectsFromPatient);
         projectsToParticipate.addAll(projectsFromApp);
-		thePatient.getExtension().clear();		
+        resultPatient.getExtension().clear();		
 		
      	
 		// If no user is existing, create a new user		
@@ -816,7 +826,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			user = existing;										
 			Plugin plugin = Plugin.getById(info.getUsedPlugin());
 			if (plugin.usePreconfirmed) {
-				thePatient.setId(user._id.toString());
+				resultPatient.setId(user._id.toString());
 				/*addSecurityTag(record, thePatient, QueryTagTools.SECURITY_LOCALCOPY);
 				addSecurityTag(record, thePatient, QueryTagTools.SECURITY_GENERATED);
 				prepare(record, thePatient);*/
@@ -844,12 +854,12 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		ContextManager.instance.clearCache(); //Is this needed??
 
 		// Cleanup
-		thePatient.setId(user._id.toString());					
+		resultPatient.setId(user._id.toString());					
 		if (tempContext != null) tempContext.close();
 		
 		AuditManager.instance.success();
 		
-		return thePatient;
+		return resultPatient;
 	}
 	
 	protected void populateIdentifiers(MidataId owner, Patient thePatient, List<Study> studies) throws AppException {

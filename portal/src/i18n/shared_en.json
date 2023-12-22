@@ -134,6 +134,7 @@
 
      "exists" : {
        "user" : "A person with this email is already registered.",
+       "email" : "Different account with same email already exists.",
        "member" : "A person with this email is already registered.",
        "provider" : "A health professional with this name already exists.",
        "organization" : "An organization with this name already exists.",

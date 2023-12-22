@@ -43,15 +43,22 @@ import utils.exceptions.AppException;
 public class FHIRPatientHolderR4 extends FHIRPatientHolder {
 
 	private Patient thePatient;
+	private Patient existingPatient;
 	
 	public FHIRPatientHolderR4(Patient thePatient) {
 		this.thePatient = thePatient;
+		this.existingPatient = thePatient;
+	}
+	
+	public FHIRPatientHolderR4(Patient thePatient, Patient existingPatient) {
+		this.thePatient = thePatient;
+		this.existingPatient = (existingPatient == null) ? thePatient : existingPatient;
 	}
 	
 	public void addServiceUrl(User user, Consent consent) {
 		try {
 	      String serviceUrl = InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+"&login="+URLEncoder.encode(user.email, "UTF-8");
-	      thePatient.addExtension(new Extension("http://midata.coop/extensions/service-url", new UriType(serviceUrl)));
+	      existingPatient.addExtension(new Extension("http://midata.coop/extensions/service-url", new UriType(serviceUrl)));
 		} catch (UnsupportedEncodingException e) {}
 	}
 	
@@ -78,8 +85,8 @@ public class FHIRPatientHolderR4 extends FHIRPatientHolder {
 	public void populateIdentifier(AccessContext context, Study study, StudyParticipation sp) throws AppException {
 		if (sp != null) {
 			Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(context, sp);
-			thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(pseudo.getRight()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/project-code",study.code, study.name)));
-			thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(pseudo.getLeft().toString()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/project-code",study.code, study.name)));
+			existingPatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(pseudo.getRight()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/project-code",study.code, study.name)));
+			existingPatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(pseudo.getLeft().toString()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/project-code",study.code, study.name)));
 		}
 	}
 	
