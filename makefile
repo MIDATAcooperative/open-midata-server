@@ -164,7 +164,7 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	$(info ------------------------------)
 	$(info Installing Node JS... )
 	$(info ------------------------------)
-	curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+	curl -sL https://deb.nodesource.com/setup_17.x | sudo -E bash -
 	sudo apt-get install -y nodejs	
 	sudo chmod -R ugo+rx /usr/lib/node_modules
 	touch tasks/install-node

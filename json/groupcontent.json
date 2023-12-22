@@ -461,3 +461,4 @@
 {"_id":{"$oid":"6548b26cfa96471011cf8c74"},"system":"v1","name":"assessment","content":"breast-qtm-preoperative"}
 {"_id":{"$oid":"6548bbd6bd916879dba88c04"},"system":"v1","name":"assessment","content":"demographic-factors"}
 {"_id":{"$oid":"6548bf41bd916879dba88c1f"},"system":"v1","name":"assessment","content":"idcv"}
+{"_id":{"$oid":"65840da6a8cbf1575e36ef96"},"system":"v1","name":"assessment","content":"type-operation"}
