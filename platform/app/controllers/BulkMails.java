@@ -313,6 +313,10 @@ public class BulkMails extends APIController {
 		mailItem.setProgress();
 	}
 	
+	private boolean isEmptyMail(String content) {
+		return content == null || content.trim().length()<10;
+	}
+	
 	private boolean sendMail(BulkMail mailItem, MidataId targetUser, MidataId study) throws AppException {
 		User user = User.getById(targetUser, Sets.create("status", "email", "emailLC", "firstname", "lastname", "language", "emailStatus", "role"));
 		if (user != null && user.email != null && (user.emailStatus == EMailStatus.VALIDATED || user.emailStatus == EMailStatus.EXTERN_VALIDATED)) {
@@ -321,12 +325,12 @@ public class BulkMails extends APIController {
 			
 			String content = mailItem.content.get(lang);
 			String title = mailItem.title.get(lang);
-			if (content == null) {
+			if (isEmptyMail(content)) {
 				content = mailItem.content.get("int");
 				title = mailItem.title.get("int");
 			}
 			
-			if (content == null) return false;
+			if (isEmptyMail(content)) return false;
 			if (title == null) return false;
 			
 			String link;
