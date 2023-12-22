@@ -107,7 +107,8 @@ public class AccountManagementTools {
 		
 			 if (result != null) {
 				 // compare name
-				 if (!isSimilar(user.firstname, result.firstname, false, false)) {
+				 				 
+				 if (!isSimilarFirstname(user.firstname, result.firstname, false)) {
 					 throw new UnprocessableEntityException("Possible candidate has no match in person given name.");
 				 }
 				 boolean nameOk = isSimilar(user.lastname, result.lastname, false, false);					 
@@ -132,42 +133,43 @@ public class AccountManagementTools {
 				 // compare address
 				 
 				 return result;
-			 } else {
-				  
-				 Map<String, Object> properties = CMaps
-						 .map("keywordsLC", user.lastname.toLowerCase())
-						 .map("lastname", Pattern.compile("^"+user.lastname+"$", Pattern.CASE_INSENSITIVE))
-						 .map("firstname", Pattern.compile("^"+user.firstname+"$", Pattern.CASE_INSENSITIVE))
-						 .map("status", User.NON_DELETED)
-						 .map("role", UserRole.MEMBER);
-									 
-				 Set<Member> candidates = Member.getAll(properties, Member.FOR_LOGIN);
-				 
-				 boolean mailGiven = nonEmpty(user.email);
-				 for (Member candidate : candidates) {
-					 boolean birthdateOk = compareBirthdate(user.birthday, candidate.birthday, false);
-					 if (!birthdateOk) continue;
-					 
-					 boolean hasMail = nonEmpty(candidate.email);
-					 boolean hasAddress = nonEmpty(candidate.address1) && nonEmpty(candidate.city);
-					 boolean addressOk = compareAddress(user, candidate);
-					 
-					 if ((mailGiven && hasMail && !user.emailLC.equals(candidate.emailLC))
-						|| (!mailGiven && hasMail)) {
-						 if (hasAddress && addressOk) {
-							 logAndNotify(context, user ,candidate, false);
-							 AuditManager.instance.fail(400, "Same email used", "error.nomatch.email");
-							 throw new UnprocessableEntityException("Account exists. Please provide same email as used for account."); 
-						 }
-					 } else if (!hasMail) {
-						 						 					 						 					 
-						 if (hasAddress && addressOk) return candidate; 
-					 }
-					 
-				 }				 
-				 
-			 }
+			 } 
 		 }
+				 
+		 String firstName = user.firstname.trim();
+		 
+		 Map<String, Object> properties = CMaps
+				 .map("keywordsLC", user.lastname.toLowerCase())
+				 .map("lastname", Pattern.compile("^"+user.lastname+"$", Pattern.CASE_INSENSITIVE))
+				 .map("firstname", Pattern.compile("^"+firstName.split("\\s+")[0]+"($|\\s)", Pattern.CASE_INSENSITIVE))
+				 .map("status", User.NON_DELETED)
+				 .map("role", UserRole.MEMBER);
+							 
+		 Set<Member> candidates = Member.getAll(properties, Member.FOR_LOGIN);				 				 				
+		 
+		 boolean mailGiven = nonEmpty(user.email);
+		 for (Member candidate : candidates) {
+			 boolean birthdateOk = compareBirthdate(user.birthday, candidate.birthday, false);
+			 if (!birthdateOk) continue;
+			 
+			 boolean hasMail = nonEmpty(candidate.email);
+			 boolean hasAddress = nonEmpty(candidate.address1) && nonEmpty(candidate.city);
+			 boolean addressOk = compareAddress(user, candidate);
+			 
+			 if ((mailGiven && hasMail && !user.emailLC.equals(candidate.emailLC))
+				|| (!mailGiven && hasMail)) {
+				 if (hasAddress && addressOk) {
+					 logAndNotify(context, user ,candidate, false);
+					 AuditManager.instance.fail(400, "Same email used", "error.nomatch.email");
+					 throw new UnprocessableEntityException("Account exists. Please provide same email as used for account."); 
+				 }
+			 } else if (!hasMail) {
+				 						 					 						 					 
+				 if (hasAddress && addressOk) return candidate; 
+			 }
+			 
+		 }				 
+		 			 	
 		 return null;
 	}
 	
@@ -495,6 +497,14 @@ public class AccountManagementTools {
 		
 		AccessLog.log("end request participation");
 		return part;
+	}
+	
+	public static boolean isSimilarFirstname(String str1, String str2, boolean matchIfEmpty) {
+		if (str1 == null) str1 = "";
+		if (str2 == null) str2 = "";
+		str1 = str1.trim().split(" ")[0];
+		str2 = str2.trim().split(" ")[0];
+		return isSimilar(str1, str2, matchIfEmpty, false);
 	}
 	
 	public static boolean isSimilar(String str1, String str2, boolean matchIfEmpty, boolean isStreet) {
