@@ -450,7 +450,12 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	public Patient generatePatientForAccount(Member member) {
 		Patient p = new Patient();
 		p.setId(member._id.toString());
-		p.addName().setFamily(member.lastname).addGiven(member.firstname);
+		HumanName name = p.addName().setFamily(member.lastname);
+		if (member.firstname!=null && member.firstname.length()>0) {
+			for (String fn : member.firstname.trim().split("\\s+")) {
+			  name.addGiven(fn);
+			}
+		}
 		p.setBirthDate(member.birthday);
 		if (member.status == UserStatus.ACTIVE || member.status == UserStatus.NEW || member.status == UserStatus.BLOCKED) {
 			p.setActive(true);
