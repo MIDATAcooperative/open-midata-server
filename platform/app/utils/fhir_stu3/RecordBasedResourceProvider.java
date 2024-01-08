@@ -396,12 +396,15 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		  String display = null;
 		  try {
 			  if (codings != null && !codings.isEmpty()) {
-			  for (Coding coding : codings) {
-				if (coding.getDisplay() != null && display == null) display = coding.getDisplay();
-				if (coding.getCode() != null && coding.getSystem() != null) {
-					record.code.add(coding.getSystem() + " " + coding.getCode());
-				}
-			  }	  
+				  for (Coding coding : codings) {
+					if (coding.getDisplay() != null && display == null) display = coding.getDisplay();
+					if (coding.getCode() != null && coding.getSystem() != null) {
+						record.code.add(coding.getSystem() + " " + coding.getCode());
+					}
+				  }	  
+              }
+			  
+			  if (!record.code.isEmpty()) {
 			  
 				ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, record.code, null);
 			  

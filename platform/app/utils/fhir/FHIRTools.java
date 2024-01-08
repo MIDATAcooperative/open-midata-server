@@ -355,6 +355,7 @@ public class FHIRTools {
     		Period p = (Period) date;
     		return stringFromDateTime(p.getStartElement())+" - "+stringFromDateTime(p.getEndElement());
     	}
+    	if (!date.hasPrimitiveValue()) return "";
     	if (date instanceof DateTimeType) {
     	return ((DateTimeType) date).getValue().toInstant()
                .atZone(ZoneId.systemDefault())

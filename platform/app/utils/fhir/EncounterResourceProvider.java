@@ -367,6 +367,7 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 			try {
 				date = FHIRTools.stringFromDateTime(theEncounter.getPeriod());
 			} catch (Exception e) {
+				AccessLog.logException("date", e);
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}
 		}
