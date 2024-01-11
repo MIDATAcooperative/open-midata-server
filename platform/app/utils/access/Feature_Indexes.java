@@ -519,17 +519,21 @@ public class Feature_Indexes extends Feature {
 			Collection<IndexMatch> results = null;
 
 			int divider = 100;
-			
+			int partCount = 0;
 			for (IndexUse part : parts) {
+				partCount++;
 				if (results != null && part instanceof IndexAccess && results.size() < divider) {
 					int coverage = ((IndexAccess) part).getCoverage();
-					 if (coverage > 10 && ((IndexAccess) part).getCoverage() > 100 * results.size() / divider) {
+					AccessLog.log("coverage="+coverage+" divider="+divider+" #="+results.size());
+					 if (coverage > 10 && coverage > 100 * results.size() / divider) {
+						AccessLog.log("skip index "+partCount);
 						((IndexAccess) part).dontuse();
 						continue;
 					 }
 				}
 				
 				Collection<IndexMatch> partResult = part.query(q, targetAps);
+				AccessLog.log("index partial result "+partCount+"/"+parts.size()+" = "+partResult.size());
 				if (results == null) {
 					results = partResult;
 					if (part instanceof IndexAccess) {
@@ -545,8 +549,10 @@ public class Feature_Indexes extends Feature {
 					}
 					results = newresult;
 				}
-				if (results.size() < NO_SECOND_INDEX_COUNT)
+				if (results.size() < NO_SECOND_INDEX_COUNT) {
+					AccessLog.log("terminate index search at "+partCount+"/"+parts.size()+" #="+results.size());
 					return results;
+				}
 			}
 			return results;
 		}

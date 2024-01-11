@@ -40,6 +40,7 @@ import akka.cluster.singleton.ClusterSingletonManagerSettings;
 import akka.cluster.singleton.ClusterSingletonProxy;
 import akka.cluster.singleton.ClusterSingletonProxySettings;
 import models.MidataId;
+import models.Plugin;
 import models.stats.MonitoringEvent;
 import models.stats.MonitoringStats;
 import models.stats.MonitoringType;
@@ -278,6 +279,7 @@ class MonitoringReporterActor extends AbstractActor {
 	
 	private int currentTimeslot;
 	private Cancellable timer;
+	private final static long PLUGIN_IGNORE_TIME = 1000l * 60l * 60l * 24l * 3l;
 			
 	public MonitoringReporterActor() {
 	
@@ -405,6 +407,7 @@ class MonitoringReporterActor extends AbstractActor {
 	
 	public MonitoringEvent checkWarnings(MonitoringStats stats) throws InternalServerException {	  
 	    if ((stats.timeslot >= 0 || stats.action==null) && stats.generation < 2) return null;
+	    
 		if (stats.requestsCurrent > 0) {
 			int errorRate = stats.errorsCurrent;// * 100 / stats.requestsCurrent;
 			if (errorRate > stats.errorsAvg + stats.errorsVar * 2) {
@@ -419,7 +422,15 @@ class MonitoringReporterActor extends AbstractActor {
 		}
 		
 		
-		if (stats.requestsCurrent > stats.requestsAvg + stats.requestsVar * 2) {
+		if (stats.requestsCurrent > 5 && stats.requestsCurrent > stats.requestsAvg + stats.requestsVar * 2) {
+			
+			if (stats.timeslot < 0 && stats.plugin!=null) {
+		    	Plugin plg = Plugin.getById(stats.plugin);
+		    	if (plg.pluginVersion > System.currentTimeMillis() - PLUGIN_IGNORE_TIME) {
+		    		return null;
+		    	}
+		    }
+			
 			MonitoringEvent result = new MonitoringEvent(stats);
 			result.type = MonitoringType.HIGH_USE;
 			result.count = stats.requestsCurrent;
