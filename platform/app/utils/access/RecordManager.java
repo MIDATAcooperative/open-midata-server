@@ -702,10 +702,11 @@ public class RecordManager {
 			
 		    rec.data = record.data;
 		    rec.meta.put("lastUpdated", record.lastUpdated);
+		    if (record.name != null) rec.meta.put("name", record.name);
 		    rec.time = Query.getTimeFromDate(record.lastUpdated);
 		    if (vrec==null) {
 		    	rec.meta.put("previousVersion", storedVersion);
-		    	rec.meta.put("previousLastUpdated", rec.meta.get("lastUpdated"));
+		    	rec.meta.put("previousLastUpdated", rec.meta.get("lastUpdated"));		    	
 		    }
 		    
 		    String version = Long.toString(System.currentTimeMillis());
