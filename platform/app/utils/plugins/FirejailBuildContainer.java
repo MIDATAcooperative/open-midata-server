@@ -144,6 +144,15 @@ public class FirejailBuildContainer extends AbstractLocalContainer {
 		cmd.add("--whitelist="+targetDir.getAbsolutePath());		
 		cmd.add("npm");
 		cmd.add("ci");	
+		Pair<Boolean, String> result = process(targetDir, cmd);
+		if (result.getLeft()) return result;
+		
+		cmd.clear();
+		cmd.add("/usr/bin/firejail");
+		cmd.add("--quiet");
+		cmd.add("--whitelist="+targetDir.getAbsolutePath());		
+		cmd.add("npm");
+		cmd.add("install");	
 		return process(targetDir, cmd);
 	}
 	
