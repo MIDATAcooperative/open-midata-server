@@ -17,6 +17,7 @@
 
 import apps from "./apps";
 import server from "./server";
+import actions from "./actions";
 
 
 	var service = {};
@@ -118,10 +119,13 @@ import server from "./server";
 			    .then(function(spaceresult) {
 					if (spaceresult.data.length > 0) {
 						var target = spaceresult.data[0];
+						let query = { spaceId : target._id, user : data.user, params : JSON.stringify(data.params || {}) };
+						let action = actions.getActions($route);
+						if (action && action.length) query.actions = JSON.stringify(action); 
 						if (app.type === "oauth1" || app.type === "oauth2") {
-							$router.push({ path : "./importrecords", query : { "spaceId" : target._id, "params" : JSON.stringify(data.params) } });
+							$router.push({ path : "./importrecords", query : query });
 						} else {
-							$router.push({ path : "./spaces", query : { spaceId : target._id, user : data.user, params : JSON.stringify(data.params || {}) } });
+							$router.push({ path : "./spaces", query : query });
 						}
 					} else {														
 						return apps.installPlugin(app._id, { applyRules : true, context : data.context, study : data.study })
