@@ -122,6 +122,10 @@ import circles from './circles';
 		return JSON.stringify(acarray);
 	};
 	
+	service.getActions = function($route) {
+		return getActions($route);
+	};
+	
 	service.params = function() {
 	  return current || {};
 	};
