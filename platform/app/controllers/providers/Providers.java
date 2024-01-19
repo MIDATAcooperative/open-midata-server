@@ -391,7 +391,7 @@ public class Providers extends APIController {
 		
 		AccessLog.logBegin("Start search for organizations");
 		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.getProvider("Organization")); 
-		List<Organization> orgs = provider.search(context, name, city, true);
+		List<Organization> orgs = provider.search(context, null, name, city, true);
 	    AccessLog.logEnd("End search for organizations #size=",Integer.toString(orgs.size()));
 		
 	    Map<MidataId, Organization> orgsById = new HashMap<MidataId, Organization>();

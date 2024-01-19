@@ -27,12 +27,20 @@
 		    </form-group>
 		    <form-group name="name" label="admin_organizations.name">
 		        <div class="input-group">
-		            <input type="text" class="form-control" id="lastname" v-model="search.criteria.name" v-validate>
+		            <input type="text" class="form-control" id="name" v-model="search.criteria.name" v-validate>
 		            <div class="input-group-append">
-		                <button class="btn btn-primary" :disabled="action!=null" @click="reload()" v-t="'common.search_btn'"></button>
+		                <button class="btn btn-primary" :disabled="action!=null" @click="reloadName()" v-t="'common.search_btn'"></button>
 		            </div>
 		        </div>
-		    </form-group>		    
+		    </form-group>
+		    <form-group name="identifier" label="admin_organizations.identifier">
+		        <div class="input-group">
+		            <input type="text" class="form-control" id="identifier" v-model="search.criteria.identifier" v-validate>
+		            <div class="input-group-append">
+		                <button class="btn btn-primary" :disabled="action!=null" @click="reloadIdentifier()" v-t="'common.search_btn'"></button>
+		            </div>
+		        </div>
+		    </form-group>			    
 		</form>
 		<div v-if="organizations && organizations.filtered">
 		  
@@ -77,7 +85,7 @@ export default {
        
 	    stati : [ "NEW", "ACTIVE", "BLOCKED", "DELETED" ],
 	 
-        search : { criteria : { name : "", status:"" } },
+        search : { criteria : { name : "", identifier : "", status:"" } },
         organizations : null,
         setup : { sort : "email", filter : { search : "" }, ignoreCase : true},
         dateLimit: null
@@ -94,6 +102,7 @@ export default {
               
             
             if (!$data.search.criteria.name) { delete $data.search.criteria.name; }
+            if (!$data.search.criteria.identifier) { delete $data.search.criteria.identifier; }
                        
             $data.organizations = null;		
     		me.doBusy(server.post(jsRoutes.controllers.admin.Administration.searchOrganization().url, $data.search.criteria)
@@ -103,6 +112,16 @@ export default {
             
             $data.dateLimit = new Date();
             $data.dateLimit.setMonth($data.dateLimit.getMonth() - 1);
+	    },
+	    
+	    reloadIdentifier() {
+	      this.$data.search.criteria.name = "";
+	      this.reload();
+	    },
+	    
+	    reloadName() {
+	      this.$data.search.criteria.identifier = "";
+	      this.reload();
 	    },
 	
 	    changeOrganization(org) {	

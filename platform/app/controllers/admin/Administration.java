@@ -627,11 +627,12 @@ public class Administration extends APIController {
 		JsonNode json = request.body().asJson();
 		String name = JsonValidation.getStringOrNull(json, "name");
 		String city = JsonValidation.getStringOrNull(json, "city");
+		String identifier = JsonValidation.getStringOrNull(json, "identifier");
 		
 		UserStatus status = (JsonValidation.getStringOrNull(json, "status") != null) ? JsonValidation.getEnum(json, "status", UserStatus.class) : null;
 		
 		OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.getProvider("Organization")); 
-		List<Organization> orgs = provider.search(portalContext(request), name, city, false);
+		List<Organization> orgs = provider.search(portalContext(request), identifier, name, city, false);
 	
 		Map<MidataId, Organization> orgsById = new HashMap<MidataId, Organization>();
 		for (Organization org : orgs) orgsById.put(MidataId.from(org.getIdElement().getIdPart()), org);		

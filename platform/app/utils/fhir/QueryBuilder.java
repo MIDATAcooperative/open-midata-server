@@ -417,7 +417,7 @@ public class QueryBuilder {
 			  TokenParam tokenParam = (TokenParam) param;
 			  String system = tokenParam.getSystem();
 			  String val = tokenParam.getValue();
-			  if (val == null) return;
+			  if (val == null && system == null) return;
 			  boolean isText = tokenParam.isText();
 			  TokenParamModifier modifier = tokenParam.getModifier();			  
 			  if (type.equals(TYPE_CODEABLE_CONCEPT)) {

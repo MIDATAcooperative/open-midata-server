@@ -255,16 +255,23 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		return query;
 	}
 	
-	public List<Organization> search(AccessContext context, String name, String city, boolean onlyActive) throws AppException {
+	public List<Organization> search(AccessContext context, String identifier, String name, String city, boolean onlyActive) throws AppException {
 		SearchParameterMap params = new SearchParameterMap();
 		if (name != null) params.add("name", new StringParam(name));		
 		if (city != null) params.add("address-city", new StringParam(city));
+		if (identifier != null) {
+			if (identifier.contains("|")) {
+				String splitted[] = identifier.split("\\|");
+				params.add("identifier", new TokenParam(splitted[0], splitted.length > 1 ? splitted[1] : null));
+			} else params.add("identifier", new TokenParam(identifier));
+		}
 		if (onlyActive) params.add("active", new TokenParam("true"));
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Organization");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restrictionMany("name", true, QueryBuilder.TYPE_STRING, "name", "alias");
 		builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "address.city");
-		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
+		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");		
 		query.putAccount("public", "only");
 		query.putAccount("content", "Organization/HP");
 		List<Record> result = query.execute(context);

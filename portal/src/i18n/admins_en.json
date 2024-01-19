@@ -39,6 +39,7 @@
   "admin_organizations" : {
     "title" : "Organizations",
     "name" : "Name",
+    "identifier" : "Identifier",
     "status" : "Status",    
     "empty" : "No matching organizations found.",
     "members_btn" : "show members"

@@ -45,6 +45,13 @@ import circles from './circles';
 		return null;
 	};
 	
+	service.doActionsFirst = function($router, $route, actions) {
+		acarray = getActions($route) || acarray;
+		if (!hasActions(acarray)) acarray = [];
+		acarray = actions.concat(acarray);
+		return service.showAction($router, $route, null, acarray);
+	};
+	
 	service.showAction = function($router, $route, role, override) {
 				
 		role = role || $route.meta.role.toLowerCase();
@@ -73,6 +80,13 @@ import circles from './circles';
 		} else if (action == "use") {
 			$router.push({ name : role+".spaces", query : { app : current.c, actions : JSON.stringify(acarray.slice(1)) } });			
 		    return true;
+	    } else if (action == "space") {
+			$router.push({ name : role+".spaces", query : { spaceId : current.c, actions : JSON.stringify(acarray.slice(1)) } });			
+		    return true;    
+        } else if (action == "open") {
+	        $router.push({ name : role+".spaces", query : { app : current.c, actions : JSON.stringify(acarray.slice(1)) } });
+			//spaces.openAppLink($router, $route, null, { app : current.c });
+			return true;
 		} else if (action == "leave") {
 			$router.push({ name : role+".serviceleave", query : { callback : current.c } });
 			return true;

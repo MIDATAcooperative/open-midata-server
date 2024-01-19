@@ -41,6 +41,7 @@
 </template>
 <script>
 import server from "services/server.js";
+import session from "services/session.js";
 import { status, ErrorBox } from 'basic-vue3-components';
 export default {
    data: () => ({
@@ -72,13 +73,16 @@ export default {
 		}
         
         let pluginName = $route.query.pluginName || $route.params.pluginName;
+        let pluginName2 = $route.query.open;        
 		if ($route.meta.account) {
             actions.push({ ac : "account"});
 		} else if (pluginName) {
 			actions.push({ ac : "use", c : pluginName });
-		}		
+		} else if (pluginName2) {
+		    actions.push({ ac : "open", c : pluginName2 });
+		}					
 
-		if (!$route.meta.account) {
+		if (!$route.meta.account && !pluginName2) {
 			if ($route.query.consent) {
 				actions.push({ ac : "confirm", c : $route.query.consent });
 			} else if ($route.query.project) {
@@ -102,6 +106,19 @@ export default {
         let base = "/public";
         if (document.location.hash.indexOf('/portal')>=0) base = "/portal";
 
+        /*if ($route.query.authToken) {
+            $route.query.actions = params.actions;
+            
+            let data = {"authToken": $route.query.authToken };
+		    let func = function(data) {
+			    return server.post(jsRoutes.controllers.Application.authenticate().url, data);
+		    };
+		
+		    session.performLogin(func, data, null)
+		    .then(function(result) {
+		        session.postLogin(result, $router, $route);
+		    });
+		} else*/ 
 		if ($route.query.isnew) {
           $router.push({ path : base+"/registration", query : params });
 		} else {

@@ -44,6 +44,7 @@ import { getLocale } from 'services/lang.js';
 import spaces from 'services/spaces.js';
 import server from 'services/server.js';
 import session from 'services/session.js';
+import actions from 'services/actions';
 import { status, ErrorBox } from 'basic-vue3-components';
 import _ from "lodash";
 
@@ -75,32 +76,37 @@ export default {
 		    spaces.openAppLink($router, $route, $data.userId, data);	 
 		},
 		
-		    
+		done() {
+		  actions.showAction($router, $route);
+		},
+				   
         getAuthToken(space, again) {
             const { $data, $route } = this, me = this;
 		    var func = again ? me.doBusy(spaces.regetUrl(space, $route.query.user)) : me.doBusy(spaces.getUrl(space, $route.query.user));
 		    func.then(function(result) {
 			    if (result.data && result.data.authorizationUrl) {
-		        app = result.data;
-                $data.appName = result.data.name;
-                $data.title = result.data.name;
-			    $data.authorized = false;
-			    $data.message = null;	
-			  
-			    if (sessionStorage.authString) {	
-				    $data.authorizing = true;
-				    me.onAuthorized(sessionStorage.authString);
-				    sessionStorage.removeItem("authString");
-				    sessionStorage.removeItem("returnTo");
-			    }
-			  
-			} else {
-			  var url = spaces.mainUrl(result.data, getLocale());			  
-			  $data.url = url;			  			  
-			  $data.message = null;			  			  
-			  $data.authorized = true;			 
-			}
-		});
+			        app = result.data;
+	                $data.appName = result.data.name;
+	                $data.title = result.data.name;
+				    $data.authorized = false;
+				    $data.message = null;	
+				  
+				    if (sessionStorage.authString) {	
+					    $data.authorizing = true;
+					    me.onAuthorized(sessionStorage.authString);
+					    sessionStorage.removeItem("authString");
+					    sessionStorage.removeItem("returnTo");
+				    }
+				  
+				} else {
+				  if (!actions.showAction($router, $route)) {				
+					  var url = spaces.mainUrl(result.data, getLocale());			  
+					  $data.url = url;			  			  
+					  $data.message = null;			  			  
+					  $data.authorized = true;			 
+				  }
+				}
+	     });
 	},
 	
 	
