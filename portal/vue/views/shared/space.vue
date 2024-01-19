@@ -62,6 +62,7 @@ export default {
 		},
 		
 		done() {
+		  const { $route, $router } = this;
 		  actions.showAction($router, $route);
 		},
 		
