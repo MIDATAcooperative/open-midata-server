@@ -77,11 +77,12 @@ export default {
 		},
 		
 		done() {
+		  const { $route, $router } = this;
 		  actions.showAction($router, $route);
 		},
 				   
         getAuthToken(space, again) {
-            const { $data, $route } = this, me = this;
+            const { $data, $route, $router } = this, me = this;
 		    var func = again ? me.doBusy(spaces.regetUrl(space, $route.query.user)) : me.doBusy(spaces.getUrl(space, $route.query.user));
 		    func.then(function(result) {
 			    if (result.data && result.data.authorizationUrl) {
