@@ -73,6 +73,7 @@ import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.ExecutionInfo;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
@@ -629,14 +630,28 @@ public class Application extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	public Result authenticate(Request request) throws AppException {
 		// validate 
-		JsonNode json = request.body().asJson();		
-		JsonValidation.validate(json, "email", "password");	
-			
-		ExtendedSessionToken token = new ExtendedSessionToken();
+		JsonNode json = request.body().asJson();	
+		ExtendedSessionToken token = null;
 		
-		token.created = System.currentTimeMillis();                               
-	    token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
-										    				
+		// Insecure
+		/*if (json.has("authToken")) {
+			AccessContext info = ExecutionInfo.checkToken(request, JsonValidation.getJsonString(json, "authToken"), false, false);
+			token = new ExtendedSessionToken();
+			token.created = System.currentTimeMillis();
+			token.userRole = info.getAccessorRole();
+			token.ownerId = info.getAccessor();
+			token.handle = KeyManager.instance.currentHandleOptional(info.getAccessor());
+	    	
+		} else { */
+		
+			JsonValidation.validate(json, "email", "password");	
+				
+			token = new ExtendedSessionToken();
+			
+			token.created = System.currentTimeMillis();                               
+		    token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
+					
+		//}
 		return OAuth2.loginHelper(request, token, json, null, null);
 		
 		

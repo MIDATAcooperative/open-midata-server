@@ -30,6 +30,7 @@ import Panel from 'components/Panel.vue';
 import { getLocale } from 'services/lang.js';
 import spaces from 'services/spaces.js';
 import session from 'services/session.js';
+import actions from 'services/actions';
 import { status, ErrorBox } from 'basic-vue3-components';
 
 
@@ -52,7 +53,16 @@ export default {
             const { $data, $route, $router } = this;
 		    data = data || {};
 		    data.user = $route.query.user;
-		    spaces.openAppLink($router, $route, $data.userId, data);	 
+		    
+		    if (data.pos == "return") {
+		      actions.doActionsFirst($router, $route, [{ ac : "open", c : data.app }, { ac : "space", c : this.$data.spaceId }]); 
+		    } else {		    
+		      spaces.openAppLink($router, $route, $data.userId, data);
+		    }	 
+		},
+		
+		done() {
+		  actions.showAction($router, $route);
 		},
 		
 		getAuthToken(space) {

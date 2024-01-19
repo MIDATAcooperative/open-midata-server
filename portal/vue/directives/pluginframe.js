@@ -31,6 +31,8 @@ export default {
 			}  else if (data && data.name == elem.id && data.type==="link") {    	  		 
 				 //console.log(data);
 				 if (vm.openAppLink) vm.openAppLink(data);
+			} else if (data && data.name == elem.id && data.type==="done") {
+				if (vm.done) vm.done();  
 			}
 		}
 
