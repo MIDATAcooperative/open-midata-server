@@ -76,7 +76,7 @@ import circles from './circles';
 			return true;
 		} else if (action == "study") {
 		    let squery = { studyId : current.s, actions : JSON.stringify(acarray.slice(1)) };
-		    if (current.c) = squery.code = current.c; 
+		    if (current.c) { squery.code = current.c; } 
 			$router.push({ name : role+".studydetails", query : squery });
 			return true;
 		} else if (action == "use") {
