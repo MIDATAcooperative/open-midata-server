@@ -167,6 +167,7 @@ export default {
     data: () => ({
         studyid : null,
 	    study : {},
+	    code : null,
         participation : null,
         research : null,
 	    providers : [],
@@ -270,7 +271,7 @@ export default {
             const { $data, $route, $router } = this, me = this;
 		    return ($data.participation != null && ( $data.participation.pstatus == "MATCH" || $data.participation.pstatus == "CODE" || $data.participation.status == "INVALID" )) ||
 			       ($data.participation != null && ( $data.participation.pstatus == "MEMBER_RETREATED" || $data.participation.pstatus == "MEMBER_REJECTED" ) && $data.study.rejoinPolicy == "DELETE_LAST" && $data.study.participantSearchStatus == 'SEARCHING' && $route.meta.role.toUpperCase() == 'MEMBER' && (!$data.study.joinMethods || $data.study.joinMethods.indexOf("PORTAL")>=0 )) ||
-		           ($data.participation == null && $data.study.participantSearchStatus == 'SEARCHING' && $route.meta.role.toUpperCase() == 'MEMBER' && (!$data.study.joinMethods || $data.study.joinMethods.indexOf("PORTAL")>=0 ));
+		           ($data.participation == null && $data.study.participantSearchStatus == 'SEARCHING' && $route.meta.role.toUpperCase() == 'MEMBER' && (!$data.study.joinMethods || $data.study.joinMethods.indexOf("PORTAL")>=0 || ($data.study.joinMethods.indexOf("CODE")>=0 && $data.code ) ));
 	    },
 	
 	    mayDeclineParticipation() {
@@ -297,8 +298,9 @@ export default {
 	
 	    requestParticipation() {
             const { $data, $route, $router } = this, me = this;
-		
-            me.doAction("request", server.post(jsRoutes.controllers.members.Studies.requestParticipation($data.studyid).url).
+            let data = {};
+            if ($data.code) data.code = $data.code;		
+            me.doAction("request", server.post(jsRoutes.controllers.members.Studies.requestParticipation($data.studyid).url, data).
             then(function(data) { 	
                 if (!actions.showAction($router, $route)) {
                 me.reload();
@@ -347,6 +349,7 @@ export default {
     created() {
 		const { $data, $route, $router } = this, me = this;
         $data.studyid = $route.query.studyId;
+        $data.code = $route.query.code;
         $data.pleaseReview = ($route.query.action != null);
 		session.currentUser.then(function(userId) {	 
 			$data.userId = userId;

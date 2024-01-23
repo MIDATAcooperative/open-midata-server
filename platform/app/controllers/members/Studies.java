@@ -375,10 +375,12 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
 	public Result requestParticipation(Request request, String id) throws AppException {
 		
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));		
 		MidataId studyId = new MidataId(id);	
+		JsonNode json = request.body().asJson();
 		
 		User user = Member.getById(userId, Member.ALL_USER_INTERNAL);
 		
@@ -386,7 +388,11 @@ public class Studies extends APIController {
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		if (notok != null && !notok.isEmpty()) requireUserFeature(request, notok.iterator().next());
 		
-		requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.PORTAL, null);		
+		if (json.has("code")) {
+		  requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.CODE, JsonValidation.getString(json, "code"));
+		} else {
+		  requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.PORTAL, null);		
+		}
 		return ok();
 	}
 
@@ -433,7 +439,7 @@ public class Studies extends APIController {
 		if (study.requiredInformation.equals(InformationType.RESTRICTED) || study.requiredInformation.equals(InformationType.NONE)) {						
 			PatientResourceProvider.createPatientForStudyParticipation(context, study, participation, user);						
 		} 
-
+		consumeCode(study, code); 
 
 		AuditManager.instance.success();
 		

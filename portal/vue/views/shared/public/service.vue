@@ -88,7 +88,13 @@ export default {
 			} else if ($route.query.project) {
 				var prjs = $route.query.project.split(",");
 				for (var j=0;j<prjs.length;j++) {
-					actions.push({ ac : "study", s : prjs[j] });		
+				    let prj = prjs[j];
+				    if (prj.indexOf("|")>0) {
+				      let p = prj.split("|");
+				      actions.push({ ac : "study", s : p[0], c : p[1] });
+				    } else {
+					  actions.push({ ac : "study", s : prj });
+					}		
 				}					
 			} else {
 				actions.push({ ac : "unconfirmed" });

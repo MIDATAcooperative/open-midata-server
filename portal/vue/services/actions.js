@@ -75,7 +75,9 @@ import circles from './circles';
 			$router.push({ name : role+".editconsent", query : { consentId : current.c, actions : JSON.stringify(acarray.slice(1)) } })
 			return true;
 		} else if (action == "study") {
-			$router.push({ name : role+".studydetails", query : { studyId : current.s, actions : JSON.stringify(acarray.slice(1)) } });
+		    let squery = { studyId : current.s, actions : JSON.stringify(acarray.slice(1)) };
+		    if (current.c) = squery.code = current.c; 
+			$router.push({ name : role+".studydetails", query : squery });
 			return true;
 		} else if (action == "use") {
 			$router.push({ name : role+".spaces", query : { app : current.c, actions : JSON.stringify(acarray.slice(1)) } });			
