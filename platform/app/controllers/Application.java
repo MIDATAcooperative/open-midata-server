@@ -37,6 +37,7 @@ import models.Actor;
 import models.Admin;
 import models.Developer;
 import models.HPUser;
+import models.HealthcareProvider;
 import models.KeyInfoExtern;
 import models.Member;
 import models.MidataId;
@@ -215,13 +216,13 @@ public class Application extends APIController {
 	 * @param user user record which sould receive the mail
 	 */
 	public static void sendWelcomeMail(User user, Actor executingUser) throws AppException {
-		sendWelcomeMail(RuntimeConstants.instance.portalPlugin, user, executingUser);
+		sendWelcomeMail(null, RuntimeConstants.instance.portalPlugin, user, executingUser);
 	}
 	
 	
-	public static void sendWelcomeMail(MidataId sourcePlugin, User user, Actor executingUser) throws AppException {
+	public static void sendWelcomeMail(AccessContext context, MidataId sourcePlugin, User user, Actor executingUser) throws AppException {
 	   if (user.developer == null) {		
-		   
+		   		  		   
 		   if (user.email == null || user.email.trim().length()==0) return;
 		   
 		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
@@ -250,6 +251,19 @@ public class Application extends APIController {
 				   replacements.put("executor-lastname", executingUser.getDisplayName());
 			   }
 			   replacements.put("executor-email", executingUser.getPublicIdentifier());
+		   }
+		   
+		   replacements.put("org-name", "");
+		   replacements.put("parent-org-name", "");
+		   if (context != null && context.isUserGroupContext()) {
+			   HealthcareProvider prov = HealthcareProvider.getById(context.getAccessor(), HealthcareProvider.ALL);
+			   if (prov != null) {
+				   replacements.put("org-name", prov.name);
+				   if (prov.parent != null) {
+					   HealthcareProvider prov2 = HealthcareProvider.getById(prov.parent, HealthcareProvider.ALL);
+					   if (prov2 != null) replacements.put("parent-org-name", prov2.name);
+				   }
+			   }
 		   }
 		   
 		   AccessLog.log("send welcome mail: ", user.email);

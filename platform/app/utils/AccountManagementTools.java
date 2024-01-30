@@ -182,7 +182,7 @@ public class AccountManagementTools {
 		);
 		Set targets = new HashSet();
 		if (existing.email != null) targets.add(existing._id);
-		if (user.email != null && !user.email.equals(existing.email)) targets.add(user.email);
+		if (used && user.email != null && !user.email.equals(existing.email)) targets.add(user.email);
 		Messager.sendMessage(context.getUsedPlugin(), used ? MessageReason.NON_PERFECT_ACCOUNT_MATCH : MessageReason.TRIED_USER_REREGISTRATION, null, targets, InstanceConfig.getInstance().getDefaultLanguage(), new HashMap<String, String>());
 		
 	}
@@ -228,7 +228,7 @@ public class AccountManagementTools {
 		user.myaps = RecordManager.instance.createPrivateAPS(tempContext.getCache(), user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
 				
-		if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(context.getUsedPlugin(), user, Actor.getActor(context, context.getActor()));			
+		if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(context, context.getUsedPlugin(), user, Actor.getActor(context, context.getActor()));			
 		
 		return tempContext;
 	}

@@ -215,7 +215,7 @@ public class QuickRegistration extends APIController {
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
 		Circles.fetchExistingConsents(context, user.emailLC);
-		Application.sendWelcomeMail(app._id, user, null);
+		Application.sendWelcomeMail(null, app._id, user, null);
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REGISTRATION);
 	
 		String joinCode = JsonValidation.getStringOrNull(json, "joinCode");

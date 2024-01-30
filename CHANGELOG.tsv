@@ -113,4 +113,5 @@ id0120	20.07.2023	a.kreutz	I	Updated resources now contain their initial creatio
 id0121	29.08.2023	a.kreutz	I	Added grantee variables to consent notification emails
 id0122	29.08.2023	a.kreutz	I	Added sender-user extension to FHIR message headers
 id0123	14.11.2023	a.kreutz	F	Consent chaining	Consents may allow to reshare data with 3rd parties.
+id0124	30.01.2024	a.kreutz	F	HTML Mails	The platform is now able to sent mails in both HTML and Text format.	
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
