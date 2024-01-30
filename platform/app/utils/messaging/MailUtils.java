@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.hazlewood.connor.bottema.emailaddress.EmailAddressCriteria;
 import org.hazlewood.connor.bottema.emailaddress.EmailAddressParser;
 
@@ -98,11 +99,43 @@ public class MailUtils {
 		mail.setSubject(subject);
 		mail.addTo(getMailboxFromAddressAndDisplay(email, fullname));
 		mail.setFrom(config.getString("play.mailer."+sender.toString().toLowerCase()+".from"));	
-		mail.setBodyText(content.toString());
+		
+		if (sender == MailSenderType.STATUS) {
+		  mail.setBodyText(content.toString());
+		} else {		
+		  mail.setBodyHtml(getHTMLVersionFromText(content.toString()));
+		  mail.setBodyText(getTextOnlyVersion(content.toString()));
+		}
 		    
 		mailerClient.get(sender).send(mail);
 		System.out.println("End send mail to "+email);
 		System.out.flush();
+	}
+	
+	public static String getHTMLVersionFromText(String text) {
+		StringBuilder result = new StringBuilder();
+		result.append("<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body><p>");
+		String escaped = StringEscapeUtils.escapeHtml4(text);
+		escaped = escaped.replaceAll("\n", "\n</p><p>");
+		escaped = escaped.replaceAll("\\_\\_([^\\n_*]+?)\\_\\_", "<i>$1</i>");
+		escaped = escaped.replaceAll("\\*\\*([^\\n_*]+?)\\*\\*", "<b>$1</b>");
+				
+		int p = escaped.indexOf("https://");
+		while (p>=0) {
+			char[] chars = escaped.toCharArray();
+			int e = p+8;
+			while (e<chars.length && !Character.isWhitespace(chars[e])) e++;
+			result.append(escaped.substring(0, p)+"<a href=\""+escaped.substring(p, e)+"\">"+escaped.substring(p,e)+"</a>");
+			escaped = escaped.substring(e);
+			p = escaped.indexOf("https://");
+		}
+		result.append(escaped);
+		result.append("</p></body></html>");
+		return result.toString();
+	}
+	
+	public static String getTextOnlyVersion(String text) {
+	   return text.replaceAll("\\_\\_", "").replaceAll("\\*\\*", "");
 	}
 	
 	public static String getAddressFromMailbox(String mailbox) {

@@ -667,7 +667,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			updatePatientForAccount(info(), user._id, false);
 		}
 		if (welcome) {
-			Application.sendWelcomeMail(info().getUsedPlugin(), user, Actor.getActor(info(), info().getActor()));
+			Application.sendWelcomeMail(info(), info().getUsedPlugin(), user, Actor.getActor(info(), info().getActor()));
 		}
 		AuditManager.instance.success();
 	}

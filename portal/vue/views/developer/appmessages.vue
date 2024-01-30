@@ -122,7 +122,7 @@ export default {
         selmsg : null,
         messages : [],
         tags : {
-            'REGISTRATION': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+            'REGISTRATION': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "plugin-name", "midata-portal-url", "org-name", "parent-org-name"],
             'REGISTRATION_BY_OTHER_PERSON': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "executor-firstname", "executor-lastname", "executor-email", "plugin-name", "midata-portal-url"],
             'FIRSTUSE_ANYUSER' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
             'SERVICE_WITHDRAW' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
