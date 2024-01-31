@@ -122,7 +122,7 @@ export default {
         selmsg : null,
         messages : [],
         tags : {
-            'REGISTRATION': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "plugin-name", "midata-portal-url", "org-name", "parent-org-name"],
+            'REGISTRATION': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "plugin-name", "midata-portal-url", "organization-name", "parent-organization-name", "top-organization-name"],
             'REGISTRATION_BY_OTHER_PERSON': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "executor-firstname", "executor-lastname", "executor-email", "plugin-name", "midata-portal-url"],
             'FIRSTUSE_ANYUSER' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
             'SERVICE_WITHDRAW' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
@@ -146,8 +146,8 @@ export default {
             'RESOURCE_CHANGE' : [ "midata-portal-url", "plugin-name", "firstname", "lastname", "email" ],
             'PROCESS_MESSAGE' : [ "midata-portal-url", "plugin-name", "firstname", "lastname", "email" ],
             'USER_PRIVATE_KEY_RECOVERED' : [ "firstname", "lastname", "email", "site" ],
-            'NON_PERFECT_ACCOUNT_MATCH' : [ "plugin-name", "firstname", "lastname", "email", "site" ],
-            'TRIED_USER_REREGISTRATION' : [ "plugin-name", "firstname", "lastname", "email", "site" ]
+            'NON_PERFECT_ACCOUNT_MATCH' : [ "plugin-name", "firstname", "lastname", "email", "site", "organization-name", "parent-organization-name", "top-organization-name" ],
+            'TRIED_USER_REREGISTRATION' : [ "plugin-name", "firstname", "lastname", "email", "site", "organization-name", "parent-organization-name", "top-organization-name" ]
         }
     }),
 
