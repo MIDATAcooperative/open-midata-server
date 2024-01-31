@@ -182,8 +182,8 @@ public class AccountManagementTools {
 		);
 		Set targets = new HashSet();
 		if (existing.email != null) targets.add(existing._id);
-		if (used && user.email != null && !user.email.equals(existing.email)) targets.add(user.email);
-		Messager.sendMessage(context.getUsedPlugin(), used ? MessageReason.NON_PERFECT_ACCOUNT_MATCH : MessageReason.TRIED_USER_REREGISTRATION, null, targets, InstanceConfig.getInstance().getDefaultLanguage(), new HashMap<String, String>());
+		if (used && user.email != null && !user.email.equals(existing.email)) targets.add(user.email);		
+		Messager.sendMessage(context, used ? MessageReason.NON_PERFECT_ACCOUNT_MATCH : MessageReason.TRIED_USER_REREGISTRATION, null, targets, InstanceConfig.getInstance().getDefaultLanguage(), new HashMap<String, String>());
 		
 	}
 	

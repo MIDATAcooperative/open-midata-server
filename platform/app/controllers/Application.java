@@ -37,7 +37,6 @@ import models.Actor;
 import models.Admin;
 import models.Developer;
 import models.HPUser;
-import models.HealthcareProvider;
 import models.KeyInfoExtern;
 import models.Member;
 import models.MidataId;
@@ -219,7 +218,6 @@ public class Application extends APIController {
 		sendWelcomeMail(null, RuntimeConstants.instance.portalPlugin, user, executingUser);
 	}
 	
-	
 	public static void sendWelcomeMail(AccessContext context, MidataId sourcePlugin, User user, Actor executingUser) throws AppException {
 	   if (user.developer == null) {		
 		   		  		   
@@ -253,19 +251,11 @@ public class Application extends APIController {
 			   replacements.put("executor-email", executingUser.getPublicIdentifier());
 		   }
 		   
-		   replacements.put("org-name", "");
-		   replacements.put("parent-org-name", "");
-		   if (context != null && context.isUserGroupContext()) {
-			   HealthcareProvider prov = HealthcareProvider.getById(context.getAccessor(), HealthcareProvider.ALL);
-			   if (prov != null) {
-				   replacements.put("org-name", prov.name);
-				   if (prov.parent != null) {
-					   HealthcareProvider prov2 = HealthcareProvider.getById(prov.parent, HealthcareProvider.ALL);
-					   if (prov2 != null) replacements.put("parent-org-name", prov2.name);
-				   }
-			   }
-		   }
-		   
+		   replacements.put("organization-name", "");
+		   replacements.put("top-organization-name", "");
+		   replacements.put("parent-organization-name", "");
+		   Messager.setOrganizationVars(context, replacements);
+		  		   
 		   AccessLog.log("send welcome mail: ", user.email);
 		   if (executingUser == null) {
 			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActor(null, user._id));			   	  	  
