@@ -278,6 +278,11 @@ const routes = [
   },
   {
     base : ["public", "oauth"],
+    path : "unsubscribe",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/unsubscribe.vue')
+  },
+  {
+    base : ["public", "oauth"],
     path : "account",
     component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/service.vue'),
     meta : {
