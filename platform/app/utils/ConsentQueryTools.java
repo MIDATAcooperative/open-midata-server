@@ -282,8 +282,8 @@ public class ConsentQueryTools {
 		masterQuery = new HashMap<String, Object>(masterQuery);
 		subQuery = new HashMap<String, Object>(subQuery);
 								
-		Feature_FormatGroups.convertQueryToContents(masterQuery);		
-		Feature_FormatGroups.convertQueryToContents(subQuery);
+		masterQuery = Feature_FormatGroups.convertQueryToContents(masterQuery, true);		
+		subQuery = Feature_FormatGroups.convertQueryToContents(subQuery, true);
 		
 		masterQuery.remove("group-system");
 		subQuery.remove("group-system");

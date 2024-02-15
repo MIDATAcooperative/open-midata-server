@@ -608,19 +608,17 @@ export default {
 		$data.groupExcludeLabels = [];
 		if ($data.sharing && $data.sharing.query) {
 			var sq = $data.sharing.query;
-		
-		 
-			
+				  		
 			if (sq.content) {
 				for (let r of sq.content) {
-				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner") return;
+				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner") continue;
 				  me.doBusy(labels.getContentLabel(getLocale(), r).then(function(lab) {
 					  if ($data.groupLabels.indexOf(lab)<0) $data.groupLabels.push(lab); 
 				  }));
 				}
 			}
 			if (sq.group) {
-				for (let r of sq.group) {
+				for (let r of sq.group) {				    
 					  me.doBusy(labels.getGroupLabel(getLocale(), sq["group-system"], r).then(function(lab) {
 						  if ($data.groupLabels.indexOf(lab)<0) $data.groupLabels.push(lab); 
 					  }));

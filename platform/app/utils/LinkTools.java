@@ -90,23 +90,42 @@ public class LinkTools {
 	
 	public static Map<String, Object> convertAppQueryToConsent(Map<String, Object> properties) throws AppException {
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("content", new HashSet<String>());
+		List<Map<String, Object>> complexResult = new ArrayList<Map<String, Object>>();
+		Set<String> resultContents = new HashSet<String>();
 		properties = ConsentQueryTools.filterQueryForUseInConsent(properties);
-		convertAppQueryToConsent(result, properties);
+		convertAppQueryToConsent(complexResult, resultContents, properties);
 		if (properties.containsKey("$or")) {
 			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");
-    		for (Map<String, Object> part : parts) convertAppQueryToConsent(result, part);
+    		for (Map<String, Object> part : parts) convertAppQueryToConsent(complexResult, resultContents, part);
 		}
-		
+		if (complexResult.isEmpty()) {
+		    result.put("content", resultContents);
+		} else {
+		    if (complexResult.size() == 1 && resultContents.isEmpty()) return complexResult.get(0);
+		    if (!resultContents.isEmpty()) {
+		      Map<String, Object> resultPart = new HashMap<String, Object>();
+		      resultPart.put("content", resultContents);
+		      complexResult.add(resultPart);
+		    }
+		    result.put("$or", complexResult);
+		}
 		return result;
 	}
 	
-	private static void convertAppQueryToConsent(Map<String, Object> result, Map<String, Object> input) throws AppException {		
+	private static void convertAppQueryToConsent(List<Map<String, Object>> result, Set<String> resultContents, Map<String, Object> input) throws AppException {		
 		Map<String, Object> work = new HashMap<String, Object>(input);
-		Feature_FormatGroups.convertQueryToContents(work);
+		work = Feature_FormatGroups.convertQueryToContents(work, false);
+		if (work.containsKey("group")) {
+		    Map<String, Object> resultPart = new HashMap<String, Object>();
+		    resultPart.put("group", work.get("group"));
+		    resultPart.put("group-system", work.get("group-system"));
+		    resultPart.put("group-dynamic", work.get("group-dynamic"));
+		    if (work.containsKey("group-exclude")) resultPart.put("group-exclude", work.get("group-exclude"));
+		    result.add(resultPart);
+		}
 		if (work.containsKey("content")) {
 		  Set<String> content = Query.getRestriction(work.get("content"), "content");
-		  ((Set<String>) result.get("content")).addAll(content);
+		  resultContents.addAll(content);
 		}
 	}
 	

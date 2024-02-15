@@ -430,7 +430,7 @@ public class Records extends APIController {
 				}
 			}
 
-			Feature_FormatGroups.convertQueryToContents(query);
+			query = Feature_FormatGroups.convertQueryToContents(query, false);
 
 			if (consent == null) {
 				if (hasAccess) {
@@ -478,7 +478,7 @@ public class Records extends APIController {
 			}
 
 			
-			Feature_FormatGroups.convertQueryToContents(query);
+			query = Feature_FormatGroups.convertQueryToContents(query, false);
 
 			if (consent == null) {
 				RecordManager.instance.shareByQuery(context, start, query);

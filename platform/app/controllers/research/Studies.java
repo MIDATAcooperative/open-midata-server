@@ -823,7 +823,7 @@ public class Studies extends APIController {
 		}
 
 		Map<String, Object> properties = new HashMap<String, Object>(study.recordQuery);
-		Feature_FormatGroups.convertQueryToContents(properties);
+		properties = Feature_FormatGroups.convertQueryToContents(properties, true);
 
 		if (!study.requiredInformation.equals(InformationType.DEMOGRAPHIC)) {
 

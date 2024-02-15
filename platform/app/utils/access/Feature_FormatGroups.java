@@ -17,9 +17,11 @@
 
 package utils.access;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -89,37 +91,55 @@ public class Feature_FormatGroups extends Feature {
 		return resolveContentNames(groupSystem, groups);
 	}
     
-    public static void convertQueryToContents(Map<String, Object> properties) throws BadRequestException, AppException {
-    	
+    public static Map<String, Object> convertQueryToContents(Map<String, Object> properties, boolean resolveDynamic) throws BadRequestException, AppException {
+        Map<String, Object> result = properties;    	
     	if (properties.containsKey("group")) {
-    		String groupSystem = properties.containsKey("group-system") ? properties.get("group-system").toString() : "v1";
-    		Set<String> include = Query.getRestriction(properties.get("group"), "group");
-    		Set<String> exclude;
-    		if (properties.containsKey("group-exclude")) {
-    			exclude = Query.getRestriction(properties.get("group-exclude"), "group-exclude");
-    		} else {
-    			exclude = new HashSet<String>();
+    	    result = new HashMap<String, Object>();
+    	    result.putAll(properties);
+    		String groupSystem = result.containsKey("group-system") ? result.get("group-system").toString() : "v1";
+    		boolean isDynamic = result.containsKey("group-dynamic") ? Boolean.valueOf(result.get("group-dynamic").toString()) : false;
+    		if (resolveDynamic || !isDynamic) {
+        		Set<String> include = Query.getRestriction(result.get("group"), "group");
+        		Set<String> exclude;
+        		if (result.containsKey("group-exclude")) {
+        			exclude = Query.getRestriction(result.get("group-exclude"), "group-exclude");
+        		} else {
+        			exclude = new HashSet<String>();
+        		}
+        		if (!(exclude.isEmpty() && include.contains("all"))) {
+        		  Set<String> contents = resolveContentNames(groupSystem, include, exclude);
+        		  if (result.containsKey("content")) {
+        		    Set<String> oldContents = Query.getRestriction(result.get("content"), "content");
+        		    contents.retainAll(oldContents);
+        		  }
+        		  result.put("content", contents);
+        		}
+        		result.remove("group");
+        		result.remove("group-exclude");        		        		
     		}
-    		if (!(exclude.isEmpty() && include.contains("all"))) {
-    		  Set<String> contents = resolveContentNames(groupSystem, include, exclude);
-    		  properties.put("content", contents);
-    		}
-    		properties.remove("group");
-    		properties.remove("group-exclude");
-    	} else if (properties.containsKey("code")) {
-    		 Set<String> codes = Query.getRestriction(properties.get("code"), "code");
+    	} 
+    	if (result.containsKey("code")) {
+    		 Set<String> codes = Query.getRestriction(result.get("code"), "code");
 			 Set<String> contents = new HashSet<String>();
 			 for (String code : codes) {
 				 String content = ContentCode.getContentForSystemCode(code);
 				 if (content == null) throw new BadRequestException("error.unknown.code", "Unknown code '"+code+"' in restriction.");
 				 contents.add(content);
 			 }
-			 properties.put("content", contents);
+			 if (result.containsKey("content")) {
+	             Set<String> oldContents = Query.getRestriction(result.get("content"), "content");
+	             contents.retainAll(oldContents);
+	         }
+			 result.put("content", contents);
     	}
     	if (properties.containsKey("$or")) {
+    	    result = new HashMap<String, Object>();
     		Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");
-    		for (Map<String, Object> part : parts) convertQueryToContents(part);
+    		List<Map<String, Object>> partResult = new ArrayList<Map<String, Object>>();
+    		for (Map<String, Object> part : parts) partResult.add(convertQueryToContents(part, resolveDynamic));
+    		result.put("$or", partResult);
     	}
+    	return result;
     }
     
     public static void convertQueryToGroups(String groupSystem, Map<String, Object> properties) throws BadRequestException, AppException {
@@ -301,9 +321,9 @@ public class Feature_FormatGroups extends Feature {
 		  if (!fmts.contains(format)) return false;
 		}
 		if (content == null) return true;
-		
-		convertQueryToContents(properties);
-		Object contentObj = properties.get("content");
+				
+		Map<String, Object> rproperties = convertQueryToContents(properties, true);		
+		Object contentObj = rproperties.get("content");
 		if (contentObj != null) {
 			Set<String> contents = Query.getRestriction(contentObj, "content");
 			if (!contents.contains(content)) return false;

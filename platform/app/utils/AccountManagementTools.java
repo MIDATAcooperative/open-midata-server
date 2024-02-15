@@ -312,8 +312,8 @@ public class AccountManagementTools {
 				
 		}
 		//convertAppQueryToConsent
-		Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
-		consent.sharingQuery = LinkTools.convertAppQueryToConsent(app.defaultQuery);	
+		Map<String, Object> query = Feature_FormatGroups.convertQueryToContents(app.defaultQuery, false);		    
+		consent.sharingQuery = LinkTools.convertAppQueryToConsent(query);	
 				
 		List<Consent> existing = LinkTools.findConsentAlreadyExists(context, consent);
 		

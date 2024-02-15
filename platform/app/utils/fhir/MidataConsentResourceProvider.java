@@ -767,7 +767,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			}
 		}
 		
-		Feature_FormatGroups.convertQueryToContents(query);
+		Feature_FormatGroups.convertQueryToContents(query, false);
 		
 		consent.sharingQuery = query;
 		
