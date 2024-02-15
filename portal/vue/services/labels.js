@@ -150,6 +150,7 @@ import { getLocale } from './lang';
 				if (ac("code")) nblock.code = ac("code");			
 				if (ac("group")) nblock.group = ac("group");
 				if (ac("group-system")) nblock.system = ac("group-system");
+				if (ac("group-dynamic")) nblock.dynamic = ac("group-dynamic");
 				if (ac("public")) nblock["public"] = ac("public");
 				if (ac("created-after")) {
 					nblock.timeRestrictionMode = "created-after";

@@ -228,10 +228,10 @@ public class Market extends APIController {
 				
 				if (app.defaultQuery != null && !app.defaultQuery.equals(oldDefaultQuery)) {
 					markReviewObsolete(app._id, AppReviewChecklist.ACCESS_FILTER);
-				}
+				}											
 				
 				app.consentObserving = (app.type.equals("external") || app.type.equals("broker")) && Feature_FormatGroups.mayAccess(app.defaultQuery, "Consent", "fhir/Consent");
-
+						
 				if (json.has("loginTemplate")) {
 				  LoginTemplate template = JsonValidation.getEnum(json, "loginTemplate", LoginTemplate.class); 
 				  if (app.loginTemplate != template) {

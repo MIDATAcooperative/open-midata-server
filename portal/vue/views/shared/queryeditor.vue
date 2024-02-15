@@ -40,6 +40,7 @@
 		      <span v-if="mode=='app'"> / </span>
 		      <span class="text-danger" v-if="block.app && block.app != 'all'"><span v-t="'queryeditor.short_app_other'"></span> {{ block.appName }}</span>
 		      <span class="text-success" v-if="!block.app || block.app == 'all'" v-t="'queryeditor.short_app_all'"></span>
+		      <span v-if="block.dynamic" class="ml-1 badge badge-danger">{{ $t('queryeditor.short_dynamic') }}</span>
 		      <span v-if="block.addTag" v-for="atag of block.addTag" :key="atag" class="ml-1 badge badge-danger">{{ getTagName(atag) }}</span>
 		      <span v-if="block.allowTag" v-for="atag of block.allowTag" :key="atag" class="ml-1 badge badge-warning">{{ getTagName(atag) }}</span>
 		    </div>		   
@@ -158,6 +159,11 @@
 		      <label class="form-check-label"><input class="form-check-input"  type="radio" v-validate v-model="currentBlock.app" value="all"><span v-t="'queryeditor.app_all'"></span></label>
 		    </div><div class="form-check">
 		      <label class="form-check-label"><input class="form-check-input"  type="radio" v-validate v-model="currentBlock.app" value="other"><span v-t="'queryeditor.app_other'"></span><input type="text" v-validate v-model="currentBlock.appName"></label>
+		    </div>
+		  </form-group>
+		  <form-group name="dynamic" label="queryeditor.dynamic" v-if="currentBlock.group">
+		    <div class="form-check">
+		      <label class="form-check-label"><input class="form-check-input"  type="checkbox" v-validate v-model="currentBlock.dynamic"  value="true"><span v-t="'queryeditor.dynamic_yes'"></span></label>
 		    </div>
 		  </form-group>
 		  <form-group name="observer" label="queryeditor.observer" v-if="currentBlock.flags.observer" :path="errors.observer">
@@ -428,6 +434,7 @@ export default {
 				var fb = {};
 				if (block.format) fb.format = [ block.format ];		
 				if (block.system) fb["group-system"] = block.system;
+				if (block.dynamic) fb["group-dynamic"] = block.dynamic;
 				if (block.owner && block.owner != "all") fb.owner = [ block.owner ];
 				if (block["public"] && block["public"] != "no") fb["public"] = block["public"];
 				if (block.app && block.app != "all") {
@@ -796,6 +803,7 @@ export default {
 					if (ac("code")) nblock.code = ac("code");		
 					if (ac("group")) nblock.group = ac("group");
 					if (ac("group-system")) nblock.system = ac("group-system");
+					if (ac("group-dynamic")) nblock.dynamic = ac("group-dynamic");
 					if (ac("add-tag")) nblock.addTag = ac("add-tag");
 					if (ac("tag")) nblock.tag = ac("tag");
 					if (ac("allow-tag")) nblock.allowTag = ac("allow-tag");

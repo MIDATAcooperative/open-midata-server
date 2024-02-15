@@ -475,8 +475,8 @@ public class ApplicationTools {
 		if (appInstance.writes==null) appInstance.writes = WritePermissionType.NONE;
 		
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
-		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
-		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);						   
+		    Map<String, Object> query = Feature_FormatGroups.convertQueryToContents(app.defaultQuery, false);		    
+		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, query);						   
         } else appInstance.sharingQuery = ConsentQueryTools.getEmptyQuery();
 		
 		return appInstance;
@@ -500,8 +500,8 @@ public class ApplicationTools {
 		appInstance.dataupdate = System.currentTimeMillis();
 		
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
-		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
-		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);						   
+		    Map<String, Object> query = Feature_FormatGroups.convertQueryToContents(app.defaultQuery, false);		    
+		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, query);						   
 		} else appInstance.sharingQuery = ConsentQueryTools.getEmptyQuery();
 		
 		RecordManager.instance.createAnonymizedAPS(context.getCache(), appInstance.owner, context.getAccessor(), appInstance._id, true);
