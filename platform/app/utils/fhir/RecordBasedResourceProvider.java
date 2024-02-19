@@ -58,6 +58,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Circles;
 import controllers.PluginsAPI;
+import models.Actor;
 import models.Consent;
 import models.ContentInfo;
 import models.MidataId;
@@ -288,6 +289,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		Record record = new Record();
 		record._id = new MidataId();
 		record.creator = info().getActor();
+		if (info().isUserGroupContext()) {
+		    record.creatorOrg = info().getAccessor();
+		    record.modifiedByOrg = info().getAccessor();
+		}
 		record.modifiedBy = record.creator;
 		record.format = format;
 		record.app = info().getUsedPlugin();
@@ -506,9 +511,17 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			Reference creatorRef = FHIRTools.getReferenceToCreator(record);
 			if (creatorRef != null) meta.addExtension("creator", creatorRef);
 		}
+		if (record.creatorOrg != null) {
+		    Reference creatorOrg = FHIRTools.getReferenceToActor(Actor.getActor(info(), record.creatorOrg));
+		    if (creatorOrg != null) meta.addExtension("creator-organization", creatorOrg);
+		}
 		if (record.modifiedBy != null && !record.version.equals("0")) {
 			Reference modifiedByRef = FHIRTools.getReferenceToModifiedBy(record);
 			if (modifiedByRef != null) meta.addExtension("modifiedBy", modifiedByRef);
+		}
+		if (record.modifiedByOrg != null && !record.version.equals("0")) {
+		    Reference modifiedByOrg = FHIRTools.getReferenceToActor(Actor.getActor(info(), record.modifiedByOrg));
+		    if (modifiedByOrg != null) meta.addExtension("modifiedBy-organization", modifiedByOrg);
 		}
 				
 		resource.getMeta().addExtension(meta);

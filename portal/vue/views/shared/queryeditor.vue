@@ -435,6 +435,7 @@ export default {
 				if (block.format) fb.format = [ block.format ];		
 				if (block.system) fb["group-system"] = block.system;
 				if (block.dynamic) fb["group-dynamic"] = block.dynamic;
+				if (block.creatorOrg) fb.creatorOrg = block.creatorOrg;
 				if (block.owner && block.owner != "all") fb.owner = [ block.owner ];
 				if (block["public"] && block["public"] != "no") fb["public"] = block["public"];
 				if (block.app && block.app != "all") {
@@ -839,6 +840,9 @@ export default {
 					}
 					if (ac("app")) {
 						nblock.app = ac("app");
+					}
+					if (ac("creatorOrg")) {
+						nblock.creatorOrg = ac("creatorOrg");
 					}
 					if (ac("observer")) {
 						nblock.observer = noarray(ac("observer"));

@@ -135,6 +135,10 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("status", ConsentStatus.ACTIVE), ALL);
 	}
 	
+	public static Set<UserGroupMember> getAllActiveByGroup(MidataId group, Set<EntityType> type) throws InternalServerException {
+        return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("status", ConsentStatus.ACTIVE).map("entityType", type), ALL);
+    }
+	
 	public static Set<UserGroupMember> getAllActiveUserByGroup(MidataId group) throws InternalServerException {
 		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("status", ConsentStatus.ACTIVE).map("entityType", Sets.create(EntityType.USER, null)), ALL);
 	}

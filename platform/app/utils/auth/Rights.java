@@ -91,7 +91,7 @@ public class Rights {
 		role(UserRole.MEMBER, "_id", "name", "type", "joinMethods", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "anonymous", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "leavePolicy", "rejoinPolicy");
 		
 		action("getRecords");
-		role(UserRole.ANY, "_id", "id", "owner" , "ownerName", "creatorName", "format", "subformat", "content", "code", "group", "app", "creator", "created", "lastUpdated", "version", "name", "description", "tags", "data", "created-after", "created-before", "max-age", "group-strict", "group-exclude", "limit");
+		role(UserRole.ANY, "_id", "id", "owner" , "ownerName", "creatorName", "format", "subformat", "content", "code", "group", "app", "creator", "creatorOrg", "created", "lastUpdated", "version", "name", "description", "tags", "data", "created-after", "created-before", "max-age", "group-strict", "group-exclude", "limit");
 		
 		action("Circles.listConsents");
 		role(UserRole.RESEARCH, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "createdAfter", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes", "allowedReshares", "querySignature", "basedOn");

@@ -32,6 +32,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import models.ContentCode;
 import models.ContentInfo;
 import models.FormatInfo;
+import models.HealthcareProvider;
 import models.MidataId;
 import models.Plugin;
 import models.RecordGroup;
@@ -256,7 +257,9 @@ public class Query {
 		} else if (v instanceof Collection) {
 			Set<String> results = new HashSet<String>();
 			for (Object val : (Collection) v) { results.add(val.toString()); }			
-			return results;											
+			return results;		
+		} else if (v instanceof Boolean) {
+            return Collections.singleton(v.toString());
 		} else {
 			AccessLog.log("Restriction on "+name+" : "+(v!=null ? (v.toString()+" of class "+v.getClass().getName()) : "null"));
 			throw new InternalServerException("error.internal","Bad Restriction 1: "+name);
@@ -489,7 +492,8 @@ public class Query {
 		
 		 fetchFromDB = fields.contains("data") ||
 	              //fields.contains("app") || 
-	              fields.contains("creator") || 	             
+	              fields.contains("creator") ||
+	              fields.contains("creatorOrg") || 
 	              fields.contains("name") ||
 	              fields.contains("code") || 
 	              fields.contains("description") ||
@@ -499,6 +503,7 @@ public class Query {
 	              (!properties.containsKey("deleted")) ||
 	              //properties.containsKey("app") ||
 	              properties.containsKey("creator") ||
+	              properties.containsKey("creatorOrg") ||
 	              properties.containsKey("data") ||
 	              properties.containsKey("code") ||
 	              properties.containsKey("tag") ||
@@ -628,6 +633,19 @@ public class Query {
 			 }
 			 properties.put("study", resolved);
 		 }
+		 
+		 if (properties.containsKey("creatorOrg")) {
+             Set<String> creatorOrgs = getRestriction(properties.get("creatorOrg"), "creatorOrg");
+             Set<String> resolved = new HashSet<String>();
+             for (Object creatorOrg : creatorOrgs) {
+                 if (!MidataId.isValid(creatorOrg.toString())) {
+                     HealthcareProvider hp = HealthcareProvider.getByName(creatorOrg.toString());                  
+                     if (hp!=null) resolved.add(hp._id.toString());
+                     else throw new BadRequestException("error.internal", "Queried for unknown organization in access filter.");
+                 } else resolved.add(creatorOrg.toString());
+             }
+             properties.put("creatorOrg", resolved);
+         }
 		 
 		 if (properties.get("owner")!=null) {
 			 Set<String> owners = getRestriction(properties.get("owner"), "owner");
