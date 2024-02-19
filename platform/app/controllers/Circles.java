@@ -483,87 +483,91 @@ public class Circles extends APIController {
 		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL)).as("application/json");
 	}
 	
-	public static void addConsent(AccessContext context, Consent consent, boolean patientRecord, String passcode, boolean force) throws AppException {
+	public static void addConsent(AccessContext context, Consent consent, boolean patientRecord, String passcode, boolean force) throws AppException {	    
 		consent._id = new MidataId();
-		consent.dateOfCreation = new Date();
-		consent.lastUpdated = consent.dateOfCreation;
-		consent.dataupdate = System.currentTimeMillis();
-			
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_CREATE).withActor(context, context.getActor()).withModifiedActor(context, consent.owner).withConsent(consent));
-		
-		if (consent.externalOwner != null) {
-			Member member = Member.getByEmail(consent.externalOwner, Sets.create("_id"));
-			if (member != null) {
-				consent.owner = member._id;
-				consent.externalOwner = null;
-			}
+		AccessLog.logBegin("begin addConsent context="+(context!=null? context.toString() :"null")+" consent id="+consent._id.toString());
+		try {
+    		consent.dateOfCreation = new Date();
+    		consent.lastUpdated = consent.dateOfCreation;
+    		consent.dataupdate = System.currentTimeMillis();
+    			
+    		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_CREATE).withActor(context, context.getActor()).withModifiedActor(context, consent.owner).withConsent(consent));
+    		
+    		if (consent.externalOwner != null) {
+    			Member member = Member.getByEmail(consent.externalOwner, Sets.create("_id"));
+    			if (member != null) {
+    				consent.owner = member._id;
+    				consent.externalOwner = null;
+    			}
+    		}
+    		if (consent.externalAuthorized != null) {
+    			Set<String> externalAuthorized = new HashSet<String>();
+    			for (String ext : consent.externalAuthorized) {
+    				if (!JsonValidation.isEMail(ext)) throw new BadRequestException("error.invalid.email", "Invalid email");
+    				Member member = Member.getByEmail(ext, Sets.create("_id"));
+    				if (member != null) {
+    					consent.authorized.add(member._id);
+    				} else externalAuthorized.add(ext);
+    			}
+    			if (externalAuthorized.isEmpty()) consent.externalAuthorized = null;
+    			else {
+    				consent.externalAuthorized = externalAuthorized;
+    				if (consent.status == ConsentStatus.ACTIVE) {
+    					consent.status = ConsentStatus.UNCONFIRMED;
+    					if (context.getAccessor().equals(consent.owner)) {
+    					  consent.autoConfirmHandle = ServiceHandler.encrypt(KeyManager.instance.currentHandle(context.getAccessor()));
+    					}
+    				}
+    			}
+    		}
+    		
+    		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED && !force && consent.type != ConsentType.IMPLICIT) {
+    			if (consent.owner == null || !consent.owner.equals(context.getAccessor())) {
+    				if (ApplicationTools.actAsRepresentative(context, consent.owner, false)==null) throw new AuthException("error.invalid.consent", "You must be owner to create active consents!");
+    			}
+    		}		
+    		
+    		if (consent.owner != null) {
+    			RecordManager.instance.createAnonymizedAPS(context.getCache(), consent.owner, context.getAccessor(), consent._id, true);
+    			
+    			if (consent.allowedReshares != null) {
+    				byte[] signkey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(consent._id, null);
+    				ConsentReshare reshare = new ConsentReshare();
+    				reshare._id = consent._id;
+    				reshare.publicKey = signkey;
+    				KeyManager.instance.backupKeyInAps(context, consent._id);
+    				reshare.add();
+    				
+    			}
+    			
+    			if (passcode != null) {			  
+    				  byte[] pubkey = KeyManager.instance.generateKeypairAndReturnPublicKey(consent._id, passcode);
+    			      RecordManager.instance.shareAPS(new ConsentAccessContext(consent, context), pubkey);
+    			      RecordManager.instance.setMeta(context, consent._id, "_config", CMaps.map("passcode", passcode));			  		
+    			}
+    		}
+    								
+    		
+    		//consent.add();
+    		
+    		consentStatusChange(context, consent, null, patientRecord);		
+    		
+    		//should not be necessary
+    		//if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(context, consent);
+    		
+    										
+    		if (consent.status == ConsentStatus.UNCONFIRMED) {
+    			sendConsentNotifications(context, consent, consent.status, false);
+    		} else if (consent.status == ConsentStatus.ACTIVE) {
+    			sendConsentNotifications(context, consent, consent.status, false);
+    		} else if (consent.status == ConsentStatus.PRECONFIRMED) {
+    			sendConsentNotifications(context, consent, consent.status, false);
+    		}
+    				
+    		AuditManager.instance.success();
+		} finally {
+		    AccessLog.logEnd("end addConsent");
 		}
-		if (consent.externalAuthorized != null) {
-			Set<String> externalAuthorized = new HashSet<String>();
-			for (String ext : consent.externalAuthorized) {
-				if (!JsonValidation.isEMail(ext)) throw new BadRequestException("error.invalid.email", "Invalid email");
-				Member member = Member.getByEmail(ext, Sets.create("_id"));
-				if (member != null) {
-					consent.authorized.add(member._id);
-				} else externalAuthorized.add(ext);
-			}
-			if (externalAuthorized.isEmpty()) consent.externalAuthorized = null;
-			else {
-				consent.externalAuthorized = externalAuthorized;
-				if (consent.status == ConsentStatus.ACTIVE) {
-					consent.status = ConsentStatus.UNCONFIRMED;
-					if (context.getAccessor().equals(consent.owner)) {
-					  consent.autoConfirmHandle = ServiceHandler.encrypt(KeyManager.instance.currentHandle(context.getAccessor()));
-					}
-				}
-			}
-		}
-		
-		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED && !force && consent.type != ConsentType.IMPLICIT) {
-			if (consent.owner == null || !consent.owner.equals(context.getAccessor())) {
-				if (ApplicationTools.actAsRepresentative(context, consent.owner, false)==null) throw new AuthException("error.invalid.consent", "You must be owner to create active consents!");
-			}
-		}		
-		
-		if (consent.owner != null) {
-			RecordManager.instance.createAnonymizedAPS(context.getCache(), consent.owner, context.getAccessor(), consent._id, true);
-			
-			if (consent.allowedReshares != null) {
-				byte[] signkey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(consent._id, null);
-				ConsentReshare reshare = new ConsentReshare();
-				reshare._id = consent._id;
-				reshare.publicKey = signkey;
-				KeyManager.instance.backupKeyInAps(context, consent._id);
-				reshare.add();
-				
-			}
-			
-			if (passcode != null) {			  
-				  byte[] pubkey = KeyManager.instance.generateKeypairAndReturnPublicKey(consent._id, passcode);
-			      RecordManager.instance.shareAPS(new ConsentAccessContext(consent, context), pubkey);
-			      RecordManager.instance.setMeta(context, consent._id, "_config", CMaps.map("passcode", passcode));			  		
-			}
-		}
-								
-		
-		//consent.add();
-		
-		consentStatusChange(context, consent, null, patientRecord);		
-		
-		//should not be necessary
-		//if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(context, consent);
-		
-										
-		if (consent.status == ConsentStatus.UNCONFIRMED) {
-			sendConsentNotifications(context, consent, consent.status, false);
-		} else if (consent.status == ConsentStatus.ACTIVE) {
-			sendConsentNotifications(context, consent, consent.status, false);
-		} else if (consent.status == ConsentStatus.PRECONFIRMED) {
-			sendConsentNotifications(context, consent, consent.status, false);
-		}
-				
-		AuditManager.instance.success();
-
 	}
 	
 	/**

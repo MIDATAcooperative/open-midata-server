@@ -507,8 +507,7 @@ public class Administration extends APIController {
 	 * @return 200 ok
 	 * @throws JsonValidationException
 	 * @throws InternalServerException
-	 */
-	@BodyParser.Of(BodyParser.Json.class)
+	 */	
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
 	public Result deleteStudy(Request request, String id) throws JsonValidationException, AppException {

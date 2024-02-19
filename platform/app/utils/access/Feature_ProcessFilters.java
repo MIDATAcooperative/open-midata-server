@@ -17,8 +17,13 @@
 
 package utils.access;
 
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 
+import models.MidataId;
+import models.UserGroupMember;
+import models.enums.EntityType;
 import utils.AccessLog;
 import utils.exceptions.AppException;
 
@@ -71,6 +76,17 @@ public class Feature_ProcessFilters extends Feature {
 		if (q.restrictedBy("creator")) {
 			result = new ProcessingTools.FilterByMetaSet(result, "creator", q.getIdRestrictionDB("creator"), false);
 		}
+		if (q.restrictedBy("creatorOrg")) {
+		    Set<MidataId> orgIds = q.getMidataIdRestriction("creatorOrg");
+		    Set<Object> destOrgIds = new HashSet<Object>();
+		    for (MidataId org : orgIds) {
+		        destOrgIds.add(org.toDb());
+		      Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByGroup(org, EnumSet.of(EntityType.ORGANIZATION));
+		      for (UserGroupMember ugm : ugms) destOrgIds.add(ugm.member.toDb());
+		    }		   
+		    result = new ProcessingTools.FilterByMetaSet(result, "creatorOrg", destOrgIds, true);
+		}
+		
 		if (q.restrictedBy("app")) {
 			result = new ProcessingTools.FilterByMetaSet(result, "app", q.getIdRestrictionDB("app"), q.restrictedBy("no-postfilter-streams"));
 		}

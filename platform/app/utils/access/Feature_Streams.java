@@ -395,7 +395,7 @@ public class Feature_Streams extends Feature {
 	       
 	       return Pair.of(streamQuery, recordQuery);
 		} else {
-			if (inputQuery.containsKey("data")) return Pair.of(null, inputQuery);		
+			if (inputQuery.containsKey("data") || inputQuery.containsKey("creatorOrg") || inputQuery.containsKey("creator")) return Pair.of(null, inputQuery);		
 			return Pair.of(inputQuery, null);
 		}
 	}

@@ -87,6 +87,7 @@ import models.enums.EntityType;
 import models.enums.InfoType;
 import models.enums.InformationType;
 import models.enums.JoinMethod;
+import models.enums.LinkTargetType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
@@ -2717,6 +2718,7 @@ public class Studies extends APIController {
 				newLink.usePeriod = JsonValidation.getEnumSet(sal, "usePeriod", StudyExecutionStatus.class);
 				newLink.validationDeveloper = StudyValidationStatus.DRAFT;
 				newLink.validationResearch = StudyValidationStatus.DRAFT;
+				newLink.linkTargetType = JsonValidation.getEnum(sal, "linkTargetType", LinkTargetType.class);
 				newLink.add();
 			} else {
 				String group = JsonValidation.getString(sal, "group");

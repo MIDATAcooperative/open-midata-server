@@ -317,10 +317,12 @@ public class AccountManagementTools {
 				
 		List<Consent> existing = LinkTools.findConsentAlreadyExists(context, consent);
 		
-		if (existing.isEmpty()) {		
+		if (existing.isEmpty()) {	
+		    AccessLog.log("no existing data broker consent found, creating one");
 		    Circles.addConsent(context, consent, true, null, true);
 		    return consent;
 		} else {
+		    AccessLog.log("existing data broker consent found, skipping creation");
 			return null;
 		}
 		
@@ -434,14 +436,14 @@ public class AccountManagementTools {
 		MidataId pluginId = context.getUsedPlugin();
 		if (pluginId == null) return null;
 		
-		Plugin plugin = Plugin.getById(pluginId);
+		Plugin plugin = Plugin.getById(pluginId);	
 		if (plugin != null && plugin.type.equals("broker")) {
-			Set<StudyAppLink> sals = StudyAppLink.getByApp(pluginId);
+			Set<StudyAppLink> sals = StudyAppLink.getByApp(pluginId);		
 			if (sals.isEmpty()) return Collections.emptySet();
 			Set<MidataId> studies = new HashSet<MidataId>();
-			for (StudyAppLink sal : sals) {
+			for (StudyAppLink sal : sals) {			   
 				if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
-					studies.add(sal.studyId);
+					studies.add(sal.studyId);					
 				}
 			}
 			return studies;
@@ -473,6 +475,7 @@ public class AccountManagementTools {
 	}
 	
 	public static void participateToProjects(AccessContext context, Member user, FHIRPatientHolder fhirPatient, Set<MidataId> projectsToParticipate, boolean active) throws AppException {
+	      AccessLog.log("request participation to "+projectsToParticipate.size()+" projects.");
 		  for (MidataId projectId : projectsToParticipate) {
 			     participateToProject(context, user, fhirPatient, projectId, active, context.getUsedPlugin().equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP);				
 		  }	  

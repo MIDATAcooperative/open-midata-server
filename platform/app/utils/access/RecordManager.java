@@ -719,6 +719,9 @@ public class RecordManager {
 		    } else {
 		      rec.meta.put("modifiedBy", record.modifiedBy.toDb());
 		    }
+		    if (record.modifiedByOrg != null) {
+		      rec.meta.put("modifiedByOrg", record.modifiedByOrg.toDb());
+		    }
 		    
 			
 		    DBRecord clone = rec.clone();

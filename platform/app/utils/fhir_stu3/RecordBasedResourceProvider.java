@@ -216,6 +216,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		record._id = new MidataId();
 		record.creator = info().getActor();
 		record.modifiedBy = record.creator;
+		if (info().isUserGroupContext()) {
+            record.creatorOrg = info().getAccessor();
+            record.modifiedByOrg = info().getAccessor();
+        }
 		record.format = format;
 		record.app = info().getUsedPlugin();
 		record.created = record._id.getCreationDate();
