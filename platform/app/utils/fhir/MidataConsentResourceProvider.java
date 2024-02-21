@@ -843,7 +843,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
                 Consent base = candidates.get(0);
                 theResource.setSource(new Reference("Consent/"+base._id));
                 info = info.forConsentReshare(base);
-            } else throw new InvalidRequestException("context does not allow to create this consent.");
+            } //else throw new InvalidRequestException("context does not allow to create this consent.");
 			
 		}
         return info;
