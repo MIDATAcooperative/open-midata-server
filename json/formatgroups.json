@@ -59,3 +59,4 @@
 {"_id":{"$oid":"6288d83102da8556e91f79e6"},"system":"v1","name":"vaccination","label":{"de":"Impfung","en":"Vaccination","it":"Vaccinazione","fr":"Vaccination"},"parent":"health"}
 {"_id":{"$oid":"628b54466020a06279c0d0be"},"system":"v1","name":"risks","label":{"de":"Risiken","en":"Risks","it":"Rischi","fr":"Risques"},"parent":"health"}
 {"_id":{"$oid":"628e2caaf91349166cef4ef0"},"system":"v1","name":"pain","label":{"de":"Schmerz","en":"Pain","it":"Dolore","fr":"Douleur"},"parent":"health"}
+{"_id":{"$oid":"65ce3dea38610a7aca972f02"},"system":"v1","name":"prom","label":{"de":"PROM","en":"PROM"},"parent":"assessment"}

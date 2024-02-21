@@ -2477,7 +2477,7 @@ public class Studies extends APIController {
 			newLink.restrictRead = sal.restrictRead;
 			newLink.shareToStudy = sal.shareToStudy;
 			newLink.studyGroup = sal.studyGroup;
-			newLink.studyId = sal.studyId;
+			newLink.studyId = study._id;
 			newLink.type = sal.type;
 			newLink.usePeriod = sal.usePeriod;
 			newLink.validationDeveloper = StudyValidationStatus.DRAFT;
