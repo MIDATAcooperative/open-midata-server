@@ -33,6 +33,7 @@ import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.ServiceInstance;
+import models.Study;
 import models.StudyAppLink;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
@@ -129,13 +130,13 @@ public class LinkTools {
 		}
 	}
 	
-	public static List<Consent> findConsentsForResharing(AccessContext context, Consent target) throws AppException {
+	public static List<Consent> findConsentsForResharing(AccessContext context, Consent target, Study optionalProject) throws AppException {
 		AccessLog.logBegin("begin find consents for resharing context=", context.toString());
 		Collection<Consent> candidates = Circles.getConsentsAuthorized(context, CMaps.map("owner", target.owner).map("status", Consent.ACTIVE_STATUS).map("allowedReshares", CMaps.map("$exists", true)), Consent.ALL);
 		AccessLog.log("found ", Integer.toString(candidates.size()), " candidates");
 		List<Consent> result = new ArrayList<Consent>();
 		for (Consent consent : candidates) {
-			if (ConsentQueryTools.isSubQuery(consent.sharingQuery, target.sharingQuery) && checkReshareToEntitiesAllowed(context, consent, target)) result.add(consent);
+			if (ConsentQueryTools.isSubQuery(consent.sharingQuery, target.sharingQuery) && checkReshareToEntitiesAllowed(context, consent, target, optionalProject)) result.add(consent);
 		}
 		AccessLog.logEnd("end find consents for resharing #=", Integer.toString(result.size()));
 		return result;
@@ -153,9 +154,18 @@ public class LinkTools {
 		return result;
 	}
 	
-	public static boolean checkReshareToEntitiesAllowed(AccessContext info, Consent base, Consent target) throws InternalServerException {
+	public static boolean checkReshareToEntitiesAllowed(AccessContext info, Consent base, Consent target, Study optionalProject) throws InternalServerException {
 		boolean isValid = true;
-	
+		if (optionalProject != null) {
+             isValid = false;
+             for (ConsentEntity allowedEntity : base.allowedReshares) {
+                 if (allowedEntity.type == EntityType.USERGROUP && allowedEntity.id.equals(optionalProject._id)) {
+                     isValid = true;
+                 }
+             }
+             AccessLog.log("verified access for project:",optionalProject._id.toString()," success=",Boolean.toString(isValid));
+             return isValid;
+         }
 		for (MidataId auth : target.authorized) {						
 			boolean partValid = false;
 			if (auth.equals(target.owner)) partValid = true;

@@ -813,6 +813,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		addSecurityTag(theResource, QueryTagTools.SECURITY_PLATFORM_MAPPED);	
 	}
 
+	
 	/**
 	 * resolve source reference and check validity.
 	 * @param consent
@@ -828,35 +829,22 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			IIdType type = ref.getReferenceElement();
 			if (type != null && type.getResourceType().equals("Consent")) {
 				MidataId baseConsentId = MidataId.parse(type.getIdPart());
-				AccessLog.log("resolve and verify source consent id=",baseConsentId.toString());
+				AccessLog.log("resolve and verify source consent id=",baseConsentId.toString());				
 				Consent base = Consent.getByIdAndOwner(baseConsentId, consent.owner, Consent.ALL);
-				if (base != null && base.allowedReshares != null && base.isActive()) {
-					// if (!base.isActive()) throw new UnprocessableEntityException("sourceReference consent is not active");
-				    // Is reshare allowed for party
-					boolean isValid = true;
-					if (optionalProject != null) {
-						isValid = false;
-						for (ConsentEntity allowedEntity : base.allowedReshares) {
-							if (allowedEntity.type == EntityType.USERGROUP && allowedEntity.id.equals(optionalProject._id)) {
-								isValid = true;
-							}
-						}
-						AccessLog.log("verified access for project:",optionalProject._id.toString()," success=",Boolean.toString(isValid));
-					} else {
-						isValid = LinkTools.checkReshareToEntitiesAllowed(info, base, consent);												
-					}
-					if (!isValid) throw new InvalidRequestException("sourceReference does not allow to create this consent.");
-					AccessLog.log("verify source consent successful");	
-					info = info.forConsentReshare(base); 
-				}
+				boolean isValid = LinkTools.checkReshareToEntitiesAllowed(info, base, consent, optionalProject);
+				
+				if (!isValid) throw new InvalidRequestException("sourceReference does not allow to create this consent.");
+				AccessLog.log("verify source consent successful");	
+				info = info.forConsentReshare(base); 				
 			}
 		} else if (consent.isActive() && !info.canCreateActiveConsentsFor(consent.owner)) {
-			List<Consent> candidates = LinkTools.findConsentsForResharing(info, consent);
+			List<Consent> candidates = LinkTools.findConsentsForResharing(info, consent, optionalProject);
 			if (!candidates.isEmpty()) {
-				Consent base = candidates.get(0);
-				theResource.setSource(new Reference("Consent/"+base._id));
-				info = info.forConsentReshare(base);
-			}
+                Consent base = candidates.get(0);
+                theResource.setSource(new Reference("Consent/"+base._id));
+                info = info.forConsentReshare(base);
+            } else throw new InvalidRequestException("context does not allow to create this consent.");
+			
 		}
         return info;
 	}
