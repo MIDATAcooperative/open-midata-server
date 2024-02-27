@@ -62,7 +62,7 @@ public class CreateTransactionStep extends TransactionStep {
 			if (result == null) {
 				AccessLog.logBegin("begin create transaction for resource ",provider.getResourceType().getSimpleName());
 				try {					
-					((ReadWriteResourceProvider) provider).createExecute(record, resource);
+					resource = ((ReadWriteResourceProvider) provider).createExecute(record, resource);
 				} catch (AppException e) {
 				  throw new InternalErrorException(e.getMessage());
 				} finally {
