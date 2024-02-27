@@ -866,7 +866,8 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			Consent.set(part._id, "fhirConsent", part.fhirConsent);
 			if (consent.status == ConsentStatus.ACTIVE) {
 			   part = controllers.members.Studies.requestParticipation(part, info, consent.owner, studyId, info.getUsedPlugin(), JoinMethod.API, joinCode);
-			   theResource.setStatus(ConsentState.ACTIVE);
+			   theResource.setStatus(ConsentState.ACTIVE);			   
+			   consent._id = part._id;
 			} else {						
 			   SubscriptionManager.resourceChange(info, part);
 			}
