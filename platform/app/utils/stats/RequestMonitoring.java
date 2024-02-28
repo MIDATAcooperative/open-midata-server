@@ -17,6 +17,7 @@
 
 package utils.stats;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,9 +91,14 @@ public class RequestMonitoring {
 	}
 }
 
-class MonitoringMessage {
+class MonitoringMessage implements Serializable {
 	
-	public final MidataId plugin;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = -6175223243374479387L;
+
+    public final MidataId plugin;
 	
 	public final String action;
 		
@@ -108,9 +114,14 @@ class MonitoringMessage {
 	}
 }
 
-class MonitoringBulkMessage {
+class MonitoringBulkMessage implements Serializable {
 	
-	public final MidataId plugin;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 6229636849511106470L;
+
+    public final MidataId plugin;
 	
 	public final String action;
 		
