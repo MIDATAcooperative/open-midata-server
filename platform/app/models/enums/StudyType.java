@@ -37,5 +37,10 @@ public enum StudyType {
 	/**
 	 * Data gathering for registry
 	 */
-	REGISTRY
+	REGISTRY,
+	
+	/**
+	 * Meta project that just combines the results of other projects
+	 */
+	META
 }

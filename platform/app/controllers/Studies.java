@@ -28,6 +28,9 @@ import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Http.Request;
 import play.mvc.Result;
+import play.mvc.Security;
+import utils.auth.AnyRoleSecured;
+import utils.auth.ResearchOrDeveloperSecured;
 import utils.auth.Rights;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AuthException;
@@ -52,7 +55,7 @@ public class Studies extends APIController {
 	 * @throws AuthException
 	 */
 	@APICall
-	
+	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	public Result search(Request request) throws JsonValidationException, InternalServerException, AuthException {
 	   //MidataId user = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));	   
@@ -63,7 +66,7 @@ public class Studies extends APIController {
 	   ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "createdBy", "studyKeywords");
 	   Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 	   
-	   Rights.chk("Studies.search", UserRole.MEMBER, properties, fields);	   	   
+	   Rights.chk("Studies.search", portalContext(request).getAccessorRole(), properties, fields);	   	   
 	   Set<Study> studies = Study.getAll(null, properties, fields);
 	   
 	   return ok(JsonOutput.toJson(studies, "Study", fields)).as("application/json");

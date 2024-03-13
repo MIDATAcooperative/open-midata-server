@@ -25,6 +25,7 @@ import java.util.Set;
 import org.bson.BSONObject;
 
 import models.MidataId;
+import models.SubProjectGroupMember;
 import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
@@ -48,7 +49,7 @@ import utils.exceptions.InternalServerException;
  */
 public class ProjectTools {
 
-    public static void addToUserGroup(AccessContext context, UserGroupMember self, ResearcherRole role, EntityType type, Set<MidataId> targetUserIds) throws AppException {
+    public static void addToUserGroup(AccessContext context, UserGroupMember self, ResearcherRole role, EntityType type, Set<MidataId> targetUserIds, Map<String, String> projectGroupMapping) throws AppException {
     	
     	context = context.forUserGroup(self.userGroup, type.getChangePermission());
     	    
@@ -58,7 +59,7 @@ public class ProjectTools {
 		for (MidataId targetUserId : targetUserIds) {
 			UserGroupMember old = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
 			if (old == null) {	
-				addToUserGroup(context, role, groupId, type, targetUserId);
+				addToUserGroup(context, role, groupId, type, targetUserId, projectGroupMapping);
 			} else {
 								
 				AuditManager.instance.addAuditEvent(AuditEventType.UPDATED_ROLE_IN_TEAM, context, null, context.getActor(), targetUserId, null, groupId);
@@ -78,6 +79,9 @@ public class ProjectTools {
 				UserGroupMember.set(old._id, "startDate", old.startDate);
 				UserGroupMember.set(old._id, "endDate", old.endDate);
 				UserGroupMember.set(old._id, "role", old.role);
+				if (projectGroupMapping != null) {
+				    UserGroupMember.set(old._id, "projectGroupMapping", projectGroupMapping);
+				}
 			}
 		}
 				
@@ -85,12 +89,22 @@ public class ProjectTools {
 
     public static void addToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId)
             throws AppException, AuthException, InternalServerException {
+        addToUserGroup(context, role, groupId, type, targetUserId, null);
+    }
+    
+    public static void addToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId, Map<String, String> projectGroupMapping)
+            throws AppException, AuthException, InternalServerException {
         AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, context, null, context.getActor(), targetUserId, null, groupId);
         
         UserGroup ug = context.getRequestCache().getUserGroupById(groupId);
         if (ug == null) throw new InternalServerException("error.internal", "UserGroup not found");
         
-        UserGroupMember member = new UserGroupMember();
+        UserGroupMember member;
+        if (projectGroupMapping != null) {
+          member = new SubProjectGroupMember(projectGroupMapping);
+        } else {
+          member = new UserGroupMember();
+        }
         member._id = new MidataId();
         member.member = targetUserId;
         member.userGroup = groupId;

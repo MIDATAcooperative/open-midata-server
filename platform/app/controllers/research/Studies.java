@@ -65,6 +65,7 @@ import models.MobileAppInstance;
 import models.Model;
 import models.ParticipationCode;
 import models.Plugin;
+import models.PluginIcon;
 import models.Record;
 import models.RecordsInfo;
 import models.Research;
@@ -76,6 +77,7 @@ import models.StudyAppLink;
 import models.StudyGroup;
 import models.StudyParticipation;
 import models.StudyRelated;
+import models.SubProjectGroupMember;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -568,6 +570,47 @@ public class Studies extends APIController {
 
 		return ok(JsonOutput.toJson(studies, "Study", fields));
 	}
+	
+	/**
+     * list subprojects of current project
+     * 
+     * @return list of studies
+     * @throws JsonValidationException
+     * @throws InternalServerException
+     */
+    @APICall
+    @Security.Authenticated(ResearchOrDeveloperSecured.class)
+    public Result listSubprojects(Request request, String id) throws AppException {
+        MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext(request);
+        MidataId studyid = MidataId.parse(id);
+        
+        Study study = Study.getById(studyid, Sets.create("owner", "type", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation"));
+        if (study == null)
+            throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+
+        UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyid, executorId);
+        if (ugm == null)
+            throw new BadRequestException("error.notauthorized.study", "Not member of study team");
+       
+        Set<SubProjectGroupMember> ugms = SubProjectGroupMember.getSubProjectsActiveByMember(Collections.singleton(studyid));        
+        Map<MidataId, SubProjectGroupMember> mapping = new HashMap<MidataId, SubProjectGroupMember>();
+        for (SubProjectGroupMember ugm1 : ugms) {
+            if (ugm1.entityType == EntityType.PROJECT) {
+                mapping.put(ugm1.userGroup, ugm1);
+            }
+        }
+
+        Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "code", "participantSearchStatus", "validationStatus", "groups");
+        Set<Study> studies = Study.getAll(null, CMaps.map("_id", mapping.keySet()), fields);
+
+        for (Study study1 : studies) mapping.get(study1._id).study = study1;
+        
+        Map<String, Set<String>> out = new HashMap<String, Set<String>>();
+        out.put("UserGroupMember",  SubProjectGroupMember.ALL);
+        out.put("Study", fields);
+        return ok(JsonOutput.toJson(ugms, out));
+    }
 
 	/**
 	 * list all studies waiting for validation

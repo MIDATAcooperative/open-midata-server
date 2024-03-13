@@ -62,6 +62,11 @@ import server from "./server";
 		return server.post(jsRoutes.controllers.UserGroups.addMembersToUserGroup().url, data);
 	};
 	
+	service.addProjectToUserGroup = function(group, members, mapping) {
+		var data = {"group": group, "members" : members, "type" : "project", "projectGroupMapping" : mapping };		
+		return server.post(jsRoutes.controllers.UserGroups.addMembersToUserGroup().url, data);
+	};
+	
 	service.addBrokerToUserGroup = function(group, members, role) {
 		var data = {"group": group, "members" : members, "type" : "services" };
 		if (role) for (let prop in role) data[prop] = role[prop];

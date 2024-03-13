@@ -28,6 +28,7 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
 import models.MidataId;
+import models.SubProjectGroupMember;
 import models.UserGroupMember;
 import models.enums.Permission;
 import models.enums.ResearcherRole;
@@ -52,13 +53,27 @@ public class Feature_UserGroups extends Feature {
 	
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
+	    if (q.restrictedBy("study")) {
+	        Set<MidataId> studies = q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null;	        
+	        Set<SubProjectGroupMember> isMemberOfGroups = SubProjectGroupMember.getSubProjectsActiveByMember(studies); 
+	        AccessLog.log("Restrict by study, subprojects #=",Integer.toString(isMemberOfGroups.size()));
+	        if (!isMemberOfGroups.isEmpty()) {
+                q.setFromRecord(null);
+                List<UserGroupMember> members = new ArrayList<UserGroupMember>(isMemberOfGroups);
+                Collections.sort(members);
+                members.add(0, null);
+                return ProcessingTools.noDuplicates(new UserGroupIterator(q, members, true));
+                
+            }
+	    }
+	    
 		if (q.restrictedBy("usergroup")) {
 			MidataId usergroup = q.getMidataIdRestriction("usergroup").iterator().next();
 			
 			if (usergroup.equals(q.getCache().getAccountOwner())) return next.iterator(q);
 			List<UserGroupMember> isMemberOfGroup = q.getCache().getByGroupAndActiveMember(usergroup, q.getCache().getAccessor(), Permission.READ_DATA);
 			if (isMemberOfGroup == null) throw new InternalServerException("error.internal", "Not member of provided user group");
-			return doQueryAsGroup(isMemberOfGroup, q);					
+			return doQueryAsGroup(isMemberOfGroup, q, null);					
 		}
 		
 		if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
@@ -70,7 +85,7 @@ public class Feature_UserGroups extends Feature {
 					List<UserGroupMember> members = new ArrayList<UserGroupMember>(isMemberOfGroups);
 					Collections.sort(members);
 					members.add(0, null);
-					return ProcessingTools.noDuplicates(new UserGroupIterator(q, members));
+					return ProcessingTools.noDuplicates(new UserGroupIterator(q, members, false));
 					
 				}
 			}
@@ -80,8 +95,11 @@ public class Feature_UserGroups extends Feature {
 	
 	class UserGroupIterator extends Feature.MultiSource<UserGroupMember> {
 				
-		UserGroupIterator(Query query, List<UserGroupMember> groups) throws AppException {
+	    private boolean subprojects;
+	    
+		UserGroupIterator(Query query, List<UserGroupMember> groups, boolean subprojects) throws AppException {
 			this.query = query;
+			this.subprojects = subprojects;
 			init(groups.iterator());
 		}
 		
@@ -91,7 +109,8 @@ public class Feature_UserGroups extends Feature {
 			if (usergroup == null) return next.iterator(query);
 			List<UserGroupMember> path = query.getCache().getByGroupAndActiveMember(usergroup, query.getContext().getAccessor(), Permission.READ_DATA);
 			if (path == null || path.isEmpty()) return ProcessingTools.empty();
-			return doQueryAsGroup(path, query);
+			Map<String, String> projectGroupMap = usergroup instanceof SubProjectGroupMember ? ((SubProjectGroupMember) usergroup).projectGroupMapping : null;
+			return doQueryAsGroup(path, query, projectGroupMap);
 			
 		}
 
@@ -106,7 +125,7 @@ public class Feature_UserGroups extends Feature {
 		
 	}
 
-	protected DBIterator<DBRecord> doQueryAsGroup(List<UserGroupMember> ugms, Query q) throws AppException {
+	protected DBIterator<DBRecord> doQueryAsGroup(List<UserGroupMember> ugms, Query q, Map<String, String> projectGroups) throws AppException {
 		if (ugms.isEmpty()) throw new InternalServerException("error.internal", "doQueryAsGroup requires UserGroup");
 		MidataId group = null;
 		APSCache subcache = q.getCache();
@@ -131,7 +150,17 @@ public class Feature_UserGroups extends Feature {
 		
 		Map<String, Object> newprops = new HashMap<String, Object>();
 		newprops.putAll(q.getProperties());
-		newprops.put("usergroup", lastUgm.userGroup);		
+		newprops.put("usergroup", lastUgm.userGroup);
+		if (projectGroups != null) {
+		    newprops.put("study", lastUgm.userGroup);
+		    String studyGroup = q.getStringRestriction("study-group");
+		    studyGroup = studyGroup != null ? projectGroups.get(studyGroup) : null;
+		    if (studyGroup != null && !studyGroup.equals("*")) {
+		        newprops.put("study-group", studyGroup);
+		    } else {
+		        newprops.remove("study-group");
+		    }
+		}
 		 				
 		if (q.restrictedBy("export")) {
 			if (!mayExportData) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");

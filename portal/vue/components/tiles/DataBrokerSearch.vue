@@ -78,7 +78,7 @@ export default {
 		dosearch() {
 			const { $data } = this, me = this;
 			let crit = { type : "broker" };
-			if ($data.criteria.name) crit.name = $data.criteria.name;
+			if ($data.criteria.name) crit.name = $data.criteria.name+"*";
 			
 			$data.databrokers = null;		
     		me.doBusy(apps.getApps(crit, ["filename", "name","type", "orgName", "description", "decentral"])
