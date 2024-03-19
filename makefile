@@ -1,4 +1,4 @@
-#
+##
 # This file is part of the Open MIDATA Server.
 #
 # The Open MIDATA Server is free software: you can redistribute it and/or modify
@@ -266,26 +266,26 @@ platform/conf/application.conf: platform/conf/application.conf.template conf/set
 	$(eval PORTAL_ORIGIN:=$(shell if [ -e switches/use-run ]; then echo "https://$(DOMAIN):9002";else echo "https://$(DOMAIN)";fi;))
 	$(eval CLUSTERSERVERS:=$(foreach a,$(CLUSTER),"akka://midata@$(a):9006"))
 	$(eval CLUSTERX:=$(call join-with,$(komma),$(CLUSTERSERVERS))) 
-	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' platform/conf/application.conf
-	sed -i 's|PLUGINS_SERVER|$(DOMAIN)/plugin|' platform/conf/application.conf
-	sed -i 's|PLUGINS_DIR|$(PLUGINS_DIR)|' platform/conf/application.conf
-	sed -i 's|DOMAIN|$(DOMAIN)|' platform/conf/application.conf	
-	sed -i 's|PLATFORM_HOSTNAME|$(HOSTNAME)|' platform/conf/application.conf
-	sed -i 's|CLUSTER_SERVER|$(CLUSTERX)|' platform/conf/application.conf
-	sed -i 's|INSTANCETYPE|$(INSTANCE_TYPE)|' platform/conf/application.conf
-	sed -i 's|USER_MAIL_PASSWORD|$(USER_MAIL_PASSWORD)|' platform/conf/application.conf
-	sed -i 's|STATUS_MAIL_PASSWORD|$(STATUS_MAIL_PASSWORD)|' platform/conf/application.conf
-	sed -i 's|BULK_MAIL_PASSWORD|$(BULK_MAIL_PASSWORD)|' platform/conf/application.conf
-	sed -i 's|USER_MAIL_SENDER|$(USER_MAIL_SENDER)|' platform/conf/application.conf
-	sed -i 's|STATUS_MAIL_SENDER|$(STATUS_MAIL_SENDER)|' platform/conf/application.conf
-	sed -i 's|BULK_MAIL_SENDER|$(BULK_MAIL_SENDER)|' platform/conf/application.conf
-	sed -i 's|MAIL_SMTP_SERVER|$(MAIL_SMTP_SERVER)|' platform/conf/application.conf
-	sed -i 's|MAIL_SECURITY_TARGET|$(MAIL_SECURITY_TARGET)|' platform/conf/application.conf
-	sed -i 's|MAIL_ADMIN|$(MAIL_ADMIN)|' platform/conf/application.conf
-	sed -i 's|DEFAULT_LANGUAGE|$(DEFAULT_LANGUAGE)|' platform/conf/application.conf
-	sed -i 's|ROOTDIR|$(abspath .)|' platform/conf/application.conf
-	sed -i 's|SMS_PROVIDER|$(SMS_PROVIDER)|' platform/conf/application.conf
-	sed -i 's|SMS_OAUTH_TOKEN|$(SMS_OAUTH_TOKEN)|' platform/conf/application.conf	
+	sed -i'' -e 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' platform/conf/application.conf
+	sed -i'' -e 's|PLUGINS_SERVER|$(DOMAIN)/plugin|' platform/conf/application.conf
+	sed -i'' -e 's|PLUGINS_DIR|$(PLUGINS_DIR)|' platform/conf/application.conf
+	sed -i'' -e 's|DOMAIN|$(DOMAIN)|' platform/conf/application.conf	
+	sed -i'' -e 's|PLATFORM_HOSTNAME|$(HOSTNAME)|' platform/conf/application.conf
+	sed -i'' -e 's|CLUSTER_SERVER|$(CLUSTERX)|' platform/conf/application.conf
+	sed -i'' -e 's|INSTANCETYPE|$(INSTANCE_TYPE)|' platform/conf/application.conf
+	sed -i'' -e 's|USER_MAIL_PASSWORD|$(USER_MAIL_PASSWORD)|' platform/conf/application.conf
+	sed -i'' -e 's|STATUS_MAIL_PASSWORD|$(STATUS_MAIL_PASSWORD)|' platform/conf/application.conf
+	sed -i'' -e 's|BULK_MAIL_PASSWORD|$(BULK_MAIL_PASSWORD)|' platform/conf/application.conf
+	sed -i'' -e 's|USER_MAIL_SENDER|$(USER_MAIL_SENDER)|' platform/conf/application.conf
+	sed -i'' -e 's|STATUS_MAIL_SENDER|$(STATUS_MAIL_SENDER)|' platform/conf/application.conf
+	sed -i'' -e 's|BULK_MAIL_SENDER|$(BULK_MAIL_SENDER)|' platform/conf/application.conf
+	sed -i'' -e 's|MAIL_SMTP_SERVER|$(MAIL_SMTP_SERVER)|' platform/conf/application.conf
+	sed -i'' -e 's|MAIL_SECURITY_TARGET|$(MAIL_SECURITY_TARGET)|' platform/conf/application.conf
+	sed -i'' -e 's|MAIL_ADMIN|$(MAIL_ADMIN)|' platform/conf/application.conf
+	sed -i'' -e 's|DEFAULT_LANGUAGE|$(DEFAULT_LANGUAGE)|' platform/conf/application.conf
+	sed -i'' -e 's|ROOTDIR|$(abspath .)|' platform/conf/application.conf
+	sed -i'' -e 's|SMS_PROVIDER|$(SMS_PROVIDER)|' platform/conf/application.conf
+	sed -i'' -e 's|SMS_OAUTH_TOKEN|$(SMS_OAUTH_TOKEN)|' platform/conf/application.conf	
 	
 conf/config.js: config/config-template.js conf/pathes.conf conf/setup.conf
 	$(info ------------------------------)
@@ -293,19 +293,19 @@ conf/config.js: config/config-template.js conf/pathes.conf conf/setup.conf
 	$(info ------------------------------)
 	$(eval PORTAL_ORIGIN:=$(shell if [ -e switches/use-run ]; then echo "https://$(DOMAIN):9002";else echo "https://$(DOMAIN)";fi;))
 	cp config/config-template.js conf/config.js
-	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' conf/config.js
-	sed -i 's|DOMAIN|$(DOMAIN)|' conf/config.js
-	sed -i 's|PLATFORM_NAME|$(PLATFORM_NAME)|' conf/config.js
-	sed -i 's|OPERATOR_NAME|$(OPERATOR_NAME)|' conf/config.js
-	sed -i 's|PRODUCT_NAME|$(PRODUCT_NAME)|' conf/config.js
-	sed -i 's|OFFICIAL_SUPPORT_MAIL|$(OFFICIAL_SUPPORT_MAIL)|' conf/config.js
-	sed -i 's|OFFICIAL_HOMEPAGE|$(OFFICIAL_HOMEPAGE)|' conf/config.js
-	sed -i 's|INSTANCE_TYPE|$(INSTANCE_TYPE)|' conf/config.js
-	sed -i 's|INSTANCE|$(INSTANCE)|' conf/config.js
-	sed -i 's|LANGUAGES|$(LANGUAGES)|' conf/config.js
-	sed -i 's|DEFAULT_LANGUAGE|$(DEFAULT_LANGUAGE)|' conf/config.js
-	sed -i 's|COUNTRIES|$(COUNTRIES)|' conf/config.js
-	sed -i 's|BETA_FEATURES|$(BETA_FEATURES)|' conf/config.js		
+	sed -i'' -e 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' conf/config.js
+	sed -i'' -e 's|DOMAIN|$(DOMAIN)|' conf/config.js
+	sed -i'' -e 's|PLATFORM_NAME|$(PLATFORM_NAME)|' conf/config.js
+	sed -i'' -e 's|OPERATOR_NAME|$(OPERATOR_NAME)|' conf/config.js
+	sed -i'' -e 's|PRODUCT_NAME|$(PRODUCT_NAME)|' conf/config.js
+	sed -i'' -e 's|OFFICIAL_SUPPORT_MAIL|$(OFFICIAL_SUPPORT_MAIL)|' conf/config.js
+	sed -i'' -e 's|OFFICIAL_HOMEPAGE|$(OFFICIAL_HOMEPAGE)|' conf/config.js
+	sed -i'' -e 's|INSTANCE_TYPE|$(INSTANCE_TYPE)|' conf/config.js
+	sed -i'' -e 's|INSTANCE|$(INSTANCE)|' conf/config.js
+	sed -i'' -e 's|LANGUAGES|$(LANGUAGES)|' conf/config.js
+	sed -i'' -e 's|DEFAULT_LANGUAGE|$(DEFAULT_LANGUAGE)|' conf/config.js
+	sed -i'' -e 's|COUNTRIES|$(COUNTRIES)|' conf/config.js
+	sed -i'' -e 's|BETA_FEATURES|$(BETA_FEATURES)|' conf/config.js		
 	
 tasks/reimport-mongodb: trigger/reimport-mongodb $(wildcard json/*.json)
 	$(info ------------------------------)
@@ -356,23 +356,23 @@ nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf
 	mkdir -p nginx/sites-available
 	cp nginx/templates/$* nginx/sites-available/$*
 	if [ $(INSTANCE_TYPE) = PROD ]; then sed -i 's|https://localhost:9004 ||' nginx/sites-available/$*; sed -i 's|https://localhost:9004 ||' nginx/sites-available/$* ; sed -i 's|https://localhost:9004 ||' nginx/sites-available/$* ; fi 
-	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
-	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
-	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
-	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
-	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
-	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
-	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
-	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
-	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
-	sed -i 's|CERTIFICATE_PEM|$(CERTIFICATE_PEM)|' nginx/sites-available/$*
-	sed -i 's|CERTIFICATE_KEY|$(CERTIFICATE_KEY)|' nginx/sites-available/$*
-	sed -i 's|CERTIFICATE_CLIENT|$(CERTIFICATE_CLIENT)|' nginx/sites-available/$*
-	sed -i 's|DHPARAMS|$(CERTIFICATE_DIR)/dhparams.pem|' nginx/sites-available/$*
-	sed -i 's|PLATFORM_INTERNAL_PORT|9001|' nginx/sites-available/$*
-	sed -i 's|ROOTDIR|$(abspath .)|' nginx/sites-available/$*
-	sed -i 's|PLUGINS_DIR|$(PLUGINS_DIR)/web|' nginx/sites-available/$*
-	sed -i 's|RUNDIR|$(abspath running)|' nginx/sites-available/$* 
+	sed -i'' -e 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i'' -e 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i'' -e 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i'' -e 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i'' -e 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i'' -e 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i'' -e 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i'' -e 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i'' -e 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i'' -e 's|CERTIFICATE_PEM|$(CERTIFICATE_PEM)|' nginx/sites-available/$*
+	sed -i'' -e 's|CERTIFICATE_KEY|$(CERTIFICATE_KEY)|' nginx/sites-available/$*
+	sed -i'' -e 's|CERTIFICATE_CLIENT|$(CERTIFICATE_CLIENT)|' nginx/sites-available/$*
+	sed -i'' -e 's|DHPARAMS|$(CERTIFICATE_DIR)/dhparams.pem|' nginx/sites-available/$*
+	sed -i'' -e 's|PLATFORM_INTERNAL_PORT|9001|' nginx/sites-available/$*
+	sed -i'' -e 's|ROOTDIR|$(abspath .)|' nginx/sites-available/$*
+	sed -i'' -e 's|PLUGINS_DIR|$(PLUGINS_DIR)/web|' nginx/sites-available/$*
+	sed -i'' -e 's|RUNDIR|$(abspath running)|' nginx/sites-available/$* 
 	
 tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages nginx/conf.d/noversion.conf $(CERTIFICATE_PEM) $(CERTIFICATE_DIR)/dhparams.pem
 	$(info ------------------------------)
