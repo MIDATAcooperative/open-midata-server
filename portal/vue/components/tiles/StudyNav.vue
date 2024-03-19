@@ -47,7 +47,7 @@ export default {
         },
         
         hasCodes() {
-          return this.study && this.study.joinMethods && this.study.joinMethods.length && this.study.joinMethods.indexOf("APP_CODE")>=0;
+          return this.study && this.study.joinMethods && this.study.joinMethods.length && (this.study.joinMethods.indexOf("APP_CODE")>=0 || this.study.joinMethods.indexOf("CODE")>=0);
         },
         
         isMetaProject() {

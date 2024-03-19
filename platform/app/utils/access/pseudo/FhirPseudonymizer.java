@@ -28,6 +28,7 @@ import org.bson.types.BasicBSONList;
 
 import models.MidataId;
 import utils.access.DBRecord;
+import utils.access.Feature_Pseudonymization;
 import utils.exceptions.AppException;
 
 public class FhirPseudonymizer {
@@ -84,7 +85,7 @@ public class FhirPseudonymizer {
 		  
 			pseudonymizeContained(rec, (BasicBSONObject) rec.data);
 		}
-		
+		pseudonymizeAllReferences(rec, rec.data);
 		
 	}
 	
@@ -113,6 +114,27 @@ public class FhirPseudonymizer {
 			}
 		}		
 	}
+	
+	public void pseudonymizeAllReferences(DBRecord rec, Object base) throws AppException {
+	    if (base == null) return;
+        if (base instanceof BasicBSONList) {       
+            BasicBSONList lst = (BasicBSONList) base;
+            for (int i=0;i<lst.size();i++) {
+                Object entry = lst.get(i);
+                pseudonymizeAllReferences(rec, entry);
+            }
+	   } else if (base instanceof BasicBSONObject) {
+            BasicBSONObject obj = (BasicBSONObject) base;
+            if (obj.containsField("reference")) {
+                Object t = obj.get("reference");
+                if (t != null && t instanceof String) {
+                    String p = Feature_Pseudonymization.pseudonymizeRefOrNull(rec.context, (String) t);
+                    if (p != null) obj.put("reference", p);
+                }
+            }
+            for (Object v : obj.values()) pseudonymizeAllReferences(rec, v);                    
+        }       
+    }
 	
 	public BasicBSONObject replaceReference(DBRecord rec, BasicBSONObject ref) throws AppException {		
 		if (ref.get("reference") instanceof String) {

@@ -69,7 +69,26 @@ public class Feature_Pseudonymization extends Feature {
 				q = new Query(q, "pseudonym", newprops).setFromRecord(q.getFromRecord());
 			} 
 
-		}				
+		}
+		
+		if (q.restrictedBy("_id")) {
+		    Set<MidataId> ids = q.getMidataIdRestriction("_id");
+		    Set<MidataId> pseudonymizedIds = null;
+		    for (MidataId id : ids) {
+		        if (id.isPseudonymized()) {
+		            if (pseudonymizedIds == null) pseudonymizedIds = new HashSet<MidataId>();
+		            pseudonymizedIds.add(id);
+		        }
+		    }
+		    // XXXX TODO NEEDS TO BE IMPLEMENTED
+		    if (pseudonymizedIds != null) {
+		        if (pseudonymizedIds.size() == ids.size()) {
+		           //Query q2 = new Query(q, "pseudo-ids", CMaps.map("")) 
+		        } else {
+		            
+		        }
+		    }
+		}
 
 		DBIterator<DBRecord> result = next.iterator(q);
 
@@ -113,9 +132,34 @@ public class Feature_Pseudonymization extends Feature {
 					return;
 				}
 			}
+			String format = (String) r.meta.get("format");
+			if (!format.equals("fhir/Patient")) {
+			  r.data.put("id", createHash(r.context, r._id.toString()));
+			  r.pseudoId = new MidataId(createHash(r.context, r._id.toString()));
+			}
 			if (r4) FhirPseudonymizer.forR4().pseudonymize(r);
 			else FhirPseudonymizer.forSTU3().pseudonymize(r);
 		}
+	}
+	
+	public static String createHash(AccessContext context, String input) {
+	    return "P"+context.getAccessor()+"-"+input;
+	}
+	
+	public static String pseudonymizeRefOrNull(AccessContext useContext, String ref) throws AppException {
+	    String parts[] = ref.split("/");
+	    
+	    if (parts.length == 2 && MidataId.isValid(parts[1])) {
+	        if (!parts[0].equals("Patient")) {
+    	        DBRecord other = QueryEngine.contextLookup(useContext.internal(), "fhir/"+parts[0], MidataId.from(parts[1]));
+    	        if (other == null || other.context.mustPseudonymize()) {
+    	            String hash = createHash(useContext, parts[1]);
+    	            return parts[0]+"/"+hash;
+    	        }
+	        }
+	    }
+	    
+	    return null;
 	}
 	
 	public static class PseudonymIterator implements DBIterator<DBRecord> {
@@ -199,8 +243,8 @@ public class Feature_Pseudonymization extends Feature {
 			String pseudoName = patient.getString("name");
 			return Pair.of(pseudoId, pseudoName);
 		}
-		//return Pair.of(new MidataId(), "ERROR!");
-		throw new InternalServerException("error.internal", "Cannot pseudonymize");
+		return Pair.of(new MidataId(), "ERROR!");
+		//throw new InternalServerException("error.internal", "Cannot pseudonymize");
 	}
 	
 	public static Pair<MidataId,String> pseudonymizeUser(APSCache cache, Consent consent) throws AppException {

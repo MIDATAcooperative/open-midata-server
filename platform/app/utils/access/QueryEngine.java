@@ -294,6 +294,20 @@ public class QueryEngine {
 		
 		return result;
 	}
+    
+   public static DBRecord contextLookup(AccessContext context, String format, MidataId idToLookup) throws AppException {
+        AccessLog.log("CONTEXT LOOKUP context="+context.toString()+" format="+format+" id="+idToLookup.toString());
+        Feature qm = new Feature_ProcessFilters(new Feature_Prefetch(true, new Feature_PublicData(/*new Feature_UserGroups(*/new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))));
+        Query q = new Query("full-query",CMaps.map("_id", idToLookup).map("format", format).map("public", "also").map("deleted", true).map("limit", 1), Sets.create("_id"), context.getCache(), context.getTargetAps(), context, null);
+        DBIterator<DBRecord> result = qm.iterator(q);     
+        DBRecord rec = null;
+        if (result.hasNext()) {        
+           rec = result.next();          
+        }
+        result.close();
+        AccessLog.log("CONTEXT LOOKUP result rec="+rec);
+        return rec;
+    }
          
     /*
     protected static List<DBRecord> query(Map<String, Object> properties, Set<String> fields, MidataId apsId, AccessContext context, APSCache cache, Feature qm) throws AppException {

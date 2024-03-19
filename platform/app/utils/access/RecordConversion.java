@@ -40,7 +40,7 @@ public class RecordConversion {
 	public Record currentVersionFromDB(DBRecord dbrecord) {
 		Record record = new Record();
 		
-		record._id = dbrecord._id;
+		record._id = dbrecord.pseudoId!=null ? dbrecord.pseudoId : dbrecord._id;
 		record.context = dbrecord.context;
 		record.format = (String) dbrecord.meta.get("format");		
 		if (record.format != null) {

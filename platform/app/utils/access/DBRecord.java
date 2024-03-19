@@ -123,6 +123,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	public @NotMaterialized String id;
 	
 	/**
+	 * A pseudonymized identifier for this record
+	 */
+	public @NotMaterialized MidataId pseudoId;
+	
+	/**
 	 * the id of the owner of this record. 
 	 * 
 	 * The owner is the person the data of this record belongs to.
