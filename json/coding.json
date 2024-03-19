@@ -521,3 +521,8 @@
 {"_id":{"$oid":"65ddf15fb5d28d374c33bf37"},"system":"http://form.brightfish.com","code":"pcs","display":"Pain Catastrophizing Scale","content":"pcs"}
 {"_id":{"$oid":"65ddf1f4b5d28d374c33bf39"},"system":"http://form.brightfish.com","code":"oss","display":"Oxford Shoulder Score","content":"oss"}
 {"_id":{"$oid":"65ddf0e05ef1d104a4f4557e"},"system":"http://form.brightfish.com","code":"fjs-12","display":"Forgotten Joint Score - 12","content":"fjs-12"}
+{"_id":{"$oid":"65f8571fd8bd0037c10c8e6a"},"system":"http://form.brightfish.com","code":"general-questions-baseline.prostate","display":"General questions baseline (advanced prostate cancer)","content":"general-questions-baseline"}
+{"_id":{"$oid":"65f85764de10d17e638a6ddb"},"system":"http://form.brightfish.com","code":"general-questions-follow-up.prostate","display":"General questions follow up (advanced prostate cancer)","content":"general-questions-follow-up"}
+{"_id":{"$oid":"65f85811d8bd0037c10c8e6b"},"system":"http://form.brightfish.com","code":"single-question-about-treatment.breast","display":"Questions about treatment","content":"treatment-questions"}
+{"_id":{"$oid":"65f85842d8bd0037c10c8e85"},"system":"http://form.brightfish.com","code":"type-of-operation.breast","display":"Type of operation","content":"type-operation"}
+{"_id":{"$oid":"65f857ddde10d17e638a6ddc"},"system":"http://form.brightfish.com","code":"general-questions-baseline.breast","display":"General questions baseline (breast cancer)","content":"general-questions-baseline-2"}
