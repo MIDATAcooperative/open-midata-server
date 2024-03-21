@@ -517,7 +517,7 @@
 {"_id":{"$oid":"65ddedd05ef1d104a4f45575"},"system":"http://form.brightfish.com","code":"pain-description","display":"Pain description","content":"pain-description"}
 {"_id":{"$oid":"65ddef58b5d28d374c33bf34"},"system":"http://form.brightfish.com","code":"fact-p","display":"Functional Assessment of Cancer Therapy – Prostate","content":"fact-p"}
 {"_id":{"$oid":"65ddeb9c5ef1d104a4f45560"},"system":"http://form.brightfish.com","code":"mfhw","display":"Marburger Fragebogen zum habituellen Wohlbefinden","content":"mfhw"}
-{"_id":{"$oid":"65ddea795ef1d104a4f4555b"},"system":"http://form.brightfish.com","code":"mds","display":"MInimal data set orthopedics","content":"mds"}
+{"_id":{"$oid":"65ddea795ef1d104a4f4555b"},"system":"http://form.brightfish.com","code":"mds","display":"Minimal data set orthopedics","content":"mds"}
 {"_id":{"$oid":"65ddf15fb5d28d374c33bf37"},"system":"http://form.brightfish.com","code":"pcs","display":"Pain Catastrophizing Scale","content":"pcs"}
 {"_id":{"$oid":"65ddf1f4b5d28d374c33bf39"},"system":"http://form.brightfish.com","code":"oss","display":"Oxford Shoulder Score","content":"oss"}
 {"_id":{"$oid":"65ddf0e05ef1d104a4f4557e"},"system":"http://form.brightfish.com","code":"fjs-12","display":"Forgotten Joint Score - 12","content":"fjs-12"}
