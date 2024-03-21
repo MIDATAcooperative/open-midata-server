@@ -129,7 +129,10 @@ public class FhirPseudonymizer {
                 Object t = obj.get("reference");
                 if (t != null && t instanceof String) {
                     String p = Feature_Pseudonymization.pseudonymizeRefOrNull(rec.context, (String) t);
-                    if (p != null) obj.put("reference", p);
+                    if (p != null) {
+                        obj.put("reference", p);
+                        obj.remove("display");
+                    }
                 }
             }
             for (Object v : obj.values()) pseudonymizeAllReferences(rec, v);                    

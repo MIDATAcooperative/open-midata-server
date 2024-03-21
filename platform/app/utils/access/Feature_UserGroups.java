@@ -34,6 +34,7 @@ import models.enums.Permission;
 import models.enums.ResearcherRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
+import utils.access.Feature_Pseudonymization.PseudonymIdOnlyIterator;
 import utils.auth.KeyManager;
 import utils.context.AccessContext;
 import utils.context.UserGroupAccessContext;
@@ -62,7 +63,11 @@ public class Feature_UserGroups extends Feature {
                 List<UserGroupMember> members = new ArrayList<UserGroupMember>(isMemberOfGroups);
                 Collections.sort(members);
                 members.add(0, null);
-                return ProcessingTools.noDuplicates(new UserGroupIterator(q, members, true));
+                if (q.getContext().mustPseudonymize()) {
+                  return new UserGroupIterator(q, members, true);
+                } else {
+                  return ProcessingTools.noDuplicates(new PseudonymIdOnlyIterator(new UserGroupIterator(q, members, true)));
+                }
                 
             }
 	    }
@@ -132,7 +137,7 @@ public class Feature_UserGroups extends Feature {
 	    UserGroupMember lastUgm = null;
 	    UserGroupMember firstUgm = null;
 	    boolean mayExportData = true;
-	    boolean pseudonymizeAccess = false;
+	    boolean pseudonymizeAccess = q.getContext().mustPseudonymize();
 	    boolean mayReadData = true;
 	    AccessContext context = q.getContext();
 		for (UserGroupMember ugm : ugms) {

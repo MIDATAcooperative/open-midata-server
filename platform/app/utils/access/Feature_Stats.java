@@ -195,7 +195,7 @@ public class Feature_Stats extends Feature {
 		public DBRecord next() throws AppException {
 			StatsIndexKey inf = iterator.next();
 			DBRecord r = new DBRecord();
-			r._id = inf.newestRecord;
+			r._id = inf.newestRecord;			
 			r.attached = inf;
 			return r;
 		}
@@ -300,6 +300,9 @@ public class Feature_Stats extends Feature {
 			   inf = fromRecord(r);
 			   inf.stream = r._id;			   			   			   
 			   StatsIndexKey streamKey = countStream(q, r._id, r.owner, qm, inf, true);
+			   if (q.getContext().mustPseudonymize()) {
+			       streamKey.newestRecord = new MidataId(Feature_Pseudonymization.createHash(q.getContext(), streamKey.newestRecord.toString()));
+			   }
 			   map.put(getKey(inf), inf);			   
 		   } else {
 			   inf = map.get(getKey(r));
@@ -308,7 +311,7 @@ public class Feature_Stats extends Feature {
 			   long created = r._id.getCreationDate().getTime();
 			   if (created > inf.newest) {
 				   inf.newest = created;
-				   inf.newestRecord = r._id;
+				   inf.newestRecord = r.getPseudoIdOrPlainId();
 			   }
 			   if (created < inf.oldest) {
 				   inf.oldest = created;

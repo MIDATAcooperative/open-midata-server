@@ -20,6 +20,7 @@ package utils.access;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.bson.BSONObject;
@@ -282,6 +283,19 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	public String getFormatOrNull() {
 		if (meta == null) return null;
 		return meta.getString("format");
+	}
+	
+	@Override
+    public boolean equals(Object other) {
+        if (other != null && this.getClass().equals(other.getClass())) {
+            DBRecord otherModel = (DBRecord) other;
+            return _id.equals(otherModel._id) && Objects.equals(pseudoId, otherModel.pseudoId);
+        }
+        return false;
+    }
+
+	public MidataId getPseudoIdOrPlainId() {
+	    return pseudoId != null ? pseudoId : _id;
 	}
 
 }
