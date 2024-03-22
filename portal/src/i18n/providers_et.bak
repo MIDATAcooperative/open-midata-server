@@ -1,0 +1,162 @@
+{
+  "provider_registration" : {
+    "sign_up" : "Registration as a Health Professional",
+    "provider" : "Health Facility",
+    "user" : "Health Professional",
+    "name" : "Facility Name",
+    "description" : "Description",
+    "url" : "Homepage URL"
+  },
+  
+  "provider_login" : {
+    "title" : "Health Professional Login"
+  },
+  
+  "provider_navbar" : {
+    "new_patient" : "New Patient",
+    "patients" : "Patients",
+    "research" : "Research",
+    "workspace" : "Workspace",
+    "market" : "Store",
+    "org" : "Enterprise",
+    "organization" : "Organization",    
+	"usergroups" : "Teams"
+  },
+  
+  "provider_organization" : {
+    "title" : "Organization",
+    "empty" : "You are not part of an organization.",
+    "name" : "Name",
+    "address" : "Address",
+    "description" : "Description",
+    "url" : "Homepage URL",
+    "status" : "Status",
+    "members" : "Organization members",
+    "addprovider" : "Register New Member",
+    "edit_btn" : "Edit Organization",
+    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions.",
+    "parent" : "Part of Organization",
+    "identifiers" : "Identifier",
+    "identifiers_info" : "Enter all external organization identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired.",
+    "select_btn" : "Select",
+    "managerType" : "Organization Manager",
+    "managers" : {
+      "ME" : "Add yourself as manager only",
+      "ME2" : "Add yourself as member and manager",
+      "PARENT" : "Organization is managed by parent organization",
+      "OTHERMEMBER" : "Add another health professional as member and manager",
+      "EXTERNALUSER" : "Add another health professional as manager"
+    },
+    "manager" : "Email of Manager",
+    "protection" : "Access protection",
+    "protection2" : "A second user must always confirm any use of this organization.", 
+    "request_btn" : "Request Access"
+  },
+  
+  "addprovider" : {
+    "sign_up" : "Register health professional",
+    "success" : "User successfully registered"
+  },
+  
+  "provider_requestaccess" : {
+     "title" : "Request Access",
+     "reason" : "Reason",
+     "wait" : "Please wait until your request is confirmed...",
+     "retry_btn" : "Retry now"
+  },
+  
+  "addpatient" : {
+    "sign_up" : "Register patient",
+    "success" : "User successfully registered",   
+    "initialPassword" : "Initial Password"
+  },
+  
+  "provider_patientsearch" : {
+     "title" : "Patient Search",
+     "email" : "Email",
+     "or" : "or",
+     "midataid" : "@PRODUCT ID",
+     "birthday" : "Birthdate",
+     "searching" : "Searching...",
+     "address" : "Address",
+     "show_patient_btn" : "Show Patient",
+     "consents" : "Consents with this patient",
+     "add_new_consent" : "Add new consent",
+     "usergroup" : "Team (optional)",
+     "passcode" : "Access Code (optional)",
+     "add_new_consent_btn" : "Add new consent",
+     "add_new_account_btn" : "Create patient account"
+  },
+  
+  "provider_patients" : {
+     "title" : "Patients",
+     "empty" : "No patients found."
+  },
+  
+  "provider_usergroups" : {
+    "title" : "Teams",
+    "name" : "Team",
+    "type" : "Type",
+    "status" : "Status",
+    "searchable" : "Public",
+    "empty" : "You are not part of a team."
+  },
+  
+  "provider_newusergroup" : {
+    "title" : "Create new Team",
+    "name" : "Team Name",
+    "create_btn" : "Create"
+  },
+  
+  "provider_editusergroup" : {
+    "title" : "Edit Team",
+    "former_members" : "Former Members",
+    "name" : "Team Name",
+    "status" : "Status",
+    "searchable" : "Findable by Account Holders",
+    "startDate" : "Member From",
+    "endDate" : "Member Until",
+    "selected" : "Selected Member",
+    "rights" : "Permissions",
+    "notexists" : "This team does not (yet) exist.",
+    "right" : {
+      "readData" : "Read data",
+      "writeData" : "Write data",
+      "changeTeam" : "Change team",
+      "setup" : "Change organization",
+      "applications" : "Manage applications"
+    },
+    "update_btn" : "Update"
+  },
+  
+  "provider_editgroups" : {
+    "title" : "Edit Sub-Entities",
+    "entityName" : "Entity Name",    
+    "entityType" : "Entity Type",
+    "roleName" : "Role",
+    "role" : {
+       "MANAGER" : "Managing Organization",
+       "SUBORGANIZATION" : "Sub-Organization",
+       "HC" : "Other"
+    },
+    "startDate" : "Member From",
+    "endDate" : "Member Until",
+    "empty" : "No sub-entities found.",
+    "add_organization_btn" : "Create Sub-Organization",
+    "add_organization2_btn" : "Link to another Organization",
+    "add_broker_btn" : "Add API Access",
+    "add_group_btn" : "Add another Team",
+    "former_members" : "Former Sub-Entities"
+  },
+  
+  "provider_memberdetails" : {
+    "propose_consent" : "Request Consent",
+    "pick_consent" : "Select a consent to display individual records",
+    "share_btn" : "Share data with the patient"
+   },
+   
+   "help_welcome" : {
+     "starts" : "Some ideas to start:"
+   }  
+  
+}

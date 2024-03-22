@@ -1,0 +1,114 @@
+{
+
+    "footer" : {
+
+        // TODO NEW:  
+        "copyright" : " ",
+
+        // TODO NEW: @OPERATOR Homepage
+        "homepage" : "@OPERATOR Homepage",
+
+        // TODO NEW: Impressum
+        "impressum" : "Impressum",
+
+        // TODO NEW: @PLATFORM Portals:
+        "portals" : "@PLATFORM Portals:"
+    },
+
+    "member_login" : {
+
+        // TODO NEW: Your Slogan
+        "teaser" : "Your Slogan",
+
+        // TODO NEW: Teaser line 1
+        "info1" : "Teaser line 1",
+
+        // TODO NEW: Teaser line 2
+        "info2" : "Teaser line 2",
+
+        // TODO NEW: Teaser line 3
+        "info3" : "Teaser line 3"
+    },
+
+    "instance" : {
+
+        // TODO NEW: Purpose of this @PLATFORM instance
+        "purpose" : "Purpose of this @PLATFORM instance",
+
+        // TODO NEW: Access to this @PLATFORM instance
+        "access" : "Access to this @PLATFORM instance",
+
+        // TODO NEW: Availability and downtimes
+        "uptime" : "Availability and downtimes",
+
+        // TODO NEW: Data stored in this @PLATFORM instance
+        "data" : "Data stored in this @PLATFORM instance",
+
+        // TODO NEW: Choose one of the portal from the top of the page to start. Each portal has its own REGISTRATION and LOGIN page.
+        "start" : "Choose one of the portal from the top of the page to start. Each portal has its own REGISTRATION and LOGIN page.",
+
+        "localhost" : {
+
+            // TODO NEW: Local Instance (localhost)
+            "name" : "Local Instance (localhost)",
+
+            // TODO NEW: This is a local installation of @PLATFORM, only available from your PC.
+            "intro" : "This is a local installation of @PLATFORM, only available from your PC.",
+
+            // TODO NEW: A local installation may be used in order to contribute to the platform and for testing purposes.
+            "purpose" : "A local installation may be used in order to contribute to the platform and for testing purposes.",
+
+            // TODO NEW: You may register user accounts for all four portals. Accounts do not need to be validated by an administrator. You may register and use your own admin accounts.
+            "access" : "You may register user accounts for all four portals. Accounts do not need to be validated by an administrator. You may register and use your own admin accounts.",
+
+            // TODO NEW: Whenever you run it, its available only for you :-)
+            "uptime" : "Whenever you run it, its available only for you :-)",
+
+            // TODO NEW: Data stored in this instance will only be available on your local PC.
+            "data" : "Data stored in this instance will only be available on your local PC."
+        },
+
+        "test" : {
+
+            // TODO NEW: Test Instance
+            "name" : "Test Instance",
+
+            // TODO NEW: This is a test instance of @PLATFORM.
+            "intro" : "This is a test instance of @PLATFORM.",
+
+            // TODO NEW: This instance may be used to develop and test new applications in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.
+            "purpose" : "This instance may be used to develop and test new applications in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.",
+
+            // TODO NEW: Register your own developer account. After validation by an administrator, you may register test users, researchers and health professionals without additional validation.
+            "access" : "Register your own developer account. After validation by an administrator, you may register test users, researchers and health professionals without additional validation.",
+
+            // TODO NEW: There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible, updates are done between 12:00 and 13:00 central european time, but may occur more than once a day if problems occur.
+            "uptime" : "There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible, updates are done between 12:00 and 13:00 central european time, but may occur more than once a day if problems occur.",
+
+            // TODO NEW: Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup of the data.
+            "data" : "Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup of the data."
+        },
+
+        "demo" : {
+
+            // TODO NEW: Demo Instance
+            "name" : "Demo Instance",
+
+            // TODO NEW: This is a demonstration instance of @PLATFORM.
+            "intro" : "This is a demonstration instance of @PLATFORM.",
+
+            // TODO NEW: This instance may be used for demonstration purposes and training.
+            "purpose" : "This instance may be used for demonstration purposes and training.",
+
+            // TODO NEW: You may register user accounts for all four portals. Accounts must be validated by an administrator, before they are unlocked.
+            "access" : "You may register user accounts for all four portals. Accounts must be validated by an administrator, before they are unlocked.",
+
+            // TODO NEW: This instance is updated less frequently than the test instance. Expected downtime is once a week on Monday between 12:00 and 14:00 central european time.
+            "uptime" : "This instance is updated less frequently than the test instance. Expected downtime is once a week on Monday between 12:00 and 14:00 central european time.",
+
+            // TODO NEW: Store only demonstration data on this instance. There is no backup of the data.
+            "data" : "Store only demonstration data on this instance. There is no backup of the data."
+        }
+
+    }
+}

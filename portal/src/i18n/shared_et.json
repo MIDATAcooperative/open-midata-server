@@ -1,0 +1,4248 @@
+{
+
+    "footer" : {
+
+        // TODO NEW: For Account Holders
+        "for_members" : "For Account Holders",
+
+        // TODO NEW: For Research Organizations
+        "for_researchers" : "For Research Organizations",
+
+        // TODO NEW: For Health Professionals
+        "for_providers" : "For Health Professionals",
+
+        // TODO NEW: For Developers
+        "for_developers" : "For Developers"
+    },
+
+    "navbar" : {
+
+        // TODO NEW: This website uses cookies. For more information, see
+        "cookiebanner" : "This website uses cookies. For more information, see",
+
+        // TODO NEW: Privacy Policy
+        "privacypolicy" : "Privacy Policy",
+
+        // TODO NEW: Close
+        "cookiebanner_close_btn" : "Close",
+
+        // TODO NEW: Toggle navigation
+        "toggle_navigation" : "Toggle navigation",
+
+        // TODO NEW: Log in
+        "login" : "Log in",
+
+        // TODO NEW: Sign Up
+        "sign_up" : "Sign Up",
+
+        // TODO NEW: Log out
+        "sign_out" : "Log out",
+
+        // TODO NEW: Edit Profile
+        "edit_profile" : "Edit Profile",
+
+        // TODO NEW: Authorized apps
+        "app_count" : "Authorized apps",
+
+        // TODO NEW: Project enrollments
+        "study_count" : "Project enrollments",
+
+        // TODO NEW: Timeline
+        "me" : "Timeline",
+
+        // TODO NEW: View
+        "view" : "View",
+
+        // TODO NEW: Overview
+        "overview" : "Overview",
+
+        // TODO NEW: Messages
+        "messages" : "Messages",
+
+        // TODO NEW: My Data
+        "my_data" : "My Data",
+
+        // TODO NEW: Sharing
+        "consents" : "Sharing",
+
+        // TODO NEW: Research
+        "research" : "Research",
+
+        // TODO NEW: Applications
+        "apps" : "Applications",
+
+        // TODO NEW: Configuration
+        "config" : "Configuration",
+
+        // TODO NEW: Language
+        "language" : "Language",
+
+        // TODO NEW: Help
+        "help" : "Help"
+    },
+
+    "error" : {
+
+        // TODO NEW: The backend is currently offline! Please contact @SUPPORT if the problem persists.
+        "offline" : "The backend is currently offline! Please contact @SUPPORT if the problem persists.",
+
+        // TODO NEW: An internal error occured. Please contact @SUPPORT if the problem persists.
+        "internal" : "An internal error occured. Please contact @SUPPORT if the problem persists.",
+
+        // TODO NEW: An internal database error occured. Please contact @SUPPORT if the problem persists.
+        "internal_db" : "An internal database error occured. Please contact @SUPPORT if the problem persists.",
+
+        // TODO NEW: An application specific error occured. Please contact the application developer or @SUPPORT if the problem persists.
+        "plugin" : "An application specific error occured. Please contact the application developer or @SUPPORT if the problem persists.",
+
+        // TODO NEW: Please relogin
+        "relogin" : "Please relogin",
+
+        // TODO NEW: No active consent that allows to add data for target person.
+        "noconsent" : "No active consent that allows to add data for target person.",
+
+        // TODO NEW: Operation not supported
+        "unsupported" : "Operation not supported",
+
+        // TODO NEW: Action failed
+        "failed" : "Action failed",
+
+        // TODO NEW: Timeout
+        "timeout" : "Timeout",
+
+        // TODO NEW: Full membership required!
+        "notrialuser_title" : "Full membership required!",
+
+        // TODO NEW: In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.
+        "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
+
+        // TODO NEW: @OPERATOR membership required!
+        "mustbemember_title" : "@OPERATOR membership required!",
+
+        // TODO NEW: In order to use this feature you must be member of the cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
+        "mustbemember_detail" : "In order to use this feature you must be member of the cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
+
+        // TODO NEW: The rate limit for the current action has been reached. Try again later.
+        "ratelimit" : "The rate limit for the current action has been reached. Try again later.",
+
+        // TODO NEW: Authorization endpoint called with insufficient parameters. Contact application developer.
+        "no_code_challenge" : "Authorization endpoint called with insufficient parameters. Contact application developer.",
+        "notauthorized" : {
+
+            // TODO NEW: You are not authorized to do this action
+            "action" : "You are not authorized to do this action",
+
+            // TODO NEW: You are not authorized to query the provided fields
+            "fields" : "You are not authorized to query the provided fields",
+
+            // TODO NEW: You are not authorized to access this account
+            "account" : "You are not authorized to access this account",
+
+            // TODO NEW: You are not authorized to access this research project
+            "study" : "You are not authorized to access this research project",
+
+            // TODO NEW: This is not your application
+            "not_plugin_owner" : "This is not your application",
+
+            // TODO NEW: Application debugging is only available during development or beta phase on non productive instances.
+            "no_debug" : "Application debugging is only available during development or beta phase on non productive instances.",
+
+            // TODO NEW: Please remove the deployment before performing this operation.
+            "remove_first" : "Please remove the deployment before performing this operation."
+        },
+
+        "invalid" : {
+
+            // TODO NEW: Please enter a valid email address
+            "email" : "Please enter a valid email address",
+
+            // TODO NEW: Invalid email address or password.
+            "credentials" : "Invalid email address or password.",
+
+            // TODO NEW: Invalid email address or password. You are trying to log in as account holder. Are you 
+            "credentials_hint" : "Invalid email address or password. You are trying to log in as account holder. Are you ",
+
+            // TODO NEW: Password and password repetition do not match!
+            "password_repetition" : "Password and password repetition do not match!",
+
+            // TODO NEW: Passphrase and passphrase repetition do not match!
+            "passphrase_repetition" : "Passphrase and passphrase repetition do not match!",
+
+            // TODO NEW: Old passphrase not correct.
+            "passphrase_old" : "Old passphrase not correct.",
+
+            // TODO NEW: Old password not correct.
+            "password_old" : "Old password not correct.",
+
+            // TODO NEW: Bad confirmation code
+            "confirmation_code" : "Bad confirmation code",
+
+            // TODO NEW: Code not correct
+            "securitytoken" : "Code not correct",
+
+            // TODO NEW: Unknown code for research project.
+            "code" : "Unknown code for research project.",
+
+            // TODO NEW: Unknown code for application.
+            "appcode" : "Unknown code for application.",
+
+            // TODO NEW: Invalid status change
+            "status_transition" : "Invalid status change",
+
+            // TODO NEW: Invalid value for date field
+            "date" : "Invalid value for date field",
+
+            // TODO NEW: Enter a valid day of month (1 - 31)
+            "day" : "Enter a valid day of month (1 - 31)",
+
+            // TODO NEW: Enter a valid year (4 digits)
+            "year" : "Enter a valid year (4 digits)",
+
+            // TODO NEW: Choose a valid month
+            "month" : "Choose a valid month",
+
+            // TODO NEW: Field must be of type string
+            "string" : "Field must be of type string",
+
+            // TODO NEW: Invalid authorization token. Please relogin.
+            "token" : "Invalid authorization token. Please relogin.",
+
+            // TODO NEW: Invalid JSON provided
+            "json" : "Invalid JSON provided",
+
+            // TODO NEW: Bad passphrase
+            "passphrase" : "Bad passphrase",
+
+            // TODO NEW: Bad passcode
+            "passcode" : "Bad passcode",
+
+            // TODO NEW: Application is intended for another role
+            "plugin" : "Application is intended for another role",
+
+            // TODO NEW: Incorrect unlock code
+            "unlock_code" : "Incorrect unlock code",
+
+            // TODO NEW: The Data Access Filter must restrict by 'content' or 'group'!
+            "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
+
+            // TODO NEW: The Data Access Filter may not contain the Patient resource. The correct Patient resource is shared automatically.
+            "sharing" : "The Data Access Filter may not contain the Patient resource. The correct Patient resource is shared automatically.",
+
+            // TODO NEW: A research project can only be anonymous if no one is allowed to access unpseudonymized data.
+            "anonymous" : "A research project can only be anonymous if no one is allowed to access unpseudonymized data.",
+
+            // TODO NEW: Invalid URL
+            "url" : "Invalid URL",
+
+            // TODO NEW: This consent may only be confirmed once all external persons have joined the platform.
+            "consent_members" : "This consent may only be confirmed once all external persons have joined the platform.",
+
+            // TODO NEW: Invalid entity type
+            "entity_type" : "Invalid entity type",
+
+            // TODO NEW: The provided participation code is not accepted.
+            "joincode" : "The provided participation code is not accepted.",
+
+            // TODO NEW: Consent preconfirmation and resharing to 3rd party is not allowed at the same time.
+            "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
+
+            // TODO NEW: Invalid mapping provided.
+            "csvmapping" : "Invalid mapping provided.",
+
+            // TODO NEW: Invalid identifier
+            "id" : "Invalid identifier",
+
+            // TODO NEW: You must be member of this user group to perform this action.
+            "usergroup" : "You must be member of this user group to perform this action."
+        },
+
+        "missing" : {
+
+            // TODO NEW: Please provide your email address and password.
+            "credentials" : "Please provide your email address and password.",
+
+            // TODO NEW: Please fill out your email address.
+            "email" : "Please fill out your email address.",
+
+            // TODO NEW: Please fill out this input field.
+            "input_field" : "Please fill out this input field.",
+
+            // TODO NEW: Please enter a new password!
+            "newpassword" : "Please enter a new password!",
+
+            // TODO NEW: Please provide your passphrase.
+            "passphrase" : "Please provide your passphrase.",
+
+            // TODO NEW: Group system must be provided.
+            "groupsystem" : "Group system must be provided.",
+
+            // TODO NEW: Missing or bad token.
+            "token" : "Missing or bad token.",
+
+            // TODO NEW: General Terms and Conditions not accepted.
+            "agb" : "General Terms and Conditions not accepted.",
+
+            // TODO NEW: Privacy Policy must be accepted.
+            "privacypolicy" : "Privacy Policy must be accepted.",
+
+            // TODO NEW: Project participation must be accepted.
+            "study_accept" : "Project participation must be accepted.",
+
+            // TODO NEW: Participant must first be assigned to a group.
+            "study_group" : "Participant must first be assigned to a group.",
+
+            // TODO NEW: Consent must be given to continue
+            "consent_accept" : "Consent must be given to continue",
+
+            // TODO NEW: Service use must be accepted to continue
+            "service_accept" : "Service use must be accepted to continue",
+
+            // TODO NEW: Confirmation by user required first.
+            "confirmation" : "Confirmation by user required first.",
+
+            // TODO NEW: No file for upload selected
+            "file" : "No file for upload selected",
+
+            // TODO NEW: No data selected
+            "access_query" : "No data selected",
+
+            // TODO NEW: This plugin does not exist in your account.
+            "plugin" : "This plugin does not exist in your account.",
+
+            // TODO NEW: Two factor authentication is required for your type of account.
+            "auth_type" : "Two factor authentication is required for your type of account.",
+
+            // TODO NEW: A valid license is required to use this application.
+            "licence" : "A valid license is required to use this application.",
+
+            // TODO NEW: You must grant someone else manager permissions before removing this entity from the group.
+            "manager" : "You must grant someone else manager permissions before removing this entity from the group."
+        },
+
+        "unknown" : {
+
+            // TODO NEW: Unknown Plugin
+            "plugin" : "Unknown Plugin",
+
+            // TODO NEW: Unknown application
+            "app" : "Unknown application",
+
+            // TODO NEW: The requested space does no longer exist.
+            "space" : "The requested space does no longer exist.",
+
+            // TODO NEW: Consent not found
+            "consent" : "Consent not found",
+
+            // TODO NEW: Research project does not exist.
+            "study" : "Research project does not exist.",
+
+            // TODO NEW: Record content type is not registered on the platform.
+            "content" : "Record content type is not registered on the platform.",
+
+            // TODO NEW: Unknown group name
+            "group" : "Unknown group name",
+
+            // TODO NEW: Unknown code
+            "code" : "Unknown code",
+
+            // TODO NEW: Unknown record
+            "record" : "Unknown record",
+
+            // TODO NEW: User does not exist
+            "user" : "User does not exist",
+
+            // TODO NEW: Research project participation not found.
+            "participation" : "Research project participation not found.",
+
+            // TODO NEW: Organization does not exist.
+            "organization" : "Organization does not exist.",
+
+            // TODO NEW: Service does not exist.
+            "service" : "Service does not exist."
+        },
+
+        "exists" : {
+
+            // TODO NEW: A person with this email is already registered.
+            "user" : "A person with this email is already registered.",
+
+            // TODO NEW: Different account with same email already exists.
+            "email" : "Different account with same email already exists.",
+
+            // TODO NEW: A person with this email is already registered.
+            "member" : "A person with this email is already registered.",
+
+            // TODO NEW: A health professional with this name already exists.
+            "provider" : "A health professional with this name already exists.",
+
+            // TODO NEW: An organization with this name already exists.
+            "organization" : "An organization with this name already exists.",
+
+            // TODO NEW: Please choose a different passcode!
+            "passcode" : "Please choose a different passcode!",
+
+            // TODO NEW: An application with the same name already exists.
+            "plugin" : "An application with the same name already exists.",
+
+            // TODO NEW: A research project with this name already exists.
+            "study" : "A research project with this name already exists.",
+
+            // TODO NEW: An endpoint with this URL already exists
+            "endpoint" : "An endpoint with this URL already exists",
+
+            // TODO NEW: A content type with this name already exists.
+            "content" : "A content type with this name already exists.",
+
+            // TODO NEW: A content group with this name already exists.
+            "group" : "A content group with this name already exists.",
+
+            // TODO NEW: A project group with this name already exists.
+            "projectgroup" : "A project group with this name already exists.",
+
+            // TODO NEW: A code with this code and codesystem already exists.
+            "code" : "A code with this code and codesystem already exists."
+        },
+
+        "blocked" : {
+
+            // TODO NEW: This account has been blocked. Your email address is blocked for further registration. Contact @SUPPORT for assistance.
+            "user" : "This account has been blocked. Your email address is blocked for further registration. Contact @SUPPORT for assistance.",
+
+            // TODO NEW: Too many missed login attempts. Please wait 1 minute before next attempt.
+            "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
+
+            // TODO NEW: Too many missed login attempts. Please wait 5 minutes before next attempt.
+            "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
+
+            // TODO NEW: Too many missed login attempts. Please wait 1 hour before next attempt.
+            "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
+
+            // TODO NEW: You are not authorized to participate in this research project and therefore cannot use this application.
+            "participation" : "You are not authorized to participate in this research project and therefore cannot use this application.",
+
+            // TODO NEW: You have withdrawn your participation in this research project and can therefore no longer use this application.
+            "projectconsent" : "You have withdrawn your participation in this research project and can therefore no longer use this application.",
+
+            // TODO NEW: You have set in the @PRODUCT portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PRODUCT portal.
+            "consent" : "You have set in the @PRODUCT portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PRODUCT portal.",
+
+            // TODO NEW: You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PRODUCT portal.
+            "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PRODUCT portal.",
+
+            // TODO NEW: You are allowed to use this application on a maximum of 10 devices. On this TEST instance consents have been reset for you. Please retry.
+            "app_test" : "You are allowed to use this application on a maximum of 10 devices. On this TEST instance consents have been reset for you. Please retry.",
+
+            // TODO NEW: It is not allowed to join the project by this method.
+            "joinmethod" : "It is not allowed to join the project by this method."
+        },
+
+        "closed" : {
+
+            // TODO NEW: Research project not searching for participants.
+            "study" : "Research project not searching for participants."
+        },
+
+        "notvalidated" : {
+
+            // TODO NEW: Research project must be validated before.
+            "study" : "Research project must be validated before."
+        },
+
+        "tooshort" : {
+
+            // TODO NEW: The password must be at least 8 characters long and contain one letter and one digit.
+            "password" : "The password must be at least 8 characters long and contain one letter and one digit.",
+
+            // TODO NEW: The password must be at least 12 characters long and contain one letter, one digit and a special character.
+            "password2" : "The password must be at least 12 characters long and contain one letter, one digit and a special character.",
+
+            // TODO NEW: Passphrases must be at least 8 characters long.
+            "passphrase" : "Passphrases must be at least 8 characters long."
+        },
+
+        "tooweak" : {
+
+            // TODO NEW: The password must contain at least one letter and one digit.
+            "password" : "The password must contain at least one letter and one digit.",
+
+            // TODO NEW: Passphrases should contain upper/lower case letters, numbers and special characters.
+            "passphrase" : "Passphrases should contain upper/lower case letters, numbers and special characters."
+        },
+
+        "concurrent" : {
+
+            // TODO NEW: Concurrent update. Please try again.
+            "update" : "Concurrent update. Please try again."
+        },
+
+        "expired" : {
+
+            // TODO NEW: This activation token has already expired. Please request a new one.
+            "token" : "This activation token has already expired. Please request a new one.",
+
+            // TODO NEW: This activation token has already expired. A new token has been sent to your email address right now. Please confirm your email address within 24 hours using the new token.
+            "tokenresent" : "This activation token has already expired. A new token has been sent to your email address right now. Please confirm your email address within 24 hours using the new token.",
+
+            // TODO NEW: This participation code has expired.
+            "code" : "This participation code has expired.",
+
+            // TODO NEW: This code has expired.
+            "securitytoken" : "This code has expired."
+        },
+
+        "already_done" : {
+
+            // TODO NEW: Email has already been verified.
+            "email_verification" : "Email has already been verified.",
+
+            // TODO NEW: You have already unsubscribed from this communication channel.
+            "unsubscribed" : "You have already unsubscribed from this communication channel.",
+
+            // TODO NEW: Project has already been validated.
+            "validation" : "Project has already been validated."
+        },
+
+        "no_alter" : {
+
+            // TODO NEW: Consents for research projects may not be altered.
+            "consent" : "Consents for research projects may not be altered.",
+
+            // TODO NEW: Setup can only be changed as long as research project is in draft phase.
+            "study" : "Setup can only be changed as long as research project is in draft phase.",
+
+            // TODO NEW: Group of participant can only be changed if research project is not running or no participant accepted yet.
+            "group" : "Group of participant can only be changed if research project is not running or no participant accepted yet."
+        },
+
+        "too_large" : {
+
+            // TODO NEW: The file is too large (maximum 1 MB).
+            "file" : "The file is too large (maximum 1 MB)."
+        },
+
+        "notrequired" : {
+
+            // TODO NEW: No license is required for this application
+            "licence" : "No license is required for this application"
+        },
+
+        "nomatch" : {
+
+            // TODO NEW: Birthdate does not match
+            "birthdate" : "Birthdate does not match",
+
+            // TODO NEW: Different email address provided
+            "email" : "Different email address provided"
+        },
+
+        "not_unique" : {
+
+            // TODO NEW: A provided identifier is not unique
+            "identifier" : "A provided identifier is not unique"
+        }
+    },
+
+    "enum" : {
+        "gender" : {
+
+            // TODO NEW: male
+            "MALE" : "male",
+
+            // TODO NEW: female
+            "FEMALE" : "female",
+
+            // TODO NEW: other
+            "OTHER" : "other",
+
+            // TODO NEW: not provided
+            "UNKNOWN" : "not provided"
+        },
+        "country" : {
+
+            // TODO NEW: Switzerland
+            "CH" : "Switzerland",
+
+            // TODO NEW: Austria
+            "AT" : "Austria",
+
+            // TODO NEW: Belgium
+            "BE" : "Belgium",
+
+            // TODO NEW: Bulgaria
+            "BG" : "Bulgaria",
+
+            // TODO NEW: Croatia
+            "HR" : "Croatia",
+
+            // TODO NEW: Cyprus
+            "CY" : "Cyprus",
+
+            // TODO NEW: Czech Republic
+            "CZ" : "Czech Republic",
+
+            // TODO NEW: Denmark
+            "DK" : "Denmark",
+
+            // TODO NEW: Estonia
+            "EE" : "Estonia",
+
+            // TODO NEW: Finland
+            "FI" : "Finland",
+
+            // TODO NEW: France
+            "FR" : "France",
+
+            // TODO NEW: Germany
+            "DE" : "Germany",
+
+            // TODO NEW: Greece
+            "GR" : "Greece",
+
+            // TODO NEW: Hungary
+            "HU" : "Hungary",
+
+            // TODO NEW: Ireland
+            "IE" : "Ireland",
+
+            // TODO NEW: Italy
+            "IT" : "Italy",
+
+            // TODO NEW: Latvia
+            "LV" : "Latvia",
+
+            // TODO NEW: Lithuania
+            "LT" : "Lithuania",
+
+            // TODO NEW: Luxembourg
+            "LU" : "Luxembourg",
+
+            // TODO NEW: Malta
+            "MT" : "Malta",
+
+            // TODO NEW: Netherlands
+            "NL" : "Netherlands",
+
+            // TODO NEW: Poland
+            "PL" : "Poland",
+
+            // TODO NEW: Portugal
+            "PT" : "Portugal",
+
+            // TODO NEW: Romania
+            "RO" : "Romania",
+
+            // TODO NEW: Slovakia
+            "SK" : "Slovakia",
+
+            // TODO NEW: Slovenia
+            "SI" : "Slovenia",
+
+            // TODO NEW: Spain
+            "ES" : "Spain",
+
+            // TODO NEW: Sweden
+            "SW" : "Sweden",
+
+            // TODO NEW: United Kingdom
+            "GB" : "United Kingdom",
+
+            // TODO NEW: Liechtenstein
+            "LI" : "Liechtenstein",
+
+            // TODO NEW: Norway
+            "NO" : "Norway",
+
+            // TODO NEW: Iceland
+            "IS" : "Iceland"
+        },
+        "eventtype" : {
+
+            // TODO NEW: Code entered
+            "CODE_ENTERED" : "Code entered",
+
+            // TODO NEW: Participation requested
+            "PARTICIPATION_REQUESTED" : "Participation requested",
+
+            // TODO NEW: No participation
+            "NO_PARTICIPATION" : "No participation",
+
+            // TODO NEW: Participation rejected
+            "PARTICIPATION_REJECTED" : "Participation rejected",
+
+            // TODO NEW: Participation approved
+            "PARTICIPATION_APPROVED" : "Participation approved",
+
+            // TODO NEW: Group assigned
+            "GROUP_ASSIGNED" : "Group assigned",
+
+            // TODO NEW: Validation requested
+            "VALIDATION_REQUESTED" : "Validation requested",
+
+            // TODO NEW: Research project validated
+            "STUDY_VALIDATED" : "Research project validated",
+
+            // TODO NEW: Research project rejected
+            "STUDY_REJECTED" : "Research project rejected",
+
+            // TODO NEW: Participant search started
+            "PARTICIPANT_SEARCH_STARTED" : "Participant search started",
+
+            // TODO NEW: Participant search closed
+            "PARTICIPANT_SEARCH_CLOSED" : "Participant search closed",
+
+            // TODO NEW: Codes generated
+            "CODES_GENERATED" : "Codes generated",
+
+            // TODO NEW: Research project started
+            "STUDY_STARTED" : "Research project started",
+
+            // TODO NEW: Research project finished
+            "STUDY_FINISHED" : "Research project finished",
+
+            // TODO NEW: Research project aborted
+            "STUDY_ABORTED" : "Research project aborted",
+
+            // TODO NEW: Required information changed
+            "REQUIRED_INFORMATION_CHANGED" : "Required information changed",
+
+            // TODO NEW: Project setup changed
+            "STUDY_SETUP_CHANGED" : "Project setup changed",
+
+            // TODO NEW: Membership requested
+            "MEMBERSHIP_REQUEST" : "Membership requested",
+
+            // TODO NEW: Address changed
+            "CONTACT_ADDRESS_CHANGED" : "Address changed",
+
+            // TODO NEW: Contract sent
+            "CONTRACT_SEND" : "Contract sent",
+
+            // TODO NEW: Account changed by an administrator
+            "ADMIN_ACCOUNT_CHANGE" : "Account changed by an administrator",
+
+            // TODO NEW: Account deleted
+            "ACCOUNT_DELETED" : "Account deleted",
+
+            // TODO NEW: Internal Comment
+            "INTERNAL_COMMENT" : "Internal Comment",
+
+            // TODO NEW: Agreed to General Terms and Conditions
+            "TERMS_OF_USE_AGREED" : "Agreed to General Terms and Conditions",
+
+            // TODO NEW: User sign up
+            "user-registration" : "User sign up",
+
+            // TODO NEW: Login
+            "110122" : "Login",
+
+            // TODO NEW: Password changed
+            "user-password-change" : "Password changed",
+
+            // TODO NEW: Password change requested
+            "user-password-change-request" : "Password change requested",
+
+            // TODO NEW: Passphrase changed
+            "user-passphrase-change" : "Passphrase changed",
+
+            // TODO NEW: User's address changed
+            "user-address-change" : "User's address changed",
+
+            // TODO NEW: User's phone number changed
+            "user-phone-change" : "User's phone number changed",
+
+            // TODO NEW: User's settings changed
+            "user-settings-change" : "User's settings changed",
+
+            // TODO NEW: User's email changed
+            "user-email-change" : "User's email changed",
+
+            // TODO NEW: User's birthdate changed
+            "user-birthday-change" : "User's birthdate changed",
+
+            // TODO NEW: User's gender changed
+            "user-gender-change" : "User's gender changed",
+
+            // TODO NEW: User account unlocked
+            "user-status-change-active" : "User account unlocked",
+
+            // TODO NEW: User account blocked
+            "user-status-change-blocked" : "User account blocked",
+
+            // TODO NEW: Email confirmed by user
+            "user-email-confirmed" : "Email confirmed by user",
+
+            // TODO NEW: Email rejected by user
+            "user-email-rejected" : "Email rejected by user",
+
+            // TODO NEW: User account changed by an administrator
+            "user-account-change-by-admin" : "User account changed by an administrator",
+
+            // TODO NEW: User account deleted
+            "user-account-deleted" : "User account deleted",
+
+            // TODO NEW: First use of application
+            "app-first-use" : "First use of application",
+
+            // TODO NEW: Application authorization rejected
+            "app-rejected" : "Application authorization rejected",
+
+            // TODO NEW: Application authorization deleted
+            "app-deleted" : "Application authorization deleted",
+
+            // TODO NEW: Consent created
+            "consent-create" : "Consent created",
+
+            // TODO NEW: Consent's recipients changed
+            "consent-persons-change" : "Consent's recipients changed",
+
+            // TODO NEW: Consent changed
+            "consent-change" : "Consent changed",
+
+            // TODO NEW: Consent approved
+            "consent-approved" : "Consent approved",
+
+            // TODO NEW: Consent rejected
+            "consent-rejected" : "Consent rejected",
+
+            // TODO NEW: Consent deleted
+            "consent-deleted" : "Consent deleted",
+
+            // TODO NEW: Project participation requested
+            "study-participation-requested" : "Project participation requested",
+
+            // TODO NEW: Project participation rejected by member
+            "study-participation-member-rejected" : "Project participation rejected by member",
+
+            // TODO NEW: Project participation rejected by researcher
+            "study-participation-research-rejected" : "Project participation rejected by researcher",
+
+            // TODO NEW: Account holder retreated from project participation
+            "study-participation-member-retreat" : "Account holder retreated from project participation",
+
+            // TODO NEW: Project participation approved
+            "study-participation-approved" : "Project participation approved",
+
+            // TODO NEW: Project participation group assigned
+            "study-participation-group-assigned" : "Project participation group assigned",
+
+            // TODO NEW: Project validation requested
+            "study-validation-requested" : "Project validation requested",
+
+            // TODO NEW: Research project validated
+            "study-validated" : "Research project validated",
+
+            // TODO NEW: Research project rejected
+            "study-rejected" : "Research project rejected",
+
+            // TODO NEW: Project participant search started
+            "study-participant-search-started" : "Project participant search started",
+
+            // TODO NEW: Project participant search closed
+            "study-participant-search-closed" : "Project participant search closed",
+
+            // TODO NEW: Research project started
+            "study-started" : "Research project started",
+
+            // TODO NEW: Research project finished
+            "study-finished" : "Research project finished",
+
+            // TODO NEW: Research project aborted
+            "study-aborted" : "Research project aborted",
+
+            // TODO NEW: Entire project deleted
+            "110105" : "Entire project deleted",
+
+            // TODO NEW: Research project changed
+            "study-setup-changed" : "Research project changed",
+
+            // TODO NEW: Data deleted
+            "data-deletion" : "Data deleted",
+
+            // TODO NEW: Data exported
+            "data-export" : "Data exported",
+
+            // TODO NEW: Data import
+            "data-import" : "Data import",
+
+            // TODO NEW: Contract requested by user
+            "contract-requested" : "Contract requested by user",
+
+            // TODO NEW: Contract send to user
+            "contract-send" : "Contract send to user",
+
+            // TODO NEW: Administrator's comment
+            "internal-comment" : "Administrator's comment",
+
+            // TODO NEW: Agreed to General Terms and Conditions
+            "user-terms-of-use-agreed" : "Agreed to General Terms and Conditions",
+
+            // TODO NEW: Took note of General Terms and Conditions
+            "user-terms-of-use-noted" : "Took note of General Terms and Conditions",
+
+            // TODO NEW: Audit log consulted
+            "audit-log-used" : "Audit log consulted",
+
+            // TODO NEW: Resource created
+            "create" : "Resource created",
+
+            // TODO NEW: Resource updated
+            "update" : "Resource updated",
+
+            // TODO NEW: Resource read
+            "read" : "Resource read",
+
+            // TODO NEW: Resource version read
+            "vread" : "Resource version read",
+
+            // TODO NEW: Resource history read
+            "history" : "Resource history read",
+
+            // TODO NEW: Searched for resources
+            "search" : "Searched for resources",
+
+            // TODO NEW: Organization updated
+            "organization-updated" : "Organization updated",
+
+            // TODO NEW: Organization created
+            "organization-created" : "Organization created",
+
+            // TODO NEW: Organization deleted
+            "organization-deleted" : "Organization deleted",
+
+            // TODO NEW: Added as team member
+            "added-as-team-member" : "Added as team member",
+
+            // TODO NEW: Updated role in team
+            "updated-role-in-team" : "Updated role in team",
+
+            // TODO NEW: Removed from team
+            "removed-from-team" : "Removed from team",
+
+            // TODO NEW: Unsubscribed from communication channel
+            "communication-rejected" : "Unsubscribed from communication channel",
+
+            // TODO NEW: Subscribed to communication channel
+            "communication-approved" : "Subscribed to communication channel",
+
+            // TODO NEW: Search for user
+            "user-searched" : "Search for user",
+
+            // TODO NEW: Welcome email sent
+            "welcome-sent" : "Welcome email sent",
+
+            // TODO NEW: Attempted user re-registration
+            "tried-user-reregistration" : "Attempted user re-registration",
+
+            // TODO NEW: Non perfect account match during access from 3rd party
+            "non-perfect-account-match" : "Non perfect account match during access from 3rd party",
+
+            // TODO NEW: Consent validation failed
+            "signature-failure" : "Consent validation failed",
+
+            // TODO NEW: Email sent
+            "email-sent" : "Email sent",
+
+            // TODO NEW: SMS sent
+            "sms-sent" : "SMS sent",
+
+            // TODO NEW: Resthook called
+            "resthook-called" : "Resthook called",
+
+            // TODO NEW: Script invoked
+            "script-invocation" : "Script invoked",
+
+            // TODO NEW: Plugin deployed
+            "plugin-deployed" : "Plugin deployed",
+
+            // TODO NEW: Plugin undeployed
+            "plugin-undeployed" : "Plugin undeployed",
+
+            // TODO NEW: Access confirmation
+            "access-confirmation" : "Access confirmation",
+
+            // TODO NEW: Access confirmation request
+            "access-confirmation-request" : "Access confirmation request",
+
+            // TODO NEW: API-Key created
+            "apikey-created" : "API-Key created",
+
+            // TODO NEW: API-Key deleted
+            "apikey-deleted" : "API-Key deleted",
+
+            // TODO NEW: Service-Instance created
+            "service-instance-created" : "Service-Instance created",
+
+            // TODO NEW: Service-Instance deleted
+            "service-instance-deleted" : "Service-Instance deleted"
+        },
+        "userfeature" : {
+
+            // TODO NEW: Email address of user must be known to the platform
+            "EMAIL_ENTERED" : "Email address of user must be known to the platform",
+
+            // TODO NEW: Email address of user must have been verified
+            "EMAIL_VERIFIED" : "Email address of user must have been verified",
+
+            // TODO NEW: Mobile phone number of user must be known to the platform
+            "PHONE_ENTERED" : "Mobile phone number of user must be known to the platform",
+
+            // TODO NEW: Mobile phone number of user must have been verified
+            "PHONE_VERIFIED" : "Mobile phone number of user must have been verified",
+
+            // TODO NEW: 2-Factor Authentication on login
+            "AUTH2FACTOR" : "2-Factor Authentication on login",
+
+            // TODO NEW: Post address of user must be known to the platform
+            "ADDRESS_ENTERED" : "Post address of user must be known to the platform",
+
+            // TODO NEW: Post address of user must have been verified
+            "ADDRESS_VERIFIED" : "Post address of user must have been verified",
+
+            // TODO NEW: ID card of users must have been verified
+            "PASSPORT_VERIFIED" : "ID card of users must have been verified",
+
+            // TODO NEW: User must be member of the cooperative
+            "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
+
+            // TODO NEW: Account must have been unlocked by an administrator
+            "ADMIN_VERIFIED" : "Account must have been unlocked by an administrator",
+
+            // TODO NEW: The birthdate of the user must be known
+            "BIRTHDAY_SET" : "The birthdate of the user must be known",
+
+            // TODO NEW: The gender of the user must be known
+            "GENDER_SET" : "The gender of the user must be known",
+
+            // TODO NEW: The application requires an unlock code
+            "APP_UNLOCK_CODE" : "The application requires an unlock code"
+        },
+        "writepermissiontype" : {
+
+            // TODO NEW: No data may be written.
+            "NONE" : "No data may be written.",
+
+            // TODO NEW: Existing data may be updated.
+            "UPDATE_EXISTING" : "Existing data may be updated.",
+
+            // TODO NEW: Data covered by consent may be written or updated.
+            "UPDATE_AND_CREATE" : "Data covered by consent may be written or updated.",
+
+            // TODO NEW: Any kind of data may be written using this consent.
+            "WRITE_ANY" : "Any kind of data may be written using this consent."
+        },
+        "consentstatus" : {
+
+            // TODO NEW: Active
+            "ACTIVE" : "Active",
+
+            // TODO NEW: Active (Preconfirmed)
+            "PRECONFIRMED" : "Active (Preconfirmed)",
+
+            // TODO NEW: Expired
+            "EXPIRED" : "Expired",
+
+            // TODO NEW: Rejected
+            "REJECTED" : "Rejected",
+
+            // TODO NEW: Unconfirmed
+            "UNCONFIRMED" : "Unconfirmed",
+
+            // TODO NEW: Frozen
+            "FROZEN" : "Frozen",
+
+            // TODO NEW: Invalid
+            "INVALID" : "Invalid"
+        },
+        "consenttype" : {
+
+            // TODO NEW: Other Account Holders
+            "CIRCLE" : "Other Account Holders",
+
+            // TODO NEW: Representative
+            "REPRESENTATIVE" : "Representative",
+
+            // TODO NEW: External Application
+            "EXTERNALSERVICE" : "External Application",
+
+            // TODO NEW: External Service
+            "API" : "External Service",
+
+            // TODO NEW: Healthcare
+            "HCRELATED" : "Healthcare",
+
+            // TODO NEW: Doctor / Hospital
+            "HEALTHCARE" : "Doctor / Hospital",
+
+            // TODO NEW: Research project
+            "STUDYPARTICIPATION" : "Research project",
+
+            // TODO NEW: Research project information
+            "STUDYRELATED" : "Research project information",
+
+            // TODO NEW: Messaging
+            "IMPLICIT" : "Messaging"
+        },
+        "contractstatus" : {
+
+            // TODO NEW: New
+            "NEW" : "New",
+
+            // TODO NEW: Contract requested
+            "REQUESTED" : "Contract requested",
+
+            // TODO NEW: Contract printed
+            "PRINTED" : "Contract printed",
+
+            // TODO NEW: Contract signed
+            "SIGNED" : "Contract signed"
+        },
+        "emailstatus" : {
+
+            // TODO NEW: Rejected
+            "REJECTED" : "Rejected",
+
+            // TODO NEW: Not confirmed yet
+            "UNVALIDATED" : "Not confirmed yet",
+
+            // TODO NEW: Confirmed
+            "VALIDATED" : "Confirmed",
+
+            // TODO NEW: Confirmed by 3rd party
+            "EXTERN_VALIDATED" : "Confirmed by 3rd party"
+        },
+        "participantsearchstatus" : {
+
+            // TODO NEW: Closed
+            "CLOSED" : "Closed",
+
+            // TODO NEW: Not yet started
+            "PRE" : "Not yet started",
+
+            // TODO NEW: Currently searching
+            "SEARCHING" : "Currently searching"
+        },
+        "participationstatus" : {
+
+            // TODO NEW: Participation accepted
+            "ACCEPTED" : "Participation accepted",
+
+            // TODO NEW: Participation code entered
+            "CODE" : "Participation code entered",
+
+            // TODO NEW: Possible match
+            "MATCH" : "Possible match",
+
+            // TODO NEW: Account holder rejected
+            "MEMBER_REJECTED" : "Account holder rejected",
+
+            // TODO NEW: Participation requested
+            "REQUEST" : "Participation requested",
+
+            // TODO NEW: Rejected by researcher
+            "RESEARCH_REJECTED" : "Rejected by researcher",
+
+            // TODO NEW: Participant has retreated
+            "MEMBER_RETREATED" : "Participant has retreated"
+        },
+        "studytype" : {
+
+            // TODO NEW: Clinical Study
+            "CLINICAL" : "Clinical Study",
+
+            // TODO NEW: Citizen Science Project
+            "CITIZENSCIENCE" : "Citizen Science Project",
+
+            // TODO NEW: Community
+            "COMMUNITY" : "Community",
+
+            // TODO NEW: Registry
+            "REGISTRY" : "Registry"
+        },
+        "joinmethod" : {
+
+            // TODO NEW: Participant uses the linked application
+            "APP" : "Participant uses the linked application",
+
+            // TODO NEW: Participant applies on @PRODUCT portal
+            "PORTAL" : "Participant applies on @PRODUCT portal",
+
+            // TODO NEW: Participant is manually registered by research team member
+            "RESEARCHER" : "Participant is manually registered by research team member",
+
+            // TODO NEW: Participant is registered by external software
+            "API" : "Participant is registered by external software",
+
+            // TODO NEW: Participant has been proposed by an algorithm (not supported)
+            "ALGORITHM" : "Participant has been proposed by an algorithm (not supported)",
+
+            // TODO NEW: Participant may join by entering a code (not supported)
+            "CODE" : "Participant may join by entering a code (not supported)",
+
+            // TODO NEW: Participant may join through application provided code
+            "APP_CODE" : "Participant may join through application provided code",
+
+            // TODO NEW: Data is transferred from another research project (not supported)
+            "TRANSFER" : "Data is transferred from another research project (not supported)"
+        },
+        "studyexecutionstatus" : {
+
+            // TODO NEW: Execution aborted
+            "ABORTED" : "Execution aborted",
+
+            // TODO NEW: Finished
+            "FINISHED" : "Finished",
+
+            // TODO NEW: Not yet started
+            "PRE" : "Not yet started",
+
+            // TODO NEW: Currently running
+            "RUNNING" : "Currently running"
+        },
+        "studyvalidationstatus" : {
+
+            // TODO NEW: Draft (Not Validated)
+            "DRAFT" : "Draft (Not Validated)",
+
+            // TODO NEW: Project rejected by @OPERATOR
+            "REJECTED" : "Project rejected by @OPERATOR",
+
+            // TODO NEW: Project has been validated
+            "VALIDATED" : "Project has been validated",
+
+            // TODO NEW: Validation running
+            "VALIDATION" : "Validation running"
+        },
+        "projectleavepolicy" : {
+
+            // TODO NEW: Freeze data on withdrawal
+            "FREEZE" : "Freeze data on withdrawal",
+
+            // TODO NEW: Data is no longer shared
+            "REJECT" : "Data is no longer shared",
+
+            // TODO NEW: Consent is deleted
+            "DELETE" : "Consent is deleted"
+        },
+        "rejoinpolicy" : {
+
+            // TODO NEW: Participants cannot rejoin
+            "NO_REJOIN" : "Participants cannot rejoin",
+
+            // TODO NEW: Replace previous participation
+            "DELETE_LAST" : "Replace previous participation"
+        },
+        "pcodestatus" : {
+
+            // TODO NEW: Not used
+            "UNUSED" : "Not used",
+
+            // TODO NEW: Given away
+            "SHARED" : "Given away",
+
+            // TODO NEW: Used
+            "USED" : "Used",
+
+            // TODO NEW: Blocked
+            "BLOCKED" : "Blocked",
+
+            // TODO NEW: Reusable
+            "REUSEABLE" : "Reusable"
+        },
+        "userrole" : {
+
+            // TODO NEW: Administrator
+            "ADMIN" : "Administrator",
+
+            // TODO NEW: Any Role
+            "ANY" : "Any Role",
+
+            // TODO NEW: Developer
+            "DEVELOPER" : "Developer",
+
+            // TODO NEW: Account Holder
+            "MEMBER" : "Account Holder",
+
+            // TODO NEW: Health professional
+            "PROVIDER" : "Health professional",
+
+            // TODO NEW: Researcher
+            "RESEARCH" : "Researcher"
+        },
+        "subuserrole" : {
+
+            // TODO NEW: Doctor
+            "DOCTOR" : "Doctor",
+
+            // TODO NEW: Nurse
+            "NURSE" : "Nurse",
+
+            // TODO NEW: Manager
+            "MANAGER" : "Manager",
+
+            // TODO NEW: Monitor
+            "MONITOR" : "Monitor",
+
+            // TODO NEW: Master User
+            "MASTER" : "Master User",
+
+            // TODO NEW: User Admin
+            "USERADMIN" : "User Admin",
+
+            // TODO NEW: Key Recovery
+            "KEYRECOVERY" : "Key Recovery",
+
+            // TODO NEW: Project Admin
+            "STUDYADMIN" : "Project Admin",
+
+            // TODO NEW: Content Admin
+            "CONTENTADMIN" : "Content Admin",
+
+            // TODO NEW: Application Admin
+            "PLUGINADMIN" : "Application Admin",
+
+            // TODO NEW: News Author
+            "NEWSWRITER" : "News Author",
+
+            // TODO NEW: Super Admin
+            "SUPERADMIN" : "Super Admin",
+
+            // TODO NEW: Trial Participant
+            "TRIALUSER" : "Trial Participant",
+
+            // TODO NEW: Project Participant
+            "STUDYPARTICIPANT" : "Project Participant",
+
+            // TODO NEW: Application User
+            "APPUSER" : "Application User",
+
+            // TODO NEW: Validated Account Holder
+            "NONMEMBERUSER" : "Validated Account Holder",
+
+            // TODO NEW: Member of Cooperative
+            "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
+        },
+        "researcherrole" : {
+
+            // TODO NEW: Sponsor
+            "SPONSOR" : "Sponsor",
+
+            // TODO NEW: Investigator
+            "INVESTIGATOR" : "Investigator",
+
+            // TODO NEW: Auditor
+            "AUDITOR" : "Auditor",
+
+            // TODO NEW: Study Nurse
+            "STUDYNURSE" : "Study Nurse",
+
+            // TODO NEW: Monitor
+            "MONITOR" : "Monitor",
+
+            // TODO NEW: Other
+            "OTHER" : "Other"
+        },
+        "userstatus" : {
+
+            // TODO NEW: Active
+            "ACTIVE" : "Active",
+
+            // TODO NEW: Blocked
+            "BLOCKED" : "Blocked",
+
+            // TODO NEW: Deleted
+            "DELETED" : "Deleted",
+
+            // TODO NEW: Fake Account
+            "FAKE" : "Fake Account",
+
+            // TODO NEW: New
+            "NEW" : "New"
+        },
+        "frequency" : {
+
+            // TODO NEW: Once
+            "ONCE" : "Once",
+
+            // TODO NEW: Daily
+            "DAILY" : "Daily",
+
+            // TODO NEW: Once a week
+            "WEEKLY" : "Once a week",
+
+            // TODO NEW: Once a month
+            "MONTHLY" : "Once a month",
+
+            // TODO NEW: Once a year
+            "YEARLY" : "Once a year"
+        },
+        "language" : {
+
+            // TODO NEW: English
+            "EN" : "English",
+
+            // TODO NEW: German
+            "DE" : "German",
+
+            // TODO NEW: Italian
+            "IT" : "Italian",
+
+            // TODO NEW: French
+            "FR" : "French",
+
+            // TODO NEW: Dutch
+            "NL" : "Dutch",
+
+            // TODO NEW: Default / Non localized
+            "INT" : "Default / Non localized"
+        },
+        "month" : {
+
+            // TODO NEW: Jan
+            "01" : "Jan",
+
+            // TODO NEW: Feb
+            "02" : "Feb",
+
+            // TODO NEW: Mar
+            "03" : "Mar",
+
+            // TODO NEW: Apr
+            "04" : "Apr",
+
+            // TODO NEW: May
+            "05" : "May",
+
+            // TODO NEW: Jun
+            "06" : "Jun",
+
+            // TODO NEW: Jul
+            "07" : "Jul",
+
+            // TODO NEW: Aug
+            "08" : "Aug",
+
+            // TODO NEW: Sep
+            "09" : "Sep",
+
+            // TODO NEW: Oct
+            "10" : "Oct",
+
+            // TODO NEW: Nov
+            "11" : "Nov",
+
+            // TODO NEW: Dec
+            "12" : "Dec"
+        },
+        "codesystems" : {
+
+            // TODO NEW: LOINC code
+            "loinc" : "LOINC code",
+
+            // TODO NEW: @PRODUCT code
+            "midata" : "@PRODUCT code",
+
+            // TODO NEW: FHIR Resource
+            "fhir" : "FHIR Resource",
+
+            // TODO NEW: SNOMED CT code
+            "snowmed" : "SNOMED CT code"
+        },
+        "tags" : {
+
+            // TODO NEW: Analysis
+            "Analysis" : "Analysis",
+
+            // TODO NEW: Import
+            "Import" : "Import",
+
+            // TODO NEW: Planning
+            "Planning" : "Planning",
+
+            // TODO NEW: Tools
+            "Tools" : "Tools",
+
+            // TODO NEW: Protocol
+            "Protocol" : "Protocol",
+
+            // TODO NEW: Expert Plugins
+            "Expert" : "Expert Plugins",
+
+            // TODO NEW: Available Plugins
+            "Available" : "Available Plugins"
+        },
+        "plugintype" : {
+
+            // TODO NEW: Plugin
+            "visualization" : "Plugin",
+
+            // TODO NEW: Internal service
+            "service" : "Internal service",
+
+            // TODO NEW: OAuth 1
+            "oauth1" : "OAuth 1",
+
+            // TODO NEW: OAuth 2
+            "oauth2" : "OAuth 2",
+
+            // TODO NEW: Application (Smartphone, Web)
+            "mobile" : "Application (Smartphone, Web)",
+
+            // TODO NEW: External service
+            "external" : "External service",
+
+            // TODO NEW: Project analyzer
+            "analyzer" : "Project analyzer",
+
+            // TODO NEW: Data broker
+            "broker" : "Data broker",
+
+            // TODO NEW: FHIR endpoint
+            "endpoint" : "FHIR endpoint"
+        },
+        "infos" : {
+
+            // TODO NEW: Short Summary
+            "SUMMARY" : "Short Summary",
+
+            // TODO NEW: Application Onboarding Text
+            "ONBOARDING" : "Application Onboarding Text",
+
+            // TODO NEW: What is this research project doing?
+            "DESCRIPTION" : "What is this research project doing?",
+
+            // TODO NEW: Link to project homepage
+            "HOMEPAGE" : "Link to project homepage",
+
+            // TODO NEW: Contact information
+            "CONTACT" : "Contact information",
+
+            // TODO NEW: Instructions for participants
+            "INSTRUCTIONS" : "Instructions for participants",
+
+            // TODO NEW: What is the purpose of this research?
+            "PURPOSE" : "What is the purpose of this research?",
+
+            // TODO NEW: Are there limitations on who should participate?
+            "AUDIENCE" : "Are there limitations on who should participate?",
+
+            // TODO NEW: At which state or region is this project taking place?
+            "LOCATION" : "At which state or region is this project taking place?",
+
+            // TODO NEW: What is the state of progression of the research taking place?
+            "PHASE" : "What is the state of progression of the research taking place?",
+
+            // TODO NEW: Who is initiator of the research and who is legally responsible?
+            "SPONSOR" : "Who is initiator of the research and who is legally responsible?",
+
+            // TODO NEW: At which site are activities being conducted?
+            "SITE" : "At which site are activities being conducted?",
+
+            // TODO NEW: Is there any special equipment required by a participant?
+            "DEVICES" : "Is there any special equipment required by a participant?",
+
+            // TODO NEW: Additional notes
+            "COMMENT" : "Additional notes"
+        },
+        "secondaryauthtype" : {
+
+            // TODO NEW: No second authentication factor
+            "NONE" : "No second authentication factor",
+
+            // TODO NEW: Two factor authentication using SMS
+            "SMS" : "Two factor authentication using SMS"
+        },
+        "accountnotifications" : {
+
+            // TODO NEW: No login notifications
+            "NONE" : "No login notifications",
+
+            // TODO NEW: Send an email on each login
+            "LOGIN" : "Send an email on each login"
+        },
+        "entitytype" : {
+
+            // TODO NEW: User
+            "USER" : "User",
+
+            // TODO NEW: Team
+            "USERGROUP" : "Team",
+
+            // TODO NEW: Organization
+            "ORGANIZATION" : "Organization",
+
+            // TODO NEW: Data broker
+            "SERVICES" : "Data broker"
+        },
+        "usergrouptype" : {
+
+            // TODO NEW: Organization
+            "ORGANIZATION" : "Organization",
+
+            // TODO NEW: Care Team
+            "CARETEAM" : "Care Team",
+
+            // TODO NEW: Healthcare Service
+            "HEALTHCARESERVICE" : "Healthcare Service",
+
+            // TODO NEW: Research
+            "RESEARCHTEAM" : "Research"
+        },
+        "bulkmailtype" : {
+
+            // TODO NEW: Marketing - Account Holders
+            "MARKETING" : "Marketing - Account Holders",
+
+            // TODO NEW: Project specific
+            "PROJECT" : "Project specific",
+
+            // TODO NEW: Application specific
+            "APP" : "Application specific"
+        },
+        "channeluse" : {
+
+            // TODO NEW: Allowed
+            "ALLOWED" : "Allowed",
+
+            // TODO NEW: Forbidden
+            "FORBIDDEN" : "Forbidden",
+
+            // TODO NEW: Undefined
+            "NULL" : "Undefined"
+        },
+        "deploymentstatus" : {
+
+            // TODO NEW: None
+            "NONE" : "None",
+
+            // TODO NEW: Ready
+            "READY" : "Ready",
+
+            // TODO NEW: Building
+            "RUNNING" : "Building",
+
+            // TODO NEW: Failed
+            "FAILED" : "Failed",
+
+            // TODO NEW: Done
+            "DONE" : "Done"
+        }
+    },
+
+    "common" : {
+
+        // TODO NEW:  
+        "empty" : " ",
+
+        // TODO NEW: Done
+        "done_btn" : "Done",
+
+        // TODO NEW: Back
+        "back_btn" : "Back",
+
+        // TODO NEW: Search
+        "search_btn" : "Search",
+
+        // TODO NEW: Add
+        "add_btn" : "Add",
+
+        // TODO NEW: Create
+        "create_btn" : "Create",
+
+        // TODO NEW: Change
+        "change_btn" : "Change",
+
+        // TODO NEW: Cancel
+        "cancel_btn" : "Cancel",
+
+        // TODO NEW: View
+        "view_btn" : "View",
+
+        // TODO NEW: Submit
+        "submit_btn" : "Submit",
+
+        // TODO NEW: Delete
+        "delete_btn" : "Delete",
+
+        // TODO NEW: Skip (no change)
+        "skip_btn" : "Skip (no change)",
+
+        // TODO NEW: or
+        "or" : "or",
+
+        // TODO NEW: Successfully Saved
+        "save_ok" : "Successfully Saved",
+        "yesno" : {
+
+            // TODO NEW: Yes
+            "true" : "Yes",
+
+            // TODO NEW: No
+            "false" : "No"
+        },
+
+        // TODO NEW: Please choose
+        "fillout" : "Please choose",
+        "user" : {
+
+            // TODO NEW: Surname
+            "lastname" : "Surname",
+
+            // TODO NEW: Firstname
+            "firstname" : "Firstname",
+
+            // TODO NEW: ZIP
+            "zip" : "ZIP",
+
+            // TODO NEW: City
+            "city" : "City",
+
+            // TODO NEW: Street
+            "street" : "Street",
+
+            // TODO NEW: Phone
+            "phone" : "Phone",
+
+            // TODO NEW: Mobile
+            "mobile_phone" : "Mobile",
+
+            // TODO NEW: Email
+            "email" : "Email"
+        }
+    },
+
+    "registration" : {
+
+        // TODO NEW: Sign Up
+        "sign_up" : "Sign Up",
+
+        // TODO NEW: Please fill in the information below, fields marked with an asterisk (*) are mandatory.
+        "mandantory_fields" : "Please fill in the information below, fields marked with an asterisk (*) are mandatory.",
+
+        // TODO NEW: Please fill in your email address and password.
+        "mandantory_fields2" : "Please fill in your email address and password.",
+
+        // TODO NEW: The password must be at least 8 characters long and contain one letter and one digit.
+        "password_policy" : "The password must be at least 8 characters long and contain one letter and one digit.",
+
+        // TODO NEW: The password must be at least 12 characters long and contain one letter, one digit and a special character.
+        "password_policy2" : "The password must be at least 12 characters long and contain one letter, one digit and a special character.",
+
+        // TODO NEW: Personal Details
+        "personal_details" : "Personal Details",
+
+        // TODO NEW: Email
+        "email" : "Email",
+
+        // TODO NEW: Password
+        "password" : "Password",
+
+        // TODO NEW: Repeat Password
+        "password_repetition" : "Repeat Password",
+
+        // TODO NEW: Account Protection
+        "secure" : "Account Protection",
+
+        // TODO NEW: Increase the protection of my data with an additional security level. Warning: if I forget my password, it may take a few days until I can reset it.
+        "secure2" : "Increase the protection of my data with an additional security level. Warning: if I forget my password, it may take a few days until I can reset it.",
+
+        // TODO NEW: First Name
+        "firstname" : "First Name",
+
+        // TODO NEW: Surname
+        "lastname" : "Surname",
+
+        // TODO NEW: Gender
+        "gender" : "Gender",
+
+        // TODO NEW: Birthdate
+        "birthday" : "Birthdate",
+
+        // TODO NEW: Birthdate (format: 31.12.1999)
+        "birthday2" : "Birthdate (format: 31.12.1999)",
+
+        // TODO NEW: Preferred Language
+        "language" : "Preferred Language",
+
+        // TODO NEW: Day
+        "day" : "Day",
+
+        // TODO NEW: Month
+        "month" : "Month",
+
+        // TODO NEW: Year
+        "year" : "Year",
+
+        // TODO NEW: Address
+        "address" : "Address",
+
+        // TODO NEW: Enter your address here
+        "address_line1" : "Enter your address here",
+
+        // TODO NEW: Second line for address
+        "address_line2" : "Second line for address",
+
+        // TODO NEW: City
+        "city" : "City",
+
+        // TODO NEW: Zip Code
+        "zip" : "Zip Code",
+
+        // TODO NEW: Country
+        "country" : "Country",
+
+        // TODO NEW: Phone
+        "phone" : "Phone",
+
+        // TODO NEW: Mobile Phone
+        "mobile_phone" : "Mobile Phone",
+
+        // TODO NEW: Contact person @OPERATOR
+        "coach" : "Contact person @OPERATOR",
+
+        // TODO NEW: Purpose of Registration*
+        "reason" : "Purpose of Registration*",
+
+        // TODO NEW: Terms
+        "agb" : "Terms",
+
+        // TODO NEW: Research
+        "study" : "Research",
+
+        // TODO NEW: I accept the
+        "agb2" : "I accept the",
+
+        // TODO NEW: General Terms and Conditions
+        "agb3" : "General Terms and Conditions",
+
+        // TODO NEW: and the
+        "privacypolicy2" : "and the",
+
+        // TODO NEW: Privacy Policy
+        "privacypolicy3" : "Privacy Policy",
+
+        // TODO NEW: App Terms
+        "app_agb" : "App Terms",
+
+        // TODO NEW: I accept the
+        "app_agb2" : "I accept the",
+
+        // TODO NEW: App General Terms and Conditions
+        "app_agb3" : "App General Terms and Conditions",
+
+        // TODO NEW: Project Terms
+        "study_agb" : "Project Terms",
+
+        // TODO NEW: Create Account
+        "sign_up_btn" : "Create Account",
+
+        // TODO NEW: Unlock Code
+        "unlock_code" : "Unlock Code",
+
+        // TODO NEW: I already have an account
+        "already_have_account" : "I already have an account",
+
+        // TODO NEW: If this is your own account click here to go to the login page.
+        "already_have_account2" : "If this is your own account click here to go to the login page.",
+
+        // TODO NEW: Have a few more seconds to spare? We'd be happy if you could give us a bit more details about you ☺️
+        "more" : "Have a few more seconds to spare? We'd be happy if you could give us a bit more details about you ☺️",
+
+        // TODO NEW: I'm feeling generous today, show me the fields!
+        "generous" : "I'm feeling generous today, show me the fields!",
+
+        // TODO NEW: Hide optional fields
+        "hide_optional" : "Hide optional fields",
+
+        // TODO NEW: Welcome
+        "welcome_title" : "Welcome",
+
+        // TODO NEW: Your @PRODUCT account has just been created. A confirmation email has been sent to you.
+        "welcome_text1" : "Your @PRODUCT account has just been created. A confirmation email has been sent to you.",
+
+        // TODO NEW: Please click on the link in the email within 24 hours to complete your registration.
+        "welcome_text2" : "Please click on the link in the email within 24 hours to complete your registration.",
+
+        // TODO NEW: If you should not receive the email within the next 30 minutes, please check your spam filter.
+        "welcome_text3" : "If you should not receive the email within the next 30 minutes, please check your spam filter.",
+
+        // TODO NEW: Go on
+        "welcome_btn" : "Go on"
+    },
+
+    "login" : {
+
+        // TODO NEW: Email address
+        "email_address" : "Email address",
+
+        // TODO NEW: Password
+        "password" : "Password",
+
+        // TODO NEW: Project
+        "study" : "Project",
+
+        // TODO NEW: Remember me
+        "remember_me" : "Remember me",
+
+        // TODO NEW: Log in
+        "sign_in_btn" : "Log in",
+
+        // TODO NEW: Forgot your password?
+        "forgot_your_password" : "Forgot your password?",
+
+        // TODO NEW: Log in
+        "login_btn" : "Log in",
+
+        // TODO NEW: Login for Confirmation Request
+        "service_login" : "Login for Confirmation Request",
+
+        // TODO NEW: At your next login, you will be asked for confirmation of consents and/or participation with research projects.
+        "service_login2" : "At your next login, you will be asked for confirmation of consents and/or participation with research projects.",
+
+        // TODO NEW: Login for Account Management
+        "account_login" : "Login for Account Management",
+
+        // TODO NEW: Please log in for access to account management functions.
+        "account_login2" : "Please log in for access to account management functions.",
+
+        // TODO NEW: I do not have a @PRODUCT account yet.
+        "no_account" : "I do not have a @PRODUCT account yet."
+    },
+
+    "lostpw" : {
+
+        // TODO NEW: Password Assistance - Step 1
+        "title" : "Password Assistance - Step 1",
+
+        // TODO NEW: Enter the email address associated with your account, then click Continue. We'll email you a link to a page where you can easily create a new password.
+        "description" : "Enter the email address associated with your account, then click Continue. We'll email you a link to a page where you can easily create a new password.",
+
+        // TODO NEW: Email address
+        "email" : "Email address",
+
+        // TODO NEW: Continue
+        "continue" : "Continue",
+
+        // TODO NEW: We have sent you an email with instructions on how to reset your password.
+        "success" : "We have sent you an email with instructions on how to reset your password."
+    },
+
+    "setpw" : {
+
+        // TODO NEW: Password Assistance - Step 2
+        "title" : "Password Assistance - Step 2",
+
+        // TODO NEW: New password
+        "new_password" : "New password",
+
+        // TODO NEW: Password repetition
+        "new_password_repeat" : "Password repetition",
+
+        // TODO NEW: Please enter a new password for your account.
+        "enter_new" : "Please enter a new password for your account.",
+
+        // TODO NEW: Set New Password
+        "set_new_btn" : "Set New Password",
+
+        // TODO NEW: You have successfully set a new password for your account.
+        "success" : "You have successfully set a new password for your account.",
+
+        // TODO NEW: Go back to login page.
+        "back_to_login" : "Go back to login page."
+    },
+
+    "passphrase" : {
+
+        // TODO NEW: Enter Passphrase
+        "title" : "Enter Passphrase",
+
+        // TODO NEW: Your account is protected with a passphrase.
+        "description" : "Your account is protected with a passphrase.",
+
+        // TODO NEW: Passphrase
+        "passphrase" : "Passphrase",
+
+        // TODO NEW: Continue
+        "continue_btn" : "Continue",
+
+        // TODO NEW: If you lost your passphrase contact @SUPPORT
+        "if_lost" : "If you lost your passphrase contact @SUPPORT"
+    },
+
+    "postregister" : {
+
+        // TODO NEW: Welcome to @PLATFORM
+        "title" : "Welcome to @PLATFORM",
+
+        // TODO NEW: Email confirmed?
+        "email_confirmed" : "Email confirmed?",
+
+        // TODO NEW: Contract signed and sent back?
+        "contract_signed" : "Contract signed and sent back?",
+
+        // TODO NEW: Welcome email has been resent.
+        "resent_success" : "Welcome email has been resent.",
+
+        // TODO NEW: Address has been confirmed.
+        "address_success" : "Address has been confirmed.",
+
+        // TODO NEW: Confirmation code entered?
+        "code_entered" : "Confirmation code entered?",
+
+        // TODO NEW: Your email address needs to be confirmed. An activation email has been sent to your account. Just click on the link in this email to confirm your email address.
+        "email_instructions" : "Your email address needs to be confirmed. An activation email has been sent to your account. Just click on the link in this email to confirm your email address.",
+
+        // TODO NEW: For convenience you may enter the code from the email here:
+        "email_code" : "For convenience you may enter the code from the email here:",
+
+        // TODO NEW: Code
+        "code" : "Code",
+
+        // TODO NEW: Resend email
+        "resend_btn" : "Resend email",
+
+        // TODO NEW: Retry login
+        "retry_btn" : "Retry login",
+
+        // TODO NEW: This application requires an unlock code to be used. Please enter the code to continue.
+        "unlock_code" : "This application requires an unlock code to be used. Please enter the code to continue.",
+
+        // TODO NEW: A contract has been sent to your postal address. Please return it signed to @OPERATOR.
+        "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to @OPERATOR.",
+
+        // TODO NEW: An administrator will verify and unlock your account. You will be notified when your account has been unlocked.
+        "pilot_phase" : "An administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
+
+        // TODO NEW: A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
+        "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
+
+        // TODO NEW: You have provided the confirmation code. You may login after the signed contract has arrived at @OPERATOR.
+        "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at @OPERATOR.",
+
+        // TODO NEW: Enter now
+        "enter_now_btn" : "Enter now",
+
+        // TODO NEW: Thank you for confirming your email address.
+        "email_success" : "Thank you for confirming your email address.",
+
+        // TODO NEW: Your postal address is required to use this service, please provide it.
+        "address_entered" : "Your postal address is required to use this service, please provide it.",
+
+        // TODO NEW: A mobile phone number is required to use this service, please provide it.
+        "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
+
+        // TODO NEW: A valid birthdate is required to use this service. Please add your birthdate to your account information. (Format example: 31.12.1999)
+        "birthday_entered" : "A valid birthdate is required to use this service. Please add your birthdate to your account information. (Format example: 31.12.1999)",
+
+        // TODO NEW: Your gender must be provided to use this service. Please indicate your gender.
+        "gender_entered" : "Your gender must be provided to use this service. Please indicate your gender.",
+
+        // TODO NEW: Your account must be unlocked by an administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact @SUPPORT.
+        "admin_verified" : "Your account must be unlocked by an administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact @SUPPORT.",
+
+        // TODO NEW: The General Terms and Conditions have been updated. Please confirm that you have taken note of the new version.
+        "terms_agreed" : "The General Terms and Conditions have been updated. Please confirm that you have taken note of the new version.",
+
+        // TODO NEW: The Privacy Policy has been updated. Please confirm that you have taken note of the new version.
+        "privacy_policy_agreed" : "The Privacy Policy has been updated. Please confirm that you have taken note of the new version.",
+
+        // TODO NEW: An authorization code has been send to your phone. Please enter it.
+        "auth2factor" : "An authorization code has been send to your phone. Please enter it.",
+
+        // TODO NEW: Code
+        "securityToken" : "Code",
+
+        // TODO NEW: Send
+        "securityToken_btn" : "Send",
+
+        // TODO NEW: Please wait up to a minute for the code to arrive.
+        "no_token" : "Please wait up to a minute for the code to arrive.",
+
+        // TODO NEW: I did not receive the code
+        "no_token_btn" : "I did not receive the code",
+
+        // TODO NEW: Please setup your security settings: Do you want to protect access to your account with a second factor in addition to your password?
+        "auth2factorsetup" : "Please setup your security settings: Do you want to protect access to your account with a second factor in addition to your password?",
+
+        // TODO NEW: You can change your settings later in your profile. Log into {{domain}} and click on your name on the top right.
+        "auth2factorsetup2" : "You can change your settings later in your profile. Log into {{domain}} and click on your name on the top right.",
+
+        // TODO NEW: Authentication
+        "auth_type" : "Authentication",
+
+        // TODO NEW: I do not want to use two factor authentication.
+        "auth_type_none" : "I do not want to use two factor authentication.",
+
+        // TODO NEW: I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.
+        "auth_type_sms" : "I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.",
+
+        // TODO NEW: Notifications
+        "emailnotify" : "Notifications",
+
+        // TODO NEW: Please send me an email everytime I log into the @PRODUCT portal at {{domain}}.
+        "emailnotify2" : "Please send me an email everytime I log into the @PRODUCT portal at {{domain}}.",
+
+        // TODO NEW: I agree
+        "agree_btn" : "I agree",
+
+        // TODO NEW: I took note of it
+        "noted_btn" : "I took note of it",
+        "keyrecovery" : {
+
+            // TODO NEW: The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:
+            "intro" : "The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:",
+
+            // TODO NEW: Do you have any application using @PRODUCT where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.
+            "way1" : "Do you have any application using @PRODUCT where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.",
+
+            // TODO NEW: Have you logged in using a browser before? If yes try to log in using the same browser and device.
+            "way2" : "Have you logged in using a browser before? If yes try to log in using the same browser and device.",
+
+            // TODO NEW: Remember your old password again? If yes try to log in using your old password.
+            "way3" : "Remember your old password again? If yes try to log in using your old password.",
+
+            // TODO NEW: Wait for @OPERATOR employees to do a manual key recovery. @OPERATOR will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed.
+            "way4" : "Wait for @OPERATOR employees to do a manual key recovery. @OPERATOR will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed."
+        },
+        "licence" : {
+
+            // TODO NEW: A license is required to use this application.
+            "intro" : "A license is required to use this application.",
+
+            // TODO NEW: Please contact @SUPPORT to obtain a valid license.
+            "text" : "Please contact @SUPPORT to obtain a valid license."
+        },
+        "reject" : {
+
+            // TODO NEW: You have clicked on the account REJECTION link in the account confirmation mail.
+            "intro1" : "You have clicked on the account REJECTION link in the account confirmation mail.",
+
+            // TODO NEW: Please confirm that you do NOT want to create an account on @PLATFORM. Your email address will be blocked for further registration attempts until you contact @SUPPORT.
+            "intro2" : "Please confirm that you do NOT want to create an account on @PLATFORM. Your email address will be blocked for further registration attempts until you contact @SUPPORT.",
+
+            // TODO NEW: Reject account creation
+            "reject_btn" : "Reject account creation",
+
+            // TODO NEW: If you clicked the wrong link and want to CONFIRM your email address instead, click here:
+            "intro3" : "If you clicked the wrong link and want to CONFIRM your email address instead, click here:",
+
+            // TODO NEW: Confirm account creation
+            "confirm_btn" : "Confirm account creation"
+        }
+    },
+
+    "changepassphrase" : {
+
+        // TODO NEW: Change Passphrase
+        "title" : "Change Passphrase",
+
+        // TODO NEW: A passphrase is an additional protection (additional encryption) for your data. It is not stored on our servers. You have to provide the passphrase on every login, to make it possible to decrypt your data. If you loose your passphrase, you will not be able to access your data anymore!.
+        "description" : "A passphrase is an additional protection (additional encryption) for your data. It is not stored on our servers. You have to provide the passphrase on every login, to make it possible to decrypt your data. If you loose your passphrase, you will not be able to access your data anymore!.",
+
+        // TODO NEW: If your account is not yet protected by a passphrase leave the field 'Old passphrase' empty.
+        "if_unprotected" : "If your account is not yet protected by a passphrase leave the field 'Old passphrase' empty.",
+
+        // TODO NEW: Please keep your passphrase at a save place, there is no recovery function for it. If you loose your passphrase, you will not be able to access your data anymore!.
+        "keep_passphrase_safe" : "Please keep your passphrase at a save place, there is no recovery function for it. If you loose your passphrase, you will not be able to access your data anymore!.",
+
+        // TODO NEW: Old Passphrase
+        "old_passphrase" : "Old Passphrase",
+
+        // TODO NEW: New Passphrase
+        "new_passphrase" : "New Passphrase",
+
+        // TODO NEW: Change Passphrase
+        "change_passphrase_btn" : "Change Passphrase",
+
+        // TODO NEW: By repeating your new passphrase you make the change final.
+        "repeat_finalizes" : "By repeating your new passphrase you make the change final.",
+
+        // TODO NEW: Repeat New Passphrase
+        "repeat_passphrase" : "Repeat New Passphrase",
+
+        // TODO NEW: Confirm Passphrase
+        "confirm_btn" : "Confirm Passphrase",
+
+        // TODO NEW: Passphrase has been successfully changed!
+        "success" : "Passphrase has been successfully changed!"
+    },
+
+    "changepassword" : {
+
+        // TODO NEW: Change Password
+        "title" : "Change Password",
+
+        // TODO NEW: Old Password
+        "old_password" : "Old Password",
+
+        // TODO NEW: New Password
+        "new_password" : "New Password",
+
+        // TODO NEW: Repeat New Password
+        "repeat_password" : "Repeat New Password",
+
+        // TODO NEW: Change Password
+        "change_btn" : "Change Password",
+
+        // TODO NEW: Password has been successfully changed!
+        "success" : "Password has been successfully changed!"
+    },
+
+    "changeaddress" : {
+
+        // TODO NEW: Postal Address and Contact Information
+        "title" : "Postal Address and Contact Information",
+
+        // TODO NEW: Your profile has been updated.
+        "success" : "Your profile has been updated.",
+
+        // TODO NEW: Update
+        "update_btn" : "Update"
+    },
+
+    "market" : {
+
+        // TODO NEW: Categories
+        "categories" : "Categories",
+
+        // TODO NEW: Plugins
+        "plugins" : "Plugins",
+
+        // TODO NEW: There are no spotlighted plugins yet.
+        "no_spotlighted_plugins" : "There are no spotlighted plugins yet.",
+
+        // TODO NEW: Plugins you may like
+        "plugins_you_may_like" : "Plugins you may like",
+
+        // TODO NEW: We have no recommendations for you yet.
+        "no_recommendations" : "We have no recommendations for you yet.",
+
+        // TODO NEW: Use Now
+        "install_now_btn" : "Use Now"
+    },
+
+    "providersearch" : {
+
+        // TODO NEW: Health professional search
+        "title" : "Health professional search",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: City / Zip
+        "city_or_zip" : "City / Zip",
+
+        // TODO NEW: Search only health professionals you already had contact with.
+        "only_with_contact" : "Search only health professionals you already had contact with.",
+
+        // TODO NEW: No health professional found.
+        "empty_result" : "No health professional found.",
+
+        // TODO NEW: Add Consent
+        "add_consent_btn" : "Add Consent"
+    },
+
+    "recorddetail" : {
+
+        // TODO NEW: Meta Information
+        "meta" : "Meta Information",
+
+        // TODO NEW: Name:
+        "name" : "Name:",
+
+        // TODO NEW: Owned by:
+        "owned_by" : "Owned by:",
+
+        // TODO NEW: Created by:
+        "created_by" : "Created by:",
+
+        // TODO NEW: Last modified by:
+        "modified_by" : "Last modified by:",
+
+        // TODO NEW: Created with:
+        "created_with" : "Created with:",
+
+        // TODO NEW: Created at:
+        "created_on" : "Created at:",
+
+        // TODO NEW: @PRODUCT content type:
+        "content" : "@PRODUCT content type:",
+
+        // TODO NEW: Format:
+        "format" : "Format:",
+
+        // TODO NEW: Download
+        "download_btn" : "Download",
+
+        // TODO NEW: Content Visualization
+        "content_visualization" : "Content Visualization",
+
+        // TODO NEW: No visualization available for this record.
+        "no_visualization" : "No visualization available for this record.",
+
+        // TODO NEW: Raw Data
+        "raw_data" : "Raw Data",
+
+        // TODO NEW: Record ID
+        "id" : "Record ID",
+
+        // TODO NEW: Code(s)
+        "code" : "Code(s)"
+    },
+
+    "studydetails" : {
+
+        // TODO NEW: Research project
+        "study" : "Research project",
+
+        // TODO NEW: Organization performing the project:
+        "organization" : "Organization performing the project:",
+
+        // TODO NEW: Health professionals monitoring the project
+        "providers_monitoring" : "Health professionals monitoring the project",
+
+        // TODO NEW: None
+        "no_providers" : "None",
+
+        // TODO NEW: Remove
+        "provider_remove_btn" : "Remove",
+
+        // TODO NEW: Add
+        "provider_add_btn" : "Add",
+
+        // TODO NEW: Duration
+        "duration" : "Duration",
+
+        // TODO NEW: Required data
+        "information_that_needs_sharing" : "Required data",
+
+        // TODO NEW: Your gender, year of birth and country of residence
+        "information_restricted" : "Your gender, year of birth and country of residence",
+
+        // TODO NEW: A pseudonym
+        "information_none" : "A pseudonym",
+
+        // TODO NEW: Your complete demographic data (name, birthdate, address, ...)
+        "information_demographic" : "Your complete demographic data (name, birthdate, address, ...)",
+
+        // TODO NEW: Records that have format:
+        "records_with_format" : "Records that have format:",
+
+        // TODO NEW: Records that have content:
+        "records_with_content" : "Records that have content:",
+
+        // TODO NEW: Records that belong to group:
+        "records_with_group" : "Records that belong to group:",
+
+        // TODO NEW: Records that belong to owner:
+        "records_with_owner" : "Records that belong to owner:",
+
+        // TODO NEW: Records created by application:
+        "records_from_app" : "Records created by application:",
+
+        // TODO NEW: Your own records
+        "owner_self" : "Your own records",
+
+        // TODO NEW: Participation History
+        "participation_history" : "Participation History",
+
+        // TODO NEW: Event
+        "history_event" : "Event",
+
+        // TODO NEW: Who
+        "history_who" : "Who",
+
+        // TODO NEW: When
+        "history_when" : "When",
+
+        // TODO NEW: Comment
+        "history_comment" : "Comment",
+
+        // TODO NEW: If you want to be part of this research you may request participation.
+        "request_participation_help" : "If you want to be part of this research you may request participation.",
+
+        // TODO NEW: Request Participation
+        "request_participation_btn" : "Request Participation",
+
+        // TODO NEW: If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.
+        "do_not_participate_help" : "If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.",
+
+        // TODO NEW: Do not participate
+        "do_not_participate_btn" : "Do not participate",
+
+        // TODO NEW: You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.
+        "retreat_help" : "You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.",
+
+        // TODO NEW: Withdraw participation
+        "retreat_btn" : "Withdraw participation",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Recommended Apps
+        "recommended_apps" : "Recommended Apps",
+
+        // TODO NEW: Use now
+        "use_app" : "Use now",
+
+        // TODO NEW: Participation Info
+        "for_participants" : "Participation Info",
+
+        // TODO NEW: Decide about participation
+        "please_review1" : "Decide about participation",
+
+        // TODO NEW: Please review this research project. Do you want to participate? Click on 'Skip (No change)' if you want to leave this page without any changes.
+        "please_review2" : "Please review this research project. Do you want to participate? Click on 'Skip (No change)' if you want to leave this page without any changes."
+    },
+
+    "user" : {
+
+        // TODO NEW: User Account
+        "account" : "User Account",
+
+        // TODO NEW: User
+        "user" : "User",
+
+        // TODO NEW: Name:
+        "name" : "Name:",
+
+        // TODO NEW: Email:
+        "email" : "Email:",
+
+        // TODO NEW: Birthdate:
+        "birthday" : "Birthdate:",
+
+        // TODO NEW: @PRODUCT ID:
+        "midataID" : "@PRODUCT ID:",
+
+        // TODO NEW: More...
+        "action" : "More...",
+
+        // TODO NEW: Change Password
+        "change_password_btn" : "Change Password",
+
+        // TODO NEW: Change Passphrase
+        "change_passphrase_btn" : "Change Passphrase",
+
+        // TODO NEW: View Audit Log
+        "auditlog_btn" : "View Audit Log",
+
+        // TODO NEW: Change Email Address
+        "change_email_btn" : "Change Email Address",
+
+        // TODO NEW: Show Expert Plugins
+        "expert_tools_btn" : "Show Expert Plugins",
+
+        // TODO NEW: Repair Account
+        "repair_account_btn" : "Repair Account",
+
+        // TODO NEW: Reset Portal
+        "reset_spaces_btn" : "Reset Portal",
+
+        // TODO NEW: Export your data
+        "export_btn" : "Export your data",
+
+        // TODO NEW: Delete Records
+        "delete_records_btn" : "Delete Records",
+
+        // TODO NEW: Delete Account
+        "wipe_account_btn" : "Delete Account",
+
+        // TODO NEW: Back to application
+        "cancel_btn" : "Back to application",
+
+        // TODO NEW: Calculate Account Metrics
+        "metrics_btn" : "Calculate Account Metrics",
+
+        // TODO NEW: Manage API Keys
+        "servicekeys_btn" : "Manage API Keys",
+
+        // TODO NEW: Your account has been repaired.
+        "account_repaired" : "Your account has been repaired.",
+
+        // TODO NEW: Your configuration has been resetted.
+        "spaces_resetted" : "Your configuration has been resetted.",
+
+        // TODO NEW: Settings
+        "settings" : "Settings",
+
+        // TODO NEW: Change Profile
+        "change_address_btn" : "Change Profile",
+
+        // TODO NEW: Visibility of your account
+        "searchable_short" : "Visibility of your account",
+
+        // TODO NEW: May other users find your profile, while searching for your email?
+        "searchable" : "May other users find your profile, while searching for your email?",
+
+        // TODO NEW: Yes, I want my name and email to be visible to other users
+        "searchable_yes" : "Yes, I want my name and email to be visible to other users",
+
+        // TODO NEW: No, I don't want that any other user sees my profile
+        "searchable_no" : "No, I don't want that any other user sees my profile",
+
+        // TODO NEW: This setting has no effect on your existing data sharing consents.
+        "searchable_info" : "This setting has no effect on your existing data sharing consents.",
+
+        // TODO NEW: Authentication
+        "auth_type" : "Authentication",
+
+        // TODO NEW: Do you want to protect access to your account with a second factor in addition to your password?
+        "auth_type2" : "Do you want to protect access to your account with a second factor in addition to your password?",
+
+        // TODO NEW: Notifications
+        "notifications" : "Notifications",
+
+        // TODO NEW: Do you want to be notified if your account is used?
+        "notifications2" : "Do you want to be notified if your account is used?",
+
+        // TODO NEW: Change Settings
+        "change_settings_btn" : "Change Settings",
+
+        // TODO NEW: Settings have been updated
+        "change_settings_success" : "Settings have been updated"
+    },
+
+    "visualization" : {
+
+        // TODO NEW: Application Information
+        "title" : "Application Information",
+
+        // TODO NEW: You have successfully installed a new plugin.
+        "success" : "You have successfully installed a new plugin.",
+
+        // TODO NEW: Created by:
+        "created_by" : "Created by:",
+
+        // TODO NEW: Organization:
+        "orgName" : "Organization:",
+
+        // TODO NEW: Publisher:
+        "publisher" : "Publisher:",
+
+        // TODO NEW: Description:
+        "description" : "Description:",
+
+        // TODO NEW: Tile Name:
+        "tile_name" : "Tile Name:",
+
+        // TODO NEW: Location:
+        "install_location" : "Location:",
+
+        // TODO NEW: Grant this plugin access to:
+        "grant_access" : "Grant this plugin access to:",
+
+        // TODO NEW: Terms of use
+        "terms" : "Terms of use",
+
+        // TODO NEW: Confirm Access
+        "install_btn" : "Confirm Access",
+        "location" : {
+
+            // TODO NEW: Workspace
+            "workspace" : "Workspace",
+
+            // TODO NEW: Mobile App
+            "mobile" : "Mobile App",
+
+            // TODO NEW: Research Dashboard
+            "research" : "Research Dashboard",
+
+            // TODO NEW: Workspace
+            "sandbox" : "Workspace",
+
+            // TODO NEW: Personal Dashboard
+            "me" : "Personal Dashboard",
+
+            // TODO NEW: Config Dashboard
+            "config" : "Config Dashboard",
+
+            // TODO NEW: My Data Dashboard
+            "mydata" : "My Data Dashboard",
+
+            // TODO NEW: Social Dashboard
+            "social" : "Social Dashboard",
+
+            // TODO NEW: Health Dashboard
+            "providers" : "Health Dashboard",
+
+            // TODO NEW: Research Dashboard
+            "studies" : "Research Dashboard"
+        }
+    },
+
+    "newconsent" : {
+
+        // TODO NEW: Create a new consent
+        "title" : "Create a new consent",
+
+        // TODO NEW: How should this consent be named?
+        "name" : "How should this consent be named?",
+
+        // TODO NEW: What type of consent do you want to create?
+        "type" : "What type of consent do you want to create?",
+
+        // TODO NEW: I want to share data with other account holders.
+        "share_with_members" : "I want to share data with other account holders.",
+
+        // TODO NEW: I want to share data with a health professional.
+        "share_with_provider" : "I want to share data with a health professional.",
+
+        // TODO NEW: I would like to add a representative for my account.
+        "share_representative" : "I would like to add a representative for my account.",
+
+        // TODO NEW: Select
+        "select" : "Select",
+
+        // TODO NEW: Include a passcode?
+        "use_passcode" : "Include a passcode?",
+
+        // TODO NEW: I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional.
+        "use_passcode2" : "I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional.",
+
+        // TODO NEW: Choose a secure passcode
+        "choose_passcode" : "Choose a secure passcode",
+
+        // TODO NEW: Who is sharing data?
+        "who_is_owner" : "Who is sharing data?",
+
+        // TODO NEW: With which persons(s) is data shared?
+        "which_persons" : "With which persons(s) is data shared?",
+
+        // TODO NEW: Select person that shares its data
+        "set_owner_btn" : "Select person that shares its data",
+
+        // TODO NEW: Add yourself
+        "add_yourself_btn" : "Add yourself",
+
+        // TODO NEW: Add New Person
+        "add_person_btn" : "Add New Person",
+
+        // TODO NEW: Add New Organization
+        "add_organization_btn" : "Add New Organization",
+
+        // TODO NEW: Add New Team
+        "add_usergroup_btn" : "Add New Team",
+
+        // TODO NEW: Write Permission
+        "writes" : "Write Permission",
+
+        // TODO NEW: The persons authorized by this consent may create or update data in your account covered by this consent.
+        "writes2" : "The persons authorized by this consent may create or update data in your account covered by this consent.",
+
+        // TODO NEW: 3rd party access?
+        "reshare" : "3rd party access?",
+
+        // TODO NEW: The persons authorized by this consent may reshare the data I gave them access to.
+        "reshare2" : "The persons authorized by this consent may reshare the data I gave them access to.",
+
+        // TODO NEW: Consent expiration date:
+        "expiration_date" : "Consent expiration date:",
+
+        // TODO NEW: Only includes data created after:
+        "created_after" : "Only includes data created after:",
+
+        // TODO NEW: Do not share data created after:
+        "created_before" : "Do not share data created after:",
+
+        // TODO NEW: What data do you want to share?
+        "share_what" : "What data do you want to share?",
+
+        // TODO NEW: This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.
+        "consent_empty" : "This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.",
+
+        // TODO NEW: Create and Data Selection
+        "create_btn" : "Create and Data Selection",
+
+        // TODO NEW: Agree to this consent
+        "create2_btn" : "Agree to this consent",
+
+        // TODO NEW: Show advanced options
+        "extended_btn" : "Show advanced options",
+
+        // TODO NEW: New proposed consent
+        "please_review1" : "New proposed consent",
+
+        // TODO NEW: Do you agree to this new consent? Please check content and click on the 'Agree to this consent' button if you agree. Otherwise click on the 'Skip (No change)' button.
+        "please_review2" : "Do you agree to this new consent? Please check content and click on the 'Agree to this consent' button if you agree. Otherwise click on the 'Skip (No change)' button."
+    },
+
+    "editconsent" : {
+
+        // TODO NEW: Consent
+        "title" : "Consent",
+
+        // TODO NEW: Owner of Consent
+        "owner" : "Owner of Consent",
+
+        // TODO NEW: Name of Consent
+        "name" : "Name of Consent",
+
+        // TODO NEW: Consent created at
+        "date_of_creation" : "Consent created at",
+
+        // TODO NEW: Type of Consent
+        "type" : "Type of Consent",
+
+        // TODO NEW: Status of Consent
+        "status" : "Status of Consent",
+
+        // TODO NEW: With which persons(s) do you want to share data?
+        "people" : "With which persons(s) do you want to share data?",
+
+        // TODO NEW: Non @PRODUCT account holder
+        "external" : "Non @PRODUCT account holder",
+
+        // TODO NEW: Add More People
+        "add_people_btn" : "Add More People",
+
+        // TODO NEW: Add Practitioner
+        "add_hp_btn" : "Add Practitioner",
+
+        // TODO NEW: Add a Team
+        "add_usergroup_btn" : "Add a Team",
+
+        // TODO NEW: @:newconsent.reshare
+        "reshare" : "@:newconsent.reshare",
+
+        // TODO NEW: @:newconsent.reshare2
+        "reshare2" : "@:newconsent.reshare2",
+
+        // TODO NEW: Write Permission
+        "writes" : "Write Permission",
+
+        // TODO NEW: Consent expiration date:
+        "expiration_date" : "Consent expiration date:",
+
+        // TODO NEW: Does not share data created after:
+        "created_before" : "Does not share data created after:",
+
+        // TODO NEW: Only data created after:
+        "created_after" : "Only data created after:",
+
+        // TODO NEW: What data is shared?
+        "what_is_shared" : "What data is shared?",
+
+        // TODO NEW: This consent does not share any data at the moment.
+        "consent_empty" : "This consent does not share any data at the moment.",
+
+        // TODO NEW: This consent shares data with other @PRODUCT account holders.
+        "type_circle" : "This consent shares data with other @PRODUCT account holders.",
+
+        // TODO NEW: This consent authorizes another person to use your account. All data of the account owner is shared with the representative.
+        "type_representative" : "This consent authorizes another person to use your account. All data of the account owner is shared with the representative.",
+
+        // TODO NEW: This consent shares data with health professionals.
+        "type_healthcare" : "This consent shares data with health professionals.",
+
+        // TODO NEW: This consent shares data with a research project.
+        "type_studyparticipation" : "This consent shares data with a research project.",
+
+        // TODO NEW: This consent shares data with a project participant.
+        "type_studyrelated" : "This consent shares data with a project participant.",
+
+        // TODO NEW: This consent shares data with an application.
+        "type_externalservice" : "This consent shares data with an application.",
+
+        // TODO NEW: This consent shares data with an external service.
+        "type_api" : "This consent shares data with an external service.",
+
+        // TODO NEW: This implicitely created consent shares messages with their receivers.
+        "type_implicit" : "This implicitely created consent shares messages with their receivers.",
+
+        // TODO NEW: This consent is active.
+        "status_active" : "This consent is active.",
+
+        // TODO NEW: This consent has been externally confirmed and is active.
+        "status_preconfirmed" : "This consent has been externally confirmed and is active.",
+
+        // TODO NEW: This consent is expired. Data is no longer shared.
+        "status_expired" : "This consent is expired. Data is no longer shared.",
+
+        // TODO NEW: This consent needs confirmation by its owner.
+        "status_unconfirmed" : "This consent needs confirmation by its owner.",
+
+        // TODO NEW: This consent has been rejected by its owner.
+        "status_rejected" : "This consent has been rejected by its owner.",
+
+        // TODO NEW: This consent needs to be reviewed by its owner.
+        "status_invalid" : "This consent needs to be reviewed by its owner.",
+
+        // TODO NEW: This consent shares currently {{count}} records.
+        "shares_records" : "This consent shares currently {{count}} records.",
+
+        // TODO NEW: Shares all records belonging to group: {{ group }}
+        "shares_group" : "Shares all records belonging to group: {{ group }}",
+
+        // TODO NEW: Excluded are records belonging to group: {{ group }}
+        "excludes_group" : "Excluded are records belonging to group: {{ group }}",
+
+        // TODO NEW: View/Change data selection
+        "view_change_selection_btn" : "View/Change data selection",
+
+        // TODO NEW: Confirm this Consent
+        "confirm_btn" : "Confirm this Consent",
+
+        // TODO NEW: Reject this Consent
+        "reject_btn" : "Reject this Consent",
+
+        // TODO NEW: Delete this Consent
+        "delete_btn" : "Delete this Consent",
+
+        // TODO NEW: Consent to review
+        "please_review1" : "Consent to review",
+
+        // TODO NEW: Please review this consent. Click on 'Confirm this Consent' if you agree. Click on 'Reject this Consent' if you do not agree.
+        "please_review2a" : "Please review this consent. Click on 'Confirm this Consent' if you agree. Click on 'Reject this Consent' if you do not agree.",
+
+        // TODO NEW: Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.
+        "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.",
+
+        // TODO NEW: You
+        "you" : "You",
+
+        // TODO NEW: Further restrictions?
+        "restrictions" : "Further restrictions?",
+
+        // TODO NEW: Project
+        "project" : "Project",
+
+        // TODO NEW: Source of this consent
+        "source" : "Source of this consent",
+
+        // TODO NEW: Link to base consent used
+        "based_on" : "Link to base consent used",
+
+        // TODO NEW: Base consent created at
+        "base_created_at" : "Base consent created at",
+
+        // TODO NEW: If required data may be reshared to these 3rd parties
+        "allowed_reshares" : "If required data may be reshared to these 3rd parties",
+
+        // TODO NEW: 3rd parties using the service
+        "reshare_service" : "3rd parties using the service",
+
+        // TODO NEW: Team or project
+        "reshare_usergroup" : "Team or project",
+
+        // TODO NEW: Single user
+        "reshare_user" : "Single user",
+
+        // TODO NEW: Project
+        "reshare_project" : "Project"
+    },
+
+    "editconsent2" : {
+
+        // TODO NEW: created at
+        "date_of_creation" : "created at",
+
+        // TODO NEW: expires at
+        "valid_until" : "expires at",
+
+        // TODO NEW: Active now
+        "status_active" : "Active now",
+
+        // TODO NEW: Active now (Preconfirmed)
+        "status_preconfirmed" : "Active now (Preconfirmed)",
+
+        // TODO NEW: Expired
+        "status_expired" : "Expired",
+
+        // TODO NEW: Needs confirmation
+        "status_unconfirmed" : "Needs confirmation",
+
+        // TODO NEW: Rejected
+        "status_rejected" : "Rejected",
+
+        // TODO NEW: Invalid
+        "status_invalid" : "Invalid",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Validity Period
+        "duration" : "Validity Period",
+
+        // TODO NEW: External Application
+        "external" : "External Application",
+
+        // TODO NEW: Research Community
+        "community" : "Research Community",
+
+        // TODO NEW: Team
+        "team" : "Team"
+    },
+
+    "consents" : {
+
+        // TODO NEW: Consents
+        "title" : "Consents",
+
+        // TODO NEW: Using consents you can grant others (health professionals, friends, researchers, ...) access to some of your data. Use this page to manage your consents and create new ones.
+        "description" : "Using consents you can grant others (health professionals, friends, researchers, ...) access to some of your data. Use this page to manage your consents and create new ones.",
+
+        // TODO NEW: You have {{ count }} consent(s):
+        "count" : "You have {{ count }} consent(s):",
+
+        // TODO NEW: Show consents where you share data with someone else
+        "where_owner" : "Show consents where you share data with someone else",
+
+        // TODO NEW: Show consents where data is shared with you
+        "where_authorized" : "Show consents where data is shared with you",
+
+        // TODO NEW: Consent Title
+        "name" : "Consent Title",
+
+        // TODO NEW: Owner
+        "ownerName" : "Owner",
+
+        // TODO NEW: Type
+        "type" : "Type",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: # persons
+        "number_of_people" : "# persons",
+
+        // TODO NEW: # records
+        "number_of_records" : "# records",
+
+        // TODO NEW: Creation Date
+        "date_of_creation" : "Creation Date",
+
+        // TODO NEW: Add new consent
+        "add_new_btn" : "Add new consent"
+    },
+
+    "revconsents" : {
+
+        // TODO NEW: There are {{ count }} consent(s) sharing data with you:
+        "count" : "There are {{ count }} consent(s) sharing data with you:",
+
+        // TODO NEW: Add Request for Consent
+        "add_new_btn" : "Add Request for Consent"
+    },
+
+    "importrecords" : {
+
+        // TODO NEW: Import
+        "title" : "Import",
+
+        // TODO NEW: Authorize Now
+        "authorize_btn" : "Authorize Now"
+    },
+
+    "spaces" : {
+
+        // TODO NEW: @PLATFORM Plugin
+        "title" : "@PLATFORM Plugin",
+
+        // TODO NEW: Delete this space
+        "delete_btn" : "Delete this space",
+
+        // TODO NEW: Used records...
+        "used_btn" : "Used records...",
+
+        // TODO NEW: Share...
+        "share_btn" : "Share...",
+
+        // TODO NEW: Finished comparing
+        "finish_comparing_btn" : "Finished comparing",
+
+        // TODO NEW: Compare
+        "compare_btn" : "Compare"
+    },
+
+    "records" : {
+
+        // TODO NEW: My Data
+        "title" : "My Data",
+
+        // TODO NEW: Please use the 'share' and 'unshare' buttons to select which records you want to share with consent 
+        "share_instructions1" : "Please use the 'share' and 'unshare' buttons to select which records you want to share with consent ",
+
+        // TODO NEW: This consent currently shares data with 
+        "share_instructions2" : "This consent currently shares data with ",
+
+        // TODO NEW: person(s).
+        "share_instructions3" : "person(s).",
+
+        // TODO NEW: In order to permanently 
+        "delete_instructions1" : "In order to permanently ",
+
+        // TODO NEW: delete
+        "delete_instructions2" : "delete",
+
+        // TODO NEW: a record, 
+        "delete_instructions3" : "a record, ",
+
+        // TODO NEW: double click
+        "delete_instructions4" : "double click",
+
+        // TODO NEW: on the 'delete' button to the right of the record.
+        "delete_instructions5" : "on the 'delete' button to the right of the record.",
+
+        // TODO NEW: In order to permanently delete all records of a certain category, double click on the 'delete all' button to the right of the category.
+        "delete_instructions6" : "In order to permanently delete all records of a certain category, double click on the 'delete all' button to the right of the category.",
+
+        // TODO NEW: Shared With:
+        "shared_with" : "Shared With:",
+
+        // TODO NEW: Records used by the application
+        "records_used_for_app" : "Records used by the application",
+
+        // TODO NEW: Back
+        "back_to_plugin" : "Back",
+
+        // TODO NEW: Grouped by type of content
+        "by_group" : "Grouped by type of content",
+
+        // TODO NEW: Grouped by application
+        "by_plugin" : "Grouped by application",
+
+        // TODO NEW: Non personal public data
+        "public_data" : "Non personal public data",
+
+        // TODO NEW: Global
+        "type_global" : "Global",
+
+        // TODO NEW: Research
+        "type_study" : "Research",
+
+        // TODO NEW: Other users
+        "type_circle" : "Other users",
+
+        // TODO NEW: Research Projects
+        "type_studyrelated" : "Research Projects",
+
+        // TODO NEW: Health professionals
+        "type_hcrelated" : "Health professionals",
+
+        // TODO NEW: Implicit
+        "type_implicit" : "Implicit",
+
+        // TODO NEW: Doctor / Hospital
+        "type_healthcare" : "Doctor / Hospital",
+
+        // TODO NEW: Research
+        "type_studyparticipation" : "Research",
+
+        // TODO NEW: Representative
+        "type_representative" : "Representative",
+
+        // TODO NEW: Service (external)
+        "type_externalservice" : "Service (external)",
+
+        // TODO NEW: Show:
+        "show" : "Show:",
+
+        // TODO NEW: My Data
+        "my_data" : "My Data",
+
+        // TODO NEW: All Data
+        "all_data" : "All Data",
+
+        // TODO NEW: Personal Data
+        "all" : "Personal Data",
+
+        // TODO NEW: Project: {{name}}
+        "study" : "Project: {{name}}",
+
+        // TODO NEW: Shared by: {{name}}
+        "shared" : "Shared by: {{name}}",
+
+        // TODO NEW: {{name}}
+        "just_name" : "{{name}}",
+
+        // TODO NEW: share
+        "share" : "share",
+
+        // TODO NEW: unshare
+        "unshare" : "unshare",
+
+        // TODO NEW: delete
+        "delete" : "delete",
+
+        // TODO NEW: delete all
+        "delete_all_btn" : "delete all",
+
+        // TODO NEW: No available records found.
+        "empty" : "No available records found.",
+
+        // TODO NEW: The record tree for this selection cannot be created. There are too many consents involved.
+        "too_many_consents" : "The record tree for this selection cannot be created. There are too many consents involved.",
+
+        // TODO NEW: Close
+        "close_btn" : "Close"
+    },
+
+    "oauth2" : {
+
+        // TODO NEW: stores your personal data in your @PRODUCT account.
+        "requests_permission" : "stores your personal data in your @PRODUCT account.",
+
+        // TODO NEW: You don't have an account?
+        "no_account" : "You don't have an account?",
+
+        // TODO NEW: You have a @PRODUCT account?
+        "have_account" : "You have a @PRODUCT account?",
+
+        // TODO NEW: Perfect, log in here
+        "have_account2" : "Perfect, log in here",
+
+        // TODO NEW: Role
+        "role" : "Role",
+
+        // TODO NEW: Sign up
+        "sign_up_btn" : "Sign up",
+
+        // TODO NEW: Application may share data it has access to to third parties.
+        "reshares_data" : "Application may share data it has access to to third parties.",
+
+        // TODO NEW: Your name and email address may be searched by other people using this app.
+        "allows_user_search" : "Your name and email address may be searched by other people using this app.",
+
+        // TODO NEW: needs access to your data.
+        "requesting_app" : "needs access to your data.",
+
+        // TODO NEW: @PRODUCT login for:
+        "sign_in" : "@PRODUCT login for:",
+
+        // TODO NEW: Log in
+        "sign_in_btn" : "Log in",
+
+        // TODO NEW: Device: {{device}}
+        "device" : "Device: {{device}}",
+
+        // TODO NEW: Please confirm the activation of the application using the @PRODUCT portal, then retry. Consent title is: {{ consent }}
+        "please_confirm" : "Please confirm the activation of the application using the @PRODUCT portal, then retry. Consent title is: {{ consent }}",
+
+        // TODO NEW: I agree
+        "confirm_btn" : "I agree",
+
+        // TODO NEW: Reject
+        "reject_btn" : "Reject",
+
+        // TODO NEW: Continue
+        "continue_btn" : "Continue",
+
+        // TODO NEW: Access requested by the application:
+        "requests_access" : "Access requested by the application:",
+
+        // TODO NEW: Data type
+        "requests_access_short" : "Data type",
+
+        // TODO NEW: Data shared with the project:
+        "requests_sharing" : "Data shared with the project:",
+
+        // TODO NEW: Data shared with the external service:
+        "requests_sharing_service" : "Data shared with the external service:",
+
+        // TODO NEW: Group: {{ group }}
+        "shares_group" : "Group: {{ group }}",
+
+        // TODO NEW: Format: {{ format }}
+        "shares_format" : "Format: {{ format }}",
+
+        // TODO NEW: Content: {{ content }}
+        "shares_content" : "Content: {{ content }}",
+
+        // TODO NEW: I accept to share data with this external provider
+        "confirm_provider" : "I accept to share data with this external provider",
+
+        // TODO NEW: I accept to share data with this external provider (optional)
+        "confirm_provider_opt" : "I accept to share data with this external provider (optional)",
+
+        // TODO NEW: I accept the terms of use of the application and to share data with the linked service
+        "confirm_service" : "I accept the terms of use of the application and to share data with the linked service",
+
+        // TODO NEW: I accept to share data with this external service (optional)
+        "confirm_service_opt" : "I accept to share data with this external service (optional)",
+
+        // TODO NEW: I accept the terms of use of the application and to participate in the project
+        "confirm_study" : "I accept the terms of use of the application and to participate in the project",
+
+        // TODO NEW: I accept to participate in the project
+        "confirm_study_opt" : "I accept to participate in the project",
+
+        // TODO NEW: I accept to participate in the citizen science project
+        "confirm_citizen_science" : "I accept to participate in the citizen science project",
+
+        // TODO NEW: I accept the terms of use of the application and community services
+        "confirm_community" : "I accept the terms of use of the application and community services",
+
+        // TODO NEW: I accept to share data with the community service
+        "confirm_community_opt" : "I accept to share data with the community service",
+
+        // TODO NEW: I accept the terms of use and to share data with 
+        "confirm_app" : "I accept the terms of use and to share data with ",
+
+        // TODO NEW: and
+        "and" : "and",
+
+        // TODO NEW: An additional service is required to use this application:
+        "link_SERVICE_required" : "An additional service is required to use this application:",
+
+        // TODO NEW: You may additionally subscribe to use this service:
+        "link_SERVICE_optional" : "You may additionally subscribe to use this service:",
+
+        // TODO NEW: A third party needs access to your data to use this application:
+        "link_ORGANIZATION_required" : "A third party needs access to your data to use this application:",
+
+        // TODO NEW: You may share data with this third party:
+        "link_ORGANIZATION_optional" : "You may share data with this third party:",
+
+        // TODO NEW: In order to use this application you need to participate in a clinical study:
+        "link_CLINICAL_required" : "In order to use this application you need to participate in a clinical study:",
+
+        // TODO NEW: Additionally you may participate in a clinical study:
+        "link_CLINICAL_optional" : "Additionally you may participate in a clinical study:",
+
+        // TODO NEW: In order to use this application you need to share data with a registry:
+        "link_REGISTRY_required" : "In order to use this application you need to share data with a registry:",
+
+        // TODO NEW: Additionally you may share data with a registry:
+        "link_REGISTRY_optional" : "Additionally you may share data with a registry:",
+
+        // TODO NEW: In order to use this application you must participate in a citizen science project:
+        "link_CITIZENSCIENCE_required" : "In order to use this application you must participate in a citizen science project:",
+
+        // TODO NEW: Additionally you may participate in a citizen science project:
+        "link_CITIZENSCIENCE_optional" : "Additionally you may participate in a citizen science project:",
+
+        // TODO NEW: In order to use this application you must participate in a community project:
+        "link_COMMUNITY_required" : "In order to use this application you must participate in a community project:",
+
+        // TODO NEW: Additionally you may participate in a community project:
+        "link_COMMUNITY_optional" : "Additionally you may participate in a community project:",
+
+        // TODO NEW: Summary of data flow
+        "sharing_summary" : "Summary of data flow",
+
+        // TODO NEW: All
+        "all" : "All",
+
+        // TODO NEW: Both
+        "both" : "Both",
+
+        // TODO NEW: Only:
+        "only" : "Only:",
+
+        // TODO NEW: All but:
+        "not" : "All but:",
+
+        // TODO NEW: Application
+        "short_app" : "Application",
+
+        // TODO NEW: Service
+        "short_service" : "Service",
+
+        // TODO NEW: Project
+        "short_project" : "Project",
+
+        // TODO NEW: Clinical Study
+        "short_clinical" : "Clinical Study",
+
+        // TODO NEW: Citizen Science Project
+        "short_citizenscience" : "Citizen Science Project",
+
+        // TODO NEW: Community Project
+        "short_community" : "Community Project",
+
+        // TODO NEW: Third party
+        "short_party" : "Third party",
+
+        // TODO NEW: pseudonymized data
+        "mode_pseudonymized" : "pseudonymized data",
+
+        // TODO NEW: anonymized data
+        "mode_anonymized" : "anonymized data",
+
+        // TODO NEW: raw data
+        "mode_all" : "raw data",
+
+        // TODO NEW: on your device
+        "target_device" : "on your device",
+
+        // TODO NEW: operated by
+        "target_operated" : "operated by",
+
+        // TODO NEW: performed by
+        "target_performed" : "performed by",
+
+        // TODO NEW: for other participants
+        "target_community" : "for other participants"
+    },
+
+    "dashboard" : {
+
+        // TODO NEW: Welcome to @PLATFORM
+        "help_welcome" : "Welcome to @PLATFORM",
+
+        // TODO NEW: My Views
+        "myviews" : "My Views",
+
+        // TODO NEW: My personal data
+        "mydata" : "My personal data",
+
+        // TODO NEW: Manage your health data. Enter new data and visualize existing data.
+        "mydata_text" : "Manage your health data. Enter new data and visualize existing data.",
+
+        // TODO NEW: Social
+        "social" : "Social",
+
+        // TODO NEW: Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.
+        "social_text" : "Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.",
+
+        // TODO NEW: Research
+        "research" : "Research",
+
+        // TODO NEW: Participate in research projects. Inform yourself about current research.
+        "research_text" : "Participate in research projects. Inform yourself about current research.",
+
+        // TODO NEW: Health
+        "health" : "Health",
+
+        // TODO NEW: Share data with your doctor. Search for health professionals.
+        "health_text" : "Share data with your doctor. Search for health professionals.",
+
+        // TODO NEW: Help
+        "help" : "Help",
+
+        // TODO NEW: Get help about the functionality
+        "help_text" : "Get help about the functionality",
+
+        // TODO NEW: Training
+        "training" : "Training",
+
+        // TODO NEW: Manage your personal training!
+        "training_text" : "Manage your personal training!",
+
+        // TODO NEW: Newest records added this month:
+        "newrecords" : "Newest records added this month:",
+
+        // TODO NEW: There are no new records. Visit the records page to browser all of your records.
+        "newrecords_teaser" : "There are no new records. Visit the records page to browser all of your records.",
+
+        // TODO NEW: My Account Data
+        "myaccount" : "My Account Data",
+
+        // TODO NEW: New records shared with you
+        "newsharedrecords" : "New records shared with you",
+
+        // TODO NEW: Other @PRODUCT account holders may share their data with you.
+        "newsharedrecords_teaser" : "Other @PRODUCT account holders may share their data with you.",
+
+        // TODO NEW: Member of Circles
+        "circles" : "Member of Circles",
+
+        // TODO NEW: Ask others to add you to their circles.
+        "circles_teaser" : "Ask others to add you to their circles.",
+
+        // TODO NEW: Your Circles
+        "circles2" : "Your Circles",
+
+        // TODO NEW: Create Circles to share your data with others. Share with friends, family or others.
+        "circles2_teaser" : "Create Circles to share your data with others. Share with friends, family or others.",
+
+        // TODO NEW: Your Health Consents
+        "providers" : "Your Health Consents",
+
+        // TODO NEW: Search for health professionals and add them to your list in order to share data with them.
+        "providers_teaser" : "Search for health professionals and add them to your list in order to share data with them.",
+
+        // TODO NEW: Search for Health Professionals
+        "providersearch" : "Search for Health Professionals",
+
+        // TODO NEW: Search function for health professionals.
+        "providersearch_text" : "Search function for health professionals.",
+
+        // TODO NEW: Search for Teams
+        "usergroupsearch" : "Search for Teams",
+
+        // TODO NEW: Newest records from your health professionals
+        "hcrecords" : "Newest records from your health professionals",
+
+        // TODO NEW: Records
+        "records" : "Records",
+
+        // TODO NEW: Share
+        "share" : "Share",
+
+        // TODO NEW: Details
+        "details" : "Details",
+
+        // TODO NEW: Research projects you are involved:
+        "yourstudies" : "Research projects you are involved:",
+
+        // TODO NEW: If you want to participate in research, configure your research settings. You will be contacted in this tile if you match a projects requirements.
+        "studies_teaser" : "If you want to participate in research, configure your research settings. You will be contacted in this tile if you match a projects requirements.",
+
+        // TODO NEW: New Research Projects
+        "newstudies" : "New Research Projects",
+
+        // TODO NEW: News
+        "newsconfig" : "News",
+
+        // TODO NEW: There are currently no announcements
+        "newsconfig_teaser" : "There are currently no announcements",
+
+        // TODO NEW: Research News
+        "researchnews" : "Research News",
+
+        // TODO NEW: Search for new health research publications.
+        "researchnews_text" : "Search for new health research publications.",
+
+        // TODO NEW: Search for News
+        "researchnews_btn" : "Search for News",
+
+        // TODO NEW: My Research Settings
+        "studysettings" : "My Research Settings",
+
+        // TODO NEW: Join by participation code
+        "entercode" : "Join by participation code",
+
+        // TODO NEW: Records shared with this consent:
+        "records_shared" : "Records shared with this consent:",
+
+        // TODO NEW: Add Users to Consent
+        "addusers" : "Add Users to Consent",
+
+        // TODO NEW: Shared records:
+        "shared_with_study" : "Shared records:",
+
+        // TODO NEW: Records of this patient:
+        "patient_records" : "Records of this patient:",
+
+        // TODO NEW: Records of this group:
+        "group_records" : "Records of this group:",
+
+        // TODO NEW: Shared records:
+        "study_records" : "Shared records:",
+
+        // TODO NEW: Add more
+        "addmore" : "Add more",
+
+        // TODO NEW: View
+        "view_btn" : "View",
+
+        // TODO NEW: Add more
+        "install_btn" : "Add more",
+
+        // TODO NEW: Measures
+        "observations" : "Measures",
+
+        // TODO NEW: Calendar
+        "calendar" : "Calendar",
+
+        // TODO NEW: Research Projects
+        "smallstudies" : "Research Projects"
+    },
+
+    "measure" : {
+
+        // TODO NEW: Body Weight
+        "body_weight" : "Body Weight",
+
+        // TODO NEW: Steps
+        "activities_steps" : "Steps",
+
+        // TODO NEW: Personal Diary
+        "diary" : "Personal Diary",
+
+        // TODO NEW: Mood
+        "subjective_condition" : "Mood",
+
+        // TODO NEW: Heart Rate and Blood Pressure
+        "heart" : "Heart Rate and Blood Pressure",
+
+        // TODO NEW: Health Documents
+        "documents" : "Health Documents",
+
+        // TODO NEW: Appointments
+        "appointments" : "Appointments",
+
+        // TODO NEW: Sleep Data
+        "sleep" : "Sleep Data",
+
+        // TODO NEW: Heart Rate
+        "activities_heartrate" : "Heart Rate",
+
+        // TODO NEW: Blood Pressure
+        "body_bloodpressure" : "Blood Pressure",
+
+        // TODO NEW: Documents
+        "files" : "Documents"
+    },
+
+    "config" : {
+
+        // TODO NEW: Fitbit Configuration
+        "fitbit" : "Fitbit Configuration",
+
+        // TODO NEW: Withings Configuration
+        "withings" : "Withings Configuration"
+    },
+
+    "spacesummary" : {
+
+        // TODO NEW: Records to view.
+        "records_to_view" : "Records to view.",
+
+        // TODO NEW: Last entry at
+        "last_entry_at" : "Last entry at",
+
+        // TODO NEW: No entries yet
+        "no_entries_yet" : "No entries yet",
+
+        // TODO NEW: Newest entry from
+        "newest_entry_from" : "Newest entry from",
+
+        // TODO NEW: View
+        "view_btn" : "View",
+
+        // TODO NEW: Add
+        "add_btn" : "Add"
+    },
+
+    "flexiblerecords" : {
+
+        // TODO NEW: Records available:
+        "records_available" : "Records available:",
+
+        // TODO NEW: Empty
+        "empty" : "Empty",
+
+        // TODO NEW: Browse Records
+        "browse_btn" : "Browse Records",
+
+        // TODO NEW: Add Records...
+        "add_btn" : "Add Records...",
+
+        // TODO NEW: Share
+        "share_btn" : "Share"
+    },
+
+    "flexiblestudies" : {
+
+        // TODO NEW: Empty
+        "empty" : "Empty",
+
+        // TODO NEW: Research projects found:
+        "studies_found" : "Research projects found:"
+    },
+
+    "addusers" : {
+
+        // TODO NEW: User Search
+        "title" : "User Search",
+
+        // TODO NEW: Existing contacts:
+        "contacts" : "Existing contacts:",
+
+        // TODO NEW: All users
+        "all_users" : "All users",
+
+        // TODO NEW: No contacts can be added to this circle.
+        "no_contacts_to_add" : "No contacts can be added to this circle.",
+
+        // TODO NEW: Enter email of target person:
+        "search_by_email" : "Enter email of target person:",
+
+        // TODO NEW: Search for a user
+        "search_user" : "Search for a user",
+
+        // TODO NEW: Searching...
+        "searching" : "Searching...",
+
+        // TODO NEW: No users matched your search.
+        "no_matching_users" : "No users matched your search.",
+
+        // TODO NEW: All found users are already members of this circle.
+        "no_new_found" : "All found users are already members of this circle."
+    },
+
+    "usergroupsearch" : {
+
+        // TODO NEW: Team Name
+        "name" : "Team Name",
+
+        // TODO NEW: No matching teams found.
+        "empty_result" : "No matching teams found.",
+
+        // TODO NEW: Add As Individual People To Consent
+        "add_individuals_btn" : "Add As Individual People To Consent",
+
+        // TODO NEW: Add As Changing Team To Consent
+        "add_group_btn" : "Add As Changing Team To Consent"
+    },
+
+    "organizationsearch" : {
+
+        // TODO NEW: Search for Organizations
+        "title" : "Search for Organizations",
+
+        // TODO NEW: Organization Name
+        "name" : "Organization Name",
+
+        // TODO NEW: City or zip code
+        "city_or_zip" : "City or zip code",
+
+        // TODO NEW: No matching organizations found.
+        "empty_result" : "No matching organizations found."
+    },
+
+    "databrokersearch" : {
+
+        // TODO NEW: Search Data Brokers (APIs)
+        "title" : "Search Data Brokers (APIs)",
+
+        // TODO NEW: Data broker name
+        "name" : "Data broker name",
+
+        // TODO NEW: No matching data brokers found.
+        "empty_result" : "No matching data brokers found.",
+
+        // TODO NEW: Create new instance
+        "new_btn" : "Create new instance"
+    },
+
+    "confirm" : {
+
+        // TODO NEW: Are you really sure?
+        "title" : "Are you really sure?",
+
+        // TODO NEW: Cancel
+        "cancel" : "Cancel"
+    },
+
+    "terms" : {
+
+        // TODO NEW: << Back
+        "close_btn" : "<< Back",
+
+        // TODO NEW: Close
+        "close_new_btn" : "Close"
+    },
+
+    "auditlog" : {
+
+        // TODO NEW: Event
+        "event" : "Event",
+
+        // TODO NEW: Actor
+        "actor" : "Actor",
+
+        // TODO NEW: Entity
+        "entity" : "Entity",
+
+        // TODO NEW: Time
+        "recorded" : "Time",
+
+        // TODO NEW: Outcome
+        "outcome" : "Outcome",
+
+        // TODO NEW: No entry yet.
+        "empty" : "No entry yet.",
+
+        // TODO NEW: Pseudonymized User
+        "anonymous" : "Pseudonymized User",
+
+        // TODO NEW: Audit Log
+        "title" : "Audit Log",
+
+        // TODO NEW: Refresh
+        "refresh_btn" : "Refresh",
+
+        // TODO NEW: via
+        "via" : "via",
+
+        // TODO NEW: Consent
+        "CIRCLE" : "Consent",
+
+        // TODO NEW: Representative
+        "REPRESENTATIVE" : "Representative",
+
+        // TODO NEW: Research Project
+        "ResearchStudy" : "Research Project",
+
+        // TODO NEW: Application
+        "EXTERNALSERVICE" : "Application",
+
+        // TODO NEW: Service
+        "API" : "Service",
+
+        // TODO NEW: Participation
+        "STUDYPARTICIPATION" : "Participation",
+
+        // TODO NEW: Consent (Health Professional)
+        "HEALTHCARE" : "Consent (Health Professional)",
+
+        // TODO NEW: Account
+        "MEMBER" : "Account",
+
+        // TODO NEW: Account (Health Professional)
+        "PROVIDER" : "Account (Health Professional)",
+
+        // TODO NEW: Account (Account Holder)
+        "HCRELATED" : "Account (Account Holder)",
+
+        // TODO NEW: Account (Researcher)
+        "RESEARCH" : "Account (Researcher)",
+
+        // TODO NEW: Account (Administrator)
+        "ADMIN" : "Account (Administrator)",
+
+        // TODO NEW: Account (Developer)
+        "DEVELOPER" : "Account (Developer)"
+    },
+
+    "apps" : {
+
+        // TODO NEW: Connect your applications to collect data
+        "greeting" : "Connect your applications to collect data",
+
+        // TODO NEW: Applications
+        "title" : "Applications",
+
+        // TODO NEW: Authorized Applicationss
+        "description" : "Authorized Applicationss",
+
+        // TODO NEW: You have {{count}} authorized applications.
+        "count" : "You have {{count}} authorized applications.",
+
+        // TODO NEW: Services
+        "services" : "Services",
+
+        // TODO NEW: There are no services available yet.
+        "empty" : "There are no services available yet.",
+
+        // TODO NEW: Authorize
+        "connect_btn" : "Authorize",
+
+        // TODO NEW: Use
+        "use_btn" : "Use"
+    },
+
+    "changeemail" : {
+
+        // TODO NEW: Change Account Email Address
+        "title" : "Change Account Email Address",
+
+        // TODO NEW: @PRODUCT ID
+        "midataId" : "@PRODUCT ID",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Current Email Address
+        "old_email" : "Current Email Address",
+
+        // TODO NEW: New Email Address
+        "new_email" : "New Email Address",
+
+        // TODO NEW: None
+        "none" : "None",
+
+        // TODO NEW: Change
+        "change_btn" : "Change",
+
+        // TODO NEW: Email address successfully changed!
+        "success" : "Email address successfully changed!"
+    },
+
+    "member_user" : {
+
+        // TODO NEW: Account Status
+        "account_status" : "Account Status",
+
+        // TODO NEW: Your account has been set up for participation in a project. Functionality is limited. You may upgrade your user account to a full account.
+        "studyparticipant" : "Your account has been set up for participation in a project. Functionality is limited. You may upgrade your user account to a full account.",
+
+        // TODO NEW: Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.
+        "appuser" : "Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.",
+
+        // TODO NEW: You are a member of the cooperative.
+        "memberofcooperative" : "You are a member of the cooperative.",
+
+        // TODO NEW: You have a full user account but you are no member of the cooperative.
+        "nonmemberuser" : "You have a full user account but you are no member of the cooperative.",
+
+        // TODO NEW: By clicking on the 'Request Contract' button, the General Terms and Conditions (T&Cs) and the contract will be sent to you by letter. Please return the signed T&Cs to convert this trial account into a full account.
+        "agb_not_requested" : "By clicking on the 'Request Contract' button, the General Terms and Conditions (T&Cs) and the contract will be sent to you by letter. Please return the signed T&Cs to convert this trial account into a full account.",
+
+        // TODO NEW: You have requested the General Terms and Conditions and the contract. Your request is being processed by the cooperative.
+        "agb_requested" : "You have requested the General Terms and Conditions and the contract. Your request is being processed by the cooperative.",
+
+        // TODO NEW: The General Terms and Conditions and contract you have asked for should arrive in the next days.
+        "agb_printed" : "The General Terms and Conditions and contract you have asked for should arrive in the next days.",
+
+        // TODO NEW: You have signed the General Terms and Conditions.
+        "agb_signed" : "You have signed the General Terms and Conditions.",
+
+        // TODO NEW: Your postal address has been confirmed.
+        "confirmed" : "Your postal address has been confirmed.",
+
+        // TODO NEW: The letter sent to you contains a registration code. Please enter your code here once you have received it:
+        "entercode" : "The letter sent to you contains a registration code. Please enter your code here once you have received it:",
+
+        // TODO NEW: Your email address has not been validated yet. Please click on the link in the validation email you received!
+        "email_unvalidated" : "Your email address has not been validated yet. Please click on the link in the validation email you received!",
+
+        // TODO NEW: Request Contract
+        "request_membership_btn" : "Request Contract"
+    },
+
+    "accountwipe" : {
+
+        // TODO NEW: Close and Delete @PRODUCT Account
+        "title" : "Close and Delete @PRODUCT Account",
+
+        // TODO NEW: Dear {{name}},
+        "hello" : "Dear {{name}},",
+
+        // TODO NEW: Dear {{name}},
+        "hello_m" : "Dear {{name}},",
+
+        // TODO NEW: Dear {{name}},
+        "hello_w" : "Dear {{name}},",
+
+        // TODO NEW: You would like to delete your @PRODUCT account irrevocably? That is of course possible.
+        "paragraph1" : "You would like to delete your @PRODUCT account irrevocably? That is of course possible.",
+
+        // TODO NEW: Please read the following information first:
+        "paragraph2" : "Please read the following information first:",
+
+        // TODO NEW: If you delete your @PRODUCT account your personal data will no longer be available.
+        "point1" : "If you delete your @PRODUCT account your personal data will no longer be available.",
+
+        // TODO NEW: Data already included in research projects will continue to be available in these projects.
+        "point2" : "Data already included in research projects will continue to be available in these projects.",
+
+        // TODO NEW: @OPERATOR is not able to recover your deleted account.
+        "point3" : "@OPERATOR is not able to recover your deleted account.",
+
+        // TODO NEW: Warning
+        "warning" : "Warning",
+
+        // TODO NEW: This action cannot be undone.
+        "final" : "This action cannot be undone.",
+
+        // TODO NEW: If you really want to delete your @PRODUCT account enter your password for confirmation.
+        "paragraph3" : "If you really want to delete your @PRODUCT account enter your password for confirmation.",
+
+        // TODO NEW: Password
+        "password" : "Password",
+
+        // TODO NEW: Reason (optional)
+        "reason" : "Reason (optional)",
+
+        // TODO NEW: We would be grateful if you could tell us why you are deleting your account. We are continually trying to improve the @PLATFORM.
+        "reason2" : "We would be grateful if you could tell us why you are deleting your account. We are continually trying to improve the @PLATFORM.",
+
+        // TODO NEW: Close and Delete @PRODUCT Account
+        "wipe_btn" : "Close and Delete @PRODUCT Account",
+
+        // TODO NEW: Password not correct. The account has not been deleted.
+        "error" : "Password not correct. The account has not been deleted."
+    },
+
+    "service" : {
+
+        // TODO NEW: Token-Link service for @PRODUCT
+        "title" : "Token-Link service for @PRODUCT",
+
+        // TODO NEW: Your token-link has been processed. You can now close this window.
+        "success" : "Your token-link has been processed. You can now close this window."
+    },
+
+    "serviceleave" : {
+
+        // TODO NEW: You are leaving @PRODUCT
+        "title" : "You are leaving @PRODUCT",
+
+        // TODO NEW: Thank you for your help!
+        "thankyou" : "Thank you for your help!",
+
+        // TODO NEW: Log out
+        "logout_btn" : "Log out",
+
+        // TODO NEW: End session and close window
+        "goodbye_btn" : "End session and close window",
+
+        // TODO NEW: You are now leaving the @PRODUCT account management portal.
+        "logoutreturn" : "You are now leaving the @PRODUCT account management portal."
+    },
+
+    "queryeditor" : {
+
+        // TODO NEW: Data Access Filter Editor
+        "title" : "Data Access Filter Editor",
+
+        // TODO NEW: Application
+        "app" : "Application",
+
+        // TODO NEW: Research Project
+        "study" : "Research Project",
+
+        // TODO NEW: List of accessable data types:
+        "summary" : "List of accessable data types:",
+
+        // TODO NEW: Data Access Filter
+        "access_query" : "Data Access Filter",
+
+        // TODO NEW: Data Format
+        "format" : "Data Format",
+
+        // TODO NEW: Code
+        "code" : "Code",
+
+        // TODO NEW: to
+        "to" : "to",
+
+        // TODO NEW: Data Type
+        "content" : "Data Type",
+
+        // TODO NEW: Expert Mode
+        "expert_mode_btn" : "Expert Mode",
+
+        // TODO NEW: Basic Resources
+        "add_basic_btn" : "Basic Resources",
+
+        // TODO NEW: Add More Data Types
+        "add_data_btn" : "Add More Data Types",
+
+        // TODO NEW: Remove code restriction
+        "no_code_btn" : "Remove code restriction",
+
+        // TODO NEW: Data Owner
+        "owner" : "Data Owner",
+
+        // TODO NEW: Use also shared data (from projects, friends, patients)
+        "owner_all" : "Use also shared data (from projects, friends, patients)",
+
+        // TODO NEW: Only data from the user of the application
+        "owner_self" : "Only data from the user of the application",
+
+        // TODO NEW: Also shared data
+        "short_owner_all" : "Also shared data",
+
+        // TODO NEW: Only own data
+        "short_owner_self" : "Only own data",
+
+        // TODO NEW: Only public data
+        "short_public_only" : "Only public data",
+
+        // TODO NEW: Public, shared and own data
+        "short_public_also" : "Public, shared and own data",
+
+        // TODO NEW: Public and own data
+        "short_public_also_self" : "Public and own data",
+
+        // TODO NEW: dynamic
+        "short_dynamic" : "dynamic",
+
+        // TODO NEW: Source application
+        "source_app" : "Source application",
+
+        // TODO NEW: All sources
+        "short_app_all" : "All sources",
+
+        // TODO NEW: Only application:
+        "short_app_other" : "Only application:",
+
+        // TODO NEW: Use only data from this application
+        "app_self" : "Use only data from this application",
+
+        // TODO NEW: Use data from any source application
+        "app_all" : "Use data from any source application",
+
+        // TODO NEW: Use data from application:
+        "app_other" : "Use data from application:",
+
+        // TODO NEW: Public Data
+        "public" : "Public Data",
+
+        // TODO NEW: Use public data only
+        "public_only" : "Use public data only",
+
+        // TODO NEW: Use public and other data
+        "public_also" : "Use public and other data",
+
+        // TODO NEW: Do not use public data
+        "public_no" : "Do not use public data",
+
+        // TODO NEW: Dynamic
+        "dynamic" : "Dynamic",
+
+        // TODO NEW: Always use current group content
+        "dynamic_yes" : "Always use current group content",
+
+        // TODO NEW: Additional Restrictions
+        "restrictions" : "Additional Restrictions",
+
+        // TODO NEW: Date
+        "data_period_restriction" : "Date",
+
+        // TODO NEW: Creation / Update date
+        "time_restriction" : "Creation / Update date",
+
+        // TODO NEW: Created after
+        "created-after" : "Created after",
+
+        // TODO NEW: Last updated after
+        "updated-after" : "Last updated after",
+
+        // TODO NEW: Effective date or period
+        "effective" : "Effective date or period",
+
+        // TODO NEW: Only with this observer (optional)
+        "observer" : "Only with this observer (optional)",
+
+        // TODO NEW: Category (optional)
+        "category" : "Category (optional)",
+
+        // TODO NEW: User Defined Filter (JSON)
+        "custom_filter" : "User Defined Filter (JSON)",
+
+        // TODO NEW: Security Tags
+        "security_tags" : "Security Tags",
+
+        // TODO NEW: Tag
+        "tag" : "Tag",
+
+        // TODO NEW: Require for read
+        "require" : "Require for read",
+
+        // TODO NEW: Allow write
+        "allow" : "Allow write",
+
+        // TODO NEW: Auto-Add
+        "add" : "Auto-Add",
+        "tags" : {
+
+            // TODO NEW: Reliable
+            "reliable" : "Reliable",
+
+            // TODO NEW: No delete
+            "no_delete" : "No delete",
+
+            // TODO NEW: Read only
+            "read_only" : "Read only",
+
+            // TODO NEW: Hide from patient
+            "hidden" : "Hide from patient",
+
+            // TODO NEW: Not pseudonymisable
+            "not_pseudonymisable" : "Not pseudonymisable"
+        },
+
+        // TODO NEW: Remove
+        "remove_btn" : "Remove",
+
+        // TODO NEW: Apply
+        "apply_btn" : "Apply",
+
+        // TODO NEW: Enter name, code, resource type or (part of) description of data type to add:
+        "newentry" : "Enter name, code, resource type or (part of) description of data type to add:",
+
+        // TODO NEW: Please select a result to add from the left or only a fragment from the right column.
+        "make_selection" : "Please select a result to add from the left or only a fragment from the right column.",
+
+        // TODO NEW: Match
+        "resultgroup" : "Match",
+
+        // TODO NEW: Contained types or codes
+        "resultdetail" : "Contained types or codes",
+
+        // TODO NEW: No matching datatype found.
+        "search_empty" : "No matching datatype found.",
+
+        // TODO NEW: Select which of these frequently used resources your application needs access to:
+        "select_resources" : "Select which of these frequently used resources your application needs access to:",
+
+        // TODO NEW: Save and exit
+        "save_exit_btn" : "Save and exit",
+
+        // TODO NEW: Cancel
+        "cancel_btn" : "Cancel",
+
+        // TODO NEW: Is the list of required data now complete and correct?
+        "check_okay" : "Is the list of required data now complete and correct?",
+        "ask" : {
+
+            // TODO NEW: Access to the audit log
+            "AuditEvent" : "Access to the audit log",
+
+            // TODO NEW: Access to consents of the application user with other users or applications
+            "Consent" : "Access to consents of the application user with other users or applications",
+
+            // TODO NEW: Access to group definitions (teams of health professionals or researchers as well as project-specific groups)
+            "Group" : "Access to group definitions (teams of health professionals or researchers as well as project-specific groups)",
+
+            // TODO NEW: Patient Records: name, email, address of account holders
+            "Patient" : "Patient Records: name, email, address of account holders",
+
+            // TODO NEW: Patient Records: pseudonym, year of birth, country of research project participants
+            "PseudonymizedPatient" : "Patient Records: pseudonym, year of birth, country of research project participants",
+
+            // TODO NEW: Practitioner Resource: search for health professionals or researchers
+            "Practitioner" : "Practitioner Resource: search for health professionals or researchers",
+
+            // TODO NEW: Access and manage subscriptions to external systems
+            "Subscription" : "Access and manage subscriptions to external systems"
+        }
+    },
+
+    "timeline" : {
+
+        // TODO NEW: Timeline
+        "title" : "Timeline",
+
+        // TODO NEW: Fitness
+        "fitness" : "Fitness",
+
+        // TODO NEW: Health Data
+        "health" : "Health Data",
+
+        // TODO NEW: Data Analysis
+        "analyze" : "Data Analysis"
+    },
+
+    "changelog" : {
+
+        // TODO NEW: Server Change Log
+        "title" : "Server Change Log",
+
+        // TODO NEW: New Feature
+        "F" : "New Feature",
+
+        // TODO NEW: Bugfix
+        "B" : "Bugfix",
+
+        // TODO NEW: Improvement
+        "I" : "Improvement",
+
+        // TODO NEW: Bugfix
+        "S" : "Bugfix"
+    },
+
+    "apikeys" : {
+
+        // TODO NEW: API Key Management
+        "title" : "API Key Management",
+
+        // TODO NEW: This account does not manage any services with API keys.
+        "empty" : "This account does not manage any services with API keys.",
+
+        // TODO NEW: managed by
+        "managedby" : "managed by",
+
+        // TODO NEW: Add Key
+        "add_btn" : "Add Key",
+
+        // TODO NEW: Remove Analyzer
+        "delete_btn" : "Remove Analyzer",
+
+        // TODO NEW: Remove Service
+        "delete_service_btn" : "Remove Service",
+
+        // TODO NEW: Remove Endpoint
+        "delete_endpoint_btn" : "Remove Endpoint",
+
+        // TODO NEW: Show Keys
+        "show_btn" : "Show Keys",
+
+        // TODO NEW: Revoke this key
+        "revoke_btn" : "Revoke this key",
+
+        // TODO NEW: Please copy these keys somewhere safe. They are displayed only once.
+        "instructions" : "Please copy these keys somewhere safe. They are displayed only once.",
+
+        // TODO NEW: API Key for direct use
+        "key" : "API Key for direct use",
+
+        // TODO NEW: Use this key directly in the authorization header of the service as bearer token.
+        "instructions_key" : "Use this key directly in the authorization header of the service as bearer token.",
+
+        // TODO NEW: Refresh token for OAuth
+        "refresh" : "Refresh token for OAuth",
+
+        // TODO NEW: For improved security, exchange this refresh token against a new pair of access token and refresh token.
+        "instructions_refresh" : "For improved security, exchange this refresh token against a new pair of access token and refresh token.",
+
+        // TODO NEW: OU (organization unit) and CN (common name) for CSR (certificate request)
+        "common_name" : "OU (organization unit) and CN (common name) for CSR (certificate request)",
+
+        // TODO NEW: For certificate based authentication create a CSR with the given OU and CN fields. Send the CSR to @SUPPORT
+        "instructions_common_name" : "For certificate based authentication create a CSR with the given OU and CN fields. Send the CSR to @SUPPORT",
+
+        // TODO NEW: Date of creation
+        "date" : "Date of creation",
+
+        // TODO NEW: Restrictions
+        "restrictions" : "Restrictions",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Active
+        "ACTIVE" : "Active",
+
+        // TODO NEW: Old version
+        "FROZEN" : "Old version",
+
+        // TODO NEW: Invalid
+        "INVALID" : "Invalid"
+    },
+
+    "failure" : {
+
+        // TODO NEW: Login not allowed
+        "title" : "Login not allowed",
+
+        // TODO NEW: You are not allowed to log in for the following reason:
+        "intro" : "You are not allowed to log in for the following reason:",
+
+        // TODO NEW: You have withdrawn your participation in a project. The participation is mandantory in order to use this application.
+        "withdrawn1" : "You have withdrawn your participation in a project. The participation is mandantory in order to use this application.",
+
+        // TODO NEW: You will not be able to use the application again with your @PRODUCT account.
+        "withdrawn2" : "You will not be able to use the application again with your @PRODUCT account.",
+
+        // TODO NEW: The access to the research project is restricted.
+        "joinmethod1" : "The access to the research project is restricted.",
+
+        // TODO NEW: Please contact the team responsible for the project. For more information, read the terms of use of the application.
+        "joinmethod2" : "Please contact the team responsible for the project. For more information, read the terms of use of the application.",
+
+        // TODO NEW: Return to login
+        "loginpage_btn" : "Return to login"
+    },
+
+    "unsubscribe" : {
+
+        // TODO NEW: Unsubscribe
+        "title" : "Unsubscribe",
+
+        // TODO NEW: Unsubscription successful.
+        "success" : "Unsubscription successful.",
+
+        // TODO NEW: Go to login page
+        "back_to_login" : "Go to login page"
+    },
+
+    "member_login" : {
+
+        // TODO NEW: Register Now
+        "register_now" : "Register Now",
+
+        // TODO NEW: Login
+        "sign_in" : "Login"
+    },
+
+
+    // TODO NEW: unknown
+    "-1" : "unknown"
+}

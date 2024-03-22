@@ -1,0 +1,380 @@
+{
+
+    "provider_registration" : {
+
+        // TODO NEW: Registration as a Health Professional
+        "sign_up" : "Registration as a Health Professional",
+
+        // TODO NEW: Health Facility
+        "provider" : "Health Facility",
+
+        // TODO NEW: Health Professional
+        "user" : "Health Professional",
+
+        // TODO NEW: Facility Name
+        "name" : "Facility Name",
+
+        // TODO NEW: Description
+        "description" : "Description",
+
+        // TODO NEW: Homepage URL
+        "url" : "Homepage URL"
+    },
+
+    "provider_login" : {
+
+        // TODO NEW: Health Professional Login
+        "title" : "Health Professional Login"
+    },
+
+    "provider_navbar" : {
+
+        // TODO NEW: New Patient
+        "new_patient" : "New Patient",
+
+        // TODO NEW: Patients
+        "patients" : "Patients",
+
+        // TODO NEW: Research
+        "research" : "Research",
+
+        // TODO NEW: Workspace
+        "workspace" : "Workspace",
+
+        // TODO NEW: Store
+        "market" : "Store",
+
+        // TODO NEW: Enterprise
+        "org" : "Enterprise",
+
+        // TODO NEW: Organization
+        "organization" : "Organization",
+
+        // TODO NEW: Teams
+        "usergroups" : "Teams"
+    },
+
+    "provider_organization" : {
+
+        // TODO NEW: Organization
+        "title" : "Organization",
+
+        // TODO NEW: You are not part of an organization.
+        "empty" : "You are not part of an organization.",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Address
+        "address" : "Address",
+
+        // TODO NEW: Description
+        "description" : "Description",
+
+        // TODO NEW: Homepage URL
+        "url" : "Homepage URL",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Organization members
+        "members" : "Organization members",
+
+        // TODO NEW: Register New Member
+        "addprovider" : "Register New Member",
+
+        // TODO NEW: Edit Organization
+        "edit_btn" : "Edit Organization",
+
+        // TODO NEW: You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions.
+        "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions.",
+
+        // TODO NEW: Part of Organization
+        "parent" : "Part of Organization",
+
+        // TODO NEW: Identifier
+        "identifiers" : "Identifier",
+
+        // TODO NEW: Enter all external organization identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired.
+        "identifiers_info" : "Enter all external organization identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired.",
+
+        // TODO NEW: Select
+        "select_btn" : "Select",
+
+        // TODO NEW: Organization Manager
+        "managerType" : "Organization Manager",
+        "managers" : {
+
+            // TODO NEW: Add yourself as manager only
+            "ME" : "Add yourself as manager only",
+
+            // TODO NEW: Add yourself as member and manager
+            "ME2" : "Add yourself as member and manager",
+
+            // TODO NEW: Organization is managed by parent organization
+            "PARENT" : "Organization is managed by parent organization",
+
+            // TODO NEW: Add another health professional as member and manager
+            "OTHERMEMBER" : "Add another health professional as member and manager",
+
+            // TODO NEW: Add another health professional as manager
+            "EXTERNALUSER" : "Add another health professional as manager"
+        },
+
+        // TODO NEW: Email of Manager
+        "manager" : "Email of Manager",
+
+        // TODO NEW: Access protection
+        "protection" : "Access protection",
+
+        // TODO NEW: A second user must always confirm any use of this organization.
+        "protection2" : "A second user must always confirm any use of this organization.",
+
+        // TODO NEW: Request Access
+        "request_btn" : "Request Access"
+    },
+
+    "addprovider" : {
+
+        // TODO NEW: Register health professional
+        "sign_up" : "Register health professional",
+
+        // TODO NEW: User successfully registered
+        "success" : "User successfully registered"
+    },
+
+    "provider_requestaccess" : {
+
+        // TODO NEW: Request Access
+        "title" : "Request Access",
+
+        // TODO NEW: Reason
+        "reason" : "Reason",
+
+        // TODO NEW: Please wait until your request is confirmed...
+        "wait" : "Please wait until your request is confirmed...",
+
+        // TODO NEW: Retry now
+        "retry_btn" : "Retry now"
+    },
+
+    "addpatient" : {
+
+        // TODO NEW: Register patient
+        "sign_up" : "Register patient",
+
+        // TODO NEW: User successfully registered
+        "success" : "User successfully registered",
+
+        // TODO NEW: Initial Password
+        "initialPassword" : "Initial Password"
+    },
+
+    "provider_patientsearch" : {
+
+        // TODO NEW: Patient Search
+        "title" : "Patient Search",
+
+        // TODO NEW: Email
+        "email" : "Email",
+
+        // TODO NEW: or
+        "or" : "or",
+
+        // TODO NEW: @PRODUCT ID
+        "midataid" : "@PRODUCT ID",
+
+        // TODO NEW: Birthdate
+        "birthday" : "Birthdate",
+
+        // TODO NEW: Searching...
+        "searching" : "Searching...",
+
+        // TODO NEW: Address
+        "address" : "Address",
+
+        // TODO NEW: Show Patient
+        "show_patient_btn" : "Show Patient",
+
+        // TODO NEW: Consents with this patient
+        "consents" : "Consents with this patient",
+
+        // TODO NEW: Add new consent
+        "add_new_consent" : "Add new consent",
+
+        // TODO NEW: Team (optional)
+        "usergroup" : "Team (optional)",
+
+        // TODO NEW: Access Code (optional)
+        "passcode" : "Access Code (optional)",
+
+        // TODO NEW: Add new consent
+        "add_new_consent_btn" : "Add new consent",
+
+        // TODO NEW: Create patient account
+        "add_new_account_btn" : "Create patient account"
+    },
+
+    "provider_patients" : {
+
+        // TODO NEW: Patients
+        "title" : "Patients",
+
+        // TODO NEW: No patients found.
+        "empty" : "No patients found."
+    },
+
+    "provider_usergroups" : {
+
+        // TODO NEW: Teams
+        "title" : "Teams",
+
+        // TODO NEW: Team
+        "name" : "Team",
+
+        // TODO NEW: Type
+        "type" : "Type",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Public
+        "searchable" : "Public",
+
+        // TODO NEW: You are not part of a team.
+        "empty" : "You are not part of a team."
+    },
+
+    "provider_newusergroup" : {
+
+        // TODO NEW: Create new Team
+        "title" : "Create new Team",
+
+        // TODO NEW: Team Name
+        "name" : "Team Name",
+
+        // TODO NEW: Create
+        "create_btn" : "Create"
+    },
+
+    "provider_editusergroup" : {
+
+        // TODO NEW: Edit Team
+        "title" : "Edit Team",
+
+        // TODO NEW: Former Members
+        "former_members" : "Former Members",
+
+        // TODO NEW: Team Name
+        "name" : "Team Name",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Findable by Account Holders
+        "searchable" : "Findable by Account Holders",
+
+        // TODO NEW: Member From
+        "startDate" : "Member From",
+
+        // TODO NEW: Member Until
+        "endDate" : "Member Until",
+
+        // TODO NEW: Selected Member
+        "selected" : "Selected Member",
+
+        // TODO NEW: Permissions
+        "rights" : "Permissions",
+
+        // TODO NEW: This team does not (yet) exist.
+        "notexists" : "This team does not (yet) exist.",
+        "right" : {
+
+            // TODO NEW: Read data
+            "readData" : "Read data",
+
+            // TODO NEW: Write data
+            "writeData" : "Write data",
+
+            // TODO NEW: Change team
+            "changeTeam" : "Change team",
+
+            // TODO NEW: Change organization
+            "setup" : "Change organization",
+
+            // TODO NEW: Manage applications
+            "applications" : "Manage applications"
+        },
+
+        // TODO NEW: Update
+        "update_btn" : "Update"
+    },
+
+    "provider_editgroups" : {
+
+        // TODO NEW: Edit Sub-Entities
+        "title" : "Edit Sub-Entities",
+
+        // TODO NEW: Entity Name
+        "entityName" : "Entity Name",
+
+        // TODO NEW: Entity Type
+        "entityType" : "Entity Type",
+
+        // TODO NEW: Role
+        "roleName" : "Role",
+        "role" : {
+
+            // TODO NEW: Managing Organization
+            "MANAGER" : "Managing Organization",
+
+            // TODO NEW: Sub-Organization
+            "SUBORGANIZATION" : "Sub-Organization",
+
+            // TODO NEW: Other
+            "HC" : "Other"
+        },
+
+        // TODO NEW: Member From
+        "startDate" : "Member From",
+
+        // TODO NEW: Member Until
+        "endDate" : "Member Until",
+
+        // TODO NEW: No sub-entities found.
+        "empty" : "No sub-entities found.",
+
+        // TODO NEW: Create Sub-Organization
+        "add_organization_btn" : "Create Sub-Organization",
+
+        // TODO NEW: Link to another Organization
+        "add_organization2_btn" : "Link to another Organization",
+
+        // TODO NEW: Add API Access
+        "add_broker_btn" : "Add API Access",
+
+        // TODO NEW: Add another Team
+        "add_group_btn" : "Add another Team",
+
+        // TODO NEW: Former Sub-Entities
+        "former_members" : "Former Sub-Entities"
+    },
+
+    "provider_memberdetails" : {
+
+        // TODO NEW: Request Consent
+        "propose_consent" : "Request Consent",
+
+        // TODO NEW: Select a consent to display individual records
+        "pick_consent" : "Select a consent to display individual records",
+
+        // TODO NEW: Share data with the patient
+        "share_btn" : "Share data with the patient"
+    },
+
+    "help_welcome" : {
+
+        // TODO NEW: Some ideas to start:
+        "starts" : "Some ideas to start:"
+    }
+}
