@@ -73,15 +73,15 @@
                 <td v-t="'studyoverview.code'"></td>
                 <td>{{ study.code }}</td>
             </tr>
-            <tr>
+            <tr v-if="study.type != 'META'">
                 <td v-t="'studyoverview.validation_status'"></td>
                 <td>{{ $t('enum.studyvalidationstatus.'+study.validationStatus) }}</td>
             </tr>
-            <tr>
+            <tr v-if="study.type != 'META'">
                 <td v-t="'studyoverview.participant_search_status'"></td>
                 <td>{{ $t('enum.participantsearchstatus.'+study.participantSearchStatus) }}</td>
             </tr>
-            <tr>
+            <tr v-if="study.type != 'META'">
                 <td v-t="'studyoverview.execution_status'"></td>
                 <td>{{ $t('enum.studyexecutionstatus.'+study.executionStatus) }}</td>
             </tr>
@@ -170,11 +170,13 @@ export default {
     methods : {
         readyForValidation() {
             const { $data } = this;
+            if ($data.study.type == "META") return false;
 		    return $data.study.myRole && $data.study.myRole.setup && ($data.study.validationStatus == "DRAFT" || $data.study.validationStatus == "REJECTED");
 	    },
 	
 	    readyForParticipantSearch() {
             const { $data } = this;
+            if ($data.study.type == "META") return false;
             return $data.study.myRole && $data.study.myRole.setup && $data.study.validationStatus == "VALIDATED" &&
                 $data.study.executionStatus == "PRE" &&
                 (
@@ -185,21 +187,24 @@ export default {
 	
 	    readyForEndParticipantSearch() {
             const { $data } = this;
+            if ($data.study.type == "META") return false;
 		    return $data.study.myRole && $data.study.myRole.setup && $data.study.validationStatus == "VALIDATED" && $data.study.participantSearchStatus == "SEARCHING";
 	    },
 	
 	    readyForDelete() {
-            const { $data } = this;
+            const { $data } = this;            
 		    return $data.study.myRole && $data.study.myRole.setup && ($data.study.executionStatus == "PRE" || $data.study.executionStatus == "ABORTED");
 	    },
 	
 	    readyForAbort() {
             const { $data } = this;
+            if ($data.study.type == "META") return false;
 		    return $data.study.myRole && $data.study.myRole.setup && ($data.study.validationStatus == "VALIDATED" && $data.study.executionStatus != "ABORTED" && $data.study.participantSearchStatus != "SEARCHING");
 	    },
 	
 	    readyForStartExecution() {
             const { $data } = this;
+            if ($data.study.type == "META") return false;
             return $data.study.validationStatus == "VALIDATED" && 
                 $data.study.participantSearchStatus != "PRE" &&
                 $data.study.executionStatus == "PRE";
@@ -207,6 +212,7 @@ export default {
 	
 	    readyForFinishExecution() {
             const { $data } = this;
+            if ($data.study.type == "META") return false;
             return $data.study.myRole && $data.study.myRole.setup && $data.study.validationStatus == "VALIDATED" && 
                 $data.study.participantSearchStatus == "CLOSED" &&
                 $data.study.executionStatus == "RUNNING";
@@ -376,29 +382,41 @@ export default {
                     }).then(function()  {
                         if (!study.processFlags) study.processFlags = [];
                 
-                        $data.checklist = [
-                            { title : "study_checklist.phase1", page : ".", heading : true  },
-                            { title : "study_checklist.name", page : "study.description", required : true, done : study.name && study.description },
-                            { title : "study_checklist.teamsetup", page : "study.team", flag : "team", done : $data.tests.team || study.processFlags.indexOf("team")>=0 },
-                            { title : "study_checklist.information", page : "study.info", required : false, done : (study.infos && study.infos.length) },
-                            { title : "study_checklist.groups", page : "study.fields", required : true, done : study.groups.length },
-                            { title : "study_checklist.sharingQuery", page : "study.rules", required : true, done : (study.recordQuery && ( JSON.stringify(study.recordQuery) !== "{}")  ) },
-                            { title : "study_checklist.dates", page : "study.rules", required : true, done : study.startDate || study.endDate || study.dataCreatedBefore },
-                            { title : "study_checklist.terms", page : "study.rules" , flag : "termsofuse", done : study.termsOfUse || study.processFlags.indexOf("termsofuse")>=0 },
-                            { title : "study_checklist.validation", action : me.startValidation, check : me.readyForValidation, page : ".", required : true, done : study.validationStatus !== "DRAFT" },
-                            { title : "study_checklist.validation_passed", page : ".", required : true, done : study.validationStatus == "VALIDATED" },
-                            { title : "study_checklist.phase2", page : ".", heading : true },
-                            { title : "study_checklist.applications", page : "study.actions", flag : "applications", done : study.processFlags.indexOf("applications") >= 0 },
-                            { title : "study_checklist.applinked", page : ".", flag : "applinked", done : $data.tests.applinked || study.processFlags.indexOf("applinked") >= 0 },
-                            { title : "study_checklist.partsearchstart", action : me.startParticipantSearch, check : me.readyForParticipantSearch, page : ".", required : true, done : study.participantSearchStatus != "PRE" },
-                            { title : "study_checklist.phase3", page : ".", heading : true },
-                            { title : "study_checklist.executionstart", action : me.startExecution, check : me.readyForStartExecution, page : ".", required : true, done : study.executionStatus != "PRE"  },
-                            { title : "study_checklist.acceptedpart", page : "study.participants", required : true, done : study.participantSearchStatus != "PRE" && $data.tests.allassigned },
-                            { title : "study_checklist.phase4", page : ".", heading : true },
-                            { title : "study_checklist.partsearchend", action : me.endParticipantSearch, check : me.readyForEndParticipantSearch, page : ".", required : true, done : study.participantSearchStatus == "CLOSED" },
-                            { title : "study_checklist.execend", action : me.finishExecution, check : me.readyForFinishExecution, page : ".", required : true, done : study.executionStatus == "FINISHED"  },
-                            { title : "study_checklist.exportdata", page : "study.records", flag : "export", done : study.processFlags.indexOf("export") >= 0 }
-                        ];
+                        if (study.type == "META") {
+                          $data.checklist = [
+	                            { title : "study_checklist.phase1", page : ".", heading : true  },
+	                            { title : "study_checklist.name", page : "study.description", required : true, done : study.name && study.description },
+	                            { title : "study_checklist.teamsetup", page : "study.team", flag : "team", done : $data.tests.team || study.processFlags.indexOf("team")>=0 },	                            
+	                            { title : "study_checklist.groups", page : "study.fields", required : true, done : study.groups.length },	                            	                            
+	                            { title : "study_checklist.applications", page : "study.actions", flag : "applications", done : study.processFlags.indexOf("applications") >= 0 },
+	                            { title : "study_checklist.applinked", page : ".", flag : "applinked", done : $data.tests.applinked || study.processFlags.indexOf("applinked") >= 0 },	                            
+	                            { title : "study_checklist.exportdata", page : "study.records", flag : "export", done : study.processFlags.indexOf("export") >= 0 }
+	                        ];
+                        } else {
+	                        $data.checklist = [
+	                            { title : "study_checklist.phase1", page : ".", heading : true  },
+	                            { title : "study_checklist.name", page : "study.description", required : true, done : study.name && study.description },
+	                            { title : "study_checklist.teamsetup", page : "study.team", flag : "team", done : $data.tests.team || study.processFlags.indexOf("team")>=0 },
+	                            { title : "study_checklist.information", page : "study.info", required : false, done : (study.infos && study.infos.length) },
+	                            { title : "study_checklist.groups", page : "study.fields", required : true, done : study.groups.length },
+	                            { title : "study_checklist.sharingQuery", page : "study.rules", required : true, done : (study.recordQuery && ( JSON.stringify(study.recordQuery) !== "{}")  ) },
+	                            { title : "study_checklist.dates", page : "study.rules", required : true, done : study.startDate || study.endDate || study.dataCreatedBefore },
+	                            { title : "study_checklist.terms", page : "study.rules" , flag : "termsofuse", done : study.termsOfUse || study.processFlags.indexOf("termsofuse")>=0 },
+	                            { title : "study_checklist.validation", action : me.startValidation, check : me.readyForValidation, page : ".", required : true, done : study.validationStatus !== "DRAFT" },
+	                            { title : "study_checklist.validation_passed", page : ".", required : true, done : study.validationStatus == "VALIDATED" },
+	                            { title : "study_checklist.phase2", page : ".", heading : true },
+	                            { title : "study_checklist.applications", page : "study.actions", flag : "applications", done : study.processFlags.indexOf("applications") >= 0 },
+	                            { title : "study_checklist.applinked", page : ".", flag : "applinked", done : $data.tests.applinked || study.processFlags.indexOf("applinked") >= 0 },
+	                            { title : "study_checklist.partsearchstart", action : me.startParticipantSearch, check : me.readyForParticipantSearch, page : ".", required : true, done : study.participantSearchStatus != "PRE" },
+	                            { title : "study_checklist.phase3", page : ".", heading : true },
+	                            { title : "study_checklist.executionstart", action : me.startExecution, check : me.readyForStartExecution, page : ".", required : true, done : study.executionStatus != "PRE"  },
+	                            { title : "study_checklist.acceptedpart", page : "study.participants", required : true, done : study.participantSearchStatus != "PRE" && $data.tests.allassigned },
+	                            { title : "study_checklist.phase4", page : ".", heading : true },
+	                            { title : "study_checklist.partsearchend", action : me.endParticipantSearch, check : me.readyForEndParticipantSearch, page : ".", required : true, done : study.participantSearchStatus == "CLOSED" },
+	                            { title : "study_checklist.execend", action : me.finishExecution, check : me.readyForFinishExecution, page : ".", required : true, done : study.executionStatus == "FINISHED"  },
+	                            { title : "study_checklist.exportdata", page : "study.records", flag : "export", done : study.processFlags.indexOf("export") >= 0 }
+	                        ];
+                        }
                     
                         for (var i = 0;i<$data.checklist.length;i++) {
                             if (! $data.checklist[i].done && ! $data.checklist[i].heading) {

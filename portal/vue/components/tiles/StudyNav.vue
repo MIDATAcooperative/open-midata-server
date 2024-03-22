@@ -17,7 +17,7 @@
 <template>
 <ul class="borderless nav nav-tabs">
   <li class="nav-item"><a :class="{ 'active' : page=='study.overview' }" href="javascript:" class="nav-link" @click="go('study.overview')" v-t="'studynav.overview'">Overview</a></li>
-  <li class="nav-item"><a :class="{ 'active' : page=='study.info' }" href="javascript:" class="nav-link" @click="go('study.info')" v-t="'studynav.info'">Info</a></li>
+  <li v-if="!isMetaProject()" class="nav-item"><a :class="{ 'active' : page=='study.info' }" href="javascript:" class="nav-link" @click="go('study.info')" v-t="'studynav.info'">Info</a></li>
   <li class="nav-item"><a :class="{ 'active' : page=='study.team' }" href="javascript:" class="nav-link" @click="go('study.team')" v-t="'studynav.team'">Team</a></li>  
   <li class="nav-item"><a :class="{ 'active' : page=='study.fields' }" href="javascript:" class="nav-link" @click="go('study.fields')" v-t="'studynav.details'">Details</a></li>
   <li v-if="isMetaProject()" class="nav-item"><a :class="{ 'active' : page=='study.subprojects' }" href="javascript:" class="nav-link" @click="go('study.subprojects')" v-t="'studynav.subprojects'">Subprojects</a></li>
