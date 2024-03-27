@@ -1395,7 +1395,9 @@ public class RecordManager {
 	 */
 	public Record fetch(AccessContext context, UserRole role, RecordToken token, Set<String> fields)
 			throws AppException {
-		List<Record> result = list(role, context.forAps(MidataId.from(token.apsId)),
+	    context = context.forAps(MidataId.from(token.apsId));
+	    AccessLog.log("Fetch context", context.toString());	   
+		List<Record> result = list(role, context,
 				CMaps.map("_id", new MidataId(token.recordId)), fields);
 		if (result.isEmpty())
 			return null;

@@ -415,7 +415,7 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
-		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(getCache(), ugm), this);
+		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(getCache(), ugm), this, false);
 	}
 	
 	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
@@ -425,10 +425,15 @@ public abstract class AccessContext {
 	
 	public UserGroupAccessContext forUserGroup(List<UserGroupMember> ugms) throws AppException {				
 		APSCache cache = getCache();
-		APSCache subcache = cache;			
-		for (UserGroupMember ugmx : ugms) subcache = Feature_UserGroups.readySubCache(cache, subcache, ugmx);
-		UserGroupMember ugm = ugms.get(ugms.size()-1);
-		return new UserGroupAccessContext(ugm, subcache, this);
+		APSCache subcache = cache;	
+		boolean pseudo = false;
+		for (UserGroupMember ugmx : ugms) {
+		    //AccessLog.log("XXXXX > "+ugmx.getConfirmedRole().roleName+" p="+ugmx.getConfirmedRole().pseudonymizedAccess());
+		    pseudo = pseudo || ugmx.getConfirmedRole().pseudonymizedAccess();
+		    subcache = Feature_UserGroups.readySubCache(cache, subcache, ugmx);
+		}
+		UserGroupMember ugm = ugms.get(ugms.size()-1);		
+		return new UserGroupAccessContext(ugm, subcache, this, pseudo);
 	}
 	
 	public boolean usesUserGroupsForQueries() throws InternalServerException {

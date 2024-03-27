@@ -140,6 +140,13 @@ public class Feature_UserGroups extends Feature {
 	    boolean pseudonymizeAccess = q.getContext().mustPseudonymize();
 	    boolean mayReadData = true;
 	    AccessContext context = q.getContext();
+	    
+	    if (q.restrictedBy("export")) {         
+            if (!pseudonymizeAccess) {
+                if (q.getStringRestriction("export").equals("pseudonymized")) { pseudonymizeAccess = true; }
+            }
+        }
+	    
 		for (UserGroupMember ugm : ugms) {
 			if (firstUgm==null) firstUgm = ugm;
 			group = ugm.userGroup;	
@@ -149,7 +156,7 @@ public class Feature_UserGroups extends Feature {
 			mayExportData = mayExportData && ugm.role.mayExportData();
 			mayReadData = mayReadData && ugm.role.mayReadData();
 			pseudonymizeAccess = pseudonymizeAccess || ugm.role.pseudonymizedAccess();
-			context = new UserGroupAccessContext(ugm, subcache, context);
+			context = new UserGroupAccessContext(ugm, subcache, context, pseudonymizeAccess);
 			//AccessLog.log("QUERY AS GROUP pA="+pseudonymizeAccess+" context="+context.toString());
 		}
 		
@@ -168,10 +175,7 @@ public class Feature_UserGroups extends Feature {
 		}
 		 				
 		if (q.restrictedBy("export")) {
-			if (!mayExportData) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");
-			if (!pseudonymizeAccess) {
-				if (q.getStringRestriction("export").equals("pseudonymized")) { pseudonymizeAccess = true; }
-			}
+			if (!mayExportData) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");			
 		}
 						
 		if (!mayReadData) return ProcessingTools.empty();		
@@ -183,7 +187,7 @@ public class Feature_UserGroups extends Feature {
 		Query qnew = new Query("ug","ug="+lastUgm.userGroup,newprops, q.getFields(), subcache, aps, context ,q).setFromRecord(q.getFromRecord());
 		if (pseudonymizeAccess) {
 			 AccessLog.log("do pseudonymized");
-			 lastUgm.role.pseudo = true;
+			 //lastUgm.role.pseudo = true;
 			 if (!Feature_Pseudonymization.pseudonymizedIdRestrictions(qnew, next, group, newprops)) {
 				 AccessLog.logEndPath("cannot unpseudonymize");
 				 return ProcessingTools.empty();

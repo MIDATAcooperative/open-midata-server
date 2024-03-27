@@ -295,7 +295,7 @@ public class Feature_Pseudonymization extends Feature {
         public DBRecord next() throws AppException {
             DBRecord r = chain.next();
             
-            if (r.context != null && r.context.mustPseudonymize()) {
+            if (r.context != null && r.context.mustPseudonymize() && !("fhir/Patient").equals(r.getFormatOrNull())) {
               r.pseudoId = new MidataId(createHash(r.context, r._id.toString()));
             }                  
 

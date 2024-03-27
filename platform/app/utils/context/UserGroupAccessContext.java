@@ -33,10 +33,12 @@ import utils.exceptions.InternalServerException;
 public class UserGroupAccessContext extends AccessContext {
 
 	private UserGroupMember ugm;
+	private boolean forcePseudonymization;
 	
-	public UserGroupAccessContext(UserGroupMember ugm, APSCache cache, AccessContext parent) {
+	public UserGroupAccessContext(UserGroupMember ugm, APSCache cache, AccessContext parent, boolean forcePseudonymization) {
 		super(cache, parent);
 	    this.ugm = ugm;	
+	    this.forcePseudonymization = forcePseudonymization;
 	}
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
@@ -60,7 +62,7 @@ public class UserGroupAccessContext extends AccessContext {
 	
 	@Override
 	public boolean mustPseudonymize() {
-		return ugm.getConfirmedRole().pseudonymizedAccess();
+		return forcePseudonymization || ugm.getConfirmedRole().pseudonymizedAccess();
 	}
 	
 	@Override
@@ -146,7 +148,7 @@ public class UserGroupAccessContext extends AccessContext {
 	@Override
 	protected AccessContext getRootContext() {	
 		if (parent == null) return this;
-		return new UserGroupAccessContext(this.ugm, cache, parent.getRootContext());
+		return new UserGroupAccessContext(this.ugm, cache, parent.getRootContext(), forcePseudonymization);
 	}
 	
 	
