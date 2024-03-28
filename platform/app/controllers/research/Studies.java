@@ -1441,6 +1441,8 @@ public class Studies extends APIController {
 			throw new BadRequestException("error.invalid.plugin", "Plugin not found.");
 		if (plugin.status == PluginStatus.DELETED)			
 			throw new BadRequestException("error.invalid.plugin", "Plugin not found.");
+		if (plugin.status == PluginStatus.EXPIRED)            
+            throw new BadRequestException("error.expired.app", "Plugin expired.");
 		if (plugin.targetUserRole != UserRole.RESEARCH)
 			throw new BadRequestException("error.invalid.plugin", "Wrong target role.");
 

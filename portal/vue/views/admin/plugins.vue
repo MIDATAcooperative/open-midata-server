@@ -72,9 +72,9 @@ import { status, rl, ErrorBox, FormGroup, Typeahead } from 'basic-vue3-component
 export default {
 
     data: () => ({	
-        pluginStati : ["DEVELOPMENT", "BETA", "ACTIVE", "DEPRECATED"],
+        pluginStati : ["DEVELOPMENT", "BETA", "ACTIVE", "DEPRECATED", "EXPIRED"],
         apps : { filtered : [], filter : {}, sort : {} },
-        search : { criteria : {} },
+        search : { criteria : { status : ["DEVELOPMENT", "BETA", "ACTIVE", "DEPRECATED", "EXPIRED" ] } },
         developers : []
     }),
 

@@ -188,7 +188,8 @@
        "token" : "This activation token has already expired. Please request a new one.",
        "tokenresent" : "This activation token has already expired. A new token has been sent to your email address right now. Please confirm your email address within 24 hours using the new token.",
        "code" : "This participation code has expired.",
-       "securitytoken" : "This code has expired."
+       "securitytoken" : "This code has expired.",
+       "app" : "This application is no longer available for use." 
      },
 
      "already_done" : {

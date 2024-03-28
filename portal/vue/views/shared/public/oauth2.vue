@@ -219,7 +219,7 @@ export default {
   },
 
   created: function () {
-	  const { $route, $data } = this, me = this;		  
+	  const { $route, $router, $data } = this, me = this;		  
 	  $data.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	
 	  $data.lang = getLocale();
@@ -246,6 +246,11 @@ export default {
 		  .then(function(results) {
 			$data.app = results.data;      
 			if (!$data.app || !$data.app.targetUserRole) $data.error ="error.unknown.app";
+			
+			if ($data.app.status === "EXPIRED") {
+				session.failurePage($router, $route, { code : "error.expired.app" });
+				return;
+			}				
 				
 			$data.login.role = $data.app.targetUserRole === 'ANY'? "MEMBER" : $data.app.targetUserRole;
 			oauth.init(me, $route.query.client_id, $route.query.redirect_uri, $route.query.state, $route.query.code_challenge, $route.query.code_challenge_method, $route.query.device_id);

@@ -36,6 +36,7 @@ import models.MidataId;
 import models.Plugin;
 import models.Space;
 import models.SubscriptionData;
+import models.enums.PluginStatus;
 import models.enums.UserFeature;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -139,8 +140,8 @@ public class Spaces extends APIController {
 		if (json.has("query")) query = JsonExtraction.extractMap(json.get("query"));
 		if (json.has("config")) config = JsonExtraction.extractMap(json.get("config"));
 		
-		Plugin plg = Plugin.getById(visualizationId, Sets.create("type","licenceDef"));
-			
+		Plugin plg = Plugin.getById(visualizationId, Sets.create("type","licenceDef","status"));
+		if (plg.status == PluginStatus.DELETED || plg.status == PluginStatus.EXPIRED) throw new BadRequestException("error.expired.app", "Plugin expired");
 		MidataId licence = null;
 		if (LicenceChecker.licenceRequired(plg)) {
 			licence = LicenceChecker.hasValidLicence(userId, plg, null);
