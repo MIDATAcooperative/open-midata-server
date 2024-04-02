@@ -39,7 +39,7 @@ import sanitizeHtml from 'sanitize-html';
 import server from "services/server.js";
 import { status } from 'basic-vue3-components';
 import Panel from 'components/Panel.vue';
-import { getLocale } from "services/lang.js";
+import { getLocale, setLocale } from "services/lang.js";
 
 function getAppInfo(name, type) {
     var data = { "name": name };
@@ -73,6 +73,7 @@ export default {
         const { $data, $route } = this;
         $data.ENV = ENV;
         $data.lang = $route.query.lang || getLocale();
+        if ($data.lang != getLocale()) setLocale($data.lang);
         this.doBusy(getAppInfo($route.query.client_id)         
         .then(function(results) {
             $data.app = results.data;      
