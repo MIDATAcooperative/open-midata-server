@@ -65,7 +65,7 @@ export default {
     methods : {
         showLogin() {       
             const { $router, $route } = this;
-            $router.push({ path : "./login" });
+            $router.push({ path : "/public/login" });
         }
     },
 
