@@ -64,8 +64,7 @@ export default {
 
     methods : {
         showLogin() {       
-            const { $router, $route } = this;
-            $router.push({ path : "/public/login" });
+            document.location.href="/index.html#/public/login";
         }
     },
 
