@@ -66,6 +66,7 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ApplicationTools;
+import utils.ContentTypeTools;
 import utils.InstanceConfig;
 import utils.PluginLoginCache;
 import utils.access.RecordManager;
@@ -463,7 +464,7 @@ public class MobileAPI extends Controller {
 		record.format = format;
 		
 			
-		ContentInfo.setRecordCodeAndContent(inf.getUsedPlugin(), record, code, content);
+		ContentTypeTools.setRecordCodeAndContent(inf, record, code, content, null);
 				
 		try {
 			record.data = BasicDBObject.parse(data);	

@@ -99,6 +99,12 @@ public class FormatAPI extends Controller {
 	    return ok(Json.toJson(contents)).as("application/json");
 	}
 	
+	@APICall
+	public Result listContentsUnconfirmed() throws InternalServerException {
+	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)).map("autoAddedAt", CMaps.map("$ne", null)).map("approvedAt", "null"), ContentInfo.ALL);
+	    return ok(Json.toJson(contents)).as("application/json");
+	}
+	
 	/**
 	 * public function to get a list of all codes supported by the platform
 	 * @return
