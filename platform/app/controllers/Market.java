@@ -291,11 +291,16 @@ public class Market extends APIController {
 			app.codeChallenge = JsonValidation.getBoolean(json, "codeChallenge");
 			app.sendReports = JsonValidation.getBoolean(json, "sendReports");
 			
+
 			app.i18n = new HashMap<String, Plugin_i18n>();
 			
 			/*if (app.resharesData && app.usePreconfirmed) {
 				throw new JsonValidationException("error.invalid.usePreconfirmed", "usePreconfirmed", "invalid", "Data reshare and preconfirmation not allowed together.");
 			}*/
+			
+			if (getRole().equals(UserRole.ADMIN)) {
+			  app.status = JsonValidation.getEnum(json, "status", PluginStatus.class);
+			}
 			
 			if (getRole().equals(UserRole.ADMIN) && withLogout) {
 				/*String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
@@ -334,6 +339,7 @@ public class Market extends APIController {
 					plugin_i18n.name = (String) entry.get("name");
 					plugin_i18n.description = (String) entry.get("description");
 					plugin_i18n.defaultSpaceName = (String) entry.get("defaultSpaceName");
+					plugin_i18n.postLoginMessage = (String) entry.get("postLoginMessage");
 					app.i18n.put(lang, plugin_i18n);
 				}
 			}
