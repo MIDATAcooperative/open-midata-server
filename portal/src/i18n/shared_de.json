@@ -1602,6 +1602,12 @@
         "joinmethod2" : "Bitte kontaktieren Sie das für das Projekt verantwortliche Team. Für weitere Informationen lesen Sie die Nutzungsbedingungen der Applikation.",
         "loginpage_btn" : "Zurück zur Anmeldung"
     },
+    
+    "appexpired" : {
+      "title" : "Anwendung nicht mehr verfügbar",
+      "intro" : "Diese Anwendung ist nicht länger verfügbar. Falls Sie mit dieser Anwendung Daten in ihrem @PRODUCT Konto gespeichert haben, sind diese noch in ihrem Account verfügbar.",
+      "loginpage_btn" : "Zur Startseite des @PRODUCT Portal"
+    },
 
     "unsubscribe" : {
         "title" : "Abbestellen",
