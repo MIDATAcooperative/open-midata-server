@@ -247,8 +247,8 @@ export default {
 			$data.app = results.data;      
 			if (!$data.app || !$data.app.targetUserRole) $data.error ="error.unknown.app";
 			
-			if ($data.app.status === "EXPIRED") {
-				session.failurePage($router, $route, { code : "error.expired.app" });
+			if ($data.app.status === "END_OF_LIFE") {
+				$router.push({ path : "./appendoflife", query : { client_id : $route.query.client_id } });
 				return;
 			}				
 				
