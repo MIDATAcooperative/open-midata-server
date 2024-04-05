@@ -27,7 +27,8 @@
 				    <br><br>
 				    After clicking on "Authorize Now" you will be redirected to an external login page.
 				    </p>
-				    <button type="button" class="btn btn-success" :disabled="authorizing" @click="authorize()" v-t="'importrecords.authorize_btn'"></button>
+				    <button type="button" class="btn btn-success mr-1" :disabled="authorizing" @click="authorize()" v-t="'importrecords.authorize_btn'"></button>
+				    <button v-if="hasActions" type="button" class="btn btn-default" @click="skip()" v-t="'importrecords.skip_btn'"></button>
 				    <div class="extraspace"></div>				
                 </div>
 				<p v-if="message" class="alert alert-info">{{message}}</p>
@@ -61,6 +62,7 @@ export default {
         appName : "",
         authorized : false,
         authorizing : false,
+        hasActions : false,
         message : null
 	}),				
 
@@ -90,6 +92,7 @@ export default {
 	                $data.appName = result.data.name;
 	                $data.title = result.data.name;
 				    $data.authorized = false;
+				    $data.hasActions = actions.hasMore();
 				    $data.message = null;	
 				  
 				    if (sessionStorage.authString) {	
@@ -100,12 +103,12 @@ export default {
 				    }
 				  
 				} else {
-				  if (!actions.showAction($router, $route)) {				
+				  //if (!actions.showAction($router, $route)) {				
 					  var url = spaces.mainUrl(result.data, getLocale());			  
 					  $data.url = url;			  			  
 					  $data.message = null;			  			  
 					  $data.authorized = true;			 
-				  }
+				  //}
 				}
 	     });
 	},
@@ -192,6 +195,13 @@ export default {
             $data.error = "Requesting access token failed: " + err.data;
             $data.authorizing = false;
         });
+	},
+	
+	skip() {
+	  const { $router, $route } = this;
+	  if (!actions.showAction($router, $route)) {				
+					 
+	  }
 	},
 	
 		
