@@ -100,6 +100,9 @@
 		  <form-group name="defaultSpaceName_i18n" label="I18n Tile Name" v-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'" :path="errors.defaultSpaceName_i18n">		    
 		    <input type="text" id="defaultSpaceName_i18n" name="defaultSpaceName_i18n" class="form-control" placeholder="Tile Name" v-validate v-model="app.i18n[sel.lang].defaultSpaceName">
 		  </form-group>
+		  <form-group v-if="app.status=='END_OF_LIFE' || app.status=='ACTIVE'" name="postlogin_i18n" label="I18n End of life (HTML)" :path="errors.postlogin_i18n">
+            <textarea rows="5" id="postlogin_i18n" name="description_i18n" class="form-control" placeholder="App End of life Message" v-validate v-model="app.i18n[sel.lang].postLoginMessage"></textarea>
+          </form-group>
 		  <hr>		  
 		  </div>
 		  <form-group name="tags" label="Tags" v-if="app.type!='analyzer' && app.type!='endpoint'">
@@ -113,10 +116,7 @@
 		    <input type="text" id="url" name="url" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" v-validate v-model="app.url">		    
 		    <p class="form-text text-muted" v-t="'manageapp.info.url'"></p>
 		  </form-group>
-		  <!-- <form-group name="previewUrl" label="Dashboard Tile URL" v-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'" :path="errors.previewUrl">
-		    <input type="text" id="previewUrl" name="previewUrl" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" v-validate v-model="app.previewUrl">
-		    <p class="form-text text-muted" v-t="'manageapp.info.previewUrl'"></p>
-		  </form-group> -->		 
+		 
 		  <form-group name="defaultSpaceContext" label="manageapp.default_context" v-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'" :path="errors.defaultSpaceContext">		    
 		    <select class="form-control" name="defaultSpaceContext" v-validate required v-model="app.defaultSpaceContext">
                 <option value="me">{{ $t('manageapp.default_context_me') }}</option>
@@ -263,7 +263,12 @@
 		  
 		  <div v-if="(app.type == 'mobile' || app.type == 'external') && app.targetUserRole != 'RESEARCH'">
 		  <hr v-if="app.type == 'mobile'">
-		  <p class="alert alert-info" v-if="app.type == 'mobile'" v-t="'manageapp.admin_only'"></p>
+		  <p class="alert alert-info" v-t="'manageapp.admin_only'"></p>
+		  <form-group name="status" label="admin_plugins.plugin_status" v-if="app._id">
+		    <select class="form-control" v-model="app.status" :disabled="!allowStudyConfig">
+              <option v-for="status in pluginStati" :key="status" :value="status">{{ status }}</option>
+            </select>
+          </form-group>
 		  <form-group name="termsOfUse" label="manageapp.terms_of_use" class="danger-change" :path="errors.termsOfUse">
 		    <typeahead id="termsOfUse" :disabled="!allowStudyConfig" name="termsOfUse" class="form-control" @selection="requireLogout();" v-model="app.termsOfUse" field="id" display="fullname" :suggestions="terms" />
 		    
@@ -301,6 +306,7 @@ export default {
 
     data: () => ({	
         checks : [ "CONCEPT", "DATA_MODEL", "CODE_REVIEW", "TEST_CONCEPT", "TEST_PROTOKOLL", "CONTRACT" ],
+        pluginStati : ["DEVELOPMENT", "BETA", "ACTIVE", "DEPRECATED", "END_OF_LIFE"],
         sel : { lang : 'de' },
 	    targetUserRoles : [
             { value : "ANY", label : "Any Role" },
@@ -362,7 +368,7 @@ export default {
                 }
                 if (!app.i18n) { app.i18n = {}; }
 				for (let lang of $data.languages) {
-					if (!app.i18n[lang]) app.i18n[lang] = { name:"", description:"", defaultSpaceName:null };
+					if (!app.i18n[lang]) app.i18n[lang] = { name:"", description:"", defaultSpaceName:null, postLoginMessage:null };
 				}
                 if (!app.requirements) { app.requirements = []; }
 				if (!app.defaultSubscriptions) app.defaultSubscriptions = [];
@@ -462,6 +468,7 @@ export default {
                 .then(function(data) { $router.push({ path : './yourapps' }); });
             }
 	    },
+	    
 
 		updateApp() {
 		
@@ -485,6 +492,7 @@ export default {
 			let app = JSON.parse(JSON.stringify($data.app));
 			let i18n = app.i18n;
 			for (let lang of $data.languages) {			
+			    if (i18n[lang] && i18n[lang].postLoginMessage && i18n[lang].name == "") i18n[lang].name = $data.app.name;
 				if (i18n[lang] && i18n[lang].name == "") {
 					delete i18n[lang];
 				} 

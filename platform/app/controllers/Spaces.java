@@ -141,7 +141,7 @@ public class Spaces extends APIController {
 		if (json.has("config")) config = JsonExtraction.extractMap(json.get("config"));
 		
 		Plugin plg = Plugin.getById(visualizationId, Sets.create("type","licenceDef","status"));
-		if (plg.status == PluginStatus.DELETED || plg.status == PluginStatus.EXPIRED) throw new BadRequestException("error.expired.app", "Plugin expired");
+		if (plg.status == PluginStatus.DELETED || plg.status == PluginStatus.END_OF_LIFE) throw new BadRequestException("error.expired.app", "Plugin expired");
 		MidataId licence = null;
 		if (LicenceChecker.licenceRequired(plg)) {
 			licence = LicenceChecker.hasValidLicence(userId, plg, null);

@@ -167,6 +167,11 @@ const routes = [
     meta : { keep : true },
     component: postRegister
   },
+  { 
+    base : ["oauth"],
+    path : "appendoflife",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/appexpired.vue')
+  },
   {
     base : ["member", "developer", "admin", "research", "provider", "project"],
     path : "spaces",
