@@ -1118,7 +1118,8 @@
 
   "importrecords" : {
     "title" : "Import",
-    "authorize_btn" : "Authorize Now"
+    "authorize_btn" : "Start authorization",
+    "skip_btn" : "Skip for now"
   },
 
   "spaces" : {
