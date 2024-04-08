@@ -1,1454 +1,545 @@
 {
-
-    "developer_registration" : {
-
-        // TODO NEW: Registration as a Developer
-        "sign_up" : "Registration as a Developer",
-
-        // TODO NEW: To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.
-        "reason_fillout" : "To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.",
-
-        // TODO NEW: Sign Up as a Developer
-        "sign_up_btn" : "Sign Up as a Developer"
+  "developer_registration" : {
+    "sign_up" : "Registration as a Developer",
+    "reason_fillout" : "To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.",
+    "sign_up_btn" : "Sign Up as a Developer"
+  },
+  
+  "developer_login" : {
+    "title" : "Developer Login",
+    "guide" : "Visit Developer Guide"
+  },
+  
+  "developer_navbar" : {
+    "yourapps" : "Your Applications",
+    "sandbox" : "Sandbox",
+    "workspace" : "Workspace",
+    "records" : "Test Records",
+    "testusers" : "Test User"
+  },
+  
+  "developer_testusers" : {
+    "title" : "Test Users",
+    "empty" : "There are no test users registered for this account.",
+    "role" : "Role",
+    "resetpw" : "New Password",
+    "description" : "Using these buttons you can register additional users for testing your applications. Using test users, plugins are run locally (from 'localhost') and not on the server.",
+    "register_member_btn" : "Register an Account Holder",
+    "register_hp_btn" : "Register a Health Professional",
+    "register_researcher_btn" : "Register a Researcher"
+  },
+  
+  "developer_yourapps" : {
+    "title" : "Your Applications",
+    "empty" : "You have not registered any application yet.",
+    "register" : "Register a new application",
+    "name" : "Name",
+    "filename" : "Internal",
+    "type" : "Type",
+    "role" : "Target Role",
+    "manage_btn" : "manage",
+    "debug_info_btn" : "debug info"
+  },
+  
+  "appmessages" : {
+    "title" : "Predefined Messages for Application:",
+    "reason" : "Event (Trigger)",
+    "code" : "Code",
+    "languages" : "Languages",
+    "empty" : "There are no application specfic messages defined yet.",
+    "lang" : "Language",
+    "msgtitle" : "Message Title",
+    "text" : "Message Text",
+    "available_tags" : "Available categories",
+    "reasons" : {
+       "REGISTRATION" : "Registration of new user",
+       "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
+       "FIRSTUSE_ANYUSER" : "First use of application",
+       "FIRSTUSE_EXISTINGUSER" : "First use of application (if no registration email sent)",
+       "SERVICE_WITHDRAW" : "Stop use of service",
+       "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
+       "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",
+       "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Consent, unconfirmed : A ➞ (invited) / Sent to (invited)",
+       "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Consent, unconfirmed : A ➞ B / Sent to B",
+       "CONSENT_REQUEST_OWNER_INVITED" : "Consent, unconfirmed : (invited) ➞ B / Sent to (invited)",
+       "CONSENT_REQUEST_OWNER_EXISTING" : "Consent, unconfirmed : A ➞ B / Sent to A",
+       "CONSENT_CONFIRM_AUTHORIZED" : "Consent, active : A ➞ B / Sent to B",
+       "CONSENT_CONFIRM_OWNER" : "Consent, active : A ➞ B / Sent to A",
+       "CONSENT_PRECONFIRMED_OWNER" : "Consent, preconfirmed : A ➞ B / Sent to A",
+       "CONSENT_REJECT_OWNER" : "Consent, * ➞ rejected : A ➞ B / Sent to A",
+       "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Consent, active ➞ rejected : A ➞ B / Sent to B",
+       "CONSENT_REJECT_AUTHORIZED" : "Consent, proposed ➞ rejected : A ➞ B / Sent to B",
+       "ACCOUNT_UNLOCK" : "Account unlocked by the administrator",
+       "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (send to old email address)",
+       "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (send to new email address)",
+       "PASSWORD_FORGOTTEN" : "Password forgotten",
+       "USER_PRIVATE_KEY_RECOVERED" : "User key recovery completed",
+       "NON_PERFECT_ACCOUNT_MATCH" : "User re-registration from API: weak match",
+       "TRIED_USER_REREGISTRATION" : "User re-registration from API: bad match",       
+       "RESOURCE_CHANGE" : "Change of resource [code]",
+       "PROCESS_MESSAGE" : "Process FHIR message with event [code]",
+       "LOGIN" : "Login Notification (if enabled by user)"
+    }             
+  },
+  
+  "manageapp" : {
+    "title_new" : "Register a new application",
+    "title_edit" : "Manage application",
+    "overview" : "Application Overview",
+    "choose" : "Functions to manage your application",
+    "defined" : "defined",
+    "filename" : "Internal Name",
+    "type" : "Application Type",
+    "targetUserRole" : "Target Role",  
+    "loginTemplate" : "Login Process Texts",
+    "loginButtonsTemplate": "Login Process Flow",
+    "usePreconfirmed" : "Preconfirmation",
+    "accountEmailsValidated" : "External email address validation",
+    "allowedIPs" : "Whitelist IP ranges",
+    "edit_btn" : "Change Settings",
+    "edit_help" : "Change the setup for your application.",
+    "query_btn" : "Change Data Access Filter",
+    "query_help" : "Define which types of data your application may access.",
+    "write_mode" : "Write Access",
+    "subscriptions_btn" : "Change Default Subscriptions",
+    "subscriptions_help" : "Define triggers that cause an action on the @PRODUCT server",
+    "tokenExchangeParams" : "OAuth 2 Parameters for the Token Exchange", 
+    "refreshTkExchangeParams" : "OAuth 2 Parameters for Refresh Token Exchange",
+    "testfromlocal_btn" : "Test your plugin from localhost",
+    "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
+    "serverimport_btn" : "Test automatic import script.",
+    "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
+    "applogin_btn" : "Login Process",
+    "applogin_help" : "View and edit login process",
+    "link_btn" : "Links with research projects or external parties",
+    "link_help" : "Applications may suggest or require participation in a research project. Research projects may recommend the use of applications. Use of the application may require a user's consent to health professionals or teams to view their data.",
+    "repository_btn" : "Code Repository",
+    "repository_help" : "Checkout the newest version of your code",
+    "icon_btn" : "Application Icons and Images",
+    "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the Store, etc.",
+    "messages_btn" : "Application email Messages",
+    "messages_help" : "Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.",
+    "stats_btn" : "Error and Performance Statistics",
+    "stats_help" : "View statistics and hints for improvements about the various types of API calls your application sends to the server.",    
+    "debug_btn" : "API Tester Sandbox",
+    "debug_help" : "Login as application and test queries against the @PRODUCT server.",
+    "appreviews_btn" : "Reviews",
+    "appreviews_help" : "Reviews conducted for this application",
+    "applicence_btn" : "License",
+    "applicence_help" : "Does the user require a license to use this application?",
+    "services_btn" : "Service Instances",
+    "services_help" : "Show all instances of this service or analyzer.",
+    "linkedStudy" : "Project linked to the application (code)",
+    "mustParticipateInStudy" : "Research Project Participation Required",
+    "admin_only" : "Only an administrator may change this section. Please request changes if required.",
+    "terms_of_use" : "Terms of Use",
+    "show_terms" : "Show Terms of Use",
+    "unlock_code" : "Code for registration", 
+    "code_challenge" : "Require 'code_challenge'", 
+    "logout" : "Disconnect All",
+    "pleaseLogout1" : "Log out all users",
+    "pleaseLogout2" : "Disconnect from research projects",
+    "logout_optional" : "[ not required ]",
+    "logout_required" : "[ required ]",
+    "logout_explain" : "Changes to fields marked with !! will require to log out all users of that application.",
+    "send_reports" : "Send error reports",  
+    "not_reviewed" : "Not reviewed yet",
+    "ACCEPTED" : "Reviewed",
+    "NEEDS_FIXING" : "Needs Fixing",  
+    "default_context" : "Display Under",
+    "default_context_me" : "Dashboard / Timeline",
+    "default_context_config" : "Configuration / Imports",
+    "default_context_extern" : "Standalone Plugin",
+    "deploy_status" : "Deployment Status",
+    "info" : {
+       "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
+       "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
+       "loginTemplate" : "How should the login process look like? Some settings need administrator's approval",
+       "loginButtonsTemplate" : "How should buttons be arranged?",
+       "type" : "Choose 'Plugin' if your application will run on the @PRODUCT portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.",
+       "name" : "The name of your application that will be presented to the end user.",
+       "description" : "The description of your application that will be shown on the Marketplace.",
+       "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
+       "refreshTkExchangeParams" : "Default is grant_type=<grant_type>&refresh_token=<refresh_token>&client_id=<client_id> but some services also requrie client_secret=<client_secret> or other parameters", 
+       "no_update_history" : "FHIR resource updates done by this application produce no history entries. Use only if application does many and frequent updates.",
+       "pseudonymize" : "Read pseudonymized data. Does not update records from participants.",
+       "resharesData" : "Application is allowed to reshare data it has access to to 3rd party.",
+       "usePreconfirmed" : "Account creation via API may use preconfirmed consents.",
+       "accountEmailsValidated" : "Account email addresses send by API have been validated by 3rd party.",
+       "allowedIPs" : "Comma separated list of IP addresses or IP ranges (CIDR format) that are allowed to connect to the platform. Leave empty for unrestricted access.",
+       "allowsUserSearch" : "Users of the application are allowed to search for other users of the same application.",
+       "consentObserving" : "Does this service monitor user consents? Add 'Consents' to the Data Access Filter in order to activate.",
+       "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
+       "tags" : "Categories on the Store for which your plugin should be listed.",
+       "url" : "URL of your plugins main page. If you use @PRODUCT's template, it is 'dist/index.html#!?authToken=:authToken''",
+       "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
+       "defaultSpaceContext" : "Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.",
+       "redirectUri" : "You may specifiy multiple possible redirect URIs by separating the URIs with a space.",
+       "secret" : "Application Secret was required by the old API; it stands for backward compatibility.",
+       "mustParticipateInStudy" : "Users must participate in research project in order to use this application.",
+       "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to @PRODUCT using the application. The code is not case sensitive.",
+       "send_reports" : "Notify the application creator and developer team by email on errors caused by this application.",
+       "developerTeam" : "Enter comma separated list of email addresses of other developers on that @PRODUCT instance, that develop this application.",
+       "code_challenge" : "During OAuth2 login, the calling application must use PKCE (Proof Key for Code Exchange) standard",
+       "createendpoint" : "Create a non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.",
+       "endpoint" : "The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir",
+       "endpoint2" : "Do not forget: to activate the endpoint you need to add an API key afterwards.",
+       "decentral" : "API keys will be managed by multiple different organizations.",
+       "organizationKeys" : "API keys are directly bound to a single organization."
     },
-
-    "developer_login" : {
-
-        // TODO NEW: Developer Login
-        "title" : "Developer Login",
-
-        // TODO NEW: Visit Developer Guide
-        "guide" : "Visit Developer Guide"
+    "status" : {
+      "title" : "Application Status",
+      "ACTIVE" : "Ready for productive use",
+      "BETA" : "Beta version",
+      "DEVELOPMENT" : "Under development - to be used by developer only",
+      "DEPRECATED" : "Deprecated - should no longer be used",
+      "DELETED" : "Deleted"
     },
-
-    "developer_navbar" : {
-
-        // TODO NEW: Your Applications
-        "yourapps" : "Your Applications",
-
-        // TODO NEW: Sandbox
-        "sandbox" : "Sandbox",
-
-        // TODO NEW: Workspace
-        "workspace" : "Workspace",
-
-        // TODO NEW: Test Records
-        "records" : "Test Records",
-
-        // TODO NEW: Test User
-        "testusers" : "Test User"
+    "nostudy" : "Not linked to a research project",
+    "optionalParticipation" : "Participation Optional",
+    "access_query_json" : "Data Access Filter",
+    "queryeditor_btn" : "Go to the Data Access Filter editor",
+    "no_update_history" : "No FHIR Resource History",
+    "pseudonymize" : "Read Pseudonymized",
+    "createendpoint" : "Create Endpoint Instance",
+    "endpoint" : "Endpoint Name",
+    "usagestats_btn" : "Usage Statistics",
+    "usagestats_help" : "Analyze the usage frequency of the application.",
+    "export_btn" : "Export Application Definition",
+    "export_help" : "Export the definition of this application, so that it can be imported and used on another server.",
+    "important" : "IMPORTANT",
+    "logoutwarning" : "Changing the application definition will log out all users from that application. They will have to confirm the use of the application again on next login.",
+    "researchwarning" : "Changing the application definition will unlink this research application from all projects!",
+    "servicewarning" : "Changing the application definition requires the generation of new API keys for all instances of this service.",
+    "creator" : "Creator",
+    "organization" : "Organization",
+    "publisher" : "Publisher",
+    "developerTeam" : "Developer Team",
+    "reviews" : "Reviews",
+    "manageyourkeys" : "Manage your API keys",
+    "decentral" : "Decentral Management",
+    "organizationKeys" : "API-Keys per Organizations"
+  },
+  
+  "appstats" : {
+    "title" : "Debug Information for",
+    "action" : "Action",
+    "first" : "First action recordet at",
+    "lastrun" : "Last executed",    
+    "count" : "Statistics",
+    "run" : "Number of times the action has been invoked.",
+    "retry" : "Number of times operations had to be repeated because of concurrency issues.",
+    "db" :  "Average number of internal database (MongoDB) queries executed per action invocation.",
+    "time" : "Execution time",
+    "avgtime" : "Avg",
+    "lasttime" : "Last",
+    "results" : "Results and Warnings",
+    "result" : "Response",
+    "empty" : "No information has been recorded since debug information was last cleared.",
+    "reload_btn" : "Refresh",
+    "reset_btn" : "Clear"    
+  },
+  
+  "appdebug" : {
+    "title" : "API Tester",
+    "login" : "Log in",
+    "oauth_login" : "OAuth Login",
+    "device" : "Device",
+    "refresh_token" : "Refresh Token",
+    "backend_services" : "Server-side Scripts",
+    "portal_username" : "Username",
+    "portal_password" : "Password",
+    "portal_role" : "Role",
+    "portal_login" : "Use plugin instance:",
+    "portal_login_btn" : "Portal login + get token"      
+  },
+  
+  "appicon" : {
+     "title" : "Icons and Images",
+     "name" : "Application Name",
+     "internalname" : "Internal Name",
+     "use" : {
+       "title" : "Usage of image",
+       "LOGINPAGE" : "Display on OAuth Login Page",
+       "APPICON" : "Use as application icon"
+     },
+     "type" : {
+       "title" : "Image type",
+       "image/jpeg" : "JPEG",
+       "image/png" : "PNG",
+       "image/gif" : "GIF"
+     },
+     "file" : "Image file to upload",
+     "file_help" : "Please resize and compress the image to a reasonable size before upload. Images larger than 1 MB will not be accepted.",
+     "existing" : "Images linked to application"
+  },
+  
+  "applink" : {
+    "title" : "Links with research projects, external services or health professionals",
+    "add_research_btn" : "Link to research project",
+    "add_provider_btn" : "Link to health professional",
+    "add_service_btn" : "Link to external service",
+    "target" : "Target",
+    "provider" : "Health professional (login)",
+    "service_app" : "External service",
+    "identifier" : "Identifier for this link",
+    "terms_of_use" : "Terms of use",
+    "terms_of_use_hint" : "If special terms of use have to be read and accepted by the user, please send the text to @OPERATOR. We will upload the text in the correct format and provide you with the identifier you need to enter here.",
+    "show_terms" : "View terms of use",
+    "types" : {
+      "REQUIRE_P" : "Consent must be accepted",
+      "OFFER_P" : "Consent is offered upon login/registration",
+      "OFFER_EXTRA_PAGE" : "Onboarding: Consent is offered on a separate page.",
+      "OFFER_INLINE_AGB" : "Onboarding: Use terms of use as description."
+    }
+  },
+  
+  "appsubscriptions" : {
+    "title" : "Default Subscriptions",
+    "empty" : "There are no default subscriptions defined.",
+    "trigger" : "Trigger",
+    "triggerDetail" : "FHIR Resource",
+    "action" : "Action",
+    "params" : "URL / Filename/ Target",
+    "triggers" : {
+      "fhir_Consent" : "Consent changes",
+      "fhir_MessageHeader" : "FHIR message",
+      "fhir_Resource" : "Resource changes",
+      "time" : "Daily",
+      "time/30m" : "Each 30 minutes",
+      "init" : "When added",
+      "forwarded" : "FHIR message (forwarded)"
     },
-
-    "developer_testusers" : {
-
-        // TODO NEW: Test Users
-        "title" : "Test Users",
-
-        // TODO NEW: There are no test users registered for this account.
-        "empty" : "There are no test users registered for this account.",
-
-        // TODO NEW: Role
-        "role" : "Role",
-
-        // TODO NEW: New Password
-        "resetpw" : "New Password",
-
-        // TODO NEW: Using these buttons you can register additional users for testing your applications. Using test users, plugins are run locally (from 'localhost') and not on the server.
-        "description" : "Using these buttons you can register additional users for testing your applications. Using test users, plugins are run locally (from 'localhost') and not on the server.",
-
-        // TODO NEW: Register an Account Holder
-        "register_member_btn" : "Register an Account Holder",
-
-        // TODO NEW: Register a Health Professional
-        "register_hp_btn" : "Register a Health Professional",
-
-        // TODO NEW: Register a Researcher
-        "register_researcher_btn" : "Register a Researcher"
+    "actions" : {
+      "rest-hook" : "Call REST hook",
+      "email": "Send email",
+      "sms" : "Send SMS",
+      "app" : "Forward to other application",
+      "nodejs": "Call Node.js script"
     },
+    "debug" : {
+      "title" : "Test your backend code on your computer",
+      "description" : "You can test your server-side subscription processing code on your local computer.",
+      "description2" : "Download the subscription tester and run it with the given connection code.",
+      "description3" : "This works only with your developer account or any account created using your developer account and only as long as the application is in development.",
+      "start_btn" : "Start debugging",
+      "stop_btn" : "Stop debugging",
+      "cmd_to_run" : "Command to run on your computer:"
+    }
+  },
+  
+  "appreviews" : {
+    "review_btn" : "Review",
+    "title" : "Application Reviews",
+    "name" : "Application Name",
+    "check" : "Review Type",
+    "date" : "Date", 
+    "userLogin" : "Reviewed by",
+    "comment" : "Comment",
+    "status" : "Status",
+    "noreviews" : "No reviews have been done yet on this instance.",
+    "success" : "Review has been added.",
+    "CONCEPT" : "Application Concept",
+    "DATA_MODEL" : "Data Model",
+    "ACCESS_FILTER" : "Data Access Filter",
+    "QUERIES" : "Queries",
+    "DESCRIPTION" : "Description",
+    "ICONS" : "Icons",
+    "MAILS" : "Mail Texts",
+    "PROJECTS" : "Projects",
+    "CODE_REVIEW" : "Code Review",
+    "TEST_CONCEPT" : "Test Concept",
+    "TEST_PROTOKOLL" : "Test Protocol",
+    "CONTRACT" : "Contract",
+    "ACCEPTED" : "Accepted",
+    "NEEDS_FIXING" : "Needs fixing",
+    "OBSOLETE" : "Obsolete",
+    "TERMS_OF_USE_MATCH_QUERY" : "Terms of use match Data Access Filter"
+  },
+  
+  "applicence" : {
+    "title" : "License",
+    "required" : "License required?",
+    "allowedEntities" : "Allowed entities",
+    "success" : "Licence requirements have been updated."
+  },
+  
+  "repository" : {
+    "title" : "Code Repository",
+    "repository_url" : "Repository URL",
+    "repository_dir" : "(Optional) Subdirectory in repository",
+    "repository_token" : "Access Token",
+    "has_scripts" : "Server-side code",
+    "has_scripts2" : "This repository contains scripts that need to be executed on the server.",
+    "repository_date" : "Last deployed at",
+    "repository_audit_date" : "Last audited at",
+    "repository_risks" : "Audit Result",
+    "never" : "Never",
+    "refresh_btn" : "Refresh",
+    "submit_btn" : "Checkout now",
+    "audit_btn" : "Audit",
+    "audit_fix_btn" : "Audit Fix",
+    "redeploy_btn" : "Redeploy",
+    "status" : "Deployment Status",
+    "phase_provided" : "The repository needs to be provided",
+    "phase_sceduled" : "Deployment scheduled",
+    "phase_checkout" : "Check out",
+    "phase_audit" : "Security Audit",
+    "phase_install" : "Install packages",
+    "phase_build" : "Build",
+    "phase_complete" : "Done",
+    "phase_import_cdn" : "Deploy on CDN",
+    "phase_import_scripts" : "Deploy to Scripting Engine",
+    "phase_wipe_cdn" : "Remove from CDN",
+    "phase_wipe_scripts" : "Remove from Scripting Engine",
+    "phase_delete" : "Remove Repository",
+    "log" : "Log",
+    "server" : "Reporting Server",
+    "checkout" : "Checkout from repository",
+    "install" : "Package installation",
+    "audit" : "Security Audit",
+    "build" : "Build process"
+  },
 
-    "developer_yourapps" : {
-
-        // TODO NEW: Your Applications
-        "title" : "Your Applications",
-
-        // TODO NEW: You have not registered any application yet.
-        "empty" : "You have not registered any application yet.",
-
-        // TODO NEW: Register a new application
-        "register" : "Register a new application",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Internal
-        "filename" : "Internal",
-
-        // TODO NEW: Type
-        "type" : "Type",
-
-        // TODO NEW: Target Role
-        "role" : "Target Role",
-
-        // TODO NEW: manage
-        "manage_btn" : "manage",
-
-        // TODO NEW: debug info
-        "debug_info_btn" : "debug info"
+  "workspace" : {
+     "title" : "Workspace",
+     "add_something" : "Please add an application or a project you are working on. You may also add a test user.",
+     "browser" : "Users Browser",
+     "midata" : "@PLATFORM Back-end",
+     "useraccount" : "User Account",
+     "newapp_btn" : "Add Application",
+     "newproject_btn" : "Add Project",
+     "newuser_btn" : "Add User",
+     "reset_btn" : "Reset Workspace",
+     "issues" : "Issues",
+     "no_issues" : "No issues found.",
+     "severity" : {
+       "severity" : "Severity",
+       "zinfo" : "Info",
+       "warning" : "Warning",
+       "error" : "Error"
+     },
+     "component" : "Component",
+     "issue" : "Issue",
+     "param" : "Parameter",
+     "summary" : "Data Access Filter Summary",
+     "add_app" : "Add Application to Workspace",
+     "add_user" : "Add User Account to Workspace",
+     "testusers_only" : "Use only with test accounts! Plain text password will be stored in your browser!",
+     "role" : "Role",
+     "add_btn" : "Add",
+     "appname" : "Internal Application Name",
+     "projectname" : "Project Code",
+     "add_project" : "Add Project to Workspace",
+     "warning" : {
+        "app_deprecated" : "Application is deprecated and should not be used.",
+        "no_orgname" : "No developer organization name specified in application definition.",
+        "no_publisher" : "No publisher specified in application definition.",
+        "no_app_description" : "Application description is missing.",
+        "not_spotlighted" : "The plugin is not available in the @PRODUCT Store. Ask an administrator.",
+        "no_repository" : "No repository for code checkout-provided.",
+        "no_send_reports" : "Error report notifications (emails) are disabled for this application.",
+        "has_comments" : "Comments available in the error and performance statistics.",
+        "project_not_validated" : "Project has not been validated yet.",
+        "project_not_searching" : "Project not searching for participants.",
+        "no_user_for_app" : "None of the test accounts use the application.",
+        "no_user_for_project" : "None of test accounts participate to the project.",
+        "appinstance_status" : "Application instance not active.",
+        "appinstance_outdated" : "Application version is newer than application consent. Needs reconfirm.",
+        "not_accepted" : "Participation not accepted.",
+        "no_access" : "You are not developer of this application. Some features are not available to you."
+     },
+     "error" : {       
+       "no_tags" : "No application category selected. Plugin cannot be added by user.",
+       "no_url" : "Plugin does not have initial URL.",
+       "never_deployed" : "Plugin has repository information but had never been checked out successful.",
+       "no_access_filter" : "No Data Access Filter provided for application.",
+       "no_join_method" : "Project has no join methods selected.",
+       "project_in_validation" : "Project is currently being validated by an administrator.",
+       "project_rejected" : "Project has been rejected.",
+       "project_finished" : "Project is already finished.",
+       "project_aborted" : "Project has been aborted.",
+       "project_no_groups" : "No participant groups defined for project.",
+       "app_no_exist" : "Application does not exist.",
+       "project_no_exist" : "Project does not exist.",
+       "login_failed" : "Account login failed.",
+       "appinstance_rejected" : "Application blocked by user."
+     },
+     "info" : {
+        "no_requirements" : "No requirements selected for application.",
+        "no_icons" : "No icons uploaded for application.",
+        "project_not_running" : "Project has not been started yet.",
+        "project_no_requirements" : "No requirements selected for project.",
+        "app_in_development" : "Application is still in development."
+     }
     },
-
-    "appmessages" : {
-
-        // TODO NEW: Predefined Messages for Application:
-        "title" : "Predefined Messages for Application:",
-
-        // TODO NEW: Event (Trigger)
-        "reason" : "Event (Trigger)",
-
-        // TODO NEW: Code
-        "code" : "Code",
-
-        // TODO NEW: Languages
-        "languages" : "Languages",
-
-        // TODO NEW: There are no application specfic messages defined yet.
-        "empty" : "There are no application specfic messages defined yet.",
-
-        // TODO NEW: Language
-        "lang" : "Language",
-
-        // TODO NEW: Message Title
-        "msgtitle" : "Message Title",
-
-        // TODO NEW: Message Text
-        "text" : "Message Text",
-
-        // TODO NEW: Available categories
-        "available_tags" : "Available categories",
-        "reasons" : {
-
-            // TODO NEW: Registration of new user
-            "REGISTRATION" : "Registration of new user",
-
-            // TODO NEW: Registration of a new user by someone else
-            "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
-
-            // TODO NEW: First use of application
-            "FIRSTUSE_ANYUSER" : "First use of application",
-
-            // TODO NEW: First use of application (if no registration email sent)
-            "FIRSTUSE_EXISTINGUSER" : "First use of application (if no registration email sent)",
-
-            // TODO NEW: Stop use of service
-            "SERVICE_WITHDRAW" : "Stop use of service",
-
-            // TODO NEW: Consent, verified : A ➞ B / Sent to A
-            "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
-
-            // TODO NEW: Consent, verified : A ➞ B / Sent to B
-            "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",
-
-            // TODO NEW: Consent, unconfirmed : A ➞ (invited) / Sent to (invited)
-            "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Consent, unconfirmed : A ➞ (invited) / Sent to (invited)",
-
-            // TODO NEW: Consent, unconfirmed : A ➞ B / Sent to B
-            "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Consent, unconfirmed : A ➞ B / Sent to B",
-
-            // TODO NEW: Consent, unconfirmed : (invited) ➞ B / Sent to (invited)
-            "CONSENT_REQUEST_OWNER_INVITED" : "Consent, unconfirmed : (invited) ➞ B / Sent to (invited)",
-
-            // TODO NEW: Consent, unconfirmed : A ➞ B / Sent to A
-            "CONSENT_REQUEST_OWNER_EXISTING" : "Consent, unconfirmed : A ➞ B / Sent to A",
-
-            // TODO NEW: Consent, active : A ➞ B / Sent to B
-            "CONSENT_CONFIRM_AUTHORIZED" : "Consent, active : A ➞ B / Sent to B",
-
-            // TODO NEW: Consent, active : A ➞ B / Sent to A
-            "CONSENT_CONFIRM_OWNER" : "Consent, active : A ➞ B / Sent to A",
-
-            // TODO NEW: Consent, preconfirmed : A ➞ B / Sent to A
-            "CONSENT_PRECONFIRMED_OWNER" : "Consent, preconfirmed : A ➞ B / Sent to A",
-
-            // TODO NEW: Consent, * ➞ rejected : A ➞ B / Sent to A
-            "CONSENT_REJECT_OWNER" : "Consent, * ➞ rejected : A ➞ B / Sent to A",
-
-            // TODO NEW: Consent, active ➞ rejected : A ➞ B / Sent to B
-            "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Consent, active ➞ rejected : A ➞ B / Sent to B",
-
-            // TODO NEW: Consent, proposed ➞ rejected : A ➞ B / Sent to B
-            "CONSENT_REJECT_AUTHORIZED" : "Consent, proposed ➞ rejected : A ➞ B / Sent to B",
-
-            // TODO NEW: Account unlocked by the administrator
-            "ACCOUNT_UNLOCK" : "Account unlocked by the administrator",
-
-            // TODO NEW: Login email changed (send to old email address)
-            "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (send to old email address)",
-
-            // TODO NEW: Login email changed (send to new email address)
-            "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (send to new email address)",
-
-            // TODO NEW: Password forgotten
-            "PASSWORD_FORGOTTEN" : "Password forgotten",
-
-            // TODO NEW: User key recovery completed
-            "USER_PRIVATE_KEY_RECOVERED" : "User key recovery completed",
-
-            // TODO NEW: User re-registration from API: weak match
-            "NON_PERFECT_ACCOUNT_MATCH" : "User re-registration from API: weak match",
-
-            // TODO NEW: User re-registration from API: bad match
-            "TRIED_USER_REREGISTRATION" : "User re-registration from API: bad match",
-
-            // TODO NEW: Change of resource [code]
-            "RESOURCE_CHANGE" : "Change of resource [code]",
-
-            // TODO NEW: Process FHIR message with event [code]
-            "PROCESS_MESSAGE" : "Process FHIR message with event [code]",
-
-            // TODO NEW: Login Notification (if enabled by user)
-            "LOGIN" : "Login Notification (if enabled by user)"
-        }
-    },
-
-    "manageapp" : {
-
-        // TODO NEW: Register a new application
-        "title_new" : "Register a new application",
-
-        // TODO NEW: Manage application
-        "title_edit" : "Manage application",
-
-        // TODO NEW: Application Overview
-        "overview" : "Application Overview",
-
-        // TODO NEW: Functions to manage your application
-        "choose" : "Functions to manage your application",
-
-        // TODO NEW: defined
-        "defined" : "defined",
-
-        // TODO NEW: Internal Name
-        "filename" : "Internal Name",
-
-        // TODO NEW: Application Type
-        "type" : "Application Type",
-
-        // TODO NEW: Target Role
-        "targetUserRole" : "Target Role",
-
-        // TODO NEW: Login Process Texts
-        "loginTemplate" : "Login Process Texts",
-
-        // TODO NEW: Login Process Flow
-        "loginButtonsTemplate" : "Login Process Flow",
-
-        // TODO NEW: Preconfirmation
-        "usePreconfirmed" : "Preconfirmation",
-
-        // TODO NEW: External email address validation
-        "accountEmailsValidated" : "External email address validation",
-
-        // TODO NEW: Whitelist IP ranges
-        "allowedIPs" : "Whitelist IP ranges",
-
-        // TODO NEW: Change Settings
-        "edit_btn" : "Change Settings",
-
-        // TODO NEW: Change the setup for your application.
-        "edit_help" : "Change the setup for your application.",
-
-        // TODO NEW: Change Data Access Filter
-        "query_btn" : "Change Data Access Filter",
-
-        // TODO NEW: Define which types of data your application may access.
-        "query_help" : "Define which types of data your application may access.",
-
-        // TODO NEW: Write Access
-        "write_mode" : "Write Access",
-
-        // TODO NEW: Change Default Subscriptions
-        "subscriptions_btn" : "Change Default Subscriptions",
-
-        // TODO NEW: Define triggers that cause an action on the @PRODUCT server
-        "subscriptions_help" : "Define triggers that cause an action on the @PRODUCT server",
-
-        // TODO NEW: OAuth 2 Parameters for the Token Exchange
-        "tokenExchangeParams" : "OAuth 2 Parameters for the Token Exchange",
-
-        // TODO NEW: OAuth 2 Parameters for Refresh Token Exchange
-        "refreshTkExchangeParams" : "OAuth 2 Parameters for Refresh Token Exchange",
-
-        // TODO NEW: Test your plugin from localhost
-        "testfromlocal_btn" : "Test your plugin from localhost",
-
-        // TODO NEW: During development, you can test the plugin code stored on your local computer on this instance.
-        "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
-
-        // TODO NEW: Test automatic import script.
-        "serverimport_btn" : "Test automatic import script.",
-
-        // TODO NEW: If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.
-        "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
-
-        // TODO NEW: Login Process
-        "applogin_btn" : "Login Process",
-
-        // TODO NEW: View and edit login process
-        "applogin_help" : "View and edit login process",
-
-        // TODO NEW: Links with research projects or external parties
-        "link_btn" : "Links with research projects or external parties",
-
-        // TODO NEW: Applications may suggest or require participation in a research project. Research projects may recommend the use of applications. Use of the application may require a user's consent to health professionals or teams to view their data.
-        "link_help" : "Applications may suggest or require participation in a research project. Research projects may recommend the use of applications. Use of the application may require a user's consent to health professionals or teams to view their data.",
-
-        // TODO NEW: Code Repository
-        "repository_btn" : "Code Repository",
-
-        // TODO NEW: Checkout the newest version of your code
-        "repository_help" : "Checkout the newest version of your code",
-
-        // TODO NEW: Application Icons and Images
-        "icon_btn" : "Application Icons and Images",
-
-        // TODO NEW: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the Store, etc.
-        "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the Store, etc.",
-
-        // TODO NEW: Application email Messages
-        "messages_btn" : "Application email Messages",
-
-        // TODO NEW: Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.
-        "messages_help" : "Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.",
-
-        // TODO NEW: Error and Performance Statistics
-        "stats_btn" : "Error and Performance Statistics",
-
-        // TODO NEW: View statistics and hints for improvements about the various types of API calls your application sends to the server.
-        "stats_help" : "View statistics and hints for improvements about the various types of API calls your application sends to the server.",
-
-        // TODO NEW: API Tester Sandbox
-        "debug_btn" : "API Tester Sandbox",
-
-        // TODO NEW: Login as application and test queries against the @PRODUCT server.
-        "debug_help" : "Login as application and test queries against the @PRODUCT server.",
-
-        // TODO NEW: Reviews
-        "appreviews_btn" : "Reviews",
-
-        // TODO NEW: Reviews conducted for this application
-        "appreviews_help" : "Reviews conducted for this application",
-
-        // TODO NEW: License
-        "applicence_btn" : "License",
-
-        // TODO NEW: Does the user require a license to use this application?
-        "applicence_help" : "Does the user require a license to use this application?",
-
-        // TODO NEW: Service Instances
-        "services_btn" : "Service Instances",
-
-        // TODO NEW: Show all instances of this service or analyzer.
-        "services_help" : "Show all instances of this service or analyzer.",
-
-        // TODO NEW: Project linked to the application (code)
-        "linkedStudy" : "Project linked to the application (code)",
-
-        // TODO NEW: Research Project Participation Required
-        "mustParticipateInStudy" : "Research Project Participation Required",
-
-        // TODO NEW: Only an administrator may change this section. Please request changes if required.
-        "admin_only" : "Only an administrator may change this section. Please request changes if required.",
-
-        // TODO NEW: Terms of Use
-        "terms_of_use" : "Terms of Use",
-
-        // TODO NEW: Show Terms of Use
-        "show_terms" : "Show Terms of Use",
-
-        // TODO NEW: Code for registration
-        "unlock_code" : "Code for registration",
-
-        // TODO NEW: Require 'code_challenge'
-        "code_challenge" : "Require 'code_challenge'",
-
-        // TODO NEW: Disconnect All
-        "logout" : "Disconnect All",
-
-        // TODO NEW: Log out all users
-        "pleaseLogout1" : "Log out all users",
-
-        // TODO NEW: Disconnect from research projects
-        "pleaseLogout2" : "Disconnect from research projects",
-
-        // TODO NEW: [ not required ]
-        "logout_optional" : "[ not required ]",
-
-        // TODO NEW: [ required ]
-        "logout_required" : "[ required ]",
-
-        // TODO NEW: Changes to fields marked with !! will require to log out all users of that application.
-        "logout_explain" : "Changes to fields marked with !! will require to log out all users of that application.",
-
-        // TODO NEW: Send error reports
-        "send_reports" : "Send error reports",
-
-        // TODO NEW: Not reviewed yet
-        "not_reviewed" : "Not reviewed yet",
-
-        // TODO NEW: Reviewed
-        "ACCEPTED" : "Reviewed",
-
-        // TODO NEW: Needs Fixing
-        "NEEDS_FIXING" : "Needs Fixing",
-
-        // TODO NEW: Display Under
-        "default_context" : "Display Under",
-
-        // TODO NEW: Dashboard / Timeline
-        "default_context_me" : "Dashboard / Timeline",
-
-        // TODO NEW: Configuration / Imports
-        "default_context_config" : "Configuration / Imports",
-
-        // TODO NEW: Standalone Plugin
-        "default_context_extern" : "Standalone Plugin",
-
-        // TODO NEW: Deployment Status
-        "deploy_status" : "Deployment Status",
-        "info" : {
-
-            // TODO NEW: This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).
-            "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
-
-            // TODO NEW: Is your application for a specific role only? Otherwise choose 'Any Role'.
-            "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
-
-            // TODO NEW: How should the login process look like? Some settings need administrator's approval
-            "loginTemplate" : "How should the login process look like? Some settings need administrator's approval",
-
-            // TODO NEW: How should buttons be arranged?
-            "loginButtonsTemplate" : "How should buttons be arranged?",
-
-            // TODO NEW: Choose 'Plugin' if your application will run on the @PRODUCT portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.
-            "type" : "Choose 'Plugin' if your application will run on the @PRODUCT portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.",
-
-            // TODO NEW: The name of your application that will be presented to the end user.
-            "name" : "The name of your application that will be presented to the end user.",
-
-            // TODO NEW: The description of your application that will be shown on the Marketplace.
-            "description" : "The description of your application that will be shown on the Marketplace.",
-
-            // TODO NEW: Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id
-            "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
-
-            // TODO NEW: Default is grant_type=<grant_type>&refresh_token=<refresh_token>&client_id=<client_id> but some services also requrie client_secret=<client_secret> or other parameters
-            "refreshTkExchangeParams" : "Default is grant_type=<grant_type>&refresh_token=<refresh_token>&client_id=<client_id> but some services also requrie client_secret=<client_secret> or other parameters",
-
-            // TODO NEW: FHIR resource updates done by this application produce no history entries. Use only if application does many and frequent updates.
-            "no_update_history" : "FHIR resource updates done by this application produce no history entries. Use only if application does many and frequent updates.",
-
-            // TODO NEW: Read pseudonymized data. Does not update records from participants.
-            "pseudonymize" : "Read pseudonymized data. Does not update records from participants.",
-
-            // TODO NEW: Application is allowed to reshare data it has access to to 3rd party.
-            "resharesData" : "Application is allowed to reshare data it has access to to 3rd party.",
-
-            // TODO NEW: Account creation via API may use preconfirmed consents.
-            "usePreconfirmed" : "Account creation via API may use preconfirmed consents.",
-
-            // TODO NEW: Account email addresses send by API have been validated by 3rd party.
-            "accountEmailsValidated" : "Account email addresses send by API have been validated by 3rd party.",
-
-            // TODO NEW: Comma separated list of IP addresses or IP ranges (CIDR format) that are allowed to connect to the platform. Leave empty for unrestricted access.
-            "allowedIPs" : "Comma separated list of IP addresses or IP ranges (CIDR format) that are allowed to connect to the platform. Leave empty for unrestricted access.",
-
-            // TODO NEW: Users of the application are allowed to search for other users of the same application.
-            "allowsUserSearch" : "Users of the application are allowed to search for other users of the same application.",
-
-            // TODO NEW: Does this service monitor user consents? Add 'Consents' to the Data Access Filter in order to activate.
-            "consentObserving" : "Does this service monitor user consents? Add 'Consents' to the Data Access Filter in order to activate.",
-
-            // TODO NEW: Title of the tile for your plugin on the dashboard.
-            "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
-
-            // TODO NEW: Categories on the Store for which your plugin should be listed.
-            "tags" : "Categories on the Store for which your plugin should be listed.",
-
-            // TODO NEW: URL of your plugins main page. If you use @PRODUCT's template, it is 'dist/index.html#!?authToken=:authToken''
-            "url" : "URL of your plugins main page. If you use @PRODUCT's template, it is 'dist/index.html#!?authToken=:authToken''",
-
-            // TODO NEW: URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.
-            "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
-
-            // TODO NEW: Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.
-            "defaultSpaceContext" : "Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.",
-
-            // TODO NEW: You may specifiy multiple possible redirect URIs by separating the URIs with a space.
-            "redirectUri" : "You may specifiy multiple possible redirect URIs by separating the URIs with a space.",
-
-            // TODO NEW: Application Secret was required by the old API; it stands for backward compatibility.
-            "secret" : "Application Secret was required by the old API; it stands for backward compatibility.",
-
-            // TODO NEW: Users must participate in research project in order to use this application.
-            "mustParticipateInStudy" : "Users must participate in research project in order to use this application.",
-
-            // TODO NEW: If filled out, this code must be entered by the user in order to sign up or log in the first time to @PRODUCT using the application. The code is not case sensitive.
-            "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to @PRODUCT using the application. The code is not case sensitive.",
-
-            // TODO NEW: Notify the application creator and developer team by email on errors caused by this application.
-            "send_reports" : "Notify the application creator and developer team by email on errors caused by this application.",
-
-            // TODO NEW: Enter comma separated list of email addresses of other developers on that @PRODUCT instance, that develop this application.
-            "developerTeam" : "Enter comma separated list of email addresses of other developers on that @PRODUCT instance, that develop this application.",
-
-            // TODO NEW: During OAuth2 login, the calling application must use PKCE (Proof Key for Code Exchange) standard
-            "code_challenge" : "During OAuth2 login, the calling application must use PKCE (Proof Key for Code Exchange) standard",
-
-            // TODO NEW: Create a non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.
-            "createendpoint" : "Create a non-project related endpoint instance. Check only if you do NOT plan to use this endpoint with a project.",
-
-            // TODO NEW: The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir
-            "endpoint" : "The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir",
-
-            // TODO NEW: Do not forget: to activate the endpoint you need to add an API key afterwards.
-            "endpoint2" : "Do not forget: to activate the endpoint you need to add an API key afterwards.",
-
-            // TODO NEW: API keys will be managed by multiple different organizations.
-            "decentral" : "API keys will be managed by multiple different organizations.",
-
-            // TODO NEW: API keys are directly bound to a single organization.
-            "organizationKeys" : "API keys are directly bound to a single organization."
-        },
-        "status" : {
-
-            // TODO NEW: Application Status
-            "title" : "Application Status",
-
-            // TODO NEW: Ready for productive use
-            "ACTIVE" : "Ready for productive use",
-
-            // TODO NEW: Beta version
-            "BETA" : "Beta version",
-
-            // TODO NEW: Under development - to be used by developer only
-            "DEVELOPMENT" : "Under development - to be used by developer only",
-
-            // TODO NEW: Deprecated - should no longer be used
-            "DEPRECATED" : "Deprecated - should no longer be used",
-
-            // TODO NEW: Deleted
-            "DELETED" : "Deleted"
-        },
-
-        // TODO NEW: Not linked to a research project
-        "nostudy" : "Not linked to a research project",
-
-        // TODO NEW: Participation Optional
-        "optionalParticipation" : "Participation Optional",
-
-        // TODO NEW: Data Access Filter
-        "access_query_json" : "Data Access Filter",
-
-        // TODO NEW: Go to the Data Access Filter editor
-        "queryeditor_btn" : "Go to the Data Access Filter editor",
-
-        // TODO NEW: No FHIR Resource History
-        "no_update_history" : "No FHIR Resource History",
-
-        // TODO NEW: Read Pseudonymized
-        "pseudonymize" : "Read Pseudonymized",
-
-        // TODO NEW: Create Endpoint Instance
-        "createendpoint" : "Create Endpoint Instance",
-
-        // TODO NEW: Endpoint Name
-        "endpoint" : "Endpoint Name",
-
-        // TODO NEW: Usage Statistics
-        "usagestats_btn" : "Usage Statistics",
-
-        // TODO NEW: Analyze the usage frequency of the application.
-        "usagestats_help" : "Analyze the usage frequency of the application.",
-
-        // TODO NEW: Export Application Definition
-        "export_btn" : "Export Application Definition",
-
-        // TODO NEW: Export the definition of this application, so that it can be imported and used on another server.
-        "export_help" : "Export the definition of this application, so that it can be imported and used on another server.",
-
-        // TODO NEW: IMPORTANT
-        "important" : "IMPORTANT",
-
-        // TODO NEW: Changing the application definition will log out all users from that application. They will have to confirm the use of the application again on next login.
-        "logoutwarning" : "Changing the application definition will log out all users from that application. They will have to confirm the use of the application again on next login.",
-
-        // TODO NEW: Changing the application definition will unlink this research application from all projects!
-        "researchwarning" : "Changing the application definition will unlink this research application from all projects!",
-
-        // TODO NEW: Changing the application definition requires the generation of new API keys for all instances of this service.
-        "servicewarning" : "Changing the application definition requires the generation of new API keys for all instances of this service.",
-
-        // TODO NEW: Creator
-        "creator" : "Creator",
-
-        // TODO NEW: Organization
-        "organization" : "Organization",
-
-        // TODO NEW: Publisher
-        "publisher" : "Publisher",
-
-        // TODO NEW: Developer Team
-        "developerTeam" : "Developer Team",
-
-        // TODO NEW: Reviews
-        "reviews" : "Reviews",
-
-        // TODO NEW: Manage your API keys
-        "manageyourkeys" : "Manage your API keys",
-
-        // TODO NEW: Decentral Management
-        "decentral" : "Decentral Management",
-
-        // TODO NEW: API-Keys per Organizations
-        "organizationKeys" : "API-Keys per Organizations"
-    },
-
-    "appstats" : {
-
-        // TODO NEW: Debug Information for
-        "title" : "Debug Information for",
-
-        // TODO NEW: Action
-        "action" : "Action",
-
-        // TODO NEW: First action recordet at
-        "first" : "First action recordet at",
-
-        // TODO NEW: Last executed
-        "lastrun" : "Last executed",
-
-        // TODO NEW: Statistics
-        "count" : "Statistics",
-
-        // TODO NEW: Number of times the action has been invoked.
-        "run" : "Number of times the action has been invoked.",
-
-        // TODO NEW: Number of times operations had to be repeated because of concurrency issues.
-        "retry" : "Number of times operations had to be repeated because of concurrency issues.",
-
-        // TODO NEW: Average number of internal database (MongoDB) queries executed per action invocation.
-        "db" : "Average number of internal database (MongoDB) queries executed per action invocation.",
-
-        // TODO NEW: Execution time
-        "time" : "Execution time",
-
-        // TODO NEW: Avg
-        "avgtime" : "Avg",
-
-        // TODO NEW: Last
-        "lasttime" : "Last",
-
-        // TODO NEW: Results and Warnings
-        "results" : "Results and Warnings",
-
-        // TODO NEW: Response
-        "result" : "Response",
-
-        // TODO NEW: No information has been recorded since debug information was last cleared.
-        "empty" : "No information has been recorded since debug information was last cleared.",
-
-        // TODO NEW: Refresh
-        "reload_btn" : "Refresh",
-
-        // TODO NEW: Clear
-        "reset_btn" : "Clear"
-    },
-
-    "appdebug" : {
-
-        // TODO NEW: API Tester
-        "title" : "API Tester",
-
-        // TODO NEW: Log in
-        "login" : "Log in",
-
-        // TODO NEW: OAuth Login
-        "oauth_login" : "OAuth Login",
-
-        // TODO NEW: Device
-        "device" : "Device",
-
-        // TODO NEW: Refresh Token
-        "refresh_token" : "Refresh Token",
-
-        // TODO NEW: Server-side Scripts
-        "backend_services" : "Server-side Scripts",
-
-        // TODO NEW: Username
-        "portal_username" : "Username",
-
-        // TODO NEW: Password
-        "portal_password" : "Password",
-
-        // TODO NEW: Role
-        "portal_role" : "Role",
-
-        // TODO NEW: Use plugin instance:
-        "portal_login" : "Use plugin instance:",
-
-        // TODO NEW: Portal login + get token
-        "portal_login_btn" : "Portal login + get token"
-    },
-
-    "appicon" : {
-
-        // TODO NEW: Icons and Images
-        "title" : "Icons and Images",
-
-        // TODO NEW: Application Name
-        "name" : "Application Name",
-
-        // TODO NEW: Internal Name
-        "internalname" : "Internal Name",
-        "use" : {
-
-            // TODO NEW: Usage of image
-            "title" : "Usage of image",
-
-            // TODO NEW: Display on OAuth Login Page
-            "LOGINPAGE" : "Display on OAuth Login Page",
-
-            // TODO NEW: Use as application icon
-            "APPICON" : "Use as application icon"
-        },
-        "type" : {
-
-            // TODO NEW: Image type
-            "title" : "Image type",
-
-            // TODO NEW: JPEG
-            "image/jpeg" : "JPEG",
-
-            // TODO NEW: PNG
-            "image/png" : "PNG",
-
-            // TODO NEW: GIF
-            "image/gif" : "GIF"
-        },
-
-        // TODO NEW: Image file to upload
-        "file" : "Image file to upload",
-
-        // TODO NEW: Please resize and compress the image to a reasonable size before upload. Images larger than 1 MB will not be accepted.
-        "file_help" : "Please resize and compress the image to a reasonable size before upload. Images larger than 1 MB will not be accepted.",
-
-        // TODO NEW: Images linked to application
-        "existing" : "Images linked to application"
-    },
-
-    "applink" : {
-
-        // TODO NEW: Links with research projects, external services or health professionals
-        "title" : "Links with research projects, external services or health professionals",
-
-        // TODO NEW: Link to research project
-        "add_research_btn" : "Link to research project",
-
-        // TODO NEW: Link to health professional
-        "add_provider_btn" : "Link to health professional",
-
-        // TODO NEW: Link to external service
-        "add_service_btn" : "Link to external service",
-
-        // TODO NEW: Target
-        "target" : "Target",
-
-        // TODO NEW: Health professional (login)
-        "provider" : "Health professional (login)",
-
-        // TODO NEW: External service
-        "service_app" : "External service",
-
-        // TODO NEW: Identifier for this link
-        "identifier" : "Identifier for this link",
-
-        // TODO NEW: Terms of use
-        "terms_of_use" : "Terms of use",
-
-        // TODO NEW: If special terms of use have to be read and accepted by the user, please send the text to @OPERATOR. We will upload the text in the correct format and provide you with the identifier you need to enter here.
-        "terms_of_use_hint" : "If special terms of use have to be read and accepted by the user, please send the text to @OPERATOR. We will upload the text in the correct format and provide you with the identifier you need to enter here.",
-
-        // TODO NEW: View terms of use
-        "show_terms" : "View terms of use",
-        "types" : {
-
-            // TODO NEW: Consent must be accepted
-            "REQUIRE_P" : "Consent must be accepted",
-
-            // TODO NEW: Consent is offered upon login/registration
-            "OFFER_P" : "Consent is offered upon login/registration",
-
-            // TODO NEW: Onboarding: Consent is offered on a separate page.
-            "OFFER_EXTRA_PAGE" : "Onboarding: Consent is offered on a separate page.",
-
-            // TODO NEW: Onboarding: Use terms of use as description.
-            "OFFER_INLINE_AGB" : "Onboarding: Use terms of use as description."
-        }
-    },
-
-    "appsubscriptions" : {
-
-        // TODO NEW: Default Subscriptions
-        "title" : "Default Subscriptions",
-
-        // TODO NEW: There are no default subscriptions defined.
-        "empty" : "There are no default subscriptions defined.",
-
-        // TODO NEW: Trigger
-        "trigger" : "Trigger",
-
-        // TODO NEW: FHIR Resource
-        "triggerDetail" : "FHIR Resource",
-
-        // TODO NEW: Action
-        "action" : "Action",
-
-        // TODO NEW: URL / Filename/ Target
-        "params" : "URL / Filename/ Target",
-        "triggers" : {
-
-            // TODO NEW: Consent changes
-            "fhir_Consent" : "Consent changes",
-
-            // TODO NEW: FHIR message
-            "fhir_MessageHeader" : "FHIR message",
-
-            // TODO NEW: Resource changes
-            "fhir_Resource" : "Resource changes",
-
-            // TODO NEW: Daily
-            "time" : "Daily",
-
-            // TODO NEW: Each 30 minutes
-            "time/30m" : "Each 30 minutes",
-
-            // TODO NEW: When added
-            "init" : "When added",
-
-            // TODO NEW: FHIR message (forwarded)
-            "forwarded" : "FHIR message (forwarded)"
-        },
-        "actions" : {
-
-            // TODO NEW: Call REST hook
-            "rest-hook" : "Call REST hook",
-
-            // TODO NEW: Send email
-            "email" : "Send email",
-
-            // TODO NEW: Send SMS
-            "sms" : "Send SMS",
-
-            // TODO NEW: Forward to other application
-            "app" : "Forward to other application",
-
-            // TODO NEW: Call Node.js script
-            "nodejs" : "Call Node.js script"
-        },
-        "debug" : {
-
-            // TODO NEW: Test your backend code on your computer
-            "title" : "Test your backend code on your computer",
-
-            // TODO NEW: You can test your server-side subscription processing code on your local computer.
-            "description" : "You can test your server-side subscription processing code on your local computer.",
-
-            // TODO NEW: Download the subscription tester and run it with the given connection code.
-            "description2" : "Download the subscription tester and run it with the given connection code.",
-
-            // TODO NEW: This works only with your developer account or any account created using your developer account and only as long as the application is in development.
-            "description3" : "This works only with your developer account or any account created using your developer account and only as long as the application is in development.",
-
-            // TODO NEW: Start debugging
-            "start_btn" : "Start debugging",
-
-            // TODO NEW: Stop debugging
-            "stop_btn" : "Stop debugging",
-
-            // TODO NEW: Command to run on your computer:
-            "cmd_to_run" : "Command to run on your computer:"
-        }
-    },
-
-    "appreviews" : {
-
-        // TODO NEW: Review
-        "review_btn" : "Review",
-
-        // TODO NEW: Application Reviews
-        "title" : "Application Reviews",
-
-        // TODO NEW: Application Name
-        "name" : "Application Name",
-
-        // TODO NEW: Review Type
-        "check" : "Review Type",
-
-        // TODO NEW: Date
-        "date" : "Date",
-
-        // TODO NEW: Reviewed by
-        "userLogin" : "Reviewed by",
-
-        // TODO NEW: Comment
-        "comment" : "Comment",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: No reviews have been done yet on this instance.
-        "noreviews" : "No reviews have been done yet on this instance.",
-
-        // TODO NEW: Review has been added.
-        "success" : "Review has been added.",
-
-        // TODO NEW: Application Concept
-        "CONCEPT" : "Application Concept",
-
-        // TODO NEW: Data Model
-        "DATA_MODEL" : "Data Model",
-
-        // TODO NEW: Data Access Filter
-        "ACCESS_FILTER" : "Data Access Filter",
-
-        // TODO NEW: Queries
-        "QUERIES" : "Queries",
-
-        // TODO NEW: Description
-        "DESCRIPTION" : "Description",
-
-        // TODO NEW: Icons
-        "ICONS" : "Icons",
-
-        // TODO NEW: Mail Texts
-        "MAILS" : "Mail Texts",
-
-        // TODO NEW: Projects
-        "PROJECTS" : "Projects",
-
-        // TODO NEW: Code Review
-        "CODE_REVIEW" : "Code Review",
-
-        // TODO NEW: Test Concept
-        "TEST_CONCEPT" : "Test Concept",
-
-        // TODO NEW: Test Protocol
-        "TEST_PROTOKOLL" : "Test Protocol",
-
-        // TODO NEW: Contract
-        "CONTRACT" : "Contract",
-
-        // TODO NEW: Accepted
-        "ACCEPTED" : "Accepted",
-
-        // TODO NEW: Needs fixing
-        "NEEDS_FIXING" : "Needs fixing",
-
-        // TODO NEW: Obsolete
-        "OBSOLETE" : "Obsolete",
-
-        // TODO NEW: Terms of use match Data Access Filter
-        "TERMS_OF_USE_MATCH_QUERY" : "Terms of use match Data Access Filter"
-    },
-
-    "applicence" : {
-
-        // TODO NEW: License
-        "title" : "License",
-
-        // TODO NEW: License required?
-        "required" : "License required?",
-
-        // TODO NEW: Allowed entities
-        "allowedEntities" : "Allowed entities",
-
-        // TODO NEW: Licence requirements have been updated.
-        "success" : "Licence requirements have been updated."
-    },
-
-    "repository" : {
-
-        // TODO NEW: Code Repository
-        "title" : "Code Repository",
-
-        // TODO NEW: Repository URL
-        "repository_url" : "Repository URL",
-
-        // TODO NEW: (Optional) Subdirectory in repository
-        "repository_dir" : "(Optional) Subdirectory in repository",
-
-        // TODO NEW: Access Token
-        "repository_token" : "Access Token",
-
-        // TODO NEW: Server-side code
-        "has_scripts" : "Server-side code",
-
-        // TODO NEW: This repository contains scripts that need to be executed on the server.
-        "has_scripts2" : "This repository contains scripts that need to be executed on the server.",
-
-        // TODO NEW: Last deployed at
-        "repository_date" : "Last deployed at",
-
-        // TODO NEW: Last audited at
-        "repository_audit_date" : "Last audited at",
-
-        // TODO NEW: Audit Result
-        "repository_risks" : "Audit Result",
-
-        // TODO NEW: Never
-        "never" : "Never",
-
-        // TODO NEW: Refresh
-        "refresh_btn" : "Refresh",
-
-        // TODO NEW: Checkout now
-        "submit_btn" : "Checkout now",
-
-        // TODO NEW: Audit
-        "audit_btn" : "Audit",
-
-        // TODO NEW: Audit Fix
-        "audit_fix_btn" : "Audit Fix",
-
-        // TODO NEW: Redeploy
-        "redeploy_btn" : "Redeploy",
-
-        // TODO NEW: Deployment Status
-        "status" : "Deployment Status",
-
-        // TODO NEW: The repository needs to be provided
-        "phase_provided" : "The repository needs to be provided",
-
-        // TODO NEW: Deployment scheduled
-        "phase_sceduled" : "Deployment scheduled",
-
-        // TODO NEW: Check out
-        "phase_checkout" : "Check out",
-
-        // TODO NEW: Security Audit
-        "phase_audit" : "Security Audit",
-
-        // TODO NEW: Install packages
-        "phase_install" : "Install packages",
-
-        // TODO NEW: Build
-        "phase_build" : "Build",
-
-        // TODO NEW: Done
-        "phase_complete" : "Done",
-
-        // TODO NEW: Deploy on CDN
-        "phase_import_cdn" : "Deploy on CDN",
-
-        // TODO NEW: Deploy to Scripting Engine
-        "phase_import_scripts" : "Deploy to Scripting Engine",
-
-        // TODO NEW: Remove from CDN
-        "phase_wipe_cdn" : "Remove from CDN",
-
-        // TODO NEW: Remove from Scripting Engine
-        "phase_wipe_scripts" : "Remove from Scripting Engine",
-
-        // TODO NEW: Remove Repository
-        "phase_delete" : "Remove Repository",
-
-        // TODO NEW: Log
-        "log" : "Log",
-
-        // TODO NEW: Reporting Server
-        "server" : "Reporting Server",
-
-        // TODO NEW: Checkout from repository
-        "checkout" : "Checkout from repository",
-
-        // TODO NEW: Package installation
-        "install" : "Package installation",
-
-        // TODO NEW: Security Audit
-        "audit" : "Security Audit",
-
-        // TODO NEW: Build process
-        "build" : "Build process"
-    },
-
-    "workspace" : {
-
-        // TODO NEW: Workspace
-        "title" : "Workspace",
-
-        // TODO NEW: Please add an application or a project you are working on. You may also add a test user.
-        "add_something" : "Please add an application or a project you are working on. You may also add a test user.",
-
-        // TODO NEW: Users Browser
-        "browser" : "Users Browser",
-
-        // TODO NEW: @PLATFORM Back-end
-        "midata" : "@PLATFORM Back-end",
-
-        // TODO NEW: User Account
-        "useraccount" : "User Account",
-
-        // TODO NEW: Add Application
-        "newapp_btn" : "Add Application",
-
-        // TODO NEW: Add Project
-        "newproject_btn" : "Add Project",
-
-        // TODO NEW: Add User
-        "newuser_btn" : "Add User",
-
-        // TODO NEW: Reset Workspace
-        "reset_btn" : "Reset Workspace",
-
-        // TODO NEW: Issues
-        "issues" : "Issues",
-
-        // TODO NEW: No issues found.
-        "no_issues" : "No issues found.",
-        "severity" : {
-
-            // TODO NEW: Severity
-            "severity" : "Severity",
-
-            // TODO NEW: Info
-            "zinfo" : "Info",
-
-            // TODO NEW: Warning
-            "warning" : "Warning",
-
-            // TODO NEW: Error
-            "error" : "Error"
-        },
-
-        // TODO NEW: Component
-        "component" : "Component",
-
-        // TODO NEW: Issue
-        "issue" : "Issue",
-
-        // TODO NEW: Parameter
-        "param" : "Parameter",
-
-        // TODO NEW: Data Access Filter Summary
-        "summary" : "Data Access Filter Summary",
-
-        // TODO NEW: Add Application to Workspace
-        "add_app" : "Add Application to Workspace",
-
-        // TODO NEW: Add User Account to Workspace
-        "add_user" : "Add User Account to Workspace",
-
-        // TODO NEW: Use only with test accounts! Plain text password will be stored in your browser!
-        "testusers_only" : "Use only with test accounts! Plain text password will be stored in your browser!",
-
-        // TODO NEW: Role
-        "role" : "Role",
-
-        // TODO NEW: Add
-        "add_btn" : "Add",
-
-        // TODO NEW: Internal Application Name
-        "appname" : "Internal Application Name",
-
-        // TODO NEW: Project Code
-        "projectname" : "Project Code",
-
-        // TODO NEW: Add Project to Workspace
-        "add_project" : "Add Project to Workspace",
-        "warning" : {
-
-            // TODO NEW: Application is deprecated and should not be used.
-            "app_deprecated" : "Application is deprecated and should not be used.",
-
-            // TODO NEW: No developer organization name specified in application definition.
-            "no_orgname" : "No developer organization name specified in application definition.",
-
-            // TODO NEW: No publisher specified in application definition.
-            "no_publisher" : "No publisher specified in application definition.",
-
-            // TODO NEW: Application description is missing.
-            "no_app_description" : "Application description is missing.",
-
-            // TODO NEW: The plugin is not available in the @PRODUCT Store. Ask an administrator.
-            "not_spotlighted" : "The plugin is not available in the @PRODUCT Store. Ask an administrator.",
-
-            // TODO NEW: No repository for code checkout-provided.
-            "no_repository" : "No repository for code checkout-provided.",
-
-            // TODO NEW: Error report notifications (emails) are disabled for this application.
-            "no_send_reports" : "Error report notifications (emails) are disabled for this application.",
-
-            // TODO NEW: Comments available in the error and performance statistics.
-            "has_comments" : "Comments available in the error and performance statistics.",
-
-            // TODO NEW: Project has not been validated yet.
-            "project_not_validated" : "Project has not been validated yet.",
-
-            // TODO NEW: Project not searching for participants.
-            "project_not_searching" : "Project not searching for participants.",
-
-            // TODO NEW: None of the test accounts use the application.
-            "no_user_for_app" : "None of the test accounts use the application.",
-
-            // TODO NEW: None of test accounts participate to the project.
-            "no_user_for_project" : "None of test accounts participate to the project.",
-
-            // TODO NEW: Application instance not active.
-            "appinstance_status" : "Application instance not active.",
-
-            // TODO NEW: Application version is newer than application consent. Needs reconfirm.
-            "appinstance_outdated" : "Application version is newer than application consent. Needs reconfirm.",
-
-            // TODO NEW: Participation not accepted.
-            "not_accepted" : "Participation not accepted.",
-
-            // TODO NEW: You are not developer of this application. Some features are not available to you.
-            "no_access" : "You are not developer of this application. Some features are not available to you."
-        },
-        "error" : {
-
-            // TODO NEW: No application category selected. Plugin cannot be added by user.
-            "no_tags" : "No application category selected. Plugin cannot be added by user.",
-
-            // TODO NEW: Plugin does not have initial URL.
-            "no_url" : "Plugin does not have initial URL.",
-
-            // TODO NEW: Plugin has repository information but had never been checked out successful.
-            "never_deployed" : "Plugin has repository information but had never been checked out successful.",
-
-            // TODO NEW: No Data Access Filter provided for application.
-            "no_access_filter" : "No Data Access Filter provided for application.",
-
-            // TODO NEW: Project has no join methods selected.
-            "no_join_method" : "Project has no join methods selected.",
-
-            // TODO NEW: Project is currently being validated by an administrator.
-            "project_in_validation" : "Project is currently being validated by an administrator.",
-
-            // TODO NEW: Project has been rejected.
-            "project_rejected" : "Project has been rejected.",
-
-            // TODO NEW: Project is already finished.
-            "project_finished" : "Project is already finished.",
-
-            // TODO NEW: Project has been aborted.
-            "project_aborted" : "Project has been aborted.",
-
-            // TODO NEW: No participant groups defined for project.
-            "project_no_groups" : "No participant groups defined for project.",
-
-            // TODO NEW: Application does not exist.
-            "app_no_exist" : "Application does not exist.",
-
-            // TODO NEW: Project does not exist.
-            "project_no_exist" : "Project does not exist.",
-
-            // TODO NEW: Account login failed.
-            "login_failed" : "Account login failed.",
-
-            // TODO NEW: Application blocked by user.
-            "appinstance_rejected" : "Application blocked by user."
-        },
-        "info" : {
-
-            // TODO NEW: No requirements selected for application.
-            "no_requirements" : "No requirements selected for application.",
-
-            // TODO NEW: No icons uploaded for application.
-            "no_icons" : "No icons uploaded for application.",
-
-            // TODO NEW: Project has not been started yet.
-            "project_not_running" : "Project has not been started yet.",
-
-            // TODO NEW: No requirements selected for project.
-            "project_no_requirements" : "No requirements selected for project.",
-
-            // TODO NEW: Application is still in development.
-            "app_in_development" : "Application is still in development."
-        }
-    },
-
+    
     "developer_updplugins" : {
-
-        // TODO NEW: Plugin Deployment
-        "title" : "Plugin Deployment",
-
-        // TODO NEW: Repository
-        "repositoryUrl" : "Repository",
-
-        // TODO NEW: Status
-        "deployStatus" : "Status",
-
-        // TODO NEW: Deployed at
-        "repositoryDate" : "Deployed at",
-
-        // TODO NEW: Audited at
-        "repositoryAuditDate" : "Audited at",
-
-        // TODO NEW: Security Risks
-        "repositoryRisks" : "Security Risks",
-
-        // TODO NEW: Deployment
-        "repo_btn" : "Deployment",
-
-        // TODO NEW: Deploy ready plugins
-        "deploy_ready_btn" : "Deploy ready plugins",
-
-        // TODO NEW: Redeploy all
-        "deploy_all_btn" : "Redeploy all",
-
-        // TODO NEW: Audit all
-        "audit_btn" : "Audit all",
-
-        // TODO NEW: There are no plugins available
-        "empty" : "There are no plugins available"
+       "title" : "Plugin Deployment",
+       "repositoryUrl" : "Repository",
+       "deployStatus" : "Status",
+       "repositoryDate" : "Deployed at",
+       "repositoryAuditDate" : "Audited at",
+       "repositoryRisks" : "Security Risks",
+       "repo_btn" : "Deployment",
+       "deploy_ready_btn" : "Deploy ready plugins",
+       "deploy_all_btn" : "Redeploy all",
+       "audit_btn" : "Audit all",
+       "empty" : "There are no plugins available"
     },
 
     "applogin" : {
-
-        // TODO NEW: Application login
-        "title" : "Application login",
-
-        // TODO NEW: View and configure the application login process.
-        "description" : "View and configure the application login process.",
-
-        // TODO NEW: Which process do you want to preview?
-        "preview" : "Which process do you want to preview?",
-        "previewtype" : {
-
-            // TODO NEW: First login. User has no account yet.
-            "NEW" : "First login. User has no account yet.",
-
-            // TODO NEW: First login. User already has an account.
-            "EXISTING" : "First login. User already has an account.",
-
-            // TODO NEW: Returning user - Relogin
-            "RELOGIN" : "Returning user - Relogin"
-        },
-
-        // TODO NEW: always
-        "required" : "always",
-
-        // TODO NEW: if necessary
-        "optional" : "if necessary",
-
-        // TODO NEW: This setting must be approved by an administrator
-        "not_approved" : "This setting must be approved by an administrator",
-
-        // TODO NEW: Approved by
-        "approvedby" : "Approved by",
-
-        // TODO NEW: at
-        "approvedat" : "at",
-
-        // TODO NEW: View terms of use
-        "show_terms" : "View terms of use",
-
-        // TODO NEW: No terms of use
-        "no_terms" : "No terms of use",
-
-        // TODO NEW: Linked projects
-        "links" : "Linked projects",
-
-        // TODO NEW: None (yet)
-        "no_links" : "None (yet)",
-
-        // TODO NEW: Test parameters to OAuth login
-        "urlParams" : "Test parameters to OAuth login",
-
-        // TODO NEW: URL test parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=en'.
-        "urlParams2" : "URL test parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=en'.",
-        "step" : {
-
-            // TODO NEW: Login
-            "login" : "Login",
-
-            // TODO NEW: Registration
-            "registration" : "Registration",
-
-            // TODO NEW: Consent
-            "confirmation" : "Consent",
-
-            // TODO NEW: Project Consent
-            "confirmation2" : "Project Consent",
-
-            // TODO NEW: Enter password
-            "password_set" : "Enter password",
-
-            // TODO NEW: Email verification
-            "email_verified" : "Email verification",
-
-            // TODO NEW: Approval by an administrator
-            "admin_verified" : "Approval by an administrator",
-
-            // TODO NEW: Phone number verification
-            "phone_verified" : "Phone number verification",
-
-            // TODO NEW: Agree to terms of use
-            "newest_terms_agreed" : "Agree to terms of use",
-
-            // TODO NEW: Enter address
-            "address_entered" : "Enter address",
-
-            // TODO NEW: Address & Phone
-            "address_phone_entered" : "Address & Phone",
-
-            // TODO NEW: Enter phone
-            "phone_entered" : "Enter phone",
-
-            // TODO NEW: Address verification
-            "address_verified" : "Address verification",
-
-            // TODO NEW: 2FA Setup
-            "auth2factorsetup" : "2FA Setup",
-
-            // TODO NEW: 2FA
-            "auth2factor" : "2FA",
-
-            // TODO NEW: Enter birthdate
-            "birthday_set" : "Enter birthdate",
-
-            // TODO NEW: Enter gender
-            "gender_set" : "Enter gender",
-
-            // TODO NEW: Application unlock code
-            "unlock_code" : "Application unlock code"
-        }
+       "title" : "Application login",
+       "description" : "View and configure the application login process.",
+       "preview" : "Which process do you want to preview?",
+       "previewtype" : {
+          "NEW" : "First login. User has no account yet.",
+          "EXISTING" : "First login. User already has an account.",
+          "RELOGIN" : "Returning user - Relogin"
+       },
+       "required" : "always",
+       "optional" : "if necessary",
+       "not_approved" : "This setting must be approved by an administrator",
+       "approvedby" : "Approved by",
+       "approvedat" : "at",
+       "show_terms" : "View terms of use",
+       "no_terms" : "No terms of use",
+       "links" : "Linked projects",
+       "no_links" : "None (yet)",
+       "urlParams" : "Test parameters to OAuth login",
+       "urlParams2" : "URL test parameters your application will provide to the login. For example 'family=Test&given=Some&ro=true&country=CH&language=en'.",
+       "step" : {
+         "login" : "Login",
+         "registration" : "Registration",
+         "confirmation" : "Consent",
+         "confirmation2" : "Project Consent",
+         "password_set" : "Enter password",
+         "email_verified" : "Email verification",
+         "admin_verified" : "Approval by an administrator",
+         "phone_verified" : "Phone number verification",
+         "newest_terms_agreed" : "Agree to terms of use",
+         "address_entered" : "Enter address",
+         "address_phone_entered" : "Address & Phone",
+         "phone_entered" : "Enter phone",
+         "address_verified" : "Address verification",
+         "auth2factorsetup" : "2FA Setup",
+         "auth2factor" : "2FA",
+         "birthday_set" : "Enter birthdate",
+         "gender_set" : "Enter gender",
+         "unlock_code" : "Application unlock code"
+       }
     },
-
+    
     "enum" : {
         "logintemplate" : {
-
-            // TODO NEW: Generate application authorization from definition
             "GENERATED" : "Generate application authorization from definition",
-
-            // TODO NEW: Show terms of use as text page with generated consent
             "TERMS_OF_USE_AND_GENERATED" : "Show terms of use as text page with generated consent",
-
-            // TODO NEW: Show terms of use as text page (needs approval by an administrator)
             "TERMS_OF_USE" : "Show terms of use as text page (needs approval by an administrator)",
-
-            // TODO NEW: Give consent on registration page (needs approval by an administrator)
             "REDUCED" : "Give consent on registration page (needs approval by an administrator)"
         },
         "loginbuttonstemplate" : {
-
-            // TODO NEW: One required confirm button and optional checkboxes
             "ONE_CONFIRM_AND_OPTIONAL_CHECKBOXES" : "One required confirm button and optional checkboxes",
-
-            // TODO NEW: One decision per page
             "ONE_CONFIRM_PER_PAGE" : "One decision per page",
-
-            // TODO NEW: Checkboxes with linked terms of use
             "CHECKBOXES_WITH_LINKED_TERMS" : "Checkboxes with linked terms of use"
         }
     }

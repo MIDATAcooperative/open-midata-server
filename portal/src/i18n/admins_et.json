@@ -1,970 +1,378 @@
 {
+  "admin_navbar" : {
+    "admin" : "Admin",
+    "members" : "Users",
+    "organizations" : "Organizations",
+    "auditlog" : "Audit Log",
+    "news" : "News",
+    "mails" : "E-Mails",
+    "plugins" : "Applications",
+    "updplugins" : "Plugin Deployment",
+    "usagestats" : "Application usage statistics",
+    "content" : "Content Types",
+    "studies" : "Projects",
+    "endpoints" : "FHIR Endpoints",
+    "terms" : "General Terms and Conditions",
+    "licenses" : "Licenses",
+    "registration" : "Register an Administrator",
+    "user_admin" : "User Administration",
+    "plugin_admin" : "Applications & Data",
+    "research_admin" : "Research & Public"
+  },
+  
+  "admin_members" : {
+    "title" : "User directory",
+    "search_type" : "Search",
+    "contract_required" : "Contract needs to be sent",
+    "contract_confirm_required" : "Signed contract needs to be confirmed",
+    "no_email_confirm" : "Email not yet confirmed by user",
+    "email_rejected" : "Email confirmation rejected by user",
+    "not_admin_confirmed" : "Not confirmed by administrator",
+    "overview" : "Overview",
+    "specific_user" : "Specific User",
+    "role" : "Role",
+    "status" : "Status",
+    "midata_id" : "@PRODUCT ID",
+    "empty" : "No matching users found."
+  },
 
-    "admin_navbar" : {
+  "admin_organizations" : {
+    "title" : "Organizations",
+    "name" : "Name",
+    "identifier" : "Identifier",
+    "status" : "Status",    
+    "empty" : "No matching organizations found.",
+    "members_btn" : "show members"
+  },
 
-        // TODO NEW: Admin
-        "admin" : "Admin",
-
-        // TODO NEW: Users
-        "members" : "Users",
-
-        // TODO NEW: Organizations
-        "organizations" : "Organizations",
-
-        // TODO NEW: Audit Log
-        "auditlog" : "Audit Log",
-
-        // TODO NEW: News
-        "news" : "News",
-
-        // TODO NEW: E-Mails
-        "mails" : "E-Mails",
-
-        // TODO NEW: Applications
-        "plugins" : "Applications",
-
-        // TODO NEW: Plugin Deployment
-        "updplugins" : "Plugin Deployment",
-
-        // TODO NEW: Application usage statistics
-        "usagestats" : "Application usage statistics",
-
-        // TODO NEW: Content Types
-        "content" : "Content Types",
-
-        // TODO NEW: Projects
-        "studies" : "Projects",
-
-        // TODO NEW: FHIR Endpoints
-        "endpoints" : "FHIR Endpoints",
-
-        // TODO NEW: General Terms and Conditions
-        "terms" : "General Terms and Conditions",
-
-        // TODO NEW: Licenses
-        "licenses" : "Licenses",
-
-        // TODO NEW: Register an Administrator
-        "registration" : "Register an Administrator",
-
-        // TODO NEW: User Administration
-        "user_admin" : "User Administration",
-
-        // TODO NEW: Applications & Data
-        "plugin_admin" : "Applications & Data",
-
-        // TODO NEW: Research & Public
-        "research_admin" : "Research & Public"
+  "admin_address" : {
+    "title" : "User profile",
+    "show_apps_created" : "Show the applications created by this developer",
+    "midata_id" : "@PRODUCT ID",
+    "role" : "Role",
+    "subroles" : "Sub-Role(s)",
+    "developer" : "Belongs to Developer:",
+    "status" : "Status:",
+    "agb_status" : "Status T&Cs:",
+    "contract_status" : "Status Contract:",
+    "email_status" : "Status Email:",
+    "mobile_status" : "Status Mobile Phone Number:",
+    "marketing_email" : "Allow information emails",
+    "confirmation_code" : "Confirmation Code:",
+    "registration_date" : "Registration Date:",
+    "confirmation_date" : "Confirmation Date:",
+    "security" : "Account protection",
+    "auth_type" : "2FA method",
+    "security_type" : {
+      "KEY" : "Private key on server",
+      "KEY_PASSPHRASE" : "PASSPHRASE protected private key",
+      "KEY_EXT_PASSWORD" : "Password protected private key"
     },
-
-    "admin_members" : {
-
-        // TODO NEW: User directory
-        "title" : "User directory",
-
-        // TODO NEW: Search
-        "search_type" : "Search",
-
-        // TODO NEW: Contract needs to be sent
-        "contract_required" : "Contract needs to be sent",
-
-        // TODO NEW: Signed contract needs to be confirmed
-        "contract_confirm_required" : "Signed contract needs to be confirmed",
-
-        // TODO NEW: Email not yet confirmed by user
-        "no_email_confirm" : "Email not yet confirmed by user",
-
-        // TODO NEW: Email confirmation rejected by user
-        "email_rejected" : "Email confirmation rejected by user",
-
-        // TODO NEW: Not confirmed by administrator
-        "not_admin_confirmed" : "Not confirmed by administrator",
-
-        // TODO NEW: Overview
-        "overview" : "Overview",
-
-        // TODO NEW: Specific User
-        "specific_user" : "Specific User",
-
-        // TODO NEW: Role
-        "role" : "Role",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: @PRODUCT ID
-        "midata_id" : "@PRODUCT ID",
-
-        // TODO NEW: No matching users found.
-        "empty" : "No matching users found."
-    },
-
-    "admin_organizations" : {
-
-        // TODO NEW: Organizations
-        "title" : "Organizations",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Identifier
-        "identifier" : "Identifier",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: No matching organizations found.
-        "empty" : "No matching organizations found.",
-
-        // TODO NEW: show members
-        "members_btn" : "show members"
-    },
-
-    "admin_address" : {
-
-        // TODO NEW: User profile
-        "title" : "User profile",
-
-        // TODO NEW: Show the applications created by this developer
-        "show_apps_created" : "Show the applications created by this developer",
-
-        // TODO NEW: @PRODUCT ID
-        "midata_id" : "@PRODUCT ID",
-
-        // TODO NEW: Role
-        "role" : "Role",
-
-        // TODO NEW: Sub-Role(s)
-        "subroles" : "Sub-Role(s)",
-
-        // TODO NEW: Belongs to Developer:
-        "developer" : "Belongs to Developer:",
-
-        // TODO NEW: Status:
-        "status" : "Status:",
-
-        // TODO NEW: Status T&Cs:
-        "agb_status" : "Status T&Cs:",
-
-        // TODO NEW: Status Contract:
-        "contract_status" : "Status Contract:",
-
-        // TODO NEW: Status Email:
-        "email_status" : "Status Email:",
-
-        // TODO NEW: Status Mobile Phone Number:
-        "mobile_status" : "Status Mobile Phone Number:",
-
-        // TODO NEW: Allow information emails
-        "marketing_email" : "Allow information emails",
-
-        // TODO NEW: Confirmation Code:
-        "confirmation_code" : "Confirmation Code:",
-
-        // TODO NEW: Registration Date:
-        "registration_date" : "Registration Date:",
-
-        // TODO NEW: Confirmation Date:
-        "confirmation_date" : "Confirmation Date:",
-
-        // TODO NEW: Account protection
-        "security" : "Account protection",
-
-        // TODO NEW: 2FA method
-        "auth_type" : "2FA method",
-        "security_type" : {
-
-            // TODO NEW: Private key on server
-            "KEY" : "Private key on server",
-
-            // TODO NEW: PASSPHRASE protected private key
-            "KEY_PASSPHRASE" : "PASSPHRASE protected private key",
-
-            // TODO NEW: Password protected private key
-            "KEY_EXT_PASSWORD" : "Password protected private key"
-        },
-
-        // TODO NEW: Last Login:
-        "last_login" : "Last Login:",
-
-        // TODO NEW: Confirm Email Address
-        "email_confirm_btn" : "Confirm Email Address",
-
-        // TODO NEW: Comment
-        "comment" : "Comment",
-
-        // TODO NEW: Add Comment
-        "add_comment_btn" : "Add Comment",
-
-        // TODO NEW: Wipe Account
-        "wipe_btn" : "Wipe Account",
-
-        // TODO NEW: Change Email Address
-        "change_email_btn" : "Change Email Address",
-
-        // TODO NEW: Change Profile
-        "change_address_btn" : "Change Profile",
-
-        // TODO NEW: Add master user role
-        "make_master_btn" : "Add master user role",
-
-        // TODO NEW: Revoke master user role
-        "remove_master_btn" : "Revoke master user role",
-
-        // TODO NEW: Account history
-        "history" : "Account history"
-    },
-
-    "admin_news" : {
-
-        // TODO NEW: Created
-        "created" : "Created",
-
-        // TODO NEW: Language
-        "language" : "Language",
-
-        // TODO NEW: Title
-        "title" : "Title",
-
-        // TODO NEW: Expiration Date
-        "expires" : "Expiration Date",
-
-        // TODO NEW: Delete
-        "delete_btn" : "Delete",
-
-        // TODO NEW: No News-Items found
-        "empty" : "No News-Items found"
-    },
-
-    "admin_managenews" : {
-
-        // TODO NEW: Add a new news message
-        "title1" : "Add a new news message",
-
-        // TODO NEW: Modify news message
-        "title2" : "Modify news message",
-
-        // TODO NEW: News title
-        "title" : "News title",
-
-        // TODO NEW: News language
-        "language" : "News language",
-
-        // TODO NEW: Content
-        "content" : "Content",
-
-        // TODO NEW: URL of full message
-        "url" : "URL of full message",
-
-        // TODO NEW: Expiration date of message
-        "expires" : "Expiration date of message",
-
-        // TODO NEW: Official date
-        "date" : "Official date",
-
-        // TODO NEW: Linked Application
-        "appId" : "Linked Application",
-
-        // TODO NEW: Linked Project
-        "studyId" : "Linked Project",
-
-        // TODO NEW: Layout
-        "layout" : "Layout",
-        "layouts" : {
-
-            // TODO NEW: Small (1x1)
-            "small" : "Small (1x1)",
-
-            // TODO NEW: Wide (2x1)
-            "wide" : "Wide (2x1)",
-
-            // TODO NEW: High (1x2)
-            "high" : "High (1x2)",
-
-            // TODO NEW: Large (2x2)
-            "large" : "Large (2x2)"
-        }
-    },
-
-    "admin_registration" : {
-
-        // TODO NEW: Register a New Administrator
-        "sign_up" : "Register a New Administrator",
-
-        // TODO NEW: If you use the email address of an existing developer account, that account will be upgraded to an administrator account.
-        "description" : "If you use the email address of an existing developer account, that account will be upgraded to an administrator account."
-    },
-
-    "admin_plugins" : {
-
-        // TODO NEW: Applications
-        "title" : "Applications",
-
-        // TODO NEW: Filter by Developer
-        "developer" : "Filter by Developer",
-
-        // TODO NEW: Filter by Application
-        "name" : "Filter by Application",
-
-        // TODO NEW: Filter by organization
-        "organisation" : "Filter by organization",
-
-        // TODO NEW: There are no applications yet.
-        "empty" : "There are no applications yet.",
-
-        // TODO NEW: Name
-        "plugin_name" : "Name",
-
-        // TODO NEW: Developer
-        "plugin_developer" : "Developer",
-
-        // TODO NEW: Type
-        "plugin_type" : "Type",
-
-        // TODO NEW: Target Role
-        "plugin_role" : "Target Role",
-
-        // TODO NEW: Store
-        "plugin_market" : "Store",
-
-        // TODO NEW: Stats
-        "plugin_stats" : "Stats",
-
-        // TODO NEW: Status
-        "plugin_status" : "Status",
-
-        // TODO NEW: Import Application Definition
-        "add_definition_btn" : "Import Application Definition"
-    },
-
-    "admin_defineplugin" : {
-
-        // TODO NEW: Import Application Definition
-        "title" : "Import Application Definition",
-
-        // TODO NEW: Definition (JSON)
-        "definition" : "Definition (JSON)"
-    },
-
-    "admin_definestudy" : {
-
-        // TODO NEW: Import Project Definition
-        "title" : "Import Project Definition",
-
-        // TODO NEW: Definition (JSON)
-        "definition" : "Definition (JSON)",
-
-        // TODO NEW: New owner (Researcher Account)
-        "researcher" : "New owner (Researcher Account)"
-    },
-
-    "admin_studies" : {
-
-        // TODO NEW: Research Projects
-        "title" : "Research Projects",
-
-        // TODO NEW: Search criteria
-        "criteria" : "Search criteria",
-
-        // TODO NEW: No matching projects found.
-        "empty" : "No matching projects found.",
-
-        // TODO NEW: Import Project Definition
-        "add_definition_btn" : "Import Project Definition",
-
-        // TODO NEW: Project code
-        "code" : "Project code",
-
-        // TODO NEW: Project name
-        "name" : "Project name",
-
-        // TODO NEW: Type
-        "type" : "Type",
-
-        // TODO NEW: Created At
-        "created" : "Created At",
-
-        // TODO NEW: All Projects
-        "ALL" : "All Projects"
-    },
-
-    "admin_terms" : {
-
-        // TODO NEW: General Terms and Conditions
-        "title" : "General Terms and Conditions",
-
-        // TODO NEW: No General Terms and Conditions available.
-        "empty" : "No General Terms and Conditions available.",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Version
-        "version" : "Version",
-
-        // TODO NEW: Language
-        "language" : "Language",
-
-        // TODO NEW: Creation Date
-        "createdAt" : "Creation Date",
-
-        // TODO NEW: Filter by name
-        "restrict_name" : "Filter by name"
-    },
-
-    "admin_manageterms" : {
-
-        // TODO NEW: General Terms and Conditions
-        "pagetitle" : "General Terms and Conditions",
-
-        // TODO NEW: Internal Name
-        "name" : "Internal Name",
-
-        // TODO NEW: Version
-        "version" : "Version",
-
-        // TODO NEW: Language
-        "language" : "Language",
-
-        // TODO NEW: Title (public)
-        "title" : "Title (public)",
-
-        // TODO NEW: Content (HTML)
-        "text" : "Content (HTML)",
-
-        // TODO NEW: Replace the current version
-        "replace" : "Replace the current version"
-    },
-
-    "admin_study" : {
-
-        // TODO NEW: Research Project
-        "title" : "Research Project",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Created at
-        "created_at" : "Created at",
-
-        // TODO NEW: Created by
-        "created_by" : "Created by",
-
-        // TODO NEW: Description
-        "description" : "Description",
-
-        // TODO NEW: Participation procedures
-        "joinmethods" : "Participation procedures",
-
-        // TODO NEW: Type
-        "type" : "Type",
-
-        // TODO NEW: Code
-        "code" : "Code",
-
-        // TODO NEW: Start Date
-        "startDate" : "Start Date",
-
-        // TODO NEW: End Date
-        "endDate" : "End Date",
-
-        // TODO NEW: Data freeze date
-        "dataCreatedBefore" : "Data freeze date",
-
-        // TODO NEW: Consent Observers
-        "consent_observers" : "Consent Observers",
-
-        // TODO NEW: Participant withdrawal policy
-        "leavePolicy" : "Participant withdrawal policy",
-
-        // TODO NEW: Participant rejoin policy
-        "rejoinPolicy" : "Participant rejoin policy",
-
-        // TODO NEW: Public information
-        "infos" : "Public information",
-
-        // TODO NEW: Information for participants
-        "infos_part" : "Information for participants",
-
-        // TODO NEW: Internal Information
-        "infos_internal" : "Internal Information",
-
-        // TODO NEW: Required Information
-        "required_information" : "Required Information",
-
-        // TODO NEW: Anonymous
-        "anonymous" : "Anonymous",
-
-        // TODO NEW: Required Assistance
-        "required_assistance" : "Required Assistance",
-
-        // TODO NEW: General Terms and Conditions
-        "termsOfUse" : "General Terms and Conditions",
-
-        // TODO NEW: Data Access Filter
-        "sharing_query" : "Data Access Filter",
-
-        // TODO NEW: Requirements
-        "requirements" : "Requirements",
-
-        // TODO NEW: Groups
-        "groups" : "Groups",
-
-        // TODO NEW: Group Name
-        "group_name" : "Group Name",
-
-        // TODO NEW: Description
-        "group_description" : "Description",
-
-        // TODO NEW: Team
-        "team" : "Team",
-
-        // TODO NEW: Role
-        "role" : "Role",
-
-        // TODO NEW: History
-        "history" : "History",
-
-        // TODO NEW: Linked Applications
-        "links" : "Linked Applications",
-
-        // TODO NEW: Complete Validation
-        "end_validation_btn" : "Complete Validation",
-
-        // TODO NEW: Back to Draft
-        "back_to_draft_btn" : "Back to Draft",
-
-        // TODO NEW: Delete Project
-        "delete_study_btn" : "Delete Project",
-
-        // TODO NEW: Export
-        "export_btn" : "Export"
-    },
-
-    "admin_stats" : {
-
-        // TODO NEW: Statistics
-        "title" : "Statistics",
-
-        // TODO NEW: Show system usage per application
-        "showusage" : "Show system usage per application",
-
-        // TODO NEW: Total count
-        "value" : "Total count",
-
-        // TODO NEW: Diff. to 1 day ago
-        "diff_yesterday" : "Diff. to 1 day ago",
-
-        // TODO NEW: Diff. to 7 days ago
-        "diff_week" : "Diff. to 7 days ago",
-
-        // TODO NEW: Records in DB
-        "recordCount" : "Records in DB",
-
-        // TODO NEW: Archived Records
-        "vRecordCount" : "Archived Records",
-
-        // TODO NEW: DB Index Pages
-        "indexPageCount" : "DB Index Pages",
-
-        // TODO NEW: Applications
-        "appCount" : "Applications",
-
-        // TODO NEW: User Languages
-        "languages" : "User Languages",
-
-        // TODO NEW: Running Projects
-        "runningStudyCount" : "Running Projects",
-
-        // TODO NEW: Teams (Healthcare and Research)
-        "groupCount" : "Teams (Healthcare and Research)",
-
-        // TODO NEW: Audit Events
-        "auditEventCount" : "Audit Events",
-
-        // TODO NEW: Active User Accounts
-        "users" : "Active User Accounts",
-
-        // TODO NEW: Consents
-        "consents" : "Consents",
-        "health" : {
-
-            // TODO NEW: System Health
-            "title" : "System Health",
-
-            // TODO NEW: Background service key present?
-            "servicekey" : "Background service key present?",
-
-            // TODO NEW: Request Key Recovery
-            "requestkey_btn" : "Request Key Recovery",
-
-            // TODO NEW: Cluster status
-            "cluster" : "Cluster status"
-        }
-    },
-
-    "admin_pwrecover" : {
-
-        // TODO NEW: Key Recovery
-        "menu" : "Key Recovery",
-
-        // TODO NEW: Key Recovery
-        "title" : "Key Recovery",
-
-        // TODO NEW: There is currently no recovery process running.
-        "empty" : "There is currently no recovery process running.",
-
-        // TODO NEW: User
-        "name" : "User",
-
-        // TODO NEW: Date
-        "started" : "Date",
-
-        // TODO NEW: Share
-        "share" : "Share",
-
-        // TODO NEW: Decrypted share
-        "decrypted" : "Decrypted share",
-
-        // TODO NEW: My recovery id
-        "myid" : "My recovery id",
-
-        // TODO NEW: Click on a share to copy the encrypted share into the clipboard.
-        "instr1" : "Click on a share to copy the encrypted share into the clipboard.",
-
-        // TODO NEW: Decrypt share on UBUNTU: (click line to copy it to clipboard)
-        "instr2" : "Decrypt share on UBUNTU: (click line to copy it to clipboard)",
-
-        // TODO NEW: Decrypt share on macOS (bash shell): (click line to copy it to clipboard)
-        "instr3" : "Decrypt share on macOS (bash shell): (click line to copy it to clipboard)"
-    },
-
-    "admin_licenses" : {
-
-        // TODO NEW: Licenses
-        "title" : "Licenses",
-
-        // TODO NEW: Application
-        "appName" : "Application",
-
-        // TODO NEW: Licensee Type
-        "licenseeType" : "Licensee Type",
-
-        // TODO NEW: Licensee
-        "licenseeName" : "Licensee",
-
-        // TODO NEW: Expires
-        "expireDate" : "Expires",
-
-        // TODO NEW: No matching licenses found.
-        "empty" : "No matching licenses found."
-    },
-
-    "admin_addlicence" : {
-
-        // TODO NEW: New License
-        "title1" : "New License",
-
-        // TODO NEW: Edit License
-        "title2" : "Edit License",
-
-        // TODO NEW: Application
-        "app" : "Application",
-
-        // TODO NEW: Licensee Type
-        "licenseeType" : "Licensee Type",
-
-        // TODO NEW: User Role
-        "role" : "User Role",
-
-        // TODO NEW: Licensee
-        "licensee" : "Licensee",
-
-        // TODO NEW: Date of expiration
-        "expireDate" : "Date of expiration",
-
-        // TODO NEW: External Service
-        "service" : "External Service",
-
-        // TODO NEW: Transfer API key management
-        "service2" : "Transfer API key management"
-    },
-
-    "usagestats" : {
-
-        // TODO NEW: Usage statistics
-        "title" : "Usage statistics",
-
-        // TODO NEW: Date
-        "date" : "Date",
-
-        // TODO NEW: Application
-        "object" : "Application",
-
-        // TODO NEW: Registration
-        "REGISTRATION" : "Registration",
-
-        // TODO NEW: Login
-        "LOGIN" : "Login",
-
-        // TODO NEW: Session
-        "REFRESH" : "Session",
-
-        // TODO NEW: Activation
-        "INSTALL" : "Activation",
-
-        // TODO NEW: Error
-        "ERROR" : "Error",
-
-        // TODO NEW: Failure
-        "FAILURE" : "Failure",
-
-        // TODO NEW: Read
-        "GET" : "Read",
-
-        // TODO NEW: Write
-        "POST" : "Write",
-
-        // TODO NEW: Update
-        "PUT" : "Update",
-
-        // TODO NEW: Delete
-        "DELETE" : "Delete"
-    },
-
-    "admin_mails" : {
-
-        // TODO NEW: Bulk Mails
-        "title" : "Bulk Mails",
-
-        // TODO NEW: Created
-        "created" : "Created",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: Project
-        "studyName" : "Project",
-
-        // TODO NEW: Author
-        "creatorName" : "Author",
-
-        // TODO NEW: # sent
-        "progressCount" : "# sent",
-
-        // TODO NEW: No bulk mails have been created yet.
-        "empty" : "No bulk mails have been created yet.",
-        "stati" : {
-
-            // TODO NEW: Draft
-            "DRAFT" : "Draft",
-
-            // TODO NEW: Scheduled for sending
-            "STARTED" : "Scheduled for sending",
-
-            // TODO NEW: Sending in progress
-            "IN_PROGRESS" : "Sending in progress",
-
-            // TODO NEW: Finished
-            "FINISHED" : "Finished",
-
-            // TODO NEW: Cancelled
-            "CANCELLED" : "Cancelled",
-
-            // TODO NEW: Paused
-            "PAUSED" : "Paused"
-        }
-    },
-
-    "admin_managemails" : {
-
-        // TODO NEW: New Bulk Mail
-        "title1" : "New Bulk Mail",
-
-        // TODO NEW: Edit Bulk Mail
-        "title2" : "Edit Bulk Mail",
-
-        // TODO NEW: Internal Mail Title
-        "name" : "Internal Mail Title",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: Type
-        "type" : "Type",
-
-        // TODO NEW: Target country
-        "country" : "Target country",
-
-        // TODO NEW: Time of creation
-        "created" : "Time of creation",
-
-        // TODO NEW: Sending started at
-        "started" : "Sending started at",
-
-        // TODO NEW: Sending completed at
-        "finished" : "Sending completed at",
-
-        // TODO NEW: # sent
-        "progressCount" : "# sent",
-
-        // TODO NEW: Research Project
-        "studyId" : "Research Project",
-
-        // TODO NEW: Exclude project participants
-        "studyExclude" : "Exclude project participants",
-
-        // TODO NEW: Application
-        "appId" : "Application",
-
-        // TODO NEW: Language
-        "lang" : "Language",
-
-        // TODO NEW: Mail Title
-        "title" : "Mail Title",
-
-        // TODO NEW: Mail Content
-        "content" : "Mail Content",
-
-        // TODO NEW: Test: send to yourself
-        "test_btn" : "Test: send to yourself",
-
-        // TODO NEW: Store Mail
-        "save_btn" : "Store Mail",
-
-        // TODO NEW: Send
-        "send_btn" : "Send"
-    },
-
-    "content" : {
-
-        // TODO NEW: Search for existing codes, content types and groups.
-        "intro" : "Search for existing codes, content types and groups.",
-
-        // TODO NEW: New Code
-        "createnew_btn" : "New Code",
-
-        // TODO NEW: New Group
-        "creategroup_btn" : "New Group",
-
-        // TODO NEW: Select the item you want to edit or add a new code to
-        "make_selection" : "Select the item you want to edit or add a new code to",
-
-        // TODO NEW: New code to be added
-        "new_code" : "New code to be added",
-
-        // TODO NEW: Edit existing code
-        "edit_code" : "Edit existing code",
-
-        // TODO NEW: Edit existing @PRODUCT content type
-        "edit_content" : "Edit existing @PRODUCT content type",
-
-        // TODO NEW: New @PRODUCT content type to be added
-        "new_content" : "New @PRODUCT content type to be added",
-
-        // TODO NEW: Edit existing group in record tree
-        "edit_group" : "Edit existing group in record tree",
-
-        // TODO NEW: New group in record tree
-        "new_group" : "New group in record tree",
-
-        // TODO NEW: Code system
-        "system" : "Code system",
-
-        // TODO NEW: Version
-        "version" : "Version",
-
-        // TODO NEW: Code
-        "code" : "Code",
-
-        // TODO NEW: Label
-        "display" : "Label",
-
-        // TODO NEW: @PRODUCT content type
-        "content" : "@PRODUCT content type",
-
-        // TODO NEW: Record encryption keys
-        "security" : "Record encryption keys",
-
-        // TODO NEW: Reuse keys for data of same type and person
-        "medium" : "Reuse keys for data of same type and person",
-
-        // TODO NEW: Use a new key for each record
-        "high" : "Use a new key for each record",
-
-        // TODO NEW: Group in record tree
-        "group" : "Group in record tree",
-
-        // TODO NEW: Default code
-        "defaultCode" : "Default code",
-
-        // TODO NEW: Default FHIR resource type
-        "resource_type" : "Default FHIR resource type",
-
-        // TODO NEW: Delete Code & Content type
-        "delete_content_btn" : "Delete Code & Content type",
-
-        // TODO NEW: Delete Code
-        "delete_code_btn" : "Delete Code",
-
-        // TODO NEW: Group Name
-        "group_name" : "Group Name",
-
-        // TODO NEW: Parent Group
-        "parent_group" : "Parent Group",
-
-        // TODO NEW: Grouping System
-        "group_system" : "Grouping System",
-
-        // TODO NEW: Save Group
-        "save_group_btn" : "Save Group",
-
-        // TODO NEW: Delete Group
-        "delete_group_btn" : "Delete Group",
-
-        // TODO NEW: Save Code & Content type
-        "save_btn" : "Save Code & Content type",
-
-        // TODO NEW: Export Changes
-        "export_btn" : "Export Changes",
-
-        // TODO NEW: Import Changes
-        "import_btn" : "Import Changes"
-    },
-
-    "admin_importcontent" : {
-
-        // TODO NEW: Import Codes
-        "title" : "Import Codes",
-
-        // TODO NEW: Code/Content Type Changes (JSON)
-        "definition" : "Code/Content Type Changes (JSON)"
-    },
-
-    "admin_services" : {
-
-        // TODO NEW: FHIR Endpoints
-        "endpoints" : "FHIR Endpoints",
-
-        // TODO NEW: Service Instance
-        "name" : "Service Instance",
-
-        // TODO NEW: FHIR Endpoint
-        "endpoint" : "FHIR Endpoint",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: No service instances found.
-        "empty" : "No service instances found.",
-
-        // TODO NEW: Show manager
-        "manager" : "Show manager",
-
-        // TODO NEW: Show project
-        "study" : "Show project"
+    "last_login" : "Last Login:",
+    "email_confirm_btn" : "Confirm Email Address",
+    "comment" : "Comment",
+    "add_comment_btn" : "Add Comment",
+    "wipe_btn" : "Wipe Account",
+    "change_email_btn" : "Change Email Address",
+    "change_address_btn" : "Change Profile",
+    "make_master_btn" : "Add master user role",
+    "remove_master_btn" : "Revoke master user role",
+    "history" : "Account history"
+  },
+  
+  "admin_news" : {
+    "created" : "Created",
+    "language" : "Language",
+    "title" : "Title",
+    "expires" : "Expiration Date",
+    "delete_btn" : "Delete",
+    "empty" : "No News-Items found"
+  },
+  
+  "admin_managenews" : {
+    "title1" : "Add a new news message",
+    "title2" : "Modify news message",
+    "title" : "News title",
+    "language" : "News language",
+    "content" : "Content",
+    "url" : "URL of full message",
+    "expires" : "Expiration date of message",
+    "date" : "Official date",
+    "appId" : "Linked Application",
+    "studyId" : "Linked Project",
+    "layout" : "Layout", 
+    "layouts" : {
+      "small" : "Small (1x1)",
+      "wide" : "Wide (2x1)",
+      "high" : "High (1x2)",
+      "large" : "Large (2x2)"
     }
+  },
+  
+  "admin_registration" : {
+    "sign_up" : "Register a New Administrator",
+    "description" : "If you use the email address of an existing developer account, that account will be upgraded to an administrator account."
+  },
+  
+  "admin_plugins" : {
+    "title" : "Applications",
+    "developer" : "Filter by Developer",
+    "name" : "Filter by Application",
+    "organisation" : "Filter by organization",
+    "empty" : "There are no applications yet.",
+    "plugin_name" : "Name",
+    "plugin_developer" : "Developer",
+    "plugin_type" : "Type",
+    "plugin_role" : "Target Role",
+    "plugin_market" : "Store",
+    "plugin_stats" : "Stats",
+    "plugin_status" : "Status",
+    "add_definition_btn" : "Import Application Definition"
+  },
+  
+  "admin_defineplugin" : {
+    "title" : "Import Application Definition",
+    "definition" : "Definition (JSON)"  
+  },
+  
+  "admin_definestudy" : {
+    "title" : "Import Project Definition",
+    "definition" : "Definition (JSON)",
+    "researcher" : "New owner (Researcher Account)"  
+  },
+  
+  "admin_studies" : {
+    "title" : "Research Projects",
+    "criteria" : "Search criteria",
+    "empty" : "No matching projects found.",
+    "add_definition_btn" : "Import Project Definition",
+    "code" : "Project code",
+    "name" : "Project name",
+    "type" : "Type",
+    "created" : "Created At",
+    "ALL" : "All Projects"
+  },
+  
+  "admin_terms" : {
+    "title" : "General Terms and Conditions",
+    "empty" : "No General Terms and Conditions available.",
+    "name" : "Name",
+    "version" : "Version",
+    "language" : "Language",
+    "createdAt" : "Creation Date",
+    "restrict_name" : "Filter by name"
+  },
+  
+  "admin_manageterms" : {
+    "pagetitle" : "General Terms and Conditions",
+    "name" : "Internal Name",
+    "version" : "Version",
+    "language" : "Language",
+    "title" : "Title (public)",
+    "text" : "Content (HTML)",
+    "replace" : "Replace the current version"
+  },
+  
+  "admin_study" : {
+     "title" : "Research Project",
+     "name" : "Name",
+     "created_at" : "Created at",
+     "created_by" : "Created by",
+     "description" : "Description",
+     "joinmethods" : "Participation procedures",
+     "type" : "Type",    
+     "code" : "Code",
+     "startDate" : "Start Date",
+     "endDate" : "End Date",
+     "dataCreatedBefore" : "Data freeze date",
+     "consent_observers" : "Consent Observers",
+     "leavePolicy" : "Participant withdrawal policy",
+     "rejoinPolicy" : "Participant rejoin policy",
+     "infos" : "Public information",
+     "infos_part" : "Information for participants",
+     "infos_internal" : "Internal Information",     
+     "required_information" : "Required Information",
+     "anonymous" : "Anonymous",
+     "required_assistance" : "Required Assistance",
+     "termsOfUse" : "General Terms and Conditions",
+     "sharing_query" : "Data Access Filter",
+     "requirements" : "Requirements",
+     "groups" : "Groups",
+     "group_name" : "Group Name",
+     "group_description" : "Description",
+     "team" : "Team",
+     "role" : "Role",
+     "history" : "History",
+     "links" : "Linked Applications",
+     "end_validation_btn" : "Complete Validation",
+     "back_to_draft_btn" : "Back to Draft",
+     "delete_study_btn" : "Delete Project",
+     "export_btn" : "Export"    
+  },
+  
+  "admin_stats" : {
+     "title" : "Statistics",
+     "showusage" : "Show system usage per application",
+     "value" : "Total count",
+     "diff_yesterday" : "Diff. to 1 day ago",
+     "diff_week" : "Diff. to 7 days ago",
+     "recordCount" : "Records in DB",
+     "vRecordCount" : "Archived Records",
+     "indexPageCount" : "DB Index Pages",
+     "appCount" : "Applications",
+     "languages" : "User Languages",
+     "runningStudyCount" : "Running Projects",
+     "groupCount" : "Teams (Healthcare and Research)",
+     "auditEventCount" : "Audit Events",
+     "users" : "Active User Accounts",             
+     "consents" : "Consents",
+     "health" : {
+       "title" : "System Health",
+       "servicekey" : "Background service key present?",
+       "requestkey_btn" : "Request Key Recovery",
+       "cluster" : "Cluster status"
+     }
+   },
+   
+   "admin_pwrecover" : {
+     "menu" : "Key Recovery",
+     "title" : "Key Recovery",
+     "empty" : "There is currently no recovery process running.",
+     "name" : "User",
+     "started" : "Date",
+     "share" : "Share",
+     "decrypted" : "Decrypted share",
+     "myid" : "My recovery id",
+     "instr1" : "Click on a share to copy the encrypted share into the clipboard.",
+     "instr2" : "Decrypt share on UBUNTU: (click line to copy it to clipboard)",
+     "instr3" : "Decrypt share on macOS (bash shell): (click line to copy it to clipboard)"     
+   },
+   
+   "admin_licenses" : {
+     "title" : "Licenses", 
+     "appName" : "Application",
+     "licenseeType" : "Licensee Type",     
+     "licenseeName" : "Licensee",
+     "expireDate" : "Expires",
+     "empty" : "No matching licenses found."     
+   },
+   
+   "admin_addlicence" : {
+     "title1" : "New License",
+     "title2" : "Edit License",
+     "app" : "Application",
+     "licenseeType" : "Licensee Type",
+     "role" : "User Role",
+     "licensee" : "Licensee",
+     "expireDate" : "Date of expiration",
+     "service" : "External Service",
+     "service2" : "Transfer API key management"
+   },
+   
+   "usagestats" : {
+      "title" : "Usage statistics",
+      "date" : "Date",
+      "object" : "Application",
+      "REGISTRATION" : "Registration",
+      "LOGIN" : "Login",
+      "REFRESH" : "Session",
+      "INSTALL" : "Activation",
+      "ERROR" : "Error",
+      "FAILURE" : "Failure",
+      "GET" : "Read",
+      "POST" : "Write",
+      "PUT" : "Update",
+      "DELETE" : "Delete"
+   },
+   
+   "admin_mails" : {
+      "title" : "Bulk Mails",
+      "created" : "Created",
+      "name" : "Name",
+      "status" : "Status",
+      "studyName" : "Project",
+      "creatorName" : "Author",
+      "progressCount" : "# sent",
+      "empty" : "No bulk mails have been created yet.",
+      "stati" : {
+        "DRAFT" : "Draft",
+        "STARTED" : "Scheduled for sending",
+        "IN_PROGRESS" : "Sending in progress",
+        "FINISHED" : "Finished",
+        "CANCELLED" : "Cancelled",
+        "PAUSED" : "Paused"
+      }
+   },
+   
+   "admin_managemails" : {
+     "title1" : "New Bulk Mail",
+     "title2" : "Edit Bulk Mail",
+     "name" : "Internal Mail Title",
+     "status" : "Status",
+     "type" : "Type",
+     "country" : "Target country",
+     "created" : "Time of creation",
+     "started" : "Sending started at",
+     "finished" : "Sending completed at",
+     "progressCount" : "# sent",
+     "studyId" : "Research Project",
+     "studyExclude" : "Exclude project participants",
+     "appId": "Application",
+     "lang" : "Language",
+     "title" : "Mail Title",
+     "content" : "Mail Content",
+     "test_btn" : "Test: send to yourself",
+     "save_btn" : "Store Mail",
+     "send_btn" : "Send"
+   },
+
+   "content" : {
+      "intro" : "Search for existing codes, content types and groups.",
+      "createnew_btn" : "New Code",
+      "creategroup_btn" : "New Group",
+      "make_selection" : "Select the item you want to edit or add a new code to",
+      "new_code" : "New code to be added",
+      "edit_code" : "Edit existing code",
+      "edit_content" : "Edit existing @PRODUCT content type",
+      "new_content" : "New @PRODUCT content type to be added",
+      "edit_group" : "Edit existing group in record tree",
+      "new_group" : "New group in record tree",
+      "system" : "Code system",
+      "version" : "Version",
+      "code" : "Code",
+      "display" : "Label",
+      "content" : "@PRODUCT content type",
+      "security" : "Record encryption keys",
+      "medium" : "Reuse keys for data of same type and person",
+      "high" : "Use a new key for each record",
+      "group" : "Group in record tree",
+      "defaultCode" : "Default code",
+      "resource_type" : "Default FHIR resource type",
+      "delete_content_btn" : "Delete Code & Content type",
+      "delete_code_btn" : "Delete Code",
+      "group_name" : "Group Name",
+      "parent_group" : "Parent Group",
+      "group_system" : "Grouping System",
+      "save_group_btn" : "Save Group",
+      "delete_group_btn" : "Delete Group",
+      "save_btn" : "Save Code & Content type",
+      "export_btn" : "Export Changes",
+      "import_btn" : "Import Changes"
+   },
+
+   "admin_importcontent" : {
+      "title" : "Import Codes",
+      "definition" : "Code/Content Type Changes (JSON)"
+   },
+   
+   "admin_services" : {
+      "endpoints" : "FHIR Endpoints",
+      "name" : "Service Instance",
+      "endpoint" : "FHIR Endpoint",
+      "status" : "Status",
+      "empty" : "No service instances found.",
+      "manager" : "Show manager",
+      "study" : "Show project"
+   }
+    
 }

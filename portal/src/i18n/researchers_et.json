@@ -1,1021 +1,392 @@
 {
-
-    "researcher_registration" : {
-
-        // TODO NEW: Registration as a Researcher
-        "sign_up" : "Registration as a Researcher",
-
-        // TODO NEW: Research Organization
-        "research_organization" : "Research Organization",
-
-        // TODO NEW: Organization Name
-        "name" : "Organization Name",
-
-        // TODO NEW: Description
-        "description" : "Description",
-
-        // TODO NEW: Researcher
-        "research_user" : "Researcher"
-    },
-
-    "researcher_login" : {
-
-        // TODO NEW: Research Login
-        "title" : "Research Login"
-    },
-
-    "researcher_navbar" : {
-
-        // TODO NEW: Projects
-        "studies" : "Projects",
-
-        // TODO NEW: Workspace
-        "workspace" : "Workspace",
-
-        // TODO NEW: Data
-        "data" : "Data",
-
-        // TODO NEW: Add Researcher
-        "addresearcher" : "Add Researcher",
-
-        // TODO NEW: Research Organization
-        "organization" : "Research Organization"
-    },
-
-    "researcher_organization" : {
-
-        // TODO NEW: Research Organization
-        "title" : "Research Organization",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Description
-        "description" : "Description",
-
-        // TODO NEW: All researchers of your organization
-        "researchers" : "All researchers of your organization",
-
-        // TODO NEW: You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions.
-        "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions."
-    },
-
-    "createstudy" : {
-
-        // TODO NEW: Create new research project
-        "title" : "Create new research project",
-
-        // TODO NEW: Change project description
-        "title2" : "Change project description",
-
-        // TODO NEW: Project name
-        "study_name" : "Project name",
-
-        // TODO NEW: Type of research
-        "study_type" : "Type of research",
-
-        // TODO NEW: Project description
-        "study_description" : "Project description",
-
-        // TODO NEW: Identifiers
-        "study_identifiers" : "Identifiers",
-
-        // TODO NEW: Enter all project identifiers from external institutions here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.
-        "study_identifiers_info" : "Enter all project identifiers from external institutions here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.",
-
-        // TODO NEW: Attention!
-        "developer_nostart" : "Attention!",
-
-        // TODO NEW: As developer you can only setup a project but not conduct it. As developer it is not possible to start the participant search.
-        "developer_nostart2" : "As developer you can only setup a project but not conduct it. As developer it is not possible to start the participant search."
-    },
-
-    "studynav" : {
-
-        // TODO NEW: Overview
-        "overview" : "Overview",
-
-        // TODO NEW: Information
-        "info" : "Information",
-
-        // TODO NEW: Details
-        "details" : "Details",
-
-        // TODO NEW: Rules
-        "rules" : "Rules",
-
-        // TODO NEW: Applications
-        "actions" : "Applications",
-
-        // TODO NEW: Participants
-        "participants" : "Participants",
-
-        // TODO NEW: Codes
-        "codes" : "Codes",
-
-        // TODO NEW: Records
-        "records" : "Records",
-
-        // TODO NEW: Results
-        "results" : "Results",
-
-        // TODO NEW: Team
-        "team" : "Team",
-
-        // TODO NEW: Published Records
-        "sharing" : "Published Records"
-    },
-
-    "studies" : {
-
-        // TODO NEW: Research Projects
-        "title" : "Research Projects",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Validation
-        "validation" : "Validation",
-
-        // TODO NEW: Participants
-        "participants" : "Participants",
-
-        // TODO NEW: Execution
-        "execution" : "Execution",
-
-        // TODO NEW: Created
-        "creation_date" : "Created",
-
-        // TODO NEW: No research projects have been created yet for your organization.
-        "empty" : "No research projects have been created yet for your organization.",
-
-        // TODO NEW: Create new project
-        "create_btn" : "Create new project"
-    },
-
-    "studyactions" : {
-
-        // TODO NEW: Applications related to the project
-        "related_apps" : "Applications related to the project",
-
-        // TODO NEW: No applications are linked to the project
-        "empty" : "No applications are linked to the project",
-
-        // TODO NEW: Add research application to be used with YOUR account
-        "aggregator_apps" : "Add research application to be used with YOUR account",
-
-        // TODO NEW: Aggregators, Analysis and Interpretation Applications
-        "datalink" : "Aggregators, Analysis and Interpretation Applications",
-
-        // TODO NEW: After the research project has been validated, you can link applications like plugins and external data processing services to it. These applications must connect to the platform using the credentials of one of the members of the research team with sufficient rights.
-        "description" : "After the research project has been validated, you can link applications like plugins and external data processing services to it. These applications must connect to the platform using the credentials of one of the members of the research team with sufficient rights.",
-
-        // TODO NEW: Select Group
-        "select_group_btn" : "Select Group",
-
-        // TODO NEW: <All Groups>
-        "allgroups" : "<All Groups>",
-
-        // TODO NEW: Research Application
-        "plugin" : "Research Application",
-
-        // TODO NEW: Device Code
-        "device" : "Device Code",
-
-        // TODO NEW: Endpoint name
-        "endpoint" : "Endpoint name",
-
-        // TODO NEW: Restrict to aggregated data
-        "only_aggregated" : "Restrict to aggregated data",
-
-        // TODO NEW: Restrict read to this group
-        "restrict" : "Restrict read to this group",
-
-        // TODO NEW: Application shares data with participant group(s)
-        "shareback" : "Application shares data with participant group(s)",
-
-        // TODO NEW: Add Research Application
-        "add_application_btn" : "Add Research Application",
-
-        // TODO NEW: Applications Consents
-        "linked_apps" : "Applications Consents",
-
-        // TODO NEW: Research Plugins
-        "linked_spaces" : "Research Plugins",
-
-        // TODO NEW: Application
-        "app" : "Application",
-
-        // TODO NEW: for
-        "for" : "for",
-
-        // TODO NEW: Status
-        "validation" : "Status",
-        "status" : {
-
-            // TODO NEW: Confirmed
-            "validated" : "Confirmed",
-
-            // TODO NEW: Not confirmed by researcher
-            "not_validated_research" : "Not confirmed by researcher",
-
-            // TODO NEW: Not confirmed by developer
-            "not_validated_developer" : "Not confirmed by developer",
-
-            // TODO NEW: Not active due to research project status
-            "study_wrong_status" : "Not active due to research project status",
-
-            // TODO NEW: Research project does not allow to join using an application
-            "study_no_app_participation" : "Research project does not allow to join using an application"
-        },
-
-        // TODO NEW: View
-        "select_btn" : "View",
-
-        // TODO NEW: Confirm
-        "validate_btn" : "Confirm",
-
-        // TODO NEW: Research Project
-        "study" : "Research Project",
-
-        // TODO NEW: Application type
-        "app_type" : "Application type",
-
-        // TODO NEW: No application selected
-        "no_valid_app" : "No application selected",
-
-        // TODO NEW: How are they linked?
-        "type" : "How are they linked?",
-        "types" : {
-
-            // TODO NEW: Onboarding: The application offers project participation upon login/start
-            "OFFER_P" : "Onboarding: The application offers project participation upon login/start",
-
-            // TODO NEW: Onboarding: The project participation is described on an extra page
-            "OFFER_EXTRA_PAGE" : "Onboarding: The project participation is described on an extra page",
-
-            // TODO NEW: Onboarding: Use the terms of use as project description
-            "OFFER_INLINE_AGB" : "Onboarding: Use the terms of use as project description",
-
-            // TODO NEW: Project participation is required to use the application
-            "REQUIRE_P" : "Project participation is required to use the application",
-
-            // TODO NEW: Application is recommended by project
-            "RECOMMEND_A" : "Application is recommended by project",
-
-            // TODO NEW: Plugin is automatically added on project participation
-            "AUTOADD_A" : "Plugin is automatically added on project participation",
-
-            // TODO NEW: Application shares data to project participants
-            "DATALINK" : "Application shares data to project participants"
-        },
-        "types_short" : {
-
-            // TODO NEW: Suggest participation
-            "OFFER_P" : "Suggest participation",
-
-            // TODO NEW: Extra project page
-            "OFFER_EXTRA_PAGE" : "Extra project page",
-
-            // TODO NEW: Terms of use as description
-            "OFFER_INLINE_AGB" : "Terms of use as description",
-
-            // TODO NEW: Require participation
-            "REQUIRE_P" : "Require participation",
-
-            // TODO NEW: Recommended
-            "RECOMMEND_A" : "Recommended",
-
-            // TODO NEW: Add automatically
-            "AUTOADD_A" : "Add automatically",
-
-            // TODO NEW: Data Sharing
-            "DATALINK" : "Data Sharing"
-        },
-
-        // TODO NEW: When are they linked?
-        "use_period" : "When are they linked?",
-        "use_periods" : {
-
-            // TODO NEW: Before the project has started
-            "PRE" : "Before the project has started",
-
-            // TODO NEW: During the execution of the project
-            "RUNNING" : "During the execution of the project",
-
-            // TODO NEW: After the project is finished
-            "FINISHED" : "After the project is finished",
-
-            // TODO NEW: When the project is aborted
-            "ABORTED" : "When the project is aborted"
-        }
-    },
-
-    "studyfields" : {
-
-        // TODO NEW: Required data
-        "required_data" : "Required data",
-
-        // TODO NEW: This setup cannot be changed anymore after the project has been validated.
-        "no_change_warning" : "This setup cannot be changed anymore after the project has been validated.",
-
-        // TODO NEW: Member Identity
-        "member_identity" : "Member Identity",
-
-        // TODO NEW: Pseudonymized participation (year of birth/gender/country)
-        "pseudonymous1" : "Pseudonymized participation (year of birth/gender/country)",
-
-        // TODO NEW: , exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers, like study nurses, may have access to full personal data.
-        "pseudonymous2" : ", exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers, like study nurses, may have access to full personal data.",
-
-        // TODO NEW: Pseudonymized participation (no additional info)
-        "pseudonymous1b" : "Pseudonymized participation (no additional info)",
-
-        // TODO NEW: , exported data reveals the pseudonymized identity. Some researchers, like study nurses, may have access to full personal data.
-        "pseudonymous2b" : ", exported data reveals the pseudonymized identity. Some researchers, like study nurses, may have access to full personal data.",
-
-        // TODO NEW: Anonymous Participation
-        "anonymous" : "Anonymous Participation",
-
-        // TODO NEW: , the pseudonymization mapping may not be accessed.
-        "anonymous2" : ", the pseudonymization mapping may not be accessed.",
-
-        // TODO NEW: Not pseudonymized
-        "not_anonymous1" : "Not pseudonymized",
-
-        // TODO NEW: , requests member to share full name, birthdate and contact information (address, phone, email)
-        "not_anonymous2" : ", requests member to share full name, birthdate and contact information (address, phone, email)",
-
-        // TODO NEW: Assistance
-        "assistance" : "Assistance",
-
-        // TODO NEW: None
-        "no_assistance1" : "None",
-
-        // TODO NEW:  - the account holder participates alone.
-        "no_assistance2" : " - the account holder participates alone.",
-
-        // TODO NEW: Health Professional
-        "assistance1" : "Health Professional",
-
-        // TODO NEW:  - the account holder needs assistance of a health professional.
-        "assistance2" : " - the account holder needs assistance of a health professional.",
-
-        // TODO NEW: Participant Groups
-        "groups" : "Participant Groups",
-
-        // TODO NEW: No groups of participants have been defined yet.
-        "groups_empty" : "No groups of participants have been defined yet.",
-
-        // TODO NEW: Group Name
-        "group_name" : "Group Name",
-
-        // TODO NEW: Description
-        "group_description" : "Description",
-
-        // TODO NEW: Add Group
-        "add_group_btn" : "Add Group",
-
-        // TODO NEW: Save Changes
-        "save_changes_btn" : "Save Changes"
-    },
-
-    "studyoverview" : {
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Type of Research
-        "type" : "Type of Research",
-
-        // TODO NEW: Created at
-        "created_at" : "Created at",
-
-        // TODO NEW: Created by
-        "created_by" : "Created by",
-
-        // TODO NEW: Description
-        "description" : "Description",
-
-        // TODO NEW: Code
-        "code" : "Code",
-
-        // TODO NEW: Validation Status
-        "validation_status" : "Validation Status",
-
-        // TODO NEW: Participant Search Status
-        "participant_search_status" : "Participant Search Status",
-
-        // TODO NEW: Execution Status
-        "execution_status" : "Execution Status",
-
-        // TODO NEW: Checklist
-        "checklist" : "Checklist",
-
-        // TODO NEW: History
-        "history" : "History",
-
-        // TODO NEW: Event
-        "event" : "Event",
-
-        // TODO NEW: Who
-        "who" : "Who",
-
-        // TODO NEW: When
-        "when" : "When",
-
-        // TODO NEW: Comment
-        "comment" : "Comment",
-
-        // TODO NEW: Change
-        "edit_description_btn" : "Change",
-
-        // TODO NEW: Request Project Validation
-        "start_validation_btn" : "Request Project Validation",
-
-        // TODO NEW: Start to Search for Participants
-        "start_participant_search_btn" : "Start to Search for Participants",
-
-        // TODO NEW: End Participant Search
-        "end_participant_search_btn" : "End Participant Search",
-
-        // TODO NEW: Start Project Execution
-        "start_study_execution_btn" : "Start Project Execution",
-
-        // TODO NEW: Finish Project
-        "finish_study_btn" : "Finish Project",
-
-        // TODO NEW: Delete Project
-        "delete_study_btn" : "Delete Project",
-
-        // TODO NEW: Abort Project
-        "abort_study_btn" : "Abort Project",
-
-        // TODO NEW: Copy to new project
-        "clone_study_btn" : "Copy to new project",
-
-        // TODO NEW: Workflow Information
-        "workflow" : "Workflow Information",
-
-        // TODO NEW: Not Required, Mark as Done
-        "markdone_btn" : "Not Required, Mark as Done",
-
-        // TODO NEW: Visit Page
-        "visitnow_btn" : "Visit Page",
-
-        // TODO NEW: Trigger Now
-        "donow_btn" : "Trigger Now",
-
-        // TODO NEW: Last step worked on
-        "lastdone" : "Last step worked on",
-
-        // TODO NEW: Next step to do
-        "nextstep" : "Next step to do",
-        "confirm" : {
-
-            // TODO NEW: The setup cannot be changed anymore. The validation process will be started.
-            "validation" : "The setup cannot be changed anymore. The validation process will be started.",
-
-            // TODO NEW: No additional users will be able to participate anymore.
-            "end_participant_search" : "No additional users will be able to participate anymore.",
-
-            // TODO NEW: All project data will be frozen at this moment.
-            "finish_execution" : "All project data will be frozen at this moment.",
-
-            // TODO NEW: The research project will be completely wiped from the platform.
-            "delete" : "The research project will be completely wiped from the platform.",
-
-            // TODO NEW: All project data will be frozen at this moment. This project will be marked as failed.
-            "abort" : "All project data will be frozen at this moment. This project will be marked as failed.",
-
-            // TODO NEW: This will clone the project's settings into a new research project. The workflow of the new project will be reset. No participants will be transferred to the new project. This project will remain unchanged.
-            "clone" : "This will clone the project's settings into a new research project. The workflow of the new project will be reset. No participants will be transferred to the new project. This project will remain unchanged.",
-
-            // TODO NEW: This operation cannot be undone. Are you sure?
-            "are_you_sure" : "This operation cannot be undone. Are you sure?"
-        }
-    },
-
-    "studyparticipant" : {
-
-        // TODO NEW: Participant:
-        "participant" : "Participant:",
-
-        // TODO NEW: Gender:
-        "gender" : "Gender:",
-
-        // TODO NEW: Year of birth:
-        "year" : "Year of birth:",
-
-        // TODO NEW: Country:
-        "country" : "Country:",
-
-        // TODO NEW: Status:
-        "status" : "Status:",
-
-        // TODO NEW: Group:
-        "group" : "Group:",
-
-        // TODO NEW: Shared records
-        "shared_records" : "Shared records",
-
-        // TODO NEW: Participation History
-        "history" : "Participation History"
-    },
-
-    "studyparticipants" : {
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Pseudonymized
-        "partName" : "Pseudonymized",
-
-        // TODO NEW: Group
-        "group" : "Group",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: {{count}} consents matching your criteria found.
-        "total" : "{{count}} consents matching your criteria found.",
-
-        // TODO NEW: Only the first 1000 matching consents are shown.
-        "only_first_shown" : "Only the first 1000 matching consents are shown.",
-
-        // TODO NEW: Recruiter
-        "recruiter" : "Recruiter",
-
-        // TODO NEW: Accept
-        "accept_btn" : "Accept",
-
-        // TODO NEW: Reject
-        "reject_btn" : "Reject",
-
-        // TODO NEW: Add Participant
-        "add_participant_btn" : "Add Participant",
-
-        // TODO NEW: This research project does not have any participants matching your search criteria yet.
-        "empty" : "This research project does not have any participants matching your search criteria yet.",
-
-        // TODO NEW: Search
-        "search_type" : "Search",
-
-        // TODO NEW: All participants
-        "all" : "All participants",
-
-        // TODO NEW: Candidates waiting for a decision
-        "request" : "Candidates waiting for a decision",
-
-        // TODO NEW: Rejected candidates
-        "rejected" : "Rejected candidates",
-
-        // TODO NEW: Participants that have retreated
-        "retreated" : "Participants that have retreated",
-
-        // TODO NEW: Accept all requests and assign new participants to participant group
-        "acceptall" : "Accept all requests and assign new participants to participant group",
-
-        // TODO NEW: Auto-Accept
-        "autojoin" : "Auto-Accept",
-
-        // TODO NEW: Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this project connects.
-        "autojoin2" : "Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this project connects.",
-
-        // TODO NEW: You are not allowed to view the participant list.
-        "not_allowed" : "You are not allowed to view the participant list."
-    },
-
-    "studyrecords" : {
-
-        // TODO NEW: Once data is available it can be downloaded here.
-        "empty" : "Once data is available it can be downloaded here.",
-
-        // TODO NEW: You need to have the 'export' permission to export data!
-        "wrongrole" : "You need to have the 'export' permission to export data!",
-
-        // TODO NEW: Export start date (optional)
-        "startDate" : "Export start date (optional)",
-
-        // TODO NEW: Export end date (optional)
-        "endDate" : "Export end date (optional)",
-
-        // TODO NEW: Data Group
-        "group" : "Data Group",
-
-        // TODO NEW: # Records
-        "number_of_records" : "# Records",
-
-        // TODO NEW: Download
-        "download_btn" : "Download",
-
-        // TODO NEW: Download Bundle
-        "fhir_download_btn" : "Download Bundle",
-
-        // TODO NEW: Download not pseudonymized
-        "fhir_download_original_btn" : "Download not pseudonymized",
-
-        // TODO NEW: Export file
-        "file" : "Export file",
-
-        // TODO NEW: FHIR Format
-        "file_fhir" : "FHIR Format",
-
-        // TODO NEW: Expert Feature: Paste JSON mapping from FHIR to CSV here.
-        "csvdef" : "Expert Feature: Paste JSON mapping from FHIR to CSV here.",
-
-        // TODO NEW: Upload CSV-Export Definition
-        "add_csvdef_btn" : "Upload CSV-Export Definition"
-    },
-
-    "studyrules" : {
-
-        // TODO NEW: Project Rules
-        "title" : "Project Rules",
-
-        // TODO NEW: This setup cannot be changed anymore after the project has been validated.
-        "no_change_warning" : "This setup cannot be changed anymore after the project has been validated.",
-
-        // TODO NEW: Official start date
-        "startDate" : "Official start date",
-
-        // TODO NEW: Official end date
-        "endDate" : "Official end date",
-
-        // TODO NEW: Data freeze date
-        "dataCreatedBefore" : "Data freeze date",
-
-        // TODO NEW: Data Access Filter
-        "sharing_query" : "Data Access Filter",
-
-        // TODO NEW: Project does NOT require any data from @PRODUCT.
-        "sharing_query_empty" : "Project does NOT require any data from @PRODUCT.",
-
-        // TODO NEW: Allowed Participation Procedures
-        "join_methods" : "Allowed Participation Procedures",
-
-        // TODO NEW: Participant withdrawal policy
-        "leavePolicy" : "Participant withdrawal policy",
-
-        // TODO NEW: Participant rejoin policy
-        "rejoinPolicy" : "Participant rejoin policy",
-
-        // TODO NEW: Edit
-        "queryeditor_btn" : "Edit",
-
-        // TODO NEW: General Terms and Conditions
-        "terms_of_use" : "General Terms and Conditions",
-
-        // TODO NEW: If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to a platform administrator. We will upload the text in the correct format and provide you with the ID you need to enter here.
-        "terms_of_use_hint" : "If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to a platform administrator. We will upload the text in the correct format and provide you with the ID you need to enter here.",
-
-        // TODO NEW: External Consent Observers
-        "consent_observers" : "External Consent Observers",
-
-        // TODO NEW: Show General Terms and Conditions
-        "show_terms" : "Show General Terms and Conditions",
-
-        // TODO NEW: Requirements
-        "requirements" : "Requirements",
-
-        // TODO NEW: Security
-        "security" : "Security",
-
-        // TODO NEW: Force the use of client certificates for project analyzers.
-        "forceClientCertificate" : "Force the use of client certificates for project analyzers."
-    },
-
-    "addresearcher" : {
-
-        // TODO NEW: Sign Up Researcher
-        "sign_up" : "Sign Up Researcher",
-
-        // TODO NEW: A new researcher has been added to your organization.
-        "success" : "A new researcher has been added to your organization."
-    },
-
-    "addparticipant" : {
-
-        // TODO NEW: Sign Up Participant
-        "sign_up" : "Sign Up Participant",
-
-        // TODO NEW: Project
-        "study" : "Project",
-
-        // TODO NEW: Participant has accepted
-        "hasaccepted" : "Participant has accepted",
-
-        // TODO NEW: A new participant has been added to your project.
-        "success" : "A new participant has been added to your project."
-    },
-
-    "studyteam" : {
-
-        // TODO NEW: Team member
-        "person" : "Team member",
-
-        // TODO NEW: Role
-        "role" : "Role",
-
-        // TODO NEW: Role (click row for details below)
-        "rolehint" : "Role (click row for details below)",
-
-        // TODO NEW: Role Name
-        "roleName" : "Role Name",
-
-        // TODO NEW: You may change your own rights by readding yourself to the team with different rights. You may only do this as long as you are the only team member. You can't deprive yourself of the right to manage the team.
-        "defineself" : "You may change your own rights by readding yourself to the team with different rights. You may only do this as long as you are the only team member. You can't deprive yourself of the right to manage the team.",
-
-        // TODO NEW: Add Person
-        "addperson_btn" : "Add Person",
-
-        // TODO NEW: Rights
-        "rights" : "Rights",
-        "right" : {
-
-            // TODO NEW: Read data records
-            "readData" : "Read data records",
-
-            // TODO NEW: Write/Update data records
-            "writeData" : "Write/Update data records",
-
-            // TODO NEW: Unpseudonymized participants
-            "unpseudo" : "Unpseudonymized participants",
-
-            // TODO NEW: Export data
-            "export" : "Export data",
-
-            // TODO NEW: Change team
-            "changeTeam" : "Change team",
-
-            // TODO NEW: View audit log
-            "auditLog" : "View audit log",
-
-            // TODO NEW: Manage participants
-            "participants" : "Manage participants",
-
-            // TODO NEW: Setup Project
-            "setup" : "Setup Project",
-
-            // TODO NEW: Manage linked applications
-            "applications" : "Manage linked applications"
-        }
-    },
-
-    "study_checklist" : {
-
-        // TODO NEW: Phase 1 : Draft
-        "phase1" : "Phase 1 : Draft",
-
-        // TODO NEW: Draft
-        "phase1_help" : "Draft",
-
-        // TODO NEW: Project name and description defined
-        "name" : "Project name and description defined",
-
-        // TODO NEW: The project name will be shown to participants. The description will be available on the portal and during application login.
-        "name_help" : "The project name will be shown to participants. The description will be available on the portal and during application login.",
-
-        // TODO NEW: Researcher team setup
-        "teamsetup" : "Researcher team setup",
-
-        // TODO NEW: If more people are involved in carrying out the project, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.
-        "teamsetup_help" : "If more people are involved in carrying out the project, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.",
-
-        // TODO NEW: Public information about your research
-        "information" : "Public information about your research",
-
-        // TODO NEW: Public information will help account holders to evaluate if your research is relevant for them.
-        "information_help" : "Public information will help account holders to evaluate if your research is relevant for them.",
-
-        // TODO NEW: Participant groups defined
-        "groups" : "Participant groups defined",
-
-        // TODO NEW: Your project may have one or multiple groups of participants. Please define the list of participant groups.
-        "groups_help" : "Your project may have one or multiple groups of participants. Please define the list of participant groups.",
-
-        // TODO NEW: Data Access Filter defined
-        "sharingQuery" : "Data Access Filter defined",
-
-        // TODO NEW: Your project has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after the project has been validated.
-        "sharingQuery_help" : "Your project has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after the project has been validated.",
-
-        // TODO NEW: Start and end dates set
-        "dates" : "Start and end dates set",
-
-        // TODO NEW: Start and end date will be shown to the participants. No additional data will flow into the project from the moment the data is frozen.
-        "dates_help" : "Start and end date will be shown to the participants. No additional data will flow into the project from the moment the data is frozen.",
-
-        // TODO NEW: General Terms and Conditions provided
-        "terms" : "General Terms and Conditions provided",
-
-        // TODO NEW: If the projects General Terms and Conditions have to be confirmed online by the participants, please contact a platform administrator.
-        "terms_help" : "If the projects General Terms and Conditions have to be confirmed online by the participants, please contact a platform administrator.",
-
-        // TODO NEW: Project validation requested
-        "validation" : "Project validation requested",
-
-        // TODO NEW: The validation will be done after it has been requested. The project may no longer be changed after validation has been requested.
-        "validation_help" : "The validation will be done after it has been requested. The project may no longer be changed after validation has been requested.",
-
-        // TODO NEW: Project has been validated
-        "validation_passed" : "Project has been validated",
-
-        // TODO NEW: Please wait until project has been validated.
-        "validation_passed_help" : "Please wait until project has been validated.",
-
-        // TODO NEW: Phase 2 : Preparation
-        "phase2" : "Phase 2 : Preparation",
-
-        // TODO NEW: Preparation
-        "phase2_help" : "Preparation",
-
-        // TODO NEW: Research application added
-        "applications" : "Research application added",
-
-        // TODO NEW: You can link applications like plugins and external data processing services to your project. These may read the participants' data and/or share aggregated data back to the participants. These applications must connect to the platform using the credentials of one of the members of the research team with sufficient rights.
-        "applications_help" : "You can link applications like plugins and external data processing services to your project. These may read the participants' data and/or share aggregated data back to the participants. These applications must connect to the platform using the credentials of one of the members of the research team with sufficient rights.",
-
-        // TODO NEW: Application has been linked with project
-        "applinked" : "Application has been linked with project",
-
-        // TODO NEW: To link an application to your project, please send the code of your project and the name of the application you want to have linked to an administrator of the platform.
-        "applinked_help" : "To link an application to your project, please send the code of your project and the name of the application you want to have linked to an administrator of the platform.",
-
-        // TODO NEW: Started to search for participants
-        "partsearchstart" : "Started to search for participants",
-
-        // TODO NEW: As long as participant search is not started it is not possible to participate to the project. Applications which require project participation may not be used.
-        "partsearchstart_help" : "As long as participant search is not started it is not possible to participate to the project. Applications which require project participation may not be used.",
-
-        // TODO NEW: Phase 3 : Execution
-        "phase3" : "Phase 3 : Execution",
-
-        // TODO NEW: Execution
-        "phase3_help" : "Execution",
-
-        // TODO NEW: Execution started
-        "executionstart" : "Execution started",
-
-        // TODO NEW: Marks this project as officially started.
-        "executionstart_help" : "Marks this project as officially started.",
-
-        // TODO NEW: Participants assigned to groups and accepted
-        "acceptedpart" : "Participants assigned to groups and accepted",
-
-        // TODO NEW: New participants must be assigned to a participant group and be accepted or rejected.
-        "acceptedpart_help" : "New participants must be assigned to a participant group and be accepted or rejected.",
-
-        // TODO NEW: Phase 4 : Completion
-        "phase4" : "Phase 4 : Completion",
-
-        // TODO NEW: Completion
-        "phase4_help" : "Completion",
-
-        // TODO NEW: Search for participants ended
-        "partsearchend" : "Search for participants ended",
-
-        // TODO NEW: No new participants may be recruited after participant search has ended.
-        "partsearchend_help" : "No new participants may be recruited after participant search has ended.",
-
-        // TODO NEW: Project ended
-        "execend" : "Project ended",
-
-        // TODO NEW: When the project is ended data are immediately frozen. The data stay available for download.
-        "execend_help" : "When the project is ended data are immediately frozen. The data stay available for download.",
-
-        // TODO NEW: Data exported
-        "exportdata" : "Data exported",
-
-        // TODO NEW: Export the project data as FHIR JSON Bundle (separate for each participant group).
-        "exportdata_help" : "Export the project data as FHIR JSON Bundle (separate for each participant group).",
-
-        // TODO NEW: (optional)
-        "optional" : "(optional)"
+   "researcher_registration" : {
+     "sign_up" : "Teadlaseks registreerimine",
+     "research_organization" : "Teadusuuringute organisatsioon",
+     "name" : "Organisatsiooni nimi",
+     "description" : "Kirjeldus",
+     "research_user" : "Teadlane"
+   },
+  
+   "researcher_login" : {
+     "title" : "Uuringu sisselogimine"
+   },
+  
+   "researcher_navbar" : {
+     "studies" : "Projektid",
+     "workspace" : "Tööruum",
+     "data" : "Andmed",
+     "addresearcher" : "Lisa uurija",
+     "organization" : "Teadusuuringute organisatsioon"
+   },
+  
+   "researcher_organization" : {
+     "title" : "Teadusuuringute organisatsioon",
+     "name" : "Nimi",
+     "description" : "Kirjeldus",
+     "researchers" : "Kõik teie organisatsiooni teadlased",
+     "master_user" : "Oma organisatsiooni värskendamiseks või uute kasutajate registreerimiseks peate olema peakasutaja. Kui arvate, et teil peaksid olema peakasutaja õigused, võtke ühendust @SUPPORTiga."
+   },
+  
+   "createstudy" : {
+     "title" : "Loo uus uurimisprojekt",
+     "title2" : "Muuda projekti kirjeldust",
+     "study_name" : "Projekti nimi",
+     "study_type" : "Uuringu tüüp",
+     "study_description" : "Projekti kirjeldus",
+     "study_identifiers" : "Identifitseerijad",
+     "study_identifiers_info" : "Sisesta siia kõik väliste asutuste projektide identifikaatorid. Sisestage igale reale üks identifikaator. Kasutage '|' soovi korral eraldada koodisüsteem ja väärtus. Identifikaatoreid portaalis projektilehtedel ei kuvata.",
+     "developer_nostart" : "Tähelepanu!",
+     "developer_nostart2" : "Arendajana saate projekti ainult seadistada, kuid mitte seda läbi viia. Arendajana pole võimalik osalejaotsingut alustada."
+   },
+  
+   "studynav" : {
+     "overview" : "Ülevaade",
+     "info" : "Teave",
+     "details" : "Üksikasjad",
+     "rules" : "Reeglid",
+     "actions" : "Rakendused",
+     "participants" : "Osalejad",
+     "codes" : "Koodid",
+     "records" : "Rekordid",
+     "results" : "Tulemused",
+     "team" : "meeskond",
+     "sharing" : "Avaldatud kirjed"
+   },
+  
+   "studies" : {
+     "title" : "Uurimisprojektid",
+     "name" : "Nimi",
+     "validation" : "Valideerimine",
+     "participants" : "Osalejad",
+     "execution" : "Täitmine",
+     "creation_date" : "Loodud",
+     "empty" : "Teie organisatsiooni jaoks pole veel uurimisprojekte loodud.",
+     "create_btn" : "Loo uus projekt"
+   },
+  
+   "studyactions" : {
+     "related_apps" : "Projektiga seotud rakendused",
+     "empty" : "Projektiga pole lingitud ühtegi rakendust",
+     "aggregator_apps" : "Lisage uurimisrakendus, mida kasutatakse OMA kontoga",
+     "datalink" : "Agregaatorid, analüüsi- ja tõlgendamisrakendused",
+     "description" : "Pärast uurimisprojekti kinnitamist saate sellega linkida selliseid rakendusi nagu pistikprogrammid ja välised andmetöötlusteenused. Need rakendused peavad platvormiga ühenduse loomiseks kasutama ühe uurimisrühma liikme, kellel on piisavad õigused, mandaate. ",
+     "select_group_btn" : "Vali rühm",
+     "allgroups" : "<Kõik rühmad>",
+     "plugin" : "Uurimisrakendus",
+     "device" : "Seadme kood",
+     "endpoint" : "Lõpp-punkti nimi",
+     "only_aggregated" : "Piirdub koondatud andmetega",
+     "restrict" : "Piira lugemine sellele grupile",
+     "shareback" : "Rakendus jagab andmeid osalejarühma(de)ga",
+     "add_application_btn" : "Lisa uurimisrakendus",
+     "linked_apps" : "Rakenduste nõusolekud",
+     "linked_spaces" : "Uurimispluginad",
+     "app" : "Rakendus",
+     "for" : "poolt",
+     "validation" : "Olek",
+     "status" : {
+"validated" : "Kinnitatud",
+"not_validated_research" : "Ei ole uurija poolt kinnitatud",
+"not_validated_developer" : "Arendaja pole kinnitanud",
+"study_wrong_status" : "Pole aktiivne uurimisprojekti oleku tõttu",
+"study_no_app_participation" : "Uurimisprojekt ei luba rakendust kasutades liituda"
+     },
+     "select_btn" : "Vaata",
+     "validate_btn" : "Kinnita",
+     "study" : "Uurimisprojekt",
+     "app_type" : "Rakenduse tüüp",
+     "no_valid_app" : "Ühtegi rakendust pole valitud",
+     "type" : "Kuidas need on seotud?",
+     "types" : {
+        "OFFER_P" : "Sissepääs: rakendus pakub sisselogimisel/käivitamisel projektis osalemist",
+        "OFFER_EXTRA_PAGE" : "Sissepääs: projektis osalemist kirjeldatakse lisalehel",
+        "OFFER_INLINE_AGB" : "Lõpetamine: kasutage projekti kirjeldusena kasutustingimusi",
+        "REQUIRE_P" : "Rakenduse kasutamiseks on projektis osalemine vajalik",
+        "RECOMMEND_A" : "Rakendust soovitab projekt",
+        "AUTOADD_A" : "Plugin lisatakse projektis osalemisel automaatselt",
+        "DATALINK" : "Rakendus jagab andmeid projektis osalejatega"
+     },
+     "types_short" : {
+        "OFFER_P" : "Soovita osalemist",
+        "OFFER_EXTRA_PAGE" : "Projekti lisaleht",
+        "OFFER_INLINE_AGB" : "Kasutustingimused kirjeldusena",
+        "REQUIRE_P" : "Nõua osalemist",
+        "RECOMMEND_A" : "Soovitatav",
+        "AUTOADD_A" : "Lisa automaatselt",
+        "DATALINK" : "Andmete jagamine"
+     },
+     "use_period" : "Millal need on lingitud?",
+     "use_periods" : {
+       "PRE" : "Enne projekti algust",
+       "RUNNING" : "Projekti teostamise ajal",
+       "FINISHED" : "Pärast projekti lõppemist",
+       "ABORTED" : "Kui projekt katkestatakse"
+     }
+   },
+  
+   "studyfields" : {
+     "required_data" : "Nõutavad andmed",
+     "no_change_warning" : "Seda seadistust ei saa pärast projekti kinnitamist enam muuta.",
+     "member_identity" : "liikme identiteet",
+     "pseudonymous1" : "Pseudonüümiga osalus (sünniaasta/sugu/riik)",
+     "pseudonymous2" : ", eksporditud andmed paljastavad pseudonüümseks muudetud identiteedi, sünniaasta, soo ja riigi. Mõnel teadlasel, näiteks õdedel, võib olla juurdepääs täielikele isikuandmetele.",
+     "pseudonymous1b" : "Pseudonüümiga osalemine (lisateave puudub)",
+     "pseudonymous2b" : ", eksporditud andmed paljastavad pseudonüümseks muudetud identiteedi. Mõnel teadlasel, näiteks õdedel, võib olla juurdepääs täielikele isikuandmetele.",
+     "anonymous" : "Anonüümne osalemine",
+     "anonymous2" : ", pseudonüümide kaardistamisele ei pruugita juurde pääseda.",
+     "not_anonymous1" : "Pole pseudonüümitud",
+     "not_anonymous2" : ", palub liikmel jagada täisnime, sünnikuupäeva ja kontaktteavet (aadress, telefon, e-post)",
+     "assistance" : "Abi",
+     "no_assistance1" : "Puudub",
+     "no_assistance2" : " - konto omanik osaleb üksi.",
+     "assistance1" : "Tervisetöötaja",
+     "assistance2" : " - konto omanik vajab tervishoiutöötaja abi.",
+     "groups" : "Osalejate rühmad",
+     "groups_empty" : "Ühtegi osalejarühma pole veel määratletud.",
+     "group_name" : "Grupi nimi",
+     "group_description" : "Kirjeldus",
+     "add_group_btn" : "Lisa rühm",
+     "save_changes_btn" : "Salvesta muudatused"
+   },
+  
+   "studyoverview" : {
+     "name" : "Nimi",
+     "type" : "Uuringu tüüp",
+     "created_at" : "Loodud kell",
+     "created_by" : "Looja",
+     "description" : "Kirjeldus",
+     "code" : "Kood",
+     "validation_status" : "Valideerimise olek",
+     "participant_search_status" : "Participant Search Status",
+     "execution_status" : "Täitmise olek",
+     "checklist" : "Checklist",
+     "history" : "ajalugu",
+     "event" : "Sündmus",
+     "who" : "kes",
+     "when" : "Millal",
+     "comment" : "Kommentaar",
+     "edit_description_btn" : "Muuda",
+     "start_validation_btn" : "Taotle projekti kinnitamist",
+     "start_participant_search_btn" : "Alustage osalejate otsimist",
+     "end_participant_search_btn" : "Lõpeta osaleja otsing",
+     "start_study_execution_btn" : "Alusta projekti täitmist",
+     "finish_study_btn" : "Lõpeta projekt",
+     "delete_study_btn" : "Kustuta projekt",
+     "abort_study_btn" : "Katkesta projekt",
+     "clone_study_btn" : "Kopeeri uude projekti",
+     "workflow" : "Töövoo teave",
+     "markdone_btn" : "Pole nõutav, märgi tehtuks",
+     "visitnow_btn" : "Külastage lehte",
+     "donow_btn" : "Käivitage kohe",
+     "lastdone" : "Viimane samm tehtud",
+     "nextstep" : "Järgmine samm teha",
+     "confirm" : {
+       "validation" : "Seadistust ei saa enam muuta. Valideerimisprotsess algab.",
+       "end_participant_search" : "Täiendavad kasutajad ei saa enam osaleda.",
+       "finish_execution" : "Kõik projekti andmed on hetkel külmutatud.",
+       "delete" : "Uurimisprojekt kustutatakse platvormilt täielikult.",
+       "abort" : "Kõik projekti andmed on hetkel külmutatud. See projekt märgitakse nurjunuks.",
+       "clone" : "See kloonib projekti seaded uude uurimisprojekti. Uue projekti töövoog lähtestatakse. Ühtegi osalejat uude projekti üle ei kanta. See projekt jääb muutumatuks.",
+       "are_you_sure" : "Seda toimingut ei saa tagasi võtta. Kas olete kindel?"
+     }
+   },
+  
+   "studyparticipant" : {
+     "participant" : "Participant:",
+     "gender" : "Sugu:",
+     "year" : "Sünniaasta:",
+     "country" : "Riik:",
+     "status" : "Olek:",
+     "group" : "Grupp:",
+     "shared_records" : "Jagatud kirjed",
+     "history" : "Osalemise ajalugu"
+   },
+  
+   "studyparticipants" : {
+     "name" : "Nimi",
+     "partName" : "Pseudonüümitud",
+     "group" : "Rühm",
+     "status" : "Olek",
+     "total" : "Leiti {{count}} teie kriteeriumidele vastavat nõusolekut.",
+     "only_first_shown" : "Kuvatakse ainult esimesed 1000 vastavat nõusolekut.",
+     "recruiter" : "värbaja",
+     "accept_btn" : "Nõustu",
+     "reject_btn" : "Keeldu",
+     "add_participant_btn" : "Lisa osaleja",
+     "empty" : "Selles uurimisprojektis ei ole veel ühtegi teie otsingukriteeriumile vastavat osalejat.",
+     "search_type" : "Otsi",
+     "all" : "Kõik osalejad",
+     "request" : "Kandidaadid ootavad otsust",
+     "rejected" : "Tagasi lükatud kandidaadid",
+     "retreated" : "Osalejad, kes on taandunud",
+     "acceptall" : "Nõustu kõik taotlused ja määrake osalejate rühma uued osalejad",
+     "autojoin" : "Automaatne aktsepteerimine",
+     
+     "not_allowed" : "Teil ei ole lubatud osalejate nimekirja vaadata."
+   },
+  
+   "studyrecords" : {
+     "empty" : "Kui andmed on saadaval, saab need siit alla laadida.",
+     "wrongrole" : "Andmete eksportimiseks peab teil olema 'ekspordi' luba!",
+     "startDate" : "Ekspordi alguskuupäev (valikuline)",
+     "endDate" : "Ekspordi lõppkuupäev (valikuline)",
+     "group" : "Andmerühm",
+     "number_of_records" : "# kirjet",
+     "download_btn" : "Laadi alla",
+     "fhir_download_btn" : "Laadi alla pakett",
+     "fhir_download_original_btn" : "Allalaadimine pole pseudonüümitud",
+     "file" : "Ekspordi fail",
+     "file_fhir" : "FHIR-vorming",
+     "csvdef" : "Eksperdi funktsioon: kleepige siia JSON-i vastendus FHIR-ist CSV-sse.",
+     "add_csvdef_btn" : "Laadi üles CSV-ekspordi definitsioon"
+   },
+  
+   "studyrules" : {
+     "title" : "Projekti reeglid",
+     "no_change_warning" : "Seda seadistust ei saa pärast projekti kinnitamist enam muuta.",
+     "startDate" : "Ametlik alguskuupäev",
+     "endDate" : "Ametlik lõppkuupäev",
+     "dataCreatedBefore" : "Andmete külmutamise kuupäev",
+     "sharing_query" : "Andmete juurdepääsu filter",
+     "sharing_query_empty" : "Projekt EI vaja @PRODUCT-lt andmeid.",
+     "join_methods" : "Lubatud osalemisprotseduurid",
+     "leavePolicy" : "Osalejate väljaastumise eeskirjad",
+     "rejoinPolicy" : "Osalejate taasliitumise eeskirjad",
+     "queryeditor_btn" : "Muuda",
+     "terms_of_use" : "Üldtingimused",
+     "terms_of_use_hint" : "Kui kasutaja peab projekti üldtingimusi lugema ja nendega nõustuma, siis saatke tekst platvormi administraatorile. Laadime teksti üles õiges vormingus ja anname teile sisestamiseks vajaliku ID siin.",
+     "consent_observers" : "Välised nõusoleku vaatlejad",
+     "show_terms" : "Kuva üldised nõuded ja tingimused",
+     "requirements" : "Nõuded",
+     "security" : "Turvalisus",
+     "forceClientCertificate" : "Sundida projektianalüsaatorite jaoks kliendisertifikaate kasutama."
+   },
+  
+   "addresearcher" : {
+     "sign_up" : "Registreeruge teadlane",
+     "success" : "Teie organisatsiooni on lisatud uus teadlane."
+   },
+  
+   "addparticipant" : {
+     "sign_up" : "Registreeruda osaleja",
+     "study" : "Projekt",
+     "hasaccepted" : "Osaleja on nõustunud",
+     "success" : "Teie projekti on lisatud uus osaleja."
+   },
+  
+   "studyteam" : {
+     "person" : "Meeskonna liige",
+     "role" : "Roll",
+     "rolehint" : "Roll (üksikasjade vaatamiseks klõpsake alloleval real)",
+     "roleName" : "Rooli nimi",
+     "defineself" : "Sa võid oma õigusi muuta, lugedes end meeskonnale erinevate õigustega. Seda võid teha ainult seni, kuni oled meeskonna ainus liige. Sa ei saa endalt meeskonna juhtimise õigust ära võtta. ",
+     "addperson_btn" : "Lisa inimene",
+     "rights" : "Õigused",
+     "right" : {
+       "readData" : "Loe andmekirjeid",
+       "writeData" : "Andmekirjete kirjutamine/värskendamine",
+       "unpseudo" : "Pseudonüümimata osalejad",
+       "export" : "Ekspordi andmed",
+       "changeTeam" : "Muuda meeskonda",
+       "auditLog" : "Kuva auditi logi",
+       "participants" : "Osalejate haldamine",
+       "setup" : "Seadistusprojekt",
+       "applications" : "Lingitud rakenduste haldamine"
+     }
+   },
+  
+   "study_checklist" : {
+     "phase1" : "Phase 1 : mustand",
+     "phase1_help" : "Mustand",
+     "name" : "Projekti nimi ja kirjeldus määratletud",
+     "name_help" : "Projekti nime näidatakse osalejatele. Kirjeldus on saadaval portaalis ja rakenduse sisselogimise ajal.",
+     "teamsetup" : "Teadlaste meeskonna seadistamine",
+     "teamsetup_help" : "Kui projekti elluviimisse on kaasatud rohkem inimesi, esitage kõik kaasatud isikud ja nende roll. Kuni te pole inimesi juurde lisanud, saate oma rolli muuta, lisades end uuesti mõne teise rolliga.",
+     "information" : "Avalik teave teie uurimistöö kohta",
+     "information_help" : "Avalik teave aitab kontoomanikel hinnata, kas teie uurimus on nende jaoks asjakohane.",
+     "groups" : "Osalejate rühmad on määratletud",
+     "groups_help" : "Teie projektis võib olla üks või mitu osalejate rühma. Määrake osalejarühmade loend.",
+     "sharingQuery" : "Andmepääsufilter on määratletud",
+     "sharingQuery_help" : "Teie projekt peab selgelt märkima, millistele osalejate andmetele see juurde pääseb. Andmepääsufiltrit ei saa pärast projekti kinnitamist muuta.",
+     "dates" : "Algus- ja lõppkuupäevad on määratud",
+     "dates_help" : "Osalejatele näidatakse algus- ja lõppkuupäeva. Andmete külmutamise hetkest alates projektist täiendavaid andmeid ei voola.",
+     "terms" : "Pakutud üldtingimused",
+     "terms_help" : "Kui osalejad peavad projekti üldtingimused veebis kinnitama, võtke ühendust platvormi administraatoriga.",
+     "validation" : "Projekti kinnitamine on taotletud",
+     
+     "validation_passed" : "Projekt on kinnitatud",
+     "validation_passed_help" : "Palun oodake, kuni projekt on kinnitatud.",
+     "phase2" : "Phase 2 : Ettevalmistus",
+     "phase2_help" : "Ettevalmistus",
+     "applications" : "Uurimisrakendus lisatud",
+     "applications_help" : "Saate oma projektiga linkida selliseid rakendusi nagu pistikprogrammid ja välised andmetöötlusteenused. Need võivad lugeda osalejate andmeid ja/või jagada koondandmeid osalejatele tagasi. Need rakendused peavad platvormiga ühenduse loomiseks kasutama ühe kasutaja mandaate piisavate õigustega uurimisrühma liikmetest.",
+     "applinked" : "Rakendus on projektiga lingitud",
+     "applinked_help" : "Rakenduse linkimiseks oma projektiga saatke platvormi administraatorile oma projekti kood ja rakenduse nimi, mida soovite siduda.",
+     "partsearchstart" : "Alustas osalejate otsimist",
+     "partsearchstart_help" : "Kuni osalejaotsingut pole käivitatud, pole projektis võimalik osaleda. Taotlusi, mis nõuavad projektis osalemist, ei tohi kasutada.",
+     "phase3" : "phase 3 : täitmine",
+     "phase3_help" : "Täitmine",
+     "executionstart" : "Täitmine algas",
+     "executionstart_help" : "Märgib selle projekti ametlikult alatuks.",
+     "acceptedpart" : "Rühmadesse määratud ja vastu võetud osalejad",
+     "acceptedpart_help" : "Uued osalejad tuleb määrata osalejate gruppi ja need tuleb vastu võtta või tagasi lükata.",
+     "phase4" : "phase 4 : Completion",
+     "phase4_help" : "Lõpetamine",
+     "partsearchend" : "Osavõtjate otsing lõppes",
+     "partsearchend_help" : "Pärast osalejaotsingu lõppemist ei tohi uusi osalejaid värvata.",
+     "execend" : "Projekt lõppes",
+     "execend_help" : "Kui projekt on lõppenud, andmed külmutatakse kohe. Andmed jäävad allalaadimiseks kättesaadavaks.",
+     "exportdata" : "Andmed eksporditud",
+     "exportdata_help" : "Ekspordi projekti andmed FHIR JSON Bundle'ina (iga osalejarühma jaoks eraldi).",
+     "optional" : "(valikuline)"
     },
 
     "studyinfo" : {
-
-        // TODO NEW: Information
-        "title" : "Information",
-
-        // TODO NEW: Give additional information about the research project. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.
-        "introduction" : "Give additional information about the research project. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.",
-
-        // TODO NEW: All information is optional. You should give information only on topics that make sense in your research context.
-        "introduction2" : "All information is optional. You should give information only on topics that make sense in your research context.",
-
-        // TODO NEW: Information visible to
-        "visibility" : "Information visible to",
-        "visibilities" : {
-
-            // TODO NEW: everybody
-            "ALL" : "everybody",
-
-            // TODO NEW: all participants
-            "PARTICIPANTS" : "all participants",
-
-            // TODO NEW: only researchers and administrators
-            "INTERNAL" : "only researchers and administrators"
-        },
-
-        // TODO NEW: Languages to edit
-        "showlanguages" : "Languages to edit"
+      "title" : "Teave",
+      "introduction" : "Andke uurimisprojekti kohta lisateavet. Saate anda avalikku teavet, lisajuhiseid ja kontaktandmeid, mis on nähtavad ainult osalejatele ning teavet teistele uurijatele ja administratsioonile. Tekstid on mõeldud ainult lisainfona ja neid saate ise toimetada igal ajal.",
+      "introduction2" : "Kogu teave on valikuline. Peaksite andma teavet ainult nendel teemadel, mis on teie uurimistöö kontekstis mõistlikud.",
+      "visibility" : "Teave on nähtav",
+      "visibilities" : {
+        "ALL" : "kõik",
+        "PARTICIPANTS" : "kõik osalejad",
+        "INTERNAL" : "ainult teadlased ja administraatorid"
+      },
+      "showlanguages" : "Keeled, mida muuta"
     },
 
     "researcher_sharing" : {
-
-        // TODO NEW: Share or unshare records from your account with groups of project participants
-        "description" : "Share or unshare records from your account with groups of project participants",
-
-        // TODO NEW: Source
-        "source" : "Source",
-
-        // TODO NEW: Data from my account
-        "me" : "Data from my account",
-
-        // TODO NEW: Data from analyzer
-        "project" : "Data from analyzer",
-
-        // TODO NEW: Resource Type
-        "format" : "Resource Type",
-
-        // TODO NEW: Content Type
-        "content" : "Content Type",
-
-        // TODO NEW: Application
-        "app" : "Application",
-
-        // TODO NEW: Time Restriction
-        "time" : "Time Restriction",
-
-        // TODO NEW: Project Group
-        "studyGroup" : "Project Group",
-
-        // TODO NEW: Share
-        "share_btn" : "Share",
-
-        // TODO NEW: Unshare
-        "unshare_btn" : "Unshare",
-
-        // TODO NEW: Search
-        "search_btn" : "Search"
+      "description" : "Oma konto kirjete jagamine projektis osalejate rühmadega või nende jagamise tühistamine",
+      "source" : "Allikas",
+      "me" : "Andmed minu kontolt",
+      "project" : "Andmed analüsaatorist",
+      "format" : "Ressursi tüüp",
+      "content" : "Sisu tüüp",
+      "app" : "Rakendus",
+      "time" : "Ajapiirang",
+      "studyGroup" : "Projektirühm",
+      "share_btn" : "Jaga",
+      "unshare_btn" : "Tühista jagamine",
+      "search_btn" : "Otsi"
     },
 
-    "codes" : {
-
-        // TODO NEW: Participation codes may be used to recruit participants for the study.
-        "intro" : "Participation codes may be used to recruit participants for the study.",
-
-        // TODO NEW: Code
-        "code" : "Code",
-
-        // TODO NEW: Group
-        "group" : "Group",
-
-        // TODO NEW: Recruiter
-        "recruiter" : "Recruiter",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: Created At
-        "created_at" : "Created At",
-
-        // TODO NEW: No participation codes have been generated.
-        "empty" : "No participation codes have been generated.",
-
-        // TODO NEW: Add new codes
-        "showcreate_btn" : "Add new codes",
-
-        // TODO NEW: Create New Codes
-        "new_title" : "Create New Codes",
-
-        // TODO NEW: Number of codes
-        "number_of_codes" : "Number of codes",
-
-        // TODO NEW: Codes are reusable
-        "reuseable" : "Codes are reusable",
-
-        // TODO NEW: Yes
-        "yes" : "Yes",
-
-        // TODO NEW: No
-        "no" : "No",
-
-        // TODO NEW: Mode of creation
-        "type_of_creation" : "Mode of creation",
-
-        // TODO NEW: Manual entry
-        "manually" : "Manual entry",
-
-        // TODO NEW: Generated
-        "generated" : "Generated",
-
-        // TODO NEW: New codes
-        "codes" : "New codes",
-
-        // TODO NEW: Add now
-        "add_btn" : "Add now"
+    "codes": {
+      "intro" : "Osalemiskoode võib kasutada osalejate värbamiseks uuringusse.",
+      "code" : "Kood",
+      "group" : "Rühm",
+      "recruiter" : "värbaja",
+      "status" : "Olek",
+      "created_at" : "Loodud kell",
+      "empty" : "Osalemiskoode pole loodud.",
+      "showcreate_btn" : "Lisa uusi koode",
+      "new_title" : "Loo uusi koode",
+      "number_of_codes" : "Koodide arv",
+      "reuseable" : "Koodid on korduvkasutatavad",
+      "yes" : "Jah",
+      "no" : "ei",
+      "type_of_creation" : "Loomisviis",
+      "manually" : "Käsitsi sisestamine",
+      "generated" : "Loodud",
+      "codes" : "Uued koodid",
+      "add_btn" : "Lisa kohe"
     }
 }

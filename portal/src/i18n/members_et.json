@@ -1,219 +1,94 @@
 {
-
-
-    "member_quickregistration" : {
-
-        // TODO NEW: Sign up
-        "sign_up" : "Sign up",
-
-        // TODO NEW: Research project*
-        "study" : "Research project*",
-
-        // TODO NEW: Application to be used*
-        "app" : "Application to be used*",
-
-        // TODO NEW: Password for application
-        "app_password" : "Password for application",
-
-        // TODO NEW: Account Password
-        "account_password" : "Account Password",
-
-        // TODO NEW: Repeat Account Password
-        "repeat_account_password" : "Repeat Account Password"
-    },
-
-    "help_welcome" : {
-
-        // TODO NEW: The menu above contains these links:
-        "menu" : "The menu above contains these links:",
-
-        // TODO NEW: Dashboard
-        "menu_me" : "Dashboard",
-
-        // TODO NEW: Your personal dashboard, where you can place whatever functionality you need most.
-        "menu_me_text" : "Your personal dashboard, where you can place whatever functionality you need most.",
-
-        // TODO NEW: Overview
-        "menu_overview" : "Overview",
-
-        // TODO NEW: Overview over all functions provided by the platform.
-        "menu_overview_text" : "Overview over all functions provided by the platform.",
-
-        // TODO NEW: Config
-        "menu_config" : "Config",
-
-        // TODO NEW: Configure your dashboard and data imports.
-        "menu_config_text" : "Configure your dashboard and data imports.",
-
-        // TODO NEW: News
-        "menu_research" : "News",
-
-        // TODO NEW: News and announcements about the platform and research projects
-        "menu_research_text" : "News and announcements about the platform and research projects",
-
-        // TODO NEW: Sharing
-        "menu_consents" : "Sharing",
-
-        // TODO NEW: Manage data sharing with others.
-        "menu_consents_text" : "Manage data sharing with others.",
-
-        // TODO NEW: Some ideas to start:
-        "starts" : "Some ideas to start:",
-
-        // TODO NEW: In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.
-        "answer_questions" : "In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.",
-
-        // TODO NEW: Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.
-        "answered_questions" : "Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.",
-
-        // TODO NEW: Answer Setup Questions Now
-        "answer_btn" : "Answer Setup Questions Now",
-
-        // TODO NEW: Visit my Dashboard
-        "dashboard_btn" : "Visit my Dashboard",
-
-        // TODO NEW: Change Answers to Setup Questions
-        "answer_again_btn" : "Change Answers to Setup Questions"
-    },
-
-    "help_setup" : {
-
-        // TODO NEW: The answers to the following questions are only used to setup your account according to your needs.
-        "description" : "The answers to the following questions are only used to setup your account according to your needs.",
-
-        // TODO NEW: Which measures do you want to view in the portal?
-        "question_measures" : "Which measures do you want to view in the portal?",
-
-        // TODO NEW: Do use any of these devices?
-        "question_devices" : "Do use any of these devices?",
-
-        // TODO NEW: Fitbit
-        "question_devices_answer1" : "Fitbit",
-
-        // TODO NEW: Jawbone
-        "question_devices_answer2" : "Jawbone",
-
-        // TODO NEW: Withings
-        "question_devices_answer3" : "Withings",
-
-        // TODO NEW: You can always come back and change these settings by visiting the "Help" page.
-        "come_back" : "You can always come back and change these settings by visiting the \"Help\" page.",
-
-        // TODO NEW: Done
-        "done_btn" : "Done"
-    },
-
-    "accountdata" : {
-
-        // TODO NEW: @PRODUCT ID:
-        "midata_id" : "@PRODUCT ID:",
-
-        // TODO NEW: Birthdate:
-        "birthday" : "Birthdate:",
-
-        // TODO NEW: Change
-        "change_btn" : "Change"
-    },
-
-    "member_circles" : {
-
-        // TODO NEW: Circles available:
-        "number_available" : "Circles available:",
-
-        // TODO NEW: You do not have any circles.
-        "empty" : "You do not have any circles.",
-
-        // TODO NEW: Add
-        "add_btn" : "Add",
-
-        // TODO NEW: Manage
-        "manage_btn" : "Manage"
-    },
-
-    "member_othercircles" : {
-
-        // TODO NEW: Circles available:
-        "number_available" : "Circles available:",
-
-        // TODO NEW: No account holders share data with you.
-        "empty" : "No account holders share data with you."
-    },
-
-    "yourstudies" : {
-
-        // TODO NEW: Research Project
-        "study" : "Research Project",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: You do not participate in any research project.
-        "empty" : "You do not participate in any research project."
-    },
-
-    "entercode" : {
-
-        // TODO NEW: Join a research project by entering a participation code.
-        "title" : "Join a research project by entering a participation code.",
-
-        // TODO NEW: Join a research project by entering a code:
-        "description" : "Join a research project by entering a code:",
-
-        // TODO NEW: Participation Code
-        "code" : "Participation Code",
-
-        // TODO NEW: Continue
-        "continue_btn" : "Continue"
-    },
-
-    "providers" : {
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: Confirmation Date
-        "confirmation_date" : "Confirmation Date",
-
-        // TODO NEW: confirm
-        "confirm_btn" : "confirm",
-
-        // TODO NEW: reject
-        "reject_btn" : "reject",
-
-        // TODO NEW: You have not registered any contacts as a health professional.
-        "empty" : "You have not registered any contacts as a health professional."
-    },
-
-    "smallstudies" : {
-
-        // TODO NEW: Do you want to support a research project by sharing your data?
-        "greeting" : "Do you want to support a research project by sharing your data?",
-
-        // TODO NEW: Projects
-        "studies" : "Projects",
-
-        // TODO NEW: Enrollment
-        "status" : "Enrollment",
-
-        // TODO NEW: Recruiting
-        "recruiting" : "Recruiting",
-
-        // TODO NEW: Ongoing
-        "ongoing" : "Ongoing",
-
-        // TODO NEW: Completed
-        "completed" : "Completed",
-
-        // TODO NEW: Stopped
-        "stopped" : "Stopped",
-
-        // TODO NEW: More Info & Participation
-        "infoapply" : "More Info & Participation",
-
-        // TODO NEW: More Information
-        "infoonly" : "More Information"
-    }
+   
+  "member_quickregistration" : {
+    "sign_up" : "Registreeri",
+    "study" : "Uuringuprojekt*",
+    "app" : "Kasutatav rakendus*",
+    "app_password" : "Rakenduse parool",
+    "account_password" : "Konto parool",
+    "repeat_account_password" : "Korrake konto parooli"
+  },
+  
+  "help_welcome" : {
+    "menu" : "Ülalolev menüü sisaldab järgmisi linke.",
+    "menu_me" : "Töölaud",
+    "menu_me_text" : "Teie isiklik töölaud, kuhu saate paigutada endale kõige vajalikumad funktsioonid.",
+    "menu_overview" : "Ülevaade",
+    "menu_overview_text" : "Platvormi kõigi funktsioonide ülevaade.",
+    "menu_config" : "Konfiguratsioon",
+    "menu_config_text" : "Saate konfigureerida oma töölauda ja andmete importi.",
+    "menu_research" : "Uudised",
+    "menu_research_text" : "Platvormi ja uurimisprojektidega seotud uudised ja teadaanded.",
+    "menu_consents" : "Jagamine",
+    "menu_consents_text" : "Saate hallata andmete teistega jagamist.",
+    "starts" : "Mõned ideed alustamiseks",
+    "answer_questions" : "Alustamiseks soovitame vastata mõnele küsimusele. Me eelkonfigureerime konto teie vastuste alusel.",
+    "answered_questions" : "Aitäh, et vastasite seadistusküsimustele! Nüüd võiksite avada oma töölaua. Kui see on vajalik, võite ka muuta oma vastuseid.",
+    "answer_btn" : "Vastan kohe seadistusküsimustele",
+    "dashboard_btn" : "Avan oma töölaua",
+    "answer_again_btn" : "Muudan seadistusküsimuste vastuseid"
+  },
+  
+  "help_setup" : {
+    "description" : "Järgmiste küsimuste vastuseid kasutatakse ainult teie konto seadistamiseks nii, nagu teile vaja on.",
+    "question_measures" : "Milliseid mõõtmisi soovite portaalis vaadata?",
+    "question_devices" : "Kas kasutate mõnda neist seadmetest?", 
+    "question_devices_answer1" : "Fitbit",
+    "question_devices_answer2" : "Jawbone",
+    "question_devices_answer3" : "Withings",             
+    "come_back" : "Lehelt „Spikker“ saate alati tagasi tulla ja neid sätteid muuta.",
+    "done_btn" : "Valmis"
+  },
+  
+  "accountdata" : {
+     "midata_id" : "@PRODUCT ID:",
+     "birthday" : "Sünniaeg:",
+     "change_btn" : "Muuda"
+  },
+  
+  "member_circles" : {
+    "number_available" : "Saadaolevad suhtlusringid:",
+    "empty" : "Teil ei ole ühtegi suhtlusringi.",
+    "add_btn" : "Lisa",
+    "manage_btn" : "Halda"
+  },
+  
+  "member_othercircles" : {
+    "number_available" : "Saadaolevad suhtlusringid:",
+    "empty" : "Ükski kontoomanik ei jaga teiega andmeid."
+  },
+  
+  "yourstudies" : {
+    "study" : "Uuringuprojekt",
+    "status" : "Olek",
+    "empty" : "Te ei osale üheski uuringuprojektis."
+  },
+  
+  "entercode" : {
+    "title" : "Uuringuprojektiga liitumiseks sisestage osaluskood.",
+    "description" : "Uuringuprojektiga liitumiseks sisestage kood:",
+    "code" : "Osaluskood",
+    "continue_btn" : "Jätka"
+  },
+  
+  "providers" : {
+    "name" : "Nimi",
+    "status" : "Olek",
+    "confirmation_date" : "Kinnitamise kuupäev",
+    "confirm_btn" : "kinnita",
+    "reject_btn" : "lükka tagasi",
+    "empty" : "Te ei ole ühtegi kontaktisikut tervishoiutöötajana registreerinud." 
+  },
+  
+  "smallstudies" : {
+    "greeting" : "Kas soovite toetada uuringuprojekti oma andmete jagamisega?",
+    "studies" : "Projektid",
+    "status" : "Kaasamine",
+    "recruiting" : "Värbamine",
+    "ongoing" : "Käimasolevad",
+    "completed" : "Lõppenud",
+    "stopped" : "Peatatud",
+    "infoapply" : "Lisateave ja osalemine",
+    "infoonly" : "Lisateave"
+  }
 }
