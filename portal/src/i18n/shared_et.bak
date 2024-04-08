@@ -188,8 +188,7 @@
        "token" : "This activation token has already expired. Please request a new one.",
        "tokenresent" : "This activation token has already expired. A new token has been sent to your email address right now. Please confirm your email address within 24 hours using the new token.",
        "code" : "This participation code has expired.",
-       "securitytoken" : "This code has expired.",
-       "app" : "This application is no longer available for use." 
+       "securitytoken" : "This code has expired."
      },
 
      "already_done" : {
@@ -537,7 +536,6 @@
 	   "IT" : "Italian",
 	   "FR" : "French",
 	   "NL" : "Dutch",
-	   "ET" : "Estonian",
 	   "INT" : "Default / Non localized"
 	 },
 	 "month" : {
@@ -637,7 +635,6 @@
 
   "common" : {
     "empty" : " ",
-    "by" : "by",
     "done_btn" : "Done",
     "back_btn" : "Back",
     "search_btn" : "Search",
@@ -1120,8 +1117,7 @@
 
   "importrecords" : {
     "title" : "Import",
-    "authorize_btn" : "Start authorization",
-    "skip_btn" : "Skip for now"
+    "authorize_btn" : "Authorize Now"
   },
 
   "spaces" : {
@@ -1504,8 +1500,7 @@
     "short_public_only" : "Only public data",
     "short_public_also" : "Public, shared and own data",
     "short_public_also_self" : "Public and own data",
-    "short_dynamic_true" : "dynamic",
-    "short_dynamic_extend" : "dynamic extend",
+    "short_dynamic" : "dynamic",
     "source_app" : "Source application",
     "short_app_all" : "All sources",
     "short_app_other" : "Only application:",
@@ -1518,8 +1513,6 @@
     "public_no" : "Do not use public data",
     "dynamic" : "Dynamic",
     "dynamic_yes" : "Always use current group content",
-    "dynamic_no" : "Use group content from time of creation",
-    "dynamic_extend" : "Autoregister new codes into current group content",
     "restrictions" : "Additional Restrictions",
     "data_period_restriction" : "Date",
     "time_restriction" : "Creation / Update date",
@@ -1611,12 +1604,6 @@
     "joinmethod1" : "The access to the research project is restricted.",
     "joinmethod2" : "Please contact the team responsible for the project. For more information, read the terms of use of the application.",
     "loginpage_btn" : "Return to login"
-  },
-  
-  "appexpired" : {
-    "title" : "Application no longer available",
-    "intro" : "This application is no longer available for use. If you have stored any data using this application, it will still be available in your @PRODUCT account.",
-    "loginpage_btn" : "Show @PRODUCT Portal"
   },
 
   "unsubscribe" : {

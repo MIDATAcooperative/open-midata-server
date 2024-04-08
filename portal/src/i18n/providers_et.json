@@ -1,0 +1,157 @@
+{
+   "provider_registration" : {
+     "sign_up" : "Tervishoiutöötajaks registreerimine",
+     "provider" : "Terviserahastu",
+     "user" : "Tervisespetsialist",
+     "name" : "Rajatise nimi",
+     "description" : "Kirjeldus",
+     "url" : "Kodulehe URL"
+   },
+  
+   "provider_login" : {
+     "title" : "Tervisespetsialisti sisselogimine"
+   },
+  
+   "provider_navbar" : {
+     "new_patient" : "Uus patsient",
+     "patients" : "Patsiendid",
+     "research" : "Uuring",
+     "workspace" : "Tööruum",
+     "market" : "pood",
+     "org" : "Ettevõte",
+     "organization" : "Organisatsioon",
+"usergroups" : "Meeskonnad"
+   },
+  
+   "provider_organization" : {
+     "title" : "Organisatsioon",
+     "empty" : "Te ei kuulu organisatsiooni.",
+     "name" : "Nimi",
+     "address" : "Aadress",
+     "description" : "Kirjeldus",
+     "url" : "Kodulehe URL",
+     "status" : "Olek",
+     "members" : "Organisatsiooni liikmed",
+     "addprovider" : "Registreeri uus liige",
+     "edit_btn" : "Muuda organisatsiooni",
+     "master_user" : "Oma organisatsiooni värskendamiseks või organisatsiooni uute kasutajate registreerimiseks peate olema peakasutaja. Kui arvate, et teil peaksid olema peakasutaja õigused, võtke ühendust @SUPPORTiga.",
+     "parent" : "Organisatsiooni osa",
+     "identifiers" : "Identifier",
+     "identifiers_info" : "Sisestage siia kõik organisatsioonivälised identifikaatorid. Sisestage igale reale üks identifikaator. Kasutage '|' soovi korral eraldada koodisüsteem ja väärtus."
+     "select_btn" : "Vali",
+     "managerType" : "Organisatsiooni juht",
+     "managers" : {
+       "ME" : "Lisage ennast ainult halduriks",
+       "ME2" : "Lisage end liikmeks ja juhiks",
+       "PARENT" : "Organisatsiooni haldab emaorganisatsioon",
+       "OTHERMEMBER" : "Lisage liikmeks ja juhiks veel üks tervishoiutöötaja",
+       "EXTERNALUSER" : "Lisage juhiks teine tervishoiutöötaja"
+     },
+     "manager" : "Halduri e-post",
+     "protection" : "Juurdepääsukaitse",
+     "protection2" : "Teine kasutaja peab alati kinnitama selle organisatsiooni kasutamise.",
+     "request_btn" : "Taotle juurdepääsu"
+   },
+  
+   "addprovider": {
+     "sign_up" : "Registreeruge tervishoiutöötaja",
+     "success" : "Kasutaja registreeriti edukalt"
+   },
+  
+   "provider_requestaccess" : {
+      "title" : "Taotle juurdepääsu",
+      "reason" : "Põhjus",
+      "wait" : "Palun oodake, kuni teie taotlus kinnitatakse...",
+      "retry_btn" : "Proovi kohe uuesti"
+   },
+  
+   "addpatient" : {
+     "sign_up" : "Registreeri patsient",
+     "success" : "Kasutaja registreeriti edukalt",
+     "initialPassword" : "Esialgne parool"
+   },
+  
+   "provider_patientsearch" : {
+      "title" : "Patsiendi otsing",
+      "email" : "E-post",
+      "or" : "või",
+      "midataid" : "@PRODUCT ID",
+      "birthday" : "Sünnipäev",
+      "searching" : "Otsib...",
+      "address" : "Aadress",
+      "show_patient_btn" : "Näita patsienti",
+      "consents" : "Nõusolekud selle patsiendiga",
+      "add_new_consent" : "Lisa uus nõusolek",
+      "usergroup" : "Meeskond (valikuline)",
+      "passcode" : "Pääsukood (valikuline)",
+      "add_new_consent_btn" : "Lisa uus nõusolek",
+      "add_new_account_btn" : "Loo patsiendi konto"
+   },
+  
+   "provider_patients" : {
+      "title" : "Patsiendid",
+      "empty" : "Patsiente ei leitud."
+   },
+  
+   "provider_usergroups" : {
+     "title" : "Meeskonnad",
+     "name" : "Meeskond",
+     "type" : "Tüüp",
+     "status" : "Olek",
+     "searchable" : "Avalik",
+     "empty" : "Sa ei ole meeskonna liige."
+   },
+  
+   "provider_newusergroup" : {
+     "title" : "Loo uus meeskond",
+     "name" : "Meeskonna nimi",
+     "create_btn" : "Loo"
+   },
+  
+   "provider_editusergroup" : {
+     "title" : "Redigeeri meeskonda",
+     "former_members" : "Endised liikmed",
+     "name" : "Meeskonna nimi",
+     "status" : "Olek",
+     "searchable" : "Leidavad kontoomanikud",
+     "startDate" : "Liige alates",
+     "endDate" : "Liige Kuni",
+     "selected" : "Valitud liige",
+     "rights" : "Load",
+     "notexists" : "Seda meeskonda pole (veel) olemas.",
+     "right" : {
+       "readData" : "Loe andmeid",
+       "writeData" : "Andmete kirjutamine",
+       "changeTeam" : "Muuda meeskonda",
+       "setup" : "Muuda organisatsiooni",
+       "applications" : "Rakenduste haldamine"
+     },
+     "update_btn" : "Uuenda"
+   },
+  
+   "provider_editgroups" : {
+     "title" : "Muuda allüksuseid",
+     "entityName" : "Olemi nimi",
+     "entityType" : "Olemi tüüp",
+     "roleName" : "Role",
+     "role" : {
+        "MANAGER" : "Juhtiv organisatsioon",
+        "SUBORGANIZATION" : "allorganisatsioon",
+        "HC": "Muu"
+     },
+     "startDate" : "Liige alates",
+     "endDate" : "Liige Kuni",
+     "empty" : "Alamüksusi ei leitud.",
+     "add_organization_btn" : "Loo allorganisatsioon",
+     "add_organization2_btn" : "Link teise organisatsiooniga",
+     "add_broker_btn" : "Lisa API juurdepääs",
+     "add_group_btn" : "Lisa teine meeskond",
+     "endised_liikmed" : "endised allüksused"
+   },
+  
+   "provider_memberdetails" : {
+     "propose_consent" : "Nõusoleku taotlemine",
+     "pick_consent" : "Valige nõusolek üksikute kirjete kuvamiseks",
+     "share_btn" : "Jaga andmeid patsiendiga"
+    }
+ }

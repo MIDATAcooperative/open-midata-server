@@ -1,0 +1,94 @@
+{
+   
+  "member_quickregistration" : {
+    "sign_up" : "Registreeri",
+    "study" : "Uuringuprojekt*",
+    "app" : "Kasutatav rakendus*",
+    "app_password" : "Rakenduse parool",
+    "account_password" : "Konto parool",
+    "repeat_account_password" : "Korrake konto parooli"
+  },
+  
+  "help_welcome" : {
+    "menu" : "Ülalolev menüü sisaldab järgmisi linke.",
+    "menu_me" : "Töölaud",
+    "menu_me_text" : "Teie isiklik töölaud, kuhu saate paigutada endale kõige vajalikumad funktsioonid.",
+    "menu_overview" : "Ülevaade",
+    "menu_overview_text" : "Platvormi kõigi funktsioonide ülevaade.",
+    "menu_config" : "Konfiguratsioon",
+    "menu_config_text" : "Saate konfigureerida oma töölauda ja andmete importi.",
+    "menu_research" : "Uudised",
+    "menu_research_text" : "Platvormi ja uurimisprojektidega seotud uudised ja teadaanded.",
+    "menu_consents" : "Jagamine",
+    "menu_consents_text" : "Saate hallata andmete teistega jagamist.",
+    "starts" : "Mõned ideed alustamiseks",
+    "answer_questions" : "Alustamiseks soovitame vastata mõnele küsimusele. Me eelkonfigureerime konto teie vastuste alusel.",
+    "answered_questions" : "Aitäh, et vastasite seadistusküsimustele! Nüüd võiksite avada oma töölaua. Kui see on vajalik, võite ka muuta oma vastuseid.",
+    "answer_btn" : "Vastan kohe seadistusküsimustele",
+    "dashboard_btn" : "Avan oma töölaua",
+    "answer_again_btn" : "Muudan seadistusküsimuste vastuseid"
+  },
+  
+  "help_setup" : {
+    "description" : "Järgmiste küsimuste vastuseid kasutatakse ainult teie konto seadistamiseks nii, nagu teile vaja on.",
+    "question_measures" : "Milliseid mõõtmisi soovite portaalis vaadata?",
+    "question_devices" : "Kas kasutate mõnda neist seadmetest?", 
+    "question_devices_answer1" : "Fitbit",
+    "question_devices_answer2" : "Jawbone",
+    "question_devices_answer3" : "Withings",             
+    "come_back" : "Lehelt „Spikker“ saate alati tagasi tulla ja neid sätteid muuta.",
+    "done_btn" : "Valmis"
+  },
+  
+  "accountdata" : {
+     "midata_id" : "@PRODUCT ID:",
+     "birthday" : "Sünniaeg:",
+     "change_btn" : "Muuda"
+  },
+  
+  "member_circles" : {
+    "number_available" : "Saadaolevad suhtlusringid:",
+    "empty" : "Teil ei ole ühtegi suhtlusringi.",
+    "add_btn" : "Lisa",
+    "manage_btn" : "Halda"
+  },
+  
+  "member_othercircles" : {
+    "number_available" : "Saadaolevad suhtlusringid:",
+    "empty" : "Ükski kontoomanik ei jaga teiega andmeid."
+  },
+  
+  "yourstudies" : {
+    "study" : "Uuringuprojekt",
+    "status" : "Olek",
+    "empty" : "Te ei osale üheski uuringuprojektis."
+  },
+  
+  "entercode" : {
+    "title" : "Uuringuprojektiga liitumiseks sisestage osaluskood.",
+    "description" : "Uuringuprojektiga liitumiseks sisestage kood:",
+    "code" : "Osaluskood",
+    "continue_btn" : "Jätka"
+  },
+  
+  "providers" : {
+    "name" : "Nimi",
+    "status" : "Olek",
+    "confirmation_date" : "Kinnitamise kuupäev",
+    "confirm_btn" : "kinnita",
+    "reject_btn" : "lükka tagasi",
+    "empty" : "Te ei ole ühtegi kontaktisikut tervishoiutöötajana registreerinud." 
+  },
+  
+  "smallstudies" : {
+    "greeting" : "Kas soovite toetada uuringuprojekti oma andmete jagamisega?",
+    "studies" : "Projektid",
+    "status" : "Kaasamine",
+    "recruiting" : "Värbamine",
+    "ongoing" : "Käimasolevad",
+    "completed" : "Lõppenud",
+    "stopped" : "Peatatud",
+    "infoapply" : "Lisateave ja osalemine",
+    "infoonly" : "Lisateave"
+  }
+}

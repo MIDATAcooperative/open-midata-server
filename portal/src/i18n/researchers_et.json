@@ -1,0 +1,392 @@
+{
+   "researcher_registration" : {
+     "sign_up" : "Teadlaseks registreerimine",
+     "research_organization" : "Teadusuuringute organisatsioon",
+     "name" : "Organisatsiooni nimi",
+     "description" : "Kirjeldus",
+     "research_user" : "Teadlane"
+   },
+  
+   "researcher_login" : {
+     "title" : "Uuringu sisselogimine"
+   },
+  
+   "researcher_navbar" : {
+     "studies" : "Projektid",
+     "workspace" : "Tööruum",
+     "data" : "Andmed",
+     "addresearcher" : "Lisa uurija",
+     "organization" : "Teadusuuringute organisatsioon"
+   },
+  
+   "researcher_organization" : {
+     "title" : "Teadusuuringute organisatsioon",
+     "name" : "Nimi",
+     "description" : "Kirjeldus",
+     "researchers" : "Kõik teie organisatsiooni teadlased",
+     "master_user" : "Oma organisatsiooni värskendamiseks või uute kasutajate registreerimiseks peate olema peakasutaja. Kui arvate, et teil peaksid olema peakasutaja õigused, võtke ühendust @SUPPORTiga."
+   },
+  
+   "createstudy" : {
+     "title" : "Loo uus uurimisprojekt",
+     "title2" : "Muuda projekti kirjeldust",
+     "study_name" : "Projekti nimi",
+     "study_type" : "Uuringu tüüp",
+     "study_description" : "Projekti kirjeldus",
+     "study_identifiers" : "Identifitseerijad",
+     "study_identifiers_info" : "Sisesta siia kõik väliste asutuste projektide identifikaatorid. Sisestage igale reale üks identifikaator. Kasutage '|' soovi korral eraldada koodisüsteem ja väärtus. Identifikaatoreid portaalis projektilehtedel ei kuvata.",
+     "developer_nostart" : "Tähelepanu!",
+     "developer_nostart2" : "Arendajana saate projekti ainult seadistada, kuid mitte seda läbi viia. Arendajana pole võimalik osalejaotsingut alustada."
+   },
+  
+   "studynav" : {
+     "overview" : "Ülevaade",
+     "info" : "Teave",
+     "details" : "Üksikasjad",
+     "rules" : "Reeglid",
+     "actions" : "Rakendused",
+     "participants" : "Osalejad",
+     "codes" : "Koodid",
+     "records" : "Rekordid",
+     "results" : "Tulemused",
+     "team" : "meeskond",
+     "sharing" : "Avaldatud kirjed"
+   },
+  
+   "studies" : {
+     "title" : "Uurimisprojektid",
+     "name" : "Nimi",
+     "validation" : "Valideerimine",
+     "participants" : "Osalejad",
+     "execution" : "Täitmine",
+     "creation_date" : "Loodud",
+     "empty" : "Teie organisatsiooni jaoks pole veel uurimisprojekte loodud.",
+     "create_btn" : "Loo uus projekt"
+   },
+  
+   "studyactions" : {
+     "related_apps" : "Projektiga seotud rakendused",
+     "empty" : "Projektiga pole lingitud ühtegi rakendust",
+     "aggregator_apps" : "Lisage uurimisrakendus, mida kasutatakse OMA kontoga",
+     "datalink" : "Agregaatorid, analüüsi- ja tõlgendamisrakendused",
+     "description" : "Pärast uurimisprojekti kinnitamist saate sellega linkida selliseid rakendusi nagu pistikprogrammid ja välised andmetöötlusteenused. Need rakendused peavad platvormiga ühenduse loomiseks kasutama ühe uurimisrühma liikme, kellel on piisavad õigused, mandaate. ",
+     "select_group_btn" : "Vali rühm",
+     "allgroups" : "<Kõik rühmad>",
+     "plugin" : "Uurimisrakendus",
+     "device" : "Seadme kood",
+     "endpoint" : "Lõpp-punkti nimi",
+     "only_aggregated" : "Piirdub koondatud andmetega",
+     "restrict" : "Piira lugemine sellele grupile",
+     "shareback" : "Rakendus jagab andmeid osalejarühma(de)ga",
+     "add_application_btn" : "Lisa uurimisrakendus",
+     "linked_apps" : "Rakenduste nõusolekud",
+     "linked_spaces" : "Uurimispluginad",
+     "app" : "Rakendus",
+     "for" : "poolt",
+     "validation" : "Olek",
+     "status" : {
+"validated" : "Kinnitatud",
+"not_validated_research" : "Ei ole uurija poolt kinnitatud",
+"not_validated_developer" : "Arendaja pole kinnitanud",
+"study_wrong_status" : "Pole aktiivne uurimisprojekti oleku tõttu",
+"study_no_app_participation" : "Uurimisprojekt ei luba rakendust kasutades liituda"
+     },
+     "select_btn" : "Vaata",
+     "validate_btn" : "Kinnita",
+     "study" : "Uurimisprojekt",
+     "app_type" : "Rakenduse tüüp",
+     "no_valid_app" : "Ühtegi rakendust pole valitud",
+     "type" : "Kuidas need on seotud?",
+     "types" : {
+        "OFFER_P" : "Sissepääs: rakendus pakub sisselogimisel/käivitamisel projektis osalemist",
+        "OFFER_EXTRA_PAGE" : "Sissepääs: projektis osalemist kirjeldatakse lisalehel",
+        "OFFER_INLINE_AGB" : "Lõpetamine: kasutage projekti kirjeldusena kasutustingimusi",
+        "REQUIRE_P" : "Rakenduse kasutamiseks on projektis osalemine vajalik",
+        "RECOMMEND_A" : "Rakendust soovitab projekt",
+        "AUTOADD_A" : "Plugin lisatakse projektis osalemisel automaatselt",
+        "DATALINK" : "Rakendus jagab andmeid projektis osalejatega"
+     },
+     "types_short" : {
+        "OFFER_P" : "Soovita osalemist",
+        "OFFER_EXTRA_PAGE" : "Projekti lisaleht",
+        "OFFER_INLINE_AGB" : "Kasutustingimused kirjeldusena",
+        "REQUIRE_P" : "Nõua osalemist",
+        "RECOMMEND_A" : "Soovitatav",
+        "AUTOADD_A" : "Lisa automaatselt",
+        "DATALINK" : "Andmete jagamine"
+     },
+     "use_period" : "Millal need on lingitud?",
+     "use_periods" : {
+       "PRE" : "Enne projekti algust",
+       "RUNNING" : "Projekti teostamise ajal",
+       "FINISHED" : "Pärast projekti lõppemist",
+       "ABORTED" : "Kui projekt katkestatakse"
+     }
+   },
+  
+   "studyfields" : {
+     "required_data" : "Nõutavad andmed",
+     "no_change_warning" : "Seda seadistust ei saa pärast projekti kinnitamist enam muuta.",
+     "member_identity" : "liikme identiteet",
+     "pseudonymous1" : "Pseudonüümiga osalus (sünniaasta/sugu/riik)",
+     "pseudonymous2" : ", eksporditud andmed paljastavad pseudonüümseks muudetud identiteedi, sünniaasta, soo ja riigi. Mõnel teadlasel, näiteks õdedel, võib olla juurdepääs täielikele isikuandmetele.",
+     "pseudonymous1b" : "Pseudonüümiga osalemine (lisateave puudub)",
+     "pseudonymous2b" : ", eksporditud andmed paljastavad pseudonüümseks muudetud identiteedi. Mõnel teadlasel, näiteks õdedel, võib olla juurdepääs täielikele isikuandmetele.",
+     "anonymous" : "Anonüümne osalemine",
+     "anonymous2" : ", pseudonüümide kaardistamisele ei pruugita juurde pääseda.",
+     "not_anonymous1" : "Pole pseudonüümitud",
+     "not_anonymous2" : ", palub liikmel jagada täisnime, sünnikuupäeva ja kontaktteavet (aadress, telefon, e-post)",
+     "assistance" : "Abi",
+     "no_assistance1" : "Puudub",
+     "no_assistance2" : " - konto omanik osaleb üksi.",
+     "assistance1" : "Tervisetöötaja",
+     "assistance2" : " - konto omanik vajab tervishoiutöötaja abi.",
+     "groups" : "Osalejate rühmad",
+     "groups_empty" : "Ühtegi osalejarühma pole veel määratletud.",
+     "group_name" : "Grupi nimi",
+     "group_description" : "Kirjeldus",
+     "add_group_btn" : "Lisa rühm",
+     "save_changes_btn" : "Salvesta muudatused"
+   },
+  
+   "studyoverview" : {
+     "name" : "Nimi",
+     "type" : "Uuringu tüüp",
+     "created_at" : "Loodud kell",
+     "created_by" : "Looja",
+     "description" : "Kirjeldus",
+     "code" : "Kood",
+     "validation_status" : "Valideerimise olek",
+     "participant_search_status" : "Participant Search Status",
+     "execution_status" : "Täitmise olek",
+     "checklist" : "Checklist",
+     "history" : "ajalugu",
+     "event" : "Sündmus",
+     "who" : "kes",
+     "when" : "Millal",
+     "comment" : "Kommentaar",
+     "edit_description_btn" : "Muuda",
+     "start_validation_btn" : "Taotle projekti kinnitamist",
+     "start_participant_search_btn" : "Alustage osalejate otsimist",
+     "end_participant_search_btn" : "Lõpeta osaleja otsing",
+     "start_study_execution_btn" : "Alusta projekti täitmist",
+     "finish_study_btn" : "Lõpeta projekt",
+     "delete_study_btn" : "Kustuta projekt",
+     "abort_study_btn" : "Katkesta projekt",
+     "clone_study_btn" : "Kopeeri uude projekti",
+     "workflow" : "Töövoo teave",
+     "markdone_btn" : "Pole nõutav, märgi tehtuks",
+     "visitnow_btn" : "Külastage lehte",
+     "donow_btn" : "Käivitage kohe",
+     "lastdone" : "Viimane samm tehtud",
+     "nextstep" : "Järgmine samm teha",
+     "confirm" : {
+       "validation" : "Seadistust ei saa enam muuta. Valideerimisprotsess algab.",
+       "end_participant_search" : "Täiendavad kasutajad ei saa enam osaleda.",
+       "finish_execution" : "Kõik projekti andmed on hetkel külmutatud.",
+       "delete" : "Uurimisprojekt kustutatakse platvormilt täielikult.",
+       "abort" : "Kõik projekti andmed on hetkel külmutatud. See projekt märgitakse nurjunuks.",
+       "clone" : "See kloonib projekti seaded uude uurimisprojekti. Uue projekti töövoog lähtestatakse. Ühtegi osalejat uude projekti üle ei kanta. See projekt jääb muutumatuks.",
+       "are_you_sure" : "Seda toimingut ei saa tagasi võtta. Kas olete kindel?"
+     }
+   },
+  
+   "studyparticipant" : {
+     "participant" : "Participant:",
+     "gender" : "Sugu:",
+     "year" : "Sünniaasta:",
+     "country" : "Riik:",
+     "status" : "Olek:",
+     "group" : "Grupp:",
+     "shared_records" : "Jagatud kirjed",
+     "history" : "Osalemise ajalugu"
+   },
+  
+   "studyparticipants" : {
+     "name" : "Nimi",
+     "partName" : "Pseudonüümitud",
+     "group" : "Rühm",
+     "status" : "Olek",
+     "total" : "Leiti {{count}} teie kriteeriumidele vastavat nõusolekut.",
+     "only_first_shown" : "Kuvatakse ainult esimesed 1000 vastavat nõusolekut.",
+     "recruiter" : "värbaja",
+     "accept_btn" : "Nõustu",
+     "reject_btn" : "Keeldu",
+     "add_participant_btn" : "Lisa osaleja",
+     "empty" : "Selles uurimisprojektis ei ole veel ühtegi teie otsingukriteeriumile vastavat osalejat.",
+     "search_type" : "Otsi",
+     "all" : "Kõik osalejad",
+     "request" : "Kandidaadid ootavad otsust",
+     "rejected" : "Tagasi lükatud kandidaadid",
+     "retreated" : "Osalejad, kes on taandunud",
+     "acceptall" : "Nõustu kõik taotlused ja määrake osalejate rühma uued osalejad",
+     "autojoin" : "Automaatne aktsepteerimine",
+     
+     "not_allowed" : "Teil ei ole lubatud osalejate nimekirja vaadata."
+   },
+  
+   "studyrecords" : {
+     "empty" : "Kui andmed on saadaval, saab need siit alla laadida.",
+     "wrongrole" : "Andmete eksportimiseks peab teil olema 'ekspordi' luba!",
+     "startDate" : "Ekspordi alguskuupäev (valikuline)",
+     "endDate" : "Ekspordi lõppkuupäev (valikuline)",
+     "group" : "Andmerühm",
+     "number_of_records" : "# kirjet",
+     "download_btn" : "Laadi alla",
+     "fhir_download_btn" : "Laadi alla pakett",
+     "fhir_download_original_btn" : "Allalaadimine pole pseudonüümitud",
+     "file" : "Ekspordi fail",
+     "file_fhir" : "FHIR-vorming",
+     "csvdef" : "Eksperdi funktsioon: kleepige siia JSON-i vastendus FHIR-ist CSV-sse.",
+     "add_csvdef_btn" : "Laadi üles CSV-ekspordi definitsioon"
+   },
+  
+   "studyrules" : {
+     "title" : "Projekti reeglid",
+     "no_change_warning" : "Seda seadistust ei saa pärast projekti kinnitamist enam muuta.",
+     "startDate" : "Ametlik alguskuupäev",
+     "endDate" : "Ametlik lõppkuupäev",
+     "dataCreatedBefore" : "Andmete külmutamise kuupäev",
+     "sharing_query" : "Andmete juurdepääsu filter",
+     "sharing_query_empty" : "Projekt EI vaja @PRODUCT-lt andmeid.",
+     "join_methods" : "Lubatud osalemisprotseduurid",
+     "leavePolicy" : "Osalejate väljaastumise eeskirjad",
+     "rejoinPolicy" : "Osalejate taasliitumise eeskirjad",
+     "queryeditor_btn" : "Muuda",
+     "terms_of_use" : "Üldtingimused",
+     "terms_of_use_hint" : "Kui kasutaja peab projekti üldtingimusi lugema ja nendega nõustuma, siis saatke tekst platvormi administraatorile. Laadime teksti üles õiges vormingus ja anname teile sisestamiseks vajaliku ID siin.",
+     "consent_observers" : "Välised nõusoleku vaatlejad",
+     "show_terms" : "Kuva üldised nõuded ja tingimused",
+     "requirements" : "Nõuded",
+     "security" : "Turvalisus",
+     "forceClientCertificate" : "Sundida projektianalüsaatorite jaoks kliendisertifikaate kasutama."
+   },
+  
+   "addresearcher" : {
+     "sign_up" : "Registreeruge teadlane",
+     "success" : "Teie organisatsiooni on lisatud uus teadlane."
+   },
+  
+   "addparticipant" : {
+     "sign_up" : "Registreeruda osaleja",
+     "study" : "Projekt",
+     "hasaccepted" : "Osaleja on nõustunud",
+     "success" : "Teie projekti on lisatud uus osaleja."
+   },
+  
+   "studyteam" : {
+     "person" : "Meeskonna liige",
+     "role" : "Roll",
+     "rolehint" : "Roll (üksikasjade vaatamiseks klõpsake alloleval real)",
+     "roleName" : "Rooli nimi",
+     "defineself" : "Sa võid oma õigusi muuta, lugedes end meeskonnale erinevate õigustega. Seda võid teha ainult seni, kuni oled meeskonna ainus liige. Sa ei saa endalt meeskonna juhtimise õigust ära võtta. ",
+     "addperson_btn" : "Lisa inimene",
+     "rights" : "Õigused",
+     "right" : {
+       "readData" : "Loe andmekirjeid",
+       "writeData" : "Andmekirjete kirjutamine/värskendamine",
+       "unpseudo" : "Pseudonüümimata osalejad",
+       "export" : "Ekspordi andmed",
+       "changeTeam" : "Muuda meeskonda",
+       "auditLog" : "Kuva auditi logi",
+       "participants" : "Osalejate haldamine",
+       "setup" : "Seadistusprojekt",
+       "applications" : "Lingitud rakenduste haldamine"
+     }
+   },
+  
+   "study_checklist" : {
+     "phase1" : "Phase 1 : mustand",
+     "phase1_help" : "Mustand",
+     "name" : "Projekti nimi ja kirjeldus määratletud",
+     "name_help" : "Projekti nime näidatakse osalejatele. Kirjeldus on saadaval portaalis ja rakenduse sisselogimise ajal.",
+     "teamsetup" : "Teadlaste meeskonna seadistamine",
+     "teamsetup_help" : "Kui projekti elluviimisse on kaasatud rohkem inimesi, esitage kõik kaasatud isikud ja nende roll. Kuni te pole inimesi juurde lisanud, saate oma rolli muuta, lisades end uuesti mõne teise rolliga.",
+     "information" : "Avalik teave teie uurimistöö kohta",
+     "information_help" : "Avalik teave aitab kontoomanikel hinnata, kas teie uurimus on nende jaoks asjakohane.",
+     "groups" : "Osalejate rühmad on määratletud",
+     "groups_help" : "Teie projektis võib olla üks või mitu osalejate rühma. Määrake osalejarühmade loend.",
+     "sharingQuery" : "Andmepääsufilter on määratletud",
+     "sharingQuery_help" : "Teie projekt peab selgelt märkima, millistele osalejate andmetele see juurde pääseb. Andmepääsufiltrit ei saa pärast projekti kinnitamist muuta.",
+     "dates" : "Algus- ja lõppkuupäevad on määratud",
+     "dates_help" : "Osalejatele näidatakse algus- ja lõppkuupäeva. Andmete külmutamise hetkest alates projektist täiendavaid andmeid ei voola.",
+     "terms" : "Pakutud üldtingimused",
+     "terms_help" : "Kui osalejad peavad projekti üldtingimused veebis kinnitama, võtke ühendust platvormi administraatoriga.",
+     "validation" : "Projekti kinnitamine on taotletud",
+     
+     "validation_passed" : "Projekt on kinnitatud",
+     "validation_passed_help" : "Palun oodake, kuni projekt on kinnitatud.",
+     "phase2" : "Phase 2 : Ettevalmistus",
+     "phase2_help" : "Ettevalmistus",
+     "applications" : "Uurimisrakendus lisatud",
+     "applications_help" : "Saate oma projektiga linkida selliseid rakendusi nagu pistikprogrammid ja välised andmetöötlusteenused. Need võivad lugeda osalejate andmeid ja/või jagada koondandmeid osalejatele tagasi. Need rakendused peavad platvormiga ühenduse loomiseks kasutama ühe kasutaja mandaate piisavate õigustega uurimisrühma liikmetest.",
+     "applinked" : "Rakendus on projektiga lingitud",
+     "applinked_help" : "Rakenduse linkimiseks oma projektiga saatke platvormi administraatorile oma projekti kood ja rakenduse nimi, mida soovite siduda.",
+     "partsearchstart" : "Alustas osalejate otsimist",
+     "partsearchstart_help" : "Kuni osalejaotsingut pole käivitatud, pole projektis võimalik osaleda. Taotlusi, mis nõuavad projektis osalemist, ei tohi kasutada.",
+     "phase3" : "phase 3 : täitmine",
+     "phase3_help" : "Täitmine",
+     "executionstart" : "Täitmine algas",
+     "executionstart_help" : "Märgib selle projekti ametlikult alatuks.",
+     "acceptedpart" : "Rühmadesse määratud ja vastu võetud osalejad",
+     "acceptedpart_help" : "Uued osalejad tuleb määrata osalejate gruppi ja need tuleb vastu võtta või tagasi lükata.",
+     "phase4" : "phase 4 : Completion",
+     "phase4_help" : "Lõpetamine",
+     "partsearchend" : "Osavõtjate otsing lõppes",
+     "partsearchend_help" : "Pärast osalejaotsingu lõppemist ei tohi uusi osalejaid värvata.",
+     "execend" : "Projekt lõppes",
+     "execend_help" : "Kui projekt on lõppenud, andmed külmutatakse kohe. Andmed jäävad allalaadimiseks kättesaadavaks.",
+     "exportdata" : "Andmed eksporditud",
+     "exportdata_help" : "Ekspordi projekti andmed FHIR JSON Bundle'ina (iga osalejarühma jaoks eraldi).",
+     "optional" : "(valikuline)"
+    },
+
+    "studyinfo" : {
+      "title" : "Teave",
+      "introduction" : "Andke uurimisprojekti kohta lisateavet. Saate anda avalikku teavet, lisajuhiseid ja kontaktandmeid, mis on nähtavad ainult osalejatele ning teavet teistele uurijatele ja administratsioonile. Tekstid on mõeldud ainult lisainfona ja neid saate ise toimetada igal ajal.",
+      "introduction2" : "Kogu teave on valikuline. Peaksite andma teavet ainult nendel teemadel, mis on teie uurimistöö kontekstis mõistlikud.",
+      "visibility" : "Teave on nähtav",
+      "visibilities" : {
+        "ALL" : "kõik",
+        "PARTICIPANTS" : "kõik osalejad",
+        "INTERNAL" : "ainult teadlased ja administraatorid"
+      },
+      "showlanguages" : "Keeled, mida muuta"
+    },
+
+    "researcher_sharing" : {
+      "description" : "Oma konto kirjete jagamine projektis osalejate rühmadega või nende jagamise tühistamine",
+      "source" : "Allikas",
+      "me" : "Andmed minu kontolt",
+      "project" : "Andmed analüsaatorist",
+      "format" : "Ressursi tüüp",
+      "content" : "Sisu tüüp",
+      "app" : "Rakendus",
+      "time" : "Ajapiirang",
+      "studyGroup" : "Projektirühm",
+      "share_btn" : "Jaga",
+      "unshare_btn" : "Tühista jagamine",
+      "search_btn" : "Otsi"
+    },
+
+    "codes": {
+      "intro" : "Osalemiskoode võib kasutada osalejate värbamiseks uuringusse.",
+      "code" : "Kood",
+      "group" : "Rühm",
+      "recruiter" : "värbaja",
+      "status" : "Olek",
+      "created_at" : "Loodud kell",
+      "empty" : "Osalemiskoode pole loodud.",
+      "showcreate_btn" : "Lisa uusi koode",
+      "new_title" : "Loo uusi koode",
+      "number_of_codes" : "Koodide arv",
+      "reuseable" : "Koodid on korduvkasutatavad",
+      "yes" : "Jah",
+      "no" : "ei",
+      "type_of_creation" : "Loomisviis",
+      "manually" : "Käsitsi sisestamine",
+      "generated" : "Loodud",
+      "codes" : "Uued koodid",
+      "add_btn" : "Lisa kohe"
+    }
+}

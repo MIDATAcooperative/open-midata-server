@@ -1,0 +1,392 @@
+{
+  "researcher_registration" : {
+    "sign_up" : "Registration as a Researcher",
+    "research_organization" : "Research Organization",
+    "name" : "Organization Name",
+    "description" : "Description",
+    "research_user" : "Researcher"
+  },
+  
+  "researcher_login" : {
+    "title" : "Research Login"
+  },
+  
+  "researcher_navbar" : {
+    "studies" : "Projects",
+    "workspace" : "Workspace",
+    "data" : "Data",
+    "addresearcher" : "Add Researcher",
+    "organization" : "Research Organization"
+  },
+  
+  "researcher_organization" : {
+    "title" : "Research Organization",
+    "name" : "Name",
+    "description" : "Description",
+    "researchers" : "All researchers of your organization",
+    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions."
+  },
+  
+  "createstudy" : {
+    "title" : "Create new research project",
+    "title2" : "Change project description",
+    "study_name" : "Project name",
+    "study_type" : "Type of research",
+    "study_description" : "Project description",
+    "study_identifiers" : "Identifiers",
+    "study_identifiers_info" : "Enter all project identifiers from external institutions here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.",
+    "developer_nostart" : "Attention!",
+    "developer_nostart2" : "As developer you can only setup a project but not conduct it. As developer it is not possible to start the participant search."    
+  },
+  
+  "studynav" : {
+    "overview" : "Overview",
+    "info" : "Information",
+    "details" : "Details",
+    "rules" : "Rules",
+    "actions" : "Applications",
+    "participants" : "Participants",
+    "codes" : "Codes",
+    "records" : "Records",
+    "results" : "Results",
+    "team" : "Team",
+    "sharing" : "Published Records"
+  },
+  
+  "studies" : {
+    "title" : "Research Projects",
+    "name" : "Name",
+    "validation" : "Validation",
+    "participants" : "Participants",
+    "execution" : "Execution",
+    "creation_date" : "Created",
+    "empty" : "No research projects have been created yet for your organization.",
+    "create_btn" : "Create new project"
+  },
+  
+  "studyactions" : {
+    "related_apps" : "Applications related to the project",
+    "empty" : "No applications are linked to the project",
+    "aggregator_apps" : "Add research application to be used with YOUR account",
+    "datalink" : "Aggregators, Analysis and Interpretation Applications",
+    "description" : "After the research project has been validated, you can link applications like plugins and external data processing services to it. These applications must connect to the platform using the credentials of one of the members of the research team with sufficient rights.",
+    "select_group_btn" : "Select Group",
+    "allgroups" : "<All Groups>",
+    "plugin" : "Research Application",
+    "device" : "Device Code",
+    "endpoint" : "Endpoint name",
+    "only_aggregated" : "Restrict to aggregated data",
+    "restrict" : "Restrict read to this group",
+    "shareback" : "Application shares data with participant group(s)",
+    "add_application_btn" : "Add Research Application",
+    "linked_apps" : "Applications Consents",
+    "linked_spaces" : "Research Plugins",
+    "app" : "Application",    
+    "for" : "for",
+    "validation" : "Status",    
+    "status" : {       
+	   "validated" : "Confirmed",	   
+	   "not_validated_research" : "Not confirmed by researcher",
+	   "not_validated_developer" : "Not confirmed by developer",
+	   "study_wrong_status" : "Not active due to research project status",
+	   "study_no_app_participation" : "Research project does not allow to join using an application"	   
+    },
+    "select_btn" : "View",
+    "validate_btn" : "Confirm",
+    "study" : "Research Project",
+    "app_type" : "Application type",
+    "no_valid_app" : "No application selected",
+    "type" : "How are they linked?",
+    "types" : {
+       "OFFER_P" : "Onboarding: The application offers project participation upon login/start",
+       "OFFER_EXTRA_PAGE" : "Onboarding: The project participation is described on an extra page",
+       "OFFER_INLINE_AGB" : "Onboarding: Use the terms of use as project description",
+       "REQUIRE_P" : "Project participation is required to use the application",
+       "RECOMMEND_A" : "Application is recommended by project",
+       "AUTOADD_A" : "Plugin is automatically added on project participation",
+       "DATALINK" : "Application shares data to project participants"
+    },
+    "types_short" : {
+       "OFFER_P" : "Suggest participation",
+       "OFFER_EXTRA_PAGE" : "Extra project page",
+       "OFFER_INLINE_AGB" : "Terms of use as description",
+       "REQUIRE_P" : "Require participation",
+       "RECOMMEND_A" : "Recommended",
+       "AUTOADD_A" : "Add automatically",
+       "DATALINK" : "Data Sharing"
+    },
+    "use_period" : "When are they linked?",
+    "use_periods" : {
+      "PRE" : "Before the project has started",
+      "RUNNING" : "During the execution of the project",
+      "FINISHED" : "After the project is finished",
+      "ABORTED" : "When the project is aborted"
+    }	                                      
+  },
+  
+  "studyfields" : {
+    "required_data" : "Required data",
+    "no_change_warning" : "This setup cannot be changed anymore after the project has been validated.",
+    "member_identity" : "Member Identity",
+    "pseudonymous1" : "Pseudonymized participation (year of birth/gender/country)",
+    "pseudonymous2" : ", exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers, like study nurses, may have access to full personal data.",
+    "pseudonymous1b" : "Pseudonymized participation (no additional info)",
+    "pseudonymous2b" : ", exported data reveals the pseudonymized identity. Some researchers, like study nurses, may have access to full personal data.",
+    "anonymous" : "Anonymous Participation",
+    "anonymous2" : ", the pseudonymization mapping may not be accessed.",
+    "not_anonymous1" : "Not pseudonymized",
+    "not_anonymous2" : ", requests member to share full name, birthdate and contact information (address, phone, email)",
+    "assistance" : "Assistance",
+    "no_assistance1" : "None",
+    "no_assistance2" : " - the account holder participates alone.",
+    "assistance1" : "Health Professional",
+    "assistance2" : " - the account holder needs assistance of a health professional.",
+    "groups" : "Participant Groups",
+    "groups_empty" : "No groups of participants have been defined yet.",
+    "group_name" : "Group Name",
+    "group_description" : "Description",
+    "add_group_btn" : "Add Group",
+    "save_changes_btn" : "Save Changes"
+  },
+  
+  "studyoverview" : {
+    "name" : "Name",
+    "type" : "Type of Research",
+    "created_at" : "Created at",
+    "created_by" : "Created by",
+    "description" : "Description",
+    "code" : "Code",
+    "validation_status" : "Validation Status",
+    "participant_search_status" : "Participant Search Status",
+    "execution_status" : "Execution Status",
+    "checklist" : "Checklist",
+    "history" : "History",
+    "event" : "Event",
+    "who" : "Who",
+    "when" : "When",
+    "comment" : "Comment",
+    "edit_description_btn" : "Change",
+    "start_validation_btn" : "Request Project Validation",
+    "start_participant_search_btn" : "Start to Search for Participants",
+    "end_participant_search_btn" : "End Participant Search",
+    "start_study_execution_btn" : "Start Project Execution",
+    "finish_study_btn" : "Finish Project",
+    "delete_study_btn" : "Delete Project",
+    "abort_study_btn" : "Abort Project",
+    "clone_study_btn" : "Copy to new project",
+    "workflow" : "Workflow Information",
+    "markdone_btn" : "Not Required, Mark as Done",
+    "visitnow_btn" : "Visit Page",
+    "donow_btn" : "Trigger Now",
+    "lastdone" : "Last step worked on",
+    "nextstep" : "Next step to do",
+    "confirm" : {
+      "validation" : "The setup cannot be changed anymore. The validation process will be started.",
+      "end_participant_search" : "No additional users will be able to participate anymore.",      
+      "finish_execution" : "All project data will be frozen at this moment.",
+      "delete" : "The research project will be completely wiped from the platform.",
+      "abort" : "All project data will be frozen at this moment. This project will be marked as failed.",
+      "clone" : "This will clone the project's settings into a new research project. The workflow of the new project will be reset. No participants will be transferred to the new project. This project will remain unchanged.",
+      "are_you_sure" : "This operation cannot be undone. Are you sure?"
+    }
+  },
+  
+  "studyparticipant" : {
+    "participant" : "Participant:",
+    "gender" : "Gender:",
+    "year" : "Year of birth:",
+    "country" : "Country:",
+    "status" : "Status:",
+    "group" : "Group:",
+    "shared_records" : "Shared records",
+    "history" : "Participation History"
+  },
+  
+  "studyparticipants" : {
+    "name" : "Name",
+    "partName" : "Pseudonymized",
+    "group" : "Group",
+    "status" : "Status",
+    "total" : "{{count}} consents matching your criteria found.",
+    "only_first_shown" : "Only the first 1000 matching consents are shown.",
+    "recruiter" : "Recruiter",
+    "accept_btn" : "Accept",
+    "reject_btn" : "Reject",
+    "add_participant_btn" : "Add Participant",
+    "empty" : "This research project does not have any participants matching your search criteria yet.",
+    "search_type" : "Search",
+    "all" : "All participants",
+    "request" : "Candidates waiting for a decision",
+    "rejected" : "Rejected candidates",
+    "retreated" : "Participants that have retreated",
+    "acceptall" : "Accept all requests and assign new participants to participant group",
+    "autojoin" : "Auto-Accept",
+    "autojoin2" : "Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this project connects.",
+    "not_allowed" : "You are not allowed to view the participant list."
+  },
+  
+  "studyrecords" : {
+    "empty" : "Once data is available it can be downloaded here.",
+    "wrongrole" : "You need to have the 'export' permission to export data!",
+    "startDate" : "Export start date (optional)",
+    "endDate" : "Export end date (optional)",
+    "group" : "Data Group",
+    "number_of_records" : "# Records",
+    "download_btn" : "Download",
+    "fhir_download_btn" : "Download Bundle",
+    "fhir_download_original_btn" : "Download not pseudonymized",
+    "file" : "Export file",
+    "file_fhir" : "FHIR Format",
+    "csvdef" : "Expert Feature: Paste JSON mapping from FHIR to CSV here.",
+    "add_csvdef_btn" : "Upload CSV-Export Definition"
+  },
+  
+  "studyrules" : {
+    "title" : "Project Rules",
+    "no_change_warning" : "This setup cannot be changed anymore after the project has been validated.",
+    "startDate" : "Official start date",
+    "endDate" : "Official end date",
+    "dataCreatedBefore" : "Data freeze date",
+    "sharing_query" : "Data Access Filter",
+    "sharing_query_empty" : "Project does NOT require any data from @PRODUCT.",
+    "join_methods" : "Allowed Participation Procedures",
+    "leavePolicy" : "Participant withdrawal policy",
+    "rejoinPolicy" : "Participant rejoin policy",
+    "queryeditor_btn" : "Edit",    
+    "terms_of_use" : "General Terms and Conditions",
+    "terms_of_use_hint" : "If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to a platform administrator. We will upload the text in the correct format and provide you with the ID you need to enter here.",
+    "consent_observers" : "External Consent Observers",
+    "show_terms" : "Show General Terms and Conditions",
+    "requirements" : "Requirements",
+    "security" : "Security",
+    "forceClientCertificate" : "Force the use of client certificates for project analyzers."
+  },
+  
+  "addresearcher" : {
+    "sign_up" : "Sign Up Researcher",
+    "success" : "A new researcher has been added to your organization."
+  },
+  
+  "addparticipant" : {
+    "sign_up" : "Sign Up Participant",
+    "study" : "Project",
+    "hasaccepted" : "Participant has accepted",
+    "success" : "A new participant has been added to your project."
+  },
+  
+  "studyteam" : {
+    "person" : "Team member",
+    "role" : "Role",
+    "rolehint" : "Role (click row for details below)",
+    "roleName" : "Role Name",
+    "defineself" : "You may change your own rights by readding yourself to the team with different rights. You may only do this as long as you are the only team member. You can't deprive yourself of the right to manage the team.",
+    "addperson_btn" : "Add Person",
+    "rights" : "Rights",
+    "right" : {
+      "readData" : "Read data records",
+      "writeData" : "Write/Update data records",
+      "unpseudo" : "Unpseudonymized participants", 
+      "export" : "Export data",
+      "changeTeam" : "Change team",
+      "auditLog" : "View audit log",
+      "participants" : "Manage participants",
+      "setup" : "Setup Project",
+      "applications" : "Manage linked applications"
+    }
+  },
+  
+  "study_checklist" : {
+    "phase1" : "Phase 1 : Draft",
+    "phase1_help" : "Draft",
+    "name" : "Project name and description defined",
+    "name_help" : "The project name will be shown to participants. The description will be available on the portal and during application login.",
+    "teamsetup" : "Researcher team setup",
+    "teamsetup_help" : "If more people are involved in carrying out the project, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.",
+    "information" : "Public information about your research",
+    "information_help" : "Public information will help account holders to evaluate if your research is relevant for them.",
+    "groups" : "Participant groups defined",
+    "groups_help" : "Your project may have one or multiple groups of participants. Please define the list of participant groups.",
+    "sharingQuery" : "Data Access Filter defined",
+    "sharingQuery_help" : "Your project has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after the project has been validated.",
+    "dates" : "Start and end dates set",
+    "dates_help" : "Start and end date will be shown to the participants. No additional data will flow into the project from the moment the data is frozen.",
+    "terms" : "General Terms and Conditions provided",
+    "terms_help" : "If the projects General Terms and Conditions have to be confirmed online by the participants, please contact a platform administrator.",
+    "validation" : "Project validation requested",
+    "validation_help" : "The validation will be done after it has been requested. The project may no longer be changed after validation has been requested.",
+    "validation_passed" : "Project has been validated",
+    "validation_passed_help" : "Please wait until project has been validated.",
+    "phase2" : "Phase 2 : Preparation",
+    "phase2_help" : "Preparation",
+    "applications" : "Research application added",
+    "applications_help" : "You can link applications like plugins and external data processing services to your project. These may read the participants' data and/or share aggregated data back to the participants. These applications must connect to the platform using the credentials of one of the members of the research team with sufficient rights.",    
+    "applinked" : "Application has been linked with project",
+    "applinked_help" : "To link an application to your project, please send the code of your project and the name of the application you want to have linked to an administrator of the platform.",
+    "partsearchstart" : "Started to search for participants",
+    "partsearchstart_help" : "As long as participant search is not started it is not possible to participate to the project. Applications which require project participation may not be used.",
+    "phase3" : "Phase 3 : Execution",
+    "phase3_help" : "Execution",
+    "executionstart" : "Execution started",
+    "executionstart_help" : "Marks this project as officially started.",
+    "acceptedpart" : "Participants assigned to groups and accepted",
+    "acceptedpart_help" : "New participants must be assigned to a participant group and be accepted or rejected.",
+    "phase4" : "Phase 4 : Completion",
+    "phase4_help" : "Completion",
+    "partsearchend" : "Search for participants ended",
+    "partsearchend_help" : "No new participants may be recruited after participant search has ended.",
+    "execend" : "Project ended",
+    "execend_help" : "When the project is ended data are immediately frozen. The data stay available for download.",
+    "exportdata" : "Data exported",
+    "exportdata_help" : "Export the project data as FHIR JSON Bundle (separate for each participant group).",
+    "optional" : "(optional)" 
+   },
+
+   "studyinfo" : {
+     "title" : "Information",
+     "introduction" : "Give additional information about the research project. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.",
+     "introduction2" : "All information is optional. You should give information only on topics that make sense in your research context.",
+     "visibility" : "Information visible to",
+     "visibilities" : {
+       "ALL" : "everybody",
+       "PARTICIPANTS" : "all participants",
+       "INTERNAL" : "only researchers and administrators"
+     },
+     "showlanguages" : "Languages to edit"
+   },
+
+   "researcher_sharing" : {
+     "description" : "Share or unshare records from your account with groups of project participants",
+     "source" : "Source",
+     "me" : "Data from my account",
+     "project" : "Data from analyzer",
+     "format" : "Resource Type",
+     "content" : "Content Type",
+     "app" : "Application",
+     "time" : "Time Restriction",
+     "studyGroup" : "Project Group",
+     "share_btn" : "Share",
+     "unshare_btn" : "Unshare",
+     "search_btn" : "Search"  
+   },
+
+   "codes" : {
+     "intro" : "Participation codes may be used to recruit participants for the study.",
+     "code" : "Code",
+     "group" : "Group",
+     "recruiter" : "Recruiter",
+     "status" : "Status",
+     "created_at" : "Created At",
+     "empty" : "No participation codes have been generated.",
+     "showcreate_btn" : "Add new codes",
+     "new_title" : "Create New Codes",
+     "number_of_codes" : "Number of codes",
+     "reuseable" : "Codes are reusable",
+     "yes" : "Yes",
+     "no" : "No",
+     "type_of_creation" : "Mode of creation",
+     "manually" : "Manual entry",
+     "generated" : "Generated",
+     "codes" : "New codes",
+     "add_btn" : "Add now"
+   }
+}
