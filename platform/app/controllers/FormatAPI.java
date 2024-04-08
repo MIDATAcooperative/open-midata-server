@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,7 +40,9 @@ import models.FormatInfo;
 import models.GroupContent;
 import models.Loinc;
 import models.MidataId;
+import models.Plugin;
 import models.RecordGroup;
+import models.User;
 import models.enums.APSSecurityLevel;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -48,8 +52,10 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.auth.AdminSecured;
+import utils.auth.AnyRoleSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -64,7 +70,7 @@ import utils.sync.Instances;
  * used by portal to retrieve data groups
  *
  */
-public class FormatAPI extends Controller {
+public class FormatAPI extends APIController {
 
 	/**
 	 * public function to get a list of data groups
@@ -84,7 +90,7 @@ public class FormatAPI extends Controller {
 	 */
 	@APICall
 	public Result listFormats() throws InternalServerException {
-	    Collection<FormatInfo> formats = FormatInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("format", "comment", "visName"));
+	    Collection<FormatInfo> formats = FormatInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("format", "comment", "visName", "defaultGroup"));
 	    return ok(Json.toJson(formats)).as("application/json");
 	}
 	
@@ -95,13 +101,42 @@ public class FormatAPI extends Controller {
 	 */
 	@APICall
 	public Result listContents() throws InternalServerException {
-	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), Sets.create("content", "security", "comment", "label", "defaultCode", "resourceType", "subType", "defaultUnit", "category", "source"));
+	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), ContentInfo.ALL);
 	    return ok(Json.toJson(contents)).as("application/json");
 	}
 	
+	public void completeFields(AccessContext context, Collection<ContentInfo> inf) throws AppException {
+		for (ContentInfo ci : inf) {
+			if (ci.autoAddedBy != null) {
+				Plugin plg = Plugin.getById(ci.autoAddedBy);
+				ci.autoAddedByName = plg != null ? plg.name : "deleted";
+			}
+			if (ci.approvedBy != null) {
+				User user = context.getRequestCache().getUserById(ci.approvedBy);
+				ci.approvedByName = user != null ? user.getDisplayName() : "deleted";
+			}
+		}
+	}
+	
 	@APICall
-	public Result listContentsUnconfirmed() throws InternalServerException {
-	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)).map("autoAddedAt", CMaps.map("$ne", null)).map("approvedAt", "null"), ContentInfo.ALL);
+	@Security.Authenticated(AdminSecured.class)
+	public Result listContentsSpecial(Request request, String mode) throws AppException {
+	    Collection<ContentInfo> contents = null;
+	    switch(mode) {
+	    case "modified":
+	    	contents = ContentInfo.getAll(CMaps.map("lastUpdated", CMaps.map("$gt", 0)), ContentInfo.ALL);
+		    break;
+	    case "notApproved": 
+	    	contents = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)).map("autoAddedAt", CMaps.map("$ne", null)).map("approvedAt", null), ContentInfo.ALL);
+	        break;
+	    case "approved":
+	    	contents = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)).map("approvedAt", CMaps.map("$ne", null)), ContentInfo.ALL);
+	        break;
+	    case "deleted":
+	    	contents = ContentInfo.getAll(CMaps.map("deleted", true), ContentInfo.ALL);
+	    	break;
+	    }
+	    completeFields(portalContext(request), contents);
 	    return ok(Json.toJson(contents)).as("application/json");
 	}
 	
@@ -221,9 +256,14 @@ public class FormatAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	public Result updateContent(Request request, String id) throws AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		
 		JsonNode json = request.body().asJson();
-		ContentInfo cc = new ContentInfo();
-		cc._id = new MidataId(id);
+		ContentInfo cc = ContentInfo.getById(MidataId.parse(id));
+		if (cc == null) {
+			cc = new ContentInfo();
+			cc._id = new MidataId(id);
+		}
 		cc.defaultCode = JsonValidation.getString(json, "defaultCode");
 		cc.content = JsonValidation.getString(json, "content");
 		cc.security = JsonValidation.getEnum(json, "security",  APSSecurityLevel.class);
@@ -234,7 +274,13 @@ public class FormatAPI extends Controller {
 		cc.category = JsonValidation.getStringOrNull(json,  "category");
 		cc.source = JsonValidation.getStringOrNull(json,  "source");
 		cc.lastUpdated = System.currentTimeMillis();
+		
 		if (cc.exists()) throw new BadRequestException("error.exists.content", "Content type already exists");
+		if (cc.autoAddedAt != null && cc.approvedAt==null) {
+			cc.approvedAt = new Date();
+			cc.approvedBy = userId;
+		}
+		
 		ContentInfo.upsert(cc);
 		Instances.cacheClear("content", null);
 		
@@ -404,7 +450,8 @@ public class FormatAPI extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result searchContents(Request request) throws JsonValidationException, InternalServerException {
+	@Security.Authenticated(AnyRoleSecured.class)
+	public Result searchContents(Request request) throws AppException {
 		JsonNode json = request.body().asJson();
 		
         JsonValidation.validate(json, "properties", "fields");		
@@ -415,7 +462,9 @@ public class FormatAPI extends Controller {
 		
 				
 	    Collection<ContentInfo> contents = ContentInfo.getAll(CMaps.map(properties).map("deleted", CMaps.map("$ne", true)), fields);
-	      	      
+	    if (fields.contains("autoAddedBy") || fields.contains("autoApprovedBy")) {
+	      completeFields(portalContext(request), contents); 
+	    }
 	    return ok(Json.toJson(contents)).as("application/json");		
 	}
 	

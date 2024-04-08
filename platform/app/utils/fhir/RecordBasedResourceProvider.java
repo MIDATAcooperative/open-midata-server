@@ -539,11 +539,19 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	  return setRecordCodeByCodings(record, cc != null ? cc.getCoding() : null, defaultContent);
 	}
 	
+	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent, String category) throws AppException {
+	  return setRecordCodeByCodings(record, cc != null ? cc.getCoding() : null, defaultContent, category);
+	}
+	
 	protected String setRecordCodeByCoding(Record record, Coding coding, String defaultContent) throws AppException {
        return setRecordCodeByCodings(record, coding != null ? Collections.singletonList(coding) : null, defaultContent);
 	}
 	
 	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent) throws AppException {
+	  return setRecordCodeByCodings(record, codings, defaultContent, null);
+	}
+	
+	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent, String category) throws AppException {
 		  record.code = new HashSet<String>(); 
 		  String display = null;
 		  try {
@@ -557,9 +565,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			  }
 			  
 			  if (!record.code.isEmpty()) {
-				  ContentTypeTools.setRecordCodeAndContent(info(), record, record.code, null, display);			  
+				  ContentTypeTools.setRecordCodeAndContent(info(), record, record.code, null, display, category);			  
 			  } else {
-				  ContentTypeTools.setRecordCodeAndContent(info(), record, null, defaultContent, display);
+				  ContentTypeTools.setRecordCodeAndContent(info(), record, null, defaultContent, display, category);
 			  }
 		  } catch (PluginException e) {
 			    ErrorReporter.reportPluginProblem("FHIR (set record code)", null, e);	

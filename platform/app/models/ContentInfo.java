@@ -97,8 +97,10 @@ public class ContentInfo extends Model {
 	
 	public Date autoAddedAt;
 	public MidataId autoAddedBy;
+	public @NotMaterialized String autoAddedByName;
 	public Date approvedAt;
 	public MidataId approvedBy;
+	public @NotMaterialized String approvedByName;
 	
 	
 	private @NotMaterialized static Map<String, ContentInfo> byName = new ConcurrentHashMap<String, ContentInfo>();

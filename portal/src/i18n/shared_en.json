@@ -636,6 +636,7 @@
 
   "common" : {
     "empty" : " ",
+    "by" : "by",
     "done_btn" : "Done",
     "back_btn" : "Back",
     "search_btn" : "Search",
@@ -1501,7 +1502,8 @@
     "short_public_only" : "Only public data",
     "short_public_also" : "Public, shared and own data",
     "short_public_also_self" : "Public and own data",
-    "short_dynamic" : "dynamic",
+    "short_dynamic_true" : "dynamic",
+    "short_dynamic_extend" : "dynamic extend",
     "source_app" : "Source application",
     "short_app_all" : "All sources",
     "short_app_other" : "Only application:",
@@ -1514,6 +1516,8 @@
     "public_no" : "Do not use public data",
     "dynamic" : "Dynamic",
     "dynamic_yes" : "Always use current group content",
+    "dynamic_no" : "Use group content from time of creation",
+    "dynamic_extend" : "Autoregister new codes into current group content",
     "restrictions" : "Additional Restrictions",
     "data_period_restriction" : "Date",
     "time_restriction" : "Creation / Update date",

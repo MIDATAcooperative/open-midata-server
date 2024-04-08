@@ -180,8 +180,12 @@ class InstanceSync extends AbstractActor {
 		   if (msg.collection.equals("plugin")) {
 			   Plugin.cacheRemove(msg.entry);
 		   } else if (msg.collection.equals("content")) {
-			   RecordGroup.load();
-			   ContentCode.reset();
+			   if (msg.entry == null) {
+			       RecordGroup.load();
+			       ContentCode.reset();
+			   } else {
+				   RecordGroup.reload(msg.entry);
+			   }
 		   } else if (msg.collection.equals("SubscriptionData")) {			 
 			   SubscriptionManager.subscriptionChangeLocal(msg.entry);			  
 		   } else if (msg.collection.equals("aeskey")) {

@@ -45,10 +45,13 @@ import utils.sync.Instances;
 
 public class ContentTypeTools {
 
-	
 	public static void setRecordCodeAndContent(AccessContext context, Record record, Set<String> code, String content, String display) throws AppException {
+		setRecordCodeAndContent(context, record, code, content ,display, null);
+	}
+	
+	public static void setRecordCodeAndContent(AccessContext context, Record record, Set<String> code, String content, String display, String category) throws AppException {
 		MidataId pluginId = context.getUsedPlugin();
-		String category = null;
+		
 		try {
 		
 		if (content != null && ContentInfo.isCoding(content)) {
@@ -68,7 +71,7 @@ public class ContentTypeTools {
 			}
 			
 			if (content==null && display!=null) {
-				
+				AccessLog.log("Try to dynamically add display="+display+" code="+code);
 				String splitted[] = code.iterator().next().split(" ");
 				if (splitted.length == 2 && splitted[0].startsWith("http")) {
 				  String groupName = determineTargetGroup(context, record.format, category);
@@ -96,10 +99,14 @@ public class ContentTypeTools {
 	
 	public static String getContentForSystemCode(AccessContext context, String system, String code) throws PluginException {
 		switch(system) {
-		case "http://loinc.org" : return "loinc";
-		case "http://snomed.info/sct" : return "snomed";
-		default: throw new PluginException(context.getUsedPlugin(), "error.plugin", "Code system ´"+system+"´ not supported for auto registration.");
+		case "http://loinc.org" : return "loinc/"+code;
+		case "http://snomed.info/sct" : return "snomed/"+code;
 		}
+		if (system.startsWith("http://")) system = system.substring("http://".length());
+		else if (system.startsWith("https://")) system = system.substring("https://".length());
+		else throw new PluginException(context.getUsedPlugin(), "error.plugin", "Code system ´"+system+"´ not supported for auto registration.");
+		system = system.replace('.', '_').replace('/', '_');
+		return system+"/"+code;
 	}
 	
 	 public static String findDynamicGroup(Map<String, Object> properties, String groupSystem, String format) throws BadRequestException, AppException {
@@ -107,9 +114,10 @@ public class ContentTypeTools {
 	    	if (properties.containsKey("format") && Query.getRestriction(properties.get("format"), "format").contains(format)) {
 	    	   
 	    		String groupSystem1 = properties.containsKey("group-system") ? properties.get("group-system").toString() : "v1";
-	    		boolean isDynamic = properties.containsKey("group-dynamic") ? Boolean.valueOf(properties.get("group-dynamic").toString()) : false;
+	    		boolean isDynamic = properties.containsKey("group-dynamic") ? "extend".equals(properties.get("group-dynamic").toString()) : false;
 	    		Object group = properties.containsKey("group") ? properties.get("group") : null;
-	        		      		        		
+	    		if (group!=null && group instanceof Collection) group = ((Collection) group).iterator().next();
+	            AccessLog.log("TEST dyn="+isDynamic+" gs="+groupSystem1+" group="+group);     		        		
 	    		if (isDynamic && groupSystem1.equals(groupSystem) && group instanceof String) return group.toString();
 	    	} 
 	    	
@@ -129,6 +137,7 @@ public class ContentTypeTools {
 	public static boolean isSubGroupOf(String groupSystem, String sgroup, String pgroup) throws AppException {
 		if (sgroup.equals(pgroup)) return true;
 		RecordGroup gr = RecordGroup.getBySystemPlusName(groupSystem, sgroup);
+		if (gr == null) return false;
 		if (gr.parent != null && gr.parent.equals(pgroup)) return true;
 		if (gr.parent != null) return isSubGroupOf(groupSystem, gr.parent, pgroup);
 		return false;
@@ -137,20 +146,45 @@ public class ContentTypeTools {
 	public static String determineTargetGroup(AccessContext context, String format, String category) throws AppException {
 		// from access filter
 		String groupFromFilter = findDynamicGroup(context.getAccessRestrictions(), "v1", format);
-		if (groupFromFilter == null) return null;
+		if (groupFromFilter == null) {
+			AccessLog.log("no dynamic target group in filter for:", format);
+			return null;
+		}
 		
 		// from category
+		String groupFromCategory = null;
+		switch(category) {
+		case "laboratory" : groupFromCategory = "health/laboratory";break;
+		}
 		
 		// from format
 		FormatInfo finf = FormatInfo.getByName(format);
 		String groupFromFormat = finf.defaultGroup;
-		if (groupFromFormat == null) return null;
+		if (groupFromFormat == null) {
+			AccessLog.log("no dynamic target group in format for:", format);
+			return null;
+		}
 		
 		// determine winner
-		if (isSubGroupOf("v1", groupFromFilter, groupFromFormat)) return groupFromFilter;
-		if (isSubGroupOf("v1", groupFromFormat, groupFromFilter)) return groupFromFormat;
+		String winner = null;
 		
-		return null;
+		if (isSubGroupOf("v1", groupFromFilter, groupFromFormat)) winner = groupFromFilter;
+		else if (isSubGroupOf("v1", groupFromFormat, groupFromFilter)) winner = groupFromFormat;
+		else {
+			AccessLog.log("dynamic groups dont fit. filter=", groupFromFilter," format=",groupFromFormat);
+		    return null;
+		}
+		
+		if (groupFromCategory==null || groupFromCategory.equals(winner)) return winner;
+		
+		if (isSubGroupOf("v1", winner, groupFromCategory)) return winner;
+		else if (isSubGroupOf("v1", groupFromCategory, winner)) return groupFromCategory;
+		else {
+			AccessLog.log("dynamic groups dont fit. winner=", winner," category=",groupFromCategory);
+		    return null;
+		}
+		
+		
 	}
 	
 	public static String generateContent(AccessContext context, String system, String code, String display, String format, String groupName, String category) throws AppException {
@@ -176,6 +210,7 @@ public class ContentTypeTools {
 	    co.display = display;
 	    
 	    GroupContent gc = new GroupContent();
+	    gc._id = new MidataId();
 	    gc.content = ci.content;
 	    gc.lastUpdated = System.currentTimeMillis();
 	    gc.system = "v1";
@@ -186,7 +221,8 @@ public class ContentTypeTools {
 		ContentCode.add(co);
 		GroupContent.add(gc);
 		
-		Instances.cacheClear("content", null);
+		RecordGroup.reload(ci, gc);
+		Instances.cacheClear("content", ci._id);
 		
 		return ci.content;
 		
