@@ -37,7 +37,7 @@
      "master_user" : "Oma organisatsiooni värskendamiseks või organisatsiooni uute kasutajate registreerimiseks peate olema peakasutaja. Kui arvate, et teil peaksid olema peakasutaja õigused, võtke ühendust @SUPPORTiga.",
      "parent" : "Organisatsiooni osa",
      "identifiers" : "Identifier",
-     "identifiers_info" : "Sisestage siia kõik organisatsioonivälised identifikaatorid. Sisestage igale reale üks identifikaator. Kasutage '|' soovi korral eraldada koodisüsteem ja väärtus."
+     "identifiers_info" : "Sisestage siia kõik organisatsioonivälised identifikaatorid. Sisestage igale reale üks identifikaator. Kasutage '|' soovi korral eraldada koodisüsteem ja väärtus.",
      "select_btn" : "Vali",
      "managerType" : "Organisatsiooni juht",
      "managers" : {
