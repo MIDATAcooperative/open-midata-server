@@ -32,7 +32,7 @@ import utils.exceptions.InternalServerException;
 public class FormatInfo extends Model {
 
 	private @NotMaterialized static final String collection = "formatinfo";
-	private @NotMaterialized static final Set<String> ALL = Sets.create("format","visualization");
+	private @NotMaterialized static final Set<String> ALL = Sets.create("format","visualization","defaultGroup");
 	
 	/**
 	 * the name of the format this class describes
@@ -53,6 +53,11 @@ public class FormatInfo extends Model {
 	 * Name of default visualization
 	 */
 	public String visName;
+	
+	/**
+	 * Default group in record tree for format
+	 */
+	public String defaultGroup;
 	
 	public static FormatInfo getByName(String name) throws InternalServerException {
 	

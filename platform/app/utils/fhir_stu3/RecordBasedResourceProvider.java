@@ -63,6 +63,7 @@ import models.Record;
 import models.TypedMidataId;
 import models.enums.AuditEventType;
 import utils.AccessLog;
+import utils.ContentTypeTools;
 import utils.ErrorReporter;
 import utils.QueryTagTools;
 import utils.access.EncryptedFileHandle;
@@ -387,15 +388,15 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	 * @param cc CodeableConcept to set
 	 * @return display of codeable concept
 	 */
-	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent) throws InternalServerException {
+	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent) throws AppException {
 	  return setRecordCodeByCodings(record, cc != null ? cc.getCoding() : null, defaultContent);
 	}
 	
-	protected String setRecordCodeByCoding(Record record, Coding coding, String defaultContent) throws InternalServerException {
+	protected String setRecordCodeByCoding(Record record, Coding coding, String defaultContent) throws AppException {
 	  return setRecordCodeByCodings(record, coding != null ? Collections.singletonList(coding) : null, defaultContent);
 	}
 	
-	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent) throws InternalServerException {
+	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent) throws AppException {
 		  record.code = new HashSet<String>(); 
 		  String display = null;
 		  try {
@@ -410,10 +411,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			  
 			  if (!record.code.isEmpty()) {
 			  
-				ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, record.code, null);
+				ContentTypeTools.setRecordCodeAndContent(info(), record, record.code, null, display);
 			  
 			  } else {
-				  ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, null, defaultContent);
+				  ContentTypeTools.setRecordCodeAndContent(info(), record, null, defaultContent, display);
 			  }
 		  } catch (PluginException e) {
 			    ErrorReporter.reportPluginProblem("FHIR (set record code)", null, e);	

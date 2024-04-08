@@ -28,6 +28,8 @@ import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.IntegerType;
@@ -508,7 +510,19 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 	// c) If the "subject" is the record owner he should be removed from the FHIR representation
 	public void prepare(Record record, Observation theObservation) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a fixed value or something else useful)
-		String display = setRecordCodeByCodeableConcept(record, theObservation.getCode(), null);
+		String category = null;
+		if (theObservation.hasCategory()) {
+			CodeableConcept cc = theObservation.getCategoryFirstRep();
+			if (cc.hasCoding()) {
+				for (Coding c : cc.getCoding()) {
+				  if ("http://terminology.hl7.org/CodeSystem/observation-category".equals(c.getSystem())) {
+				    category = c.getCode();
+				  }
+				}
+			}
+		}
+		
+		String display = setRecordCodeByCodeableConcept(record, theObservation.getCode(), null, category);
 		
 		// Task b : Create record name
 		String date = "No time";		

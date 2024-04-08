@@ -24,7 +24,19 @@
 		<div class="col-sm-8 mt-1">
 		<input type="text" id="queryadd" name="queryadd" class="form-control" v-validate v-model="newentry.search">
 		</div><div class="col-sm-4 mt-1">
-		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="search()" v-t="'common.search_btn'"></button>
+		<div class="btn-group space mb-1">
+		  <button class="btn btn-default" :disabled="action!=null" @click="search()" v-t="'common.search_btn'"></button>
+		  <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="javascript:" @click="searchSpecial('notApproved')" v-t="'content.search_not_approved'">All not approved</a>
+            <a class="dropdown-item" href="javascript:" @click="searchSpecial('approved')" v-t="'content.search_approved'">All not approved</a>
+            <a class="dropdown-item" href="javascript:" @click="searchSpecial('modified')" v-t="'content.search_modified'">All modified</a>
+            <a class="dropdown-item" href="javascript:" @click="searchSpecial('deleted')" v-t="'content.search_deleted'">Recently deleted</a>         
+          </div>
+        </div>
+		
 		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="createNew()" v-t="'content.createnew_btn'"></button>
 		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="createGroup()" v-t="'content.creategroup_btn'"></button>
 		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="exporter()" v-t="'content.export_btn'"></button>
@@ -42,6 +54,8 @@
 		    <td><a href="javascript:" @click="addContent(choice)">{{ choice.display }}</a>
 		      <span v-if="choice.group" class="text-muted">(Group)</span>
 		      <span v-else class="text-muted">(Content)</span>
+		      <span v-if="choice.approvedByName" class="text-success">✓</span>
+		      <span v-else-if="choice.autoAddedByName" class="text-warning">?</span>
 		    </td>
 		    <td>
 		      <div v-for="code in choice.codes" :key="JSON.stringify(code)"><a href="javascript:" @click="addContent(choice, code)">{{ code.system }} {{ code.code }}</a> <span class="text-muted">(Code)</span></div>
@@ -79,6 +93,12 @@
 	               <input class="form-control" type="text" v-validate v-model="currentContent.label[lang]">                   
 	           </form-group>
                </div>
+               <form-group v-if="currentContent.autoAddedAt" name="autoAddedAt" label="content.autoAddedAt">
+                 <p class="form-control-plaintext">{{ $filters.dateTime(currentContent.autoAddedAt) }} {{ $t("common.by") }} {{ currentContent.autoAddedByName }}</p>
+               </form-group>
+               <form-group v-if="currentContent.approvedAt" name="approvedAt" label="content.approvedAt">
+                 <p class="form-control-plaintext">{{ $filters.dateTime(currentContent.approvedAt) }} {{ $t("common.by") }} {{ currentContent.approvedByName }}</p>
+               </form-group>
 	           <form-group name="security" label="content.security">
 	             <select class="form-control" name="security" v-validate v-model="currentContent.security">
                      <option value="MEDIUM" v-t="'content.medium'">MEDIUM</option>
@@ -104,9 +124,9 @@
 	           </form-group>
 
 			   <form-group label="common.empty">
-				  <button class="btn btn-primary mr-1" type="submit" v-submit :disabled="action!=null" v-t="'content.save_btn'">Save</button>
-				  <button class="btn btn-danger mr-1" type="button" :disabled="action!=null" @click="deleteCode(true)" v-t="'content.delete_content_btn'">Delete Content</button>
-				  <button class="btn btn-danger" type="button" :disabled="action!=null" @click="deleteCode(false)" v-t="'content.delete_code_btn'">Delete Code</button>
+				  <button class="btn btn-primary mr-1 mb-1" type="submit" v-submit :disabled="action!=null" v-t="'content.save_btn'">Save</button>
+				  <button class="btn btn-danger mr-1 mb-1" type="button" :disabled="action!=null" @click="deleteCode(true)" v-t="'content.delete_content_btn'">Delete Content</button>
+				  <button class="btn btn-danger mb-1" type="button" :disabled="action!=null" @click="deleteCode(false)" v-t="'content.delete_code_btn'">Delete Code</button>
 			   </form-group>
         </div>
 
@@ -130,8 +150,8 @@
 	             <input class="form-control" type="text" name="system" v-validate v-model="currentGroup.system">
 	           </form-group>
 			   <form-group label="common.empty">
-				  <button class="btn btn-primary mr-1" type="submit" v-submit :disabled="action!=null" v-t="'content.save_group_btn'">Save Group</button>
-				  <button class="btn btn-danger" type="button" :disabled="action!=null" @click="deleteGroup()" v-t="'content.delete_group_btn'">Delete Group</button>				  
+				  <button class="btn btn-primary mr-1 mb-1" type="submit" v-submit :disabled="action!=null" v-t="'content.save_group_btn'">Save Group</button>
+				  <button class="btn btn-danger mb-1" type="button" :disabled="action!=null" @click="deleteGroup()" v-t="'content.delete_group_btn'">Delete Group</button>				  
 			   </form-group>
 		</div>
 		</form>
@@ -167,9 +187,9 @@ var lookupCodes = function(entry) {
 	};
 	
 	var lookupContent = function(name) {
-		return formats.searchContents({ content : name }, ["content", "defaultCode", "security","label", "resourceType", "comment", "source"])
+		return formats.searchContents({ content : name }, ["content", "defaultCode", "security","label", "resourceType", "comment", "source", "autoAddedBy", "autoAddedAt", "approvedBy", "approvedAt"])
 		.then(function(result) {
-			if (result.data.length == 1) return { key : result.data[0].content, format : result.data[0].resourceType, content : result.data[0].content, display : result.data[0].label[getLocale()] || result.data[0].label.en || result.data[0].content };
+			if (result.data.length == 1) return { key : result.data[0].content, format : result.data[0].resourceType, autoAddedByName : result.data[0].autoAddedByName, autoAddedAt : result.data[0].autoAddedAt, approvedByName : result.data[0].approvedByName, approvedAt : result.data[0].approvedAt,  content : result.data[0].content, display : result.data[0].label[getLocale()] || result.data[0].label.en || result.data[0].content };
 		});
 	};
 	
@@ -248,7 +268,7 @@ export default {
 				});				
 			} else {
 				$data.currentGroup = null;
-				formats.searchContents({ content : content.content }, ["_id", "content", "defaultCode", "security","label", "resourceType", "comment", "source"])
+				formats.searchContents({ content : content.content }, ["_id", "content", "defaultCode", "security","label", "resourceType", "comment", "source", "autoAddedAt", "autoAddedBy", "approvedAt","approvedBy"])
 				.then((c) => { 
 					
 					let cnt = c.data[0];
@@ -487,7 +507,7 @@ export default {
 						let dat = result.data[i];
 						for (let lang in dat.label) {
 						if (dat.label[lang].toLowerCase().indexOf(what) >= 0) {					 
-							waitFor2.push(lookupCodes({ key : dat.content, content : dat.content, display : dat.label[getLocale()] || dat.label.en || dat.content, format : dat.resourceType })
+							waitFor2.push(lookupCodes({ key : dat.content, content : dat.content, display : dat.label[getLocale()] || dat.label.en || dat.content, format : dat.resourceType, autoAddedByName:dat.autoAddedByName, autoAddedAt:dat.autoAddedAt, approvedByName:dat.approvedByName, approvedAt:dat.approvedAt })
 							.then(add));					
 						}
 						}
@@ -534,6 +554,30 @@ export default {
 			let what = $data.newentry.search.toLowerCase();
 			me.doBusy(me.fullTextSearch(what).then((result) => $data.newentry.choices=_.orderBy(result, ["display"],["asc"])));
 		},
+		
+		searchSpecial(mode) {
+            const { $data, $route, $router } = this, me = this;
+            
+            let searchresult = [];
+            let waitFor2 = [];
+            let already = {};
+            let add = function(entry) {                                     
+                    if (!already[entry.key]) { searchresult.push(entry); already[entry.key] = entry; return true; }
+                    return false;
+             };
+            
+            
+            me.doBusy(formats.listContentsSpecial(mode)
+            .then(function(result) {
+               let l = result.data.length;     
+               for (let i=0;i<l;i++) {
+                 let dat = result.data[i];                  
+                 waitFor2.push(lookupCodes({ key : dat.content, content : dat.content, display : dat.label[getLocale()] || dat.label.en || dat.content, format : dat.resourceType, autoAddedByName: dat.autoAddedByName, autoAddedAt:dat.autoAddedAt, approvedAt: dat.approvedAt, approvedByName: dat.approvedByName })
+                 .then(add));                    
+               }        
+            }).then(() => Promise.all(waitFor2).then(() => $data.newentry.choices=_.orderBy(searchresult, ["display"],["asc"]))));
+            
+        },
 
         exporter() {
             this.doAction("download", server.token())

@@ -97,7 +97,7 @@ public class Feature_FormatGroups extends Feature {
     	    result = new HashMap<String, Object>();
     	    result.putAll(properties);
     		String groupSystem = result.containsKey("group-system") ? result.get("group-system").toString() : "v1";
-    		boolean isDynamic = result.containsKey("group-dynamic") ? Boolean.valueOf(result.get("group-dynamic").toString()) : false;
+    		boolean isDynamic = result.containsKey("group-dynamic") ? !("false".equals(result.get("group-dynamic").toString())) : false;
     		if (resolveDynamic || !isDynamic) {
         		Set<String> include = Query.getRestriction(result.get("group"), "group");
         		Set<String> exclude;

@@ -16,6 +16,7 @@
 -->
 
 <template>
+  
     <div  class="midata-overlay borderless">
         <panel :title="getTitle()" :busy="isBusy">
         <error-box :error="error"></error-box>
@@ -40,7 +41,7 @@
 		      <span v-if="mode=='app'"> / </span>
 		      <span class="text-danger" v-if="block.app && block.app != 'all'"><span v-t="'queryeditor.short_app_other'"></span> {{ block.appName }}</span>
 		      <span class="text-success" v-if="!block.app || block.app == 'all'" v-t="'queryeditor.short_app_all'"></span>
-		      <span v-if="block.dynamic" class="ml-1 badge badge-danger">{{ $t('queryeditor.short_dynamic') }}</span>
+		      <span v-if="block.dynamic" class="ml-1 badge badge-danger">{{ $t('queryeditor.short_dynamic_'+block.dynamic) }}</span>
 		      <span v-if="block.addTag" v-for="atag of block.addTag" :key="atag" class="ml-1 badge badge-danger">{{ getTagName(atag) }}</span>
 		      <span v-if="block.allowTag" v-for="atag of block.allowTag" :key="atag" class="ml-1 badge badge-warning">{{ getTagName(atag) }}</span>
 		    </div>		   
@@ -162,9 +163,11 @@
 		    </div>
 		  </form-group>
 		  <form-group name="dynamic" label="queryeditor.dynamic" v-if="currentBlock.group">
-		    <div class="form-check">
-		      <label class="form-check-label"><input class="form-check-input"  type="checkbox" v-validate v-model="currentBlock.dynamic"  value="true"><span v-t="'queryeditor.dynamic_yes'"></span></label>
-		    </div>
+            <select class="form-control" v-validate v-model="currentBlock.dynamic">
+                <option :value="undefined">{{ $t("queryeditor.dynamic_no") }}</option>
+                <option value="true">{{ $t("queryeditor.dynamic_yes") }}</option>
+                <option value="extend">{{ $t("queryeditor.dynamic_extend") }}</option>
+            </select>
 		  </form-group>
 		  <form-group name="observer" label="queryeditor.observer" v-if="currentBlock.flags.observer" :path="errors.observer">
 		    <input type="text" class="form-control" name="observer" v-validate v-model="currentBlock.observer">		    
