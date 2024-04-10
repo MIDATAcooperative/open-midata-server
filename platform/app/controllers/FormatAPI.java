@@ -53,6 +53,7 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
+import utils.auth.PreLoginSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -450,7 +451,7 @@ public class FormatAPI extends APIController {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)
+	@Security.Authenticated(PreLoginSecured.class)
 	public Result searchContents(Request request) throws AppException {
 		JsonNode json = request.body().asJson();
 		

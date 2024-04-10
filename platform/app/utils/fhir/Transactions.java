@@ -249,9 +249,11 @@ public class Transactions {
 	   for (TransactionStep step : steps) {
 		   IIdType source = step.getResource().getIdElement();
 		   if (source != null && source.getIdPart() != null) {
-			 IdType t = new IdType(source.getResourceType(), step.getRecord()._id.toString());
-			 AccessLog.log("reg ref:"+source.getIdPart()+" -> "+t.toString());
-		     idSubstitutions.put(source.getIdPart(), t);
+		     String idPart = source.getIdPart();
+			 IdType t = new IdType(step.getResource().fhirType(), step.getRecord()._id.toString());
+			 AccessLog.log("reg ref:"+idPart+" -> "+t.toString());
+		     idSubstitutions.put(idPart, t);
+		     if (idPart.startsWith("urn:uuid:")) idSubstitutions.put(idPart.substring("urn:uuid:".length()), t);
 		   }
 	   }
 	   

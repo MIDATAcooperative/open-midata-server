@@ -959,7 +959,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		Member existing = AccountManagementTools.identifyExistingAccount(info(), user);
 		
 		if (existing != null) {
-			//record._id = existing._id;
+			record._id = existing._id;
 			record.attached = existing;
 		}
 		
