@@ -153,8 +153,10 @@ public class ContentTypeTools {
 		
 		// from category
 		String groupFromCategory = null;
-		switch(category) {
-		case "laboratory" : groupFromCategory = "health/laboratory";break;
+		if (category != null) {
+    		switch(category) {
+    		case "laboratory" : groupFromCategory = "health/laboratory";break;
+    		}
 		}
 		
 		// from format
