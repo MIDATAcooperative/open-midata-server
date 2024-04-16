@@ -65,7 +65,9 @@ public class EncryptedFileHandle implements UpdateFileHandleSupport {
 		AccessLog.log("Rename to: ",filename);
 		try {
 			FileStorage.rename(id.toObjectId(), filename);
-		} catch (MongoGridFSException e) {}
+		} catch (MongoGridFSException e) {
+			AccessLog.logException("GridFS", e);
+		}
 	}
 	
 	private final static String protokoll = "midata-file://";

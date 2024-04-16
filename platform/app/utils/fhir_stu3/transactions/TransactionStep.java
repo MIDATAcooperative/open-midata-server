@@ -21,6 +21,7 @@ import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
 import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Resource;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
@@ -71,6 +72,10 @@ public abstract class TransactionStep {
 	 */
 	public Model getRecord() {
 		return record;
+	}
+	
+	public IdType getReferenceId() {
+		return new IdType(getResource().fhirType(), provider.getIdForReference(getRecord()));
 	}
 
 	/**

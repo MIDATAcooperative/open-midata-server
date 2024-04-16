@@ -196,6 +196,11 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		return resource._id.toString()+"."+resource.owner.toString();
 	}
 	
+	@Override
+	public String getIdForReference(Record record) {
+		return record._id.toString();
+	}
+	
 	public List<T> parse(List<Record> result, Class<T> resultClass) throws AppException {
 		ArrayList<T> parsed = new ArrayList<T>();	
 	    IParser parser = ctx().newJsonParser();

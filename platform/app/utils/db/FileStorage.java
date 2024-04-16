@@ -19,15 +19,18 @@ package utils.db;
 
 import java.io.InputStream;
 
+import org.bson.BsonObjectId;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
+import com.mongodb.client.result.UpdateResult;
 
 import models.MidataId;
 import utils.AccessLog;
@@ -51,8 +54,9 @@ public class FileStorage {
                 //.chunkSizeBytes(1024)                
                 .metadata(new Document("contentType", contentType).append("filename", filename));
 
-        return MidataId.from(fileSystem.uploadFromStream(id.toString()+"_"+index, file, options));
+        fileSystem.uploadFromStream(new BsonObjectId(id.toObjectId()), id.toString()+"_"+index, file, options);
 						
+        return id;
 	}
 
 	/**
@@ -78,8 +82,9 @@ public class FileStorage {
 		
 		String filename = null;
 		if (meta != null) filename = meta.getString("filename");
-		if (filename == null) filename = gridfile.getFilename();
-				
+		if (filename == null) 
+			filename = gridfile.getFilename();
+		AccessLog.log("from mets="+meta.getString("filename")+" fnm="+filename);		
 		return new FileData(fileSystem.openDownloadStream(fileid), filename, contentType);		
 	}
 	
@@ -90,9 +95,24 @@ public class FileStorage {
 	}
 	
 	public static void rename(ObjectId fileId, String filename) {
-		GridFSBucket fileSystem = GridFSBuckets.create(DBLayer.getFSDB(), FILE_STORAGE);
+		//GridFSBucket fileSystem = GridFSBuckets.create(DBLayer.getFSDB(), FILE_STORAGE);
 		System.out.println("rename id="+fileId.toString()+" to "+filename);
-		fileSystem.rename(fileId, filename);
+		//fileSystem.rename(fileId, filename);
+		
+		BasicDBObject query = new BasicDBObject();
+		query.put("_id", fileId);
+								
+		BasicDBObject updateContent = new BasicDBObject();
+		updateContent.put("metadata.filename", filename);
+					
+		BasicDBObject update = new BasicDBObject("$set", updateContent);	
+		MongoCollection<Document> mc = DBLayer.getFSDB().getCollection("fs.files");
+		System.out.println("query="+query.toJson());
+		System.out.println("update="+update.toJson());
+		
+		UpdateResult res = mc.updateOne(query, update);
+		System.out.println("out="+res.toString());
+		
 	}
 
 	/**
