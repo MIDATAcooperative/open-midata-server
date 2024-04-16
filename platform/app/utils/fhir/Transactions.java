@@ -250,7 +250,7 @@ public class Transactions {
 		   IIdType source = step.getResource().getIdElement();
 		   if (source != null && source.getIdPart() != null) {
 		     String idPart = source.getIdPart();
-			 IdType t = new IdType(step.getResource().fhirType(), step.getRecord()._id.toString());
+			 IdType t = step.getReferenceId();
 			 AccessLog.log("reg ref:"+idPart+" -> "+t.toString());
 		     idSubstitutions.put(idPart, t);
 		     if (idPart.startsWith("urn:uuid:")) idSubstitutions.put(idPart.substring("urn:uuid:".length()), t);

@@ -379,7 +379,9 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		return true;
 	}
 		
-		
+	public String getIdForReference(M record) {
+		return record._id.toString();
+	}	
 	
 
 }

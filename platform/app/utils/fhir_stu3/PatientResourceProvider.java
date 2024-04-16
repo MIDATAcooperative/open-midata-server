@@ -87,6 +87,7 @@ import models.MemberKey;
 import models.MidataId;
 import models.Plugin;
 import models.Record;
+import models.RecordWithMeta;
 import models.Study;
 import models.StudyAppLink;
 import models.StudyParticipation;
@@ -148,7 +149,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	public Patient getResourceById(@IdParam IIdType theId) throws AppException {
 
 		String id = theId.getIdPart();
-		MidataId targetId = new MidataId(id);
+		MidataId targetId = MidataId.parse(id);
 
 		AccessContext info = info();
 		List<Record> allRecs = RecordManager.instance.list(info.getAccessorRole(), info, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
@@ -421,7 +422,12 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	public Patient generatePatientForAccount(Member member) {
 		Patient p = new Patient();
 		p.setId(member._id.toString());
-		p.addName().setFamily(member.lastname).addGiven(member.firstname);
+		HumanName name = p.addName().setFamily(member.lastname);
+		if (member.firstname!=null && member.firstname.length()>0) {
+			for (String fn : member.firstname.trim().split("\\s+")) {
+			  name.addGiven(fn);
+			}
+		}
 		p.setBirthDate(member.birthday);
 		if (member.status == UserStatus.ACTIVE || member.status == UserStatus.NEW || member.status == UserStatus.BLOCKED) {
 			p.setActive(true);
@@ -772,6 +778,14 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		    fhirPatient.populateIdentifier(info(), study, sp);
 		}
 	}		
-		
+	
+	@Override
+	public String getIdForReference(Record record) {
+		if (record instanceof RecordWithMeta) {
+			RecordWithMeta rm = (RecordWithMeta) record;
+			if (rm.attached != null) return rm.attached._id.toString();
+		}
+		return record.owner.toString();
+	}
 
 }
