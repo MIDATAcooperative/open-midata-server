@@ -66,7 +66,7 @@ import circles from './circles';
 		
 		if (action == "consent") {			
 		    var what = current.s.split(",");
-			$router.push({ name : role+".newconsent", query : { share : JSON.stringify({"group":what}), authorize : current.a, actions : JSON.stringify(acarray.slice(1)) } });
+			$router.push({ name : role+".newconsent", query : { share : JSON.stringify({"group":what, "group-system" : "v1"}), authorize : current.a, "allow-write" : (current.w || false), actions : JSON.stringify(acarray.slice(1)) } });
 			return true;
 		} else if (action == "account") {
 			$router.push({ name : role+".user2", query : { actions : JSON.stringify(acarray.slice(1)) } });

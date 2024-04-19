@@ -83,7 +83,9 @@ export default {
 		}					
 
 		if (!$route.meta.account && !pluginName2) {
-			if ($route.query.consent) {
+		    if ($route.query.authorize && $route.query.data) {
+		        actions.push({ ac : "consent", s : $route.query.data, a: $route.query.authorize, w: $route.query["allow-write"] });
+			} else if ($route.query.consent) {
 				actions.push({ ac : "confirm", c : $route.query.consent });
 			} else if ($route.query.project) {
 				var prjs = $route.query.project.split(",");

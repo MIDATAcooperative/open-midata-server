@@ -331,7 +331,7 @@
         </div>
             
         <div v-if="!consentId && consent.type" class="margin-top">
-            <button type="button" :disabled="action!=null" @click="skip();" v-if="maySkip()" class="btn btn-default" v-t="'common.skip_btn'"></button>
+            <button type="button" :disabled="action!=null" @click="skip();" v-if="maySkip()" class="btn btn-default space" v-t="'common.skip_btn'"></button>
             <span v-if="!consent.query">
                 <span v-if="!pleaseReview">
                     <button :disabled="action!=null" v-if="consent.authorized.length || consent.usepasscode || consent.externalAuthorized" type="submit" v-submit class="btn btn-primary" v-t="'newconsent.create_btn'"></button>
@@ -405,6 +405,7 @@ import circles from 'services/circles';
 import session from 'services/session';
 import actions from 'services/actions';
 import labels from 'services/labels';
+import records from 'services/records';
 import usergroups from 'services/usergroups';
 import users from 'services/users';
 import hc from 'services/hc';
@@ -541,8 +542,11 @@ export default {
 			
 		} else {
 			$data.isSimple = false;
-			$data.consent = { type : ($route.meta.role == "provider" ? "HEALTHCARE" : null), status : "ACTIVE", authorized : [], writes : "NONE" };
-			if ($route.meta.role == "provider") $data.consent.writesBool = true;
+			$data.consent = { type : ($route.meta.role == "provider" ? "HEALTHCARE" : null), status : "ACTIVE", authorized : [], writes : "NONE", writesBool : false };
+			if ($route.meta.role == "provider" || $route.query["allow-write"]==="true") {
+			  $data.consent.writesBool = true;
+			  $data.consent.writes = $data.consent.writesBool ? "UPDATE_AND_CREATE" : "NONE";
+			}
 			//views.disableView("records_shared");
 			
 			if ($route.query.owner != null) {
