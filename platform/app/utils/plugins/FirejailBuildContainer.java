@@ -125,6 +125,7 @@ public class FirejailBuildContainer extends AbstractLocalContainer {
 		List<String> cmd = new ArrayList<String>();
 		cmd.add("/usr/bin/git");
 		cmd.add("clone");
+		cmd.add("--recurse-submodules");
 		cmd.add(repo);
 		cmd.add(internalName);
 		return process(targetDir, cmd);
@@ -133,7 +134,8 @@ public class FirejailBuildContainer extends AbstractLocalContainer {
 	public Pair<Boolean, String> doGitPull(File targetDir) {
 		List<String> cmd = new ArrayList<String>();
 		cmd.add("/usr/bin/git");
-		cmd.add("pull");		
+		cmd.add("pull");
+		cmd.add("--recurse-submodules");
 		return process(targetDir, cmd);
 	}
 	
@@ -144,6 +146,15 @@ public class FirejailBuildContainer extends AbstractLocalContainer {
 		cmd.add("--whitelist="+targetDir.getAbsolutePath());		
 		cmd.add("npm");
 		cmd.add("ci");	
+		Pair<Boolean, String> result = process(targetDir, cmd);
+		if (result.getLeft()) return result;
+		
+		cmd.clear();
+		cmd.add("/usr/bin/firejail");
+		cmd.add("--quiet");
+		cmd.add("--whitelist="+targetDir.getAbsolutePath());		
+		cmd.add("npm");
+		cmd.add("install");	
 		return process(targetDir, cmd);
 	}
 	

@@ -47,6 +47,7 @@ import models.User;
 import models.enums.LoginTemplate;
 import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
+import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
@@ -91,6 +92,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.SubscriptionManager;
 import utils.stats.Stats;
+import utils.stats.UsageStatsRecorder;
 
 /**
  * functions for managing MIDATA plugins
@@ -149,7 +151,7 @@ public class Plugins extends APIController {
 		// get visualizations
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		if (!properties.containsKey("status")) {
-			properties.put("status", EnumSet.of(PluginStatus.DEVELOPMENT, PluginStatus.BETA, PluginStatus.ACTIVE, PluginStatus.DEPRECATED));
+			properties.put("status", EnumSet.of(PluginStatus.DEVELOPMENT, PluginStatus.BETA, PluginStatus.ACTIVE, PluginStatus.DEPRECATED, PluginStatus.END_OF_LIFE));
 		}
 		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins", "developerTeam");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
@@ -192,7 +194,7 @@ public class Plugins extends APIController {
 		if (type == null || !type.equals("visualization")) type = "mobile";
 
 		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "termsOfUse", "requirements",
-				"orgName", "publisher", "unlockCode", "targetUserRole", "icons", "filename", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate");
+				"orgName", "publisher", "unlockCode", "targetUserRole", "icons", "filename", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "status");
 		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", type), fields);
 		if (plugin != null && plugin.unlockCode != null)
 			plugin.unlockCode = "true";
@@ -223,9 +225,9 @@ public class Plugins extends APIController {
 		Plugin visualization = null;
 		if (MidataId.isValid(visualizationIdString)) {
 			visualizationId = new MidataId(visualizationIdString);
-			visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions", "licenceDef"));
+			visualization = Plugin.getById(visualizationId, Sets.create("name", "filename", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions", "licenceDef"));
 		} else {
-			visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions", "licenceDef"));
+			visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "filename", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions", "licenceDef"));
 		}
 
 		if (visualization == null)
@@ -265,6 +267,8 @@ public class Plugins extends APIController {
 			throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
 		if (visualization.status == PluginStatus.DELETED)
 			throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
+		if (visualization.status == PluginStatus.END_OF_LIFE)
+            throw new BadRequestException("error.expired.app", "Plugin expired");
 		MidataId visualizationId = visualization._id;
 		
 		if (context == null)
@@ -272,7 +276,7 @@ public class Plugins extends APIController {
 		if (context.equals("me") && visualization.defaultSpaceContext != null && visualization.defaultSpaceContext.length() > 0)
 			context = visualization.defaultSpaceContext;
 
-		User user = User.getById(userId, Sets.create("visualizations", "apps", "role", "developer"));
+		User user = User.getById(userId, Sets.create("visualizations", "apps", "role", "developer", "developerTeam"));
 		if (user == null) throw new BadRequestException("error.unknown.user", "Unknown user");
 
 		boolean testing = visualization.isDeveloper(user._id) || (user.developer != null && visualization.isDeveloper(user.developer));
@@ -326,6 +330,9 @@ public class Plugins extends APIController {
 				RecordManager.instance.setMeta(userId, space._id, "_config", config);
 			}*/
 			SubscriptionManager.activateSubscriptions(userId, visualization, space._id, false);
+			
+			UsageStatsRecorder.protokoll(visualization._id, visualization.filename, UsageAction.INSTALL);
+			
 			return space;
 		} 		
 
@@ -825,7 +832,7 @@ public class Plugins extends APIController {
 					  
 					  Set<Space> spaces = Space.getByOwnerVisualization(userId, appId, Sets.create("context"));
 					  if (spaces.isEmpty()) {
-						  Plugin visualization = Plugin.getById(appId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions","licenceDef"));
+						  Plugin visualization = Plugin.getById(appId, Sets.create("name", "filename", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions","licenceDef"));
 						  AccessLog.log("add plugins: "+appId.toString());
 						  install(context, userId, visualization, null, null, null);
 					  }

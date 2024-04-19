@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ import org.bson.BSONObject;
 
 import controllers.Circles;
 import controllers.OAuth2;
+import models.Actor;
 import models.Consent;
 import models.MidataId;
 import models.MobileAppInstance;
@@ -47,6 +49,7 @@ import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
+import models.enums.Permission;
 import models.enums.PluginStatus;
 import models.enums.ResearcherRole;
 import models.enums.StudyAppLinkType;
@@ -55,6 +58,7 @@ import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
+import utils.access.APSCache;
 import utils.access.Feature_FormatGroups;
 import utils.access.Feature_QueryRedirect;
 import utils.access.Feature_UserGroups;
@@ -196,7 +200,7 @@ public class ApplicationTools {
 			boolean sendMessage = service.status == ConsentStatus.ACTIVE; 
 			Plugin app = Plugin.getById(service.applicationId);		
 			User user = context.getRequestCache().getUserById(service.owner, true);
-			if (user != null) AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_REJECTED).withActorUser(context.getActor()).withModifiedUser(user).withConsent(service));		
+			if (user != null) AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_REJECTED).withActor(context, context.getActor()).withModifiedActor(user).withConsent(service));		
 			if (reject) Circles.consentStatusChange(context, service, ConsentStatus.REJECTED);
 			else Circles.consentStatusChange(context, service, ConsentStatus.EXPIRED);
 			if (app != null && user != null && sendMessage) sendServiceRejectMessage(user, app);
@@ -223,7 +227,11 @@ public class ApplicationTools {
 		return getObserversForApp(StudyAppLink.getByApp(appId));
 	}
 
-	public static MobileAppInstance createServiceApiKey(AccessContext context, ServiceInstance serviceInstance) throws AppException {
+    public static MobileAppInstance createServiceApiKey(AccessContext context, ServiceInstance serviceInstance) throws AppException {
+    	return createServiceApiKey(context, serviceInstance, null);
+    }
+    
+	public static MobileAppInstance createServiceApiKey(AccessContext context, ServiceInstance serviceInstance, MidataId group) throws AppException {
 		AccessLog.logBegin("begin create service api key");
 		Plugin app = Plugin.getById(serviceInstance.appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 		if (app == null) throw new InternalServerException("error.internal", "App not found");
@@ -249,7 +257,14 @@ public class ApplicationTools {
 		
 		// Write phrase into APS *
 		Map<String, Object> meta = new HashMap<String, Object>();
-		meta.put("phrase", phrase);		
+		meta.put("phrase", phrase);	
+		if (group != null) {			
+			UserGroup grp = context.getRequestCache().getUserGroupById(group);
+			if (grp != null) {
+				meta.put("group", group.toString());
+				appInstance.comment = grp.name;
+			} else throw new InternalServerException("error.internal", "Invalid group provided.");
+		}
 		RecordManager.instance.setMeta(context, appInstance._id, "_app", meta);
 								
 		Map<String, Object> query = appInstance.sharingQuery;
@@ -311,7 +326,7 @@ public class ApplicationTools {
         	ServiceInstance old = ServiceInstance.getByEndpoint(endpoint, ServiceInstance.ALL);
         	if (old != null) throw new BadRequestException("error.exists.endpoint", "Endpoint already exists.");
         }
-        
+                      
 		ServiceInstance si = new ServiceInstance();
 		si._id = new MidataId();
 		si.appId = app._id;
@@ -321,6 +336,7 @@ public class ApplicationTools {
 		si.linkedStudyGroup = group;
 		si.restrictReadToGroup = restrictReadToGroup;
 		si.managerAccount = study._id;
+		si.managerName = study.code;
 		si.status = UserStatus.ACTIVE;
 		si.executorAccount = study._id;
 		if (app.type.equals("endpoint")) {
@@ -330,9 +346,11 @@ public class ApplicationTools {
 		}
 		si.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(si._id, null);
 		si.add();
+		
+		 AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SERVICE_INSTANCE_CREATED).withActor(context, context.getActor()).withModifiedActor(si).withStudy(study._id));
 
 		// Create service instance APS and store key
-		RecordManager.instance.createAnonymizedAPS(si.executorAccount, si.managerAccount, si._id, false, false, true);
+		RecordManager.instance.createAnonymizedAPS(context.getCache(), si.executorAccount, si.managerAccount, si._id, false, false, true);
 		MidataId keyId = new MidataId();
 		byte[] splitKey = KeyManager.instance.generateAlias(si._id, keyId);
 		Map<String, Object> obj = new HashMap<String, Object>();
@@ -365,12 +383,15 @@ public class ApplicationTools {
         	if (old != null) throw new BadRequestException("error.exists.endpoint", "Endpoint already exists.");
         }
 		
+		Actor manager = Actor.getActor(context, managerId);
+		
 		ServiceInstance si = new ServiceInstance();
 		si._id = new MidataId();
 		si.appId = app._id;
 		si.linkedStudy = null;
 		si.linkedStudyGroup = null;
 		si.managerAccount = managerId;
+		si.managerName = manager.getDisplayName();
 		si.status = UserStatus.ACTIVE;
 		si.executorAccount = si._id;
 		si.endpoint = endpoint;
@@ -381,9 +402,11 @@ public class ApplicationTools {
 		}
 		si.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(si._id, null);
 		si.add();
+		
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SERVICE_INSTANCE_CREATED).withActor(context, context.getActor()).withModifiedActor(si));
 		RecordManager.instance.getMeta(context, context.getAccessor(), "_");
 		// Create service instance APS and store key
-		RecordManager.instance.createAnonymizedAPS(si._id, managerId, si._id, false, false, true);
+		RecordManager.instance.createAnonymizedAPS(context.getCache(), si._id, managerId, si._id, false, false, true);
 		MidataId keyId = new MidataId();
 		byte[] splitKey = KeyManager.instance.generateAlias(si._id, keyId);
 		Map<String, Object> obj = new HashMap<String, Object>();
@@ -402,15 +425,24 @@ public class ApplicationTools {
 
 
 
-	public static ServiceInstance checkServiceInstanceOwner(AccessContext context, MidataId serviceId, boolean userWithMaySetupIsAccepted) throws AppException {
+	public static ServiceInstance checkServiceInstanceOwner(AccessContext context, MidataId serviceId, boolean userWithMaySetupIsAccepted, AuditEventType auditType) throws AppException {
 		ServiceInstance instance = ServiceInstance.getById(serviceId, ServiceInstance.ALL);
 		if (instance == null) throw new BadRequestException("error.unknown.service", "Service Instance does not exist");
+		
+		if (auditType != null) {
+		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(auditType).withActor(context, context.getActor()).withModifiedActor(instance));
+		}
+		
 		if (instance.managerAccount.equals(context.getAccessor())) return instance;
 
-		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(instance.managerAccount, context.getAccessor());
-		if (ugm != null && (ugm.getRole().mayUseApplications() || ugm.getRole().maySetup())) {
-			if (!userWithMaySetupIsAccepted && !ugm.getRole().mayUseApplications()) throw new BadRequestException("error.notauthorized.action", "Application manage permission required.");
-			Feature_UserGroups.loadKey(context, ugm);
+		List<UserGroupMember> ugms = context.getCache().getByGroupAndActiveMember(instance.managerAccount, context.getAccessor(), Permission.APPLICATIONS);
+		if (!userWithMaySetupIsAccepted && ugms == null) throw new BadRequestException("error.notauthorized.action", "Application manage permission required.");
+		if (ugms == null) ugms = context.getCache().getByGroupAndActiveMember(instance.managerAccount, context.getAccessor(), Permission.SETUP);
+		
+		if (ugms != null) {
+			APSCache cache = context.getCache();
+			APSCache subcache = cache;		
+			for (UserGroupMember ugmx : ugms) subcache = Feature_UserGroups.readySubCache(cache, subcache, ugmx);						
 			return instance;
 		}
 
@@ -443,8 +475,8 @@ public class ApplicationTools {
 		if (appInstance.writes==null) appInstance.writes = WritePermissionType.NONE;
 		
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
-		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
-		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);						   
+		    Map<String, Object> query = Feature_FormatGroups.convertQueryToContents(app.defaultQuery, false);		    
+		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, query);						   
         } else appInstance.sharingQuery = ConsentQueryTools.getEmptyQuery();
 		
 		return appInstance;
@@ -468,11 +500,11 @@ public class ApplicationTools {
 		appInstance.dataupdate = System.currentTimeMillis();
 		
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
-		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
-		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);						   
+		    Map<String, Object> query = Feature_FormatGroups.convertQueryToContents(app.defaultQuery, false);		    
+		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, query);						   
 		} else appInstance.sharingQuery = ConsentQueryTools.getEmptyQuery();
 		
-		RecordManager.instance.createAnonymizedAPS(appInstance.owner, context.getAccessor(), appInstance._id, true);
+		RecordManager.instance.createAnonymizedAPS(context.getCache(), appInstance.owner, context.getAccessor(), appInstance._id, true);
 		
 		//Circles.addConsent(context, appInstance, true, null, false);
 		
@@ -483,7 +515,7 @@ public class ApplicationTools {
 			MobileAppInstance appInstance) throws AppException, JsonValidationException {
 		AccessLog.log("create new app instance APS id="+appInstance._id);
 		// create APS *				
-		RecordManager.instance.createAnonymizedAPS(owner, appInstance._id, appInstance._id, true);
+		RecordManager.instance.createAnonymizedAPS(context.getCache(), owner, appInstance._id, appInstance._id, true);
 		
 		// Write phrase into APS *
 		Map<String, Object> meta = new HashMap<String, Object>();
@@ -612,7 +644,8 @@ public class ApplicationTools {
 	public static AccessContext actAsRepresentative(AccessContext context, MidataId targetUser, boolean useOriginalContextOnFail) throws AppException {
 		
 		
-		if (context.getAccessor().equals(targetUser)) return context;
+		if (context.getAccessor().equals(targetUser)) return context;	
+		if (context.canCreateActiveConsentsFor(targetUser)) return context;
 		if (context.getCache().hasSubCache(targetUser)) return new RepresentativeAccessContext(context.getCache().getSubCache(targetUser), context);
 		
 		Consent consent = Consent.getRepresentativeActiveByAuthorizedAndOwner(context.getActor(), targetUser);

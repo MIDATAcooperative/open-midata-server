@@ -37,6 +37,7 @@ import models.enums.AuditEventType;
 import models.enums.CommunicationChannelUseStatus;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
+import models.enums.EntityType;
 import models.enums.Gender;
 import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
@@ -58,7 +59,7 @@ import utils.exceptions.InternalServerException;
  *
  */
 @JsonFilter("User")
-public class User extends Model implements Comparable<User> {
+public class User extends Model implements Comparable<User>, Actor {
 
 	protected static final @NotMaterialized String collection = "users";
 	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString()));	
@@ -569,6 +570,42 @@ public class User extends Model implements Comparable<User> {
 		this.passwordAge = System.currentTimeMillis();		
 		this.setMultiple(collection, Sets.create("password", "publicExtKey", "security", "recoverKey", "passwordAge", "flags"));
 		this.removeFlag(AccountActionFlags.CHANGE_PASSWORD);
+	}
+
+	@Override
+	public byte[] getPublicKey() {		
+		return publicKey;
+	}
+
+	@Override
+	public MidataId getId() {
+		return _id;
+	}
+
+	@Override
+	public String getResourceType() {
+		switch (role) {
+			case MEMBER: return "Patient";
+			case RESEARCH:
+			case PROVIDER: return "Practitioner";
+			default: return "Patient";
+		}		
+	}
+
+	@Override
+	public EntityType getEntityType() {
+		return EntityType.USER;
+	}
+	
+	@Override
+	public UserRole getUserRole() {
+		return role;
+	}
+
+	@Override
+	public String getDisplayName() {
+		// for fake account we may return the user name
+		return (status == UserStatus.WIPED || status == UserStatus.DELETED) ? null : firstname+" "+lastname;
 	}
 	
 }

@@ -327,6 +327,8 @@ public abstract class AccessContext {
 			   }
 		   }
 		}
+		
+		AccessLog.log("context="+toString()+" consent="+consent._id);
 		throw new InternalServerException("error.internal", "Consent context not createable");
 	}
 	
@@ -337,7 +339,7 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public AccessContext forConsentReshare(Consent consent) throws AppException {
-		return new CreateParticipantContext(consent, getCache());		
+		return new CreateParticipantContext(consent, getCache(), getRootContext());		
 	}
 	
 	/**
@@ -372,7 +374,8 @@ public abstract class AccessContext {
 	 * @return
 	 */
 	public AccessContext forAccountReshare() {
-		return new AccountAccessContext(getRootCache(), getRootContext());		
+		AccessContext rootContext = getRootContext();
+		return new AccountAccessContext(rootContext.getCache(), getRootContext());		
 	}
 	
 	/**
@@ -561,8 +564,18 @@ public abstract class AccessContext {
 	 * Is it possible to create active consents for accessor with this context?
 	 * @return
 	 */
-	public boolean canCreateActiveConsents() {
-		if (parent != null) return parent.canCreateActiveConsents();
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
+		if (parent != null) return parent.canCreateActiveConsentsFor(owner);
+		return cache.getAccountOwner().equals(owner) || owner.equals(getAccessor());
+	}
+	
+	/**
+	 * Is it possible to access all data listed in the given filter?
+	 * @param targetFilter
+	 * @return
+	 */
+	public boolean hasAccessToAllOf(Map<String, Object> targetFilter) throws AppException {
+		if (parent != null) return parent.hasAccessToAllOf(targetFilter);
 		return true;
 	}
 	
@@ -574,6 +587,11 @@ public abstract class AccessContext {
 	public boolean isUserGroupContext() {
 		if (parent != null) return parent.isUserGroupContext();
 		return false;
+	}
+	
+	public MidataId getConsentSigner() throws InternalServerException {
+		if (parent != null) return parent.getConsentSigner();
+		return null;
 	}
 	
 }

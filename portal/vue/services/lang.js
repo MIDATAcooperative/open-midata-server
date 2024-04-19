@@ -40,6 +40,8 @@ function replaceInstr(where) {
 
 let i18n;
 let myLocale = ref("ch");
+let targetLocale = null;
+let duringUpdate = false;
 let bundles = new Set();
 let messages = {}; // lang to bundle
 
@@ -91,7 +93,7 @@ async function setLocaleMessages(locale) {
   return nextTick();
 }
 
-export const SUPPORT_LOCALES = ['en', 'de', 'fr', 'it']
+export const SUPPORT_LOCALES = ['en', 'de', 'fr', 'it', 'et']
 
 export function setupI18n() {
   i18n = setI18n({ locale: 'ch', messages:{} });
@@ -108,18 +110,31 @@ export async function addBundle(bundlename) {
   console.log("add bundle: "+bundlename);
   bundles.add(bundlename);
   //messages = {};
-  setLocale(myLocale.value);  
+  await setLocale(myLocale.value);  
 }
 
-export async function setLocale(locale) {
+export async function setLocale(locale) {  
+  if (duringUpdate) {
+	targetLocale = locale;
+	return;
+  } else {
+	duringUpdate = true;
+  }
+    
   //if (locale != myLocale.value) messages = {};
   myLocale.value = locale;
   localStorage.language = locale;
   //i18n.locale.value = locale;
    
   for (let bundle of bundles) await loadLocaleMessages(bundle, locale);
-  await setLocaleMessages(locale);
-  console.log("changed locale to:"+locale);    
+  await setLocaleMessages(locale);  
+  duringUpdate = false;
+  console.log("changed locale to:"+locale);
+  if (targetLocale) {
+	 let tl = targetLocale;
+     targetLocale = null;  
+     await setLocale(tl);
+  }    
 }
 
 export function getLocale() {

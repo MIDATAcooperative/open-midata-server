@@ -110,4 +110,11 @@ id0117	10.07.2023	a.kreutz	F	Changes to Organizations	Organizations may have a p
 id0118	10.07.2023	a.kreutz	F	New application type Data Broker	There is a new application type "Data Broker". The data broker is like an external service but may not directly access any patient data. Instead the data broker may be added as member to UserGroups. A group may be added to the authorization token which allows the data broker to act as this group (with the given permissions). The data broker may create or update Organizations and UserGroups using the API.
 id0119	13.07.2023	a.kreutz	I	Allow use of national and separate international SMS service
 id0120	20.07.2023	a.kreutz	I	Updated resources now contain their initial creation time	In the MIDATA meta block extension a new valueDateTime extension with name "createAt" with the initial creation time of the resource is available for all resources that have been updated.
+id0121	29.08.2023	a.kreutz	I	Added grantee variables to consent notification emails
+id0122	29.08.2023	a.kreutz	I	Added sender-user extension to FHIR message headers
+id0123	14.11.2023	a.kreutz	F	Consent chaining	Consents may allow to reshare data with 3rd parties.
+id0124	30.01.2024	a.kreutz	F	HTML Mails	The platform is now able to sent mails in both HTML and Text format.	
+id0125	15.02.2024	a.kreutz	F	Dynamic content groups	Access filters may now declare a group as dynamic. Dynamic groups will be resolved at use time and not at consent creation time.
+id0126	02.04.2024	a.kreutz	F	App end of life function	Application may now have an END OF LIFE status. Users can no longer log in with this application. You can specificy a message to be displayed.
+id0127	08.04.2024	a.kreutz	F	Dynamically add content types	Access filters may now declare automatic content type addition for a dynamic group.
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

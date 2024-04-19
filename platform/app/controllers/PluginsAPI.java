@@ -69,6 +69,7 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;
+import utils.ContentTypeTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.QueryTagTools;
@@ -490,7 +491,7 @@ public class PluginsAPI extends APIController {
 		record.format = format;
 		
 		
-		ContentInfo.setRecordCodeAndContent(authToken.getUsedPlugin(), record, code, content);		
+		ContentTypeTools.setRecordCodeAndContent(authToken, record, code, content, null);		
 					
 		try {
 			record.data = BasicDBObject.parse(data);
@@ -587,11 +588,11 @@ public class PluginsAPI extends APIController {
 		
 		Set<MidataId> records = Collections.singleton(record._id);
 								    				
-		AccessContext myContext = context;		
-		
+		AccessContext myContext = context;				
 		if (inf.getAccessor().equals(inf.getLegacyOwner())) {
 			while (myContext != null) {
 				if (!myContext.isIncluded(dbrecord)) {
+					AccessLog.log("share new record to parent context="+context.toString());
 					RecordManager.instance.share(inf, inf.getLegacyOwner(), myContext.getTargetAps(), records, !myContext.getOwner().equals(dbrecord.owner));
 				}
 				myContext = myContext.getParent();
@@ -600,7 +601,8 @@ public class PluginsAPI extends APIController {
 			
 			myContext = myContext.getParent();			
 			while (myContext != null) {
-				if (!myContext.isIncluded(dbrecord)) {
+				if (!myContext.isIncluded(dbrecord)) {					
+					AccessLog.log("share new record to parent context="+context.toString());
 					RecordManager.instance.share(inf, context.getTargetAps(), myContext.getTargetAps(), records, !myContext.getOwner().equals(dbrecord.owner));
 				}
 				myContext = myContext.getParent();
@@ -878,7 +880,7 @@ public class PluginsAPI extends APIController {
 			String[] contents = metaData.get("content");
 			String[] codes = metaData.get("code");
 			
-			ContentInfo.setRecordCodeAndContent(authToken.getUsedPlugin(), record, codes != null ? new HashSet<String>(Arrays.asList(codes)) : null, contents != null ? contents[0] : null);					
+			ContentTypeTools.setRecordCodeAndContent(authToken, record, codes != null ? new HashSet<String>(Arrays.asList(codes)) : null, contents != null ? contents[0] : null, null);					
 						
 			if (metaData.containsKey("data")) {
 				String data = metaData.get("data")[0];

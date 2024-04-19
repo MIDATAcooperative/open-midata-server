@@ -220,7 +220,7 @@ public class FHIRTools {
 			Identifier id = ref.getIdentifier();
 			String system = id.getSystem();
 			String value = id.getValue();
-			
+			if (system==null || value==null) return ref;
 			User target = null;
 			String type = null;
 			if (system.equals("http://midata.coop/identifier/patient-login")) {
@@ -281,6 +281,7 @@ public class FHIRTools {
     		Period p = (Period) date;
     		return stringFromDateTime(p.getStartElement())+" - "+stringFromDateTime(p.getEndElement());
     	}
+    	if (!date.hasPrimitiveValue()) return "";
     	if (date instanceof DateTimeType) {
     	return ((DateTimeType) date).getValue().toInstant()
                .atZone(ZoneId.systemDefault())

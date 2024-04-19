@@ -241,6 +241,10 @@ public enum AuditEventType {
 	
 	UPDATED_ROLE_IN_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "updated-role-in-team", "Updated role in team"), AuditEventAction.U),
 	
+	ACCESS_CONFIRMATION_REQUEST(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "access-confirmation-request", "Access confirmation request"), AuditEventAction.E),
+	
+	ACCESS_CONFIRMATION(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "access-confirmation", "Access confirmation"), AuditEventAction.E),
+	
 	REMOVED_FROM_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "removed-from-team", "Removed from team"), AuditEventAction.D),
 	
 	APP_DEFINITION_CHANGED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "app-definition-changed", "App Definition Changed"), AuditEventAction.U),
@@ -249,7 +253,15 @@ public enum AuditEventType {
 	
 	PLUGIN_UNDEPLOYED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "plugin-undeployed", "Plugin undeployed"), AuditEventAction.U),
 	
-	SIGNATURE_FAILURE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "signature-failure", "Signature failure"), AuditEventAction.E);
+	SIGNATURE_FAILURE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "signature-failure", "Signature failure"), AuditEventAction.E),
+	
+	APIKEY_CREATED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "apikey-created", "API-Key created"), AuditEventAction.C),
+	
+	APIKEY_DELETED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "apikey-deleted", "API-Key deleted"), AuditEventAction.D),
+	
+    SERVICE_INSTANCE_CREATED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "service-instance-created", "Service-Instance created"), AuditEventAction.C),
+	
+	SERVICE_INSTANCE_DELETED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "service-instance-deleted", "Service-Instance deleted"), AuditEventAction.D);
 	
 	private AuditEventAction action;
 	private Coding type;

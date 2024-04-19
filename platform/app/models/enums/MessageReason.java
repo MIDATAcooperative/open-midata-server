@@ -100,6 +100,16 @@ public enum MessageReason {
 	CONSENT_REJECT_ACTIVE_AUTHORIZED,
 	
 	/**
+	 * Message sent to consent owner if verification has been added to consent
+	 */
+	CONSENT_VERIFIED_OWNER,
+	
+	/**
+	 * Message sent to authorized person if verification has been added to consent
+	 */
+	CONSENT_VERIFIED_AUTHORIZED,
+	
+	/**
 	 * Message sent because account has been unlocked by admin
 	 */
 	ACCOUNT_UNLOCK,
@@ -142,5 +152,10 @@ public enum MessageReason {
 	/**
 	 * A FHIR message should be processed
 	 */
-	PROCESS_MESSAGE
+	PROCESS_MESSAGE,
+	
+	/**
+	 * Request for access confirmation for protected user group
+	 */
+	ACCESS_CONFIRMATION_REQUEST
 }

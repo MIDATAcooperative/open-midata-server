@@ -813,12 +813,14 @@ body.demo {
 }
 
 .terms {
-   h1,h2,h3,h4 { text-align:center; }
+   h1,h2,h3 { text-align:center; }
+   h4 { text-align: left; }
 
    @media (max-width: 767px) { 
 	 h1 { font-size: 1.5rem }
      h2 { font-size: 1.2rem }
-     h3 { font-size: 1.1rem } 
+     h3 { font-size: 1.1rem }
+     h4 { font-size: 1.0rem; font-weight:bold; } 
    }
 
 

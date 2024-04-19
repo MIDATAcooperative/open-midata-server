@@ -143,7 +143,7 @@ public class RecordGroup extends Model {
 		Set<String> existing = new HashSet<String>();
 		for (GroupContent grpContent : groupContent) {
 			existing.add(grpContent.system+":"+grpContent.name+":"+grpContent.content);
-		}
+		}  
 		for (RecordGroup group : groups) {
 			for (String c : group.contents) {
 				if (!existing.contains(group.system+":"+group.name+":"+c)) {
@@ -201,6 +201,18 @@ public class RecordGroup extends Model {
 		
 	}
 	
+	public static void reload(MidataId contentId) throws AppException {		
+		ContentInfo info = ContentInfo.getById(contentId);
+		Set<GroupContent> groupContents = GroupContent.getByContent(info.content);
+		for (GroupContent gc : groupContents) {
+		  reload(info, gc);
+		}
+	}
 	
+	public static void reload(ContentInfo info, GroupContent gc) throws AppException {
+		RecordGroup grp = getBySystemPlusName(gc.system, gc.name);
+		if (info.deleted) grp.contents.remove(info.content);
+		else grp.contents.add(info.content);
+	}
 	
 }

@@ -17,6 +17,8 @@
 
 package utils.context;
 
+import java.util.Map;
+
 import models.MidataId;
 import models.Record;
 import models.enums.UserRole;
@@ -157,7 +159,11 @@ public class ActionTokenAccessContext extends AccessContext {
 		throw new NullPointerException();	}
 
 	@Override
-	public boolean canCreateActiveConsents() {
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
+		return false;
+	}
+	
+	public boolean hasAccessToAllOf(Map<String, Object> targetFilter) {
 		return false;
 	}
 	

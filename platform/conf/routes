@@ -9,6 +9,8 @@ GET     /debug/test                                      controllers.Debug.test(
 GET     /api/ping                                            controllers.Debug.ping()
 POST    /fhir/$p<\$process\-message>                     controllers.FHIR.postProcessMessage(request: Request, p)
 POST    /fhir/Binary                                     controllers.FHIR.binaryUpload(request: Request)
+GET     /fhir/Patient/$p<\$everything>                   controllers.FHIR.export(request: Request,p )
+GET     /fhir/Patient/:id/$p<\$everything>               controllers.FHIR.exportPatient(request: Request, id: String, p)
 GET     /fhir/.well-known/smart-configuration			 controllers.FHIR.wellknownSmartConfiguration()
 OPTIONS /fhir/*all                                       controllers.FHIR.checkPreflight(all)
 GET     /fhir/*all                                       controllers.FHIR.get(request: Request, all)
@@ -156,7 +158,7 @@ POST    /api/research/login                              controllers.research.Re
 GET     /api/shared/org/:id                              controllers.research.Researchers.getOrganization(id: String)
 POST    /api/shared/org/:id                              controllers.research.Researchers.updateOrganization(request: Request,id: String)
 
-GET     /api/shared/hp/:id                              controllers.providers.Providers.getOrganization(id: String)
+GET     /api/shared/hp/:id                              controllers.providers.Providers.getOrganization(request: Request, id: String)
 PUT     /api/shared/hp/:id                               controllers.providers.Providers.updateOrganization(request: Request,id: String)
 POST    /api/shared/hp                                   controllers.providers.Providers.createOrganization(request: Request)
 POST    /api/provider/addprovider                       controllers.providers.Providers.registerOther(request: Request)
@@ -212,6 +214,7 @@ DELETE  /api/common/groups/:group                        controllers.FormatAPI.d
 POST    /api/common/groupcontent                         controllers.FormatAPI.updateGroupContent(request: Request)
 GET     /api/common/formats                              controllers.FormatAPI.listFormats()
 GET     /api/common/contents                             controllers.FormatAPI.listContents()
+GET     /api/common/contents/:special                    controllers.FormatAPI.listContentsSpecial(request: Request,special: String)
 POST    /api/common/contents                             controllers.FormatAPI.searchContents(request: Request)
 POST    /api/common/contents/create                      controllers.FormatAPI.createContent(request: Request)
 POST    /api/common/contents/:content                    controllers.FormatAPI.updateContent(request: Request,content: String)
@@ -245,6 +248,7 @@ POST    /api/providers/usevisualization                  controllers.providers.P
 GET     /api/providers/member/:member                    controllers.providers.Providers.getMember(request: Request, member: String)    
 
 POST    /api/shared/usergroups/search                     controllers.UserGroups.search(request: Request)
+GET     /api/shared/usergroups/get/:id                    controllers.UserGroups.getUserGroup(request: Request, id : String)
 POST    /api/shared/usergroups/members                    controllers.UserGroups.listUserGroupMembers(request: Request)
 POST    /api/shared/usergroups/groups                     controllers.UserGroups.listUserGroupGroups(request: Request)
 POST    /api/shared/usergroups/create                     controllers.UserGroups.createUserGroup(request: Request)
@@ -252,6 +256,7 @@ POST    /api/shared/usergroups/delete/:group              controllers.UserGroups
 POST    /api/shared/usergroups/edit/:group                controllers.UserGroups.editUserGroup(request: Request,group: String)
 POST    /api/shared/usergroups/adduser                    controllers.UserGroups.addMembersToUserGroup(request: Request)
 POST    /api/shared/usergroups/removeuser                 controllers.UserGroups.deleteUserGroupMembership(request: Request)
+POST    /api/shared/usergroups/confirm                    controllers.UserGroups.requestConfirmation(request: Request)
 
 # Developers
 POST    /api/developers/register                          controllers.Developers.register(request: Request)
@@ -268,7 +273,7 @@ POST    /api/admins/wipeaccount                          controllers.admin.Admin
 POST    /api/admin/stats                                 controllers.admin.Administration.getStats(request: Request)
 POST    /api/admin/usage                                 controllers.admin.Administration.getUsageStats(request: Request)
 GET     /api/admin/health                                controllers.admin.Administration.getSystemHealth()
-GET		/api/admins/pwrecovery                           controllers.PWRecovery.getUnfinished()
+GET		/api/admins/pwrecovery                           controllers.PWRecovery.getUnfinished(request: Request)
 POST	/api/admins/pwrecovery                           controllers.PWRecovery.storeRecoveryShare(request: Request)
 POST	/api/admins/pwrecovery/finish                    controllers.PWRecovery.finishRecovery(request: Request)
 POST	/api/admins/pwrecovery/servicekey                controllers.PWRecovery.requestServiceKeyRecovery(request: Request)
@@ -292,7 +297,7 @@ GET     /api/plugins/:id/url            controllers.Plugins.getUrl(id: String)
 
 # Services
 GET     /api/servicesproject/:studyId   controllers.Services.listServiceInstancesStudy(request: Request, studyId: String)
-GET     /api/services                   controllers.Services.listServiceInstances(request: Request)
+POST     /api/services                   controllers.Services.listServiceInstances(request: Request)
 GET     /api/endpoints                  controllers.Services.listEndpoints(request: Request)
 GET     /api/services/:appId/app        controllers.Services.listServiceInstancesApp(request: Request, appId: String)
 DELETE  /api/services/:instanceId       controllers.Services.removeServiceInstance(request: Request, instanceId: String)

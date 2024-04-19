@@ -54,11 +54,11 @@ public class Rights {
 		allowed = new HashMap<String, Map<UserRole, Set<String>>>();
 		
 		action("Users.get");
-		role(UserRole.MEMBER, "_id", "role", "firstname", "lastname", "name", "status", "email");
-		role(UserRole.RESEARCH, "_id", "role", "firstname", "lastname", "name", "status", "email");
-		role(UserRole.DEVELOPER, "_id", "role", "firstname", "lastname", "name", "email", "developer", "status");
+		role(UserRole.MEMBER, "_id", "role", "firstname", "lastname", "name", "status", "email","searchable");
+		role(UserRole.RESEARCH, "_id", "role", "firstname", "lastname", "name", "status", "email", "searchable");
+		role(UserRole.DEVELOPER, "_id", "role", "firstname", "lastname", "name", "email", "developer", "status", "searchable");
 		role(UserRole.ADMIN, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "registeredAt", "role", "subroles", "security", "status", "zip", "midataID", "birthday", "confirmationCode", "emailStatus", "mobileStatus", "confirmedAt", "reason", "coach", "developer", "language", "searchable", "authType", "notifications", "marketingEmail");
-		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "role", "subroles", "status", "zip", "midataID", "birthday");
+		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "role", "subroles", "status", "zip", "midataID", "birthday", "searchable");
 		
 		action("Users.getPROVIDER");
 		role(UserRole.MEMBER  , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "phone", "mobile", "name", "role", "subroles", "status", "zip");
@@ -91,13 +91,13 @@ public class Rights {
 		role(UserRole.MEMBER, "_id", "name", "type", "joinMethods", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "anonymous", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "leavePolicy", "rejoinPolicy");
 		
 		action("getRecords");
-		role(UserRole.ANY, "_id", "id", "owner" , "ownerName", "creatorName", "format", "subformat", "content", "code", "group", "app", "creator", "created", "lastUpdated", "version", "name", "description", "tags", "data", "created-after", "created-before", "max-age", "group-strict", "group-exclude", "limit");
+		role(UserRole.ANY, "_id", "id", "owner" , "ownerName", "creatorName", "format", "subformat", "content", "code", "group", "app", "creator", "creatorOrg", "created", "lastUpdated", "version", "name", "description", "tags", "data", "created-after", "created-before", "max-age", "group-strict", "group-exclude", "limit");
 		
 		action("Circles.listConsents");
-		role(UserRole.RESEARCH, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes");
-		role(UserRole.DEVELOPER, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes");
-		role(UserRole.ADMIN, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes");
-		role(UserRole.ANY, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "writes", "applicationId");		
+		role(UserRole.RESEARCH, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "createdAfter", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes", "allowedReshares", "querySignature", "basedOn");
+		role(UserRole.DEVELOPER, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "createdAfter", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes", "allowedReshares", "querySignature", "basedOn");
+		role(UserRole.ADMIN, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "createdAfter", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes", "allowedReshares", "querySignature", "basedOn");
+		role(UserRole.ANY, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "createdAfter", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "writes", "applicationId","allowedReshares", "querySignature", "basedOn");		
 		
 		action("Plugins.get");
 		role(UserRole.ANY, Plugin.ALL_PUBLIC);

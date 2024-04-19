@@ -245,7 +245,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		   
 		   if (!params.getIncludes().isEmpty()) {
 			   FhirTerser terser = ResourceProvider.ctx().newTerser();
-			   
+			   Set<IIdType> existingIds = new HashSet<>();
 			   for (Include inc : params.getIncludes()) {
 				   for (T res : resources) {
 					   String type = inc.getParamType();
@@ -259,15 +259,17 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 					   if (refs != null) {
 						   for (IBaseReference r : refs) {
 							   IIdType refElem = r.getReferenceElement();
+							   if (refElem==null) continue;
 							   String rtype = refElem.getResourceType();
 							   if (allowedTypes != null && !allowedTypes.contains(rtype)) continue;
+							   if (existingIds.contains(refElem)) continue;
 							   ResourceProvider prov = FHIRServlet.myProviders.get(refElem.getResourceType());
-							   if (prov != null) {
+							   if (prov != null) {							       
 								   IBaseResource result = prov.getResourceById(refElem);
-								   
-								   r.setResource(result);
-								   results.add(result);
-								   
+								   if (existingIds.add(result.getIdElement())) {								   
+								     r.setResource(result);
+								     results.add(result);
+								   }
 								   
 								   /*r.setDisplay(null);
 								   r.setReference(null);*/
@@ -455,6 +457,10 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		}
 		theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
 		return true;
+	}
+	
+	public String getIdForReference(M record) {
+		return record._id.toString();
 	}
 	
 	

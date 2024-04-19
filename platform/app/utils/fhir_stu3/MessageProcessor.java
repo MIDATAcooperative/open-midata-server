@@ -22,18 +22,23 @@ import java.util.Map;
 
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.MessageHeader;
 import org.hl7.fhir.dstu3.model.Parameters;
 import org.hl7.fhir.dstu3.model.Parameters.ParametersParameterComponent;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.rest.annotation.Operation;
 import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
+import ca.uhn.fhir.util.ExtensionUtil;
 import utils.AccessLog;
 import utils.context.AccessContext;
+import utils.exceptions.AppException;
+import utils.fhir.FHIRTools;
 import utils.messaging.SubscriptionManager;
 
 public class MessageProcessor {
@@ -51,9 +56,21 @@ public class MessageProcessor {
 			Resource mh = bec.getResource();
 			if (mh==null || mh.getResourceType() == null || !mh.getResourceType().toString().equals("MessageHeader")) throw new InvalidRequestException("Missing MessageHeader at beginning of bundle");
 			
+			AccessContext inf = ResourceProvider.info();
+			
 			MessageHeader mhr = (MessageHeader) mh;
 			String eventCode = mhr.getEvent().getCode();
 			String destination = mhr.hasDestination() ? mhr.getDestinationFirstRep().getEndpoint() : null;
+			
+			ExtensionUtil.clearExtensionsByUrl(mhr, "http://midata.coop/extensions/sender-user");
+			if (inf.getOwnerType() == null) {
+				try {
+					Reference target = FHIRTools.getReferenceToUser(inf.getAccessor(), null);				
+					if (target != null) mhr.addExtension(new Extension("http://midata.coop/extensions/sender-user", target));
+				} catch (AppException e) {
+				    AccessLog.logException("error resolving message sender", e);
+				}
+			}
 			
 			String inputBundle = ResourceProvider.ctx.newJsonParser().encodeResourceToString(content);
 			
@@ -70,7 +87,7 @@ public class MessageProcessor {
 			}
 			
 			boolean doasync = async != null && async.getValue() != null && async.getValue().equals("true");
-			AccessContext inf = ResourceProvider.info();
+			
 			String result = SubscriptionManager.messageToProcess(inf.getAccessor(), inf.getUsedPlugin(), eventCode, destination, "3.0", inputBundle, params, doasync);
 			
 			if (doasync) {			

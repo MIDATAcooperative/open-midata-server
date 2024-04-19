@@ -88,7 +88,9 @@
        "entity_type" : "Invalid entity type",
        "joincode" : "The provided participation code is not accepted.",
        "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
-       "csvmapping" : "Invalid mapping provided."
+       "csvmapping" : "Invalid mapping provided.",
+       "id" : "Invalid identifier",
+       "usergroup" : "You must be member of this user group to perform this action."
      },
 
      "missing" : {
@@ -110,7 +112,8 @@
        "access_query" : "No data selected",
        "plugin" : "This plugin does not exist in your account.",
        "auth_type" : "Two factor authentication is required for your type of account.",
-       "licence" : "A valid license is required to use this application."
+       "licence" : "A valid license is required to use this application.",
+       "manager" : "You must grant someone else manager permissions before removing this entity from the group." 
      },
 
      "unknown" : {
@@ -210,6 +213,10 @@
      "nomatch" : {
        "birthdate" : "Birthdate does not match",
        "email" : "Different email address provided"
+     },
+     
+     "not_unique" : {
+        "identifier" : "A provided identifier is not unique"
      }
    },
 
@@ -249,7 +256,10 @@
 	    "SI" : "Slovenia",
 	    "ES" : "Spain",
 	    "SW" : "Sweden",          
-	    "GB" : "United Kingdom"
+	    "GB" : "United Kingdom",
+	    "LI" : "Liechtenstein",
+	    "NO" : "Norway",
+	    "IS" : "Iceland"
      },
      "eventtype" : {
        "CODE_ENTERED" : "Code entered",
@@ -332,7 +342,10 @@
        "read" : "Resource read",
        "vread" : "Resource version read",
        "history" : "Resource history read",
-       "search" : "Searched for resources",          
+       "search" : "Searched for resources",   
+       "organization-updated" : "Organization updated",     
+       "organization-created" : "Organization created",
+       "organization-deleted" : "Organization deleted",
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
 	   "removed-from-team" : "Removed from team",
@@ -348,7 +361,13 @@
 	   "resthook-called" : "Resthook called",
 	   "script-invocation" : "Script invoked",
 	   "plugin-deployed" : "Plugin deployed",
-	   "plugin-undeployed" : "Plugin undeployed"	   	   
+	   "plugin-undeployed" : "Plugin undeployed",
+	   "access-confirmation" : "Access confirmation",
+	   "access-confirmation-request" : "Access confirmation request",
+	   "apikey-created" : "API-Key created",
+       "apikey-deleted" : "API-Key deleted",
+       "service-instance-created" : "Service-Instance created",
+       "service-instance-deleted" : "Service-Instance deleted"	   	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -377,11 +396,12 @@
 	   "EXPIRED" : "Expired",
 	   "REJECTED" : "Rejected",
 	   "UNCONFIRMED" : "Unconfirmed",
-	   "FROZEN" : "Frozen"
+	   "FROZEN" : "Frozen",
+	   "INVALID" : "Invalid"
 	 },
 	 "consenttype" : {
 	   "CIRCLE" : "Other Account Holders",
-     "REPRESENTATIVE" : "Representative",
+       "REPRESENTATIVE" : "Representative",
 	   "EXTERNALSERVICE" : "External Application",
 	   "API" : "External Service",
 	   "HCRELATED" : "Healthcare",
@@ -475,6 +495,7 @@
 	   "MONITOR" : "Monitor",
 	   "MASTER" : "Master User",
 	   "USERADMIN" : "User Admin",
+	   "KEYRECOVERY" : "Key Recoveries",
 	   "STUDYADMIN" : "Project Admin",
 	   "CONTENTADMIN" : "Content Admin",
 	   "PLUGINADMIN" : "Application Admin",
@@ -498,6 +519,7 @@
 	   "ACTIVE" : "Active",
 	   "BLOCKED" : "Blocked",
 	   "DELETED" : "Deleted",
+	   "FAKE" : "Fake Account",
 	   "NEW" : "New"
 	 },
 	 "frequency" : {
@@ -546,12 +568,13 @@
 	 },
 	 "plugintype" : {
 	   "visualization" : "Plugin",
-	   "service" : "Internal Service",
+	   "service" : "Internal service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
 	   "mobile" : "Application (Smartphone, Web)",
-	   "external": "External Service",
+	   "external": "External service",
 	   "analyzer" : "Project analyzer",
+	   "broker" : "Data broker",
 	   "endpoint" : "FHIR endpoint"
 	 },
 	 "infos" : {
@@ -580,8 +603,15 @@
 	 },
 	 "entitytype" : {
 	   "USER" : "User",
-	   "USERGROUP" : "Team",
-	   "ORGANIZATION" : "Organization"
+	   "USERGROUP" : "Team",	  
+	   "ORGANIZATION" : "Organization",
+	   "SERVICES" : "Data broker"
+	 },
+	 "usergrouptype" : {
+	   "ORGANIZATION" : "Organization",
+	   "CARETEAM" : "Care Team",
+	   "HEALTHCARESERVICE" : "Healthcare Service",
+	   "RESEARCHTEAM" : "Research"
 	 },
 	 "bulkmailtype" : {
 	   "MARKETING" : "Marketing - Account Holders",
@@ -678,6 +708,7 @@
     "sign_up_btn" : "Create Account",
     "unlock_code" : "Unlock Code",
     "already_have_account" : "I already have an account",
+    "already_have_account2" : "If this is your own account click here to go to the login page.",
     "more" : "Have a few more seconds to spare? We'd be happy if you could give us a bit more details about you ☺️",
     "generous" : "I'm feeling generous today, show me the fields!",
     "hide_optional" : "Hide optional fields",
@@ -971,12 +1002,14 @@
     "set_owner_btn" : "Select person that shares its data",
     "add_yourself_btn" : "Add yourself",
     "add_person_btn" : "Add New Person",
+    "add_organization_btn" : "Add New Organization",
     "add_usergroup_btn" : "Add New Team",
     "writes" : "Write Permission",
     "writes2" : "The persons authorized by this consent may create or update data in your account covered by this consent.",
     "reshare" : "3rd party access?",
     "reshare2" : "The persons authorized by this consent may reshare the data I gave them access to.",
     "expiration_date" : "Consent expiration date:",
+    "created_after" : "Only includes data created after:",
     "created_before" : "Do not share data created after:",
     "share_what" : "What data do you want to share?",
     "consent_empty" : "This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.",
@@ -997,12 +1030,14 @@
     "people" : "With which persons(s) do you want to share data?",
     "external" : "Non @PRODUCT account holder",
     "add_people_btn" : "Add More People",
+    "add_hp_btn" : "Add Practitioner",
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
     "reshare2" : "@:newconsent.reshare2",
     "writes" : "Write Permission",
     "expiration_date" : "Consent expiration date:",
     "created_before" : "Does not share data created after:",
+    "created_after" :"Only data created after:",
     "what_is_shared" : "What data is shared?",
     "consent_empty" : "This consent does not share any data at the moment.",
     "type_circle" : "This consent shares data with other @PRODUCT account holders.",
@@ -1031,7 +1066,16 @@
     "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.",
     "you" : "You",
     "restrictions" : "Further restrictions?",
-    "project" : "Project"
+    "project" : "Project",
+    "source" : "Source of this consent",
+    "based_on" : "Link to base consent used",
+    "base_created_at" : "Base consent created at",
+    "allowed_reshares" : "If required data may be reshared to these 3rd parties",
+    "reshare_service" : "3rd parties using the service",
+    "reshare_usergroup" : "Team or project",
+    "reshare_user" : "Single user",
+    "reshare_project" : "Project"
+    
   },
   
   "editconsent2" : {
@@ -1295,6 +1339,7 @@
   },
   
   "addusers" : {
+    "title" : "User Search",
     "contacts" : "Existing contacts:",
     "all_users" : "All users",
     "no_contacts_to_add" : "No contacts can be added to this circle.",
@@ -1310,6 +1355,20 @@
      "empty_result" : "No matching teams found.",
      "add_individuals_btn" : "Add As Individual People To Consent",
      "add_group_btn" : "Add As Changing Team To Consent"
+  },
+  
+  "organizationsearch" : {
+     "title" : "Search for Organizations",
+     "name" : "Organization Name",
+     "city_or_zip" : "City or zip code",
+     "empty_result" : "No matching organizations found."
+  },
+  
+  "databrokersearch" : {
+    "title" : "Search Data Brokers (APIs)",
+    "name" : "Data broker name",
+    "empty_result" : "No matching data brokers found.",
+    "new_btn" : "Create new instance"
   },
   
   "confirm" : {
@@ -1404,6 +1463,11 @@
     "reason2" : "We would be grateful if you could tell us why you are deleting your account. We are continually trying to improve the @PLATFORM.",
     "wipe_btn" : "Close and Delete @PRODUCT Account",
     "error" : "Password not correct. The account has not been deleted."
+  },
+  
+  "service" : {
+     "title" : "Token-Link service for @PRODUCT",
+     "success" : "Your token-link has been processed. You can now close this window."
   },
   
   "serviceleave" : {
@@ -1507,8 +1571,10 @@
   "apikeys" : {
     "title" : "API Key Management",
     "empty" : "This account does not manage any services with API keys.",
+    "managedby" : "managed by",
     "add_btn" : "Add Key",
     "delete_btn" : "Remove Analyzer",
+    "delete_service_btn" : "Remove Service",
     "delete_endpoint_btn" : "Remove Endpoint",
     "show_btn" : "Show Keys",  
     "revoke_btn" : "Revoke this key",
@@ -1520,6 +1586,7 @@
     "common_name" : "OU (organization unit) and CN (common name) for CSR (certificate request)",
     "instructions_common_name" : "For certificate based authentication create a CSR with the given OU and CN fields. Send the CSR to @SUPPORT",
     "date" : "Date of creation",
+    "restrictions" : "Restrictions", 
     "status" : "Status",
     "ACTIVE" : "Active",
     "FROZEN" : "Old version",

@@ -16,6 +16,7 @@
 -->
 
 <template>
+  
     <div  class="midata-overlay borderless">
         <panel :title="getTitle()" :busy="isBusy">
         <error-box :error="error"></error-box>
@@ -40,6 +41,7 @@
 		      <span v-if="mode=='app'"> / </span>
 		      <span class="text-danger" v-if="block.app && block.app != 'all'"><span v-t="'queryeditor.short_app_other'"></span> {{ block.appName }}</span>
 		      <span class="text-success" v-if="!block.app || block.app == 'all'" v-t="'queryeditor.short_app_all'"></span>
+		      <span v-if="block.dynamic" class="ml-1 badge badge-danger">{{ $t('queryeditor.short_dynamic_'+block.dynamic) }}</span>
 		      <span v-if="block.addTag" v-for="atag of block.addTag" :key="atag" class="ml-1 badge badge-danger">{{ getTagName(atag) }}</span>
 		      <span v-if="block.allowTag" v-for="atag of block.allowTag" :key="atag" class="ml-1 badge badge-warning">{{ getTagName(atag) }}</span>
 		    </div>		   
@@ -159,6 +161,13 @@
 		    </div><div class="form-check">
 		      <label class="form-check-label"><input class="form-check-input"  type="radio" v-validate v-model="currentBlock.app" value="other"><span v-t="'queryeditor.app_other'"></span><input type="text" v-validate v-model="currentBlock.appName"></label>
 		    </div>
+		  </form-group>
+		  <form-group name="dynamic" label="queryeditor.dynamic" v-if="currentBlock.group">
+            <select class="form-control" v-validate v-model="currentBlock.dynamic">
+                <option :value="undefined">{{ $t("queryeditor.dynamic_no") }}</option>
+                <option value="true">{{ $t("queryeditor.dynamic_yes") }}</option>
+                <option value="extend">{{ $t("queryeditor.dynamic_extend") }}</option>
+            </select>
 		  </form-group>
 		  <form-group name="observer" label="queryeditor.observer" v-if="currentBlock.flags.observer" :path="errors.observer">
 		    <input type="text" class="form-control" name="observer" v-validate v-model="currentBlock.observer">		    
@@ -377,7 +386,7 @@ export default {
 				}));				
 			} else if ($route.meta.mode == "app") {
 				$data.mode = "app";
-				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs"])
+				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "sendReports"])
 				.then(function(data) { 
 					$data.app = data.data[0];
 					$data.target.appname = $data.app.filename;
@@ -428,6 +437,8 @@ export default {
 				var fb = {};
 				if (block.format) fb.format = [ block.format ];		
 				if (block.system) fb["group-system"] = block.system;
+				if (block.dynamic) fb["group-dynamic"] = block.dynamic;
+				if (block.creatorOrg) fb.creatorOrg = block.creatorOrg;
 				if (block.owner && block.owner != "all") fb.owner = [ block.owner ];
 				if (block["public"] && block["public"] != "no") fb["public"] = block["public"];
 				if (block.app && block.app != "all") {
@@ -796,6 +807,7 @@ export default {
 					if (ac("code")) nblock.code = ac("code");		
 					if (ac("group")) nblock.group = ac("group");
 					if (ac("group-system")) nblock.system = ac("group-system");
+					if (ac("group-dynamic")) nblock.dynamic = ac("group-dynamic");
 					if (ac("add-tag")) nblock.addTag = ac("add-tag");
 					if (ac("tag")) nblock.tag = ac("tag");
 					if (ac("allow-tag")) nblock.allowTag = ac("allow-tag");
@@ -831,6 +843,9 @@ export default {
 					}
 					if (ac("app")) {
 						nblock.app = ac("app");
+					}
+					if (ac("creatorOrg")) {
+						nblock.creatorOrg = ac("creatorOrg");
 					}
 					if (ac("observer")) {
 						nblock.observer = noarray(ac("observer"));

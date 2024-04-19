@@ -40,7 +40,7 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		return ugm.getRole().mayWriteData() && parent.mayCreateRecord(record);
+		return ugm.getConfirmedRole().mayWriteData() && parent.mayCreateRecord(record);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class UserGroupAccessContext extends AccessContext {
 
 	@Override
 	public boolean mayUpdateRecord(DBRecord stored, Record newVersion)  throws InternalServerException {
-		return ugm.getRole().mayWriteData() && parent.mayUpdateRecord(stored, newVersion);
+		return ugm.getConfirmedRole().mayWriteData() && parent.mayUpdateRecord(stored, newVersion);
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public class UserGroupAccessContext extends AccessContext {
 	
 	@Override
 	public boolean mustPseudonymize() {
-		return ugm.getRole().pseudonymizedAccess();
+		return ugm.getConfirmedRole().pseudonymizedAccess();
 	}
 	
 	@Override
@@ -136,6 +136,17 @@ public class UserGroupAccessContext extends AccessContext {
 	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
 		if (userGroup.equals(ugm.userGroup)) return this;
 		return super.forUserGroup(userGroup, permission);		
+	}
+	
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
+		if (owner.equals(ugm.userGroup)) return true;
+		return super.canCreateActiveConsentsFor(owner);
+	}
+	
+	@Override
+	protected AccessContext getRootContext() {	
+		if (parent == null) return this;
+		return new UserGroupAccessContext(this.ugm, cache, parent.getRootContext());
 	}
 	
 	

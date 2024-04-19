@@ -62,6 +62,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import models.Actor;
 import models.Consent;
 import models.MidataAuditEvent;
 import models.MidataId;
@@ -70,6 +71,7 @@ import models.Study;
 import models.User;
 import models.UserGroupMember;
 import models.enums.ConsentType;
+import models.enums.EntityType;
 import models.enums.Permission;
 import models.enums.UserRole;
 import utils.AccessLog;
@@ -108,10 +110,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	    
     
 	/**
-	 * Convert a MIDATA User object into a FHIR person object
-	 * @param userToConvert user to be converted into a FHIR object
-	 * @return FHIR person
-	 * @throws AppException
+	 * Convert a MIDATA AuditEvent object into a FHIR AuditEvent object	 
 	 */
 	public AuditEvent readAuditEventFromMidataAuditEvent(MidataAuditEvent mae) throws AppException {
 		
@@ -297,7 +296,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	
 	 	
 			
-	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, User actorUser, User modifiedUser, Consent affectedConsent, String message, Study study, AuditExtraInfo extra) throws AppException {
+	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, Actor actor0, Actor modifiedUser, Consent affectedConsent, String message, Study study, AuditExtraInfo extra) throws AppException {
 		AuditEvent ae = new AuditEvent();
 
 		ae.setId(mae._id.toString());
@@ -313,41 +312,35 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			//}
 		}
 		
-		if (actorUser != null) {
+		if (actor0 != null) {
 			AuditEventAgentComponent actor = ae.addAgent();
-			actor.addRole().addCoding().setSystem("http://midata.coop/codesystems/user-role").setCode(actorUser.role.toString());
+			actor.addRole().addCoding().setSystem("http://midata.coop/codesystems/user-role").setCode(actor0.getUserRole().toString());
 			actor.setRequestor(true);
 			
-			if (anonymize != null && actorUser._id.equals(anonymize)) {
+			if (anonymize != null && actor0.getId().equals(anonymize)) {
 				actor.setName(affectedConsent.getOwnerName());
 				actor.setWho(new Reference("Patient/"+affectedConsent._id.toString()));
 			} else {
-				if (actorUser.role.equals(UserRole.MEMBER)) {
-					actor.setWho(new Reference("Patient/"+actorUser._id.toString()));
-				} else if (actorUser.role.equals(UserRole.PROVIDER)) {
-					actor.setWho(new Reference("Practitioner/"+actorUser._id.toString()));
-				}
-				actor.setName(actorUser.firstname+" "+actorUser.lastname);
-				actor.setAltId(actorUser.getPublicIdentifier());
+				actor.setWho(new Reference(actor0.getLocalReference()));
+				
+				actor.setName(actor0.getDisplayName());
+				actor.setAltId(actor0.getPublicIdentifier());
 			}
 		}
 		if (modifiedUser != null) {
 			AuditEventEntityComponent aeec = ae.addEntity();
-			aeec.setType(new Coding().setSystem("http://midata.coop/codesystems/user-role").setCode(modifiedUser.role.toString()));
+			if (modifiedUser.getEntityType() == EntityType.USER) {
+			  aeec.setType(new Coding().setSystem("http://midata.coop/codesystems/user-role").setCode(modifiedUser.getUserRole().toString()));
+			}
 			
-			if (anonymize != null && modifiedUser._id.equals(anonymize)) {
+			if (anonymize != null && modifiedUser.getId().equals(anonymize)) {
 				aeec.setName(affectedConsent.getOwnerName());
 				aeec.setWhat(new Reference("Patient/"+affectedConsent._id.toString()));
 			} else {
-				if (modifiedUser.role == UserRole.PROVIDER) {			   
-				   aeec.setWhat(new Reference("Practitioner/"+modifiedUser._id.toString()).setDisplay(modifiedUser.getPublicIdentifier()));
-				} else {			   
-				   aeec.setWhat(new Reference("Patient/"+modifiedUser._id.toString()).setDisplay(modifiedUser.getPublicIdentifier()));
-				}
+				aeec.setName(modifiedUser.getDisplayName());		
+				aeec.setWhat(new Reference(modifiedUser.getLocalReference()).setDisplay(modifiedUser.getPublicIdentifier()));				
 			}
-			
-			aeec.setName(modifiedUser.firstname+" "+modifiedUser.lastname);
-			
+									
 			//aeec.setIdentifier(new Identifier().setValue(modifiedUser.getPublicIdentifier()));
 		}
 				
@@ -367,7 +360,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			aeec.setWhat(new Reference("ResearchStudy/"+study._id.toString()).setDisplay(study.code));
 			aeec.setName(study.name);
 			//aeec.setIdentifier(new Identifier().setValue(study.code));
-			aeec.addExtension("http://midata.coop/extension/research-type", new CodeType(study.type.toString()));
+			aeec.addExtension("http://midata.coop/extensions/research-type", new CodeType(study.type.toString()));
 		}
 				
 		

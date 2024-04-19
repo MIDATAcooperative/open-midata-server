@@ -24,6 +24,7 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import models.HealthcareProvider;
 import models.MessageDefinition;
 import models.MidataId;
 import models.Plugin;
@@ -40,6 +41,7 @@ import utils.ServerTools;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.stats.ActionRecorder;
 
@@ -61,12 +63,12 @@ public class Messager {
 	}
 	
 	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId) {	
-		AccessLog.log("trigger send text mail to="+email);		
+		AccessLog.log("trigger send text mail to="+email+" subject="+subject);		
 		mailSender.tell(new Message(email, fullname, subject, content, eventId), ActorRef.noSender());
 	}
 	
 	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId, MailSenderType type) {	
-		AccessLog.log("trigger send text mail to="+email);
+		AccessLog.log("trigger send text mail to="+email+" subject="+subject);
 		mailSender.tell(new Message(type, email, fullname, subject, content, eventId), ActorRef.noSender());
 	}
 	
@@ -75,13 +77,18 @@ public class Messager {
 		smsSender.tell(new SMS(phone, text, eventId), ActorRef.noSender());
 	}
 
+	public static boolean sendMessage(AccessContext context, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
+		setOrganizationVars(context, replacements);
+		return sendMessage(context.getUsedPlugin(), reason, code, targets, defaultLanguage, replacements, MessageChannel.EMAIL);
+	}
+	
 	public static boolean sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
 		return sendMessage(sourcePlugin, reason, code, targets, defaultLanguage, replacements, MessageChannel.EMAIL);
 	}
 	
 	public static boolean sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel) throws AppException {
 		if (targets == null || targets.isEmpty()) {
-			AccessLog.log("no email targets");
+			AccessLog.log("no email targets reason="+reason.toString());
 			return false;
 		}
 		Plugin plugin = Plugin.getById(sourcePlugin, Sets.create("predefinedMessages", "name"));
@@ -90,7 +97,7 @@ public class Messager {
 		  replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
 		  return sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements, channel, sourcePlugin);
 		}
-		AccessLog.log("no predefined messages");
+		AccessLog.log("no predefined messages for reason="+reason.toString());
 		return false;
 	}
 	
@@ -214,6 +221,29 @@ public class Messager {
 		} else {
 		  Messager.sendTextMail(email, fullname, subject, content, null);
 		}
+	}
+
+	public static void setOrganizationVars(AccessContext context, Map<String, String> replacements) throws AppException {
+		 if (context != null && context.isUserGroupContext()) {
+			   HealthcareProvider prov = HealthcareProvider.getById(context.getAccessor(), HealthcareProvider.ALL);
+			   if (prov != null) {
+				   replacements.put("organization-name", prov.name);
+				   replacements.put("top-organization-name", prov.name);
+				   replacements.put("parent-organization-name", prov.name);
+				   if (prov.parent != null) {
+					   HealthcareProvider prov2 = HealthcareProvider.getById(prov.parent, HealthcareProvider.ALL);
+					   if (prov2 != null) {
+						   replacements.put("parent-organization-name", prov2.name);						   
+						   int i=0;
+						   while (prov2.parent != null && i<10) {							   
+							   HealthcareProvider prov3 = HealthcareProvider.getById(prov2.parent, HealthcareProvider.ALL);
+							   if (prov3 == null) i=6; else {prov2 = prov3;i++;}
+						   }
+						   replacements.put("top-organization-name", prov2.name);
+					   }
+				   }
+			   }
+		   }
 	}
 }
 

@@ -58,14 +58,18 @@
             "FIRSTUSE_ANYUSER" : "Première utilisation de l'application",
             "FIRSTUSE_EXISTINGUSER" : "Première utilisation de l'application (si pas d'e-mail d'inscription envoyé)",
             "SERVICE_WITHDRAW" : "Cesser l'utilisation du service",
-            "CONSENT_REQUEST_OWNER_INVITED" : "Consentement proposé (cédant, invitation)",
-            "CONSENT_REQUEST_OWNER_EXISTING" : "Consentement proposé (cédant, utilisateur)",
-            "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Consentement proposé (bénéficiaire, invitation)",
-            "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Consentement proposé (bénéficiaire, utilisateur)",
-            "CONSENT_CONFIRM_OWNER" : "Confirmation de consentement (cédant)",
-            "CONSENT_CONFIRM_AUTHORIZED" : "Confirmation de consentement (bénéficiaire)",
-            "CONSENT_REJECT_OWNER" : "Refus de consentement (cédant)",
-            "CONSENT_REJECT_AUTHORIZED" : "Refus de consentement (bénéficiaire)",
+            "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
+            "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",
+            "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Consent, unconfirmed : A ➞ (invited) / Sent to (invited)",
+            "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Consent, unconfirmed : A ➞ B / Sent to B",
+            "CONSENT_REQUEST_OWNER_INVITED" : "Consent, unconfirmed : (invited) ➞ B / Sent to (invited)",
+            "CONSENT_REQUEST_OWNER_EXISTING" : "Consent, unconfirmed : A ➞ B / Sent to A",
+            "CONSENT_CONFIRM_AUTHORIZED" : "Consent, active : A ➞ B / Sent to B",
+            "CONSENT_CONFIRM_OWNER" : "Consent, active : A ➞ B / Sent to A",
+            "CONSENT_PRECONFIRMED_OWNER" : "Consent, preconfirmed : A ➞ B / Sent to A",
+            "CONSENT_REJECT_OWNER" : "Consent, * ➞ rejected : A ➞ B / Sent to A",
+            "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Consent, active ➞ rejected : A ➞ B / Sent to B",
+            "CONSENT_REJECT_AUTHORIZED" : "Consent, proposed ➞ rejected : A ➞ B / Sent to B",          
             "ACCOUNT_UNLOCK" : "Compte validé par l'administrateur",
             "EMAIL_CHANGED_OLDADDRESS" : "Adresse e-mail changée (envoyer à l'ancienne adresse e-mail)",
             "EMAIL_CHANGED_NEWADDRESS" : "Adresse e-mail changée (envoyer à la nouvelle adresse e-mail)",
@@ -149,7 +153,7 @@
         "default_context_extern" : "Plugin autonome",
         "deploy_status" : "État du déploiement",
         "info" : {
-            "filename" : "Ce nom est utilisé (en interne) pour identifier votre application. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
+            "filename" : "Ce nom est utilisé (en interne) pour identifier votre application. Il doit s'agir d'un identifiant valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Votre application est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
             "loginTemplate" : "À quoi doit ressembler le processus de connexion? Certaines configurations nécessitent l'approbation d'un administrateur",
             "loginButtonsTemplate" : "Comment disposer les boutons?",
@@ -180,7 +184,9 @@
             "code_challenge" : "Lors de la connexion OAuth2, l'application appelante doit utiliser la norme PKCE (Proof Key for Code Exchange)",
             "createendpoint" : "Créer une instance de cet endpoint non liée au projet. Cochez uniquement si vous ne prévoyez PAS d'utiliser cet endpoint avec un projet.",
             "endpoint" : "Le chemin d'accès de cet endpoint FHIR non lié à un projet sera /opendata/endpointname/fhir",
-            "endpoint2" : "N'oubliez pas: pour activer l'endpoint, vous devez ensuite ajouter une clé API."
+            "endpoint2" : "N'oubliez pas: pour activer l'endpoint, vous devez ensuite ajouter une clé API.",
+            "decentral" : "Les clés API seront gérées par plusieurs organisations différentes.",
+            "organizationKeys" : "Les clés API sont directement liées à une seule organisation."
         },
         "status" : {
             "title" : "État de l'application",
@@ -211,7 +217,9 @@
         "publisher" : "Éditeur",
         "developerTeam" : "Équipe de développement",
         "reviews" : "Revues",
-        "manageyourkeys" : "Gérer vos clés API"
+        "manageyourkeys" : "Gérer vos clés API",
+        "decentral" : "Gestion décentralisée",
+        "organizationKeys" : "Clés API par organisation"
     },
 
     "appstats" : {
@@ -293,7 +301,7 @@
         "trigger" : "Trigger",
         "triggerDetail" : "FHIR Resource",
         "action" : "Action",
-        "params" : "URL / Nom du fichier",
+        "params" : "URL / Nom du fichier / Cible",
         "triggers" : {
             "fhir_Consent" : "Modifications de consentement",
             "fhir_MessageHeader" : "Message FHIR",

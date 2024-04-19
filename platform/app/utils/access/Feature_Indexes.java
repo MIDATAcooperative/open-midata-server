@@ -398,6 +398,8 @@ public class Feature_Indexes extends Feature {
 		void revalidate(MidataId executor, List<DBRecord> result) throws AppException;
 
 		long version(MidataId aps) throws InternalServerException;
+		
+		public int getCoverage() throws AppException;
 	}
 
 	class IndexAccess implements IndexUse {
@@ -415,6 +417,7 @@ public class Feature_Indexes extends Feature {
 		Collection<IndexMatch> matches;
 		IndexRoot root;
 		boolean doupdate = false;
+		private int coverage = -1;
 
 		IndexAccess(IndexPseudonym pseudo, Set<String> format, Condition indexQuery, boolean pseudonymize) throws InternalServerException {
 			this.pseudo = pseudo;
@@ -458,7 +461,9 @@ public class Feature_Indexes extends Feature {
 		
 		public int getCoverage() throws AppException {
 			if (index == null) prepare();
-			return root.getEstimatedIndexCoverage(new Lookup(condition));
+			if (coverage>=0) return coverage;
+			coverage = root.getEstimatedIndexCoverage(new Lookup(condition));
+			return coverage;
 		}
 		
 		public void dontuse() {
@@ -505,6 +510,11 @@ public class Feature_Indexes extends Feature {
 			}
 			return -1;
 		}
+		
+		@Override
+		public String toString() {
+			return condition[0].toString();
+		}
 	}
 
 	class IndexAnd implements IndexUse {
@@ -518,18 +528,43 @@ public class Feature_Indexes extends Feature {
 		public Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException {
 			Collection<IndexMatch> results = null;
 
-			int divider = 100;
+			// Is the first index restrictive enough? Else sort by coverage ascending
+			if (parts.size()>1) {
+				if (parts.get(0).getCoverage()>=10) {
+					AccessLog.log("sorting ",Integer.toString(parts.size())," index accesses.");
+					parts.sort((a,b) -> {  
+						try {
+							return a.getCoverage() - b.getCoverage();
+						} catch (AppException e) {
+							AccessLog.logException("index sort", e);
+						}
+						return 0;
+					 } );
+					for (IndexUse part:parts) {
+						AccessLog.log("index ",part.toString()," coverage ",Integer.toString(part.getCoverage()));
+					}
+				} else {
+					AccessLog.log("not sorting, first index coverage=",Integer.toString(parts.get(0).getCoverage()));
+				}
+				
+			}
 			
+			int divider = 100;
+			int partCount = 0;
 			for (IndexUse part : parts) {
+				partCount++;
 				if (results != null && part instanceof IndexAccess && results.size() < divider) {
 					int coverage = ((IndexAccess) part).getCoverage();
-					 if (coverage > 10 && ((IndexAccess) part).getCoverage() > 100 * results.size() / divider) {
+					AccessLog.log("coverage="+coverage+" divider="+divider+" #="+results.size());
+					 if (coverage > 10 && coverage > 100 * results.size() / divider) {
+						AccessLog.log("skip index "+partCount);
 						((IndexAccess) part).dontuse();
 						continue;
 					 }
 				}
 				
 				Collection<IndexMatch> partResult = part.query(q, targetAps);
+				AccessLog.log("index partial result "+partCount+"/"+parts.size()+" = "+partResult.size());
 				if (results == null) {
 					results = partResult;
 					if (part instanceof IndexAccess) {
@@ -545,8 +580,10 @@ public class Feature_Indexes extends Feature {
 					}
 					results = newresult;
 				}
-				if (results.size() < NO_SECOND_INDEX_COUNT)
+				if (results.size() < NO_SECOND_INDEX_COUNT) {
+					AccessLog.log("terminate index search at "+partCount+"/"+parts.size()+" #="+results.size());
 					return results;
+				}
 			}
 			return results;
 		}
@@ -567,6 +604,15 @@ public class Feature_Indexes extends Feature {
 					r = v;
 			}
 			return r;
+		}
+		
+		public int getCoverage() throws AppException {
+			return 50;
+		}
+		
+		@Override
+		public String toString() {
+			return "AND(size="+parts.size()+")";
 		}
 
 	}
@@ -608,6 +654,15 @@ public class Feature_Indexes extends Feature {
 					r = v;
 			}
 			return r;
+		}
+		
+		public int getCoverage() throws AppException {
+			return 50;
+		}
+		
+		@Override
+		public String toString() {
+			return "OR(size="+parts.size()+")";
 		}
 	}
 

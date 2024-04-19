@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
 import models.AccessPermissionSet;
+import models.Actor;
 import models.Admin;
 import models.Developer;
 import models.HPUser;
@@ -47,6 +48,7 @@ import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
+import models.enums.EntityType;
 import models.enums.Gender;
 import models.enums.MessageReason;
 import models.enums.ParticipationInterest;
@@ -71,6 +73,7 @@ import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.ExecutionInfo;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
@@ -148,7 +151,7 @@ public class Application extends APIController {
 		default: break;		
 		}
 		if (user != null) {				
-		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, user._id);
+		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, Actor.getActor(null, user._id));
 		  if (user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
 		  
 		  if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.USER_PASSWORD_CHANGE_REQUEST, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
@@ -211,14 +214,13 @@ public class Application extends APIController {
 	 * Helper function to send welcome mail
 	 * @param user user record which sould receive the mail
 	 */
-	public static void sendWelcomeMail(User user, User executingUser) throws AppException {
-		sendWelcomeMail(RuntimeConstants.instance.portalPlugin, user, executingUser);
+	public static void sendWelcomeMail(User user, Actor executingUser) throws AppException {
+		sendWelcomeMail(null, RuntimeConstants.instance.portalPlugin, user, executingUser);
 	}
 	
-	
-	public static void sendWelcomeMail(MidataId sourcePlugin, User user, User executingUser) throws AppException {
+	public static void sendWelcomeMail(AccessContext context, MidataId sourcePlugin, User user, Actor executingUser) throws AppException {
 	   if (user.developer == null) {		
-		   
+		   		  		   
 		   if (user.email == null || user.email.trim().length()==0) return;
 		   
 		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
@@ -238,27 +240,43 @@ public class Application extends APIController {
 		   replacements.put("token", token.token);
 		   
 		   if (executingUser != null) {
-			   replacements.put("executor-firstname", executingUser.firstname);
-			   replacements.put("executor-lastname", executingUser.lastname);
-			   replacements.put("executor-email", executingUser.email);
+			   String name[] = executingUser.getDisplayName().split("\\s");
+			   if (name.length == 2) {
+				   replacements.put("executor-firstname", name[0]);
+				   replacements.put("executor-lastname", name[1]);
+			   } else {
+				   replacements.put("executor-firstname", "");
+				   replacements.put("executor-lastname", executingUser.getDisplayName());
+			   }
+			   replacements.put("executor-email", executingUser.getPublicIdentifier());
 		   }
 		   
+		   replacements.put("organization-name", "");
+		   replacements.put("top-organization-name", "");
+		   replacements.put("parent-organization-name", "");
+		   Messager.setOrganizationVars(context, replacements);
+		  		   
 		   AccessLog.log("send welcome mail: ", user.email);
 		   if (executingUser == null) {
-			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(user._id));
+			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActor(null, user._id));			   	  	  
+		   } else {
+			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActor(executingUser).withModifiedActor(null, user._id));			   	  	  
+		   }
+		   
+		   if (executingUser == null || executingUser.getEntityType() != EntityType.USER) {
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
 				   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, user.role.toString(), Collections.singleton(user._id), null, replacements);
-			   }	  	   
+			   }
 		   } else {
-			   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.WELCOME_SENT).withApp(sourcePlugin).withActorUser(executingUser).withModifiedUser(user._id));
 			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, null, Collections.singleton(user._id), null, replacements)) {
 				   if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, user.role.toString(), Collections.singleton(user._id), null, replacements)) {
 					   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
 						   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, user.role.toString(), Collections.singleton(user._id), null, replacements);
 					   }	
 				   }
-			   }	  	   
+			   }
 		   }
+		   
 		   AuditManager.instance.success();
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
@@ -354,7 +372,7 @@ public class Application extends APIController {
 		if (user == null)  throw new BadRequestException("error.unknown.user", "User not found");
 				
 		if (user!=null && password != null) {				
-			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, userId);
+			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, Actor.getActor(null, userId));
 			 
 			 boolean tokenOk = (token != null && user.resettoken != null 		    		    
 		    		   && user.resettoken.equals(token)
@@ -589,7 +607,7 @@ public class Application extends APIController {
 		String oldPassphrase = JsonValidation.getStringOrNull(json, "oldPassphrase");
 		String passphrase = JsonValidation.getPassword(json, "passphrase");
 		
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSPHRASE_CHANGE, userId);
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSPHRASE_CHANGE, Actor.getActor(null, userId));
 		
 		KeyManager.instance.unlock(userId, oldPassphrase);
 		
@@ -616,14 +634,28 @@ public class Application extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	public Result authenticate(Request request) throws AppException {
 		// validate 
-		JsonNode json = request.body().asJson();		
-		JsonValidation.validate(json, "email", "password");	
-			
-		ExtendedSessionToken token = new ExtendedSessionToken();
+		JsonNode json = request.body().asJson();	
+		ExtendedSessionToken token = null;
 		
-		token.created = System.currentTimeMillis();                               
-	    token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
-										    				
+		// Insecure
+		/*if (json.has("authToken")) {
+			AccessContext info = ExecutionInfo.checkToken(request, JsonValidation.getJsonString(json, "authToken"), false, false);
+			token = new ExtendedSessionToken();
+			token.created = System.currentTimeMillis();
+			token.userRole = info.getAccessorRole();
+			token.ownerId = info.getAccessor();
+			token.handle = KeyManager.instance.currentHandleOptional(info.getAccessor());
+	    	
+		} else { */
+		
+			JsonValidation.validate(json, "email", "password");	
+				
+			token = new ExtendedSessionToken();
+			
+			token.created = System.currentTimeMillis();                               
+		    token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
+					
+		//}
 		return OAuth2.loginHelper(request, token, json, null, null);
 		
 		
@@ -667,7 +699,7 @@ public class Application extends APIController {
 	*/
 	
 	public static Set<UserFeature> loginHelperPreconditionsFailed(User user, Set<UserFeature> required) throws AppException {
-        if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
+        if (user.status.equals(UserStatus.BLOCKED) || user.status.isDeleted()) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION)) && !InstanceConfig.getInstance().getInstanceType().disableEMailValidation()) {
 			user.status = UserStatus.TIMEOUT;			
@@ -874,7 +906,7 @@ public class Application extends APIController {
 		  user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 		  Member.set(user._id, "myaps", user.myaps);		  
 			
-		  PatientResourceProvider.updatePatientForAccount(context, user._id);
+		  PatientResourceProvider.updatePatientForAccount(context, user._id, true);
 		  		  		  		  
 		} else {
 		  handle = registerCreateUser(context, user);		
@@ -944,7 +976,7 @@ public class Application extends APIController {
 		user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
 		
-		PatientResourceProvider.updatePatientForAccount(context, user._id);
+		PatientResourceProvider.updatePatientForAccount(context, user._id, true);
 		
 		return handle;
 	}
@@ -1037,6 +1069,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.FormatAPI.importChanges(),
 				controllers.routes.javascript.FormatAPI.listFormats(),				
 				controllers.routes.javascript.FormatAPI.listContents(),
+				controllers.routes.javascript.FormatAPI.listContentsSpecial(),
 				controllers.routes.javascript.FormatAPI.searchContents(),
 				controllers.routes.javascript.FormatAPI.searchCoding(),
 				controllers.routes.javascript.FormatAPI.searchCodingPortal(),
@@ -1219,6 +1252,7 @@ public class Application extends APIController {
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),
+				controllers.routes.javascript.UserGroups.getUserGroup(),
 				controllers.routes.javascript.UserGroups.createUserGroup(),
 				controllers.routes.javascript.UserGroups.deleteUserGroup(), 
 				controllers.routes.javascript.UserGroups.editUserGroup(),
@@ -1226,6 +1260,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.UserGroups.deleteUserGroupMembership(),
 				controllers.routes.javascript.UserGroups.listUserGroupMembers(),
 				controllers.routes.javascript.UserGroups.listUserGroupGroups(),
+				controllers.routes.javascript.UserGroups.requestConfirmation(),
 				
 				controllers.routes.javascript.Terms.get(),
 				controllers.routes.javascript.Terms.search(),

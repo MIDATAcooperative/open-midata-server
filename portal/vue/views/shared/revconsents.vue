@@ -26,7 +26,7 @@
             </div>
             <div class="form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="consenttype" value="option2" v-model="consenttype"> <span class="margin-left" v-t="'consents.where_authorized'"></span>
+                <input class="form-check-input" type="radio" name="consenttype" value="option2" checked="checked"> <span class="margin-left" v-t="'consents.where_authorized'"></span>
               </label>
             </div>
         </form>

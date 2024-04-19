@@ -38,4 +38,9 @@ public class Plugin_i18n implements JsonSerializable {
 	 * null for mobile apps
 	 */
 	public String defaultSpaceName;
+	
+	/**
+	 * A post login message in HTML to be shown afdter login. (if app is expired)
+	 */
+	public String postLoginMessage;
 }

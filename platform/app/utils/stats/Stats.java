@@ -58,17 +58,16 @@ public class Stats {
 	}
 	
 	public static void startRequest(Request req) {
-		if (!enabled) return;
-		
+				
 		PluginDevStats stats = new PluginDevStats();	
-		stats.queryCount = new HashMap<String, Integer>();
+		if (enabled) stats.queryCount = new HashMap<String, Integer>();
 		stats.lastrun = stats.lastExecTime = System.currentTimeMillis();
 		
 		currentStats.set(stats);
 	}
 	
 	public static void setPlugin(MidataId plugin) {
-		if (!enabled) return;
+		//if (!enabled) return;
 		PluginDevStats stats = currentStats.get();
 		if (stats == null) return;
 		stats.plugin = plugin;
@@ -109,12 +108,14 @@ public class Stats {
 	}
 	
 	public static void finishRequest(String method, String pathf, Map<String, String[]> qstring, String result, Set<String> paramSet) {
-		if (!enabled) return;		
-		
+				
 		PluginDevStats stats = currentStats.get();
 		if (stats == null) return;
 		currentStats.set(null);
-		if (stats.plugin == null) return;
+				
+		RequestMonitoring.report(stats.plugin, method+" "+pathf, !(result.startsWith("2") || result.startsWith("0")));
+		
+		if (!enabled || stats.plugin == null) return;
 		
 		stats.lastExecTime = System.currentTimeMillis() - stats.lastExecTime;
 		

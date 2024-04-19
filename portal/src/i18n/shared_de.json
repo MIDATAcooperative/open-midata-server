@@ -89,7 +89,9 @@
             "entity_type" : "Ungültiger Entitätstyp",
             "joincode" : "Der angegebene Teilnahme-Code wird nicht akzeptiert.",
             "usePreconfirmed" : "Die Vorabbestätigung der Zustimmung und die Weitergabe an Dritte ist nicht gleichzeitig zulässig.",
-            "csvmapping" : "Ungültiges Mapping angegeben."
+            "csvmapping" : "Ungültiges Mapping angegeben.",
+            "id" : "Ungültiger Identifikator",
+            "usergroup" : "Sie müssen Mitglied dieser Benutzergruppe sein, um diese Aktion durchführen zu können."
         },
 
         "missing" : {
@@ -111,7 +113,8 @@
             "access_query" : "Keine Daten ausgewählt",
             "plugin" : "Dieses Plugin existiert nicht in Ihrem Konto.",
             "auth_type" : "Für Ihren Kontotyp ist eine Zwei-Faktor-Authentifizierung erforderlich.",
-            "licence" : "Für die Nutzung dieser Applikation ist eine gültige Lizenz erforderlich."
+            "licence" : "Für die Nutzung dieser Applikation ist eine gültige Lizenz erforderlich.",
+            "manager" : "Sie müssen einer anderen Person Managerberechtigungen erteilen, bevor Sie diese Entität aus der Gruppe entfernen."
         },
 
         "unknown" : {
@@ -211,6 +214,10 @@
         "nomatch" : {
             "birthdate" : "Das Geburtsdatum stimmt nicht überein",
             "email" : "Abweichende E-Mail-Adresse angegeben"
+        },
+
+        "not_unique" : {
+            "identifier" : "Ein angegebener Identifikator ist nicht eindeutig"
         }
     },
 
@@ -337,6 +344,9 @@
             "vread" : "Ressource Version gelesen",
             "history" : "Ressource Historie lesen",
             "search" : "Nach Ressourcen gesucht",
+            "organization-updated" : "Organisation aktualisiert",
+            "organization-created" : "Organisation erstellt",
+            "organization-deleted" : "Organisation gelöscht",
             "added-as-team-member" : "Hinzugefügt als Teammitglied",
             "updated-role-in-team" : "Rolle im Team aktualisiert",
             "removed-from-team" : "Aus Team entfernt",
@@ -352,7 +362,13 @@
             "resthook-called" : "Resthook aufgerufen",
             "script-invocation" : "Skript aufgerufen",
             "plugin-deployed" : "Plugin installiert",
-            "plugin-undeployed" : "Plugin nicht installiert"
+            "plugin-undeployed" : "Plugin nicht installiert",
+            "access-confirmation" : "Zugangsbestätigung",
+            "access-confirmation-request" : "Anfrage auf Zugangsbestätigung",
+            "apikey-created" : "API-Schlüssel erstellt",
+            "apikey-deleted" : "API-Schlüssel gelöscht",
+            "service-instance-created" : "Service-Instanz erstellt",
+            "service-instance-deleted" : "Service-Instanz gelöscht"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "Die E-Mail-Adresse des Benutzers muss der Plattform bekannt sein",
@@ -381,7 +397,8 @@
             "EXPIRED" : "Abgelaufen",
             "REJECTED" : "Verworfen",
             "UNCONFIRMED" : "Nicht bestätigt",
-            "FROZEN" : "Eingefroren"
+            "FROZEN" : "Eingefroren",
+            "INVALID" : "Ungültig"
         },
         "consenttype" : {
             "CIRCLE" : "Andere Kontoinhabende",
@@ -479,6 +496,7 @@
             "MONITOR" : "Aufsichtsperson",
             "MASTER" : "Master-Benutzer",
             "USERADMIN" : "Verwaltung der Benutzer",
+            "KEYRECOVERY" : "Schlüssel-Wiederherstellung",
             "STUDYADMIN" : "Verwaltung der Projekte",
             "CONTENTADMIN" : "Verwaltung der Datentypen",
             "PLUGINADMIN" : "Verwaltung der Applikationen",
@@ -502,6 +520,7 @@
             "ACTIVE" : "Aktiv",
             "BLOCKED" : "Gesperrt",
             "DELETED" : "Gelöscht",
+            "FAKE" : "Gefälschtes Konto",
             "NEW" : "Neu"
         },
         "frequency" : {
@@ -556,6 +575,7 @@
             "mobile" : "Applikation (Smartphone, Web)",
             "external" : "Externer Dienst",
             "analyzer" : "Projekt-Analysator",
+            "broker" : "Data broker",
             "endpoint" : "FHIR endpoint"
         },
         "infos" : {
@@ -585,7 +605,14 @@
         "entitytype" : {
             "USER" : "Benutzer",
             "USERGROUP" : "Team",
-            "ORGANIZATION" : "Organisation"
+            "ORGANIZATION" : "Organisation",
+            "SERVICES" : "Data broker"
+        },
+        "usergrouptype" : {
+            "ORGANIZATION" : "Organisation",
+            "CARETEAM" : "Pflegeteam",
+            "HEALTHCARESERVICE" : "Gesundheitsdienst",
+            "RESEARCHTEAM" : "Forschung"
         },
         "bulkmailtype" : {
             "MARKETING" : "Marketing - Kontoinhabende",
@@ -682,6 +709,7 @@
         "sign_up_btn" : "Konto erstellen",
         "unlock_code" : "Freischaltcode",
         "already_have_account" : "Ich habe bereits ein Konto",
+        "already_have_account2" : "Wenn dies Ihr eigenes Konto ist, klicken Sie hier, um zur Anmeldeseite zu gelangen.",
         "more" : "Haben Sie noch ein paar Sekunden Zeit? Wir wären froh, wenn Sie uns noch ein paar Details über sich verraten könnten ☺️",
         "generous" : "Ich bin heute grosszügig, zeigen Sie mir die Eingabefelder!",
         "hide_optional" : "Optionale Felder verstecken",
@@ -975,13 +1003,15 @@
         "set_owner_btn" : "Person auswählen, die ihre Daten teilt",
         "add_yourself_btn" : "Sich selbst hinzufügen",
         "add_person_btn" : "Neue Person hinzufügen",
+        "add_organization_btn" : "Neue Organisation hinzufügen",
         "add_usergroup_btn" : "Neues Team hinzufügen",
         "writes" : "Schreibrechte",
         "writes2" : "Die durch diese Zustimmung ermächtigten Personen dürfen Daten, die dieser Zustimmung unterstellt sind, in Ihrem Konto speichern oder aktualisieren.",
         "reshare" : "Zugriff für Drittpartei?",
         "reshare2" : "Die durch diese Zustimmung ermächtigten Personen dürfen die entsprechenden Daten weiter teilen.",
         "expiration_date" : "Ablaufdatum der Zustimmung:",
-        "created_before" : "Daten nicht teilen, die erstellt wurden nach dem:",
+        "created_after" : "Umfasst nur Daten, die erstellt wurden nach dem:",
+        "created_before" : "Keine Daten teilen, die erstellt wurden nach dem:",
         "share_what" : "Welche Daten wollen Sie teilen?",
         "consent_empty" : "Diese Zustimmung teilt zu Beginn keine Daten. Sie können die Daten, die Sie darüber teilen wollen, später wählen.",
         "create_btn" : "Erstellen und Daten wählen",
@@ -1001,12 +1031,14 @@
         "people" : "Mit welcher Person/welchen Personen wollen Sie Daten teilen?",
         "external" : "Personen ohne @PRODUCT Konto",
         "add_people_btn" : "Andere Personen hinzufügen",
+        "add_hp_btn" : "Gesundheitsfachperson hinzufügen",
         "add_usergroup_btn" : "Team hinzufügen",
         "reshare" : "@:newconsent.reshare",
         "reshare2" : "@:newconsent.reshare2",
         "writes" : "Schreibrechte",
         "expiration_date" : "Ablaufdatum der Zustimmung:",
         "created_before" : "Teilt keine Daten, die erstellt wurden nach dem:",
+        "created_after" : "Nur Daten, die erstellt wurden nach dem:",
         "what_is_shared" : "Welche Daten sind geteilt?",
         "consent_empty" : "Diese Zustimmung teilt momentan keine Daten.",
         "type_circle" : "Diese Zustimmung teilt Daten mit anderen @PRODUCT Kontoinhabenden.",
@@ -1035,7 +1067,15 @@
         "please_review2b" : "Bitte überprüfen Sie diese bestehende Zustimmung. Klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)', um diese Seite ohne Änderungen zu verlassen. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht mehr einverstanden sind.",
         "you" : "Sie",
         "restrictions" : "Weitere Einschränkungen?",
-        "project" : "Projekt"
+        "project" : "Projekt",
+        "source" : "Quelle dieser Zustimmung",
+        "based_on" : "Link zur verwendeten Basiszustimmung",
+        "base_created_at" : "Basiszustimmung erstellt am",
+        "allowed_reshares" : "Bei Bedarf können die Daten an diese Dritten weitergegeben werden",
+        "reshare_service" : "Dritte Parteien, die den Dienst nutzen",
+        "reshare_usergroup" : "Team oder Projekt",
+        "reshare_user" : "Einzelner Benutzer",
+        "reshare_project" : "Projekt"
     },
 
     "editconsent2" : {
@@ -1299,6 +1339,7 @@
     },
 
     "addusers" : {
+        "title" : "Benutzersuche",
         "contacts" : "Vorhandene Kontakte",
         "all_users" : "Alle Benutzer",
         "no_contacts_to_add" : "Keine Kontakte können diesem Circle hinzugefügt werden.",
@@ -1314,6 +1355,20 @@
         "empty_result" : "Kein passendes Team gefunden.",
         "add_individuals_btn" : "Als individuellen Personen der Zustimmung hinzufügen",
         "add_group_btn" : "Als veränderliches Team der Zustimmung hinzufügen"
+    },
+
+    "organizationsearch" : {
+        "title" : "Suche nach Organisationen",
+        "name" : "Name der Organisation",
+        "city_or_zip" : "Ort oder Postleitzahl",
+        "empty_result" : "Keine passende Organisation gefunden."
+    },
+
+    "databrokersearch" : {
+        "title" : "Suche nach Data Brokers (APIs)",
+        "name" : "Name des Data brokers",
+        "empty_result" : "Keinen passenden Data broker gefunden.",
+        "new_btn" : "Neue Instanz erstellen"
     },
 
     "confirm" : {
@@ -1408,6 +1463,11 @@
         "reason2" : "Wir wären Ihnen dankbar, wenn Sie uns mitteilen könnten, warum Sie Ihr Konto löschen. Wir sind ständig bemüht, @PLATFORM zu verbessern.",
         "wipe_btn" : "@PRODUCT Konto schliessen und löschen",
         "error" : "Passwort nicht korrekt. Das Konto wurde nicht gelöscht."
+    },
+
+    "service" : {
+        "title" : "Token-Link-Dienst für @PRODUCT",
+        "success" : "Ihr Token-Link wurde verarbeitet. Sie können dieses Fenster nun schließen."
     },
 
     "serviceleave" : {
@@ -1511,8 +1571,10 @@
     "apikeys" : {
         "title" : "API-Schlüsselverwaltung",
         "empty" : "Dieses Konto verwaltet keine Dienste mit API-Schlüsseln.",
+        "managedby" : "verwaltet von",
         "add_btn" : "Schlüssel hinzufügen",
         "delete_btn" : "Analysator entfernen",
+        "delete_service_btn" : "Dienst entfernen",
         "delete_endpoint_btn" : "Endpoint entfernen",
         "show_btn" : "Schlüssel anzeigen",
         "revoke_btn" : "Diesen Schlüssel widerrufen",
@@ -1524,6 +1586,7 @@
         "common_name" : "OU (organization unit) und CN (common name) für das CSR (certificate request)",
         "instructions_common_name" : "Für zertifikatsbasierte Authentifizierung erstellen Sie eine CSR mit den angegebenen OU- und CN-Feldern. Senden Sie den CSR an @SUPPORT",
         "date" : "Erstellungsdatum",
+        "restrictions" : "Beschränkungen",
         "status" : "Status",
         "ACTIVE" : "Aktiv",
         "FROZEN" : "Alte Version",
@@ -1538,6 +1601,12 @@
         "joinmethod1" : "Der Zugang zum Forschungsprojekt ist eingeschränkt.",
         "joinmethod2" : "Bitte kontaktieren Sie das für das Projekt verantwortliche Team. Für weitere Informationen lesen Sie die Nutzungsbedingungen der Applikation.",
         "loginpage_btn" : "Zurück zur Anmeldung"
+    },
+    
+    "appexpired" : {
+      "title" : "Anwendung nicht mehr verfügbar",
+      "intro" : "Diese Anwendung ist nicht länger verfügbar. Falls Sie mit dieser Anwendung Daten in ihrem @PRODUCT Konto gespeichert haben, sind diese noch in ihrem Account verfügbar.",
+      "loginpage_btn" : "Zur Startseite des @PRODUCT Portal"
     },
 
     "unsubscribe" : {

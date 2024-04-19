@@ -18,55 +18,45 @@
     <panel :title="$t('provider_organization.title')" :busy="isBusy">	 
         <error-box :error="error"></error-box>
 	    <p v-if="!isMasterUser()" class="alert alert-info" v-t="'provider_organization.master_user'"></p>
-	    <p v-if="!orgs.length" v-t="'provider_organization.empty'"></p>
+	    <p v-if="allOrgs && !allOrgs.length" v-t="'provider_organization.empty'"></p>
 	    
 	    <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="editorg()" role="form">
-	        <div v-for="org in orgs" :key="org._id">
-	           <form-group name="name" label="provider_organization.name" :path="errors.name"> 
-			        <p class="form-control-plaintext">{{org.name}}<br>
-			        </p>
-			   </form-group>
-		        <form-group name="name" label="provider_organization.address" :path="errors.address"> 
-			        <p class="form-control-plaintext">
-			            <address>                                      
+	       <pagination v-model="orgs" search="name"></pagination>
+	       
+	       	<table class="table table-striped" v-if="orgs.filtered.length">
+                <thead>
+				<tr>
+					<Sorter sortby="name" v-model="orgs" v-t="'provider_organization.name'"></Sorter>					
+					<Sorter sortby="address" v-model="orgs" v-t="'provider_organization.address'"></Sorter>
+					<th></th>
+				</tr>
+				</thead>
+						
+				<tbody>		
+				<tr v-for="org in orgs.filtered" :key="org._id" >
+					<td>{{ org.name }}</td>					
+					<td>
+					    <address>                                      
 		    {{ org.address1 }}<br>
 			{{ org.address2 }}<br>
 			{{ org.zip }} {{ org.city }}<br>
 			{{ org.country }}<br><br>			
 			<span v-if="org.phone"><span v-t="'common.user.phone'"></span>: {{ org.phone }}</span>
 		                </address>
-			        
-			        </p>		    
-	            </form-group>
-	            <form-group name="description" label="provider_organization.description" :path="errors.description">
-	                <p class="form-control-plaintext" >{{org.description}}</p>
-	            </form-group>
-	            <form-group name="x" label="common.empty">
-	                <button type="button" class="btn btn-default mr-1" @click="editOrg(org)" v-t="'provider_organization.edit_btn'"></button>
-                    <button type="button" class="btn btn-default" @click="editGroup(org)" v-t="'provider_organization.members'"></button>	                            
-	            </form-group>
-	            <hr>
-            </div>
+					</td>
+                    <td>
+                    <button type="button" class="btn btn-default mr-1 btn-sm mb-1" @click="editOrg(org)" v-t="'provider_organization.edit_btn'"></button>
+                    <button type="button" class="btn btn-default btn-sm mb-1" @click="editGroup(org)" v-t="'provider_organization.members'"></button>	                           
+                    </td>                    
+				</tr>
+				</tbody>
+		</table>
+	       
+	    
             <button type="button" class="btn btn-primary" @click="addOrg()" v-t="'common.create_btn'"></button>
         </form>	
     </panel>     
-   <!-- <panel :title="$t('provider_organization.members')" :busy="isBusy">	 
-        <pagination v-model="persons" search="search"></pagination>
-	    <table class="table table-striped" v-if="persons.filtered.length">
-	        <tr>
-	            <Sorter v-t="'common.user.firstname'" sortby="firstname" v-model="persons"></Sorter>
-	            <Sorter v-t="'common.user.lastname'" sortby="lastname" v-model="persons"></Sorter>
-	            <Sorter v-t="'common.user.email'" sortby="email" v-model="persons"></Sorter>
-	        </tr>
-	        <tr v-for="person in persons.filtered" :key="person._id">
-	            <td>{{ person.firstname }}</td>
-	            <td>{{ person.lastname }}</td>
-	            <td>{{ person.email }}</td>
-	        </tr>
-	    </table>
-	  
-	    <button class="btn btn-default" :disabled="!isMasterUser()" @click="add()" v-t="'provider_organization.addprovider'"></button>	  
-    </panel> -->
+  
 </template>
 <script>
 
@@ -81,6 +71,7 @@ import { rl, status, ErrorBox, FormGroup, Success } from 'basic-vue3-components'
 export default {
     data: () => ({	
         orgs : [],
+        allOrgs : null,
         persons : null
     }),
 
@@ -92,25 +83,24 @@ export default {
         reload() {
             const { $data } = this, me = this;
 
-/*
-            me.doBusy(users.getMembers({  role : "PROVIDER", provider : session.org }, users.MINIMAL )
-		    .then(function(data) {
-                for (let user of data.data)	user.search = user.firstname+" "+user.lastname;
-			    $data.persons = me.process(data.data, { filter : { search : "" }});
-		    }));
-*/
+
 			me.doBusy(usergroups.search({ "member" : true, type : "ORGANIZATION", active : true, setup : true }, usergroups.ALLPUBLIC )
     	    .then(function(results) {
-		        $data.orgs = [];
+		        let orgs = [];
+		        let wait = [];
 				for (let grp of results.data) {
-					me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization(grp._id).url)
-		    		.then(function(data) { 	               
-		        		$data.orgs.push(data.data);												
-		    		}));	   
+					wait.push(me.doBusy(server.get(jsRoutes.controllers.providers.Providers.getOrganization(grp._id).url)
+		    		.then(function(data) { 	 
+		    		    if (data.data) {              
+		        		   orgs.push(data.data);
+		        		}												
+		    		}, function(err) {})));	   
 				}
-    	    }));
-
-		    
+				return Promise.all(wait).then(() => {
+				   $data.allOrgs = orgs;
+				   $data.orgs = me.process(orgs, { sort : "name", filter : { "name" : "" } });
+				});
+    	    }));		    
 				    				
 	    },
 	

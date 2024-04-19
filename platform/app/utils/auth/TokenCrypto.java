@@ -36,6 +36,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import com.google.common.io.BaseEncoding;
 
+import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -136,7 +137,8 @@ public class TokenCrypto {
 			byte[] sign = signToken(encrypted, 0, IV_LENGTH, encrypted, IV_LENGTH, encrypted.length - IV_LENGTH - HMAC_LENGTH);
 			int j = encrypted.length - HMAC_LENGTH ;
 			for (int i=0;i<HMAC_LENGTH;i++) {
-				if (sign[i] != encrypted[i+j]) {					
+				if (sign[i] != encrypted[i+j]) {	
+					AccessLog.log("bad token signature");
 					throw new BadRequestException("error.invalid.token", "Invalid token");
 				}			
 			}
@@ -163,6 +165,7 @@ public class TokenCrypto {
 		} catch (UnsupportedEncodingException e7) {
 			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (IllegalArgumentException e8) {
+			AccessLog.log("illegal argument exception during token decrypt");
 			throw new BadRequestException("error.invalid.token", "Invalid token");
 		}
 	}

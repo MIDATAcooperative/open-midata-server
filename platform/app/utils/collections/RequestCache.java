@@ -21,23 +21,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 import models.MidataId;
+import models.ServiceInstance;
 import models.User;
+import models.UserGroup;
 import models.enums.UserStatus;
 import utils.buffer.StudyPublishBuffer;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 import utils.messaging.SubscriptionBuffer;
 
 public class RequestCache {
 
 	private Map<MidataId, User> userCache;
+	private Map<MidataId, UserGroup> userGroupCache;
+	private Map<MidataId, ServiceInstance> siCache;
 	private StudyPublishBuffer studyPublishBuffer;
 	private SubscriptionBuffer subscriptionBuffer;
 	
-	public User getUserById(MidataId userId) throws AppException {
+	public User getUserById(MidataId userId) throws InternalServerException {
 		return getUserById(userId, false);
 	}
 	
-	public User getUserById(MidataId userId, boolean alsoDeleted) throws AppException {
+	public User getUserById(MidataId userId, boolean alsoDeleted) throws InternalServerException {
 		User result = null;
 		if (userCache == null) {
 			userCache = new HashMap<MidataId, User>();
@@ -48,7 +53,39 @@ public class RequestCache {
 			result = User.getByIdAlsoDeleted(userId, User.PUBLIC);
 			userCache.put(userId, result);
 		}
-		if (!alsoDeleted && result != null && result.status == UserStatus.DELETED) return null;
+		if (!alsoDeleted && result != null && result.status.isDeleted()) return null;
+		return result;
+	}
+	
+	public UserGroup getUserGroupById(MidataId userGroupId) throws InternalServerException {
+		UserGroup result = null;
+		if (userGroupCache == null) {
+			userGroupCache = new HashMap<MidataId, UserGroup>();
+		} else {
+			result = userGroupCache.get(userGroupId);
+		}
+		if (result == null) {
+			result = UserGroup.getById(userGroupId, UserGroup.ALL);
+			userGroupCache.put(userGroupId, result);
+		}		
+		return result;
+	}
+	
+	public void update(UserGroup grp) {
+		if (userGroupCache != null) userGroupCache.put(grp._id, grp);
+	}
+	
+	public ServiceInstance getServiceInstanceById(MidataId serviceInstanceId) throws InternalServerException {
+		ServiceInstance result = null;
+		if (siCache == null) {
+			siCache = new HashMap<MidataId, ServiceInstance>();
+		} else {
+			result = siCache.get(serviceInstanceId);
+		}
+		if (result == null) {
+			result = ServiceInstance.getById(serviceInstanceId, ServiceInstance.ALL);
+			siCache.put(serviceInstanceId, result);
+		}		
 		return result;
 	}
 	

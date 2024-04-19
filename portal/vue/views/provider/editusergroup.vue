@@ -81,7 +81,8 @@
         <div v-if="usergroup && usergroup._id">
             <a @click="$router.back()" href="javascript:" class="btn btn-default mr-1" v-t="'common.back_btn'"></a>
             <button v-if="add.user" :disabled="action != null || !mayChangeTeam()" type="button" class="btn btn-primary mr-1" v-t="'provider_editusergroup.update_btn'" @click="updateMember();"></button>
-            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addPeople();" v-t="'editconsent.add_people_btn'"></button>            
+            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addPeople();" v-t="'editconsent.add_hp_btn'"></button>
+            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addPeople2();" v-t="'editconsent.add_people_btn'"></button>
             <success :finished="finished" action="change" msg="common.save_ok"></success>
         </div>                          
     </panel>  
@@ -110,8 +111,12 @@
     </panel>
     </div>
 
-    <modal id="provSearch" full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('providersearch.title')">
+    <modal id="provSearch" :full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('providersearch.title')">
 	   <provider-search :setup="setupProvidersearch" @add="addPerson"></provider-search>
+	</modal>
+	
+	<modal id="anyUserSearch" :full-width="true" @close="setupAnyUserSearch=null" :open="setupAnyUserSearch!=null" :title="$t('addusers.title')">
+	   <add-any-user :setup="setupAnyUserSearch" @add="addPerson"></add-any-user>
 	</modal>
 </div>
    
@@ -125,6 +130,7 @@ import studies from "services/studies.js"
 import session from "services/session.js"
 import users from "services/users.js"
 import ProviderSearch from "components/tiles/ProviderSearch.vue"
+import AddAnyUser from "components/tiles/AddAnyUser.vue"
 import { rl, status, ErrorBox, Success, CheckBox, FormGroup, Modal } from 'basic-vue3-components'
 import _ from "lodash";
 
@@ -136,12 +142,13 @@ export default {
         members : null,
         expired : null,
         setupProvidersearch : null,
+        setupAnyUserSearch : null,
 	    form : {},        
         add : { user:null, role:{ unpseudo:true } },
         rights : [ "readData", "writeData", "changeTeam","setup","applications" ]       
     }),
 
-    components: {  ErrorBox, FormGroup, Success, CheckBox, Panel, Modal, ProviderSearch },
+    components: {  ErrorBox, FormGroup, Success, CheckBox, Panel, Modal, ProviderSearch, AddAnyUser },
 
     mixins : [ status, rl ],
 
@@ -227,11 +234,18 @@ export default {
 		
 		    $data.setupProvidersearch = {}; 
 	    },
+	    
+	    addPeople2() {
+            const { $data, $route, $router } = this, me = this;
+		
+		    $data.setupAnyUserSearch = {}; 
+	    },
 
         addPerson(persons) {	
 		    const { $data, $route, $router } = this, me = this;
 				   
 		    $data.setupProvidersearch = null;
+		    $data.setupAnyUserSearch = null;
 
             if (!persons.length) persons = [ persons ];					
 		    let personIds = [];

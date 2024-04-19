@@ -24,7 +24,7 @@
 		            <span class="fas fa-check text-success" v-if="health.servicekey"></span>
 		            <span class="fas fa-times text-danger" v-else></span>
 		            {{ health.servicekey }}
-		            <button class="btn btn-primary btn-sm" v-t="'admin_stats.health.requestkey_btn'" :disabled="action=='key'" @click="requestKey()" v-if="!health.servicekey"></button>
+		            <button class="btn btn-primary btn-sm" v-t="'admin_stats.health.requestkey_btn'" :disabled="action=='key'" @click="requestKey()" v-if="!health.servicekey && hasSubRole('KEYRECOVERY')"></button>
 		        </td>
 		    </tr>
 		    <tr>
@@ -143,7 +143,7 @@
 		    </tr>
 		     
 		  </table>
-		  <div class="margin-top">
+		  <div class="margin-top" v-if="hasSubRole('PLUGINADMIN')">
 		    <router-link :to="{ path : './usagestats' }" v-t="'admin_stats.showusage'"></router-link>
 	      </div>
     </panel>
@@ -154,6 +154,7 @@
 import ChangeLog from "components/tiles/ChangeLog.vue"
 import Panel from "components/Panel.vue"
 import server from "services/server.js"
+import session from "services/session.js"
 import crypto from "services/crypto.js"
 import { status, ErrorBox } from 'basic-vue3-components'
 
@@ -164,7 +165,8 @@ export default {
         today : null,
         yesterday : null,
         week : null,
-        health : null
+        health : null,
+        user : null
     }),
 
     components: {  Panel, ErrorBox, ChangeLog },
@@ -214,11 +216,20 @@ export default {
 		    }).then(function() {
 			    $router.push({ path : './pwrecover' });
 		    });			
-	    }		    
+	    },
+	    
+	    hasSubRole(subRole) {	
+			const { $data, $route, $router } = this, me = this;
+		    return $data.user.subroles.indexOf(subRole) >= 0;
+	    },		    
     },
 
     created() {
+        const { $data } = this;
         this.refresh();
+        this.doBusy(session.currentUser.then(function(userId) {			
+			$data.user = session.user;	
+	    }));
     }
 }
 </script>

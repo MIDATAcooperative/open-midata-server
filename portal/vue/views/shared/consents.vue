@@ -20,7 +20,7 @@
 		<form class="form" v-if="role!='research'">            
 		    <div class="form-check">
 		      <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="consenttype" value="option1" v-model="consenttype"> <span class="margin-left" v-t="'consents.where_owner'"></span> 
+               <input class="form-check-input" type="radio" name="consenttype" value="option1" checked="checked"> <span class="margin-left" v-t="'consents.where_owner'"></span> 
               </label>
             </div>
             <div class="form-check">

@@ -47,6 +47,7 @@ import setup.MinimalSetup;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.access.PatientRecordTool;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
@@ -68,6 +69,7 @@ import utils.messaging.SubscriptionManager;
 import utils.plugins.DeploymentManager;
 import utils.servlet.PlayHttpServletConfig;
 import utils.stats.ActionRecorder;
+import utils.stats.RequestMonitoring;
 import utils.stats.Stats;
 import utils.stats.UsageStatsRecorder;
 import utils.sync.Instances;
@@ -194,6 +196,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		System.out.println("Statistiks");
 		Stats.init(system);
 		UsageStatsRecorder.init(Instances.system());
+		RequestMonitoring.init(Instances.system());
 						
 		System.out.println("Service Handler");
 		ServiceHandler.startup();
@@ -205,12 +208,14 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		AutoRun.init();
 		
 		
-		try {
+		// All startup patches have been done on the existing instances
+		/*try {
 			   AccountPatches.fixOrgs();
+			   PatientRecordTool.patchMissingPatientRecords();
 		} catch (AppException e) {
 				e.printStackTrace();
 				System.exit(-1);
-		}
+		}*/
 		
 		lifecycle.addStopHook(() -> {
 			//AutoRun.shutdown();

@@ -58,6 +58,7 @@ import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
+import models.enums.RejoinPolicy;
 import models.enums.SecondaryAuthType;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
@@ -126,8 +127,10 @@ public class OAuth2 extends Controller {
         if (!appInstance.owner.equals(ownerId)) throw new InternalServerException("error.invalid.token", "Wrong app instance owner!");
         if (!appInstance.applicationId.equals(applicationId)) throw new InternalServerException("error.invalid.token", "Wrong app for app instance!");
         
-        if (!appInstance.status.isSharingData()) 
+        if (!appInstance.status.isSharingData()) {
+        	AccessLog.log("appInstance not sharing data");
         	throw new BadRequestException("error.blocked.consent", "Consent expired or blocked.");
+        }
         
         Plugin app = Plugin.getById(appInstance.applicationId);
         
@@ -173,7 +176,14 @@ public class OAuth2 extends Controller {
 				    if ( 
 						sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
 						sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED)) {
-							throw new BadRequestException("error.blocked.projectconsent", "Research consent expired or blocked.");
+				    	    Study project = Study.getById(sp.study, Sets.create("rejoinPolicy"));
+				    	    if (project != null && project.rejoinPolicy == RejoinPolicy.NO_REJOIN) {
+							   throw new BadRequestException("error.blocked.projectconsent", "Research consent expired or blocked.");
+				    	    } else {
+				    	    	AccessLog.log("remove instance due to retreted from project: "+sal.studyId);
+		        			    if (context != null) ApplicationTools.removeAppInstance(context, appInstance.owner, appInstance);
+			                   	return false;
+				    	    }
 					}
 				    if (sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
 							throw new BadRequestException("error.blocked.participation", "Research consent expired or blocked.");
@@ -299,7 +309,7 @@ public class OAuth2 extends Controller {
     		obj.put("state", tk.state);
     		
     		user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
-    		if (user == null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) throw new BadRequestException("error.internal", "invalid_grant");
+    		if (user == null || user.status.isDeleted() || user.status.equals(UserStatus.BLOCKED)) throw new BadRequestException("error.internal", "invalid_grant");
     		
     		//This check can be disabled: both phrase and appInstance._id come from authorization "code" which has been validated										
     		//if (appInstance.passcode != null && !User.phraseValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");
@@ -355,18 +365,22 @@ public class OAuth2 extends Controller {
 
 	public static Pair<User, MobileAppInstance> useRefreshToken(String refresh_token) throws AppException {
 		OAuthRefreshToken refreshToken = OAuthRefreshToken.decrypt(refresh_token);
-		if (refreshToken == null) throw new BadRequestException("error.internal", "Bad refresh_token.");
+		if (refreshToken == null) {
+			throw new BadRequestException("error.internal", "Bad refresh_token.");
+		}
 		
 		MidataId appInstanceId = refreshToken.appInstanceId;
 		
 		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
 		
 		if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) {
+			AccessLog.log("Refresh token has expired at "+(refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME)+" now="+System.currentTimeMillis());
 			// Begin: Allow expired refresh tokens for key recovery
 		    boolean isInvalid = true;
 			if (appInstance != null && appInstance.owner != null) {
 			  User checkuser = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
 			  if (checkuser != null && checkuser.flags != null && checkuser.flags.contains(AccountActionFlags.KEY_RECOVERY)) {
+				  AccessLog.log("Refresh token expired becuase key recovery required.");
 				  isInvalid = false;
 			  }
 			}
@@ -377,15 +391,25 @@ public class OAuth2 extends Controller {
 		if (!verifyAppInstance(null, appInstance, refreshToken.ownerId, refreshToken.appId, null)) throw new BadRequestException("error.internal", "Bad refresh token.");
 		
 		Plugin app = Plugin.getById(appInstance.applicationId);
-		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");			
-		if (!app.type.equals("mobile") && !app.type.equals("analyzer") && !app.type.equals("external")) throw new InternalServerException("error.internal", "Wrong app type");
+		if (app == null) {
+			AccessLog.log("refresh token: unknown app");
+			throw new BadRequestException("error.unknown.app", "Unknown app");			
+		}
+		if (!app.type.equals("mobile") && !app.type.equals("analyzer") && !app.type.equals("external")) {
+			AccessLog.log("refresh token: wrong application type");
+			throw new InternalServerException("error.internal", "Wrong app type");
+		}
 	
 		User user = null;
 		if (!app.type.equals("external") && !app.type.equals("analyzer")) {
 			user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
-			if (user == null) invalidToken();
+			if (user == null) {
+				AccessLog.log("refresh token: user does not exist");
+				invalidToken();
+			}
 			
 			if (!LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
+				AccessLog.log("refresh token: licence not valid");
 				invalidToken();
 			}
 								
@@ -393,16 +417,21 @@ public class OAuth2 extends Controller {
 			if (app.requirements != null) req.addAll(app.requirements);
 			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);
 			if (notok != null) {
+				AccessLog.log("refresh token: login preconditions failed: "+notok.toString());
 				invalidToken();
 			}                       
 		}
 		
-		if (KeyManager.instance.unlock(appInstance._id, refreshToken.phrase) == KeyManager.KEYPROTECTION_FAIL) invalidToken();
+		if (KeyManager.instance.unlock(appInstance._id, refreshToken.phrase) == KeyManager.KEYPROTECTION_FAIL) {
+			AccessLog.log("refresh token: could not unlock account");
+			invalidToken();
+		}
 		
 		AccessContext temp = ContextManager.instance.createLoginOnlyContext(appInstance._id, user.role, appInstance);
 		Map<String, Object> meta = RecordManager.instance.getMeta(temp, appInstance._id, "_app").toMap();
 					
 		if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
+			AccessLog.log("refresh token: created for a different application version");
 			invalidToken();
 		}
 

@@ -87,6 +87,7 @@ import models.MemberKey;
 import models.MidataId;
 import models.Plugin;
 import models.Record;
+import models.RecordWithMeta;
 import models.Study;
 import models.StudyAppLink;
 import models.StudyParticipation;
@@ -148,7 +149,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	public Patient getResourceById(@IdParam IIdType theId) throws AppException {
 
 		String id = theId.getIdPart();
-		MidataId targetId = new MidataId(id);
+		MidataId targetId = MidataId.parse(id);
 
 		AccessContext info = info();
 		List<Record> allRecs = RecordManager.instance.list(info.getAccessorRole(), info, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
@@ -421,7 +422,12 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	public Patient generatePatientForAccount(Member member) {
 		Patient p = new Patient();
 		p.setId(member._id.toString());
-		p.addName().setFamily(member.lastname).addGiven(member.firstname);
+		HumanName name = p.addName().setFamily(member.lastname);
+		if (member.firstname!=null && member.firstname.length()>0) {
+			for (String fn : member.firstname.trim().split("\\s+")) {
+			  name.addGiven(fn);
+			}
+		}
 		p.setBirthDate(member.birthday);
 		if (member.status == UserStatus.ACTIVE || member.status == UserStatus.NEW || member.status == UserStatus.BLOCKED) {
 			p.setActive(true);
@@ -479,30 +485,6 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		Member member = Member.getById(who, Sets.create(User.ALL_USER, "firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC", "language", "role"));
 		patientProvider.updatePatientForAccount(member);
 	}
-
-	public static Patient generatePatientForStudyParticipation(StudyParticipation part, Member member) {
-
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(member.birthday);
-		cal.set(Calendar.MONTH, 0);
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-
-		Patient p = new Patient();
-		p.setId(part._id.toString());
-		p.addName().setText(part.ownerName);
-		p.setBirthDate(cal.getTime());
-		if (member.gender != null) p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
-
-		p.addIdentifier(new Identifier().setValue(part.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
-		p.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
-
-		return p;
-	}
-	
 
 	public void prepare(Record record, Patient thePatient) {
 		record.content = "Patient";
@@ -562,6 +544,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	@Override
 	public void createPrepare(Record record, Patient thePatient) throws AppException {
+		if (!info().mayAccess("Patient", "fhir/Patient")) throw new UnprocessableEntityException("Patient resource not in access filter.");
 		if (!thePatient.hasName()) throw new UnprocessableEntityException("Name required for patient");
 		boolean nameFound = false;
 		for (HumanName name : thePatient.getName()) {
@@ -755,11 +738,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			Plugin plugin = Plugin.getById(info.getUsedPlugin());
 			if (plugin.usePreconfirmed) {
 				thePatient.setId(user._id.toString());
-				addSecurityTag(record, thePatient, QueryTagTools.SECURITY_LOCALCOPY);
+				/*addSecurityTag(record, thePatient, QueryTagTools.SECURITY_LOCALCOPY);
 				addSecurityTag(record, thePatient, QueryTagTools.SECURITY_GENERATED);
-				prepare(record, thePatient);
+				prepare(record, thePatient);*/
 				
-			    tempContext = new AccountReuseAccessContext(info, user._id, record);
+			    tempContext = new AccountReuseAccessContext(info, user._id);
 			} else {
 			  tempContext = info;
 			}
@@ -772,10 +755,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
         	fhirPatient.addServiceUrl(user, consent);
         } else if (consent != null && consent.status==ConsentStatus.PRECONFIRMED) {
         	insertRecord(tempContext.forConsentReshare(consent), record, thePatient);
+        	tempContext = tempContext.forConsent(consent);
         }
 		        
         // Have user participate to requested projects
-		AccountManagementTools.participateToProjects(tempContext, user, fhirPatient, projectsToParticipate, existing == null);	
+		AccountManagementTools.participateToProjects(tempContext, user, fhirPatient, projectsToParticipate, tempContext.canCreateActiveConsentsFor(user._id));	
 		ContextManager.instance.clearCache(); //Is this needed??
 
 		// Cleanup
@@ -794,6 +778,14 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		    fhirPatient.populateIdentifier(info(), study, sp);
 		}
 	}		
-		
+	
+	@Override
+	public String getIdForReference(Record record) {
+		if (record instanceof RecordWithMeta) {
+			RecordWithMeta rm = (RecordWithMeta) record;
+			if (rm.attached != null) return rm.attached._id.toString();
+		}
+		return record.owner.toString();
+	}
 
 }

@@ -87,6 +87,7 @@ import models.enums.EntityType;
 import models.enums.InfoType;
 import models.enums.InformationType;
 import models.enums.JoinMethod;
+import models.enums.LinkTargetType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
@@ -122,6 +123,7 @@ import utils.access.Feature_Pseudonymization;
 import utils.access.Feature_QueryRedirect;
 import utils.access.Query;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.CodeGenerator;
@@ -250,7 +252,7 @@ public class Studies extends APIController {
 
 		MidataResearchStudyResourceProvider.updateFromStudy(context, study);
 
-		AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, userId, userId, null, study._id);
+		AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, context, null, userId, userId, null, study._id);
 		AuditManager.instance.success();
 
 		return ok(JsonOutput.toJson(study, "Study", Study.ALL)).as("application/json");
@@ -361,42 +363,45 @@ public class Studies extends APIController {
 		final String handle = PortalSessionToken.session().handle;
 		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session()).forAccount();
 
-		return downloadFHIR(context, handle, studyid, role, startDate, endDate, studyGroup, mode);
+		return downloadFHIR(context, handle, null, studyid, role, startDate, endDate, null, studyGroup, mode);
 	}
 
-	public static Result downloadFHIR(AccessContext initialInf, final String handle, final MidataId studyid, final UserRole role, final Date startDate, final Date endDate, final String studyGroup,
+	public static Result downloadFHIR(AccessContext initialInf, final String handle, final MidataId exportUserIdOrNull, final MidataId studyIdOrNull, final UserRole role, final Date startDateOrNull, final Date endDateOrNull, final Date minCreatedOrNull, final String studyGroupOrNull,
 			final String mode) throws AppException, IOException {
 		final MidataId executorId = initialInf.getAccessor();
-		final Study study = Study.getById(studyid, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "validationStatus", "owner", "groups", "createdBy", "code"));
 
-		if (study == null)
-			throw new BadRequestException("error.unknown.study", "Unknown Study");
+		final Study study = studyIdOrNull != null ? Study.getById(studyIdOrNull, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "validationStatus", "owner", "groups", "createdBy", "code")) : null;
 
-		AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId, null, study);
-		
+		if (studyIdOrNull != null && study == null) {									
+				throw new BadRequestException("error.unknown.study", "Unknown Project");
+		}
+
 		StringBuffer out = new StringBuffer();
-
-		AccessLog.log("exeId=" + executorId);
+		out.append("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
+		boolean first = true;
+		
 		KeyManager.instance.continueSession(handle, executorId);
 		ResourceProvider.setAccessContext(initialInf);
-		out.append("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
 
-		boolean first = true;
-
-		if (initialInf.mayAccess("Practitioner", "fhir/Practitioner")) {
-			Set<UserGroupMember> ugms = UserGroupMember.getAllUserByGroup(study._id);
-			Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
-			for (UserGroupMember member : ugms)
-				idmap.put(member.member, member);
-			Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()).map("role", UserRole.RESEARCH), User.ALL_USER);
-
-			ResourceProvider<DomainResource, Model> pprov = FHIRServlet.myProviders.get("Practitioner");
-			for (User user : users) {
-				String location = FHIRServlet.getBaseUrl() + "/" + pprov.getResourceType().getSimpleName() + "/" + user._id.toString();
-				String ser = pprov.serialize(MidataPractitionerResourceProvider.practitionerFromMidataUser(user));
-				out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
-				first = false;
+		if (study != null) {
+			AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId, null, study);	
+			if (initialInf.mayAccess("Practitioner", "fhir/Practitioner")) {
+				Set<UserGroupMember> ugms = UserGroupMember.getAllUserByGroup(study._id);
+				Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
+				for (UserGroupMember member : ugms)
+					idmap.put(member.member, member);
+				Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()).map("role", UserRole.RESEARCH), User.ALL_USER);
+	
+				ResourceProvider<DomainResource, Model> pprov = FHIRServlet.myProviders.get("Practitioner");
+				for (User user : users) {
+					String location = FHIRServlet.getBaseUrl() + "/" + pprov.getResourceType().getSimpleName() + "/" + user._id.toString();
+					String ser = pprov.serialize(MidataPractitionerResourceProvider.practitionerFromMidataUser(user));
+					out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
+					first = false;
+				}
 			}
+		} else {
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.DATA_EXPORT).withActor(initialInf, executorId).withModifiedActor(initialInf, exportUserIdOrNull));			
 		}
 
 		final boolean firstWritten = first;
@@ -412,7 +417,7 @@ public class Studies extends APIController {
 					AccessContext context = ContextManager.instance.createSessionForDownloadStream(executorId, role);
 					ResourceProvider.setAccessContext(context);
 					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, initialInf,
-							CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after", startDate).mapNotEmpty("updated-before", endDate),
+							CMaps.map("export", mode).mapNotEmpty("study", studyIdOrNull).mapNotEmpty("study-group", studyGroupOrNull).mapNotEmpty("shared-after", startDateOrNull).mapNotEmpty("created-after", minCreatedOrNull).mapNotEmpty("updated-before", endDateOrNull).mapNotEmpty("owner", exportUserIdOrNull),
 							RecordManager.COMPLETE_DATA);
 					
 					return new RecIterator(allRecords);
@@ -537,7 +542,7 @@ public class Studies extends APIController {
 
 		// Serves this stream with 200 OK
 		Result result = ok().chunked(outstream).as("application/json+fhir");
-		return setAttachmentContentDisposition(result, "study.json");				
+		return setAttachmentContentDisposition(result, "export.json");				
 	}
 
 	/**
@@ -819,7 +824,7 @@ public class Studies extends APIController {
 		}
 
 		Map<String, Object> properties = new HashMap<String, Object>(study.recordQuery);
-		Feature_FormatGroups.convertQueryToContents(properties);
+		properties = Feature_FormatGroups.convertQueryToContents(properties, true);
 
 		if (!study.requiredInformation.equals(InformationType.DEMOGRAPHIC)) {
 
@@ -1168,7 +1173,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().maySetup())
+		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 		closeStudy(context, study);
@@ -1205,7 +1210,7 @@ public class Studies extends APIController {
 			consent.writes = WritePermissionType.UPDATE_EXISTING;
 			consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 
-			RecordManager.instance.createAnonymizedAPS(ownerId, context.getAccessor(), consent._id, true, true, true);
+			RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, context.getAccessor(), consent._id, true, true, true);
 			Circles.persistConsentMetadataChange(context, consent, true);
 			Circles.addUsers(context, ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
@@ -1231,7 +1236,7 @@ public class Studies extends APIController {
 		consent.status = ConsentStatus.ACTIVE;
 		consent.writes = WritePermissionType.NONE;
 
-		RecordManager.instance.createAnonymizedAPS(ownerId, study._id, consent._id, true, true, true);
+		RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, study._id, consent._id, true, true, true);
 		Circles.persistConsentMetadataChange(context, consent, true);
 
 		RecordManager.instance.copyAPS(context, reference._id, consent._id, ownerId);
@@ -1260,7 +1265,7 @@ public class Studies extends APIController {
 			consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 			consent.noBackshare = true;
 
-			RecordManager.instance.createAnonymizedAPS(ownerId, context.getAccessor(), consent._id, true, true, true);
+			RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, context.getAccessor(), consent._id, true, true, true);
 			Circles.persistConsentMetadataChange(context, consent, true);
 			Circles.addUsers(context, ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
@@ -1420,7 +1425,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().mayUseApplications() && !self.getRole().maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+		if (!self.getConfirmedRole().mayUseApplications() && !self.getConfirmedRole().maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 		// validate json
 		JsonNode json = request.body().asJson();
@@ -1436,6 +1441,8 @@ public class Studies extends APIController {
 			throw new BadRequestException("error.invalid.plugin", "Plugin not found.");
 		if (plugin.status == PluginStatus.DELETED)			
 			throw new BadRequestException("error.invalid.plugin", "Plugin not found.");
+		if (plugin.status == PluginStatus.END_OF_LIFE)            
+            throw new BadRequestException("error.expired.app", "Plugin expired.");
 		if (plugin.targetUserRole != UserRole.RESEARCH)
 			throw new BadRequestException("error.invalid.plugin", "Wrong target role.");
 
@@ -1489,7 +1496,7 @@ public class Studies extends APIController {
 
 		} else {
 			
-			if (!self.getRole().mayUseApplications()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+			if (!self.getConfirmedRole().mayUseApplications()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 			
 			if (shareBack) {
 
@@ -1667,13 +1674,13 @@ public class Studies extends APIController {
 		if (ugm == null)
 			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 
-		if (study.requiredInformation != InformationType.DEMOGRAPHIC && ugm.getRole().pseudonymizedAccess()) {
+		if (study.requiredInformation != InformationType.DEMOGRAPHIC && ugm.getConfirmedRole().pseudonymizedAccess()) {
 			return ok(JsonOutput.toJson(Collections.emptyList(), "Consent", Sets.create()));
 		}
 		Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "status", "partName");
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		List<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, properties, fields, 1000);
-		if (!ugm.getRole().pseudonymizedAccess() && study.requiredInformation != InformationType.DEMOGRAPHIC) {
+		if (!ugm.getConfirmedRole().pseudonymizedAccess() && study.requiredInformation != InformationType.DEMOGRAPHIC) {
 			for (StudyParticipation part : participants) {
 				part.partName = Feature_Pseudonymization.pseudonymizeUser(context, part).getRight();
 				part.ownerName = null;
@@ -1745,7 +1752,7 @@ public class Studies extends APIController {
 		if (ugm == null)
 			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 
-		Set<String> participationFields = Sets.create("pstatus", "status", "group", "ownerName", "owner", "partName", "records");
+		Set<String> participationFields = Sets.create("pstatus", "status", "group", "ownerName", "owner", "partName", "records", "authorized");
 		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, participationFields);
 
 		if (participation == null)
@@ -1753,7 +1760,7 @@ public class Studies extends APIController {
 		if (participation.pstatus == ParticipationStatus.CODE || participation.pstatus == ParticipationStatus.MATCH || participation.pstatus == ParticipationStatus.MEMBER_REJECTED)
 			throw new BadRequestException("error.unknown.participant", "Member does not participate in study");
 
-		if (!ugm.getRole().pseudonymizedAccess() && study.requiredInformation != InformationType.DEMOGRAPHIC) {
+		if (!ugm.getConfirmedRole().pseudonymizedAccess() && study.requiredInformation != InformationType.DEMOGRAPHIC) {
 			participation.partName = Feature_Pseudonymization.pseudonymizeUser(context, participation).getRight();
 			participation.ownerName = null;
 		}
@@ -1770,7 +1777,7 @@ public class Studies extends APIController {
 		ObjectNode obj = Json.newObject();
 		obj.put("participation", JsonOutput.toJsonNode(participation, "Consent", participationFields));
 
-		if (!study.anonymous && (study.requiredInformation == InformationType.DEMOGRAPHIC || !ugm.getRole().pseudonymizedAccess())) {
+		if (!study.anonymous && (study.requiredInformation == InformationType.DEMOGRAPHIC || !ugm.getConfirmedRole().pseudonymizedAccess())) {
 			Set<String> memberFields = Sets.create("_id", "firstname", "lastname", "address1", "address2", "city", "zip", "country", "email", "phone", "mobile");
 			Member member = Member.getById(participation.owner, memberFields);
 			if (member == null)
@@ -1827,7 +1834,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().manageParticipants())
+		if (!self.getConfirmedRole().manageParticipants())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 
 		autoApprove(null, study, portalContext(request), participation.group, Collections.singletonList(participation));
@@ -1857,7 +1864,7 @@ public class Studies extends APIController {
 			UserGroupMember ugmm = UserGroupMember.getByGroupAndActiveMember(study._id, userId);
 			if (ugmm == null)
 				throw new BadRequestException("error.notauthorized.study", "Not member of study team");
-			if (!ugmm.getRole().manageParticipants())
+			if (!ugmm.getConfirmedRole().manageParticipants())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 		} else auditUser = RuntimeConstants.instance.backendService;
 		Set<UserGroupMember> ugms = UserGroupMember.getAllActiveUserByGroup(study._id);
@@ -1867,7 +1874,7 @@ public class Studies extends APIController {
 
 			controllers.research.Studies.joinSharing(context, study._id, study, group, true, participants);
 			for (UserGroupMember ugm : ugms) {
-				if (ugm.getRole().manageParticipants()) {
+				if (ugm.getConfirmedRole().manageParticipants()) {
 					controllers.research.Studies.joinSharing(context, ugm.member, study, group, true, participants);
 				}
 			}
@@ -1959,14 +1966,14 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().manageParticipants())
+		if (!self.getConfirmedRole().manageParticipants())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 
 		// participation.addHistory(new
 		// History(EventType.PARTICIPATION_REJECTED, user, comment));
 		participation.pstatus = ParticipationStatus.RESEARCH_REJECTED;
 		Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
-		Circles.sendConsentNotifications(context.getAccessor(), participation, ConsentStatus.REJECTED, false);
+		Circles.sendConsentNotifications(context, participation, ConsentStatus.REJECTED, false);
 		leaveSharing(context, studyId, partId);
 		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
 		AuditManager.instance.success();
@@ -2014,7 +2021,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().manageParticipants())
+		if (!self.getConfirmedRole().manageParticipants())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 
 		participation.group = JsonValidation.getString(json, "group");
@@ -2074,7 +2081,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().maySetup())
+		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 		if (study.validationStatus != StudyValidationStatus.DRAFT)
@@ -2085,7 +2092,7 @@ public class Studies extends APIController {
 
 		if (anonymous) {
 			for (UserGroupMember member : UserGroupMember.getAllActiveByGroup(study._id)) {
-				if (!member.getRole().pseudonymizedAccess())
+				if (!member.getConfirmedRole().pseudonymizedAccess())
 					throw new BadRequestException("error.invalid.anonymous", "Anonymous can only be set if no team member may access unpseudonymized.");
 			}
 		}
@@ -2123,7 +2130,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().maySetup())
+		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 		if (study.validationStatus != StudyValidationStatus.DRAFT)
 			throw new BadRequestException("error.no_alter.study", "Setup can only be changed as long as study is in draft phase.");
@@ -2243,13 +2250,15 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
+		
+		context = context.forUserGroup(self);
 
 		if (json.has("processFlags")) {
 			study.setProcessFlags(JsonExtraction.extractStringSet(json.get("processFlags")));
 		}
 
 		if (json.has("autoJoinGroup")) {
-			if (!self.getRole().manageParticipants())
+			if (!self.getConfirmedRole().manageParticipants())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 			String grp = JsonValidation.getStringOrNull(json, "autoJoinGroup");
 
@@ -2278,7 +2287,7 @@ public class Studies extends APIController {
 			}
 		}
 		if (json.has("infos")) {
-			if (!self.getRole().maySetup())
+			if (!self.getConfirmedRole().maySetup())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 			JsonNode infos = json.get("infos");
@@ -2293,7 +2302,7 @@ public class Studies extends APIController {
 			study.setInfos(result);
 		}
 		if (json.has("infosPart")) {
-			if (!self.getRole().maySetup())
+			if (!self.getConfirmedRole().maySetup())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 			JsonNode infos = json.get("infosPart");
@@ -2308,7 +2317,7 @@ public class Studies extends APIController {
 			study.setInfosPart(result);
 		}
 		if (json.has("infosInternal")) {
-			if (!self.getRole().maySetup())
+			if (!self.getConfirmedRole().maySetup())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 			JsonNode infos = json.get("infosInternal");
@@ -2357,7 +2366,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().maySetup())
+		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
 		deleteStudy(context, study._id, false);
@@ -2452,7 +2461,7 @@ public class Studies extends APIController {
 		Set<UserGroupMember> members = UserGroupMember.getAllActiveUserByGroup(oldGroup);
 
 		for (UserGroupMember member : members) {
-			ProjectTools.addToUserGroup(context, member.getRole(), userGroup._id, EntityType.USER, member.member);
+			ProjectTools.addToUserGroup(context, member.getConfirmedRole(), userGroup._id, EntityType.USER, member.member);
 		}
 
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
@@ -2470,7 +2479,7 @@ public class Studies extends APIController {
 			newLink.restrictRead = sal.restrictRead;
 			newLink.shareToStudy = sal.shareToStudy;
 			newLink.studyGroup = sal.studyGroup;
-			newLink.studyId = sal.studyId;
+			newLink.studyId = study._id;
 			newLink.type = sal.type;
 			newLink.usePeriod = sal.usePeriod;
 			newLink.validationDeveloper = StudyValidationStatus.DRAFT;
@@ -2711,6 +2720,7 @@ public class Studies extends APIController {
 				newLink.usePeriod = JsonValidation.getEnumSet(sal, "usePeriod", StudyExecutionStatus.class);
 				newLink.validationDeveloper = StudyValidationStatus.DRAFT;
 				newLink.validationResearch = StudyValidationStatus.DRAFT;
+				newLink.linkTargetType = JsonValidation.getEnum(sal, "linkTargetType", LinkTargetType.class);
 				newLink.add();
 			} else {
 				String group = JsonValidation.getString(sal, "group");
@@ -2748,7 +2758,7 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
-		if (!self.getRole().maySetup())
+		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 		if (study.executionStatus != StudyExecutionStatus.PRE && study.executionStatus != StudyExecutionStatus.RUNNING) {
 			throw new BadRequestException("error.notauthorized.action", "Groups can only be added as long as project is running.");

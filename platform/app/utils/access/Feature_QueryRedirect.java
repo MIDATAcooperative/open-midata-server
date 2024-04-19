@@ -35,6 +35,7 @@ import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.AccountAccessContext;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 
 /**
@@ -221,9 +222,14 @@ public class Feature_QueryRedirect extends Feature {
 							AccessLog.log("empty (val/col): ", key, " val1=", val1.toString()," val2=", val2.toString());
 							return null;
 						}
-					} else {					
-						AccessLog.log("empty (val/val): ", key);
-						return null;
+					} else {	
+						if (key.equals("public")) {
+							if ("also".equals(val1)) combined.put(key, val2);
+							else if ("also".equals(val2)) combined.put(key, val1);
+						} else {
+						   AccessLog.log("empty (val/val): ", key);
+						   return null;
+						}
 					}
 				}
 				
@@ -298,7 +304,11 @@ public class Feature_QueryRedirect extends Feature {
 	 */
     public static Map<String, Object> simplifyAccessFilter(MidataId pluginId, Map<String, Object> in) throws AppException {
     	//AccessLog.log("simplifyAccessFilter");
-    	if (in == null) throw new PluginException(pluginId, "error.plugin", "No access filter defined for plugin.");
+    	if (in == null) {
+    		if (pluginId != null) {
+    			throw new PluginException(pluginId, "error.plugin", "No access filter defined for plugin.");
+    		} else throw new InternalServerException("error.internal", "No access filter defined for project.");
+    	}
     	if (!in.containsKey("$or")) return in;
     	Map<String, Object> out = new HashMap<String, Object>();
     	Set<String> ignore = Sets.create("code","content");

@@ -89,4 +89,12 @@ public class RepresentativeAccessContext extends AccessContext {
 		return "Representative Access for other person";
 	}
 
+	@Override
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
+		if (owner.equals(cache.getAccountOwner())) return true;
+		return super.canCreateActiveConsentsFor(owner);
+	}
+	
+	
+
 }

@@ -50,11 +50,19 @@ public class RecordConversion {
 		  Object creator = dbrecord.meta.get("creator");
 		  if (creator != null) record.creator = MidataId.from(creator); else record.creator = dbrecord.owner;
 		  
+		  Object creatorOrg = dbrecord.meta.get("creatorOrg");
+          if (creatorOrg != null) record.creatorOrg = MidataId.from(creatorOrg);
+          
+		  
 		  Object modifiedBy = dbrecord.meta.get("modifiedBy");
 		  if (modifiedBy != null) {
 			  if ("O".equals(modifiedBy)) record.modifiedBy = dbrecord.owner;
 			  else record.modifiedBy = MidataId.from(modifiedBy); 
 		  } else record.modifiedBy = record.creator;
+		  
+		  Object modifiedByOrg = dbrecord.meta.get("modifiedByOrg");
+          if (modifiedByOrg != null) record.modifiedByOrg = MidataId.from(modifiedByOrg);
+          
 		  
 		  record.name = (String) dbrecord.meta.get("name");				
 		  record.created = (Date) dbrecord.meta.get("created");
@@ -113,9 +121,15 @@ public class RecordConversion {
 		BSONObject meta = dbrecord.meta;		
 		meta.put("app", record.app !=null ? record.app.toDb() : null);
 		meta.put("creator", (record.creator != null && !record.creator.equals(record.owner)) ? record.creator.toDb() : null);
+		if (record.creatorOrg != null) {
+		    meta.put("creatorOrg", record.creatorOrg.toDb());
+		}
 		if (record.modifiedBy != null && !record.modifiedBy.equals(record.creator)) {
 		  meta.put("modifiedBy", !record.modifiedBy.equals(record.owner) ? record.modifiedBy.toDb() : "O");
-		}		  
+		}
+		if (record.modifiedByOrg != null && !record.modifiedByOrg.equals(record.creatorOrg)) {
+            meta.put("modifiedByOrg", record.modifiedByOrg.toDb());
+        }
 						
 		meta.put("name", record.name);
 		meta.put("created", record.created);

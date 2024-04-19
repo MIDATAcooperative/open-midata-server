@@ -238,6 +238,7 @@ import oauth from './oauth';
     		if (error && error.code) {
     			if (error.code == "error.blocked.joinmethod") reason = "joinmethod";
     			else if (error.code == "error.blocked.projectconsent") reason = "withdrawn";
+                else if (error.code == "error.expired.app") reason = "expired_app";
     		}
     		
     		if (!reason) return;

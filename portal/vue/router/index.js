@@ -106,7 +106,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/oauth2.vue')
   },
   {
-    base : ['public', 'oauth', "developer", "public_research", "public_developer", "public_provider"],
+    base : ['public', 'oauth', "developer", "admin", "public_research", "public_developer", "public_provider"],
     path : 'registration',
     name: 'registration',
     component: () => import(/* webpackChunkName: "oauth" */ 'views/member/public/registration.vue')
@@ -166,6 +166,11 @@ const routes = [
     path : "failure",
     meta : { keep : true },
     component: postRegister
+  },
+  { 
+    base : ["oauth"],
+    path : "appendoflife",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/appexpired.vue')
   },
   {
     base : ["member", "developer", "admin", "research", "provider", "project"],
@@ -278,6 +283,11 @@ const routes = [
   },
   {
     base : ["public", "oauth"],
+    path : "unsubscribe",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/unsubscribe.vue')
+  },
+  {
+    base : ["public", "oauth"],
     path : "account",
     component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/service.vue'),
     meta : {
@@ -377,7 +387,7 @@ const routes = [
   {
     base : ["provider"],
     path : "addprovider",
-    component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),
+    component: () => import(/* webpackChunkName: "provider" */ 'views/shared/registerother.vue'),
     meta : {
       mode : "provider"
     }
@@ -385,16 +395,21 @@ const routes = [
   {
     base : ["provider", "admin"],
     path : "addorganization",
-    component: () => import(/* webpackChunkName: "research" */ 'views/provider/editorg.vue'),   
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/editorg.vue'),   
   },
   {
     base : ["provider", "admin"],
     path : "updateorganization",
-    component: () => import(/* webpackChunkName: "research" */ 'views/provider/editorg.vue'),   
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/editorg.vue'),   
+  },
+  {
+    base : ["provider", "admin"],
+    path : "requestaccess",
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/requestaccess.vue'),   
   },
   {
     base : ["admin"],
-    path : "registration",
+    path : "adminregistration",
     component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),
     meta : {
       mode : "admin"

@@ -61,11 +61,10 @@ public class APSTreeImplementation extends APSImplementation {
 			if (eaps.isDirect()) oldStyle = true;
 			else if (!eaps.getPermissions().containsKey("p")) {
 			   streamIndexRoot = new StreamIndexRoot(eaps.getLocalAPSKey(), eaps);
-			   oldStyle = false;
-			   AccessLog.log("NEW FORMAT");
+			   oldStyle = false;			  
 			} else {
 				oldStyle = true;
-				AccessLog.log("OLD FORMAT");
+				AccessLog.log("using OLD format");
 				if (!noupdateToNewVersion) {
 					noupdateToNewVersion = true;
 					upgrade();
@@ -231,9 +230,10 @@ public class APSTreeImplementation extends APSImplementation {
 		throw new InternalServerException("error.internal", "Not implemented");		
 	}
 		
-	protected void merge() throws AppException {
+	protected void merge() throws InternalServerException {
 		try {
 		if (eaps.needsMerge()) {
+			noupdateToNewVersion = true; 
 			ready();
 			try (DBSession session = DBLayer.startTransaction("aps")) {
 			
@@ -265,7 +265,11 @@ public class APSTreeImplementation extends APSImplementation {
 		} catch (LostUpdateException e) {
 			recoverFromLostUpdate();
 			merge();		
-		}		
+		} catch (InternalServerException e2) {
+			throw e2;
+		} catch (AppException e3) {
+			throw new InternalServerException("error.internal", e3);
+		}
 	}
 	
 	protected void recoverFromLostUpdate() throws InternalServerException {

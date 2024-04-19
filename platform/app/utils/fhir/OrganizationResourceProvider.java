@@ -29,6 +29,7 @@ import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.Endpoint;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Reference;
@@ -70,6 +71,7 @@ import models.enums.AuditEventType;
 import models.enums.EntityType;
 import models.enums.ResearcherRole;
 import models.enums.UserStatus;
+import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.OrganizationTools;
 import utils.QueryTagTools;
@@ -248,21 +250,28 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 																		
 		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
-		//query.putAccount("public", "also");
+		query.putAccount("public", "also");
 		// At last execute the constructed query
 		return query;
 	}
 	
-	public List<Organization> search(AccessContext context, String name, String city, boolean onlyActive) throws AppException {
+	public List<Organization> search(AccessContext context, String identifier, String name, String city, boolean onlyActive) throws AppException {
 		SearchParameterMap params = new SearchParameterMap();
 		if (name != null) params.add("name", new StringParam(name));		
 		if (city != null) params.add("address-city", new StringParam(city));
+		if (identifier != null) {
+			if (identifier.contains("|")) {
+				String splitted[] = identifier.split("\\|");
+				params.add("identifier", new TokenParam(splitted[0], splitted.length > 1 ? splitted[1] : null));
+			} else params.add("identifier", new TokenParam(identifier));
+		}
 		if (onlyActive) params.add("active", new TokenParam("true"));
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Organization");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restrictionMany("name", true, QueryBuilder.TYPE_STRING, "name", "alias");
 		builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "address.city");
-		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
+		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");		
 		query.putAccount("public", "only");
 		query.putAccount("content", "Organization/HP");
 		List<Record> result = query.execute(context);
@@ -290,7 +299,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	@Override
 	public void updatePrepare(Record record, Organization theResource) throws AppException {
 		if (theResource.getUserData("source")==null && record.content.equals("Organization/HP")) {
-			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CHANGED).withActorUser(info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CHANGED).withActor(info(), info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
 			HealthcareProvider hp = HealthcareProvider.getByIdAlsoDeleted(record._id, HealthcareProvider.ALL);
 			hp.name = theResource.getName();
 			extractAddress(theResource, hp);
@@ -358,10 +367,15 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 		for (Extension ext : theOrganization.getExtensionsByUrl("http://midata.coop/extensions/managed-by")) {
 			Type t = ext.getValue();
-			if (t instanceof Reference) t = FHIRTools.resolve((Reference) t);
+			if (t instanceof Reference) t = FHIRTools.resolve((Reference) t);		
 			ext.setValue(t);
 		}
 		
+		for (Identifier id : theOrganization.getIdentifier()) {
+			OrganizationTools.checkIdentifier(record, id.getSystem(), id.getValue());			
+		}
+		
+		theOrganization.setPartOf(FHIRTools.resolve(theOrganization.getPartOf()));		
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
 		clean(theOrganization);
  
@@ -379,22 +393,32 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 	
 
 	@Override
-	public Organization createExecute(Record record, Organization theResource) throws AppException {
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CREATED).withActorUser(info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
+	public Organization createExecute(Record record, Organization theResource) throws AppException {	
 		if (record.content.equals("Organization/HP") && theResource.getUserData("source")==null) {
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.ORGANIZATION_CREATED).withActor(info(), info().getActor()).withApp(info().getUsedPlugin()).withMessage(theResource.getName()));
 			MidataId parent = null;
 			if (theResource.hasPartOf()) {
 			   Reference parentRef = theResource.getPartOf();
-			   parent =  MidataId.parse(parentRef.getId());
+			   if (parentRef.hasReference()) {
+			     parent =  MidataId.parse(parentRef.getReferenceElement().getIdPart());
+			   }
 			}
 		   HealthcareProvider provider = (HealthcareProvider) record.mapped;
-		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), provider, parent, true, false);		  		
-		   UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), provider, parent, true, false);
+		   try {
+		       UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+		       Organization result = super.createExecute(record, theResource);
+			   AuditManager.instance.success();
+		       return result;
+		   } catch (AppException e) {
+			   HealthcareProvider.delete(provider._id);			   
+			   throw e;
+		   }
 		   
-		   
-		}
-		
-		return super.createExecute(record, theResource);
+		}		
+		Organization result = super.createExecute(record, theResource);
+
+		return result;
 		
 	}
 
@@ -463,8 +487,30 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		
 	}
 	
-   public static void updateFromHP(AccessContext context, HealthcareProvider healthProvider) throws AppException {
+	public static List<String> getIdentifiers(AccessContext context, HealthcareProvider healthProvider) throws AppException {
+		try {
+			info();
+		} catch (AuthenticationException e) {					
+			OrganizationResourceProvider.setAccessContext(context);
+		}
 		
+        OrganizationResourceProvider provider = ((OrganizationResourceProvider) FHIRServlet.myProviders.get("Organization")); 
+				 
+		List<Record> records = RecordManager.instance.list(info().getAccessorRole(), info(), CMaps.map("_id",healthProvider._id).map("format","fhir/Organization").map("public","only").map("content","Organization/HP"), RecordManager.COMPLETE_DATA); 
+		if (!records.isEmpty()) {
+			Organization org = provider.parse(records.get(0), Organization.class);
+			List<String> result = new ArrayList<String>();
+			for (Identifier id : org.getIdentifier()) {
+				result.add(id.getSystem()+"|"+id.getValue());
+			}
+			return result;
+		}
+				
+		return null;
+	}
+	
+   public static void updateFromHP(AccessContext context, HealthcareProvider healthProvider) throws AppException {
+		AccessLog.logBegin("begin update organization resource from model");
 		try {
 			info();
 		} catch (AuthenticationException e) {					
@@ -510,6 +556,22 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			org.setActive(true);
 		}
 		
+		if (healthProvider.identifiers != null) {
+			List<Identifier> ids = new ArrayList<Identifier>();
+			for (String identifierStr : healthProvider.identifiers) {
+				String parts[] = identifierStr.split("[\\s\\|]");
+				Identifier identifier = new Identifier();				
+				if (parts.length==1) identifier.setValue(parts[0]);
+				else if (parts.length>=2) identifier.setSystem(parts[0]).setValue(parts[1]);
+				for (Identifier oldId : org.getIdentifier()) {
+					if (oldId.getValue().equals(identifier.getValue()) && oldId.getSystem() != null && oldId.getSystem().equals(identifier.getSystem())) identifier = oldId;
+				}
+				ids.add(identifier);
+			}
+			
+			org.setIdentifier(ids);
+		}
+		
 		Address adr = new Address();
 		adr.setCity(healthProvider.city);
 		adr.setPostalCode(healthProvider.zip);
@@ -533,7 +595,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
  		  //RecordManager.instance.wipeFromPublic(executor, CMaps.map("_id", healthProvider._id).map("format","fhir/Organization"));
 		  provider.createResource(org);
 		}
-		
+		AccessLog.logEnd("end update organization from model");
 	}
    
    private void extractAddress(Organization theResource, HealthcareProvider prov) {

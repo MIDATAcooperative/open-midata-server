@@ -199,7 +199,7 @@ public class Feature_Pseudonymization extends Feature {
 			String pseudoName = patient.getString("name");
 			return Pair.of(pseudoId, pseudoName);
 		}
-		
+		//return Pair.of(new MidataId(), "ERROR!");
 		throw new InternalServerException("error.internal", "Cannot pseudonymize");
 	}
 	
@@ -213,6 +213,8 @@ public class Feature_Pseudonymization extends Feature {
 			return Pair.of(pseudoId, pseudoName);
 		}
 		AccessLog.log(consent._id.toString()," ow=",consent.owner.toString()," executor=",cache.getAccessor().toString()," acowner=",cache.getAccountOwner().toString());
+		
+		//return Pair.of(new MidataId(), "ERROR!");
 		throw new InternalServerException("error.internal", "Cannot pseudonymize");
 	}
 	
@@ -232,6 +234,7 @@ public class Feature_Pseudonymization extends Feature {
 	}
 	
 	public static void addPseudonymization(AccessContext context, MidataId consentId, MidataId pseudoId, String pseudoName) throws AppException {
+		AccessLog.log("add pseudonymization");
 		RecordManager.instance.setMeta(context, consentId, "_patient", CMaps.map("id", pseudoId.toString()).map("name", pseudoName));		
 	}
 	   

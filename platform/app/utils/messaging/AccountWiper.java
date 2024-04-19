@@ -79,7 +79,7 @@ public class AccountWiper extends AbstractActor {
 	private void sceduleNextPhase(AccountWipeMessage msg) {
 		getContext().getSystem().scheduler().scheduleOnce(
 			   Duration.ofSeconds(30),
-			   getSelf(), new AccountWipeMessage(msg.getAccountToWipe(), msg.getHandle(), msg.getExecutorId(), msg.getPhase() + 1, msg.getAudit()), getContext().dispatcher(), getSender());
+			   getSelf(), new AccountWipeMessage(msg.getAccountToWipe(), msg.getHandle(), msg.getExecutorId(), msg.getPhase() + 1, msg.getAudit(), msg.isFakeAccount()), getContext().dispatcher(), getSender());
 	
 	}
 	
@@ -94,7 +94,7 @@ public class AccountWiper extends AbstractActor {
 			AccessContext context = ContextManager.instance.createSessionForDownloadStream(msg.getExecutorId(), UserRole.ANY);			
 	
 			switch(msg.getPhase()) {
-			case 0: retreatPhase(context, msg.getAccountToWipe());
+			case 0: retreatPhase(context, msg.getAccountToWipe(), msg.isFakeAccount());
                     appLeavePhase(context, msg.getAccountToWipe());
 			        sceduleNextPhase(msg);
 			        AuditManager.instance.success();
@@ -123,7 +123,7 @@ public class AccountWiper extends AbstractActor {
 		}
 	}
 	
-	private void retreatPhase(AccessContext context, MidataId userId) throws AppException {
+	private void retreatPhase(AccessContext context, MidataId userId, boolean isFakeAccount) throws AppException {
         MidataId executorId = context.getAccessor();
 		AccessLog.logBegin("begin expire all consents with healthcare, friends and delegation");
 		Set<Consent> allconsents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.HCRELATED, ConsentType.HEALTHCARE, ConsentType.REPRESENTATIVE)), Consent.ALL, Integer.MAX_VALUE);
@@ -138,7 +138,7 @@ public class AccountWiper extends AbstractActor {
 		for (StudyParticipation study : studies) {
 			if (study.pstatus == ParticipationStatus.MEMBER_REJECTED || study.pstatus == ParticipationStatus.MEMBER_RETREATED || study.pstatus == ParticipationStatus.RESEARCH_REJECTED) continue;
 			try {
-			  controllers.members.Studies.retreatParticipation(context, userId, study.study);
+			  controllers.members.Studies.retreatParticipation(context, userId, study.study, isFakeAccount);
 			} catch (Exception e) {
 			  AccessLog.logException("Error retreating from project", e);
 			  ErrorReporter.report("Account wiper", null, e);

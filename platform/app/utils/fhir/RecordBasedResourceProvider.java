@@ -58,6 +58,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Circles;
 import controllers.PluginsAPI;
+import models.Actor;
 import models.Consent;
 import models.ContentInfo;
 import models.MidataId;
@@ -66,6 +67,7 @@ import models.Record;
 import models.TypedMidataId;
 import models.enums.AuditEventType;
 import utils.AccessLog;
+import utils.ContentTypeTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.QueryTagTools;
@@ -267,6 +269,11 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		return resource._id.toString()+"."+resource.owner.toString();
 	}
 	
+	@Override
+	public String getIdForReference(Record record) {
+		return record._id.toString();
+	}
+	
 	public List<T> parse(List<Record> result, Class<T> resultClass) throws AppException {
 		ArrayList<T> parsed = new ArrayList<T>();	
 	    IParser parser = ctx().newJsonParser();
@@ -288,6 +295,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		Record record = new Record();
 		record._id = new MidataId();
 		record.creator = info().getActor();
+		if (info().isUserGroupContext()) {
+		    record.creatorOrg = info().getAccessor();
+		    record.modifiedByOrg = info().getAccessor();
+		}
 		record.modifiedBy = record.creator;
 		record.format = format;
 		record.app = info().getUsedPlugin();
@@ -506,9 +517,17 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			Reference creatorRef = FHIRTools.getReferenceToCreator(record);
 			if (creatorRef != null) meta.addExtension("creator", creatorRef);
 		}
+		if (record.creatorOrg != null) {
+		    Reference creatorOrg = FHIRTools.getReferenceToActor(Actor.getActor(info(), record.creatorOrg));
+		    if (creatorOrg != null) meta.addExtension("creator-organization", creatorOrg);
+		}
 		if (record.modifiedBy != null && !record.version.equals("0")) {
 			Reference modifiedByRef = FHIRTools.getReferenceToModifiedBy(record);
 			if (modifiedByRef != null) meta.addExtension("modifiedBy", modifiedByRef);
+		}
+		if (record.modifiedByOrg != null && !record.version.equals("0")) {
+		    Reference modifiedByOrg = FHIRTools.getReferenceToActor(Actor.getActor(info(), record.modifiedByOrg));
+		    if (modifiedByOrg != null) meta.addExtension("modifiedBy-organization", modifiedByOrg);
 		}
 				
 		resource.getMeta().addExtension(meta);
@@ -521,26 +540,39 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	 * @param cc CodeableConcept to set
 	 * @return display of codeable concept
 	 */
-	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent) throws InternalServerException {
+	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent) throws AppException {
 	  return setRecordCodeByCodings(record, cc != null ? cc.getCoding() : null, defaultContent);
 	}
 	
-	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent) throws InternalServerException {
+	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent, String category) throws AppException {
+	  return setRecordCodeByCodings(record, cc != null ? cc.getCoding() : null, defaultContent, category);
+	}
+	
+	protected String setRecordCodeByCoding(Record record, Coding coding, String defaultContent) throws AppException {
+       return setRecordCodeByCodings(record, coding != null ? Collections.singletonList(coding) : null, defaultContent);
+	}
+	
+	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent) throws AppException {
+	  return setRecordCodeByCodings(record, codings, defaultContent, null);
+	}
+	
+	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent, String category) throws AppException {
 		  record.code = new HashSet<String>(); 
 		  String display = null;
 		  try {
 			  if (codings != null && !codings.isEmpty()) {
-			  for (Coding coding : codings) {
-				if (coding.getDisplay() != null && display == null) display = coding.getDisplay();
-				if (coding.getCode() != null && coding.getSystem() != null) {
-					record.code.add(coding.getSystem() + " " + coding.getCode());
-				}
-			  }	  
+				  for (Coding coding : codings) {
+					if (coding.getDisplay() != null && display == null) display = coding.getDisplay();
+					if (coding.getCode() != null && coding.getSystem() != null) {
+						record.code.add(coding.getSystem() + " " + coding.getCode());
+					}
+				  }	  
+			  }
 			  
-				ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, record.code, null);
-			  
+			  if (!record.code.isEmpty()) {
+				  ContentTypeTools.setRecordCodeAndContent(info(), record, record.code, null, display, category);			  
 			  } else {
-				  ContentInfo.setRecordCodeAndContent(info().getUsedPlugin(), record, null, defaultContent);
+				  ContentTypeTools.setRecordCodeAndContent(info(), record, null, defaultContent, display, category);
 			  }
 		  } catch (PluginException e) {
 			    ErrorReporter.reportPluginProblem("FHIR (set record code)", null, e);	

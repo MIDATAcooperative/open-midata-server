@@ -25,11 +25,11 @@ import utils.exceptions.AppException;
 
 public class AccountReuseAccessContext extends AccountCreationAccessContext {
 	
-	private Record patientRecord;
+	//private Record patientRecord;
 	
-	public AccountReuseAccessContext(AccessContext parent, MidataId newAccountId, Record patientRecord) throws AppException {
+	public AccountReuseAccessContext(AccessContext parent, MidataId newAccountId) throws AppException {
 		super(new APSCache(parent.getAccessor(), newAccountId), parent);
-		this.patientRecord = patientRecord;
+		//this.patientRecord = patientRecord;
 	}
 	
 	protected AccountReuseAccessContext(APSCache cache, AccessContext parent) {
@@ -37,7 +37,7 @@ public class AccountReuseAccessContext extends AccountCreationAccessContext {
 	}
 	
 	@Override
-	public boolean canCreateActiveConsents() {
+	public boolean canCreateActiveConsentsFor(MidataId owner) {
 		return false;
 	}
 		
@@ -51,10 +51,10 @@ public class AccountReuseAccessContext extends AccountCreationAccessContext {
 		return "account-reuse("+cache.getAccountOwner()+","+parentString()+")";
 	}
 	
-	@Override
+	/*@Override
 	public MidataId getPatientRecordId() {
 		return patientRecord._id;
-	}
+	}*/
 	
 	@Override
 	public AccessContext forAccountReshare() {
@@ -64,6 +64,12 @@ public class AccountReuseAccessContext extends AccountCreationAccessContext {
 	@Override
 	public boolean isUserGroupContext() {
 		return false;
+	}
+	
+	@Override
+	protected AccessContext getRootContext() {	
+		if (parent == null) return this;
+		return new AccountReuseAccessContext(cache, parent.getRootContext());
 	}
 
 }

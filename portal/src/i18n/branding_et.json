@@ -1,0 +1,61 @@
+{
+   "footer" : {
+     "copyright" : " ",
+     "homepage" : "@OPERATOR Homepage",
+     "impressum" : "Impressum",
+     "portals" : "@PLATFORM Portals:"    
+   },
+   
+   "member_login" : {
+     "teaser": "Your Slogan",
+     "info1" : "Teaser line 1",
+     "info2" : "Teaser line 2",
+     "info3" : "Teaser line 3"    
+  },
+  
+  
+  "instance" : {
+     "purpose" : "Platvormi @PLATFORM selle eksemplari eesmärk",
+     "access" : "Juurdepääs platvormi @PLATFORM sellele eksemplarile",
+     "uptime" : "Käideldavus ja seisuajad",
+     "data" : "Platvormi @PLATFORM selles eksemplaris säilitatavad andmed",
+     "start" : "Alustamiseks valige lehe ülaosast üks portaal. Igal portaalil on SISSELOGIMISEKS ja REGISTREERUMISEKS eraldi leht.",
+
+     "localhost" : {
+        "name" : "Kohalik eksemplar (kohalik host)",
+        "intro": "See on platvormi @PLATFORM kohalik paigaldis, mis on saadaval ainult teie arvutis.",
+        "purpose" : "Kohalikku paigaldist saab kasutada platvormile kaastöö tegemiseks ja testimiseks.",
+        "access" : "Võite registreerida kasutajakonto kõigis neljas portaalis. Administraator ei pea kontosid kinnitama. Võite registreerida oma administraatorikontod ja neid kasutada.",
+        "uptime" : "Kui seda kasutate, on see alati ainult teile kättesaadav :-)",
+        "data" : "Selles eksemplaris säilitatavad andmed on kättesaadavad ainult teie kohalikus arvutis."
+     },
+
+     "test" : {
+        "name" : "Testeksemplar",
+        "intro": "See on platvormi @PLATFORM testeksemplar.",
+        "purpose" : "Seda eksemplari saab kasutada uute rakenduste väljatöötamiseks ja turvalises keskkonnas testimiseks. Seda kasutatakse ka portaali ja tagasüsteemi uute versioonide testimiseks enne muude eksemplaride uuendamist.",
+        "access" : "Registreerige oma isiklik arendajakonto. Pärast administraatori kinnitust võite ilma lisakinnituseta registreerida testkasutajaid, teadureid ja tervishoiuteenuse osutajaid.",
+        "uptime" : "Käideldavus ei ole garanteeritud. Võite arvestada, et eksemplari uuendatakse vajadust mööda. Võimaluse korral tehakse uuendusi ajavahemikus 12.00–13.00 Kesk-Euroopa aja järgi, kuid probleemide ilmnemisel võidakse uuendada rohkem kui kord päevas.",
+        "data" : "Säilitage selles eksemplaris ainult testandmeid. Vajaduse korral võidakse nii andmed kui ka kontod kustutada. Kirjed võivad programmivigade tõttu rikneda. Andmeid ei varundata."
+     },
+
+     "demo" : {
+        "name" : "Demoeksemplar",
+        "intro": "See on platvormi @PLATFORM demoeksemplar.",
+        "purpose" : "Seda eksemplari võib kasutada näitamiseks ja koolitamiseks.",
+        "access" : "Võite registreerida kasutajakonto kõigis neljas portaalis. Kontod avatakse lukust, kui administraator on need kinnitanud.",
+        "uptime" : "Seda eksemplari uuendatakse testeksemplarist harvem. Prognoositav seisuaeg on kord nädalas esmaspäeval kell 12.00–14.00 Kesk-Euroopa aja järgi.",
+        "data" : "Säilitage selles eksemplaris ainult näidisandmeid. Andmeid ei varundata."
+     },
+
+     "p-ch" : {
+        "name" : "Šveitsi @PLATFORM",
+        "intro": "See on Šveitsi @PLATFORM.",
+        "purpose" : "See on platvormi @PLATFORM Šveitsi töökeskkond terviseandmete säilitamiseks.",
+        "access" : "Uutel kasutajakontodel on funktsioonipiirangud. Tervishoiuteenuse osutajate, teaduri- ja arendajakontosid saab kasutada ainult pärast kinnitamist käitaja @OPERATOR poolt. Liba- või testkontod ei ole lubatud ja need blokeeritakse.",
+        "uptime" : "Seisuaegadest antakse teada.",
+        "data" : "See eksemplar on ette nähtud päris inimeste tegelike andmete säilitamiseks. Andmeid varundatakse iga päev."
+     }
+
+  }
+}

@@ -62,7 +62,7 @@ public class TokenActions extends Controller {
 		ActionTokenAccessContext context = ExecutionInfo.checkActionToken(request, token);
 	    AuditEventType action = context.getActionToken().action;
 	    
-	    if (action == AuditEventType.CONSENT_REJECTED) {
+	    if (action == AuditEventType.CONSENT_REJECTED) { // Reject consent
 	    	AuditExtraInfo extra = new AuditExtraInfo();
 	    	extra.setExternalUser(context.getActionToken().handle);
 		    MidataId consentId =  context.getActionToken().resourceId;
@@ -77,12 +77,14 @@ public class TokenActions extends Controller {
 				Consent.set(consent._id, "lastUpdated", consent.lastUpdated);	
 				if (consent.externalAuthorized.isEmpty() && consent.authorized.isEmpty()) {
 					Circles.consentStatusChange(context, consent, ConsentStatus.REJECTED);
-					Circles.sendConsentNotifications(context.getAccessor(), consent, ConsentStatus.REJECTED, wasActive);
+					Circles.sendConsentNotifications(context, consent, ConsentStatus.REJECTED, wasActive);
 				} else {
 					Circles.persistConsentMetadataChange(context, consent, false);
 				}
 		    } else throw new BadRequestException("error.invalid.token", "Token expired");
 	    
+	    } else if (action == AuditEventType.ACCESS_CONFIRMATION) { // Confirmation for protected UserGroups
+	    	UserGroups.confirmation(context.getActionToken().userId, context.getActionToken().resourceId);
 	    }
 	   	AuditManager.instance.success();
        return ok();	

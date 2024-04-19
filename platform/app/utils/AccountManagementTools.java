@@ -36,8 +36,10 @@ import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Application;
 import controllers.Circles;
+import models.Actor;
 import models.Circle;
 import models.Consent;
+import models.ConsentEntity;
 import models.HPUser;
 import models.HealthcareProvider;
 import models.Member;
@@ -105,10 +107,11 @@ public class AccountManagementTools {
 		
 			 if (result != null) {
 				 // compare name
-				 if (!isSimilar(user.firstname, result.firstname, false)) {
+				 				 
+				 if (!isSimilarFirstname(user.firstname, result.firstname, false)) {
 					 throw new UnprocessableEntityException("Possible candidate has no match in person given name.");
 				 }
-				 boolean nameOk = isSimilar(user.lastname, result.lastname, false);					 
+				 boolean nameOk = isSimilar(user.lastname, result.lastname, false, false);					 
 				 boolean birthdateOk = compareBirthdate(user.birthday, result.birthday, true);				
 				 boolean addressOk = compareAddress(user, result);
 					 
@@ -130,42 +133,43 @@ public class AccountManagementTools {
 				 // compare address
 				 
 				 return result;
-			 } else {
-				  
-				 Map<String, Object> properties = CMaps
-						 .map("keywordsLC", user.lastname.toLowerCase())
-						 .map("lastname", Pattern.compile("^"+user.lastname+"$", Pattern.CASE_INSENSITIVE))
-						 .map("firstname", Pattern.compile("^"+user.firstname+"$", Pattern.CASE_INSENSITIVE))
-						 .map("status", User.NON_DELETED)
-						 .map("role", UserRole.MEMBER);
-									 
-				 Set<Member> candidates = Member.getAll(properties, Member.FOR_LOGIN);
-				 
-				 boolean mailGiven = nonEmpty(user.email);
-				 for (Member candidate : candidates) {
-					 boolean birthdateOk = compareBirthdate(user.birthday, candidate.birthday, false);
-					 if (!birthdateOk) continue;
-					 
-					 boolean hasMail = nonEmpty(candidate.email);
-					 boolean hasAddress = nonEmpty(candidate.address1) && nonEmpty(candidate.city);
-					 boolean addressOk = compareAddress(user, candidate);
-					 
-					 if ((mailGiven && hasMail && !user.emailLC.equals(candidate.emailLC))
-						|| (!mailGiven && hasMail)) {
-						 if (hasAddress && addressOk) {
-							 logAndNotify(context, user ,candidate, false);
-							 AuditManager.instance.fail(400, "Same email used", "error.nomatch.email");
-							 throw new UnprocessableEntityException("Account exists. Please provide same email as used for account."); 
-						 }
-					 } else if (!hasMail) {
-						 						 					 						 					 
-						 if (hasAddress && addressOk) return candidate; 
-					 }
-					 
-				 }				 
-				 
-			 }
+			 } 
 		 }
+				 
+		 String firstName = user.firstname.trim();
+		 
+		 Map<String, Object> properties = CMaps
+				 .map("keywordsLC", user.lastname.toLowerCase())
+				 .map("lastname", Pattern.compile("^"+user.lastname+"$", Pattern.CASE_INSENSITIVE))
+				 .map("firstname", Pattern.compile("^"+firstName.split("\\s+")[0]+"($|\\s)", Pattern.CASE_INSENSITIVE))
+				 .map("status", User.NON_DELETED)
+				 .map("role", UserRole.MEMBER);
+							 
+		 Set<Member> candidates = Member.getAll(properties, Member.FOR_LOGIN);				 				 				
+		 
+		 boolean mailGiven = nonEmpty(user.email);
+		 for (Member candidate : candidates) {
+			 boolean birthdateOk = compareBirthdate(user.birthday, candidate.birthday, false);
+			 if (!birthdateOk) continue;
+			 
+			 boolean hasMail = nonEmpty(candidate.email);
+			 boolean hasAddress = nonEmpty(candidate.address1) && nonEmpty(candidate.city);
+			 boolean addressOk = compareAddress(user, candidate);
+			 
+			 if ((mailGiven && hasMail && !user.emailLC.equals(candidate.emailLC))
+				|| (!mailGiven && hasMail)) {
+				 if (hasAddress && addressOk) {
+					 logAndNotify(context, user ,candidate, false);
+					 AuditManager.instance.fail(400, "Same email used", "error.nomatch.email");
+					 throw new UnprocessableEntityException("Account exists. Please provide same email as used for account."); 
+				 }
+			 } else if (!hasMail) {
+				 						 					 						 					 
+				 if (hasAddress && addressOk) return candidate; 
+			 }
+			 
+		 }				 
+		 			 	
 		 return null;
 	}
 	
@@ -174,12 +178,12 @@ public class AccountManagementTools {
 				AuditEventBuilder
 				   .withType(used ? AuditEventType.NON_PERFECT_ACCOUNT_MATCH : AuditEventType.TRIED_USER_REREGISTRATION)
 				   .withApp(context.getUsedPlugin())
-				   .withModifiedUser(existing)
+				   .withModifiedActor(existing)
 		);
 		Set targets = new HashSet();
 		if (existing.email != null) targets.add(existing._id);
-		if (user.email != null && !user.email.equals(existing.email)) targets.add(user.email);
-		Messager.sendMessage(context.getUsedPlugin(), used ? MessageReason.NON_PERFECT_ACCOUNT_MATCH : MessageReason.TRIED_USER_REREGISTRATION, null, targets, InstanceConfig.getInstance().getDefaultLanguage(), new HashMap<String, String>());
+		if (used && user.email != null && !user.email.equals(existing.email)) targets.add(user.email);		
+		Messager.sendMessage(context, used ? MessageReason.NON_PERFECT_ACCOUNT_MATCH : MessageReason.TRIED_USER_REREGISTRATION, null, targets, InstanceConfig.getInstance().getDefaultLanguage(), new HashMap<String, String>());
 		
 	}
 	
@@ -189,6 +193,19 @@ public class AccountManagementTools {
 			if (!exist.isEmpty())
 				throw new UnprocessableEntityException("Already exists and consent is already given. Use search instead.");
 		return user;
+	}
+	
+	public static void precheckRegistration(AccessContext context) throws AppException {
+		
+		 Plugin plugin = Plugin.getById(context.getUsedPlugin());
+	     if (plugin.type.equals("external")) {
+	       // Nothing yet
+	     } else if (plugin.type.equals("analyzer") || plugin.targetUserRole.equals(UserRole.RESEARCH)) {
+	       // Nothing yet
+	     } else if (plugin.type.equals("broker")) {	        	
+	    	if (context.getAccessorEntityType() != EntityType.USERGROUP) throw new PluginException(context.getUsedPlugin(), "error.plugin", "Data broker cannot directly create patient resources.");   
+	     } 							
+
 	}
 	
 	public static AccessContext registerUserAccount(AccessContext context, Member user) throws AppException {
@@ -210,9 +227,8 @@ public class AccountManagementTools {
 		AccessContext tempContext = new AccountCreationAccessContext(context, user._id);									
 		user.myaps = RecordManager.instance.createPrivateAPS(tempContext.getCache(), user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
-	
-		User executorUser = context.getRequestCache().getUserById(context.getLegacyOwner());		
-		if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(context.getUsedPlugin(), user, executorUser);			
+				
+		if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(context, context.getUsedPlugin(), user, Actor.getActor(context, context.getActor()));			
 		
 		return tempContext;
 	}
@@ -239,8 +255,14 @@ public class AccountManagementTools {
 		consent.sharingQuery.put("owner", "self");
 		consent.sharingQuery.put("app", plugin.filename);
 		
-		Circles.addConsent(info, consent, false, null, true);
-		return consent;
+		List<Consent> existing = LinkTools.findConsentAlreadyExists(info, consent);
+		
+		if (existing.isEmpty()) {		
+			Circles.addConsent(info, consent, false, null, true);
+			return consent;
+		} else {
+			return null;
+		}
 	}
 	
 	public static Consent createDataBrokerConsent(AccessContext context, Member user, boolean active) throws AppException {
@@ -250,7 +272,7 @@ public class AccountManagementTools {
 		AccessContext ac = context;
 		while (ac != null && !(ac instanceof UserGroupAccessContext)) ac = ac.getParent();
 		
-		UserGroup userGroup = UserGroup.getById(ac.getAccessor(), UserGroup.ALL);
+		UserGroup userGroup = context.getRequestCache().getUserGroupById(ac.getAccessor());
 		if (userGroup == null) throw new InternalServerException("error.internal", "User group for data broker not found.");
 
 		String consentName = userGroup.name;				
@@ -266,11 +288,44 @@ public class AccountManagementTools {
 		consent.authorized.add(ac.getAccessor());
 		consent.entityType = context.getAccessorEntityType();
 		
-		Feature_FormatGroups.convertQueryToContents(app.defaultQuery);		    
-		consent.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);	
+		if (app.resharesData) {
+			consent.allowedReshares = new ArrayList<ConsentEntity>();
+			ConsentEntity ce = new ConsentEntity();
+			ce.type = EntityType.SERVICES;
+			ce.id = app._id;
+			ce.name = app.name;
+			consent.allowedReshares.add(ce);
+			
+			Set<StudyAppLink> sals = StudyAppLink.getByApp(app._id);			
+			for (StudyAppLink sal : sals) {
+				if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+					ce = new ConsentEntity();
+					ce.type = EntityType.USERGROUP;
+					ce.id = sal.studyId;
+					Study study = Study.getById(sal.studyId, Sets.create("code", "name"));
+					if (study != null) {
+						ce.name = study.code+" ("+study.name+")";
+						consent.allowedReshares.add(ce);
+					}
+				}
+			}
 				
-		Circles.addConsent(context, consent, true, null, true);
-		return consent;
+		}
+		//convertAppQueryToConsent
+		Map<String, Object> query = Feature_FormatGroups.convertQueryToContents(app.defaultQuery, false);		    
+		consent.sharingQuery = LinkTools.convertAppQueryToConsent(query);	
+				
+		List<Consent> existing = LinkTools.findConsentAlreadyExists(context, consent);
+		
+		if (existing.isEmpty()) {	
+		    AccessLog.log("no existing data broker consent found, creating one");
+		    Circles.addConsent(context, consent, true, null, true);
+		    return consent;
+		} else {
+		    AccessLog.log("existing data broker consent found, skipping creation");
+			return null;
+		}
+		
 	}
 	
 	public static Consent createRepresentativeConsent(AccessContext context, User executorUser, MidataId targetUser, boolean active) throws AppException {
@@ -296,7 +351,16 @@ public class AccountManagementTools {
 	}
 	
 	public static Consent createExternalServiceConsent(AccessContext info, Member user, boolean active) throws AppException {
+	    
+	    // Check for consent already existing
+	    Set<MobileAppInstance> instances = MobileAppInstance.getActiveByApplicationAndOwner(info.getUsedPlugin(), user._id, MobileAppInstance.APPINSTANCE_ALL);
+	    Plugin app = Plugin.getById(info.getUsedPlugin());
+	    for (MobileAppInstance appInstance : instances) {
+	        if (appInstance.appVersion == app.pluginVersion) return appInstance;
+	    }
+	    
 		if (!active) throw new UnprocessableEntityException("Cannot create consent for existing account.");
+		
 		MobileAppInstance instance = ApplicationTools.installApp(info, info.getUsedPlugin(), user, null, true, null, null);		
 		return instance;
 	}
@@ -377,6 +441,25 @@ public class AccountManagementTools {
 		return result;
 	}
 	
+	public static Set<MidataId> getProjectIdsFromUsedApp(AccessContext context) throws AppException {
+		MidataId pluginId = context.getUsedPlugin();
+		if (pluginId == null) return null;
+		
+		Plugin plugin = Plugin.getById(pluginId);	
+		if (plugin != null && plugin.type.equals("broker")) {
+			Set<StudyAppLink> sals = StudyAppLink.getByApp(pluginId);		
+			if (sals.isEmpty()) return Collections.emptySet();
+			Set<MidataId> studies = new HashSet<MidataId>();
+			for (StudyAppLink sal : sals) {			   
+				if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
+					studies.add(sal.studyId);					
+				}
+			}
+			return studies;
+		}
+		return Collections.emptySet();
+	}
+	
 	public static List<Study> determineProjectsFromUsedApp(AccessContext context, boolean fromLinks) throws AppException {
 		MidataId pluginId = context.getUsedPlugin();
 		if (pluginId == null) return null;
@@ -401,6 +484,7 @@ public class AccountManagementTools {
 	}
 	
 	public static void participateToProjects(AccessContext context, Member user, FHIRPatientHolder fhirPatient, Set<MidataId> projectsToParticipate, boolean active) throws AppException {
+	      AccessLog.log("request participation to "+projectsToParticipate.size()+" projects.");
 		  for (MidataId projectId : projectsToParticipate) {
 			     participateToProject(context, user, fhirPatient, projectId, active, context.getUsedPlugin().equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP);				
 		  }	  
@@ -416,7 +500,7 @@ public class AccountManagementTools {
 			part = controllers.members.Studies.match(context, user._id, projectId, context.getUsedPlugin(), method);
 		}
 		
-		if (part != null) {
+		if (part != null && context.getCache().getAPS(part._id).isAccessible()) {
 			if (part.ownerName != null && !part.ownerName.equals("???")) {
 				Study study = Study.getById(projectId, Sets.create("_id","code","name"));
 				fhirPatient.populateIdentifier(context, study, part);							
@@ -427,19 +511,49 @@ public class AccountManagementTools {
 		return part;
 	}
 	
-	public static boolean isSimilar(String str1, String str2, boolean matchIfEmpty) {
+	public static boolean isSimilarFirstname(String str1, String str2, boolean matchIfEmpty) {
+		if (str1 == null) str1 = "";
+		if (str2 == null) str2 = "";
+		str1 = str1.trim().split(" ")[0];
+		str2 = str2.trim().split(" ")[0];
+		return isSimilar(str1, str2, matchIfEmpty, false);
+	}
+	
+	public static boolean isSimilar(String str1, String str2, boolean matchIfEmpty, boolean isStreet) {
 		if (str1 == null) str1 = "";
 		if (str2 == null) str2 = "";
 		str1 = str1.trim().toLowerCase();
 		str2 = str2.trim().toLowerCase();
 		if (str2.length() == 0 && matchIfEmpty) return true;
-		str1 = soundsSimilar(str1);
-		str2 = soundsSimilar(str2);
+		str1 = soundsSimilar(str1, isStreet);
+		str2 = soundsSimilar(str2, isStreet);
 		return str1.equals(str2);
 	}
 	
-	private static String soundsSimilar(String str) {
-		str = str.replace(".", " ").replace("/", " ").replace("-", " ").replace("  ", " ");		
+	public static String replStart(String str, String start, String repl) {
+		if (str.startsWith(start)) str = str.replace(start, repl);
+		return str;
+	}
+	
+	private static String soundsSimilar(String str, boolean isStreet) {
+		str = str.replace(".", " ").replace("/", " ").replace("-", " ").replace("  ", " ");
+		if (isStreet) {
+			str = str.replace(" ","");
+			str = replStart(str, "avenue", "av");
+			str = replStart(str, "boulevard", "bd");
+			str = replStart(str, "chemin", "ch");
+			str = replStart(str, "esplanade", "espl");
+			str = replStart(str, "impasse", "imp");
+			str = replStart(str, "passage", "pass");
+			str = replStart(str, "promenade", "prom");
+			str = replStart(str, "route", "rte");
+			str = replStart(str, "ruelle", "rle");
+			str = replStart(str, "sentier", "sent");
+			str = str.replace("street","st").replace("straße","str").replace("strasse","str").replace("platz","pl");
+			str = str.replace("avenue","ave").replace("boulevard","blvd").replace("lane","ln").replace("road","rd").replace("drive","dr");
+			str = str.replace("crescent","cres").replace("court","ct").replace("place","pl").replace("square","sq");
+			str = str.replace("sankt","st");						
+		}
 		str = str.replace("ß", "s").replace("ss","s");
 		str = str.replace("ll", "l").replace("rr", "r");
 		str = str.replace("d", "t").replace("tt", "t");
@@ -474,9 +588,9 @@ public class AccountManagementTools {
 	}
 	
 	public static boolean compareAddress(User user1, User user2) {
-		if (!isSimilar(user1.country, user2.country, true)) return false;
-		if (!isSimilar(user1.address1, user2.address1, true)) return false;
-		if (!isSimilar(user1.city, user2.city, true) && !isSimilar(user1.zip, user2.zip, true)) return false;
+		if (!isSimilar(user1.country, user2.country, true, false)) return false;
+		if (!isSimilar(user1.address1, user2.address1, true, true)) return false;
+		if (!isSimilar(user1.city, user2.city, true, false) && !isSimilar(user1.zip, user2.zip, true, false)) return false;
 		return true;		
 	}
 		

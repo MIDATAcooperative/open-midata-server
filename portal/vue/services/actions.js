@@ -45,6 +45,13 @@ import circles from './circles';
 		return null;
 	};
 	
+	service.doActionsFirst = function($router, $route, actions) {
+		acarray = getActions($route) || acarray;
+		if (!hasActions(acarray)) acarray = [];
+		acarray = actions.concat(acarray);
+		return service.showAction($router, $route, null, acarray);
+	};
+	
 	service.showAction = function($router, $route, role, override) {
 				
 		role = role || $route.meta.role.toLowerCase();
@@ -59,7 +66,7 @@ import circles from './circles';
 		
 		if (action == "consent") {			
 		    var what = current.s.split(",");
-			$router.push({ name : role+".newconsent", query : { share : JSON.stringify({"group":what}), authorize : current.a, actions : JSON.stringify(acarray.slice(1)) } });
+			$router.push({ name : role+".newconsent", query : { share : JSON.stringify({"group":what, "group-system" : "v1"}), authorize : current.a, "allow-write" : (current.w || false), actions : JSON.stringify(acarray.slice(1)) } });
 			return true;
 		} else if (action == "account") {
 			$router.push({ name : role+".user2", query : { actions : JSON.stringify(acarray.slice(1)) } });
@@ -68,11 +75,20 @@ import circles from './circles';
 			$router.push({ name : role+".editconsent", query : { consentId : current.c, actions : JSON.stringify(acarray.slice(1)) } })
 			return true;
 		} else if (action == "study") {
-			$router.push({ name : role+".studydetails", query : { studyId : current.s, actions : JSON.stringify(acarray.slice(1)) } });
+		    let squery = { studyId : current.s, actions : JSON.stringify(acarray.slice(1)) };
+		    if (current.c) { squery.code = current.c; } 
+			$router.push({ name : role+".studydetails", query : squery });
 			return true;
 		} else if (action == "use") {
 			$router.push({ name : role+".spaces", query : { app : current.c, actions : JSON.stringify(acarray.slice(1)) } });			
 		    return true;
+	    } else if (action == "space") {
+			$router.push({ name : role+".spaces", query : { spaceId : current.c, actions : JSON.stringify(acarray.slice(1)) } });			
+		    return true;    
+        } else if (action == "open") {
+	        $router.push({ name : role+".spaces", query : { app : current.c, actions : JSON.stringify(acarray.slice(1)) } });
+			//spaces.openAppLink($router, $route, null, { app : current.c });
+			return true;
 		} else if (action == "leave") {
 			$router.push({ name : role+".serviceleave", query : { callback : current.c } });
 			return true;
@@ -106,6 +122,10 @@ import circles from './circles';
 		if (!hasActions(acarray)) return "[]";
 		acarray.splice(0,1);
 		return JSON.stringify(acarray);
+	};
+	
+	service.getActions = function($route) {
+		return getActions($route);
 	};
 	
 	service.params = function() {

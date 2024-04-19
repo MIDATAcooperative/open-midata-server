@@ -161,4 +161,20 @@ public class ResearcherRole implements JsonSerializable {
 		result.id = "SUBORGANIZATION";
 		return result;
 	}
+	
+	public static ResearcherRole UNCONFIRMED() {
+		ResearcherRole result = new ResearcherRole();
+		result.changeTeam = false;
+		result.auditLog = false;
+		result.readData = false;
+		result.writeData = false;
+		result.participants = false;
+		result.pseudo = false;
+		result.export = false;
+		result.setup = false;
+		result.applications = false;
+		result.roleName = "UNCONFIRMED";
+		result.id = "UNCONFIRMED";
+		return result;
+	}
 }

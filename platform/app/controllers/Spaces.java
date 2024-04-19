@@ -36,6 +36,7 @@ import models.MidataId;
 import models.Plugin;
 import models.Space;
 import models.SubscriptionData;
+import models.enums.PluginStatus;
 import models.enums.UserFeature;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -139,8 +140,8 @@ public class Spaces extends APIController {
 		if (json.has("query")) query = JsonExtraction.extractMap(json.get("query"));
 		if (json.has("config")) config = JsonExtraction.extractMap(json.get("config"));
 		
-		Plugin plg = Plugin.getById(visualizationId, Sets.create("type","licenceDef"));
-			
+		Plugin plg = Plugin.getById(visualizationId, Sets.create("type","licenceDef","status"));
+		if (plg.status == PluginStatus.DELETED || plg.status == PluginStatus.END_OF_LIFE) throw new BadRequestException("error.expired.app", "Plugin expired");
 		MidataId licence = null;
 		if (LicenceChecker.licenceRequired(plg)) {
 			licence = LicenceChecker.hasValidLicence(userId, plg, null);
@@ -307,10 +308,10 @@ public class Spaces extends APIController {
 		  throw new InternalServerException("error.internal", "No space with this id exists.");
 		}
 		
-		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters","licenceDef"));
-
+		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters", "licenceDef", "developerTeam"));		
+	
 		boolean testing = visualization.isDeveloper(PortalSessionToken.session().getDeveloperId()) || visualization.isDeveloper(userId); 
-
+		AccessLog.log("get url devid="+PortalSessionToken.session().getDeveloperId()+" userid="+userId+" testing="+testing);
 		if (!testing && LicenceChecker.licenceRequired(visualization)) {
 			LicenceChecker.checkSpace(userId, visualization, space);
 		}

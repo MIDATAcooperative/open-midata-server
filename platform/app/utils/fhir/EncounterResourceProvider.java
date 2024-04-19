@@ -49,6 +49,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.AccessLog;
 import utils.access.pseudo.FhirPseudonymizer;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -357,8 +358,8 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 	// representation
 	public void prepare(Record record, Encounter theEncounter) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a
-		// fixed value or something else useful)
-		String display = setRecordCodeByCodeableConcept(record, null, "Encounter"); 
+		// fixed value or something else useful)		
+		String display = setRecordCodeByCoding(record, theEncounter.getClass_(), "Encounter"); 
 
 		// Task b : Create record name
 		String date = "No time";
@@ -366,6 +367,7 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 			try {
 				date = FHIRTools.stringFromDateTime(theEncounter.getPeriod());
 			} catch (Exception e) {
+				AccessLog.logException("date", e);
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}
 		}

@@ -63,6 +63,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.ConsentQueryTools;
 import utils.InstanceConfig;
+import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.APS;
 import utils.access.DBIterator;
@@ -429,7 +430,7 @@ public class Records extends APIController {
 				}
 			}
 
-			Feature_FormatGroups.convertQueryToContents(query);
+			query = Feature_FormatGroups.convertQueryToContents(query, false);
 
 			if (consent == null) {
 				if (hasAccess) {
@@ -477,7 +478,7 @@ public class Records extends APIController {
 			}
 
 			
-			Feature_FormatGroups.convertQueryToContents(query);
+			query = Feature_FormatGroups.convertQueryToContents(query, false);
 
 			if (consent == null) {
 				RecordManager.instance.shareByQuery(context, start, query);
@@ -574,10 +575,19 @@ public class Records extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result fixAccount(Request request) throws AppException {
 
-		List<String> messages = RecordManager.instance.fixAccount(portalContext(request));
-
+		List<String> messages = new ArrayList<String>();
+						
+		messages.addAll(RecordManager.instance.fixAccount(portalContext(request)));
+				
 		if (getRole().equals(UserRole.ADMIN)) {
-			messages.addAll(RecordManager.instance.fixAccount(portalContext(request).forPublic()));
+			ContextManager.instance.clear();
+			
+			KeyManager.instance.login(60000l, false);
+	        KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
+	        AccessContext tempContext = ContextManager.instance.createRootPublicUserContext();
+			
+			messages.addAll(RecordManager.instance.fixAccount(tempContext));			
+			
 		}
 		
 		ArrayNode result = Json.newArray();
@@ -589,16 +599,21 @@ public class Records extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result downloadAccountData(Request request) throws AppException, IOException {
 
+		
+		
+		
 		final MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
         final UserRole role = getRole();
-		AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId);
+		
 	
 		final String handle = PortalSessionToken.session().handle;
-
 		KeyManager.instance.continueSession(handle);
 		AccessContext context = ContextManager.instance.createSession(PortalSessionToken.session()).forAccount();
 		ResourceProvider.setAccessContext(context);
-		String headerStr = "{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ";
+		
+		return controllers.research.Studies.downloadFHIR(context, handle, executorId, null, role, null, null, null, null, "original");
+		
+		/*String headerStr = "{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ";
 
 		boolean first = true;
 
@@ -707,7 +722,8 @@ public class Records extends APIController {
 
 		// Serves this stream with 200 OK
 		Result result = ok().chunked(outstream).as("application/json+fhir");
-		return setAttachmentContentDisposition(result, "yourdata.json");				
+		return setAttachmentContentDisposition(result, "yourdata.json");	
+		*/			
 	}
 	
 	@APICall

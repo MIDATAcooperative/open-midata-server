@@ -33,6 +33,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.RequestMonitoring;
 
 /**
  * used for debugging. Reading of APS content is not allowed on productive system.
@@ -79,9 +80,10 @@ public class Debug extends Controller {
 	
 	@APICall	
 	public Result test() throws AppException {
-		try {
+	  RequestMonitoring.flush();
+		/*try {
 	      Thread.sleep(10000);
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {}*/
 	  return ok("ok");
 	}
 	

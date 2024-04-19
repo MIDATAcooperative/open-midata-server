@@ -20,6 +20,7 @@ package utils.auth;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -39,6 +40,7 @@ import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
+import utils.OrganizationTools;
 import utils.access.RecordManager;
 import utils.collections.CMaps;
 import utils.collections.RequestCache;
@@ -51,6 +53,7 @@ import utils.context.SpaceAccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.stats.Stats;
 
 public class ExecutionInfo {
 		
@@ -58,7 +61,10 @@ public class ExecutionInfo {
 		String plaintext = TokenCrypto.decryptToken(MobileAppSessionToken.noExtra(token));
 		if (plaintext == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");	
 		JsonNode json = Json.parse(plaintext);
-		if (json == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+		if (json == null) {
+			AccessLog.log("no json in token");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+		}
 		
 		if (json.has("instanceId")) {
 			return checkSpaceToken(SpaceToken.decrypt(request, json));
@@ -111,7 +117,7 @@ public class ExecutionInfo {
 		} else if (authToken.pluginId == null) {							
 			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.autoimport ? authToken.userId : authToken.executorId, Sets.create("visualization", "app", "aps", "autoShare", "sharingQuery", "writes", "owner", "name"));
 			if (space == null) throw new BadRequestException("error.unknown.space", "The current space does no longer exist.");
-							
+			Stats.setPlugin(space.visualization);			
 			MidataId ownerId = authToken.userId;
 			
 			
@@ -204,7 +210,8 @@ public class ExecutionInfo {
 		
 		AccessLog.logBegin("begin check 'mobile' type session token");
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, MobileAppInstance.APPINSTANCE_ALL);
-        if (appInstance == null) OAuth2.invalidToken(); 
+        if (appInstance == null) OAuth2.invalidToken();
+        Stats.setPlugin(appInstance.applicationId);
         if (appInstance.status.equals(ConsentStatus.REJECTED) || appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.FROZEN)) OAuth2.invalidToken();
         
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
@@ -226,11 +233,21 @@ public class ExecutionInfo {
 			appInstance.sharingQuery = RecordManager.instance.getMeta(tempContext, authToken.appInstanceId, "_query").toMap();
 		}
 				
+		Map<String, Object> appobj = (plugin.type.equals("broker")) ? (RecordManager.instance.getMeta(tempContext, appInstance._id, "_app").toMap()) : null;
 		AccessContext session = ContextManager.instance.upgradeSessionForApp(tempContext, appInstance);
 		
-		String group = authToken.getExtra().get("grp");
-		if (group != null) {
-			MidataId groupId = MidataId.parse(group);
+		MidataId groupId = null;
+		if (appobj != null && appobj.containsKey("group")) {
+			groupId = MidataId.from(appobj.get("group"));
+		} else {
+		   String group = authToken.getExtra().get("grp");		
+		
+			if (group != null) {
+				groupId = OrganizationTools.resolve(session, group);
+				if (groupId == null) OAuth2.invalidToken();
+			}
+		}
+		if (groupId != null) {
 			List<UserGroupMember> ugms = session.getCache().getByGroupAndActiveMember(groupId, session.getAccessor(), Permission.READ_DATA);			
 			if (ugms != null) {
 				session = session.forUserGroup(ugms);

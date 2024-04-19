@@ -39,11 +39,11 @@
   "admin_organizations" : {
     "title" : "Organizations",
     "name" : "Name",
+    "identifier" : "Identifier",
     "status" : "Status",    
     "empty" : "No matching organizations found.",
     "members_btn" : "show members"
   },
-
 
   "admin_address" : {
     "title" : "User profile",
@@ -245,7 +245,7 @@
      "myid" : "My recovery id",
      "instr1" : "Click on a share to copy the encrypted share into the clipboard.",
      "instr2" : "Decrypt share on UBUNTU: (click line to copy it to clipboard)",
-     "instr3" : "Decrypt share on MAC OS: (click line to copy it to clipboard)"     
+     "instr3" : "Decrypt share on macOS (bash shell): (click line to copy it to clipboard)"     
    },
    
    "admin_licenses" : {
@@ -277,6 +277,8 @@
       "LOGIN" : "Login",
       "REFRESH" : "Session",
       "INSTALL" : "Activation",
+      "ERROR" : "Error",
+      "FAILURE" : "Failure",
       "GET" : "Read",
       "POST" : "Write",
       "PUT" : "Update",
@@ -326,6 +328,10 @@
 
    "content" : {
       "intro" : "Search for existing codes, content types and groups.",
+      "search_approved" : "Show approved entries",
+      "search_not_approved" : "Show entries missing approval",
+      "search_modified" : "Show modified entries",
+      "search_deleted" : "Show recently deleted entries",
       "createnew_btn" : "New Code",
       "creategroup_btn" : "New Group",
       "make_selection" : "Select the item you want to edit or add a new code to",
@@ -355,7 +361,9 @@
       "delete_group_btn" : "Delete Group",
       "save_btn" : "Save Code & Content type",
       "export_btn" : "Export Changes",
-      "import_btn" : "Import Changes"
+      "import_btn" : "Import Changes",
+      "autoAddedAt" : "Automatically added",
+      "approvedAt" : "Approved"
    },
 
    "admin_importcontent" : {

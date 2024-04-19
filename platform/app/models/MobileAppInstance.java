@@ -40,7 +40,7 @@ import utils.exceptions.InternalServerException;
 @JsonFilter("MobileAppInstance")
 public class MobileAppInstance extends Consent {
 
-	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.ALL, "applicationId", "appVersion", "licence", "serviceId", "deviceId", "passcode", "sharingQuery");
+	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.ALL, "applicationId", "appVersion", "licence", "serviceId", "deviceId", "passcode", "sharingQuery", "comment");
 	
 	/**
 	 * public key of the application instance
@@ -71,6 +71,11 @@ public class MobileAppInstance extends Consent {
 	 * First 3 characters of device string
 	 */
 	public String deviceId;
+	
+	/**
+	 * Additional comment like organization linkage
+	 */
+	public String comment;
 		
 	
 	public MobileAppInstance() {

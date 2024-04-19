@@ -21,6 +21,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
+import models.enums.EntityType;
 import models.enums.UserStatus;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -28,12 +29,12 @@ import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 @JsonFilter("ServiceInstance")
-public class ServiceInstance extends Model {
+public class ServiceInstance extends Model implements Actor {
 
 	private static final String collection = "serviceinstances";
 	
 	public @NotMaterialized final static Set<String> ALL = 
-			 Sets.create("_id", "name", "endpoint", "appId", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey", "studyRelatedOnly", "restrictReadToGroup", "status");
+			 Sets.create("_id", "name", "endpoint", "appId", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey", "studyRelatedOnly", "restrictReadToGroup", "status", "managerName");
    
 	public @NotMaterialized final static Set<String> LIMITED = 
 			 Sets.create("_id", "name", "endpoint", "appId", "linkedStudy", "managerAccount","status");
@@ -42,6 +43,7 @@ public class ServiceInstance extends Model {
      * name of service
     */
     public String name;
+        
     
     /**
      * pubish fhir endpoint 
@@ -76,9 +78,14 @@ public class ServiceInstance extends Model {
     public boolean restrictReadToGroup;
         
     /**
-     * if of user who manages this service instance
+     * id of entity who manages this service instance
      */
     public MidataId managerAccount;
+    
+    /**
+     * name of entity who manages this service instance
+     */
+    public String managerName;
 
     /**
      * public key if no other executor exists
@@ -105,6 +112,14 @@ public class ServiceInstance extends Model {
   public static Set<ServiceInstance> getByManagerAndApp(MidataId managerId, MidataId appId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId).map("appId", appId), fields);
 }
+  
+  public static Set<ServiceInstance> getByManagersAndApp(Set<MidataId> managerId, MidataId appId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId).map("appId", appId), fields);
+  }
+  
+  public static Set<ServiceInstance> getByManagersAndId(Set<MidataId> managerId, MidataId serviceId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId).map("_id", serviceId), fields);
+}
 
   public static Set<ServiceInstance> getByManager(Set<MidataId> managerId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId), fields);
@@ -124,6 +139,36 @@ public class ServiceInstance extends Model {
 
 	public static void delete(MidataId instanceId) throws InternalServerException {				
 		Model.delete(ServiceInstance.class, collection, CMaps.map("_id", instanceId));		
+	}
+
+	@Override
+	public byte[] getPublicKey() {
+		return publicKey;
+	}
+
+	@Override
+	public MidataId getId() {
+		return _id;
+	}
+
+	@Override
+	public String getResourceType() {
+		return "Device";
+	}
+
+	@Override
+	public EntityType getEntityType() {
+		return EntityType.SERVICES;
+	}
+
+	@Override
+	public String getDisplayName() {
+		return name;
+	}
+
+	@Override
+	public String getPublicIdentifier() {
+		return "#"+_id.toString();
 	}
 		
 }

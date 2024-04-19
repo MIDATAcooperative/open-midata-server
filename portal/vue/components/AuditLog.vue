@@ -16,7 +16,7 @@
 -->
 <template>
 <div v-if="log">
-    <pagination v-model="log"></pagination>
+    <pagination v-model="log" search="search"></pagination>
 			
 
 	<div v-for="entry in log.filtered" :key="entry.id">
@@ -96,8 +96,9 @@ export default {
     		crit._count=1001;
     		$data.log = null;
     		fhir.search("AuditEvent", crit)
-    		.then(function(log) {    		    
-    			$data.log = me.process(log);    				
+    		.then(function(log) {    
+    		    for (let entry of log) entry.search = JSON.stringify(entry);		    
+    			$data.log = me.process(log, { filter : { search : "" }});    				
     		});
     			
     			

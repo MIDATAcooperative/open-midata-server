@@ -66,6 +66,7 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ApplicationTools;
+import utils.ContentTypeTools;
 import utils.InstanceConfig;
 import utils.PluginLoginCache;
 import utils.access.RecordManager;
@@ -463,7 +464,7 @@ public class MobileAPI extends Controller {
 		record.format = format;
 		
 			
-		ContentInfo.setRecordCodeAndContent(inf.getUsedPlugin(), record, code, content);
+		ContentTypeTools.setRecordCodeAndContent(inf, record, code, content, null);
 				
 		try {
 			record.data = BasicDBObject.parse(data);	
@@ -620,17 +621,19 @@ public class MobileAPI extends Controller {
 	}
 	
     public static int shareRecord(AccessContext inf, MidataId studyId, String group, Map<String, Object> properties) throws AppException, JsonValidationException {
-										
-		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");
-		MidataId sharer = properties.get("usergroup") != null ? studyId : inf.getAccessor(); 	
-		//properties.remove("usergroup");
-		
-		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudyPublic(sharer, group, studyId, Sets.create("_id"));
-		//Set<StudyRelated> nsrs = StudyRelated.getActiveByOwnerGroupAndStudyPrivate(sharer, group, studyId, Sets.create("_id"));
-		
-		int count = 0;
-		
 			
+    	AccessLog.logBegin("start share records by query context="+inf.toString());
+    	try {
+			if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");
+			MidataId sharer = properties.get("usergroup") != null ? studyId : inf.getAccessor(); 	
+			//properties.remove("usergroup");
+			
+			Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudyPublic(sharer, group, studyId, Sets.create("_id"));
+			//Set<StudyRelated> nsrs = StudyRelated.getActiveByOwnerGroupAndStudyPrivate(sharer, group, studyId, Sets.create("_id"));
+			
+			int count = 0;
+			
+				
 			if (srs.isEmpty()) {				
 				Study study = Study.getById(studyId, Study.ALL);
 				Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
@@ -642,10 +645,13 @@ public class MobileAPI extends Controller {
 			for (StudyRelated sr : srs ) {
 			  count = RecordManager.instance.share(context, sr._id, sr.owner, properties, false);
 			}
-			
+				
 										
-								
-		return count;
+									
+			return count;
+    	} finally {
+    		AccessLog.logEnd("end share records by query");
+    	}
 	}
 			
 	

@@ -25,6 +25,7 @@ import models.enums.ParticipationInterest;
 import models.enums.UserRole;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
+import utils.collections.Sets;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -59,6 +60,13 @@ public class Member extends User {
 	 * id of main APS. Is the same as the id of this object. Will be removed.
 	 */
 	public MidataId myaps;
+	
+	/**
+	 * key for patient record
+	 */
+	public byte[] patientRecordKey;
+	
+	public MidataId patientRecordId;
 	
 	public Member() {
 		role =UserRole.MEMBER;
@@ -110,6 +118,12 @@ public class Member extends User {
 
 	public static void set(MidataId userId, String field, Object value) throws InternalServerException {
 		Model.set(Member.class, collection, userId, field, value);
+	}
+	
+	public void setPatientRecord(MidataId patientRecordId, byte[] patientRecordKey) throws InternalServerException {
+		this.patientRecordId = patientRecordId;
+		this.patientRecordKey = patientRecordKey;
+		this.setMultiple(collection, Sets.create("patientRecordId", "patientRecordKey"));
 	}
 
 	public static void add(Member user) throws InternalServerException {

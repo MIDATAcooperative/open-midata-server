@@ -60,7 +60,10 @@ public class VirusScanner {
 	public VirusScanner() {
 		Config config = InstanceConfig.getInstance().getConfig(); 
 		if (config.hasPath("virusscan.host")) {
-		  this.address = new InetSocketAddress(config.getString("virusscan.host"), config.getInt("virusscan.port"));
+			String host = config.getString("virusscan.host");
+			int port = config.getInt("virusscan.port");
+			AccessLog.log("connect to: host="+host+" port="+port);
+		    this.address = new InetSocketAddress(host, port);
 		} else {
 		  this.address = new InetSocketAddress(defaultHost, defaultPort);
 		}

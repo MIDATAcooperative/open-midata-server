@@ -33,5 +33,9 @@ public enum UsageAction {
 	
 	PUT,
 	
-	DELETE
+	DELETE,
+	
+	FAILURE,
+	
+	ERROR
 }

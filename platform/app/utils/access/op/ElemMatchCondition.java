@@ -17,6 +17,7 @@
 
 package utils.access.op;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -48,12 +49,18 @@ public class ElemMatchCondition extends AndCondition {
 		return result;
 	}
 	
+	
 	public static Condition and(Condition cond1, Condition cond2) {
     	if (cond1 == null) return cond2;
     	if (cond2 == null) return cond1;
     	if (cond1 instanceof ElemMatchCondition) {
-    		((ElemMatchCondition) cond1).checks.add(cond2);
-    		return (ElemMatchCondition) cond1;
+    		if (cond2 instanceof ElemMatchCondition) {
+    			((ElemMatchCondition) cond1).checks.addAll(((ElemMatchCondition) cond2).checks);
+    			return cond1;
+    		} else {
+	    		((ElemMatchCondition) cond1).checks.add(cond2);
+	    		return (ElemMatchCondition) cond1;
+    		}
     	} else if (cond2 instanceof ElemMatchCondition) {
     		((ElemMatchCondition) cond2).checks.add(cond1);
     		return (ElemMatchCondition) cond2;
@@ -64,6 +71,19 @@ public class ElemMatchCondition extends AndCondition {
     		return result;
     	}
     }
+	
+	/*@Override
+	public Condition indexExpression() {		
+		if (checks.size() > 0) {
+			ElemMatchCondition result = new ElemMatchCondition(new ArrayList<Condition>());
+			for (Condition cond : checks) {				 
+				Condition indexAccess = cond.indexExpression();
+				result.checks.add(indexAccess);				
+			}
+			return result;
+		}
+		return null;
+	}*/
 
 	@Override
 	public String toString() {

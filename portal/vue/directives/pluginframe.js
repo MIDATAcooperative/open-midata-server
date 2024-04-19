@@ -23,8 +23,7 @@ export default {
 		elem.innerHTML = html;
 
 		const vm = binding.instance;
-
-		window.addEventListener('message', (e) => {			
+		elem.myListener = function(e) {
 			let data = e.data;
 			if (data && data.name == elem.id && data.viewHeight && data.viewHeight !== "0px") {
 				  //console.log("adjust height for "+elem.id+" to:"+data.viewHeight);
@@ -32,8 +31,16 @@ export default {
 			}  else if (data && data.name == elem.id && data.type==="link") {    	  		 
 				 //console.log(data);
 				 if (vm.openAppLink) vm.openAppLink(data);
+			} else if (data && data.name == elem.id && data.type==="close") {
+				if (vm.done) vm.done();  
 			}
-		});
+		}
+
+		window.addEventListener('message', elem.myListener);
+	},
+	
+	unmounted: function(elem) {		
+		if (elem.myListener) window.removeEventListener('message', elem.myListener);
 	}
     
 }

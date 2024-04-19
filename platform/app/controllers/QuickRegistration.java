@@ -208,14 +208,14 @@ public class QuickRegistration extends APIController {
 			  user.myaps = RecordManager.instance.createPrivateAPS(null, user._id, user._id);
 			  Member.set(user._id, "myaps", user.myaps);
 				
-			  PatientResourceProvider.updatePatientForAccount(context, user._id);
+			  PatientResourceProvider.updatePatientForAccount(context, user._id, true);
 		} else {
 		      handle = Application.registerCreateUser(context, user);
 		}
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
 		Circles.fetchExistingConsents(context, user.emailLC);
-		Application.sendWelcomeMail(app._id, user, null);
+		Application.sendWelcomeMail(null, app._id, user, null);
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REGISTRATION);
 	
 		String joinCode = JsonValidation.getStringOrNull(json, "joinCode");

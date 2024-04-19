@@ -32,10 +32,13 @@
 				
 				<div v-for="databroker in databrokers.filtered" :key="databroker._id">
 				    <div class="row">
-					<div class="col-md-6 col-12 main-col">{{ databroker.name }}</div>					
+					<div class="col-md-6 col-12 main-col">{{ databroker.name }} <span style="color-secondary" v-if="databroker.managerName"> - {{ databroker.managerName }} </span></div>					
 					<div class="col-md-6 col-12">{{ databroker.orgName }}</div>
 					<div class="col-12">{{ databroker.description }}</div>									
-					<div class="col-lg-1 col-md-2 col-12"><a class="btn btn-primary btn-sm" href="javascript:" @click="addConsent(databroker)" v-t="'common.add_btn'"></a></div>
+					<div class="col-12">					   
+					   <a v-if="databroker.decentral" class="btn btn-primary btn-sm" href="javascript:" @click="addConsent(databroker)" v-t="'databrokersearch.new_btn'"></a>
+					   <a v-else class="btn btn-primary btn-sm" href="javascript:" @click="addConsent(databroker)" v-t="'common.add_btn'"></a>
+					 </div>
 					</div>
 					<div style="border-bottom: 1px solid #e0e0e0; margin-top:10px; margin-bottom:5px"></div>
 				</div>
@@ -51,6 +54,7 @@ import Panel from "components/Panel.vue"
 import { status, rl, CheckBox, FormGroup } from 'basic-vue3-components'
 import hc from "services/hc"
 import apps from "services/apps"
+import server from "services/server"
 
 export default {
 
@@ -77,9 +81,23 @@ export default {
 			if ($data.criteria.name) crit.name = $data.criteria.name;
 			
 			$data.databrokers = null;		
-    		me.doBusy(apps.getApps(crit, ["filename", "name","type", "orgName", "description"])
+    		me.doBusy(apps.getApps(crit, ["filename", "name","type", "orgName", "description", "decentral"])
 			.then(function(data) {
-				$data.databrokers = me.process(data.data, { sort : "name" });
+			    let promises = [];
+			    let all = [];
+			    for (let brk of data.data) {
+			      if (brk.decentral) {
+			        promises.push(server.post(jsRoutes.controllers.Services.listServiceInstances(brk._id).url, { app : brk._id })
+                    .then(function(data2) {
+                      for (let inst of data2.data) all.push(inst);
+                      all.push(brk);
+                    }));
+                    
+			      } else all.push(brk);
+			    }
+			    return Promise.all(promises).then(() => { 
+				   $data.databrokers = me.process(all, { sort : "name" });
+				});
 
 			}));
     	},

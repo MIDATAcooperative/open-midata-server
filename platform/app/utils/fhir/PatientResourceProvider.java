@@ -38,13 +38,18 @@ import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
+import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
+
+import com.mongodb.BasicDBObject;
+
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.UriType;
 
@@ -55,6 +60,8 @@ import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
+import ca.uhn.fhir.rest.annotation.Operation;
+import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
@@ -79,6 +86,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Application;
 import controllers.Circles;
+import models.Actor;
 import models.Circle;
 import models.Consent;
 import models.HPUser;
@@ -119,6 +127,7 @@ import utils.QueryTagTools;
 import utils.RuntimeConstants;
 import utils.access.DBIterator;
 import utils.access.Feature_Pseudonymization;
+import utils.access.PatientRecordTool;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.audit.AuditEventBuilder;
@@ -441,7 +450,12 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	public Patient generatePatientForAccount(Member member) {
 		Patient p = new Patient();
 		p.setId(member._id.toString());
-		p.addName().setFamily(member.lastname).addGiven(member.firstname);
+		HumanName name = p.addName().setFamily(member.lastname);
+		if (member.firstname!=null && member.firstname.length()>0) {
+			for (String fn : member.firstname.trim().split("\\s+")) {
+			  name.addGiven(fn);
+			}
+		}
 		p.setBirthDate(member.birthday);
 		if (member.status == UserStatus.ACTIVE || member.status == UserStatus.NEW || member.status == UserStatus.BLOCKED) {
 			p.setActive(true);
@@ -464,30 +478,31 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		return p;
 	}
 
-	public void updatePatientForAccount(Member member) throws AppException {
+	public void updatePatientForAccount(Member member, boolean create) throws AppException {
 		if (!member.role.equals(UserRole.MEMBER)) return;
 		AccessLog.logBegin("update patient record");
-		AccessContext context = ContextManager.instance.createSharingContext(info(), member._id);
-		List<Record> allExisting = RecordManager.instance.list(info().getAccessorRole(), context,
-				CMaps.map("format", "fhir/Patient").map("owner", member._id).map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
-
-		if (allExisting.isEmpty()) {
+		
+		if (create) {
 			Patient patient = generatePatientForAccount(member);
 			Record record = newRecord("fhir/Patient");
 			prepare(record, patient);
 			record.owner = member._id;
-			insertRecord(record, patient);
-		} else {
+			insertRecord(record, patient);	
+			PatientRecordTool.keepPatientRecordKey(info().forAccountReshare(), member._id);
+		} else {		
+			Record record = PatientRecordTool.getPatientRecord(info(), member._id);
 			Patient patient = generatePatientForAccount(member);
-			Record existing = allExisting.get(0);
-			patient.getMeta().setVersionId(existing.version);
-			prepare(existing, patient);
-			updateRecord(existing, patient, getAttachments(patient));
+			patient.getMeta().setVersionId(record.version);
+			record.addTag("fhir:r4");
+			String encoded = ctx.newJsonParser().encodeResourceToString(patient);
+			record.data = BasicDBObject.parse(encoded);	
+			
+			PatientRecordTool.updatePatientRecord(info(), record);
 		}
 		AccessLog.logEnd("update patient record");
 	}
 
-	public static void updatePatientForAccount(AccessContext context, MidataId who) throws AppException {
+	public static void updatePatientForAccount(AccessContext context, MidataId who, boolean create) throws AppException {
 		PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
 
 		try {
@@ -497,7 +512,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 
 		Member member = Member.getById(who, Sets.create(User.ALL_USER, "firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC", "language", "role"));
-		patientProvider.updatePatientForAccount(member);
+		patientProvider.updatePatientForAccount(member, create);
 	}
 
 	public static Patient generatePatientForStudyParticipation(MidataId pseudo, String ownerName, Member member, Study study) {
@@ -530,8 +545,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	}
 
 	public static void createPatientForStudyParticipation(AccessContext inf, Study study, StudyParticipation part, Member member) throws AppException {
-
-		AccessContext context = inf.forAccountReshare().forConsentReshare(part);//Manager.instance.createSharingContext(inf, part.owner);
+		AccessLog.logBegin("start patient for study participation");
+		AccessContext context = ContextManager.instance.createSharingContext(inf, part.owner).forConsentReshare(part);
+		//AccessLog.log("BEFORE="+inf.toString());
+		//AccessLog.log("AFTER="+context.toString());
 		PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
 		PatientResourceProvider.setAccessContext(inf);
 		String userName = "P-" + CodeGenerator.nextUniqueCode();			
@@ -547,7 +564,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		Feature_Pseudonymization.addPseudonymization(context, part._id, pseudo, userName);
 		RecordManager.instance.share(context, member._id, part._id, Collections.singleton(record._id), false);
-	
+		AccessLog.logEnd("end patient for study participation");
 	}
 
 	public void prepare(Record record, Patient thePatient) {
@@ -631,8 +648,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		   AuditManager.instance.addAuditEvent(
 				   AuditEventBuilder
 				     .withType(AuditEventType.USER_EMAIL_CHANGE)
-				     .withActorUser(info().getRequestCache().getUserById(info().getAccessor()))
-				     .withModifiedUser(user)
+				     .withActor(info(), info().getActor())
+				     .withModifiedActor(user)
 				     .withApp(info().getUsedPlugin())
 		   );
 		}
@@ -647,17 +664,17 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 		
 		if (changes) {
-			updatePatientForAccount(info(), user._id);
+			updatePatientForAccount(info(), user._id, false);
 		}
 		if (welcome) {
-			Application.sendWelcomeMail(info().getUsedPlugin(), user, info().getRequestCache().getUserById(info().getAccessor()));
+			Application.sendWelcomeMail(info(), info().getUsedPlugin(), user, Actor.getActor(info(), info().getActor()));
 		}
 		AuditManager.instance.success();
 	}
 
 	@Override
-	public void createPrepare(Record record, Patient thePatient) throws AppException {
-	
+	public void createPrepare(Record record, Patient thePatient) throws AppException {	
+		AccountManagementTools.precheckRegistration(info());
 		super.createPrepare(record, thePatient);
 	}
 
@@ -770,13 +787,27 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		AccountManagementTools.validateUserAccountFilledOut(user);
 	
 		// Is there already a matching user account?
-		Member existing = AccountManagementTools.checkNoExistingConsents(info(), ((RecordWithMeta) record).attached);
+		Member existing = ((RecordWithMeta) record).attached;
+		Patient existingPatient = null;
+		Patient resultPatient = thePatient;
+		
+		if (existing != null) {
+			Record existingRecord = PatientRecordTool.getPatientRecord(info(), existing._id);
+			if (existingRecord != null) {
+				existingPatient = parse(existingRecord, Patient.class);	
+				resultPatient = existingPatient;
+			}
+		}
 					
-		FHIRPatientHolder fhirPatient = new FHIRPatientHolderR4(thePatient);
+		FHIRPatientHolder fhirPatient = new FHIRPatientHolderR4(thePatient, existingPatient);
 		
 		// Determine projects the given user should participate in
-        Set<MidataId> projectsToParticipate = AccountManagementTools.getProjectIdsFromPatient(fhirPatient);					
-		thePatient.getExtension().clear();		
+        Set<MidataId> projectsFromPatient = AccountManagementTools.getProjectIdsFromPatient(fhirPatient);
+        Set<MidataId> projectsFromApp = AccountManagementTools.getProjectIdsFromUsedApp(info);
+        Set<MidataId> projectsToParticipate = new HashSet<MidataId>();
+        projectsToParticipate.addAll(projectsFromPatient);
+        projectsToParticipate.addAll(projectsFromApp);
+        resultPatient.getExtension().clear();		
 		
      	
 		// If no user is existing, create a new user		
@@ -792,7 +823,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			record.owner = user._id;
 			prepare(record, thePatient);			
 			insertRecord(tempContext, record, thePatient);
-
+            PatientRecordTool.keepPatientRecordKey(tempContext.forAccountReshare(), user._id);
 			if (user.emailLC!=null) Circles.fetchExistingConsents(tempContext, user.emailLC);
 		
 		// Otherwise reuse existing user
@@ -800,12 +831,12 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			user = existing;										
 			Plugin plugin = Plugin.getById(info.getUsedPlugin());
 			if (plugin.usePreconfirmed) {
-				thePatient.setId(user._id.toString());
-				addSecurityTag(record, thePatient, QueryTagTools.SECURITY_LOCALCOPY);
+				resultPatient.setId(user._id.toString());
+				/*addSecurityTag(record, thePatient, QueryTagTools.SECURITY_LOCALCOPY);
 				addSecurityTag(record, thePatient, QueryTagTools.SECURITY_GENERATED);
-				prepare(record, thePatient);
+				prepare(record, thePatient);*/
 				
-			    tempContext = new AccountReuseAccessContext(info, user._id, record);
+			    tempContext = new AccountReuseAccessContext(info, user._id);
 			} else {
 			  tempContext = info;
 			}
@@ -814,23 +845,26 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		
 		// Create apropriete consent  
 		Consent consent = AccountManagementTools.createConsentFromAPIContext(tempContext, user, fhirPatient, existing);
+		
+		// Add patient record (or ask for confirmation)
         if (consent != null && !consent.isActive()) {
         	fhirPatient.addServiceUrl(user, consent);
         } else if (consent != null && consent.status==ConsentStatus.PRECONFIRMED) {
         	insertRecord(tempContext.forConsentReshare(consent), record, thePatient);
+        	tempContext = tempContext.forConsent(consent);
         }
 		        
         // Have user participate to requested projects
-		AccountManagementTools.participateToProjects(tempContext, user, fhirPatient, projectsToParticipate, existing == null);	
+		AccountManagementTools.participateToProjects(tempContext, user, fhirPatient, projectsToParticipate, tempContext.canCreateActiveConsentsFor(user._id));	
 		ContextManager.instance.clearCache(); //Is this needed??
 
 		// Cleanup
-		thePatient.setId(user._id.toString());					
+		resultPatient.setId(user._id.toString());					
 		if (tempContext != null) tempContext.close();
 		
 		AuditManager.instance.success();
 		
-		return thePatient;
+		return resultPatient;
 	}
 	
 	protected void populateIdentifiers(MidataId owner, Patient thePatient, List<Study> studies) throws AppException {
@@ -851,6 +885,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 	@Override
 	public Record init(Patient thePatient) throws AppException {
+		if (!info().mayAccess("Patient", "fhir/Patient")) throw new UnprocessableEntityException("Patient resource not in access filter.");
 		RecordWithMeta record = new RecordWithMeta();
 		record._id = new MidataId();
 		record.creator = info().getActor();
@@ -924,13 +959,22 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		Member existing = AccountManagementTools.identifyExistingAccount(info(), user);
 		
 		if (existing != null) {
-			record._id = existing._id;
+			//record._id = existing._id;
 			record.attached = existing;
 		}
 		
 		return record;
 		
 		
+	}
+	
+	@Override
+	public String getIdForReference(Record record) {
+		if (record instanceof RecordWithMeta) {
+			RecordWithMeta rm = (RecordWithMeta) record;
+			if (rm.attached != null) return rm.attached._id.toString();
+		}
+		return record.owner.toString();
 	}
 
 	// Early processing
@@ -939,8 +983,24 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		return 1;
 	}
 	
+	@Operation(name="$everything", idempotent=true)
+	public Bundle everything(	
+			@IdParam IdType thePatientId,
+			@OperationParam(name="start") DateType theStart,
+			@OperationParam(name="end") DateType theEnd,
+			@OperationParam(name="_since") DateType theSince) {
+	    // This is a mock only. The request will be handeled by play and not by HAPI
+		return null;
+	}
 	
-	
+	@Operation(name="$everything", idempotent=true)
+	public Bundle everything(				
+			@OperationParam(name="start") DateType theStart,
+			@OperationParam(name="end") DateType theEnd,
+			@OperationParam(name="_since") DateType theSince) {
+	    // This is a mock only. The request will be handeled by play and not by HAPI
+		return null;
+	}
 	
 
 }

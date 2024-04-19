@@ -68,7 +68,7 @@ class APSImplementation extends APS {
 		return eaps.getId();
 	}
 	
-	public boolean isAccessible() throws AppException {
+	public boolean isAccessible() throws InternalServerException {
 		return eaps.isAccessable();
 	}
 	
@@ -246,7 +246,7 @@ class APSImplementation extends APS {
 		}
 	}
 
-	public BasicBSONObject getMeta(String key) throws AppException {
+	public BasicBSONObject getMeta(String key) throws InternalServerException {
 		merge();
 		return (BasicBSONObject) eaps.getPermissions().get(key);
 	}
@@ -653,7 +653,7 @@ class APSImplementation extends APS {
 		AccessLog.logEnd("end creating accessible subset");
 	}
 	
-	protected void merge() throws AppException {
+	protected void merge() throws InternalServerException {
 		try {
 		if (eaps.needsMerge()) {
 			AccessLog.logBegin("begin merge:",eaps.getId().toString());
@@ -705,7 +705,7 @@ class APSImplementation extends APS {
 		}
 	}
 	
-	protected void mergeHistory(EncryptedAPS subaps) throws AppException {
+	protected void mergeHistory(EncryptedAPS subaps) throws InternalServerException {
 		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
 		BasicBSONList history2 = (BasicBSONList) subaps.getPermissions().get("_history");
 		if (history != null && history2 != null) {

@@ -49,7 +49,9 @@
 								<router-link class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ path : './organization' }"
 									v-t="'provider_navbar.organization'"></router-link> 
                                 <router-link class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show"
-									:to="{ path : './usergroups' }" v-t="'provider_navbar.usergroups'"></router-link>
+									:to="{ path : './usergroups' }" v-t="'provider_navbar.usergroups'"></router-link>									
+                                <router-link class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show"
+									:to="{ path : './servicekeys' }" v-t="'user.servicekeys_btn'"></router-link>																	
 							</div></li>						
 					</ul>
 

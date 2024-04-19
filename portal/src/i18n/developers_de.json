@@ -58,14 +58,18 @@
             "FIRSTUSE_ANYUSER" : "Erstanwendung der Applikation",
             "FIRSTUSE_EXISTINGUSER" : "Erstanwendung der Appplikation (wenn kein Registrierungs-E-Mail versendet)",
             "SERVICE_WITHDRAW" : "Nutzung des Dienstes einstellen",
-            "CONSENT_REQUEST_OWNER_INVITED" : "Vorgeschlagene Zustimmung (Geber, Einladung)",
-            "CONSENT_REQUEST_OWNER_EXISTING" : "Vorgeschlagene Zustimmung (Geber, Nutzer)",
-            "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Vorgeschlagene Zustimmung (Empfänger, Einladung)",
-            "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Vorgeschlagene Zustimmung (Empfänger, Nutzer)",
-            "CONSENT_CONFIRM_OWNER" : "Zustimmungsannahme (Geber)",
-            "CONSENT_CONFIRM_AUTHORIZED" : "Zustimmungsannahme (Empfänger)",
-            "CONSENT_REJECT_OWNER" : "Zustimmungsablehnung (Geber)",
-            "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (Empfänger)",
+            "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
+            "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",
+            "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Consent, unconfirmed : A ➞ (invited) / Sent to (invited)",
+            "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Consent, unconfirmed : A ➞ B / Sent to B",
+            "CONSENT_REQUEST_OWNER_INVITED" : "Consent, unconfirmed : (invited) ➞ B / Sent to (invited)",
+            "CONSENT_REQUEST_OWNER_EXISTING" : "Consent, unconfirmed : A ➞ B / Sent to A",
+            "CONSENT_CONFIRM_AUTHORIZED" : "Consent, active : A ➞ B / Sent to B",
+            "CONSENT_CONFIRM_OWNER" : "Consent, active : A ➞ B / Sent to A",
+            "CONSENT_PRECONFIRMED_OWNER" : "Consent, preconfirmed : A ➞ B / Sent to A",
+            "CONSENT_REJECT_OWNER" : "Consent, * ➞ rejected : A ➞ B / Sent to A",
+            "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Consent, active ➞ rejected : A ➞ B / Sent to B",
+            "CONSENT_REJECT_AUTHORIZED" : "Consent, proposed ➞ rejected : A ➞ B / Sent to B",
             "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet",
             "EMAIL_CHANGED_OLDADDRESS" : "E-Mail-Adresse geändert (an alte E-Mail-Adresse senden)",
             "EMAIL_CHANGED_NEWADDRESS" : "E-Mail-Adresse geändert (an neue E-Mail-Adresse senden)",
@@ -180,7 +184,9 @@
             "code_challenge" : "Beim OAuth2-Login muss die aufrufende Applikation den PKCE-Standard (Proof Key for Code Exchange) verwenden",
             "createendpoint" : "Nicht projektbezogene Instanz des Endpoint erstellen. Nur ankreuzen, wenn Sie diesen Endpoint NICHT mit einem Projekt verwenden wollen.",
             "endpoint" : "Der Pfad dieses nicht projektbezogenen FHIR-Endpoint lautet /opendata/endpointname/fhir",
-            "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen."
+            "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen.",
+            "decentral" : "Die API-Schlüssel werden von mehreren verschiedenen Organisationen verwaltet.",
+            "organizationKeys" : "Die API-Schlüssel sind direkt an eine einzelne Organisation gebunden."
         },
         "status" : {
             "title" : "Applikationsstatus",
@@ -211,7 +217,9 @@
         "publisher" : "Herausgeber",
         "developerTeam" : "Entwicklungsteam",
         "reviews" : "Überprüfungen",
-        "manageyourkeys" : "Verwalten Sie Ihre API-Schlüssel"
+        "manageyourkeys" : "Verwalten Sie Ihre API-Schlüssel",
+        "decentral" : "Dezentrale Verwaltung",
+        "organizationKeys" : "API-Schlüssel pro Organisation"
     },
 
     "appstats" : {
@@ -293,7 +301,7 @@
         "trigger" : "Trigger",
         "triggerDetail" : "FHIR Ressource",
         "action" : "Aktion",
-        "params" : "URL / Dateiname",
+        "params" : "URL / Dateiname / Ziel",
         "triggers" : {
             "fhir_Consent" : "Zustimmungsänderungen",
             "fhir_MessageHeader" : "FHIR-Nachricht",

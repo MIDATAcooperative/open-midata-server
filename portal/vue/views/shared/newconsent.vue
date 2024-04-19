@@ -232,7 +232,7 @@
 			
 					<div class="margin-top" v-if="mayAddPeople()">
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" @click="addYourself();" v-t="'newconsent.add_yourself_btn'"></button>
-						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP' && consent.entityType!='ORGANIZATION'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addOrganization();" v-t="'newconsent.add_organization_btn'"></button>
 						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
 					</div>
@@ -263,9 +263,29 @@
                 <div class="extraspace"></div>
                 <p><b class="text-primary" v-t="'editconsent.restrictions'"></b></p>
                 <p>{{ $t('enum.writepermissiontype.'+(consent.writes || 'NONE')) }}</p>
-                <p v-if="consent.createdBefore"><span v-t="'editconsent.created_before'"></span>:{{ $filters.date(consent.createdBefore) }} 
-            </p>
+                <p v-if="consent.createdAfter"><span v-t="'editconsent.created_after'"></span>:{{ $filters.date(consent.createdAfter) }}</p>
+                <p v-if="consent.createdBefore"><span v-t="'editconsent.created_before'"></span>:{{ $filters.date(consent.createdBefore) }}</p>
+                       
+        </div>
         
+        <div v-if="consent.basedOn">
+           <div class="extraspace"></div>
+           <p><b class="text-primary" v-t="'editconsent.source'"></b></p>
+           <p><span v-t="'editconsent.based_on'"></span>: <router-link :to="{ path : './editconsent', query : { consentId : consent.basedOn._id }}">{{ consent.basedOn.name }}</router-link></p>
+           <p><span v-t="'editconsent.base_created_at'"></span>: {{ $filters.date(consent.basedOn.dateOfCreation) }}</p>
+        </div>
+        
+        <div v-if="consent.allowedReshares">
+           <div class="extraspace"></div>
+           <p><b class="text-primary" v-t="'editconsent.allowed_reshares'"></b></p>
+           <ul>
+           <li v-for="reshare in consent.allowedReshares">
+              <span v-if="reshare.type=='SERVICES'"><span v-t="'editconsent.reshare_service'"></span>: {{ reshare.name }}</span>
+              <span v-if="reshare.type=='USERGROUP'"><span v-t="'editconsent.reshare_usergroup'"></span>: {{ reshare.name }}</span>
+              <span v-if="reshare.type=='USER'"><span v-t="'editconsent.reshare_user'"></span>: {{ reshare.name }}</span>
+              <span v-if="reshare.type=='PROJECT'"><span v-t="'editconsent.reshare_project'"></span>: {{ reshare.name }}</span>
+           </li>
+           </ul>
         </div>
             
         <div v-if="options.advanced" class="margin-top">
@@ -297,6 +317,10 @@
                 <input id="validUntil" type="date" class="form-control" v-validate v-date="consent.validUntil" v-model="consent.validUntil" >              
             </form-group>
 
+            <form-group name="createdAfter" label="newconsent.created_after">	  
+                <input id="createdAfter" type="date" class="form-control" v-validate v-date="consent.createdAfter" v-model="consent.createdAfter"  />              
+            </form-group>
+
             <form-group name="createdBefore" label="newconsent.created_before">	  
                 <input id="createdBefore" type="date" class="form-control" v-validate v-date="consent.createdBefore" v-model="consent.createdBefore"  />              
             </form-group>
@@ -307,7 +331,7 @@
         </div>
             
         <div v-if="!consentId && consent.type" class="margin-top">
-            <button type="button" :disabled="action!=null" @click="skip();" v-if="maySkip()" class="btn btn-default" v-t="'common.skip_btn'"></button>
+            <button type="button" :disabled="action!=null" @click="skip();" v-if="maySkip()" class="btn btn-default space" v-t="'common.skip_btn'"></button>
             <span v-if="!consent.query">
                 <span v-if="!pleaseReview">
                     <button :disabled="action!=null" v-if="consent.authorized.length || consent.usepasscode || consent.externalAuthorized" type="submit" v-submit class="btn btn-primary" v-t="'newconsent.create_btn'"></button>
@@ -352,23 +376,23 @@
         </form>
     </panel>
 	
-	<modal id="provSearch" full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('providersearch.title')">
+	<modal id="provSearch" :full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('providersearch.title')">
 	   <provider-search :setup="setupProvidersearch" @add="addPerson"></provider-search>
 	</modal>
 	
-	<modal id="organizationSearch" full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
+	<modal id="organizationSearch" :full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
 	   <organization-search :setup="setupOrganizationSearch" @add="addPerson"></organization-search>
 	</modal>
 	
-	<modal id="setupUser" full-width="true" @close="setupAdduser=null" :open="setupAdduser!=null" :title="$t('dashboard.addusers')">
+	<modal id="setupUser" :full-width="true" @close="setupAdduser=null" :open="setupAdduser!=null" :title="$t('dashboard.addusers')">
 	  <add-users :setup="setupAdduser" @close="setupAdduser=null" @add="addPerson"></add-users>
 	</modal>
 
-	<modal id="addOwner" full-width="true" @close="setupAddowner=null" :open="setupAddowner!=null" :title="$t('dashboard.addusers')">
+	<modal id="addOwner" :full-width="true" @close="setupAddowner=null" :open="setupAddowner!=null" :title="$t('dashboard.addusers')">
 	  <add-users :setup="setupAddowner" @close="setupAddowner=null" @add="setOwnerPerson"></add-users>
 	</modal>
 
-	<modal id="searchGroup" full-width="true" @close="setupSearchGroup=null" :open="setupSearchGroup!=null" :title="$t('dashboard.usergroupsearch')">
+	<modal id="searchGroup" :full-width="true" @close="setupSearchGroup=null" :open="setupSearchGroup!=null" :title="$t('dashboard.usergroupsearch')">
 	  <user-group-search :setup="setupSearchGroup" @close="setupSearchGroup=null" @add="addPerson"></user-group-search>
 	</modal>
 
@@ -381,6 +405,7 @@ import circles from 'services/circles';
 import session from 'services/session';
 import actions from 'services/actions';
 import labels from 'services/labels';
+import records from 'services/records';
 import usergroups from 'services/usergroups';
 import users from 'services/users';
 import hc from 'services/hc';
@@ -455,7 +480,7 @@ export default {
 			$data.isSimple = true;
 			$data.consentId = $route.query.consentId;
 			
-			me.doBusy(circles.listConsents({ "_id" : $route.query.consentId }, ["name", "type", "status", "owner", "ownerName", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ])
+			me.doBusy(circles.listConsents({ "_id" : $route.query.consentId }, ["name", "type", "status", "owner", "ownerName", "authorized", "entityType", "createdBefore", "createdAfter", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes", "allowedReshares", "basedOn" ])
 			.then(function(data) {
 				if (!data.data || !data.data.length) {
 					$data.consent = null;
@@ -466,7 +491,7 @@ export default {
 				
 				if ($data.consent.type == "CIRCLE") $data.isSimple = false;
 								
-				if ($data.consent.entityType == "USERGROUP") {
+				if ($data.consent.entityType == "USERGROUP" || $data.consent.entityType == "ORGANIZATION") {
 					me.doBusy(usergroups.search({ "_id" : $data.consent.authorized }, ["name", "status", "type"]))
 					.then(function(data2) {
 						for (let userGroup of data2.data) {
@@ -517,8 +542,11 @@ export default {
 			
 		} else {
 			$data.isSimple = false;
-			$data.consent = { type : ($route.meta.role == "provider" ? "HEALTHCARE" : null), status : "ACTIVE", authorized : [], writes : "NONE" };
-			if ($route.meta.role == "provider") $data.consent.writesBool = true;
+			$data.consent = { type : ($route.meta.role == "provider" ? "HEALTHCARE" : null), status : "ACTIVE", authorized : [], writes : "NONE", writesBool : false };
+			if ($route.meta.role == "provider" || $route.query["allow-write"]==="true") {
+			  $data.consent.writesBool = true;
+			  $data.consent.writes = $data.consent.writesBool ? "UPDATE_AND_CREATE" : "NONE";
+			}
 			//views.disableView("records_shared");
 			
 			if ($route.query.owner != null) {
@@ -584,19 +612,17 @@ export default {
 		$data.groupExcludeLabels = [];
 		if ($data.sharing && $data.sharing.query) {
 			var sq = $data.sharing.query;
-		
-		 
-			
+				  		
 			if (sq.content) {
 				for (let r of sq.content) {
-				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner") return;
+				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner") continue;
 				  me.doBusy(labels.getContentLabel(getLocale(), r).then(function(lab) {
 					  if ($data.groupLabels.indexOf(lab)<0) $data.groupLabels.push(lab); 
 				  }));
 				}
 			}
 			if (sq.group) {
-				for (let r of sq.group) {
+				for (let r of sq.group) {				    
 					  me.doBusy(labels.getGroupLabel(getLocale(), sq["group-system"], r).then(function(lab) {
 						  if ($data.groupLabels.indexOf(lab)<0) $data.groupLabels.push(lab); 
 					  }));
@@ -646,14 +672,14 @@ export default {
 		    me.doAction("delete", server.delete(jsRoutes.controllers.Circles.removeMember($data.consent._id, person._id).url).
 			then(function() {
 				$data.consent.authorized.splice($data.consent.authorized.indexOf(person._id), 1);
-				if ($data.consent.entityType == "USERGROUP") {
+				if ($data.consent.entityType == "USERGROUP" || $data.consent.entityType == "ORGANIZATION") {
 				  $data.authteams.splice($data.authteams.indexOf(person), 1);
 				} else {
 				  $data.authpersons.splice($data.authpersons.indexOf(person), 1);
 				}
 			}));
 		} else {
-			if ($data.consent.entityType == "USERGROUP") {
+			if ($data.consent.entityType == "USERGROUP" || $data.consent.entityType == "ORGANIZATION") {
 				  $data.authteams.splice($data.authteams.indexOf(person), 1);
 				  $data.consent.authorized.splice($data.consent.authorized.indexOf(person._id), 1);
 			} else {

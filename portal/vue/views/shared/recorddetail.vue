@@ -128,7 +128,7 @@ export default {
 			    let data = {"properties": {"_id": record.app}, "fields": ["name"]};
 		        me.doBusy(server.post(jsRoutes.controllers.Plugins.get().url, data).
 			    then(function(apps) { 
-                    record.app = apps.data[0].name; 
+                    record.app = (apps.data && apps.data.length) ? apps.data[0].name : "-"; 
                     $data.record = record;
                 }));
 		    });

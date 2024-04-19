@@ -17,22 +17,29 @@
 
 package utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import controllers.Circles;
 import models.Consent;
+import models.ConsentEntity;
 import models.MemberKey;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
+import models.ServiceInstance;
+import models.Study;
 import models.StudyAppLink;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.LinkTargetType;
+import models.enums.Permission;
+import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import utils.access.Feature_FormatGroups;
 import utils.access.Query;
@@ -84,22 +91,101 @@ public class LinkTools {
 	
 	public static Map<String, Object> convertAppQueryToConsent(Map<String, Object> properties) throws AppException {
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("content", new HashSet<String>());
-		convertAppQueryToConsent(result, properties);
+		List<Map<String, Object>> complexResult = new ArrayList<Map<String, Object>>();
+		Set<String> resultContents = new HashSet<String>();
+		properties = ConsentQueryTools.filterQueryForUseInConsent(properties);
+		convertAppQueryToConsent(complexResult, resultContents, properties);
 		if (properties.containsKey("$or")) {
 			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");
-    		for (Map<String, Object> part : parts) convertAppQueryToConsent(result, part);
+    		for (Map<String, Object> part : parts) convertAppQueryToConsent(complexResult, resultContents, part);
 		}
-		
+		if (complexResult.isEmpty()) {
+		    result.put("content", resultContents);
+		} else {
+		    if (complexResult.size() == 1 && resultContents.isEmpty()) return complexResult.get(0);
+		    if (!resultContents.isEmpty()) {
+		      Map<String, Object> resultPart = new HashMap<String, Object>();
+		      resultPart.put("content", resultContents);
+		      complexResult.add(resultPart);
+		    }
+		    result.put("$or", complexResult);
+		}
 		return result;
 	}
 	
-	private static void convertAppQueryToConsent(Map<String, Object> result, Map<String, Object> input) throws AppException {		
+	private static void convertAppQueryToConsent(List<Map<String, Object>> result, Set<String> resultContents, Map<String, Object> input) throws AppException {		
 		Map<String, Object> work = new HashMap<String, Object>(input);
-		Feature_FormatGroups.convertQueryToContents(work);
+		work = Feature_FormatGroups.convertQueryToContents(work, false);
+		if (work.containsKey("group")) {
+		    Map<String, Object> resultPart = new HashMap<String, Object>();
+		    resultPart.put("group", work.get("group"));
+		    resultPart.put("group-system", work.get("group-system"));
+		    resultPart.put("group-dynamic", work.get("group-dynamic"));
+		    if (work.containsKey("group-exclude")) resultPart.put("group-exclude", work.get("group-exclude"));
+		    result.add(resultPart);
+		}
 		if (work.containsKey("content")) {
 		  Set<String> content = Query.getRestriction(work.get("content"), "content");
-		  ((Set<String>) result.get("content")).addAll(content);
+		  resultContents.addAll(content);
 		}
+	}
+	
+	public static List<Consent> findConsentsForResharing(AccessContext context, Consent target, Study optionalProject) throws AppException {
+		AccessLog.logBegin("begin find consents for resharing context=", context.toString());
+		Collection<Consent> candidates = Circles.getConsentsAuthorized(context, CMaps.map("owner", target.owner).map("status", Consent.ACTIVE_STATUS).map("allowedReshares", CMaps.map("$exists", true)), Consent.ALL);
+		AccessLog.log("found ", Integer.toString(candidates.size()), " candidates");
+		List<Consent> result = new ArrayList<Consent>();
+		for (Consent consent : candidates) {
+			if (ConsentQueryTools.isSubQuery(consent.sharingQuery, target.sharingQuery) && checkReshareToEntitiesAllowed(context, consent, target, optionalProject)) result.add(consent);
+		}
+		AccessLog.logEnd("end find consents for resharing #=", Integer.toString(result.size()));
+		return result;
+	}
+	
+	public static List<Consent> findConsentAlreadyExists(AccessContext context, Consent target) throws AppException {
+		AccessLog.logBegin("begin find consent duplicates context=", context.toString());
+		Collection<Consent> candidates = Circles.getConsentsAuthorized(context, CMaps.map("owner", target.owner).map("status", Consent.WRITEABLE_STATUS).map("type", target.type), Consent.ALL);
+		AccessLog.log("found ", Integer.toString(candidates.size()), " candidates");
+		List<Consent> result = new ArrayList<Consent>();
+		for (Consent consent : candidates) {
+			if (ConsentQueryTools.isSubQuery(consent.sharingQuery, target.sharingQuery)) result.add(consent);
+		}
+		AccessLog.logEnd("end find consent duplicates #=", Integer.toString(result.size()));
+		return result;
+	}
+	
+	public static boolean checkReshareToEntitiesAllowed(AccessContext info, Consent base, Consent target, Study optionalProject) throws InternalServerException {
+		boolean isValid = true;
+		if (optionalProject != null) {
+             isValid = false;
+             for (ConsentEntity allowedEntity : base.allowedReshares) {
+                 if (allowedEntity.type == EntityType.USERGROUP && allowedEntity.id.equals(optionalProject._id)) {
+                     isValid = true;
+                 }
+             }
+             AccessLog.log("verified access for project:",optionalProject._id.toString()," success=",Boolean.toString(isValid));
+             return isValid;
+         }
+		for (MidataId auth : target.authorized) {						
+			boolean partValid = false;
+			if (auth.equals(target.owner)) partValid = true;
+			else {
+				for (ConsentEntity allowedEntity : base.allowedReshares) {
+					if (allowedEntity.id.equals(auth)) partValid = true;
+					else if (allowedEntity.type == EntityType.SERVICES && (target.entityType == EntityType.USERGROUP || target.entityType == EntityType.ORGANIZATION)) {
+						Set<ServiceInstance> insts = ServiceInstance.getByApp(allowedEntity.id, Sets.create("_id", "status"));
+						if (!insts.isEmpty()) {
+							for (ServiceInstance si : insts) {
+								if (si.status == UserStatus.ACTIVE && info.getCache().getByGroupAndActiveMember(auth, si._id, Permission.READ_DATA) != null) partValid = true; 
+							}
+						}										
+					}
+				}	
+			}
+			AccessLog.log("verified access for ",auth.toString()," success=",Boolean.toString(partValid));
+			if (!partValid) isValid = false;
+	    }
+		
+		return isValid;
 	}
 }

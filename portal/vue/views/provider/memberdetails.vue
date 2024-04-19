@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col-sm-7">
                 <select class="form-control" @change="selectConsent(data.consent)" v-model="data.consent">
-                    <option v-for="consent in consents" :key="consent._id" :value="consent._id">{{ consent.name }}</option>
+                    <option v-for="consent in consents" :key="consent._id" :value="consent._id">{{ consent.name }} - {{ $t('enum.consentstatus.'+consent.status) }}</option>
                 </select>
             </div>
             <div class="col-sm-5">

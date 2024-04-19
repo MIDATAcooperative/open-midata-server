@@ -25,6 +25,7 @@ import java.util.Set;
 import org.bson.BSONObject;
 
 import models.MidataId;
+import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
@@ -35,6 +36,7 @@ import utils.access.Feature_UserGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.KeyManager;
+import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
@@ -59,7 +61,7 @@ public class ProjectTools {
 				addToUserGroup(context, role, groupId, type, targetUserId);
 			} else {
 								
-				AuditManager.instance.addAuditEvent(AuditEventType.UPDATED_ROLE_IN_TEAM, null, context.getActor(), targetUserId, null, groupId);
+				AuditManager.instance.addAuditEvent(AuditEventType.UPDATED_ROLE_IN_TEAM, context, null, context.getActor(), targetUserId, null, groupId);
 				
 				if (old.member.equals(self.member)) {
 					int size = UserGroupMember.getAllActiveUserByGroup(self.userGroup).size();
@@ -83,7 +85,10 @@ public class ProjectTools {
 
     public static void addToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId)
             throws AppException, AuthException, InternalServerException {
-        AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, context.getActor(), targetUserId, null, groupId);
+        AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, context, null, context.getActor(), targetUserId, null, groupId);
+        
+        UserGroup ug = context.getRequestCache().getUserGroupById(groupId);
+        if (ug == null) throw new InternalServerException("error.internal", "UserGroup not found");
         
         UserGroupMember member = new UserGroupMember();
         member._id = new MidataId();
@@ -93,10 +98,14 @@ public class ProjectTools {
         member.status = ConsentStatus.ACTIVE;
         member.startDate = new Date();
         member.role = role;
+        if (ug.protection) {
+        	member.confirmedUntil = new Date(System.currentTimeMillis()+1000l*10l);
+        	member.confirmedBy = context.getActor();
+        }
         																					
         Map<String, Object> accessData = new HashMap<String, Object>();
         accessData.put("aliaskey", KeyManager.instance.generateAlias(groupId, member._id));
-        RecordManager.instance.createAnonymizedAPS(targetUserId, context.getAccessor(), member._id, false);
+        RecordManager.instance.createAnonymizedAPS(context.getCache(), targetUserId, context.getAccessor(), member._id, false);
         RecordManager.instance.setMeta(context, member._id, "_usergroup", accessData);
         
         member.add();

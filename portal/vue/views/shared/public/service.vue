@@ -41,6 +41,7 @@
 </template>
 <script>
 import server from "services/server.js";
+import session from "services/session.js";
 import { status, ErrorBox } from 'basic-vue3-components';
 export default {
    data: () => ({
@@ -72,19 +73,30 @@ export default {
 		}
         
         let pluginName = $route.query.pluginName || $route.params.pluginName;
+        let pluginName2 = $route.query.open;        
 		if ($route.meta.account) {
             actions.push({ ac : "account"});
 		} else if (pluginName) {
 			actions.push({ ac : "use", c : pluginName });
-		}		
+		} else if (pluginName2) {
+		    actions.push({ ac : "open", c : pluginName2 });
+		}					
 
-		if (!$route.meta.account) {
-			if ($route.query.consent) {
+		if (!$route.meta.account && !pluginName2) {
+		    if ($route.query.authorize && $route.query.data) {
+		        actions.push({ ac : "consent", s : $route.query.data, a: $route.query.authorize, w: $route.query["allow-write"] });
+			} else if ($route.query.consent) {
 				actions.push({ ac : "confirm", c : $route.query.consent });
 			} else if ($route.query.project) {
 				var prjs = $route.query.project.split(",");
 				for (var j=0;j<prjs.length;j++) {
-					actions.push({ ac : "study", s : prjs[j] });		
+				    let prj = prjs[j];
+				    if (prj.indexOf("|")>0) {
+				      let p = prj.split("|");
+				      actions.push({ ac : "study", s : p[0], c : p[1] });
+				    } else {
+					  actions.push({ ac : "study", s : prj });
+					}		
 				}					
 			} else {
 				actions.push({ ac : "unconfirmed" });
@@ -102,6 +114,19 @@ export default {
         let base = "/public";
         if (document.location.hash.indexOf('/portal')>=0) base = "/portal";
 
+        /*if ($route.query.authToken) {
+            $route.query.actions = params.actions;
+            
+            let data = {"authToken": $route.query.authToken };
+		    let func = function(data) {
+			    return server.post(jsRoutes.controllers.Application.authenticate().url, data);
+		    };
+		
+		    session.performLogin(func, data, null)
+		    .then(function(result) {
+		        session.postLogin(result, $router, $route);
+		    });
+		} else*/ 
 		if ($route.query.isnew) {
           $router.push({ path : base+"/registration", query : params });
 		} else {

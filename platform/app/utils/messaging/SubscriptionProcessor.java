@@ -121,7 +121,7 @@ public class SubscriptionProcessor extends AbstractActor {
 					
 					//System.out.println("type="+channel.getType().toString());
 					if (channel.getType().equals(SubscriptionChannelType.RESTHOOK)) {
-						AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.RESTHOOK).withActorUser(subscription.owner).withModifiedUser(triggered.getSourceOwner()).withApp(subscription.app));
+						AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.RESTHOOK).withActor(null, subscription.owner).withModifiedActor(null, triggered.getSourceOwner()).withApp(subscription.app));
 						processRestHook(subscription._id, triggered, channel);
 					} else if (channel.getType().equals(SubscriptionChannelType.MESSAGE)) {
 						String endpoint = channel.getEndpoint();
@@ -259,7 +259,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			subscription.disable();
 			return false;
 		}
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SCRIPT_INVOCATION).withActorUser(subscription.owner).withModifiedUser(triggered.getSourceOwner()).withApp(subscription.app));
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SCRIPT_INVOCATION).withActor(null, subscription.owner).withModifiedActor(null, triggered.getSourceOwner()).withApp(subscription.app));
 		//System.out.println("prcApp2");
 		String endpoint = channel.getEndpoint();		
 		
@@ -285,7 +285,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		if (!plugin.type.equals("analyzer") && !plugin.type.equals("external") && !plugin.type.equals("endpoint")) {
 			user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
 			//System.out.println("prcApp4");
-			if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) {
+			if (user==null || user.status.isDeleted() || user.status.equals(UserStatus.BLOCKED)) {
 				subscription.disable();
 				AuditManager.instance.fail(400, "Subscription owner bad status", "error.unknown.user");
 				return false;
@@ -386,7 +386,7 @@ public class SubscriptionProcessor extends AbstractActor {
 	   
 	   request.addQueryParameter("token", token);
 	   request.addQueryParameter("lang", lang);
-	   request.addQueryParameter("backend", "http://localhost:9001");
+	   request.addQueryParameter("backend", "https://"+InstanceConfig.getInstance().getPlatformServer()); //"http://localhost:9001");
 	   request.addQueryParameter("owner", subscription.owner.toString());
 	   request.addQueryParameter("id", id);
 	   		   
