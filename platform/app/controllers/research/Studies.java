@@ -41,6 +41,7 @@ import org.hl7.fhir.r4.model.DomainResource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
@@ -94,6 +95,7 @@ import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
+import models.enums.ProjectDataFilter;
 import models.enums.ProjectLeavePolicy;
 import models.enums.RejoinPolicy;
 import models.enums.ResearcherRole;
@@ -215,6 +217,7 @@ public class Studies extends APIController {
 		study.participantRules = new HashSet<FilterRule>();
 		study.recordQuery = new HashMap<String, Object>();
 		study.requiredInformation = InformationType.RESTRICTED;
+		study.dataFilters = new HashSet<ProjectDataFilter>();
 		study.anonymous = false;
 		study.assistance = AssistanceType.NONE;
 		study.groups = new ArrayList<StudyGroup>();
@@ -2090,6 +2093,9 @@ public class Studies extends APIController {
 
 		ObjectNode result = Json.newObject();
 		result.put("identity", study.requiredInformation.toString());
+		ArrayNode dataFilters = Json.newArray();
+		if (study.dataFilters != null) for (ProjectDataFilter df : study.dataFilters) dataFilters.add(df.toString()); 
+		result.set("dataFilters", dataFilters);
 		result.put("anonymous", study.anonymous);
 		result.put("assistance", study.assistance.toString());
 		return ok(result);
@@ -2716,6 +2722,7 @@ public class Studies extends APIController {
 		study.infosInternal = result;
 		
 		study.requiredInformation = JsonValidation.getEnum(studyJson, "requiredInformation", InformationType.class);
+		study.dataFilters = JsonExtraction.extractEnumSet(json, "dataFilters", ProjectDataFilter.class);
 		study.assistance = JsonValidation.getEnum(studyJson, "assistance", AssistanceType.class);
 		study.anonymous = JsonValidation.getBoolean(studyJson, "anonymous");
 		study.forceClientCertificate = JsonValidation.getBoolean(studyJson, "forceClientCertificate"); 
