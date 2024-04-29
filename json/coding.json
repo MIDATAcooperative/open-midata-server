@@ -528,3 +528,4 @@
 {"_id":{"$oid":"65f857ddde10d17e638a6ddc"},"system":"http://form.brightfish.com","code":"general-questions-baseline.breast","display":"General questions baseline (breast cancer)","content":"general-questions-baseline-2"}
 {"_id":{"$oid":"660292225311295f58e16dd5"},"system":"http://form.brightfish.com","code":"mpdi","display":"Michigan Pain and Disability Index (mPDI)","content":"mpdi"}
 {"_id":{"$oid":"6602906d5311295f58e16dd3"},"system":"http://form.brightfish.com","code":"mpss","display":"Mood and physical symptoms scale (MPSS)","content":"mpss"}
+{"_id":{"$oid":"661d11325c10195721cc63e9"},"system":"http://www.krebsliga.ch","code":"scape-ch","display":"SCAPE-CH Questionnaire","content":"scape-ch"}

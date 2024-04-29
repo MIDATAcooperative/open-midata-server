@@ -478,3 +478,4 @@
 {"_id":{"$oid":"65df32665ef1d104a4f4597d"},"system":"v1","name":"prom","content":"rose-dyspnea-scale"}
 {"_id":{"$oid":"660292225311295f58e16dd6"},"system":"v1","name":"prom","content":"mpdi"}
 {"_id":{"$oid":"6602906d5311295f58e16dd4"},"system":"v1","name":"prom","content":"mpss"}
+{"_id":{"$oid":"661d11325c10195721cc63ea"},"system":"v1","name":"other_assessment","content":"scape-ch"}

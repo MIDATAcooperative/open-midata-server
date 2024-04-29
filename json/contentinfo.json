@@ -478,3 +478,4 @@
 {"_id":{"$oid":"65ddf15f5ef1d104a4f45580"},"content":"pcs","defaultCode":"http://form.brightfish.com pcs","security":"MEDIUM","label":{"en":"Pain Catastrophizing Scale"},"resourceType":"fhir/QuestionnaireResponse"}
 {"_id":{"$oid":"6602906d24cbb411bbe361f4"},"content":"mpss","defaultCode":"http://form.brightfish.com mpss","security":"MEDIUM","label":{"en":"Mood and physical symptoms scale (MPSS)"},"resourceType":"fhir/QuestionnaireResponse"}
 {"_id":{"$oid":"6602922224cbb411bbe361fa"},"content":"mpdi","defaultCode":"http://form.brightfish.com mpdi","security":"MEDIUM","label":{"en":"Michigan Pain and Disability Index (mPDI)"},"resourceType":"fhir/QuestionnaireResponse"}
+{"_id":{"$oid":"661d1132596b5e73d7de4eab"},"content":"scape-ch","defaultCode":"http://www.krebsliga.ch scape-ch","security":"MEDIUM","label":{"de":"SCAPE-CH Fragebogen","en":"SCAPE-CH Questionnaire","fr":"Questionnaire SCAPE-CH"},"resourceType":"fhir/Questionnaire","source":"Krebsliga"}
