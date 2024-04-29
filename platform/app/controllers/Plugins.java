@@ -152,7 +152,7 @@ public class Plugins extends APIController {
 		// get visualizations
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		if (!properties.containsKey("status")) {
-			properties.put("status", EnumSet.of(PluginStatus.DEVELOPMENT, PluginStatus.BETA, PluginStatus.ACTIVE, PluginStatus.DEPRECATED));
+			properties.put("status", EnumSet.of(PluginStatus.DEVELOPMENT, PluginStatus.BETA, PluginStatus.ACTIVE, PluginStatus.DEPRECATED, PluginStatus.END_OF_LIFE));
 		}
 		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins", "developerTeam");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
@@ -210,7 +210,7 @@ public class Plugins extends APIController {
 		if (type == null || !type.equals("visualization")) type = "mobile";
 
 		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "termsOfUse", "requirements",
-				"orgName", "publisher", "unlockCode", "targetUserRole", "icons", "filename", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate");
+				"orgName", "publisher", "unlockCode", "targetUserRole", "icons", "filename", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "status");
 		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", type), fields);
 		if (plugin != null && plugin.unlockCode != null)
 			plugin.unlockCode = "true";
@@ -283,6 +283,8 @@ public class Plugins extends APIController {
 			throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
 		if (visualization.status == PluginStatus.DELETED)
 			throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
+		if (visualization.status == PluginStatus.END_OF_LIFE)
+            throw new BadRequestException("error.expired.app", "Plugin expired");
 		MidataId visualizationId = visualization._id;
 		
 		if (context == null)

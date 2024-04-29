@@ -351,7 +351,16 @@ public class AccountManagementTools {
 	}
 	
 	public static Consent createExternalServiceConsent(AccessContext info, Member user, boolean active) throws AppException {
+	    
+	    // Check for consent already existing
+	    Set<MobileAppInstance> instances = MobileAppInstance.getActiveByApplicationAndOwner(info.getUsedPlugin(), user._id, MobileAppInstance.APPINSTANCE_ALL);
+	    Plugin app = Plugin.getById(info.getUsedPlugin());
+	    for (MobileAppInstance appInstance : instances) {
+	        if (appInstance.appVersion == app.pluginVersion) return appInstance;
+	    }
+	    
 		if (!active) throw new UnprocessableEntityException("Cannot create consent for existing account.");
+		
 		MobileAppInstance instance = ApplicationTools.installApp(info, info.getUsedPlugin(), user, null, true, null, null);		
 		return instance;
 	}

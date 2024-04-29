@@ -967,6 +967,15 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		
 		
 	}
+	
+	@Override
+	public String getIdForReference(Record record) {
+		if (record instanceof RecordWithMeta) {
+			RecordWithMeta rm = (RecordWithMeta) record;
+			if (rm.attached != null) return rm.attached._id.toString();
+		}
+		return record.owner.toString();
+	}
 
 	// Early processing
 	@Override

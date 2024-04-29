@@ -328,6 +328,10 @@
 
    "content" : {
       "intro" : "Search for existing codes, content types and groups.",
+      "search_approved" : "Show approved entries",
+      "search_not_approved" : "Show entries missing approval",
+      "search_modified" : "Show modified entries",
+      "search_deleted" : "Show recently deleted entries",
       "createnew_btn" : "New Code",
       "creategroup_btn" : "New Group",
       "make_selection" : "Select the item you want to edit or add a new code to",
@@ -357,7 +361,9 @@
       "delete_group_btn" : "Delete Group",
       "save_btn" : "Save Code & Content type",
       "export_btn" : "Export Changes",
-      "import_btn" : "Import Changes"
+      "import_btn" : "Import Changes",
+      "autoAddedAt" : "Automatically added",
+      "approvedAt" : "Approved"
    },
 
    "admin_importcontent" : {

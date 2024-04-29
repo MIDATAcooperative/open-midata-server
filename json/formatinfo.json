@@ -3,20 +3,20 @@
 {"_id":{"$oid":"55ae59d0f351efda91eadc74"},"format":"credentials-manager","comment":"Proprietary format used for storing credentials","visName":"Credentials Manager","visualization":"credentials"}
 {"_id":{"$oid":"55ae59d0f351efda91eadc75"},"format":"demo-card/part1","comment":"Demo only. Do not use!","visName":"Demo kardiologische Risikoauswertung"}
 {"_id":{"$oid":"55ae59d0f351efda91eadc76"},"format":"demo-card/part2","comment":"Demo only. Do not use!","visName":"Demo kardiologische Risikoauswertung"}
-{"_id":{"$oid":"55ae59d0f351efda91eadc77"},"format":"fhir/Observation","comment":"FHIR Observation Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"55ae59d0f351efda91eadc77"},"format":"fhir/Observation","defaultGroup":"all","comment":"FHIR Observation Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"55ae59d0f351efda91eadc78"},"format":"jawbone/summary","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock"}
 {"_id":{"$oid":"55ae59d0f351efda91eadc79"},"format":"jawbone/ticks","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock"}
 {"_id":{"$oid":"55ae59d0f351efda91eadc7b"},"format":"training-app","comment":"Demo only. Do not use.","visName":"Training Editor","visualization":{"$oid":"554c867de4b08413ff37d6f5"}}
 {"_id":{"$oid":"57c935873f4bb36b8d99794a"},"format":"fhir/Patient","comment":"FHIR Patient Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"57c935873f4bb36b8d99794b"},"format":"fhir/DocumentReference","comment":"FHIR DocumentReference Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"57c935873f4bb36b8d99794c"},"format":"fhir/MedicationStatement","comment":"FHIR MedicationStatement Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"57fb683a6b17c4a12238e597"},"format":"fhir/Media","comment":"FHIR Media Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"57c935873f4bb36b8d99794b"},"format":"fhir/DocumentReference","defaultGroup":"healthdocuments","comment":"FHIR DocumentReference Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"57c935873f4bb36b8d99794c"},"format":"fhir/MedicationStatement","defaultGroup":"medication","comment":"FHIR MedicationStatement Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"57fb683a6b17c4a12238e597"},"format":"fhir/Media","defaultGroup":"all","comment":"FHIR Media Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5800fd960834cb6453433e8e"},"format":"fhir/Communication","comment":"FHIR Communication Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"5800fd960834cb6453433e8f"},"format":"fhir/QuestionnaireResponse","comment":"FHIR QuestionnaireResponse Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"583d6a6350214afeeb296918"},"format":"fhir/Task","comment":"FHIR Task Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5800fd960834cb6453433e8f"},"format":"fhir/QuestionnaireResponse","defaultGroup":"assessment","comment":"FHIR QuestionnaireResponse Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"583d6a6350214afeeb296918"},"format":"fhir/Task","defaultGroup":"all","comment":"FHIR Task Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"583dae4eea22922db7561fed"},"format":"fhir/Appointment","comment":"FHIR Appointment Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"58765a8620230b512be8859c"},"format":"fhir/Goal","comment":"FHIR Goal Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"58765a8620230b512be8859d"},"format":"fhir/Condition","comment":"FHIR Condition Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"58765a8620230b512be8859d"},"format":"fhir/Condition","defaultGroup":"condition","comment":"FHIR Condition Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"58ca6a188d4500b518e62bb6"},"format":"fhir/Device","comment":"FHIR Device Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"59fb36eaffe9fb139ff977e3"},"format":"fhir/EpisodeOfCare","comment":"FHIR Episode Of Care Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"59fb36eaffe9fb139ff977e4"},"format":"fhir/Procedure","comment":"FHIR Procedure Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
@@ -25,24 +25,24 @@
 {"_id":{"$oid":"5b4df7656adfdcdde8e3247f"},"format":"fhir/Consent","comment":"FHIR Consent Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b4df7656adfdcdde8e32480"},"format":"fhir/AuditLog","comment":"FHIR Audit Log Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b8514499210b300979f2a14"},"format":"fhir/CarePlan","comment":"FHIR CarePlan Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"5b8514499210b300979f2a15"},"format":"fhir/DiagnosticReport","comment":"FHIR DiagnosticReport Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"5b8514499210b300979f2a16"},"format":"fhir/Encounter","comment":"FHIR Encounter Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a15"},"format":"fhir/DiagnosticReport","defaultGroup":"all","comment":"FHIR DiagnosticReport Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a16"},"format":"fhir/Encounter","defaultGroup":"encounters","comment":"FHIR Encounter Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b8514499210b300979f2a17"},"format":"fhir/FamilyMemberHistory","comment":"FHIR FamilyMemberHistory Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"5b8514499210b300979f2a18"},"format":"fhir/Flag","comment":"FHIR Flag Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a18"},"format":"fhir/Flag","defaultGroup":"all","comment":"FHIR Flag Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b8514499210b300979f2a19"},"format":"fhir/ImagingStudy","comment":"FHIR ImagingStudy Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b8514499210b300979f2a1a"},"format":"fhir/Immunization","comment":"FHIR Immunization Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"5b8514499210b300979f2a1b"},"format":"fhir/MedicationAdministration","comment":"FHIR MedicationAdministration Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a1b"},"format":"fhir/MedicationAdministration","defaultGroup":"medication","comment":"FHIR MedicationAdministration Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b8514499210b300979f2a1c"},"format":"fhir/Sequence","comment":"FHIR Sequence Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"5b8514499210b300979f2a1d"},"format":"fhir/Composition","comment":"FHIR Composition Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"5c051eac49a2b9fefed18b0c"},"format":"fhir/Specimen","comment":"FHIR Specimen Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a1d"},"format":"fhir/Composition","defaultGroup":"all","comment":"FHIR Composition Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5c051eac49a2b9fefed18b0c"},"format":"fhir/Specimen","defaultGroup":"all","comment":"FHIR Specimen Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5ca1db3ebaf9748016abfd0c"},"format":"fhir/Location","comment":"FHIR Location Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"5ec4dc762492c13cbf7baebb"},"format":"fhir/Questionnaire","comment":"FHIR Questionnaire Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5ec4dc762492c13cbf7baebb"},"format":"fhir/Questionnaire","defaultGroup":"assessment","comment":"FHIR Questionnaire Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5ec4dc762492c13cbf7baebd"},"format":"fhir/Group","comment":"FHIR Group Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5ec4dc762492c13cbf7baebf"},"format":"fhir/Practitioner","comment":"FHIR Practitioner Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5ee73a0796fcbad0c74aa0e1"},"format":"fhir/ResearchStudy","comment":"FHIR ResearchStudy Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5efdbaba5a67eaa8db3982b6"},"format":"fhir/Provenance","comment":"FHIR Provenance Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5f1e7b63415c4c23ca5e45a6"},"format":"fhir/Organization","comment":"FHIR Organization Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"5fa291a7250485e3e8ab709e"},"format":"fhir/List","comment":"FHIR List Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5fa291a7250485e3e8ab709e"},"format":"fhir/List","defaultGroup":"all","comment":"FHIR List Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"61eec6201ca1c61b9fa69b3a"},"format":"fhir/RelatedPerson","comment":"FHIR RelatedPerson Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"620a7744f14c3090276bd72f"},"format":"fhir/ImmunizationRecommendation","comment":"FHIR ImmunizationRecommendation Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"6254076864acb90656cea466"},"format":"fhir/RiskAssessment","comment":"FHIR Risk Assessment Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"6254076864acb90656cea466"},"format":"fhir/RiskAssessment","defaultGroup":"assessment","comment":"FHIR Risk Assessment Resource","visName":"Data Viewer","visualization":"fhir-viewer"}

@@ -215,6 +215,7 @@ DELETE  /api/common/groups/:group                        controllers.FormatAPI.d
 POST    /api/common/groupcontent                         controllers.FormatAPI.updateGroupContent(request: Request)
 GET     /api/common/formats                              controllers.FormatAPI.listFormats()
 GET     /api/common/contents                             controllers.FormatAPI.listContents()
+GET     /api/common/contents/:special                    controllers.FormatAPI.listContentsSpecial(request: Request,special: String)
 POST    /api/common/contents                             controllers.FormatAPI.searchContents(request: Request)
 POST    /api/common/contents/create                      controllers.FormatAPI.createContent(request: Request)
 POST    /api/common/contents/:content                    controllers.FormatAPI.updateContent(request: Request,content: String)

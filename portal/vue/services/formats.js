@@ -26,6 +26,10 @@ import server from "./server";
 	service.listContents = function() {
 		return server.get(jsRoutes.controllers.FormatAPI.listContents().url);		
 	};
+    
+    service.listContentsSpecial = function(mode) {
+        return server.get(jsRoutes.controllers.FormatAPI.listContentsSpecial(mode).url);       
+    };
 	
 	service.searchContents = function(properties, fields) {
 		return server.post(jsRoutes.controllers.FormatAPI.searchContents().url, { properties : properties, fields : fields});		

@@ -23,6 +23,7 @@ import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryResponseComponent;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity;
 import org.hl7.fhir.r4.model.OperationOutcome.IssueType;
@@ -81,6 +82,10 @@ public abstract class TransactionStep {
 	 */
 	public Model getRecord() {
 		return record;
+	}
+	
+	public IdType getReferenceId() {
+	  return new IdType(getResource().fhirType(), provider.getIdForReference(getRecord()));
 	}
 
 	/**

@@ -18,6 +18,7 @@
 package models;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +39,7 @@ import utils.exceptions.PluginException;
 public class ContentInfo extends Model {
 
 	private @NotMaterialized static final String collection = "contentinfo";
-	public @NotMaterialized static final Set<String> ALL = Sets.create("content", "defaultCode", "security","label", "resourceType", "comment", "source", "deleted", "lastUpdated");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("content", "defaultCode", "security","label", "resourceType", "comment", "source", "deleted", "lastUpdated", "autoAddedAt","autoAddedBy", "approvedAt","approvedBy");
 	
 	/**
 	 * the name of the content type this class describes
@@ -93,6 +94,13 @@ public class ContentInfo extends Model {
 	public boolean deleted;
 	
 	public long lastUpdated;
+	
+	public Date autoAddedAt;
+	public MidataId autoAddedBy;
+	public @NotMaterialized String autoAddedByName;
+	public Date approvedAt;
+	public MidataId approvedBy;
+	public @NotMaterialized String approvedByName;
 	
 	
 	private @NotMaterialized static Map<String, ContentInfo> byName = new ConcurrentHashMap<String, ContentInfo>();

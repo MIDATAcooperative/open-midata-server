@@ -129,7 +129,12 @@ public enum UserFeature {
 	/**
 	 * Application specific unlock code is required
 	 */
-	APP_UNLOCK_CODE;
+	APP_UNLOCK_CODE,
+	
+	/**
+	 * Application may no longer be used
+	 */
+	APP_EXPIRED;
 	
 	/**
 	 * Does a user satisfy this feature?
@@ -175,6 +180,8 @@ public enum UserFeature {
 				return true;
 			case APP_UNLOCK_CODE:
 				return true;
+			case APP_EXPIRED:
+			    return true;
 		}
 		return false;
 	}

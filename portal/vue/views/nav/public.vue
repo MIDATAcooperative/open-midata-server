@@ -64,17 +64,19 @@
 							<li class="nav-item"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" v-if="!notPublic"
 								:to="{ path : './registration', query : {actions:actions} }" v-t="'navbar.sign_up'"></router-link></li>
 						</ul>
-						<ul class="nav navbar-nav nav-language">
-						    <li class="nav-item d-lg-none"><div class="nav-link" v-t="'navbar.language'"></div></li>
-							<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-								@click="changeLanguage('en')" href="javascript:">en</a></li>
-							<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-								@click="changeLanguage('de')" href="javascript:">de</a></li>
-							<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-								@click="changeLanguage('fr')" href="javascript:">fr</a></li>
-							<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-								@click="changeLanguage('it')" href="javascript:">it</a></li>
-						</ul>
+                        <div class="nav navbar-nav nav-language">
+                        <div class="nav-item d-lg-none"><div class="nav-link" v-t="'navbar.language'"></div></div>
+                        <div class="nav-item d-none d-lg-block dropdown">
+                          <a class="dropdown-toggle nav-link" href="javascript:" data-toggle="dropdown" aria-expanded="false">{{ $t("navbar.language") }} <img :src="'/images/lang/'+language+'.png'"></a>
+						  <div class="dropdown-menu">
+							<a v-for="lang in languages" :key="lang.value" class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show"
+								@click="changeLanguage(lang.value)" href="javascript:"><img class="mr-1" :src="'/images/lang/'+lang.value+'.png'">{{ $t(lang.name) }}</a>
+							
+						  </div>
+                        </div>
+                        <div v-for="lang in languages" :key="lang.value" class="nav-item d-lg-none"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
+                        								@click="changeLanguage(lang.value)" href="javascript:"><img class="mr-1" :src="'/images/lang/'+lang.value+'.png'">{{ $t(lang.name) }}</a></div>
+                        </div>
 					</div>
 				</div>
 			</div>
@@ -100,8 +102,9 @@
 
 <script>
 import ENV from "config";
-import { setLocale, addBundle } from "services/lang.js";
+import { setLocale, addBundle, getLocale } from "services/lang.js";
 import session from "services/session.js"
+import languages from "services/languages.js"
 
 export default {
 	
@@ -110,7 +113,9 @@ export default {
 	notPublic : false,
 	now : "",
 	actions : null,
-	homepage : ENV.homepage
+	homepage : ENV.homepage,
+	languages : [],
+	language : "en"
   }),
       
   methods : {
@@ -121,6 +126,7 @@ export default {
 	  
 	  changeLanguage(language) {
 		setLocale(language);
+		this.$data.language = language;
 	  } 
 
   },
@@ -131,6 +137,8 @@ export default {
 	 $data.notPublic = ENV.instanceType == "prod";
 	 $data.actions = $route.query.actions;
 	 $data.hideCookieBar = localStorage.hideCookieBar;
+	 $data.languages = languages.all;
+	 $data.language = getLocale();
 
 	 if (!$route.meta || !$route.meta.keep) {		 	
 		session.logout();

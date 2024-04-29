@@ -1069,6 +1069,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.FormatAPI.importChanges(),
 				controllers.routes.javascript.FormatAPI.listFormats(),				
 				controllers.routes.javascript.FormatAPI.listContents(),
+				controllers.routes.javascript.FormatAPI.listContentsSpecial(),
 				controllers.routes.javascript.FormatAPI.searchContents(),
 				controllers.routes.javascript.FormatAPI.searchCoding(),
 				controllers.routes.javascript.FormatAPI.searchCodingPortal(),

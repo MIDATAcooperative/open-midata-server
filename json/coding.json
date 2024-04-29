@@ -483,46 +483,49 @@
 {"_id":{"$oid":"6548c24bbd916879dba88c3e"},"system":"http://form.brightfish.com","code":"eortc-qlq-c30","display":"Quality of life after tumor","content":"eortc-qlq-c30"}
 {"_id":{"$oid":"6548c75fbd916879dba88c89"},"system":"http://form.brightfish.com","code":"promis-physical-function-short-form-4a","display":"Promis physical function short form 4a","content":"promis-questionnaire"}
 {"_id":{"$oid":"6548befffa96471011cf8ca3"},"system":"http://form.brightfish.com","code":"whodas-20","display":"Disability Assessment Schedule","content":"whodas-20"}
-{"_id":{"$oid":"6548c861bd916879dba88c8e"},"system":"http://form.brightfish.com","code":"saq-7","display":"Seattle Angina Questionnaire","content":"saq-7"}
+{"_id":{"$oid":"6548c861bd916879dba88c8e"},"system":"http://form.brightfish.com","code":"saq-7","display":"Seattle Angina Questionnaire 7 (SAQ-7)","content":"saq-7"}
 {"_id":{"$oid":"6548b6dafa96471011cf8c84"},"system":"http://form.brightfish.com","code":"phq-2-eq-5d-vas","display":"PHQ2 + EQ-5D-VAS Questionnaire","content":"phq-2-eq-5d-vas"}
-{"_id":{"$oid":"6548b21bbd916879dba88be1"},"system":"http://form.brightfish.com","code":"general-questions-baseline-2","display":"General questions baseline (breast cancer)","content":"general-questions-baseline-2"}
-{"_id":{"$oid":"6548c2a6fa96471011cf8cc3"},"system":"http://form.brightfish.com","code":"epic-26","display":"Expanded Prostate Cancer Index Composite","content":"epic-26"}
+{"_id":{"$oid":"6548b21bbd916879dba88be1"},"system":"http://form.brightfish.com","code":"general-questions-baseline-2","display":"General questions baseline 2","content":"general-questions-baseline-2"}
+{"_id":{"$oid":"6548c2a6fa96471011cf8cc3"},"system":"http://form.brightfish.com","code":"epic-26","display":"Expanded Prostate Cancer Index Composite 26 (EPIC-26)","content":"epic-26"}
 {"_id":{"$oid":"6548beb8bd916879dba88c18"},"system":"http://form.brightfish.com","code":"rose-dyspnea-scale","display":"Rose Dyspnea Scale","content":"rose-dyspnea-scale"}
-{"_id":{"$oid":"6548b26cfa96471011cf8c73"},"system":"http://form.brightfish.com","code":"breast-qtm-preoperative","display":"Breast-Q Pre-op","content":"breast-qtm-preoperative"}
-{"_id":{"$oid":"6548b2d5bd916879dba88be8"},"system":"http://form.brightfish.com","code":"breast-q-lumpectomy","display":"Breast-Q lumpectomy","content":"breast-q-lumpectomie"}
+{"_id":{"$oid":"6548b26cfa96471011cf8c73"},"system":"http://form.brightfish.com","code":"breast-qtm-preoperative","display":"Breast QTM preoperative","content":"breast-qtm-preoperative"}
+{"_id":{"$oid":"6548b2d5bd916879dba88be8"},"system":"http://form.brightfish.com","code":"breast-q-lumpectomy","display":"Breast QTM lumpectomy","content":"breast-q-lumpectomie"}
 {"_id":{"$oid":"6548b61ebd916879dba88bfa"},"system":"http://form.brightfish.com","code":"questions-about-treatment","display":"Questions about treatment","content":"treatment-questions"}
 {"_id":{"$oid":"6548c808fa96471011cf8d04"},"system":"http://form.brightfish.com","code":"phq-2","display":"Patient Health Questionnaire PHQ-2","content":"phq-2"}
 {"_id":{"$oid":"6548c20cbd916879dba88c3a"},"system":"http://form.brightfish.com","code":"eq-5d-5l","display":"EQ-5D-5L","content":"eq-5d-5l-euroqol"}
-{"_id":{"$oid":"6548c1d0bd916879dba88c37"},"system":"http://form.brightfish.com","code":"comorbiditiessacq","display":"Self-administered co-morbidity index","content":"comorbiditiessacq"}
+{"_id":{"$oid":"6548c1d0bd916879dba88c37"},"system":"http://form.brightfish.com","code":"comorbiditiessacq","display":"Self-administered co-morbidy questionnaire (SACQ)","content":"comorbiditiessacq"}
 {"_id":{"$oid":"6548b037fa96471011cf8c6a"},"system":"http://form.brightfish.com","code":"use-of-sexual-medication-devices","display":"Utilization of Sexual Medications/Devices","content":"use-of-sexual-medicine-devices"}
-{"_id":{"$oid":"6548b198fa96471011cf8c6f"},"system":"http://form.brightfish.com","code":"general-questions-follow-up","display":"General questions follow up (advanced prostate cancer)","content":"general-questions-follow-up"}
-{"_id":{"$oid":"6548b2a8bd916879dba88be6"},"system":"http://form.brightfish.com","code":"breast-qtm-reconstruction","display":"Breast-Q Reconstruction","content":"breast-qtm-reconstruction"}
+{"_id":{"$oid":"6548b198fa96471011cf8c6f"},"system":"http://form.brightfish.com","code":"general-questions-follow-up","display":"General questions follow-up","content":"general-questions-follow-up"}
+{"_id":{"$oid":"6548b2a8bd916879dba88be6"},"system":"http://form.brightfish.com","code":"breast-qtm-reconstruction","display":"Breast QTM reconstruction","content":"breast-qtm-reconstruction"}
 {"_id":{"$oid":"6548c925fa96471011cf8d07"},"system":"http://form.brightfish.com","code":"vr-12","display":"Veterans RAND 12-Item Health Survey","content":"vr-12"}
-{"_id":{"$oid":"6548b306bd916879dba88bea"},"system":"http://form.brightfish.com","code":"breast-qtm-mastectomy","display":"Breast-Q Mastectomy","content":"breast-qtm-mastectomy"}
+{"_id":{"$oid":"6548b306bd916879dba88bea"},"system":"http://form.brightfish.com","code":"breast-qtm-mastectomy","display":"Breast QTM mastectomy","content":"breast-qtm-mastectomy"}
 {"_id":{"$oid":"6548c643fa96471011cf8cdc"},"system":"http://form.brightfish.com","code":"eortc-qlq-br45","display":"ORTC QLQ-Breast Cancer Module BR 45","content":"eortc-qlq-br45"}
-{"_id":{"$oid":"6548bc50fa96471011cf8c96"},"system":"http://form.brightfish.com","code":"kccq12","display":"KCCQ12","content":"kccq12"}
+{"_id":{"$oid":"6548bc50fa96471011cf8c96"},"system":"http://form.brightfish.com","code":"kccq12","display":"Kansas City Cardiomyopathy Questionnaire (KCCQ 12)","content":"kccq12"}
 {"_id":{"$oid":"6548bbd6bd916879dba88c03"},"system":"http://form.brightfish.com","code":"demographic-factors","display":"Demographic factors (Heart faillure)","content":"demographic-factors"}
-{"_id":{"$oid":"6548c789bd916879dba88c8c"},"system":"http://form.brightfish.com","code":"promis-v12-global-health","display":"Promis v1.2 global health","content":"promis-questionnaire"}
+{"_id":{"$oid":"6548c789bd916879dba88c8c"},"system":"http://form.brightfish.com","code":"promis-v12-global-health","display":"Promis global health","content":"promis-questionnaire"}
 {"_id":{"$oid":"6548bb5dfa96471011cf8c94"},"system":"http://form.brightfish.com","code":"informed-consent","display":"Informed consent","content":"documents/patient-consent"}
 {"_id":{"$oid":"6548b0d7bd916879dba88bd6"},"system":"http://form.brightfish.com","code":"general-questions-baseline","display":"General questions baseline (advanced prostate cancer)","content":"general-questions-baseline"}
-{"_id":{"$oid":"6548bf41bd916879dba88c1e"},"system":"http://form.brightfish.com","code":"idcv","display":"Impact on mental health and daily activities","content":"idcv"}
+{"_id":{"$oid":"6548bf41bd916879dba88c1e"},"system":"http://form.brightfish.com","code":"idcv","display":"Impact of Coronary Disease on Patient's Everyday Life (IDCV)","content":"idcv"}
 {"_id":{"$oid":"65840da6a8cbf1575e36ef95"},"system":"http://form.brightfish.com","code":"type-operation","display":"Type of operation","content":"type-operation"}
-{"_id":{"$oid":"65ddf2735ef1d104a4f45582"},"system":"http://form.brightfish.com","code":"oks","display":"Oxford Knee Score","content":"oks"}
-{"_id":{"$oid":"65ddea0a5ef1d104a4f45559"},"system":"http://form.brightfish.com","code":"koos","display":"Knee Osteoarthritis Outcome Score","content":"koos"}
-{"_id":{"$oid":"65ddeb37b5d28d374c33bf12"},"system":"http://form.brightfish.com","code":"isi","display":"Insomnia Severity Index","content":"isi"}
+{"_id":{"$oid":"65ddf2735ef1d104a4f45582"},"system":"http://form.brightfish.com","code":"oks","display":"Oxford knee score (OKS)","content":"oks"}
+{"_id":{"$oid":"65ddea0a5ef1d104a4f45559"},"system":"http://form.brightfish.com","code":"koos","display":"Knee osteoarthritis outcome score (KOOS)","content":"koos"}
+{"_id":{"$oid":"65ddeb37b5d28d374c33bf12"},"system":"http://form.brightfish.com","code":"isi","display":"Insomnia Severity Index (ISI)","content":"isi"}
 {"_id":{"$oid":"65ddeece5ef1d104a4f4557b"},"system":"http://form.brightfish.com","code":"vonkorff","display":"Chronic Pain Grade Questionnaire","content":"vonkorff"}
 {"_id":{"$oid":"65ddee57b5d28d374c33bf31"},"system":"http://form.brightfish.com","code":"sf12","display":"12-Item Short Form Survey","content":"sf12"}
-{"_id":{"$oid":"65ddeadcb5d28d374c33bf0f"},"system":"http://form.brightfish.com","code":"hads","display":"Hospital Anxiety and Depression Scale","content":"hads"}
+{"_id":{"$oid":"65ddeadcb5d28d374c33bf0f"},"system":"http://form.brightfish.com","code":"hads","display":"Hospital Anxiety and Depression Scale (HADS)","content":"hads"}
 {"_id":{"$oid":"65ddee07b5d28d374c33bf2f"},"system":"http://form.brightfish.com","code":"pain-intensity","display":"Pain intensity","content":"pain-intensity"}
 {"_id":{"$oid":"65ddedd05ef1d104a4f45575"},"system":"http://form.brightfish.com","code":"pain-description","display":"Pain description","content":"pain-description"}
 {"_id":{"$oid":"65ddef58b5d28d374c33bf34"},"system":"http://form.brightfish.com","code":"fact-p","display":"Functional Assessment of Cancer Therapy – Prostate","content":"fact-p"}
-{"_id":{"$oid":"65ddeb9c5ef1d104a4f45560"},"system":"http://form.brightfish.com","code":"mfhw","display":"Marburger Fragebogen zum habituellen Wohlbefinden","content":"mfhw"}
-{"_id":{"$oid":"65ddea795ef1d104a4f4555b"},"system":"http://form.brightfish.com","code":"mds","display":"Minimal data set orthopedics","content":"mds"}
+{"_id":{"$oid":"65ddeb9c5ef1d104a4f45560"},"system":"http://form.brightfish.com","code":"mfhw","display":"Marburg questionnaire on habitual health findings (MFHW)","content":"mfhw"}
+{"_id":{"$oid":"65ddea795ef1d104a4f4555b"},"system":"http://form.brightfish.com","code":"mds","display":"Minimum data set questionnaire (MDS)","content":"mds"}
 {"_id":{"$oid":"65ddf15fb5d28d374c33bf37"},"system":"http://form.brightfish.com","code":"pcs","display":"Pain Catastrophizing Scale","content":"pcs"}
-{"_id":{"$oid":"65ddf1f4b5d28d374c33bf39"},"system":"http://form.brightfish.com","code":"oss","display":"Oxford Shoulder Score","content":"oss"}
+{"_id":{"$oid":"65ddf1f4b5d28d374c33bf39"},"system":"http://form.brightfish.com","code":"oss","display":"Oxford shoulder score (OSS)","content":"oss"}
 {"_id":{"$oid":"65ddf0e05ef1d104a4f4557e"},"system":"http://form.brightfish.com","code":"fjs-12","display":"Forgotten Joint Score - 12","content":"fjs-12"}
-{"_id":{"$oid":"65f8571fd8bd0037c10c8e6a"},"system":"http://form.brightfish.com","code":"general-questions-baseline.prostate","display":"General questions baseline (advanced prostate cancer)","content":"general-questions-baseline"}
+{"_id":{"$oid":"65f8571fd8bd0037c10c8e6a"},"system":"http://form.brightfish.com","code":"general-questions-baseline.prostate","display":"General questions baseline","content":"general-questions-baseline"}
 {"_id":{"$oid":"65f85764de10d17e638a6ddb"},"system":"http://form.brightfish.com","code":"general-questions-follow-up.prostate","display":"General questions follow up (advanced prostate cancer)","content":"general-questions-follow-up"}
 {"_id":{"$oid":"65f85811d8bd0037c10c8e6b"},"system":"http://form.brightfish.com","code":"single-question-about-treatment.breast","display":"Questions about treatment","content":"treatment-questions"}
-{"_id":{"$oid":"65f85842d8bd0037c10c8e85"},"system":"http://form.brightfish.com","code":"type-of-operation.breast","display":"Type of operation","content":"type-operation"}
+{"_id":{"$oid":"65f85842d8bd0037c10c8e85"},"system":"http://form.brightfish.com","code":"type-of-operation.breast","display":"Type of breast operation","content":"type-operation"}
 {"_id":{"$oid":"65f857ddde10d17e638a6ddc"},"system":"http://form.brightfish.com","code":"general-questions-baseline.breast","display":"General questions baseline (breast cancer)","content":"general-questions-baseline-2"}
+{"_id":{"$oid":"660292225311295f58e16dd5"},"system":"http://form.brightfish.com","code":"mpdi","display":"Michigan Pain and Disability Index (mPDI)","content":"mpdi"}
+{"_id":{"$oid":"6602906d5311295f58e16dd3"},"system":"http://form.brightfish.com","code":"mpss","display":"Mood and physical symptoms scale (MPSS)","content":"mpss"}
+{"_id":{"$oid":"661d11325c10195721cc63e9"},"system":"http://www.krebsliga.ch","code":"scape-ch","display":"SCAPE-CH Questionnaire","content":"scape-ch"}

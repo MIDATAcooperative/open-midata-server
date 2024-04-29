@@ -582,7 +582,7 @@ public class RecordManager {
 		CountingInputStream countInput = new CountingInputStream(data);
 		System.out.println("START UPLOAD");
 		try {
-		  FileStorage.store(EncryptionUtils.encryptStream(kdata, countInput), id, 0, fileName, contentType);
+		  id = FileStorage.store(EncryptionUtils.encryptStream(kdata, countInput), id, 0, fileName, contentType);
 		} catch (Exception e) {
 		  System.out.println("FAIL UPLOAD");
 		  try {

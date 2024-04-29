@@ -93,7 +93,7 @@ async function setLocaleMessages(locale) {
   return nextTick();
 }
 
-export const SUPPORT_LOCALES = ['en', 'de', 'fr', 'it']
+export const SUPPORT_LOCALES = ['en', 'de', 'fr', 'it', 'et']
 
 export function setupI18n() {
   i18n = setI18n({ locale: 'ch', messages:{} });

@@ -115,4 +115,6 @@ id0122	29.08.2023	a.kreutz	I	Added sender-user extension to FHIR message headers
 id0123	14.11.2023	a.kreutz	F	Consent chaining	Consents may allow to reshare data with 3rd parties.
 id0124	30.01.2024	a.kreutz	F	HTML Mails	The platform is now able to sent mails in both HTML and Text format.	
 id0125	15.02.2024	a.kreutz	F	Dynamic content groups	Access filters may now declare a group as dynamic. Dynamic groups will be resolved at use time and not at consent creation time.
+id0126	02.04.2024	a.kreutz	F	App end of life function	Application may now have an END OF LIFE status. Users can no longer log in with this application. You can specificy a message to be displayed.
+id0127	08.04.2024	a.kreutz	F	Dynamically add content types	Access filters may now declare automatic content type addition for a dynamic group.
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
