@@ -15,28 +15,17 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package models.enums;
+package utils.access.pseudo;
 
-public enum ProjectDataFilter {
+import models.Record;
 
-    /**
-     * Remove all time information from resources
-     */
-    NO_TIME,
-    
-    /**
-     * Remove time and day information from resources. Keep only year and month.
-     */
-    ONLY_MONTH_YEAR,
-    
-    /**
-     * Remove all practitioner references
-     */
-    NO_PRACTITIONER,
-    
-    /**
-     * Remove all narratives
-     */
-    NO_NARRATIVES
-    
+public class RemoveNarrativesFilter extends ProjectDataFilterBase {
+
+	@Override
+	public void pseudonymizeMeta(Record rec) {
+		rec.name = "pseudonymized";
+		rec.description = "pseudonymized";
+	}
+
+	
 }

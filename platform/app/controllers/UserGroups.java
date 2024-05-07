@@ -47,6 +47,7 @@ import models.enums.MessageChannel;
 import models.enums.MessageReason;
 import models.enums.Permission;
 import models.enums.ResearcherRole;
+import models.enums.StudyType;
 import models.enums.SubUserRole;
 import models.enums.UserGroupType;
 import models.enums.UserRole;
@@ -307,7 +308,10 @@ public class UserGroups extends APIController {
 				targetUserIds.add(targetUserId);
 				break;
 			case PROJECT:
-			    if (Study.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.unknown.project", "Target project does not exist.");
+				Study targetStudy = Study.getById(targetUserId, Sets.create("_id", "type"));
+			    if (targetStudy == null) throw new BadRequestException("error.unknown.project", "Target project does not exist.");
+			    Study sStudy = Study.getById(groupId, Sets.create("_id", "type"));
+			    if (sStudy == null || sStudy.type == StudyType.META) throw new BadRequestException("error.invalid.project", "No meta projects allowed as target");
 			    targetUserIds.add(targetUserId);
 			    role = ResearcherRole.SUBPROJECT();
 			    break;

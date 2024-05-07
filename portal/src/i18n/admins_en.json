@@ -192,6 +192,8 @@
      "infos_part" : "Information for participants",
      "infos_internal" : "Internal Information",     
      "required_information" : "Required Information",
+     "data_filters" : "Data filters for pseudonymization",
+     "none" : "None",
      "anonymous" : "Anonymous",
      "required_assistance" : "Required Assistance",
      "termsOfUse" : "General Terms and Conditions",

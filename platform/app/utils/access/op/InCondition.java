@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import utils.AccessLog;
 import utils.collections.CMaps;
 
 /**
@@ -52,6 +53,8 @@ public class InCondition implements Condition, Serializable {
 
 	@Override
 	public boolean satisfiedBy(Object obj) {
+		//AccessLog.log("OBJ="+obj+" OC="+obj.getClass().getName()+" C="+val.contains(obj));
+		//AccessLog.log("CV="+val.iterator().next().getClass().getName());
 		return val.contains(obj);
 	}
 
@@ -88,6 +91,11 @@ public class InCondition implements Condition, Serializable {
 	@Override
 	public Condition mongoCompatible() {
 		return this;
+	}
+	
+	@Override
+	public String toString() {
+	   return "in {"+val.toString()+"}";
 	}
 		
 	

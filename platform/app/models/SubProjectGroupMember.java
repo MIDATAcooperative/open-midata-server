@@ -43,6 +43,10 @@ public class SubProjectGroupMember extends UserGroupMember {
     public static Set<SubProjectGroupMember> getSubProjectsActiveByMember(Set<MidataId> members) throws InternalServerException {
         return Model.getAll(SubProjectGroupMember.class, collection, CMaps.map("member", members).map("status", ConsentStatus.ACTIVE), ALL);
     }
+    
+    public static SubProjectGroupMember getById(MidataId id) throws InternalServerException {
+		return Model.get(SubProjectGroupMember.class, collection, CMaps.map("_id", id), ALL);
+	}
         
 
 }

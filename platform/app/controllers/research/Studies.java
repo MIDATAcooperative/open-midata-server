@@ -653,7 +653,7 @@ public class Studies extends APIController {
 		MidataId owner = PortalSessionToken.session().getOrgId();
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "identifiers", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
-				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
+				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "dataFilters", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
 				"dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy", "forceClientCertificate");
 		Study study = Study.getById(studyid, fields);
 
@@ -692,7 +692,7 @@ public class Studies extends APIController {
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
 				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
-				"dataCreatedBefore", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy");
+				"dataCreatedBefore", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy", "dataFilters");
 		Study study = Study.getById(studyid, fields);
 
 		if (study != null && study.consentObserver != null) {
@@ -2086,7 +2086,7 @@ public class Studies extends APIController {
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
-		Study study = Study.getById(studyid, Sets.create("owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "assistance"));
+		Study study = Study.getById(studyid, Sets.create("owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "assistance", "dataFilters"));
 
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
@@ -2107,12 +2107,13 @@ public class Studies extends APIController {
 	public Result setRequiredInformationSetup(Request request, String id) throws JsonValidationException, AppException {
 		JsonNode json = request.body().asJson();
 
-		JsonValidation.validate(json, "identity", "assistance");
+		JsonValidation.validate(json, "identity", "assistance", "dataFilters");
 
 		InformationType inf = JsonValidation.getEnum(json, "identity", InformationType.class);
 		AssistanceType assist = JsonValidation.getEnum(json, "assistance", AssistanceType.class);
 		boolean anonymous = JsonValidation.getBoolean(json, "anonymous");
-
+        Set<ProjectDataFilter> dataFilters = JsonExtraction.extractEnumSet(json, "dataFilters", ProjectDataFilter.class);
+		
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
@@ -2120,7 +2121,7 @@ public class Studies extends APIController {
 		
 
 		Study study = Study.getById(studyid,
-				Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "createdBy", "code"));
+				Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "createdBy", "code", "dataFilters"));
 
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
@@ -2133,9 +2134,18 @@ public class Studies extends APIController {
 		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
-		if (study.validationStatus != StudyValidationStatus.DRAFT)
+		if (study.validationStatus != StudyValidationStatus.DRAFT) {
+			// Allow to add data filters for existing projects
+		    if (dataFilters != null && study.dataFilters == null) {
+		    	study.setDataFilters(dataFilters);
+		    	MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		    	RecordManager.instance.fixAccount(context);
+				AuditManager.instance.success();
+		    	return ok();
+		    }
+		
 			throw new BadRequestException("error.no_alter.study", "Setup can only be changed as long as study is in draft phase.");
-
+		}
 		if (anonymous && inf.equals(InformationType.DEMOGRAPHIC))
 			throw new BadRequestException("error.invalid.anonymous", "Anonymous can only be set if pseudonymized.");
 
@@ -2149,6 +2159,7 @@ public class Studies extends APIController {
 		study.setRequiredInformation(inf);
 		study.setAnonymous(anonymous);
 		study.setAssistance(assist);
+		study.setDataFilters(dataFilters);
 		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 		AuditManager.instance.success();
 		return ok();

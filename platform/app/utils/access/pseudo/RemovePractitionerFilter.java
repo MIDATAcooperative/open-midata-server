@@ -15,28 +15,33 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package models.enums;
+package utils.access.pseudo;
 
-public enum ProjectDataFilter {
+import java.util.Calendar;
 
-    /**
-     * Remove all time information from resources
-     */
-    NO_TIME,
-    
-    /**
-     * Remove time and day information from resources. Keep only year and month.
-     */
-    ONLY_MONTH_YEAR,
-    
-    /**
-     * Remove all practitioner references
-     */
-    NO_PRACTITIONER,
-    
-    /**
-     * Remove all narratives
-     */
-    NO_NARRATIVES
-    
+import org.bson.BasicBSONObject;
+
+import models.Record;
+import utils.access.DBRecord;
+
+public class RemovePractitionerFilter extends ProjectDataFilterBase {
+
+	@Override
+	public void pseudonymizeObject(DBRecord rec, BasicBSONObject obj) {
+		if (obj.containsField("reference") && obj.get("reference").toString().startsWith("Practitioner/")) {
+			obj.remove("reference");
+			obj.put("display", "Removed Practitioner");
+		}
+		
+	
+	}
+	
+	@Override
+	public void pseudonymizeMeta(Record rec) {
+		if (!rec.creator.equals(rec.owner)) rec.creator = null;
+		
+		
+	}
+
+	
 }

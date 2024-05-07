@@ -17,7 +17,11 @@
 
 package utils.access;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,7 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.tuple.Pair;
+import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 
@@ -42,6 +48,7 @@ import utils.access.op.CompareCaseInsensitive;
 import utils.access.op.Condition;
 import utils.access.op.FieldAccess;
 import utils.access.pseudo.FhirPseudonymizer;
+import utils.auth.CodeGenerator;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -78,11 +85,11 @@ public class Feature_Pseudonymization extends Feature {
 		
 		if (q.restrictedBy("_id")) {
 		    Set<MidataId> ids = q.getMidataIdRestriction("_id");
-		    Set<MidataId> pseudonymizedIds = null;
+		    Set<String> pseudonymizedIds = null;
 		    for (MidataId id : ids) {
 		        if (id.isPseudonymized()) {
-		            if (pseudonymizedIds == null) pseudonymizedIds = new HashSet<MidataId>();
-		            pseudonymizedIds.add(id);
+		            if (pseudonymizedIds == null) pseudonymizedIds = new HashSet<String>();
+		            pseudonymizedIds.add(id.toString());
 		        }
 		    }
 		    
@@ -147,16 +154,42 @@ public class Feature_Pseudonymization extends Feature {
 			}
 			String format = (String) r.meta.get("format");
 			if (!format.equals("fhir/Patient")) {
-			  r.data.put("id", createHash(r.context, r._id.toString()));
+			  String hash = createHash(r.context, r._id.toString());
+			  //AccessLog.log("MAP FROM "+r._id.toString()+" TO "+hash);
+			  r.data.put("id", hash);
 			  r.pseudoId = new MidataId(createHash(r.context, r._id.toString()));
 			}
-			if (r4) FhirPseudonymizer.forR4().pseudonymize(r);
-			else FhirPseudonymizer.forSTU3().pseudonymize(r);
+			if (r4) FhirPseudonymizer.forR4().pseudonymize(r, r.context.getProjectDataFilters());
+			else FhirPseudonymizer.forSTU3().pseudonymize(r, r.context.getProjectDataFilters());
 		}
 	}
 	
-	public static String createHash(AccessContext context, String input) {
-	    return "P"+context.getAccessor()+"-"+input;
+	public static String createSHAHash(String input) {
+
+	      try {
+		      MessageDigest md = MessageDigest.getInstance("SHA-256");
+		      byte[] messageDigest =
+		              md.digest(input.getBytes(StandardCharsets.UTF_8));
+	          return Hex.encodeHexString(messageDigest);//Base64.getEncoder().encodeToString(messageDigest);
+	      } catch (NoSuchAlgorithmException e) {
+	    	  throw new NullPointerException();
+	      }
+	}
+
+	public static String getSalt(AccessContext context) throws AppException {
+		APS aps = context.getCache().getAPS(context.getAccessor(), context.getAccessor());
+		BSONObject obj = aps.getMeta("salt");
+		if (obj != null && obj.containsField("v")) {
+			return obj.get("v").toString();
+		} else {
+			String salt = CodeGenerator.generatePassphrase();
+			aps.setMeta("salt", CMaps.map("v", salt));
+			return salt;
+		}
+	}
+	
+	public static String createHash(AccessContext context, String input) throws AppException {
+	    return "P"+createSHAHash(context.getSalt()+"-"+context.getAccessor()+"-"+input).substring(0,40);
 	}
 	
 	public static String pseudonymizeRefOrNull(AccessContext useContext, String ref) throws AppException {

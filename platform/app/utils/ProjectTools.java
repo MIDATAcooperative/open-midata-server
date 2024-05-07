@@ -25,6 +25,7 @@ import java.util.Set;
 import org.bson.BSONObject;
 
 import models.MidataId;
+import models.Study;
 import models.SubProjectGroupMember;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -33,6 +34,7 @@ import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.Permission;
 import models.enums.ResearcherRole;
+import models.enums.StudyValidationStatus;
 import utils.access.Feature_UserGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -69,6 +71,8 @@ public class ProjectTools {
 					if (size > 1) throw new BadRequestException("error.notauthorized.action", "You may only change your rights as long as you are sole member.");
 					
 					if (!role.mayChangeTeam()) throw new BadRequestException("error.notauthorized.action", "You may not remove team management feature from yourself.");
+				    Study study = Study.getById(old.userGroup, Study.ALL);
+				    if (study != null && study.validationStatus != StudyValidationStatus.DRAFT) throw new BadRequestException("error.notauthorized.action", "You may not update your own role after project was started.");
 				}
 				
 				old.status = ConsentStatus.ACTIVE;

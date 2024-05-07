@@ -288,6 +288,10 @@ public class Study extends Model {
 		Model.set(Study.class, collection, this._id, "assistance", inf);
 	}
     
+    public void setDataFilters(Set<ProjectDataFilter> dataFilters) throws InternalServerException {
+		Model.set(Study.class, collection, this._id, "dataFilters", dataFilters);
+	}
+    
     public void setForceClientCertificate(boolean forceClientCertificate) throws InternalServerException {
     	this.forceClientCertificate = forceClientCertificate;
 		Model.set(Study.class, collection, this._id, "forceClientCertificate", forceClientCertificate);

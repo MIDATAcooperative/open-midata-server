@@ -20,6 +20,7 @@ package utils.access;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -90,7 +91,7 @@ public class Feature_UserGroups extends Feature {
 					List<UserGroupMember> members = new ArrayList<UserGroupMember>(isMemberOfGroups);
 					Collections.sort(members);
 					members.add(0, null);
-					return ProcessingTools.noDuplicates(new UserGroupIterator(q, members, false));
+					return ProcessingTools.noDuplicates(new PseudonymIdOnlyIterator(new UserGroupIterator(q, members, false)));
 					
 				}
 			}
@@ -115,6 +116,14 @@ public class Feature_UserGroups extends Feature {
 			List<UserGroupMember> path = query.getCache().getByGroupAndActiveMember(usergroup, query.getContext().getAccessor(), Permission.READ_DATA);
 			if (path == null || path.isEmpty()) return ProcessingTools.empty();
 			Map<String, String> projectGroupMap = usergroup instanceof SubProjectGroupMember ? ((SubProjectGroupMember) usergroup).projectGroupMapping : null;
+			if (projectGroupMap == null) {
+				for (UserGroupMember ugm : path) {
+					if (ugm.getConfirmedRole().id.equals("SUBPROJECT")) {
+						SubProjectGroupMember pm = SubProjectGroupMember.getById(ugm._id);
+						projectGroupMap = pm.projectGroupMapping;
+					}
+				}
+			}
 			return doQueryAsGroup(path, query, projectGroupMap);
 			
 		}
@@ -157,7 +166,7 @@ public class Feature_UserGroups extends Feature {
 			mayReadData = mayReadData && ugm.role.mayReadData();
 			pseudonymizeAccess = pseudonymizeAccess || ugm.role.pseudonymizedAccess();
 			context = new UserGroupAccessContext(ugm, subcache, context, pseudonymizeAccess);
-			//AccessLog.log("QUERY AS GROUP pA="+pseudonymizeAccess+" context="+context.toString());
+			AccessLog.log("QUERY AS GROUP pA="+pseudonymizeAccess+" context="+context.toString());
 		}
 		
 		Map<String, Object> newprops = new HashMap<String, Object>();
@@ -165,10 +174,23 @@ public class Feature_UserGroups extends Feature {
 		newprops.put("usergroup", lastUgm.userGroup);
 		if (projectGroups != null) {
 		    newprops.put("study", lastUgm.userGroup);
-		    String studyGroup = q.getStringRestriction("study-group");
-		    studyGroup = studyGroup != null ? projectGroups.get(studyGroup) : null;
-		    if (studyGroup != null && !studyGroup.equals("*")) {
-		        newprops.put("study-group", studyGroup);
+		    Set<String> studyGroups = q.getRestrictionOrNull("study-group");
+		    Set<String> targetGroups = null;
+		    if (studyGroups == null) {
+		    	targetGroups = new HashSet<String>(projectGroups.values());
+		    	if (targetGroups.contains("*")) targetGroups = null;
+		    	else if (targetGroups.contains("-")) targetGroups.remove("-");
+		    } else {
+		    	targetGroups = new HashSet<String>();
+		    	Set<String> tg = targetGroups;
+		    	for (String studyGroup : studyGroups) {
+		    		if (studyGroup.equals("*")) targetGroups = null;
+		    		else tg.add(projectGroups.get(studyGroup));
+		    	}
+		    }
+		    
+		    if (targetGroups != null) {
+		        newprops.put("study-group", targetGroups);
 		    } else {
 		        newprops.remove("study-group");
 		    }

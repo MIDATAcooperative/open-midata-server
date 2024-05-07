@@ -169,7 +169,7 @@ public class ResearcherRole implements JsonSerializable {
         result.readData = true;
         result.writeData = false;
         result.participants = false;
-        result.pseudo = false;
+        result.pseudo = true;
         result.export = true;
         result.setup = false;
         result.applications = false;

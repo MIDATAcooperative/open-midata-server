@@ -17,16 +17,22 @@
 
 package utils.context;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import models.MidataId;
 import models.Record;
+import models.Study;
 import models.UserGroupMember;
 import models.enums.EntityType;
 import models.enums.Permission;
+import models.enums.ProjectDataFilter;
 import utils.access.APSCache;
 import utils.access.DBRecord;
+import utils.access.Feature_Pseudonymization;
 import utils.access.Feature_UserGroups;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -34,6 +40,8 @@ public class UserGroupAccessContext extends AccessContext {
 
 	private UserGroupMember ugm;
 	private boolean forcePseudonymization;
+	private Study study;
+	private String salt;
 	
 	public UserGroupAccessContext(UserGroupMember ugm, APSCache cache, AccessContext parent, boolean forcePseudonymization) {
 		super(cache, parent);
@@ -149,6 +157,27 @@ public class UserGroupAccessContext extends AccessContext {
 	protected AccessContext getRootContext() {	
 		if (parent == null) return this;
 		return new UserGroupAccessContext(this.ugm, cache, parent.getRootContext(), forcePseudonymization);
+	}
+	
+	@Override
+	public Set<ProjectDataFilter> getProjectDataFilters() throws InternalServerException {
+		if (study == null) study = Study.getById(ugm.userGroup, Sets.create("dataFilters"));
+		if (study != null) {
+			Set<ProjectDataFilter> result = study.dataFilters;
+			Set<ProjectDataFilter> fromParent = parent.getProjectDataFilters();
+			if (fromParent.isEmpty()) return result;
+			result = new HashSet<ProjectDataFilter>(result);
+			result.addAll(fromParent);
+			return result;
+		}
+		return super.getProjectDataFilters();
+	}
+	
+	@Override
+	public String getSalt() throws AppException {
+		if (salt != null) return salt;
+		salt = Feature_Pseudonymization.getSalt(this);
+		return salt;
 	}
 	
 	

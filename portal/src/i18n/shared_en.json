@@ -90,7 +90,8 @@
        "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
        "csvmapping" : "Invalid mapping provided.",
        "id" : "Invalid identifier",
-       "usergroup" : "You must be member of this user group to perform this action."
+       "usergroup" : "You must be member of this user group to perform this action.",
+       "project" : "Meta projects cannot be used as subprojects for other meta projects."
      },
 
      "missing" : {
@@ -476,6 +477,12 @@
      "NO_REJOIN" : "Participants cannot rejoin",
      "DELETE_LAST" : "Replace previous participation"
    },
+     "projectdatafilter" : {
+       "NO_TIME" : "Remove all time information from dates",
+       "ONLY_MONTH_YEAR" : "Remove day from dates.(Keep month and year)",
+       "NO_PRACTITIONER" : "Remove practitioner references",
+       "NO_NARRATIVES" : "Remove narrative texts"
+     },
 	 "pcodestatus" : {
 	    "UNUSED" : "Not used",
 	    "SHARED" : "Given away",

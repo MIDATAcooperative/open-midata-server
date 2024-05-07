@@ -25,6 +25,7 @@ import server from "./server";
 	service.executionStati = ["PRE", "RUNNING", "FINISHED", "ABORTED"];
 	service.leavePolicies = [ "FREEZE", "REJECT", "DELETE" ];
 	service.rejoinPolicies = [ "NO_REJOIN", "DELETE_LAST" ];
+	service.dataFilters = ["NO_TIME", "ONLY_MONTH_YEAR", "NO_PRACTITIONER", "NO_NARRATIVES"];
 	
 	service.roles = [
 		{ id :"SPONSOR",

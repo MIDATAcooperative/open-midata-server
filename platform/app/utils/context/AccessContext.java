@@ -36,6 +36,7 @@ import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.Permission;
+import models.enums.ProjectDataFilter;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
@@ -87,6 +88,20 @@ public abstract class AccessContext {
 	 * @return
 	 */
 	public abstract boolean mustPseudonymize();
+	
+	/**
+	 * Return set of data filters that must be applied
+	 * @return
+	 */
+	public Set<ProjectDataFilter> getProjectDataFilters() throws InternalServerException {
+		if (parent != null) return parent.getProjectDataFilters();
+		return Collections.EMPTY_SET;
+	}
+	
+	public String getSalt() throws AppException {
+		if (parent != null) return parent.getSalt();
+		return null;
+	}
 	
 	/**
 	 * Must the owner/creator of records be renamed? This is similar to pseudonymization but not the same.
@@ -415,7 +430,8 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
-		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(getCache(), ugm), this, false);
+		boolean pseudo = (this instanceof UserGroupAccessContext) ? mustPseudonymize() : false;
+		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(getCache(), ugm), this, pseudo);
 	}
 	
 	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
@@ -426,7 +442,7 @@ public abstract class AccessContext {
 	public UserGroupAccessContext forUserGroup(List<UserGroupMember> ugms) throws AppException {				
 		APSCache cache = getCache();
 		APSCache subcache = cache;	
-		boolean pseudo = false;
+		boolean pseudo = (this instanceof UserGroupAccessContext) ? mustPseudonymize() : false;
 		for (UserGroupMember ugmx : ugms) {
 		    //AccessLog.log("XXXXX > "+ugmx.getConfirmedRole().roleName+" p="+ugmx.getConfirmedRole().pseudonymizedAccess());
 		    pseudo = pseudo || ugmx.getConfirmedRole().pseudonymizedAccess();
