@@ -537,7 +537,7 @@ public class CSVConverter {
 		case "timeOnly" : 
 			if (data.isTextual()) {
 				String[] t = data.asText().split("T");
-				if (t.length>1) return t[1].split(".")[0];
+				if (t.length>1 && t[1].length()>0) return t[1].split("\\.")[0];
 			}
 			return null;	
 		case "map" : 
