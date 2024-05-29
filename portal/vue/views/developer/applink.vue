@@ -76,7 +76,7 @@
 			    <button type="button" class="btn btn-primary mr-1" v-t="'applink.add_service_btn'" @click="addNewService()"></button>
 	            <button type="button" class="btn btn-primary mr-1" v-t="'applink.add_provider_btn'" @click="addNewProvider()"></button>                
             </div>
-            <div v-if="selection && selection.linkTargetType=='STUDY'">
+            <div v-if="selection && (selection.linkTargetType=='STUDY' || !selection.linkTargetType)">
                 <form-group name="study" label="studyactions.study" :path="errors.study">
                     <div class="row">
 	                    <div class="col-sm-3">
