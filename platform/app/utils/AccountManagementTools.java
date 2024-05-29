@@ -298,7 +298,7 @@ public class AccountManagementTools {
 			
 			Set<StudyAppLink> sals = StudyAppLink.getByApp(app._id);			
 			for (StudyAppLink sal : sals) {
-				if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+				if (sal.isConfirmed() && sal.active && (sal.linkTargetType==null || sal.linkTargetType == LinkTargetType.STUDY) && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
 					ce = new ConsentEntity();
 					ce.type = EntityType.USERGROUP;
 					ce.id = sal.studyId;
@@ -451,7 +451,7 @@ public class AccountManagementTools {
 			if (sals.isEmpty()) return Collections.emptySet();
 			Set<MidataId> studies = new HashSet<MidataId>();
 			for (StudyAppLink sal : sals) {			   
-				if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
+				if (sal.isConfirmed() && sal.active && (sal.linkTargetType==null || sal.linkTargetType == LinkTargetType.STUDY) && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
 					studies.add(sal.studyId);					
 				}
 			}
@@ -476,7 +476,7 @@ public class AccountManagementTools {
 		if (sals.isEmpty()) return null;
 		List<Study> studies = new ArrayList<Study>();
 		for (StudyAppLink sal : sals) {
-			if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+			if (sal.isConfirmed() && sal.active && (sal.linkTargetType==null || sal.linkTargetType == LinkTargetType.STUDY) && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
 				studies.add(Study.getById(sal.studyId, Sets.create("_id","code","name")));
 			}
 		}

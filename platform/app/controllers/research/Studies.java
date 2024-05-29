@@ -2480,6 +2480,7 @@ public class Studies extends APIController {
 			newLink.shareToStudy = sal.shareToStudy;
 			newLink.studyGroup = sal.studyGroup;
 			newLink.studyId = study._id;
+			newLink.linkTargetType = sal.linkTargetType;
 			newLink.type = sal.type;
 			newLink.usePeriod = sal.usePeriod;
 			newLink.validationDeveloper = StudyValidationStatus.DRAFT;
