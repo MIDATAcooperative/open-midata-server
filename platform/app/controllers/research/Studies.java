@@ -2214,7 +2214,7 @@ public class Studies extends APIController {
 			study.consentObserver = new HashSet<MidataId>();
 			for (String observerName : observerNames) {
 				Plugin plugin = Plugin.getByFilename(observerName, Sets.create("filename", "type", "consentObserving", "status"));
-				if (plugin != null && plugin.type.equals("external") && plugin.consentObserving && plugin.status != PluginStatus.DELETED) {
+				if (plugin != null && (plugin.type.equals("external") || plugin.type.equals("broker")) && plugin.consentObserving && plugin.status != PluginStatus.DELETED) {
 					study.consentObserver.add(plugin._id);
 				}
 			}

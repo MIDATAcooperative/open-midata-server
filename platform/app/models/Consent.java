@@ -54,7 +54,7 @@ public class Consent extends Model implements Comparable<Consent> {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator", "externals", "allowedReshares");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "managers", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator", "externals", "allowedReshares");
 	
 	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "writes", "dataupdate", "lastUpdated");
 	
@@ -115,6 +115,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	 * a set containing all ids of external service type apps having access to this consent
 	 */
 	public Set<MidataId> observers;
+	
+	/**
+	 * a set of consent managing parties (not included in authorized)
+	 */
+	public Set<MidataId> managers;
 	
 	/**
 	 * a set containing the emails of external (non midata) entities that are authorized by this consent.
@@ -248,6 +253,10 @@ public class Consent extends Model implements Comparable<Consent> {
 	
 	public static Set<Consent> getAllByObserver(MidataId observer, Map<String, Object> properties,  Set<String> fields, int limit) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("observers", observer).map("status", NOT_DELETED), fields, limit);
+	}
+	
+	public static Set<Consent> getAllByManager(MidataId manager, Map<String, Object> properties,  Set<String> fields) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("managers", manager).map("status", NOT_DELETED), fields);
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member) throws InternalServerException {
