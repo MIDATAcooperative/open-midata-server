@@ -148,7 +148,7 @@ export default {
                 $data.study = study;	
             }));
             
-            me.doBusy(apps.getApps({ type : "external", consentObserving : true }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"])
+            me.doBusy(apps.getApps({ type : ["external","broker"], consentObserving : true }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"])
             .then(function(data) {
                 $data.observers = data.data;                
             }));
