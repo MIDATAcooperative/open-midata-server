@@ -359,6 +359,8 @@ public class Circles extends APIController {
 		if (consent.owner != null && consent.owner.equals(context.getAccessor())) return consent;
 		if (consent.authorized.contains(context.getAccessor())) return consent;
 		if (observerId != null && consent.observers != null && consent.observers.contains(observerId)) return consent;
+		if (consent.managers != null && consent.managers.contains(context.getAccessor())) return consent;
+		
 		if (consent.owner != null && ApplicationTools.actAsRepresentative(context, consent.owner, false) != null) return consent;
 		
 		Set<UserGroupMember> groups = context.getAllActiveByMember();
@@ -521,6 +523,15 @@ public class Circles extends APIController {
     			}
     		}
     		
+    		Set<MidataId> managers = context.getManagers();
+    		for (MidataId manager : managers) {
+    			if (!manager.equals(consent.owner) && !consent.authorized.contains(manager)) {
+        			if (consent.managers==null) consent.managers = new HashSet<MidataId>();
+        			consent.managers.add(manager);
+        		}
+    		}
+    		
+    		
     		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED && !force && consent.type != ConsentType.IMPLICIT) {
     			if (consent.owner == null || !consent.owner.equals(context.getAccessor())) {
     				if (ApplicationTools.actAsRepresentative(context, consent.owner, false)==null) throw new AuthException("error.invalid.consent", "You must be owner to create active consents!");
@@ -528,7 +539,12 @@ public class Circles extends APIController {
     		}		
     		
     		if (consent.owner != null) {
-    			RecordManager.instance.createAnonymizedAPS(context.getCache(), consent.owner, context.getAccessor(), consent._id, true);
+    			MidataId apsId = RecordManager.instance.createAnonymizedAPS(context.getCache(), consent.owner, context.getAccessor(), consent._id, true);
+    			
+    			// XXX Shall we authorize managers or not?
+    			//if (consent.managers != null) {
+    			//	context.getCache().getAPS(apsId).addAccess(consent.managers);
+    			//}
     			
     			if (consent.allowedReshares != null) {
     				byte[] signkey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(consent._id, null);

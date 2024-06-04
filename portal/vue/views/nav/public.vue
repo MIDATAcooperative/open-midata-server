@@ -67,15 +67,15 @@
                         <div class="nav navbar-nav nav-language">
                         <div class="nav-item d-lg-none"><div class="nav-link" v-t="'navbar.language'"></div></div>
                         <div class="nav-item d-none d-lg-block dropdown">
-                          <a class="dropdown-toggle nav-link" href="javascript:" data-toggle="dropdown" aria-expanded="false">{{ $t("navbar.language") }} <img :src="'/images/lang/'+language+'.png'"></a>
+                          <a class="dropdown-toggle nav-link" href="javascript:" data-toggle="dropdown" aria-expanded="false">{{ $t('enum.language.'+(language || 'en').toUpperCase()) }}</a>
 						  <div class="dropdown-menu">
 							<a v-for="lang in languages" :key="lang.value" class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show"
-								@click="changeLanguage(lang.value)" href="javascript:"><img class="mr-1" :src="'/images/lang/'+lang.value+'.png'">{{ $t(lang.name) }}</a>
+								@click="changeLanguage(lang.value)" href="javascript:">{{ $t(lang.name) }}</a>
 							
 						  </div>
                         </div>
                         <div v-for="lang in languages" :key="lang.value" class="nav-item d-lg-none"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-                        								@click="changeLanguage(lang.value)" href="javascript:"><img class="mr-1" :src="'/images/lang/'+lang.value+'.png'">{{ $t(lang.name) }}</a></div>
+                        								@click="changeLanguage(lang.value)" href="javascript:">{{ $t(lang.name) }}</a></div>
                         </div>
 					</div>
 				</div>

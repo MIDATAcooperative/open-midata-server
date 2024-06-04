@@ -2274,7 +2274,7 @@ public class Studies extends APIController {
 			study.consentObserver = new HashSet<MidataId>();
 			for (String observerName : observerNames) {
 				Plugin plugin = Plugin.getByFilename(observerName, Sets.create("filename", "type", "consentObserving", "status"));
-				if (plugin != null && plugin.type.equals("external") && plugin.consentObserving && plugin.status != PluginStatus.DELETED) {
+				if (plugin != null && (plugin.type.equals("external") || plugin.type.equals("broker")) && plugin.consentObserving && plugin.status != PluginStatus.DELETED) {
 					study.consentObserver.add(plugin._id);
 				}
 			}
@@ -2540,6 +2540,7 @@ public class Studies extends APIController {
 			newLink.shareToStudy = sal.shareToStudy;
 			newLink.studyGroup = sal.studyGroup;
 			newLink.studyId = study._id;
+			newLink.linkTargetType = sal.linkTargetType;
 			newLink.type = sal.type;
 			newLink.usePeriod = sal.usePeriod;
 			newLink.validationDeveloper = StudyValidationStatus.DRAFT;

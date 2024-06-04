@@ -120,4 +120,5 @@ id0127	08.04.2024	a.kreutz	F	Dynamically add content types	Access filters may no
 id0128	07.05.2024	a.kreutz	F	ID pseudonymization	All IDs in pseudonymized projects are now pseudonymized.
 id0129	07.05.2024	a.kreutz	F	More pseudonymization options	For new projects additional pseudonymization filters may be selected
 id0130	07.05.2024	a.kreutz	F	Meta projects	It is now possible to define a META project that is the union of other projects.
-# PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION??
+id0131	04.06.2024	a.kreutz	F	Consents may be managed by creator organization
+# PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

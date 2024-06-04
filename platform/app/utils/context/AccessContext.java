@@ -20,6 +20,7 @@ package utils.context;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -610,9 +611,32 @@ public abstract class AccessContext {
 		return false;
 	}
 	
+	/**
+	 * which entity will sign consent changes done with this context
+	 * @return
+	 * @throws InternalServerException
+	 */
 	public MidataId getConsentSigner() throws InternalServerException {
 		if (parent != null) return parent.getConsentSigner();
 		return null;
+	}
+	
+	/**
+	 * get parties that are allowed to manage consents created with this context
+	 */
+	public Set<MidataId> getManagers() throws InternalServerException {
+		Set<MidataId> managers = new HashSet<MidataId>();
+		addManagers(managers);
+		return managers;
+	}
+	
+	/**
+	 * add parties that are allowed to manage consents created with this context
+	 * @param managers
+	 * @throws InternalServerException
+	 */
+	public void addManagers(Set<MidataId> managers) throws InternalServerException {
+		if (parent != null) parent.addManagers(managers);
 	}
 	
 }

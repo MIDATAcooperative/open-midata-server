@@ -138,16 +138,19 @@ public class UserGroupAccessContext extends AccessContext {
 		return EntityType.USERGROUP;
 	}
 	
+	@Override
 	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
 		if (ugm != null && ugm.userGroup.equals(this.ugm.userGroup)) return this;
 		return super.forUserGroup(ugm);
 	}
 	
+	@Override
 	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
 		if (userGroup.equals(ugm.userGroup)) return this;
 		return super.forUserGroup(userGroup, permission);		
 	}
 	
+	@Override
 	public boolean canCreateActiveConsentsFor(MidataId owner) {
 		if (owner.equals(ugm.userGroup)) return true;
 		return super.canCreateActiveConsentsFor(owner);
@@ -180,5 +183,9 @@ public class UserGroupAccessContext extends AccessContext {
 		return salt;
 	}
 	
-	
+	@Override
+	public void addManagers(Set<MidataId> managers) throws InternalServerException {
+		if (parent != null) parent.addManagers(managers);
+		managers.add(getAccessor());
+	}
 }
