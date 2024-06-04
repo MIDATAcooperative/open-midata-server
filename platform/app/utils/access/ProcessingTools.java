@@ -626,10 +626,14 @@ public class ProcessingTools {
 		public boolean contained(DBRecord record) {
 			Object accessVal = record.data;
 			//AccessLog.log("chk: "+(accessVal!=null?accessVal.toString():"null"));
+			//AccessLog.log("cond:"+condition.toString());
 			if (condition.satisfiedBy(accessVal)) {
+				//AccessLog.log("TRUE");
 				return true;
-			} else if (nomatch != null)
+			} else if (nomatch != null) {
+				//AccessLog.log("FALSE");
 				nomatch.add(record);
+			}
 			return false;
 		}
 		

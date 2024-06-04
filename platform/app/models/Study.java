@@ -28,6 +28,7 @@ import models.enums.AssistanceType;
 import models.enums.InformationType;
 import models.enums.JoinMethod;
 import models.enums.ParticipantSearchStatus;
+import models.enums.ProjectDataFilter;
 import models.enums.ProjectLeavePolicy;
 import models.enums.RejoinPolicy;
 import models.enums.ResearcherRole;
@@ -53,7 +54,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy", "forceClientCertificate");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy", "forceClientCertificate", "dataFilters");
 	
 	public @NotMaterialized static final Set<String> LINK_FIELDS = Sets.create("_id", "name", "code", "type", "joinMethods", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
 	
@@ -153,6 +154,11 @@ public class Study extends Model {
 	 * Level of information required
 	 */
 	public InformationType requiredInformation;
+	
+	/**
+	 * Information to be filtered out for pseudonymization
+	 */
+	public Set<ProjectDataFilter> dataFilters;
 	
 	/**
 	 * If set no one is allowed to see mapping
@@ -280,6 +286,10 @@ public class Study extends Model {
     
     public void setAssistance(AssistanceType inf) throws InternalServerException {
 		Model.set(Study.class, collection, this._id, "assistance", inf);
+	}
+    
+    public void setDataFilters(Set<ProjectDataFilter> dataFilters) throws InternalServerException {
+		Model.set(Study.class, collection, this._id, "dataFilters", dataFilters);
 	}
     
     public void setForceClientCertificate(boolean forceClientCertificate) throws InternalServerException {

@@ -257,7 +257,7 @@ public class Market extends APIController {
 					for (ServiceInstance instance : si) {
 						User manager = User.getById(instance.managerAccount, User.ALL_USER);
 						if (manager != null) {
-							Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.ALL);
+							Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.APPINSTANCE_ALL);
 							if (!appInstances.isEmpty()) {
 								String subject = InstanceConfig.getInstance().getPortalServerDomain()+": API Keys expired";
 								String content = "Dear "+manager.firstname+" "+manager.lastname+",\n\nthe definition for the service '"+app.name+"' has been updated. The existing API keys for that service have expired. You are managing at least one API keys for this service.\n\nPlease generate a new API key if required.\n\nThis is an automated mail.";

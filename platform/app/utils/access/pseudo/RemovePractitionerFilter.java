@@ -15,42 +15,33 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package models.enums;
+package utils.access.pseudo;
 
-/**
- * Which type of entities is used
- *
- */
-public enum EntityType {
+import java.util.Calendar;
 
-	/**
-	 * Users
-	 */
-	USER,
-	
-	/**
-	 * UserGroups 
-	 */
-	USERGROUP,
-	
-	/**
-	 * Organizations
-	 */
-	ORGANIZATION,
+import org.bson.BasicBSONObject;
 
-	/**
-	 * Services
-	 */
-	SERVICES,
+import models.Record;
+import utils.access.DBRecord;
+
+public class RemovePractitionerFilter extends ProjectDataFilterBase {
+
+	@Override
+	public void pseudonymizeObject(DBRecord rec, BasicBSONObject obj) {
+		if (obj.containsField("reference") && obj.get("reference").toString().startsWith("Practitioner/")) {
+			obj.remove("reference");
+			obj.put("display", "Removed Practitioner");
+		}
+		
 	
-	/**
-	 * Project
-	 */
-	PROJECT;
-	
-	public Permission getChangePermission() {
-		if (this == SERVICES) return Permission.APPLICATIONS;
-		else if (this == ORGANIZATION || this == PROJECT) return Permission.SETUP;
-		return Permission.CHANGE_TEAM;
 	}
+	
+	@Override
+	public void pseudonymizeMeta(Record rec) {
+		if (!rec.creator.equals(rec.owner)) rec.creator = null;
+		
+		
+	}
+
+	
 }

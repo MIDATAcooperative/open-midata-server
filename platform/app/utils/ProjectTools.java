@@ -25,6 +25,8 @@ import java.util.Set;
 import org.bson.BSONObject;
 
 import models.MidataId;
+import models.Study;
+import models.SubProjectGroupMember;
 import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
@@ -32,6 +34,7 @@ import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.Permission;
 import models.enums.ResearcherRole;
+import models.enums.StudyValidationStatus;
 import utils.access.Feature_UserGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -48,7 +51,7 @@ import utils.exceptions.InternalServerException;
  */
 public class ProjectTools {
 
-    public static void addToUserGroup(AccessContext context, UserGroupMember self, ResearcherRole role, EntityType type, Set<MidataId> targetUserIds) throws AppException {
+    public static void addToUserGroup(AccessContext context, UserGroupMember self, ResearcherRole role, EntityType type, Set<MidataId> targetUserIds, Map<String, String> projectGroupMapping) throws AppException {
     	
     	context = context.forUserGroup(self.userGroup, type.getChangePermission());
     	    
@@ -58,7 +61,7 @@ public class ProjectTools {
 		for (MidataId targetUserId : targetUserIds) {
 			UserGroupMember old = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
 			if (old == null) {	
-				addToUserGroup(context, role, groupId, type, targetUserId);
+				addToUserGroup(context, role, groupId, type, targetUserId, projectGroupMapping);
 			} else {
 								
 				AuditManager.instance.addAuditEvent(AuditEventType.UPDATED_ROLE_IN_TEAM, context, null, context.getActor(), targetUserId, null, groupId);
@@ -68,6 +71,8 @@ public class ProjectTools {
 					if (size > 1) throw new BadRequestException("error.notauthorized.action", "You may only change your rights as long as you are sole member.");
 					
 					if (!role.mayChangeTeam()) throw new BadRequestException("error.notauthorized.action", "You may not remove team management feature from yourself.");
+				    Study study = Study.getById(old.userGroup, Study.ALL);
+				    if (study != null && study.validationStatus != StudyValidationStatus.DRAFT) throw new BadRequestException("error.notauthorized.action", "You may not update your own role after project was started.");
 				}
 				
 				old.status = ConsentStatus.ACTIVE;
@@ -78,6 +83,9 @@ public class ProjectTools {
 				UserGroupMember.set(old._id, "startDate", old.startDate);
 				UserGroupMember.set(old._id, "endDate", old.endDate);
 				UserGroupMember.set(old._id, "role", old.role);
+				if (projectGroupMapping != null) {
+				    UserGroupMember.set(old._id, "projectGroupMapping", projectGroupMapping);
+				}
 			}
 		}
 				
@@ -85,12 +93,22 @@ public class ProjectTools {
 
     public static void addToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId)
             throws AppException, AuthException, InternalServerException {
+        addToUserGroup(context, role, groupId, type, targetUserId, null);
+    }
+    
+    public static void addToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId, Map<String, String> projectGroupMapping)
+            throws AppException, AuthException, InternalServerException {
         AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, context, null, context.getActor(), targetUserId, null, groupId);
         
         UserGroup ug = context.getRequestCache().getUserGroupById(groupId);
         if (ug == null) throw new InternalServerException("error.internal", "UserGroup not found");
         
-        UserGroupMember member = new UserGroupMember();
+        UserGroupMember member;
+        if (projectGroupMapping != null) {
+          member = new SubProjectGroupMember(projectGroupMapping);
+        } else {
+          member = new UserGroupMember();
+        }
         member._id = new MidataId();
         member.member = targetUserId;
         member.userGroup = groupId;

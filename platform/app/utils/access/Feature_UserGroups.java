@@ -20,6 +20,7 @@ package utils.access;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,11 +29,13 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
 import models.MidataId;
+import models.SubProjectGroupMember;
 import models.UserGroupMember;
 import models.enums.Permission;
 import models.enums.ResearcherRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
+import utils.access.Feature_Pseudonymization.PseudonymIdOnlyIterator;
 import utils.auth.KeyManager;
 import utils.context.AccessContext;
 import utils.context.UserGroupAccessContext;
@@ -52,13 +55,31 @@ public class Feature_UserGroups extends Feature {
 	
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
+	    if (q.restrictedBy("study")) {
+	        Set<MidataId> studies = q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null;	        
+	        Set<SubProjectGroupMember> isMemberOfGroups = SubProjectGroupMember.getSubProjectsActiveByMember(studies); 
+	        AccessLog.log("Restrict by study, subprojects #=",Integer.toString(isMemberOfGroups.size()));
+	        if (!isMemberOfGroups.isEmpty()) {
+                q.setFromRecord(null);
+                List<UserGroupMember> members = new ArrayList<UserGroupMember>(isMemberOfGroups);
+                Collections.sort(members);
+                members.add(0, null);
+                if (q.getContext().mustPseudonymize()) {
+                  return new UserGroupIterator(q, members, true);
+                } else {
+                  return ProcessingTools.noDuplicates(new PseudonymIdOnlyIterator(new UserGroupIterator(q, members, true)));
+                }
+                
+            }
+	    }
+	    
 		if (q.restrictedBy("usergroup")) {
 			MidataId usergroup = q.getMidataIdRestriction("usergroup").iterator().next();
 			
 			if (usergroup.equals(q.getCache().getAccountOwner())) return next.iterator(q);
 			List<UserGroupMember> isMemberOfGroup = q.getCache().getByGroupAndActiveMember(usergroup, q.getCache().getAccessor(), Permission.READ_DATA);
 			if (isMemberOfGroup == null) throw new InternalServerException("error.internal", "Not member of provided user group");
-			return doQueryAsGroup(isMemberOfGroup, q);					
+			return doQueryAsGroup(isMemberOfGroup, q, null);					
 		}
 		
 		if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
@@ -70,7 +91,7 @@ public class Feature_UserGroups extends Feature {
 					List<UserGroupMember> members = new ArrayList<UserGroupMember>(isMemberOfGroups);
 					Collections.sort(members);
 					members.add(0, null);
-					return ProcessingTools.noDuplicates(new UserGroupIterator(q, members));
+					return ProcessingTools.noDuplicates(new PseudonymIdOnlyIterator(new UserGroupIterator(q, members, false)));
 					
 				}
 			}
@@ -80,8 +101,11 @@ public class Feature_UserGroups extends Feature {
 	
 	class UserGroupIterator extends Feature.MultiSource<UserGroupMember> {
 				
-		UserGroupIterator(Query query, List<UserGroupMember> groups) throws AppException {
+	    private boolean subprojects;
+	    
+		UserGroupIterator(Query query, List<UserGroupMember> groups, boolean subprojects) throws AppException {
 			this.query = query;
+			this.subprojects = subprojects;
 			init(groups.iterator());
 		}
 		
@@ -91,7 +115,16 @@ public class Feature_UserGroups extends Feature {
 			if (usergroup == null) return next.iterator(query);
 			List<UserGroupMember> path = query.getCache().getByGroupAndActiveMember(usergroup, query.getContext().getAccessor(), Permission.READ_DATA);
 			if (path == null || path.isEmpty()) return ProcessingTools.empty();
-			return doQueryAsGroup(path, query);
+			Map<String, String> projectGroupMap = usergroup instanceof SubProjectGroupMember ? ((SubProjectGroupMember) usergroup).projectGroupMapping : null;
+			if (projectGroupMap == null) {
+				for (UserGroupMember ugm : path) {
+					if (ugm.getConfirmedRole().id.equals("SUBPROJECT")) {
+						SubProjectGroupMember pm = SubProjectGroupMember.getById(ugm._id);
+						projectGroupMap = pm.projectGroupMapping;
+					}
+				}
+			}
+			return doQueryAsGroup(path, query, projectGroupMap);
 			
 		}
 
@@ -106,16 +139,23 @@ public class Feature_UserGroups extends Feature {
 		
 	}
 
-	protected DBIterator<DBRecord> doQueryAsGroup(List<UserGroupMember> ugms, Query q) throws AppException {
+	protected DBIterator<DBRecord> doQueryAsGroup(List<UserGroupMember> ugms, Query q, Map<String, String> projectGroups) throws AppException {
 		if (ugms.isEmpty()) throw new InternalServerException("error.internal", "doQueryAsGroup requires UserGroup");
 		MidataId group = null;
 		APSCache subcache = q.getCache();
 	    UserGroupMember lastUgm = null;
 	    UserGroupMember firstUgm = null;
 	    boolean mayExportData = true;
-	    boolean pseudonymizeAccess = false;
+	    boolean pseudonymizeAccess = q.getContext().mustPseudonymize();
 	    boolean mayReadData = true;
 	    AccessContext context = q.getContext();
+	    
+	    if (q.restrictedBy("export")) {         
+            if (!pseudonymizeAccess) {
+                if (q.getStringRestriction("export").equals("pseudonymized")) { pseudonymizeAccess = true; }
+            }
+        }
+	    
 		for (UserGroupMember ugm : ugms) {
 			if (firstUgm==null) firstUgm = ugm;
 			group = ugm.userGroup;	
@@ -125,19 +165,39 @@ public class Feature_UserGroups extends Feature {
 			mayExportData = mayExportData && ugm.role.mayExportData();
 			mayReadData = mayReadData && ugm.role.mayReadData();
 			pseudonymizeAccess = pseudonymizeAccess || ugm.role.pseudonymizedAccess();
-			context = new UserGroupAccessContext(ugm, subcache, context);
-			//AccessLog.log("QUERY AS GROUP pA="+pseudonymizeAccess+" context="+context.toString());
+			context = new UserGroupAccessContext(ugm, subcache, context, pseudonymizeAccess);
+			AccessLog.log("QUERY AS GROUP pA="+pseudonymizeAccess+" context="+context.toString());
 		}
 		
 		Map<String, Object> newprops = new HashMap<String, Object>();
 		newprops.putAll(q.getProperties());
-		newprops.put("usergroup", lastUgm.userGroup);		
+		newprops.put("usergroup", lastUgm.userGroup);
+		if (projectGroups != null) {
+		    newprops.put("study", lastUgm.userGroup);
+		    Set<String> studyGroups = q.getRestrictionOrNull("study-group");
+		    Set<String> targetGroups = null;
+		    if (studyGroups == null) {
+		    	targetGroups = new HashSet<String>(projectGroups.values());
+		    	if (targetGroups.contains("*")) targetGroups = null;
+		    	else if (targetGroups.contains("-")) targetGroups.remove("-");
+		    } else {
+		    	targetGroups = new HashSet<String>();
+		    	Set<String> tg = targetGroups;
+		    	for (String studyGroup : studyGroups) {
+		    		if (studyGroup.equals("*")) targetGroups = null;
+		    		else tg.add(projectGroups.get(studyGroup));
+		    	}
+		    }
+		    
+		    if (targetGroups != null) {
+		        newprops.put("study-group", targetGroups);
+		    } else {
+		        newprops.remove("study-group");
+		    }
+		}
 		 				
 		if (q.restrictedBy("export")) {
-			if (!mayExportData) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");
-			if (!pseudonymizeAccess) {
-				if (q.getStringRestriction("export").equals("pseudonymized")) { pseudonymizeAccess = true; }
-			}
+			if (!mayExportData) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");			
 		}
 						
 		if (!mayReadData) return ProcessingTools.empty();		
@@ -149,7 +209,7 @@ public class Feature_UserGroups extends Feature {
 		Query qnew = new Query("ug","ug="+lastUgm.userGroup,newprops, q.getFields(), subcache, aps, context ,q).setFromRecord(q.getFromRecord());
 		if (pseudonymizeAccess) {
 			 AccessLog.log("do pseudonymized");
-			 lastUgm.role.pseudo = true;
+			 //lastUgm.role.pseudo = true;
 			 if (!Feature_Pseudonymization.pseudonymizedIdRestrictions(qnew, next, group, newprops)) {
 				 AccessLog.logEndPath("cannot unpseudonymize");
 				 return ProcessingTools.empty();

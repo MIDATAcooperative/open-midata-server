@@ -164,7 +164,7 @@ public class ConsentQueryTools {
 			  app = Plugin.getById(mai.applicationId);
 			}
 			
-			SubscriptionManager.deactivateSubscriptions(consent.owner, app, consent._id);				
+			if (app != null) SubscriptionManager.deactivateSubscriptions(consent.owner, app, consent._id);				
 
 		} else {
 			Circles.removeQueries(consent.owner, consent._id);

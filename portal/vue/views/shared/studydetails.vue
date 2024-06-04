@@ -45,7 +45,13 @@
 						<div class="" v-if="!participation || participation.pstatus == 'MATCH'">{{ $t('enum.participantsearchstatus.'+study.participantSearchStatus) }}</div>
 						<div class="">{{ $t('enum.studyexecutionstatus.'+study.executionStatus) }}</div>
 						<div class="extraspace">&nbsp;</div>
-						<div v-if="mayRequestParticipation()">
+						<div v-if="mayRequestParticipation() && code">
+																
+							<p v-t="'studydetails.accept_invitation_help'"></p>
+							<button @click="requestParticipation()" :disabled="action!=null" class="btn btn-primary"
+									v-t="'studydetails.accept_invitation_btn'"></button>		                		              
+						</div>
+						<div v-else-if="mayRequestParticipation()">
 																
 							<p v-t="'studydetails.request_participation_help'"></p>
 							<button @click="requestParticipation()" :disabled="action!=null" class="btn btn-primary"

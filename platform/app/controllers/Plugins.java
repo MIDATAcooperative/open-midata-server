@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.regex.Pattern;
 
 import org.bson.BSONObject;
 
@@ -157,7 +158,22 @@ public class Plugins extends APIController {
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 
 		Rights.chk("Plugins.get", getRole(), properties, fields);
+		
+		boolean nameSearch = false;
+		String name = properties.containsKey("name") ? properties.get("name").toString() : null;
+		if (name != null && name.endsWith("*") ) {
+		    Pattern pat = Pattern.compile("^"+name.substring(0, name.length()-1), Pattern.CASE_INSENSITIVE);
+		    properties.put("name", pat);	
+		    nameSearch = true;
+		}
+		
 		Set<Plugin> vis = Plugin.getAll(properties, fields);
+		if (nameSearch) {
+		    properties.put("filename", properties.get("name"));
+		    properties.remove("name");
+		    vis.addAll(Plugin.getAll(properties, fields));
+		}
+		
 		if (properties.containsKey("developerTeam")) {
 			properties.put("creator", properties.get("developerTeam"));
 			properties.remove("developerTeam");

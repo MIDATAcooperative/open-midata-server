@@ -323,7 +323,7 @@ public class APSCache {
 	    		if (ugm.member.equals(member) && ugm.getConfirmedRole().may(permission)) {
 	    			result.add(ugm);
 	    			return true;
-	    		} else if (ugm.entityType == EntityType.USERGROUP || ugm.entityType == EntityType.ORGANIZATION) {
+	    		} else if (ugm.entityType == EntityType.USERGROUP || ugm.entityType == EntityType.ORGANIZATION || ugm.entityType == EntityType.PROJECT) {
 		    	   if (ugm.getConfirmedRole().may(permission) && getByGroupAndActiveMember(tested, result, ugm.member, member, permission)) {
 		    		   result.add(ugm);		    		   
 		    		   return true;

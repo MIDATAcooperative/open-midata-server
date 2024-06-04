@@ -143,7 +143,7 @@ let doLoadPlugins = false;
 	var getOrCreateGroup = function($data, group) {
 	   	if (groups[group] != null) return groups[group];
 	  
-	   	var newgroup = _.filter($data.gi, function(x){  return x.name == group; })[0];
+	   	var newgroup = _.filter($data.gi, function(x){  return x.name == group; })[0] || { name : "undefined", label:{}};
 	   
 	   	newgroup.children = [];
 	   	newgroup.records = [];

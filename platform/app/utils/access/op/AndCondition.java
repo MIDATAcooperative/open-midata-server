@@ -163,7 +163,8 @@ public class AndCondition implements Condition, Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Condition parseRemaining(Object fragment) {
-		if (fragment instanceof String) {	    	   
+	    if (fragment==null) return null;
+	    else if (fragment instanceof String) {	    	   
 	       return new EqualsSingleValueCondition((Comparable) fragment);
 	    } else if (fragment instanceof Map) {
 	       return new AndCondition((Map<String,Object>) fragment);

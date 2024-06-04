@@ -691,10 +691,10 @@ public class ApplicationTools {
 	}
 
 	public static void removeAppInstance(AccessContext context, MidataId executorId, MobileAppInstance appInstance) throws AppException {
-		AccessLog.logBegin("start remove app instance: ",appInstance._id.toString()," context="+context.toString());
+		AccessLog.logBegin("start remove app instance: ",appInstance._id.toString()," context="+context.toString()+" app="+appInstance.applicationId.toString());	
 		// Device or password changed, regenerates consent				
-		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);
-		Plugin app = Plugin.getById(appInstance.applicationId);
+		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);		
+		Plugin app = Plugin.getById(appInstance.applicationId);		
 		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
 		RecordManager.instance.deleteAPS(context, appInstance._id);									
 		//Removing queries from user account should not be necessary
@@ -705,12 +705,13 @@ public class ApplicationTools {
 	}
 
 	public static void deleteServiceInstance(AccessContext context, ServiceInstance instance) throws InternalServerException {
-        Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.ALL);
+        Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.APPINSTANCE_ALL);
         AccessLog.log("delete service instance:",instance._id.toString()," #instances=", Integer.toString(appInstances.size()));
         for (MobileAppInstance appInstance : appInstances) {
             try {
               ApplicationTools.removeAppInstance(context, context.getAccessor(), appInstance);            
             } catch (Exception e) {
+                AccessLog.logException("delete service instance:", e);
             	AccessLog.logEnd("end remove app instance (exception)");
                 MobileAppInstance.delete(instance.executorAccount, appInstance._id);
             }

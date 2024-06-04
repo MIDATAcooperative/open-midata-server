@@ -15,42 +15,17 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package models.enums;
+package utils.access.pseudo;
 
-/**
- * Which type of entities is used
- *
- */
-public enum EntityType {
+import models.Record;
 
-	/**
-	 * Users
-	 */
-	USER,
-	
-	/**
-	 * UserGroups 
-	 */
-	USERGROUP,
-	
-	/**
-	 * Organizations
-	 */
-	ORGANIZATION,
+public class RemoveNarrativesFilter extends ProjectDataFilterBase {
 
-	/**
-	 * Services
-	 */
-	SERVICES,
-	
-	/**
-	 * Project
-	 */
-	PROJECT;
-	
-	public Permission getChangePermission() {
-		if (this == SERVICES) return Permission.APPLICATIONS;
-		else if (this == ORGANIZATION || this == PROJECT) return Permission.SETUP;
-		return Permission.CHANGE_TEAM;
+	@Override
+	public void pseudonymizeMeta(Record rec) {
+		rec.name = "pseudonymized";
+		rec.description = "pseudonymized";
 	}
+
+	
 }

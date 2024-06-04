@@ -116,7 +116,12 @@
 		  <p><span v-t="'admin_study.anonymous'"></span>: <b>{{ $t('common.yesno.'+study.anonymous) }}</b></p>
 		  <p><span v-t="'admin_study.required_assistance'"></span>: <b>{{ study.assistance }}</b></p>
 		  <p><span v-t="'admin_study.termsOfUse'"></span>: <b><router-link :to="{ path : './terms', query : { which:study.termsOfUse} }">{{ study.termsOfUse }}</router-link></b></p>
-		  <p><span v-t="'admin_study.sharing_query'"></span>:</p>
+		  <p><span v-t="'admin_study.data_filters'"></span>: </p>
+          <ul>
+            <li v-if="study.dataFilters.length == 0">{{ $t("admin_study.none") }}</li>
+            <li v-for="filter in study.dataFilters" :key="filter">{{ $t('enum.projectdatafilter.'+filter) }}</li>
+          </ul>
+          <p><span v-t="'admin_study.sharing_query'"></span>:</p>
 		  <access-query :query="study.recordQuery" details="true"></access-query>
 		  <pre>{{ JSON.stringify(study.recordQuery, null, 2) }}
 		  </pre>
@@ -254,6 +259,7 @@ export default {
 			const { $data, $route } = this, me = this;
             me.doBusy(server.get(jsRoutes.controllers.research.Studies.getAdmin($data.studyid).url)
             .then(function(data) { 				
+                data.data.study.dataFilters = data.data.study.dataFilters || [];
                 $data.study = data.data.study;
                 
                 me.doBusy(users.getMembers({ _id : $data.study.createdBy, "role" : ["RESEARCH","DEVELOPER","ADMIN"] }, users.MINIMAL)

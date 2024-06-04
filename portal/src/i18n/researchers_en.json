@@ -46,6 +46,7 @@
     "rules" : "Rules",
     "actions" : "Applications",
     "participants" : "Participants",
+    "subprojects" : "Sub-Projects",
     "codes" : "Codes",
     "records" : "Records",
     "results" : "Results",
@@ -55,6 +56,7 @@
   
   "studies" : {
     "title" : "Research Projects",
+    "code" : "Code",
     "name" : "Name",
     "validation" : "Validation",
     "participants" : "Participants",
@@ -136,6 +138,7 @@
     "anonymous2" : ", the pseudonymization mapping may not be accessed.",
     "not_anonymous1" : "Not pseudonymized",
     "not_anonymous2" : ", requests member to share full name, birthdate and contact information (address, phone, email)",
+    "data_filters" : "Pseudonymization",
     "assistance" : "Assistance",
     "no_assistance1" : "None",
     "no_assistance2" : " - the account holder participates alone.",
@@ -189,6 +192,16 @@
       "clone" : "This will clone the project's settings into a new research project. The workflow of the new project will be reset. No participants will be transferred to the new project. This project will remain unchanged.",
       "are_you_sure" : "This operation cannot be undone. Are you sure?"
     }
+  },
+  
+  "studysubprojects" : {
+     "project" : "Project Code",
+     "projectName" : "Project Name",
+     "addproject_btn" : "Add project",
+     "empty" : "There are currently no subprojects defined for this project",
+     "projectGroupMapping" : "Group mapping",
+     "target" : "Destination",
+     "source" : "Source"
   },
   
   "studyparticipant" : {

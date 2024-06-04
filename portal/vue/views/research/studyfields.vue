@@ -19,11 +19,12 @@
     <study-nav page="study.fields" :study="study"></study-nav>
     <tab-panel :busy="isBusy">
        
-
-        <h2 v-t="'studyfields.required_data'"></h2>
-        <p class="alert alert-info" v-t="'studyfields.no_change_warning'"></p>
+        <div v-if="!isMetaProject()">  
+          <h2 v-t="'studyfields.required_data'"></h2>
+          <p class="alert alert-info" v-t="'studyfields.no_change_warning'"></p>
+        </div>
         <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="setRequiredInformation()" role="form">
-                    
+            <div v-if="!isMetaProject()">    
             <form-group name="identity" label="studyfields.member_identity" :path="errors.identity">
                 <radio-box name="identity" :disabled="studyLocked()" value="DEMOGRAPHIC" v-model="information.identity">
                     <div class="margin-left">
@@ -47,6 +48,13 @@
                 </check-box>
                                     
             </form-group>
+            <form-group v-if="information.identity!='DEMOGRAPHIC'" name="dataFilters" label="studyfields.data_filters" :path="errors.dataFilters">
+                         
+                <check-box v-for="filter in dataFilters" :key="filter" :name="filter" :disabled="filtersLocked()" :checked="information.dataFilters.indexOf(filter)>=0" @click="toggle(information.dataFilters, filter);">
+                   <span class="margin-left" v-t="'enum.projectdatafilter.'+filter"></span>
+                </check-box>         
+                                             
+            </form-group>
             <form-group name="assistance" label="studyfields.assistance" :path="errors.assistance">
                 <radio-box :disabled="studyLocked()" name="assistance" value="NONE" v-model="information.assistance">
                     <div class="margin-left">
@@ -60,10 +68,10 @@
                 </radio-box>                
             </form-group>
             <form-group label="common.empty">
-                <button type="submit" v-submit class="btn btn-primary" :disabled="studyLocked()" v-t="'common.change_btn'"></button>
+                <button type="submit" v-submit class="btn btn-primary" :disabled="studyLocked() && filtersLocked()" v-t="'common.change_btn'"></button>
                 <success :finished="finished" action="change" msg="common.save_ok"></success>                
             </form-group>
-       
+            </div>
         
 	        <h2 v-t="'studyfields.groups'"></h2>
 	        <p v-if="!study.groups.length" v-t="'studyfields.groups_empty'"></p>
@@ -105,13 +113,16 @@ import StudyNav from "components/tiles/StudyNav.vue"
 import server from "services/server.js"
 import { status, ErrorBox, Success, CheckBox, RadioBox, FormGroup } from 'basic-vue3-components'
 import _ from "lodash";
+import studies from "services/studies.js";
 
 export default {
     data: () => ({	
         studyid : null,
         information : {},
         study : null,
-        newGroup : { name : "", description: "" }
+        newGroup : { name : "", description: "" },
+        dataFilters : studies.dataFilters,
+        filtersNotSet : false
     }),
 
     components: {  Panel, TabPanel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, RadioBox },
@@ -130,6 +141,10 @@ export default {
 	        .then(function(data) { 				
                 let study = data.data;
                 if (!study.groups) { study.groups = []; }
+                if (!study.dataFilters) { 
+                  study.dataFilters = [];
+                  $data.filtersNotSet = true; 
+                } else $data.filtersNotSet = false; 
 			    $data.study = study;
 			    $data.study.recordQuery = undefined;
 		    }));
@@ -177,6 +192,20 @@ export default {
         studyLocked() {
             const { $data } = this;
 		    return (!$data.study) || ($data.study.validationStatus !== "DRAFT" && $data.study.validationStatus !== "REJECTED") || !$data.study.myRole.setup;
+        },
+        
+        filtersLocked() {
+            const { $data } = this;
+            return (!$data.study) || (!$data.filtersNotSet && $data.study.validationStatus !== "DRAFT" && $data.study.validationStatus !== "REJECTED") || !$data.study.myRole.setup;
+        },
+        
+        toggle(array,itm) {       
+              var pos = array.indexOf(itm);
+              if (pos < 0) array.push(itm); else array.splice(pos, 1);
+        },
+        
+        isMetaProject() {
+          return this.$data.study && this.$data.study.type == "META";
         }
     },
 

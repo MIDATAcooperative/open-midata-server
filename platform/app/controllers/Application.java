@@ -1154,6 +1154,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.abortExecution(),
 				controllers.research.routes.javascript.Studies.delete(),
 				controllers.research.routes.javascript.Studies.listParticipants(),
+				controllers.research.routes.javascript.Studies.listSubprojects(),
 				controllers.research.routes.javascript.Studies.countParticipants(),
 				controllers.research.routes.javascript.Studies.getParticipant(),
 				controllers.research.routes.javascript.Studies.approveParticipation(),

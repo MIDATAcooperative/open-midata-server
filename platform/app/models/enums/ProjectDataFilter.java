@@ -17,40 +17,26 @@
 
 package models.enums;
 
-/**
- * Which type of entities is used
- *
- */
-public enum EntityType {
+public enum ProjectDataFilter {
 
-	/**
-	 * Users
-	 */
-	USER,
-	
-	/**
-	 * UserGroups 
-	 */
-	USERGROUP,
-	
-	/**
-	 * Organizations
-	 */
-	ORGANIZATION,
-
-	/**
-	 * Services
-	 */
-	SERVICES,
-	
-	/**
-	 * Project
-	 */
-	PROJECT;
-	
-	public Permission getChangePermission() {
-		if (this == SERVICES) return Permission.APPLICATIONS;
-		else if (this == ORGANIZATION || this == PROJECT) return Permission.SETUP;
-		return Permission.CHANGE_TEAM;
-	}
+    /**
+     * Remove all time information from resources
+     */
+    NO_TIME,
+    
+    /**
+     * Remove time and day information from resources. Keep only year and month.
+     */
+    ONLY_MONTH_YEAR,
+    
+    /**
+     * Remove all practitioner references
+     */
+    NO_PRACTITIONER,
+    
+    /**
+     * Remove all narratives
+     */
+    NO_NARRATIVES
+    
 }
