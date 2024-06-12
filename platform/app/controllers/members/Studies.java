@@ -323,7 +323,7 @@ public class Studies extends APIController {
 			}
 		}
 		if (study.leavePolicy == ProjectLeavePolicy.FREEZE && part.managers != null) {
-			context.getCache().getAPS(part._id).addAccess(part.managers);
+			context.getCache().getAPS(part._id).addAccess(part.managers, true);
 		}
 		
 		

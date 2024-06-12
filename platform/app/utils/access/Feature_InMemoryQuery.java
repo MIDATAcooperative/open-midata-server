@@ -103,7 +103,7 @@ public class Feature_InMemoryQuery extends APS {
 	}
 
 	@Override
-	public void addAccess(Set<MidataId> targets) throws AppException, EncryptionNotSupportedException {
+	public void addAccess(Set<MidataId> targets, boolean mustExist) throws AppException, EncryptionNotSupportedException {
 		throw new NotImplementedError();
 	}
 

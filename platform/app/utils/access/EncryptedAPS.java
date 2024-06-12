@@ -206,6 +206,7 @@ public class EncryptedAPS {
 	}
 	
 	public void setKey(String name, byte[] key) throws InternalServerException {
+	    if (key==null) return;
 		if (!isLoaded()) load();
 		aps.keys.put(name,  key);
 	}
@@ -436,9 +437,9 @@ public class EncryptedAPS {
 		    for (String ckey : keyNames()) {
 			   try {	
 				   if (ckey.equals("owner")) {
-					   setKey(ckey, KeyManager.instance.encryptKey(owner, newKey));
+					   setKey(ckey, KeyManager.instance.encryptKey(owner, newKey, true));
 				   } else {
-					   setKey(ckey, KeyManager.instance.encryptKey(new MidataId(ckey), newKey));  
+					   setKey(ckey, KeyManager.instance.encryptKey(new MidataId(ckey), newKey, false));  
 				   }			      
 			   } catch (EncryptionNotSupportedException e) {
 				   if (! e.getMessage().equals("No public key")) throw new InternalServerException("error.internal", e);

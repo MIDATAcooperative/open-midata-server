@@ -296,9 +296,9 @@ public class EncryptionUtils {
 			}
 		} else {
 		   if (!noAnonymousOwner && target.equals(eaps.getOwner())) {
-			   eaps.setKey("owner", KeyManager.instance.encryptKey(target, eaps.getAPSKey()));
+			   eaps.setKey("owner", KeyManager.instance.encryptKey(target, eaps.getAPSKey(), true));
 		   } else {
-			   eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey()));	
+			   eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey(), true));	
 		   }
 		}
 		

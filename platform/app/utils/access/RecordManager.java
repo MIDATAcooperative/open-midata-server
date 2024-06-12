@@ -176,10 +176,10 @@ public class RecordManager {
 		APSCache cache = context.getCache();
 		//if (context != null) {
 		  try (DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, context.getTargetAps(), context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()).map("ignore-redirect","true"),SHARING_FIELDS)) {
-			  shareRecursive(cache, it, targetUsers);
+			  shareRecursive(cache, it, targetUsers, true);
 		  }
 		//}
-		cache.getAPS(context.getTargetAps()).addAccess(targetUsers);
+		cache.getAPS(context.getTargetAps()).addAccess(targetUsers, true);
 		AccessLog.logEnd("end shareAPS");
 	}
 	
@@ -191,9 +191,9 @@ public class RecordManager {
 			AccessLog.logBegin("begin reshareAPS aps=",context.getTargetAps().toString()," executor=",context.getAccessor().toString()," #targetUsers=",Integer.toString(targetUsers.size()));
 			APSCache cache = context.getCache();
 			try (DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, context.getTargetAps(), context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()), SHARING_FIELDS)) {
-			  shareRecursive(cache, it, targetUsers);
+			  shareRecursive(cache, it, targetUsers, true);
 			}
-			Feature_UserGroups.findApsCacheToUse(cache, context.getTargetAps()).getAPS(context.getTargetAps()).addAccess(targetUsers);
+			Feature_UserGroups.findApsCacheToUse(cache, context.getTargetAps()).getAPS(context.getTargetAps()).addAccess(targetUsers, true);
 			AccessLog.logEnd("end shareAPS");
 		}
 	}
@@ -247,13 +247,13 @@ public class RecordManager {
 	}
 	
 	
-	private void shareRecursive(APSCache cache, DBIterator<DBRecord> recs, Set<MidataId> targetUsers) throws AppException {
+	private void shareRecursive(APSCache cache, DBIterator<DBRecord> recs, Set<MidataId> targetUsers, boolean keysMustExist) throws AppException {
 		if (targetUsers.isEmpty() || !recs.hasNext()) return;		
 		while (recs.hasNext()) {
 			DBRecord rec = recs.next();
 			if (rec.isStream != null) {
 				APS stream = cache.getAPS(rec._id, rec.key, rec.owner);
-				stream.addAccess(targetUsers);
+				stream.addAccess(targetUsers, keysMustExist);
 			}
 		}		
 	}		
@@ -374,7 +374,7 @@ public class RecordManager {
         }
 		AccessLog.log("to-share: count#=", Integer.toString(recordEntries.size()), " already=", Integer.toString(alreadyContained.size()));
         if (alreadyContained.size() == 0) {	
-        	shareRecursive(cache, ProcessingTools.dbiterator("", recordEntries.iterator()), apswrapper.getAccess());
+        	shareRecursive(cache, ProcessingTools.dbiterator("", recordEntries.iterator()), apswrapper.getAccess(), false);
 		    apswrapper.addPermission(recordEntries, withOwnerInformation);
 		    for (DBRecord rec : recordEntries) {		    	
 		    	cache.changeWatches().addWatchingAps(rec, apswrapper.getId());
@@ -386,7 +386,7 @@ public class RecordManager {
         	for (DBRecord rec : recordEntries) {
         		if (!contained.contains(rec._id)) filtered.add(rec);
         	}
-        	shareRecursive(cache, ProcessingTools.dbiterator("", filtered.iterator()), apswrapper.getAccess());
+        	shareRecursive(cache, ProcessingTools.dbiterator("", filtered.iterator()), apswrapper.getAccess(), false);
         	apswrapper.addPermission(filtered, withOwnerInformation);
         	for (DBRecord rec : filtered) cache.changeWatches().addWatchingAps(rec, apswrapper.getId());
         }

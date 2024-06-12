@@ -137,12 +137,14 @@ public class KeyManager implements KeySession {
 	 * @throws EncryptionNotSupportedException
 	 * @throws InternalServerException
 	 */
-	public byte[] encryptKey(MidataId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, InternalServerException {
-		return encryptKey(getPublicKey(target) , keyToEncrypt);	
+	public byte[] encryptKey(MidataId target, byte[] keyToEncrypt, boolean mustExist) throws EncryptionNotSupportedException, InternalServerException {
+		byte[] pk = getPublicKey(target, mustExist);
+		if (pk == null && !mustExist) return null;
+	    return encryptKey(pk , keyToEncrypt);	
 	}
 	
-	private byte[] getPublicKey(MidataId target) throws EncryptionNotSupportedException, InternalServerException {
-		return session.get().getPublicKey(target);
+	private byte[] getPublicKey(MidataId target, boolean mustExist) throws EncryptionNotSupportedException, InternalServerException {
+		return session.get().getPublicKey(target, mustExist);
 	}
 	
 	private byte[] putPublicKey(MidataId target, byte[] key) {
@@ -504,7 +506,7 @@ public class KeyManager implements KeySession {
 			return key;
 		}
 		
-		private byte[] getPublicKey(MidataId target) throws EncryptionNotSupportedException, InternalServerException {
+		private byte[] getPublicKey(MidataId target, boolean mustExist) throws EncryptionNotSupportedException, InternalServerException {
 			byte[] fromCache = publicKeyCache.get(target);
 			if (fromCache != null) return fromCache;
 			
@@ -543,12 +545,14 @@ public class KeyManager implements KeySession {
 				return cr.publicKey;
 			}
 			
+			if (!mustExist) return null;
+			
 			throw new EncryptionNotSupportedException("No public key");	
 
 		}
 		
 		public boolean verifyHash(MidataId target, byte[] encryptedHash, byte[] message) throws InternalServerException {
-			byte[] publicKey = getPublicKey(target);
+			byte[] publicKey = getPublicKey(target, true);
 			try {						
 				X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKey);
 				

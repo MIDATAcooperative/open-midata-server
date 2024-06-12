@@ -122,7 +122,7 @@ class APSImplementation extends APS {
 		return eaps.getVersion();
 	}
 
-	public void addAccess(Set<MidataId> targets) throws AppException, EncryptionNotSupportedException {
+	public void addAccess(Set<MidataId> targets, boolean mustExist) throws AppException, EncryptionNotSupportedException {
 		merge();
 		try {
 			boolean changed = false;
@@ -135,8 +135,11 @@ class APSImplementation extends APS {
 			} else {
 				for (MidataId target : targets)
 					if (eaps.getKey(target.toString()) == null) {
-						eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey()));
-						changed = true;
+					    byte k[] = KeyManager.instance.encryptKey(target, eaps.getAPSKey(), mustExist);
+						if (k != null) {
+						    eaps.setKey(target.toString(), k);
+						    changed = true;
+						}
 					}
 			}
 			if (changed)
@@ -148,7 +151,7 @@ class APSImplementation extends APS {
 			} catch (InterruptedException e2) {
 			}
 			eaps.reload();
-			addAccess(targets);
+			addAccess(targets, mustExist);
 		}
 	}
 
@@ -637,7 +640,7 @@ class APSImplementation extends APS {
 				else wrapper.setKey(ckey, null);
 			 } else {
 				MidataId person = ckey.equals("owner") ? eaps.getOwner() : new MidataId(ckey);
-		        wrapper.setKey(ckey, KeyManager.instance.encryptKey(person, wrapper.getAPSKey()));
+		        wrapper.setKey(ckey, KeyManager.instance.encryptKey(person, wrapper.getAPSKey(), true));
 			 }
 		   } catch (EncryptionNotSupportedException e) {}
 		   
@@ -645,7 +648,7 @@ class APSImplementation extends APS {
 	   try {
 		 if (wrapper.getSecurityLevel().equals(APSSecurityLevel.NONE)) {
 			wrapper.setKey(eaps.getAccessor().toString(), null);
-		 } else wrapper.setKey(eaps.getAccessor().toString(), KeyManager.instance.encryptKey(eaps.getAccessor(), wrapper.getAPSKey()));
+		 } else wrapper.setKey(eaps.getAccessor().toString(), KeyManager.instance.encryptKey(eaps.getAccessor(), wrapper.getAPSKey(), true));
 	   } catch (EncryptionNotSupportedException e) {}
 								
 		eaps.useAccessibleSubset(wrapper);
