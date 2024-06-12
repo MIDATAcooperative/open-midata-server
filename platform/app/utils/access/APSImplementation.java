@@ -640,7 +640,7 @@ class APSImplementation extends APS {
 				else wrapper.setKey(ckey, null);
 			 } else {
 				MidataId person = ckey.equals("owner") ? eaps.getOwner() : new MidataId(ckey);
-		        wrapper.setKey(ckey, KeyManager.instance.encryptKey(person, wrapper.getAPSKey(), true));
+		        wrapper.setKey(ckey, KeyManager.instance.encryptKey(person, wrapper.getAPSKey(), false));
 			 }
 		   } catch (EncryptionNotSupportedException e) {}
 		   
