@@ -73,7 +73,7 @@ public class EncryptedFileHandle implements UpdateFileHandleSupport {
 	private final static String protokoll = "midata-file://";
 	
 	public String serializeAsURL(MidataId owner) throws InternalServerException {
-		byte[] keydata = KeyManager.instance.encryptKey(owner, key);
+		byte[] keydata = KeyManager.instance.encryptKey(owner, key, true);
 		return protokoll+TokenCrypto.encryptToken(id.toString()+"-"+Base64.getEncoder().encodeToString(keydata)+"-"+length);
 	}
 	

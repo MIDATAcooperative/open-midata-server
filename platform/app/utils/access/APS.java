@@ -54,7 +54,7 @@ public abstract class APS extends Feature {
 	
 	public abstract void provideRecordKey(DBRecord record) throws AppException;
 	
-	public abstract void addAccess(Set<MidataId> targets) throws AppException,EncryptionNotSupportedException;
+	public abstract void addAccess(Set<MidataId> targets, boolean mustExist) throws AppException,EncryptionNotSupportedException;
 
 	public abstract void addAccess(MidataId target, byte[] publickey) throws AppException,EncryptionNotSupportedException;
 	

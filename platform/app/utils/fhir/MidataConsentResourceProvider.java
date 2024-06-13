@@ -569,7 +569,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		if (params.containsKey("actor")) {
 			List<ReferenceParam> actors = builder.resolveReferences("actor", null);
 			if (actors != null) {
-				if (FHIRTools.areAllOfType(actors, Sets.create("Patient","Group"))) {
+				if (FHIRTools.areAllOfType(actors, Sets.create("Patient","Group","Organization"))) {
 				  authorized = FHIRTools.referencesToIds(actors);				
 				} else builder.restriction("actor", false, null, "fhirConsent.provision.actor.reference");
 			}

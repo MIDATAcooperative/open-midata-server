@@ -146,7 +146,7 @@ public class APSCache {
 			result = aps(new EncryptedAPS(apsId, accessorId, unlockKey, owner));
 			if (!result.isAccessible()) {
 				AccessLog.log("Adding missing access for ",accessorId.toString()," APS:",apsId.toString());
-				result.addAccess(Collections.<MidataId>singleton(accessorId));
+				result.addAccess(Collections.<MidataId>singleton(accessorId), true);
 			}
 			cache.put(apsId.toString(), result);
 		} else if (unlockKey != null) {
@@ -159,7 +159,7 @@ public class APSCache {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
 			result = aps(new EncryptedAPS(apsId, accessorId, unlockKey, owner, set));
-			if (!result.isAccessible() && addIfMissing) result.addAccess(Collections.<MidataId>singleton(accessorId));
+			if (!result.isAccessible() && addIfMissing) result.addAccess(Collections.<MidataId>singleton(accessorId), true);
 			cache.put(apsId.toString(), result);
 		}
 		return result;
