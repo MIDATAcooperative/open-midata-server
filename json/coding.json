@@ -491,7 +491,7 @@
 {"_id":{"$oid":"6548b26cfa96471011cf8c73"},"system":"http://form.brightfish.com","code":"breast-qtm-preoperative","display":"Breast QTM preoperative","content":"breast-qtm-preoperative"}
 {"_id":{"$oid":"6548b2d5bd916879dba88be8"},"system":"http://form.brightfish.com","code":"breast-q-lumpectomy","display":"Breast QTM lumpectomy","content":"breast-q-lumpectomie"}
 {"_id":{"$oid":"6548b61ebd916879dba88bfa"},"system":"http://form.brightfish.com","code":"questions-about-treatment","display":"Questions about treatment","content":"treatment-questions"}
-{"_id":{"$oid":"6548c808fa96471011cf8d04"},"system":"http://form.brightfish.com","code":"phq-2","display":"Patient Health Questionnaire PHQ-2","content":"phq-2"}
+{"_id":{"$oid":"6548c808fa96471011cf8d04"},"system":"http://form.brightfish.com","code":"phq-2","display":"Patient Health Questionnaire-2 (PHQ-2)","content":"phq-2"}
 {"_id":{"$oid":"6548c20cbd916879dba88c3a"},"system":"http://form.brightfish.com","code":"eq-5d-5l","display":"EQ-5D-5L","content":"eq-5d-5l-euroqol"}
 {"_id":{"$oid":"6548c1d0bd916879dba88c37"},"system":"http://form.brightfish.com","code":"comorbiditiessacq","display":"Self-administered co-morbidy questionnaire (SACQ)","content":"comorbiditiessacq"}
 {"_id":{"$oid":"6548b037fa96471011cf8c6a"},"system":"http://form.brightfish.com","code":"use-of-sexual-medication-devices","display":"Utilization of Sexual Medications/Devices","content":"use-of-sexual-medicine-devices"}
@@ -529,3 +529,10 @@
 {"_id":{"$oid":"660292225311295f58e16dd5"},"system":"http://form.brightfish.com","code":"mpdi","display":"Michigan Pain and Disability Index (mPDI)","content":"mpdi"}
 {"_id":{"$oid":"6602906d5311295f58e16dd3"},"system":"http://form.brightfish.com","code":"mpss","display":"Mood and physical symptoms scale (MPSS)","content":"mpss"}
 {"_id":{"$oid":"661d11325c10195721cc63e9"},"system":"http://www.krebsliga.ch","code":"scape-ch","display":"SCAPE-CH Questionnaire","content":"scape-ch"}
+{"_id":{"$oid":"66700c80409c6503d161b1a9"},"system":"http://midata.coop","code":"other-document","display":"Other document","content":"other-document"}
+{"_id":{"$oid":"667013a3427c7e41613f0cba"},"system":"http://loinc.org","code":"56446-8","display":"Visit summary","content":"loinc/56446-8"}
+{"_id":{"$oid":"66700bcf409c6503d161b1a7"},"system":"http://loinc.org","code":"87273-9","display":"Immunization note","content":"loinc/87273-9"}
+{"_id":{"$oid":"6630e96071410570d094c017"},"system":"http://www.phqscreeners.com","code":"phq-9","display":"Patient Health Questionnaire-9 (PHQ-9)","content":"phq-9"}
+{"_id":{"$oid":"66421c5271410570d094c394"},"system":"http://snomed.info/sct","code":"198436008","display":"Menopausal flushing (finding)","content":"snomed/198436008"}
+{"_id":{"$oid":"6674114f427c7e41613f0e2c"},"system":"http://snomed.info/sct","code":"406193000","display":"Client satisfaction","content":"snomed/406193000"}
+{"_id":{"$oid":"6632320232f1c9431d7f0d4f"},"system":"http://www.phqscreeners.com","code":"phq-2","display":"Patient Health Questionnaire-2 (PHQ-2)","content":"phq-2"}
