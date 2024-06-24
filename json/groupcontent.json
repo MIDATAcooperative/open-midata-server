@@ -479,3 +479,9 @@
 {"_id":{"$oid":"660292225311295f58e16dd6"},"system":"v1","name":"prom","content":"mpdi"}
 {"_id":{"$oid":"6602906d5311295f58e16dd4"},"system":"v1","name":"prom","content":"mpss"}
 {"_id":{"$oid":"661d11325c10195721cc63ea"},"system":"v1","name":"other_assessment","content":"scape-ch"}
+{"_id":{"$oid":"66700beb427c7e41613f0cab"},"system":"v1","name":"vaccination","content":"loinc/87273-9"}
+{"_id":{"$oid":"667013a3427c7e41613f0cbb"},"system":"v1","name":"healthdocuments","content":"loinc/56446-8"}
+{"_id":{"$oid":"66700c80409c6503d161b1aa"},"system":"v1","name":"healthdocuments","content":"other-document"}
+{"_id":{"$oid":"6630e96071410570d094c018"},"system":"v1","name":"prom","content":"phq-9"}
+{"_id":{"$oid":"66421c5271410570d094c395"},"system":"v1","name":"condition","content":"snomed/198436008"}
+{"_id":{"$oid":"6674114f427c7e41613f0e2d"},"system":"v1","name":"other_assessment","content":"snomed/406193000"}
