@@ -478,7 +478,7 @@ function analyze(usedApps, usedProjects, usedAccounts, issues, accprojects) {
     for (let project of usedProjects) {
         projects[project._id] = project;
         if (!project.joinMethods || project.joinMethods.length == 0) add("error","workspace.error.no_join_method", project.name, null, projectlink("study.overview", project._id));
-        if (project.validationStatus == "DRAFT") add("warning", "workspace.warning.project_not_validated", project.name, null, projectlink("study.overview", project._id));
+        if (project.validationStatus == "DRAFT" || project.validationStatus == "PATCH") add("warning", "workspace.warning.project_not_validated", project.name, null, projectlink("study.overview", project._id));
         if (project.validationStatus == "VALIDATION") add("error", "workspace.error.project_in_validation", project.name, null, projectlink("study.overview", project._id));
         if (project.validationStatus == "REJECTED") add("error", "workspace.error.project_rejected", project.name, null, projectlink("study.overview", project._id));
 

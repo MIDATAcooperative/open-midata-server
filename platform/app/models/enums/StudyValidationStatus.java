@@ -29,6 +29,11 @@ public enum StudyValidationStatus {
 	DRAFT,
 	
 	/**
+	 * Study may be changed again after it was already validated
+	 */
+	PATCH,
+	
+	/**
 	 * Study validation is currently in progress
 	 */
 	VALIDATION,

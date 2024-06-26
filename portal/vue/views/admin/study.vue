@@ -223,7 +223,7 @@
           
     <router-link class="btn btn-default mr-1" :to="{ path : './astudies' }" v-t="'common.back_btn'"></router-link>
     <button v-if="study.validationStatus == 'VALIDATION'" class="btn btn-primary mr-1" @click="finishValidation()" v-t="'admin_study.end_validation_btn'"></button>    
-    <button v-if="study.validationStatus == 'VALIDATION'" class="btn btn-default mr-1" @click="backToDraft()" v-t="'admin_study.back_to_draft_btn'"></button>
+    <button v-if="study.validationStatus != 'DRAFT' && study.validationStatus != 'PATCH'" class="btn btn-default mr-1" @click="backToDraft()" v-t="'admin_study.back_to_draft_btn'"></button>
     <button v-if="study.validationStatus != 'DRAFT'" class="btn btn-default mr-1" @click="exportStudy()" v-t="'admin_study.export_btn'"></button>
     <button v-if="readyForDelete()" class="btn btn-danger mr-1" @click="doDelete()" v-t="'admin_study.delete_study_btn'"></button>
        

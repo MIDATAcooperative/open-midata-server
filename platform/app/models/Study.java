@@ -54,7 +54,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy", "forceClientCertificate", "dataFilters");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "categories", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy", "forceClientCertificate", "dataFilters");
 	
 	public @NotMaterialized static final Set<String> LINK_FIELDS = Sets.create("_id", "name", "code", "type", "joinMethods", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
 	
@@ -72,6 +72,11 @@ public class Study extends Model {
 	 * additional identifiers
 	 */
 	public List<String> identifiers;
+	
+	/**
+	 * additional categories (also used for consents)
+	 */
+	public List<String> categories;
 	
 	/**
 	 * id of research organization which does the study
@@ -345,6 +350,11 @@ public class Study extends Model {
     public void setIdentifiers(List<String> identifiers) throws InternalServerException {
     	this.identifiers = identifiers;
     	Model.set(Study.class, collection, this._id, "identifiers", identifiers);
+    }
+    
+    public void setCategories(List<String> categories) throws InternalServerException {
+    	this.categories = categories;
+    	Model.set(Study.class, collection, this._id, "categories", categories);
     }
     
     public void setType(StudyType type) throws InternalServerException {

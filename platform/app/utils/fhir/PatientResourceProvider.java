@@ -850,7 +850,9 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
         if (consent != null && !consent.isActive()) {
         	fhirPatient.addServiceUrl(user, consent);
         } else if (consent != null && consent.status==ConsentStatus.PRECONFIRMED) {
-        	insertRecord(tempContext.forConsentReshare(consent), record, thePatient);
+        	//Patient record is copied from original for preconfirmed consents
+        	//insertRecord(tempContext.forConsentReshare(consent), record, thePatient);
+        	
         	tempContext = tempContext.forConsent(consent);
         }
 		        

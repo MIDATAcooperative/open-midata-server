@@ -23,35 +23,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeType;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Location;
-import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Period;
-import org.hl7.fhir.r4.model.PlanDefinition;
-import org.hl7.fhir.r4.model.Practitioner;
-import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResearchStudy;
 import org.hl7.fhir.r4.model.ResearchStudy.ResearchStudyArmComponent;
 import org.hl7.fhir.r4.model.StringType;
 
-import ca.uhn.fhir.model.api.Include;
-import ca.uhn.fhir.model.api.annotation.Description;
-import ca.uhn.fhir.rest.annotation.IncludeParam;
-import ca.uhn.fhir.rest.annotation.OptionalParam;
-import ca.uhn.fhir.rest.annotation.Search;
-import ca.uhn.fhir.rest.annotation.Sort;
-import ca.uhn.fhir.rest.api.SortSpec;
-import ca.uhn.fhir.rest.api.server.RequestDetails;
-import ca.uhn.fhir.rest.param.DateAndListParam;
-import ca.uhn.fhir.rest.param.DateRangeParam;
-import ca.uhn.fhir.rest.param.ReferenceAndListParam;
-import ca.uhn.fhir.rest.param.StringAndListParam;
-import ca.uhn.fhir.rest.param.StringParam;
-import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import models.Info;
@@ -66,7 +46,6 @@ import utils.QueryTagTools;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.collections.CMaps;
-import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 
@@ -244,6 +223,7 @@ public class MidataResearchStudyResourceProvider extends RecordBasedResourceProv
 		
 		switch(study.validationStatus) {	
 		case DRAFT:
+		case PATCH:
 		case VALIDATION:researchStudy.setStatus(ResearchStudy.ResearchStudyStatus.INREVIEW);break;
 		case REJECTED:researchStudy.setStatus(ResearchStudy.ResearchStudyStatus.DISAPPROVED);break;
 		case VALIDATED:

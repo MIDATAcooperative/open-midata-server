@@ -255,8 +255,8 @@ public class Consent extends Model implements Comparable<Consent> {
 		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("observers", observer).map("status", NOT_DELETED), fields, limit);
 	}
 	
-	public static Set<Consent> getAllByManager(MidataId manager, Map<String, Object> properties,  Set<String> fields) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("managers", manager).map("status", NOT_DELETED), fields);
+	public static Set<Consent> getAllByManagers(Set<MidataId> managers, Map<String, Object> properties,  Set<String> fields) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("managers", managers).map("status", NOT_DELETED), fields);
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member) throws InternalServerException {

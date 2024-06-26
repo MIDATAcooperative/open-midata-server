@@ -171,7 +171,7 @@ export default {
         readyForValidation() {
             const { $data } = this;
             if ($data.study.type == "META") return false;
-		    return $data.study.myRole && $data.study.myRole.setup && ($data.study.validationStatus == "DRAFT" || $data.study.validationStatus == "REJECTED");
+		    return $data.study.myRole && $data.study.myRole.setup && ($data.study.validationStatus == "DRAFT" || $data.study.validationStatus == "REJECTED" || $data.study.validationStatus == "PATCH");
 	    },
 	
 	    readyForParticipantSearch() {
@@ -402,7 +402,7 @@ export default {
 	                            { title : "study_checklist.sharingQuery", page : "study.rules", required : true, done : (study.recordQuery && ( JSON.stringify(study.recordQuery) !== "{}")  ) },
 	                            { title : "study_checklist.dates", page : "study.rules", required : true, done : study.startDate || study.endDate || study.dataCreatedBefore },
 	                            { title : "study_checklist.terms", page : "study.rules" , flag : "termsofuse", done : study.termsOfUse || study.processFlags.indexOf("termsofuse")>=0 },
-	                            { title : "study_checklist.validation", action : me.startValidation, check : me.readyForValidation, page : ".", required : true, done : study.validationStatus !== "DRAFT" },
+	                            { title : "study_checklist.validation", action : me.startValidation, check : me.readyForValidation, page : ".", required : true, done : (study.validationStatus !== "DRAFT" && study.validationStatus !== "PATCH")  },
 	                            { title : "study_checklist.validation_passed", page : ".", required : true, done : study.validationStatus == "VALIDATED" },
 	                            { title : "study_checklist.phase2", page : ".", heading : true },
 	                            { title : "study_checklist.applications", page : "study.actions", flag : "applications", done : study.processFlags.indexOf("applications") >= 0 },

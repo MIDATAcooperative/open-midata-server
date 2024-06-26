@@ -72,7 +72,7 @@ public class ProjectTools {
 					
 					if (!role.mayChangeTeam()) throw new BadRequestException("error.notauthorized.action", "You may not remove team management feature from yourself.");
 				    Study study = Study.getById(old.userGroup, Study.ALL);
-				    if (study != null && study.validationStatus != StudyValidationStatus.DRAFT) throw new BadRequestException("error.notauthorized.action", "You may not update your own role after project was started.");
+				    if (study != null && study.validationStatus != StudyValidationStatus.DRAFT && study.validationStatus != StudyValidationStatus.PATCH) throw new BadRequestException("error.notauthorized.action", "You may not update your own role after project was started.");
 				}
 				
 				old.status = ConsentStatus.ACTIVE;
