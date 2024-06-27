@@ -121,4 +121,5 @@ id0128	07.05.2024	a.kreutz	F	ID pseudonymization	All IDs in pseudonymized projec
 id0129	07.05.2024	a.kreutz	F	More pseudonymization options	For new projects additional pseudonymization filters may be selected
 id0130	07.05.2024	a.kreutz	F	Meta projects	It is now possible to define a META project that is the union of other projects.
 id0131	04.06.2024	a.kreutz	F	Consents may be managed by creator organization
+id0132	27.06.2024	a.kreutz	B	Bugfix for existing patient creation via API
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

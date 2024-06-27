@@ -26,7 +26,7 @@
         <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="setRequiredInformation()" role="form">
             <div v-if="!isMetaProject()">    
             <form-group name="identity" label="studyfields.member_identity" :path="errors.identity">
-                <radio-box name="identity" :disabled="studyLocked()" value="DEMOGRAPHIC" v-model="information.identity">
+                <radio-box name="identity" :disabled="notDraft()" value="DEMOGRAPHIC" v-model="information.identity">
                     <div class="margin-left">
                         <strong v-t="'studyfields.not_anonymous1'"></strong><span v-t="'studyfields.not_anonymous2'"></span>
                     </div>
@@ -82,9 +82,9 @@
 	                <th>&nbsp;</th>
 	            </tr>
 	            <tr v-for="(group,idx) in study.groups" :key="idx">
-	                <td><input class="form-control" type="text"  :disabled="studyLocked()" v-validate v-model="group.name"></td>
-	                <td><input class="form-control" type="text"  :disabled="studyLocked()" v-validate v-model="group.description"></td>
-	                <td><button type="button" class="btn btn-danger btn-sm" @click="deleteGroup(group);" v-t="'common.delete_btn'" :disabled="studyLocked()">Delete</button></td>
+	                <td><input class="form-control" type="text"  :disabled="notDraft()" v-validate v-model="group.name"></td>
+	                <td><input class="form-control" type="text"  :disabled="notDraft()" v-validate v-model="group.description"></td>
+	                <td><button type="button" class="btn btn-danger btn-sm" @click="deleteGroup(group);" v-t="'common.delete_btn'" :disabled="notDraft()">Delete</button></td>
 	            </tr>
 	            <tr v-if="studyLocked() && study.myRole && study.myRole.setup">
 	                <td><input name="name" class="form-control" type="text" v-validate v-model="newGroup.name"></td>
@@ -191,12 +191,17 @@ export default {
    
         studyLocked() {
             const { $data } = this;
-		    return (!$data.study) || ($data.study.validationStatus !== "DRAFT" && $data.study.validationStatus !== "REJECTED") || !$data.study.myRole.setup;
+		    return (!$data.study) || ($data.study.validationStatus !== "DRAFT" && $data.study.validationStatus !== "REJECTED" && $data.study.validationStatus !== "PATCH") || !$data.study.myRole.setup;
+        },
+        
+        notDraft() {
+            const { $data } = this;
+            return (!$data.study) || ($data.study.validationStatus !== "DRAFT" && $data.study.validationStatus !== "REJECTED") || !$data.study.myRole.setup;
         },
         
         filtersLocked() {
             const { $data } = this;
-            return (!$data.study) || (!$data.filtersNotSet && $data.study.validationStatus !== "DRAFT" && $data.study.validationStatus !== "REJECTED") || !$data.study.myRole.setup;
+            return (!$data.study) || (!$data.filtersNotSet && $data.study.validationStatus !== "DRAFT" && $data.study.validationStatus !== "REJECTED" && $data.study.validationStatus !== "PATCH") || !$data.study.myRole.setup;
         },
         
         toggle(array,itm) {       

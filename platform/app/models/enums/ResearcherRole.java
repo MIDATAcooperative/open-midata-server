@@ -162,6 +162,22 @@ public class ResearcherRole implements JsonSerializable {
 		return result;
 	}
 	
+	public static ResearcherRole PARENTORGANIZATION() {
+		ResearcherRole result = new ResearcherRole();
+		result.changeTeam = false;
+		result.auditLog = true;
+		result.readData = false;
+		result.writeData = false;
+		result.participants = true;
+		result.pseudo = false;
+		result.export = false;
+		result.setup = false;
+		result.applications = false;
+		result.roleName = "PARENTORGANIZATION";
+		result.id = "PARENTORGANIZATION";
+		return result;
+	}
+	
 	public static ResearcherRole SUBPROJECT() {
         ResearcherRole result = new ResearcherRole();
         result.changeTeam = false;
@@ -192,5 +208,17 @@ public class ResearcherRole implements JsonSerializable {
 		result.roleName = "UNCONFIRMED";
 		result.id = "UNCONFIRMED";
 		return result;
+	}
+	
+	public void merge(ResearcherRole role) {
+		this.changeTeam |= role.changeTeam;
+		this.auditLog |= role.auditLog;
+		this.readData |= role.readData;
+		this.writeData |= role.writeData;
+		this.participants |= role.participants;
+		this.pseudo &= role.pseudo;
+		this.export |= role.export;
+		this.setup |= role.setup;
+		this.applications |= role.applications;
 	}
 }

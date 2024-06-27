@@ -113,6 +113,7 @@ import utils.ErrorReporter;
 import utils.LinkTools;
 import utils.PluginLoginCache;
 import utils.QueryTagTools;
+import utils.UserGroupTools;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -501,8 +502,24 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		c.setCategory(new ArrayList<CodeableConcept>());
 		c.addCategory().addCoding().setCode(categoryCode).setSystem("http://midata.coop/codesystems/consent-category");
 
+		if (consentToConvert.creatorApp != null) {
+		  Plugin app = Plugin.getById(consentToConvert.creatorApp);
+		  if (app != null) c.addCategory().addCoding().setCode(app.filename).setSystem("http://midata.coop/codesystems/app");
+		}
+		
 		if (study != null) {
 			c.addCategory().addCoding().setCode(study.code).setSystem("http://midata.coop/codesystems/project-code").setDisplay(study.name);
+			if (study.categories != null) {
+				for (String category : study.categories) {
+					String parts[] = category.split("[\\s\\|]");
+					if (parts.length>=2) {
+						c.addCategory().addCoding().setCode(parts[1]).setSystem(parts[0]);
+					} else if (parts.length==1) {
+						c.addCategory().addCoding().setCode(parts[0]);
+					} 
+				}
+			}
+			
 			if (org != null) {
 			   c.getProvision().addActor().setRole(new CodeableConcept(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/v3-ParticipationType").setCode("IRCP"))).setReference(new Reference("Organization/"+study.owner.toString()).setDisplay(org.name));
 			}
@@ -605,10 +622,13 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized", "observers");
 		AccessLog.log(properties.toString());
 		Set<models.Consent> consents = new HashSet<models.Consent>();						
-		if (context != null && (authorized == null || authorized.contains(context.getOwner().toString()))) {			
-			Set<Consent> partResult = Consent.getAllByAuthorized(context.getOwner(), properties, Consent.FHIR);
+		if (context != null && (authorized == null || authorized.contains(context.getOwner().toString()))) {
+			Set<MidataId> consentManagers = UserGroupTools.getConsentManagers(context);
+			Set<Consent> partResult = Consent.getAllByAuthorized(consentManagers, properties, Consent.FHIR, 2000);
 			AccessLog.log("read by auth #="+partResult.size());
-			Set<Consent> partResult2 = Consent.getAllByManager(context.getAccessor(), properties, Consent.FHIR);
+			MidataId accessor = context.getAccessor();
+			
+			Set<Consent> partResult2 = Consent.getAllByManagers(consentManagers, properties, Consent.FHIR);
 			AccessLog.log("read by manager #="+partResult2.size());
 			
 			consents.addAll(partResult);
@@ -992,6 +1012,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			}
 			break;
 		case ACTIVE:
+		case PRECONFIRMED:
 			if (theResource.getStatus()==ConsentState.REJECTED || theResource.getStatus()==ConsentState.INACTIVE) {
 				if (consent.type == ConsentType.STUDYPARTICIPATION) {
 					   StudyParticipation part = StudyParticipation.getById(consent._id, Sets.create("study", "owner"));

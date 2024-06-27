@@ -131,7 +131,7 @@ export default {
         setupBrokerSearch : null,
 	    form : {},        
         add : { user:null, role:{} },
-        rights : [ "readData", "writeData", "changeTeam","setup","applications" ]       
+        rights : [ "readData", "writeData", "participants", "changeTeam", "setup","applications" ]       
     }),
 
     components: {  ErrorBox, FormGroup, Success, CheckBox, Panel, Modal, UserGroupSearch, OrganizationSearch, DataBrokerSearch },
@@ -204,6 +204,7 @@ export default {
             var r = "";            
             r += role.readData ? "R" : "-";
             r += role.writeData ? "W" : "-";          
+            r += role.participants ? "C" : "-";
             r += role.changeTeam ? "T" : "-";          
             r += role.applications ? "A" : "-";
             r += role.setup ? "S" : "-";	   

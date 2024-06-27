@@ -35,6 +35,7 @@ import models.enums.APSSecurityLevel;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import models.enums.UserRole;
+import models.enums.Permission;
 import play.mvc.Http;
 import utils.AccessLog;
 import utils.ConsentQueryTools;
@@ -1656,7 +1657,7 @@ public class RecordManager {
 		result.numConsentsOwner = Consent.count(userId);
 		Set<MidataId> auth = new HashSet<MidataId>();
 		auth.add(userId);
-		for (UserGroupMember ugm : context.getAllActiveByMember()) {
+		for (UserGroupMember ugm : context.getAllActiveByMember(Permission.ANY)) {
 			auth.add(ugm.userGroup);
 			result.numUserGroups++;
 		}

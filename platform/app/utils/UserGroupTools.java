@@ -91,6 +91,14 @@ public class UserGroupTools {
 		return createUserGroupMember(context, context.getAccessor(), context.getAccessorEntityType(), role, userGroupId);					
 	}
 	
+	public static UserGroupMember createOrMergeUserGroupMember(AccessContext context, MidataId memberId, EntityType entityType, ResearcherRole role, MidataId userGroupId) throws AppException {
+	  UserGroupMember ugm = UserGroupMember.getByGroupAndMember(userGroupId, memberId);
+	  if (ugm == null) return createUserGroupMember(context, memberId, entityType, role, userGroupId);
+	  ugm.role.merge(role);
+	  ugm.set(ugm._id, "role", ugm.role);
+	  return ugm;
+	}
+	
 	public static UserGroupMember createUserGroupMember(AccessContext context, MidataId memberId, EntityType entityType, ResearcherRole role, MidataId userGroupId) throws AppException {
 		UserGroupMember member = new UserGroupMember();
 		member._id = new MidataId();
@@ -196,8 +204,14 @@ public class UserGroupTools {
 				
 			if (context.getAccessorEntityType() == EntityType.SERVICES) ProjectTools.addToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.SERVICES, context.getAccessor());
 		}
-		if (parent != null) ProjectTools.addToUserGroup(context.forUserGroup(parent, Permission.SETUP), ResearcherRole.SUBORGANIZATION(), parent, EntityType.ORGANIZATION, organizationId);
-		if (oldParent != null) UserGroupTools.removeMemberFromUserGroup(context.forUserGroup(oldParent, Permission.SETUP), organizationId, oldParent);
+		if (parent != null) {
+			ProjectTools.addToUserGroup(context.forUserGroup(parent, Permission.SETUP), ResearcherRole.SUBORGANIZATION(), parent, EntityType.ORGANIZATION, organizationId);
+			ProjectTools.addToUserGroup(context, ResearcherRole.PARENTORGANIZATION(), organizationId, EntityType.ORGANIZATION, parent);
+		}
+		if (oldParent != null) {
+			UserGroupTools.removeMemberFromUserGroup(context.forUserGroup(oldParent, Permission.SETUP), organizationId, oldParent);
+			UserGroupTools.removeMemberFromUserGroup(context.forUserGroup(organizationId, Permission.SETUP), oldParent, organizationId);
+		}
 		
 		return provider;
 		} finally {
@@ -232,8 +246,8 @@ public class UserGroupTools {
 					
 					if (!oldEntries.containsKey(resourceId)) {
 						switch(resourceType) {
-						case "Practitioner":createUserGroupMember(context, resourceId, EntityType.USER, role, targetGroup);break;
-						case "Organization":createUserGroupMember(context, resourceId, EntityType.ORGANIZATION, role, targetGroup);break;
+						case "Practitioner":createOrMergeUserGroupMember(context, resourceId, EntityType.USER, role, targetGroup);break;
+						case "Organization":createOrMergeUserGroupMember(context, resourceId, EntityType.ORGANIZATION, role, targetGroup);break;
 						default:
 						}												
 					} else {
@@ -379,5 +393,21 @@ public class UserGroupTools {
 			AccessLog.logEnd("END changeUserGroupStatus");
 		}
 	}
+	
+	public static Set<MidataId> getConsentManagers(AccessContext context) throws AppException {
+		Set<MidataId> result = new HashSet<MidataId>();
+		result.add(context.getAccessor());
+		Set<UserGroupMember> ugms = context.getCache().getAllActiveByMember(Permission.PARTICIPANTS);
+		for (UserGroupMember ugm : ugms) {
+			if (ugm.getConfirmedRole().manageParticipants()) {
+				if (context.getCache().getByGroupAndActiveMember(ugm, context.getAccessor(), Permission.PARTICIPANTS) != null) {
+					result.add(ugm.userGroup);
+				}
+			}
+		}
+		return result;
+	}
+	
+	
 		
 }

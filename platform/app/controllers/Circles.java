@@ -76,6 +76,7 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
+import utils.UserGroupTools;
 import utils.access.APS;
 import utils.access.APSCache;
 import utils.access.Feature_Streams;
@@ -295,7 +296,7 @@ public class Circles extends APIController {
 	}
 	
 	public static Collection<Consent> getConsentsAuthorized(AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
-		Set<UserGroupMember> groups = context.getAllActiveByMember();
+		Set<UserGroupMember> groups = context.getAllActiveByMember(Permission.READ_DATA);
 		Set<MidataId> auth = new HashSet<MidataId>();
 		auth.add(context.getAccessor());
 		for (UserGroupMember group : groups) if (context.getCache().getByGroupAndActiveMember(group, context.getAccessor(), Permission.READ_DATA)!=null) auth.add(group.userGroup);
@@ -363,7 +364,12 @@ public class Circles extends APIController {
 		
 		if (consent.owner != null && ApplicationTools.actAsRepresentative(context, consent.owner, false) != null) return consent;
 		
-		Set<UserGroupMember> groups = context.getAllActiveByMember();
+		Set<MidataId> managers = UserGroupTools.getConsentManagers(context);
+		for (MidataId manager : managers) {
+			if (consent.authorized.contains(manager) || (consent.managers != null && consent.managers.contains(manager))) return consent;
+		}
+		
+		Set<UserGroupMember> groups = context.getAllActiveByMember(Permission.PARTICIPANTS);
 		for (UserGroupMember group : groups) if (consent.authorized.contains(group.userGroup)) return consent;
 		return null;							
 	}
@@ -925,7 +931,7 @@ public class Circles extends APIController {
 		if (active && !wasActive && !preconfirmed) ConsentQueryTools.updateConsentStatusActive(context, consent);
 		
 		// share patient record
-		if ((active && !wasActive && !preconfirmed) && patientRecord && (consent.type.equals(ConsentType.REPRESENTATIVE) || consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE) || consent.type.equals(ConsentType.STUDYPARTICIPATION))) {			
+		if ((active && !wasActive) && patientRecord && (consent.type.equals(ConsentType.REPRESENTATIVE) || consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE) || consent.type.equals(ConsentType.STUDYPARTICIPATION))) {			
 			autosharePatientRecord(context, consent);			
 		}
 			

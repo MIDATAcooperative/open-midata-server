@@ -464,6 +464,7 @@
 	 },
 	 "studyvalidationstatus" : {
 	   "DRAFT" : "Draft (Not Validated)",
+	   "PATCH" : "Re-edit (Not Validated)",
 	   "REJECTED" : "Project rejected by @OPERATOR",
 	   "VALIDATED" : "Project has been validated",
 	   "VALIDATION" : "Validation running"

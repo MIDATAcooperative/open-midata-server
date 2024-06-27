@@ -131,7 +131,7 @@ public class AccountManagementTools {
 				 }
 				 
 				 // compare address
-				 
+				 AccessLog.log("found existing patient with matching email");
 				 return result;
 			 } 
 		 }
@@ -146,7 +146,7 @@ public class AccountManagementTools {
 				 .map("role", UserRole.MEMBER);
 							 
 		 Set<Member> candidates = Member.getAll(properties, Member.FOR_LOGIN);				 				 				
-		 
+		 AccessLog.log("checking "+candidates.size()+" existing patients with matching name");
 		 boolean mailGiven = nonEmpty(user.email);
 		 for (Member candidate : candidates) {
 			 boolean birthdateOk = compareBirthdate(user.birthday, candidate.birthday, false);
@@ -165,11 +165,14 @@ public class AccountManagementTools {
 				 }
 			 } else if (!hasMail) {
 				 						 					 						 					 
-				 if (hasAddress && addressOk) return candidate; 
+				 if (hasAddress && addressOk) {
+					 AccessLog.log("found martching patient without email");
+					 return candidate; 
+				 }
 			 }
 			 
 		 }				 
-		 			 	
+		 AccessLog.log("found no existing patient");
 		 return null;
 	}
 	

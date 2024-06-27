@@ -205,6 +205,7 @@ public class Studies extends APIController {
 		study.type = JsonValidation.getEnum(json, "type", StudyType.class);
 		study.description = JsonValidation.getString(json, "description");		
 		study.identifiers = JsonExtraction.extractStringList(json.get("identifiers"));
+		study.categories = JsonExtraction.extractStringList(json.get("categories"));
 		
 		study.createdAt = new Date();
 		study.createdBy = userId;
@@ -652,7 +653,7 @@ public class Studies extends APIController {
 		MidataId userid = MidataId.from(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 
-		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "identifiers", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
+		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "identifiers", "categories", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
 				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "dataFilters", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
 				"dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy", "forceClientCertificate");
 		Study study = Study.getById(studyid, fields);
@@ -974,12 +975,14 @@ public class Studies extends APIController {
 			throw new BadRequestException("error.missing.study", "Study does not exist");
 
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_REJECTED, userId, null, study);
-		if (!study.validationStatus.equals(StudyValidationStatus.VALIDATION))
+		if (!study.validationStatus.equals(StudyValidationStatus.VALIDATION) && !study.validationStatus.equals(StudyValidationStatus.VALIDATED))
 			throw new BadRequestException("error.already_done.validation","Study has already been validated.");
 
-		// study.addHistory(new History(EventType.STUDY_REJECTED, user, "Reset
-		// to draft mode"));
-		study.setValidationStatus(StudyValidationStatus.DRAFT);
+		if (study.validationStatus.equals(StudyValidationStatus.VALIDATED)) {
+		  study.setValidationStatus(StudyValidationStatus.PATCH);
+		} else {
+		  study.setValidationStatus(StudyValidationStatus.DRAFT);
+		}
 		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		AuditManager.instance.success();
@@ -2134,7 +2137,7 @@ public class Studies extends APIController {
 		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
-		if (study.validationStatus != StudyValidationStatus.DRAFT) {
+		if (study.validationStatus != StudyValidationStatus.DRAFT && study.validationStatus != StudyValidationStatus.PATCH) {
 			// Allow to add data filters for existing projects
 		    if (dataFilters != null && study.dataFilters == null) {
 		    	study.setDataFilters(dataFilters);
@@ -2161,6 +2164,9 @@ public class Studies extends APIController {
 		study.setAssistance(assist);
 		study.setDataFilters(dataFilters);
 		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		if (study.validationStatus == StudyValidationStatus.PATCH) {
+			RecordManager.instance.fixAccount(context);
+		}
 		AuditManager.instance.success();
 		return ok();
 	}
@@ -2192,10 +2198,11 @@ public class Studies extends APIController {
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
-		if (study.validationStatus != StudyValidationStatus.DRAFT)
+		if (study.validationStatus != StudyValidationStatus.DRAFT && study.validationStatus != StudyValidationStatus.PATCH)
 			throw new BadRequestException("error.no_alter.study", "Setup can only be changed as long as study is in draft phase.");
-
-		if (json.has("groups")) {
+        boolean isPatch = study.validationStatus == StudyValidationStatus.PATCH;
+		
+		if (json.has("groups") && !isPatch) {
 
 			Set<ServiceInstance> instances = ServiceInstance.getByManager(studyid, ServiceInstance.ALL);
 			if (!instances.isEmpty())
@@ -2253,6 +2260,9 @@ public class Studies extends APIController {
 		}
 		if (json.has("identifiers")) {
 			study.setIdentifiers(JsonExtraction.extractStringList(json.get("identifiers")));
+		}
+		if (json.has("categories")) {
+			study.setCategories(JsonExtraction.extractStringList(json.get("categories")));
 		}
 		if (json.has("type")) {
 			study.setType(JsonValidation.getEnum(json, "type", StudyType.class));
@@ -2653,6 +2663,7 @@ public class Studies extends APIController {
 		study.code = JsonValidation.getString(studyJson, "code");
 		study.description = JsonValidation.getString(studyJson, "description");
 		study.identifiers = JsonExtraction.extractStringList(studyJson.get("identifiers"));
+		study.categories = JsonExtraction.extractStringList(studyJson.get("categories"));
         study.owner = org._id;        
 		study.createdAt = new Date();
 		study.createdBy = userId;

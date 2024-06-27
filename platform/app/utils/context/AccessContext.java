@@ -459,9 +459,9 @@ public abstract class AccessContext {
 		return true;
 	}
 	
-	public Set<UserGroupMember> getAllActiveByMember() throws AppException {
+	public Set<UserGroupMember> getAllActiveByMember(Permission permission) throws AppException {
 		if (!usesUserGroupsForQueries()) return Collections.emptySet();
-		return getCache().getAllActiveByMember();
+		return getCache().getAllActiveByMember(permission);
 	}
 	
 	/**

@@ -173,7 +173,7 @@ export default {
    
         studyLocked() {
             const { $data } = this;
-	        return (!$data.study) || ($data.study.validationStatus !== "DRAFT" && $data.study.validationStatus !== "REJECTED") || !$data.study.myRole.setup;    
+	        return (!$data.study) || ($data.study.validationStatus !== "DRAFT" && $data.study.validationStatus !== "REJECTED" && $data.study.validationStatus !== "PATCH") || !$data.study.myRole.setup;    
         },
    
         toggle(array,itm) {		
