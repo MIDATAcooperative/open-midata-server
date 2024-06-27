@@ -85,7 +85,7 @@ public class Feature_UserGroups extends Feature {
 		if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
 			
 			if (!q.isRestrictedToSelf()) {
-				Set<UserGroupMember> isMemberOfGroups = q.getContext().getAllActiveByMember();
+				Set<UserGroupMember> isMemberOfGroups = q.getContext().getAllActiveByMember(Permission.READ_DATA);
 				if (!isMemberOfGroups.isEmpty()) {
 					q.setFromRecord(null);
 					List<UserGroupMember> members = new ArrayList<UserGroupMember>(isMemberOfGroups);
@@ -234,7 +234,7 @@ public class Feature_UserGroups extends Feature {
 		if (target.isAccessible()) {
 			return null;
 		}
-		Set<UserGroupMember> isMemberOfGroups = cache.getAllActiveByMember();
+		Set<UserGroupMember> isMemberOfGroups = cache.getAllActiveByMember(Permission.READ_DATA);
 		if (!isMemberOfGroups.isEmpty()) {
 			
 			for (UserGroupMember ugm : isMemberOfGroups) {

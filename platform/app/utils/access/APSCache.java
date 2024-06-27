@@ -68,7 +68,7 @@ public class APSCache {
 	private ConsentToKeyIndexRoot consentKeysRoot = null;
 	
 	private long consentLimit;
-	private Set<UserGroupMember> userGroupMember;
+	private Map<Permission, Set<UserGroupMember>> userGroupMember;
 	
 	private static final int CACHE_LIMIT = 5000;
 	
@@ -263,23 +263,26 @@ public class APSCache {
 		    }  						
 	}
 	
-	public Set<UserGroupMember> getAllActiveByMember() throws InternalServerException {
-		if (userGroupMember != null) return userGroupMember;		
-		userGroupMember = getAllActiveByMember(new HashSet<MidataId>(), Collections.singleton(getAccountOwner()));						
-		return userGroupMember;
+	public Set<UserGroupMember> getAllActiveByMember(Permission permission) throws InternalServerException {
+		if (userGroupMember == null) userGroupMember = new HashMap<Permission, Set<UserGroupMember>>(); 		
+		if (userGroupMember.containsKey(permission)) return userGroupMember.get(permission);		
+		Set<UserGroupMember> ugms = getAllActiveByMember(new HashSet<MidataId>(), Collections.singleton(getAccountOwner()), permission);						
+		userGroupMember.put(permission, ugms);
+		return ugms;
 	}
 	
-	private Set<UserGroupMember> getAllActiveByMember(Set<MidataId> alreadyFound, Set<MidataId> members) throws InternalServerException {
+	private Set<UserGroupMember> getAllActiveByMember(Set<MidataId> alreadyFound, Set<MidataId> members, Permission permission) throws InternalServerException {
 		Set<UserGroupMember> results = UserGroupMember.getAllActiveByMember(members);
 		Set<MidataId> recursion = new HashSet<MidataId>();
 		for (UserGroupMember ugm : results) {
+			if (!ugm.role.may(permission)) continue;
 			if (!alreadyFound.contains(ugm.userGroup)) {
 				recursion.add(ugm.userGroup);
 				alreadyFound.add(ugm.userGroup);
 			}
 		}
 		if (!recursion.isEmpty()) {
-			Set<UserGroupMember> inner = getAllActiveByMember(alreadyFound, recursion);
+			Set<UserGroupMember> inner = getAllActiveByMember(alreadyFound, recursion, permission);
 			results.addAll(inner);
 		}
 		return results;
@@ -313,7 +316,7 @@ public class APSCache {
 	}
 	
 	private boolean getByGroupAndActiveMember(Set<MidataId> tested, List<UserGroupMember> result, MidataId userGroup, MidataId member, Permission permission) throws InternalServerException  {		
-	    Set<UserGroupMember> all = getAllActiveByMember();
+	    Set<UserGroupMember> all = getAllActiveByMember(permission);
 	    for (UserGroupMember ugm : all) {
 	    	if (tested.contains(ugm._id)) continue;	    	
 	    	

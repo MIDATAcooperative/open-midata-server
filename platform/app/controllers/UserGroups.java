@@ -118,10 +118,10 @@ public class UserGroups extends APIController {
 			
 			if (properties.containsKey("active")) {
 				properties.remove("active");
-				ugms = context.getCache().getAllActiveByMember();
+				ugms = context.getCache().getAllActiveByMember(Permission.ANY);
 			} else {
 			   ugms = UserGroupMember.getAllByMember(executorId);
-			   ugms.addAll(context.getCache().getAllActiveByMember());			   
+			   ugms.addAll(context.getCache().getAllActiveByMember(Permission.ANY));			   
 			}
 			Set<MidataId> ids = new HashSet<MidataId>();
 			if (properties.containsKey("setup")) {

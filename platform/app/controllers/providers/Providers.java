@@ -384,7 +384,7 @@ public class Providers extends APIController {
 			AccessLog.log("orgsIds:",orgIds.toString());
 		} else {
 			AccessLog.logBegin("Start search for organization membership");			
-			Set<UserGroupMember> memberOf = context.getCache().getAllActiveByMember();		
+			Set<UserGroupMember> memberOf = context.getCache().getAllActiveByMember(Permission.ANY);		
 			for (UserGroupMember ugm : memberOf) orgIds.add(ugm.userGroup);
 			AccessLog.logEnd("End search for org membership #size=",Integer.toString(orgIds.size()));		
 		}

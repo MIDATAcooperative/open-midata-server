@@ -397,7 +397,7 @@ public class UserGroupTools {
 	public static Set<MidataId> getConsentManagers(AccessContext context) throws AppException {
 		Set<MidataId> result = new HashSet<MidataId>();
 		result.add(context.getAccessor());
-		Set<UserGroupMember> ugms = context.getCache().getAllActiveByMember();
+		Set<UserGroupMember> ugms = context.getCache().getAllActiveByMember(Permission.PARTICIPANTS);
 		for (UserGroupMember ugm : ugms) {
 			if (ugm.getConfirmedRole().manageParticipants()) {
 				if (context.getCache().getByGroupAndActiveMember(ugm, context.getAccessor(), Permission.PARTICIPANTS) != null) {
