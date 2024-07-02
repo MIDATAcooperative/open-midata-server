@@ -165,8 +165,10 @@ public class Messager {
 		
 		for (Map.Entry<String, String> replacement : replacements.entrySet()) {
 			String key = "<"+replacement.getKey()+">";
-		    subject = subject.replaceAll(key, replacement.getValue());
-		    content = content.replaceAll(key, replacement.getValue());
+			String v = replacement.getValue();
+			if (v==null) v = "";
+		    subject = subject.replaceAll(key, v);
+		    content = content.replaceAll(key, v);
 		}
 		String phone = member.mobile;
 		

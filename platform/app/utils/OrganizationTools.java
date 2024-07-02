@@ -72,7 +72,7 @@ public class OrganizationTools {
 		MidataId managerId = midataResource.managerId;
 		EntityType managerType = midataResource.managerType;
         HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, midataResource._id, midataResource.name, midataResource, midataResource.parent, midataResource.managerId.equals(context.getAccessor()), false);		
-		if (!managerId.equals(context.getAccessor())) UserGroupTools.createOrMergeUserGroupMember(context, managerId, managerType, ResearcherRole.MANAGER(), provider._id);	
+		if (!managerId.equals(context.getAccessor())) ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.MANAGER(), provider._id, managerType, managerId);	
 	}
 	
 	public static HealthcareProvider loadModelFromId(AccessContext context, MidataId id) throws AppException {

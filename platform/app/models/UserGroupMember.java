@@ -162,4 +162,11 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 	public static void set(MidataId userId, String field, Object value) throws InternalServerException {
 		Model.set(UserGroupMember.class, collection, userId, field, value);
 	}
+	
+	public static void ensureUnique(UserGroupMember keep) throws InternalServerException {
+	    Set<UserGroupMember> ugms = Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", keep.userGroup).map("member", keep.member), ALL);
+	    for (UserGroupMember ugm : ugms) {
+	        if (!ugm._id.equals(keep._id)) Model.delete(UserGroupMember.class, collection, CMaps.map("_id", ugm._id));
+	    }
+	}
 }

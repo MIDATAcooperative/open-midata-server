@@ -132,12 +132,12 @@ export default {
 
     created() {
         const { $data } = this, me = this;
-        //session.load("MembersListCtrl", me, ["search", "searchName"]);	    
+        session.load("OrganizationListCtrl", me, ["search", "setup"]);	    
 	    me.reload(true);
     },
 
     unmounted() {
-        //session.save("MembersListCtrl", this, ["search", "searchName"]);
+        session.save("OrganizationListCtrl", this, ["search", "setup"]);
     }
     
 }
