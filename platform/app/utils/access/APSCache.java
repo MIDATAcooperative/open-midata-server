@@ -275,7 +275,7 @@ public class APSCache {
 		Set<UserGroupMember> results = UserGroupMember.getAllActiveByMember(members);
 		Set<MidataId> recursion = new HashSet<MidataId>();
 		for (UserGroupMember ugm : results) {
-			if (!ugm.role.may(permission)) continue;
+			if (!ugm.getRole().may(permission)) continue;
 			if (!alreadyFound.contains(ugm.userGroup)) {
 				recursion.add(ugm.userGroup);
 				alreadyFound.add(ugm.userGroup);
