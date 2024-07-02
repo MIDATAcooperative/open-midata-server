@@ -130,9 +130,12 @@ public class ProjectTools {
         UserGroup ug = context.getRequestCache().getUserGroupById(groupId);
         if (ug == null) throw new InternalServerException("error.internal", "UserGroup not found");
         
+        //Ensure that there is access to the usergroup
+        context.forUserGroup(groupId, type.getChangePermission());
+        
         UserGroupMember member = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
         if (member != null) throw new InternalServerException("error.internal", "Already existing");
-        
+      
         if (projectGroupMapping != null) {
            member = new SubProjectGroupMember(projectGroupMapping);
         } else {
