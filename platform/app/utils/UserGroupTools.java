@@ -87,19 +87,11 @@ public class UserGroupTools {
 		return userGroup;
 	}
 	
-	public static UserGroupMember createUserGroupMember(AccessContext context, ResearcherRole role, MidataId userGroupId) throws AppException {
+	public static UserGroupMember uncheckedCreateUserGroupMember(AccessContext context, ResearcherRole role, MidataId userGroupId) throws AppException {
 		return createUserGroupMember(context, context.getAccessor(), context.getAccessorEntityType(), role, userGroupId);					
 	}
-	
-	public static UserGroupMember createOrMergeUserGroupMember(AccessContext context, MidataId memberId, EntityType entityType, ResearcherRole role, MidataId userGroupId) throws AppException {
-	  UserGroupMember ugm = UserGroupMember.getByGroupAndMember(userGroupId, memberId);
-	  if (ugm == null) return createUserGroupMember(context, memberId, entityType, role, userGroupId);
-	  ugm.role.merge(role);
-	  ugm.set(ugm._id, "role", ugm.role);
-	  return ugm;
-	}
-	
-	public static UserGroupMember createUserGroupMember(AccessContext context, MidataId memberId, EntityType entityType, ResearcherRole role, MidataId userGroupId) throws AppException {
+		
+	private static UserGroupMember createUserGroupMember(AccessContext context, MidataId memberId, EntityType entityType, ResearcherRole role, MidataId userGroupId) throws AppException {
 		UserGroupMember member = new UserGroupMember();
 		member._id = new MidataId();
 		member.member = memberId;
@@ -129,6 +121,8 @@ public class UserGroupTools {
 		
 		UserGroup existing = context.getRequestCache().getUserGroupById(organizationId);
 		if (existing != null) {
+		    if (!accessorIsMemberOfGroup(context, existing._id, Permission.SETUP) && context.getAccessorRole() != UserRole.ADMIN) throw new BadRequestException("error.notauthorized.action", "You are not authorized to manage parent organization.");		    
+		    
 			if (name != null && !existing.name.equals(name)) {
 				existing.name = name;
 				UserGroup.set(existing._id, "name", existing.name);
@@ -176,7 +170,7 @@ public class UserGroupTools {
 			provider.setMultiple(Sets.create("name", "description", "parent", "status","city","zip","country","address1","address2","phone","mobile"));
 			if (oldParent != null && oldParent.equals(parent)) {
 				// No change
-				oldParent = parent = null;
+				oldParent = null;
 			}
 		}
 		
@@ -195,18 +189,18 @@ public class UserGroupTools {
 				//return provider;
 			} else {
 				UserGroup userGroup = createUserGroup(context, UserGroupType.ORGANIZATION, organizationId, provider.name);
-				if (owner != null) ProjectTools.addToUserGroup(context, accessorFullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), organizationId, EntityType.USER, owner._id);
+				if (owner != null) ProjectTools.addOrMergeToUserGroup(context, accessorFullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), organizationId, EntityType.USER, owner._id);
 				for (User user : members) {
-					ProjectTools.addToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.USER, user._id);
+					ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.USER, user._id);
 				}			
 				RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 			}
 				
-			if (context.getAccessorEntityType() == EntityType.SERVICES) ProjectTools.addToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.SERVICES, context.getAccessor());
+			if (context.getAccessorEntityType() == EntityType.SERVICES) ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.HC(), organizationId, EntityType.SERVICES, context.getAccessor());
 		}
 		if (parent != null) {
-			ProjectTools.addToUserGroup(context.forUserGroup(parent, Permission.SETUP), ResearcherRole.SUBORGANIZATION(), parent, EntityType.ORGANIZATION, organizationId);
-			ProjectTools.addToUserGroup(context, ResearcherRole.PARENTORGANIZATION(), organizationId, EntityType.ORGANIZATION, parent);
+			ProjectTools.addOrMergeToUserGroup(context.forUserGroup(parent, Permission.SETUP), ResearcherRole.SUBORGANIZATION(), parent, EntityType.ORGANIZATION, organizationId);			
+			ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.PARENTORGANIZATION(), organizationId, EntityType.ORGANIZATION, parent);	
 		}
 		if (oldParent != null) {
 			UserGroupTools.removeMemberFromUserGroup(context.forUserGroup(oldParent, Permission.SETUP), organizationId, oldParent);
@@ -246,8 +240,8 @@ public class UserGroupTools {
 					
 					if (!oldEntries.containsKey(resourceId)) {
 						switch(resourceType) {
-						case "Practitioner":createOrMergeUserGroupMember(context, resourceId, EntityType.USER, role, targetGroup);break;
-						case "Organization":createOrMergeUserGroupMember(context, resourceId, EntityType.ORGANIZATION, role, targetGroup);break;
+						case "Practitioner":ProjectTools.addOrMergeToUserGroup(context, role, targetGroup, EntityType.USER, resourceId);break;
+						case "Organization":ProjectTools.addOrMergeToUserGroup(context, role, targetGroup, EntityType.ORGANIZATION, resourceId);break;
 						default:
 						}												
 					} else {
@@ -297,8 +291,19 @@ public class UserGroupTools {
 				HealthcareProvider prov = HealthcareProvider.getByIdAlsoDeleted(targetUserId, HealthcareProvider.ALL);
 				prov.parent = null;
 				prov.set("parent", null);
-				OrganizationResourceProvider.updateFromHP(context, prov);
+				OrganizationTools.updateModel(context, prov);
+				
+				//OrganizationResourceProvider.updateFromHP(context, prov);
 			}
+			if (target.getRole().id.equals("PARENTORGANIZATION")) {
+                HealthcareProvider prov = HealthcareProvider.getByIdAlsoDeleted(groupId, HealthcareProvider.ALL);
+                prov.parent = null;
+                prov.set("parent", null);
+                OrganizationTools.updateModel(context, prov);
+                
+                //prov.set("parent", null);
+                //OrganizationResourceProvider.updateFromHP(context, prov);
+            }
 			
 			target.status = ConsentStatus.EXPIRED;
 			target.endDate = new Date();

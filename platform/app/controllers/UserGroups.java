@@ -221,7 +221,7 @@ public class UserGroups extends APIController {
 		AccessContext context = portalContext(request);
 		
 		UserGroup userGroup = UserGroupTools.createUserGroup(context, UserGroupType.CARETEAM, new MidataId(), JsonValidation.getString(json, "name"));
-		UserGroupMember member = UserGroupTools.createUserGroupMember(context, ResearcherRole.HC(), userGroup._id);
+		UserGroupMember member = UserGroupTools.uncheckedCreateUserGroupMember(context, ResearcherRole.HC(), userGroup._id);
 				
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 		
@@ -368,7 +368,7 @@ public class UserGroups extends APIController {
 		}
 		
 		List<UserGroupMember> self = context.getCache().getByGroupAndActiveMember(groupId, context.getAccessor(), permission);
-		ProjectTools.addToUserGroup(context, self.get(self.size()-1), role, memberType, targetUserIds, projectGroupMapping);
+		ProjectTools.addOrOverwriteToUserGroup(context, self.get(self.size()-1), role, memberType, targetUserIds, projectGroupMapping);
 		
 		AuditManager.instance.success();
 		return ok();

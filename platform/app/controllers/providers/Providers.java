@@ -71,6 +71,7 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.OrganizationTools;
+import utils.ProjectTools;
 import utils.UserGroupTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -585,6 +586,8 @@ public class Providers extends APIController {
 		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, name, provider, parent, false, false);		   
 		   OrganizationResourceProvider.updateFromHP(context, provider);			   
 		}
+		
+		AuditManager.instance.success();
 		return ok();		
 	}
 	
@@ -643,7 +646,7 @@ public class Providers extends APIController {
 		
 		provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, provider, parent, managerId.equals(context.getAccessor()), fullAccess);
 						
-		if (!managerId.equals(context.getAccessor())) UserGroupTools.createOrMergeUserGroupMember(context, managerId, managerType, fullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), provider._id);
+		if (!managerId.equals(context.getAccessor())) ProjectTools.addOrMergeToUserGroup(context, fullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), provider._id, managerType, managerId);
 		
 		OrganizationResourceProvider.updateFromHP(context, provider);
 		

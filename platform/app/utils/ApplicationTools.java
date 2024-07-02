@@ -724,7 +724,7 @@ public class ApplicationTools {
 		MidataId pluginId = context.getUsedPlugin();
 		
 		UserGroup userGroup = UserGroupTools.createUserGroup(context, UserGroupType.CARETEAM, targetId, name);
-		UserGroupMember member = UserGroupTools.createUserGroupMember(context, ResearcherRole.HC(), userGroup._id);
+		UserGroupMember member = UserGroupTools.uncheckedCreateUserGroupMember(context, ResearcherRole.HC(), userGroup._id);
 				
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 		
