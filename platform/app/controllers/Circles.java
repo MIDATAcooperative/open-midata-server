@@ -1046,6 +1046,12 @@ public class Circles extends APIController {
 						
 		String category = consent.categoryCode;
 		if (category == null) category = consent.type.toString();
+		
+		String studyCode = null;
+		if (consent instanceof StudyParticipation) {
+		   studyCode = ((StudyParticipation) consent).studyCode; 
+		}
+		
 		User sender = context.getActor() != null ? context.getRequestCache().getUserById(context.getActor(), true) : null;
 		User grantor = consent.owner != null ? context.getRequestCache().getUserById(consent.owner, true) : null;
 		User grantee = null;
@@ -1150,8 +1156,11 @@ public class Circles extends APIController {
 				Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_PRECONFIRMED_OWNER, category, Collections.singleton(consent.owner), language, replacements);				
 			} else if (reason == ConsentStatus.REJECTED) {
 				
-				if (!context.getActor().equals(consent.owner)) {
-					Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), language, replacements);					
+				if (!context.getActor().equals(consent.owner)) {					
+					if (studyCode != null) {
+					    if (Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, studyCode, Collections.singleton(consent.owner), language, replacements)) return;
+					}
+					Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), language, replacements);
 				} 
 				if (wasActive) {
 					Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_ACTIVE_AUTHORIZED, category, targets, language, replacements);	
