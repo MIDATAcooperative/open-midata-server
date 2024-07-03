@@ -34,6 +34,7 @@ import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.access.Feature_FormatGroups;
 import utils.access.Feature_Pseudonymization;
+import utils.access.Feature_QueryRedirect;
 import utils.access.QueryEngine;
 import utils.auth.KeyManager;
 import utils.exceptions.AppException;
@@ -201,6 +202,15 @@ public class ConsentAccessContext extends AccessContext{
 		loadSharingQuery();
 		return Feature_FormatGroups.getAccessRestriction(consent.sharingQuery, content, format, field);
 		
+	}
+	
+	@Override
+	public Map<String, Object> getAccessRestrictions() throws AppException {
+		loadSharingQuery();
+		if (parent==null) return consent.sharingQuery;
+		Map<String, Object> parentQuery = parent.getAccessRestrictions();
+		if (parentQuery==null) return consent.sharingQuery;
+		return Feature_QueryRedirect.combineQuery(consent.sharingQuery, parentQuery, this);
 	}
 
 	@Override
