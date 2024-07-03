@@ -61,6 +61,8 @@ public class StudyParticipation extends Consent {
 	//public Gender gender;
 	
 	public @NotMaterialized String partName;
+	
+	public @NotMaterialized String studyCode;
 			
 	public StudyParticipation() {
 		this.type = ConsentType.STUDYPARTICIPATION;
