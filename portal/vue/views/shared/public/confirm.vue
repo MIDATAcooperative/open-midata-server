@@ -60,7 +60,7 @@
 								<span>{{ line }}</span>
 							</div>																	
 						</section>
-						<section v-if="link.serviceApp">
+						<section v-else-if="link.serviceApp">
 							{{ description(link.serviceApp) }}
 						</section>												
 					</div>

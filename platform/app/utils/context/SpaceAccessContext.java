@@ -21,12 +21,14 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 
 import models.MidataId;
 import models.Record;
 import models.Space;
 import utils.ConsentQueryTools;
 import utils.RuntimeConstants;
+import utils.access.APS;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.access.Feature_FormatGroups;
@@ -137,6 +139,12 @@ public class SpaceAccessContext extends AccessContext {
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {
 		loadSharingQuery();
 		return Feature_FormatGroups.getAccessRestriction(space.query, content, format, field);
+	}
+	
+	@Override
+	public Map<String, Object> getAccessRestrictions() throws AppException {
+		loadSharingQuery();
+		return space.query;
 	}
 
 	@Override

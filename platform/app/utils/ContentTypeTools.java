@@ -72,7 +72,7 @@ public class ContentTypeTools {
 			
 			if (content==null && display!=null) {
 				AccessLog.log("Try to dynamically add display="+display+" code="+code);
-				String splitted[] = code.iterator().next().split(" ");
+				String splitted[] = code.iterator().next().split("\\s");
 				if (splitted.length == 2 && splitted[0].startsWith("http")) {
 				  String groupName = determineTargetGroup(context, record.format, category);
 				  if (groupName != null) {
