@@ -266,7 +266,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 							   ResourceProvider prov = FHIRServlet.myProviders.get(refElem.getResourceType());
 							   if (prov != null) {							       
 								   IBaseResource result = prov.getResourceById(refElem);
-								   if (existingIds.add(result.getIdElement())) {								   
+								   if (result != null && existingIds.add(result.getIdElement())) {								   
 								     r.setResource(result);
 								     results.add(result);
 								   }
