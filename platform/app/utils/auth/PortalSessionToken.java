@@ -189,7 +189,7 @@ public class PortalSessionToken {
 			}
 			if (!result.remoteAddress.equals("all")) {
 				if (!remoteAddr(request).equals(result.remoteAddress)) {
-					AccessLog.log("bad ip address");
+					AccessLog.log("bad ip address tk="+result.remoteAddress+" f="+remoteAddr(request));
 					return null;
 				}
 			}
