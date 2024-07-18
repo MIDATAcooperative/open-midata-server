@@ -60,7 +60,7 @@ public class ProjectTools {
 		for (MidataId targetUserId : targetUserIds) {
 			UserGroupMember old = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
 			if (old == null) {	
-				addNewToUserGroup(context, role, groupId, type, targetUserId, projectGroupMapping);
+				addNewToUserGroup(context, role, groupId, type, targetUserId, projectGroupMapping, false);
 			} else {
 								
 				
@@ -98,21 +98,21 @@ public class ProjectTools {
         
     }
 
-    public static void addOrOverwriteToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId)
+    /*public static void addOrOverwriteToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId)
             throws AppException, AuthException, InternalServerException {
         UserGroupMember old = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
         if (old == null) {
-          addNewToUserGroup(context, role, groupId, type, targetUserId, null);
+          addNewToUserGroup(context, role, groupId, type, targetUserId, null, false);
         } else {            
           updateExistingGroup(context, old, role, null); 
         }
-    }
+    }*/
     
-    public static UserGroupMember addOrMergeToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId)
+    public static UserGroupMember addOrMergeToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId, boolean duringCreation)
             throws AppException, AuthException, InternalServerException {
         UserGroupMember old = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
         if (old == null) {
-            return addNewToUserGroup(context, role, groupId, type, targetUserId, null);
+            return addNewToUserGroup(context, role, groupId, type, targetUserId, null, duringCreation);
         } else {
             if (old.status==ConsentStatus.ACTIVE) {
               old.getRole().merge(role);
@@ -123,7 +123,7 @@ public class ProjectTools {
         }
     }
     
-    private static UserGroupMember addNewToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId, Map<String, String> projectGroupMapping)
+    private static UserGroupMember addNewToUserGroup(AccessContext context, ResearcherRole role, MidataId groupId, EntityType type, MidataId targetUserId, Map<String, String> projectGroupMapping, boolean duringCreation)
             throws AppException, AuthException, InternalServerException {
         AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, context, null, context.getActor(), targetUserId, null, groupId);
         AccessLog.log("add user to group group="+groupId+" user="+targetUserId+" type="+type);
@@ -131,7 +131,9 @@ public class ProjectTools {
         if (ug == null) throw new InternalServerException("error.internal", "UserGroup not found");
         
         //Ensure that there is access to the usergroup
-        context.forUserGroup(groupId, type.getChangePermission());
+        if (!duringCreation) {
+          context.forUserGroup(groupId, type.getChangePermission());
+        }
         
         UserGroupMember member = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
         if (member != null) throw new InternalServerException("error.internal", "Already existing");

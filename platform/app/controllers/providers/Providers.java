@@ -646,7 +646,7 @@ public class Providers extends APIController {
 		
 		provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, provider, parent, managerId.equals(context.getAccessor()), fullAccess);
 						
-		if (!managerId.equals(context.getAccessor())) ProjectTools.addOrMergeToUserGroup(context, fullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), provider._id, managerType, managerId);
+		if (!managerId.equals(context.getAccessor())) ProjectTools.addOrMergeToUserGroup(context, fullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), provider._id, managerType, managerId, true);
 		
 		OrganizationResourceProvider.updateFromHP(context, provider);
 		

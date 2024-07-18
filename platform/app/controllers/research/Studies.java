@@ -2531,7 +2531,7 @@ public class Studies extends APIController {
 		Set<UserGroupMember> members = UserGroupMember.getAllActiveUserByGroup(oldGroup);
 
 		for (UserGroupMember member : members) {
-			ProjectTools.addOrMergeToUserGroup(context, member.getConfirmedRole(), userGroup._id, EntityType.USER, member.member);
+			ProjectTools.addOrMergeToUserGroup(context, member.getConfirmedRole(), userGroup._id, EntityType.USER, member.member, true);
 		}
 
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
@@ -2765,8 +2765,8 @@ public class Studies extends APIController {
 		GroupResourceProvider.updateMidataUserGroup(userGroup);
 		userGroup.add();
 		
-		ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.DEVELOPER(), userGroup._id, EntityType.USER, userId);
-		ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.SPONSOR(), userGroup._id, EntityType.USER, res._id);		
+		ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.DEVELOPER(), userGroup._id, EntityType.USER, userId, true);
+		ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.SPONSOR(), userGroup._id, EntityType.USER, res._id, true);		
 		
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 

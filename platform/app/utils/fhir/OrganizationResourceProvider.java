@@ -406,7 +406,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		   HealthcareProvider provider = (HealthcareProvider) record.mapped;
 		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), provider, parent, true, false);
 		   try {
-		       UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+		       UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()), true);
 		       Organization result = super.createExecute(record, theResource);
 			   AuditManager.instance.success();
 		       return result;
@@ -630,7 +630,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			}
 			
 			OrganizationTools.updateModel(info(), hp);   						
-			UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+			UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()), false);
 		}
 	}
 	

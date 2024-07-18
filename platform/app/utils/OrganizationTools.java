@@ -67,13 +67,14 @@ public class OrganizationTools {
 		if (existing != null && !existing.equals(record._id)) throw new BadRequestException("error.not_unique.identifier", "Identifier is not unique");
 		
 	}
-	
+
+	/*
 	public static void createModel(AccessContext context, HealthcareProvider midataResource) throws AppException {
 		MidataId managerId = midataResource.managerId;
 		EntityType managerType = midataResource.managerType;
         HealthcareProvider provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, midataResource._id, midataResource.name, midataResource, midataResource.parent, midataResource.managerId.equals(context.getAccessor()), false);		
-		if (!managerId.equals(context.getAccessor())) ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.MANAGER(), provider._id, managerType, managerId);	
-	}
+		if (!managerId.equals(context.getAccessor())) ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.MANAGER(), provider._id, managerType, managerId, true);	
+	}*/
 	
 	public static HealthcareProvider loadModelFromId(AccessContext context, MidataId id) throws AppException {
 		HealthcareProvider provider = HealthcareProvider.getByIdAlsoDeleted(id, HealthcareProvider.ALL);
