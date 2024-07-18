@@ -37,6 +37,7 @@ import akka.cluster.ClusterEvent.CurrentClusterState;
 import controllers.APIController;
 import controllers.Application;
 import controllers.Users;
+import controllers.members.HealthProvider;
 import models.Admin;
 import models.Consent;
 import models.Developer;
@@ -46,6 +47,7 @@ import models.MidataAuditEvent;
 import models.MidataId;
 import models.Plugin;
 import models.Study;
+import models.StudyParticipation;
 import models.User;
 import models.UserGroup;
 import models.enums.AccountActionFlags;
@@ -675,5 +677,26 @@ public class Administration extends APIController {
 		AuditManager.instance.success();
 		return ok();
 	}
+	
+	@APICall   
+	@Security.Authenticated(AdminSecured.class)
+    public Result consentRemove(Request request, String userId, String consentId) throws AppException {
+        MidataId user = MidataId.parse(userId);
+        MidataId consent = MidataId.parse(consentId);
+        String handle = KeyManager.instance.login(60000, false);
+        if (KeyManager.instance.unlock(user, null) != KeyManager.KEYPROTECTION_NONE) throw new BadRequestException("error.internal", "User has already logged in");
+        AccessContext context = ContextManager.instance.createSession(user, UserRole.MEMBER, RuntimeConstants.instance.portalPlugin, user, null);
+        User theUser = User.getById(user, User.ALL_USER);
+        if (theUser == null) throw new BadRequestException("error.internal", "User not existing");
+        StudyParticipation theConsent = StudyParticipation.getById(consent, StudyParticipation.STUDY_EXTRA);
+        if (theConsent == null || !theConsent.owner.equals(user)) throw new BadRequestException("error.internal", "Wrong consent");
+        if (theConsent.type == ConsentType.STUDYPARTICIPATION) {
+            controllers.members.Studies.retreatParticipation(context, user,  theConsent.study, false);
+        } else {
+            HealthProvider.rejectConsent(context, user, consent);
+        }
+        AuditManager.instance.success();
+        return ok();
+    }
 	
 }
