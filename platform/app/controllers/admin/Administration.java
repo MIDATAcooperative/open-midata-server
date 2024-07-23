@@ -685,8 +685,9 @@ public class Administration extends APIController {
         MidataId consent = MidataId.parse(consentId);
         String handle = KeyManager.instance.login(60000, false);
         if (KeyManager.instance.unlock(user, null) != KeyManager.KEYPROTECTION_NONE) throw new BadRequestException("error.internal", "User has already logged in");
-        AccessContext context = ContextManager.instance.createSession(user, UserRole.MEMBER, RuntimeConstants.instance.portalPlugin, user, null);
+        AccessContext context = ContextManager.instance.createSession(user, UserRole.MEMBER, RuntimeConstants.instance.portalPlugin, user, null);        
         User theUser = User.getById(user, User.ALL_USER);
+        AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.INTERNAL_COMMENT).withActor(theUser).withModifiedActor(theUser).withMessage("Consent withdraw by administrator"));
         if (theUser == null) throw new BadRequestException("error.internal", "User not existing");
         StudyParticipation theConsent = StudyParticipation.getById(consent, StudyParticipation.STUDY_EXTRA);
         if (theConsent == null || !theConsent.owner.equals(user)) throw new BadRequestException("error.internal", "Wrong consent");
