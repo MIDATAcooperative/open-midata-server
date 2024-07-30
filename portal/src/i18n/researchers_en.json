@@ -408,5 +408,9 @@
      "link" : "Link to join project",
      "link2" : "Click on a code from the list above to view the corresponding link that may be used to join the project.",
      "link_no" : "This project does not allow to participate via link."
+   },
+   
+   "studymessages" : {
+     "all" : "All participant groups"
    }
 }

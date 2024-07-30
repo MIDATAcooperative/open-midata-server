@@ -50,6 +50,7 @@ import models.enums.ProjectLeavePolicy;
 import models.enums.RejoinPolicy;
 import models.enums.UserFeature;
 import models.enums.WritePermissionType;
+import org.apache.commons.lang3.tuple.Pair;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Http.Request;
@@ -57,6 +58,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
+import utils.access.Feature_Pseudonymization;
 import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
@@ -349,11 +351,12 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result get(Request request, String id) throws JsonValidationException, InternalServerException {
+	public Result get(Request request, String id) throws AppException {
 	   MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));	
-	    	   
+	   AccessContext context = portalContext(request); 	
+	   
 	   Set<String> studyFields = Sets.create("_id", "type", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","infosPart", "owner","participantRules","recordQuery","studyKeywords","requiredInformation","anonymous","assistance", "startDate", "endDate", "dataCreatedBefore", "termsOfUse", "joinMethods", "leavePolicy", "rejoinPolicy");
-	   Set<String> consentFields = Sets.create("_id", "pstatus", "status", "providers");
+	   Set<String> consentFields = Sets.create("_id", "pstatus", "status", "providers", "ownerName");
 	   Set<String> researchFields = Sets.create("_id", "name", "description");
 	  
 	   Study study;
@@ -372,10 +375,17 @@ public class Studies extends APIController {
 	   Research research = Research.getById(study.owner, researchFields);
 	 
 	   if (participation == null || participation.pstatus != ParticipationStatus.ACCEPTED) study.infosPart = null;
+	   
+	   participation.ownerName = null;
+	   if (participation != null && study.requiredInformation != InformationType.DEMOGRAPHIC) {
+	       Pair<MidataId, String> ps = Feature_Pseudonymization.pseudonymizeUser(context, participation);
+	       if (ps != null) participation.ownerName = ps.getRight();
+	   }
+	   
 	   ObjectNode obj = Json.newObject();
-	   obj.put("study", JsonOutput.toJsonNode(study, "Study", studyFields));
-	   obj.put("participation", JsonOutput.toJsonNode(participation, "Consent", consentFields));
-	   obj.put("research", JsonOutput.toJsonNode(research, "Research", researchFields));
+	   obj.set("study", JsonOutput.toJsonNode(study, "Study", studyFields));
+	   obj.set("participation", JsonOutput.toJsonNode(participation, "Consent", consentFields));
+	   obj.set("research", JsonOutput.toJsonNode(research, "Research", researchFields));
 	   
 	   return ok(obj);
 	}
