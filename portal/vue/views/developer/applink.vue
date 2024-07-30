@@ -218,8 +218,10 @@ export default {
 		    }));	
                         
             me.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app", $data.appId).url)
-            .then(function(data) { 				
-                $data.links = data.data;												
+            .then(function(data) { 	
+                let links = data.data;
+                for (let l of links) { if (l.study && !l.study.joinMethods) { l.study.joinMethods = []; } }			
+                $data.links = links;												
             }));	
 
             me.doBusy(studies.search({ validationStatus : "VALIDATED" }, ["_id", "code", "name" ])
