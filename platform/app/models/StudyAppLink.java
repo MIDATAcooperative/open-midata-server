@@ -196,7 +196,7 @@ public class StudyAppLink extends Model {
 		this.appId = appId;
 		this.studyId = studyId;
 		this.linkTargetType=LinkTargetType.STUDY;
-		this.type=EnumSet.of(StudyAppLinkType.OFFER_P, StudyAppLinkType.REQUIRE_P);
+		this.type=EnumSet.of(StudyAppLinkType.OFFER_P, StudyAppLinkType.CHECK_P, StudyAppLinkType.AUTOADD_P, StudyAppLinkType.LINKED_P);
 		this.usePeriod=EnumSet.allOf(StudyExecutionStatus.class);	
 		this.validationDeveloper=StudyValidationStatus.VALIDATED;
 		this.validationResearch=StudyValidationStatus.VALIDATED;

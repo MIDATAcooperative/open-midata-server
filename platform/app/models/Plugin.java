@@ -52,7 +52,7 @@ import utils.sync.Instances;
  *
  */
 @JsonFilter("Plugin")
-public class Plugin extends Model implements Comparable<Plugin> {
+public class Plugin extends Model implements Comparable<Plugin>, HasPredefinedMessages {
 
 	private static final String collection = "plugins";
 	private static Map<MidataId, Plugin> cache = new ConcurrentHashMap<MidataId, Plugin>();	
@@ -564,5 +564,10 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		if (this.creator != null && this.creator.equals(user)) return true;
 		if (this.developerTeam != null && this.developerTeam.contains(user)) return true;
 		return false;
+	}
+	
+	@Override
+	public Map<String, MessageDefinition> getPredefinedMessages() {
+		return predefinedMessages;
 	}
 }

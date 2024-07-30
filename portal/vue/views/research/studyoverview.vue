@@ -370,7 +370,7 @@ export default {
                         .then(function(data) { 				
                             for (var i=0;i<data.data.length;i++) {
                                 var sal = data.data[i];
-                                if (sal.type.indexOf("OFFER_P")>=0 ||sal.type.indexOf("REQUIRE_P")>=0 ) $data.tests.applinked = true;
+                                if (sal.type.indexOf("OFFER_P")>=0 ||sal.type.indexOf("AUTOADD_P")>=0||sal.type.indexOf("CHECK_P")>=0 ) $data.tests.applinked = true;
                             }												
                         }));	
                                                             

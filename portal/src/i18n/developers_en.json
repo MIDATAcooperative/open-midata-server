@@ -78,7 +78,12 @@
 	   "TRIED_USER_REREGISTRATION" : "User re-registration from API: bad match",	   
 	   "RESOURCE_CHANGE" : "Change of resource [code]",
 	   "PROCESS_MESSAGE" : "Process FHIR message with event [code]",
-	   "LOGIN" : "Login Notification (if enabled by user)"
+	   "LOGIN" : "Login Notification (if enabled by user)",
+	   "PROJECT_PARTICIPATION_REQUEST" : "Participation requested",
+       "PROJECT_PARTICIPATION_APPROVED" : "Participation approved",
+       "PROJECT_PARTICIPATION_REJECTED" : "Participation rejected",
+       "PROJECT_PARTICIPATION_GROUP_ASSIGNED" : "Group assigned",
+       "PROJECT_PARTICIPATION_RETREAT" : "User retreated"
     }		      
   },
   

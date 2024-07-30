@@ -42,6 +42,7 @@ import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.InformationType;
 import models.enums.JoinMethod;
+import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
@@ -75,6 +76,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.Messager;
 
 /**
  * functions about studies for members
@@ -452,6 +454,8 @@ public class Studies extends APIController {
 			PatientResourceProvider.createPatientForStudyParticipation(context, study, participation, user);						
 		} 
 		consumeCode(study, code); 
+		
+		Messager.sendProjectMessage(context, participation, MessageReason.PROJECT_PARTICIPATION_REQUEST, null);
 
 		AuditManager.instance.success();
 		
@@ -606,6 +610,8 @@ public class Studies extends APIController {
 		   if (isFakeAccount) bld = bld.withMessage("fake account");
 		   AuditManager.instance.addAuditEvent(bld);		   
 		   if (participation.pstatus != ParticipationStatus.ACCEPTED) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");		   
+		   Messager.sendProjectMessage(context, participation, MessageReason.PROJECT_PARTICIPATION_RETREAT, participation.group);
+			
 		   participation.setPStatus(ParticipationStatus.MEMBER_RETREATED);
 		   if (isFakeAccount) {
 			   Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);

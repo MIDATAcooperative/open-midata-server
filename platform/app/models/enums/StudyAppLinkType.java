@@ -23,16 +23,43 @@ package models.enums;
  */
 public enum StudyAppLinkType {
 
+	/**
+	 * offer to participate
+	 */
 	OFFER_P,
 
 	OFFER_EXTRA_PAGE,
 
 	OFFER_INLINE_AGB,
 	
+	/**
+	 * participation is required = AUTOADD_P, CHECK_P, LINK_P
+	 */
 	REQUIRE_P,
 	
+	/**
+	 * automatically add participation
+	 */
+	AUTOADD_P,
+	
+	/**
+	 * participation is required, otherwise block/logout
+	 */
+	CHECK_P,
+	
+	/**
+	 * participation id / pseudonym will be returned upon login  
+	 */
+	LINKED_P,
+	
+	/**
+	 * recommend plugin/app upon participation
+	 */
 	RECOMMEND_A,
 	
+	/**
+	 * automatically add plugin upon participation
+	 */
 	AUTOADD_A,
 	
 	DATALINK
