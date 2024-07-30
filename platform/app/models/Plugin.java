@@ -31,6 +31,7 @@ import models.enums.IconUse;
 import models.enums.LoginButtonsTemplate;
 import models.enums.LoginTemplate;
 import models.enums.PluginStatus;
+import models.enums.TestAccountsAcceptance;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
@@ -443,6 +444,27 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * List of allowed IP ranges in CIDR notation
 	 */
 	public String allowedIPs;
+	
+	/**
+	 * Maximum number of test accounts that may be created using this app
+	 */
+	public int testAccountsMax;
+	
+	/**
+	 * Number of test accounts that have already been created using this app
+	 */
+	public int testAccountsCurrent;
+	
+	/**
+	 * Does this application accept test accounts
+	 */
+	public TestAccountsAcceptance acceptTestAccounts;
+	
+	/**
+	 * From which applications does this app accept test user (data)
+	 */
+	public Set<MidataId> acceptTestAccountsFromApp;
+	
 
 	@Override
 	public int compareTo(Plugin other) {
