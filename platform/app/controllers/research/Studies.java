@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -224,6 +225,7 @@ public class Studies extends APIController {
 		study.anonymous = false;
 		study.assistance = AssistanceType.NONE;
 		study.groups = new ArrayList<StudyGroup>();
+		study.joinMethods = EnumSet.noneOf(JoinMethod.class);
 
 		study.studyKeywords = new HashSet<MidataId>();
 
