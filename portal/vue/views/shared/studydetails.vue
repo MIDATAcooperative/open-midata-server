@@ -214,7 +214,7 @@ export default {
 			    	for (var l=0;l<data.data.length;l++) {
 			    		var link = data.data[l];
 			    		if (link.type.indexOf("RECOMMEND_A")>=0) {
-			    			if (link.type.indexOf("REQUIRE_P")<0 || ($data.participation && $data.participation.pstatus=="ACCEPTED")) {
+			    			if (link.type.indexOf("AUTOADD_P")<0 || ($data.participation && $data.participation.pstatus=="ACCEPTED")) {
 			    			  links.push(link);
 			    			}
 			    		}

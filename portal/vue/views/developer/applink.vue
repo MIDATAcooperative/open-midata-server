@@ -55,11 +55,11 @@
                                 <span class="fas fa-times text-danger mr-1"></span>
                                 <span v-t="'studyactions.status.study_wrong_status'"></span>
                             </div>
-                            <div v-if="link.study && link.type.indexOf('REQUIRE_P')>=0 && link.study.participantSearchStatus != 'SEARCHING'">
+                            <div v-if="link.study && link.type.indexOf('AUTOADD_P')>=0 && link.study.participantSearchStatus != 'SEARCHING'">
                                 <span class="fas fa-times text-danger mr-1"></span>
                                 <span v-t="'error.closed.study'"></span>
                             </div>
-                            <div v-if="link.study && (link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0">
+                            <div v-if="link.study && (link.type.indexOf('AUTOADD_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0">
                                 <span class="fas fa-times text-danger mr-1"></span>
                                 <span v-t="'studyactions.status.study_no_app_participation'"></span>
                             </div>	                
@@ -188,7 +188,7 @@ export default {
         appId : null,
         crit : { group : "" },
         types : studies.linktypes,
-        types2 : ["OFFER_P", "REQUIRE_P"],
+        types2 : ["OFFER_P", "AUTOADD_P", "CHECK_P"],
 	    periods : studies.executionStati,
 	    selection : undefined,
         apps : [],

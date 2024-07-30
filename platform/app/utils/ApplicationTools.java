@@ -559,7 +559,7 @@ public class ApplicationTools {
         for (StudyAppLink sal : links) {
 			if (sal.isConfirmed()) {	
 				if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {
+					if (sal.type.contains(StudyAppLinkType.AUTOADD_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {
 						
 						if (LinkTools.findConsentForAppLink(context.getAccessor(),sal)==null) {
 							ContextManager.instance.clearCache();
@@ -568,12 +568,12 @@ public class ApplicationTools {
 						}
 					}
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.serviceAppId))) {					
+					if (sal.type.contains(StudyAppLinkType.AUTOADD_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.serviceAppId))) {					
 						ContextManager.instance.clearCache();
 						refreshOrInstallService(context, sal.serviceAppId, member, studyConfirm);											
 					}
 				} else
-				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
+				if (sal.type.contains(StudyAppLinkType.AUTOADD_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
 					ContextManager.instance.clearCache();
 			        controllers.members.Studies.requestParticipation(context.forAccountReshare(), member._id, sal.studyId, app._id, sal.dynamic ? JoinMethod.API : JoinMethod.APP, null);
 				}
@@ -589,18 +589,18 @@ public class ApplicationTools {
 				if (!sal.active) sal.type = Collections.emptySet();
 				
 				if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.userId)) {
+					if (sal.type.contains(StudyAppLinkType.CHECK_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.userId)) {
 						Consent consent = LinkTools.findConsentForAppLink(member._id, sal);						
 						if (consent==null) throw new BadRequestException("error.missing.consent_accept", "Consent belonging to app must be accepted.");
 					}
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
-						if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.serviceAppId)) {
+						if (sal.type.contains(StudyAppLinkType.CHECK_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.serviceAppId)) {
 							Consent consent = LinkTools.findConsentForAppLink(member._id, sal);						
 							if (consent==null) throw new BadRequestException("error.missing.consent_accept", "Consent belonging to app must be accepted.");
 						}									
 				} else {
 				
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.studyId)) {
+					if (sal.type.contains(StudyAppLinkType.CHECK_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.studyId)) {
 						StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, member._id, Sets.create("status", "pstatus"));
 			        	if (sp == null || 
 			        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
@@ -610,7 +610,7 @@ public class ApplicationTools {
 			        	}
 					}
 					
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
+					if (sal.type.contains(StudyAppLinkType.AUTOADD_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
 						controllers.members.Studies.precheckRequestParticipation(member._id, sal.studyId);
 					}
 				}

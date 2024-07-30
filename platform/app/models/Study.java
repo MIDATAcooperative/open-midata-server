@@ -47,14 +47,14 @@ import utils.exceptions.InternalServerException;
  *
  */
 @JsonFilter("Study")
-public class Study extends Model {
+public class Study extends Model implements HasPredefinedMessages {
 	
 	private static final String collection = "studies";
 	
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "categories", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy", "forceClientCertificate", "dataFilters");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "categories", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy", "forceClientCertificate", "dataFilters", "predefinedMessages");
 	
 	public @NotMaterialized static final Set<String> LINK_FIELDS = Sets.create("_id", "name", "code", "type", "joinMethods", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
 	
@@ -237,6 +237,11 @@ public class Study extends Model {
     
     public boolean forceClientCertificate;
     
+    /**
+	 * Predefined messages
+	 */
+	public Map<String, MessageDefinition> predefinedMessages;
+    
     public static void add(Study study) throws InternalServerException {
 		Model.insert(collection, study);
 	 }
@@ -408,6 +413,11 @@ public class Study extends Model {
     	this.infosInternal = infosInternal;
     	Model.set(Study.class, collection, this._id, "infosInternal", infosInternal);
     }
+    
+    public void setPredefinedMessages(Map<String, MessageDefinition> msgs) throws InternalServerException {
+    	this.predefinedMessages = msgs;
+    	Model.set(Study.class, collection, this._id, "predefinedMessages", msgs);
+    }
         
     
     public static void delete(MidataId studyId) throws InternalServerException {	
@@ -416,5 +426,10 @@ public class Study extends Model {
 	
     public static long count() throws AppException {
 		return Model.count(Study.class, collection, CMaps.map("executionStatus", StudyExecutionStatus.RUNNING));
+	}
+
+	@Override
+	public Map<String, MessageDefinition> getPredefinedMessages() {
+		return predefinedMessages;
 	}
 }

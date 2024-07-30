@@ -17,8 +17,12 @@
 
 package utils.messaging;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
@@ -29,6 +33,8 @@ import models.MessageDefinition;
 import models.MidataId;
 import models.Plugin;
 import models.RateLimitedAction;
+import models.Study;
+import models.StudyParticipation;
 import models.User;
 import models.enums.AuditEventType;
 import models.enums.MessageChannel;
@@ -38,6 +44,7 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.ServerTools;
+import utils.access.Feature_Pseudonymization;
 import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.collections.Sets;
@@ -96,6 +103,31 @@ public class Messager {
 		  replacements.put("plugin-name", plugin.name);
 		  replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
 		  return sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements, channel, sourcePlugin);
+		}
+		AccessLog.log("no predefined messages for reason="+reason.toString());
+		return false;
+	}
+	
+	public static boolean sendProjectMessage(AccessContext context, StudyParticipation pp, MessageReason reason, String code) throws AppException {
+		Map<String, String> replacements = new HashMap<String, String>();
+		Pair<MidataId,String> p = Feature_Pseudonymization.pseudonymizeUser(context.getCache(), pp);
+		if (p!=null) {
+			replacements.put("pseudonym", p.getRight());
+			replacements.put("participation-id", p.getLeft().toString());
+		}
+		Plugin plugin = Plugin.getById(context.getUsedPlugin(), Sets.create("name"));
+		replacements.put("plugin-name", plugin.name);
+		replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
+		replacements.put("site", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
+		if (pp.group != null) replacements.put("project-group", pp.group);
+		
+		Set targets = Collections.singleton(pp.owner);
+		String defaultLanguage = InstanceConfig.getInstance().getDefaultLanguage();
+		Study project = Study.getById(pp.study, Sets.create("predefinedMessages", "name"));
+		if (project.predefinedMessages != null) {
+		  //replacements.put("plugin-name", plugin.name);
+		  replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
+		  return sendMessage(project.predefinedMessages, reason, code, targets, defaultLanguage, replacements, MessageChannel.EMAIL, context.getUsedPlugin());
 		}
 		AccessLog.log("no predefined messages for reason="+reason.toString());
 		return false;

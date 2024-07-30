@@ -142,7 +142,7 @@ public class OAuth2 extends Controller {
         
         if (links == null) links = StudyAppLink.getByApp(app._id);
         for (StudyAppLink sal : links) {
-        	if (sal.isConfirmed() && sal.active && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
+        	if (sal.isConfirmed() && sal.active && sal.type.contains(StudyAppLinkType.CHECK_P)) {
         		
         		if (sal.linkTargetType == LinkTargetType.ORGANIZATION || sal.linkTargetType == LinkTargetType.SERVICE) {
       			  Consent c = LinkTools.findConsentForAppLink(appInstance.owner, sal);
@@ -549,7 +549,7 @@ public class OAuth2 extends Controller {
 		
 		
 		for (StudyAppLink sal : links) {
-			if (sal.isConfirmed() && sal.active && ((sal.type.contains(StudyAppLinkType.OFFER_P) && confirmStudy.contains(sal.studyId)) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
+			if (sal.isConfirmed() && sal.active && ((sal.type.contains(StudyAppLinkType.OFFER_P) && confirmStudy.contains(sal.studyId)) || sal.type.contains(StudyAppLinkType.AUTOADD_P))) {
 				if (sal.linkTargetType == null || sal.linkTargetType == LinkTargetType.STUDY) {
 					Study study = sal.getStudy();				
 					if (study.requirements != null) requirements.addAll(study.requirements);		
@@ -822,14 +822,14 @@ public class OAuth2 extends Controller {
 			AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
 			boolean allRequired = true;
 			for (StudyAppLink sal : links) {
-				if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+				if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.CHECK_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
 					if (sal.linkTargetType == LinkTargetType.ORGANIZATION || sal.linkTargetType == LinkTargetType.SERVICE) {
 					  Consent existingConsent = LinkTools.findConsentForAppLink(token.ownerId, sal);
 					  allRequired = allRequired && (existingConsent != null);
 					} else {
 					  if (allRequired) {
 					     allRequired = checkAlreadyParticipatesInStudy(sal.studyId, token.ownerId);
-					     if (!allRequired && sal.type.contains(StudyAppLinkType.REQUIRE_P) && token.joinCode==null) {
+					     if (!allRequired && sal.type.contains(StudyAppLinkType.AUTOADD_P) && token.joinCode==null) {
 					    	Study study = sal.getStudy();
 					    	if (!study.joinMethods.contains(token.appId != null ? JoinMethod.APP : JoinMethod.PORTAL)) throw new JsonValidationException("error.blocked.joinmethod", "code", "joinmethod", "Study is not searching for participants using this channel.");
 					     }

@@ -199,11 +199,11 @@
 	                  <span class="fas fa-times text-danger"></span>
 	                  <span v-t="'studyactions.status.study_wrong_status'"></span>
 	                </div>
-	                <div v-if="link.type.indexOf('REQUIRE_P')>=0 && study.participantSearchStatus != 'SEARCHING'">
+	                <div v-if="link.type.indexOf('AUTOADD_P')>=0 && study.participantSearchStatus != 'SEARCHING'">
 	                  <span class="fas fa-times text-danger"></span>
 	                  <span v-t="'error.closed.study'"></span>
 	                </div>
-	                <div v-if="(link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0">
+	                <div v-if="(link.type.indexOf('AUTOADD_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0">
 	                  <span class="fas fa-times text-danger"></span>
 	                  <span v-t="'studyactions.status.study_no_app_participation'"></span>
 	                </div>
@@ -216,6 +216,19 @@
 	            </tr>
 	          </table>
 	</panel>
+    
+    <panel v-if="study && study.predefinedMessages" :title="$t('admin_study.messages')" :busy="isBusy">
+      <div v-for="(msg,reason) in study.predefinedMessages" :key="reason" class="mb-3">
+        <div><b>{{ $t('appmessages.reasons.' + reason) }}</b></div>
+        <div class="mt-3">
+    
+          <div v-for="(t,l) in msg.text" :key="l">
+            <div class="mt-1">{{ l }}: <b>{{ msg.title[l]}}</b></div>
+            <pre>{{ t }}</pre>
+          </div>
+        </div>
+      </div>        
+    </panel>
 	
 	<panel :title="$t('admin_study.history')" :busy="isBusy">
       <audit-log :entity="study._id"></audit-log>

@@ -484,6 +484,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "research" */ 'views/research/studyrules.vue')
   },
   {
+      base : ["research", "developer", "admin"],
+      path : "study.messages",
+      component: () => import(/* webpackChunkName: "research" */ 'views/research/studymessages.vue')
+  },
+  {
     base : ["research"],
     path : "study.participants",
     component: () => import(/* webpackChunkName: "research" */ 'views/research/studyparticipants.vue')

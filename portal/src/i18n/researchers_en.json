@@ -51,6 +51,7 @@
     "participants" : "Participants",
     "subprojects" : "Sub-Projects",
     "codes" : "Codes",
+    "messages" : "Communication",
     "records" : "Records",
     "results" : "Results",
     "team" : "Team",
@@ -104,20 +105,20 @@
     "type" : "How are they linked?",
     "types" : {
        "OFFER_P" : "Onboarding: The application offers project participation upon login/start",
-       "OFFER_EXTRA_PAGE" : "Onboarding: The project participation is described on an extra page",
-       "OFFER_INLINE_AGB" : "Onboarding: Use the terms of use as project description",
-       "REQUIRE_P" : "Project participation is required to use the application",
+       "AUTOADD_P" : "Onboarding: Project participation is added upon login/start",
+       "LINKED_P" : "Project participation ID is shared with app in Patient resource",
+       "CHECK_P" : "Project participation is required to use the application",
        "RECOMMEND_A" : "Application is recommended by project",
        "AUTOADD_A" : "Plugin is automatically added on project participation",
        "DATALINK" : "Application shares data to project participants"
     },
     "types_short" : {
        "OFFER_P" : "Suggest participation",
-       "OFFER_EXTRA_PAGE" : "Extra project page",
-       "OFFER_INLINE_AGB" : "Terms of use as description",
-       "REQUIRE_P" : "Require participation",
+       "AUTOADD_P" : "Add participation on application use",
+       "LINKED_P" : "Participation ID is shared with app",
+       "CHECK_P" : "Participation required to use app",
        "RECOMMEND_A" : "Recommended",
-       "AUTOADD_A" : "Add automatically",
+       "AUTOADD_A" : "Add app automatically",
        "DATALINK" : "Data Sharing"
     },
     "use_period" : "When are they linked?",
@@ -403,6 +404,9 @@
      "manually" : "Manual entry",
      "generated" : "Generated",
      "codes" : "New codes",
-     "add_btn" : "Add now"
+     "add_btn" : "Add now",
+     "link" : "Link to join project",
+     "link2" : "Click on a code from the list above to view the corresponding link that may be used to join the project.",
+     "link_no" : "This project does not allow to participate via link."
    }
 }

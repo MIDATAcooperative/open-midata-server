@@ -24,6 +24,7 @@
   <li v-if="!isMetaProject()" class="nav-item"><a :class="{ 'active' : page=='study.rules' }" href="javascript:" class="nav-link" @click="go('study.rules')" v-t="'studynav.rules'">Rules</a></li>
   <li class="nav-item"><a :class="{ 'active' : page=='study.actions', 'disabled' : !hasRole('applications') && !hasRole('setup')}" href="javascript:" class="nav-link" @click="go('study.actions')" v-t="'studynav.actions'">Actions</a></li>
   <li v-if="!isMetaProject()" class="nav-item"><a :class="{ 'active' : page=='study.codes', 'disabled' : !hasCodes() }" href="javascript:" class="nav-link" @click="go('study.codes')" v-t="'studynav.codes'">Codes</a></li>
+  <li v-if="!isMetaProject()" class="nav-item"><a :class="{ 'active' : page=='study.messages' }" href="javascript:" class="nav-link" @click="go('study.messages')" v-t="'studynav.messages'">Communication</a></li>
   <li v-if="fullMenu && !isMetaProject()" class="nav-item"><a :class="{ 'active' : page=='study.participants', 'disabled' : !hasRole('participants') }" href="javascript:" class="nav-link" @click="go('study.participants')" v-t="'studynav.participants'">Participants</a></li>
   <li v-if="!isMetaProject()" class="nav-item"><a :class="{ 'active' : page=='study.sharing' }" href="javascript:" class="nav-link" @click="go('study.sharing')" v-t="'studynav.sharing'">Sharing</a></li>
   <li v-if="fullMenu" class="nav-item"><a :class="{ 'active' : page=='study.records', 'disabled' : !hasRole('export') }" href="javascript:" class="nav-link" @click="go('study.records')" v-t="'studynav.records'">Records</a></li> 
