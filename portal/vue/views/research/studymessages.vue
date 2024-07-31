@@ -25,7 +25,7 @@
             <table class="table table-striped" v-if="messages.length">
                 <tr>
                     <th v-t="'appmessages.reason'"></th>
-                    <th v-t="'appmessages.code'"></th>
+                    <th v-t="'studyfields.group_name'"></th>
                     <th v-t="'appmessages.languages'"></th>
                     <th>&nbsp;</th>
                 </tr>
@@ -59,8 +59,11 @@
                     </select>           
                 </form-group>
             
-                <form-group name="code" label="appmessages.code" :path="errors.code">           
-                    <input type="text" id="code" name="code" class="form-control" placeholder="Code" v-validate v-model="selmsg.code">
+                <form-group v-if="selmsg && selmsg.reason && selmsg.reason != 'PROJECT_PARTICIPATION_REQUEST'" name="code" label="studyfields.group_name" :path="errors.code">
+                   <select id="code" name="code" v-validate v-model="selmsg.code" class="form-control">
+                     <option value="">{{ $t("studymessages.all") }}</option>
+                     <option v-for="group in study.groups" :key="group.name">{{ group.name }}</option>
+                   </select>                             
                 </form-group>
                 
                 <hr>    
@@ -149,7 +152,10 @@ export default {
                $data.study = study;
                $data.messages = [];  
                $data.selmsg = null;              
-               for (let msg in study.predefinedMessages) { $data.messages.push(study.predefinedMessages[msg]); }
+               for (let msg in study.predefinedMessages) {
+                 if (!study.predefinedMessages[msg].code) study.predefinedMessages[msg].code = ""; 
+                 $data.messages.push(study.predefinedMessages[msg]); 
+               }
              }));
            
         },
@@ -162,6 +168,7 @@ export default {
             
                 for (let k in msg.text) if (msg.text[k]==="") { delete msg.text[k]; }
                 for (let k in msg.title) if (msg.title[k]==="") { delete msg.title[k]; }
+                if (msg.reason == 'PROJECT_PARTICIPATION_REQUEST') msg.code = "";
                                 
                 predefinedMessages[msg.reason+(msg.code ? ("_"+msg.code) : "")] = msg;
             }
@@ -175,7 +182,7 @@ export default {
     
         addMessage() {
             const { $data } = this, me = this;
-            $data.messages.push($data.selmsg = { title : {}, text: {} });
+            $data.messages.push($data.selmsg = { reason:'PROJECT_PARTICIPATION_REQUEST' , code: "", title : {}, text: {} });
         },
     
         showMessage(msg, lang) {
