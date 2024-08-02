@@ -9,7 +9,7 @@ GET     /debug/test                                      controllers.Debug.test(
 GET     /api/ping                                            controllers.Debug.ping()
 POST    /fhir/$p<\$process\-message>                     controllers.FHIR.postProcessMessage(request: Request, p)
 POST    /fhir/Binary                                     controllers.FHIR.binaryUpload(request: Request)
-GET     /fhir/Patient/$p<\$everything>                   controllers.FHIR.export(request: Request,p )
+GET     /fhir/Patient/$p<\$everything>                   controllers.FHIR.doExport(request: Request,p )
 GET     /fhir/Patient/:id/$p<\$everything>               controllers.FHIR.exportPatient(request: Request, id: String, p)
 GET     /fhir/.well-known/smart-configuration			 controllers.FHIR.wellknownSmartConfiguration()
 OPTIONS /fhir/*all                                       controllers.FHIR.checkPreflight(all)

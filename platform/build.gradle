@@ -20,13 +20,13 @@ plugins {
     id 'idea'
 }
 
-def playVersion = '2.8.17'
-def scalaVersion = System.getProperty("scala.binary.version", /* default = */ "2.13.6")
+def playVersion = '2.9.5'
+def scalaVersion = System.getProperty("scala.binary.version", /* default = */ "2.13.14")
 
 model {
     components {
         play {
-            platform play: playVersion, scala: scalaVersion, java: '1.8'
+            platform play: playVersion, scala: scalaVersion, java: '21'
             injectedRoutesGenerator = true
 
             sources {

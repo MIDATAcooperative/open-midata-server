@@ -22,7 +22,7 @@ version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
-scalaVersion := "2.13.6"
+scalaVersion := "2.13.14"
 
 libraryDependencies += guice
 
@@ -42,15 +42,15 @@ libraryDependencies ++= Seq(
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.13.2",
     "com.fasterxml.jackson.core" % "jackson-annotations" % "2.13.2",
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.2",
-    "com.typesafe.akka" %% "akka-remote" % "2.6.14",
-    "com.typesafe.akka" %% "akka-cluster" % "2.6.14",
-    "com.typesafe.akka" %% "akka-cluster-typed" % "2.6.14",
-    "com.typesafe.akka" %% "akka-stream" % "2.6.14",
-    "com.typesafe.akka" %% "akka-cluster-tools" % "2.6.14",    
+    "com.typesafe.akka" %% "akka-remote" % "2.6.21",
+    "com.typesafe.akka" %% "akka-cluster" % "2.6.21",
+    "com.typesafe.akka" %% "akka-cluster-typed" % "2.6.21",
+    "com.typesafe.akka" %% "akka-stream" % "2.6.21",
+    "com.typesafe.akka" %% "akka-cluster-tools" % "2.6.21",    
     "javax.servlet" % "javax.servlet-api" % "3.1.0",
-    "com.typesafe.play" %% "play-mailer" % "8.0.1",
-    "com.typesafe.play" %% "play-mailer-guice" % "8.0.1",
-    "com.typesafe.play" %% "play-json" % "2.9.2"        
+    "com.typesafe.play" %% "play-mailer" % "9.0.0",
+    "com.typesafe.play" %% "play-mailer-guice" % "9.0.0",
+    "com.typesafe.play" %% "play-json" % "2.10.6"        
 )
 routesGenerator := InjectedRoutesGenerator
 
