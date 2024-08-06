@@ -21,7 +21,7 @@
 				
 		<div class="row" v-if="study && study.infos">
 			<div class="col-sm-4 infopanel">
-			    <div v-if="participation.ownerName" class="panel panel-primary">
+			    <div v-if="participation && participation.ownerName" class="panel panel-primary">
 					<div class="panel-heading" v-t="'studydetails.pseudonym'"></div>
 					<div class="panel-body">
                       <div class="lead">{{ participation.ownerName }}</div>						
