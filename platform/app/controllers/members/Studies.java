@@ -376,7 +376,7 @@ public class Studies extends APIController {
 	 
 	   if (participation == null || participation.pstatus != ParticipationStatus.ACCEPTED) study.infosPart = null;
 	   
-	   participation.ownerName = null;
+	   if (participation != null) participation.ownerName = null;
 	   if (participation != null && study.requiredInformation != InformationType.DEMOGRAPHIC) {
 	       Pair<MidataId, String> ps = Feature_Pseudonymization.pseudonymizeUser(context, participation);
 	       if (ps != null) participation.ownerName = ps.getRight();
