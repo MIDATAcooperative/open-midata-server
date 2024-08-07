@@ -68,7 +68,6 @@ import models.MobileAppInstance;
 import models.Model;
 import models.ParticipationCode;
 import models.Plugin;
-import models.PluginIcon;
 import models.Record;
 import models.RecordsInfo;
 import models.Research;
@@ -2877,5 +2876,30 @@ public class Studies extends APIController {
 				
 		return ok();
 	}
+	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)	
+	public Result shareCode(Request request, String study, String codestr) throws AppException {
+        JsonNode json = request.body().asJson();
+		
+				
+		AccessContext context = portalContext(request);
+								
+		ParticipationCode code = ParticipationCode.getByCode(codestr);
+		if (code == null || !code.study.equals(MidataId.parse(study))) return inputerror("code", "notfound", "Unknown Participation Code.");
+		
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(code.study, context.getAccessor());
+		if (self == null)
+			throw new AuthException("error.notauthorized.action", "User not member of study group");
+		//if (!self.getConfirmedRole().manageParticipants())
+		//	throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
+				
+		if (code.status == ParticipationCodeStatus.UNUSED) {
+		  code.setStatus(ParticipationCodeStatus.SHARED);
+		}
+		
+		return ok();
+	}
+	
 
 }
