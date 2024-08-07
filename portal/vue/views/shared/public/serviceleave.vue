@@ -16,7 +16,7 @@
 -->
 <template>
 <panel :title="$t('serviceleave.title')" :busy="isBusy" style="max-width:330px; padding-top:30px; margin:0 auto;">
-    
+    <p v-for="msg in msgs">{{ msg }}</p>
     <div v-if="callback && callback!='close'">
 		<p v-t="'serviceleave.logoutreturn'"></p>
 		<!-- <button class="btn btn-primary" v-t="'serviceleave.return_btn'" @click="leave();"></button> -->
@@ -44,7 +44,8 @@ import Panel from 'components/Panel.vue'
 
 export default {
     data: () => ({
-        callback : null  
+        callback : null,
+		msgs : []  
     }),
 
     components : {
@@ -56,6 +57,7 @@ export default {
     methods: {
         init() {		
             const { $data, $route } = this, me = this;
+			$data.msgs = actions.getOutMsgs();
 		    actions.logout();
 		    if ($route.query.callback) {
 			    $data.callback = $route.query.callback;		

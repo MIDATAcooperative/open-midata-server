@@ -30,6 +30,7 @@ import controllers.APIController;
 import controllers.Application;
 import controllers.Circles;
 import controllers.research.AutoJoiner;
+import models.Consent;
 import models.Member;
 import models.MidataId;
 import models.ParticipationCode;
@@ -177,6 +178,7 @@ public class Studies extends APIController {
 		result.put("study", code.study.toString());
 		return ok(result);
 	}
+		
 	
 	private static ParticipationCode checkCode(Study study, JoinMethod method, String codestr) throws AppException {
 		if (method != JoinMethod.APP_CODE && method != JoinMethod.CODE) return null;
@@ -411,13 +413,14 @@ public class Studies extends APIController {
 		Set<UserFeature> requirements = precheckRequestParticipation(userId, studyId);
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		if (notok != null && !notok.isEmpty()) requireUserFeature(request, notok.iterator().next());
-		
+		StudyParticipation part = null;
 		if (json.has("code")) {
-		  requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.CODE, JsonValidation.getString(json, "code"));
+		  part = requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.CODE, JsonValidation.getString(json, "code"));
 		} else {
-		  requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.PORTAL, null);		
+		  part = requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.PORTAL, null);		
 		}
-		return ok();
+		
+		return ok(JsonOutput.toJson(part, "Consent", Consent.ALL));
 	}
 
 	public static StudyParticipation requestParticipation(AccessContext context, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod, String joinCode) throws AppException {
@@ -461,7 +464,7 @@ public class Studies extends APIController {
 		Circles.consentStatusChange(context, participation, ConsentStatus.ACTIVE);
 		
 		if (study.requiredInformation.equals(InformationType.RESTRICTED) || study.requiredInformation.equals(InformationType.NONE)) {						
-			PatientResourceProvider.createPatientForStudyParticipation(context, study, participation, user);						
+			participation.ownerName = PatientResourceProvider.createPatientForStudyParticipation(context, study, participation, user);						
 		} 
 		consumeCode(study, code); 
 		

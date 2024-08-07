@@ -315,8 +315,12 @@ export default {
             if ($data.code) data.code = $data.code;		
             me.doAction("request", server.post(jsRoutes.controllers.members.Studies.requestParticipation($data.studyid).url, data).
             then(function(data) { 	
+				let part = data.data;
+				if (part.ownerName && !me.needs("DEMOGRAPHIC")) {
+					actions.addOut(me.$t("studydetails.pseudonym")+": "+part.ownerName);
+				}
                 if (!actions.showAction($router, $route)) {
-                me.reload();
+                  me.reload();
                 }
             }));
 	    },

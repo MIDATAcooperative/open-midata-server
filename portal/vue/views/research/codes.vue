@@ -35,7 +35,7 @@
 	                </tr>
 	            </thead>
 	            <tbody>
-	                <tr v-for="code in codes.filtered" :key="code.code" @click="setLink(code.code)">
+	                <tr v-for="code in codes.filtered" :key="code.code" @click="setLink(code)">
 	                    <td>{{ code.code }}</td>	  
 	                    <td>{{ code.group }}</td>
 	                    <!-- <td>{{ code.recruiterName }}</td>  -->
@@ -163,7 +163,12 @@ export default {
 		},
         
         setLink(code) {
-          this.$data.studyLink = ENV.apiurl+"/#/public/service?project="+this.$data.study.code+"|"+code;
+		  const { $data } = this, me = this;
+          this.$data.studyLink = ENV.apiurl+"/#/public/service?project="+this.$data.study.code+"|"+code.code;
+		  if (code.status == "UNUSED") {
+		    me.doAction("share", server.post(jsRoutes.controllers.research.Studies.shareCode($data.studyid, code.code).url))
+			.then(() => { code.status = "SHARED"; });
+		  }
         },
 	
 		generate() {

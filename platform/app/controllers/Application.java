@@ -1144,6 +1144,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.CSVDownload.downloadCSV(),
 				controllers.research.routes.javascript.Studies.listCodes(),
 				controllers.research.routes.javascript.Studies.generateCodes(),
+				controllers.research.routes.javascript.Studies.shareCode(),
 				controllers.research.routes.javascript.Studies.startValidation(),
 				controllers.research.routes.javascript.Studies.endValidation(),
 				controllers.research.routes.javascript.Studies.backToDraft(),
