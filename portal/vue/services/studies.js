@@ -21,7 +21,7 @@ import server from "./server";
 	
 	service.studytypes = ["CLINICAL", "CITIZENSCIENCE", "COMMUNITY", "REGISTRY", "META"];
 	service.joinmethods = ["APP", "PORTAL", "RESEARCHER", "API", "APP_CODE", "ALGORITHM", "CODE", "TRANSFER"];
-	service.linktypes = ["OFFER_P", "REQUIRE_P", "RECOMMEND_A", "AUTOADD_A"];
+	service.linktypes = ["OFFER_P", "AUTOADD_P", "CHECK_P", "LINKED_P", "RECOMMEND_A", "AUTOADD_A"];
 	service.executionStati = ["PRE", "RUNNING", "FINISHED", "ABORTED"];
 	service.leavePolicies = [ "FREEZE", "REJECT", "DELETE" ];
 	service.rejoinPolicies = [ "NO_REJOIN", "DELETE_LAST" ];

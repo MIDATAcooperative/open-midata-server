@@ -35,7 +35,7 @@
 	                </tr>
 	            </thead>
 	            <tbody>
-	                <tr v-for="code in codes.filtered" :key="code.code">
+	                <tr v-for="code in codes.filtered" :key="code.code" @click="setLink(code)">
 	                    <td>{{ code.code }}</td>	  
 	                    <td>{{ code.group }}</td>
 	                    <!-- <td>{{ code.recruiterName }}</td>  -->
@@ -44,11 +44,23 @@
 	                </tr>
 	            </tbody>
 	        </table>
+            
+            <div class="mb-3">
+              <div><b v-t="'codes.link'"></b></div>
+              <div v-if="study && study.joinMethods && study.joinMethods.indexOf('CODE')>=0">
+                <div v-t="'codes.link2'"></div>
+                <input type="text" class="form-control mt-1" readonly @click="copyToClip($event)" v-model="studyLink">
+              </div>
+              <div v-else>
+                <div v-t="'codes.link_no'"></div>
+              </div>  
+          </div>       
 	        
 	        <p v-if="codes.filtered.length === 0" v-t="'codes.empty'"></p>
 		    <div v-if="!blocked">
 		        <button class="btn btn-primary" :disabled="action!=null" @click="showcreatenew()" v-t="'codes.showcreate_btn'">Generate new codes</button>
 		    </div>
+                           
 		
 	</tab-panel>
 	
@@ -96,6 +108,8 @@
 			<form-group label="common.empty">
           		<button type="submit" v-submit class="btn btn-primary" v-t="'codes.add_btn'">Generate</button>
         	</form-group>
+            
+                    
    		</form>
 	</panel>
    
@@ -108,6 +122,7 @@ import Panel from "components/Panel.vue"
 import TabPanel from "components/TabPanel.vue"
 import StudyNav from "components/tiles/StudyNav.vue"
 import server from "services/server.js"
+import ENV from "config"
 import { rl, status, ErrorBox, Success, FormGroup } from 'basic-vue3-components'
 
 export default {
@@ -117,7 +132,8 @@ export default {
 		newcodes : { count:1, reuseable:"true", manually:"false", group:"" },
 		createnew : false,
 		blocked : false,
-		study : null	
+		study : null,
+        studyLink : ""	
     }),
 
     components: {  Panel, TabPanel, ErrorBox, FormGroup, StudyNav, Success },
@@ -129,20 +145,31 @@ export default {
 			const { $data } = this, me = this;
 			me.doBusy(server.get(jsRoutes.controllers.research.Studies.get($data.studyid).url)
 			.then(function(data) { 				
-				$data.study = data.data;			
+				$data.study = data.data;	
+                
+                me.doBusy(server.get(jsRoutes.controllers.research.Studies.listCodes($data.studyid).url).
+                then(function(data) {               
+                    $data.codes = me.process(data.data, { filter : { code : "" }});             
+                    $data.createnew = false;
+                    //if ($data.codes.all.length) this.setLink($data.codes.all[0].code);
+                }, function(err) {
+                    //$data.error = err.data.type;
+                    $data.blocked = true;
+                    $data.createnew = false;
+                }));		
 			}));
 		
-			me.doBusy(server.get(jsRoutes.controllers.research.Studies.listCodes($data.studyid).url).
-			then(function(data) { 				
-				$data.codes = me.process(data.data, { filter : { code : "" }});				
-				$data.createnew = false;
-				
-			}, function(err) {
-				//$data.error = err.data.type;
-				$data.blocked = true;
-				$data.createnew = false;
-			}));
+			
 		},
+        
+        setLink(code) {
+		  const { $data } = this, me = this;
+          this.$data.studyLink = ENV.apiurl+"/#/public/service?project="+this.$data.study.code+"|"+code.code;
+		  if (code.status == "UNUSED") {
+		    me.doAction("share", server.post(jsRoutes.controllers.research.Studies.shareCode($data.studyid, code.code).url))
+			.then(() => { code.status = "SHARED"; });
+		  }
+        },
 	
 		generate() {
 			const { $data } = this, me = this;
@@ -173,7 +200,14 @@ export default {
 					}
 				}
 			} else $data.newcodes.codes = undefined;
-		}
+		},
+        
+        copyToClip(elem) {
+          elem = elem.currentTarget;
+          elem.focus();
+          elem.select();        
+          window.document.execCommand("copy");
+        }
     },
 
     created() {

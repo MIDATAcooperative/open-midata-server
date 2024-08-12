@@ -30,6 +30,7 @@ import controllers.APIController;
 import controllers.Application;
 import controllers.Circles;
 import controllers.research.AutoJoiner;
+import models.Consent;
 import models.Member;
 import models.MidataId;
 import models.ParticipationCode;
@@ -42,6 +43,7 @@ import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.InformationType;
 import models.enums.JoinMethod;
+import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
@@ -49,6 +51,7 @@ import models.enums.ProjectLeavePolicy;
 import models.enums.RejoinPolicy;
 import models.enums.UserFeature;
 import models.enums.WritePermissionType;
+import org.apache.commons.lang3.tuple.Pair;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Http.Request;
@@ -56,6 +59,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
+import utils.access.Feature_Pseudonymization;
 import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
@@ -75,6 +79,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.Messager;
 
 /**
  * functions about studies for members
@@ -173,6 +178,7 @@ public class Studies extends APIController {
 		result.put("study", code.study.toString());
 		return ok(result);
 	}
+		
 	
 	private static ParticipationCode checkCode(Study study, JoinMethod method, String codestr) throws AppException {
 		if (method != JoinMethod.APP_CODE && method != JoinMethod.CODE) return null;
@@ -347,11 +353,12 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public Result get(Request request, String id) throws JsonValidationException, InternalServerException {
+	public Result get(Request request, String id) throws AppException {
 	   MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));	
-	    	   
+	   AccessContext context = portalContext(request); 	
+	   
 	   Set<String> studyFields = Sets.create("_id", "type", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","infosPart", "owner","participantRules","recordQuery","studyKeywords","requiredInformation","anonymous","assistance", "startDate", "endDate", "dataCreatedBefore", "termsOfUse", "joinMethods", "leavePolicy", "rejoinPolicy");
-	   Set<String> consentFields = Sets.create("_id", "pstatus", "status", "providers");
+	   Set<String> consentFields = Sets.create("_id", "pstatus", "status", "providers", "ownerName");
 	   Set<String> researchFields = Sets.create("_id", "name", "description");
 	  
 	   Study study;
@@ -370,10 +377,17 @@ public class Studies extends APIController {
 	   Research research = Research.getById(study.owner, researchFields);
 	 
 	   if (participation == null || participation.pstatus != ParticipationStatus.ACCEPTED) study.infosPart = null;
+	   
+	   if (participation != null) participation.ownerName = null;
+	   if (participation != null && study.requiredInformation != InformationType.DEMOGRAPHIC) {
+	       Pair<MidataId, String> ps = Feature_Pseudonymization.pseudonymizeUser(context, participation);
+	       if (ps != null) participation.ownerName = ps.getRight();
+	   }
+	   
 	   ObjectNode obj = Json.newObject();
-	   obj.put("study", JsonOutput.toJsonNode(study, "Study", studyFields));
-	   obj.put("participation", JsonOutput.toJsonNode(participation, "Consent", consentFields));
-	   obj.put("research", JsonOutput.toJsonNode(research, "Research", researchFields));
+	   obj.set("study", JsonOutput.toJsonNode(study, "Study", studyFields));
+	   obj.set("participation", JsonOutput.toJsonNode(participation, "Consent", consentFields));
+	   obj.set("research", JsonOutput.toJsonNode(research, "Research", researchFields));
 	   
 	   return ok(obj);
 	}
@@ -399,13 +413,14 @@ public class Studies extends APIController {
 		Set<UserFeature> requirements = precheckRequestParticipation(userId, studyId);
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		if (notok != null && !notok.isEmpty()) requireUserFeature(request, notok.iterator().next());
-		
+		StudyParticipation part = null;
 		if (json.has("code")) {
-		  requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.CODE, JsonValidation.getString(json, "code"));
+		  part = requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.CODE, JsonValidation.getString(json, "code"));
 		} else {
-		  requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.PORTAL, null);		
+		  part = requestParticipation(portalContext(request), userId, studyId, null, JoinMethod.PORTAL, null);		
 		}
-		return ok();
+		
+		return ok(JsonOutput.toJson(part, "Consent", Consent.ALL));
 	}
 
 	public static StudyParticipation requestParticipation(AccessContext context, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod, String joinCode) throws AppException {
@@ -449,9 +464,11 @@ public class Studies extends APIController {
 		Circles.consentStatusChange(context, participation, ConsentStatus.ACTIVE);
 		
 		if (study.requiredInformation.equals(InformationType.RESTRICTED) || study.requiredInformation.equals(InformationType.NONE)) {						
-			PatientResourceProvider.createPatientForStudyParticipation(context, study, participation, user);						
+			participation.ownerName = PatientResourceProvider.createPatientForStudyParticipation(context, study, participation, user);						
 		} 
 		consumeCode(study, code); 
+		
+		Messager.sendProjectMessage(context, participation, MessageReason.PROJECT_PARTICIPATION_REQUEST, null);
 
 		AuditManager.instance.success();
 		
@@ -606,6 +623,8 @@ public class Studies extends APIController {
 		   if (isFakeAccount) bld = bld.withMessage("fake account");
 		   AuditManager.instance.addAuditEvent(bld);		   
 		   if (participation.pstatus != ParticipationStatus.ACCEPTED) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");		   
+		   Messager.sendProjectMessage(context, participation, MessageReason.PROJECT_PARTICIPATION_RETREAT, participation.group);
+			
 		   participation.setPStatus(ParticipationStatus.MEMBER_RETREATED);
 		   if (isFakeAccount) {
 			   Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);

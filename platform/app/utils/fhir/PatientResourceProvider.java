@@ -544,7 +544,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		return p;
 	}
 
-	public static void createPatientForStudyParticipation(AccessContext inf, Study study, StudyParticipation part, Member member) throws AppException {
+	public static String createPatientForStudyParticipation(AccessContext inf, Study study, StudyParticipation part, Member member) throws AppException {
 		AccessLog.logBegin("start patient for study participation");
 		AccessContext context = ContextManager.instance.createSharingContext(inf, part.owner).forConsentReshare(part);
 		//AccessLog.log("BEFORE="+inf.toString());
@@ -565,6 +565,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		Feature_Pseudonymization.addPseudonymization(context, part._id, pseudo, userName);
 		RecordManager.instance.share(context, member._id, part._id, Collections.singleton(record._id), false);
 		AccessLog.logEnd("end patient for study participation");
+		
+		return userName;
 	}
 
 	public void prepare(Record record, Patient thePatient) {
@@ -585,7 +587,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 				
 		if (info().getUsedPlugin() != null) {
-		  List<Study> studies = AccountManagementTools.determineProjectsFromUsedApp(info(), info().getLegacyOwner().equals(record.owner));
+		  List<Study> studies = AccountManagementTools.determineLinkedProjectsFromUsedApp(info(), info().getLegacyOwner().equals(record.owner));
 		  populateIdentifiers(record.owner, resource, studies);		  		 
 		}
 		
@@ -803,7 +805,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		
 		// Determine projects the given user should participate in
         Set<MidataId> projectsFromPatient = AccountManagementTools.getProjectIdsFromPatient(fhirPatient);
-        Set<MidataId> projectsFromApp = AccountManagementTools.getProjectIdsFromUsedApp(info);
+        Set<MidataId> projectsFromApp = AccountManagementTools.getAutoaddProjectIdsFromUsedApp(info);
         Set<MidataId> projectsToParticipate = new HashSet<MidataId>();
         projectsToParticipate.addAll(projectsFromPatient);
         projectsToParticipate.addAll(projectsFromApp);

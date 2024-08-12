@@ -44,5 +44,8 @@ db.devstats.createIndex({ "plugin" : 1, "action" : 1, "params" : 1});
 //db.plugins.find({ linkedStudy : { $ne : null } }).forEach(function(e) { db.studyapplink.insert({ studyId : e.linkedStudy, appId : e._id, type : (e.mustParticipateInStudy ? ["OFFER_P","REQUIRE_P"] : ["OFFER_P"] ), usePeriod:["RUNNING","FINISHED","PRE"], validationDeveloper : "VALIDATED", validationResearch : "VALIDATED", active : true }); db.plugins.update({ _id : e._id }, { $unset : { linkedStudy : 1, mustParticipateInStudy : 1 } }); });
 
 //db.studyapplink.find({ linkTargetType : { $exists : false } }).forEach(function(e) { db.studyapplink.update({ _id : e._id}, { $set : { linkTargetType : "STUDY" } }); });
+db.studyapplink.find({ type : "REQUIRE_P" }).forEach(function(e) { db.studyapplink.update({ _id : e._id}, { $push : { "type": { $each : ["CHECK_P","LINKED_P","AUTOADD_P"]} } }); });
+db.studyapplink.find({ type : "REQUIRE_P" }).forEach(function(e) { db.studyapplink.update({ _id : e._id}, { $pull : { "type": "REQUIRE_P" } }); });
+
 
 db.providers.find({ status : { $exists : false } }).forEach(function(e) { db.providers.update({ _id : e._id}, { $set : { status : "NEW" } }); });

@@ -831,7 +831,7 @@ public class Market extends APIController {
 		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
 	}
 	
-	private static Map<String, MessageDefinition> parseMessages(JsonNode json) throws JsonValidationException {
+	public static Map<String, MessageDefinition> parseMessages(JsonNode json) throws JsonValidationException {
 		if (!json.has("predefinedMessages")) return null;
 		Iterator<Entry<String,JsonNode>> messages = json.get("predefinedMessages").fields();
 		if (!messages.hasNext()) return null;
@@ -1470,7 +1470,15 @@ public class Market extends APIController {
         	autoValidDeveloper = false;
         	autoValidResearcher = false;
         }
-        if (link.type.contains(StudyAppLinkType.REQUIRE_P)) {
+        if (link.type.contains(StudyAppLinkType.AUTOADD_P)) {
+        	autoValidDeveloper = false;
+        	autoValidResearcher = false;
+        }
+        if (link.type.contains(StudyAppLinkType.CHECK_P)) {
+        	autoValidDeveloper = false;
+        	autoValidResearcher = false;
+        }
+        if (link.type.contains(StudyAppLinkType.LINKED_P)) {
         	autoValidDeveloper = false;
         	autoValidResearcher = false;
         }

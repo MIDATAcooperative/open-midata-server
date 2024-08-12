@@ -399,25 +399,25 @@ export default {
 	getLinkHeading(link) {
 		let t = (link.study && link.study.type) ? link.study.type : (link.linkTargetType || "STUDY");
 		
-		return this.$t('oauth2.link_'+t+"_"+((link.type.indexOf("REQUIRE_P") >= 0) ? "required" : "optional"));
+		return this.$t('oauth2.link_'+t+"_"+((link.type.indexOf("CHECK_P") >= 0) ? "required" : "optional"));
 	},
    
     getLinkLabel(link) {
 	    if (link.linkTargetType == "ORGANIZATION") {
-			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_provider";
+			if (link.type.indexOf("CHECK_P") >= 0) return "oauth2.confirm_provider";
 			return "oauth2.confirm_provider_opt";
 		} 
 		if (link.linkTargetType == "SERVICE") {
-			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_service";
+			if (link.type.indexOf("CHECK_P") >= 0) return "oauth2.confirm_service";
 			return "oauth2.confirm_service_opt";
 		} 
 		if (link.study.type == "CLINICAL" || link.study.type == "REGISTRY") {
-			if (link.type.indexOf("REQUIRE_P") >= 0 /*&& !(link.type.indexOf("OFFER_EXTRA_PAGE") >=0)*/) return "oauth2.confirm_study";
+			if (link.type.indexOf("CHECK_P") >= 0 /*&& !(link.type.indexOf("OFFER_EXTRA_PAGE") >=0)*/) return "oauth2.confirm_study";
 			return "oauth2.confirm_study_opt";
 		}
 		if (link.study.type == "CITIZENSCIENCE") return "oauth2.confirm_citizen_science";		
 		if (link.study.type == "COMMUNITY") {
-			if (link.type.indexOf("REQUIRE_P") >= 0 /*&& !(link.type.indexOf("OFFER_EXTRA_PAGE") >=0)*/) return "oauth2.confirm_community";
+			if (link.type.indexOf("CHECK_P") >= 0 /*&& !(link.type.indexOf("OFFER_EXTRA_PAGE") >=0)*/) return "oauth2.confirm_community";
 			return "oauth2.confirm_community_opt";
 		}		
 	},

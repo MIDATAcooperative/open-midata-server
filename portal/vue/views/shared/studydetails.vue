@@ -21,6 +21,13 @@
 				
 		<div class="row" v-if="study && study.infos">
 			<div class="col-sm-4 infopanel">
+			    <div v-if="participation && participation.ownerName" class="panel panel-primary">
+					<div class="panel-heading" v-t="'studydetails.pseudonym'"></div>
+					<div class="panel-body">
+                      <div class="lead">{{ participation.ownerName }}</div>						
+					</div>
+				</div>
+			
           		<div class="panel panel-primary">
 					<div class="panel-heading" v-t="'studydetails.duration'"></div>
 					<div class="panel-body">
@@ -36,7 +43,7 @@
 					   		{{ label }}
 						</span>						
 					</div>
-				</div>
+				</div>								
 
 				<div class="panel panel-primary">
 					<div class="panel-heading" v-t="'studydetails.status'"></div>
@@ -214,7 +221,7 @@ export default {
 			    	for (var l=0;l<data.data.length;l++) {
 			    		var link = data.data[l];
 			    		if (link.type.indexOf("RECOMMEND_A")>=0) {
-			    			if (link.type.indexOf("REQUIRE_P")<0 || ($data.participation && $data.participation.pstatus=="ACCEPTED")) {
+			    			if (link.type.indexOf("AUTOADD_P")<0 || ($data.participation && $data.participation.pstatus=="ACCEPTED")) {
 			    			  links.push(link);
 			    			}
 			    		}
@@ -308,8 +315,12 @@ export default {
             if ($data.code) data.code = $data.code;		
             me.doAction("request", server.post(jsRoutes.controllers.members.Studies.requestParticipation($data.studyid).url, data).
             then(function(data) { 	
+				let part = data.data;
+				if (part.ownerName && !me.needs("DEMOGRAPHIC")) {
+					actions.addOut(me.$t("studydetails.pseudonym")+": "+part.ownerName);
+				}
                 if (!actions.showAction($router, $route)) {
-                me.reload();
+                  me.reload();
                 }
             }));
 	    },

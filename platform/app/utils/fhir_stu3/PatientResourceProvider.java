@@ -467,7 +467,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 				
 		if (info().getUsedPlugin() != null) {
-		  List<Study> studies = AccountManagementTools.determineProjectsFromUsedApp(info(), info().getLegacyOwner().equals(record.owner));
+		  List<Study> studies = AccountManagementTools.determineLinkedProjectsFromUsedApp(info(), info().getLegacyOwner().equals(record.owner));
 		  populateIdentifiers(record.owner, resource, studies);		  		 
 		}
 					

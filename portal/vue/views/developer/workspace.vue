@@ -510,8 +510,8 @@ function analyze(usedApps, usedProjects, usedAccounts, issues, accprojects) {
               if (link.validationResearch != "VALIDATED") add("error", "workspace.link_not_validated_research", app.filename, link.study.name, applink("applink", app._id));
               if (link.validationDeveloper != "VALIDATED") add("error", "workspace.link_not_validated_developer", app.filename, link.study.name, applink("applink", app._id));
               if (link.usePeriod.indexOf(link.study.executionStatus)<0) add("warning", "studyactions.status.study_wrong_status", link.study.name, null, projectlink("study.overview", link.study._id));
-              if (link.type.indexOf('REQUIRE_P')>=0 && link.study.participantSearchStatus != 'SEARCHING') add("error","error.closed.study", link.study.name, null, projectlink("study.overview", link.study._id));
-              if ((link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0) add("error", "studyactions.status.study_no_app_participation", link.study.name, null, projectlink("study.rules", link.study._id));
+              if (link.type.indexOf('AUTOADD_P')>=0 && link.study.participantSearchStatus != 'SEARCHING') add("error","error.closed.study", link.study.name, null, projectlink("study.overview", link.study._id));
+              if ((link.type.indexOf('AUTOADD_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0) add("error", "studyactions.status.study_no_app_participation", link.study.name, null, projectlink("study.rules", link.study._id));
             }	
         }
     }
