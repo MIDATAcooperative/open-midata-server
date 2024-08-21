@@ -160,7 +160,7 @@ tasks/install-packages: trigger/install-packages
 	sudo service clamav-freshclam start	
 	touch tasks/install-packages
 	
-tasks/install-: tasks/install-packages trigger/install-
+tasks/install-node: tasks/install-packages trigger/install-node
 	$(info ------------------------------)
 	$(info Installing Node JS... )
 	$(info ------------------------------)
