@@ -165,7 +165,7 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	$(info Installing Node JS... )
 	$(info ------------------------------)
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-	export NVM_DIR=$HOME/.nvm;source $NVM_DIR/nvm.sh;nvm install --lts
+	export NVM_DIR=$$HOME/.nvm;. $$NVM_DIR/nvm.sh;nvm install --lts
 	touch tasks/install-node
 
 tasks/install-firejail:
