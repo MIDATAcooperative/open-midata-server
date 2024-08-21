@@ -72,7 +72,7 @@ stop-mongo:
 	@echo 'Shutting down MongoDB...'
 	if [ -e switches/local-mongo ]; then pkill mongod; fi
 
-update: tasks/check-config tasks/check-plugins tasks/install-packages tasks/install-node tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform conf/config.js tasks/setup-nginx start
+update: tasks/check-config tasks/check-plugins tasks/install-packages tasks/install- tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform conf/config.js tasks/setup-nginx start
 
 test: tasks/build-portal tasks/build-platform
 	
@@ -160,12 +160,12 @@ tasks/install-packages: trigger/install-packages
 	sudo service clamav-freshclam start	
 	touch tasks/install-packages
 	
-tasks/install-node: tasks/install-packages trigger/install-node
+tasks/install-: tasks/install-packages trigger/install-
 	$(info ------------------------------)
 	$(info Installing Node JS... )
 	$(info ------------------------------)
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-	nvm install --lts
+	export NVM_DIR=$HOME/.nvm;source $NVM_DIR/nvm.sh;nvm install --lts
 	touch tasks/install-node
 
 tasks/install-firejail:
