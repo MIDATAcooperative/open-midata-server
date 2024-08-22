@@ -35,9 +35,8 @@ info:
 	$(info lock : Lock current instance (exclude from load balancer) )
 	$(info unlock : Unlock current instance)
 
-space :=
-space +=	
-komma :=,
+space := $(null) #
+komma := ,
 join-with = $(subst $(space),$1,$(strip $2))
 
 install-from-servertools: lock tasks/install-packages tasks/config-firejail tasks/install-node tasks/bugfixes tasks/install-localmongo $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem tasks/precompile
