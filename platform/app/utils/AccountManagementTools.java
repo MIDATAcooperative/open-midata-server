@@ -222,6 +222,7 @@ public class AccountManagementTools {
 				
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, context.getUsedPlugin(), context.getLegacyOwner(), user);
 
+		TestAccountTools.createNewUser(context, user);
 		user.security = AccountSecurityLevel.KEY;
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		Member.add(user);

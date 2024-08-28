@@ -76,6 +76,7 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
+import utils.TestAccountTools;
 import utils.UserGroupTools;
 import utils.access.APS;
 import utils.access.APSCache;
@@ -902,6 +903,7 @@ public class Circles extends APIController {
 		if ((isNew || active) && context == null) throw new InternalServerException("error.internal", "Cannot set consent to active state without proper context");
 		
 		if (isNew) {
+		  TestAccountTools.prepareConsent(context, consent);
 		  wasActive = false;
 		  if (!context.canCreateActiveConsentsFor(consent.owner) && consent.status == ConsentStatus.ACTIVE) {
 			  consent.status = ConsentStatus.PRECONFIRMED;

@@ -220,6 +220,8 @@ public class Study extends Model implements HasPredefinedMessages {
      */
     public String autoJoinGroup;
     
+    public String autoJoinTestGroup;
+    
     public byte[] autoJoinKey;
     
     public MidataId autoJoinExecutor;

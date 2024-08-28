@@ -195,6 +195,19 @@ public class Plugins extends APIController {
 				}
 			}
 		}
+		
+		if (fields.contains("acceptTestAccountsFromAppNames")) {
+			for (Plugin plugin : visualizations) {
+				if (plugin.acceptTestAccountsFromApp != null) {
+					plugin.acceptTestAccountsFromAppNames = new ArrayList<String>(plugin.acceptTestAccountsFromApp.size());
+					for (MidataId plugId : plugin.acceptTestAccountsFromApp) {
+						Plugin plg = Plugin.getById(plugId);
+						if (plg!=null) plugin.acceptTestAccountsFromAppNames.add(plg.filename);
+						else plugin.acceptTestAccountsFromAppNames.add("unknown");
+					}
+				}
+			}
+		}
 		return ok(JsonOutput.toJson(visualizations, "Plugin", fields)).as("application/json");
 	}
 

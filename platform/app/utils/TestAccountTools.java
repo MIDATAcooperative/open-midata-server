@@ -17,19 +17,53 @@
 
 package utils;
 
+import models.Consent;
+import models.MidataId;
+import models.MobileAppInstance;
+import models.Plugin;
+import models.Study;
+import models.StudyParticipation;
 import models.User;
+import models.enums.ConsentType;
+import models.enums.TestAccountsAcceptance;
+import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 
 public class TestAccountTools {
 
     public static String testCustomerFromName(String name) {
         String parts[] = name.split("\\-");
         if (parts.length == 3) {
-            if (!parts[2].equals("test")) return null;
+            if (!parts[2].toLowerCase().equals("test")) return null;
             return parts[0];
         }
         return null;
+    }
+    
+    public static MidataId testUserAppOrNull(AccessContext context, MidataId user) throws InternalServerException {
+    	User theUser = context.getRequestCache().getUserById(user, true);
+    	if (theUser != null) return theUser.testUserApp;
+    	return null;
+    }
+    
+    
+    public static boolean doesAcceptTestUsers(AccessContext context, MidataId plugin) throws InternalServerException  {
+    	if (plugin==null) return false;
+    	return doesAcceptTestUsers(context.getUsedPlugin(), Plugin.getById(plugin));
+    }
+    
+    public static boolean doesAcceptTestUsers(MidataId testUserPlugin, MidataId targetPlugin) throws InternalServerException  {
+    	return doesAcceptTestUsers(testUserPlugin, Plugin.getById(targetPlugin));
+    }
+    
+    public static boolean doesAcceptTestUsers(MidataId testUserPlugin, Plugin plugin) {
+    	if (plugin.acceptTestAccounts == TestAccountsAcceptance.NONE) return false;
+    	if (plugin.acceptTestAccounts == TestAccountsAcceptance.ALL) return true;
+    	if (plugin.acceptTestAccountsFromApp != null && plugin.acceptTestAccountsFromApp.contains(testUserPlugin)) return true;
+    	return false;
     }
     
     public static void prepareNewUser(AccessContext context, User user, String testUserExtension) throws AppException {
@@ -39,10 +73,41 @@ public class TestAccountTools {
         if (customer != null) {
             user.testUserApp = context.getUsedPlugin();
             user.testUserCustomer = customer;
+            
+            if (!doesAcceptTestUsers(context, context.getUsedPlugin())) throw new PluginException(context.getUsedPlugin(), "error.blocked.testuser", "Application does not accept test users.");
         }
     }
     
     public static void createNewUser(AccessContext context, User user) throws AppException {
-        
+        if (user.testUserApp != null) {
+        	Plugin pl = Plugin.getById(user.testUserApp, Plugin.FOR_TEST_ACCOUNTS);
+        	if (pl == null || !pl.status.isUsable()) throw new InternalServerException("error.internal", "Test user creating plugin not found or usable");
+        	
+        	if (pl.testAccountsCurrent < pl.testAccountsMax) {
+        		pl.testAccountsCurrent++;
+        		Plugin.set(pl._id, "testAccountsCurrent", pl.testAccountsCurrent);
+        	} else {
+        		throw new PluginException(context.getUsedPlugin(), "error.toomany.testuser", "No more test user available");
+        	}
+        }
+    }
+    
+    public static void prepareConsent(AccessContext context, Consent consent) throws InternalServerException, PluginException {
+    	if (consent.owner != null && consent.testUserApp == null) {
+    		User user = context.getRequestCache().getUserById(consent.owner, true);
+    		if (user != null && user.testUserApp != null) {
+    		  consent.testUserApp = user.testUserApp;
+    		  
+    		  if (consent.type == ConsentType.EXTERNALSERVICE || consent.type == ConsentType.API) {
+    			MobileAppInstance app = (MobileAppInstance) consent;
+    			if (!doesAcceptTestUsers(consent.testUserApp, app.applicationId)) throw new PluginException(consent.testUserApp, "error.blocked.testapp", "Target application does not accept test user.");  	  
+    		  } else if (consent.type == ConsentType.STUDYPARTICIPATION) {
+    			 StudyParticipation part = (StudyParticipation) consent;
+    			 Study study = Study.getById(part.study, Sets.create("_id", "autoJoinTestGroup"));
+    			 if (study.autoJoinTestGroup != null) part.group = study.autoJoinTestGroup;
+    		  }
+    		  
+    		}
+    	}
     }
 }

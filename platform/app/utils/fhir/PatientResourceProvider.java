@@ -125,6 +125,7 @@ import utils.FHIRPatientHolder;
 import utils.InstanceConfig;
 import utils.QueryTagTools;
 import utils.RuntimeConstants;
+import utils.TestAccountTools;
 import utils.access.DBIterator;
 import utils.access.Feature_Pseudonymization;
 import utils.access.PatientRecordTool;
@@ -787,6 +788,9 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		user.initialApp = info().getUsedPlugin();
 	
 		AccountManagementTools.validateUserAccountFilledOut(user);
+		Extension testCustomerExt = thePatient.getExtensionByUrl("http://midata.coop/extensions/test-user-customer");
+		String testCustomer = testCustomerExt != null ? testCustomerExt.getValue().toString() : null;
+		TestAccountTools.prepareNewUser(tempContext, user, testCustomer);
 	
 		// Is there already a matching user account?
 		Member existing = ((RecordWithMeta) record).attached;

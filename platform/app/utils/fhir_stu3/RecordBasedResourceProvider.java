@@ -66,6 +66,7 @@ import utils.AccessLog;
 import utils.ContentTypeTools;
 import utils.ErrorReporter;
 import utils.QueryTagTools;
+import utils.TestAccountTools;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
@@ -272,7 +273,12 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	public static void insertRecord(AccessContext targetConsent, Record record, IBaseResource resource) throws AppException {
-		AccessLog.logBegin("begin insert FHIR record");		    
+		AccessLog.logBegin("begin insert FHIR record");		 
+		
+		    if (TestAccountTools.testUserAppOrNull(targetConsent, record.owner) != null) {
+		    	addSecurityTag(record,  (DomainResource) resource, QueryTagTools.SECURITY_TEST);
+		    }
+		
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);			
 			record.data = BasicDBObject.parse(encoded);	
 			try {
@@ -460,7 +466,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		return record.lastUpdated != null ? record.lastUpdated : record.created;
 	}
 	
-	public void addSecurityTag(Record record, DomainResource theResource, String tag) {
+	public static void addSecurityTag(Record record, DomainResource theResource, String tag) {
 		  record.addTag(tag);
 		  Pair<String, String> coding = QueryTagTools.getSystemCodeForTag(tag);
 		  theResource.getMeta().addSecurity(new Coding(coding.getLeft(), coding.getRight(), null));
