@@ -885,6 +885,7 @@ public class Application extends APIController {
 		//handlePreCreated(user);
 		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.MEMBER, null);
 		TestAccountTools.prepareNewUser(context, user, null);
+		TestAccountTools.createNewUser(context, user);
 		String handle;
 		if (json.has("priv_pw")) {
 		  String pub = JsonValidation.getString(json, "pub");
@@ -912,7 +913,7 @@ public class Application extends APIController {
 		} else {
 		  handle = registerCreateUser(context, user);		
 		}
-		TestAccountTools.createNewUser(context, user);
+		
 		Circles.fetchExistingConsents(context, user.emailLC);
 		
 		sendWelcomeMail(user, null);

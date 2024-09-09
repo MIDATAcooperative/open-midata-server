@@ -35,7 +35,7 @@
 				<div class="collapse navbar-collapse navbar-ex1-collapse">
 
 					<ul class="nav navbar-nav mr-auto" :class="{'vishidden d-none d-md-flex':locked()}">
-					    <li class="d-lg-none nav-item"><div class="mb-3 mt-3 username"><span class="fas fa-user"></span> {{ user.name }}</div></li>					    
+					    <li class="d-lg-none nav-item"><div class="mb-3 mt-3 username"><span class="fas fa-user"></span><span v-if="user.testUserApp" class="ml-1 mr-1 badge badge-warning"><span class="fas fa-vial"></span></span> {{ user.name }}</div></li>					    
 						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
 							:to="{ name : 'member.overview' }" v-t="'navbar.me'"></router-link></li>
 
@@ -72,11 +72,12 @@
 					</ul>
 
 					<ul class="d-none d-lg-block nav navbar-nav">
-						<li class="nav-item dropdown"><a class="nav-link" href="javascript:" tabindex="0" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.name}}</a>
+						<li class="nav-item dropdown"><a class="nav-link" href="javascript:" tabindex="0" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span v-if="user.testUserApp" class="ml-1 mr-1 badge badge-warning"><span class="fas fa-vial"></span></span>{{user.name}}</a>
 						<div class="dropdown-menu" style="right:0px;left:auto;min-width:200px;">
-							<div style="padding:10px;">
+							<div style="padding:10px;">								
 								<div><b>{{ user.firstname }} {{ user.lastname }}</b></div>
 								<div>{{ user.email }}</div>
+								<span v-if="user.testUserApp" class="ml-1 mr-1 badge badge-warning"><span class="fas fa-vial"></span> {{ user.testUserCustomer }}</span>
 								<hr>
 								<div><b style="min-width:40px;display:inline-block;">{{circles.apps}}</b><span v-t="'navbar.app_count'"></span></div>
 								<div><b style="min-width:40px;display:inline-block;">{{circles.studies}}</b><span v-t="'navbar.study_count'"></span></div>

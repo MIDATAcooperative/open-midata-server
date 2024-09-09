@@ -75,6 +75,7 @@
 					  <span v-if="member.emailStatus != 'VALIDATED' && member.emailStatus != 'EXTERN_VALIDATED'" class="fas fa-question-sign mr-1" title="email not confirmed"></span>					  
 					  <span v-if="!member.login || member.login &lt; dateLimit" class="fas fa-clock mr-1" title="last login older 1 month"></span>
 					  <span v-if="member.security != 'KEY_EXT_PASSWORD'" class="fas fa-eye mr-1" title="Non standard key protection"></span>
+					  <span v-if="member.testUserApp" class="fas fa-vial mr-1" title="Test User"></span>
 					</td>
 					<td>{{ $t('enum.userrole.'+member.role) }}</td>
 					<td><select @change="changeUser(member);" v-model="member.status" class="form-control">
@@ -152,7 +153,7 @@ export default {
             if ($data.search.searchable && !$data.search.criteria.lastname && !$data.search.criteria.email) return;
             if (!$data.search.criteria.lastname) { delete $data.search.criteria.lastname; }
             if (!$data.search.criteria.email) { delete $data.search.criteria.email; }
-            me.doBusy(users.getMembers($data.search.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "emailStatus", "developer", "login", "security" ])
+            me.doBusy(users.getMembers($data.search.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "emailStatus", "developer", "login", "security", "testUserApp" ])
             .then(function(data) { 
                 for (let user of data.data) user.search = user.firstname+" "+user.lastname+" "+user.email;
                 $data.members = me.process(data.data, $data.setup);						

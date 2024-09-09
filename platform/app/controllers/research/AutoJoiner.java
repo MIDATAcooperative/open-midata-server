@@ -17,6 +17,7 @@
 
 package controllers.research;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -69,11 +70,17 @@ private static ActorSystem system;
 	       
   
     
-    public static void approve(AccessContext context, Study theStudy, MidataId participant, MidataId app, String group) throws AppException {    	
+    public static void approve(AccessContext context, Study theStudy, MidataId participant, MidataId app) throws AppException {    	
 	    Set<String> fields = StudyParticipation.STUDY_EXTRA;	    
 		List<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(theStudy._id, CMaps.map("pstatus", ParticipationStatus.REQUEST).map("owner", participant), fields, 0);
-		
-		Studies.autoApprove(app, theStudy, context, theStudy.autoJoinGroup, participants);			
+		List<StudyParticipation> participants1 = new ArrayList<StudyParticipation>(participants.size());
+		List<StudyParticipation> testParticipants = new ArrayList<StudyParticipation>();
+        for (StudyParticipation sp : participants) {
+        	if (sp.testUserApp != null) testParticipants.add(sp); else participants1.add(sp);
+        }
+        if (!participants1.isEmpty()) Studies.autoApprove(app, theStudy, context, theStudy.autoJoinGroup, participants1);
+        if (!testParticipants.isEmpty()) Studies.autoApprove(app, theStudy, context, theStudy.autoJoinTestGroup, testParticipants);
+				
     }
     
     public static void autoConfirm(MidataId consentId) {
@@ -101,7 +108,7 @@ class AutoJoinerActor extends AbstractActor {
 		try {
 		    AccessLog.logStart("jobs", message.toString());
 			
-			Study theStudy = Study.getById(message.getStudy(), Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "autoJoinExecutor", "autoJoinKey", "name", "code", "type"));				
+			Study theStudy = Study.getById(message.getStudy(), Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "autoJoinTestGroup", "autoJoinExecutor", "autoJoinKey", "name", "code", "type"));				
 			if (theStudy != null && theStudy.autoJoinGroup != null && theStudy.autoJoinExecutor != null && theStudy.autoJoinKey != null) {
 				if (theStudy.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING) && (theStudy.executionStatus.equals(StudyExecutionStatus.PRE) || theStudy.executionStatus.equals(StudyExecutionStatus.RUNNING))) {
 					
@@ -111,8 +118,8 @@ class AutoJoinerActor extends AbstractActor {
 							String handle = ServiceHandler.decrypt(theStudy.autoJoinKey);
 							
 							if (handle == null) { // Main background service key not valid anymore
-								theStudy.autoJoinGroup = null;
-								theStudy.setAutoJoinGroup(null, null, null);
+								//theStudy.autoJoinGroup = null;
+								//theStudy.setAutoJoinGroup(null, null, null, null);
 								try {
 									throw new InternalServerException("error.internal", "Missing service key for study:"+theStudy.code+"("+theStudy.name+")");
 								} catch (InternalServerException e) {
@@ -124,7 +131,7 @@ class AutoJoinerActor extends AbstractActor {
 							KeyManager.instance.continueSession(handle, theStudy.autoJoinExecutor);	
 							AccessContext context = ContextManager.instance.createSessionForDownloadStream(theStudy.autoJoinExecutor, UserRole.ANY);
 							ContextManager.instance.setAccountOwner(theStudy.autoJoinExecutor, theStudy.autoJoinExecutor);							
-							AutoJoiner.approve(context, theStudy, message.getUser(), message.getApp(), theStudy.autoJoinGroup);
+							AutoJoiner.approve(context, theStudy, message.getUser(), message.getApp());
 							
 							AccessLog.log("END AUTOJOIN");
 						} finally {

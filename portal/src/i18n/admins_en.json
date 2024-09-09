@@ -77,7 +77,8 @@
     "change_address_btn" : "Change Profile",
     "make_master_btn" : "Add master user role",
     "remove_master_btn" : "Revoke master user role",
-    "history" : "Account history"
+    "history" : "Account history",
+    "test_user" : "Test User Account"
   },
   
   "admin_news" : {
