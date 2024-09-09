@@ -638,8 +638,13 @@ public class Query {
              Set<String> creatorOrgs = getRestriction(properties.get("creatorOrg"), "creatorOrg");
              Set<String> resolved = new HashSet<String>();
              for (Object creatorOrg : creatorOrgs) {
+            	 HealthcareProvider hp = null;
                  if (!MidataId.isValid(creatorOrg.toString())) {
-                     HealthcareProvider hp = HealthcareProvider.getByName(creatorOrg.toString());                  
+                	 if (creatorOrg.toString().indexOf("|")>=0) {
+                	   hp = HealthcareProvider.getByIdentifier(creatorOrg.toString(), Sets.create("_id"));
+                	 } else {
+                       hp = HealthcareProvider.getByName(creatorOrg.toString());                  
+                	 }
                      if (hp!=null) resolved.add(hp._id.toString());
                      else throw new BadRequestException("error.internal", "Queried for unknown organization in access filter.");
                  } else resolved.add(creatorOrg.toString());

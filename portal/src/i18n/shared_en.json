@@ -1572,7 +1572,8 @@
       "PseudonymizedPatient" : "Patient Records: pseudonym, year of birth, country of research project participants",
       "Practitioner" : "Practitioner Resource: search for health professionals or researchers",
       "Subscription" : "Access and manage subscriptions to external systems"
-    }
+    },
+    "creator_org" : "Creator Organization"
   },
   
   "timeline" : {

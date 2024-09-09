@@ -20,7 +20,6 @@
     <div  class="midata-overlay borderless">
         <panel :title="getTitle()" :busy="isBusy">
         <error-box :error="error"></error-box>
-		
 		<div v-if="app && (app.type=='mobile' || app.type=='service')" class="alert alert-warning">
 		    <strong v-t="'manageapp.important'"></strong>		   
 		    <p v-if="app.targetUserRole=='RESEARCH'" v-t="'manageapp.researchwarning'"></p>		    
@@ -52,6 +51,9 @@
 		    <div v-if="block.dataPeriodRestrictionMode">
 		      <span>{{ $t('queryeditor.'+block.dataPeriodRestrictionMode) }}</span>: {{ $filters.date(block.dataPeriodRestrictionStart) }} - {{ $filters.date(block.dataPeriodRestrictionEnd) }} 
 		    </div>
+            <div v-if="block.creatorOrg">
+              <span>{{ $t('queryeditor.creator_org') }}</span>: {{ block.creatorOrg }}
+            </div>
 		    <div v-if="block.customFilter">
 		      <span>Extra Filter: </span><span>{{ block.customFilterPath }}</span>: {{ block.customFilterValue }}
 		    </div>
