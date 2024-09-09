@@ -35,9 +35,8 @@ info:
 	$(info lock : Lock current instance (exclude from load balancer) )
 	$(info unlock : Unlock current instance)
 
-space :=
-space +=	
-komma :=,
+space := $(null) #
+komma := ,
 join-with = $(subst $(space),$1,$(strip $2))
 
 install-from-servertools: lock tasks/install-packages tasks/config-firejail tasks/install-node tasks/bugfixes tasks/install-localmongo $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem tasks/precompile
@@ -164,9 +163,8 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	$(info ------------------------------)
 	$(info Installing Node JS... )
 	$(info ------------------------------)
-	curl -sL https://deb.nodesource.com/setup_17.x | sudo -E bash -
-	sudo apt-get install -y nodejs	
-	sudo chmod -R ugo+rx /usr/lib/node_modules
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+	export NVM_DIR=$$HOME/.nvm;. $$NVM_DIR/nvm.sh;nvm install --lts
 	touch tasks/install-node
 
 tasks/install-firejail:

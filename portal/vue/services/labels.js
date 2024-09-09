@@ -168,6 +168,9 @@ import { getLocale } from './lang';
 				if (ac("app")) {
 					nblock.app = ac("app");
 				}
+                if (ac("creatorOrg")) {
+                    nblock.creatorOrg = ac("creatorOrg");
+                }
 				if (ac("owner")) {
 					nblock.owner = noarray(ac("owner"));
 				}

@@ -59,7 +59,7 @@ public class HealthcareProvider extends Model {
 	/**
 	 * additional identifiers
 	 */
-	@NotMaterialized public List<String> identifiers;
+	public List<String> identifiers;
 	
 	/**
 	 * City of clinic address
@@ -106,6 +106,10 @@ public class HealthcareProvider extends Model {
  
 	public static HealthcareProvider getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(HealthcareProvider.class, collection, CMaps.map("_id", id).map("status", NON_DELETED), fields);
+	}
+	
+	public static HealthcareProvider getByIdentifier(String identifier, Set<String> fields) throws InternalServerException {
+		return Model.get(HealthcareProvider.class, collection, CMaps.map("identifiers", identifier).map("status", NON_DELETED), fields);
 	}
 	
 	public static HealthcareProvider getByIdAlsoDeleted(MidataId id, Set<String> fields) throws InternalServerException {

@@ -34,6 +34,9 @@
 		    <div v-if="block.dataPeriodRestrictionMode">
 		      <span>{{ $t('queryeditor.'+block.dataPeriodRestrictionMode) }}</span>: {{ $filters.date(block.dataPeriodRestrictionStart) }} - {{ $filters.date(block.dataPeriodRestrictionEnd) }} 
 		    </div>	
+            <div v-if="block.creatorOrg">
+              <span>{{ $t('queryeditor.creator_org') }}</span>: {{ block.creatorOrg }}
+            </div>
         </li>
         <li v-if="blocks.length==0" class="list-group-item" v-t="'error.missing.access_query'">
         </li>
