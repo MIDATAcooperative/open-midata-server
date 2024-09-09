@@ -598,7 +598,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		AccessLog.logEnd("end update organization from model");
 	}
    
-   private void extractAddress(Organization theResource, HealthcareProvider prov) {
+   public static void extractAddress(Organization theResource, HealthcareProvider prov) {
 	   if (theResource.hasAddress()) {
 		   Address adr = theResource.getAddressFirstRep();		   
 		   prov.city = adr.getCity();
@@ -614,6 +614,15 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			  }
 		   }
 	   } 
+	   prov.identifiers = new ArrayList<String>();
+	   if (theResource.hasIdentifier()) {
+		   for (Identifier id : theResource.getIdentifier()) {
+			   String idStr = "";
+			   if (id.getSystem() != null && id.getSystem().trim().length()>0) idStr = id.getSystem()+"|";
+			   if (id.getValue() != null) idStr+=id.getValue();
+			   prov.identifiers.add(idStr);
+		   }
+	   }
 	   
    }
    

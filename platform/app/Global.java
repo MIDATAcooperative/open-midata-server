@@ -209,13 +209,13 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		
 		
 		// All startup patches have been done on the existing instances
-		/*try {
+		try {
 			   AccountPatches.fixOrgs();
-			   PatientRecordTool.patchMissingPatientRecords();
+			
 		} catch (AppException e) {
 				e.printStackTrace();
 				System.exit(-1);
-		}*/
+		}
 		
 		lifecycle.addStopHook(() -> {
 			//AutoRun.shutdown();

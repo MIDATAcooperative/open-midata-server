@@ -96,6 +96,9 @@
     <div v-if="orgId">
       <editgroups></editgroups>
       <editusergroup></editusergroup>
+      <panel :title="$t('admin_address.history')" :busy="isBusy">
+         <auditlog :patient="org._id"></auditlog>  
+       </panel>
     </div>      
     <modal id="parentOrganizationSearch" :full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
 	   <organization-search :setup="parentOrganizationSearch" @add="setParent"></organization-search>
@@ -125,7 +128,7 @@
 import Panel from "components/Panel.vue"
 import server from "services/server.js"
 import session from "services/session.js"
-import users from "services/users.js"
+import Auditlog from "components/AuditLog.vue"
 import usergroups from "services/usergroups.js"
 import editusergroup from "views/provider/editusergroup.vue"
 import editgroups from "views/provider/editgroups.vue"
@@ -145,7 +148,7 @@ export default {
         setupOrganizationSearch : null
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, CheckBox, Success, editgroups, editusergroup, OrganizationSearch, Modal },
+    components: {  Panel, ErrorBox, FormGroup, CheckBox, Success, editgroups, editusergroup, OrganizationSearch, Modal, Auditlog },
 
     mixins : [ status, rl ],
     
