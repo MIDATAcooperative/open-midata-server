@@ -99,7 +99,11 @@ public class ApplicationTools {
 		
 		// check consents accepted
 		checkProjectConsentsAccepted(member, studyConfirm, links);
-							
+				
+		// check user accepted
+		if (!TestAccountTools.allowInstallation(context, member._id, app._id)) 
+			throw new BadRequestException("error.blocked.testuser", "Application does not allow test users.");
+			
 		// Create app instance *
 		MobileAppInstance appInstance = null;
 		

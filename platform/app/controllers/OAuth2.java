@@ -78,6 +78,7 @@ import utils.InstanceConfig;
 import utils.LinkTools;
 import utils.PluginLoginCache;
 import utils.RuntimeConstants;
+import utils.TestAccountTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
@@ -140,6 +141,9 @@ public class OAuth2 extends Controller {
         	return false;
         }
         
+        if (!TestAccountTools.allowInstallation(context, ownerId, applicationId)) 
+			return false;
+	        
         if (links == null) links = StudyAppLink.getByApp(app._id);
         for (StudyAppLink sal : links) {
         	if (sal.isConfirmed() && sal.active && sal.type.contains(StudyAppLinkType.CHECK_P)) {

@@ -48,11 +48,21 @@ public class TestAccountTools {
     	if (theUser != null) return theUser.testUserApp;
     	return null;
     }
-    
+      
+    public static boolean allowInstallation(AccessContext context, MidataId userId, MidataId targetPlugin) throws InternalServerException {
+    	MidataId testUserPlugin = testUserAppOrNull(context, userId);
+    	if (testUserPlugin==null) return true;
+    	return doesAcceptTestUsers(testUserPlugin, targetPlugin);
+    }
     
     public static boolean doesAcceptTestUsers(AccessContext context, MidataId plugin) throws InternalServerException  {
     	if (plugin==null) return false;
     	return doesAcceptTestUsers(context.getUsedPlugin(), Plugin.getById(plugin));
+    }
+    
+    public static boolean doesAcceptTestUserData(AccessContext context, MidataId plugin) throws InternalServerException  {
+    	//if (plugin==null) return false;
+    	return doesAcceptTestUsers(plugin, Plugin.getById(context.getUsedPlugin()));
     }
     
     public static boolean doesAcceptTestUsers(MidataId testUserPlugin, MidataId targetPlugin) throws InternalServerException  {
@@ -60,6 +70,8 @@ public class TestAccountTools {
     }
     
     public static boolean doesAcceptTestUsers(MidataId testUserPlugin, Plugin plugin) {
+    	AccessLog.log("ATU testUserPlugin="+testUserPlugin+" ACCEPT="+plugin._id+"/"+plugin.acceptTestAccounts);
+    	if (testUserPlugin == null) return true; // It is a normal user and no test user
     	if (plugin.acceptTestAccounts == TestAccountsAcceptance.NONE) return false;
     	if (plugin.acceptTestAccounts == TestAccountsAcceptance.ALL) return true;
     	if (plugin.acceptTestAccountsFromApp != null && plugin.acceptTestAccountsFromApp.contains(testUserPlugin)) return true;
