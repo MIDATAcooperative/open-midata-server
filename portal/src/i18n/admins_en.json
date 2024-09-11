@@ -30,6 +30,7 @@
 	"not_admin_confirmed" : "Not confirmed by administrator",
     "overview" : "Overview",
     "specific_user" : "Specific User",
+    "testusers" : "Test Users",
     "role" : "Role",
     "status" : "Status",
     "midata_id" : "@PRODUCT ID",

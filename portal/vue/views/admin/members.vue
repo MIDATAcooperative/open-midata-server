@@ -125,6 +125,10 @@ export default {
                 criteria : { status : "NEW" }
             },
             {
+                name : "admin_members.testusers",
+                criteria : { testUserApp : { $exists : true } }
+            },
+            {
                 name : "admin_members.overview",
                 criteria : { role : "MEMBER", status : "NEW" },
                 changeable : true

@@ -49,3 +49,4 @@ db.studyapplink.find({ type : "REQUIRE_P" }).forEach(function(e) { db.studyappli
 
 
 db.providers.find({ status : { $exists : false } }).forEach(function(e) { db.providers.update({ _id : e._id}, { $set : { status : "NEW" } }); });
+db.plugins.find({ acceptTestAccounts : { $exists : false } }).forEach(function(e) { db.plugins.update({ _id : e._id }, { $set : { acceptTestAccounts : "ALL" } }); });

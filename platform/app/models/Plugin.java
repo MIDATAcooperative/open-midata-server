@@ -467,7 +467,7 @@ public class Plugin extends Model implements Comparable<Plugin>, HasPredefinedMe
 	/**
 	 * From which applications does this app accept test user (data)
 	 */
-	public Set<MidataId> acceptTestAccountsFromApp;
+	public Set<MidataId> acceptTestAccountsFromApp;  
 	
 	@NotMaterialized
 	public List<String> acceptTestAccountsFromAppNames;

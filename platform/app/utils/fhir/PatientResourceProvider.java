@@ -464,6 +464,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			p.setActive(false);
 		}
 		p.addIdentifier().setSystem("http://midata.coop/identifier/midata-id").setValue(member.midataID);
+		if (member.testUserCustomer != null) {
+			p.addExtension().setUrl("http://midata.coop/extensions/test-user-customer").setValue(new StringType(member.testUserCustomer));
+		}
+		
 		String gender = member.gender != null ? member.gender.toString() : null;
 		if (gender != null) p.setGender(AdministrativeGender.valueOf(gender));
 		if (member.email != null)

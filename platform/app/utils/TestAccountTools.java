@@ -70,7 +70,6 @@ public class TestAccountTools {
     }
     
     public static boolean doesAcceptTestUsers(MidataId testUserPlugin, Plugin plugin) {
-    	AccessLog.log("ATU testUserPlugin="+testUserPlugin+" ACCEPT="+plugin._id+"/"+plugin.acceptTestAccounts);
     	if (testUserPlugin == null) return true; // It is a normal user and no test user
     	if (plugin.acceptTestAccounts == TestAccountsAcceptance.NONE) return false;
     	if (plugin.acceptTestAccounts == TestAccountsAcceptance.ALL) return true;

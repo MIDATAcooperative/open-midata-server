@@ -899,6 +899,7 @@
     "created_on" : "Created at:",
     "content" : "@PRODUCT content type:",
     "format" : "Format:",
+    "tags" : "Tags:",
     "download_btn" : "Download",
     "content_visualization" : "Content Visualization",
     "no_visualization" : "No visualization available for this record.",

@@ -39,16 +39,13 @@ public class Feature_TestAccounts extends Feature {
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		AccessContext context = q.getContext();
-		AccessLog.log("FEATURE TEST ACCOUNTS c="+context.toString());
 		if (context instanceof ConsentAccessContext) {
 			ConsentAccessContext c = (ConsentAccessContext) context;
-			AccessLog.log("YES, testUserApp="+c.getConsent().testUserApp);
 			if (c.getConsent().testUserApp != null) {
 				if (!TestAccountTools.doesAcceptTestUserData(c, c.getConsent().testUserApp)) {
-					AccessLog.log("EMPTY");
+					AccessLog.log("Skipping test user", c.getConsent().owner.toString());
 					return ProcessingTools.empty();
 				}
-				AccessLog.log("CONTINUE");
 			}
 		}
 		return next.iterator(q);
