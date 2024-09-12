@@ -113,6 +113,7 @@ import utils.FHIRPatientHolder;
 import utils.InstanceConfig;
 import utils.QueryTagTools;
 import utils.RuntimeConstants;
+import utils.TestAccountTools;
 import utils.access.DBIterator;
 import utils.access.Feature_Pseudonymization;
 import utils.access.RecordManager;
@@ -672,6 +673,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		user.initialApp = info().getUsedPlugin();
 	
 		AccountManagementTools.validateUserAccountFilledOut(user);
+		List<Extension> testCustomerExt = thePatient.getExtensionsByUrl("http://midata.coop/extensions/test-user-customer");
+		String testCustomer = testCustomerExt.isEmpty() ? null : testCustomerExt.get(0).getValue().toString();
+		TestAccountTools.prepareNewUser(tempContext, user, testCustomer);
+	
 			
 		// Determine projects the given user should participate in
         Set<MidataId> projectsToParticipate = AccountManagementTools.getProjectIdsFromPatient(fhirPatient);					

@@ -17,43 +17,12 @@
 
 package models.enums;
 
-/**
- * Status of MIDATA plugin
- *
- */
-public enum PluginStatus {
-	
-	/**
-	 * Plugin is still in development. Should not be shown in market
-	 */
-    DEVELOPMENT,
+public enum TestAccountsAcceptance {
+
+    ALL,
     
-    /**
-     * Plugin should be shown on beta (demo) servers but not in production
-     */
-    BETA,
+    SOME,
     
-    /**
-     * Plugin should be shown in market
-     */
-    ACTIVE,
+    NONE
     
-    /**
-     * Plugin is deprecated and should no longer be used
-     */
-    DEPRECATED,
-    
-    /**
-     * Plugin may no longer be used
-     */
-    END_OF_LIFE,
-    
-    /**
-     * Plugin has been deleted
-     */
-    DELETED;
-    
-    public boolean isUsable() {
-    	return this == DEVELOPMENT || this == BETA || this == ACTIVE || this == DEPRECATED;
-    }
 }

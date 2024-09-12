@@ -17,14 +17,18 @@
 
 package utils.context;
 
+import java.util.Collections;
+
 import models.MidataId;
 import models.Record;
 import models.enums.Permission;
 import models.enums.UserRole;
+import models.enums.WritePermissionType;
 import utils.RuntimeConstants;
 import utils.UserGroupTools;
 import utils.access.APSCache;
 import utils.access.DBRecord;
+import utils.access.QueryEngine;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -53,7 +57,27 @@ public class PublicAccessContext extends AccessContext {
 			   (newVersion.creator != null && newVersion.creator.toString().equals(stored.meta.getString("creator"))
 			   || (newVersion.app != null && newVersion.app.toString().equals(stored.meta.getString("app"))));
 	}
-
+	
+	@Override
+	public String getMayUpdateReport(DBRecord stored, Record newVersion) throws AppException {
+		boolean result = mayUpdateRecord(stored, newVersion);
+		boolean isGrpManaged = UserGroupTools.isGroupManaged(newVersion.format, newVersion.content);
+		boolean hasPublicTag = newVersion.tags != null && newVersion.tags.contains("security:public");
+		String ai = "\n- Resource has public tag? ["+hasPublicTag+"]\n- Resource is group managed? ["+isGrpManaged+"]";
+		if (isGrpManaged) {
+			boolean accessorIsMemberOfGroup = (UserGroupTools.accessorIsMemberOfGroup(parent, stored._id, Permission.SETUP) || getAccessorRole() == UserRole.ADMIN);
+			ai+="\n- Accessor has permissions for group? ["+accessorIsMemberOfGroup+"]";
+		} else {
+			boolean hasSameCreator = (newVersion.creator != null && newVersion.creator.toString().equals(stored.meta.getString("creator")));
+			boolean hasSameApp = (newVersion.app != null && newVersion.app.toString().equals(stored.meta.getString("app")));
+			ai+="\n- Resource has same creator? ["+hasSameCreator+"]\n- Resource was created by same app? ["+hasSameApp+"]";
+		}
+				
+		String report = getContextName()+ai+"\n- Conclusion: is update allowed for this entry of the chain? ["+result+"]\n";
+		if (parent != null) return parent.getMayUpdateReport(stored, newVersion)+"\n"+report;
+		return report;
+	}
+	
 	@Override
 	public boolean mustPseudonymize() {
 		return false;

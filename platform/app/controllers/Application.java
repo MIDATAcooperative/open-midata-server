@@ -67,6 +67,7 @@ import play.routing.JavaScriptReverseRouter;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.TestAccountTools;
 import utils.access.DBRecord;
 import utils.access.RecordManager;
 import utils.audit.AuditEventBuilder;
@@ -883,7 +884,8 @@ public class Application extends APIController {
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		//handlePreCreated(user);
 		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.MEMBER, null);
-		
+		TestAccountTools.prepareNewUser(context, user, null);
+		TestAccountTools.createNewUser(context, user);
 		String handle;
 		if (json.has("priv_pw")) {
 		  String pub = JsonValidation.getString(json, "pub");
@@ -911,6 +913,7 @@ public class Application extends APIController {
 		} else {
 		  handle = registerCreateUser(context, user);		
 		}
+		
 		Circles.fetchExistingConsents(context, user.emailLC);
 		
 		sendWelcomeMail(user, null);

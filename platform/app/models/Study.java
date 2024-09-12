@@ -54,9 +54,9 @@ public class Study extends Model implements HasPredefinedMessages {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "categories", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy", "forceClientCertificate", "dataFilters", "predefinedMessages");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "categories", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "autoJoinTestGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy", "forceClientCertificate", "dataFilters", "predefinedMessages");
 	
-	public @NotMaterialized static final Set<String> LINK_FIELDS = Sets.create("_id", "name", "code", "type", "joinMethods", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
+	public @NotMaterialized static final Set<String> LINK_FIELDS = Sets.create("_id", "name", "code", "type", "joinMethods", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "autoJoinTestGroup", "anonymous");
 	
 	/**
 	 * name of study
@@ -219,6 +219,8 @@ public class Study extends Model implements HasPredefinedMessages {
      * A StudyGroup new participants should automatically join
      */
     public String autoJoinGroup;
+    
+    public String autoJoinTestGroup;
     
     public byte[] autoJoinKey;
     
@@ -387,11 +389,12 @@ public class Study extends Model implements HasPredefinedMessages {
     	Model.set(Study.class, collection, this._id, "consentObserver", consentObserver);
     }
     
-    public void setAutoJoinGroup(String autoJoinGroup, MidataId executor, byte[] key) throws InternalServerException {
+    public void setAutoJoinGroup(String autoJoinGroup, String autoJoinTestGroup, MidataId executor, byte[] key) throws InternalServerException {
     	this.autoJoinGroup = autoJoinGroup;
+    	this.autoJoinTestGroup = autoJoinTestGroup;
     	this.autoJoinExecutor = executor;
     	this.autoJoinKey = key;
-    	this.setMultiple(collection, Sets.create("autoJoinGroup", "autoJoinExecutor", "autoJoinKey"));
+    	this.setMultiple(collection, Sets.create("autoJoinGroup", "autoJoinTestGroup", "autoJoinExecutor", "autoJoinKey"));
     }
     
     public void setProcessFlags(Set<String> processFlags) throws InternalServerException {

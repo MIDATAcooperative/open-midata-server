@@ -44,6 +44,7 @@ public class QueryTagTools {
 	public static String SECURITY_PLATFORM_MAPPED = "security:platform-mapped";
 	public static String SECURITY_LOCALCOPY = "security:local-copy";
 	public static String SECURITY_NOT_PSEUDONYMISABLE = "security:not-pseudonymisable";
+	public static String SECURITY_TEST = "security:test";
 	
 	public static List<SecurityTag> tags;
 	
@@ -73,6 +74,8 @@ public class QueryTagTools {
 		if (oldTags.contains(SECURITY_RELIABLE) && !newTags.contains(SECURITY_RELIABLE)) throw new BadRequestException("error.plugin", "Cannot reduce reliability.");
 		if (oldTags.contains(SECURITY_PUBLIC) != newTags.contains(SECURITY_PUBLIC)) throw new BadRequestException("error.plugin", "Cannot change public security tag on existing resource.");
 		if (oldTags.contains(SECURITY_PLATFORM_MAPPED) && !newTags.contains(SECURITY_PLATFORM_MAPPED)) throw new BadRequestException("error.plugin", "Cannot change platform-mapped security tag on existing resource.");
+		if (oldTags.contains(SECURITY_TEST) && !newTags.contains(SECURITY_TEST)) throw new BadRequestException("error.plugin", "Cannot change test data security tag on existing resource.");
+		
 		
 		rec.meta.put("tags", record.tags);
 	}
@@ -103,6 +106,7 @@ public class QueryTagTools {
 		tags.add(new SecurityTag(SECURITY_RELIABLE, "http://terminology.hl7.org/CodeSystem/v3-ObservationValue", "reliable", null));
 		tags.add(new SecurityTag(SECURITY_NOT_PSEUDONYMISABLE, "http://midata.coop/codesystems/security", "not-pseudonymisable", null));
 		tags.add(new SecurityTag(SECURITY_PLATFORM_MAPPED, "http://midata.coop/codesystems/security", "platform-mapped", null));
+		tags.add(new SecurityTag(SECURITY_TEST, "http://terminology.hl7.org/CodeSystem/v3-ActReason", "HTEST", null));
 	}
 		
 }

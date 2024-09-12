@@ -151,7 +151,8 @@ public class Query {
 			return result;
 		} else {				
 			Collection<RecordsInfo> result = RecordManager.instance.info(info.getAccessorRole(), info.getTargetAps(), info, accountCriteria, AggregationType.ALL);
-			if (result.size() != 1) throw new InternalServerException("error.internal", "Wrong result size in info query");
+			if (result.size() > 1) throw new InternalServerException("error.internal", "Wrong result size in info query");
+			else if (result.isEmpty()) return 0;
 			RecordsInfo inf = result.iterator().next();
 			AccessLog.log("count result (info query):"+inf.count);
 			return inf.count;

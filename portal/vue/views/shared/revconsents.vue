@@ -50,7 +50,7 @@
 				<th class="d-none d-lg-table-cell" v-t="'consents.number_of_records'"></th>
 			</tr>
 			<tr v-for="consent in consents.filtered" :key="consent._id" :class="{ 'table-warning' : consent.status == 'UNCONFIRMED' }">
-				<td><a @click="editConsent(consent);" href="javascript:">{{ consent.ownerName || consent.externalOwner }}</a></td>
+				<td><span v-if="consent.testUserApp" class="fas fa-vial mr-1" title="Test User"></span><a @click="editConsent(consent);" href="javascript:">{{ consent.ownerName || consent.externalOwner }}</a></td>
 				<td class="d-none d-sm-table-cell">{{ $filters.date(consent.dateOfCreation) }}</td> 
                 <td class="d-none d-md-table-cell">{{ consent.name }}</td>				
 				<td>{{ $t('enum.consenttype.'+consent.type) }}</td>
@@ -89,7 +89,7 @@ export default {
 
         loadConsents(userId) {	
             const { $data, $route } = this,me=this;		    
-		    me.doBusy(circles.listConsents({ member : true }, [ "name", "authorized", "type", "status", "records", "owner", "ownerName", "externalOwner", "dateOfCreation" ])
+		    me.doBusy(circles.listConsents({ member : true }, [ "name", "authorized", "type", "status", "records", "owner", "ownerName", "externalOwner", "dateOfCreation", "testUserApp" ])
 		    .then(function(data) {
                 $data.consents = me.process(data.data, { filter : { name : "" }, ignoreCase : true, sort : "-dateOfCreation" });						
                

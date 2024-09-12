@@ -658,7 +658,7 @@ public class Studies extends APIController {
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "identifiers", "categories", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
 				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "dataFilters", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
-				"dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy", "forceClientCertificate", "predefinedMessages");
+				"dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup", "autoJoinTestGroup", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy", "forceClientCertificate", "predefinedMessages");
 		Study study = Study.getById(studyid, fields);
 
 		if (study != null && study.consentObserver != null) {
@@ -1894,11 +1894,16 @@ public class Studies extends APIController {
 		return ok();
 	}
 
-	public static void autoApprove(MidataId app, Study study, AccessContext context, String group) throws AppException {
+	public static void autoApprove(MidataId app, Study study, AccessContext context, String group, String testGroup) throws AppException {
 		Set<String> fields = StudyParticipation.STUDY_EXTRA; //.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");
-		List<StudyParticipation> participants1 = StudyParticipation.getParticipantsByStudy(study._id, CMaps.map("pstatus", ParticipationStatus.REQUEST), fields, 0);
-
-		autoApprove(app, study, context, group, participants1);
+		List<StudyParticipation> participants0 = StudyParticipation.getParticipantsByStudy(study._id, CMaps.map("pstatus", ParticipationStatus.REQUEST), fields, 0);
+		List<StudyParticipation> participants1 = new ArrayList<StudyParticipation>(participants0.size());
+		List<StudyParticipation> testParticipants = new ArrayList<StudyParticipation>();
+        for (StudyParticipation sp : participants0) {
+        	if (sp.testUserApp != null) testParticipants.add(sp); else participants1.add(sp);
+        }
+        if (!participants1.isEmpty()) autoApprove(app, study, context, group, participants1);
+        if (!testParticipants.isEmpty()) autoApprove(app, study, context, testGroup, testParticipants);
 	}
 
 	public static void autoApprove(MidataId app, Study study, AccessContext context, String group, List<StudyParticipation> participants1) throws AppException {
@@ -1971,12 +1976,12 @@ public class Studies extends APIController {
 	}
 
 	public static void autoApproveCheck(MidataId app, MidataId studyid, AccessContext context) throws AppException {
-		Study study = Study.getById(studyid, Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "name", "code", "type"));
+		Study study = Study.getById(studyid, Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "autoJoinTestGroup", "name", "code", "type"));
 		if (study != null && study.autoJoinGroup != null) {
 			if (study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)
 					&& (study.executionStatus.equals(StudyExecutionStatus.PRE) || study.executionStatus.equals(StudyExecutionStatus.RUNNING))) {
 				try {
-					autoApprove(app, study, context, study.autoJoinGroup);
+					autoApprove(app, study, context, study.autoJoinGroup, study.autoJoinTestGroup);
 				} catch (BadRequestException e) {
 				} // We are not interested if the researcher is not allowed to
 					// do it.
@@ -2329,7 +2334,7 @@ public class Studies extends APIController {
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create(Study.ALL, "name", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "code",
-				"startDate", "endDate", "dataCreatedBefore", "type", "autoJoinGroup", "autoJoinExecutor"));
+				"startDate", "endDate", "dataCreatedBefore", "type", "autoJoinGroup", "autoJoinTestGroup", "autoJoinExecutor"));
 
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
@@ -2348,6 +2353,7 @@ public class Studies extends APIController {
 			if (!self.getConfirmedRole().manageParticipants())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 			String grp = JsonValidation.getStringOrNull(json, "autoJoinGroup");
+			String testGrp = JsonValidation.getStringOrNull(json, "autoJoinTestGroup");
 
 			if (JsonValidation.getBoolean(json, "autoJoin")) {
 
@@ -2362,15 +2368,15 @@ public class Studies extends APIController {
 
 				MobileAppInstance appInstance = ApplicationTools.createServiceApiKey(context, serviceInstance);
 
-				study.setAutoJoinGroup(grp, serviceInstance.executorAccount, ServiceHandler.encrypt(KeyManager.instance.currentHandle(serviceInstance.executorAccount)));
+				study.setAutoJoinGroup(grp, testGrp, serviceInstance.executorAccount, ServiceHandler.encrypt(KeyManager.instance.currentHandle(serviceInstance.executorAccount)));
 			} else {
 				Set<ServiceInstance> instances = ServiceInstance.getByManagerAndApp(study._id, RuntimeConstants.instance.autojoinerPlugin, ServiceInstance.ALL);
 				for (ServiceInstance instance : instances)
 					ApplicationTools.deleteServiceInstance(context, instance);
-				study.setAutoJoinGroup(null, null, null);
+				study.setAutoJoinGroup(null, null, null, null);
 			}
 			if (grp != null && study.participantSearchStatus == ParticipantSearchStatus.SEARCHING) {
-				autoApprove(null, study, portalContext(request), grp);
+				autoApprove(null, study, portalContext(request), grp, testGrp);
 			}
 		}
 		if (json.has("infos")) {

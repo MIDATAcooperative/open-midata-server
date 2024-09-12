@@ -156,6 +156,9 @@
     "default_context_config" : "Configuration / Imports",
     "default_context_extern" : "Standalone Plugin",
     "deploy_status" : "Deployment Status",
+    "accept_test_accounts" : "Allow Test-Users?",
+    "accept_test_accounts_from_app" : "Allowed source applications",
+    "test_accounts_max" : "Test accounts limit",
     "info" : {
        "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
@@ -190,7 +193,10 @@
        "endpoint" : "The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir",
        "endpoint2" : "Do not forget: to activate the endpoint you need to add an API key afterwards.",
        "decentral" : "API keys will be managed by multiple different organizations.",
-       "organizationKeys" : "API keys are directly bound to a single organization."
+       "organizationKeys" : "API keys are directly bound to a single organization.",
+       "accept_test_accounts_from_app" : "Allow test users created by these applications. (Comma separted list of internal app names.)",
+       "test_accounts_max" : "Current number of test accounts created and maximum number of test accounts allowed."
+       
     },
     "status" : {
       "title" : "Application Status",

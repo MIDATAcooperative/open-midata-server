@@ -107,8 +107,13 @@ public class JsonValidation {
 	}
 	
 	public static int getInteger(JsonNode json, String field, int lowest, int highest) throws JsonValidationException {
+		int val;
+		if (json.path(field).isTextual()) {
+			val = json.path(field).asInt(Integer.MIN_VALUE);
+			if (val == Integer.MIN_VALUE) throw new JsonValidationException("error.invalid.integer", field, "nonumber", "Integer value expected.");
+		} else
 		if (! json.path(field).isInt()) throw new JsonValidationException("error.invalid.integer", field, "nonumber", "Integer value expected.");
-		int val = json.path(field).intValue();
+		else val = json.path(field).intValue();
 		if (val < lowest) throw new JsonValidationException("error.invalid.integer.toolow", field, "toolow", "Value must be " + lowest+" at minimum.");
 		if (val > highest) throw new JsonValidationException("error.invalid.integer.toohigh", field, "toohigh", "Value may be " + lowest+" at maximum.");
 		return val;
