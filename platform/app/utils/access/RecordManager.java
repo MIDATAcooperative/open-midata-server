@@ -1488,8 +1488,17 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public List<String> fixAccount(AccessContext context) throws AppException {
-		MidataId userId = context.getCache().getAccountOwner();
+	   return fixAccount(context, new HashSet<MidataId>());
+	}
+	
+	
+	public List<String> fixAccount(AccessContext context, Set<MidataId> alreadyDone) throws AppException {
+		MidataId userId = context.getCache().getAccountOwner();		
+		
 		List<String> msgs = new ArrayList<String>();
+		if (alreadyDone.contains(userId)) return msgs;
+		alreadyDone.add(userId);
+		
 		msgs.add(IndexManager.instance.clearIndexes(context.getCache(), context.getAccessor()));
 		
 		APSCache cache = context.getCache();
@@ -1520,8 +1529,8 @@ public class RecordManager {
 		
 		AccessLog.logBegin("start check of user groups");
 		for (UserGroupMember ugm : ugms) {
-			if (ugm.status.isSharingData()) {			  
-			  List<String> ugMsgs = RecordManager.instance.fixAccount(context.forUserGroup(ugm));
+			if (ugm.status.isSharingData() && ugm.role.mayReadData()) {			  
+			  List<String> ugMsgs = RecordManager.instance.fixAccount(context.forUserGroup(ugm), alreadyDone);
 			  for (String s : ugMsgs) msgs.add("ug "+ugm.userGroup.toString()+": "+s);
 			}
 		}
