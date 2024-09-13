@@ -373,7 +373,7 @@ public class AccountPatches {
 				
 					Organization org = orgProvider.parse(rec, Organization.class);
 				    orgProvider.extractAddress(org, provider);
-				    provider.set("identifier", provider.identifiers);
+				    provider.set("identifiers", provider.identifiers);
 				    
 				 	AuditManager.instance.success();
 				}
