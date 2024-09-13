@@ -43,7 +43,7 @@ public class HealthcareProvider extends Model {
 	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString(), null));
 	
 	@NotMaterialized
-	 public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "name","description","url","parent","status","city", "zip", "country", "address1", "address2", "phone", "mobile")); 
+	 public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "name","description","url","parent","status","city", "zip", "country", "address1", "address2", "phone", "mobile", "identifiers")); 
 		
 	/**
 	 * the name of the healthcare provider (clinic)

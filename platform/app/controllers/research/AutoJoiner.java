@@ -79,7 +79,7 @@ private static ActorSystem system;
         	if (sp.testUserApp != null) testParticipants.add(sp); else participants1.add(sp);
         }
         if (!participants1.isEmpty()) Studies.autoApprove(app, theStudy, context, theStudy.autoJoinGroup, participants1);
-        if (!testParticipants.isEmpty()) Studies.autoApprove(app, theStudy, context, theStudy.autoJoinTestGroup, testParticipants);
+        if (!testParticipants.isEmpty() && theStudy.autoJoinTestGroup != null) Studies.autoApprove(app, theStudy, context, theStudy.autoJoinTestGroup, testParticipants);
 				
     }
     

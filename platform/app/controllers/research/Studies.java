@@ -1901,9 +1901,9 @@ public class Studies extends APIController {
 		List<StudyParticipation> testParticipants = new ArrayList<StudyParticipation>();
         for (StudyParticipation sp : participants0) {
         	if (sp.testUserApp != null) testParticipants.add(sp); else participants1.add(sp);
-        }
+        }        
         if (!participants1.isEmpty()) autoApprove(app, study, context, group, participants1);
-        if (!testParticipants.isEmpty()) autoApprove(app, study, context, testGroup, testParticipants);
+        if (!testParticipants.isEmpty() && testGroup != null) autoApprove(app, study, context, testGroup, testParticipants);
 	}
 
 	public static void autoApprove(MidataId app, Study study, AccessContext context, String group, List<StudyParticipation> participants1) throws AppException {
