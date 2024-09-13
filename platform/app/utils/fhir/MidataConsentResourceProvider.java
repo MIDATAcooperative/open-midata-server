@@ -473,7 +473,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			c.addExtension().setUrl("http://midata.coop/extensions/consent-name").setValue(new StringType(consentToConvert.name));
 		}
 		if (part != null) {
-			if (!c.hasExtension("http://midata.coop/extensions/project-join-method")) c.addExtension().setUrl("http://midata.coop/extensions/project-join-method").setValue(new StringType(part.joinMethod.toString()));
+			if (part.joinMethod != null && !c.hasExtension("http://midata.coop/extensions/project-join-method")) c.addExtension().setUrl("http://midata.coop/extensions/project-join-method").setValue(new StringType(part.joinMethod.toString()));
 			if (part.projectEmails != null) {
 			  if (c.hasExtension("http://midata.coop/extensions/communication-channel-use")) {
 			    c.getExtensionByUrl("http://midata.coop/extensions/communication-channel-use").setValue(new StringType(part.projectEmails.toString()));

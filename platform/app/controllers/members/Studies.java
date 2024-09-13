@@ -428,56 +428,68 @@ public class Studies extends APIController {
 	}
 	public static StudyParticipation requestParticipation(StudyParticipation participation, AccessContext context, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod, String joinCode) throws AppException {
 		AccessLog.logBegin("start request participation user="+userId+" project="+studyId);
-		try {
-		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
-		if (participation == null) participation = StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA);		
-		Study study = Study.getById(studyId, Sets.create("name", "joinMethods", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup", "autoJoinTestGroup", "type", "consentObserver", "leavePolicy", "rejoinPolicy"));
-		ParticipationCode code = null;
-		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
-		        
-		if (participation == null) {
-			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");			
-			if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.blocked.joinmethod", "code", "joinmethod", "Study is not searching for participants using this channel.");
-			code = checkCode(study, joinMethod, joinCode);
-			Set<MidataId> observers = ApplicationTools.getObserversForApp(usingApp);
-			participation = createStudyParticipation(context, study, user, code, observers, joinMethod);
-		}
+		boolean successful = true;
+		try {			
+			Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
+			if (participation == null) participation = StudyParticipation.getByStudyAndMember(studyId, userId, StudyParticipation.STUDY_EXTRA);		
+			Study study = Study.getById(studyId, Sets.create("name", "joinMethods", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup", "autoJoinTestGroup", "type", "consentObserver", "leavePolicy", "rejoinPolicy"));
+			ParticipationCode code = null;
+			if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
+			        
+			if (participation == null) {
+				if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");			
+				if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.blocked.joinmethod", "code", "joinmethod", "Study is not searching for participants using this channel.");
+				code = checkCode(study, joinMethod, joinCode);
+				Set<MidataId> observers = ApplicationTools.getObserversForApp(usingApp);
+				participation = createStudyParticipation(context, study, user, code, observers, joinMethod);
+			}
+				
+			if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;
+					
+			if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
+				if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
+					if (participation.status != ConsentStatus.DELETED) {
+						Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);	
+					}
+					return requestParticipation(context, userId, studyId, usingApp, joinMethod, joinCode);
+				} else throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
+			}
 			
-		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;
-				
-		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
-			if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
-				if (participation.status != ConsentStatus.DELETED) {
-					Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);	
-				}
-				return requestParticipation(context, userId, studyId, usingApp, joinMethod, joinCode);
-			} else throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
-		}
-		
-		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_REQUESTED, userId, participation, study);
-				
-		participation.setPStatus(ParticipationStatus.REQUEST, joinMethod);	
-		
-		//participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
-		if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp, true);		
-		
-		Circles.consentStatusChange(context, participation, ConsentStatus.ACTIVE);
-		
-		if (study.requiredInformation.equals(InformationType.RESTRICTED) || study.requiredInformation.equals(InformationType.NONE)) {						
-			participation.ownerName = PatientResourceProvider.createPatientForStudyParticipation(context, study, participation, user);						
-		} 
-		consumeCode(study, code); 
-		
-		Messager.sendProjectMessage(context, participation, MessageReason.PROJECT_PARTICIPATION_REQUEST, null);
-
-		AuditManager.instance.success();
-		
-		if (study.autoJoinGroup != null) {
-			AutoJoiner.autoJoin(usingApp, userId, study._id);
-		}
-		
-		return participation;
+			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_REQUESTED, userId, participation, study);
+					
+			participation.setPStatus(ParticipationStatus.REQUEST, joinMethod);	
+			
+			//participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
+			if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp, true);		
+			
+			successful = false;
+			
+			Circles.consentStatusChange(context, participation, ConsentStatus.ACTIVE);
+			
+			if (study.requiredInformation.equals(InformationType.RESTRICTED) || study.requiredInformation.equals(InformationType.NONE)) {						
+				participation.ownerName = PatientResourceProvider.createPatientForStudyParticipation(context, study, participation, user);						
+			} 
+			consumeCode(study, code); 
+			
+			Messager.sendProjectMessage(context, participation, MessageReason.PROJECT_PARTICIPATION_REQUEST, null);
+	
+			AuditManager.instance.success();
+			
+			if (study.autoJoinGroup != null) {
+				AutoJoiner.autoJoin(usingApp, userId, study._id);
+			}
+			successful = true;
+			return participation;
 		} finally {
+			if (!successful && participation != null) {
+				AccessLog.log("failure - removing participation");
+				try {
+			      RecordManager.instance.deleteAPS(context, participation._id);
+				} catch (Exception e) {}
+				try {
+			      Consent.delete(participation.owner, participation._id);
+				} catch (Exception e) {}
+			}
 			AccessLog.logEnd("end request participation");	
 		}
 	}
