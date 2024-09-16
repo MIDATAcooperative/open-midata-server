@@ -43,8 +43,8 @@ public class TestAccountTools {
         return null;
     }
     
-    public static MidataId testUserAppOrNull(AccessContext context, MidataId user) throws InternalServerException {
-    	User theUser = context.getRequestCache().getUserById(user, true);
+    public static MidataId testUserAppOrNull(AccessContext context, MidataId user) throws InternalServerException {    
+    	User theUser = (context == null || context.getRequestCache() == null) ? User.getById(user, User.PUBLIC) : context.getRequestCache().getUserById(user, true);
     	if (theUser != null) return theUser.testUserApp;
     	return null;
     }
