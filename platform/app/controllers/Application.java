@@ -321,7 +321,8 @@ public class Application extends APIController {
 		String role;
 		String handle = null;
 		
-		if (json.has("token")) {				
+		if (json.has("token")) {	
+			AccessLog.log("confirm with token");
 			// check status
 			PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
 			if (passwordResetToken == null) throw new BadRequestException("error.missing.token", "Missing or bad token.");
@@ -350,6 +351,7 @@ public class Application extends APIController {
 			*/
 			
 		    if (tk != null) {
+		    	AccessLog.log("confirm using session token");
 		    	if (tk.getHandle() == null) throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 			    try {
 			      KeyManager.instance.continueSession(tk.getHandle());
@@ -360,6 +362,7 @@ public class Application extends APIController {
 			    role = tk.userRole.toString().toUpperCase();
 			    
 			    if (json.has("code")) {
+			    	AccessLog.log("confirm with code");
 			    	token = JsonValidation.getString(json, "code");
 			    }
 			    
@@ -372,7 +375,8 @@ public class Application extends APIController {
 		User user = User.getById(userId, Sets.create(User.FOR_LOGIN, "resettoken", "resettokenTs", "registeredAt", "confirmedAt", "previousEMail"));
 		if (user == null)  throw new BadRequestException("error.unknown.user", "User not found");
 				
-		if (user!=null && password != null) {				
+		if (user!=null && password != null) {	
+			 AccessLog.log("trying to set password");
 			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, Actor.getActor(null, userId));
 			 
 			 boolean tokenOk = (token != null && user.resettoken != null 		    		    
@@ -411,7 +415,8 @@ public class Application extends APIController {
 		
 		if (wanted != null) {
 			if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {
-				if (user.password == null) {					
+				if (user.password == null) {	
+					AccessLog.log("password is still missing");
 					return OAuth2.loginHelper(request);	
 				}
 			       if (user.resettoken != null 		    		    
@@ -702,13 +707,14 @@ public class Application extends APIController {
 	public static Set<UserFeature> loginHelperPreconditionsFailed(User user, Set<UserFeature> required) throws AppException {
         if (user.status.equals(UserStatus.BLOCKED) || user.status.isDeleted()) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
+        Set<UserFeature> missing = null;
+        
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION)) && !InstanceConfig.getInstance().getInstanceType().disableEMailValidation()) {
-			user.status = UserStatus.TIMEOUT;			
-			return new HashSet<UserFeature>(Collections.singleton(UserFeature.EMAIL_VERIFIED));
+			user.status = UserStatus.TIMEOUT;	
+			missing = new HashSet<UserFeature>();
+			missing.add(UserFeature.EMAIL_VERIFIED);
 		}
 		
-						
-		Set<UserFeature> missing = null;
 		if (required != null) {
 			for (UserFeature feature : required) {
 				if (!feature.isSatisfiedBy(user)) {

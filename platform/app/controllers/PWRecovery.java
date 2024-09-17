@@ -230,7 +230,7 @@ public class PWRecovery extends APIController {
 	}
 	
 	public static void changePassword(User user, JsonNode json) throws AppException {
-		
+		AccessLog.log("change password for user ",user._id.toString());
 		String password = JsonValidation.getPassword(json, "password");
 		String pub = JsonValidation.getStringOrNull(json, "pub");
 		String pk = JsonValidation.getStringOrNull(json, "priv_pw");		
