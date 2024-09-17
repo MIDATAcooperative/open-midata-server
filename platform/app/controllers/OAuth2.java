@@ -544,6 +544,7 @@ public class OAuth2 extends Controller {
 		if (token.userRole == null) throw new NullPointerException();
 		if (confirmStudy==null) confirmStudy = Collections.emptySet();
 		if (app == null) {
+			AccessLog.log("no app set, using portal requirements");
 			requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(token.userRole);
 			return requirements;
 		}
@@ -960,12 +961,14 @@ public class OAuth2 extends Controller {
 	public static Result loginHelper(Request request) throws AppException {
 		PortalSessionToken tk = PortalSessionToken.session();
 		if (tk instanceof ExtendedSessionToken) {
+			AccessLog.log("reusing existing extended session token");
 			ExtendedSessionToken token = (ExtendedSessionToken) tk;
 			token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, null, tk.userRole);
 			JsonNode json = Json.newObject();
 			Plugin app = token.appId != null ? validatePlugin(token, json) : null;
 			return loginHelper(request, token, json, app, token.currentContext);
 		} else {
+			AccessLog.log("creating new extended session token");
 			ExtendedSessionToken token = new ExtendedSessionToken();
 			token.ownerId = tk.ownerId;
 			token.orgId = tk.orgId;
@@ -1010,7 +1013,7 @@ public class OAuth2 extends Controller {
 		}
 		
 		Set<UserFeature> requirements = determineRequirements(token, app, links, token.confirmations);
-					
+		 		
 																		
 		User user = identifyUserForLogin(token, json);
 		Set<UserFeature> notok;
@@ -1030,12 +1033,13 @@ public class OAuth2 extends Controller {
 		if (studySelectionRequired != null) return studySelectionRequired;
 		
 		notok = Application.loginHelperPreconditionsFailed(user, requirements);
-	    
+	    if (notok != null) AccessLog.log("not ok conditions: ",notok.toString());
+		
 		long ts3 = System.currentTimeMillis();
 		AccessLog.log("[login] preparing session, time=", Long.toString(ts3-ts2));
 	 
 		int keyType;
-		if (token.handle != null) {			
+		if (token.handle != null) {			 
 			if (token.currentContext == null) {
 				KeyManager.instance.continueSession(token.handle);
 				token.currentContext = ContextManager.instance.createLoginOnlyContext(token.ownerId, token.appId, user.role );
