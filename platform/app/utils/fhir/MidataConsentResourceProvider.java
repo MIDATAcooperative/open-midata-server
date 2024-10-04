@@ -486,7 +486,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		c.setId(consentToConvert._id.toString());
 		c.getProvision().getActor().clear();
 		
-		switch (consentToConvert.status) {
+		switch (consentToConvert.getTargetStatus()) {
 		case PRECONFIRMED:
 		case ACTIVE:
 			c.setStatus(ConsentState.ACTIVE);break;
@@ -954,7 +954,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 	@Override
 	public void updatePrepare(Consent consent, org.hl7.fhir.r4.model.Consent theResource) throws AppException {
 		AccessContext info = resolveSource(consent, theResource, null);
-		switch(consent.status) {
+		switch(consent.getTargetStatus()) {
 		case UNCONFIRMED:
 		case INVALID:
 			if (theResource.getStatus()==ConsentState.ACTIVE) {

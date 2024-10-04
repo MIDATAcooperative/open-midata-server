@@ -54,9 +54,9 @@ public class Consent extends Model implements Comparable<Consent> {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "managers", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator", "externals", "allowedReshares", "testUserApp");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "managers", "type", "status", "reportedStatus", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator", "externals", "allowedReshares", "testUserApp");
 	
-	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "writes", "dataupdate", "lastUpdated", "testUserApp");
+	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "reportedStatus", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "writes", "dataupdate", "lastUpdated", "testUserApp");
 	
 	/**
 	 * constant for all FHIR fields of a consent
@@ -152,6 +152,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	public ConsentStatus status;
 	
 	/**
+	 * during transition the reported status may be different. null value if same as normal status
+	 */
+	public ConsentStatus reportedStatus;
+	
+	/**
 	 * firstname and lastname of the owner of this consent. Not materialized.
 	 */
 	public @NotMaterialized String ownerName;
@@ -230,6 +235,10 @@ public class Consent extends Model implements Comparable<Consent> {
 	
 	public static Consent getByIdUnchecked(MidataId consentId, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("status", NOT_DELETED), fields);
+	}
+	
+	public static Consent getByIdUncheckedAlsoDeleted(MidataId consentId, Set<String> fields) throws InternalServerException {
+		return Model.get(Consent.class, collection, CMaps.map("_id", consentId), fields);
 	}
 	
 	public static Consent getByIdAndOwner(MidataId consentId, MidataId ownerId, Set<String> fields) throws InternalServerException {
@@ -332,26 +341,26 @@ public class Consent extends Model implements Comparable<Consent> {
 		return Model.exists(Consent.class, collection, CMaps.map("owner", owner).map("name", name).map("status", NOT_DELETED));
 	}
 	
-	public void setStatus(ConsentStatus status) throws InternalServerException {
-		this.status = status;	
+	public void setStatus(ConsentStatus status, boolean finish) throws InternalServerException {
+		setTargetStatus(status, finish);
 		this.lastUpdated = new Date();
 		if (this.createdAfter != null) {
-		   this.setMultiple(collection, Sets.create("status", "createdAfter", "lastUpdated"));
+		   this.setMultiple(collection, Sets.create("status", "reportedStatus", "createdAfter", "lastUpdated"));
 		} else {
-		   this.setMultiple(collection, Sets.create("status", "lastUpdated"));
+		   this.setMultiple(collection, Sets.create("status", "reportedStatus", "lastUpdated"));
 		}
 	}
 	
 	public void updateMetadata() throws InternalServerException {
 		if (this.fhirConsent != null) {
 		  assertNonNullFields();
-		  this.setMultiple(collection, Sets.create("status", "lastUpdated", "fhirConsent", "sharingQuery", "writes", "querySignature"));
+		  this.setMultiple(collection, Sets.create("status", "reportedStatus", "lastUpdated", "fhirConsent", "sharingQuery", "writes", "querySignature"));
 		} else {
 		  // assert except fhirConsent which is null, but not written into the DB
 		  this.fhirConsent = new BasicBSONObject();
 		  assertNonNullFields();
 		  this.fhirConsent = null;
-		  this.setMultiple(collection, Sets.create("status", "lastUpdated", "sharingQuery", "writes", "querySignature"));
+		  this.setMultiple(collection, Sets.create("status", "reportedStatus", "lastUpdated", "sharingQuery", "writes", "querySignature"));
 		}
 	}
 	
@@ -443,5 +452,23 @@ public class Consent extends Model implements Comparable<Consent> {
 		if (result != null) return result;
 		result = externals.get(email.replace(".","[dot]").toLowerCase());
 		return result;
+	}
+	
+	public ConsentStatus getTargetStatus() {
+		if (reportedStatus != null) return reportedStatus;
+		return status;
+	}
+	
+	public void setTargetStatus(ConsentStatus target, boolean finish) throws InternalServerException {
+		if (finish || owner == null || target == ConsentStatus.INVALID) {
+			status = target;
+			reportedStatus = null;
+		} else if (status != null && (!target.isSharingData() || target==ConsentStatus.FROZEN) && status.isSharingData()) {
+			reportedStatus = target;
+		} else if (reportedStatus == null){
+			status = target;
+		} else if (!target.isSharingData()) {
+			reportedStatus = target;
+		} else throw new InternalServerException("error.internal", "Illegal state transition");
 	}
 }

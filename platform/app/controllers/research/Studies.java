@@ -1263,7 +1263,7 @@ public class Studies extends APIController {
 			consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 
 			RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, context.getAccessor(), consent._id, true, true, true);
-			Circles.persistConsentMetadataChange(context, consent, true);
+			Circles.persistConsentMetadataChange(context, consent, true, false);
 			Circles.addUsers(context, ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
 			reference = consent;
@@ -1289,7 +1289,7 @@ public class Studies extends APIController {
 		consent.writes = WritePermissionType.NONE;
 
 		RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, study._id, consent._id, true, true, true);
-		Circles.persistConsentMetadataChange(context, consent, true);
+		Circles.persistConsentMetadataChange(context, consent, true, false);
 
 		RecordManager.instance.copyAPS(context, reference._id, consent._id, ownerId);
 		return consent;
@@ -1318,7 +1318,7 @@ public class Studies extends APIController {
 			consent.noBackshare = true;
 
 			RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, context.getAccessor(), consent._id, true, true, true);
-			Circles.persistConsentMetadataChange(context, consent, true);
+			Circles.persistConsentMetadataChange(context, consent, true, false);
 			Circles.addUsers(context, ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
 			reference = consent;
@@ -1965,7 +1965,7 @@ public class Studies extends APIController {
 			for (StudyParticipation participation : participants) { 
 				if (!participation.pstatus.equals(ParticipationStatus.ACCEPTED)) {
 			      participation.pstatus = ParticipationStatus.ACCEPTED;
-			      Circles.persistConsentMetadataChange(context, participation, false); 
+			      Circles.persistConsentMetadataChange(context, participation, false, false); 
 			    } 
 			}
 			    

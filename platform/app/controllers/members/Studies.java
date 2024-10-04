@@ -448,7 +448,7 @@ public class Studies extends APIController {
 					
 			if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
 				if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
-					if (participation.status != ConsentStatus.DELETED) {
+					if (participation.getTargetStatus() != ConsentStatus.DELETED) {
 						Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);	
 					}
 					return requestParticipation(context, userId, studyId, usingApp, joinMethod, joinCode);
@@ -518,7 +518,7 @@ public class Studies extends APIController {
 			    participation.pstatus != ParticipationStatus.ACCEPTED &&
 			    participation.pstatus != ParticipationStatus.REQUEST) {
 				if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
-					if (participation.status != ConsentStatus.DELETED) {
+					if (participation.getTargetStatus() != ConsentStatus.DELETED) {
 						Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);	
 					}
 					return match(context, userId, studyId, usingApp, joinMethod);

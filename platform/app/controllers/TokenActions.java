@@ -79,7 +79,7 @@ public class TokenActions extends Controller {
 					Circles.consentStatusChange(context, consent, ConsentStatus.REJECTED);
 					Circles.sendConsentNotifications(context, consent, ConsentStatus.REJECTED, wasActive);
 				} else {
-					Circles.persistConsentMetadataChange(context, consent, false);
+					Circles.persistConsentMetadataChange(context, consent, false, false);
 				}
 		    } else throw new BadRequestException("error.invalid.token", "Token expired");
 	    

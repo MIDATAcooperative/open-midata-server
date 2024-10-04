@@ -35,7 +35,7 @@ public class TestPluginCall extends Model {
 	public @NotMaterialized final static int NOTANSWERED = -999;
 	
 	public @NotMaterialized final static Set<String> ALL = 
-			 Sets.create("_id", "handle", "path", "token", "lang", "owner", "resource", "resourceId", "created", "answer", "answerStatus");
+			 Sets.create("_id", "handle", "path", "token", "lang", "owner", "resource", "resourceId", "created", "answer", "answerStatus", "transactionId");
 	
 	
 	public String handle;
@@ -57,6 +57,8 @@ public class TestPluginCall extends Model {
 	public int answerStatus;
 	
 	public long created;
+	
+	public MidataId transactionId;
 	
 	public void add() throws InternalServerException {
 		Model.insert(collection, this);
