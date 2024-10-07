@@ -193,7 +193,7 @@ public enum InstanceType {
 	 * @return
 	 */
 	public boolean simpleServiceKeyProtection() {
-		return this == DEMO;
+		return this == DEMO || this == LOCAL;
 	}
 	
 	/**

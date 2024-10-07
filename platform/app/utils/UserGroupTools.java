@@ -413,6 +413,27 @@ public class UserGroupTools {
 		return result;
 	}
 	
+	public static Set<MidataId> getActiveMembersOfGroups(Set<MidataId> groups, Permission permission) throws InternalServerException {
+		Set<MidataId> result = new HashSet<MidataId>();
+		getActiveMembersOfGroups(groups, permission, result);
+		return result;
+	}
+		
+	
+	private static void getActiveMembersOfGroups(Set<MidataId> groups, Permission permission, Set<MidataId> result) throws InternalServerException {
+		Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByGroups(groups);
+		Set<MidataId> next = new HashSet<MidataId>();
+		for (UserGroupMember ugm : ugms) {
+			if (ugm.getConfirmedRole().may(permission) && !result.contains(ugm.member)) {
+				result.add(ugm.member);
+				if (ugm.entityType == EntityType.ORGANIZATION || ugm.entityType == EntityType.USERGROUP) {
+				  next.add(ugm.member);
+				}
+			}
+		}
+		if (!next.isEmpty()) getActiveMembersOfGroups(next, permission, result);
+	}
+	
 	
 		
 }

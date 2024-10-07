@@ -50,9 +50,12 @@ import models.ServiceInstance;
 import models.Space;
 import models.SubscriptionData;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import models.enums.EntityType;
+import models.enums.Permission;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.libs.ws.WSClient;
@@ -62,6 +65,7 @@ import utils.ErrorReporter;
 import utils.PluginLoginCache;
 import utils.RuntimeConstants;
 import utils.ServerTools;
+import utils.UserGroupTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.KeyManager;
@@ -511,6 +515,11 @@ class SubscriptionChecker extends AbstractActor {
 			sourceOwner = consent.owner;
 			if (consent.owner != null) affected.add(consent.owner);
 			if (consent.authorized != null) affected.addAll(consent.authorized);
+			
+			if (consent.entityType == EntityType.ORGANIZATION || consent.entityType == EntityType.USERGROUP) {
+				affected.addAll(UserGroupTools.getActiveMembersOfGroups(consent.authorized, Permission.PARTICIPANTS));
+			}
+			
 			if (consent.observers != null) {
 				for (MidataId appId : consent.observers) {
 					try {
@@ -562,10 +571,10 @@ class SubscriptionChecker extends AbstractActor {
 			 * It determines which user accounts subscriptions need to be triggered by a resource change.
 			 * Without this section only the account owner of the changed resource is notified.
 			 */
-			/*
+		    /*
 			try {
 			  Set<MidataId> alsoAffected = RecordManager.instance.findAllSharingAps(record.owner, record);
-			  RecordManager.instance.clear();
+			 
 			  if (!alsoAffected.isEmpty()) {
 			    Set<Consent> affectedConsents = Consent.getActiveByIdsAndOwner(alsoAffected, record.owner, Sets.create("_id", "authorized", "entityType"));
 			    for (Consent c : affectedConsents) {

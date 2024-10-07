@@ -54,7 +54,7 @@ public class MinimalSetup {
 
 	public static void dosetup() throws AppException {
 		System.out.println("Starting to create minimal setup for MIDATA platform.");
-		
+		KeyManager.instance.login(5000, false);
 		if (Admin.getById(MidataId.from("5608f881e4b0f992a4e197b3"), Sets.create("_id")) == null && Admin.getByEmail("admin@example.com", Sets.create("_id")) == null) {
 			Admin admin = new Admin();
 			admin._id = new MidataId("5608f881e4b0f992a4e197b3");
@@ -139,7 +139,7 @@ public class MinimalSetup {
 			admin.authType = SecondaryAuthType.NONE;
 			admin.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(admin._id);
 			Admin.add(admin);
-			
+		
 			//KeyManager.instance.unlock(admin._id, null);
 			RecordManager.instance.createPrivateAPS(null, admin._id, admin._id);
 		}
@@ -167,7 +167,7 @@ public class MinimalSetup {
 			admin.authType = SecondaryAuthType.NONE;
 			admin.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(admin._id);
 			Admin.add(admin);
-			
+		
 			//KeyManager.instance.unlock(admin._id, null);
 			RecordManager.instance.createPrivateAPS(null, admin._id, admin._id);
 		}
@@ -194,7 +194,8 @@ public class MinimalSetup {
 			publicUser.emailStatus = EMailStatus.VALIDATED;
 			publicUser.authType = SecondaryAuthType.NONE;
 			publicUser.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(publicUser._id);
-			Member.add(publicUser);			
+			Member.add(publicUser);	
+			
 			//KeyManager.instance.unlock(admin._id, null);
 						
 			UserGroup ug = new UserGroup();
@@ -212,7 +213,7 @@ public class MinimalSetup {
 		
 		// Bugfix for test instance - remove after next update
 		if (AccessPermissionSet.getById(RuntimeConstants.publicGroup)==null) {
-			KeyManager.instance.login(5000, false);
+			
 			KeyManager.instance.unlock(RuntimeConstants.publicGroup, null);
 			RecordManager.instance.createPrivateAPS(null, RuntimeConstants.publicGroup, RuntimeConstants.publicGroup);
 		}
@@ -283,6 +284,8 @@ public class MinimalSetup {
 			common.pseudonymize = true;
 			Plugin.add(common);
 		}
+		
+		KeyManager.instance.logout();
 	}
 
 }

@@ -289,7 +289,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		
 		User user = null;
 		
-		if (!plugin.type.equals("analyzer") && !plugin.type.equals("external") && !plugin.type.equals("endpoint")) {
+		if (!plugin.type.equals("analyzer") && !plugin.type.equals("external") && !plugin.type.equals("broker") && !plugin.type.equals("endpoint")) {
 			user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
 			//System.out.println("prcApp4");
 			if (user==null || user.status.isDeleted() || user.status.equals(UserStatus.BLOCKED)) {
@@ -301,7 +301,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		}
         final ActorRef sender = getSender();						
 		SpaceToken tk = null;
-		if (plugin.type.equals("mobile") || plugin.type.equals("service") || plugin.type.equals("analyzer") || plugin.type.equals("external")) {
+		if (plugin.type.equals("mobile") || plugin.type.equals("service") || plugin.type.equals("analyzer") || plugin.type.equals("external") || plugin.type.equals("broker")) {
 			AccessLog.log("RIGHT PATH");
 			System.out.println("RIGHT PATH "+plugin.name);
 			Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(plugin._id, subscription.owner, Sets.create("status", "dateOfCreation"));
