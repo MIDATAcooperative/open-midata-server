@@ -85,8 +85,13 @@ public class SubscriptionTriggered {
      * link to trigger status for determining if all is done
      */
     final MidataId transactionId;
+    
+    /**
+     * user group involved (for data brokers)
+     */
+    final MidataId userGroupId;
 	
-	public SubscriptionTriggered(MidataId affected, MidataId app, String type, String eventCode, String fhirVersion, String resource, MidataId resourceId, Map<String, String> params, MidataId sourceOwner, String resourceVersion, MidataId transactionId) {
+	public SubscriptionTriggered(MidataId affected, MidataId app, String type, String eventCode, String fhirVersion, String resource, MidataId resourceId, Map<String, String> params, MidataId sourceOwner, String resourceVersion, MidataId transactionId, MidataId userGroupId) {
 		this.affected = affected;
 		this.app = app;
 		this.type = type;
@@ -99,6 +104,7 @@ public class SubscriptionTriggered {
 		this.sourceOwner = sourceOwner;
 		this.resourceVersion = resourceVersion;
 		this.transactionId = transactionId;
+		this.userGroupId = userGroupId;
 	}
 	
 	public SubscriptionTriggered(MidataId id, MidataId affected, MidataId app, String type, String eventCode, String fhirVersion, String resource, MidataId resourceId, Map<String, String> params, MidataId sourceOwner, String resourceVersion) {
@@ -114,6 +120,7 @@ public class SubscriptionTriggered {
 		this.sourceOwner = sourceOwner;
 		this.resourceVersion = resourceVersion;
 		this.transactionId = null;
+		this.userGroupId = null;
 	}
 
 	public MidataId getAffected() {
@@ -167,6 +174,10 @@ public class SubscriptionTriggered {
 	
 	public MidataId getTransactionId() {
 		return transactionId;
+	}
+	
+	public MidataId getUserGroupId() {
+		return userGroupId;
 	}
 
 	public String toString() {

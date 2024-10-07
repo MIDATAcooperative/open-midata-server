@@ -413,19 +413,19 @@ public class UserGroupTools {
 		return result;
 	}
 	
-	public static Set<MidataId> getActiveMembersOfGroups(Set<MidataId> groups, Permission permission) throws InternalServerException {
-		Set<MidataId> result = new HashSet<MidataId>();
+	public static Map<MidataId, MidataId> getActiveMembersOfGroups(Set<MidataId> groups, Permission permission) throws InternalServerException {
+		Map<MidataId, MidataId> result = new HashMap<MidataId, MidataId>();
 		getActiveMembersOfGroups(groups, permission, result);
 		return result;
 	}
 		
 	
-	private static void getActiveMembersOfGroups(Set<MidataId> groups, Permission permission, Set<MidataId> result) throws InternalServerException {
+	private static void getActiveMembersOfGroups(Set<MidataId> groups, Permission permission, Map<MidataId, MidataId> result) throws InternalServerException {
 		Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByGroups(groups);
 		Set<MidataId> next = new HashSet<MidataId>();
 		for (UserGroupMember ugm : ugms) {
-			if (ugm.getConfirmedRole().may(permission) && !result.contains(ugm.member)) {
-				result.add(ugm.member);
+			if (ugm.getConfirmedRole().may(permission) && !result.containsKey(ugm.member)) {
+				result.put(ugm.member, ugm.userGroup);
 				if (ugm.entityType == EntityType.ORGANIZATION || ugm.entityType == EntityType.USERGROUP) {
 				  next.add(ugm.member);
 				}

@@ -328,7 +328,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			//AccessLog.log("HANDLE="+handle);
 
 			if (subscription.app == null) throw new NullPointerException(); 
-			tk = new SpaceToken(handle, appInstanceId, subscription.owner, user != null ? user.getRole() : UserRole.ANY, null, subscription.app, subscription.owner);			
+			tk = new SpaceToken(handle, appInstanceId, subscription.owner, user != null ? user.getRole() : UserRole.ANY, null, subscription.app, subscription.owner, triggered.getUserGroupId());			
 			AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
 			
 			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
@@ -342,7 +342,7 @@ public class SubscriptionProcessor extends AbstractActor {
 				if (oauthmeta != null) {
 					System.out.println("NEW OAUTH2 - 2");
 					if (oauthmeta.get("refreshToken") != null) {
-						tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
+						tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner, triggered.getUserGroupId());
 						final String token = tk.encrypt();
 						System.out.println("NEW OAUTH2 - 3");
 						Plugin plugin2 = Plugin.getById(plugin._id, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams"));
@@ -380,7 +380,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			} 
 		} else {
 			//AccessLog.log("BPART HANDLE="+handle);
-			tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
+			tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner, triggered.getUserGroupId());
 			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
 		}
 		AuditManager.instance.success();
