@@ -254,6 +254,17 @@ public abstract class AccessContext {
 		return cache.getAccessor();
 	}
 	
+	/**
+	 * what team or organization is processing this request? (may be null)
+	 * @return
+	 * @throws InternalServerException
+	 */
+	 public MidataId getUserGroupAccessor() {
+		 if (isUserGroupContext()) return getAccessor();
+		 if (parent != null) return parent.getUserGroupAccessor();
+		 return null;
+	 }
+	
 	public EntityType getAccessorEntityType() throws InternalServerException {
 		if (parent != null) return parent.getAccessorEntityType();
 		

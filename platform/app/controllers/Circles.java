@@ -173,6 +173,7 @@ public class Circles extends APIController {
 		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		fields.add("type");
+		fields.add("reportedStatus");
 		
 		Rights.chk("Circles.listConsents", getRole(), properties, fields);
 		
@@ -258,6 +259,8 @@ public class Circles extends APIController {
 		}
 		
 		for (Consent consent : consents) {
+			if (consent.reportedStatus != null) consent.status = consent.reportedStatus;
+			
 			if (consent.type.equals(ConsentType.STUDYRELATED) && consent.authorized != null) consent.authorized.clear();
 			
 			if (consent.sharingQuery == null && (consent.isSharingData() || (consent.owner != null && consent.owner.equals(context.getAccessor())))) {
@@ -1021,7 +1024,15 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	public static void persistConsentMetadataChange(AccessContext context, Consent consent, boolean isNew, boolean finishMakeInactive) throws AppException {
-		if (!finishMakeInactive) { MidataConsentResourceProvider.updateMidataConsent(consent, null); }		
+		if (!finishMakeInactive) {
+			consent.modifiedBy = context.getActor();
+			
+			if (isNew) consent.creatorOrg = context.getUserGroupAccessor();
+			consent.modifiedByOrg = context.getUserGroupAccessor();
+			
+			MidataConsentResourceProvider.updateMidataConsent(consent, null); 
+		}	
+		
 		if (consent.authorized == null && consent.type != ConsentType.EXTERNALSERVICE) throw new InternalServerException("error.internal", "Missing authorized");
 		if (isNew) {
 			consent.add();

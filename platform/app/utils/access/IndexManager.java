@@ -414,7 +414,7 @@ public class IndexManager {
 		Set<ProjectDataFilter> filter = null;
 		if (index.getModel().pseudonymize) {
 			Study study = Study.getById(executor, Sets.create("dataFilters"));
-			filter = study.dataFilters;
+			if (study != null) filter = study.dataFilters;
 		}
 		List<DBRecord> recs = QueryEngine.listInternal(cache, aps, new IndexAccessContext(cache, index.getModel().pseudonymize, filter), restrictions, Sets.create("_id"));
 		addRecords(index, aps, recs);

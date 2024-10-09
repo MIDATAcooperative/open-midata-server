@@ -203,7 +203,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		org.hl7.fhir.r4.model.Consent p = parser.parseResource(getResourceType(), consentToConvert.fhirConsent.toString());		
 		
 		if (consentToConvert.sharingQuery == null) Circles.fillConsentFields(context, Collections.singleton(consentToConvert), Sets.create("sharingQuery"));
-		
+		setAccessContext(context);
 		processResource(consentToConvert, p);
 		addQueryToConsent(consentToConvert, p);			
 		addActorsToConsent(context, consentToConvert, p);
@@ -1054,6 +1054,24 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		  if (creatorApp != null && !meta.hasExtension("app")) meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
 		if (record.creator != null && !meta.hasExtension("creator")) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, null));
+		
+		if (record.creatorOrg != null && !meta.hasExtension("creator-organization")) {
+		    Reference creatorOrg = FHIRTools.getReferenceToActor(Actor.getActor(info(), record.creatorOrg));
+		    if (creatorOrg != null) meta.addExtension("creator-organization", creatorOrg);
+		}
+		
+		meta.removeExtension("modifiedBy");
+		meta.removeExtension("modifiedBy-organization");
+		
+		if (record.modifiedBy != null) {
+			Reference modifiedByRef = FHIRTools.getReferenceToUser(record.modifiedBy, null);
+			if (modifiedByRef != null) meta.addExtension("modifiedBy", modifiedByRef);
+		}
+		if (record.modifiedByOrg != null) {
+		    Reference modifiedByOrg = FHIRTools.getReferenceToActor(Actor.getActor(info(), record.modifiedByOrg));
+		    if (modifiedByOrg != null) meta.addExtension("modifiedBy-organization", modifiedByOrg);
+		}
+		
 		addSecurityTag(resource, QueryTagTools.SECURITY_PLATFORM_MAPPED);	
 		
 	}

@@ -1163,22 +1163,22 @@ public class OAuth2 extends Controller {
 	    ObjectNode obj = Json.newObject();
 	    
 	    try {
-	    	
-	    	MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
-			if (authToken != null) {				
-			   AccessContext context = ExecutionInfo.checkMobileToken(request, authToken, false, true);	
-	    		 
+	    		
+			   AccessContext context = ExecutionInfo.checkToken(request, token, false, true);	
+			   MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
+				
 		       User user = User.getById(context.getOwner(), User.FOR_LOGIN);
 		       Plugin plugin = Plugin.getById(context.getUsedPlugin());
 		       obj.put("active", true);
-			   obj.put("client_id", plugin.filename);		
+			   obj.put("client_id", plugin.filename);	
+			   obj.put("actor_id", context.getActor().toString());
 			   obj.put("scope", getScope(plugin, context) /*"patient/*.read openid fhirUser" */);				
-			   obj.put("fhirUser", getFhirUser(user));
-			   obj.put("exp", authToken.expiration / 1000l);
-		   } else {
-			   obj.put("active", false);
-		   }
-			
+			   if (user!=null) obj.put("fhirUser", getFhirUser(user));
+			   if (authToken != null) obj.put("exp", authToken.expiration / 1000l);
+			   if (context.getUserGroupAccessor() != null) {
+				   obj.put("group_id", context.getUserGroupAccessor().toString());
+			   }
+		  
 	    } catch (AppException e) {
 	       obj.put("active", false);
 	    }					

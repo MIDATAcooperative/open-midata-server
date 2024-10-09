@@ -110,6 +110,7 @@ public class SubscriptionManager {
 		AccessLog.log("Resource change: Consent");
 								
 		MidataConsentResourceProvider prov = MidataConsentResourceProvider.getInstance(); 
+	
 		try {
 		    String resource = prov.serialize(prov.readConsentFromMidataConsent(context, consent, consent.type != ConsentType.STUDYRELATED));
 		    

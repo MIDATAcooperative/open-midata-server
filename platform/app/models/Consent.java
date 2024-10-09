@@ -54,7 +54,7 @@ public class Consent extends Model implements Comparable<Consent> {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "managers", "type", "status", "reportedStatus", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator", "externals", "allowedReshares", "testUserApp");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "managers", "type", "status", "reportedStatus", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers", "creator", "creatorOrg", "modifiedBy", "modifiedByOrg", "externals", "allowedReshares", "testUserApp");
 	
 	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "reportedStatus", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "createdAfter", "dateOfCreation", "sharingQuery", "querySignature", "externalOwner", "writes", "dataupdate", "lastUpdated", "testUserApp");
 	
@@ -95,6 +95,21 @@ public class Consent extends Model implements Comparable<Consent> {
 	 * id of user that created the consent
 	 */
 	public  MidataId creator; 
+	
+	/**
+	 * id of org that created the consent (may be null)
+	 */
+	public MidataId creatorOrg;
+	
+	/**
+	 * id of user that last modified the consent
+	 */
+	public MidataId modifiedBy;
+	
+	/**
+	 * id of org that last modified the consent (may be null)
+	 */
+	public MidataId modifiedByOrg;
 	
 	/**
 	 * a code for the category of the consent. 
@@ -354,13 +369,13 @@ public class Consent extends Model implements Comparable<Consent> {
 	public void updateMetadata() throws InternalServerException {
 		if (this.fhirConsent != null) {
 		  assertNonNullFields();
-		  this.setMultiple(collection, Sets.create("status", "reportedStatus", "lastUpdated", "fhirConsent", "sharingQuery", "writes", "querySignature"));
+		  this.setMultiple(collection, Sets.create("status", "reportedStatus", "lastUpdated", "fhirConsent", "sharingQuery", "writes", "querySignature", "modifiedBy", "modifiedByOrg"));
 		} else {
 		  // assert except fhirConsent which is null, but not written into the DB
 		  this.fhirConsent = new BasicBSONObject();
 		  assertNonNullFields();
 		  this.fhirConsent = null;
-		  this.setMultiple(collection, Sets.create("status", "reportedStatus", "lastUpdated", "sharingQuery", "writes", "querySignature"));
+		  this.setMultiple(collection, Sets.create("status", "reportedStatus", "lastUpdated", "sharingQuery", "writes", "querySignature", "modifiedBy", "modifiedByOrg"));
 		}
 	}
 	
