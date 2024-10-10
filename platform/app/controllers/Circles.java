@@ -744,23 +744,12 @@ public class Circles extends APIController {
 		}
 		
 		boolean wasActive = consent.isActive();
-		consentStatusChange(context, consent, ConsentStatus.EXPIRED);
+		boolean doDelete = consent.type == ConsentType.CIRCLE || consent.type == ConsentType.API || consent.type == ConsentType.EXTERNALSERVICE || consent.type == ConsentType.IMPLICIT;   
+		
+		consentStatusChange(context, consent, doDelete ? ConsentStatus.DELETED : ConsentStatus.EXPIRED);
 		sendConsentNotifications(context, consent, ConsentStatus.EXPIRED, wasActive);
 				
 		// delete circle		
-		switch (consent.type) {
-		case CIRCLE:
-			RecordManager.instance.deleteAPS(context, consent._id);
-			Circle.delete(userId, circleId);
-			break;
-		case API:
-		case EXTERNALSERVICE: 
-			RecordManager.instance.deleteAPS(context, consent._id);
-			Consent.delete(userId, circleId);break;
-		case IMPLICIT: //consent.setStatus(ConsentStatus.DELETED, f);break;
-		//case STUDYRELATED : StudyRelated.delete(userId, circleId);break;
-		default:break;
-		}
 		AuditManager.instance.success();
 		
 		return ok();

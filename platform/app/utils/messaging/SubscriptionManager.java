@@ -523,6 +523,11 @@ class SubscriptionChecker extends AbstractActor {
 				affected.addAll(affToGroup.keySet());
 				affectedToGroup.putAll(affToGroup);
 			}
+			if (consent.managers != null) {
+				affected.addAll(consent.managers);
+				Map<MidataId, MidataId> affToGroup = UserGroupTools.getActiveMembersOfGroups(consent.managers, Permission.READ_DATA);
+				affectedToGroup.putAll(affToGroup);
+			}
 			
 			if (consent.observers != null) {
 				for (MidataId appId : consent.observers) {
@@ -605,7 +610,9 @@ class SubscriptionChecker extends AbstractActor {
 				SubscriptionTriggered trigger = new SubscriptionTriggered(affectedUser, null, change.type, content, null, resource, resourceId, null, sourceOwner, resourceVersion, transactionId, affectedToGroup.get(affectedUser));
 				if (triggerStatus != null) triggerStatus.running++;
 				processor.tell(trigger, getSelf());
-			} 
+			} else {
+				AccessLog.log("no subscription for user="+affectedUser.toString()+" -> "+affectedToGroup.get(affectedUser));
+			}
 		}
 		} catch (Exception e) {
 			ErrorReporter.report("Subscripion processing", null, e);

@@ -36,15 +36,18 @@ import controllers.Circles;
 import controllers.Plugins;
 import models.APSNotExistingException;
 import models.BackgroundAction;
+import models.Circle;
 import models.Consent;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
+import models.StudyRelated;
 import models.SubscriptionData;
 import models.TestPluginCall;
 import models.User;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
+import models.enums.ConsentType;
 import models.enums.MessageChannel;
 import models.enums.MessageReason;
 import models.enums.PluginStatus;
@@ -124,8 +127,29 @@ public class DelayedActionsProcessor extends AbstractActor {
 			String handle = ServiceHandler.decrypt(ba.session);
 			KeyManager.instance.continueSession(handle, ba.owner);
 			AccessContext context = ContextManager.instance.createSessionForDownloadStream(ba.owner, UserRole.ANY);
-			Consent consent = Consent.getByIdUncheckedAlsoDeleted(ba.targetId, Consent.FHIR);
-			if (consent != null) Circles.consentStatusChange(context, consent, consent.reportedStatus);
+			MobileAppInstance consent = MobileAppInstance.getByIdUncheckedAlsoDeleted(ba.targetId, Sets.create(MobileAppInstance.APPINSTANCE_ALL,"fhirConsent"));
+			if (consent != null) {
+				Circles.consentStatusChange(context, consent, consent.reportedStatus);
+				
+				if (consent.getTargetStatus() == ConsentStatus.DELETED) {
+					if (consent.type == ConsentType.API || consent.type == ConsentType.EXTERNALSERVICE) {									
+						Plugin app = Plugin.getById(consent.applicationId);		
+						if (app!=null) SubscriptionManager.deactivateSubscriptions(consent.owner, app, consent._id);
+												
+						//Removing queries from user account should not be necessary
+						if (consent.serviceId == null) Circles.removeQueries(consent.owner, consent._id);										
+					}															
+					RecordManager.instance.deleteAPS(context, consent._id);
+					if (consent.type == ConsentType.CIRCLE) Circle.delete(consent.owner, consent._id);
+					else if (consent.type == ConsentType.API || consent.type == ConsentType.EXTERNALSERVICE) {
+						Consent.delete(consent.owner, consent._id);		
+					}
+					else if (consent.type == ConsentType.STUDYRELATED) {
+						StudyRelated.delete(consent.owner, consent._id);
+					}
+				}
+			}        					
+			
 			ba.delete();			
 		} catch (Exception e) {			
 			ErrorReporter.report("DelayedActionsProcessor", null, e);
