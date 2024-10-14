@@ -32,10 +32,14 @@ import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelType;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.PoisonPill;
 import akka.actor.Props;
+import akka.cluster.singleton.ClusterSingletonManager;
+import akka.cluster.singleton.ClusterSingletonManagerSettings;
+import akka.cluster.singleton.ClusterSingletonProxy;
+import akka.cluster.singleton.ClusterSingletonProxySettings;
 import akka.routing.ConsistentHashingPool;
 import akka.routing.ConsistentHashingRouter.ConsistentHashMapper;
-import akka.routing.RoundRobinPool;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import models.BackgroundAction;
 import models.Consent;
@@ -50,7 +54,6 @@ import models.ServiceInstance;
 import models.Space;
 import models.SubscriptionData;
 import models.User;
-import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
@@ -59,7 +62,6 @@ import models.enums.Permission;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.libs.ws.WSClient;
-import scala.Option;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.PluginLoginCache;
@@ -74,10 +76,8 @@ import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.context.ContextManager;
 import utils.exceptions.AppException;
-import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.MidataConsentResourceProvider;
-import utils.fhir.FHIRServlet;
 import utils.fhir.SubscriptionResourceProvider;
 import utils.stats.ActionRecorder;
 import utils.stats.Stats;
@@ -102,7 +102,18 @@ public class SubscriptionManager {
 	   	
 	   	subscriptionChecker = system.actorOf(Props.create(SubscriptionChecker.class).withDispatcher("medium-work-dispatcher"), "subscriptionChecker");
 	   	accountWiper = system.actorOf(Props.create(AccountWiper.class).withDispatcher("medium-work-dispatcher"), "accountWiper");
-	   	delayedActionsProcessor = system.actorOf(Props.create(DelayedActionsProcessor.class).withDispatcher("medium-work-dispatcher"), "delayedActionsProcessor");
+	   	
+	    final ClusterSingletonManagerSettings settings =
+				  ClusterSingletonManagerSettings.create(system1);
+		
+		ActorRef managerSingleton = system1.actorOf(ClusterSingletonManager.props(Props.create(DelayedActionsProcessor.class).withDispatcher("medium-work-dispatcher"), PoisonPill.getInstance(), settings), "delayedActionsActor");
+		
+		final ClusterSingletonProxySettings proxySettings =
+			    ClusterSingletonProxySettings.create(Instances.system());
+
+		
+		delayedActionsProcessor = system1.actorOf(ClusterSingletonProxy.props("user/delayedActionsActor", proxySettings).withDispatcher("medium-work-dispatcher"), "delayedActionsProxy");		   	 
+
 	}
 	
 	

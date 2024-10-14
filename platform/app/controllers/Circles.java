@@ -1014,11 +1014,12 @@ public class Circles extends APIController {
 	 */
 	public static void persistConsentMetadataChange(AccessContext context, Consent consent, boolean isNew, boolean finishMakeInactive) throws AppException {
 		if (!finishMakeInactive) {
-			consent.modifiedBy = context.getActor();
-			
-			if (isNew) consent.creatorOrg = context.getUserGroupAccessor();
-			consent.modifiedByOrg = context.getUserGroupAccessor();
-			
+			if (isNew) {
+				consent.creatorOrg = context.getUserGroupAccessor();
+			} else {
+				consent.modifiedByOrg = context.getUserGroupAccessor();
+				consent.modifiedBy = context.getActor();
+			}
 			MidataConsentResourceProvider.updateMidataConsent(consent, null); 
 		}	
 		
