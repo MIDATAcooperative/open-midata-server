@@ -114,7 +114,7 @@ public class MobileAppInstance extends Consent {
 	}
 
 	public static Set<MobileAppInstance> getByService(MidataId serviceId, Set<String> fields) throws InternalServerException {
-		return Model.getAll(MobileAppInstance.class, collection, CMaps.map("serviceId", serviceId).map("status", NOT_DELETED), fields);
+		return Model.getAll(MobileAppInstance.class, collection, CMaps.map("serviceId", serviceId).map("status", NOT_DELETED).map("reportedStatus", CMaps.map("$exists", false)), fields);
 	}
 	
 	public static MobileAppInstance getByIdUncheckedAlsoDeleted(MidataId consentId, Set<String> fields) throws InternalServerException {

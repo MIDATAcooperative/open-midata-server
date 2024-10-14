@@ -527,6 +527,7 @@ class SubscriptionChecker extends AbstractActor {
 				affected.addAll(consent.managers);
 				Map<MidataId, MidataId> affToGroup = UserGroupTools.getActiveMembersOfGroups(consent.managers, Permission.READ_DATA);
 				affectedToGroup.putAll(affToGroup);
+				affected.addAll(affToGroup.keySet());
 			}
 			
 			if (consent.observers != null) {

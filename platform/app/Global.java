@@ -162,6 +162,12 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		  System.out.println("Instances");
 		  Instances.init();
 		  
+		  System.out.println("Statistiks");
+		  Stats.init(system);
+		  UsageStatsRecorder.init(Instances.system());
+		  RequestMonitoring.init(Instances.system());
+			
+		  
 		  System.out.println("Subscription Manager");
 		  SubscriptionManager.init(Instances.system(), ws);
 		  
@@ -193,10 +199,6 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		  throw new NullPointerException();
 		}
 		
-		System.out.println("Statistiks");
-		Stats.init(system);
-		UsageStatsRecorder.init(Instances.system());
-		RequestMonitoring.init(Instances.system());
 						
 		System.out.println("Service Handler");
 		ServiceHandler.startup();
