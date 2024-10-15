@@ -163,8 +163,9 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	$(info ------------------------------)
 	$(info Installing Node JS... )
 	$(info ------------------------------)
-	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-	export NVM_DIR=$$HOME/.nvm;. $$NVM_DIR/nvm.sh;nvm install --lts
+	curl -sL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+	sudo apt-get install -y nodejs	
+	sudo chmod -R ugo+rx /usr/lib/node_modules
 	touch tasks/install-node
 
 tasks/install-firejail:
