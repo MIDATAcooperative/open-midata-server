@@ -436,7 +436,7 @@ public class Studies extends APIController {
 			ParticipationCode code = null;
 			if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 			        
-			if (participation == null) {
+			if (participation == null || participation.getTargetStatus() == ConsentStatus.DELETED) {
 				if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");			
 				if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.blocked.joinmethod", "code", "joinmethod", "Study is not searching for participants using this channel.");
 				code = checkCode(study, joinMethod, joinCode);
@@ -448,7 +448,7 @@ public class Studies extends APIController {
 					
 			if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) {
 				if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
-					if (participation.status != ConsentStatus.DELETED) {
+					if (participation.getTargetStatus() != ConsentStatus.DELETED) {
 						Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);	
 					}
 					return requestParticipation(context, userId, studyId, usingApp, joinMethod, joinCode);
@@ -518,7 +518,7 @@ public class Studies extends APIController {
 			    participation.pstatus != ParticipationStatus.ACCEPTED &&
 			    participation.pstatus != ParticipationStatus.REQUEST) {
 				if ((participation.pstatus == ParticipationStatus.MEMBER_RETREATED || participation.pstatus == ParticipationStatus.MEMBER_REJECTED) && study.rejoinPolicy == RejoinPolicy.DELETE_LAST) {
-					if (participation.status != ConsentStatus.DELETED) {
+					if (participation.getTargetStatus() != ConsentStatus.DELETED) {
 						Circles.consentStatusChange(context, participation, ConsentStatus.DELETED);	
 					}
 					return match(context, userId, studyId, usingApp, joinMethod);

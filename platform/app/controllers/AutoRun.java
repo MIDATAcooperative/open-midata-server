@@ -302,7 +302,7 @@ public class AutoRun extends APIController {
 						sender.tell(new ImportResult(0, "Ignore autoimport for deleted user", plugin.filename), getSelf());
 						return;
 					}
-					SpaceToken token = new SpaceToken(request.handle, space._id, space.owner, tuser.role, null, null, autorunner);
+					SpaceToken token = new SpaceToken(request.handle, space._id, space.owner, tuser.role, null, null, autorunner, null);
 					final String lang = tuser.language != null ? tuser.language : InstanceConfig.getInstance().getDefaultLanguage();
 					final String tokenstr = token.encrypt();
 					final String owner = space.owner.toString();

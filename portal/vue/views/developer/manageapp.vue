@@ -176,7 +176,7 @@
                </check-box>		    
 		  </form-group>
 		  
-		   <form-group name="consentObserving" label="Consent Observing" v-if="app.type == 'external'">
+		   <form-group name="consentObserving" label="Consent Observing" v-if="app.type == 'external' || app.type=='broker'">
                <check-box name="consentObserving" v-model="app.consentObserving" disabled>
                    <span v-t="'manageapp.info.consentObserving'"></span>
                </check-box>		    

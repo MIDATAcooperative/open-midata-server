@@ -88,6 +88,8 @@ public class MessageProcessor {
 			
 			boolean doasync = async != null && async.getValue() != null && async.getValue().equals("true");
 		
+			while (inf != null && inf.isUserGroupContext()) inf = inf.getParent();
+			
 			String result = SubscriptionManager.messageToProcess(inf.getAccessor(), inf.getUsedPlugin(), eventCode, destination, "4.0", inputBundle, params, doasync);
 			
 			if (doasync) {			

@@ -90,13 +90,16 @@ public class Feature_QueryRedirect extends Feature {
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		APS target = q.getCache().getAPS(q.getApsId());
-		BasicBSONObject query1 = target.getMeta(APS.QUERY);  
-		Map<String, Object> query = (query1 != null) ? query1 : q.getContext().getAccessRestrictions();
+		BasicBSONObject query1 = target.getMeta(APS.QUERY);  	
+		Map<String, Object> query = (query1 != null) ? query1 : null;
     	// Ignores queries in main APS 
-		if (query != null /* && !q.getApsId().equals(q.getCache().getAccountOwner()) */) {
-			
-			MidataId redirectApsId = (query1 != null) ? MidataId.from(query1.get("aps")) : q.getApsId();			
+		if (query1 != null /* && !q.getApsId().equals(q.getCache().getAccountOwner()) */) {			
+			MidataId redirectApsId = MidataId.from(query1.get("aps"));			
 			return new RedirectIterator(target, redirectApsId, query, next, q);						
+		} 
+		Map<String, Object> fromRestrictions = q.getContext().getAccessRestrictions();
+		if (fromRestrictions != null) {			
+			return QueryEngine.combineIterator(q, "context-restrictions", fromRestrictions, next);            				    						
 		}
 		
 		return next.iterator(q);	
