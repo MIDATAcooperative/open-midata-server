@@ -90,7 +90,8 @@
        "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
        "csvmapping" : "Invalid mapping provided.",
        "id" : "Invalid identifier",
-       "usergroup" : "You must be member of this user group to perform this action."
+       "usergroup" : "You must be member of this user group to perform this action.",
+       "project" : "Meta projects cannot be used as subprojects for other meta projects."
      },
 
      "missing" : {
@@ -158,7 +159,8 @@
        "consent" : "You have set in the @PRODUCT portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PRODUCT portal.",
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PRODUCT portal.",
        "app_test" : "You are allowed to use this application on a maximum of 10 devices. On this TEST instance consents have been reset for you. Please retry.",
-       "joinmethod" : "It is not allowed to join the project by this method." 
+       "joinmethod" : "It is not allowed to join the project by this method.",
+       "testuser" : "Application does not accept test accounts." 
      },
 
      "closed" : {
@@ -178,6 +180,9 @@
      "tooweak" : {
        "password" : "The password must contain at least one letter and one digit.",
        "passphrase" : "Passphrases should contain upper/lower case letters, numbers and special characters."
+     },
+     "toomany" : {
+       "testuser" : "The maximum allowed number of test users has been reached."
      },
 
      "concurrent" : {
@@ -442,7 +447,8 @@
 	   "CLINICAL" : "Clinical Study",
 	   "CITIZENSCIENCE" : "Citizen Science Project",
 	   "COMMUNITY" : "Community",
-	   "REGISTRY" : "Registry"
+	   "REGISTRY" : "Registry",
+	   "META" : "Meta Project"
 	 },
 	 "joinmethod" : {
 	   "APP" : "Participant uses the linked application",
@@ -450,7 +456,7 @@
 	   "RESEARCHER" : "Participant is manually registered by research team member",
 	   "API" : "Participant is registered by external software",
 	   "ALGORITHM" : "Participant has been proposed by an algorithm (not supported)",
-	   "CODE" : "Participant may join by entering a code (not supported)",
+	   "CODE" : "Participant may join by entering a code",
 	   "APP_CODE" : "Participant may join through application provided code",
 	   "TRANSFER" : "Data is transferred from another research project (not supported)"	
 	 },
@@ -462,6 +468,7 @@
 	 },
 	 "studyvalidationstatus" : {
 	   "DRAFT" : "Draft (Not Validated)",
+	   "PATCH" : "Re-edit (Not Validated)",
 	   "REJECTED" : "Project rejected by @OPERATOR",
 	   "VALIDATED" : "Project has been validated",
 	   "VALIDATION" : "Validation running"
@@ -475,6 +482,12 @@
      "NO_REJOIN" : "Participants cannot rejoin",
      "DELETE_LAST" : "Replace previous participation"
    },
+     "projectdatafilter" : {
+       "NO_TIME" : "Remove all time information from dates",
+       "ONLY_MONTH_YEAR" : "Remove day from dates.(Keep month and year)",
+       "NO_PRACTITIONER" : "Remove practitioner references",
+       "NO_NARRATIVES" : "Remove narrative texts"
+     },
 	 "pcodestatus" : {
 	    "UNUSED" : "Not used",
 	    "SHARED" : "Given away",
@@ -632,6 +645,11 @@
 	    "RUNNING" : "Building",
 	    "FAILED" : "Failed",
 	    "DONE" : "Done"
+	 },
+	 "test_accounts" : {
+	    "ALL" : "Allow test users created by any application",
+	    "NONE": "Do not allow test users",
+	    "SOME" : "Allow test users created by some applications"
 	 }
    },
 
@@ -881,6 +899,7 @@
     "created_on" : "Created at:",
     "content" : "@PRODUCT content type:",
     "format" : "Format:",
+    "tags" : "Tags:",
     "download_btn" : "Download",
     "content_visualization" : "Content Visualization",
     "no_visualization" : "No visualization available for this record.",
@@ -914,6 +933,8 @@
 	"history_comment" : "Comment",
 	"request_participation_help" : "If you want to be part of this research you may request participation.",
 	"request_participation_btn" : "Request Participation",
+	"accept_invitation_help" : "You have been invited to participate to this research.",
+	"accept_invitation_btn" : "Accept invitation",
 	"do_not_participate_help" : "If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.",
 	"do_not_participate_btn" : "Do not participate",
 	"retreat_help" : "You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.",
@@ -921,6 +942,7 @@
 	"status" : "Status",
 	"recommended_apps" : "Recommended Apps",
 	"use_app" : "Use now",
+	"pseudonym" : "Your pseudonym",
 	"for_participants" : "Participation Info",
 	"please_review1" : "Decide about participation",
     "please_review2" : "Please review this research project. Do you want to participate? Click on 'Skip (No change)' if you want to leave this page without any changes."
@@ -1560,7 +1582,8 @@
       "PseudonymizedPatient" : "Patient Records: pseudonym, year of birth, country of research project participants",
       "Practitioner" : "Practitioner Resource: search for health professionals or researchers",
       "Subscription" : "Access and manage subscriptions to external systems"
-    }
+    },
+    "creator_org" : "Creator Organization"
   },
   
   "timeline" : {

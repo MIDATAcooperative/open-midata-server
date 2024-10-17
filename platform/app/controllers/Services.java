@@ -108,7 +108,7 @@ public class Services extends APIController {
         		managers.add(groupRestriction);
         	};
         } else {
-	        Set<UserGroupMember> ugms = context.getCache().getAllActiveByMember();        
+	        Set<UserGroupMember> ugms = context.getCache().getAllActiveByMember(Permission.SETUP);        
 	        managers.add(managerId);
 	        
 	        for (UserGroupMember ugm : ugms) {

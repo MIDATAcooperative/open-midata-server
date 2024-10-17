@@ -34,6 +34,9 @@
 			<router-link :to="{ path : './yourapps', query : {creator:member.email}}" v-t="'admin_address.show_apps_created'"></router-link>
 		</div>
 		<table class="table table-striped table-bordered">
+			<tr v-if="member.testUserApp" class="table-warning">
+				<td v-t="'admin_address.test_user'"></td><td><span class="fas fa-vial mr-1" title="Test User"></span> {{ member.testUserCustomer }}</td>
+			</tr>
 		    <tr>
 			    <td v-t="'admin_address.midata_id'"></td><td>{{ member.midataID }}</td>
 			</tr><tr>
@@ -133,7 +136,7 @@ export default {
     methods : {
         reload() {
             const { $data, $route } = this, me = this;
-		    me.doBusy(users.getMembers($data.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "mobileStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "developer", "security", "authType", "marketingEmail" ])
+		    me.doBusy(users.getMembers($data.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "mobileStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "developer", "security", "authType", "marketingEmail", "testUserApp", "testUserCustomer" ])
 		    .then(function(data) {
 			    $data.member = data.data[0];
 			    if ($data.member.role == "DEVELOPER") {

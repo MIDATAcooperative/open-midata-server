@@ -124,7 +124,8 @@
       "writeData" : "Write data",
       "changeTeam" : "Change team",
       "setup" : "Change organization",
-      "applications" : "Manage applications"
+      "applications" : "Manage applications",
+      "participants" : "Manage consents"
     },
     "update_btn" : "Update"
   },
@@ -137,6 +138,7 @@
     "role" : {
        "MANAGER" : "Managing Organization",
        "SUBORGANIZATION" : "Sub-Organization",
+       "PARENTORGANIZATION" : "Parent Organization",
        "HC" : "Other"
     },
     "startDate" : "Member From",

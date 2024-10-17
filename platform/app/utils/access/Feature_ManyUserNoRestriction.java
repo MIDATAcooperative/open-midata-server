@@ -43,8 +43,8 @@ public class Feature_ManyUserNoRestriction extends Feature {
 					if (index!=null) AccessLog.log("INDEX 1 = "+index.getModel().getId().toString()+" "+index.getModel().pseudonymize);
 					if (index2!=null) AccessLog.log("INDEX 2 = "+index2.getModel().getId().toString()+" "+index2.getModel().pseudonymize);
 					if (index != null || index2 != null) {*/						
-						Feature calcStats = new Feature_Stats(new Feature_ProcessFilters(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))));
-						Query q2 = new Query(q.onlyRestrictions(Sets.create("format","content","app","owner","public","deleted","group","group-system","code","group-exclude","force-local","usergroup","study","consent-limit")), "find-many", CMaps.map("fast-stats", true).map("no-postfilter-streams", true), q.getApsId(), new IndexAccessContext(q.getCache(), false));						
+						Feature calcStats = new Feature_Stats(new Feature_ProcessFilters(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_TestAccounts(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))));
+						Query q2 = new Query(q.onlyRestrictions(Sets.create("format","content","app","owner","public","deleted","group","group-system","code","group-exclude","force-local","usergroup","study","consent-limit")), "find-many", CMaps.map("fast-stats", true).map("no-postfilter-streams", true), q.getApsId(), new IndexAccessContext(q.getCache(), false, null));						
 						DBIterator<DBRecord> recs = calcStats.iterator(q2);		
 						Set<String> owner = new HashSet<String>();
 						int count = 0;

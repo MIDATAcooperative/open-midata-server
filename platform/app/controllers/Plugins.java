@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.regex.Pattern;
 
 import org.bson.BSONObject;
 
@@ -68,6 +69,7 @@ import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
+import utils.TestAccountTools;
 import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
@@ -157,7 +159,22 @@ public class Plugins extends APIController {
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 
 		Rights.chk("Plugins.get", getRole(), properties, fields);
+		
+		boolean nameSearch = false;
+		String name = properties.containsKey("name") ? properties.get("name").toString() : null;
+		if (name != null && name.endsWith("*") ) {
+		    Pattern pat = Pattern.compile("^"+name.substring(0, name.length()-1), Pattern.CASE_INSENSITIVE);
+		    properties.put("name", pat);	
+		    nameSearch = true;
+		}
+		
 		Set<Plugin> vis = Plugin.getAll(properties, fields);
+		if (nameSearch) {
+		    properties.put("filename", properties.get("name"));
+		    properties.remove("name");
+		    vis.addAll(Plugin.getAll(properties, fields));
+		}
+		
 		if (properties.containsKey("developerTeam")) {
 			properties.put("creator", properties.get("developerTeam"));
 			properties.remove("developerTeam");
@@ -175,6 +192,19 @@ public class Plugins extends APIController {
 						User developer = User.getById(devId, Sets.create("email"));
 						if (developer!=null) plugin.developerTeamLogins.add(developer.email);
 						else plugin.developerTeamLogins.add("unknown");
+					}
+				}
+			}
+		}
+		
+		if (fields.contains("acceptTestAccountsFromAppNames")) {
+			for (Plugin plugin : visualizations) {
+				if (plugin.acceptTestAccountsFromApp != null) {
+					plugin.acceptTestAccountsFromAppNames = new ArrayList<String>(plugin.acceptTestAccountsFromApp.size());
+					for (MidataId plugId : plugin.acceptTestAccountsFromApp) {
+						Plugin plg = Plugin.getById(plugId);
+						if (plg!=null) plugin.acceptTestAccountsFromAppNames.add(plg.filename);
+						else plugin.acceptTestAccountsFromAppNames.add("unknown");
 					}
 				}
 			}
@@ -276,7 +306,7 @@ public class Plugins extends APIController {
 		if (context.equals("me") && visualization.defaultSpaceContext != null && visualization.defaultSpaceContext.length() > 0)
 			context = visualization.defaultSpaceContext;
 
-		User user = User.getById(userId, Sets.create("visualizations", "apps", "role", "developer", "developerTeam"));
+		User user = User.getById(userId, Sets.create("visualizations", "apps", "role", "developer", "developerTeam", "testUserApp", "testUserCustomer"));
 		if (user == null) throw new BadRequestException("error.unknown.user", "Unknown user");
 
 		boolean testing = visualization.isDeveloper(user._id) || (user.developer != null && visualization.isDeveloper(user.developer));
@@ -285,6 +315,10 @@ public class Plugins extends APIController {
 			throw new BadRequestException("error.invalid.plugin", "Visualization is for a different role. Your role:" + user.role);
 		}
 		
+		if (!TestAccountTools.allowInstallation(context1, userId, visualizationId)) 
+			throw new BadRequestException("error.blocked.testuser", "Application does not allow test users.");
+		
+				
 		MidataId licence = null;
 		if (!testing && LicenceChecker.licenceRequired(visualization)) {
 			licence = LicenceChecker.hasValidLicence(user._id, visualization, null);

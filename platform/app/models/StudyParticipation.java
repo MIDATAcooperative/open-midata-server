@@ -54,13 +54,15 @@ public class StudyParticipation extends Consent {
 	public CommunicationChannelUseStatus projectEmails;
 	
 	public @NotMaterialized final static Set<String> SMALL_WITH_GROUP = Sets.create(Consent.SMALL, "group");
-	public @NotMaterialized final static Set<String> STUDY_EXTRA = Sets.create(Consent.FHIR, "ownerName","study","studyName","pstatus","group","joinMethod","projectEmails","recruiter", "recruiterName", "providers");
+	public @NotMaterialized final static Set<String> STUDY_EXTRA = Sets.create(Consent.FHIR, "ownerName","study","studyName","pstatus","group","joinMethod","projectEmails","recruiter", "recruiterName", "providers", "testUserApp");
 	
 	//public int yearOfBirth;
 	//public String country;
 	//public Gender gender;
 	
 	public @NotMaterialized String partName;
+	
+	public @NotMaterialized String studyCode;
 			
 	public StudyParticipation() {
 		this.type = ConsentType.STUDYPARTICIPATION;

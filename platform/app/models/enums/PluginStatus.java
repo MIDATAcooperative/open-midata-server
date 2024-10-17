@@ -51,5 +51,9 @@ public enum PluginStatus {
     /**
      * Plugin has been deleted
      */
-    DELETED
+    DELETED;
+    
+    public boolean isUsable() {
+    	return this == DEVELOPMENT || this == BETA || this == ACTIVE || this == DEPRECATED;
+    }
 }

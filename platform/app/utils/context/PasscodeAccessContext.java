@@ -14,7 +14,7 @@ public class PasscodeAccessContext extends ConsentAccessContext {
 	public PasscodeAccessContext(AccessContext parent, Consent consent, MidataId passcodeId) throws AppException {
 		super(consent, parent);
 		APSCache temp = new APSCache(passcodeId, parent.getCache().getAccountOwner());
-		temp.getAPS(consent._id, consent.owner).addAccess(Collections.singleton(parent.getAccessor()));
+		temp.getAPS(consent._id, consent.owner).addAccess(Collections.singleton(parent.getAccessor()), true);
 		temp.finishTouch();
 		parent.getCache().getAPS(consent._id, consent.owner);
 		//this.passcodeId = passcodeId;		

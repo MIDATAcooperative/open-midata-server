@@ -32,15 +32,17 @@ import org.bson.types.BasicBSONList;
 import models.MidataId;
 import models.Record;
 import utils.AccessLog;
+import utils.access.pseudo.FhirPseudonymizer;
+import utils.exceptions.AppException;
 
 public class RecordConversion {
 	
 	public static RecordConversion instance = new RecordConversion();
 
-	public Record currentVersionFromDB(DBRecord dbrecord) {
+	public Record currentVersionFromDB(DBRecord dbrecord) throws AppException {
 		Record record = new Record();
 		
-		record._id = dbrecord._id;
+		record._id = dbrecord.pseudoId!=null ? dbrecord.pseudoId : dbrecord._id;
 		record.context = dbrecord.context;
 		record.format = (String) dbrecord.meta.get("format");		
 		if (record.format != null) {
@@ -63,15 +65,19 @@ public class RecordConversion {
 		  Object modifiedByOrg = dbrecord.meta.get("modifiedByOrg");
           if (modifiedByOrg != null) record.modifiedByOrg = MidataId.from(modifiedByOrg);
           
-		  
-		  record.name = (String) dbrecord.meta.get("name");				
 		  record.created = (Date) dbrecord.meta.get("created");
 		  record.lastUpdated = (Date) dbrecord.meta.get("lastUpdated");
 		  if (record.lastUpdated == null) record.lastUpdated = record.created;
+		  record.name = (String) dbrecord.meta.get("name");		
 		  record.description = (String) dbrecord.meta.get("description");
 		  
 		  if (record.version == null) record.version = VersionedDBRecord.INITIAL_VERSION;
-						
+		
+          if (record.context.mustPseudonymize()) {
+		     FhirPseudonymizer.pseudonymizeMeta(record, record.context.getProjectDataFilters());
+		  }
+		  
+		  
 		  record.content = (String) dbrecord.meta.get("content");
 		  Object code = dbrecord.meta.get("code");
 		  if (code != null) {
@@ -93,7 +99,7 @@ public class RecordConversion {
 		return record;		
 	}
 	
-	public List<Record> currentVersionFromDB(List<DBRecord> dbrecords) {
+	public List<Record> currentVersionFromDB(List<DBRecord> dbrecords) throws AppException {
 		long now = System.currentTimeMillis();
 		AccessLog.log("start convert");
 		List<Record> result = new ArrayList<Record>(dbrecords.size());

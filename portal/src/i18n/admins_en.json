@@ -30,6 +30,7 @@
 	"not_admin_confirmed" : "Not confirmed by administrator",
     "overview" : "Overview",
     "specific_user" : "Specific User",
+    "testusers" : "Test Users",
     "role" : "Role",
     "status" : "Status",
     "midata_id" : "@PRODUCT ID",
@@ -77,7 +78,8 @@
     "change_address_btn" : "Change Profile",
     "make_master_btn" : "Add master user role",
     "remove_master_btn" : "Revoke master user role",
-    "history" : "Account history"
+    "history" : "Account history",
+    "test_user" : "Test User Account"
   },
   
   "admin_news" : {
@@ -192,6 +194,8 @@
      "infos_part" : "Information for participants",
      "infos_internal" : "Internal Information",     
      "required_information" : "Required Information",
+     "data_filters" : "Data filters for pseudonymization",
+     "none" : "None",
      "anonymous" : "Anonymous",
      "required_assistance" : "Required Assistance",
      "termsOfUse" : "General Terms and Conditions",
@@ -207,7 +211,8 @@
      "end_validation_btn" : "Complete Validation",
      "back_to_draft_btn" : "Back to Draft",
      "delete_study_btn" : "Delete Project",
-     "export_btn" : "Export"    
+     "export_btn" : "Export",
+     "messages" : "Communication"    
   },
   
   "admin_stats" : {

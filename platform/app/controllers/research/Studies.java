@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ import org.hl7.fhir.r4.model.DomainResource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
@@ -60,6 +62,7 @@ import models.Consent;
 import models.FilterRule;
 import models.Info;
 import models.Member;
+import models.MessageDefinition;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Model;
@@ -76,6 +79,7 @@ import models.StudyAppLink;
 import models.StudyGroup;
 import models.StudyParticipation;
 import models.StudyRelated;
+import models.SubProjectGroupMember;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -88,10 +92,12 @@ import models.enums.InfoType;
 import models.enums.InformationType;
 import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
+import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
+import models.enums.ProjectDataFilter;
 import models.enums.ProjectLeavePolicy;
 import models.enums.RejoinPolicy;
 import models.enums.ResearcherRole;
@@ -201,6 +207,7 @@ public class Studies extends APIController {
 		study.type = JsonValidation.getEnum(json, "type", StudyType.class);
 		study.description = JsonValidation.getString(json, "description");		
 		study.identifiers = JsonExtraction.extractStringList(json.get("identifiers"));
+		study.categories = JsonExtraction.extractStringList(json.get("categories"));
 		
 		study.createdAt = new Date();
 		study.createdBy = userId;
@@ -213,9 +220,11 @@ public class Studies extends APIController {
 		study.participantRules = new HashSet<FilterRule>();
 		study.recordQuery = new HashMap<String, Object>();
 		study.requiredInformation = InformationType.RESTRICTED;
+		study.dataFilters = new HashSet<ProjectDataFilter>();
 		study.anonymous = false;
 		study.assistance = AssistanceType.NONE;
 		study.groups = new ArrayList<StudyGroup>();
+		study.joinMethods = EnumSet.noneOf(JoinMethod.class);
 
 		study.studyKeywords = new HashSet<MidataId>();
 
@@ -568,6 +577,47 @@ public class Studies extends APIController {
 
 		return ok(JsonOutput.toJson(studies, "Study", fields));
 	}
+	
+	/**
+     * list subprojects of current project
+     * 
+     * @return list of studies
+     * @throws JsonValidationException
+     * @throws InternalServerException
+     */
+    @APICall
+    @Security.Authenticated(ResearchOrDeveloperSecured.class)
+    public Result listSubprojects(Request request, String id) throws AppException {
+        MidataId executorId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+        AccessContext context = portalContext(request);
+        MidataId studyid = MidataId.parse(id);
+        
+        Study study = Study.getById(studyid, Sets.create("owner", "type", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation"));
+        if (study == null)
+            throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+
+        UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyid, executorId);
+        if (ugm == null)
+            throw new BadRequestException("error.notauthorized.study", "Not member of study team");
+       
+        Set<SubProjectGroupMember> ugms = SubProjectGroupMember.getSubProjectsActiveByMember(Collections.singleton(studyid));        
+        Map<MidataId, SubProjectGroupMember> mapping = new HashMap<MidataId, SubProjectGroupMember>();
+        for (SubProjectGroupMember ugm1 : ugms) {
+            if (ugm1.entityType == EntityType.PROJECT) {
+                mapping.put(ugm1.userGroup, ugm1);
+            }
+        }
+
+        Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "code", "participantSearchStatus", "validationStatus", "groups");
+        Set<Study> studies = Study.getAll(null, CMaps.map("_id", mapping.keySet()), fields);
+
+        for (Study study1 : studies) mapping.get(study1._id).study = study1;
+        
+        Map<String, Set<String>> out = new HashMap<String, Set<String>>();
+        out.put("UserGroupMember",  SubProjectGroupMember.ALL);
+        out.put("Study", fields);
+        return ok(JsonOutput.toJson(ugms, out));
+    }
 
 	/**
 	 * list all studies waiting for validation
@@ -606,9 +656,9 @@ public class Studies extends APIController {
 		MidataId userid = MidataId.from(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 
-		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "identifiers", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
-				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
-				"dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy", "forceClientCertificate");
+		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "identifiers", "categories", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
+				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "dataFilters", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
+				"dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup", "autoJoinTestGroup", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy", "forceClientCertificate", "predefinedMessages");
 		Study study = Study.getById(studyid, fields);
 
 		if (study != null && study.consentObserver != null) {
@@ -646,7 +696,7 @@ public class Studies extends APIController {
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal",
 				"owner", "participantRules", "recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate",
-				"dataCreatedBefore", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy");
+				"dataCreatedBefore", "type", "joinMethods", "consentObserver", "consentObserverNames", "leavePolicy", "rejoinPolicy", "dataFilters", "predefinedMessages");
 		Study study = Study.getById(studyid, fields);
 
 		if (study != null && study.consentObserver != null) {
@@ -928,12 +978,14 @@ public class Studies extends APIController {
 			throw new BadRequestException("error.missing.study", "Study does not exist");
 
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_REJECTED, userId, null, study);
-		if (!study.validationStatus.equals(StudyValidationStatus.VALIDATION))
+		if (!study.validationStatus.equals(StudyValidationStatus.VALIDATION) && !study.validationStatus.equals(StudyValidationStatus.VALIDATED))
 			throw new BadRequestException("error.already_done.validation","Study has already been validated.");
 
-		// study.addHistory(new History(EventType.STUDY_REJECTED, user, "Reset
-		// to draft mode"));
-		study.setValidationStatus(StudyValidationStatus.DRAFT);
+		if (study.validationStatus.equals(StudyValidationStatus.VALIDATED)) {
+		  study.setValidationStatus(StudyValidationStatus.PATCH);
+		} else {
+		  study.setValidationStatus(StudyValidationStatus.DRAFT);
+		}
 		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		AuditManager.instance.success();
@@ -1211,7 +1263,7 @@ public class Studies extends APIController {
 			consent.sharingQuery = ConsentQueryTools.getEmptyQuery();
 
 			RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, context.getAccessor(), consent._id, true, true, true);
-			Circles.persistConsentMetadataChange(context, consent, true);
+			Circles.persistConsentMetadataChange(context, consent, true, false);
 			Circles.addUsers(context, ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
 			reference = consent;
@@ -1237,7 +1289,7 @@ public class Studies extends APIController {
 		consent.writes = WritePermissionType.NONE;
 
 		RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, study._id, consent._id, true, true, true);
-		Circles.persistConsentMetadataChange(context, consent, true);
+		Circles.persistConsentMetadataChange(context, consent, true, false);
 
 		RecordManager.instance.copyAPS(context, reference._id, consent._id, ownerId);
 		return consent;
@@ -1266,7 +1318,7 @@ public class Studies extends APIController {
 			consent.noBackshare = true;
 
 			RecordManager.instance.createAnonymizedAPS(context.getCache(), ownerId, context.getAccessor(), consent._id, true, true, true);
-			Circles.persistConsentMetadataChange(context, consent, true);
+			Circles.persistConsentMetadataChange(context, consent, true, false);
 			Circles.addUsers(context, ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
 			reference = consent;
@@ -1842,11 +1894,16 @@ public class Studies extends APIController {
 		return ok();
 	}
 
-	public static void autoApprove(MidataId app, Study study, AccessContext context, String group) throws AppException {
+	public static void autoApprove(MidataId app, Study study, AccessContext context, String group, String testGroup) throws AppException {
 		Set<String> fields = StudyParticipation.STUDY_EXTRA; //.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");
-		List<StudyParticipation> participants1 = StudyParticipation.getParticipantsByStudy(study._id, CMaps.map("pstatus", ParticipationStatus.REQUEST), fields, 0);
-
-		autoApprove(app, study, context, group, participants1);
+		List<StudyParticipation> participants0 = StudyParticipation.getParticipantsByStudy(study._id, CMaps.map("pstatus", ParticipationStatus.REQUEST), fields, 0);
+		List<StudyParticipation> participants1 = new ArrayList<StudyParticipation>(participants0.size());
+		List<StudyParticipation> testParticipants = new ArrayList<StudyParticipation>();
+        for (StudyParticipation sp : participants0) {
+        	if (sp.testUserApp != null) testParticipants.add(sp); else participants1.add(sp);
+        }        
+        if (!participants1.isEmpty()) autoApprove(app, study, context, group, participants1);
+        if (!testParticipants.isEmpty() && testGroup != null) autoApprove(app, study, context, testGroup, testParticipants);
 	}
 
 	public static void autoApprove(MidataId app, Study study, AccessContext context, String group, List<StudyParticipation> participants1) throws AppException {
@@ -1880,19 +1937,27 @@ public class Studies extends APIController {
 			}
 
 			Set<MidataId> ids = new HashSet<MidataId>();
+			Set<MidataId> idsGroup = new HashSet<MidataId>();
 
 			for (StudyParticipation participation : participants) {
-				if (!group.equals(participation.group))
+				if (participation.group == null) {
+				  if (!group.equals(participation.group))
 					AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_GROUP_ASSIGNED, app, auditUser, participation, study);
-				participation.group = group;
+				  participation.group = group;
+				  Messager.sendProjectMessage(context, participation, MessageReason.PROJECT_PARTICIPATION_GROUP_ASSIGNED, participation.group);
+				
+				  idsGroup.add(participation._id);
+				}
 				ids.add(participation._id);
 			}
 
-			StudyParticipation.setManyGroup(ids, group);
+			StudyParticipation.setManyGroup(idsGroup, group);
 
 			for (StudyParticipation participation : participants) {
-				if (!participation.pstatus.equals(ParticipationStatus.ACCEPTED))
+				if (!participation.pstatus.equals(ParticipationStatus.ACCEPTED)) {
 					AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_APPROVED, app, auditUser, participation, study);
+					Messager.sendProjectMessage(context, participation, MessageReason.PROJECT_PARTICIPATION_APPROVED, participation.group);
+				}
 			}
 
 			StudyParticipation.setManyStatus(ids, ParticipationStatus.ACCEPTED);
@@ -1900,7 +1965,7 @@ public class Studies extends APIController {
 			for (StudyParticipation participation : participants) { 
 				if (!participation.pstatus.equals(ParticipationStatus.ACCEPTED)) {
 			      participation.pstatus = ParticipationStatus.ACCEPTED;
-			      Circles.persistConsentMetadataChange(context, participation, false); 
+			      Circles.persistConsentMetadataChange(context, participation, false, false); 
 			    } 
 			}
 			    
@@ -1911,12 +1976,12 @@ public class Studies extends APIController {
 	}
 
 	public static void autoApproveCheck(MidataId app, MidataId studyid, AccessContext context) throws AppException {
-		Study study = Study.getById(studyid, Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "name", "code", "type"));
+		Study study = Study.getById(studyid, Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "autoJoinTestGroup", "name", "code", "type"));
 		if (study != null && study.autoJoinGroup != null) {
 			if (study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)
 					&& (study.executionStatus.equals(StudyExecutionStatus.PRE) || study.executionStatus.equals(StudyExecutionStatus.RUNNING))) {
 				try {
-					autoApprove(app, study, context, study.autoJoinGroup);
+					autoApprove(app, study, context, study.autoJoinGroup, study.autoJoinTestGroup);
 				} catch (BadRequestException e) {
 				} // We are not interested if the researcher is not allowed to
 					// do it.
@@ -1974,6 +2039,8 @@ public class Studies extends APIController {
 		participation.pstatus = ParticipationStatus.RESEARCH_REJECTED;
 		Circles.consentStatusChange(context, participation, ConsentStatus.REJECTED);
 		Circles.sendConsentNotifications(context, participation, ConsentStatus.REJECTED, false);
+		Messager.sendProjectMessage(context, participation, MessageReason.PROJECT_PARTICIPATION_REJECTED, participation.group);
+		
 		leaveSharing(context, studyId, partId);
 		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
 		AuditManager.instance.success();
@@ -2006,7 +2073,7 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("name", "pstatus", "owner", "ownerName"));
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("name", "pstatus", "owner", "ownerName", "study"));
 		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "code", "owner", "createdBy", "type"));
 
 		if (study == null)
@@ -2024,10 +2091,14 @@ public class Studies extends APIController {
 		if (!self.getConfirmedRole().manageParticipants())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 
-		participation.group = JsonValidation.getString(json, "group");
-		// participation.addHistory(new History(EventType.GROUP_ASSIGNED, user,
-		// comment));
-		StudyParticipation.set(participation._id, "group", participation.group);
+		String group = JsonValidation.getString(json, "group");
+		
+		if (!group.equals(participation.group)) {
+		  participation.group = group;
+		
+		  StudyParticipation.set(participation._id, "group", participation.group);
+		  
+		}
 		AuditManager.instance.success();
 
 		return ok();
@@ -2040,13 +2111,16 @@ public class Studies extends APIController {
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
-		Study study = Study.getById(studyid, Sets.create("owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "assistance"));
+		Study study = Study.getById(studyid, Sets.create("owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "assistance", "dataFilters"));
 
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 
 		ObjectNode result = Json.newObject();
 		result.put("identity", study.requiredInformation.toString());
+		ArrayNode dataFilters = Json.newArray();
+		if (study.dataFilters != null) for (ProjectDataFilter df : study.dataFilters) dataFilters.add(df.toString()); 
+		result.set("dataFilters", dataFilters);
 		result.put("anonymous", study.anonymous);
 		result.put("assistance", study.assistance.toString());
 		return ok(result);
@@ -2058,12 +2132,13 @@ public class Studies extends APIController {
 	public Result setRequiredInformationSetup(Request request, String id) throws JsonValidationException, AppException {
 		JsonNode json = request.body().asJson();
 
-		JsonValidation.validate(json, "identity", "assistance");
+		JsonValidation.validate(json, "identity", "assistance", "dataFilters");
 
 		InformationType inf = JsonValidation.getEnum(json, "identity", InformationType.class);
 		AssistanceType assist = JsonValidation.getEnum(json, "assistance", AssistanceType.class);
 		boolean anonymous = JsonValidation.getBoolean(json, "anonymous");
-
+        Set<ProjectDataFilter> dataFilters = JsonExtraction.extractEnumSet(json, "dataFilters", ProjectDataFilter.class);
+		
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
@@ -2071,7 +2146,7 @@ public class Studies extends APIController {
 		
 
 		Study study = Study.getById(studyid,
-				Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "createdBy", "code"));
+				Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "createdBy", "code", "dataFilters"));
 
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
@@ -2084,9 +2159,18 @@ public class Studies extends APIController {
 		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 
-		if (study.validationStatus != StudyValidationStatus.DRAFT)
+		if (study.validationStatus != StudyValidationStatus.DRAFT && study.validationStatus != StudyValidationStatus.PATCH) {
+			// Allow to add data filters for existing projects
+		    if (dataFilters != null && study.dataFilters == null) {
+		    	study.setDataFilters(dataFilters);
+		    	MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		    	RecordManager.instance.fixAccount(context);
+				AuditManager.instance.success();
+		    	return ok();
+		    }
+		
 			throw new BadRequestException("error.no_alter.study", "Setup can only be changed as long as study is in draft phase.");
-
+		}
 		if (anonymous && inf.equals(InformationType.DEMOGRAPHIC))
 			throw new BadRequestException("error.invalid.anonymous", "Anonymous can only be set if pseudonymized.");
 
@@ -2100,7 +2184,11 @@ public class Studies extends APIController {
 		study.setRequiredInformation(inf);
 		study.setAnonymous(anonymous);
 		study.setAssistance(assist);
+		study.setDataFilters(dataFilters);
 		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
+		if (study.validationStatus == StudyValidationStatus.PATCH) {
+			RecordManager.instance.fixAccount(context);
+		}
 		AuditManager.instance.success();
 		return ok();
 	}
@@ -2132,10 +2220,11 @@ public class Studies extends APIController {
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.getConfirmedRole().maySetup())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
-		if (study.validationStatus != StudyValidationStatus.DRAFT)
+		if (study.validationStatus != StudyValidationStatus.DRAFT && study.validationStatus != StudyValidationStatus.PATCH)
 			throw new BadRequestException("error.no_alter.study", "Setup can only be changed as long as study is in draft phase.");
-
-		if (json.has("groups")) {
+        boolean isPatch = study.validationStatus == StudyValidationStatus.PATCH;
+		
+		if (json.has("groups") && !isPatch) {
 
 			Set<ServiceInstance> instances = ServiceInstance.getByManager(studyid, ServiceInstance.ALL);
 			if (!instances.isEmpty())
@@ -2194,6 +2283,9 @@ public class Studies extends APIController {
 		if (json.has("identifiers")) {
 			study.setIdentifiers(JsonExtraction.extractStringList(json.get("identifiers")));
 		}
+		if (json.has("categories")) {
+			study.setCategories(JsonExtraction.extractStringList(json.get("categories")));
+		}
 		if (json.has("type")) {
 			study.setType(JsonValidation.getEnum(json, "type", StudyType.class));
 		}
@@ -2214,7 +2306,7 @@ public class Studies extends APIController {
 			study.consentObserver = new HashSet<MidataId>();
 			for (String observerName : observerNames) {
 				Plugin plugin = Plugin.getByFilename(observerName, Sets.create("filename", "type", "consentObserving", "status"));
-				if (plugin != null && plugin.type.equals("external") && plugin.consentObserving && plugin.status != PluginStatus.DELETED) {
+				if (plugin != null && (plugin.type.equals("external") || plugin.type.equals("broker")) && plugin.consentObserving && plugin.status != PluginStatus.DELETED) {
 					study.consentObserver.add(plugin._id);
 				}
 			}
@@ -2242,7 +2334,7 @@ public class Studies extends APIController {
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create(Study.ALL, "name", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "code",
-				"startDate", "endDate", "dataCreatedBefore", "type", "autoJoinGroup", "autoJoinExecutor"));
+				"startDate", "endDate", "dataCreatedBefore", "type", "autoJoinGroup", "autoJoinTestGroup", "autoJoinExecutor"));
 
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
@@ -2261,6 +2353,7 @@ public class Studies extends APIController {
 			if (!self.getConfirmedRole().manageParticipants())
 				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 			String grp = JsonValidation.getStringOrNull(json, "autoJoinGroup");
+			String testGrp = JsonValidation.getStringOrNull(json, "autoJoinTestGroup");
 
 			if (JsonValidation.getBoolean(json, "autoJoin")) {
 
@@ -2275,15 +2368,15 @@ public class Studies extends APIController {
 
 				MobileAppInstance appInstance = ApplicationTools.createServiceApiKey(context, serviceInstance);
 
-				study.setAutoJoinGroup(grp, serviceInstance.executorAccount, ServiceHandler.encrypt(KeyManager.instance.currentHandle(serviceInstance.executorAccount)));
+				study.setAutoJoinGroup(grp, testGrp, serviceInstance.executorAccount, ServiceHandler.encrypt(KeyManager.instance.currentHandle(serviceInstance.executorAccount)));
 			} else {
 				Set<ServiceInstance> instances = ServiceInstance.getByManagerAndApp(study._id, RuntimeConstants.instance.autojoinerPlugin, ServiceInstance.ALL);
 				for (ServiceInstance instance : instances)
 					ApplicationTools.deleteServiceInstance(context, instance);
-				study.setAutoJoinGroup(null, null, null);
+				study.setAutoJoinGroup(null, null, null, null);
 			}
 			if (grp != null && study.participantSearchStatus == ParticipantSearchStatus.SEARCHING) {
-				autoApprove(null, study, portalContext(request), grp);
+				autoApprove(null, study, portalContext(request), grp, testGrp);
 			}
 		}
 		if (json.has("infos")) {
@@ -2331,6 +2424,12 @@ public class Studies extends APIController {
 
 			study.setInfosInternal(result);
 		}
+		
+		if (json.has("predefinedMessages")) {
+			Map<String, MessageDefinition> msgs = Market.parseMessages(json);
+			study.setPredefinedMessages(msgs);
+		}
+		
 		MidataResearchStudyResourceProvider.updateFromStudy(context, study._id);
 
 		return ok();
@@ -2461,7 +2560,7 @@ public class Studies extends APIController {
 		Set<UserGroupMember> members = UserGroupMember.getAllActiveUserByGroup(oldGroup);
 
 		for (UserGroupMember member : members) {
-			ProjectTools.addToUserGroup(context, member.getConfirmedRole(), userGroup._id, EntityType.USER, member.member);
+			ProjectTools.addOrMergeToUserGroup(context, member.getConfirmedRole(), userGroup._id, EntityType.USER, member.member, true);
 		}
 
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
@@ -2480,6 +2579,7 @@ public class Studies extends APIController {
 			newLink.shareToStudy = sal.shareToStudy;
 			newLink.studyGroup = sal.studyGroup;
 			newLink.studyId = study._id;
+			newLink.linkTargetType = sal.linkTargetType;
 			newLink.type = sal.type;
 			newLink.usePeriod = sal.usePeriod;
 			newLink.validationDeveloper = StudyValidationStatus.DRAFT;
@@ -2592,6 +2692,7 @@ public class Studies extends APIController {
 		study.code = JsonValidation.getString(studyJson, "code");
 		study.description = JsonValidation.getString(studyJson, "description");
 		study.identifiers = JsonExtraction.extractStringList(studyJson.get("identifiers"));
+		study.categories = JsonExtraction.extractStringList(studyJson.get("categories"));
         study.owner = org._id;        
 		study.createdAt = new Date();
 		study.createdBy = userId;
@@ -2673,6 +2774,7 @@ public class Studies extends APIController {
 		study.infosInternal = result;
 		
 		study.requiredInformation = JsonValidation.getEnum(studyJson, "requiredInformation", InformationType.class);
+		study.dataFilters = JsonExtraction.extractEnumSet(json, "dataFilters", ProjectDataFilter.class);
 		study.assistance = JsonValidation.getEnum(studyJson, "assistance", AssistanceType.class);
 		study.anonymous = JsonValidation.getBoolean(studyJson, "anonymous");
 		study.forceClientCertificate = JsonValidation.getBoolean(studyJson, "forceClientCertificate"); 
@@ -2692,8 +2794,8 @@ public class Studies extends APIController {
 		GroupResourceProvider.updateMidataUserGroup(userGroup);
 		userGroup.add();
 		
-		ProjectTools.addToUserGroup(context, ResearcherRole.DEVELOPER(), userGroup._id, EntityType.USER, userId);
-		ProjectTools.addToUserGroup(context, ResearcherRole.SPONSOR(), userGroup._id, EntityType.USER, res._id);		
+		ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.DEVELOPER(), userGroup._id, EntityType.USER, userId, true);
+		ProjectTools.addOrMergeToUserGroup(context, ResearcherRole.SPONSOR(), userGroup._id, EntityType.USER, res._id, true);		
 		
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 
@@ -2780,5 +2882,30 @@ public class Studies extends APIController {
 				
 		return ok();
 	}
+	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)	
+	public Result shareCode(Request request, String study, String codestr) throws AppException {
+        JsonNode json = request.body().asJson();
+		
+				
+		AccessContext context = portalContext(request);
+								
+		ParticipationCode code = ParticipationCode.getByCode(codestr);
+		if (code == null || !code.study.equals(MidataId.parse(study))) return inputerror("code", "notfound", "Unknown Participation Code.");
+		
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(code.study, context.getAccessor());
+		if (self == null)
+			throw new AuthException("error.notauthorized.action", "User not member of study group");
+		//if (!self.getConfirmedRole().manageParticipants())
+		//	throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
+				
+		if (code.status == ParticipationCodeStatus.UNUSED) {
+		  code.setStatus(ParticipationCodeStatus.SHARED);
+		}
+		
+		return ok();
+	}
+	
 
 }

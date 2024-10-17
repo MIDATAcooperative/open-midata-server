@@ -478,7 +478,7 @@ function analyze(usedApps, usedProjects, usedAccounts, issues, accprojects) {
     for (let project of usedProjects) {
         projects[project._id] = project;
         if (!project.joinMethods || project.joinMethods.length == 0) add("error","workspace.error.no_join_method", project.name, null, projectlink("study.overview", project._id));
-        if (project.validationStatus == "DRAFT") add("warning", "workspace.warning.project_not_validated", project.name, null, projectlink("study.overview", project._id));
+        if (project.validationStatus == "DRAFT" || project.validationStatus == "PATCH") add("warning", "workspace.warning.project_not_validated", project.name, null, projectlink("study.overview", project._id));
         if (project.validationStatus == "VALIDATION") add("error", "workspace.error.project_in_validation", project.name, null, projectlink("study.overview", project._id));
         if (project.validationStatus == "REJECTED") add("error", "workspace.error.project_rejected", project.name, null, projectlink("study.overview", project._id));
 
@@ -510,8 +510,8 @@ function analyze(usedApps, usedProjects, usedAccounts, issues, accprojects) {
               if (link.validationResearch != "VALIDATED") add("error", "workspace.link_not_validated_research", app.filename, link.study.name, applink("applink", app._id));
               if (link.validationDeveloper != "VALIDATED") add("error", "workspace.link_not_validated_developer", app.filename, link.study.name, applink("applink", app._id));
               if (link.usePeriod.indexOf(link.study.executionStatus)<0) add("warning", "studyactions.status.study_wrong_status", link.study.name, null, projectlink("study.overview", link.study._id));
-              if (link.type.indexOf('REQUIRE_P')>=0 && link.study.participantSearchStatus != 'SEARCHING') add("error","error.closed.study", link.study.name, null, projectlink("study.overview", link.study._id));
-              if ((link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0) add("error", "studyactions.status.study_no_app_participation", link.study.name, null, projectlink("study.rules", link.study._id));
+              if (link.type.indexOf('AUTOADD_P')>=0 && link.study.participantSearchStatus != 'SEARCHING') add("error","error.closed.study", link.study.name, null, projectlink("study.overview", link.study._id));
+              if ((link.type.indexOf('AUTOADD_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0) add("error", "studyactions.status.study_no_app_participation", link.study.name, null, projectlink("study.rules", link.study._id));
             }	
         }
     }
@@ -639,7 +639,7 @@ export default {
             .then((st) => { $data.availableProjects = st.data }));
             for (let entry of $data.setup) {
                 if (entry.type == "app") {
-                    waitFor.push(apps.getApps({ filename : entry.name }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys"])
+                    waitFor.push(apps.getApps({ filename : entry.name }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax"])
                     .then(function(result) {
                         if (result.data.length==0) {
                             me.addError("workspace.error.app_no_exist", entry.name);

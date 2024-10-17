@@ -200,7 +200,8 @@ public class Users extends APIController {
 			for (User user : users) user.name = (user.firstname + " "+ user.lastname).trim();
 		}
 		
-		if (!getRole().equals(UserRole.ADMIN)) {
+		// Do not spam Audit Log with Researcher searches when browsing projects
+		if (!getRole().equals(UserRole.ADMIN) && role!=UserRole.RESEARCH) {
 			for (User result : users) {
 				if (!result._id.equals(PortalSessionToken.session().ownerId)) {
 					AuditManager.instance.addAuditEvent(

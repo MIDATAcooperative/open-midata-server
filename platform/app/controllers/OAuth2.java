@@ -78,6 +78,7 @@ import utils.InstanceConfig;
 import utils.LinkTools;
 import utils.PluginLoginCache;
 import utils.RuntimeConstants;
+import utils.TestAccountTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
@@ -140,9 +141,12 @@ public class OAuth2 extends Controller {
         	return false;
         }
         
+        if (!TestAccountTools.allowInstallation(context, ownerId, applicationId)) 
+			return false;
+	        
         if (links == null) links = StudyAppLink.getByApp(app._id);
         for (StudyAppLink sal : links) {
-        	if (sal.isConfirmed() && sal.active && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
+        	if (sal.isConfirmed() && sal.active && sal.type.contains(StudyAppLinkType.CHECK_P)) {
         		
         		if (sal.linkTargetType == LinkTargetType.ORGANIZATION || sal.linkTargetType == LinkTargetType.SERVICE) {
       			  Consent c = LinkTools.findConsentForAppLink(appInstance.owner, sal);
@@ -540,6 +544,7 @@ public class OAuth2 extends Controller {
 		if (token.userRole == null) throw new NullPointerException();
 		if (confirmStudy==null) confirmStudy = Collections.emptySet();
 		if (app == null) {
+			AccessLog.log("no app set, using portal requirements");
 			requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(token.userRole);
 			return requirements;
 		}
@@ -549,7 +554,7 @@ public class OAuth2 extends Controller {
 		
 		
 		for (StudyAppLink sal : links) {
-			if (sal.isConfirmed() && sal.active && ((sal.type.contains(StudyAppLinkType.OFFER_P) && confirmStudy.contains(sal.studyId)) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
+			if (sal.isConfirmed() && sal.active && ((sal.type.contains(StudyAppLinkType.OFFER_P) && confirmStudy.contains(sal.studyId)) || sal.type.contains(StudyAppLinkType.AUTOADD_P))) {
 				if (sal.linkTargetType == null || sal.linkTargetType == LinkTargetType.STUDY) {
 					Study study = sal.getStudy();				
 					if (study.requirements != null) requirements.addAll(study.requirements);		
@@ -822,14 +827,14 @@ public class OAuth2 extends Controller {
 			AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
 			boolean allRequired = true;
 			for (StudyAppLink sal : links) {
-				if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+				if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.CHECK_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
 					if (sal.linkTargetType == LinkTargetType.ORGANIZATION || sal.linkTargetType == LinkTargetType.SERVICE) {
 					  Consent existingConsent = LinkTools.findConsentForAppLink(token.ownerId, sal);
 					  allRequired = allRequired && (existingConsent != null);
 					} else {
 					  if (allRequired) {
 					     allRequired = checkAlreadyParticipatesInStudy(sal.studyId, token.ownerId);
-					     if (!allRequired && sal.type.contains(StudyAppLinkType.REQUIRE_P) && token.joinCode==null) {
+					     if (!allRequired && sal.type.contains(StudyAppLinkType.AUTOADD_P) && token.joinCode==null) {
 					    	Study study = sal.getStudy();
 					    	if (!study.joinMethods.contains(token.appId != null ? JoinMethod.APP : JoinMethod.PORTAL)) throw new JsonValidationException("error.blocked.joinmethod", "code", "joinmethod", "Study is not searching for participants using this channel.");
 					     }
@@ -956,12 +961,14 @@ public class OAuth2 extends Controller {
 	public static Result loginHelper(Request request) throws AppException {
 		PortalSessionToken tk = PortalSessionToken.session();
 		if (tk instanceof ExtendedSessionToken) {
+			AccessLog.log("reusing existing extended session token");
 			ExtendedSessionToken token = (ExtendedSessionToken) tk;
 			token.currentContext = ContextManager.instance.createLoginOnlyContext(tk.ownerId, null, tk.userRole);
 			JsonNode json = Json.newObject();
 			Plugin app = token.appId != null ? validatePlugin(token, json) : null;
 			return loginHelper(request, token, json, app, token.currentContext);
 		} else {
+			AccessLog.log("creating new extended session token");
 			ExtendedSessionToken token = new ExtendedSessionToken();
 			token.ownerId = tk.ownerId;
 			token.orgId = tk.orgId;
@@ -1006,7 +1013,7 @@ public class OAuth2 extends Controller {
 		}
 		
 		Set<UserFeature> requirements = determineRequirements(token, app, links, token.confirmations);
-					
+		 		
 																		
 		User user = identifyUserForLogin(token, json);
 		Set<UserFeature> notok;
@@ -1026,12 +1033,13 @@ public class OAuth2 extends Controller {
 		if (studySelectionRequired != null) return studySelectionRequired;
 		
 		notok = Application.loginHelperPreconditionsFailed(user, requirements);
-	    
+	    if (notok != null) AccessLog.log("not ok conditions: ",notok.toString());
+		
 		long ts3 = System.currentTimeMillis();
 		AccessLog.log("[login] preparing session, time=", Long.toString(ts3-ts2));
 	 
 		int keyType;
-		if (token.handle != null) {			
+		if (token.handle != null) {			 
 			if (token.currentContext == null) {
 				KeyManager.instance.continueSession(token.handle);
 				token.currentContext = ContextManager.instance.createLoginOnlyContext(token.ownerId, token.appId, user.role );
@@ -1155,22 +1163,22 @@ public class OAuth2 extends Controller {
 	    ObjectNode obj = Json.newObject();
 	    
 	    try {
-	    	
-	    	MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
-			if (authToken != null) {				
-			   AccessContext context = ExecutionInfo.checkMobileToken(request, authToken, false, true);	
-	    		 
+	    		
+			   AccessContext context = ExecutionInfo.checkToken(request, token, false, true);	
+			   MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
+				
 		       User user = User.getById(context.getOwner(), User.FOR_LOGIN);
 		       Plugin plugin = Plugin.getById(context.getUsedPlugin());
 		       obj.put("active", true);
-			   obj.put("client_id", plugin.filename);		
+			   obj.put("client_id", plugin.filename);	
+			   obj.put("actor_id", context.getActor().toString());
 			   obj.put("scope", getScope(plugin, context) /*"patient/*.read openid fhirUser" */);				
-			   obj.put("fhirUser", getFhirUser(user));
-			   obj.put("exp", authToken.expiration / 1000l);
-		   } else {
-			   obj.put("active", false);
-		   }
-			
+			   if (user!=null) obj.put("fhirUser", getFhirUser(user));
+			   if (authToken != null) obj.put("exp", authToken.expiration / 1000l);
+			   if (context.getUserGroupAccessor() != null) {
+				   obj.put("group_id", context.getUserGroupAccessor().toString());
+			   }
+		  
 	    } catch (AppException e) {
 	       obj.put("active", false);
 	    }					

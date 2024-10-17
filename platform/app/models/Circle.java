@@ -21,12 +21,15 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
+import controllers.Circles;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.DatabaseException;
 import utils.db.OrderOperations;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -100,7 +103,7 @@ public class Circle extends Consent {
 		}*/
 	}
 
-	public static void delete(MidataId ownerId, MidataId circleId) throws InternalServerException {
+	public static void delete(AccessContext context, MidataId ownerId, MidataId circleId) throws AppException {
 		// find order first
 		
 		Circle circle = Circle.getByIdAndOwner(circleId, ownerId, Sets.create("order","dataupdate","status"));
@@ -113,7 +116,8 @@ public class Circle extends Consent {
 				throw new InternalServerException("error.internal", e);
 			}
 			
-			circle.setStatus(ConsentStatus.DELETED);
+			Circles.consentStatusChange(context, circle, ConsentStatus.DELETED);
+			
         }
 		        
 		//Model.delete(Circle.class, collection, CMaps.map("owner", ownerId).map("_id", circleId));

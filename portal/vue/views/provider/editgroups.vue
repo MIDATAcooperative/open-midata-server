@@ -60,7 +60,7 @@
         </form>			
         <error-box :error="error"></error-box>
         <div v-if="usergroup && usergroup._id">
-            <router-link :to="{ path : './usergroups' }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
+            <a @click="$router.back()" href="javascript:" class="btn btn-default mr-1" v-t="'common.back_btn'"></a>
             <button v-if="add.entityName" :disabled="action != null || !mayChangeTeam()" type="button" class="btn btn-primary mr-1" v-t="'provider_editusergroup.update_btn'" @click="updateMember();"></button>
             <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addOrganizations();" v-t="'provider_editgroups.add_organization_btn'"></button>
             <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addOrganizations2();" v-t="'provider_editgroups.add_organization2_btn'"></button>
@@ -131,7 +131,7 @@ export default {
         setupBrokerSearch : null,
 	    form : {},        
         add : { user:null, role:{} },
-        rights : [ "readData", "writeData", "changeTeam","setup","applications" ]       
+        rights : [ "readData", "writeData", "participants", "changeTeam", "setup","applications" ]       
     }),
 
     components: {  ErrorBox, FormGroup, Success, CheckBox, Panel, Modal, UserGroupSearch, OrganizationSearch, DataBrokerSearch },
@@ -204,6 +204,7 @@ export default {
             var r = "";            
             r += role.readData ? "R" : "-";
             r += role.writeData ? "W" : "-";          
+            r += role.participants ? "C" : "-";
             r += role.changeTeam ? "T" : "-";          
             r += role.applications ? "A" : "-";
             r += role.setup ? "S" : "-";	   

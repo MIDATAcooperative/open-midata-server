@@ -21,6 +21,13 @@
 				
 		<div class="row" v-if="study && study.infos">
 			<div class="col-sm-4 infopanel">
+			    <div v-if="participation && participation.ownerName" class="panel panel-primary">
+					<div class="panel-heading" v-t="'studydetails.pseudonym'"></div>
+					<div class="panel-body">
+                      <div class="lead">{{ participation.ownerName }}</div>						
+					</div>
+				</div>
+			
           		<div class="panel panel-primary">
 					<div class="panel-heading" v-t="'studydetails.duration'"></div>
 					<div class="panel-body">
@@ -36,7 +43,7 @@
 					   		{{ label }}
 						</span>						
 					</div>
-				</div>
+				</div>								
 
 				<div class="panel panel-primary">
 					<div class="panel-heading" v-t="'studydetails.status'"></div>
@@ -45,7 +52,13 @@
 						<div class="" v-if="!participation || participation.pstatus == 'MATCH'">{{ $t('enum.participantsearchstatus.'+study.participantSearchStatus) }}</div>
 						<div class="">{{ $t('enum.studyexecutionstatus.'+study.executionStatus) }}</div>
 						<div class="extraspace">&nbsp;</div>
-						<div v-if="mayRequestParticipation()">
+						<div v-if="mayRequestParticipation() && code">
+																
+							<p v-t="'studydetails.accept_invitation_help'"></p>
+							<button @click="requestParticipation()" :disabled="action!=null" class="btn btn-primary"
+									v-t="'studydetails.accept_invitation_btn'"></button>		                		              
+						</div>
+						<div v-else-if="mayRequestParticipation()">
 																
 							<p v-t="'studydetails.request_participation_help'"></p>
 							<button @click="requestParticipation()" :disabled="action!=null" class="btn btn-primary"
@@ -208,7 +221,7 @@ export default {
 			    	for (var l=0;l<data.data.length;l++) {
 			    		var link = data.data[l];
 			    		if (link.type.indexOf("RECOMMEND_A")>=0) {
-			    			if (link.type.indexOf("REQUIRE_P")<0 || ($data.participation && $data.participation.pstatus=="ACCEPTED")) {
+			    			if (link.type.indexOf("AUTOADD_P")<0 || ($data.participation && $data.participation.pstatus=="ACCEPTED")) {
 			    			  links.push(link);
 			    			}
 			    		}
@@ -302,8 +315,12 @@ export default {
             if ($data.code) data.code = $data.code;		
             me.doAction("request", server.post(jsRoutes.controllers.members.Studies.requestParticipation($data.studyid).url, data).
             then(function(data) { 	
+				let part = data.data;
+				if (part.ownerName && !me.needs("DEMOGRAPHIC")) {
+					actions.addOut(me.$t("studydetails.pseudonym")+": "+part.ownerName);
+				}
                 if (!actions.showAction($router, $route)) {
-                me.reload();
+                  me.reload();
                 }
             }));
 	    },

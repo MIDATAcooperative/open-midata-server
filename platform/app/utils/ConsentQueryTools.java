@@ -84,7 +84,7 @@ public class ConsentQueryTools {
 		
 		if (consent.isActive() && verify && consent.status != ConsentStatus.PRECONFIRMED) {
 			if (!verifyIntegrity(consent)) {
-				consent.setStatus(ConsentStatus.INVALID);
+				consent.setStatus(ConsentStatus.INVALID, false);
 				AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SIGNATURE_FAILURE).withModifiedActor(null, consent.owner).withConsent(consent));
 				MailUtils.sendTextMailAsync(MailSenderType.STATUS, InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail"), InstanceConfig.getInstance().getConfig().getString("errorreports.targetname"), "Consent signature failure "+consent._id+" of "+consent.owner, "Consent signature failure: type="+consent.type+" creation="+consent.dateOfCreation+" lastUpdate="+consent.lastUpdated);
 				return getEmptyQuery();
@@ -112,7 +112,7 @@ public class ConsentQueryTools {
 			updateSignature(validAccessContext, consent);
 			executeDataSharing(context, consent, true);
 		} else removeSignature(consent);
-		Circles.persistConsentMetadataChange(context, consent, false);		
+		Circles.persistConsentMetadataChange(context, consent, false, false);		
 		AccessLog.logEnd("end update sharing query");
 	}
 	
@@ -164,7 +164,7 @@ public class ConsentQueryTools {
 			  app = Plugin.getById(mai.applicationId);
 			}
 			
-			SubscriptionManager.deactivateSubscriptions(consent.owner, app, consent._id);				
+			if (app != null) SubscriptionManager.deactivateSubscriptions(consent.owner, app, consent._id);				
 
 		} else {
 			Circles.removeQueries(consent.owner, consent._id);

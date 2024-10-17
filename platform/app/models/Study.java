@@ -28,6 +28,7 @@ import models.enums.AssistanceType;
 import models.enums.InformationType;
 import models.enums.JoinMethod;
 import models.enums.ParticipantSearchStatus;
+import models.enums.ProjectDataFilter;
 import models.enums.ProjectLeavePolicy;
 import models.enums.RejoinPolicy;
 import models.enums.ResearcherRole;
@@ -46,16 +47,16 @@ import utils.exceptions.InternalServerException;
  *
  */
 @JsonFilter("Study")
-public class Study extends Model {
+public class Study extends Model implements HasPredefinedMessages {
 	
 	private static final String collection = "studies";
 	
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy", "forceClientCertificate");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "identifiers", "categories", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "autoJoinTestGroup", "anonymous", "consentObserver", "leavePolicy", "rejoinPolicy", "forceClientCertificate", "dataFilters", "predefinedMessages");
 	
-	public @NotMaterialized static final Set<String> LINK_FIELDS = Sets.create("_id", "name", "code", "type", "joinMethods", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
+	public @NotMaterialized static final Set<String> LINK_FIELDS = Sets.create("_id", "name", "code", "type", "joinMethods", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "autoJoinTestGroup", "anonymous");
 	
 	/**
 	 * name of study
@@ -71,6 +72,11 @@ public class Study extends Model {
 	 * additional identifiers
 	 */
 	public List<String> identifiers;
+	
+	/**
+	 * additional categories (also used for consents)
+	 */
+	public List<String> categories;
 	
 	/**
 	 * id of research organization which does the study
@@ -155,6 +161,11 @@ public class Study extends Model {
 	public InformationType requiredInformation;
 	
 	/**
+	 * Information to be filtered out for pseudonymization
+	 */
+	public Set<ProjectDataFilter> dataFilters;
+	
+	/**
 	 * If set no one is allowed to see mapping
 	 */
 	public boolean anonymous;
@@ -209,6 +220,8 @@ public class Study extends Model {
      */
     public String autoJoinGroup;
     
+    public String autoJoinTestGroup;
+    
     public byte[] autoJoinKey;
     
     public MidataId autoJoinExecutor;
@@ -225,6 +238,11 @@ public class Study extends Model {
     public @NotMaterialized Set<String> consentObserverNames;
     
     public boolean forceClientCertificate;
+    
+    /**
+	 * Predefined messages
+	 */
+	public Map<String, MessageDefinition> predefinedMessages;
     
     public static void add(Study study) throws InternalServerException {
 		Model.insert(collection, study);
@@ -282,6 +300,10 @@ public class Study extends Model {
 		Model.set(Study.class, collection, this._id, "assistance", inf);
 	}
     
+    public void setDataFilters(Set<ProjectDataFilter> dataFilters) throws InternalServerException {
+		Model.set(Study.class, collection, this._id, "dataFilters", dataFilters);
+	}
+    
     public void setForceClientCertificate(boolean forceClientCertificate) throws InternalServerException {
     	this.forceClientCertificate = forceClientCertificate;
 		Model.set(Study.class, collection, this._id, "forceClientCertificate", forceClientCertificate);
@@ -337,6 +359,11 @@ public class Study extends Model {
     	Model.set(Study.class, collection, this._id, "identifiers", identifiers);
     }
     
+    public void setCategories(List<String> categories) throws InternalServerException {
+    	this.categories = categories;
+    	Model.set(Study.class, collection, this._id, "categories", categories);
+    }
+    
     public void setType(StudyType type) throws InternalServerException {
     	this.type = type;
     	Model.set(Study.class, collection, this._id, "type", type);
@@ -362,11 +389,12 @@ public class Study extends Model {
     	Model.set(Study.class, collection, this._id, "consentObserver", consentObserver);
     }
     
-    public void setAutoJoinGroup(String autoJoinGroup, MidataId executor, byte[] key) throws InternalServerException {
+    public void setAutoJoinGroup(String autoJoinGroup, String autoJoinTestGroup, MidataId executor, byte[] key) throws InternalServerException {
     	this.autoJoinGroup = autoJoinGroup;
+    	this.autoJoinTestGroup = autoJoinTestGroup;
     	this.autoJoinExecutor = executor;
     	this.autoJoinKey = key;
-    	this.setMultiple(collection, Sets.create("autoJoinGroup", "autoJoinExecutor", "autoJoinKey"));
+    	this.setMultiple(collection, Sets.create("autoJoinGroup", "autoJoinTestGroup", "autoJoinExecutor", "autoJoinKey"));
     }
     
     public void setProcessFlags(Set<String> processFlags) throws InternalServerException {
@@ -388,6 +416,11 @@ public class Study extends Model {
     	this.infosInternal = infosInternal;
     	Model.set(Study.class, collection, this._id, "infosInternal", infosInternal);
     }
+    
+    public void setPredefinedMessages(Map<String, MessageDefinition> msgs) throws InternalServerException {
+    	this.predefinedMessages = msgs;
+    	Model.set(Study.class, collection, this._id, "predefinedMessages", msgs);
+    }
         
     
     public static void delete(MidataId studyId) throws InternalServerException {	
@@ -396,5 +429,10 @@ public class Study extends Model {
 	
     public static long count() throws AppException {
 		return Model.count(Study.class, collection, CMaps.map("executionStatus", StudyExecutionStatus.RUNNING));
+	}
+
+	@Override
+	public Map<String, MessageDefinition> getPredefinedMessages() {
+		return predefinedMessages;
 	}
 }

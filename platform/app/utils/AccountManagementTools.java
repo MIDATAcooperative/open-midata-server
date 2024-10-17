@@ -131,7 +131,7 @@ public class AccountManagementTools {
 				 }
 				 
 				 // compare address
-				 
+				 AccessLog.log("found existing patient with matching email");
 				 return result;
 			 } 
 		 }
@@ -146,7 +146,7 @@ public class AccountManagementTools {
 				 .map("role", UserRole.MEMBER);
 							 
 		 Set<Member> candidates = Member.getAll(properties, Member.FOR_LOGIN);				 				 				
-		 
+		 AccessLog.log("checking "+candidates.size()+" existing patients with matching name");
 		 boolean mailGiven = nonEmpty(user.email);
 		 for (Member candidate : candidates) {
 			 boolean birthdateOk = compareBirthdate(user.birthday, candidate.birthday, false);
@@ -165,11 +165,14 @@ public class AccountManagementTools {
 				 }
 			 } else if (!hasMail) {
 				 						 					 						 					 
-				 if (hasAddress && addressOk) return candidate; 
+				 if (hasAddress && addressOk) {
+					 AccessLog.log("found martching patient without email");
+					 return candidate; 
+				 }
 			 }
 			 
 		 }				 
-		 			 	
+		 AccessLog.log("found no existing patient");
 		 return null;
 	}
 	
@@ -219,6 +222,7 @@ public class AccountManagementTools {
 				
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, context.getUsedPlugin(), context.getLegacyOwner(), user);
 
+		TestAccountTools.createNewUser(context, user);
 		user.security = AccountSecurityLevel.KEY;
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		Member.add(user);
@@ -298,7 +302,7 @@ public class AccountManagementTools {
 			
 			Set<StudyAppLink> sals = StudyAppLink.getByApp(app._id);			
 			for (StudyAppLink sal : sals) {
-				if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+				if (sal.isConfirmed() && sal.active && (sal.linkTargetType==null || sal.linkTargetType == LinkTargetType.STUDY) && (sal.type.contains(StudyAppLinkType.AUTOADD_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
 					ce = new ConsentEntity();
 					ce.type = EntityType.USERGROUP;
 					ce.id = sal.studyId;
@@ -441,7 +445,7 @@ public class AccountManagementTools {
 		return result;
 	}
 	
-	public static Set<MidataId> getProjectIdsFromUsedApp(AccessContext context) throws AppException {
+	public static Set<MidataId> getAutoaddProjectIdsFromUsedApp(AccessContext context) throws AppException {
 		MidataId pluginId = context.getUsedPlugin();
 		if (pluginId == null) return null;
 		
@@ -451,7 +455,7 @@ public class AccountManagementTools {
 			if (sals.isEmpty()) return Collections.emptySet();
 			Set<MidataId> studies = new HashSet<MidataId>();
 			for (StudyAppLink sal : sals) {			   
-				if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
+				if (sal.isConfirmed() && sal.active && (sal.linkTargetType==null || sal.linkTargetType == LinkTargetType.STUDY) && sal.type.contains(StudyAppLinkType.AUTOADD_P)) {
 					studies.add(sal.studyId);					
 				}
 			}
@@ -460,7 +464,7 @@ public class AccountManagementTools {
 		return Collections.emptySet();
 	}
 	
-	public static List<Study> determineProjectsFromUsedApp(AccessContext context, boolean fromLinks) throws AppException {
+	public static List<Study> determineLinkedProjectsFromUsedApp(AccessContext context, boolean fromLinks) throws AppException {
 		MidataId pluginId = context.getUsedPlugin();
 		if (pluginId == null) return null;
 		
@@ -476,7 +480,7 @@ public class AccountManagementTools {
 		if (sals.isEmpty()) return null;
 		List<Study> studies = new ArrayList<Study>();
 		for (StudyAppLink sal : sals) {
-			if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+			if (sal.isConfirmed() && sal.active && (sal.linkTargetType==null || sal.linkTargetType == LinkTargetType.STUDY) && (sal.type.contains(StudyAppLinkType.LINKED_P))) {
 				studies.add(Study.getById(sal.studyId, Sets.create("_id","code","name")));
 			}
 		}

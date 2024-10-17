@@ -20,7 +20,6 @@
     <div  class="midata-overlay borderless">
         <panel :title="getTitle()" :busy="isBusy">
         <error-box :error="error"></error-box>
-		
 		<div v-if="app && (app.type=='mobile' || app.type=='service')" class="alert alert-warning">
 		    <strong v-t="'manageapp.important'"></strong>		   
 		    <p v-if="app.targetUserRole=='RESEARCH'" v-t="'manageapp.researchwarning'"></p>		    
@@ -52,6 +51,9 @@
 		    <div v-if="block.dataPeriodRestrictionMode">
 		      <span>{{ $t('queryeditor.'+block.dataPeriodRestrictionMode) }}</span>: {{ $filters.date(block.dataPeriodRestrictionStart) }} - {{ $filters.date(block.dataPeriodRestrictionEnd) }} 
 		    </div>
+            <div v-if="block.creatorOrg">
+              <span>{{ $t('queryeditor.creator_org') }}</span>: {{ block.creatorOrg }}
+            </div>
 		    <div v-if="block.customFilter">
 		      <span>Extra Filter: </span><span>{{ block.customFilterPath }}</span>: {{ block.customFilterValue }}
 		    </div>
@@ -386,7 +388,7 @@ export default {
 				}));				
 			} else if ($route.meta.mode == "app") {
 				$data.mode = "app";
-				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "sendReports"])
+				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "sendReports", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax"])
 				.then(function(data) { 
 					$data.app = data.data[0];
 					$data.target.appname = $data.app.filename;

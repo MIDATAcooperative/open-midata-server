@@ -35,6 +35,7 @@ import models.enums.APSSecurityLevel;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import models.enums.UserRole;
+import models.enums.Permission;
 import play.mvc.Http;
 import utils.AccessLog;
 import utils.ConsentQueryTools;
@@ -176,10 +177,10 @@ public class RecordManager {
 		APSCache cache = context.getCache();
 		//if (context != null) {
 		  try (DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, context.getTargetAps(), context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()).map("ignore-redirect","true"),SHARING_FIELDS)) {
-			  shareRecursive(cache, it, targetUsers);
+			  shareRecursive(cache, it, targetUsers, true);
 		  }
 		//}
-		cache.getAPS(context.getTargetAps()).addAccess(targetUsers);
+		cache.getAPS(context.getTargetAps()).addAccess(targetUsers, true);
 		AccessLog.logEnd("end shareAPS");
 	}
 	
@@ -191,9 +192,9 @@ public class RecordManager {
 			AccessLog.logBegin("begin reshareAPS aps=",context.getTargetAps().toString()," executor=",context.getAccessor().toString()," #targetUsers=",Integer.toString(targetUsers.size()));
 			APSCache cache = context.getCache();
 			try (DBIterator<DBRecord> it = QueryEngine.listInternalIterator(cache, context.getTargetAps(), context, CMaps.map("flat","true").map("streams","only").map("owner",cache.getAccountOwner()), SHARING_FIELDS)) {
-			  shareRecursive(cache, it, targetUsers);
+			  shareRecursive(cache, it, targetUsers, true);
 			}
-			Feature_UserGroups.findApsCacheToUse(cache, context.getTargetAps()).getAPS(context.getTargetAps()).addAccess(targetUsers);
+			Feature_UserGroups.findApsCacheToUse(cache, context.getTargetAps()).getAPS(context.getTargetAps()).addAccess(targetUsers, true);
 			AccessLog.logEnd("end shareAPS");
 		}
 	}
@@ -247,13 +248,13 @@ public class RecordManager {
 	}
 	
 	
-	private void shareRecursive(APSCache cache, DBIterator<DBRecord> recs, Set<MidataId> targetUsers) throws AppException {
+	private void shareRecursive(APSCache cache, DBIterator<DBRecord> recs, Set<MidataId> targetUsers, boolean keysMustExist) throws AppException {
 		if (targetUsers.isEmpty() || !recs.hasNext()) return;		
 		while (recs.hasNext()) {
 			DBRecord rec = recs.next();
 			if (rec.isStream != null) {
 				APS stream = cache.getAPS(rec._id, rec.key, rec.owner);
-				stream.addAccess(targetUsers);
+				stream.addAccess(targetUsers, keysMustExist);
 			}
 		}		
 	}		
@@ -374,7 +375,7 @@ public class RecordManager {
         }
 		AccessLog.log("to-share: count#=", Integer.toString(recordEntries.size()), " already=", Integer.toString(alreadyContained.size()));
         if (alreadyContained.size() == 0) {	
-        	shareRecursive(cache, ProcessingTools.dbiterator("", recordEntries.iterator()), apswrapper.getAccess());
+        	shareRecursive(cache, ProcessingTools.dbiterator("", recordEntries.iterator()), apswrapper.getAccess(), false);
 		    apswrapper.addPermission(recordEntries, withOwnerInformation);
 		    for (DBRecord rec : recordEntries) {		    	
 		    	cache.changeWatches().addWatchingAps(rec, apswrapper.getId());
@@ -386,7 +387,7 @@ public class RecordManager {
         	for (DBRecord rec : recordEntries) {
         		if (!contained.contains(rec._id)) filtered.add(rec);
         	}
-        	shareRecursive(cache, ProcessingTools.dbiterator("", filtered.iterator()), apswrapper.getAccess());
+        	shareRecursive(cache, ProcessingTools.dbiterator("", filtered.iterator()), apswrapper.getAccess(), false);
         	apswrapper.addPermission(filtered, withOwnerInformation);
         	for (DBRecord rec : filtered) cache.changeWatches().addWatchingAps(rec, apswrapper.getId());
         }
@@ -1395,7 +1396,9 @@ public class RecordManager {
 	 */
 	public Record fetch(AccessContext context, UserRole role, RecordToken token, Set<String> fields)
 			throws AppException {
-		List<Record> result = list(role, context.forAps(MidataId.from(token.apsId)),
+	    context = context.forAps(MidataId.from(token.apsId));
+	    AccessLog.log("Fetch context", context.toString());	   
+		List<Record> result = list(role, context,
 				CMaps.map("_id", new MidataId(token.recordId)), fields);
 		if (result.isEmpty())
 			return null;
@@ -1464,8 +1467,8 @@ public class RecordManager {
 		MidataId who = context.getAccessor();
 		AccessLog.logBegin("start reset info user=",who.toString());
 		int count = 0;
-		List<Record> result = list(UserRole.ANY, context, CMaps.map("streams", "only").map("flat", "true"), Sets.create("_id", "owner"));
-		for (Record stream : result) {
+		List<DBRecord> result = QueryEngine.listInternal(context.getCache(), context.getTargetAps(), context, CMaps.map("streams", "only").map("flat", "true"), Sets.create("_id", "owner"));
+		for (DBRecord stream : result) {
 			try {
 			  AccessLog.log("reset stream:", stream._id.toString());
 			  Feature_UserGroups.findApsCacheToUse(context.getCache(), stream._id).getAPS(stream._id, stream.owner).removeMeta("_info");
@@ -1485,8 +1488,17 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public List<String> fixAccount(AccessContext context) throws AppException {
-		MidataId userId = context.getCache().getAccountOwner();
+	   return fixAccount(context, new HashSet<MidataId>());
+	}
+	
+	
+	public List<String> fixAccount(AccessContext context, Set<MidataId> alreadyDone) throws AppException {
+		MidataId userId = context.getCache().getAccountOwner();		
+		
 		List<String> msgs = new ArrayList<String>();
+		if (alreadyDone.contains(userId)) return msgs;
+		alreadyDone.add(userId);
+		
 		msgs.add(IndexManager.instance.clearIndexes(context.getCache(), context.getAccessor()));
 		
 		APSCache cache = context.getCache();
@@ -1515,12 +1527,24 @@ public class RecordManager {
 		}
 		AccessLog.logEnd("end search for broken user groups");
 		
+		AccessLog.logBegin("start check of user groups");
+		for (UserGroupMember ugm : ugms) {
+			if (ugm.status.isSharingData() && ugm.role.mayReadData()) {			  
+			  List<String> ugMsgs = RecordManager.instance.fixAccount(context.forUserGroup(ugm), alreadyDone);
+			  for (String s : ugMsgs) msgs.add("ug "+ugm.userGroup.toString()+": "+s);
+			}
+		}
+		AccessLog.logEnd("end check of user groups");
+		
 		AccessLog.logBegin("start searching for missing records in consents");
 		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Sets.create("_id"), Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			try {
 				AccessLog.log("check owned consent:"+consent._id.toString());
-				cache.getAPS(consent._id, userId).getStoredOwner();					
+				cache.getAPS(consent._id, userId).getStoredOwner();	
+				
+				Consent ca = Consent.getByIdAndOwner(consent._id, userId, Consent.ALL);
+				context.forConsent(ca).getOwnerName(); // Delete on pseudonymization failure
 			} catch (Exception e) {
 				msgs.add("delete inaccessible consent "+consent._id.toString());
 				Consent.delete(userId, consent._id);
@@ -1542,6 +1566,19 @@ public class RecordManager {
 			}
 			checkRecordsInAPS(context, consent._id, false, "consent "+consent._id.toString()+": ",msgs);
 		}
+		
+		AccessLog.log("check pseudonymization");
+		for (Consent consent : consents) {
+			try {									
+				Consent ca = Consent.getByIdAndOwner(consent._id, consent.owner, Consent.ALL);
+				context.forConsent(ca).getOwnerName(); // Delete on pseudonymization failure
+			} catch (Exception e) {
+				msgs.add("delete consent with pseudonymization error "+consent._id.toString());
+				Consent.delete(consent.owner, consent._id);
+				continue;
+			}			
+		}
+		
 		AccessLog.logEnd("end searching for missing records in authorized consents");
 						
 		AccessLog.logBegin("start searching for missing records in spaces");
@@ -1654,7 +1691,7 @@ public class RecordManager {
 		result.numConsentsOwner = Consent.count(userId);
 		Set<MidataId> auth = new HashSet<MidataId>();
 		auth.add(userId);
-		for (UserGroupMember ugm : context.getAllActiveByMember()) {
+		for (UserGroupMember ugm : context.getAllActiveByMember(Permission.ANY)) {
 			auth.add(ugm.userGroup);
 			result.numUserGroups++;
 		}

@@ -55,11 +55,11 @@
                                 <span class="fas fa-times text-danger mr-1"></span>
                                 <span v-t="'studyactions.status.study_wrong_status'"></span>
                             </div>
-                            <div v-if="link.study && link.type.indexOf('REQUIRE_P')>=0 && link.study.participantSearchStatus != 'SEARCHING'">
+                            <div v-if="link.study && link.type.indexOf('AUTOADD_P')>=0 && link.study.participantSearchStatus != 'SEARCHING'">
                                 <span class="fas fa-times text-danger mr-1"></span>
                                 <span v-t="'error.closed.study'"></span>
                             </div>
-                            <div v-if="link.study && (link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0">
+                            <div v-if="link.study && (link.type.indexOf('AUTOADD_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0">
                                 <span class="fas fa-times text-danger mr-1"></span>
                                 <span v-t="'studyactions.status.study_no_app_participation'"></span>
                             </div>	                
@@ -76,7 +76,7 @@
 			    <button type="button" class="btn btn-primary mr-1" v-t="'applink.add_service_btn'" @click="addNewService()"></button>
 	            <button type="button" class="btn btn-primary mr-1" v-t="'applink.add_provider_btn'" @click="addNewProvider()"></button>                
             </div>
-            <div v-if="selection && selection.linkTargetType=='STUDY'">
+            <div v-if="selection && (selection.linkTargetType=='STUDY' || !selection.linkTargetType)">
                 <form-group name="study" label="studyactions.study" :path="errors.study">
                     <div class="row">
 	                    <div class="col-sm-3">
@@ -188,7 +188,7 @@ export default {
         appId : null,
         crit : { group : "" },
         types : studies.linktypes,
-        types2 : ["OFFER_P", "REQUIRE_P"],
+        types2 : ["OFFER_P", "AUTOADD_P", "CHECK_P"],
 	    periods : studies.executionStati,
 	    selection : undefined,
         apps : [],
@@ -218,8 +218,10 @@ export default {
 		    }));	
                         
             me.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app", $data.appId).url)
-            .then(function(data) { 				
-                $data.links = data.data;												
+            .then(function(data) { 	
+                let links = data.data;
+                for (let l of links) { if (l.study && !l.study.joinMethods) { l.study.joinMethods = []; } }			
+                $data.links = links;												
             }));	
 
             me.doBusy(studies.search({ validationStatus : "VALIDATED" }, ["_id", "code", "name" ])

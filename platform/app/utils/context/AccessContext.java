@@ -20,6 +20,7 @@ package utils.context;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,7 @@ import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.Permission;
+import models.enums.ProjectDataFilter;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.RuntimeConstants;
@@ -87,6 +89,20 @@ public abstract class AccessContext {
 	 * @return
 	 */
 	public abstract boolean mustPseudonymize();
+	
+	/**
+	 * Return set of data filters that must be applied
+	 * @return
+	 */
+	public Set<ProjectDataFilter> getProjectDataFilters() throws InternalServerException {
+		if (parent != null) return parent.getProjectDataFilters();
+		return Collections.EMPTY_SET;
+	}
+	
+	public String getSalt() throws AppException {
+		if (parent != null) return parent.getSalt();
+		return null;
+	}
 	
 	/**
 	 * Must the owner/creator of records be renamed? This is similar to pseudonymization but not the same.
@@ -237,6 +253,17 @@ public abstract class AccessContext {
 	public MidataId getAccessor() {
 		return cache.getAccessor();
 	}
+	
+	/**
+	 * what team or organization is processing this request? (may be null)
+	 * @return
+	 * @throws InternalServerException
+	 */
+	 public MidataId getUserGroupAccessor() {
+		 if (isUserGroupContext()) return getAccessor();
+		 if (parent != null) return parent.getUserGroupAccessor();
+		 return null;
+	 }
 	
 	public EntityType getAccessorEntityType() throws InternalServerException {
 		if (parent != null) return parent.getAccessorEntityType();
@@ -415,7 +442,8 @@ public abstract class AccessContext {
 	 * @throws AppException
 	 */
 	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
-		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(getCache(), ugm), this);
+		boolean pseudo = (this instanceof UserGroupAccessContext) ? mustPseudonymize() : false;
+		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(getCache(), ugm), this, pseudo);
 	}
 	
 	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
@@ -425,10 +453,15 @@ public abstract class AccessContext {
 	
 	public UserGroupAccessContext forUserGroup(List<UserGroupMember> ugms) throws AppException {				
 		APSCache cache = getCache();
-		APSCache subcache = cache;			
-		for (UserGroupMember ugmx : ugms) subcache = Feature_UserGroups.readySubCache(cache, subcache, ugmx);
-		UserGroupMember ugm = ugms.get(ugms.size()-1);
-		return new UserGroupAccessContext(ugm, subcache, this);
+		APSCache subcache = cache;	
+		boolean pseudo = (this instanceof UserGroupAccessContext) ? mustPseudonymize() : false;
+		for (UserGroupMember ugmx : ugms) {
+		    //AccessLog.log("XXXXX > "+ugmx.getConfirmedRole().roleName+" p="+ugmx.getConfirmedRole().pseudonymizedAccess());
+		    pseudo = pseudo || ugmx.getConfirmedRole().pseudonymizedAccess();
+		    subcache = Feature_UserGroups.readySubCache(cache, subcache, ugmx);
+		}
+		UserGroupMember ugm = ugms.get(ugms.size()-1);		
+		return new UserGroupAccessContext(ugm, subcache, this, pseudo);
 	}
 	
 	public boolean usesUserGroupsForQueries() throws InternalServerException {
@@ -437,9 +470,9 @@ public abstract class AccessContext {
 		return true;
 	}
 	
-	public Set<UserGroupMember> getAllActiveByMember() throws AppException {
+	public Set<UserGroupMember> getAllActiveByMember(Permission permission) throws AppException {
 		if (!usesUserGroupsForQueries()) return Collections.emptySet();
-		return getCache().getAllActiveByMember();
+		return getCache().getAllActiveByMember(permission);
 	}
 	
 	/**
@@ -589,9 +622,32 @@ public abstract class AccessContext {
 		return false;
 	}
 	
+	/**
+	 * which entity will sign consent changes done with this context
+	 * @return
+	 * @throws InternalServerException
+	 */
 	public MidataId getConsentSigner() throws InternalServerException {
 		if (parent != null) return parent.getConsentSigner();
 		return null;
+	}
+	
+	/**
+	 * get parties that are allowed to manage consents created with this context
+	 */
+	public Set<MidataId> getManagers() throws InternalServerException {
+		Set<MidataId> managers = new HashSet<MidataId>();
+		addManagers(managers);
+		return managers;
+	}
+	
+	/**
+	 * add parties that are allowed to manage consents created with this context
+	 * @param managers
+	 * @throws InternalServerException
+	 */
+	public void addManagers(Set<MidataId> managers) throws InternalServerException {
+		if (parent != null) parent.addManagers(managers);
 	}
 	
 }

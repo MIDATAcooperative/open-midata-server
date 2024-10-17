@@ -157,5 +157,30 @@ public enum MessageReason {
 	/**
 	 * Request for access confirmation for protected user group
 	 */
-	ACCESS_CONFIRMATION_REQUEST
+	ACCESS_CONFIRMATION_REQUEST,
+	
+	/**
+	 * the user has requested project participation
+	 */
+	PROJECT_PARTICIPATION_REQUEST,
+	
+	/**
+	 * project participation has been approved
+	 */
+	PROJECT_PARTICIPATION_APPROVED,
+	
+	/** 
+	 * project participation has been rejected
+	 */
+	PROJECT_PARTICIPATION_REJECTED,
+	
+	/**
+	 * project group has been assigned
+	 */
+	PROJECT_PARTICIPATION_GROUP_ASSIGNED,
+	
+	/**
+	 * user has retreated from participation
+	 */
+	PROJECT_PARTICIPATION_RETREAT
 }

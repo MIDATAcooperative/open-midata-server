@@ -85,7 +85,7 @@ public class MediumStreamAPS extends APS {
 		return 0;
 	}
 
-	public void addAccess(Set<MidataId> targets) throws AppException, EncryptionNotSupportedException {
+	public void addAccess(Set<MidataId> targets, boolean mustExist) throws AppException, EncryptionNotSupportedException {
 	}
 
 	public void addAccess(MidataId target, byte[] publickey) throws AppException, EncryptionNotSupportedException {

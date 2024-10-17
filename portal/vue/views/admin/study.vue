@@ -116,7 +116,12 @@
 		  <p><span v-t="'admin_study.anonymous'"></span>: <b>{{ $t('common.yesno.'+study.anonymous) }}</b></p>
 		  <p><span v-t="'admin_study.required_assistance'"></span>: <b>{{ study.assistance }}</b></p>
 		  <p><span v-t="'admin_study.termsOfUse'"></span>: <b><router-link :to="{ path : './terms', query : { which:study.termsOfUse} }">{{ study.termsOfUse }}</router-link></b></p>
-		  <p><span v-t="'admin_study.sharing_query'"></span>:</p>
+		  <p><span v-t="'admin_study.data_filters'"></span>: </p>
+          <ul>
+            <li v-if="study.dataFilters.length == 0">{{ $t("admin_study.none") }}</li>
+            <li v-for="filter in study.dataFilters" :key="filter">{{ $t('enum.projectdatafilter.'+filter) }}</li>
+          </ul>
+          <p><span v-t="'admin_study.sharing_query'"></span>:</p>
 		  <access-query :query="study.recordQuery" details="true"></access-query>
 		  <pre>{{ JSON.stringify(study.recordQuery, null, 2) }}
 		  </pre>
@@ -194,11 +199,11 @@
 	                  <span class="fas fa-times text-danger"></span>
 	                  <span v-t="'studyactions.status.study_wrong_status'"></span>
 	                </div>
-	                <div v-if="link.type.indexOf('REQUIRE_P')>=0 && study.participantSearchStatus != 'SEARCHING'">
+	                <div v-if="link.type.indexOf('AUTOADD_P')>=0 && study.participantSearchStatus != 'SEARCHING'">
 	                  <span class="fas fa-times text-danger"></span>
 	                  <span v-t="'error.closed.study'"></span>
 	                </div>
-	                <div v-if="(link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0">
+	                <div v-if="(link.type.indexOf('AUTOADD_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0">
 	                  <span class="fas fa-times text-danger"></span>
 	                  <span v-t="'studyactions.status.study_no_app_participation'"></span>
 	                </div>
@@ -211,6 +216,19 @@
 	            </tr>
 	          </table>
 	</panel>
+    
+    <panel v-if="study && study.predefinedMessages" :title="$t('admin_study.messages')" :busy="isBusy">
+      <div v-for="(msg,reason) in study.predefinedMessages" :key="reason" class="mb-3">
+        <div><b>{{ $t('appmessages.reasons.' + reason) }}</b></div>
+        <div class="mt-3">
+    
+          <div v-for="(t,l) in msg.text" :key="l">
+            <div class="mt-1">{{ l }}: <b>{{ msg.title[l]}}</b></div>
+            <pre>{{ t }}</pre>
+          </div>
+        </div>
+      </div>        
+    </panel>
 	
 	<panel :title="$t('admin_study.history')" :busy="isBusy">
       <audit-log :entity="study._id"></audit-log>
@@ -218,7 +236,7 @@
           
     <router-link class="btn btn-default mr-1" :to="{ path : './astudies' }" v-t="'common.back_btn'"></router-link>
     <button v-if="study.validationStatus == 'VALIDATION'" class="btn btn-primary mr-1" @click="finishValidation()" v-t="'admin_study.end_validation_btn'"></button>    
-    <button v-if="study.validationStatus == 'VALIDATION'" class="btn btn-default mr-1" @click="backToDraft()" v-t="'admin_study.back_to_draft_btn'"></button>
+    <button v-if="study.validationStatus != 'DRAFT' && study.validationStatus != 'PATCH'" class="btn btn-default mr-1" @click="backToDraft()" v-t="'admin_study.back_to_draft_btn'"></button>
     <button v-if="study.validationStatus != 'DRAFT'" class="btn btn-default mr-1" @click="exportStudy()" v-t="'admin_study.export_btn'"></button>
     <button v-if="readyForDelete()" class="btn btn-danger mr-1" @click="doDelete()" v-t="'admin_study.delete_study_btn'"></button>
        
@@ -254,6 +272,7 @@ export default {
 			const { $data, $route } = this, me = this;
             me.doBusy(server.get(jsRoutes.controllers.research.Studies.getAdmin($data.studyid).url)
             .then(function(data) { 				
+                data.data.study.dataFilters = data.data.study.dataFilters || [];
                 $data.study = data.data.study;
                 
                 me.doBusy(users.getMembers({ _id : $data.study.createdBy, "role" : ["RESEARCH","DEVELOPER","ADMIN"] }, users.MINIMAL)

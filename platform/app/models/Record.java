@@ -42,10 +42,10 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * constant containing the set of all public field names
 	 */
 	public @NotMaterialized final static Set<String> ALL_PUBLIC = Sets.create("_id", "id", "version", "owner",
-			"app", "creator", "creatorOrg", "modifiedBy", "modifiedByOrg", "created", "name", "format", "content", "code", "description", "data", "group");
+			"app", "creator", "creatorOrg", "modifiedBy", "modifiedByOrg", "created", "name", "format", "content", "code", "description", "data", "group", "tags");
 
 	public @NotMaterialized final static Set<String> ALL_PUBLIC_WITHNAMES = Sets.create("_id", "id", "version", "owner", "ownerName",
-			"app", "creator", "creatorOrg", "creatorName", "creatorOrgName", "modifiedBy", "modifiedByOrg", "modifiedByName", "modifiedByOrgName", "created", "name", "format", "content", "code", "description", "data", "group");
+			"app", "creator", "creatorOrg", "creatorName", "creatorOrgName", "modifiedBy", "modifiedByOrg", "modifiedByName", "modifiedByOrgName", "created", "name", "format", "content", "code", "description", "data", "group", "tags");
 
 		
 	

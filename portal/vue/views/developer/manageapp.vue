@@ -176,7 +176,7 @@
                </check-box>		    
 		  </form-group>
 		  
-		   <form-group name="consentObserving" label="Consent Observing" v-if="app.type == 'external'">
+		   <form-group name="consentObserving" label="Consent Observing" v-if="app.type == 'external' || app.type=='broker'">
                <check-box name="consentObserving" v-model="app.consentObserving" disabled>
                    <span v-t="'manageapp.info.consentObserving'"></span>
                </check-box>		    
@@ -237,6 +237,29 @@
 		      </div>		    
 		  </form-group>		
 		  
+          <form-group name="acceptTestAccounts" label="manageapp.accept_test_accounts" :path="errors.acceptTestAccounts">
+             <select class="form-control" name="acceptTestAccounts" v-validate v-model="app.acceptTestAccounts">
+                <option value="ALL">{{ $t('enum.test_accounts.ALL') }}</option>
+                <option value="NONE">{{ $t('enum.test_accounts.NONE') }}</option>
+                <option value="SOME">{{ $t('enum.test_accounts.SOME') }}</option>
+             </select>
+          </form-group>
+          <form-group v-if="app.acceptTestAccounts=='SOME'" name="acceptTestAccountsFromAppNames" label="manageapp.accept_test_accounts_from_app" :path="errors.acceptTestAccountsFromAppNames">
+             <input type="text" id="acceptTestAccountsFromAppNames" name="acceptTestAccountsFromAppNames" class="form-control" v-validate v-model="app.acceptTestAccountsFromAppNamesStr">
+             <formerror name="acceptTestAccountsFromAppNames" type="unknown" message="error.unknown.app"></formerror>
+             <p class="form-text text-muted" v-t="'manageapp.info.accept_test_accounts_from_app'"></p>
+          </form-group>
+          <form-group name="testAccountsMax" label="manageapp.test_accounts_max" :path="errors.test_accounts_max">
+             <div class="row">
+               <div class="col-2">
+                 <span class="form-control-plaintext">{{ app.testAccountsCurrent || 0 }}  /</span> 
+               </div><div class="col-10">
+                  <input type="number" id="testAccountsMax" name="testAccountsMax" class="form-control" v-validate v-model="app.testAccountsMax">
+               </div>
+              </div>
+             <p class="form-text text-muted" v-t="'manageapp.info.test_accounts_max'"></p>
+          </form-group>
+          
 		   <form-group name="sendReports" label="manageapp.send_reports" :path="errors.sendReports">
 		      <div class="form-check">
 		         <input type="checkbox" id="sendReports" name="sendReports" class="form-check-input" v-validate v-model="app.sendReports">
@@ -357,7 +380,7 @@ export default {
                 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax"])
 		    .then(function(data) { 
                 let app = data.data[0];	
 				
@@ -375,6 +398,8 @@ export default {
 				if (!app.icons) app.icons = [];
                 if (app.developerTeamLogins) app.developerTeamLoginsStr = app.developerTeamLogins.join(", "); 
 				else app.developerTeamLogins = [];
+                if (app.acceptTestAccountsFromAppNames) app.acceptTestAccountsFromAppNamesStr = app.acceptTestAccountsFromAppNames.join(", ");
+                else app.acceptTestAccountsFromAppNames = [];
                 if (app.type === "oauth2" && ! (app.tokenExchangeParams) ) app.tokenExchangeParams = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
                 if (app.type === "oauth2" && ! (app.refreshTkExchangeParams) ) app.refreshTkExchangeParams = DEFAULT_REFRESH;
                 app.defaultQueryStr = JSON.stringify(app.defaultQuery);
@@ -487,6 +512,9 @@ export default {
 			if ($data.app.developerTeamLoginsStr) {
 				$data.app.developerTeamLogins = $data.app.developerTeamLoginsStr.split(/[ ,]+/);
 			} else $data.app.developerTeamLogins = [];
+            if ($data.app.acceptTestAccountsFromAppNamesStr) {
+                $data.app.acceptTestAccountsFromAppNames = $data.app.acceptTestAccountsFromAppNamesStr.split(/[ ,]+/);
+            } else $data.app.acceptTestAccountsFromAppNames = [];
 			if (!$data.app.createendpoint) $data.app.endpoint = undefined;
 			
 			let app = JSON.parse(JSON.stringify($data.app));

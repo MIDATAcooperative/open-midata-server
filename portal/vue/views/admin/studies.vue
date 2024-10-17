@@ -86,7 +86,7 @@ export default {
             {
                 id : "enum.studyvalidationstatus.DRAFT",
                 properties : {
-                    "validationStatus" : "DRAFT"
+                    "validationStatus" : ["DRAFT", "PATCH"]
                 }
             },
             {

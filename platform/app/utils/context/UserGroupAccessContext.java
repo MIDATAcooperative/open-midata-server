@@ -17,30 +17,41 @@
 
 package utils.context;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import models.MidataId;
 import models.Record;
+import models.Study;
 import models.UserGroupMember;
 import models.enums.EntityType;
 import models.enums.Permission;
+import models.enums.ProjectDataFilter;
+import utils.RuntimeConstants;
 import utils.access.APSCache;
 import utils.access.DBRecord;
+import utils.access.Feature_Pseudonymization;
 import utils.access.Feature_UserGroups;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 public class UserGroupAccessContext extends AccessContext {
 
 	private UserGroupMember ugm;
+	private boolean forcePseudonymization;
+	private Study study;
+	private String salt;
 	
-	public UserGroupAccessContext(UserGroupMember ugm, APSCache cache, AccessContext parent) {
+	public UserGroupAccessContext(UserGroupMember ugm, APSCache cache, AccessContext parent, boolean forcePseudonymization) {
 		super(cache, parent);
 	    this.ugm = ugm;	
+	    this.forcePseudonymization = forcePseudonymization;
 	}
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		return ugm.getConfirmedRole().mayWriteData() && parent.mayCreateRecord(record);
+		return (ugm.getConfirmedRole().mayWriteData() || record.owner.equals(RuntimeConstants.instance.publicUser)) && parent.mayCreateRecord(record);
 	}
 
 	@Override
@@ -60,7 +71,7 @@ public class UserGroupAccessContext extends AccessContext {
 	
 	@Override
 	public boolean mustPseudonymize() {
-		return ugm.getConfirmedRole().pseudonymizedAccess();
+		return forcePseudonymization || ugm.getConfirmedRole().pseudonymizedAccess();
 	}
 	
 	@Override
@@ -128,16 +139,19 @@ public class UserGroupAccessContext extends AccessContext {
 		return EntityType.USERGROUP;
 	}
 	
+	@Override
 	public UserGroupAccessContext forUserGroup(UserGroupMember ugm) throws AppException {
 		if (ugm != null && ugm.userGroup.equals(this.ugm.userGroup)) return this;
 		return super.forUserGroup(ugm);
 	}
 	
+	@Override
 	public UserGroupAccessContext forUserGroup(MidataId userGroup, Permission permission) throws AppException {
 		if (userGroup.equals(ugm.userGroup)) return this;
 		return super.forUserGroup(userGroup, permission);		
 	}
 	
+	@Override
 	public boolean canCreateActiveConsentsFor(MidataId owner) {
 		if (owner.equals(ugm.userGroup)) return true;
 		return super.canCreateActiveConsentsFor(owner);
@@ -146,8 +160,33 @@ public class UserGroupAccessContext extends AccessContext {
 	@Override
 	protected AccessContext getRootContext() {	
 		if (parent == null) return this;
-		return new UserGroupAccessContext(this.ugm, cache, parent.getRootContext());
+		return new UserGroupAccessContext(this.ugm, cache, parent.getRootContext(), forcePseudonymization);
 	}
 	
+	@Override
+	public Set<ProjectDataFilter> getProjectDataFilters() throws InternalServerException {
+		if (study == null) study = Study.getById(ugm.userGroup, Sets.create("dataFilters"));
+		if (study != null) {
+			Set<ProjectDataFilter> result = study.dataFilters;
+			Set<ProjectDataFilter> fromParent = parent.getProjectDataFilters();
+			if (fromParent.isEmpty()) return result;
+			result = new HashSet<ProjectDataFilter>(result);
+			result.addAll(fromParent);
+			return result;
+		}
+		return super.getProjectDataFilters();
+	}
 	
+	@Override
+	public String getSalt() throws AppException {
+		if (salt != null) return salt;
+		salt = Feature_Pseudonymization.getSalt(this);
+		return salt;
+	}
+	
+	@Override
+	public void addManagers(Set<MidataId> managers) throws InternalServerException {
+		if (parent != null) parent.addManagers(managers);
+		managers.add(getAccessor());
+	}
 }

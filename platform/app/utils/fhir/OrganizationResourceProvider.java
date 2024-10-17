@@ -406,7 +406,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		   HealthcareProvider provider = (HealthcareProvider) record.mapped;
 		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(info(), record._id, theResource.getName(), provider, parent, true, false);
 		   try {
-		       UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+		       UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()), true);
 		       Organization result = super.createExecute(record, theResource);
 			   AuditManager.instance.success();
 		       return result;
@@ -598,7 +598,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 		AccessLog.logEnd("end update organization from model");
 	}
    
-   private void extractAddress(Organization theResource, HealthcareProvider prov) {
+   public static void extractAddress(Organization theResource, HealthcareProvider prov) {
 	   if (theResource.hasAddress()) {
 		   Address adr = theResource.getAddressFirstRep();		   
 		   prov.city = adr.getCity();
@@ -614,6 +614,15 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			  }
 		   }
 	   } 
+	   prov.identifiers = new ArrayList<String>();
+	   if (theResource.hasIdentifier()) {
+		   for (Identifier id : theResource.getIdentifier()) {
+			   String idStr = "";
+			   if (id.getSystem() != null && id.getSystem().trim().length()>0) idStr = id.getSystem()+"|";
+			   if (id.getValue() != null) idStr+=id.getValue();
+			   prov.identifiers.add(idStr);
+		   }
+	   }
 	   
    }
    
@@ -630,7 +639,7 @@ public class OrganizationResourceProvider extends RecordBasedResourceProvider<Or
 			}
 			
 			OrganizationTools.updateModel(info(), hp);   						
-			UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()));
+			UserGroupTools.updateManagers(info(), record._id, new ArrayList<IBaseExtension>(theResource.getExtension()), false);
 		}
 	}
 	

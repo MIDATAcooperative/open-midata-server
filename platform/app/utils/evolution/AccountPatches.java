@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hl7.fhir.r4.model.Organization;
+
 import controllers.Circles;
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
@@ -61,6 +63,7 @@ import utils.context.ConsentAccessContext;
 import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.fhir.MidataConsentResourceProvider;
+import utils.fhir.FHIRServlet;
 import utils.fhir.GroupResourceProvider;
 import utils.fhir.OrganizationResourceProvider;
 import utils.fhir.PatientResourceProvider;
@@ -358,13 +361,22 @@ public class AccountPatches {
 		}*/
 		
 		Set<HealthcareProvider> hps = HealthcareProvider.getAll(CMaps.map(), HealthcareProvider.ALL);
+		OrganizationResourceProvider orgProvider = ((OrganizationResourceProvider) FHIRServlet.myProviders.get("Organization")); 
+		
 		for (HealthcareProvider provider : hps) {
 			//RecordManager.instance.wipeFromPublic(session, CMaps.map("_id", provider._id).map("format","fhir/Organization"));
-			if (provider.status == UserStatus.NEW && UserGroup.getById(provider._id, Sets.create("_id")) == null && provider.parent == null) {
+			if (provider.identifiers == null) {
 				System.out.println("update provider: "+provider.name);
-				provider = OrganizationTools.updateModel(session, provider);
-				OrganizationResourceProvider.updateFromHP(session, provider);
-				AuditManager.instance.success();
+				List<Record> records = RecordManager.instance.list(session.getAccessorRole(), session, CMaps.map("_id",provider._id).map("format","fhir/Organization").map("public","only").map("content","Organization/HP"), RecordManager.COMPLETE_DATA); 
+				if (!records.isEmpty()) {
+					Record rec = records.get(0);								  
+				
+					Organization org = orgProvider.parse(rec, Organization.class);
+				    orgProvider.extractAddress(org, provider);
+				    provider.set("identifiers", provider.identifiers);
+				    
+				 	AuditManager.instance.success();
+				}
 			}
 		}
 

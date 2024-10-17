@@ -99,7 +99,11 @@ public class ApplicationTools {
 		
 		// check consents accepted
 		checkProjectConsentsAccepted(member, studyConfirm, links);
-							
+				
+		// check user accepted
+		if (!TestAccountTools.allowInstallation(context, member._id, app._id)) 
+			throw new BadRequestException("error.blocked.testuser", "Application does not allow test users.");
+			
 		// Create app instance *
 		MobileAppInstance appInstance = null;
 		
@@ -559,7 +563,7 @@ public class ApplicationTools {
         for (StudyAppLink sal : links) {
 			if (sal.isConfirmed()) {	
 				if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {
+					if (sal.type.contains(StudyAppLinkType.AUTOADD_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {
 						
 						if (LinkTools.findConsentForAppLink(context.getAccessor(),sal)==null) {
 							ContextManager.instance.clearCache();
@@ -568,12 +572,12 @@ public class ApplicationTools {
 						}
 					}
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.serviceAppId))) {					
+					if (sal.type.contains(StudyAppLinkType.AUTOADD_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.serviceAppId))) {					
 						ContextManager.instance.clearCache();
 						refreshOrInstallService(context, sal.serviceAppId, member, studyConfirm);											
 					}
 				} else
-				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
+				if (sal.type.contains(StudyAppLinkType.AUTOADD_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
 					ContextManager.instance.clearCache();
 			        controllers.members.Studies.requestParticipation(context.forAccountReshare(), member._id, sal.studyId, app._id, sal.dynamic ? JoinMethod.API : JoinMethod.APP, null);
 				}
@@ -589,18 +593,18 @@ public class ApplicationTools {
 				if (!sal.active) sal.type = Collections.emptySet();
 				
 				if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.userId)) {
+					if (sal.type.contains(StudyAppLinkType.CHECK_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.userId)) {
 						Consent consent = LinkTools.findConsentForAppLink(member._id, sal);						
 						if (consent==null) throw new BadRequestException("error.missing.consent_accept", "Consent belonging to app must be accepted.");
 					}
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
-						if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.serviceAppId)) {
+						if (sal.type.contains(StudyAppLinkType.CHECK_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.serviceAppId)) {
 							Consent consent = LinkTools.findConsentForAppLink(member._id, sal);						
 							if (consent==null) throw new BadRequestException("error.missing.consent_accept", "Consent belonging to app must be accepted.");
 						}									
 				} else {
 				
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.studyId)) {
+					if (sal.type.contains(StudyAppLinkType.CHECK_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.studyId)) {
 						StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, member._id, Sets.create("status", "pstatus"));
 			        	if (sp == null || 
 			        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
@@ -610,7 +614,7 @@ public class ApplicationTools {
 			        	}
 					}
 					
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
+					if (sal.type.contains(StudyAppLinkType.AUTOADD_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
 						controllers.members.Studies.precheckRequestParticipation(member._id, sal.studyId);
 					}
 				}
@@ -691,26 +695,30 @@ public class ApplicationTools {
 	}
 
 	public static void removeAppInstance(AccessContext context, MidataId executorId, MobileAppInstance appInstance) throws AppException {
-		AccessLog.logBegin("start remove app instance: ",appInstance._id.toString()," context="+context.toString());
+		AccessLog.logBegin("start remove app instance: ",appInstance._id.toString()," context="+context.toString()+" app="+appInstance.applicationId.toString());	
 		// Device or password changed, regenerates consent				
-		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);
-		Plugin app = Plugin.getById(appInstance.applicationId);
+		Circles.consentStatusChange(context, appInstance, ConsentStatus.DELETED);		
+		
+		// This is now all done asynchronously
+		/*Plugin app = Plugin.getById(appInstance.applicationId);		
 		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
 		RecordManager.instance.deleteAPS(context, appInstance._id);									
 		//Removing queries from user account should not be necessary
 		if (appInstance.serviceId == null) Circles.removeQueries(appInstance.owner, appInstance._id);										
 		
-		MobileAppInstance.delete(appInstance.owner, appInstance._id);
+		MobileAppInstance.delete(appInstance.owner, appInstance._id);*/
+		
 		AccessLog.logEnd("end remove app instance");
 	}
 
 	public static void deleteServiceInstance(AccessContext context, ServiceInstance instance) throws InternalServerException {
-        Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.ALL);
+        Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.APPINSTANCE_ALL);
         AccessLog.log("delete service instance:",instance._id.toString()," #instances=", Integer.toString(appInstances.size()));
         for (MobileAppInstance appInstance : appInstances) {
             try {
               ApplicationTools.removeAppInstance(context, context.getAccessor(), appInstance);            
             } catch (Exception e) {
+                AccessLog.logException("delete service instance:", e);
             	AccessLog.logEnd("end remove app instance (exception)");
                 MobileAppInstance.delete(instance.executorAccount, appInstance._id);
             }
@@ -723,7 +731,7 @@ public class ApplicationTools {
 		MidataId pluginId = context.getUsedPlugin();
 		
 		UserGroup userGroup = UserGroupTools.createUserGroup(context, UserGroupType.CARETEAM, targetId, name);
-		UserGroupMember member = UserGroupTools.createUserGroupMember(context, ResearcherRole.HC(), userGroup._id);
+		UserGroupMember member = UserGroupTools.uncheckedCreateUserGroupMember(context, ResearcherRole.HC(), userGroup._id);
 				
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 		

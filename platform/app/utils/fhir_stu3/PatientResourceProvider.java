@@ -113,6 +113,7 @@ import utils.FHIRPatientHolder;
 import utils.InstanceConfig;
 import utils.QueryTagTools;
 import utils.RuntimeConstants;
+import utils.TestAccountTools;
 import utils.access.DBIterator;
 import utils.access.Feature_Pseudonymization;
 import utils.access.RecordManager;
@@ -450,42 +451,6 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		return p;
 	}
 
-	public void updatePatientForAccount(Member member) throws AppException {
-		if (!member.role.equals(UserRole.MEMBER)) return;
-		AccessLog.logBegin("update patient record");
-		AccessContext context = ContextManager.instance.createSharingContext(info(), member._id);
-		List<Record> allExisting = RecordManager.instance.list(info().getAccessorRole(), context,
-				CMaps.map("format", "fhir/Patient").map("owner", member._id).map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
-
-		if (allExisting.isEmpty()) {
-			Patient patient = generatePatientForAccount(member);
-			Record record = newRecord("fhir/Patient");
-			prepare(record, patient);
-			record.owner = member._id;
-			insertRecord(record, patient);
-		} else {
-			Patient patient = generatePatientForAccount(member);
-			Record existing = allExisting.get(0);
-			patient.getMeta().setVersionId(existing.version);
-			prepare(existing, patient);
-			updateRecord(existing, patient);
-		}
-		AccessLog.logEnd("update patient record");
-	}
-
-	public static void updatePatientForAccount(AccessContext context, MidataId who) throws AppException {
-		PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
-
-		try {
-			info();
-		} catch (AuthenticationException e) {	
-			patientProvider.setAccessContext(context);
-		}
-
-		Member member = Member.getById(who, Sets.create(User.ALL_USER, "firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC", "language", "role"));
-		patientProvider.updatePatientForAccount(member);
-	}
-
 	public void prepare(Record record, Patient thePatient) {
 		record.content = "Patient";
 		record.name = thePatient.getName().get(0).getNameAsSingleString();
@@ -503,7 +468,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 				
 		if (info().getUsedPlugin() != null) {
-		  List<Study> studies = AccountManagementTools.determineProjectsFromUsedApp(info(), info().getLegacyOwner().equals(record.owner));
+		  List<Study> studies = AccountManagementTools.determineLinkedProjectsFromUsedApp(info(), info().getLegacyOwner().equals(record.owner));
 		  populateIdentifiers(record.owner, resource, studies);		  		 
 		}
 					
@@ -537,7 +502,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (lang != null && !lang.equals(user.language)) {			
 			user.language = lang;
 			User.set(user._id, "language", user.language);
-			updatePatientForAccount(user);
+			utils.fhir.PatientResourceProvider.updatePatientForAccount(info(), user._id, false);
 		}
 		AuditManager.instance.success();
 	}
@@ -708,6 +673,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		user.initialApp = info().getUsedPlugin();
 	
 		AccountManagementTools.validateUserAccountFilledOut(user);
+		List<Extension> testCustomerExt = thePatient.getExtensionsByUrl("http://midata.coop/extensions/test-user-customer");
+		String testCustomer = testCustomerExt.isEmpty() ? null : testCustomerExt.get(0).getValue().toString();
+		TestAccountTools.prepareNewUser(tempContext, user, testCustomer);
+	
 			
 		// Determine projects the given user should participate in
         Set<MidataId> projectsToParticipate = AccountManagementTools.getProjectIdsFromPatient(fhirPatient);					
@@ -754,7 +723,9 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
         if (consent != null && !consent.isActive()) {
         	fhirPatient.addServiceUrl(user, consent);
         } else if (consent != null && consent.status==ConsentStatus.PRECONFIRMED) {
-        	insertRecord(tempContext.forConsentReshare(consent), record, thePatient);
+        	//Insertion no longer needed. Is copied from original
+        	//insertRecord(tempContext.forConsentReshare(consent), record, thePatient);
+        	
         	tempContext = tempContext.forConsent(consent);
         }
 		        

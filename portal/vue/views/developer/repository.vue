@@ -144,7 +144,7 @@ export default {
         loadApp(appId) {
             const { $data } = this, me = this;
             $data.appId=appId;
-            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "repositoryUrl", "repositoryDirectory", "repositoryDate", "repositoryAuditDate", "repositoryRisks", "hasScripts" ])
+            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "repositoryUrl", "repositoryDirectory", "repositoryDate", "repositoryAuditDate", "repositoryRisks", "hasScripts", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax" ])
             .then(function(data) { 
                 $data.app = data.data[0];			
             }));

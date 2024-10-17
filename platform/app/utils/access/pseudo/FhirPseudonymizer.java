@@ -21,13 +21,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 
 import models.MidataId;
+import models.Record;
+import models.enums.ProjectDataFilter;
 import utils.access.DBRecord;
+import utils.access.Feature_Pseudonymization;
 import utils.exceptions.AppException;
 
 public class FhirPseudonymizer {
@@ -45,6 +49,14 @@ public class FhirPseudonymizer {
 	
 	private static PseudonymizeOperation subject = new PseudonymizeOperation(new String[] { "subject" }, PseudonymizeAction.REFERENCE);
 	private static PseudonymizeOperation patient = new PseudonymizeOperation(new String[] { "patient" }, PseudonymizeAction.REFERENCE);
+	private static Map<ProjectDataFilter, ProjectDataFilterBase> filters;
+	static {
+		filters = new HashMap<ProjectDataFilter, ProjectDataFilterBase>();
+		filters.put(ProjectDataFilter.NO_TIME, new RemoveTimeFilter());
+		filters.put(ProjectDataFilter.ONLY_MONTH_YEAR, new RemoveDayFilter());
+		filters.put(ProjectDataFilter.NO_PRACTITIONER, new RemovePractitionerFilter());
+		filters.put(ProjectDataFilter.NO_NARRATIVES, new RemoveNarrativesFilter());
+	}
 	
 	Map<String, List<PseudonymizeOperation>> catalog = new HashMap<String, List<PseudonymizeOperation>>();
 			
@@ -72,7 +84,15 @@ public class FhirPseudonymizer {
 		return ops;
 	}
 	
-	public void pseudonymize(DBRecord rec) throws AppException {
+	public static void pseudonymizeMeta(Record rec, Set<ProjectDataFilter> dataFilters) throws AppException {
+		if (dataFilters != null) {
+			for (ProjectDataFilter filter : dataFilters) {
+				filters.get(filter).pseudonymizeMeta(rec);
+			}
+		}
+	} 
+	
+	public void pseudonymize(DBRecord rec, Set<ProjectDataFilter> dataFilters) throws AppException {
 		String format = (String) rec.meta.get("format");
 		List<PseudonymizeOperation> ops = catalog.get(format);
 		if (rec.data != null && rec.data instanceof BasicBSONObject) {
@@ -83,8 +103,14 @@ public class FhirPseudonymizer {
 			}
 		  
 			pseudonymizeContained(rec, (BasicBSONObject) rec.data);
+			
+			if (dataFilters != null) {
+				for (ProjectDataFilter filter : dataFilters) {
+					filters.get(filter).pseudonymizeAll(rec, rec.data);
+				}
+			}
 		}
-		
+		pseudonymizeAllReferences(rec, rec.data);
 		
 	}
 	
@@ -113,6 +139,30 @@ public class FhirPseudonymizer {
 			}
 		}		
 	}
+	
+	public void pseudonymizeAllReferences(DBRecord rec, Object base) throws AppException {
+	    if (base == null) return;
+        if (base instanceof BasicBSONList) {       
+            BasicBSONList lst = (BasicBSONList) base;
+            for (int i=0;i<lst.size();i++) {
+                Object entry = lst.get(i);
+                pseudonymizeAllReferences(rec, entry);
+            }
+	   } else if (base instanceof BasicBSONObject) {
+            BasicBSONObject obj = (BasicBSONObject) base;
+            if (obj.containsField("reference")) {
+                Object t = obj.get("reference");
+                if (t != null && t instanceof String) {
+                    String p = Feature_Pseudonymization.pseudonymizeRefOrNull(rec.context, (String) t);
+                    if (p != null) {
+                        obj.put("reference", p);
+                        obj.remove("display");
+                    }
+                }
+            }
+            for (Object v : obj.values()) pseudonymizeAllReferences(rec, v);                    
+        }       
+    }
 	
 	public BasicBSONObject replaceReference(DBRecord rec, BasicBSONObject ref) throws AppException {		
 		if (ref.get("reference") instanceof String) {

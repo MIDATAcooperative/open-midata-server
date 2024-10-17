@@ -117,4 +117,11 @@ id0124	30.01.2024	a.kreutz	F	HTML Mails	The platform is now able to sent mails i
 id0125	15.02.2024	a.kreutz	F	Dynamic content groups	Access filters may now declare a group as dynamic. Dynamic groups will be resolved at use time and not at consent creation time.
 id0126	02.04.2024	a.kreutz	F	App end of life function	Application may now have an END OF LIFE status. Users can no longer log in with this application. You can specificy a message to be displayed.
 id0127	08.04.2024	a.kreutz	F	Dynamically add content types	Access filters may now declare automatic content type addition for a dynamic group.
+id0128	07.05.2024	a.kreutz	F	ID pseudonymization	All IDs in pseudonymized projects are now pseudonymized.
+id0129	07.05.2024	a.kreutz	F	More pseudonymization options	For new projects additional pseudonymization filters may be selected
+id0130	07.05.2024	a.kreutz	F	Meta projects	It is now possible to define a META project that is the union of other projects.
+id0131	04.06.2024	a.kreutz	F	Consents may be managed by creator organization
+id0132	27.06.2024	a.kreutz	B	Bugfix for existing patient creation via API
+id0133	11.09.2024	a.kreutz	F	Test User	It is now possible to create users for testing on a production system.
+id0134	09.10.2024	a.kreutz	F	Two phase consent withdrawal	Consents are now withdrawen in two phases so that Subscriptions watching consent changes are still able to access the consents data.
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

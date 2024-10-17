@@ -474,7 +474,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		  query.putDataCondition(new AndCondition(CMaps.map("authorized", info.getAccessor())).optimize());
 		  authrestricted = true;
 		} else if (!current.role.equals(UserRole.ADMIN)) {
-		  Set<UserGroupMember> ugms = info.getCache().getAllActiveByMember();
+		  Set<UserGroupMember> ugms = info.getCache().getAllActiveByMember(Permission.AUDIT_LOG);
 		  if (ugms.isEmpty()) {
 		    query.putDataCondition(new AndCondition(CMaps.map("authorized", info.getAccessor())).optimize());
 		  } else {

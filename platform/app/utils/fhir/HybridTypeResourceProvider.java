@@ -106,27 +106,28 @@ public abstract class HybridTypeResourceProvider<T extends DomainResource, M1 ex
 
 	@Override
 	public void updatePrepare(Model record, T theResource) throws AppException {
-		AccessLog.logBegin("begin update for resource ", getResourceType().getSimpleName());
-		try {
-			if (handleWithFirstProvider(theResource)) {
-				first.updatePrepare((M1) record, theResource);
-			} else  {
-				if (secondRW!=null) secondRW.updatePrepare((M2) record, theResource);
-				else throw new BadRequestException("error.nowrite", "Cannot write this resource.");
-			} 
-		} finally {
-			AccessLog.logEnd("end update for resource");
-		}
-		
+			
+		if (handleWithFirstProvider(theResource)) {
+			first.updatePrepare((M1) record, theResource);
+		} else  {
+			if (secondRW!=null) secondRW.updatePrepare((M2) record, theResource);
+			else throw new BadRequestException("error.nowrite", "Cannot write this resource.");
+		} 
+	
 	}
 
 	@Override
 	public void updateExecute(Model record, T theResource) throws AppException {
-		if (handleWithFirstProvider(theResource)) {
-			first.updateExecute((M1) record, theResource);
-		} else  {
-			secondRW.updateExecute((M2) record, theResource);
-		} 		
+		AccessLog.logBegin("begin hybrid update for resource ", getResourceType().getSimpleName());
+		try {
+			if (handleWithFirstProvider(theResource)) {
+				first.updateExecute((M1) record, theResource);
+			} else  {
+				secondRW.updateExecute((M2) record, theResource);
+			} 		
+		} finally {
+			AccessLog.logEnd("end hybrid update for resource");
+		}
 	}
 
 	@Override

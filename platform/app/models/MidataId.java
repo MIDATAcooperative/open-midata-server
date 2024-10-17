@@ -72,6 +72,13 @@ public class MidataId implements Comparable<MidataId>, Serializable {
 	}
 	
 	/**
+	 * Is this a pseudonymized identifier that cannot be mapped to an ObjectId
+	 */
+	public boolean isPseudonymized() {
+	    return id.charAt(0) == 'P';
+	}
+	
+	/**
 	 * Returns ID as string representation
 	 */
 	public String toString() {
@@ -92,6 +99,7 @@ public class MidataId implements Comparable<MidataId>, Serializable {
 	 */
 	public ObjectId toObjectId() {
 		if (objId!=null) return objId;
+		if (isPseudonymized()) throw new NullPointerException();
 		objId = new ObjectId(id);
 		return objId;
 	}
@@ -105,7 +113,7 @@ public class MidataId implements Comparable<MidataId>, Serializable {
 	 * @return returns String or ObjectId
 	 */
 	public Object toDb() {
-		if (isLocal()) return toObjectId(); else return toString();
+		if (isLocal() && !isPseudonymized()) return toObjectId(); else return toString();
 	}
 		
 
@@ -142,6 +150,7 @@ public class MidataId implements Comparable<MidataId>, Serializable {
 	 */
 	public static boolean isValid(String str) {		
 		if (ObjectId.isValid(str)) return true;
+		if (str.length()>0 && str.charAt(0) == 'P') return true;
 		return false;
 	}
 	

@@ -83,6 +83,7 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Circles;
 import controllers.members.HealthProvider;
 import controllers.members.Studies;
+import models.Actor;
 import models.Consent;
 import models.ConsentEntity;
 import models.ConsentVersion;
@@ -112,6 +113,7 @@ import utils.ErrorReporter;
 import utils.LinkTools;
 import utils.PluginLoginCache;
 import utils.QueryTagTools;
+import utils.UserGroupTools;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -201,10 +203,10 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		org.hl7.fhir.r4.model.Consent p = parser.parseResource(getResourceType(), consentToConvert.fhirConsent.toString());		
 		
 		if (consentToConvert.sharingQuery == null) Circles.fillConsentFields(context, Collections.singleton(consentToConvert), Sets.create("sharingQuery"));
-		
+		setAccessContext(context);
 		processResource(consentToConvert, p);
 		addQueryToConsent(consentToConvert, p);			
-		addActorsToConsent(consentToConvert, p);
+		addActorsToConsent(context, consentToConvert, p);
 						
 		return p;
 	}
@@ -214,7 +216,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		if (query != null) buildQuery(query, p.getProvision());
 	}
 	
-	public void addActorsToConsent(Consent consentToConvert, org.hl7.fhir.r4.model.Consent p) throws AppException {
+	public void addActorsToConsent(AccessContext context, Consent consentToConvert, org.hl7.fhir.r4.model.Consent p) throws AppException {
 		p.getProvision().getActor().removeIf(actor -> { return actor.hasRole() && ("GRANTEE".equals(actor.getRole().getCodingFirstRep().getCode())); });
 
 		if (consentToConvert.type == ConsentType.EXTERNALSERVICE || consentToConvert.type == ConsentType.API) {
@@ -251,6 +253,16 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 				  p.getProvision().addActor().setRole(new CodeableConcept().addCoding(new Coding().setSystem("http://hl7.org/fhir/v3/RoleCode").setCode("GRANTEE"))).setReference(new Reference().setIdentifier(new Identifier().setSystem("http://midata.coop/identifier/patient-login-or-invitation").setValue(auth)));
 				}
 			}
+		}
+		
+		if (consentToConvert.managers != null) {
+			p.getProvision().getActor().removeIf(actor -> { return actor.hasRole() && ("CST".equals(actor.getRole().getCodingFirstRep().getCode())); });
+
+			for (MidataId entity : consentToConvert.managers) {
+				Reference ref = FHIRTools.getReferenceToActor(Actor.getActor(context, entity));
+				if (ref != null) p.getProvision().addActor().setRole(new CodeableConcept().addCoding(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/v3-ParticipationType").setCode("CST"))).setReference(ref);
+			}
+			
 		}
 		
 		if (consentToConvert.allowedReshares != null) {
@@ -461,7 +473,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			c.addExtension().setUrl("http://midata.coop/extensions/consent-name").setValue(new StringType(consentToConvert.name));
 		}
 		if (part != null) {
-			if (!c.hasExtension("http://midata.coop/extensions/project-join-method")) c.addExtension().setUrl("http://midata.coop/extensions/project-join-method").setValue(new StringType(part.joinMethod.toString()));
+			if (part.joinMethod != null && !c.hasExtension("http://midata.coop/extensions/project-join-method")) c.addExtension().setUrl("http://midata.coop/extensions/project-join-method").setValue(new StringType(part.joinMethod.toString()));
 			if (part.projectEmails != null) {
 			  if (c.hasExtension("http://midata.coop/extensions/communication-channel-use")) {
 			    c.getExtensionByUrl("http://midata.coop/extensions/communication-channel-use").setValue(new StringType(part.projectEmails.toString()));
@@ -474,7 +486,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		c.setId(consentToConvert._id.toString());
 		c.getProvision().getActor().clear();
 		
-		switch (consentToConvert.status) {
+		switch (consentToConvert.getTargetStatus()) {
 		case PRECONFIRMED:
 		case ACTIVE:
 			c.setStatus(ConsentState.ACTIVE);break;
@@ -490,8 +502,24 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		c.setCategory(new ArrayList<CodeableConcept>());
 		c.addCategory().addCoding().setCode(categoryCode).setSystem("http://midata.coop/codesystems/consent-category");
 
+		if (consentToConvert.creatorApp != null) {
+		  Plugin app = Plugin.getById(consentToConvert.creatorApp);
+		  if (app != null) c.addCategory().addCoding().setCode(app.filename).setSystem("http://midata.coop/codesystems/app");
+		}
+		
 		if (study != null) {
 			c.addCategory().addCoding().setCode(study.code).setSystem("http://midata.coop/codesystems/project-code").setDisplay(study.name);
+			if (study.categories != null) {
+				for (String category : study.categories) {
+					String parts[] = category.split("[\\s\\|]");
+					if (parts.length>=2) {
+						c.addCategory().addCoding().setCode(parts[1]).setSystem(parts[0]);
+					} else if (parts.length==1) {
+						c.addCategory().addCoding().setCode(parts[0]);
+					} 
+				}
+			}
+			
 			if (org != null) {
 			   c.getProvision().addActor().setRole(new CodeableConcept(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/v3-ParticipationType").setCode("IRCP"))).setReference(new Reference("Organization/"+study.owner.toString()).setDisplay(org.name));
 			}
@@ -558,7 +586,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		if (params.containsKey("actor")) {
 			List<ReferenceParam> actors = builder.resolveReferences("actor", null);
 			if (actors != null) {
-				if (FHIRTools.areAllOfType(actors, Sets.create("Patient","Group"))) {
+				if (FHIRTools.areAllOfType(actors, Sets.create("Patient","Group","Organization"))) {
 				  authorized = FHIRTools.referencesToIds(actors);				
 				} else builder.restriction("actor", false, null, "fhirConsent.provision.actor.reference");
 			}
@@ -594,10 +622,17 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized", "observers");
 		AccessLog.log(properties.toString());
 		Set<models.Consent> consents = new HashSet<models.Consent>();						
-		if (context != null && (authorized == null || authorized.contains(context.getOwner().toString()))) {			
-			Set<Consent> partResult = Consent.getAllByAuthorized(context.getOwner(), properties, Consent.FHIR);
+		if (context != null && (authorized == null || authorized.contains(context.getOwner().toString()))) {
+			Set<MidataId> consentManagers = UserGroupTools.getConsentManagers(context);
+			Set<Consent> partResult = Consent.getAllByAuthorized(consentManagers, properties, Consent.FHIR, 2000);
 			AccessLog.log("read by auth #="+partResult.size());
+			MidataId accessor = context.getAccessor();
+			
+			Set<Consent> partResult2 = Consent.getAllByManagers(consentManagers, properties, Consent.FHIR);
+			AccessLog.log("read by manager #="+partResult2.size());
+			
 			consents.addAll(partResult);
+			consents.addAll(partResult2);
 		}
 		if (ownerQuery) {			
 			Set<Consent> partResult = Consent.getAllByOwner(context.getOwner(), properties, Consent.FHIR, Circles.RETURNED_CONSENT_LIMIT);
@@ -608,7 +643,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		if (pluginId != null) {
 		  Plugin plugin = Plugin.getById(pluginId);
 		  if (plugin.consentObserving) {			 
-			  Set<Consent> partResult = Consent.getAllByObserver(pluginId, properties, Consent.FHIR, Circles.RETURNED_CONSENT_LIMIT);
+			  Set<Consent> partResult = Consent.getAllByObserver(pluginId, properties, Consent.FHIR, Circles.RETURNED_CONSENT_LIMIT);  
 			  AccessLog.log("read by observer #="+partResult.size());
 			  consents.addAll(partResult);
 		  }
@@ -883,7 +918,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			theResource.setId(consent._id.toString());
 			processDataSharing(consent, theResource);			
 			addQueryToConsent(consent, theResource);			
-			addActorsToConsent(consent, theResource);
+			addActorsToConsent(info, consent, theResource);
 			return theResource;
 		}
 		
@@ -919,7 +954,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 	@Override
 	public void updatePrepare(Consent consent, org.hl7.fhir.r4.model.Consent theResource) throws AppException {
 		AccessContext info = resolveSource(consent, theResource, null);
-		switch(consent.status) {
+		switch(consent.getTargetStatus()) {
 		case UNCONFIRMED:
 		case INVALID:
 			if (theResource.getStatus()==ConsentState.ACTIVE) {
@@ -969,7 +1004,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			}
 			if (theResource.getStatus()==ConsentState.REJECTED) {
 				if (consent.type == ConsentType.STUDYPARTICIPATION) {
-				   StudyParticipation part = StudyParticipation.getById(consent._id, Sets.create("study"));
+				   StudyParticipation part = StudyParticipation.getById(consent._id, Sets.create("study", "owner"));
 				   Studies.noParticipation(info(), consent.owner, part.study);
 				} else {
 				   HealthProvider.rejectConsent(context, consent.owner, consent._id);
@@ -977,12 +1012,13 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			}
 			break;
 		case ACTIVE:
+		case PRECONFIRMED:
 			if (theResource.getStatus()==ConsentState.REJECTED || theResource.getStatus()==ConsentState.INACTIVE) {
 				if (consent.type == ConsentType.STUDYPARTICIPATION) {
-					   StudyParticipation part = StudyParticipation.getById(consent._id, Sets.create("study"));
-					   Studies.retreatParticipation(context, context.getAccessor(), part.study, false);
+					   StudyParticipation part = StudyParticipation.getById(consent._id, Sets.create("study", "owner"));
+					   Studies.retreatParticipation(context, part.owner, part.study, false);
 				} else {
-				       HealthProvider.rejectConsent(context, context.getAccessor(), consent._id);
+				       HealthProvider.rejectConsent(context, consent.owner, consent._id);
 				}
 			}
 			break;
@@ -1018,6 +1054,24 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		  if (creatorApp != null && !meta.hasExtension("app")) meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
 		if (record.creator != null && !meta.hasExtension("creator")) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, null));
+		
+		if (record.creatorOrg != null && !meta.hasExtension("creator-organization")) {
+		    Reference creatorOrg = FHIRTools.getReferenceToActor(Actor.getActor(info(), record.creatorOrg));
+		    if (creatorOrg != null) meta.addExtension("creator-organization", creatorOrg);
+		}
+		
+		meta.removeExtension("modifiedBy");
+		meta.removeExtension("modifiedBy-organization");
+		
+		if (record.modifiedBy != null) {
+			Reference modifiedByRef = FHIRTools.getReferenceToUser(record.modifiedBy, null);
+			if (modifiedByRef != null) meta.addExtension("modifiedBy", modifiedByRef);
+		}
+		if (record.modifiedByOrg != null) {
+		    Reference modifiedByOrg = FHIRTools.getReferenceToActor(Actor.getActor(info(), record.modifiedByOrg));
+		    if (modifiedByOrg != null) meta.addExtension("modifiedBy-organization", modifiedByOrg);
+		}
+		
 		addSecurityTag(resource, QueryTagTools.SECURITY_PLATFORM_MAPPED);	
 		
 	}

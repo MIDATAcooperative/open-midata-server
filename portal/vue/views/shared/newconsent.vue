@@ -104,6 +104,7 @@
 								<div class="iconspace">
 									<div>{{ $t('enum.userrole.'+owner.role)}}</div>		  	
 									<address>
+                                        <span v-if="owner.testUserApp" class="badge badge-warning mr-1"><span class="fas fa-vial" title="Test User"></span></span>
 										<strong>{{ owner.firstname }} {{ owner.lastname }}</strong>
 										<div v-if="owner.email">{{ owner.email }}<br></div>
 										<span v-if="owner.address1 || owner.city || owner.country"><br>{{ owner.address1 }}<br>
@@ -117,7 +118,8 @@
 						<div v-if="owner && owner._id == userId">
 		  					<div class="card-body">
 		    					<img :src="getIconRole(owner)" class="float-left consenticon">
-		    					<div class="iconspace"><div>&nbsp;</div><strong v-t="'editconsent.you'"></strong></div>
+		    					<div class="iconspace"><div>&nbsp;</div>
+                                <span v-if="owner.testUserApp" class="badge badge-warning mr-1"><span class="fas fa-vial" title="Test User"></span></span><strong v-t="'editconsent.you'"></strong></div>
 		  					</div>
 						</div>
 						<div v-if="consent.type=='STUDYRELATED'">
@@ -183,6 +185,7 @@
 								<div class="iconspace">
 									<div>{{$t('enum.userrole.'+person.role)}}</div>		
 									<address>
+                                         <span v-if="person.testUserApp" class="badge badge-warning mr-1"><span class="fas fa-vial" title="Test User"></span></span>
 										<strong>{{ person.firstname }} {{ person.lastname }}</strong>
 										<div v-if="person.email">{{ person.email }}<br></div>
 										<span v-if="person.address1 || person.city || person.country"><br>
@@ -519,7 +522,7 @@ export default {
 				
 				
 				if ($data.consent.owner && $data.consent.type!="STUDYRELATED") {
-					me.doBusy(users.getMembers({ "_id" : $data.consent.owner }, [ "firstname", "lastname", "email", "role"])
+					me.doBusy(users.getMembers({ "_id" : $data.consent.owner }, [ "firstname", "lastname", "email", "role", "testUserApp"])
 					.then(function(result) { $data.owner = result.data[0]; }));
 				}
 				
@@ -574,7 +577,7 @@ export default {
 			}
 			
 			if ($data.consent.owner) {				
-				me.doBusy(users.getMembers({ "_id" : $data.consent.owner }, [ "firstname", "lastname", "city", "address1", "address2", "country", "role"])
+				me.doBusy(users.getMembers({ "_id" : $data.consent.owner }, [ "firstname", "lastname", "city", "address1", "address2", "country", "role", "testUserApp"])
 				.then(function(result) { $data.owner = result.data[0]; }));
 			} else me.ready();
 			
@@ -792,7 +795,7 @@ export default {
         const { $data, $route, $router } = this, me = this;
 		$data.consent.authorized.push(session.user._id);
 		$data.consent.entityType = "USER";
-		me.doAction("add", users.getMembers({ "_id" : session.user._id }, [ "firstname", "lastname", "city", "address1", "address2", "country", "role"])
+		me.doAction("add", users.getMembers({ "_id" : session.user._id }, [ "firstname", "lastname", "city", "address1", "address2", "country", "role", "testUserApp"])
 		.then(function(result) { $data.authpersons.push(result.data[0]); }));		
 	},
 	

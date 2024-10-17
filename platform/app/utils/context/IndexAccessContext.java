@@ -17,22 +17,31 @@
 
 package utils.context;
 
+import java.util.Collections;
+import java.util.Set;
+
 import models.MidataId;
 import models.Record;
+import models.enums.ProjectDataFilter;
 import utils.access.APSCache;
 import utils.access.DBRecord;
+import utils.access.Feature_Pseudonymization;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class IndexAccessContext extends AccessContext {
 
 	private MidataId selfUser;
 	private boolean pseudonymize;
+	private Set<ProjectDataFilter> dataFilters;
+	private String salt;
 	
 	
-	public IndexAccessContext(APSCache cache, boolean pseudonymize) {
+	public IndexAccessContext(APSCache cache, boolean pseudonymize, Set<ProjectDataFilter> dataFilters) {
 		super(cache, null);
 		selfUser = cache.getAccountOwner();
 		this.pseudonymize = pseudonymize;
+		this.dataFilters = dataFilters;
 	}
 			
 	@Override
@@ -108,6 +117,17 @@ public class IndexAccessContext extends AccessContext {
 	@Override
 	public String getContextName() {
 		return "Index Access";
+	}
+	
+	public Set<ProjectDataFilter> getProjectDataFilters() throws InternalServerException {
+		return dataFilters != null ? dataFilters : Collections.emptySet();
+	}
+	
+	@Override
+	public String getSalt() throws AppException {
+		if (salt != null) return salt;
+		salt = Feature_Pseudonymization.getSalt(this);
+		return salt;
 	}
 	
 }

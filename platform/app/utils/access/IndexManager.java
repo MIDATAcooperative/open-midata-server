@@ -41,8 +41,10 @@ import akka.cluster.singleton.ClusterSingletonProxy;
 import akka.cluster.singleton.ClusterSingletonProxySettings;
 import models.Consent;
 import models.MidataId;
+import models.Study;
 import models.StudyParticipation;
 import models.enums.ConsentStatus;
+import models.enums.ProjectDataFilter;
 import utils.AccessLog;
 import utils.access.index.BaseIndexRoot;
 import utils.access.index.ConsentToKeyIndexRoot;
@@ -408,8 +410,13 @@ public class IndexManager {
 		Date limit = v>0 ? new Date(v - UPDATE_TIME) : null;
 		long now = System.currentTimeMillis();
 		 
-		if (limit != null) restrictions.put("shared-after", limit);								
-		List<DBRecord> recs = QueryEngine.listInternal(cache, aps, new IndexAccessContext(cache, index.getModel().pseudonymize), restrictions, Sets.create("_id"));
+		if (limit != null) restrictions.put("shared-after", limit);		
+		Set<ProjectDataFilter> filter = null;
+		if (index.getModel().pseudonymize) {
+			Study study = Study.getById(executor, Sets.create("dataFilters"));
+			if (study != null) filter = study.dataFilters;
+		}
+		List<DBRecord> recs = QueryEngine.listInternal(cache, aps, new IndexAccessContext(cache, index.getModel().pseudonymize, filter), restrictions, Sets.create("_id"));
 		addRecords(index, aps, recs);
 		boolean updateTs = recs.size() > 0 || limit == null || (now-v) > UPDATE_UNUSED;
 		// Records that have been freshly shared				
@@ -513,8 +520,13 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 						restrictions.put("no-postfilter-steams", "true");
 						restrictions.put("group-system", "v1");
 						//if (aps.equals(executor)) restrictions.put("owner", "self");
-										
-						Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new IndexAccessContext(cache, index.getModel().pseudonymize), false);
+						Set<ProjectDataFilter> filter = null;
+						if (index.getModel().pseudonymize) {
+							Study study = Study.getById(executor, Sets.create("dataFilters"));
+							filter = study.dataFilters;
+						}
+						
+						Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new IndexAccessContext(cache, index.getModel().pseudonymize, filter), false);
 						
 						Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
 						for (StatsIndexKey k : keys) {							
@@ -542,8 +554,12 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 			restrictions.put("no-postfilter-steams", "true");
 			restrictions.put("group-system", "v1");
 			//if (aps.equals(executor)) restrictions.put("owner", "self");
-								
-			Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new IndexAccessContext(cache, index.getModel().pseudonymize), false);
+			Set<ProjectDataFilter> filter = null;
+			if (index.getModel().pseudonymize) {
+				Study study = Study.getById(executor, Sets.create("dataFilters"));
+				filter = study.dataFilters;
+			}		
+			Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new IndexAccessContext(cache, index.getModel().pseudonymize, filter), false);
 				
 			Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
 			for (StatsIndexKey k : keys) {

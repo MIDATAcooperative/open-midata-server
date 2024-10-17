@@ -148,7 +148,7 @@ export default {
                 $data.study = study;	
             }));
             
-            me.doBusy(apps.getApps({ type : "external", consentObserving : true }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"])
+            me.doBusy(apps.getApps({ type : ["external","broker"], consentObserving : true }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"])
             .then(function(data) {
                 $data.observers = data.data;                
             }));
@@ -173,7 +173,7 @@ export default {
    
         studyLocked() {
             const { $data } = this;
-	        return (!$data.study) || ($data.study.validationStatus !== "DRAFT" && $data.study.validationStatus !== "REJECTED") || !$data.study.myRole.setup;    
+	        return (!$data.study) || ($data.study.validationStatus !== "DRAFT" && $data.study.validationStatus !== "REJECTED" && $data.study.validationStatus !== "PATCH") || !$data.study.myRole.setup;    
         },
    
         toggle(array,itm) {		

@@ -71,6 +71,7 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.OrganizationTools;
+import utils.ProjectTools;
 import utils.UserGroupTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -384,7 +385,7 @@ public class Providers extends APIController {
 			AccessLog.log("orgsIds:",orgIds.toString());
 		} else {
 			AccessLog.logBegin("Start search for organization membership");			
-			Set<UserGroupMember> memberOf = context.getCache().getAllActiveByMember();		
+			Set<UserGroupMember> memberOf = context.getCache().getAllActiveByMember(Permission.ANY);		
 			for (UserGroupMember ugm : memberOf) orgIds.add(ugm.userGroup);
 			AccessLog.logEnd("End search for org membership #size=",Integer.toString(orgIds.size()));		
 		}
@@ -585,6 +586,8 @@ public class Providers extends APIController {
 		   provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, provider._id, name, provider, parent, false, false);		   
 		   OrganizationResourceProvider.updateFromHP(context, provider);			   
 		}
+		
+		AuditManager.instance.success();
 		return ok();		
 	}
 	
@@ -643,7 +646,7 @@ public class Providers extends APIController {
 		
 		provider = UserGroupTools.createOrUpdateOrganizationUserGroup(context, new MidataId(), name, provider, parent, managerId.equals(context.getAccessor()), fullAccess);
 						
-		if (!managerId.equals(context.getAccessor())) UserGroupTools.createUserGroupMember(context, managerId, managerType, fullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), provider._id);
+		if (!managerId.equals(context.getAccessor())) ProjectTools.addOrMergeToUserGroup(context, fullAccess ? ResearcherRole.HC() : ResearcherRole.MANAGER(), provider._id, managerType, managerId, true);
 		
 		OrganizationResourceProvider.updateFromHP(context, provider);
 		

@@ -470,6 +470,11 @@ const routes = [
   },
   {
     base : ["research", "developer", "admin"],
+    path : "study.subprojects",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/studysubprojects.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
     path : "study.fields",
     component: () => import(/* webpackChunkName: "research" */ 'views/research/studyfields.vue')
   },
@@ -477,6 +482,11 @@ const routes = [
     base : ["research", "developer", "admin"],
     path : "study.rules",
     component: () => import(/* webpackChunkName: "research" */ 'views/research/studyrules.vue')
+  },
+  {
+      base : ["research", "developer", "admin"],
+      path : "study.messages",
+      component: () => import(/* webpackChunkName: "research" */ 'views/research/studymessages.vue')
   },
   {
     base : ["research"],

@@ -126,7 +126,7 @@ public class QueryEngine {
 		
 		//APS myaps = q.getCache().getAPS(aps);
 		
-		Feature qm = new Feature_QueryRedirect(new Feature_Pseudonymization(new Feature_PublicData(new Feature_UserGroups(new Feature_Stats(new Feature_ProcessFilters(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))));						 
+		Feature qm = new Feature_QueryRedirect(new Feature_Pseudonymization(new Feature_PublicData(new Feature_UserGroups(new Feature_Stats(new Feature_ProcessFilters(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_TestAccounts(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))));						 
 		DBIterator<DBRecord> recs = qm.iterator(q);		
 		
 		while (recs.hasNext()) {
@@ -275,10 +275,10 @@ public class QueryEngine {
     		AccessLog.log("with usergroup");
     		properties = new HashMap<String, Object>(properties);
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(false, new Feature_ManyUserNoRestriction(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))));
+    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(false, new Feature_ManyUserNoRestriction(new Feature_Indexes(new Feature_AccountQuery(new Feature_TestAccounts(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))))))));
     	} else {    	
     	   APS target = cache.getAPS(aps);    	
-    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_PublicData(new Feature_UserGroups(new Feature_ManyUserNoRestriction(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))))))))));
+    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_PublicData(new Feature_UserGroups(new Feature_ManyUserNoRestriction(new Feature_Indexes(new Feature_AccountQuery(new Feature_TestAccounts(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))))))));
     	}
     	Query q = new Query("full-query",properties, fields, cache, aps, context, null);
     	AccessLog.logQuery(q.getApsId(), q.getProperties(), q.getFields());
@@ -294,6 +294,20 @@ public class QueryEngine {
 		
 		return result;
 	}
+    
+   public static DBRecord contextLookup(AccessContext context, String format, MidataId idToLookup) throws AppException {
+        AccessLog.log("CONTEXT LOOKUP context="+context.toString()+" format="+format+" id="+idToLookup.toString());
+        Feature qm = new Feature_ProcessFilters(new Feature_Prefetch(true, new Feature_PublicData(/*new Feature_UserGroups(*/new Feature_AccountQuery(new Feature_TestAccounts(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))));
+        Query q = new Query("full-query",CMaps.map("_id", idToLookup).map("format", format).map("public", "also").map("deleted", true).map("limit", 1), Sets.create("_id"), context.getCache(), context.getTargetAps(), context, null);
+        DBIterator<DBRecord> result = qm.iterator(q);     
+        DBRecord rec = null;
+        if (result.hasNext()) {        
+           rec = result.next();          
+        }
+        result.close();
+        AccessLog.log("CONTEXT LOOKUP result rec="+rec);
+        return rec;
+    }
          
     /*
     protected static List<DBRecord> query(Map<String, Object> properties, Set<String> fields, MidataId apsId, AccessContext context, APSCache cache, Feature qm) throws AppException {

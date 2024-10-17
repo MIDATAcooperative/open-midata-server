@@ -47,6 +47,7 @@ import models.enums.MessageChannel;
 import models.enums.MessageReason;
 import models.enums.Permission;
 import models.enums.ResearcherRole;
+import models.enums.StudyType;
 import models.enums.SubUserRole;
 import models.enums.UserGroupType;
 import models.enums.UserRole;
@@ -55,6 +56,7 @@ import play.mvc.BodyParser;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.InstanceConfig;
 import utils.ProjectTools;
@@ -116,10 +118,10 @@ public class UserGroups extends APIController {
 			
 			if (properties.containsKey("active")) {
 				properties.remove("active");
-				ugms = context.getCache().getAllActiveByMember();
+				ugms = context.getCache().getAllActiveByMember(Permission.ANY);
 			} else {
 			   ugms = UserGroupMember.getAllByMember(executorId);
-			   ugms.addAll(context.getCache().getAllActiveByMember());			   
+			   ugms.addAll(context.getCache().getAllActiveByMember(Permission.ANY));			   
 			}
 			Set<MidataId> ids = new HashSet<MidataId>();
 			if (properties.containsKey("setup")) {
@@ -219,7 +221,7 @@ public class UserGroups extends APIController {
 		AccessContext context = portalContext(request);
 		
 		UserGroup userGroup = UserGroupTools.createUserGroup(context, UserGroupType.CARETEAM, new MidataId(), JsonValidation.getString(json, "name"));
-		UserGroupMember member = UserGroupTools.createUserGroupMember(context, ResearcherRole.HC(), userGroup._id);
+		UserGroupMember member = UserGroupTools.uncheckedCreateUserGroupMember(context, ResearcherRole.HC(), userGroup._id);
 				
 		RecordManager.instance.createPrivateAPS(context.getCache(), userGroup._id, userGroup._id);
 		
@@ -286,27 +288,38 @@ public class UserGroups extends APIController {
 		if (!UserGroupTools.accessorIsMemberOfGroup(context, groupId, permission)) {
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");		
 		}
+		
+		ResearcherRole role = null;
+		
 		Set<MidataId> targetUserIds = new HashSet<MidataId>();
 		for (MidataId targetUserId : targetUserIds1) {
 			switch(memberType) {
 			case USER:
-				if (User.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.notexists.user", "Target user does not exist.");
+				if (User.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.unknown.user", "Target user does not exist.");
 				targetUserIds.add(targetUserId);
 				break;
 			case ORGANIZATION:
-				if (HealthcareProvider.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.notexists.organization", "Target organization does not exist.");
+				if (HealthcareProvider.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.unknown.organization", "Target organization does not exist.");
 				targetUserIds.add(targetUserId);
 				break;
 			case USERGROUP:
 				if (targetUserIds.size()==1 && HealthcareProvider.getById(targetUserId, Sets.create("_id")) != null) memberType=EntityType.ORGANIZATION;
-				if (UserGroup.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.notexists.usergroup", "Target team does not exist.");
+				if (UserGroup.getById(targetUserId, Sets.create("_id")) == null) throw new BadRequestException("error.unknown.group", "Target team does not exist.");
 				targetUserIds.add(targetUserId);
 				break;
+			case PROJECT:
+				Study targetStudy = Study.getById(targetUserId, Sets.create("_id", "type"));
+			    if (targetStudy == null) throw new BadRequestException("error.unknown.project", "Target project does not exist.");
+			    Study sStudy = Study.getById(groupId, Sets.create("_id", "type"));
+			    if (sStudy == null || sStudy.type == StudyType.META) throw new BadRequestException("error.invalid.project", "No meta projects allowed as target");
+			    targetUserIds.add(targetUserId);
+			    role = ResearcherRole.SUBPROJECT();
+			    break;
 			case SERVICES:
 				Plugin pl = Plugin.getById(targetUserId);
 				if (pl==null) {
 					targetUserIds.add(targetUserId);
-				} else if (!pl.type.equals("broker")) throw new BadRequestException("error.notexists.plugin", "Target data broker does not exist.");
+				} else if (!pl.type.equals("broker")) throw new BadRequestException("error.unknown.plugin", "Target data broker does not exist.");
 				else {
 					if (pl.decentral) {
 						ServiceInstance si = ApplicationTools.createServiceInstance(context, pl, groupId);
@@ -320,7 +333,7 @@ public class UserGroups extends APIController {
 								found = true;
 							}
 						}
-						if (!found) throw new BadRequestException("error.notexists.plugin", "Target data broker does not exist.");
+						if (!found) throw new BadRequestException("error.unknown.plugin", "Target data broker does not exist.");
 					}
 				}
 		
@@ -330,7 +343,11 @@ public class UserGroups extends APIController {
 		Study study = Study.getById(groupId, Sets.create("anonymous"));
 		boolean anonymous = study != null && study.anonymous;
 		
-		ResearcherRole role = null;
+		Map<String, String> projectGroupMapping = null;
+		if (json.has("projectGroupMapping")) {
+		    projectGroupMapping = JsonExtraction.extractStringMap(json.get("projectGroupMapping"));
+		}
+				
 		if (json.has("roleName")) {
 			role = new ResearcherRole();
 			role.readData = JsonValidation.getBoolean(json, "readData");
@@ -351,7 +368,7 @@ public class UserGroups extends APIController {
 		}
 		
 		List<UserGroupMember> self = context.getCache().getByGroupAndActiveMember(groupId, context.getAccessor(), permission);
-		ProjectTools.addToUserGroup(context, self.get(self.size()-1), role, memberType, targetUserIds);
+		ProjectTools.addOrOverwriteToUserGroup(context, self.get(self.size()-1), role, memberType, targetUserIds, projectGroupMapping);
 		
 		AuditManager.instance.success();
 		return ok();

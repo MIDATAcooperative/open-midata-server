@@ -26,7 +26,7 @@
                 <div class="row extraspace">
                     <div class="col-8"><b>{{ service.name }}</b> <i v-if="service.managerName">{{ $t('apikeys.managedby') }} {{ service.managerName }}</i></div>
                     <div class="col-4">
-                        <button type="button" class="btn btn-default space" v-t="'apikeys.add_btn'" :disabled="action!=null" @click="addKey(service)"></button>                            
+                        <button type="button" class="btn btn-default space" v-t="'apikeys.add_btn'" :disabled="action!=null || service.name.startsWith('Midata Project Auto-Approver')" @click="addKey(service)"></button>                            
                         <button type="button" class="btn btn-danger space" v-t="'apikeys.delete_btn'" v-if="service.linkedStudy" :disabled="action!=null" @click="deleteService(service);"></button>
                         <!-- <button type="button" class="btn btn-danger space" v-t="'apikeys.delete_service_btn'" v-if="service.app.decentral" :disabled="action!=null" @click="deleteService(service);"></button> -->
                         <button type="button" class="btn btn-danger space" v-t="'apikeys.delete_endpoint_btn'" v-else-if="service.endpoint" :disabled="action!=null" @click="deleteService(service);"></button>
