@@ -69,6 +69,7 @@ import utils.context.AccessContext;
 import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 import utils.fhir.SubscriptionResourceProvider;
 import utils.stats.ActionRecorder;
 import utils.stats.Stats;
@@ -422,6 +423,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			   try {
 				   SubscriptionData.setError(subscription._id, new Date().toString()+": "+error);
 				   AuditManager.instance.fail(400, error, "error.plugin");
+				   ErrorReporter.reportPluginProblem("subscription script", null, new PluginException(plugin._id, "error.plugin", error));
 			   } catch (Exception e) {
 				   AccessLog.logException("Error during Subscription.setError", e);				   
 				   ErrorReporter.report("SubscriptionManager", null, e);

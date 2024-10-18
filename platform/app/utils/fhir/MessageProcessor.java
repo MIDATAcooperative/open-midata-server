@@ -81,7 +81,9 @@ public class MessageProcessor {
 					Parameters parameters = (Parameters) r;
 					params = new HashMap<String, String>();
 					for (ParametersParameterComponent entry : parameters.getParameter()) {
-						params.put(entry.getName(), entry.getValue().primitiveValue());
+						if (entry.getValue() != null) {
+						  params.put(entry.getName(), entry.getValue().primitiveValue());
+						}
 					}
 				}
 			}
