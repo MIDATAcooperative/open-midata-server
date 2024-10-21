@@ -334,7 +334,7 @@ public class MongoDatabase extends Database {
 	public long count(Class modelClass, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
 		try {
 		  Bson query = toDBObject(modelClass, properties);
-		  return getCollection(collection).count(query);
+		  return getCollection(collection).countDocuments(query);
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
 		}
