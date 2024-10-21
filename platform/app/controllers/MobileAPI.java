@@ -34,7 +34,6 @@ import org.bson.BSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.BasicDBObject;
-import com.mongodb.util.JSONParseException;
 
 import actions.MobileCall;
 import models.Consent;
@@ -513,7 +512,7 @@ public class MobileAPI extends Controller {
 							
 		try {
 			record.data = BasicDBObject.parse(data);
-		} catch (JSONParseException e) {
+		} catch (Exception e) { // JsonParseException
 			throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
 		}
 				
