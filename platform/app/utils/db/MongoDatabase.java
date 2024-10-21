@@ -41,7 +41,7 @@ import com.mongodb.WriteConcern;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.ReplaceOptions;
 
 import models.Model;
 import utils.AccessLog;
@@ -61,7 +61,7 @@ public class MongoDatabase extends Database {
 	private DatabaseConversion conversion = new DatabaseConversion();
 	private MongoCredential credential;
 	
-	private final static UpdateOptions UPSERT = new UpdateOptions().upsert(true);
+	private final static ReplaceOptions UPSERT = new ReplaceOptions().upsert(true);
 	
 	private final static int MAX_TRIES = 3;
 	
@@ -106,9 +106,11 @@ public class MongoDatabase extends Database {
 		} else { 
 		
 			if (credential != null) {		
-				mongoClient = new MongoClient(new ServerAddress(host, port), Arrays.asList(this.credential));
+				MongoClientOptions.Builder builder = new MongoClientOptions.Builder();			 
+				MongoClientOptions options = builder.build();
+				mongoClient = new MongoClient(new ServerAddress(host, port), this.credential, options);
 			} else mongoClient = new MongoClient(new ServerAddress(host, port));
-				mongoClient.setWriteConcern(WriteConcern.ACKNOWLEDGED);
+				//mongoClient.setWriteConcern(WriteConcern.ACKNOWLEDGED);
 			
 		}		
 	}

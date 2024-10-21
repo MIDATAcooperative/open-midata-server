@@ -28,7 +28,7 @@ libraryDependencies += guice
 
 libraryDependencies ++= Seq(
     ws,
-    "org.mongodb" % "mongodb-java-driver" % "5.2.0",
+    "org.mongodb" % "mongodb-driver-legacy" % "5.2.0",
     "joda-time" % "joda-time" % "2.10.10",
     "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "6.1.2",
     "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu3" % "6.1.2",
