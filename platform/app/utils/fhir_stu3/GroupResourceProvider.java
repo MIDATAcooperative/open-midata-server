@@ -35,8 +35,8 @@ import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -150,7 +150,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 		p.addIdentifier().setSystem("http://midata.coop/identifier/group-name").setValue(groupToConvert.name);
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(p);		
-		groupToConvert.fhirGroup = (DBObject) JSON.parse(encoded);				
+		groupToConvert.fhirGroup = (DBObject) BasicDBObject.parse(encoded);				
 	}
 			
 	   @Search()

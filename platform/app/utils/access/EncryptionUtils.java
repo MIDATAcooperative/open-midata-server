@@ -38,8 +38,9 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.bson.BSON;
 import org.bson.BSONObject;
+import org.bson.BasicBSONDecoder;
+import org.bson.BasicBSONEncoder;
 
 import akka.japi.Pair;
 import models.MidataId;
@@ -115,13 +116,13 @@ public class EncryptionUtils {
 		
 			byte[] bson = decrypt(key, encrypted);
 		   												
-	    	BSONObject obj =BSON.decode(bson);
+	    	BSONObject obj = new BasicBSONDecoder().readObject(bson);
 	    	
 	    	return obj;	    
 	}
 	
 	public static byte[] encryptBSON(byte[] key, BSONObject obj) throws InternalServerException {
-		byte[] bson = BSON.encode(obj);
+		byte[] bson = new BasicBSONEncoder().encode(obj);
 		return encrypt(key, bson);
 	}
 	
