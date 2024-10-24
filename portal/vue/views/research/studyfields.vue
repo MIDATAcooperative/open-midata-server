@@ -76,11 +76,14 @@
 	        <h2 v-t="'studyfields.groups'"></h2>
 	        <p v-if="!study.groups.length" v-t="'studyfields.groups_empty'"></p>
 	        <table v-else class="table table-striped">
+				<thead>
 	            <tr>
 	                <th v-t="'studyfields.group_name'"></th>
 	                <th v-t="'studyfields.group_description'"></th>
 	                <th>&nbsp;</th>
 	            </tr>
+				</thead>
+				<tbody>
 	            <tr v-for="(group,idx) in study.groups" :key="idx">
 	                <td><input class="form-control" type="text"  :disabled="notDraft()" v-validate v-model="group.name"></td>
 	                <td><input class="form-control" type="text"  :disabled="notDraft()" v-validate v-model="group.description"></td>
@@ -91,6 +94,7 @@
 	                <td><input name="description" class="form-control" type="text" v-validate v-model="newGroup.description"></td>
 	                <td><button type="button" class="btn btn-secondary btn-sm" @click="addNewGroup()" v-t="'common.add_btn'">Add</button></td>
 	            </tr>
+				</tbody>
 	        </table>
         
          </form>

@@ -65,7 +65,7 @@
                 </div>                     
             </form-group> 
             <form-group name="parent" label="provider_organization.parent" :path="errors.parent">
-                <p class="form-control-plaintext"><span class="mr-1" v-if="parentOrg">{{ (parentOrg || {}).name }}</span><button type="button" @click="selectParent()" class="btn btn-sm btn-default" v-t="'provider_organization.select_btn'"></button></p>
+                <p class="form-control-plaintext"><span class="me-1" v-if="parentOrg">{{ (parentOrg || {}).name }}</span><button type="button" @click="selectParent()" class="btn btn-sm btn-default" v-t="'provider_organization.select_btn'"></button></p>
                 
             </form-group>
             <form-group name="identifier" label="provider_organization.identifiers" :path="errors.identifier">
@@ -87,8 +87,8 @@
             </form-group>
             <form-group name="x" label="common.empty">
                 <button type="submit" v-submit :disabled="!isMasterUser() || action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
-                <button v-if="org._id" type="button" :disabled="!isMasterUser() || action!=null" class="btn btn-default ml-1" v-t="'common.delete_btn'" @click="deleteOrg()"></button>
-                <button v-if="org._id && usergroup.protection" type="button" :disabled="!isMasterUser() || action!=null || (usergroup.currentUserAccessUntil && usergroup.currentUserAccessUntil > now)" class="btn btn-primary ml-1" v-t="'provider_organization.request_btn'" @click="requestAccess()"></button> 
+                <button v-if="org._id" type="button" :disabled="!isMasterUser() || action!=null" class="btn btn-default ms-1" v-t="'common.delete_btn'" @click="deleteOrg()"></button>
+                <button v-if="org._id && usergroup.protection" type="button" :disabled="!isMasterUser() || action!=null || (usergroup.currentUserAccessUntil && usergroup.currentUserAccessUntil > now)" class="btn btn-primary ms-1" v-t="'provider_organization.request_btn'" @click="requestAccess()"></button> 
                 <success :finished="finished" action="update" msg="common.save_ok"></success>                
             </form-group>          
         </form>	

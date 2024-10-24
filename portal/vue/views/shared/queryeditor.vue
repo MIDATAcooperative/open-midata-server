@@ -40,9 +40,9 @@
 		      <span v-if="mode=='app'"> / </span>
 		      <span class="text-danger" v-if="block.app && block.app != 'all'"><span v-t="'queryeditor.short_app_other'"></span> {{ block.appName }}</span>
 		      <span class="text-success" v-if="!block.app || block.app == 'all'" v-t="'queryeditor.short_app_all'"></span>
-		      <span v-if="block.dynamic" class="ml-1 badge badge-danger">{{ $t('queryeditor.short_dynamic_'+block.dynamic) }}</span>
-		      <span v-if="block.addTag" v-for="atag of block.addTag" :key="atag" class="ml-1 badge badge-danger">{{ getTagName(atag) }}</span>
-		      <span v-if="block.allowTag" v-for="atag of block.allowTag" :key="atag" class="ml-1 badge badge-warning">{{ getTagName(atag) }}</span>
+		      <span v-if="block.dynamic" class="ms-1 badge text-bg-danger">{{ $t('queryeditor.short_dynamic_'+block.dynamic) }}</span>
+		      <span v-if="block.addTag" v-for="atag of block.addTag" :key="atag" class="ms-1 badge text-bg-danger">{{ getTagName(atag) }}</span>
+		      <span v-if="block.allowTag" v-for="atag of block.allowTag" :key="atag" class="ms-1 badge text-bg-warning">{{ getTagName(atag) }}</span>
 		    </div>		   
 		    
 		    <div v-if="block.timeRestrictionMode">
@@ -260,10 +260,13 @@
 		<div class="extraspace"></div>
 		<p v-t="'queryeditor.make_selection'" v-if="newentry.choices"></p>
 		<table class="table table-striped" v-if="newentry.choices">
+		  <thead>
 		  <tr>
 		    <th v-t="'queryeditor.resultgroup'"></th>
 		    <th v-t="'queryeditor.resultdetail'"></th>
 		  </tr>
+		  </thead>
+		  <tbody>
 		  <tr v-for="choice in newentry.choices" :key="JSON.stringify(choice)">
 		    <td><a href="javascript:" @click="addContent(choice)">{{ choice.display }}</a>
 		      <span v-if="choice.group" class="text-muted">(Group)</span>
@@ -273,6 +276,7 @@
 		      <div v-for="content in orderDisplay(choice.contents)" :key="JSON.stringify(content)"><a href="javascript:" @click="addContent(content);">{{ content.display }}</a><span v-if="content.content" class="text-muted">(Content)</span></div>
 		    </td> 
 		  </tr>
+		  </tbody>
 		</table>
 		<p v-if="newentry.choices && newentry.choices.length == 0" v-t="'queryeditor.search_empty'"></p>
 		

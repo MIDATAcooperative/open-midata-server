@@ -23,12 +23,15 @@
         <p v-if="members.all.length < 2" v-t="'studyteam.defineself'" class="alert alert-info"></p>
         <pagination v-model="members"></pagination>
         <table class="table table-striped table-hover">
+			<thead>
             <tr>
                 <Sorter v-t="'common.user.firstname'" sortby="user.firstname" v-model="members"></Sorter>
                 <Sorter sortby="user.lastname" v-model="members" v-t="'common.user.lastname'"></Sorter>
                 <Sorter v-t="'common.user.email'" sortby="user.email" v-model="members"></Sorter>
                 <Sorter colspan="3" v-t="'studyteam.rolehint'" sortby="role.roleName" v-model="members"></Sorter>			      
             </tr>
+			</thead>
+			<tbody>
             <tr class="clickable" @click="select(member)" v-for="member in members.filtered" :key="member._id">
                 <td>{{ member.user.firstname }}</td>
                 <td>{{ member.user.lastname }}</td>
@@ -42,7 +45,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>
-            </tr>				
+            </tr>	
+			</tbody>			
         </table>
         
         <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="addPerson()" role="form">

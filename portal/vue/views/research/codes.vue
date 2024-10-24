@@ -80,7 +80,7 @@
 	        </form-group>
   	          	          	 
   	        <form-group name="reuseable" label="codes.reuseable" :path="errors.reuseable">
-  	            <label class="radio-inline mr-2">
+  	            <label class="radio-inline me-2">
   	                <input type="radio" id="reuseable" name="reuseable" value="true" v-validate v-model="newcodes.reuseable">
   	                <span v-t="'codes.yes'"></span>
   	            </label>
@@ -90,7 +90,7 @@
   	            </label>
             </form-group>  	
          	<form-group name="manually" label="codes.type_of_creation" :path="errors.manually">
-  	       		<label class="radio-inline mr-2">
+  	       		<label class="radio-inline me-2">
   	         		<input type="radio" id="manually" name="manually" value="true" @change="updateCodeCount()" v-validate v-model="newcodes.manually">
   	         		<span v-t="'codes.manually'"></span>
   	       		</label>

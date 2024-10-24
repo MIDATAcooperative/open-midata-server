@@ -153,7 +153,7 @@
 		  <form-group name="endpoint" label="manageapp.endpoint" v-if="app.type == 'endpoint' && app.createendpoint" :path="errors.endpoint">
 		    <input type="text" id="endpoint" name="endpoint" class="form-control" v-validate v-model="app.endpoint">		    
 		    <p class="form-text text-muted" v-t="'manageapp.info.endpoint'"></p>
-		    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle mr-1"></i>{{ $t('manageapp.info.endpoint2') }}</div>
+		    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-1"></i>{{ $t('manageapp.info.endpoint2') }}</div>
 		  </form-group>	
 		  <form-group name="resharesData" label="Resharing" class="danger-change" v-if="app.type!='endpoint'">
                 <check-box name="resharesData" v-model="app.resharesData" :path="errors.resharesData" @change="requireLogout();">		    

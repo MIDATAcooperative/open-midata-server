@@ -21,6 +21,7 @@
                        
         <pagination v-model="members"></pagination>
         <table class="table table-striped table-hover" v-if="members.filtered.length">
+		   <thead>
             <tr>
                 <Sorter v-t="'provider_editgroups.entityName'" sortby="entityName" v-model="members"></Sorter>
                 <Sorter v-t="'provider_editgroups.entityType'" sortby="entityType" v-model="members"></Sorter>                                
@@ -29,6 +30,8 @@
                 <th></th>
                 <th></th>   
             </tr>
+		   </thead>
+		   <tbody>
             <tr class="clickable" @click="select(member)" v-for="member in members.filtered" :key="member._id">
                 <td>{{ member.entityName }}</td>
                 <td>{{ $t('enum.entitytype.'+member.entityType) }}</td>
@@ -42,7 +45,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>
-            </tr>				
+            </tr>
+		   </tbody>				
         </table>
         
         <p v-if="members.filtered.length==0" v-t="'provider_editgroups.empty'"></p>
@@ -60,12 +64,12 @@
         </form>			
         <error-box :error="error"></error-box>
         <div v-if="usergroup && usergroup._id">
-            <a @click="$router.back()" href="javascript:" class="btn btn-default mr-1" v-t="'common.back_btn'"></a>
-            <button v-if="add.entityName" :disabled="action != null || !mayChangeTeam()" type="button" class="btn btn-primary mr-1" v-t="'provider_editusergroup.update_btn'" @click="updateMember();"></button>
-            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addOrganizations();" v-t="'provider_editgroups.add_organization_btn'"></button>
-            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addOrganizations2();" v-t="'provider_editgroups.add_organization2_btn'"></button>
-            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addBroker();" v-t="'provider_editgroups.add_broker_btn'"></button>
-            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addUserGroups();" v-t="'provider_editgroups.add_group_btn'"></button>            
+            <a @click="$router.back()" href="javascript:" class="btn btn-default me-1" v-t="'common.back_btn'"></a>
+            <button v-if="add.entityName" :disabled="action != null || !mayChangeTeam()" type="button" class="btn btn-primary me-1" v-t="'provider_editusergroup.update_btn'" @click="updateMember();"></button>
+            <button type="button" class="btn btn-default me-1" v-if="usergroup.status == 'ACTIVE'" @click="addOrganizations();" v-t="'provider_editgroups.add_organization_btn'"></button>
+            <button type="button" class="btn btn-default me-1" v-if="usergroup.status == 'ACTIVE'" @click="addOrganizations2();" v-t="'provider_editgroups.add_organization2_btn'"></button>
+            <button type="button" class="btn btn-default me-1" v-if="usergroup.status == 'ACTIVE'" @click="addBroker();" v-t="'provider_editgroups.add_broker_btn'"></button>
+            <button type="button" class="btn btn-default me-1" v-if="usergroup.status == 'ACTIVE'" @click="addUserGroups();" v-t="'provider_editgroups.add_group_btn'"></button>            
         </div>                          
     </panel>  
 
@@ -73,18 +77,22 @@
     <panel :busy="isBusy" :title="$t('provider_editgroups.former_members')">
         <pagination v-model="expired"></pagination>
         <table class="table table-striped table-hover" v-if="expired.filtered.length">
+			<thead>
             <tr>
                <Sorter v-t="'provider_editgroups.entityName'" sortby="entityName" v-model="expired"></Sorter>            
                <Sorter v-t="'provider_editgroups.entityType'" sortby="entityType" v-model="expired"></Sorter>
                <Sorter v-t="'provider_editusergroup.startDate'" sortby="startDate" v-model="expired"></Sorter>
                <Sorter v-t="'provider_editusergroup.endDate'" sortby="endDate" v-model="expired"></Sorter>
             </tr>
+			</thead>
+			<tbody>
             <tr v-for="member in expired.filtered" :key="member._id">
                 <td>{{ member.entityName }}</td>
                 <td>{{ $t('enum.entitytype.'+member.entityType) }}</td>                
                 <td>{{ $filters.date(member.startDate) }}</td>
                 <td>{{ $filters.date(member.endDate) }}</td> 
-            </tr>				
+            </tr>	
+			</tbody>			
         </table>
 
     </panel>

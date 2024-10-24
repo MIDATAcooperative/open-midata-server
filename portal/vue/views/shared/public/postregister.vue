@@ -59,8 +59,10 @@
 					<form-group name="unlockCode" label="registration.unlock_code" :path="errors.unlockCode">									
                     	  <input type="text" class="form-control" id="unlockCode"
 						   name="unlockCode" :placeholder="$t('registration.unlock_code')" v-model="unlockCode" v-validate required>
-					</form-group>									
-			    	<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'common.submit_btn'"></button>
+					</form-group>		
+					<div class="d-grid gap-2 mt-3 mb-2">							
+			    	  <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
+					</div>
 			      </form>
 				</div>
 						
@@ -71,13 +73,17 @@
 							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
 						</form-group>							  
 						<div class="extraspace"></div>
-						<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'postregister.securityToken_btn'"></button>
+						<div class="d-grid gap-2 mt-3 mb-2">
+						  <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'postregister.securityToken_btn'"></button>
+						</div>						  	
 						<div class="extraspace"></div>
                         <error-box :error="error"></error-box>
 							  
 						<div v-if="progress.PHONE_VERIFIED">							   							  
 							<p v-t="'postregister.no_token'"></p>
-							<button @click="noSecurityToken()" type="button" :disabled="action!=null" class="btn btn-default btn-block" v-t="'postregister.no_token_btn'"></button>
+							<div class="d-grid gap-2 mt-3 mb-2">
+							  <button @click="noSecurityToken()" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.no_token_btn'"></button>
+							</div>  
 						</div>
 						<div class="extraspace"></div>
 					</form>
@@ -109,7 +115,9 @@
 						  <a @click="showTerms({which : progress.termsOfUse});" href="javascript:" v-t="'registration.agb3'"></a>
 						</p>
 						<div class="extraspace"></div>
-						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.termsOfUse);" v-t="'postregister.noted_btn'"></button>
+						<div class="d-grid gap-2 mt-3 mb-2">
+						  <button class="btn btn-primary" :disabled="action!=null" @click="agreedToTerms(progress.termsOfUse);" v-t="'postregister.noted_btn'"></button>
+						</div>
 						<div class="extraspace"></div>
 						<error-box :error="error"></error-box>
 					</div>
@@ -121,7 +129,9 @@
 						  <a @click="showTerms({which : progress.privacyPolicy});" href="javascript:" v-t="'registration.privacypolicy3'"></a>
 						</p>
 						<div class="extraspace"></div>
-						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.privacyPolicy);" v-t="'postregister.noted_btn'"></button>
+						<div class="d-grid gap-2 mt-3 mb-2">
+						  <button class="btn btn-primary" :disabled="action!=null" @click="agreedToTerms(progress.privacyPolicy);" v-t="'postregister.noted_btn'"></button>
+						</div>
 						<div class="extraspace"></div>
 						<error-box :error="error"></error-box>
 					</div>
@@ -142,7 +152,9 @@
 						        </form-group>
 						    </form>
 							<div class="extraspace"></div>	
-							<button class="btn btn-primary btn-block" @click="enterMailCode(passphrase.code)" v-t="'postregister.enter_now_btn'"></button>
+							<div class="d-grid gap-2 mt-3 mb-2">
+							  <button class="btn btn-primary" @click="enterMailCode(passphrase.code)" v-t="'postregister.enter_now_btn'"></button>
+							</div>
 							<div class="extraspace"></div>
 							<error-box :error="error"></error-box>
 							<hr>
@@ -172,7 +184,9 @@
 										    <input class="form-control" v-model="passphrase.passphrase" type="text">
 									    </form-group>
 									</form>
-									<button class="btn btn-primary btn-block" @click="sendCode()" v-t="'postregister.enter_now_btn'"></button>
+									<div class="d-grid gap-2 mt-3 mb-2">
+									  <button class="btn btn-primary" @click="sendCode()" v-t="'postregister.enter_now_btn'"></button>
+									</div>
 									<div class="extraspace"></div>
                                     <error-box :error="error"></error-box>									
 								</div>

@@ -23,12 +23,15 @@
 		<div>
 	        <pagination v-model="services" search="name"></pagination>
             <table class="table table-striped" v-if="services.filtered.length">
+				<thead>
                 <tr>
                     <th v-t="'admin_services.name'"></th>
                     <!-- <th v-t="'admin_services.endpoint'"></th> -->
                     <th v-t="'admin_services.status'"></th>
                     <th>&nbsp;</th>
                 </tr>
+				</thead>
+				<tbody>
                 <tr v-for="service in services.filtered" :key="service._id">
                     <td>{{ service.name }}</td>
                     <!-- <td>{{ service.endpoint }}</td> -->                    
@@ -39,6 +42,7 @@
                     </td>
                     
                 </tr>
+				</tbody>
             </table>
                             
             <p v-if="!services.filtered.length" v-t="'admin_services.empty'"></p>

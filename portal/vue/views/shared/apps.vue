@@ -43,6 +43,7 @@
 
     <panel :title="$t('apps.services')" :busy="isBusy">
         <table class="table table-hover clickable" v-if="filtered.length">
+			<tbody>
 		    <tr v-for="visualization in filtered" :key="visualization._id" @click="install(visualization)">
 		        <td>
 		            {{ getName(visualization) }}
@@ -52,6 +53,7 @@
 		            <button class="btn btn-sm btn-default" v-show="!pluginToSpace[visualization._id]">{{ $t(visualization.type=='visualization'?'apps.use_btn':'apps.connect_btn') }}</button>
 		        </td>
 		    </tr>
+			</tbody>
 		</table>	
 		<p v-if="filtered.length===0" v-t="'apps.empty'"></p>	      
     </panel>

@@ -66,7 +66,7 @@
 			</div>	
             <div class="row mt-1">
                 <div class="col-md-4 col-lg-2" v-t="'recorddetail.tags'"></div>
-                <div class="col-md-8 col-lg-10 main-col"><div v-for="tag in record.tags" :key="tag" class="badge badge-info mr-1">{{tag}}</div></div>
+                <div class="col-md-8 col-lg-10 main-col"><div v-for="tag in record.tags" :key="tag" class="badge text-bg-info me-1">{{tag}}</div></div>
             </div>	
 			<button href="javascript:" @click="download()" class="btn btn-primary" v-if="isFile()" v-t="'recorddetail.download_btn'">Download</button>
         </panel>

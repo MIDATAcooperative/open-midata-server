@@ -53,7 +53,7 @@
 			    <router-link class="btn btn-default mt-1" :to="{ path : './changepassword' }" v-t="'user.change_password_btn'"></router-link>&nbsp;
 			    
 			    <div class="btn-group mt-1">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span v-t="'user.action'"></span> <span class="caret"></span>
                     </button>
                     <div class="dropdown-menu">                        

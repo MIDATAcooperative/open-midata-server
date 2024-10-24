@@ -29,7 +29,9 @@
 				<p>{{ $t('failure.'+reason+'2') }}"></p>
 				<p>&nbsp;</p>
 				<div class="extraspace"></div>
-				<button @click="showLogin()" type="button" class="btn btn-default btn-block" v-t="'failure.loginpage_btn'"></button>
+				<div class="d-grid gap-2 mt-3 mb-2">	
+				   <button @click="showLogin()" type="button" class="btn btn-default" v-t="'failure.loginpage_btn'"></button>
+				</div>
 				<div class="extraspace"></div>						  
 				
             </panel>			

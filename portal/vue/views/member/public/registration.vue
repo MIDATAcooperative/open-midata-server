@@ -214,9 +214,10 @@
 				      <a href="javascript:" @click="showLogin()" v-t="'registration.already_have_account2'"></a>				      
 				   </div>
 				 </error-box>
-				
-                <button class="mt-1 btn btn-primary btn-block" type="submit" :disabled="action!=null" v-t="'registration.sign_up_btn'" v-submit>					
-                </button>
+				 <div class="d-grid gap-2 mt-3 mb-2">	
+                   <button class="mt-1 btn btn-primary" type="submit" :disabled="action!=null" v-t="'registration.sign_up_btn'" v-submit>				 				
+                   </button>
+				</div>
 			
 			</form>
 		</panel>

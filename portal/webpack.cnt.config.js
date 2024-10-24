@@ -17,7 +17,6 @@
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const My_Definitions = require('./webpack.definitions');
@@ -49,8 +48,7 @@ var PUBLIC_PATH = '/';// + APP_NAME + '/dist/';
 /**
  * Prepare the plugins
  */
-var My_Plugins = [    
-    new CleanWebpackPlugin(),   
+var My_Plugins = [      
     new CopyWebpackPlugin({ patterns : [
         { from: path.resolve(CLIENT_DIR, '**/*.html'), to: DIST_DIR, globOptions: {
             ignore: [ 'src/index_old.html', 'src/oauth_old.html' ] } , context: 'src/'},
@@ -120,7 +118,7 @@ module.exports = {
     devServer: {
         static: DIST_DIR,
         port: 9002,
-        https: true        
+        server: "http" 
     },
 
     /**
@@ -128,6 +126,13 @@ module.exports = {
      */
     module: {
         rules: [
+			{
+			   mimetype: 'image/svg+xml',			 
+			   type: 'asset/resource',
+			   generator: {
+			     filename: 'icons/[hash].svg'
+			   }
+			},
             {
                 test: /\.(le|c)ss$/,
                 use: [
@@ -162,18 +167,20 @@ module.exports = {
                     //'less-loader'
                 ]
             },
-            {
-                test: /\.(png|svg|jpg|gif)$/,
-                use: [
-                    'file-loader'
-                ]
-            },
-            {
-                test: /\.(woff|woff2|eot|ttf|otf)$/,
-                use: [
-                    'file-loader'
-                ]
-            },
+			{
+			  test: /\.(ico|png|jpg|jpeg|gif|svg|webp|tiff)$/i,
+			  type: "asset/resource",
+			  generator: {
+			    filename: "images/[name].[hash][ext]",
+			  },
+			},
+			{
+			  test: /\.(woff|woff2|eot|ttf|otf)$/i,
+			  type: "asset/resource",
+			  generator: {
+			     filename: "fonts/[name].[hash][ext]",
+			  },
+			},
             {
                 test: /\.vue$/,
                 loader: 'vue-loader'

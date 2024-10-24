@@ -48,7 +48,7 @@
 
 					<div class="navbar-header">
 
-						<button class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
+						<button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-ex1-collapse"
 							aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 							<span class="fas fa-list"></span>
 						</button>
@@ -57,24 +57,24 @@
 								style="height: 36px;"></span>
 						</router-link>
 					</div>
-					<div class="collapse navbar-collapse navbar-ex1-collapse">
-						<ul class="nav navbar-nav mr-auto">
-							<li class="nav-item"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-								:to="{ path : './login', query : {actions:actions} }" v-t="'navbar.login'"></router-link></li>
-							<li class="nav-item"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" v-if="!notPublic"
-								:to="{ path : './registration', query : {actions:actions} }" v-t="'navbar.sign_up'"></router-link></li>
+					<div class="collapse navbar-collapse navbar-ex1-collapse" id="navbarToggler">
+						<ul class="nav navbar-nav me-auto">
+							<li class="nav-item"><a class="nav-link" 
+								@click="go({ path : './login', query : {actions:actions} })" data-bs-toggle="collapse" data-bs-target="#navbarToggler" v-t="'navbar.login'"></a></li>
+							<li class="nav-item"><a class="nav-link" v-if="!notPublic"
+								@click="go({ path : './registration', query : {actions:actions} })" data-bs-toggle="collapse" data-bs-target="#navbarToggler" v-t="'navbar.sign_up'"></a></li>
 						</ul>
                         <div class="nav navbar-nav nav-language">
                         <div class="nav-item d-lg-none"><div class="nav-link" v-t="'navbar.language'"></div></div>
                         <div class="nav-item d-none d-lg-block dropdown">
-                          <a class="dropdown-toggle nav-link" href="javascript:" data-toggle="dropdown" aria-expanded="false">{{ $t('enum.language.'+(language || 'en').toUpperCase()) }}</a>
+                          <a class="dropdown-toggle nav-link" href="javascript:" data-bs-toggle="dropdown" aria-expanded="false">{{ $t('enum.language.'+(language || 'en').toUpperCase()) }}</a>
 						  <div class="dropdown-menu">
-							<a v-for="lang in languages" :key="lang.value" class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show"
+							<a v-for="lang in languages" :key="lang.value" class="dropdown-item" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
 								@click="changeLanguage(lang.value)" href="javascript:">{{ $t(lang.name) }}</a>
 							
 						  </div>
                         </div>
-                        <div v-for="lang in languages" :key="lang.value" class="nav-item d-lg-none"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
+                        <div v-for="lang in languages" :key="lang.value" class="nav-item d-lg-none"><a class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
                         								@click="changeLanguage(lang.value)" href="javascript:">{{ $t(lang.name) }}</a></div>
                         </div>
 					</div>
@@ -127,6 +127,10 @@ export default {
 	  changeLanguage(language) {
 		setLocale(language);
 		this.$data.language = language;
+	  },
+	  
+	  go(to) {
+		this.$router.push(to);
 	  } 
 
   },

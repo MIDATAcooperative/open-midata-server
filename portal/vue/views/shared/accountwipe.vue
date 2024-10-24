@@ -51,9 +51,11 @@
 				    <textarea class="form-control" id="reason" name="reason" v-model="user.reason"></textarea>
 				</form-group>
                 <error-box :error="error"></error-box>
-	           	            
-				<button type="submit" v-submit :disabled="action!=null" class="btn btn-danger mt-3 btn-block" v-t="'accountwipe.wipe_btn'"></button>				
-				<button type="button" class="btn btn-default mt-3 btn-block" @click="skip()" v-t="'common.cancel_btn'"></button>
+	           	     
+				<div class="d-grid gap-3 mt-3 mb-2">       
+				  <button type="submit" v-submit :disabled="action!=null" class="btn btn-danger" v-t="'accountwipe.wipe_btn'"></button>				
+				  <button type="button" class="btn btn-default" @click="skip()" v-t="'common.cancel_btn'"></button>
+				</div>
 			</form>
 							
         </panel>				   				

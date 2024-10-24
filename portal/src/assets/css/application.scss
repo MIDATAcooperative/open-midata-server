@@ -18,14 +18,20 @@
 
 $enable-rounded:                              true;
 $enable-shadows:                              true;
+$enable-transitions:                          true;
 $primary: #1C4982;
 $primary: #2E88CC;
+$info: #E0A442;
+$secondary: #333333;
 
+$primary-btn-color: white;
+
+/*
 $theme-colors: (
   "primary": #2E88CC,
   "secondary" : #333333,
   "info" : #E0A442
-);
+);*/
 
 
 $input-btn-padding-y-sm:      0;
@@ -42,6 +48,20 @@ $fa-font-path:                "../fonts";
 
 @import "../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
 @import "../../../node_modules/@fortawesome/fontawesome-free/scss/solid";
+
+.btn-primary { color: white; }
+
+.form-row {
+	@extend .row;
+	@extend .g-2;
+	@extend .mb-3;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.nav-link { cursor: pointer; }
 
 select,
 select option {

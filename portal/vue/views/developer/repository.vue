@@ -58,12 +58,12 @@
 	    
 	  
 		    <form-group myid="x" label="common.empty">
-		        <button type="button" class="btn btn-default mr-1" v-t="'common.back_btn'" @click="$router.back()"></button>
-		        <button type="button" class="btn btn-danger mr-1" @click="repoAction('wipe')" :disabled="!report" v-t="'common.delete_btn'"></button>		    
-		        <button type="submit" :disabled="action!=null" class="btn btn-primary mr-1" v-t="'repository.submit_btn'">Submit</button>
-		        <button type="button" @click="repoAction('audit')" :disabled="action!=null" class="btn btn-default mr-1" v-t="'repository.audit_btn'">Audit</button>
-		        <button type="button" @click="repoAction('auditfix')" :disabled="action!=null" class="btn btn-default mr-1" v-t="'repository.audit_fix_btn'">Audit Fix</button>
-		        <button type="button" @click="repoAction('redeploy')" :disabled="action!=null" class="btn btn-default mr-1" v-t="'repository.redeploy_btn'">Redeploy</button>		    		    
+		        <button type="button" class="btn btn-default me-1" v-t="'common.back_btn'" @click="$router.back()"></button>
+		        <button type="button" class="btn btn-danger me-1" @click="repoAction('wipe')" :disabled="!report" v-t="'common.delete_btn'"></button>		    
+		        <button type="submit" :disabled="action!=null" class="btn btn-primary me-1" v-t="'repository.submit_btn'">Submit</button>
+		        <button type="button" @click="repoAction('audit')" :disabled="action!=null" class="btn btn-default me-1" v-t="'repository.audit_btn'">Audit</button>
+		        <button type="button" @click="repoAction('auditfix')" :disabled="action!=null" class="btn btn-default me-1" v-t="'repository.audit_fix_btn'">Audit Fix</button>
+		        <button type="button" @click="repoAction('redeploy')" :disabled="action!=null" class="btn btn-default me-1" v-t="'repository.redeploy_btn'">Redeploy</button>		    		    
 		    </form-group>
 		  
 		  		  

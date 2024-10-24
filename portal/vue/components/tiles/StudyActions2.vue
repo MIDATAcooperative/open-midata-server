@@ -62,31 +62,36 @@
     </div>
 </panel>
 <panel v-if="me_menu.length" :title="$t('studyactions.linked_spaces')" :busy="isBusy">
-	<table class="table table-striped"> 							
+	<table class="table table-striped"> 	
+		<tbody>						
 	    <tr v-for="entry in me_menu" :key="entry._id">
 			<td>
 			    <a href="javascript:" @click="showSpace(entry)" v-t="entry.name"></a>
-			    <a href="javascript:" @click="deleteSpace(entry)" :disabled="action!=null" class="float-right btn btn-danger btn-sm" v-t="'common.delete_btn'"></a>
+			    <a href="javascript:" @click="deleteSpace(entry)" :disabled="action!=null" class="float-end btn btn-danger btn-sm" v-t="'common.delete_btn'"></a>
 			</td>
 		</tr>
+		</tbody>
 	</table>
 </panel>
 <panel v-if="consents.length" :title="$t('studyactions.linked_apps')" :busy="isBusy">
 
 	<table class="table table-striped" v-if="consents.length">
-
+       <thead>
 		<tr>
 			<th v-t="'consents.name'"></th>					
 			<th v-t="'consents.status'"></th>					
 			<th v-t="'consents.number_of_records'"></th>
 			<th></th>
 		</tr>
+       </thead>
+	   <tbody>
 		<tr v-for="consent in consents" :key="consent._id" :class="{ 'table-warning' : consent.status == 'UNCONFIRMED' }">
 			<td><a @click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>					
 			<td>{{ $t('enum.consentstatus.'+consent.status) }}</td>					
 			<td>{{ consent.records }}</td>
 			<td><button @click="deleteConsent(consent)" :disabled="action!=null" class="btn btn-danger btn-sm" v-t="'common.delete_btn'"></button></td>
 		</tr>
+	   </tbody>
 	</table>
 </panel>
 <div v-if="showKeys">

@@ -27,6 +27,7 @@
 		    </form-group>
 		    <pagination v-model="reviews"></pagination>
 		    <table v-if="reviews.filtered.length" class="table">
+			  <thead>
 		      <tr>
 		        <Sorter v-model="reviews" sortby="timestamp" v-t="'appreviews.date'"></Sorter>
 		        <Sorter v-model="reviews" sortby="check" v-t="'appreviews.check'"></Sorter>
@@ -34,6 +35,8 @@
 		        <Sorter v-model="reviews" sortby="userLogin" v-t="'appreviews.userLogin'"></Sorter>
 		        <Sorter v-model="reviews" sortby="comment" v-t="'appreviews.comment'"></Sorter>
 		      </tr>
+			  </thead>
+			  <tbody>
 		      <tr v-for="review in reviews.filtered" :key="review.timestamp">
 		        <td>{{ $filters.date(review.timestamp) }}</td>
 		        <td>{{ $t('appreviews.'+review.check) }}</td>
@@ -41,6 +44,7 @@
 		        <td>{{ review.userLogin }}</td>
 		        <td>{{ review.comment }}</td>
 		      </tr>
+			  </tbody>
 		    </table>
 		    
 		    <p v-else v-t="'appreviews.noreviews'"></p>
@@ -61,7 +65,7 @@
                 </form-group>
 		    </div>
 		    <form-group  label="common.empty">
-		      <router-link :to="{ path : './manageapp', query :  {appId:appId} }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
+		      <router-link :to="{ path : './manageapp', query :  {appId:appId} }" class="btn btn-default me-1" v-t="'common.back_btn'"></router-link>
 		      <button v-if="allowReview" class="btn btn-primary" :disabled="action!=null" type="submit" v-t="'common.submit_btn'"></button>
 			  <success :finished="finished" msg="appreviews.success" action="submit"></success>
 		    </form-group>

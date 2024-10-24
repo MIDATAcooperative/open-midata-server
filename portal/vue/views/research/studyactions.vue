@@ -28,12 +28,15 @@
             <div v-if="!selection">
                 <p v-t="'studyactions.empty'" v-if="!links.length"></p>
                 <table class="table table-striped table-hover" v-if="links.length">
+					<thead>
                     <tr>
                         <th v-t="'studyactions.app'"></th>
                         <th v-t="'studyactions.type'"></th>
                         <th v-t="'studyactions.validation'"></th>
                         <th></th>
                     </tr>
+					</thead>
+					<tbody>
                     <tr v-for="link in links" :key="link._id">
                         <td @click="select(link);">{{ link.app.filename }}</td>
                         <td>
@@ -41,36 +44,37 @@
                         </td>
                         <td>
                             <div v-if="link.validationResearch != 'VALIDATED'">
-                                <span class="fas fa-times text-danger mr-1"></span>
+                                <span class="fas fa-times text-danger me-1"></span>
                                 <span v-t="'studyactions.status.not_validated_research'"></span>
                             </div>
                             <div v-if="link.validationDeveloper != 'VALIDATED'">
-                                <span class="fas fa-times text-danger mr-1"></span>
+                                <span class="fas fa-times text-danger me-1"></span>
                                 <span v-t="'studyactions.status.not_validated_developer'"></span>
                             </div>
                             <div v-if="link.validationDeveloper == 'VALIDATED' && link.validationResearch == 'VALIDATED'">
-                                <span class="fas fa-check text-success mr-1"></span>
+                                <span class="fas fa-check text-success me-1"></span>
                                 <span v-t="'studyactions.status.validated'"></span>
                             </div>
                             <div v-if="link.usePeriod.indexOf(study.executionStatus)<0">
-                                <span class="fas fa-times text-danger mr-1"></span>
+                                <span class="fas fa-times text-danger me-1"></span>
                                 <span v-t="'studyactions.status.study_wrong_status'"></span>
                             </div>
                             <div v-if="link.type.indexOf('AUTOADD_P')>=0 && study.participantSearchStatus != 'SEARCHING'">
-                                <span class="fas fa-times text-danger mr-1"></span>
+                                <span class="fas fa-times text-danger me-1"></span>
                                 <span v-t="'error.closed.study'"></span>
                             </div>
                             <div v-if="(link.type.indexOf('AUTOADD_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0">
-                                <span class="fas fa-times text-danger mr-1"></span>
+                                <span class="fas fa-times text-danger me-1"></span>
                                 <span v-t="'studyactions.status.study_no_app_participation'"></span>
                             </div>	                
                         </td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-default mr-1" @click="select(link);" v-t="'studyactions.select_btn'"></button>
-                            <button type="button" class="btn btn-sm btn-default mr-1" :disabled="action!=null" @click="validate(link);" v-t="'studyactions.validate_btn'"></button>
+                            <button type="button" class="btn btn-sm btn-default me-1" @click="select(link);" v-t="'studyactions.select_btn'"></button>
+                            <button type="button" class="btn btn-sm btn-default me-1" :disabled="action!=null" @click="validate(link);" v-t="'studyactions.validate_btn'"></button>
                             <button type="button" class="btn btn-sm btn-danger" :disabled="action!=null" @click="remove(link);" v-t="'common.delete_btn'"></button>
                         </td>
                     </tr>
+					</tbody>
                 </table>
             
                 <button type="button" class="btn btn-primary" v-t="'common.add_btn'" @click="addNew()"></button>
