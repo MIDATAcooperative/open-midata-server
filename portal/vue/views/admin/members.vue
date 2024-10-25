@@ -35,18 +35,14 @@
 		    </form-group>
 		    <form-group name="lastname" label="common.user.lastname" v-if="search.searchable">
 		        <div class="input-group">
-		            <input type="text" class="form-control" id="lastname" v-model="search.criteria.lastname" v-validate>
-		            <div class="input-group-append">
-		                <button class="btn btn-primary" :disabled="action!=null" @click="reload()" v-t="'common.search_btn'"></button>
-		            </div>
+		            <input type="text" class="form-control" id="lastname" v-model="search.criteria.lastname" v-validate>		            
+		            <button class="btn btn-primary" :disabled="action!=null" @click="reload()" v-t="'common.search_btn'"></button>		            
 		        </div>
 		    </form-group>
 		    <form-group name="email" label="common.user.email" v-if="search.searchable">
 		        <div class="input-group">
-		            <input type="text" class="form-control" id="email" v-model="search.criteria.email" v-validate>
-		            <div class="input-group-append">
-		                <button class="btn btn-primary" @click="reload()" :disabled="action!=null" v-t="'common.search_btn'"></button>
-		            </div>
+		            <input type="text" class="form-control" id="email" v-model="search.criteria.email" v-validate>		            
+		            <button class="btn btn-primary" @click="reload()" :disabled="action!=null" v-t="'common.search_btn'"></button>		           
 		        </div>
 		    </form-group>
 		</form>

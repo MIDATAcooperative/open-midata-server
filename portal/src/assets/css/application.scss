@@ -76,7 +76,7 @@ select option[value=""] {
 [hidden] {
   display: none;
 }
-
+select.form-control { @extend .form-select }
 
 .glyphicon { @extend .fas }
 .glyphicon-chevron-left { @extend .fa-chevron-left }

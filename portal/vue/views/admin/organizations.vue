@@ -27,18 +27,14 @@
 		    </form-group>
 		    <form-group name="name" label="admin_organizations.name">
 		        <div class="input-group">
-		            <input type="text" class="form-control" id="name" v-model="search.criteria.name" v-validate>
-		            <div class="input-group-append">
-		                <button class="btn btn-primary" :disabled="action!=null" @click="reloadName()" v-t="'common.search_btn'"></button>
-		            </div>
+		            <input type="text" class="form-control" id="name" v-model="search.criteria.name" v-validate>		            
+		            <button class="btn btn-primary" :disabled="action!=null" @click="reloadName()" v-t="'common.search_btn'"></button>		          
 		        </div>
 		    </form-group>
 		    <form-group name="identifier" label="admin_organizations.identifier">
 		        <div class="input-group">
-		            <input type="text" class="form-control" id="identifier" v-model="search.criteria.identifier" v-validate>
-		            <div class="input-group-append">
-		                <button class="btn btn-primary" :disabled="action!=null" @click="reloadIdentifier()" v-t="'common.search_btn'"></button>
-		            </div>
+		            <input type="text" class="form-control" id="identifier" v-model="search.criteria.identifier" v-validate>		          
+		            <button class="btn btn-primary" :disabled="action!=null" @click="reloadIdentifier()" v-t="'common.search_btn'"></button>		            
 		        </div>
 		    </form-group>			    
 		</form>
