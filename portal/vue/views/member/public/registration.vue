@@ -88,7 +88,7 @@
                         <password class="form-control" id="password2" name="password2" :placeholder="$t('registration.password')" v-model="registration.password2" required></password>
                     </form-group>
                 </div>
-                <!--<form-group name="secure" label="registration.secure" v-if="secureChoice()">
+                <!--<form-group name="secure" label="registration.secure" v-if="secureChoice()" class="midata-checkbox-row">
                     <div class="form-check">
                         <label class="form-check-label">
                             <input class="form-check-input" type="checkbox" v-model="registration.secure" disabled>
@@ -175,7 +175,7 @@
                     <p class="form-text text-muted" translate="developer_registration.reason_fillout"></p>
                 </form-group>
                 <hr>
-                <form-group name="agb" label="registration.agb" >
+                <form-group name="agb" label="registration.agb" class="midata-checkbox-row">
                     <check-box v-model="registration.agb" name="agb" required :path="errors.agb">                                 
                         <span v-t="'registration.agb2'"></span>&nbsp;
                         <a @click="showTerms(currentTerms.member.termsOfUse);" href="javascript:" v-t="'registration.agb3'"></a>&nbsp;
@@ -214,9 +214,10 @@
 				      <a href="javascript:" @click="showLogin()" v-t="'registration.already_have_account2'"></a>				      
 				   </div>
 				 </error-box>
-				
-                <button class="mt-1 btn btn-primary btn-block" type="submit" :disabled="action!=null" v-t="'registration.sign_up_btn'" v-submit>					
-                </button>
+				 <div class="d-grid gap-2 mt-3 mb-2">	
+                   <button class="mt-1 btn btn-primary" type="submit" :disabled="action!=null" v-t="'registration.sign_up_btn'" v-submit>				 				
+                   </button>
+				</div>
 			
 			</form>
 		</panel>

@@ -22,22 +22,26 @@
                        
         <pagination v-model="members"></pagination>
         <table class="table table-striped table-hover" v-if="members.filtered.length">
+			<thead>
             <tr>
                 <Sorter v-t="'studies.code'" sortby="study.code" v-model="members"></Sorter>
                 <Sorter v-t="'studies.name'" sortby="study.name" v-model="members"></Sorter>                                                
                 <th></th>
                 <th></th>              
             </tr>
+			</thead>
+			<tbody>
             <tr class="clickable" @click="select(member)" v-for="member in members.filtered" :key="member._id">
                 <td>{{ member.study.code }}</td>
                 <td>{{ member.study.name }}</td>
                 <td><span v-for="(m,s) in member.projectGroupMapping" :key="s" class="comma">{{ s+"="+m }}</span></td>                
                 <td>
-                    <button type="button" @click="removeProject(member.study)" :disabled="action!=null || !study.myRole.setup" class="close" aria-label="Delete">
+                    <button type="button" @click="removeProject(member.study)" :disabled="action!=null || !study.myRole.setup" class="btn-close" aria-label="Delete">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>
-            </tr>				
+            </tr>	
+			</tbody>			
         </table>
         
         <p v-if="members.filtered.length==0" v-t="'studysubprojects.empty'"></p>

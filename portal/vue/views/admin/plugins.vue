@@ -32,6 +32,7 @@
 
         <pagination v-model="apps"></pagination>
         <table class="table" v-if="apps.filtered.length">
+			<thead>
             <tr>
             <Sorter sortby="name" v-model="apps" v-t="'admin_plugins.plugin_name'">Name</Sorter>
             <Sorter sortby="creatorLogin" v-model="apps" v-t="'admin_plugins.plugin_developer'">Developer</Sorter>
@@ -41,6 +42,8 @@
             <th v-t="'admin_plugins.plugin_stats'">Stats</th>
             <Sorter sortby="status" v-model="apps" v-t="'admin_plugins.plugin_status'">Status</Sorter>
             </tr>
+			</thead>
+			<tbody>
             <tr v-for="app in apps.filtered" :key="app._id">
                 <td><router-link :to="{ path : './manageapp', query : { appId : app._id }}">{{  app.name }}</router-link><div class="text-muted">{{ app.filename }}</div></td>
                 <td><router-link :to="{ path : './address', query : { userId : app.creator }}">{{ app.creatorLogin }}</router-link><div class="text-muted">{{ app.orgName }}</div></td>
@@ -54,6 +57,7 @@
                     </select>
                 </td>
             </tr>
+			</tbody>
         </table>
         <p v-if="apps.filtered.length == 0" v-t="'admin_plugins.empty'"></p>
                   

@@ -82,7 +82,7 @@
 			        <option v-for="group in study.groups" :key="group.name" :value="group.name">{{ group.name }}</option>
 			    </select>
 		    </form-group>
-	        <form-group name="autoJoin" label="studyparticipants.autojoin" :path="errors.autoJoin">
+	        <form-group name="autoJoin" label="studyparticipants.autojoin" :path="errors.autoJoin" class="midata-checkbox-row">
                 <check-box v-model="acceptall.autoJoin" name="autoJoin">
 	                <span v-t="'studyparticipants.autojoin2'"></span>
                 </check-box>	    

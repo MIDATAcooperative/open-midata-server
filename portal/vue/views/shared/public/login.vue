@@ -69,14 +69,18 @@
                                 <option v-for="role in roles" :key="role.value" :value="role.value">{{ $t(role.name) }}</option>
                             </select>
 						</div>
-								
-						<button type="submit" v-submit :disabled="action!=null" class="btn btn-lg btn-primary btn-block" v-t="'login.sign_in_btn'"></button>
+						
+						<div class="d-grid gap-2 mt-3 mb-2">						  	
+						  <button type="submit" v-submit :disabled="action!=null" class="btn btn-lg btn-primary" v-t="'login.sign_in_btn'"></button>
+						</div>
 						<div class="margin-top">
 						    <router-link :to="{ path : './lostpw' }" v-t="'login.forgot_your_password'"></router-link>
 						</div>
 						<div class="margin-top" v-if="serviceLogin=='consent'">
 							<hr>
-							<router-link class="btn btn-primary btn-block" :to="{ path : './registration', query : { actions : actions } }"  v-t="'login.no_account'"></router-link>
+							<div class="d-grid gap-2 mt-3 mb-2">	
+							  <router-link class="btn btn-primary" :to="{ path : './registration', query : { actions : actions } }"  v-t="'login.no_account'"></router-link>
+							</div>
 						</div>
 					</form>
                 </panel>

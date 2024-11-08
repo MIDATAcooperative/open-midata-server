@@ -100,11 +100,11 @@
 			
 						<div class="" v-if="owner && owner._id != userId">
 							<div class="card-body">
-								<img :src="getIconRole(owner)" class="float-left consenticon">
+								<img :src="getIconRole(owner)" class="float-start consenticon">
 								<div class="iconspace">
 									<div>{{ $t('enum.userrole.'+owner.role)}}</div>		  	
 									<address>
-                                        <span v-if="owner.testUserApp" class="badge badge-warning mr-1"><span class="fas fa-vial" title="Test User"></span></span>
+                                        <span v-if="owner.testUserApp" class="badge text-bg-warning me-1"><span class="fas fa-vial" title="Test User"></span></span>
 										<strong>{{ owner.firstname }} {{ owner.lastname }}</strong>
 										<div v-if="owner.email">{{ owner.email }}<br></div>
 										<span v-if="owner.address1 || owner.city || owner.country"><br>{{ owner.address1 }}<br>
@@ -117,14 +117,14 @@
 						</div>
 						<div v-if="owner && owner._id == userId">
 		  					<div class="card-body">
-		    					<img :src="getIconRole(owner)" class="float-left consenticon">
+		    					<img :src="getIconRole(owner)" class="float-start consenticon">
 		    					<div class="iconspace"><div>&nbsp;</div>
-                                <span v-if="owner.testUserApp" class="badge badge-warning mr-1"><span class="fas fa-vial" title="Test User"></span></span><strong v-t="'editconsent.you'"></strong></div>
+                                <span v-if="owner.testUserApp" class="badge text-bg-warning me-1"><span class="fas fa-vial" title="Test User"></span></span><strong v-t="'editconsent.you'"></strong></div>
 		  					</div>
 						</div>
 						<div v-if="consent.type=='STUDYRELATED'">
 		  					<div class="card-body">
-		  						<img :src="getIconRole('research')" class="float-left consenticon">
+		  						<img :src="getIconRole('research')" class="float-start consenticon">
           						<div class="iconspace">
 		    						<div v-t="'editconsent.project'"></div>
 		    						<div><strong>{{ consent.ownerName }}</strong></div>
@@ -133,7 +133,7 @@
 						</div>
 						<div class="" v-if="consent.externalOwner">
 							<div class="card-body">
-							<img src="/images/question.jpeg" class="float-left consenticon">
+							<img src="/images/question.jpeg" class="float-start consenticon">
 							<div class="iconspace">
 								<div v-t="'editconsent.external'"></div>
 								<div><strong>{{ consent.externalOwner }}</strong></div>
@@ -154,7 +154,7 @@
 					<p><b class="text-primary" v-t="'editconsent.people'"></b></p>
 					<div  v-if="consent.type=='EXTERNALSERVICE'">
 						<div class="card-body">
-							<img :src="getIconRole('app')" class="consenticon float-left">
+							<img :src="getIconRole('app')" class="consenticon float-start">
 							<div class="iconspace">
 								<strong v-t="'editconsent2.external'"></strong>
 							</div>
@@ -162,7 +162,7 @@
 					</div>
 					<div v-if="consent.type=='API'">
 						<div class="card-body">
-							<img :src="getIconRole('app')" class="consenticon float-left">
+							<img :src="getIconRole('app')" class="consenticon float-start">
 							<div class="iconspace">
 								<strong v-t="'editconsent2.external'"></strong>
 							</div>
@@ -170,7 +170,7 @@
 					</div>
 					<div v-if="consent.type=='STUDYRELATED'">
 						<div class="card-body">
-							<img :src="getIconRole('community')" class="consenticon float-left">
+							<img :src="getIconRole('community')" class="consenticon float-start">
 							<div class="iconspace">
 								<strong v-t="'editconsent2.community'"></strong>
 							</div>
@@ -180,12 +180,12 @@
 					<div v-if="consent.type != 'EXTERNALSERVICE' && consent.type != 'API'">
 						<div v-for="person in authpersons" :key="person._id">
 							<div class="card-body">
-								<button type="button" @click="removePerson(person)" :disabled="action!=null" class="close" aria-label="Delete" v-if="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>
-								<img :src="getIconRole(person)" class="float-left consenticon">
+								<button type="button" @click="removePerson(person)" :disabled="action!=null" class="btn-close" aria-label="Delete" v-if="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>
+								<img :src="getIconRole(person)" class="float-start consenticon">
 								<div class="iconspace">
 									<div>{{$t('enum.userrole.'+person.role)}}</div>		
 									<address>
-                                         <span v-if="person.testUserApp" class="badge badge-warning mr-1"><span class="fas fa-vial" title="Test User"></span></span>
+                                         <span v-if="person.testUserApp" class="badge text-bg-warning me-1"><span class="fas fa-vial" title="Test User"></span></span>
 										<strong>{{ person.firstname }} {{ person.lastname }}</strong>
 										<div v-if="person.email">{{ person.email }}<br></div>
 										<span v-if="person.address1 || person.city || person.country"><br>
@@ -201,7 +201,7 @@
 					<div v-for="usergroup in authteams" :key="usergroup._id">
 						<div class="card-body">
 							<button type="button" :disabled="action!=null" v-if="mayChangeUsers()" @click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
-							<img :src="getIconRole(usergroup.type=='ORGANIZATION' ? 'organization' : 'team')" class="float-left consenticon">
+							<img :src="getIconRole(usergroup.type=='ORGANIZATION' ? 'organization' : 'team')" class="float-start consenticon">
 							<div class="iconspace">
 								<div v-t="'enum.usergrouptype.'+usergroup.type"></div>	
 								<strong>{{ usergroup.name }}</strong>
@@ -217,7 +217,7 @@
 					</div>
 					<div v-for="person in consent.externalAuthorized" :key="person">
 						<div class="card-body">
-							<img :src="getIconRole('external')" class="float-left consenticon">
+							<img :src="getIconRole('external')" class="float-start consenticon">
 							<div class="iconspace">
 								<div v-t="'editconsent.external'"></div>
 								<strong>{{ person }}</strong>
@@ -226,7 +226,7 @@
 					</div>
 					<div v-if="consent.reshare">
 						<div class="card-body">
-							<img :src="getIconRole('reshare')" class="float-left consenticon">
+							<img :src="getIconRole('reshare')" class="float-start consenticon">
 							<div class="iconspace">
 								<span v-t="'newconsent.reshare'"></span>
 							</div>
@@ -234,10 +234,10 @@
 					</div>
 			
 					<div class="margin-top" v-if="mayAddPeople()">
-						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" @click="addYourself();" v-t="'newconsent.add_yourself_btn'"></button>
-						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP' && consent.entityType!='ORGANIZATION'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
-						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addOrganization();" v-t="'newconsent.add_organization_btn'"></button>
-						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default me-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" @click="addYourself();" v-t="'newconsent.add_yourself_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default me-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP' && consent.entityType!='ORGANIZATION'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default me-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addOrganization();" v-t="'newconsent.add_organization_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default me-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
 					</div>
 					<div class="extraspace"></div>
 			
@@ -293,20 +293,20 @@
             
         <div v-if="options.advanced" class="margin-top">
             <div class="extraspace"></div>
-            <form-group name="writes" label="newconsent.writes">
+            <form-group name="writes" label="newconsent.writes" class="midata-checkbox-row">
                 <check-box v-model="consent.writesBool" name="writes">
                     <span v-t="'newconsent.writes2'"></span>
                 </check-box>	    
             </form-group>
         
-            <form-group name="reshare" label="newconsent.reshare">
+            <form-group name="reshare" label="newconsent.reshare" class="midata-checkbox-row">
                 <check-box v-model="consent.reshare" name="reshare">
                     <span v-t="'newconsent.reshare2'"></span>
                 </check-box>
             </form-group>
       
         
-            <form-group name="passcode" label="newconsent.use_passcode" v-if="consent.type == 'HEALTHCARE' && consent.owner == userId">
+            <form-group name="passcode" label="newconsent.use_passcode" v-if="consent.type == 'HEALTHCARE' && consent.owner == userId" class="midata-checkbox-row">
                 <check-box v-model="consent.usepasscode" name="usepasscode">
                     <span v-t="'newconsent.use_passcode2'"></span>
                 </check-box>    
@@ -360,11 +360,13 @@
     				<p v-else v-t="'editconsent.please_review2b'"></p>
     			</div>
     
-				<button type="button" :disabled="action!=null" @click="confirmConsent();" v-if="mayConfirm()" class="btn btn-primary btn-lg btn-block" v-t="'editconsent.confirm_btn'"></button>
-				<button type="button" :disabled="action!=null" @click="rejectConsent();" v-if="mayReject()" class="btn btn-danger btn-block" v-t="'editconsent.reject_btn'"></button>
-    			<button type="button" :disabled="action!=null" @click="deleteConsent();" v-if="mayDelete()" class="btn btn-danger btn-block" v-t="'editconsent.delete_btn'"></button>
-    			<router-link :to="{ path : './circles' }" class="btn btn-default btn-block" v-if="mayBack()" v-t="'common.back_btn'"></router-link>
-				<button type="button" :disabled="action!=null" @click="skip();" v-if="maySkip()" class="btn btn-default btn-block" v-t="'common.skip_btn'"></button>
+				<div class="d-grid gap-2 mt-3 mb-2">	
+				<button type="button" :disabled="action!=null" @click="confirmConsent();" v-if="mayConfirm()" class="btn btn-primary btn-lg" v-t="'editconsent.confirm_btn'"></button>
+				<button type="button" :disabled="action!=null" @click="rejectConsent();" v-if="mayReject()" class="btn btn-danger" v-t="'editconsent.reject_btn'"></button>
+    			<button type="button" :disabled="action!=null" @click="deleteConsent();" v-if="mayDelete()" class="btn btn-danger" v-t="'editconsent.delete_btn'"></button>
+    			<router-link :to="{ path : './circles' }" class="btn btn-default" v-if="mayBack()" v-t="'common.back_btn'"></router-link>
+				<button type="button" :disabled="action!=null" @click="skip();" v-if="maySkip()" class="btn btn-default" v-t="'common.skip_btn'"></button>
+				</div>
     		</div>
     		<div class="d-none d-md-block">
 				<router-link :to="{ path : './circles' }" class="btn btn-default space" v-if="mayBack()" v-t="'common.back_btn'"></router-link>    

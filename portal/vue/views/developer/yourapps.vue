@@ -21,6 +21,7 @@
         <pagination v-model="apps" search="search"></pagination>
 
         <table class="table" v-if="apps.filtered.length">
+			<thead>
             <tr>
                 <Sorter sortby="name" v-model="apps" v-t="'developer_yourapps.name'">Name</Sorter>
                 <Sorter sortby="filename" v-model="apps" v-t="'developer_yourapps.filename'">Internal</Sorter>
@@ -28,15 +29,18 @@
                 <Sorter sortby="targetUserRole" v-model="apps" v-t="'developer_yourapps.role'">Target Role</Sorter>
                 <th class="d-none d-lg-table-cell"></th>
             </tr>
+			</thead>
+			<tbody>
             <tr v-for="app in apps.filtered" :key="app._id">
                 <td><router-link :to="{ path : './manageapp', query : { appId : app._id } }">{{  app.name }}</router-link></td>
                 <td>{{ app.filename }}</td>
                 <td>{{ $t('enum.plugintype.'+app.type) }}</td>
                 <td>{{ $t('enum.userrole.'+app.targetUserRole) }}</td>
                 <td class="d-none d-lg-table-cell">
-                    <router-link class="btn btn-default btn-sm mr-1" :to="{ path : './manageapp', query : { appId : app._id }}" v-t="'developer_yourapps.manage_btn'">manage</router-link> 
+                    <router-link class="btn btn-default btn-sm me-1" :to="{ path : './manageapp', query : { appId : app._id }}" v-t="'developer_yourapps.manage_btn'">manage</router-link> 
                     <router-link class="btn btn-default btn-sm" :to="{ path : './appstats' ,query :  { appId : app._id }}" v-t="'developer_yourapps.debug_info_btn'">debug info</router-link></td>
             </tr>
+			</tbody>
         </table>
         <p v-if="apps.filtered.length == 0" v-t="'developer_yourapps.empty'"></p>
       

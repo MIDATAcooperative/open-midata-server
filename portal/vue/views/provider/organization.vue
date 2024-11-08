@@ -45,7 +45,7 @@
 		                </address>
 					</td>
                     <td>
-                    <button type="button" class="btn btn-default mr-1 btn-sm mb-1" @click="editOrg(org)" v-t="'provider_organization.edit_btn'"></button>
+                    <button type="button" class="btn btn-default me-1 btn-sm mb-1" @click="editOrg(org)" v-t="'provider_organization.edit_btn'"></button>
                     <button type="button" class="btn btn-default btn-sm mb-1" @click="editGroup(org)" v-t="'provider_organization.members'"></button>	                           
                     </td>                    
 				</tr>

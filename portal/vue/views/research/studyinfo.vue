@@ -30,17 +30,17 @@
                 </select>
             </form-group>
             
-            <form-group name="languages" label="studyinfo.showlanguages" :path="errors.languages">
+            <form-group name="languages" label="studyinfo.showlanguages" :path="errors.languages" class="midata-checkbox-row">
                 <div class="checkbox col-sm-12">
                     <label>
                         <input type="checkbox" disabled :checked="selection.langs.indexOf('int')>=0">
-                        <span class="ml-1" v-t="'enum.language.INT'"></span>
+                        <span class="ms-1" v-t="'enum.language.INT'"></span>
                     </label>
                 </div>
                 <div v-for="language in languages" :key="language.value" class="checkbox col-sm-3">
                     <label>
                         <input type="checkbox" :checked="selection.langs.indexOf(language.value)>=0" @click="toggle(selection.langs, language.value);">
-                        <span class="ml-1" v-t="language.name"></span>
+                        <span class="ms-1" v-t="language.name"></span>
                     </label>
                 </div>
             </form-group>

@@ -35,7 +35,7 @@
                 </select>
             </div>
             <div class="col-sm-5">
-                <button class="btn btn-default mr-1" @click="addData();" v-if="!hideAdd" v-t="'provider_memberdetails.share_btn'">Share Data With Patient</button>      
+                <button class="btn btn-default me-1" @click="addData();" v-if="!hideAdd" v-t="'provider_memberdetails.share_btn'">Share Data With Patient</button>      
                 <router-link class="btn btn-default" :to="{ path : './newconsent', query : { owner : member._id } }" v-t="'provider_memberdetails.propose_consent'"></router-link>            
             </div>           
         </div>

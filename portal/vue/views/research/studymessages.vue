@@ -23,12 +23,15 @@
             
             <error-box :error="error"></error-box>    
             <table class="table table-striped" v-if="messages.length">
+				<thead>
                 <tr>
                     <th v-t="'appmessages.reason'"></th>
                     <th v-t="'studyfields.group_name'"></th>
                     <th v-t="'appmessages.languages'"></th>
                     <th>&nbsp;</th>
                 </tr>
+				</thead>
+				<tbody>
                 <tr v-for="msg in messages" :key="JSON.stringify(msg)">
                     <td><a @click="showMessage(msg)" href="javascript:">{{ $t('appmessages.reasons.' + msg.reason) }}</a></td>
                     <td>{{ msg.code }}</td>
@@ -41,11 +44,12 @@
                         <button class="btn btn-sm btn-default" @click="showMessage(msg)" v-t="'common.view_btn'"></button>
                     </td>
                 </tr>
+				</tbody>
             </table>
                             
             <p v-if="!messages.length" v-t="'appmessages.empty'"></p>
             
-            <router-link class="btn btn-default mr-1" :to="{ path : './manageapp', query : { studyId : study._id } }" v-t="'common.back_btn'"></router-link>        
+            <router-link class="btn btn-default me-1" :to="{ path : './manageapp', query : { studyId : study._id } }" v-t="'common.back_btn'"></router-link>        
             <button class="btn btn-default" @click="addMessage()" v-t="'common.add_btn'"></button>
             
         </div>
@@ -96,7 +100,7 @@
                 </form-group>
                     
                 <form-group label="common.empty">
-                    <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary mr-1">Submit</button>    
+                    <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary me-1">Submit</button>    
                     <button type="button" class="btn btn-danger" v-t="'common.delete_btn'" @click="deleteMessage(msg)"></button>        
                 </form-group>
             </form>   

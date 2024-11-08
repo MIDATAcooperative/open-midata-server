@@ -23,8 +23,8 @@
 			<div class="container">
 				<div class="navbar-header">
 
-					<router-link v-if="$route.query.actions" class="ml-1 navbar-toggler" :class="{'vishidden':$route.meta.locked}" data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user2', query : { userId : user._id, actions : $route.query.actions }}"><span class="fas fa-user"></span></router-link>						
-					<button v-else class="ml-1 navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
+					<router-link v-if="$route.query.actions" class="ms-1 navbar-toggler" :class="{'vishidden':$route.meta.locked}" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="go({ name : 'member.user2', query : { userId : user._id, actions : $route.query.actions }})"><span class="fas fa-user"></span></router-link>						
+					<button v-else class="ms-1 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>
@@ -34,58 +34,58 @@
 				</div>
 				<div class="collapse navbar-collapse navbar-ex1-collapse">
 
-					<ul class="nav navbar-nav mr-auto" :class="{'vishidden d-none d-md-flex':locked()}">
-					    <li class="d-lg-none nav-item"><div class="mb-3 mt-3 username"><span class="fas fa-user"></span><span v-if="user.testUserApp" class="ml-1 mr-1 badge badge-warning"><span class="fas fa-vial"></span></span> {{ user.name }}</div></li>					    
-						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-							:to="{ name : 'member.overview' }" v-t="'navbar.me'"></router-link></li>
+					<ul class="nav navbar-nav me-auto" :class="{'vishidden d-none d-md-flex':locked()}">
+					    <li class="d-lg-none nav-item"><div class="mb-3 mt-3 username"><span class="fas fa-user"></span><span v-if="user.testUserApp" class="ms-1 me-1 badge text-bg-warning"><span class="fas fa-vial"></span></span> {{ user.name }}</div></li>					    
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+							@click="go({ name : 'member.overview' })" v-t="'navbar.me'"></a></li>
 
 						
-						<li class="nav-item" v-if="beta" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse"
-							data-target=".navbar-collapse.show" :to="{ name : 'member.records' }" v-t="'navbar.my_data'"></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse"
-							data-target=".navbar-collapse.show" :to="{ name : 'member.circles' }"><span v-t="'navbar.consents'"></span> <span
-								v-if="circles.unconfirmed" class="badge badge-info">{{circles.unconfirmed}}</span></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-							:to="{ name : 'member.studies' }" v-t="'navbar.research'"></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-							:to="{ name : 'member.apps' }"><span v-t="'navbar.apps'"></span></router-link></li>
+						<li class="nav-item" v-if="beta" ui-sref-active="active"><a class="nav-link" data-bs-toggle="collapse"
+							data-bs-target=".navbar-collapse.show" @click="go({ name : 'member.records' })" v-t="'navbar.my_data'"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-bs-toggle="collapse"
+							data-bs-target=".navbar-collapse.show" @click="go({ name : 'member.circles' })"><span v-t="'navbar.consents'"></span> <span
+								v-if="circles.unconfirmed" class="badge text-bg-info">{{circles.unconfirmed}}</span></a></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+							@click="go({ name : 'member.studies' })" v-t="'navbar.research'"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+							@click="go({ name : 'member.apps' })"><span v-t="'navbar.apps'"></span></a></li>
 						
 
 						<li class="nav-item dropdown d-none d-lg-block" ui-sref-active="active"><a href="javascript:" class="dropdown-toggle nav-link"
-							data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+							data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
 							<div class="dropdown-menu">
-								<a class="dropdown-item" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show"
+								<a class="dropdown-item" href="javascript:" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
 									@click="showApp('fhir-observation');" v-t="'dashboard.observations'"></a> <a class="dropdown-item" href="javascript:"
-									data-toggle="collapse" data-target=".navbar-collapse.show" @click="showApp('calendar');" v-t="'dashboard.calendar'"></a> <a
-									v-for="entry in me_menu" :key="entry._id" class="dropdown-item" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show"
+									data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="showApp('calendar');" v-t="'dashboard.calendar'"></a> <a
+									v-for="entry in me_menu" :key="entry._id" class="dropdown-item" href="javascript:" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
 									@click="showSpace(entry)" v-t="entry.name"></a>
 
 							</div></li>
 							
-						<li class="nav-item d-lg-none" ui-sref-active="active"><a class="nav-link" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="showApp('fhir-observation');" v-t="'dashboard.observations'"></a></li>
-						<li class="nav-item d-lg-none" ui-sref-active="active"><a class="nav-link" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="showApp('calendar');" v-t="'dashboard.calendar'"></a></li>
-						<li class="nav-item d-lg-none" ui-sref-active="active" v-for="entry in me_menu" :key="entry._id"><a class="nav-link" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="showSpace(entry)" v-t="entry.name"></a></li>
-						<li class="nav-item d-lg-none" ui-sref-active="active"><router-link v-if="$route.query.actions" data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user2', query : { actions : $route.query.actions }}" class="nav-link"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>
-								<router-link v-else data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user', query : { userId : user._id  }}" class="nav-link"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>
+						<li class="nav-item d-lg-none" ui-sref-active="active"><a class="nav-link" href="javascript:" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="showApp('fhir-observation');" v-t="'dashboard.observations'"></a></li>
+						<li class="nav-item d-lg-none" ui-sref-active="active"><a class="nav-link" href="javascript:" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="showApp('calendar');" v-t="'dashboard.calendar'"></a></li>
+						<li class="nav-item d-lg-none" ui-sref-active="active" v-for="entry in me_menu" :key="entry._id"><a class="nav-link" href="javascript:" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="showSpace(entry)" v-t="entry.name"></a></li>
+						<li class="nav-item d-lg-none" ui-sref-active="active"><a v-if="$route.query.actions" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="go({ name : 'member.user2', query : { actions : $route.query.actions }})" class="nav-link"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></a>
+								<a v-else data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="go({ name : 'member.user', query : { userId : user._id  }})" class="nav-link"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></a>
 								</li>
-						<li class="nav-item d-lg-none" ui-sref-active="active"><a class="nav-link" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="logout()"><span class="fas fa-power-off"></span> {{ $t('navbar.sign_out') }}</a></li>
+						<li class="nav-item d-lg-none" ui-sref-active="active"><a class="nav-link" href="javascript:" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="logout()"><span class="fas fa-power-off"></span> {{ $t('navbar.sign_out') }}</a></li>
 					</ul>
 
 					<ul class="d-none d-lg-block nav navbar-nav">
-						<li class="nav-item dropdown"><a class="nav-link" href="javascript:" tabindex="0" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span v-if="user.testUserApp" class="ml-1 mr-1 badge badge-warning"><span class="fas fa-vial"></span></span>{{user.name}}</a>
+						<li class="nav-item dropdown"><a class="nav-link" href="javascript:" tabindex="0" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span v-if="user.testUserApp" class="ms-1 me-1 badge text-bg-warning"><span class="fas fa-vial"></span></span>{{user.name}}</a>
 						<div class="dropdown-menu" style="right:0px;left:auto;min-width:200px;">
 							<div style="padding:10px;">								
 								<div><b>{{ user.firstname }} {{ user.lastname }}</b></div>
 								<div>{{ user.email }}</div>
-								<span v-if="user.testUserApp" class="ml-1 mr-1 badge badge-warning"><span class="fas fa-vial"></span> {{ user.testUserCustomer }}</span>
+								<span v-if="user.testUserApp" class="ms-1 me-1 badge text-bg-warning"><span class="fas fa-vial"></span> {{ user.testUserCustomer }}</span>
 								<hr>
 								<div><b style="min-width:40px;display:inline-block;">{{circles.apps}}</b><span v-t="'navbar.app_count'"></span></div>
 								<div><b style="min-width:40px;display:inline-block;">{{circles.studies}}</b><span v-t="'navbar.study_count'"></span></div>
 								<div class="extraspace"></div>
-								<router-link v-if="$route.query.actions" data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user2', query : { actions : $route.query.actions }}" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>
-								<router-link v-else data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user', query : { userId : user._id  }}" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>
+								<a v-if="$route.query.actions" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="go({ name : 'member.user2', query : { actions : $route.query.actions }})" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></a>
+								<a v-else data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="go({ name : 'member.user', query : { userId : user._id  }})" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></a>
 								&nbsp;
-								<a href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="logout()" class="btn btn-sm btn-default"><span class="fas fa-power-off"></span> <span v-t="'navbar.sign_out'"></span></a>
+								<a href="javascript:" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="logout()" class="btn btn-sm btn-default"><span class="fas fa-power-off"></span> <span v-t="'navbar.sign_out'"></span></a>
        						</div>
 						</div>
 						</li>
@@ -108,8 +108,8 @@
 
 		<ul>
 			<li><a :href="homepage" v-t="'footer.homepage'"></a></li>			
-			<li><router-link :to="{ path : './terms', query : {which : 'midata-terms-of-use'} }" v-t="'registration.agb3'">Terms of Use</router-link></li>
-			<li><router-link :to="{ path : './terms' ,query : {which : 'midata-privacy-policy'} }" v-t="'registration.privacypolicy3'">Privacy Policy</router-link></li>
+			<li><a @click="go({ path : './terms', query : {which : 'midata-terms-of-use'} })" v-t="'registration.agb3'">Terms of Use</a></li>
+			<li><a @click="go({ path : './terms' ,query : {which : 'midata-privacy-policy'} })" v-t="'registration.privacypolicy3'">Privacy Policy</a></li>
 
 		</ul>
 	</div>
@@ -206,7 +206,11 @@ export default {
 				});
 	    
 			});
-		}
+		},
+			  
+		go(to) {
+		  this.$router.push(to);
+		} 
 
 	},
 

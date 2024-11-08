@@ -57,19 +57,19 @@
                 <typeahead id="consentObserver" name="consentObserver" class="form-control" :disabled="studyLocked()" v-model="study.consentObserverStr" field="filename" display="name" :suggestions="observers" />		    	    
             </form-group>
     
-            <form-group name="joinMethods" label="studyrules.join_methods" :path="errors.joinMethods">
+            <form-group name="joinMethods" label="studyrules.join_methods" :path="errors.joinMethods" class="midata-checkbox-row">
                 <check-box v-for="method in joinmethods" :key="method" :name="method" :disabled="studyLocked()" :checked="study.joinMethods.indexOf(method)>=0" @click="toggle(study.joinMethods, method);">
                     <span class="margin-left" v-t="'enum.joinmethod.'+method"></span>
                 </check-box>		 
             </form-group>
     
-            <form-group name="requirements" label="studyrules.requirements" :path="errors.requirements">
+            <form-group name="requirements" label="studyrules.requirements" :path="errors.requirements" class="midata-checkbox-row">
                 <check-box v-for="req in requirements" :key="req" :name="req" :disabled="studyLocked()" :checked="study.requirements.indexOf(req)>=0" @click="toggle(study.requirements, req);">
                     <span class="margin-left" v-t="'enum.userfeature.'+req"></span>
                 </check-box>		 
             </form-group>
             
-            <form-group name="security" label="studyrules.security" :path="errors.security">
+            <form-group name="security" label="studyrules.security" :path="errors.security" class="midata-checkbox-row">
                 <check-box name="forceClientCertificate" :disabled="studyLocked()" v-model="study.forceClientCertificate">
                     <span class="margin-left" v-t="'studyrules.forceClientCertificate'"></span>
                 </check-box>		 

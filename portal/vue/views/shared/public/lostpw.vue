@@ -39,8 +39,10 @@
 	                                  <option v-for="role in roles" :key="role.value" :value="role.value">{{ $t(role.name) }}</option>
 	                                </select>
                                 </form-group>
-                                <error-box :error="error"></error-box>								
-								<button type="submit" v-submit class="btn btn-primary btn-block" :disabled="action!=null" v-t="'lostpw.continue'"></button>
+                                <error-box :error="error"></error-box>		
+								<div class="d-grid gap-2 mt-3 mb-2">							
+								  <button type="submit" v-submit class="btn btn-primary" :disabled="action!=null" v-t="'lostpw.continue'"></button>
+								</div>
 							</form>							
 														
 		            	</div>

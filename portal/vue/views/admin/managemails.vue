@@ -100,10 +100,10 @@
 		    </form-group>
 	
 		    <form-group label="common.empty">
-                <button type="submit" v-submit :disabled="action!=null" v-if="editable" class="btn btn-primary mr-1" v-t="'admin_managemails.save_btn'"></button>		    
-                <button type="button" class="btn btn-primary mr-1" v-if="allowSend" @click="test()" :disabled="action!=null" v-t="'admin_managemails.test_btn'"></button>
-                <button type="button" class="btn btn-primary mr-1" v-if="allowSend" @click="send()" :disabled="action!=null" v-t="'admin_managemails.send_btn'"></button>
-                <button type="button" class="btn btn-danger mr-1" v-if="allowDelete" @click="doDelete()" :disabled="action!=null" v-t="'common.delete_btn'"></button>
+                <button type="submit" v-submit :disabled="action!=null" v-if="editable" class="btn btn-primary me-1" v-t="'admin_managemails.save_btn'"></button>		    
+                <button type="button" class="btn btn-primary me-1" v-if="allowSend" @click="test()" :disabled="action!=null" v-t="'admin_managemails.test_btn'"></button>
+                <button type="button" class="btn btn-primary me-1" v-if="allowSend" @click="send()" :disabled="action!=null" v-t="'admin_managemails.send_btn'"></button>
+                <button type="button" class="btn btn-danger me-1" v-if="allowDelete" @click="doDelete()" :disabled="action!=null" v-t="'common.delete_btn'"></button>
                 <router-link :to="{ path : './mails' }" class="btn btn-default" v-t="'common.back_btn'"></router-link>
 		    </form-group>
 	    </form>	  		

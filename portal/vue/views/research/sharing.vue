@@ -65,6 +65,7 @@
 			    <div class="extraspace">&nbsp;</div>
                 <p v-if="found"><span>Records found: </span>{{ found }}</p>
                 <table class="table table-striped" v-if="results.filtered.length">
+					<thead>
                     <tr>
                         <th></th>
                         <Sorter sortby="name" v-model="results">Name</Sorter>
@@ -72,6 +73,8 @@
                         <Sorter sortby="created" v-model="results">Created</Sorter>
                         <th></th>
                     </tr>
+					</thead>
+					<tbody>
                     <tr v-for="result in results.filtered" :key="result._id" :class="{'table-success' : result.selected }">
                         <td><input type="checkbox" :checked="ids.indexOf(result._id)>=0" @click="toggle(ids, result._id);"></td>
                         <td>{{ result.name }}</td>
@@ -79,6 +82,7 @@
                         <td>{{ $filters.date(result.created) }}</td>
                         <td>{{ result.selected }}</td>
                     </tr>
+					</tbody>
                 </table>
 	        </form>
     </tab-panel>	

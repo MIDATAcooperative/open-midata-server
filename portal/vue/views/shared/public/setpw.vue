@@ -41,7 +41,9 @@
 								<form @submit.prevent="submit()" name="myform" ref="myform" role="form" novalidate>
 									<password class="form-control" :placeholder="$t('setpw.new_password')" v-model="setpw.password" name="password" required style="margin-bottom:5px;" autofocus />								
 									<password class="form-control" :placeholder="$t('setpw.new_password_repeat')" v-model="setpw.passwordRepeat" name="passwordRepeat" required style="margin-bottom:5px;" />
-									<button type="submit" :disabled="action!=null" class="btn btn-primary btn-block" v-submit v-t="'setpw.set_new_btn'">Set New Password</button>
+									<div class="d-grid gap-2 mt-3 mb-2">
+									  <button type="submit" :disabled="action!=null" class="btn btn-primary" v-submit v-t="'setpw.set_new_btn'">Set New Password</button>
+									</div>
 								</form>
 							</div>
 		            	</div>

@@ -21,7 +21,7 @@
 		<div id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">			
 			<div class="container">
 				<div class="navbar-header">
-					<button class="ml-1 navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
+					<button class="ms-1 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>
@@ -31,42 +31,42 @@
 				</div>
 				<div class="collapse navbar-collapse navbar-ex1-collapse">
 
-					<ul class="nav navbar-nav mr-auto" :class="{'vishidden d-none d-md-flex':locked()}">
+					<ul class="nav navbar-nav me-auto" :class="{'vishidden d-none d-md-flex':locked()}">
 						<li ui-sref-active="active" class="nav-item dropdown"><a href="javascript:" class="nav-link dropdown-toggle"
-							data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span v-t="'admin_navbar.admin'"></span><span
+							data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span v-t="'admin_navbar.admin'"></span><span
 								class="caret"></span></a>
 							<div class="dropdown-menu">
 								<div class="dropdown-header" v-if="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN') || hasSubRole('KEYRECOVERY')" v-t="'admin_navbar.user_admin'"></div>
-								<router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('USERADMIN')" :to="{ path : './members' }" v-t="'admin_navbar.members'"></router-link><router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('USERADMIN')" :to="{ path : './organizations' }" v-t="'admin_navbar.organizations'"></router-link><router-link data-toggle="collapse" data-target=".navbar-collapse.show"
-									class="dropdown-item" v-if="hasSubRole('KEYRECOVERY')" :to="{ path : './pwrecover' }" v-t="'admin_pwrecover.menu'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show"
-									class="dropdown-item" v-if="hasSubRole('USERADMIN')" :to="{ path : './auditlog' }" v-t="'admin_navbar.auditlog'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show"
-									class="dropdown-item" v-if="hasSubRole('SUPERADMIN')" :to="{ path : './adminregistration' }" v-t="'admin_navbar.registration'"></router-link>
+								<a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('USERADMIN')" @click="go({ path : './members' })" v-t="'admin_navbar.members'"></a><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('USERADMIN')" @click="go({ path : './organizations' })" v-t="'admin_navbar.organizations'"></a><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+									class="dropdown-item" v-if="hasSubRole('KEYRECOVERY')" @click="go({ path : './pwrecover' })" v-t="'admin_pwrecover.menu'"></a> <a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+									class="dropdown-item" v-if="hasSubRole('USERADMIN')" @click="go({ path : './auditlog' })" v-t="'admin_navbar.auditlog'"></a> <a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+									class="dropdown-item" v-if="hasSubRole('SUPERADMIN')" @click="go({ path : './adminregistration' })" v-t="'admin_navbar.registration'"></a>
 								<div role="separator" class="dropdown-divider" v-if="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN')"></div>
 								<div class="dropdown-header" v-if="hasSubRole('PLUGINADMIN') || hasSubRole('CONTENTADMIN')" v-t="'admin_navbar.plugin_admin'"></div>
-								<router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './yourapps' }" v-t="'admin_navbar.plugins'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show" 
-								    class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './updplugins' }" v-t="'admin_navbar.updplugins'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show"
-									class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './usagestats' }" v-t="'admin_navbar.usagestats'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './services' }" v-t="'admin_navbar.endpoints'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show"
-									class="dropdown-item" v-if="hasSubRole('CONTENTADMIN')" :to="{ path : './content' }" v-t="'admin_navbar.content'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show"
-									class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './viewterms' }" v-t="'admin_navbar.terms'"></router-link> <router-link data-toggle="collapse" data-target=".navbar-collapse.show"
-									class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" :to="{ path : './licenses' }" v-t="'admin_navbar.licenses'"></router-link>
+								<a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" @click="go({ path : './yourapps' })" v-t="'admin_navbar.plugins'"></a> <a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" 
+								    class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" @click="go({ path : './updplugins' })" v-t="'admin_navbar.updplugins'"></a> <a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+									class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" @click="go({ path : './usagestats' })" v-t="'admin_navbar.usagestats'"></a> <a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" @click="go({ path : './services' })" v-t="'admin_navbar.endpoints'"></a> <a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+									class="dropdown-item" v-if="hasSubRole('CONTENTADMIN')" @click="go({ path : './content' })" v-t="'admin_navbar.content'"></a> <a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+									class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" @click="go({ path : './viewterms' })" v-t="'admin_navbar.terms'"></a> <a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+									class="dropdown-item" v-if="hasSubRole('PLUGINADMIN')" @click="go({ path : './licenses' })" v-t="'admin_navbar.licenses'"></a>
 								<div role="separator" class="dropdown-divider" v-if="hasSubRole('PLUGINADMIN') || hasSubRole('CONTENTADMIN')"></div>
 								<div class="dropdown-header" v-t="'admin_navbar.research_admin'" v-if="hasSubRole('STUDYADMIN') || hasSubRole('NEWSADMIN')"></div>
-								<router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('STUDYADMIN')" :to="{ path : './astudies'}"  v-t="'admin_navbar.studies'"></router-link> 
-								<router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('NEWSWRITER')" :to="{ path : './news' }" v-t="'admin_navbar.news'"></router-link>
-								<router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('NEWSWRITER')" :to="{ path : './mails' }" v-t="'admin_navbar.mails'"></router-link>
+								<a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('STUDYADMIN')" @click="go({ path : './astudies'})"  v-t="'admin_navbar.studies'"></a> 
+								<a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('NEWSWRITER')" @click="go({ path : './news' })" v-t="'admin_navbar.news'"></a>
+								<a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" v-if="hasSubRole('NEWSWRITER')" @click="go({ path : './mails' })" v-t="'admin_navbar.mails'"></a>
 							</div></li>
-						<li class="nav-item" ui-sref-active="active"><router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-link" :to="{ path : './workspace' }" v-t="'developer_navbar.workspace'"></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-link" :to="{ path : './yourapps2' }" v-t="'developer_navbar.yourapps'"></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-link" :to="{ path : './studies' }" v-t="'researcher_navbar.studies'"></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-link" :to="{ path : './sandbox' }" v-t="'developer_navbar.sandbox'"></router-link></li>
-						<!-- <li class="nav-item" ui-sref-active="active"><router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-link" :to="{ path : './records' }" v-t="'developer_navbar.records'"></router-link></li> -->
-						<li class="nav-item" ui-sref-active="active"><router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-link" :to="{ path : './testusers' }" v-t="'developer_navbar.testusers'"></router-link></li>
+						<li class="nav-item" ui-sref-active="active"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="go({ path : './workspace' })" v-t="'developer_navbar.workspace'"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="go({ path : './yourapps2' })" v-t="'developer_navbar.yourapps'"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="go({ path : './studies' })" v-t="'researcher_navbar.studies'"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="go({ path : './sandbox' })" v-t="'developer_navbar.sandbox'"></a></li>
+						<!-- <li class="nav-item" ui-sref-active="active"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="go({ path : './records' })" v-t="'developer_navbar.records'"></a></li> -->
+						<li class="nav-item" ui-sref-active="active"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="go({ path : './testusers' })" v-t="'developer_navbar.testusers'"></a></li>
 
 					</ul>
 
 					<ul class="nav navbar-nav">
-						<li class="nav-item"><router-link data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-link" :to="{ name : 'admin.user', query : { userId : user._id}}">{{user.name}}</router-link></li>
-						<li class="nav-item"><a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-link" @click="logout()" href="javascript:"> <span class="fas fa-power-off"></span> <span
+						<li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="go({ name : 'admin.user', query : { userId : user._id}})">{{user.name}}</a></li>
+						<li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="logout()" href="javascript:"> <span class="fas fa-power-off"></span> <span
 								v-t="'navbar.sign_out'"></span>
 						</a></li>
 					</ul>				
@@ -88,8 +88,8 @@
 
 		<ul>
 			<li><a :href="homepage" v-t="'footer.homepage'"></a></li>			
-			<li><router-link :to="{ path : './terms', query : {which : 'midata-terms-of-use'} }" v-t="'registration.agb3'">Terms of Use</router-link></li>
-			<li><router-link :to="{ path : './terms' ,query : {which : 'midata-privacy-policy'} }" v-t="'registration.privacypolicy3'">Privacy Policy</router-link></li>
+			<li><a @click="go({ path : './terms', query : {which : 'midata-terms-of-use'} })" v-t="'registration.agb3'">Terms of Use</a></li>
+			<li><a @click="go({ path : './terms' ,query : {which : 'midata-privacy-policy'} })" v-t="'registration.privacypolicy3'">Privacy Policy</a></li>
 
 		</ul>
 	</div>
@@ -186,7 +186,11 @@ export default {
 				});
 	    
 			});
-		}
+		},
+			  
+		go(to) {
+		  this.$router.push(to);
+		} 
 
 	},
 

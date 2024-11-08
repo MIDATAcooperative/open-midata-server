@@ -25,7 +25,7 @@
 		        <span v-if="block.public == 'also' && (!block.owner || block.owner == 'all')" v-t="'queryeditor.short_public_also'"></span> 
 		        <span v-if="block.public == 'also' && block.owner != 'all'" v-t="'queryeditor.short_public_also_self'"></span>				    
 		        <span v-if="block.app && block.app != 'all'"><span v-t="'queryeditor.short_app_other'"></span> {{ block.appName }}</span>
-		        <span v-if="block.dynamic" class="ml-1 badge badge-danger">{{ $t('queryeditor.short_dynamic_'+block.dynamic) }}</span>		      
+		        <span v-if="block.dynamic" class="ms-1 badge text-bg-danger">{{ $t('queryeditor.short_dynamic_'+block.dynamic) }}</span>		      
 		    </div>		   
 		    
 		    <div v-if="block.timeRestrictionMode">

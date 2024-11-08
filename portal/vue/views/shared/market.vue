@@ -22,19 +22,21 @@
                             
         <p v-show="!filtered.length" v-t="'market.no_spotlighted_plugins'"></p>
         <table class="table table-hover clickable">
+			<tbody>
             <tr @click="install(visualization)" v-for="visualization in filtered" :key="visualization._id">
-                <!--  a class="float-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)"> <img class="media-object"
+                <!--  a class="float-start" href="javascript:;" ng-click="showVisualizationDetails(visualization)"> <img class="media-object"
                     ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">
                 </a -->
                 <td>
-                    <!--div class="float-right">
+                    <!--div class="float-end">
                     <button ng-click="showVisualizationDetails(visualization)" class="btn btn-sm btn-default" translate="market.install_now_btn"></button>
                     </div-->
                     <b>{{ getName(visualization) }}</b>
                     <p>{{ getDescription(visualization) }}</p>
                                     
                 </td>	
-            </tr>					
+            </tr>	
+			</tbody>				
         </table>
             
     </panel>

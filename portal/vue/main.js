@@ -25,7 +25,7 @@ import VueCookies from 'vue3-cookies';
 import PluginFrame from "directives/pluginframe.js";
 import ENV from 'config';
 
-require('bootstrap/dist/js/bootstrap.bundle');
+import * as bootstrap from 'bootstrap'
 
 
 const addMaximumScaleToMetaViewport = () => {

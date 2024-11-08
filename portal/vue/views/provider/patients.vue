@@ -18,16 +18,20 @@
     <panel :title="$t('provider_patients.title')" :busy="isBusy">    
         <pagination v-model="patients"></pagination>
 	    <table class="table" v-if="patients.filtered.length > 0">
+			<thead>
 	        <tr>
 	            <Sorter sortby="family" v-model="patients">Surname</Sorter>
 	            <Sorter sortby="firstname" v-model="patients">Firstname</Sorter>
 	            <Sorter sortby="birthDate" v-model="patients">Birthday</Sorter>	        
 	        </tr>
+			</thead>
+			<tbody>
 	        <tr v-for="patient in patients.filtered" :key="patient._id">
 	            <td><a href="javascript:" @click="selectPatient(patient)">{{ patient.name[0].family }}</a></td>
 	            <td>{{ patient.name[0].given[0] }}</td>
 	            <td>{{ $filters.date(patient.birthDate) }}</td>	        
 	        </tr>
+			</tbody>
 	    </table>
 	    
 	    <p v-if="patients.filtered.length == 0" v-t="'provider_patients.empty'">No patients found.</p>
