@@ -28,6 +28,7 @@ import models.UserGroupMember;
 import models.enums.EntityType;
 import models.enums.Permission;
 import models.enums.ProjectDataFilter;
+import utils.RuntimeConstants;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.access.Feature_Pseudonymization;
@@ -50,7 +51,7 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		return ugm.getConfirmedRole().mayWriteData() && parent.mayCreateRecord(record);
+		return (ugm.getConfirmedRole().mayWriteData() || record.owner.equals(RuntimeConstants.instance.publicUser)) && parent.mayCreateRecord(record);
 	}
 
 	@Override

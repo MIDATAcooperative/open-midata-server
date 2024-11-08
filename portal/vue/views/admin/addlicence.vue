@@ -25,7 +25,7 @@
 	            <p v-if="app" class="form-text text-muted">{{ app.name }} {{ app.orgName }}</p>
 		    </form-group>
 
-		    <form-group name="si" label="admin_addlicence.service" :path="errors.si">			  
+		    <form-group name="si" label="admin_addlicence.service" :path="errors.si" class="midata-checkbox-row">			  
 			    <check-box :disabled="!app || (app.type!='external' && app.type!='endpoint' && app.type!='broker')" v-model="licence.service" name="si">
 		            <span v-t="'admin_addlicence.service2'"></span>
                 </check-box>
@@ -54,7 +54,7 @@
 		    </form-group>
 		  		  
 		    <form-group label="common.empty">
-		        <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary mr-1" v-t="'common.submit_btn'"></button>		    
+		        <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary me-1" v-t="'common.submit_btn'"></button>		    
 		        <button type="button" class="btn btn-danger" v-if="allowDelete" @click="doDelete()" :disabled="action!=null" v-t="'common.delete_btn'"></button>
 		    </form-group>
         </form>	  

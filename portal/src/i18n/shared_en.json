@@ -159,7 +159,8 @@
        "consent" : "You have set in the @PRODUCT portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PRODUCT portal.",
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PRODUCT portal.",
        "app_test" : "You are allowed to use this application on a maximum of 10 devices. On this TEST instance consents have been reset for you. Please retry.",
-       "joinmethod" : "It is not allowed to join the project by this method." 
+       "joinmethod" : "It is not allowed to join the project by this method.",
+       "testuser" : "Application does not accept test accounts." 
      },
 
      "closed" : {
@@ -179,6 +180,9 @@
      "tooweak" : {
        "password" : "The password must contain at least one letter and one digit.",
        "passphrase" : "Passphrases should contain upper/lower case letters, numbers and special characters."
+     },
+     "toomany" : {
+       "testuser" : "The maximum allowed number of test users has been reached."
      },
 
      "concurrent" : {
@@ -641,6 +645,11 @@
 	    "RUNNING" : "Building",
 	    "FAILED" : "Failed",
 	    "DONE" : "Done"
+	 },
+	 "test_accounts" : {
+	    "ALL" : "Allow test users created by any application",
+	    "NONE": "Do not allow test users",
+	    "SOME" : "Allow test users created by some applications"
 	 }
    },
 
@@ -890,6 +899,7 @@
     "created_on" : "Created at:",
     "content" : "@PRODUCT content type:",
     "format" : "Format:",
+    "tags" : "Tags:",
     "download_btn" : "Download",
     "content_visualization" : "Content Visualization",
     "no_visualization" : "No visualization available for this record.",
@@ -1572,7 +1582,8 @@
       "PseudonymizedPatient" : "Patient Records: pseudonym, year of birth, country of research project participants",
       "Practitioner" : "Practitioner Resource: search for health professionals or researchers",
       "Subscription" : "Access and manage subscriptions to external systems"
-    }
+    },
+    "creator_org" : "Creator Organization"
   },
   
   "timeline" : {

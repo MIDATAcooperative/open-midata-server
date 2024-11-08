@@ -81,13 +81,17 @@ public class MessageProcessor {
 					Parameters parameters = (Parameters) r;
 					params = new HashMap<String, String>();
 					for (ParametersParameterComponent entry : parameters.getParameter()) {
-						params.put(entry.getName(), entry.getValue().primitiveValue());
+						if (entry.getValue() != null) {
+						  params.put(entry.getName(), entry.getValue().primitiveValue());
+						}
 					}
 				}
 			}
 			
 			boolean doasync = async != null && async.getValue() != null && async.getValue().equals("true");
 		
+			while (inf != null && inf.isUserGroupContext()) inf = inf.getParent();
+			
 			String result = SubscriptionManager.messageToProcess(inf.getAccessor(), inf.getUsedPlugin(), eventCode, destination, "4.0", inputBundle, params, doasync);
 			
 			if (doasync) {			

@@ -1488,8 +1488,17 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public List<String> fixAccount(AccessContext context) throws AppException {
-		MidataId userId = context.getCache().getAccountOwner();
+	   return fixAccount(context, new HashSet<MidataId>());
+	}
+	
+	
+	public List<String> fixAccount(AccessContext context, Set<MidataId> alreadyDone) throws AppException {
+		MidataId userId = context.getCache().getAccountOwner();		
+		
 		List<String> msgs = new ArrayList<String>();
+		if (alreadyDone.contains(userId)) return msgs;
+		alreadyDone.add(userId);
+		
 		msgs.add(IndexManager.instance.clearIndexes(context.getCache(), context.getAccessor()));
 		
 		APSCache cache = context.getCache();
@@ -1518,12 +1527,24 @@ public class RecordManager {
 		}
 		AccessLog.logEnd("end search for broken user groups");
 		
+		AccessLog.logBegin("start check of user groups");
+		for (UserGroupMember ugm : ugms) {
+			if (ugm.status.isSharingData() && ugm.role.mayReadData()) {			  
+			  List<String> ugMsgs = RecordManager.instance.fixAccount(context.forUserGroup(ugm), alreadyDone);
+			  for (String s : ugMsgs) msgs.add("ug "+ugm.userGroup.toString()+": "+s);
+			}
+		}
+		AccessLog.logEnd("end check of user groups");
+		
 		AccessLog.logBegin("start searching for missing records in consents");
 		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Sets.create("_id"), Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			try {
 				AccessLog.log("check owned consent:"+consent._id.toString());
-				cache.getAPS(consent._id, userId).getStoredOwner();					
+				cache.getAPS(consent._id, userId).getStoredOwner();	
+				
+				Consent ca = Consent.getByIdAndOwner(consent._id, userId, Consent.ALL);
+				context.forConsent(ca).getOwnerName(); // Delete on pseudonymization failure
 			} catch (Exception e) {
 				msgs.add("delete inaccessible consent "+consent._id.toString());
 				Consent.delete(userId, consent._id);
@@ -1545,6 +1566,19 @@ public class RecordManager {
 			}
 			checkRecordsInAPS(context, consent._id, false, "consent "+consent._id.toString()+": ",msgs);
 		}
+		
+		AccessLog.log("check pseudonymization");
+		for (Consent consent : consents) {
+			try {									
+				Consent ca = Consent.getByIdAndOwner(consent._id, consent.owner, Consent.ALL);
+				context.forConsent(ca).getOwnerName(); // Delete on pseudonymization failure
+			} catch (Exception e) {
+				msgs.add("delete consent with pseudonymization error "+consent._id.toString());
+				Consent.delete(consent.owner, consent._id);
+				continue;
+			}			
+		}
+		
 		AccessLog.logEnd("end searching for missing records in authorized consents");
 						
 		AccessLog.logBegin("start searching for missing records in spaces");

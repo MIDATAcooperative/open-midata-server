@@ -25,7 +25,7 @@
                 <p v-if="usergroup._id" class="form-control-plaintext">{{ usergroup.name }}</p>
                 <input v-else id="name" name="name" type="text" class="form-control" v-validate v-model="usergroup.name" required>
             </form-group> 
-            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup._id && usergroup.type!='ORGANIZATION'">
+            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup._id && usergroup.type!='ORGANIZATION'" class="midata-checkbox-row">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" v-validate v-model="usergroup.searchable" @change="edit();">
                     <div class="margin-left">
@@ -42,6 +42,7 @@
         
         <pagination v-model="members"></pagination>
         <table class="table table-striped table-hover" v-if="members.filtered.length">
+			<thead>
             <tr>
                 <Sorter v-t="'common.user.firstname'" sortby="user.firstname" v-model="members"></Sorter>
                 <Sorter sortby="user.lastname" v-model="members" v-t="'common.user.lastname'"></Sorter>
@@ -49,6 +50,8 @@
                 <th></th>
                 <th></th>   
             </tr>
+			</thead>
+			<tbody>
             <tr class="clickable" @click="select(member)" v-for="member in members.filtered" :key="member._id">
                 <td>{{ member.user.firstname }}</td>
                 <td>{{ member.user.lastname }}</td>
@@ -57,11 +60,12 @@
                     {{ matrix(member.role) }}
                 </td>
                 <td>
-                    <button type="button" v-if="member.member != user._id" @click="removePerson(member)" :disabled="action!=null" class="close" aria-label="Delete">
+                    <button type="button" v-if="member.member != user._id" @click="removePerson(member)" :disabled="action!=null" class="btn-close" aria-label="Delete">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>
-            </tr>				
+            </tr>	
+			</tbody>			
         </table>
         
          <form v-if="usergroup" class="css-form form-horizontal" role="form">
@@ -69,7 +73,7 @@
             <form-group name="selected" v-if="add.user" label="provider_editusergroup.selected">
                <p class="form-control-static">{{ (add.user || {}).email }}</p>
             </form-group>
-            <form-group name="rights" label="provider_editusergroup.rights">
+            <form-group name="rights" label="provider_editusergroup.rights" class="midata-checkbox-row">
                 <check-box v-for="req in rights" :name="req" :key="req" v-model="add.role[req]" :disabled="!mayChangeTeam()">
                     <span>{{ $t('provider_editusergroup.right.'+req) }}</span>
                 </check-box>		 
@@ -79,10 +83,10 @@
 
         <error-box :error="error"></error-box>
         <div v-if="usergroup && usergroup._id">
-            <a @click="$router.back()" href="javascript:" class="btn btn-default mr-1" v-t="'common.back_btn'"></a>
-            <button v-if="add.user" :disabled="action != null || !mayChangeTeam()" type="button" class="btn btn-primary mr-1" v-t="'provider_editusergroup.update_btn'" @click="updateMember();"></button>
-            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addPeople();" v-t="'editconsent.add_hp_btn'"></button>
-            <button type="button" class="btn btn-default mr-1" v-if="usergroup.status == 'ACTIVE'" @click="addPeople2();" v-t="'editconsent.add_people_btn'"></button>
+            <a @click="$router.back()" href="javascript:" class="btn btn-default me-1" v-t="'common.back_btn'"></a>
+            <button v-if="add.user" :disabled="action != null || !mayChangeTeam()" type="button" class="btn btn-primary me-1" v-t="'provider_editusergroup.update_btn'" @click="updateMember();"></button>
+            <button type="button" class="btn btn-default me-1" v-if="usergroup.status == 'ACTIVE'" @click="addPeople();" v-t="'editconsent.add_hp_btn'"></button>
+            <button type="button" class="btn btn-default me-1" v-if="usergroup.status == 'ACTIVE'" @click="addPeople2();" v-t="'editconsent.add_people_btn'"></button>
             <success :finished="finished" action="change" msg="common.save_ok"></success>
         </div>                          
     </panel>  
@@ -91,6 +95,7 @@
     <panel :busy="isBusy" :title="$t('provider_editusergroup.former_members')">
         <pagination v-model="expired"></pagination>
         <table class="table table-striped table-hover" v-if="expired.filtered.length">
+			<thead>
             <tr>
                 <Sorter v-t="'common.user.firstname'" sortby="user.firstname" v-model="expired"></Sorter>
                 <Sorter sortby="user.lastname" v-model="expired" v-t="'common.user.lastname'"></Sorter>
@@ -98,6 +103,8 @@
                 <Sorter v-t="'provider_editusergroup.startDate'" sortby="startDate" v-model="expired"></Sorter>
                 <Sorter v-t="'provider_editusergroup.endDate'" sortby="endDate" v-model="expired"></Sorter>
             </tr>
+			</thead>
+			<tbody>
             <tr v-for="member in expired.filtered" :key="member._id">
                 <td>{{ member.user.firstname }}</td>
                 <td>{{ member.user.lastname }}</td>
@@ -105,7 +112,8 @@
                 
                 <td>{{ $filters.date(member.startDate) }}</td>
                 <td>{{ $filters.date(member.endDate) }}</td> 
-            </tr>				
+            </tr>	
+			</tbody>			
         </table>
 
     </panel>

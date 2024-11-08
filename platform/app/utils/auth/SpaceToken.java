@@ -77,6 +77,11 @@ public class SpaceToken {
 	public UserRole role;
 	
 	public String handle;
+	
+	/**
+	 * Just used for auto import tokens
+	 */
+	public MidataId userGroup;
 
 	public SpaceToken(String handle, MidataId spaceId, MidataId userId, UserRole role) {
 		this.handle = handle;
@@ -104,7 +109,7 @@ public class SpaceToken {
 		this.role = role;
 	}
 	
-	public SpaceToken(String handle, MidataId spaceId, MidataId userId, UserRole role, MidataId recordId, MidataId pluginId, MidataId executorId) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, UserRole role, MidataId recordId, MidataId pluginId, MidataId executorId, MidataId userGroupId) {
 		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
@@ -114,9 +119,10 @@ public class SpaceToken {
 		this.autoimport = true;
 		this.created = System.currentTimeMillis();
 		this.role = role;
+		this.userGroup = userGroupId;
 	}
 	
-	public SpaceToken(String handle, MidataId spaceId, MidataId userId, UserRole role, MidataId recordId, MidataId pluginId, MidataId executorId, long created, String remoteAddr, boolean autoimport) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, UserRole role, MidataId recordId, MidataId pluginId, MidataId executorId, long created, String remoteAddr, boolean autoimport, MidataId userGroup) {
 		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
@@ -127,6 +133,7 @@ public class SpaceToken {
 		this.remoteAddress = remoteAddr;
 		this.autoimport = autoimport;
 		this.role = role;
+		this.userGroup = userGroup;
 	}
 	
 	public SpaceToken(String handle, MidataId spaceId, MidataId userId, UserRole role, MidataId recordId) {
@@ -161,6 +168,7 @@ public class SpaceToken {
 		map.put("R", role.toShortString());
 		if (executorId != null && !executorId.equals(userId)) map.put("e", executorId.toString());
 		if (autoimport) map.put("a", "1");
+		if (userGroup != null) map.put("g", userGroup.toString());
 		map.put("c", Long.toString(this.created));
 		map.put("i", this.remoteAddress);
 		map.put("h", handle);
@@ -199,6 +207,7 @@ public class SpaceToken {
 			MidataId recordId = json.has("r") ? new MidataId(json.get("r").asText()) : null;
 			MidataId pluginId = json.has("p") ? new MidataId(json.get("p").asText()) : null;
 			MidataId executorId = json.has("e") ? new MidataId(json.get("e").asText()) : userId;
+			MidataId userGroup = json.has("g") ? new MidataId(json.get("g").asText()) : null;
 			String handle = json.get("h").asText();
 			long created = json.get("c").asLong();
 			String remoteAddr = json.get("i").asText();
@@ -209,7 +218,7 @@ public class SpaceToken {
 			}
 			UserRole role = UserRole.fromShortString(json.get("R").asText());
 			
-			return new SpaceToken(handle, spaceId, userId, role, recordId, pluginId, executorId, created, remoteAddr, json.has("a"));
+			return new SpaceToken(handle, spaceId, userId, role, recordId, pluginId, executorId, created, remoteAddr, json.has("a"), userGroup);
 		} catch (Exception e) {
 			return null;
 		}

@@ -151,6 +151,10 @@ public class ExecutionInfo {
 				appInstance.sharingQuery = RecordManager.instance.getMeta(session, authToken.spaceId, "_query").toMap();
 			}
 			
+			if (authToken.userGroup != null) {
+				session = session.forUserGroup(authToken.userGroup, Permission.READ_DATA);
+			}
+			
 		} else {
 			// Unhandeled case. How can this happen?
 			throw new NullPointerException();

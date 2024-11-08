@@ -99,7 +99,11 @@ public class ApplicationTools {
 		
 		// check consents accepted
 		checkProjectConsentsAccepted(member, studyConfirm, links);
-							
+				
+		// check user accepted
+		if (!TestAccountTools.allowInstallation(context, member._id, app._id)) 
+			throw new BadRequestException("error.blocked.testuser", "Application does not allow test users.");
+			
 		// Create app instance *
 		MobileAppInstance appInstance = null;
 		
@@ -693,14 +697,17 @@ public class ApplicationTools {
 	public static void removeAppInstance(AccessContext context, MidataId executorId, MobileAppInstance appInstance) throws AppException {
 		AccessLog.logBegin("start remove app instance: ",appInstance._id.toString()," context="+context.toString()+" app="+appInstance.applicationId.toString());	
 		// Device or password changed, regenerates consent				
-		Circles.consentStatusChange(context, appInstance, ConsentStatus.EXPIRED);		
-		Plugin app = Plugin.getById(appInstance.applicationId);		
+		Circles.consentStatusChange(context, appInstance, ConsentStatus.DELETED);		
+		
+		// This is now all done asynchronously
+		/*Plugin app = Plugin.getById(appInstance.applicationId);		
 		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
 		RecordManager.instance.deleteAPS(context, appInstance._id);									
 		//Removing queries from user account should not be necessary
 		if (appInstance.serviceId == null) Circles.removeQueries(appInstance.owner, appInstance._id);										
 		
-		MobileAppInstance.delete(appInstance.owner, appInstance._id);
+		MobileAppInstance.delete(appInstance.owner, appInstance._id);*/
+		
 		AccessLog.logEnd("end remove app instance");
 	}
 

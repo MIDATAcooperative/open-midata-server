@@ -40,7 +40,7 @@
         <pagination v-model="consents" search="name"></pagination>
 
 		<table class="table table-striped" v-if="consents.filtered && consents.filtered.length">
-
+          <thead>
 			<tr>
                 <Sorter sortby="ownerName" v-model="consents" v-t="'consents.ownerName'"></Sorter>
                 <Sorter class="d-none d-sm-table-cell" sortby="dateOfCreation" v-model="consents" v-t="'consents.date_of_creation'"></Sorter>
@@ -49,14 +49,17 @@
 				<Sorter class="d-none d-sm-table-cell" sortby="status" v-model="consents" v-t="'consents.status'"></Sorter>				
 				<th class="d-none d-lg-table-cell" v-t="'consents.number_of_records'"></th>
 			</tr>
+          </thead>
+		  <tbody>
 			<tr v-for="consent in consents.filtered" :key="consent._id" :class="{ 'table-warning' : consent.status == 'UNCONFIRMED' }">
-				<td><a @click="editConsent(consent);" href="javascript:">{{ consent.ownerName || consent.externalOwner }}</a></td>
+				<td><span v-if="consent.testUserApp" class="fas fa-vial me-1" title="Test User"></span><a @click="editConsent(consent);" href="javascript:">{{ consent.ownerName || consent.externalOwner }}</a></td>
 				<td class="d-none d-sm-table-cell">{{ $filters.date(consent.dateOfCreation) }}</td> 
                 <td class="d-none d-md-table-cell">{{ consent.name }}</td>				
 				<td>{{ $t('enum.consenttype.'+consent.type) }}</td>
 				<td class="d-none d-sm-table-cell">{{ $t('enum.consentstatus.'+consent.status) }}</td>				
 				<td class="d-none d-lg-table-cell">{{ consent.records }}</td>
 			</tr>
+		  </tbody>
 		</table>
 
 		<button class="btn btn-primary" @click="addConsent();" v-t="'revconsents.add_new_btn'"></button>
@@ -89,7 +92,7 @@ export default {
 
         loadConsents(userId) {	
             const { $data, $route } = this,me=this;		    
-		    me.doBusy(circles.listConsents({ member : true }, [ "name", "authorized", "type", "status", "records", "owner", "ownerName", "externalOwner", "dateOfCreation" ])
+		    me.doBusy(circles.listConsents({ member : true }, [ "name", "authorized", "type", "status", "records", "owner", "ownerName", "externalOwner", "dateOfCreation", "testUserApp" ])
 		    .then(function(data) {
                 $data.consents = me.process(data.data, { filter : { name : "" }, ignoreCase : true, sort : "-dateOfCreation" });						
                

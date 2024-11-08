@@ -182,6 +182,7 @@ POST    /api/research/studies/:study/csvdownload         controllers.research.CS
 GET     /api/research/studies/:study/csvdownload         controllers.research.CSVDownload.getCSVDef(request: Request, study: String)
 GET     /api/research/studies/:study/codes               controllers.research.Studies.listCodes(request: Request, study: String)
 POST    /api/research/studies/:study/codes               controllers.research.Studies.generateCodes(request: Request,study: String)
+POST    /api/research/studies/:study/code/:codestr       controllers.research.Studies.shareCode(request: Request,study: String, codestr: String)
 GET     /api/research/studies/:study/requiredinfo        controllers.research.Studies.getRequiredInformationSetup(study: String)
 POST    /api/research/studies/:study/requiredinfo        controllers.research.Studies.setRequiredInformationSetup(request: Request,study: String)
 POST    /api/research/studies/:study/status/validate     controllers.research.Studies.startValidation(request: Request,study: String)

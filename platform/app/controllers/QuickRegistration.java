@@ -41,6 +41,7 @@ import play.mvc.BodyParser;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.InstanceConfig;
+import utils.TestAccountTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExtendedSessionToken;
@@ -184,7 +185,9 @@ public class QuickRegistration extends APIController {
 		//user.agreedToTerms(app.termsOfUse, user.initialApp);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user, app._id);
-		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.MEMBER, null);
+		AccessContext context = ContextManager.instance.createInitialSession(user._id, UserRole.MEMBER, app._id);
+		TestAccountTools.prepareNewUser(context, user, null);
+		TestAccountTools.createNewUser(context, user);
 		//Application.handlePreCreated(user);
 		String handle;
 		if (json.has("priv_pw")) {
@@ -213,6 +216,7 @@ public class QuickRegistration extends APIController {
 		      handle = Application.registerCreateUser(context, user);
 		}
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
+		
 		
 		Circles.fetchExistingConsents(context, user.emailLC);
 		Application.sendWelcomeMail(null, app._id, user, null);

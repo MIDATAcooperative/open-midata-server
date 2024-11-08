@@ -139,7 +139,7 @@ import oauth from './oauth';
 					//$cookies.put("session", userId);
 					//session.storedCookie = userId;
 					//userId = { "$oid" : userId };			
-					var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles", "developer", "security", "language"] };
+					var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles", "developer", "security", "language", "testUserApp", "testUserCustomer"] };
 					session.org = result.org;
 					server.post(jsRoutes.controllers.Users.get().url, data)
 					.then(function(data) {

@@ -27,7 +27,7 @@
 				    <br><br>
 				    After clicking on "Authorize Now" you will be redirected to an external login page.
 				    </p>
-				    <button type="button" class="btn btn-success mr-1" :disabled="authorizing" @click="authorize()" v-t="'importrecords.authorize_btn'"></button>
+				    <button type="button" class="btn btn-success me-1" :disabled="authorizing" @click="authorize()" v-t="'importrecords.authorize_btn'"></button>
 				    <button v-if="hasActions" type="button" class="btn btn-default" @click="skip()" v-t="'importrecords.skip_btn'"></button>
 				    <div class="extraspace"></div>				
                 </div>

@@ -21,6 +21,7 @@ import circles from './circles';
 	var service = {};
 	var current = null;
 	var acarray = null;
+	var outMsgs = [];
 	
 	var getActions = function($route) {
         var ac = $route.query.actions;
@@ -35,6 +36,16 @@ import circles from './circles';
 		return true;
 	};
 	
+	service.addOut = function(outMsg) {
+		if (this.hasMore()) {
+		    outMsgs.push(outMsg);
+		}
+	};
+	
+	service.getOutMsgs = function() {
+		return outMsgs;
+	};
+			
 	service.hasMore = function() {
 	   return hasActions(acarray);	
 	};
@@ -134,6 +145,7 @@ import circles from './circles';
 	
 	service.logout = function() {
 	  acarray = current = null;
+	  outMsgs = [];
 	};
 	
 export default service;

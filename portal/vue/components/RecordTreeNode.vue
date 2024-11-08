@@ -15,7 +15,7 @@
  along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-    <div class="float-right sharebox" v-if="selectedAps!=null">
+    <div class="float-end sharebox" v-if="selectedAps!=null">
 		<button class="btn btn-sm btn-primary" :disabled="action!=null" @click="unshare(data);" v-show="isSharedGroup(data)">
 			<span class="fas fa-picture"></span><span v-t="'records.unshare'"></span>
 		</button>

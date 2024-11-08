@@ -21,6 +21,7 @@
         <pagination v-model="apps" search="search"></pagination>
 
         <table class="table" v-if="apps.filtered.length">
+			<thead>
             <tr>
                 <Sorter sortby="name" v-model="apps" v-t="'developer_yourapps.name'">Name</Sorter>
                 <!-- <Sorter sortby="filename" v-model="apps" v-t="'developer_yourapps.filename'">Internal</Sorter> -->
@@ -32,6 +33,8 @@
                 <Sorter sortby="repositoryUrl" v-model="apps" v-t="'developer_updplugins.repositoryUrl'"></Sorter>
                 <th class="d-none d-lg-table-cell"></th>
             </tr>
+			</thead>
+			<tbody>
             <tr v-for="app in apps.filtered" :key="app._id" :class="{ 'table-success' : app.deployStatus=='DONE', 'table-warning' : app.deployStatus=='RUNNING', 'table-danger' : app.deployStatus=='FAILED' }">
                 <td><router-link :to="{ path : './manageapp', query : { appId : app._id } }">{{  app.name }}</router-link></td>
                 <!-- <td>{{ app.filename }}</td> -->
@@ -45,14 +48,15 @@
                  <span class="icon fas fa-times-circle" v-else></span>                                                
                 </td>
                 <td class="d-none d-lg-table-cell">
-                    <router-link class="btn btn-default btn-sm mr-1" :to="{ path : './repository', query : { appId : app._id }}" v-t="'developer_updplugins.repo_btn'"></router-link> 
+                    <router-link class="btn btn-default btn-sm me-1" :to="{ path : './repository', query : { appId : app._id }}" v-t="'developer_updplugins.repo_btn'"></router-link> 
                 </td>
             </tr>
+			</tbody>
         </table>
         <p v-if="apps.filtered.length == 0" v-t="'developer_updplugins.empty'"></p>
         <button class="btn btn-default" type="button" @click="execute('deploy-ready')">{{ $t("developer_updplugins.deploy_ready_btn") }}</button>
-        <button class="ml-1 btn btn-default" type="button" @click="execute('deploy-all')">{{ $t("developer_updplugins.deploy_all_btn") }}</button>
-        <button class="ml-1 btn btn-default" type="button" @click="execute('audit-all')">{{ $t("developer_updplugins.audit_btn") }}</button>      
+        <button class="ms-1 btn btn-default" type="button" @click="execute('deploy-all')">{{ $t("developer_updplugins.deploy_all_btn") }}</button>
+        <button class="ms-1 btn btn-default" type="button" @click="execute('audit-all')">{{ $t("developer_updplugins.audit_btn") }}</button>      
     </panel>
     
 </template>

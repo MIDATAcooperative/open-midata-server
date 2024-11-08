@@ -56,7 +56,7 @@
             <form-group name="status" label="provider_organization.status" :path="errors.status">
                 <p class="form-control-plaintext" v-t="'enum.userstatus.'+org.status"></p>
             </form-group>
-            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup && usergroup._id">
+            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup && usergroup._id" class="midata-checkbox-row">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" v-validate v-model="usergroup.searchable" @change="edit();">
                     <div class="margin-left">
@@ -65,7 +65,7 @@
                 </div>                     
             </form-group> 
             <form-group name="parent" label="provider_organization.parent" :path="errors.parent">
-                <p class="form-control-plaintext"><span class="mr-1" v-if="parentOrg">{{ (parentOrg || {}).name }}</span><button type="button" @click="selectParent()" class="btn btn-sm btn-default" v-t="'provider_organization.select_btn'"></button></p>
+                <p class="form-control-plaintext"><span class="me-1" v-if="parentOrg">{{ (parentOrg || {}).name }}</span><button type="button" @click="selectParent()" class="btn btn-sm btn-default" v-t="'provider_organization.select_btn'"></button></p>
                 
             </form-group>
             <form-group name="identifier" label="provider_organization.identifiers" :path="errors.identifier">
@@ -80,15 +80,15 @@
             <form-group v-if="!org._id && (org.managerTypeExt=='OTHERMEMBER' || org.managerTypeExt=='EXTERNALUSER')" name="manager" label="provider_organization.manager" :path="errors.manager"> 
 		        <input type="text" class="form-control" id="manager" name="manager" v-validate v-model="org.manager" required>		    
             </form-group>
-            <form-group name="protection" label="provider_organization.protection" :path="errors.protection"> 
+            <form-group name="protection" label="provider_organization.protection" :path="errors.protection" class="midata-checkbox-row"> 
 		         <check-box v-model="usergroup.protection" name="protection" :disabled="org._id">
                     <span v-t="'provider_organization.protection2'"></span>
                 </check-box>
             </form-group>
             <form-group name="x" label="common.empty">
                 <button type="submit" v-submit :disabled="!isMasterUser() || action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
-                <button v-if="org._id" type="button" :disabled="!isMasterUser() || action!=null" class="btn btn-default ml-1" v-t="'common.delete_btn'" @click="deleteOrg()"></button>
-                <button v-if="org._id && usergroup.protection" type="button" :disabled="!isMasterUser() || action!=null || (usergroup.currentUserAccessUntil && usergroup.currentUserAccessUntil > now)" class="btn btn-primary ml-1" v-t="'provider_organization.request_btn'" @click="requestAccess()"></button> 
+                <button v-if="org._id" type="button" :disabled="!isMasterUser() || action!=null" class="btn btn-default ms-1" v-t="'common.delete_btn'" @click="deleteOrg()"></button>
+                <button v-if="org._id && usergroup.protection" type="button" :disabled="!isMasterUser() || action!=null || (usergroup.currentUserAccessUntil && usergroup.currentUserAccessUntil > now)" class="btn btn-primary ms-1" v-t="'provider_organization.request_btn'" @click="requestAccess()"></button> 
                 <success :finished="finished" action="update" msg="common.save_ok"></success>                
             </form-group>          
         </form>	
@@ -96,6 +96,9 @@
     <div v-if="orgId">
       <editgroups></editgroups>
       <editusergroup></editusergroup>
+      <panel :title="$t('admin_address.history')" :busy="isBusy">
+         <auditlog :patient="org._id"></auditlog>  
+       </panel>
     </div>      
     <modal id="parentOrganizationSearch" :full-width="true" @close="setupOrganizationSearch=null" :open="setupOrganizationSearch!=null" :title="$t('organizationsearch.title')">
 	   <organization-search :setup="parentOrganizationSearch" @add="setParent"></organization-search>
@@ -125,7 +128,7 @@
 import Panel from "components/Panel.vue"
 import server from "services/server.js"
 import session from "services/session.js"
-import users from "services/users.js"
+import Auditlog from "components/AuditLog.vue"
 import usergroups from "services/usergroups.js"
 import editusergroup from "views/provider/editusergroup.vue"
 import editgroups from "views/provider/editgroups.vue"
@@ -145,7 +148,7 @@ export default {
         setupOrganizationSearch : null
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, CheckBox, Success, editgroups, editusergroup, OrganizationSearch, Modal },
+    components: {  Panel, ErrorBox, FormGroup, CheckBox, Success, editgroups, editusergroup, OrganizationSearch, Modal, Auditlog },
 
     mixins : [ status, rl ],
     

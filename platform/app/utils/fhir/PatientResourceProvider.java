@@ -125,6 +125,7 @@ import utils.FHIRPatientHolder;
 import utils.InstanceConfig;
 import utils.QueryTagTools;
 import utils.RuntimeConstants;
+import utils.TestAccountTools;
 import utils.access.DBIterator;
 import utils.access.Feature_Pseudonymization;
 import utils.access.PatientRecordTool;
@@ -463,6 +464,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			p.setActive(false);
 		}
 		p.addIdentifier().setSystem("http://midata.coop/identifier/midata-id").setValue(member.midataID);
+		if (member.testUserCustomer != null) {
+			p.addExtension().setUrl("http://midata.coop/extensions/test-user-customer").setValue(new StringType(member.testUserCustomer));
+		}
+		
 		String gender = member.gender != null ? member.gender.toString() : null;
 		if (gender != null) p.setGender(AdministrativeGender.valueOf(gender));
 		if (member.email != null)
@@ -544,7 +549,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		return p;
 	}
 
-	public static void createPatientForStudyParticipation(AccessContext inf, Study study, StudyParticipation part, Member member) throws AppException {
+	public static String createPatientForStudyParticipation(AccessContext inf, Study study, StudyParticipation part, Member member) throws AppException {
 		AccessLog.logBegin("start patient for study participation");
 		AccessContext context = ContextManager.instance.createSharingContext(inf, part.owner).forConsentReshare(part);
 		//AccessLog.log("BEFORE="+inf.toString());
@@ -565,6 +570,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		Feature_Pseudonymization.addPseudonymization(context, part._id, pseudo, userName);
 		RecordManager.instance.share(context, member._id, part._id, Collections.singleton(record._id), false);
 		AccessLog.logEnd("end patient for study participation");
+		
+		return userName;
 	}
 
 	public void prepare(Record record, Patient thePatient) {
@@ -785,6 +792,9 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		user.initialApp = info().getUsedPlugin();
 	
 		AccountManagementTools.validateUserAccountFilledOut(user);
+		Extension testCustomerExt = thePatient.getExtensionByUrl("http://midata.coop/extensions/test-user-customer");
+		String testCustomer = testCustomerExt != null ? testCustomerExt.getValue().toString() : null;
+		TestAccountTools.prepareNewUser(tempContext, user, testCustomer);
 	
 		// Is there already a matching user account?
 		Member existing = ((RecordWithMeta) record).attached;

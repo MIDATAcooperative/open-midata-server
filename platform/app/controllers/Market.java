@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,7 @@ import models.enums.StudyAppLinkType;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
 import models.enums.SubUserRole;
+import models.enums.TestAccountsAcceptance;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -291,6 +293,9 @@ public class Market extends APIController {
 			app.codeChallenge = JsonValidation.getBoolean(json, "codeChallenge");
 			app.sendReports = JsonValidation.getBoolean(json, "sendReports");
 			
+			app.acceptTestAccounts = JsonValidation.getEnum(json, "acceptTestAccounts", TestAccountsAcceptance.class);
+			setAcceptTestAccountsFromApp(app, JsonExtraction.extractStringSet(json.get("acceptTestAccountsFromAppNames")));
+			app.testAccountsMax = JsonValidation.getInteger(json, "testAccountsMax", 0, 10000);
 
 			app.i18n = new HashMap<String, Plugin_i18n>();
 			
@@ -656,6 +661,17 @@ public class Market extends APIController {
 			}
 		}
 	}
+	
+	private static void setAcceptTestAccountsFromApp(Plugin plugin, Set<String> appNames) throws AppException {
+		if (appNames != null) {
+			plugin.acceptTestAccountsFromApp = new HashSet<MidataId>(appNames.size());
+			for (String appName : appNames) {
+				Plugin plg = Plugin.getByFilename(appName, Sets.create("_id"));
+				if (plg == null) throw new JsonValidationException("error.unknown.app", "acceptTestAccountsFromAppNames", "unknown", "Unknown app");
+				plugin.acceptTestAccountsFromApp.add(plg._id);
+			}
+		}
+	}
 
 	/**
 	 * create a new plugin
@@ -755,6 +771,8 @@ public class Market extends APIController {
 		plugin.pluginVersion = System.currentTimeMillis();
 		plugin.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
 		plugin.sendReports = JsonValidation.getBoolean(json, "sendReports");
+		plugin.acceptTestAccounts = TestAccountsAcceptance.ALL;
+		plugin.testAccountsMax = 0;
 		if (plugin.type.equals("analyzer") || plugin.type.equals("endpoint")) {
 			plugin.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
 		} else plugin.pseudonymize = false;
@@ -889,6 +907,9 @@ public class Market extends APIController {
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		app.codeChallenge = JsonValidation.getBoolean(json, "codeChallenge");
 		app.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
+		app.acceptTestAccounts = JsonValidation.getEnum(json, "acceptTestAccounts", TestAccountsAcceptance.class);
+		setAcceptTestAccountsFromApp(app, JsonExtraction.extractStringSet(json.get("acceptTestAccountsFromAppNames")));
+		app.testAccountsMax = JsonValidation.getInteger(json, "testAccountsMax", 0, 10000);
 		if (app.type.equals("analyzer") || app.type.equals("endpoint")) {
 			  app.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
 		} else app.pseudonymize = false;

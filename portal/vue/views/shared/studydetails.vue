@@ -21,7 +21,7 @@
 				
 		<div class="row" v-if="study && study.infos">
 			<div class="col-sm-4 infopanel">
-			    <div v-if="participation.ownerName" class="panel panel-primary">
+			    <div v-if="participation && participation.ownerName" class="panel panel-primary">
 					<div class="panel-heading" v-t="'studydetails.pseudonym'"></div>
 					<div class="panel-body">
                       <div class="lead">{{ participation.ownerName }}</div>						
@@ -315,8 +315,12 @@ export default {
             if ($data.code) data.code = $data.code;		
             me.doAction("request", server.post(jsRoutes.controllers.members.Studies.requestParticipation($data.studyid).url, data).
             then(function(data) { 	
+				let part = data.data;
+				if (part.ownerName && !me.needs("DEMOGRAPHIC")) {
+					actions.addOut(me.$t("studydetails.pseudonym")+": "+part.ownerName);
+				}
                 if (!actions.showAction($router, $route)) {
-                me.reload();
+                  me.reload();
                 }
             }));
 	    },

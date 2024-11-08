@@ -21,6 +21,7 @@
         <pagination v-model="usergroups" search="name"></pagination>
 
         <table class="table" v-if="usergroups.filtered.length > 0">
+		<thead>
         <tr>
           <Sorter sortby="name" v-model="usergroups" v-t="'provider_usergroups.name'"></Sorter>
           <Sorter sortby="type" v-model="usergroups" v-t="'provider_usergroups.type'"></Sorter>
@@ -28,6 +29,8 @@
           <Sorter sortby="status" v-model="usergroups" v-t="'provider_usergroups.status'"></Sorter>  
           <th></th>        
         </tr>
+		</thead>
+		<tbody>
         <tr v-for="item in usergroups.filtered" :key="item._id" >
           <td><router-link :to="{ path : './editusergroup', query :  { groupId : item._id }}">{{ item.name }}</router-link></td>
           <td>{{ $t('enum.usergrouptype.'+item.type) }}</td>
@@ -35,6 +38,7 @@
           <td>{{ $t('enum.userstatus.'+item.status) }}</td>          
           <td><button class="btn btn-danger btn-sm" v-if="item.status != 'DELETED' && (!item.type || item.type=='CARETEAM')" :disabled="action!=null" v-t="'common.delete_btn'" @click="deleteGroup(item)"></button></td>
         </tr>
+		</tbody>
       </table>
       <p v-if="usergroups.filtered.length == 0" v-t="'provider_usergroups.empty'"></p>
       

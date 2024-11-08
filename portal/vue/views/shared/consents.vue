@@ -39,7 +39,7 @@
         <pagination v-model="consents" search="name"></pagination>
 
 		<table class="table table-striped mt-1" v-if="consents.filtered && consents.filtered.length">
-
+           <thead>
 			<tr>
 				<Sorter sortby="name" v-model="consents" v-t="'consents.name'"></Sorter>
 				<Sorter class="d-none d-sm-table-cell" sortby="dateOfCreation" v-model="consents" v-t="'consents.date_of_creation'"></Sorter>
@@ -48,6 +48,8 @@
 				<th class="d-none d-lg-table-cell" v-t="'consents.number_of_people'"></th>
 				<th class="d-none d-lg-table-cell" v-t="'consents.number_of_records'"></th>
 			</tr>
+           </thead>
+		   <tbody>
 			<tr v-for="consent in consents.filtered" :key="consent._id" :class="{ 'table-warning' : consent.status == 'UNCONFIRMED' }">
 				<td><a @click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>
 				<td class="d-none d-sm-table-cell">{{ $filters.date(consent.dateOfCreation) }}</td> 
@@ -56,6 +58,7 @@
 				<td class="d-none d-lg-table-cell">{{ consent.authorized.length }}</td>
 				<td class="d-none d-lg-table-cell">{{ consent.records }}</td>
 			</tr>
+		   </tbody>
 		</table>  
 		<button class="btn btn-primary" @click="addConsent();" v-if="role!='research' && role!='provider'" v-t="'consents.add_new_btn'"></button>
 		

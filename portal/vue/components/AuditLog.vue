@@ -32,8 +32,8 @@
 			    <div>
                     <span v-if="entry.agent[0].name!='?'">{{ entry.agent[0].name }}</span>
                     <span v-else v-t="'auditlog.anonymous'"></span>
-                    <span v-if="entry.agent[0].role && entry.agent[0].role[0].coding[0].code == '110150'" class="badge badge-info ml-1">{{ $t('enum.plugintype.external') }}</span> 
-                    <span v-else-if="entry.agent[0].role && entry.agent[0].role[0].coding[0].code != 'MEMBER' && entry.agent[0].role[0].coding[0].code != '110150'" class="badge badge-info ml-1">{{ $t('enum.userrole.'+entry.agent[0].role[0].coding[0].code) }}</span>
+                    <span v-if="entry.agent[0].role && entry.agent[0].role[0].coding[0].code == '110150'" class="badge text-bg-info ms-1">{{ $t('enum.plugintype.external') }}</span> 
+                    <span v-else-if="entry.agent[0].role && entry.agent[0].role[0].coding[0].code != 'MEMBER' && entry.agent[0].role[0].coding[0].code != '110150'" class="badge text-bg-info ms-1">{{ $t('enum.userrole.'+entry.agent[0].role[0].coding[0].code) }}</span>
                 </div>
 			    <div class="text-primary">{{ entry.agent[0].altId }}</div>
 			    <div v-if="entry.agent.length>1 && entry.agent[1].name"><i><span v-t="'auditlog.via'"></span> {{ entry.agent[1].name }}</i></div>

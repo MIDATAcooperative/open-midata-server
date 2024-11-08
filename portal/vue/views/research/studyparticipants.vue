@@ -76,7 +76,13 @@
                     <option v-for="group in study.groups" :key="group.name" :value="group.name">{{ group.name }}</option>
                 </select>
 	        </form-group>
-	        <form-group name="autoJoin" label="studyparticipants.autojoin" :path="errors.autoJoin">
+			<form-group name="autoJoinTestGroup" label="studyparticipants.test_group" :path="errors.autoJoinTestGroup">
+			    <select v-validate v-model="acceptall.autoJoinTestGroup" class="form-control">
+			        <option :value="null">&nbsp;</option>
+			        <option v-for="group in study.groups" :key="group.name" :value="group.name">{{ group.name }}</option>
+			    </select>
+		    </form-group>
+	        <form-group name="autoJoin" label="studyparticipants.autojoin" :path="errors.autoJoin" class="midata-checkbox-row">
                 <check-box v-model="acceptall.autoJoin" name="autoJoin">
 	                <span v-t="'studyparticipants.autojoin2'"></span>
                 </check-box>	    
@@ -106,7 +112,7 @@ export default {
         study : null,
         results : null,
         total : 0,
-        acceptall : { autoJoin:false, autoJoinGroup:null },
+        acceptall : { autoJoin:false, autoJoinGroup:null, autoJoinTestGroup:null },
         searches : [ 
             { 
                 name : "studyparticipants.all",
@@ -142,7 +148,7 @@ export default {
             .then(function(data) { 				
                 $data.study = data.data;
                 if ($data.study.autoJoinGroup) {
-                    $data.acceptall = { autoJoinGroup : $data.study.autoJoinGroup, autoJoin : true };
+                    $data.acceptall = { autoJoinGroup : $data.study.autoJoinGroup, autoJoinTestGroup : $data.study.autoJoinTestGroup, autoJoin : true };
                 }
             }));
             

@@ -42,7 +42,7 @@
 		    <textarea rows="10" id="text" class="form-control" v-validate v-model="newTerms.text"></textarea>
 		  </form-group>		  		  
 
-		  <form-group name="replace" label="admin_manageterms.replace" :path="errors.replace">
+		  <form-group name="replace" label="admin_manageterms.replace" :path="errors.replace" class="midata-checkbox-row">
 			   <check-box name="replace" v-model="newTerms.replace"></check-box>			  
 		  </form-group>
 		  		

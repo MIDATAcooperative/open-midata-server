@@ -87,7 +87,7 @@
                     </div>  
                 </div>  
                 <div v-if="mode=='admin'">
-                    <form-group :name="subrole" label="common.empty">
+                    <form-group :name="subrole" label="common.empty" class="midata-checkbox-row">
                         <div v-for="subrole in subroles" :key="subrole">
                             
                                 <div class="form-check">

@@ -20,7 +20,6 @@
     <div  class="midata-overlay borderless">
         <panel :title="getTitle()" :busy="isBusy">
         <error-box :error="error"></error-box>
-		
 		<div v-if="app && (app.type=='mobile' || app.type=='service')" class="alert alert-warning">
 		    <strong v-t="'manageapp.important'"></strong>		   
 		    <p v-if="app.targetUserRole=='RESEARCH'" v-t="'manageapp.researchwarning'"></p>		    
@@ -41,9 +40,9 @@
 		      <span v-if="mode=='app'"> / </span>
 		      <span class="text-danger" v-if="block.app && block.app != 'all'"><span v-t="'queryeditor.short_app_other'"></span> {{ block.appName }}</span>
 		      <span class="text-success" v-if="!block.app || block.app == 'all'" v-t="'queryeditor.short_app_all'"></span>
-		      <span v-if="block.dynamic" class="ml-1 badge badge-danger">{{ $t('queryeditor.short_dynamic_'+block.dynamic) }}</span>
-		      <span v-if="block.addTag" v-for="atag of block.addTag" :key="atag" class="ml-1 badge badge-danger">{{ getTagName(atag) }}</span>
-		      <span v-if="block.allowTag" v-for="atag of block.allowTag" :key="atag" class="ml-1 badge badge-warning">{{ getTagName(atag) }}</span>
+		      <span v-if="block.dynamic" class="ms-1 badge text-bg-danger">{{ $t('queryeditor.short_dynamic_'+block.dynamic) }}</span>
+		      <span v-if="block.addTag" v-for="atag of block.addTag" :key="atag" class="ms-1 badge text-bg-danger">{{ getTagName(atag) }}</span>
+		      <span v-if="block.allowTag" v-for="atag of block.allowTag" :key="atag" class="ms-1 badge text-bg-warning">{{ getTagName(atag) }}</span>
 		    </div>		   
 		    
 		    <div v-if="block.timeRestrictionMode">
@@ -52,6 +51,9 @@
 		    <div v-if="block.dataPeriodRestrictionMode">
 		      <span>{{ $t('queryeditor.'+block.dataPeriodRestrictionMode) }}</span>: {{ $filters.date(block.dataPeriodRestrictionStart) }} - {{ $filters.date(block.dataPeriodRestrictionEnd) }} 
 		    </div>
+            <div v-if="block.creatorOrg">
+              <span>{{ $t('queryeditor.creator_org') }}</span>: {{ block.creatorOrg }}
+            </div>
 		    <div v-if="block.customFilter">
 		      <span>Extra Filter: </span><span>{{ block.customFilterPath }}</span>: {{ block.customFilterValue }}
 		    </div>
@@ -176,7 +178,7 @@
 		    <input type="text" class="form-control" v-validate v-model="currentBlock.category">	    
 		  </form-group>
 		  <div v-if="mode=='study'">
-		  <form-group name="restrictions" label="queryeditor.restrictions" v-if="(timeModes && timeModes.length) || (dataPeriodModes && dataPeriodModes.length) || currentBlock.flags.custom" :path="errors.restrictions">
+		  <form-group name="restrictions" label="queryeditor.restrictions" v-if="(timeModes && timeModes.length) || (dataPeriodModes && dataPeriodModes.length) || currentBlock.flags.custom" :path="errors.restrictions" class="midata-checkbox-row">
 		    <div class="form-check" v-if="timeModes && timeModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.timeRestriction"><span v-t="'queryeditor.time_restriction'"></span></label></div>
 		    <div class="form-check" v-if="dataPeriodModes && dataPeriodModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.dataPeriodRestriction"><span v-t="'queryeditor.data_period_restriction'"></span></label></div>
 		    <div class="form-check" v-if="currentBlock.flags.custom"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.customFilter"><span v-t="'queryeditor.custom_filter'"></span></label></div>
@@ -258,10 +260,13 @@
 		<div class="extraspace"></div>
 		<p v-t="'queryeditor.make_selection'" v-if="newentry.choices"></p>
 		<table class="table table-striped" v-if="newentry.choices">
+		  <thead>
 		  <tr>
 		    <th v-t="'queryeditor.resultgroup'"></th>
 		    <th v-t="'queryeditor.resultdetail'"></th>
 		  </tr>
+		  </thead>
+		  <tbody>
 		  <tr v-for="choice in newentry.choices" :key="JSON.stringify(choice)">
 		    <td><a href="javascript:" @click="addContent(choice)">{{ choice.display }}</a>
 		      <span v-if="choice.group" class="text-muted">(Group)</span>
@@ -271,6 +276,7 @@
 		      <div v-for="content in orderDisplay(choice.contents)" :key="JSON.stringify(content)"><a href="javascript:" @click="addContent(content);">{{ content.display }}</a><span v-if="content.content" class="text-muted">(Content)</span></div>
 		    </td> 
 		  </tr>
+		  </tbody>
 		</table>
 		<p v-if="newentry.choices && newentry.choices.length == 0" v-t="'queryeditor.search_empty'"></p>
 		
@@ -386,7 +392,7 @@ export default {
 				}));				
 			} else if ($route.meta.mode == "app") {
 				$data.mode = "app";
-				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "sendReports"])
+				me.doBusy(apps.getApps({ "_id" : $route.query.appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory","pseudonymize", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "sendReports", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax"])
 				.then(function(data) { 
 					$data.app = data.data[0];
 					$data.target.appname = $data.app.filename;

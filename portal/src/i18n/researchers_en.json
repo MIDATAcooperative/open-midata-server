@@ -223,6 +223,7 @@
     "name" : "Name",
     "partName" : "Pseudonymized",
     "group" : "Group",
+    "test_group" : "Group for Test-Users",
     "status" : "Status",
     "total" : "{{count}} consents matching your criteria found.",
     "only_first_shown" : "Only the first 1000 matching consents are shown.",

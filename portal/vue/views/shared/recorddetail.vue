@@ -63,7 +63,11 @@
 			<div class="row mt-1">
 				<div class="col-md-4 col-lg-2" v-t="'recorddetail.content'"></div>
 				<div class="col-md-8 col-lg-10 main-col">{{record.content}}</div>
-			</div>		
+			</div>	
+            <div class="row mt-1">
+                <div class="col-md-4 col-lg-2" v-t="'recorddetail.tags'"></div>
+                <div class="col-md-8 col-lg-10 main-col"><div v-for="tag in record.tags" :key="tag" class="badge text-bg-info me-1">{{tag}}</div></div>
+            </div>	
 			<button href="javascript:" @click="download()" class="btn btn-primary" v-if="isFile()" v-t="'recorddetail.download_btn'">Download</button>
         </panel>
 		<panel :title="$t('recorddetail.content_visualization')" :busy="isBusy">

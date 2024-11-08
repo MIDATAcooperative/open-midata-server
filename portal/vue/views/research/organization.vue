@@ -34,16 +34,20 @@
     <panel :title="$t('researcher_organization.researchers')" :busy="isBusy">	 
         <pagination v-model="persons" search="search"></pagination>
 	    <table class="table table-striped" v-if="persons.filtered.length">
+		  <thead>
 	        <tr>
 	            <Sorter v-t="'common.user.firstname'" sortby="firstname" v-model="persons"></Sorter>
 	            <Sorter v-t="'common.user.lastname'" sortby="lastname" v-model="persons"></Sorter>
 	            <Sorter v-t="'common.user.email'" sortby="email" v-model="persons"></Sorter>
 	        </tr>
+		  </thead>
+		  <tbody>
 	        <tr v-for="person in persons.filtered" :key="person._id">
 	            <td>{{ person.firstname }}</td>
 	            <td>{{ person.lastname }}</td>
 	            <td>{{ person.email }}</td>
 	        </tr>
+		  </tbody>
 	    </table>
 	  
 	    <button class="btn btn-default" :disabled="!isMasterUser()" @click="add()" v-t="'researcher_navbar.addresearcher'"></button>	  

@@ -37,14 +37,15 @@
             <div v-if="primaryCheck">
                 <p><span v-t="'studyoverview.nextstep'"></span>: <a href="javascript:" @click="go(primaryCheck.page);" class="alert-link" v-t="primaryCheck.title"></a></p>
                 <p><i>{{ $t(primaryCheck.title + '_help') }}</i></p>
-                <a v-if="primaryCheck.page != '.'" href="javascript:" @click="go(primaryCheck.page);" class="btn btn-default mr-1" v-t="'studyoverview.visitnow_btn'" ></a>               
-                <button v-if="primaryCheck.flag && !primaryCheck.done" @click="addProcessTag(primaryCheck.flag)" class="btn btn-default mr-1" v-t="'studyoverview.markdone_btn'"></button>
-                <button @click="primaryCheck.action()" class="btn btn-default mr-1" v-if="primaryCheck.action && primaryCheck.check()" v-t="'studyoverview.donow_btn'"></button>
+                <a v-if="primaryCheck.page != '.'" href="javascript:" @click="go(primaryCheck.page);" class="btn btn-default me-1" v-t="'studyoverview.visitnow_btn'" ></a>               
+                <button v-if="primaryCheck.flag && !primaryCheck.done" @click="addProcessTag(primaryCheck.flag)" class="btn btn-default me-1" v-t="'studyoverview.markdone_btn'"></button>
+                <button @click="primaryCheck.action()" class="btn btn-default me-1" v-if="primaryCheck.action && primaryCheck.check()" v-t="'studyoverview.donow_btn'"></button>
             </div>
     
         </div>
 
         <table class="table">
+			<tbody>
             <tr>
                 <td v-t="'studyoverview.name'"></td>
                 <td>{{ study.name }}
@@ -85,22 +86,25 @@
                 <td v-t="'studyoverview.execution_status'"></td>
                 <td>{{ $t('enum.studyexecutionstatus.'+study.executionStatus) }}</td>
             </tr>
+			</tbody>
         </table>
     </tab-panel>
     
     <panel :title="$t('studyoverview.checklist')" :busy="isBusy">
         <table class="table table-hover">
+			<tbody>
             <tr class="clickable" v-for="item in checklist" :key="item.title" :class="{ 'table-success' : item.done, 'table-danger' : item.required && !item.done, 'table-warning' : !item.required && !item.done && !item.heading, 'table-heading' : item.heading }">
                 <td @click="go(item.page)">
                     <span uib-tooltip="item.title+'_help'" v-t="item.title"></span>
                 </td><td>
-                    <div class="float-right">           
+                    <div class="float-end">           
                         <span v-if="item.done" class="fas fa-check"></span>
                         <span v-if="!item.done && item.required" class="fas fa-exclamation-sign"></span>
                         <span v-if="!item.done && !item.required && !item.heading" v-t="'study_checklist.optional'"></span>
                     </div>  
                 </td>          
             </tr>
+			</tbody>
         </table>
     </panel>
 

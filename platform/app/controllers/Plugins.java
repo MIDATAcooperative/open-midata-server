@@ -69,6 +69,7 @@ import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
+import utils.TestAccountTools;
 import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
@@ -195,6 +196,19 @@ public class Plugins extends APIController {
 				}
 			}
 		}
+		
+		if (fields.contains("acceptTestAccountsFromAppNames")) {
+			for (Plugin plugin : visualizations) {
+				if (plugin.acceptTestAccountsFromApp != null) {
+					plugin.acceptTestAccountsFromAppNames = new ArrayList<String>(plugin.acceptTestAccountsFromApp.size());
+					for (MidataId plugId : plugin.acceptTestAccountsFromApp) {
+						Plugin plg = Plugin.getById(plugId);
+						if (plg!=null) plugin.acceptTestAccountsFromAppNames.add(plg.filename);
+						else plugin.acceptTestAccountsFromAppNames.add("unknown");
+					}
+				}
+			}
+		}
 		return ok(JsonOutput.toJson(visualizations, "Plugin", fields)).as("application/json");
 	}
 
@@ -292,7 +306,7 @@ public class Plugins extends APIController {
 		if (context.equals("me") && visualization.defaultSpaceContext != null && visualization.defaultSpaceContext.length() > 0)
 			context = visualization.defaultSpaceContext;
 
-		User user = User.getById(userId, Sets.create("visualizations", "apps", "role", "developer", "developerTeam"));
+		User user = User.getById(userId, Sets.create("visualizations", "apps", "role", "developer", "developerTeam", "testUserApp", "testUserCustomer"));
 		if (user == null) throw new BadRequestException("error.unknown.user", "Unknown user");
 
 		boolean testing = visualization.isDeveloper(user._id) || (user.developer != null && visualization.isDeveloper(user.developer));
@@ -301,6 +315,10 @@ public class Plugins extends APIController {
 			throw new BadRequestException("error.invalid.plugin", "Visualization is for a different role. Your role:" + user.role);
 		}
 		
+		if (!TestAccountTools.allowInstallation(context1, userId, visualizationId)) 
+			throw new BadRequestException("error.blocked.testuser", "Application does not allow test users.");
+		
+				
 		MidataId licence = null;
 		if (!testing && LicenceChecker.licenceRequired(visualization)) {
 			licence = LicenceChecker.hasValidLicence(user._id, visualization, null);

@@ -24,14 +24,14 @@
 
     <ul class="list-group" v-if="recs && recs.filtered && recs.filtered.length">
 		<li class="list-group-item rotate truncate" v-for="record in recs.filtered" :key="record._id">
-		    <div class="float-right" v-if="setup.allowRemove">
+		    <div class="float-end" v-if="setup.allowRemove">
 		        <button type="button" class="btn btn-sm btn-danger" @click="removeRecord(record)" :disabled="action!=null">
 				    <span class="fas fa-times"></span>
 			    </button>
 			</div>	
 		    <input type="checkbox" v-model="record.marked" v-if="setup.allowShare"/>
-			<span class="badge badge-info">{{ $filters.date(record.created) }}</span>&nbsp;
-			<span v-if="record.owner != userId" class="badge badge-info">{{ record.ownerName }}</span>&nbsp;
+			<span class="badge text-bg-info">{{ $filters.date(record.created) }}</span>&nbsp;
+			<span v-if="record.owner != userId" class="badge text-bg-info">{{ record.ownerName }}</span>&nbsp;
 			<span v-if="record.creator != userId && record.creatorName" class="label label-info">by {{ record.creatorName }}</span>&nbsp;
 			<a href="javascript:;" @click="showDetails(record)">{{record.name}}</a>												
 		</li>

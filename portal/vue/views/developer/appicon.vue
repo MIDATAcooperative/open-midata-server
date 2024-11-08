@@ -37,7 +37,7 @@
 		        <p class="help-text" v-t="'appicon.file_help'"></p>
 		    </form-group>
 		    <form-group label="common.empty">
-		        <router-link :to="{ path : './manageapp', query : {appId:appId} }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>  
+		        <router-link :to="{ path : './manageapp', query : {appId:appId} }" class="btn btn-default me-1" v-t="'common.back_btn'"></router-link>  
 		        <button class="btn btn-primary" type="submit" v-submit v-t="'common.submit_btn'"></button>
 		    </form-group>
 		</form>

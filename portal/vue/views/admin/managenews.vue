@@ -79,7 +79,7 @@
 		
 
 		    <form-group label="common.empty">
-		        <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary mr-1" v-t="'common.submit_btn'"></button>		    
+		        <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary me-1" v-t="'common.submit_btn'"></button>		    
 		        <button type="button" class="btn btn-danger" v-if="allowDelete" @click="doDelete()" :disabled="action!=null" v-t="'common.delete_btn'"></button>
 		    </form-group>
 

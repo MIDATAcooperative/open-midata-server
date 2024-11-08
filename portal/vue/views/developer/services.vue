@@ -23,12 +23,15 @@
 		<div>
 	        <pagination v-model="services" search="name"></pagination>
             <table class="table table-striped" v-if="services.filtered.length">
+				<thead>
                 <tr>
                     <th v-t="'admin_services.name'"></th>
                     <!-- <th v-t="'admin_services.endpoint'"></th> -->
                     <th v-t="'admin_services.status'"></th>
                     <th>&nbsp;</th>
                 </tr>
+				</thead>
+				<tbody>
                 <tr v-for="service in services.filtered" :key="service._id">
                     <td>{{ service.name }}</td>
                     <!-- <td>{{ service.endpoint }}</td> -->                    
@@ -39,6 +42,7 @@
                     </td>
                     
                 </tr>
+				</tbody>
             </table>
                             
             <p v-if="!services.filtered.length" v-t="'admin_services.empty'"></p>
@@ -88,7 +92,7 @@ export default {
 
         loadApp(appId) {
             const { $data } = this, me = this;
-            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "predefinedMessages", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys"])
+            me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "predefinedMessages", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax"])
             .then(function(data) { 
                 let app = data.data[0];                
                 $data.app = app;                

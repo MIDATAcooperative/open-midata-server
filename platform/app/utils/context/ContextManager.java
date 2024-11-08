@@ -198,7 +198,7 @@ public class ContextManager {
 		//if (!context1.canCreateActiveConsents() && context1.getOwner().equals(aps)) return context1;
 		
 		APSCache cache = context1.getCache();
-		AccessContext context = new AccountAccessContext(cache, null);
+		AccessContext context = new AccountAccessContext(cache, new SharingAccessContext(context1));
 		if (context1.getAccessor().equals(aps)) {
 			AccessLog.log("same accessor");
 			return context;		

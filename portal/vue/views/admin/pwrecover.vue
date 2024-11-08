@@ -30,7 +30,7 @@
             <pagination v-model="members" search="name"></pagination>
                         
             <table class="table table-striped" v-if="members.filtered.length">
-
+              <thead>
                 <tr>
                     <Sorter sortby="name" v-model="members" v-t="'admin_pwrecover.name'"></Sorter>
                     <Sorter sortby="started" v-model="members" v-t="'admin_pwrecover.started'"></Sorter>
@@ -38,6 +38,8 @@
                     <th v-t="'admin_pwrecover.decrypted'"></th>						
                     <th>&nbsp;</th>
                 </tr>
+              </thead>
+			  <tbody>
                             
                 <tr v-for="member in members.filtered" :key="member._id">
                     <td><router-link :to="{ path : './address', query : { userId : member._id } }">{{ member.name || 'none' }}</router-link></td>
@@ -54,6 +56,7 @@
                         {{ member.success }}{{ member.fail }}
                     </td>					
                 </tr>
+			  </tbody>
             </table>
 
             <p v-if="members.filtered.length === 0" v-t="'admin_pwrecover.empty'"></p>

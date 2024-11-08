@@ -73,18 +73,22 @@
 						<b>{{ inp.letter }}</b> : <span v-if="inp.mode">{{ $t(inp.mode) }} <i class="fas fa-arrow-right"></i></span> {{ inp.system }} ({{ inp.short}}) {{ inp.target }}
 					</div>
 					<table class="table table-sm mt-2">
+						<thead>
 						<tr>
 							<th v-t="'oauth2.requests_access_short'"></th>
 							<th class="d-none d-sm-table-cell" v-for="sh in short" :key="sh">{{ sh }}</th>
 							<!-- <td></td> -->
 						</tr>
+						</thead>
+						<tbody>
 						<tr v-for="line in summary" :key="line.label">
 							<td>{{ line.label }}
-								<div class="d-inline-block d-sm-none float-right text-muted">{{ line.letters }}</div>
+								<div class="d-inline-block d-sm-none float-end text-muted">{{ line.letters }}</div>
 							</td>
 							<td class="d-none d-sm-table-cell" v-for="(sh,idx) in short" :key="idx"><i class="fas fa-check" v-if="line.checks[idx]"></i></td>
 							<!-- <td>{{ line.summary }}</td> -->
 						</tr>
+						</tbody>
 					</table>
 					<p v-t="'oauth2.reshares_data'" v-if="app.resharesData"></p>
 					<p v-t="'oauth2.allows_user_search'" v-if="app.allowsUserSearch"></p>                    				
@@ -586,7 +590,7 @@ export default {
 </script>
 <style scoped>
 .summary { 
-	background-color: #c0c0c0;
+	border-top: 1px solid #c0c0c0;
 	margin-left: -15px;
 	margin-right: -15px;
 	padding-top: 30px;

@@ -32,7 +32,7 @@
 
             <error-box :error="error"></error-box>
 		  		 
-		  	<div class="float-right col-sm-4" v-if="displayAps.owner && compare!=null">
+		  	<div class="float-end col-sm-4" v-if="displayAps.owner && compare!=null">
 			    <label for="selectedAps" v-t="'records.shared_with'"></label>
 			    <select class="form-control" id="selectedAps" v-model="selectedApsId" @change="setSelectedAps()">
                     <optgroup v-for="(list,label) in compareGrouped" :label="$t('enum.consenttype.'+label)" :key="label">
@@ -40,7 +40,7 @@
                     </optgroup>
                 </select>
 	        </div>	
-	        <div class="float-right col-sm-4" v-if="compare==null && selectedAps!=null && selectedType=='spaces'">
+	        <div class="float-end col-sm-4" v-if="compare==null && selectedAps!=null && selectedType=='spaces'">
 			    <label for="selectedAps" v-t="'records.records_used_for_app'"></label>	
 			    <router-link class="btn btn-default" :to="{ path : './spaces', query : { spaceId : selectedAps._id }}" v-t="'records.back_to_plugin'"></router-link>
 	        </div>	  
@@ -90,11 +90,11 @@
 
                     <ul class="list-group nospaceafter" v-if="selectedData.allRecords.filtered.length > 0">
 				        <li class="list-group-item" v-for="record in selectedData.allRecords.filtered" :key="record._id" :class="{ 'list-group-item-success' : ( isShared(record)) }">
-                            <span class="badge badge-info">{{ $filters.date(record.created) }}</span>&nbsp;
-                            <span v-if="record.owner != userId" class="badge badge-info">{{ record.ownerName }}</span>&nbsp;
+                            <span class="badge text-bg-info">{{ $filters.date(record.created) }}</span>&nbsp;
+                            <span v-if="record.owner != userId" class="badge text-bg-info">{{ record.ownerName }}</span>&nbsp;
                             <a href="javascript:;" @click="showDetails(record)">{{record.name}}</a>
-                            <button v-show="(allowDelete && isOwnRecord(record)) || (allowDeletePublic && isPublicRecord(record))" @dblclick="deleteRecord(record, selectedData)" class="btn btn-danger btn-sm ml-1" v-t="'records.delete'"></button>
-                            <div class="float-right" v-if="selectedAps!=null">					   
+                            <button v-show="(allowDelete && isOwnRecord(record)) || (allowDeletePublic && isPublicRecord(record))" @dblclick="deleteRecord(record, selectedData)" class="btn btn-danger btn-sm ms-1" v-t="'records.delete'"></button>
+                            <div class="float-end" v-if="selectedAps!=null">					   
                                 <button class="btn btn-sm btn-primary" :disabled="action!=null" @click="unshare(record, selectedData);" v-show="isShared(record)">
                                     <span class="fas fa-picture"></span><span v-t="'records.unshare'"></span>
                                 </button>

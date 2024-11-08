@@ -40,10 +40,12 @@
 							
 					<div v-if="!hideRegistration">				
 						<p v-t="'oauth2.no_account'"></p>
-							
-						<button class="btn btn-primary btn-block" type="button" @click="showRegister(true);">
-						<span v-t="'oauth2.sign_up_btn'"></span>					  
-						</button>					
+						
+						<div class="d-grid gap-2 mt-3 mb-2">	
+						  <button class="btn btn-primary btn-block" type="button" @click="showRegister(true);">
+						    <span v-t="'oauth2.sign_up_btn'"></span>					  
+						  </button>					
+						</div>
 						<hr>
 						<div style="margin-top:20px"></div>
 						<div v-t="'oauth2.have_account'"></div>
@@ -82,9 +84,11 @@
 						<span v-t="'error.offline'"></span>
 						</div>
 
-						<button class="btn btn-block btn-primary" v-submit type="submit" :disabled="action=='login' || doneLock">
+						<div class="d-grid gap-2 mt-3 mb-2">
+						  <button class="btn btn-primary" v-submit type="submit" :disabled="action=='login' || doneLock">
 							<span v-t="'oauth2.sign_in_btn'">login</span>
-						</button>
+						  </button>
+						</div>
 
 					</form>
 					<div class="extraspace"></div>

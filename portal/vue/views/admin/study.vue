@@ -20,6 +20,7 @@
         <error-box :error="error"></error-box>
         
 	<table class="table">
+	  <tbody>
 	  <tr>
 	    <td v-t="'admin_study.name'"></td>
 	    <td>{{ study.name }}</td>
@@ -80,6 +81,7 @@
 	    <td v-t="'admin_study.rejoinPolicy'"></td>
 	    <td>{{ $t('enum.rejoinpolicy.' + (study.rejoinPolicy || 'NO_REJOIN')) }}</td>
 	  </tr>
+	  </tbody>
     </table>	
     </panel> 
 		  
@@ -133,20 +135,25 @@
 
     <panel :title="$t('admin_study.groups')" :busy="isBusy">
 		<table class="table table-striped">
+			<thead>
 		      <tr>
 		        <th v-t="'admin_study.group_name'"></th>
 		        <th v-t="'admin_study.group_description'"></th>		        
 		      </tr>
+			</thead>
+			<tbody>
 		      <tr v-for="(group,idx) in study.groups" :key="idx">
 		        <td>{{ group.name }}</td>
 		        <td>{{ group.description }}</td>		        
 		      </tr>
+			</tbody>
          </table>
     </panel>
 	
     <panel :title="$t('admin_study.team')" :busy="isBusy">
         <pagination v-model="members"></pagination>
 		<table class="table table-striped">
+			<thead>
 			    <tr>
 			      <Sorter v-model="members" sortby="user.firstname" v-t="'common.user.firstname'"></Sorter>
 			      <Sorter v-model="members" sortby="user.lastname" v-t="'common.user.lastname'"></Sorter>
@@ -155,6 +162,8 @@
 			      <th></th>
 			     
 			    </tr>
+			</thead>
+			<tbody>
 				<tr v-for="member in members.filtered" :key="member.user._id">
 					<td>{{ member.user.firstname }}</td>
 					<td>{{ member.user.lastname }}</td>
@@ -163,7 +172,8 @@
 					<td>
 					  {{ matrix(member.role) }}
 					</td>					
-				</tr>				
+				</tr>
+			</tbody>				
 		</table>
     </panel>
 	
@@ -171,12 +181,15 @@
 	
 	  <p v-t="'studyactions.empty'" v-if="!links.length"></p>
 	    <table class="table table-striped table-hover" v-if="links.length">
+			<thead>
 	            <tr>
 	              <th v-t="'studyactions.app'"></th>
 	              <th v-t="'studyactions.type'"></th>
 	              <th v-t="'studyactions.validation'"></th>
 	              <th></th>
 	            </tr>
+			</thead>
+			<tbody>
 	            <tr v-for="(link,idx) in links" :key="idx">
 	              <td @click="select(link);">{{ link.app.filename }}</td>
 	                <td>
@@ -214,6 +227,7 @@
 	                <button type="button" class="btn btn-sm btn-danger" @click="remove(link);" v-t="'common.delete_btn'"></button>
 	              </td>
 	            </tr>
+			</tbody>
 	          </table>
 	</panel>
     
@@ -234,11 +248,11 @@
       <audit-log :entity="study._id"></audit-log>
     </panel>
           
-    <router-link class="btn btn-default mr-1" :to="{ path : './astudies' }" v-t="'common.back_btn'"></router-link>
-    <button v-if="study.validationStatus == 'VALIDATION'" class="btn btn-primary mr-1" @click="finishValidation()" v-t="'admin_study.end_validation_btn'"></button>    
-    <button v-if="study.validationStatus != 'DRAFT' && study.validationStatus != 'PATCH'" class="btn btn-default mr-1" @click="backToDraft()" v-t="'admin_study.back_to_draft_btn'"></button>
-    <button v-if="study.validationStatus != 'DRAFT'" class="btn btn-default mr-1" @click="exportStudy()" v-t="'admin_study.export_btn'"></button>
-    <button v-if="readyForDelete()" class="btn btn-danger mr-1" @click="doDelete()" v-t="'admin_study.delete_study_btn'"></button>
+    <router-link class="btn btn-default me-1" :to="{ path : './astudies' }" v-t="'common.back_btn'"></router-link>
+    <button v-if="study.validationStatus == 'VALIDATION'" class="btn btn-primary me-1" @click="finishValidation()" v-t="'admin_study.end_validation_btn'"></button>    
+    <button v-if="study.validationStatus != 'DRAFT' && study.validationStatus != 'PATCH'" class="btn btn-default me-1" @click="backToDraft()" v-t="'admin_study.back_to_draft_btn'"></button>
+    <button v-if="study.validationStatus != 'DRAFT'" class="btn btn-default me-1" @click="exportStudy()" v-t="'admin_study.export_btn'"></button>
+    <button v-if="readyForDelete()" class="btn btn-danger me-1" @click="doDelete()" v-t="'admin_study.delete_study_btn'"></button>
        
 </template>
 <script>

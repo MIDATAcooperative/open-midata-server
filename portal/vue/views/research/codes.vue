@@ -35,7 +35,7 @@
 	                </tr>
 	            </thead>
 	            <tbody>
-	                <tr v-for="code in codes.filtered" :key="code.code" @click="setLink(code.code)">
+	                <tr v-for="code in codes.filtered" :key="code.code" @click="setLink(code)">
 	                    <td>{{ code.code }}</td>	  
 	                    <td>{{ code.group }}</td>
 	                    <!-- <td>{{ code.recruiterName }}</td>  -->
@@ -80,7 +80,7 @@
 	        </form-group>
   	          	          	 
   	        <form-group name="reuseable" label="codes.reuseable" :path="errors.reuseable">
-  	            <label class="radio-inline mr-2">
+  	            <label class="radio-inline me-2">
   	                <input type="radio" id="reuseable" name="reuseable" value="true" v-validate v-model="newcodes.reuseable">
   	                <span v-t="'codes.yes'"></span>
   	            </label>
@@ -90,7 +90,7 @@
   	            </label>
             </form-group>  	
          	<form-group name="manually" label="codes.type_of_creation" :path="errors.manually">
-  	       		<label class="radio-inline mr-2">
+  	       		<label class="radio-inline me-2">
   	         		<input type="radio" id="manually" name="manually" value="true" @change="updateCodeCount()" v-validate v-model="newcodes.manually">
   	         		<span v-t="'codes.manually'"></span>
   	       		</label>
@@ -163,7 +163,12 @@ export default {
 		},
         
         setLink(code) {
-          this.$data.studyLink = ENV.apiurl+"/#/public/service?project="+this.$data.study.code+"|"+code;
+		  const { $data } = this, me = this;
+          this.$data.studyLink = ENV.apiurl+"/#/public/service?project="+this.$data.study.code+"|"+code.code;
+		  if (code.status == "UNUSED") {
+		    me.doAction("share", server.post(jsRoutes.controllers.research.Studies.shareCode($data.studyid, code.code).url))
+			.then(() => { code.status = "SHARED"; });
+		  }
         },
 	
 		generate() {

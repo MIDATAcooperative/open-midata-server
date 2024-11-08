@@ -69,6 +69,7 @@ import utils.context.AccessContext;
 import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 import utils.fhir.SubscriptionResourceProvider;
 import utils.stats.ActionRecorder;
 import utils.stats.Stats;
@@ -121,11 +122,12 @@ public class SubscriptionProcessor extends AbstractActor {
 					
 					//System.out.println("type="+channel.getType().toString());
 					if (channel.getType().equals(SubscriptionChannelType.RESTHOOK)) {
+						if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), 1), getSelf());
 						AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.RESTHOOK).withActor(null, subscription.owner).withModifiedActor(null, triggered.getSourceOwner()).withApp(subscription.app));
 						processRestHook(subscription._id, triggered, channel);
 					} else if (channel.getType().equals(SubscriptionChannelType.MESSAGE)) {
 						String endpoint = channel.getEndpoint();
-						if (endpoint != null && endpoint.startsWith("node://")) {
+						if (endpoint != null && endpoint.startsWith("node://")) {							
 							answered = processApplication(subscription, triggered, channel) || answered;
 							if (answered) anyAnswered = true;
 						} else if (endpoint != null && endpoint.startsWith("app://")) {
@@ -166,6 +168,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			getSender().tell(new MessageResponse("Exception while processing subscription: "+e.toString(),-1, null), getSelf());
 			
 		} finally {
+			if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 			ServerTools.endRequest();
 			ActionRecorder.end(path, st);
 		}
@@ -189,6 +192,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		   if (p > 0) request.addHeader(str.substring(0, p).trim(), str.substring(p+1));
 	   }
 	   AccessLog.log("Calling Rest Hook");
+	   final ActorRef sender = getSender();
 	   final MidataId eventId = AuditManager.instance.convertLastEventToAsync();
 	   CompletionStage<WSResponse> response = request.execute("POST");
 	   response.whenComplete((out, exception) -> {
@@ -212,7 +216,9 @@ public class SubscriptionProcessor extends AbstractActor {
 			   } finally {
 				   ServerTools.endRequest();
 			   }
-		   } else try { AuditManager.instance.success(); } catch (AppException e) {}		   
+		   } else try { AuditManager.instance.success(); } catch (AppException e) {}	
+		   
+		   if (triggered.getTransactionId()!=null) sender.tell(new TriggerCountMessage(triggered.getTransactionId(), -1), ActorRef.noSender());
 	   });
 	}
 	
@@ -259,6 +265,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			subscription.disable();
 			return false;
 		}
+		if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), 1), getSelf());
 		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SCRIPT_INVOCATION).withActor(null, subscription.owner).withModifiedActor(null, triggered.getSourceOwner()).withApp(subscription.app));
 		//System.out.println("prcApp2");
 		String endpoint = channel.getEndpoint();		
@@ -277,28 +284,31 @@ public class SubscriptionProcessor extends AbstractActor {
 			}
 			
 			AuditManager.instance.fail(500, "Service key expired", "error.missing.token");
+			if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 			return true;
 		}
 		
 		User user = null;
 		
-		if (!plugin.type.equals("analyzer") && !plugin.type.equals("external") && !plugin.type.equals("endpoint")) {
+		if (!plugin.type.equals("analyzer") && !plugin.type.equals("external") && !plugin.type.equals("broker") && !plugin.type.equals("endpoint")) {
 			user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
 			//System.out.println("prcApp4");
 			if (user==null || user.status.isDeleted() || user.status.equals(UserStatus.BLOCKED)) {
 				subscription.disable();
 				AuditManager.instance.fail(400, "Subscription owner bad status", "error.unknown.user");
+				if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 				return false;
 			}
 		}
         final ActorRef sender = getSender();						
 		SpaceToken tk = null;
-		if (plugin.type.equals("mobile") || plugin.type.equals("service") || plugin.type.equals("analyzer") || plugin.type.equals("external")) {
+		if (plugin.type.equals("mobile") || plugin.type.equals("service") || plugin.type.equals("analyzer") || plugin.type.equals("external") || plugin.type.equals("broker")) {
 			AccessLog.log("RIGHT PATH");
 			System.out.println("RIGHT PATH "+plugin.name);
 			Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(plugin._id, subscription.owner, Sets.create("status", "dateOfCreation"));
 			if (mais.isEmpty()) {
 				AuditManager.instance.fail(400, "No application instance", "error.unknown.consent");
+				if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 				return false;
 			}
 			MidataId appInstanceId = null;
@@ -313,12 +323,13 @@ public class SubscriptionProcessor extends AbstractActor {
 			}
 			if (appInstanceId == null) {
 				AuditManager.instance.fail(400, "No application instance", "error.unknown.consent");
+				if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 				return false;	
 			}
 			//AccessLog.log("HANDLE="+handle);
 
 			if (subscription.app == null) throw new NullPointerException(); 
-			tk = new SpaceToken(handle, appInstanceId, subscription.owner, user != null ? user.getRole() : UserRole.ANY, null, subscription.app, subscription.owner);			
+			tk = new SpaceToken(handle, appInstanceId, subscription.owner, user != null ? user.getRole() : UserRole.ANY, null, subscription.app, subscription.owner, triggered.getUserGroupId());			
 			AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
 			
 			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
@@ -332,7 +343,7 @@ public class SubscriptionProcessor extends AbstractActor {
 				if (oauthmeta != null) {
 					System.out.println("NEW OAUTH2 - 2");
 					if (oauthmeta.get("refreshToken") != null) {
-						tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
+						tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner, triggered.getUserGroupId());
 						final String token = tk.encrypt();
 						System.out.println("NEW OAUTH2 - 3");
 						Plugin plugin2 = Plugin.getById(plugin._id, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams"));
@@ -348,25 +359,29 @@ public class SubscriptionProcessor extends AbstractActor {
 									System.out.println("NEW OAUTH2 - 4B");
 									sender.tell(new MessageResponse("OAuth 2 failed",-1, plugin.filename), getSelf());
 									AuditManager.instance.fail(400, "OAuth 2 failed", "error.missing.token");
+									if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 								}
 								try { AuditManager.instance.success(); } catch (AppException e) {}
 						});
 					} else {
 						sender.tell(new MessageResponse("OAuth 2 no refresh token",-1, plugin.filename), getSelf());
 						AuditManager.instance.fail(400, "OAuth 2 no refresh token", "error.missing.token");
+						if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 					}
 				} else {
 					sender.tell(new MessageResponse("OAuth 2 no data",-1, plugin.filename), getSelf());
 					AuditManager.instance.fail(400, "OAuth 2 no data", "error.missing.consent_accept");
+					if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 				}	
 			} catch (APSNotExistingException e) {
 				subscription.disable();
 				sender.tell(new MessageResponse("Space no longer existing - disabled",-1, plugin.filename), getSelf());
 				AuditManager.instance.fail(400, "No application instance", "error.missing.plugin");
+				if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 			} 
 		} else {
 			//AccessLog.log("BPART HANDLE="+handle);
-			tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
+			tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner, triggered.getUserGroupId());
 			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
 		}
 		AuditManager.instance.success();
@@ -376,7 +391,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		}
 	}	
 	
-	private void runProcessExternal(ActorRef sender, Plugin plugin, SubscriptionTriggered triggered, SubscriptionData subscription, User user, String token, String endpoint) {
+	private void runProcessExternal(ActorRef sender, Plugin plugin, final SubscriptionTriggered triggered, SubscriptionData subscription, User user, String token, String endpoint) {
   		String type = triggered.getType();
 		if (type.startsWith("fhir/")) type = type.substring("fhir/".length());
 	
@@ -389,7 +404,7 @@ public class SubscriptionProcessor extends AbstractActor {
 	   request.addQueryParameter("backend", "https://"+InstanceConfig.getInstance().getPlatformServer()); //"http://localhost:9001");
 	   request.addQueryParameter("owner", subscription.owner.toString());
 	   request.addQueryParameter("id", id);
-	   		   
+	   //final ActorRef sender = getSender();	   
 	   AccessLog.log("Calling Rest Hook");
 	   //final MidataId eventId = AuditManager.instance.convertLastEventToAsync();
 	   CompletionStage<WSResponse> response = request.execute("POST");
@@ -408,6 +423,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			   try {
 				   SubscriptionData.setError(subscription._id, new Date().toString()+": "+error);
 				   AuditManager.instance.fail(400, error, "error.plugin");
+				   ErrorReporter.reportPluginProblem("subscription script", null, new PluginException(plugin._id, "error.plugin", error));
 			   } catch (Exception e) {
 				   AccessLog.logException("Error during Subscription.setError", e);				   
 				   ErrorReporter.report("SubscriptionManager", null, e);
@@ -428,6 +444,8 @@ public class SubscriptionProcessor extends AbstractActor {
 					 sender.tell(new MessageResponse("", 0, plugin.filename), getSelf());
 				  } 
 		   }
+		   if (triggered.getTransactionId()!=null) sender.tell(new TriggerCountMessage(triggered.getTransactionId(), -1), ActorRef.noSender());
+		   
 	   });
 	}
 
@@ -464,7 +482,8 @@ public class SubscriptionProcessor extends AbstractActor {
 				testcall.token = token;
 				testcall.resourceId = id;				
 				testcall.answer = null;
-				testcall.answerStatus = TestPluginCall.NOTANSWERED;			
+				testcall.answerStatus = TestPluginCall.NOTANSWERED;		
+				testcall.transactionId = triggered.transactionId;
 				testcall.add();
 				
 				getContext().getSystem().scheduler().scheduleOnce(
@@ -511,11 +530,12 @@ public class SubscriptionProcessor extends AbstractActor {
 			  }
 			 sender.tell(new MessageResponse(response, p.exitValue(), plugin.filename), getSelf());
 		  } 
-		  		    
+		  if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());	    
 		  AccessLog.log("Response sended");		 		  
 		} catch (Exception e) {			
 			sender.tell(new MessageResponse("Failed: "+e.toString(),-1, plugin.filename), getSelf());	
 			AuditManager.instance.fail(500, "Script error", "error.internal");
+			if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 		} 				
 	}
 	
@@ -535,6 +555,7 @@ public class SubscriptionProcessor extends AbstractActor {
 					} else {
 						AuditManager.instance.success();
 					}
+					if (call.transactionId!=null) getSender().tell(new TriggerCountMessage(call.transactionId, -1), getSelf());
 				} else {
 					if (msg.count < 50) {
 						getContext().getSystem().scheduler().scheduleOnce(

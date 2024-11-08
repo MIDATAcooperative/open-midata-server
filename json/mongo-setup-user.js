@@ -29,7 +29,7 @@ db.studyapplink.createIndex({ "appId" : 1 });
 
 db.usagestats.createIndex({ "date" : 1, "object" : 1, "detail" : 1, "action" : 1 }, { "unique" : true });
 db.monitorstats.createIndex({ "path" : 1 }, { "unique" : true });
-
+db.providers.createIndex({ "identifier" : 1 });
 
 db.users.update({ emailLC : "development@midata.coop", role : "DEVELOPER" }, { $set : { email : "developers@midata.coop", emailLC : "developers@midata.coop" }})
 db.plugins.find({ creator : ObjectId("55eff624e4b0b767e88f92b9") }).forEach(function(e) { db.plugins.update({ _id : e._id }, { $set : { creatorLogin : "developers@midata.coop" }})});
@@ -49,3 +49,4 @@ db.studyapplink.find({ type : "REQUIRE_P" }).forEach(function(e) { db.studyappli
 
 
 db.providers.find({ status : { $exists : false } }).forEach(function(e) { db.providers.update({ _id : e._id}, { $set : { status : "NEW" } }); });
+db.plugins.find({ acceptTestAccounts : { $exists : false } }).forEach(function(e) { db.plugins.update({ _id : e._id }, { $set : { acceptTestAccounts : "ALL" } }); });

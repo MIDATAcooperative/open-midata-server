@@ -100,7 +100,7 @@ public class CSVDownload extends APIController {
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create(Study.ALL, "name", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "code",
-				"startDate", "endDate", "dataCreatedBefore", "type", "autoJoinGroup", "autoJoinExecutor"));
+				"startDate", "endDate", "dataCreatedBefore", "type", "autoJoinGroup", "autoJoinTestGroup", "autoJoinExecutor"));
 
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
@@ -142,7 +142,7 @@ public class CSVDownload extends APIController {
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create(Study.ALL, "name", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "code",
-				"startDate", "endDate", "dataCreatedBefore", "type", "autoJoinGroup", "autoJoinExecutor"));
+				"startDate", "endDate", "dataCreatedBefore", "type", "autoJoinGroup", "autoJoinTestGroup", "autoJoinExecutor"));
 
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");

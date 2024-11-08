@@ -223,7 +223,8 @@ public class HealthProvider extends APIController {
 		} else {
 		    AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.CONSENT_REJECTED).withActor(context, context.getActor()).withModifiedActor(context, userId).withConsent(target));
 			boolean wasActive = target.isActive();
-			if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE) || target.status.equals(ConsentStatus.PRECONFIRMED) || target.status.equals(ConsentStatus.INVALID)) {
+			ConsentStatus currentStatus = target.getTargetStatus();
+			if (currentStatus.equals(ConsentStatus.UNCONFIRMED) || currentStatus.equals(ConsentStatus.ACTIVE) || currentStatus.equals(ConsentStatus.PRECONFIRMED) || currentStatus.equals(ConsentStatus.INVALID)) {
 				target.setConfirmDate(new Date());			
 				Circles.consentStatusChange(context, target, ConsentStatus.REJECTED);
 				Circles.sendConsentNotifications(context, target, ConsentStatus.REJECTED, wasActive);

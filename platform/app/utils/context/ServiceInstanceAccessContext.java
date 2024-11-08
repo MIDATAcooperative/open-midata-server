@@ -3,6 +3,7 @@ package utils.context;
 import models.MidataId;
 import models.Record;
 import models.ServiceInstance;
+import utils.RuntimeConstants;
 import utils.access.APSCache;
 import utils.access.DBRecord;
 import utils.collections.RequestCache;
@@ -104,6 +105,11 @@ public class ServiceInstanceAccessContext extends AccessContext {
 	@Override
 	public String getContextName() {
 		return "Service Instance '"+serviceInstance.name+"'";
+	}
+	
+	@Override
+	public MidataId getUsedPlugin() {
+		return serviceInstance.appId; 
 	}
 
 }

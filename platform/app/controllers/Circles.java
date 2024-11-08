@@ -76,6 +76,7 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
+import utils.TestAccountTools;
 import utils.UserGroupTools;
 import utils.access.APS;
 import utils.access.APSCache;
@@ -172,6 +173,7 @@ public class Circles extends APIController {
 		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		fields.add("type");
+		fields.add("reportedStatus");
 		
 		Rights.chk("Circles.listConsents", getRole(), properties, fields);
 		
@@ -257,6 +259,8 @@ public class Circles extends APIController {
 		}
 		
 		for (Consent consent : consents) {
+			if (consent.reportedStatus != null) consent.status = consent.reportedStatus;
+			
 			if (consent.type.equals(ConsentType.STUDYRELATED) && consent.authorized != null) consent.authorized.clear();
 			
 			if (consent.sharingQuery == null && (consent.isSharingData() || (consent.owner != null && consent.owner.equals(context.getAccessor())))) {
@@ -740,23 +744,12 @@ public class Circles extends APIController {
 		}
 		
 		boolean wasActive = consent.isActive();
-		consentStatusChange(context, consent, ConsentStatus.EXPIRED);
+		boolean doDelete = consent.type == ConsentType.CIRCLE || consent.type == ConsentType.API || consent.type == ConsentType.EXTERNALSERVICE || consent.type == ConsentType.IMPLICIT;   
+		
+		consentStatusChange(context, consent, doDelete ? ConsentStatus.DELETED : ConsentStatus.EXPIRED);
 		sendConsentNotifications(context, consent, ConsentStatus.EXPIRED, wasActive);
 				
 		// delete circle		
-		switch (consent.type) {
-		case CIRCLE:
-			RecordManager.instance.deleteAPS(context, consent._id);
-			Circle.delete(userId, circleId);
-			break;
-		case API:
-		case EXTERNALSERVICE: 
-			RecordManager.instance.deleteAPS(context, consent._id);
-			Consent.delete(userId, circleId);break;
-		case IMPLICIT: consent.setStatus(ConsentStatus.DELETED);break;
-		//case STUDYRELATED : StudyRelated.delete(userId, circleId);break;
-		default:break;
-		}
 		AuditManager.instance.success();
 		
 		return ok();
@@ -888,12 +881,13 @@ public class Circles extends APIController {
 	}
 	
 	public static void consentStatusChange(AccessContext context, Consent consent, ConsentStatus newStatus, boolean patientRecord) throws AppException {
-		AccessLog.logBegin("start consent status change from="+consent.status+" to="+newStatus+" type="+consent.type);
+		AccessLog.logBegin("start consent status change from="+consent.status+"["+consent.reportedStatus+"] to="+newStatus+" type="+consent.type);
 		ConsentStatus oldStatus = consent.status;
 		boolean wasActive = oldStatus.isSharingData();
 		boolean active = (newStatus == null) ? wasActive : newStatus.isSharingData();
 		boolean isNew = (newStatus == null);
 		boolean preconfirmed = consent.status == ConsentStatus.PRECONFIRMED && (isNew || newStatus == ConsentStatus.PRECONFIRMED);
+		boolean finishMakeInactive = consent.reportedStatus != null && consent.reportedStatus.equals(newStatus);
 		
 		if (context!=null) {
 			context = ApplicationTools.actAsRepresentative(context, consent.owner, true);
@@ -902,6 +896,7 @@ public class Circles extends APIController {
 		if ((isNew || active) && context == null) throw new InternalServerException("error.internal", "Cannot set consent to active state without proper context");
 		
 		if (isNew) {
+		  TestAccountTools.prepareConsent(context, consent);
 		  wasActive = false;
 		  if (!context.canCreateActiveConsentsFor(consent.owner) && consent.status == ConsentStatus.ACTIVE) {
 			  consent.status = ConsentStatus.PRECONFIRMED;
@@ -917,7 +912,7 @@ public class Circles extends APIController {
 			  preconfirmed = true;
 			  AccessLog.log("using preconfirmation for existing consent");
 		  }
-		  consent.setStatus(newStatus);
+		  consent.setStatus(newStatus, finishMakeInactive);
 		}
 					
 				
@@ -950,7 +945,7 @@ public class Circles extends APIController {
 			if (!plugin.type.equals("endpoint")) SubscriptionManager.activateSubscriptions(context.getAccessor(), plugin, consent._id, true);			
 		}	
 		
-		if (!active && wasActive) {
+		if (wasActive && !active && finishMakeInactive) {
 			
 			Set<MidataId> auth = consent.authorized;
 			if (auth != null && auth.contains(consent.owner)) { auth.remove(consent.owner); }			
@@ -968,7 +963,7 @@ public class Circles extends APIController {
 		}		
 		
 		// freeze data if necessary
-		if (!isNew && newStatus.equals(ConsentStatus.FROZEN)) {
+		if (!isNew && newStatus.equals(ConsentStatus.FROZEN) && finishMakeInactive) {
 			if (context == null) throw new InternalServerException("error.internal", "Cannot set consent to frozen state without proper context");
 			Date now = new Date();
 			if (consent.createdBefore == null || consent.createdBefore.after(now)) {				
@@ -979,7 +974,7 @@ public class Circles extends APIController {
 			Circles.removeQueries(consent.owner, consent._id);
 		}
 		
-		persistConsentMetadataChange(context, consent, isNew);
+		persistConsentMetadataChange(context, consent, isNew, finishMakeInactive);
 		AccessLog.logEnd("end consent status change");
 	}
 	 
@@ -1017,8 +1012,17 @@ public class Circles extends APIController {
 	 * @param consent
 	 * @throws AppException
 	 */
-	public static void persistConsentMetadataChange(AccessContext context, Consent consent, boolean isNew) throws AppException {
-		MidataConsentResourceProvider.updateMidataConsent(consent, null);		
+	public static void persistConsentMetadataChange(AccessContext context, Consent consent, boolean isNew, boolean finishMakeInactive) throws AppException {
+		if (!finishMakeInactive) {
+			if (isNew) {
+				consent.creatorOrg = context.getUserGroupAccessor();
+			} else {
+				consent.modifiedByOrg = context.getUserGroupAccessor();
+				consent.modifiedBy = context.getActor();
+			}
+			MidataConsentResourceProvider.updateMidataConsent(consent, null); 
+		}	
+		
 		if (consent.authorized == null && consent.type != ConsentType.EXTERNALSERVICE) throw new InternalServerException("error.internal", "Missing authorized");
 		if (isNew) {
 			consent.add();
@@ -1029,8 +1033,8 @@ public class Circles extends APIController {
 		if (consent instanceof StudyParticipation) {
 			// Do not trigger resource change for "MATCH" only
 			if (((StudyParticipation) consent).pstatus == ParticipationStatus.MATCH) return;
-		}
-		SubscriptionManager.resourceChange(context, consent);
+		}		
+		if (!finishMakeInactive) SubscriptionManager.resourceChange(context, consent);
 	}
 	
 	public static void sendConsentNotifications(AccessContext context, Consent consent, ConsentStatus reason, boolean wasActive) throws AppException {
@@ -1180,7 +1184,7 @@ public class Circles extends APIController {
 			consent.externalAuthorized.remove(emailLC);
 			Consent.set(consent._id, "externalAuthorized", consent.externalAuthorized);
 			
-			persistConsentMetadataChange(context, consent, false);
+			persistConsentMetadataChange(context, consent, false, false);
 			
 			if (consent.externalAuthorized.isEmpty() && consent.status==ConsentStatus.UNCONFIRMED) AutoJoiner.autoConfirm(consent._id);
 		}
@@ -1196,7 +1200,7 @@ public class Circles extends APIController {
 			Consent.set(consent._id, "owner", consent.owner);
 			Consent.set(consent._id, "externalOwner", consent.externalOwner);
 			
-			persistConsentMetadataChange(context, consent, false);
+			persistConsentMetadataChange(context, consent, false, false);
 		}
 		AccessLog.logEnd("end fetch existing consents");
 	}
