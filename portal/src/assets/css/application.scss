@@ -50,6 +50,9 @@ $fa-font-path:                "../fonts";
 @import "../../../node_modules/@fortawesome/fontawesome-free/scss/solid";
 
 .btn-primary { color: white; }
+.btn-primary:hover { color: white; }
+.btn-primary:active { color: white; }
+.btn-primary:checked { color: white; }
 
 .form-row {
 	@extend .row;
@@ -152,8 +155,7 @@ select.form-control { @extend .form-select }
 }
 
 .form-check { 
-  @include media-breakpoint-down(sm) {
-     padding-left: 3rem;
+  @include media-breakpoint-down(sm) {     
      min-height: 35px;
      margin-bottom: 10px;
   } 
@@ -162,18 +164,23 @@ select.form-control { @extend .form-select }
   @include media-breakpoint-down(sm) {
      margin-left: -3rem;
      min-height: 25px;
-     min-width: 25px;
+     min-width: 25px;	 
   }
 }
 .form-check-label {
   @include media-breakpoint-down(sm) {     
-     min-height: 25px;        
+     min-height: 25px;  
+	 padding-top: 5px;	   
   }
 }
-.form-check-label .margin-left {
+.form-check-label {
    @include media-breakpoint-down(sm) {
-	  margin-left: 0px;
+	  margin-left: 10px;
    }
+}
+
+.midata-checkbox-row .midata-label {
+	padding-top: 0px;
 }
 
 

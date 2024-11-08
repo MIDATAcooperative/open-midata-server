@@ -56,7 +56,7 @@
             <form-group name="status" label="provider_organization.status" :path="errors.status">
                 <p class="form-control-plaintext" v-t="'enum.userstatus.'+org.status"></p>
             </form-group>
-            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup && usergroup._id">
+            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup && usergroup._id" class="midata-checkbox-row">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" v-validate v-model="usergroup.searchable" @change="edit();">
                     <div class="margin-left">
@@ -80,7 +80,7 @@
             <form-group v-if="!org._id && (org.managerTypeExt=='OTHERMEMBER' || org.managerTypeExt=='EXTERNALUSER')" name="manager" label="provider_organization.manager" :path="errors.manager"> 
 		        <input type="text" class="form-control" id="manager" name="manager" v-validate v-model="org.manager" required>		    
             </form-group>
-            <form-group name="protection" label="provider_organization.protection" :path="errors.protection"> 
+            <form-group name="protection" label="provider_organization.protection" :path="errors.protection" class="midata-checkbox-row"> 
 		         <check-box v-model="usergroup.protection" name="protection" :disabled="org._id">
                     <span v-t="'provider_organization.protection2'"></span>
                 </check-box>

@@ -33,7 +33,7 @@
                 </div>
 		    </form-group>		   
 		    		              
-		    <form-group name="requirements" label="Requirements" class="danger-change" v-if="app.type!='analyzer' && app.type!='endpoint'" :path="errors.requirements">
+		    <form-group name="requirements" label="Requirements" class="danger-change midata-checkbox-row" v-if="app.type!='analyzer' && app.type!='endpoint'" :path="errors.requirements">
 		        <check-box v-for="req in requirements" :key="req" :checked="app.requirements.indexOf(req)>=0" :name="'chk_'+req" @click="toggle(app.requirements, req);requireLogout();">
                     <span>{{ $t('enum.userfeature.'+req) }}</span>
 		        </check-box>		        
@@ -58,7 +58,7 @@
                 <p class="form-text">{{ $t('applogin.urlParams2') }}</p>
 		    </form-group>	
 		  
-		   <form-group name="withLogout" label="manageapp.logout" v-if="app._id">
+		   <form-group name="withLogout" label="manageapp.logout" v-if="app._id" class="midata-checkbox-row">
 		     <check-box name="withLogout" v-model="app.withLogout" :path="errors.withLogout" :required="logoutRequired">		      
 		        <span v-t="'manageapp.pleaseLogout1'"></span>
 		        <span v-if="app.targetUserRole=='RESEARCH'"> / </span>

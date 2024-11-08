@@ -102,12 +102,12 @@
                     </p>
                     <p class="form-control-plaintext" v-if="!app.type" v-t="'studyactions.no_valid_app'"></p>
                 </form-group>
-                <form-group name="type" label="studyactions.type" :path="errors.type">	                
+                <form-group name="type" label="studyactions.type" :path="errors.type" class="midata-checkbox-row">	                
                     <check-box v-for="type in types" :key="type" :name="type" :disabled="checkType(app, type)" :checked="selection.type.indexOf(type)>=0" @click="toggle(selection.type, type);" >
                         <span>{{ $t('studyactions.types.'+type) }}</span>
                     </check-box>                
                 </form-group>
-                <form-group name="usePeriod" label="studyactions.use_period" :path="errors.usePeriod">
+                <form-group name="usePeriod" label="studyactions.use_period" :path="errors.usePeriod" class="midata-checkbox-row">
                     <check-box v-for="period in periods" :key="period" :name="period" :checked="selection.usePeriod.indexOf(period)>=0" @click="toggle(selection.usePeriod, period);" >
                         <span>{{ $t('studyactions.use_periods.'+period) }}</span>
                     </check-box>	                        
@@ -134,7 +134,7 @@
 	                  <p class="form-text text-muted" v-if="selection.termsOfUse"><router-link :to="{ path : './terms', query : { which:selection.termsOfUse }}" v-t="'applink.show_terms'"></router-link></p>
 	                  <p class="form-text text-muted" v-t="'applink.terms_of_use_hint'"></p> 
 	            </form-group>	            
-	            <form-group name="type" label="studyactions.type">
+	            <form-group name="type" label="studyactions.type" class="midata-checkbox-row">
 	              <div v-for="type in types2" :key="type" class="form-check">
 	                <label class="form-check-label">
 	                  <input class="form-check-input" type="checkbox" :disabled="checkType(app, type)" :checked="selection.type.indexOf(type)>=0" @click="toggle(selection.type, type)" >
@@ -156,7 +156,7 @@
 	            <form-group name="app" label="studyactions.app">
 	               <p class="form-control-plaintext">{{ app.filename }}</p>	               
 	            </form-group>	       	                  
-	            <form-group name="type" label="studyactions.type">
+	            <form-group name="type" label="studyactions.type" class="midata-checkbox-row">
 	              <div v-for="type in types2" :key="type" class="form-check">
 	                <label class="form-check-label">
 	                  <input class="form-check-input" type="checkbox" :disabled="checkType(app, type)" :checked="selection.type.indexOf(type)>=0" @click="toggle(selection.type, type);" >

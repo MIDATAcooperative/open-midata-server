@@ -24,7 +24,7 @@
 			<form-group name="city" label="providersearch.city_or_zip" :path="errors.city"> 
 				<input type="text" class="form-control" :placeholder="$t('providersearch.city_or_zip')" v-model="criteria.city" v-validate> 
 			</form-group>
-			<form-group name="restrict" label="common.empty" v-if="role=='MEMBER'">
+			<form-group name="restrict" label="common.empty" v-if="role=='MEMBER'" class="midata-checkbox-row">
                 <check-box v-model="criteria.onlymine" name="onlymine">
 				    <span v-t="'providersearch.only_with_contact'"></span> 
                 </check-box>

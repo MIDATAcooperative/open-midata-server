@@ -590,7 +590,7 @@ export default {
 </script>
 <style scoped>
 .summary { 
-	background-color: #c0c0c0;
+	border-top: 1px solid #c0c0c0;
 	margin-left: -15px;
 	margin-right: -15px;
 	padding-top: 30px;

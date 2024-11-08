@@ -21,7 +21,7 @@
 		<div id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">			
 			<div class="container">
 				<div class="navbar-header">
-					<button class="ms-1 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-ex1-collapse"
+					<button class="ms-1 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>
@@ -57,8 +57,8 @@
 
 
 					<ul class="nav navbar-nav">
-						<li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-ex1-collapse" class="nav-link" @click="go({ name : 'provider.user', query : { userId : user._id}})">{{user.name}}</a></li>
-						<li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-ex1-collapse" class="nav-link" @click="logout()" href="javascript:"> <span class="fas fa-power-off"></span> <span
+						<li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="go({ name : 'provider.user', query : { userId : user._id}})">{{user.name}}</a></li>
+						<li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="logout()" href="javascript:"> <span class="fas fa-power-off"></span> <span
 								v-t="'navbar.sign_out'"></span>
 						</a></li>
 					</ul>				

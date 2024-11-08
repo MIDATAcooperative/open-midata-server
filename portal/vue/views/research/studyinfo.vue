@@ -30,7 +30,7 @@
                 </select>
             </form-group>
             
-            <form-group name="languages" label="studyinfo.showlanguages" :path="errors.languages">
+            <form-group name="languages" label="studyinfo.showlanguages" :path="errors.languages" class="midata-checkbox-row">
                 <div class="checkbox col-sm-12">
                     <label>
                         <input type="checkbox" disabled :checked="selection.langs.indexOf('int')>=0">

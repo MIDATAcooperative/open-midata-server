@@ -48,7 +48,7 @@
 
 					<div class="navbar-header">
 
-						<button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-ex1-collapse"
+						<button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
 							aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 							<span class="fas fa-list"></span>
 						</button>
@@ -60,9 +60,9 @@
 					<div class="collapse navbar-collapse navbar-ex1-collapse" id="navbarToggler">
 						<ul class="nav navbar-nav me-auto">
 							<li class="nav-item"><a class="nav-link" 
-								@click="go({ path : './login', query : {actions:actions} })" data-bs-toggle="collapse" data-bs-target="#navbarToggler" v-t="'navbar.login'"></a></li>
+								@click="go({ path : './login', query : {actions:actions} })" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" v-t="'navbar.login'"></a></li>
 							<li class="nav-item"><a class="nav-link" v-if="!notPublic"
-								@click="go({ path : './registration', query : {actions:actions} })" data-bs-toggle="collapse" data-bs-target="#navbarToggler" v-t="'navbar.sign_up'"></a></li>
+								@click="go({ path : './registration', query : {actions:actions} })" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" v-t="'navbar.sign_up'"></a></li>
 						</ul>
                         <div class="nav navbar-nav nav-language">
                         <div class="nav-item d-lg-none"><div class="nav-link" v-t="'navbar.language'"></div></div>

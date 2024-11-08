@@ -43,7 +43,7 @@
 				<p v-t="'oauth2.allows_user_search'" v-if="visualization.allowsUserSearch"></p>                			      			      
 			</div>
         </form-group>
-		<form-group v-if="visualization.termsOfUse" label="visualization.terms">
+		<form-group v-if="visualization.termsOfUse" label="visualization.terms" class="midata-checkbox-row">
             <check-box name="appAgb" v-model="options.appAgb" :path="errors.appAgb">
 			    <span v-t="'registration.app_agb2'"></span>
                 <a @click="terms({which : visualization.termsOfUse })" href="javascript:" v-t="'registration.app_agb3'"></a>

@@ -21,7 +21,7 @@
 		<div id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">			
 			<div class="container">
 				<div class="navbar-header">
-					<button class="ms-1 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-ex1-collapse"
+					<button class="ms-1 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>

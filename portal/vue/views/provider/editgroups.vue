@@ -41,7 +41,7 @@
                   <a v-if="member.entityType=='SERVICES'" href="javascript:" @click="manageKeys(member)"><i class="fas fa-key"></i></a>
                 </td>
                 <td>
-                    <button type="button" v-if="member.member != user._id" @click="removeGroup(member)" :disabled="action!=null" class="close" aria-label="Delete">
+                    <button type="button" v-if="member.member != user._id" @click="removeGroup(member)" :disabled="action!=null" class="btn-close" aria-label="Delete">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>
@@ -56,7 +56,7 @@
             <form-group name="selected" v-if="add.entityName" label="provider_editusergroup.selected">
                <p class="form-control-static">{{ add.entityName }}</p>
             </form-group>
-            <form-group name="rights" label="provider_editusergroup.rights">
+            <form-group name="rights" label="provider_editusergroup.rights" class="midata-checkbox-row">
                 <check-box v-for="req in rights" :name="req+'_1'" :key="req" v-model="add.role[req]" :disabled="!mayChangeTeam()">
                     <span>{{ $t('provider_editusergroup.right.'+req) }}</span>
                 </check-box>		 

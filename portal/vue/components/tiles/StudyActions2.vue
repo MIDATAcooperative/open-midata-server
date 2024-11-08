@@ -41,15 +41,15 @@
                 <form-group name="endpoint" label="studyactions.endpoint" v-if="crit.pluginType=='endpoint'" :path="errors.endpoint">
                     <input type="text" id="endpoint" name="endpoint"  v-validate v-model="crit.endpoint" class="form-control" required>
                 </form-group>
-                <form-group name="onlyAggregated" label="studyactions.only_aggregated" v-if="crit.pluginType=='endpoint'" :path="errors.onlyAggregated">
+                <form-group name="onlyAggregated" label="studyactions.only_aggregated" class="midata-checkbox-row" v-if="crit.pluginType=='endpoint'" :path="errors.onlyAggregated">
                     <check-box name="onlyAggregated" v-validate v-model="crit.onlyAggregated" :path="errors.onlyAggregated">                              
 					</check-box>
                 </form-group>
-                <form-group name="shareback" label="studyactions.shareback" v-if="crit.pluginType!='endpoint'">
+                <form-group name="shareback" label="studyactions.shareback" class="midata-checkbox-row" v-if="crit.pluginType!='endpoint'">
                     <check-box name="shareback" id="shareback" v-validate v-model="crit.shareback" :path="errors.shareback"> 
 					</check-box>
                 </form-group>
-                <form-group name="restrictread" label="studyactions.restrict" v-if="crit.group">
+                <form-group name="restrictread" label="studyactions.restrict" class="midata-checkbox-row" v-if="crit.group">
                     <check-box name="restrictread" v-validate v-model="crit.restrictread" :path="errors.restrictread">
 					</check-box>                               
                 </form-group>

@@ -178,7 +178,7 @@
 		    <input type="text" class="form-control" v-validate v-model="currentBlock.category">	    
 		  </form-group>
 		  <div v-if="mode=='study'">
-		  <form-group name="restrictions" label="queryeditor.restrictions" v-if="(timeModes && timeModes.length) || (dataPeriodModes && dataPeriodModes.length) || currentBlock.flags.custom" :path="errors.restrictions">
+		  <form-group name="restrictions" label="queryeditor.restrictions" v-if="(timeModes && timeModes.length) || (dataPeriodModes && dataPeriodModes.length) || currentBlock.flags.custom" :path="errors.restrictions" class="midata-checkbox-row">
 		    <div class="form-check" v-if="timeModes && timeModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.timeRestriction"><span v-t="'queryeditor.time_restriction'"></span></label></div>
 		    <div class="form-check" v-if="dataPeriodModes && dataPeriodModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.dataPeriodRestriction"><span v-t="'queryeditor.data_period_restriction'"></span></label></div>
 		    <div class="form-check" v-if="currentBlock.flags.custom"><label class="form-check-label"><input class="form-check-input" type="checkbox" v-validate v-model="currentBlock.customFilter"><span v-t="'queryeditor.custom_filter'"></span></label></div>

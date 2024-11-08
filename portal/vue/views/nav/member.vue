@@ -24,7 +24,7 @@
 				<div class="navbar-header">
 
 					<router-link v-if="$route.query.actions" class="ms-1 navbar-toggler" :class="{'vishidden':$route.meta.locked}" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" @click="go({ name : 'member.user2', query : { userId : user._id, actions : $route.query.actions }})"><span class="fas fa-user"></span></router-link>						
-					<button v-else class="ms-1 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-ex1-collapse"
+					<button v-else class="ms-1 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>

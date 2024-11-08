@@ -180,7 +180,7 @@
 					<div v-if="consent.type != 'EXTERNALSERVICE' && consent.type != 'API'">
 						<div v-for="person in authpersons" :key="person._id">
 							<div class="card-body">
-								<button type="button" @click="removePerson(person)" :disabled="action!=null" class="close" aria-label="Delete" v-if="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>
+								<button type="button" @click="removePerson(person)" :disabled="action!=null" class="btn-close" aria-label="Delete" v-if="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>
 								<img :src="getIconRole(person)" class="float-start consenticon">
 								<div class="iconspace">
 									<div>{{$t('enum.userrole.'+person.role)}}</div>		
@@ -293,20 +293,20 @@
             
         <div v-if="options.advanced" class="margin-top">
             <div class="extraspace"></div>
-            <form-group name="writes" label="newconsent.writes">
+            <form-group name="writes" label="newconsent.writes" class="midata-checkbox-row">
                 <check-box v-model="consent.writesBool" name="writes">
                     <span v-t="'newconsent.writes2'"></span>
                 </check-box>	    
             </form-group>
         
-            <form-group name="reshare" label="newconsent.reshare">
+            <form-group name="reshare" label="newconsent.reshare" class="midata-checkbox-row">
                 <check-box v-model="consent.reshare" name="reshare">
                     <span v-t="'newconsent.reshare2'"></span>
                 </check-box>
             </form-group>
       
         
-            <form-group name="passcode" label="newconsent.use_passcode" v-if="consent.type == 'HEALTHCARE' && consent.owner == userId">
+            <form-group name="passcode" label="newconsent.use_passcode" v-if="consent.type == 'HEALTHCARE' && consent.owner == userId" class="midata-checkbox-row">
                 <check-box v-model="consent.usepasscode" name="usepasscode">
                     <span v-t="'newconsent.use_passcode2'"></span>
                 </check-box>    

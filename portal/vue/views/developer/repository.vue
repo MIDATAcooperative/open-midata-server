@@ -19,7 +19,7 @@
 		        <input type="text" id="repository_dir" name="repository_dir" class="form-control" v-validate v-model="app.repositoryDirectory" required>		    
 		    </form-group>
 		    
-		    <form-group name="has_scripts" label="repository.has_scripts" :path="errors.hasScripts">
+		    <form-group name="has_scripts" label="repository.has_scripts" class="midata-checkbox-row" :path="errors.hasScripts">
 		       <check-box name="has_scripts" v-model="app.hasScripts">
                    <span v-t="'repository.has_scripts2'"></span>
                </check-box>				        		   

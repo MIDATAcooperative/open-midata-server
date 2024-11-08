@@ -25,7 +25,7 @@
                 <p v-if="usergroup._id" class="form-control-plaintext">{{ usergroup.name }}</p>
                 <input v-else id="name" name="name" type="text" class="form-control" v-validate v-model="usergroup.name" required>
             </form-group> 
-            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup._id && usergroup.type!='ORGANIZATION'">
+            <form-group id="status" label="provider_editusergroup.searchable" v-if="usergroup._id && usergroup.type!='ORGANIZATION'" class="midata-checkbox-row">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" v-validate v-model="usergroup.searchable" @change="edit();">
                     <div class="margin-left">
@@ -60,7 +60,7 @@
                     {{ matrix(member.role) }}
                 </td>
                 <td>
-                    <button type="button" v-if="member.member != user._id" @click="removePerson(member)" :disabled="action!=null" class="close" aria-label="Delete">
+                    <button type="button" v-if="member.member != user._id" @click="removePerson(member)" :disabled="action!=null" class="btn-close" aria-label="Delete">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>
@@ -73,7 +73,7 @@
             <form-group name="selected" v-if="add.user" label="provider_editusergroup.selected">
                <p class="form-control-static">{{ (add.user || {}).email }}</p>
             </form-group>
-            <form-group name="rights" label="provider_editusergroup.rights">
+            <form-group name="rights" label="provider_editusergroup.rights" class="midata-checkbox-row">
                 <check-box v-for="req in rights" :name="req" :key="req" v-model="add.role[req]" :disabled="!mayChangeTeam()">
                     <span>{{ $t('provider_editusergroup.right.'+req) }}</span>
                 </check-box>		 

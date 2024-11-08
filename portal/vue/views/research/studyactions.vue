@@ -94,12 +94,12 @@
                     </p>
                     <p class="form-control-plaintext" v-if="!selection.app.type" v-t="'studyactions.no_valid_app'"></p>
                 </form-group>
-                <form-group name="type" label="studyactions.type" :path="errors.type">	                
+                <form-group name="type" label="studyactions.type" :path="errors.type" class="midata-checkbox-row">	                
                     <check-box v-for="type in types" :key="type" :name="type" :disabled="checkType(selection.app, type)" :checked="selection.type.indexOf(type)>=0" @click="toggle(selection.type, type);" >
                         <span>{{ $t('studyactions.types.'+type) }}</span>
                     </check-box>                
                 </form-group>
-                <form-group name="usePeriod" label="studyactions.use_period" :path="errors.usePeriod">
+                <form-group name="usePeriod" label="studyactions.use_period" :path="errors.usePeriod" class="midata-checkbox-row">
                     <check-box v-for="period in periods" :key="period" :name="period" :checked="selection.usePeriod.indexOf(period)>=0" @click="toggle(selection.usePeriod, period);" >
                         <span>{{ $t('studyactions.use_periods.'+period) }}</span>
                     </check-box>	                        

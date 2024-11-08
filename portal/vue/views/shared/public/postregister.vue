@@ -205,7 +205,7 @@
 							
 								
 								<div class="dynheight">
-									<form-group name="authType" label="postregister.auth_type">
+									<form-group name="authType" label="postregister.auth_type" class="midata-checkbox-row">
 										<radio-box name="authType" value="NONE" v-model="registration.authType" :path="errors.authType">                                     
 									       <span v-t="'postregister.auth_type_none'"></span>
 										</radio-box>
@@ -218,7 +218,7 @@
 									<input type="text" class="form-control" id="mobile" name="mobile" v-model="registration.mobile" v-validate :required="registration.authType=='SMS'">
 								</form-group>
 								<div class="dynheight">
-									<form-group name="emailnotify" label="postregister.emailnotify">
+									<form-group name="emailnotify" label="postregister.emailnotify" class="midata-checkbox-row">
 										<check-box name="emailnotify" v-model="registration.emailnotify" :path="errors.emailnotify">
 											{{ $t('postregister.emailnotify2', { domain : ENV.apiurl}) }}
 										</check-box>

@@ -36,7 +36,7 @@
                 <td>{{ member.study.name }}</td>
                 <td><span v-for="(m,s) in member.projectGroupMapping" :key="s" class="comma">{{ s+"="+m }}</span></td>                
                 <td>
-                    <button type="button" @click="removeProject(member.study)" :disabled="action!=null || !study.myRole.setup" class="close" aria-label="Delete">
+                    <button type="button" @click="removeProject(member.study)" :disabled="action!=null || !study.myRole.setup" class="btn-close" aria-label="Delete">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>

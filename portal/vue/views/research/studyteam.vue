@@ -41,7 +41,7 @@
                     {{ matrix(member.role) }}
                 </td>
                 <td>
-                    <button type="button" v-if="member.member != user._id && study.myRole.changeTeam" @click="removePerson(member)" :disabled="action!=null" class="close" aria-label="Delete">
+                    <button type="button" v-if="member.member != user._id && study.myRole.changeTeam" @click="removePerson(member)" :disabled="action!=null" class="btn-close" aria-label="Delete">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>
@@ -63,7 +63,7 @@
                     <input type="text" class="form-control" id="roleName" :disabled="lockChanges" name="roleName" v-validate v-model="add.role.roleName">			    
                 </form-group>
             </div>
-            <form-group name="rights" label="studyteam.rights" :path="errors.rights">
+            <form-group name="rights" label="studyteam.rights" :path="errors.rights" class="midata-checkbox-row">
                 <check-box v-for="req in rights" :name="req" :key="req" v-model="add.role[req]" :disabled="add.roleTemplate != 'OTHER' || lockChanges">
                     <span>{{ $t('studyteam.right.'+req) }}</span>
                 </check-box>		 
