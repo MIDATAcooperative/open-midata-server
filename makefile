@@ -39,7 +39,7 @@ space := $(null) #
 komma := ,
 join-with = $(subst $(space),$1,$(strip $2))
 
-install-from-servertools: lock tasks/install-packages tasks/config-firejail tasks/install-node tasks/bugfixes tasks/install-localmongo $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem tasks/precompile
+install-from-servertools: lock tasks/install-packages tasks/config-firejail tasks/install-node tasks/bugfixes tasks/install-dbtools $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem tasks/precompile
 	touch switches/use-hotdeploy
 	touch tasks/check-config	
 
@@ -148,7 +148,7 @@ tasks/install-packages: trigger/install-packages
 	$(info ------------------------------)
 	$(info Installing Packages... )
 	$(info ------------------------------)
-	sudo apt-get install git curl openssl openjdk-11-jdk mcrypt unzip ruby-sass software-properties-common clamav-daemon firejail
+	sudo apt-get install git curl openssl openjdk-21-jdk mcrypt unzip ruby-sass software-properties-common clamav-daemon firejail
 	sudo apt-get install nginx
 	sudo service clamav-daemon stop
 	sudo service clamav-freshclam stop
@@ -212,6 +212,19 @@ tasks/install-localmongo: trigger/install-localmongo
 	sed -i 's|MONGODB_LOG_PATH|$(abspath logs/mongod.log)|' mongodb/mongod.conf
 	rm mongodb-linux-x86_64-$(MONGO_VERSION).tgz			
 	touch tasks/install-localmongo
+
+tasks/install-dbtools: 
+	$(info ------------------------------)
+	$(info Installing Database Tools... )
+	$(info ------------------------------)
+	wget -O dbtools.tgz https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu2204-x86_64-100.10.0.tgz
+	wget -O mshell.tgz https://downloads.mongodb.com/compass/mongosh-2.3.3-linux-x64.tgz
+	mkdir -p mongodb
+	tar xzf dbtools.tgz -C mongodb --strip-components 1
+	tar xzf mshell.tgz -C mongodb --strip-components 1
+	rm mshell.tgz
+	rm dbtools.tgz
+	touch tasks/install-dbtools
 
 update-mongodb:
 	wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-$(MONGO_VERSION).tgz

@@ -32,15 +32,10 @@ import akka.stream.javadsl.StreamRefs;
 import akka.util.ByteString;
 import models.MidataId;
 import models.Plugin;
-import play.core.Paths;
-import scala.reflect.io.Path;
 import utils.AccessLog;
-import utils.ErrorReporter;
 import utils.InstanceConfig;
-import utils.ServerTools;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.stats.ActionRecorder;
 
 public class FirejailBuildContainer extends AbstractLocalContainer {
 
