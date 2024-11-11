@@ -536,3 +536,8 @@
 {"_id":{"$oid":"66421c5271410570d094c394"},"system":"http://snomed.info/sct","code":"198436008","display":"Menopausal flushing (finding)","content":"snomed/198436008"}
 {"_id":{"$oid":"6674114f427c7e41613f0e2c"},"system":"http://snomed.info/sct","code":"406193000","display":"Client satisfaction","content":"snomed/406193000"}
 {"_id":{"$oid":"6632320232f1c9431d7f0d4f"},"system":"http://www.phqscreeners.com","code":"phq-2","display":"Patient Health Questionnaire-2 (PHQ-2)","content":"phq-2"}
+{"_id":{"$oid":"66e2ee9c05bffe54fba894e2"},"system":"http://form.brightfish.com","code":"lbp.other","display":"Lower Back Pain Other","content":"lbp.other"}
+{"_id":{"$oid":"66e2ee6605bffe54fba894e0"},"system":"http://form.brightfish.com","code":"lbp.nprs","display":"Lower Back Pain Numeric Pain Rating Scale","content":"lbp.nprs"}
+{"_id":{"$oid":"66e2eed450e21b2c54e4647a"},"system":"http://form.brightfish.com","code":"odi","display":"Oswestry Low Back Pain Disability Questionnaire","content":"odi"}
+{"_id":{"$oid":"66e2ee2905bffe54fba894de"},"system":"http://form.brightfish.com","code":"lbp.followup","display":"Lower Back Pain Follow-up","content":"lbp.followup"}
+{"_id":{"$oid":"66e2edf205bffe54fba894dd"},"system":"http://form.brightfish.com","code":"lbp.baseline","display":"Lower Back Pain Baseline","content":"lbp.baseline"}
