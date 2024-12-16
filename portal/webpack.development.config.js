@@ -24,7 +24,6 @@ const autoprefixer = require('autoprefixer');
 const { VueLoaderPlugin } = require('vue-loader')
 const webpack = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin')
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 /**
  * Distribution mode:
@@ -79,7 +78,10 @@ var My_Plugins = [
       extensions : ['js','vue']
     }),*/
     new VueLoaderPlugin(),
-	new NodePolyfillPlugin()
+	new webpack.ProvidePlugin({
+	   process: 'process/browser.js',
+	   Buffer: ['buffer', 'Buffer']
+	})
 ];
 
 for (let i = 0; i < My_Definitions.html_files_to_add.length; i++) {
