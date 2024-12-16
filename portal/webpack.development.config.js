@@ -77,7 +77,10 @@ var My_Plugins = [
     /*new ESLintPlugin({
       extensions : ['js','vue']
     }),*/
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+	new webpack.ProvidePlugin({
+	   process: 'process/browser'
+	})
 ];
 
 for (let i = 0; i < My_Definitions.html_files_to_add.length; i++) {

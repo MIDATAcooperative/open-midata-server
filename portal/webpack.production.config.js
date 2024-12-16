@@ -71,7 +71,11 @@ var My_Plugins = [
        __VUE_OPTIONS_API__ : true,
        __VUE_PROD_DEVTOOLS__ : false
     }),
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+	
+	new webpack.ProvidePlugin({
+	   process: 'process/browser'
+	})
 ];
 
 for (let i = 0; i < My_Definitions.html_files_to_add.length; i++) {
