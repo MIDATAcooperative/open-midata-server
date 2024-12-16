@@ -24,6 +24,7 @@ const autoprefixer = require('autoprefixer');
 const { VueLoaderPlugin } = require('vue-loader')
 const webpack = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin')
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 /**
  * Distribution mode:
@@ -77,7 +78,8 @@ var My_Plugins = [
     /*new ESLintPlugin({
       extensions : ['js','vue']
     }),*/
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+	new NodePolyfillPlugin()
 ];
 
 for (let i = 0; i < My_Definitions.html_files_to_add.length; i++) {
@@ -209,7 +211,9 @@ module.exports = {
 	       "crypto": require.resolve("crypto-browserify"),
            "buffer": require.resolve("buffer/"),
            "stream": require.resolve("stream-browserify"),
-           "querystring": require.resolve("querystring-es3") 
+           "querystring": require.resolve("querystring-es3"),
+		   'process/browser': require.resolve('process/browser'),
+		   'process': require.resolve('process/browser') 
         }
     },
 

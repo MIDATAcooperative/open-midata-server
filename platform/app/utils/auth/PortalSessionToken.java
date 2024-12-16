@@ -128,6 +128,8 @@ public class PortalSessionToken {
 	}
 					
 	protected void populate(Map<String, Object> map) {		
+		if (userRole == null && ownerId != null) throw new NullPointerException();
+		
 		if (handle != null) map.put("h", handle);
 		if (ownerId != null) map.put("o", ownerId.toString());		
 		if (orgId != null) map.put("or", orgId.toString());		

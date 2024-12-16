@@ -17,11 +17,14 @@
 
 import forge from 'node-forge';
 import Axios from 'axios';
+import process from 'process';
 
 	var service = {};
 
 	var rsa = forge.pki.rsa;
 	var ssss = require('./../../src/secrets.js');
+    if (!window.process) window.process = process;	
+	
 	
 	var recoveryPubKeys = null;
 		
