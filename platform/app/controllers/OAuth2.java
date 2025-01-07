@@ -906,7 +906,9 @@ public class OAuth2 extends Controller {
         ExtendedSessionToken token = new ExtendedSessionToken();
         if (json.has("loginToken")) {
         	ExtendedSessionToken token1 = ExtendedSessionToken.decrypt(JsonValidation.getString(json, "loginToken"));
-        	if (token1.getIsChallengeResponse()) token = token1;
+        	if (token1.getIsChallengeResponse()) {
+        	  token = token1;
+        	} else return unauthorized();
         } else {
 	        token.created = System.currentTimeMillis();                               
 	        token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
