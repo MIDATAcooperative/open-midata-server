@@ -414,7 +414,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		if (attachments==null || attachments.isEmpty()) return Collections.emptyList();
 		List<UpdateFileHandleSupport> handles = new ArrayList<UpdateFileHandleSupport>();
 		for (Attachment attachment : attachments) {
-		    if (attachment==null) continue;		
+		    if (attachment==null) continue;	
+		    if (attachment.getUrl() == null && attachment.getData() == null) continue;
 			InputStream data = null;
 			UpdateFileHandleSupport handle1 = null;
 			
