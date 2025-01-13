@@ -155,7 +155,7 @@ public class FileTypeScanner {
 			if (mt == null) throw new BadRequestException("error.invalid.content", "File type not supported.");			
 						
 			if (!mimeType.toLowerCase().startsWith(mt)) throw new BadRequestException("error.invalid.content", "File type not supported. ext="+extension+" mt="+mimeType);
-		} else throw new InternalServerException("error.invalid.content", "File type not supported. file="+filename+" mt="+mimeType);
+		} else throw new InternalServerException("error.invalid.content", "Filename needs to have a '.' followed by a file extension. file="+filename+" mt="+mimeType);
 		
 		return true;
 	}
