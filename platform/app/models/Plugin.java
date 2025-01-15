@@ -65,7 +65,7 @@ public class Plugin extends Model implements Comparable<Plugin>, HasPredefinedMe
 	 */
 	public @NotMaterialized final static Set<String> ALL_DEVELOPER = 
 			 Sets.create("_id", "version", "creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", 
-	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
+	                     "targetUserRole", "spotlighted", "url", "homeUrl", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams", "refreshTkExchangeParams",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
@@ -76,7 +76,7 @@ public class Plugin extends Model implements Comparable<Plugin>, HasPredefinedMe
 	 */
 	public @NotMaterialized final static Set<String> ALL_PUBLIC = 
 			 Sets.create("_id", "version", "creator", "creatorLogin", "developerTeam", "filename", "name", "description", "tags", 
-	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
+	                     "targetUserRole", "spotlighted", "url", "homeUrl", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "pluginVersion",
 	                     "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "licenceDef", "pseudonymize", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "acceptTestAccounts", "acceptTestAccountsFromApp");
@@ -233,6 +233,12 @@ public class Plugin extends Model implements Comparable<Plugin>, HasPredefinedMe
 	 * null for mobile apps
 	 */
 	public String url;
+	
+	/**
+	 * The URL with the initial page of the application.
+	 * (For example after a password reset)
+	 */
+	public String homeUrl;
 	
 	/**
 	 * The URL from which an add data dialog for this plugin is served
@@ -522,7 +528,7 @@ public class Plugin extends Model implements Comparable<Plugin>, HasPredefinedMe
 	
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "apiUrl", "noUpdateHistory", "sendReports", "pseudonymize", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "testAccountsMax", "acceptTestAccounts", "acceptTestAccountsFromApp");
+		   DBLayer.secureUpdate(this, collection, "version", "creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url", "homeUrl", "developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "apiUrl", "noUpdateHistory", "sendReports", "pseudonymize", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "testAccountsMax", "acceptTestAccounts", "acceptTestAccountsFromApp");
 		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);

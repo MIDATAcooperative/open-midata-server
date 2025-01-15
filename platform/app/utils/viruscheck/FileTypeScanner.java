@@ -144,7 +144,9 @@ public class FileTypeScanner {
 	}
 	
 	public boolean isValidFile(String filename, String mimeType) throws AppException {		
+		if (filename == null || filename.trim().length()==0) throw new BadRequestException("error.invalid.filename", "Missing filename for attachment.");
 		if (filename.length() > 255) throw new BadRequestException("error.invalid.filename", "Filename too long.");
+		if (mimeType == null || mimeType.trim().length()==0) throw new BadRequestException("error.invalid.content", "Missing contentType for attachment.");
 		
 		AccessLog.log("check ", filename, " mimeType=", mimeType);
 		int p = filename.lastIndexOf('.');

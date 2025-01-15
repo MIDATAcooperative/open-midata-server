@@ -325,7 +325,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			  String url = getAttachmentBaseUrl()+record._id+"_"+idx;
 			  attachment.setUrl(url);
 			  idx++;
-		  }
+		  } else if (attachment != null && attachment.getUrl().equals("//")) attachment.setUrl(null);
 		}
 	}
 	
@@ -415,7 +415,11 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		List<UpdateFileHandleSupport> handles = new ArrayList<UpdateFileHandleSupport>();
 		for (Attachment attachment : attachments) {
 		    if (attachment==null) continue;	
-		    if (attachment.getUrl() == null && attachment.getData() == null) continue;
+		    if ((attachment.getUrl() == null || attachment.getUrl().length() == 0 || attachment.getUrl().equals("//")) && 
+		    	(attachment.getData() == null || attachment.getData().length == 0)) {
+		    	attachment.setUrl("//"); // Marker for no URL and data. Will be removed upon read
+		    	continue;
+		    }
 			InputStream data = null;
 			UpdateFileHandleSupport handle1 = null;
 			

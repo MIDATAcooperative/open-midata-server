@@ -118,7 +118,10 @@ import server from './server.js';
 		var pw = cred.password;
 		
 		var cred2 = JSON.parse(JSON.stringify(cred));
-		cred2.password = crypto.getHash(cred.password);		
+		
+		if (pw != null) {
+		  cred2.password = crypto.getHash(cred.password);
+		}		
 		var func = function(data) {
 			return server.post("/v1/authorize", cred2)
 		};

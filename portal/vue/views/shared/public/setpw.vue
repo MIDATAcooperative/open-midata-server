@@ -31,7 +31,12 @@
 
 							<div class="alert alert-success" v-if="success">
 								<p v-t="'setpw.success'"></p>
-								<p><router-link :to="{ path : '/public/login' }" v-t="'setpw.back_to_login'"></router-link></p>
+								<p v-if="homeUrl">
+								  <a :href="homeUrl" v-t="'setpw.back_to_login'"></a>
+								</p>
+								<p v-else>
+									<router-link :to="{ path : '/public/login' }" v-t="'setpw.back_to_login'"></router-link>
+								</p>
 							</div>
 							<div v-if="!success">
 								<p v-t="'setpw.enter_new'"></p>
@@ -59,15 +64,23 @@ import server from "services/server.js";
 import { status, FormGroup, ErrorBox, Password } from 'basic-vue3-components';
 import crypto from "services/crypto.js";
 
+function getAppInfo(name, type) {
+    var data = { "name": name };
+    if (type) data.type = type;
+    return server.post(jsRoutes.controllers.Plugins.getInfo().url, data);
+};
+
 export default {
   data: () => ({
      success : false,
      secure : false,
      role : "member",
+	 homeUrl : null,
      setpw : {
         token : "",
 		password : "",
-        passwordRepeat : ""
+        passwordRepeat : "",
+		app : null
      }
      
   }),
@@ -111,7 +124,16 @@ export default {
 			}
 			return server.post(jsRoutes.controllers.Application.setPasswordWithToken().url, data);
 		}).then(function() { 
-            $data.success = true;
+			
+			if ($data.setpw.app) {
+				getAppInfo($data.setpw.app)     	
+				.then(function(results) {
+				  if (results.data && results.data.homeUrl) {
+					$data.homeUrl = results.data.homeUrl;
+				  }
+				  $data.success = true;
+				});
+			} else $data.success = true;
         }));	
      }
   },
@@ -121,6 +143,7 @@ export default {
      $data.setpw.token = $route.query.token;
      $data.secure = $route.query.ns != 1;	
      $data.role = $route.query.role || "member";	
+	 $data.setpw.app = $route.query.app;
      this.loadEnd();
   }
 }

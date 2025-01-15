@@ -17,6 +17,9 @@
 
 package controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -40,6 +43,7 @@ import models.HPUser;
 import models.KeyInfoExtern;
 import models.Member;
 import models.MidataId;
+import models.Plugin;
 import models.RateLimitedAction;
 import models.ResearchUser;
 import models.User;
@@ -138,7 +142,9 @@ public class Application extends APIController {
 		JsonValidation.validate(json, "email", "role");				
 		String email = JsonValidation.getEMail(json, "email");
 		String role = JsonValidation.getString(json, "role");
-		
+		String appStr = JsonValidation.getStringOrNull(json, "app");
+		MidataId app = appStr != null ? MidataId.parse(appStr) : null;
+						
 		// execute
 		User user = null;
 		switch (role) {
@@ -152,7 +158,7 @@ public class Application extends APIController {
 		default: break;		
 		}
 		if (user != null) {				
-		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, Actor.getActor(null, user._id));
+		  AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_PASSWORD_CHANGE_REQUEST).withActor(Actor.getActor(null, user._id)).withApp(app));
 		  if (user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
 		  
 		  if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.USER_PASSWORD_CHANGE_REQUEST, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
@@ -174,13 +180,21 @@ public class Application extends APIController {
 		  String url = site + "/#/portal/setpw?token=" + encrypted;
 		  if (user.security != AccountSecurityLevel.KEY_EXT_PASSWORD) url +="&ns=1";
 		  url += "&role="+role;
+		  if (app != null) {
+			  Plugin pl = Plugin.getById(app);
+			  try {
+			    if (pl != null && pl.homeUrl != null) url+="&app="+URLEncoder.encode(pl.filename, "UTF-8");
+			  } catch (UnsupportedEncodingException e) {}
+		  }
 		  
 		  Map<String,String> replacements = new HashMap<String, String>();
 		  replacements.put("site", site);
 		  replacements.put("password-link", url);
 		   				
-		  if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.PASSWORD_FORGOTTEN, null, Collections.singleton(user._id), null, replacements)) {			  		  		 
-		    Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString(), AuditManager.instance.convertLastEventToAsync());
+		  if (app == null || !Messager.sendMessage(app, MessageReason.PASSWORD_FORGOTTEN, null, Collections.singleton(user._id), null, replacements)) {			  		  		 
+			  if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.PASSWORD_FORGOTTEN, null, Collections.singleton(user._id), null, replacements)) {
+   		        Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString(), AuditManager.instance.convertLastEventToAsync());
+			  }
 		  }		
 		  AuditManager.instance.success();
 		}
@@ -225,7 +239,8 @@ public class Application extends APIController {
 		   if (user.email == null || user.email.trim().length()==0) return;
 		   
 		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
-			   throw new InternalServerException("error.ratelimit", "Rate limit hit");
+			   return;
+			   //throw new InternalServerException("error.ratelimit", "Rate limit hit");
 		   }
 		   
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
@@ -759,7 +774,7 @@ public class Application extends APIController {
 						
 		ArrayNode ar = obj.putArray("requirements");
 		for (UserFeature feature : missing) ar.add(feature.toString());
-		token.setRemoteAddress(request);
+		if (request != null) token.setRemoteAddress(request);
 		obj.put("sessionToken", token.encrypt());
 			
 		AuditManager.instance.success();
