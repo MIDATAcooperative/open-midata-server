@@ -159,6 +159,7 @@
     "accept_test_accounts" : "Allow Test-Users?",
     "accept_test_accounts_from_app" : "Allowed source applications",
     "test_accounts_max" : "Test accounts limit",
+    "home_url" : "Landing page",
     "info" : {
        "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
@@ -180,6 +181,7 @@
        "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
        "tags" : "Categories on the Store for which your plugin should be listed.",
        "url" : "URL of your plugins main page. If you use @PRODUCT's template, it is 'dist/index.html#!?authToken=:authToken''",
+       "home_url" : "URL of initial page (before login).",
        "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
        "defaultSpaceContext" : "Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.",
        "redirectUri" : "You may specifiy multiple possible redirect URIs by separating the URIs with a space.",

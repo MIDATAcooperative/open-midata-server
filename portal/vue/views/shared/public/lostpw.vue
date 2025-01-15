@@ -64,7 +64,7 @@ import { status, FormGroup, ErrorBox } from 'basic-vue3-components';
 export default {
   data: () => ({
      success : false,
-     lostpw : { email : "", role : null },
+     lostpw : { email : "", role : null, app : null },
      roles : [
             { value : "member", name : "enum.userrole.MEMBER" },
 		    { value : "provider" , name : "enum.userrole.PROVIDER"},
@@ -87,10 +87,11 @@ export default {
     },
     
     submit() {	
-        const { $data, $route }	= this;
+        const { $data }	= this;
        
 		// send the request
 		var data = { "email": $data.lostpw.email, "role" : $data.lostpw.role };
+		if (this.$data.lostpw.app) data.app = this.$data.lostpw.app;
 		this.doAction("pw",server.post(jsRoutes.controllers.Application.requestPasswordResetToken().url, data)).
 		then(function() { 
 			$data.success = true; 
@@ -100,6 +101,7 @@ export default {
 
   created() {  
      this.$data.lostpw.role = this.$route.meta.role;  
+	 this.$data.lostpw.app = this.$route.query.app;
      this.loadEnd();
   }
 }

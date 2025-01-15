@@ -279,6 +279,7 @@ public class Market extends APIController {
 			app.description = JsonValidation.getStringOrNull(json, "description");	
 			setDeveloperTeam(app, JsonExtraction.extractStringSet(json.get("developerTeamLogins")));
 			app.url = JsonValidation.getStringOrNull(json, "url");
+			app.homeUrl = JsonValidation.getStringOrNull(json, "homeUrl");
 			app.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
 			app.addDataUrl = JsonValidation.getStringOrNull(json, "addDataUrl");
 			app.developmentServer = "https://localhost:9004/"+app.filename;
@@ -747,6 +748,7 @@ public class Market extends APIController {
 		plugin.spotlighted = JsonValidation.getBoolean(json, "spotlighted");
 		plugin.type = JsonValidation.getString(json, "type");
 		plugin.url = JsonValidation.getStringOrNull(json, "url");
+		plugin.homeUrl = JsonValidation.getStringOrNull(json, "homeUrl");
 		plugin.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
 		plugin.addDataUrl = JsonValidation.getStringOrNull(json, "addDataUrl");
 		plugin.developmentServer = "https://localhost:9004/"+plugin.filename; //JsonValidation.getStringOrNull(json, "developmentServer");
@@ -886,6 +888,7 @@ public class Market extends APIController {
 		app.description = JsonValidation.getStringOrNull(json, "description");		
 		app.type = JsonValidation.getString(json, "type");
 		app.url = JsonValidation.getStringOrNull(json, "url");
+		app.homeUrl = JsonValidation.getStringOrNull(json, "homeUrl");
 		app.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
 		app.addDataUrl = JsonValidation.getStringOrNull(json, "addDataUrl");
 		app.developmentServer = "https://localhost:9004/"+app.filename;
