@@ -276,6 +276,7 @@ POST    /api/admin/stats                                 controllers.admin.Admin
 POST    /api/admin/usage                                 controllers.admin.Administration.getUsageStats(request: Request)
 GET     /api/admin/health                                controllers.admin.Administration.getSystemHealth()
 POST    /api/admin/cancelconsent/:userId/:consentId      controllers.admin.Administration.consentRemove(request: Request, userId : String, consentId : String)
+POST    /api/admin/testpatientremove                     controllers.admin.Administration.deleteTestPatients(request: Request)
 GET		/api/admins/pwrecovery                           controllers.PWRecovery.getUnfinished(request: Request)
 POST	/api/admins/pwrecovery                           controllers.PWRecovery.storeRecoveryShare(request: Request)
 POST	/api/admins/pwrecovery/finish                    controllers.PWRecovery.finishRecovery(request: Request)
