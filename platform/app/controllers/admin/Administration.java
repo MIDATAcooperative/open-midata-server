@@ -57,6 +57,7 @@ import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.InstanceType;
 import models.enums.MessageReason;
 import models.enums.SecondaryAuthType;
 import models.enums.StudyExecutionStatus;
@@ -699,5 +700,20 @@ public class Administration extends APIController {
         AuditManager.instance.success();
         return ok();
     }
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public Result deleteTestPatients(Request request) throws AppException {
+	  if (InstanceConfig.getInstance().getInstanceType() != InstanceType.TEST) return unauthorized();
+	  AccessContext context = portalContext(request);
+	  Set<User> users = User.getAllUser(CMaps.map("initialApp", MidataId.from("65096eae8aa44a20aa20fca3")).map("status", User.NON_DELETED), Sets.create("_id"));
+	  if (users.size() > 580) throw new NullPointerException();
+	  for (User user : users) {
+	    AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActor(context, context.getActor()).withModifiedActor(context, user._id).withMessage("Testuser Bulk-Delete"));
+		SubscriptionManager.accountWipe(context, user._id);
+		//AuditManager.instance.success();
+	  }	  		
+	  return ok("ok");
+	}
 	
 }
