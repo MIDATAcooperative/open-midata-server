@@ -438,8 +438,12 @@ export default {
 		   		else session.postLogin(funcresult, $router, $route);		
 	    	} else {
 				let r = me.doAction("login",session.retryLogin(params));				
-				r.then(function(result) {					
-					if (result.data.istatus === "ACTIVE") {						
+				r.then(function(result) {	
+					console.log(result.data);
+					if (result.data == "ask-password") {
+						$router.go(-1);	
+					}				
+					else if (result.data.istatus === "ACTIVE") {						
 						oauth.postLogin(result);
 					}
 					else {

@@ -88,6 +88,7 @@ import utils.auth.LicenceChecker;
 import utils.auth.MobileAppSessionToken;
 import utils.auth.OAuthRefreshToken;
 import utils.auth.PortalSessionToken;
+import utils.auth.PreAuthSecured;
 import utils.auth.PreLoginSecured;
 import utils.auth.TokenCrypto;
 import utils.auth.auth2factor.Authenticators;
@@ -631,10 +632,19 @@ public class OAuth2 extends Controller {
 	}
 	
 	private static final Result checkPasswordAuthentication(ExtendedSessionToken token, JsonNode json, User user) throws AppException {
-		if (token.ownerId != null) return null;
+		if (token.ownerId != null && token.getIsAuthenticated()) return null;
 						
-		String password = JsonValidation.getString(json, "password");
+		String password = JsonValidation.getStringOrNull(json, "password");
 		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken");
+		
+		if (password == null) {
+		  if (user.password == null) {							
+			  Application.sendWelcomeMail(token.currentContext, token.appId, user, user);			  
+			  token.ownerId = user._id;
+			  return Application.loginHelperResult(null, token, user, Collections.singleton(UserFeature.EMAIL_VERIFIED));
+		  }
+		  return ok("ask-password");
+		}
 				
 		if (user.publicExtKey == null) {
 			if (!json.has("nonHashed")) {
@@ -652,7 +662,8 @@ public class OAuth2 extends Controller {
 			throw e;
 		}
 		
-		token.ownerId = user._id;		
+		token.ownerId = user._id;	
+		token.setIsAuthenticated();
 		return null;
 		
 	}		
@@ -901,7 +912,7 @@ public class OAuth2 extends Controller {
 	public Result login(Request request) throws AppException {
 			
         JsonNode json = request.body().asJson();		
-        JsonValidation.validate(json, "appname", "username", "password", "device", "state", "redirectUri");
+        JsonValidation.validate(json, "appname", "username", "device", "state", "redirectUri");
 
         ExtendedSessionToken token = new ExtendedSessionToken();
         if (json.has("loginToken")) {
@@ -926,7 +937,7 @@ public class OAuth2 extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(PreLoginSecured.class)
+	@Security.Authenticated(PreAuthSecured.class)
 	public Result continuelogin(Request request) throws AppException {
 		JsonNode json = request.body().asJson();		
        

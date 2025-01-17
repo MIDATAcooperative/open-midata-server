@@ -33,6 +33,7 @@ public class PreLoginSecured extends Security.Authenticator {
 	public Optional<String> getUsername(Request ctx) {
 	    PortalSessionToken tk = PortalSessionToken.decrypt(ctx);
 	    if (tk == null) return Optional.empty();
+	    if (tk instanceof ExtendedSessionToken && !((ExtendedSessionToken) tk).getIsAuthenticated()) return Optional.empty();
 	    try {
 	      if (tk.getHandle()!=null) KeyManager.instance.continueSession(tk.getHandle());
 	    } catch (AppException e) { return Optional.empty(); }	    

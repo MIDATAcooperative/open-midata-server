@@ -128,6 +128,14 @@ public class ExtendedSessionToken extends PortalSessionToken {
 		return (flags & (1 << 4)) > 0;
 	}
 	
+	public void setIsAuthenticated() {
+		flags |= (1 << 5);
+	}
+	
+	public boolean getIsAuthenticated() {
+		return (flags & (1 << 5)) > 0;
+	}
+	
 	protected void populate(Map<String, Object> map) {
 		super.populate(map);
 		if (appInstanceId != null) map.put("i", appInstanceId.toString());
@@ -144,7 +152,7 @@ public class ExtendedSessionToken extends PortalSessionToken {
 		if (codeChallenge != null) map.put("cs", codeChallenge);
 		if (codeChallengeMethod != null) map.put("csm", codeChallengeMethod);
 		
-		/*if (flags != 0)*/ map.put("f", flags);
+		map.put("f", flags);
 		
 		if (confirmations != null && !confirmations.isEmpty()) {
 			Set<String> conf = new HashSet<String>();
@@ -216,6 +224,7 @@ public class ExtendedSessionToken extends PortalSessionToken {
 		
 	
 	public OAuthRefreshToken asRefreshToken() {		
+		if (!getIsAuthenticated()) throw new NullPointerException();
 		return new OAuthRefreshToken(this.appId, this.appInstanceId, this.ownerId, this.aeskey, System.currentTimeMillis());
 	}
 		
@@ -224,6 +233,7 @@ public class ExtendedSessionToken extends PortalSessionToken {
     	this.userRole = user.role;
     	this.developerId = user.developer;
     	this.created = System.currentTimeMillis();
+    	setIsAuthenticated();
     	return this;
     }
     
@@ -268,5 +278,11 @@ public class ExtendedSessionToken extends PortalSessionToken {
     	if (user.mobileStatus == EMailStatus.VALIDATED && user.authType != null && user.authType != SecondaryAuthType.NONE && this.securityToken==null) return false;
     	return true;
 	}
+    
+    @Override
+    public PortalSessionToken asPortalSession() {
+    	if (!getIsAuthenticated()) throw new NullPointerException();
+	    return super.asPortalSession();	
+    }
 	
 }
