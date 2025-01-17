@@ -49,7 +49,8 @@
                             
             <p v-if="!messages.length" v-t="'appmessages.empty'"></p>
             
-            <router-link class="btn btn-default me-1" :to="{ path : './manageapp', query : { appId : app._id } }" v-t="'common.back_btn'"></router-link>		
+            <router-link class="btn btn-default me-1" :to="{ path : './manageapp', query : { appId : app._id } }" v-t="'common.back_btn'"></router-link>
+			<router-link class="btn btn-default me-1" :to="{ path : './appsmtp', query : { appId : app._id } }" v-t="'appmessages.smtp_btn'"></router-link>		
             <button class="btn btn-default" @click="addMessage()" v-t="'common.add_btn'"></button>
             
 		</div>

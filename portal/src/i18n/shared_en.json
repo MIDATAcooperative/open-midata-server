@@ -91,7 +91,8 @@
        "csvmapping" : "Invalid mapping provided.",
        "id" : "Invalid identifier",
        "usergroup" : "You must be member of this user group to perform this action.",
-       "project" : "Meta projects cannot be used as subprojects for other meta projects."
+       "project" : "Meta projects cannot be used as subprojects for other meta projects.",
+       "smtp" : "Test of SMTP configuration failed."
      },
 
      "missing" : {

@@ -39,6 +39,7 @@ import play.libs.mailer.MailerClient;
 import scala.Option;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;
+import com.typesafe.config.ConfigFactory;
 
 /**
  * function for sending mails
@@ -71,8 +72,9 @@ public class MailUtils {
         return new SMTPMailer(conf);		
 	}
 	
-	private MailerClient createInstance(SMTPConfig config) {
-		SMTPConfiguration conf = new SMTPConfiguration(config.host, config.port, config.ssl, config.tls, false, Option.apply(config.user), Option.apply(config.password), false, Option.empty(), Option.empty(), null, false);
+	private MailerClient createInstance(SMTPConfig smtp) {
+
+		SMTPConfiguration conf = new SMTPConfiguration(smtp.host, smtp.port, smtp.ssl, smtp.tls, false, Option.apply(smtp.user), Option.apply(smtp.password), false, Option.empty(), Option.empty(), ConfigFactory.empty(), false);
 		return new SMTPMailer(conf);	
 	}
 	

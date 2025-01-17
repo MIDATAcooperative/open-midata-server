@@ -555,6 +555,15 @@ public class Plugin extends Model implements Comparable<Plugin>, HasPredefinedMe
 		}
 	}
 	
+	public void updateSMTP() throws InternalServerException, LostUpdateException {		
+		try {
+		   DBLayer.secureUpdate(this, collection, "version", "smtp");
+		   Instances.cacheClear("plugin",  _id);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
 	public void updateIcons(Set<IconUse> icons) throws InternalServerException {
 		this.icons = icons;
 		Model.set(Plugin.class, collection, _id, "icons", icons);

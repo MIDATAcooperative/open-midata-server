@@ -124,7 +124,10 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.MailSenderType;
+import utils.messaging.MailUtils;
 import utils.messaging.Messager;
+import utils.messaging.SMTPConfig;
 import utils.plugins.DeploymentManager;
 import utils.plugins.DeploymentReport;
 
@@ -497,6 +500,48 @@ public class Market extends APIController {
 		   app.updateLicenceDef();		   
 		} catch (LostUpdateException e) {
 			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
+		}
+		
+		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(DeveloperSecured.class)
+	public Result updateSMTP(Request request, String pluginIdStr) throws JsonValidationException, AppException {
+		// validate json
+		JsonNode json = request.body().asJson();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		// validate request		
+		MidataId pluginId = new MidataId(pluginIdStr);
+		
+		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+		
+		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+						
+		SMTPConfig config = new SMTPConfig();
+		config.host = JsonValidation.getStringOrNull(json, "host");
+		config.port = JsonValidation.getInteger(json, "port", 0, 10000);
+		config.ssl = JsonValidation.getBoolean(json, "ssl");
+		config.tls = JsonValidation.getBoolean(json, "tls");
+		config.user = JsonValidation.getStringOrNull(json, "user");
+		config.password = JsonValidation.getStringOrNull(json, "password");
+		
+		if (config.host != null) app.smtp = config; else app.smtp = null;
+		
+		try {
+		   app.updateSMTP();		   
+		} catch (LostUpdateException e) {
+			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
+		}
+		
+		User user = User.getById(userId, Sets.create("email", "firstname", "lastname"));
+		
+		try {
+		    MailUtils.sendTextMail(MailSenderType.USER, user.email, user.firstname+" "+user.lastname, "SMTP Config Test", "This is just a test mail to check the SMTP configuration for app: "+app.filename, app._id);
+		} catch (Exception e) {
+			throw new BadRequestException("error.invalid.smtp", e.toString());
 		}
 		
 		return ok();
