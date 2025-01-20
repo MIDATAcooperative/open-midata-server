@@ -119,7 +119,11 @@ public class MailUtils {
 		Email mail = new Email();		    	
 		mail.setSubject(subject);
 		mail.addTo(getMailboxFromAddressAndDisplay(email, fullname));
-		mail.setFrom(config.getString("play.mailer."+sender.toString().toLowerCase()+".from"));	
+		if (smtp != null) {
+		  mail.setFrom(smtp.from);	
+		} else {
+		  mail.setFrom(config.getString("play.mailer."+sender.toString().toLowerCase()+".from"));
+		}
 		
 		if (sender == MailSenderType.STATUS) {
 		  mail.setBodyText(content.toString());

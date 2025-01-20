@@ -527,6 +527,7 @@ public class Market extends APIController {
 		config.tls = JsonValidation.getBoolean(json, "tls");
 		config.user = JsonValidation.getStringOrNull(json, "user");
 		config.password = JsonValidation.getStringOrNull(json, "password");
+		config.from = JsonValidation.getStringOrNull(json, "from");
 		
 		if (config.host != null) app.smtp = config; else app.smtp = null;
 		
@@ -988,6 +989,7 @@ public class Market extends APIController {
 			smtp.password = JsonValidation.getStringOrNull(smtpJson, "password");
 			smtp.ssl = JsonValidation.getBoolean(smtpJson, "ssl");
 			smtp.tls = JsonValidation.getBoolean(smtpJson, "tls");
+			smtp.from = JsonValidation.getStringOrNull(smtpJson, "from");
 			app.smtp = smtp;
 		} else app.smtp = null;
 		

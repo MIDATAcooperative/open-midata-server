@@ -58,6 +58,11 @@
           <form-group name="password" label="appsmtp.password" :path="errors.password">
              <input type="text" id="password" name="password" class="form-control" v-validate v-model="smtp.password" required>
           </form-group>
+		  
+		  <form-group name="from" label="appsmtp.from" :path="errors.from">
+		     <input type="text" id="from" name="from" class="form-control" v-validate v-model="smtp.from" required>
+			 <p class="form-text text-muted" v-t="'appsmtp.from2'"></p>
+		  </form-group>
                                                           
           <form-group label="common.empty">
             <router-link :to="{ path : './manageapp' , query :  {appId:appId} }" class="btn btn-default me-1" v-t="'common.back_btn'"></router-link>              

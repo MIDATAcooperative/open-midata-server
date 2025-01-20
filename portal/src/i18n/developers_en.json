@@ -97,6 +97,8 @@
     "password" : "Password",
     "tls" : "TLS",
     "ssl" : "SSL",
+    "from" : "Sender",
+    "from2" : "Sender must contain sender name and email in the format: name<email>", 
     "success" : "SMTP configuration successfully updated."
   },
   
