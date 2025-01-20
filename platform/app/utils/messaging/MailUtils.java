@@ -31,11 +31,15 @@ import com.typesafe.config.Config;
 
 import akka.dispatch.Mailbox;
 import models.MidataId;
+import models.Plugin;
 import play.api.libs.mailer.SMTPConfiguration;
 import play.api.libs.mailer.SMTPMailer;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
 import scala.Option;
+import utils.collections.Sets;
+import utils.exceptions.InternalServerException;
+import com.typesafe.config.ConfigFactory;
 
 /**
  * function for sending mails
@@ -68,6 +72,12 @@ public class MailUtils {
         return new SMTPMailer(conf);		
 	}
 	
+	private MailerClient createInstance(SMTPConfig smtp) {
+
+		SMTPConfiguration conf = new SMTPConfiguration(smtp.host, smtp.port, smtp.ssl, smtp.tls, false, Option.apply(smtp.user), Option.apply(smtp.password), false, Option.empty(), Option.empty(), ConfigFactory.empty(), false);
+		return new SMTPMailer(conf);	
+	}
+	
 	private static MailUtils instance;
 	
 	public static void setInstance(MailUtils instance1) {
@@ -81,16 +91,27 @@ public class MailUtils {
 	 * @param subject title of email
 	 * @param content content of email
 	 */
-	public static void sendTextMail(MailSenderType sender, String email, String fullname, String subject, Object content) {		
+	public static void sendTextMail(MailSenderType sender, String email, String fullname, String subject, Object content, MidataId smtpFromApp) {		
 		if (instance == null) throw new NullPointerException("MailUtils not initialized");
-		instance.sendEmail(sender, email, fullname, subject, content);
+		SMTPConfig config = null;
+		if (smtpFromApp != null) {
+			try {
+			  Plugin pl = Plugin.getById(smtpFromApp, Sets.create("smtp", "status"));
+		      if (pl != null && pl.smtp != null && pl.status.isUsable()) config = pl.smtp;
+			} catch (InternalServerException e) {}
+		}
+		instance.sendEmail(sender, config, email, fullname, subject, content);
 	}
 	
 	public static void sendTextMailAsync(MailSenderType sender, String email, String fullname, String subject, Object content) {
-		Messager.sendTextMail(email, fullname, subject, content.toString(), null, sender);
+		sendTextMailAsync(sender, email, fullname, subject, content, null);
+	}
+	
+	public static void sendTextMailAsync(MailSenderType sender, String email, String fullname, String subject, Object content, MidataId smtpFromApp) {
+		Messager.sendTextMail(email, fullname, subject, content.toString(), null, sender, smtpFromApp);
 	}
 					 
-	public void sendEmail(MailSenderType sender, String email, String fullname, String subject, Object content) {
+	public void sendEmail(MailSenderType sender, SMTPConfig smtp, String email, String fullname, String subject, Object content) {
 		System.out.println("Start send mail to "+email+" at "+new Date().toString());
 		
 		if (email==null) return;
@@ -98,7 +119,11 @@ public class MailUtils {
 		Email mail = new Email();		    	
 		mail.setSubject(subject);
 		mail.addTo(getMailboxFromAddressAndDisplay(email, fullname));
-		mail.setFrom(config.getString("play.mailer."+sender.toString().toLowerCase()+".from"));	
+		if (smtp != null) {
+		  mail.setFrom(smtp.from);	
+		} else {
+		  mail.setFrom(config.getString("play.mailer."+sender.toString().toLowerCase()+".from"));
+		}
 		
 		if (sender == MailSenderType.STATUS) {
 		  mail.setBodyText(content.toString());
@@ -106,8 +131,12 @@ public class MailUtils {
 		  mail.setBodyHtml(getHTMLVersionFromText(content.toString()));
 		  mail.setBodyText(getTextOnlyVersion(content.toString()));
 		}
-		    
-		mailerClient.get(sender).send(mail);
+		
+		if (smtp != null) {
+			createInstance(smtp).send(mail);
+		} else {
+		    mailerClient.get(sender).send(mail);
+		}
 		System.out.println("End send mail to "+email);
 		System.out.flush();
 	}

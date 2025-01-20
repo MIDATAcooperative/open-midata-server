@@ -727,6 +727,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/applicence.vue')
   },
   {
+      base : ["admin", "developer"],
+      path : "appsmtp",
+      component: () => import(/* webpackChunkName: "developer" */ 'views/developer/appsmtp.vue')
+  },
+  {
     base : ["admin", "developer"],
     path : "repository",
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/repository.vue')

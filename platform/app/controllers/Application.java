@@ -1260,6 +1260,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.getReviews(),
 				controllers.routes.javascript.Market.getSoftwareChangeLog(),
 				controllers.routes.javascript.Market.updateLicence(),
+				controllers.routes.javascript.Market.updateSMTP(),
 				controllers.routes.javascript.Market.addLicence(),
 				controllers.routes.javascript.Market.searchLicenses(),
 				controllers.routes.javascript.Market.updateFromRepository(),
