@@ -161,6 +161,9 @@ public class Messager {
 		  if (footerDefs != null) footers = footerDefs.text;
 		}
 		
+		// Do not allow to sent password forgotten mail from another SMTP server
+		if (reason == MessageReason.PASSWORD_FORGOTTEN) sourceApp = RuntimeConstants.instance.portalPlugin;
+		
 		sendMessage(msg, footers, targets, defaultLanguage, replacements, channel, sourceApp);
 		
 		return true;

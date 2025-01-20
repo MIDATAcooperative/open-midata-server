@@ -209,6 +209,12 @@ public class Plugins extends APIController {
 				}
 			}
 		}
+		
+		// Remove password from SMTP server
+		for (Plugin pl : visualizations) {
+			if (pl.smtp != null) pl.smtp.password = null;
+		}
+		
 		return ok(JsonOutput.toJson(visualizations, "Plugin", fields)).as("application/json");
 	}
 

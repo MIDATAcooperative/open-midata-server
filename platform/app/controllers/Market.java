@@ -979,6 +979,17 @@ public class Market extends APIController {
 		if (json.has("loginButtonsTemplate")) {
 		  app.loginButtonsTemplate = JsonValidation.getEnum(json, "loginButtonsTemplate", LoginButtonsTemplate.class);
 		}
+		if (json.has("smtp")) {
+			JsonNode smtpJson = json.get("smtp");
+			SMTPConfig smtp = new SMTPConfig();
+			smtp.host = JsonValidation.getStringOrNull(smtpJson, "smtp");
+			smtp.port = JsonValidation.getInteger(smtpJson, "port", 0, 10000);
+			smtp.user = JsonValidation.getStringOrNull(smtpJson, "user");
+			smtp.password = JsonValidation.getStringOrNull(smtpJson, "password");
+			smtp.ssl = JsonValidation.getBoolean(smtpJson, "ssl");
+			smtp.tls = JsonValidation.getBoolean(smtpJson, "tls");
+			app.smtp = smtp;
+		} else app.smtp = null;
 		
 		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
 		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;
