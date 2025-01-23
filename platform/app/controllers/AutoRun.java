@@ -761,7 +761,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				String email = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
 				String fullname = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
 				String server = InstanceConfig.getInstance().getPlatformServer();
-				MailUtils.sendTextMail(MailSenderType.STATUS, email, fullname, "Autoimport "+server, report);									
+				MailUtils.sendTextMail(MailSenderType.STATUS, email, fullname, "Autoimport "+server, report, null);									
 				
 				if (endReport != null) {
 					endReport.cancel();

@@ -109,6 +109,7 @@ POST    /api/developers/plugins                          controllers.Market.regi
 PUT     /api/developers/plugins/:appId                   controllers.Market.updatePlugin(request: Request, appId: String)
 POST    /api/developers/plugins/:appId/subscriptions     controllers.Market.updateDefaultSubscriptions(request: Request,appId: String)
 POST    /api/developers/plugins/:appId/licence           controllers.Market.updateLicence(request: Request,appId: String)
+POST    /api/developers/plugins/:appId/smtp              controllers.Market.updateSMTP(request: Request,appId: String)
 DELETE  /api/developers/plugins/:appId            	     controllers.Market.deletePluginDeveloper(request: Request, appId: String)
 GET     /api/developers/plugins/:appId/stats             controllers.Market.getPluginStats(request: Request, appId: String)
 DELETE  /api/developers/plugins/:appId/stats             controllers.Market.deletePluginStats(request: Request, appId: String)
