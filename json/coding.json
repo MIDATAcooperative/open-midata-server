@@ -541,3 +541,16 @@
 {"_id":{"$oid":"66e2eed450e21b2c54e4647a"},"system":"http://form.brightfish.com","code":"odi","display":"Oswestry Low Back Pain Disability Questionnaire","content":"odi"}
 {"_id":{"$oid":"66e2ee2905bffe54fba894de"},"system":"http://form.brightfish.com","code":"lbp.followup","display":"Lower Back Pain Follow-up","content":"lbp.followup"}
 {"_id":{"$oid":"66e2edf205bffe54fba894dd"},"system":"http://form.brightfish.com","code":"lbp.baseline","display":"Lower Back Pain Baseline","content":"lbp.baseline"}
+{"_id":{"$oid":"678a713081ce797ab622f453"},"system":"http://form.brightfish.com","code":"symptomerfassung","display":"Symptomerfassung (PRO-CTCAE)","content":"PRO-CTCAE"}
+{"_id":{"$oid":"6752d51b9c373606311052f7"},"system":"http://form.brightfish.com","code":"koos-ps-right-knee","display":"KOOS-PS (right knee)","content":"koos-ps-right-knee"}
+{"_id":{"$oid":"6763f8ee0a62d43fa5d4683e"},"system":"http://midata.coop/sero","code":"treasure-chest-media","display":"SERO Schatzkisten-Eintrag","content":"treasure-chest-media"}
+{"_id":{"$oid":"6752d5aa9c373606311052fd"},"system":"http://form.brightfish.com","code":"mds-right-hip","display":"MDS (right hip)","content":"mds-right-hip"}
+{"_id":{"$oid":"6752d4f29c373606311052f5"},"system":"http://form.brightfish.com","code":"koos-ps-left-knee","display":"KOOS-PS (left knee)","content":"koos-ps-left-knee"}
+{"_id":{"$oid":"6752d676f86a56786aa18e92"},"system":"http://form.brightfish.com","code":"koos-ps","display":"KOOS-PS","content":"koos-ps"}
+{"_id":{"$oid":"6752d54a9c373606311052f9"},"system":"http://form.brightfish.com","code":"mds-left-hip","display":"MDS (left hip)","content":"mds-left-hip"}
+{"_id":{"$oid":"6752d6009c373606311052ff"},"system":"http://form.brightfish.com","code":"mds-right-knee","display":"MDS (right knee)","content":"mds-right-knee"}
+{"_id":{"$oid":"6752d69df86a56786aa18e94"},"system":"http://form.brightfish.com","code":"hoos-ps","display":"HOOS-PS","content":"hoos-ps"}
+{"_id":{"$oid":"6752d5739c373606311052fb"},"system":"http://form.brightfish.com","code":"mds-left-knee","display":"MDS (left knee)","content":"mds-left-knee"}
+{"_id":{"$oid":"6752d482f86a56786aa18e87"},"system":"http://form.brightfish.com","code":"hoos-ps-left-hip","display":"HOOS-PS (left hip)","content":"hoos-ps-left-hip"}
+{"_id":{"$oid":"6763f930942111073878a0c9"},"system":"http://midata.coop/sero","code":"treasure-chest","display":"SERO Schatzkiste","content":"treasure-chest"}
+{"_id":{"$oid":"6752d4b79c373606311052f3"},"system":"http://form.brightfish.com","code":"hoos-ps-right-hip","display":"HOOS-PS (right hip)","content":"hoos-ps-right-hip"}
