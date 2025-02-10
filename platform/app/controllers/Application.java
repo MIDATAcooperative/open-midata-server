@@ -230,7 +230,10 @@ public class Application extends APIController {
 	 * @param user user record which sould receive the mail
 	 */
 	public static void sendWelcomeMail(User user, Actor executingUser) throws AppException {
-		sendWelcomeMail(null, RuntimeConstants.instance.portalPlugin, user, executingUser);
+		
+		if (user.initialApp != null) {
+			sendWelcomeMail(null, user.initialApp, user, executingUser);
+		} else sendWelcomeMail(null, RuntimeConstants.instance.portalPlugin, user, executingUser);
 	}
 	
 	public static void sendWelcomeMail(AccessContext context, MidataId sourcePlugin, User user, Actor executingUser) throws AppException {
