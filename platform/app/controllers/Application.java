@@ -230,7 +230,10 @@ public class Application extends APIController {
 	 * @param user user record which sould receive the mail
 	 */
 	public static void sendWelcomeMail(User user, Actor executingUser) throws AppException {
-		sendWelcomeMail(null, RuntimeConstants.instance.portalPlugin, user, executingUser);
+		
+		if (user.initialApp != null) {
+			sendWelcomeMail(null, user.initialApp, user, executingUser);
+		} else sendWelcomeMail(null, RuntimeConstants.instance.portalPlugin, user, executingUser);
 	}
 	
 	public static void sendWelcomeMail(AccessContext context, MidataId sourcePlugin, User user, Actor executingUser) throws AppException {
@@ -247,12 +250,13 @@ public class Application extends APIController {
 		   user.set("resettoken", token.token);
 		   user.set("resettokenTs", System.currentTimeMillis());
 		   String encrypted = token.encrypt();
-	
+	       String lang = user.language != null ? "/"+user.language : "";
+		   
 		   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		   Map<String,String> replacements = new HashMap<String, String>();
 		   replacements.put("site", site);
-		   replacements.put("confirm-url", site + "/#/portal/confirm/" + encrypted);
-		   replacements.put("reject-url", site + "/#/portal/reject/" + encrypted);
+		   replacements.put("confirm-url", site + "/#/portal/confirm/" + encrypted+lang);
+		   replacements.put("reject-url", site + "/#/portal/reject/" + encrypted+lang);
 		   replacements.put("token", token.token);
 		   
 		   if (executingUser != null) {
@@ -1260,6 +1264,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.getReviews(),
 				controllers.routes.javascript.Market.getSoftwareChangeLog(),
 				controllers.routes.javascript.Market.updateLicence(),
+				controllers.routes.javascript.Market.updateSMTP(),
 				controllers.routes.javascript.Market.addLicence(),
 				controllers.routes.javascript.Market.searchLicenses(),
 				controllers.routes.javascript.Market.updateFromRepository(),

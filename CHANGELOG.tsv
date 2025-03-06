@@ -124,4 +124,5 @@ id0131	04.06.2024	a.kreutz	F	Consents may be managed by creator organization
 id0132	27.06.2024	a.kreutz	B	Bugfix for existing patient creation via API
 id0133	11.09.2024	a.kreutz	F	Test User	It is now possible to create users for testing on a production system.
 id0134	09.10.2024	a.kreutz	F	Two phase consent withdrawal	Consents are now withdrawen in two phases so that Subscriptions watching consent changes are still able to access the consents data.
+id0135	20.01.2025	a.kreutz	F	Configurable SMTP Server	Each application may now use its own SMTP server to send out messages.
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

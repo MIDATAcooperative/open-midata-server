@@ -346,13 +346,13 @@ public class BulkMails extends APIController {
 			if (!restricted || (user.emailLC.endsWith("@midata.coop") || user.role==UserRole.ADMIN)) {
 			  if (restricted) title="(Restricted Test): "+title;
 			  try {
-			    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content);
+			    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content, mailItem.appId);
 			  } catch (Exception e) {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e2) {}
 				try {
-				    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content);
+				    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content, mailItem.appId);
 				} catch (Exception e3) {
 				    mailItem.progressFailed++;
 				}

@@ -351,6 +351,7 @@ import languages from "services/languages.js";
 import { status, CheckBox, RadioBox, ErrorBox, FormGroup, Password } from 'basic-vue3-components';
 import session from "services/session.js";
 import ENV from "config";
+import { setLocale } from "services/lang.js";
 
 export default {
 	data: () => ({
@@ -722,6 +723,9 @@ export default {
     },
     
 	created() {
+        if (this.$route.query.language) {
+            setLocale(this.$route.query.language);
+        }
 		this.prepare();
 	}
     

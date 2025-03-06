@@ -63,6 +63,7 @@
 import server from "services/server.js";
 import { status, FormGroup, ErrorBox, Password } from 'basic-vue3-components';
 import crypto from "services/crypto.js";
+import { setLocale } from "services/lang.js";
 
 function getAppInfo(name, type) {
     var data = { "name": name };
@@ -144,6 +145,9 @@ export default {
      $data.secure = $route.query.ns != 1;	
      $data.role = $route.query.role || "member";	
 	 $data.setpw.app = $route.query.app;
+     if ($route.query.language) {
+        setLocale($route.query.language); 
+     }
      this.loadEnd();
   }
 }

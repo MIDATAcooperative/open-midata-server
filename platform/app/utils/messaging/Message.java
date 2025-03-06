@@ -27,23 +27,26 @@ public class Message {
 	private final String receiverName;
 	private final MidataId eventId;
 	private final MailSenderType type;
+	private final MidataId smtpFromApp;
 	
-	public Message(String receiverEmail, String receiverName, String subject, String text, MidataId eventId) {
+	public Message(String receiverEmail, String receiverName, String subject, String text, MidataId eventId, MidataId smtpFromApp) {
 		this.text = text;
 		this.subject = subject;
 		this.receiverEmail = receiverEmail;
 		this.receiverName = receiverName;
 		this.eventId = eventId;
 		this.type = MailSenderType.USER;
+		this.smtpFromApp = smtpFromApp;
 	}
 	
-	public Message(MailSenderType type, String receiverEmail, String receiverName, String subject, String text, MidataId eventId) {
+	public Message(MailSenderType type, String receiverEmail, String receiverName, String subject, String text, MidataId eventId, MidataId smtpFromApp) {
 		this.text = text;
 		this.subject = subject;
 		this.receiverEmail = receiverEmail;
 		this.receiverName = receiverName;
 		this.eventId = eventId;
 		this.type = type;
+		this.smtpFromApp = smtpFromApp;
 	}
 
 	public String getText() {
@@ -69,6 +72,11 @@ public class Message {
 	public MailSenderType getType() {
 		return type;
 	}
+
+	public MidataId getSmtpFromApp() {
+		return smtpFromApp;
+	}
+	
 	
 		
 }

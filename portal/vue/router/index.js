@@ -94,6 +94,14 @@ const baseRoutes = [
     redirect : to => ({ path : "/portal/reject", query : { token : to.params.token }})
   },
   {
+    path : '/portal/confirm/:token/:lang',
+    redirect : to => ({ path : "/portal/confirm", query : { token : to.params.token, language : to.params.lang }})
+  },
+  {
+    path : '/portal/reject/:token/:lang',
+    redirect : to => ({ path : "/portal/reject", query : { token : to.params.token, language : to.params.lang  }})
+  },
+  {
     path : '/',
     redirect : ((domain.indexOf("ch.midata.coop")>=0) ? '/public/login' : '/public/info')
   }
@@ -725,6 +733,11 @@ const routes = [
     base : ["admin", "developer"],
     path : "applicence",
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/applicence.vue')
+  },
+  {
+      base : ["admin", "developer"],
+      path : "appsmtp",
+      component: () => import(/* webpackChunkName: "developer" */ 'views/developer/appsmtp.vue')
   },
   {
     base : ["admin", "developer"],
