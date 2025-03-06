@@ -250,12 +250,13 @@ public class Application extends APIController {
 		   user.set("resettoken", token.token);
 		   user.set("resettokenTs", System.currentTimeMillis());
 		   String encrypted = token.encrypt();
-	
+	       String lang = user.language != null ? "/"+user.language : "";
+		   
 		   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		   Map<String,String> replacements = new HashMap<String, String>();
 		   replacements.put("site", site);
-		   replacements.put("confirm-url", site + "/#/portal/confirm/" + encrypted);
-		   replacements.put("reject-url", site + "/#/portal/reject/" + encrypted);
+		   replacements.put("confirm-url", site + "/#/portal/confirm/" + encrypted+lang);
+		   replacements.put("reject-url", site + "/#/portal/reject/" + encrypted+lang);
 		   replacements.put("token", token.token);
 		   
 		   if (executingUser != null) {

@@ -101,6 +101,7 @@ public class FileTypeScanner {
 		r("text/rtf","rtf");
 		r("text/tab-separated-values","tsv");
 		r("text/xml","xml");
+		r("text/turtle", "ttl");
 		r("video/mpeg","mpeg");
 		r("video/mpeg","mpg");
 		r("video/mpeg","mpe");
