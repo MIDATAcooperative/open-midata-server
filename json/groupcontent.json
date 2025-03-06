@@ -489,3 +489,16 @@
 {"_id":{"$oid":"66e2ee6605bffe54fba894e1"},"system":"v1","name":"prom","content":"lbp.nprs"}
 {"_id":{"$oid":"66e2eed450e21b2c54e4647b"},"system":"v1","name":"prom","content":"odi"}
 {"_id":{"$oid":"66e2ee2905bffe54fba894df"},"system":"v1","name":"prom","content":"lbp.followup"}
+{"_id":{"$oid":"6763f930942111073878a0ca"},"system":"v1","name":"other","content":"treasure-chest"}
+{"_id":{"$oid":"678a713081ce797ab622f454"},"system":"v1","name":"prom","content":"PRO-CTCAE"}
+{"_id":{"$oid":"6752d51b9c373606311052f8"},"system":"v1","name":"prom","content":"koos-ps-right-knee"}
+{"_id":{"$oid":"6763f8ee0a62d43fa5d4683f"},"system":"v1","name":"media","content":"treasure-chest-media"}
+{"_id":{"$oid":"6752d5aa9c373606311052fe"},"system":"v1","name":"prom","content":"mds-right-hip"}
+{"_id":{"$oid":"6752d4f29c373606311052f6"},"system":"v1","name":"prom","content":"koos-ps-left-knee"}
+{"_id":{"$oid":"6752d676f86a56786aa18e93"},"system":"v1","name":"prom","content":"koos-ps"}
+{"_id":{"$oid":"6752d6009c37360631105300"},"system":"v1","name":"prom","content":"mds-right-knee"}
+{"_id":{"$oid":"6752d69df86a56786aa18e95"},"system":"v1","name":"prom","content":"hoos-ps"}
+{"_id":{"$oid":"6752d54a9c373606311052fa"},"system":"v1","name":"prom","content":"mds-left-hip"}
+{"_id":{"$oid":"6752d5739c373606311052fc"},"system":"v1","name":"prom","content":"mds-left-knee"}
+{"_id":{"$oid":"6752d482f86a56786aa18e88"},"system":"v1","name":"prom","content":"hoos-ps-left-hip"}
+{"_id":{"$oid":"6752d4b79c373606311052f4"},"system":"v1","name":"prom","content":"hoos-ps-right-hip"}

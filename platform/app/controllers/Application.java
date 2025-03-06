@@ -58,6 +58,7 @@ import models.enums.MessageReason;
 import models.enums.ParticipationInterest;
 import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
+import models.enums.TokenType;
 import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -148,12 +149,12 @@ public class Application extends APIController {
 		// execute
 		User user = null;
 		switch (role) {
-		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
-		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
-		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
+		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));break;
+		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));break;
+		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));break;
 		case "developer" : 
-			user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));
-			if (user == null) user = Admin.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));
+			user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));
+			if (user == null) user = Admin.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));
 			break;
 		default: break;		
 		}
@@ -173,6 +174,7 @@ public class Application extends APIController {
 			  token = new PasswordResetToken(user._id, role);
 			  user.set("resettoken", token.token);
 			  user.set("resettokenTs", System.currentTimeMillis());
+			  user.set("resettokenType", TokenType.PWRESET_MAIL);
 		  }
 		  String encrypted = token.encrypt();
 			   
@@ -230,7 +232,10 @@ public class Application extends APIController {
 	 * @param user user record which sould receive the mail
 	 */
 	public static void sendWelcomeMail(User user, Actor executingUser) throws AppException {
-		sendWelcomeMail(null, RuntimeConstants.instance.portalPlugin, user, executingUser);
+		
+		if (user.initialApp != null) {
+			sendWelcomeMail(null, user.initialApp, user, executingUser);
+		} else sendWelcomeMail(null, RuntimeConstants.instance.portalPlugin, user, executingUser);
 	}
 	
 	public static void sendWelcomeMail(AccessContext context, MidataId sourcePlugin, User user, Actor executingUser) throws AppException {
@@ -246,13 +251,15 @@ public class Application extends APIController {
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
 		   user.set("resettoken", token.token);
 		   user.set("resettokenTs", System.currentTimeMillis());
+		   user.set("resettokenType", TokenType.WELCOME_MAIL);
 		   String encrypted = token.encrypt();
-	
+	       String lang = user.language != null ? "/"+user.language : "";
+		   
 		   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		   Map<String,String> replacements = new HashMap<String, String>();
 		   replacements.put("site", site);
-		   replacements.put("confirm-url", site + "/#/portal/confirm/" + encrypted);
-		   replacements.put("reject-url", site + "/#/portal/reject/" + encrypted);
+		   replacements.put("confirm-url", site + "/#/portal/confirm/" + encrypted+lang);
+		   replacements.put("reject-url", site + "/#/portal/reject/" + encrypted+lang);
 		   replacements.put("token", token.token);
 		   
 		   if (executingUser != null) {
