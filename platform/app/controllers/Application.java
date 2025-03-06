@@ -58,6 +58,7 @@ import models.enums.MessageReason;
 import models.enums.ParticipationInterest;
 import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
+import models.enums.TokenType;
 import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -148,12 +149,12 @@ public class Application extends APIController {
 		// execute
 		User user = null;
 		switch (role) {
-		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
-		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
-		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
+		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));break;
+		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));break;
+		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));break;
 		case "developer" : 
-			user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));
-			if (user == null) user = Admin.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));
+			user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));
+			if (user == null) user = Admin.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));
 			break;
 		default: break;		
 		}
@@ -173,6 +174,7 @@ public class Application extends APIController {
 			  token = new PasswordResetToken(user._id, role);
 			  user.set("resettoken", token.token);
 			  user.set("resettokenTs", System.currentTimeMillis());
+			  user.set("resettokenType", TokenType.PWRESET_MAIL);
 		  }
 		  String encrypted = token.encrypt();
 			   
@@ -249,6 +251,7 @@ public class Application extends APIController {
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
 		   user.set("resettoken", token.token);
 		   user.set("resettokenTs", System.currentTimeMillis());
+		   user.set("resettokenType", TokenType.WELCOME_MAIL);
 		   String encrypted = token.encrypt();
 	       String lang = user.language != null ? "/"+user.language : "";
 		   

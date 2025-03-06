@@ -62,6 +62,7 @@ import models.enums.MessageReason;
 import models.enums.SecondaryAuthType;
 import models.enums.StudyExecutionStatus;
 import models.enums.SubUserRole;
+import models.enums.TokenType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.stats.InstanceStats;
@@ -387,6 +388,7 @@ public class Administration extends APIController {
 		PasswordResetToken token = new PasswordResetToken(targetUser._id, targetUser.role.toString(), true);
 		targetUser.set("resettoken", token.token);
 		targetUser.set("resettokenTs", System.currentTimeMillis());
+		targetUser.set("resettokenType", TokenType.MAILCHANGE_NOTIFICATION);
 		String encrypted = token.encrypt();
 			
 		String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();

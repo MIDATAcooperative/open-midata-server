@@ -41,6 +41,7 @@ import models.enums.EntityType;
 import models.enums.Gender;
 import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
+import models.enums.TokenType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.PasswordHash;
@@ -141,6 +142,11 @@ public class User extends Model implements Comparable<User>, Actor {
 	 * Timestamp of password reset token request
 	 */
 	public long resettokenTs; 
+	
+	/**
+	 * The type of the reset token
+	 */
+	public TokenType resettokenType;
 	
 	/**
 	 * Status of user account
