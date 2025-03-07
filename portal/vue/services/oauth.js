@@ -76,6 +76,10 @@ import server from './server.js';
 	   cred.role = role || "MEMBER";
 	};
 	
+	service.setPassword = function(password) {
+	   if (cred.username) cred.password = password;
+	};
+	
 	service.setUnlockCode = function(code) {
 		
 		cred.unlockCode = code;

@@ -83,6 +83,7 @@ import utils.auth.ExecutionInfo;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
+import utils.auth.OTPTools;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
@@ -167,15 +168,7 @@ public class Application extends APIController {
 			  return ok();
 		  }
 		  		  
-		  PasswordResetToken token;
-		  if (user.resettoken != null && user.resettokenTs > 0 && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME - 1000l * 60l * 60l) {
-			  token = new PasswordResetToken(user._id, role, user.resettoken);
-		  } else {		  
-			  token = new PasswordResetToken(user._id, role);
-			  user.set("resettoken", token.token);
-			  user.set("resettokenTs", System.currentTimeMillis());
-			  user.set("resettokenType", TokenType.PWRESET_MAIL);
-		  }
+		  PasswordResetToken token = OTPTools.issueToken(user, TokenType.PWRESET_MAIL);		  
 		  String encrypted = token.encrypt();
 			   
 		  String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
@@ -248,10 +241,7 @@ public class Application extends APIController {
 			   //throw new InternalServerException("error.ratelimit", "Rate limit hit");
 		   }
 		   
-		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
-		   user.set("resettoken", token.token);
-		   user.set("resettokenTs", System.currentTimeMillis());
-		   user.set("resettokenType", TokenType.WELCOME_MAIL);
+		   PasswordResetToken token = OTPTools.issueToken(user, TokenType.WELCOME_MAIL);
 		   String encrypted = token.encrypt();
 	       String lang = user.language != null ? "/"+user.language : "";
 		   
@@ -305,6 +295,34 @@ public class Application extends APIController {
 		   user.emailStatus = EMailStatus.VALIDATED;
 		   User.set(user._id, "emailStatus", user.emailStatus);
 	   }
+	}
+	
+	public static void sendOTP(AccessContext context, MidataId sourcePlugin, User user) throws AppException {
+		  		
+	   TokenType type = TokenType.OTP_MAIL;
+	   if (user.email == null || user.email.trim().length()==0) return;
+	   
+	   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.OTP_SENT, MIN_BETWEEN_MAILS, 4, PER_DAY)) {
+		   return;				  
+	   }
+	   
+	   PasswordResetToken token = OTPTools.issueToken(user, type);
+	   String encrypted = token.encrypt();
+       
+	   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
+	   Map<String,String> replacements = new HashMap<String, String>();
+	   replacements.put("site", site);			   
+	   replacements.put("token", token.token);
+	   			   			  		  
+	   AccessLog.log("send OTP mail: ", user.email);
+	   
+	   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.OTP_SENT).withApp(sourcePlugin).withActor(null, user._id));			   	  	  
+	   
+	   if (!Messager.sendMessage(sourcePlugin, MessageReason.ONE_TIME_PASSWORD, null, Collections.singleton(user._id), null, replacements)) {
+		   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.ONE_TIME_PASSWORD, user.role.toString(), Collections.singleton(user._id), null, replacements);
+	   }   
+	   
+	   AuditManager.instance.success();	   
 	}
 	
 	/**
@@ -394,16 +412,14 @@ public class Application extends APIController {
 		}
 		
 		
-		User user = User.getById(userId, Sets.create(User.FOR_LOGIN, "resettoken", "resettokenTs", "registeredAt", "confirmedAt", "previousEMail"));
+		User user = User.getById(userId, Sets.create(User.FOR_LOGIN, "resettoken", "resettokenTs", "resettokenType", "registeredAt", "confirmedAt", "previousEMail"));
 		if (user == null)  throw new BadRequestException("error.unknown.user", "User not found");
 				
 		if (user!=null && password != null) {	
 			 AccessLog.log("trying to set password");
 			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, Actor.getActor(null, userId));
 			 
-			 boolean tokenOk = (token != null && user.resettoken != null 		    		    
-		    		   && user.resettoken.equals(token)
-		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME);
+			 boolean tokenOk = OTPTools.checkToken(user, token);
 			 boolean ok = tokenOk;
 			 if (!ok && user.flags != null && user.flags.contains(AccountActionFlags.CHANGE_PASSWORD)) ok = true;
 			 
@@ -423,14 +439,14 @@ public class Application extends APIController {
 		               }
 		    	   } else PWRecovery.changePassword(user, json);
 		    	   		
-		    	   if (user.emailStatus == EMailStatus.UNVALIDATED && wanted == null && tokenOk) {
+		    	   if (user.emailStatus == EMailStatus.UNVALIDATED && wanted == null && tokenOk && OTPTools.tokenConfirmsEMail(user)) {
 		    		   // Implicit confirmation of email address by having received password reset mail
 		    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);			       		    	   		         
 		               user.emailStatus = EMailStatus.VALIDATED;
 			           user.set("emailStatus", EMailStatus.VALIDATED);		 
 		    	   }
 		    	   
-		    	   if (tokenOk) user.set("resettoken", null);	
+		    	   if (tokenOk && wanted == null) OTPTools.clearToken(user);	
 		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 		}
 		
@@ -441,10 +457,7 @@ public class Application extends APIController {
 					AccessLog.log("password is still missing");
 					return OAuth2.loginHelper(request);	
 				}
-			       if (user.resettoken != null 		    		    
-			    		   && user.resettoken.equals(token)
-			    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
-				   
+			       if (OTPTools.checkToken(user, token)) {	   				   
 			    	   
 			    	   if (wanted == EMailStatus.REJECTED) {
 			    		   if (user.previousEMail != null) {
@@ -465,9 +478,8 @@ public class Application extends APIController {
 			    	   		          
 			           user.emailStatus = wanted;
 				       user.set("emailStatus", wanted);				       
-				       
-			       } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.resettoken != null 
-			    		   && user.resettoken.equals(token)) {
+				       OTPTools.clearToken(user);
+			       } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED) && OTPTools.checkTokenAllowExpired(user, token)) {
 			    	     sendWelcomeMail(user, null);
 			    	     throw new BadRequestException("error.expired.tokenresent", "Token has already expired. A new one has been requested.");
 			       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");

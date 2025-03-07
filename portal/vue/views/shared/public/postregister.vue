@@ -88,6 +88,20 @@
 						<div class="extraspace"></div>
 					</form>
 				</div>
+				
+				<div v-if="progress.OTP_VERIFIED">
+					<p v-t="'postregister.otp'"></p>
+					<form ref="myform" name="myform" @submit.prevent="otpsubmit()" role="form" class="form form-horizontal" novalidate>
+						<form-group name="password" label="postregister.otp_password" :path="errors.otp">
+							<password class="form-control" name="otp" v-model="otp.otp" style="margin-bottom:5px;" autofocus required />
+						</form-group>												
+						<div class="extraspace"></div>
+						<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'common.submit_btn'"></button>
+						<div class="extraspace"></div>
+                        <error-box :error="error"></error-box>
+						<!-- <p ng-show="error && !tokenIncluded" class="alert alert-danger" translate="{{ error.code || error }}"></p> -->
+					</form>
+				</div>
 							
 				<div v-if="progress.PASSWORD_SET">
 					<p v-t="'setpw.enter_new'"></p>
@@ -359,6 +373,7 @@ export default {
 		user : {},
 		passphrase : {},
 		setpw : { secure : true },
+		otp : { otp : "" },
 		progress : {},
 		mailSuccess : false,
 		codeSuccess : false,
@@ -465,6 +480,9 @@ export default {
 		   this.retry(null, { unlockCode : this.$data.unlockCode });
 		},
 
+		otpsubmit() {
+			this.retry(null, { otp : this.$data.otp.otp });
+		},
 		
 		pwsubmit() {
 			const { $data, $route, $t } = this, me = this;
@@ -511,7 +529,8 @@ export default {
 				.then(function(result) {
 					if (result.data.challenge) {
 					
-					} else {				
+					} else {	
+					oauth.setPassword($data.setpw.password);			
 					me.retry(result);
 					}
 				});
