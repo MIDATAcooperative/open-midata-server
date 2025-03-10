@@ -229,6 +229,8 @@ public enum AuditEventType {
 	
 	WELCOME_SENT(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "welcome-sent", "Welcome mail sent"), AuditEventAction.E),
 	
+	OTP_SENT(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "otp-sent", "Onetime password sent"), AuditEventAction.E),
+	
 	EMAIL_SENT(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "email-sent", "Email sent"), AuditEventAction.E),
 	
 	SMS_SENT(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "sms-sent", "SMS sent"), AuditEventAction.E),

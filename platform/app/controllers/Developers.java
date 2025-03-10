@@ -34,6 +34,7 @@ import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.SubUserRole;
+import models.enums.TokenType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
@@ -47,6 +48,7 @@ import utils.auth.CodeGenerator;
 import utils.auth.DeveloperSecured;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.KeyManager;
+import utils.auth.OTPTools;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
@@ -178,9 +180,7 @@ public class Developers extends APIController {
 		User target = User.getById(targetUserId, Sets.create("developer", "role", "password","security"));		
 		if (target == null || !target.developer.equals(developerId)) throw new BadRequestException("error.unknown.user", "No test user");
 		
-		PasswordResetToken token = new PasswordResetToken(target._id, target.role.toString().toLowerCase());
-		target.set("resettoken", token.token);
-		target.set("resettokenTs", System.currentTimeMillis());
+		PasswordResetToken token = OTPTools.issueToken(target, TokenType.PWRESET_MAIL);		
 		String encrypted = token.encrypt();
 					   	
 		String url = "/#/portal/setpw?token=" + encrypted;

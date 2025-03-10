@@ -92,7 +92,8 @@
        "id" : "Invalid identifier",
        "usergroup" : "You must be member of this user group to perform this action.",
        "project" : "Meta projects cannot be used as subprojects for other meta projects.",
-       "smtp" : "Test of SMTP configuration failed."
+       "smtp" : "Test of SMTP configuration failed.",
+       "otp" : "Wrong one-time password."
      },
 
      "missing" : {
@@ -375,7 +376,8 @@
 	   "apikey-created" : "API-Key created",
        "apikey-deleted" : "API-Key deleted",
        "service-instance-created" : "Service-Instance created",
-       "service-instance-deleted" : "Service-Instance deleted"	   	   
+       "service-instance-deleted" : "Service-Instance deleted",
+       "otp-sent" : "One-time password sent"	   	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -814,6 +816,8 @@
     "securityToken_btn" : "Send",
     "no_token" : "Please wait up to a minute for the code to arrive.",
     "no_token_btn" : "I did not receive the code",
+    "otp" : "An email with a one time password has been sent to your email address. Please enter the code from the email:",
+    "otp_password" : "One time password",
     "auth2factorsetup" : "Please setup your security settings: Do you want to protect access to your account with a second factor in addition to your password?",
     "auth2factorsetup2" : "You can change your settings later in your profile. Log into {{domain}} and click on your name on the top right.",
     "auth_type" : "Authentication",

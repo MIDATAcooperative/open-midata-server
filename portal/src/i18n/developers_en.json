@@ -57,6 +57,7 @@
        "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
 	   "FIRSTUSE_ANYUSER" : "First use of application",
 	   "FIRSTUSE_EXISTINGUSER" : "First use of application (if no registration email sent)",
+	   "ONE_TIME_PASSWORD" : "One-time password sent",
 	   "SERVICE_WITHDRAW" : "Stop use of service",
 	   "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
        "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",

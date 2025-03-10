@@ -41,6 +41,7 @@ import models.enums.EntityType;
 import models.enums.Gender;
 import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
+import models.enums.TokenType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.PasswordHash;
@@ -67,7 +68,7 @@ public class User extends Model implements Comparable<User>, Actor {
 	public static final @NotMaterialized Set<String> ALL_USER = Collections.unmodifiableSet(Sets.create("_id", "email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "midataID", "termsAgreed", "security", "notifications", "marketingEmail", "testUserApp"));
 	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed", "termsAgreed", "publicExtKey", "recoverKey", "flags", "security", "authType", "notifications", "passwordAge", "marketingEmail", "testUserApp", "testUserCustomer"));
 	public static final @NotMaterialized Set<String> PUBLIC = Collections.unmodifiableSet(Sets.create("email", "role", "status", "firstname", "lastname", "gender", "midataID", "testUserApp"));
-	public static final @NotMaterialized Set<String> FOR_LOGIN = Collections.unmodifiableSet(Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed", "flags", "resettoken", "termsAgreed", "publicExtKey", "recoverKey", "security", "phone", "mobile", "authType", "apps", "notifications", "confirmedAt", "birthday", "gender", "zip", "address1", "country", "city", "passwordAge", "testUserApp"));		
+	public static final @NotMaterialized Set<String> FOR_LOGIN = Collections.unmodifiableSet(Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed", "flags", "resettoken", "resettokenTs", "resettokenType", "termsAgreed", "publicExtKey", "recoverKey", "security", "phone", "mobile", "authType", "apps", "notifications", "confirmedAt", "birthday", "gender", "zip", "address1", "country", "city", "passwordAge", "testUserApp"));		
 			
 	/**
 	 * Email address of the user
@@ -141,6 +142,11 @@ public class User extends Model implements Comparable<User>, Actor {
 	 * Timestamp of password reset token request
 	 */
 	public long resettokenTs; 
+	
+	/**
+	 * The type of the reset token
+	 */
+	public TokenType resettokenType;
 	
 	/**
 	 * Status of user account
@@ -378,42 +384,50 @@ public class User extends Model implements Comparable<User>, Actor {
 		setMultiple(collection, Sets.create("failedLogins", "lastFailed"));
 	}
 	
+	public void checkLoginAttempts() throws AppException {
+		if (this.failedLogins > 4) {
+			long diff = System.currentTimeMillis() - this.lastFailed.getTime();
+			switch (this.failedLogins) {
+				case 5:
+				case 6:
+					if (diff < 1000l * 60l) throw new BadRequestException("error.blocked.password1", "Blocked for 1 minute.");
+					break;				
+				case 7:
+				case 8:
+					if (diff < 1000l * 60l * 5l) throw new BadRequestException("error.blocked.password5", "Blocked for 5 minutes.");					
+					break;
+				default:
+					if (diff < 1000l * 60l * 60l) throw new BadRequestException("error.blocked.password60", "Blocked for 1 hour.");					
+					break;
+			}
+		}		
+	}
+	
+	public void recordLoginAttempt(boolean valid) throws AppException {
+		if (!valid) {
+			this.failedLogins ++;
+			this.lastFailed = new Date();
+			setMultiple(collection, Sets.create("failedLogins", "lastFailed"));
+		} else {
+			if (this.failedLogins > 0){			
+				this.failedLogins = 0;
+				set("failedLogins", this.failedLogins);								
+			}
+		}
+	}
+	
 	public boolean authenticationValid(String givenPassword) throws AppException {
 		try {
 			if (givenPassword == null || this.password == null) return false;
 			
-			if (this.failedLogins > 4) {
-				long diff = System.currentTimeMillis() - this.lastFailed.getTime();
-				switch (this.failedLogins) {
-					case 5:
-					case 6:
-						if (diff < 1000l * 60l) throw new BadRequestException("error.blocked.password1", "Blocked for 1 minute.");
-						break;				
-					case 7:
-					case 8:
-						if (diff < 1000l * 60l * 5l) throw new BadRequestException("error.blocked.password5", "Blocked for 5 minutes.");					
-						break;
-					default:
-						if (diff < 1000l * 60l * 60l) throw new BadRequestException("error.blocked.password60", "Blocked for 1 hour.");					
-						break;
-				}
-			}
+			checkLoginAttempts();
 			
 			boolean valid = PasswordHash.validatePassword(givenPassword, this.password);
-			
-			if (!valid) {
-				this.failedLogins ++;
-				this.lastFailed = new Date();
-				setMultiple(collection, Sets.create("failedLogins", "lastFailed"));
-			} else {
-				if (this.failedLogins > 0){			
-					this.failedLogins = 0;
-					set("failedLogins", this.failedLogins);								
-				}
-				if (PasswordHash.needsUpgrade(this.password)) {
-					this.password = PasswordHash.createHash(givenPassword);
-					set("password", this.password);
-				}
+		
+			recordLoginAttempt(valid);
+			if (valid && PasswordHash.needsUpgrade(this.password)) {
+				this.password = PasswordHash.createHash(givenPassword);
+				set("password", this.password);				
 			}
 			
 			return valid;
@@ -511,6 +525,7 @@ public class User extends Model implements Comparable<User>, Actor {
 		this.registeredAt = null;
 		this.resettoken = null;
 		this.resettokenTs = 0;
+		this.resettokenType = null;
 		this.status = UserStatus.WIPED;
 		this.contractStatus = null;
 		this.agbStatus = null;
@@ -580,6 +595,13 @@ public class User extends Model implements Comparable<User>, Actor {
 		this.passwordAge = System.currentTimeMillis();		
 		this.setMultiple(collection, Sets.create("password", "publicExtKey", "security", "recoverKey", "passwordAge", "flags"));
 		this.removeFlag(AccountActionFlags.CHANGE_PASSWORD);
+	}
+	
+	public void updateResetToken(String resettoken, long ts, TokenType type) throws AppException {
+		this.resettoken = resettoken;
+		this.resettokenTs = ts;
+		this.resettokenType = type;
+		this.setMultiple(collection, Sets.create("resettoken", "resettokenTs", "resettokenType"));
 	}
 
 	@Override

@@ -62,6 +62,11 @@ public enum UserFeature {
 	ADDRESS_VERIFIED,
 	
 	/**
+	 * the user has to enter a OTP
+	 */
+	OTP_VERIFIED,
+	
+	/**
 	 * the user has been identified by passport
 	 */
 	PASSPORT_VERIFIED,
@@ -182,6 +187,8 @@ public enum UserFeature {
 				return true;
 			case APP_EXPIRED:
 			    return true;
+			case OTP_VERIFIED:
+				return true;
 		}
 		return false;
 	}
