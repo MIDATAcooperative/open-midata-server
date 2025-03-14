@@ -318,7 +318,7 @@ public class Application extends APIController {
 	   
 	   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.OTP_SENT).withApp(sourcePlugin).withActor(null, user._id));			   	  	  
 	   
-	   if (!Messager.sendMessage(sourcePlugin, MessageReason.ONE_TIME_PASSWORD, null, Collections.singleton(user._id), null, replacements)) {
+	   if (sourcePlugin==null || !Messager.sendMessage(sourcePlugin, MessageReason.ONE_TIME_PASSWORD, null, Collections.singleton(user._id), null, replacements)) {
 		   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.ONE_TIME_PASSWORD, user.role.toString(), Collections.singleton(user._id), null, replacements);
 	   }   
 	   
@@ -361,6 +361,8 @@ public class Application extends APIController {
 		String role;
 		String handle = null;
 		
+		ExtendedSessionToken stoken = null;
+		
 		if (json.has("token")) {	
 			AccessLog.log("confirm with token");
 			// check status
@@ -372,7 +374,7 @@ public class Application extends APIController {
 			token = passwordResetToken.token;
 			role = passwordResetToken.role.toUpperCase();	
 			
-			ExtendedSessionToken stoken = new ExtendedSessionToken();
+		    stoken = new ExtendedSessionToken();
 			stoken.userRole = UserRole.valueOf(role);
 			stoken.ownerId = userId;
 			stoken.created = System.currentTimeMillis();
@@ -453,11 +455,15 @@ public class Application extends APIController {
 		
 		if (wanted != null) {
 			if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {
+				
+			    if (OTPTools.checkToken(user, token)) {	
+			    	
 				if (user.password == null) {	
-					AccessLog.log("password is still missing");
+					AccessLog.log("password is still missing, but token is okay");
+					if (stoken != null) stoken.setIsAuthenticated();
 					return OAuth2.loginHelper(request);	
 				}
-			       if (OTPTools.checkToken(user, token)) {	   				   
+			      				   
 			    	   
 			    	   if (wanted == EMailStatus.REJECTED) {
 			    		   if (user.previousEMail != null) {
