@@ -304,7 +304,9 @@ export default {
 	},
 	
 	changeLanguage(lang) {
-		setLocale(lang);
+		if (!this.$route.query.developer) {
+	  	  setLocale(lang);
+		}
 	},
 
 	addressNeeded() {
@@ -514,16 +516,32 @@ export default {
 			  });
 			} else if ($data.role == "research") {
 				me.doAction("register", server.post(jsRoutes.controllers.research.Researchers.register().url, data))
-		        .then(function(data) { session.postLogin(data, $router, $route); });
+		        .then(function(data) { 
+					if (!me.$route.query.developer) {
+					  session.postLogin(data, $router, $route);
+					} else me.$router.go(-1);
+				});
 			} else if ($data.role == "provider") {
 				me.doAction("register", server.post(jsRoutes.controllers.providers.Providers.register().url, data))
-		        .then(function(data) { session.postLogin(data, $router, $route); });			
+		        .then(function(data) { 
+					if (!me.$route.query.developer) {
+					  session.postLogin(data, $router, $route);
+					} else me.$router.go(-1);
+				});			
 			} else if ($data.role == "developer") {
 				me.doAction("register", server.post(jsRoutes.controllers.Developers.register().url, data))
-		        .then(function(data) { session.postLogin(data, $router, $route); });	
+		        .then(function(data) {
+					if (!me.$route.query.developer) { 
+					  session.postLogin(data, $router, $route);
+					} else me.$router.go(-1);
+				});	
 			} else {			
 				me.doAction("register", server.post(jsRoutes.controllers.Application.register().url, data)).
-				then(function(data) { session.postLogin(data, $router, $route); });
+				then(function(data) { 
+					if (!me.$route.query.developer) {
+					  session.postLogin(data, $router, $route);
+			  	    } else me.$router.go(-1);
+				});
 			}
 			
 		};
