@@ -17,19 +17,39 @@
 
 package controllers;
 
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import actions.APICall;
 import models.Admin;
+import models.Consent;
 import models.MidataId;
+import models.enums.ConsentStatus;
+import models.enums.ConsentType;
+import models.enums.Permission;
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.access.DBRecord;
 import utils.access.EncryptedAPS;
+import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.ExecutionInfo;
+import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation.JsonValidationException;
@@ -86,5 +106,74 @@ public class Debug extends Controller {
 		} catch (InterruptedException e) {}*/
 	  return ok("ok");
 	}
+	
+	// wget --header="Authorization: Bearer xxx" http://localhost:9001/debug/patch/false
+	@APICall	
+	public Result patch(Request request, String exec) throws AppException {
+		String param = request.header("Authorization").get();
+		AccessContext brokerContext = ExecutionInfo.checkToken(request, param.substring("Bearer ".length()), false, false);
+				  
+		  boolean execute = exec != null && exec.equals("true");
+		  
+		  // get target project
+	      MidataId project = MidataId.from("65d4cfc46d842c65d959559d");
+	      
+	      // source organizations
+		  Set<MidataId> ugs = new HashSet<MidataId>();
+		  // prod
+		  ugs.add(MidataId.from("6756a6a41712c556381a48d1"));
+		  ugs.add(MidataId.from("6756a6a61712c556381a48db"));
+		  
+		  //ugs.add(MidataId.from("67eab5c147e7e069cc492248"));
+		  //ugs.add(MidataId.from("67eab59e47e7e069cc492244"));
+		  
+		  // for each sub org
+		  for (MidataId ug : ugs) {
+		      AccessLog.log("for organization: "+ug.toString());
+			  AccessContext suborgContext = brokerContext.forUserGroup(ug, Permission.READ_DATA);
+			  
+			  // get patients
+			  Set<Consent> patientConsents = Consent.getAllByAuthorized(ug, CMaps.map("type", ConsentType.HEALTHCARE).map("status", Sets.create(ConsentStatus.ACTIVE, ConsentStatus.PRECONFIRMED)), Consent.ALL);
+			  AccessLog.log("found patients: "+patientConsents.size());
+			  
+			  Date beginOfMonth = new GregorianCalendar(2025, Calendar.MARCH, 30).getTime();
+			  // for each patient
+			  for (Consent from : patientConsents) {
+				 /*if (from.dateOfCreation.after(beginOfMonth)) {
+					 AccessLog.log("skip: "+from._id.toString()+" owner="+from.owner.toString());
+					 continue;
+				 }*/
+			  // get consent for project
+				 Set<Consent> targets = Consent.getAllActiveByAuthorizedAndOwners(project, Collections.singleton(from.owner));
+				 AccessLog.log("patient: "+from.owner.toString()+" targets="+targets.size());
+				 if (targets.size()>1) throw new NullPointerException();
+				 // get records
+			     if (targets.size() == 1) {
+			    	 Consent target = targets.iterator().next();
+			    	 AccessContext consentContext = suborgContext.forConsent(from); 
+			    	 List<models.Record> recs = RecordManager.instance.list(UserRole.PROVIDER, consentContext, target.sharingQuery, RecordManager.COMPLETE_META);
+			    	 Set<MidataId> recIds = new HashSet<MidataId>();
+			    	 for (models.Record rec : recs) {
+			    		 if (!rec.owner.equals(from.owner)) throw new NullPointerException();
+			    		 if (rec.created.before(beginOfMonth)) recIds.add(rec._id);
+			    		 else AccessLog.log("skipped entry id="+rec._id.toString());
+			    	 }
+			    	 AccessLog.log("#records="+recIds.size());
+			    	 
+			    	// share records with project 
+			    	 if (execute && !recIds.isEmpty()) {
+			    	   RecordManager.instance.share(suborgContext, from._id, target._id, target.owner, recIds, false);
+			    	 }
+			     }
+			  
+			  }
+			
+		  }
+		  AccessLog.log("all done");
+		  
+		  return ok("ok");
+	
+	}
+	
 	
 }
