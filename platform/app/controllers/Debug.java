@@ -129,23 +129,23 @@ public class Debug extends Controller {
 		  
 		  // for each sub org
 		  for (MidataId ug : ugs) {
-		      AccessLog.log("for organization: "+ug.toString());
+		      System.out.println("for organization: "+ug.toString());
 			  AccessContext suborgContext = brokerContext.forUserGroup(ug, Permission.READ_DATA);
 			  
 			  // get patients
 			  Set<Consent> patientConsents = Consent.getAllByAuthorized(ug, CMaps.map("type", ConsentType.HEALTHCARE).map("status", Sets.create(ConsentStatus.ACTIVE, ConsentStatus.PRECONFIRMED)), Consent.ALL);
-			  AccessLog.log("found patients: "+patientConsents.size());
+			  System.out.println("found patients: "+patientConsents.size());
 			  
 			  Date beginOfMonth = new GregorianCalendar(2025, Calendar.MARCH, 30).getTime();
 			  // for each patient
 			  for (Consent from : patientConsents) {
 				 /*if (from.dateOfCreation.after(beginOfMonth)) {
-					 AccessLog.log("skip: "+from._id.toString()+" owner="+from.owner.toString());
+					 System.out.println("skip: "+from._id.toString()+" owner="+from.owner.toString());
 					 continue;
 				 }*/
 			  // get consent for project
 				 Set<Consent> targets = Consent.getAllActiveByAuthorizedAndOwners(project, Collections.singleton(from.owner));
-				 AccessLog.log("patient: "+from.owner.toString()+" targets="+targets.size());
+				 System.out.println("patient: "+from.owner.toString()+" targets="+targets.size());
 				 if (targets.size()>1) throw new NullPointerException();
 				 // get records
 			     if (targets.size() == 1) {
@@ -156,9 +156,9 @@ public class Debug extends Controller {
 			    	 for (models.Record rec : recs) {
 			    		 if (!rec.owner.equals(from.owner)) throw new NullPointerException();
 			    		 if (rec.created.before(beginOfMonth)) recIds.add(rec._id);
-			    		 else AccessLog.log("skipped entry id="+rec._id.toString());
+			    		 else System.out.println("skipped entry id="+rec._id.toString());
 			    	 }
-			    	 AccessLog.log("#records="+recIds.size());
+			    	 System.out.println("#records="+recIds.size());
 			    	 
 			    	// share records with project 
 			    	 if (execute && !recIds.isEmpty()) {
@@ -169,7 +169,7 @@ public class Debug extends Controller {
 			  }
 			
 		  }
-		  AccessLog.log("all done");
+		  System.out.println("all done");
 		  
 		  return ok("ok");
 	
