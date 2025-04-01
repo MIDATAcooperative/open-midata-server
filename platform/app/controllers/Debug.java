@@ -107,7 +107,7 @@ public class Debug extends Controller {
 	  return ok("ok");
 	}
 	
-	// wget --header="Authorization: Bearer MZCFc1SVgd59WBYwpjy6sF2nlpnRWdvU3WsATbxMSMvCx4p8UYou7ggQd2wr2Hy04Nl0Pu9suurXy5hRmHtsihBU2I23CFcSs8aJam0Y0kLQTZLHyWt8_zxMjUzhTrjS4iJ48Q2GxuRaDL_u2M1RIk6jKYmDZNrugGHoQCGzsujnyhB_ltFJjXTdE3EK8Ts7GkoxzO8BzI03e025w5rZ2Q" http://localhost:9001/debug/patch/false
+	// wget --header="Authorization: Bearer xxx" http://localhost:9001/debug/patch/false
 	@APICall	
 	public Result patch(Request request, String exec) throws AppException {
 		String param = request.header("Authorization").get();
