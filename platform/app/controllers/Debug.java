@@ -17,7 +17,10 @@
 
 package controllers;
 
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -133,9 +136,13 @@ public class Debug extends Controller {
 			  Set<Consent> patientConsents = Consent.getAllByAuthorized(ug, CMaps.map("type", ConsentType.HEALTHCARE).map("status", Sets.create(ConsentStatus.ACTIVE, ConsentStatus.PRECONFIRMED)), Consent.ALL);
 			  AccessLog.log("found patients: "+patientConsents.size());
 			  
+			  Date beginOfMonth = new GregorianCalendar(2025, Calendar.MARCH, 30).getTime();
 			  // for each patient
 			  for (Consent from : patientConsents) {
-				 
+				 /*if (from.dateOfCreation.after(beginOfMonth)) {
+					 AccessLog.log("skip: "+from._id.toString()+" owner="+from.owner.toString());
+					 continue;
+				 }*/
 			  // get consent for project
 				 Set<Consent> targets = Consent.getAllActiveByAuthorizedAndOwners(project, Collections.singleton(from.owner));
 				 AccessLog.log("patient: "+from.owner.toString()+" targets="+targets.size());
@@ -144,16 +151,17 @@ public class Debug extends Controller {
 			     if (targets.size() == 1) {
 			    	 Consent target = targets.iterator().next();
 			    	 AccessContext consentContext = suborgContext.forConsent(from); 
-			    	 List<models.Record> recs = RecordManager.instance.list(UserRole.PROVIDER, consentContext, target.sharingQuery, RecordManager.SHARING_FIELDS);
+			    	 List<models.Record> recs = RecordManager.instance.list(UserRole.PROVIDER, consentContext, target.sharingQuery, RecordManager.COMPLETE_META);
 			    	 Set<MidataId> recIds = new HashSet<MidataId>();
 			    	 for (models.Record rec : recs) {
 			    		 if (!rec.owner.equals(from.owner)) throw new NullPointerException();
-			    		 recIds.add(rec._id);
+			    		 if (rec.created.before(beginOfMonth)) recIds.add(rec._id);
+			    		 else AccessLog.log("skipped entry id="+rec._id.toString());
 			    	 }
 			    	 AccessLog.log("#records="+recIds.size());
 			    	 
 			    	// share records with project 
-			    	 if (execute) {
+			    	 if (execute && !recIds.isEmpty()) {
 			    	   RecordManager.instance.share(suborgContext, from._id, target._id, target.owner, recIds, false);
 			    	 }
 			     }
