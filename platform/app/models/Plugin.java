@@ -79,7 +79,7 @@ public class Plugin extends Model implements Comparable<Plugin>, HasPredefinedMe
 			 Sets.create("_id", "version", "creator", "creatorLogin", "developerTeam", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "homeUrl", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
-	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "pluginVersion",
+	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "resharesData", "pluginVersion",
 	                     "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "licenceDef", "pseudonymize", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "acceptTestAccounts", "acceptTestAccountsFromApp");
 	
 	public @NotMaterialized final static Set<String> FOR_LOGIN =

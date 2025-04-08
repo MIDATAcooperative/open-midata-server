@@ -22,6 +22,7 @@ import models.MidataId;
 public class Message {
 
 	private final String text;
+	private final String htmlFrame;
 	private final String subject;
 	private final String receiverEmail;
 	private final String receiverName;
@@ -29,8 +30,9 @@ public class Message {
 	private final MailSenderType type;
 	private final MidataId smtpFromApp;
 	
-	public Message(String receiverEmail, String receiverName, String subject, String text, MidataId eventId, MidataId smtpFromApp) {
+	public Message(String receiverEmail, String receiverName, String subject, String text, String htmlFrame, MidataId eventId, MidataId smtpFromApp) {
 		this.text = text;
+		this.htmlFrame = htmlFrame;
 		this.subject = subject;
 		this.receiverEmail = receiverEmail;
 		this.receiverName = receiverName;
@@ -39,8 +41,9 @@ public class Message {
 		this.smtpFromApp = smtpFromApp;
 	}
 	
-	public Message(MailSenderType type, String receiverEmail, String receiverName, String subject, String text, MidataId eventId, MidataId smtpFromApp) {
+	public Message(MailSenderType type, String receiverEmail, String receiverName, String subject, String text, String htmlFrame, MidataId eventId, MidataId smtpFromApp) {
 		this.text = text;
+		this.htmlFrame = htmlFrame;
 		this.subject = subject;
 		this.receiverEmail = receiverEmail;
 		this.receiverName = receiverName;
@@ -77,6 +80,8 @@ public class Message {
 		return smtpFromApp;
 	}
 	
-	
+	public String getHtmlFrame() {
+		return htmlFrame;
+	}
 		
 }

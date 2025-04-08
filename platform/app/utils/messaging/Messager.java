@@ -70,21 +70,14 @@ public class Messager {
 	}
 	
 	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId) {	
-	    sendTextMail(email, fullname, subject, content, eventId, MailSenderType.USER, null);
+	    sendTextMail(email, fullname, subject, content, null, eventId, MailSenderType.USER, null);
 	}
 	
-	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId, MailSenderType type, MidataId smtpFromApp) {	
+	public static void sendTextMail(String email, String fullname, String subject, String content, String htmlFrame, MidataId eventId, MailSenderType type, MidataId smtpFromApp) {	
 		AccessLog.log("trigger send text mail to="+email+" subject="+subject);		
-		mailSender.tell(new Message(type, email, fullname, subject, content, eventId, smtpFromApp), ActorRef.noSender());
+		mailSender.tell(new Message(type, email, fullname, subject, content, htmlFrame, eventId, smtpFromApp), ActorRef.noSender());
 	}
 	
-	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId, MailSenderType type) {	
-	    sendTextMail(email, fullname, subject, content, eventId, type, null);
-	}
-	
-	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId, MidataId smtpFromApp) {	
-	    sendTextMail(email, fullname, subject, content, eventId, MailSenderType.USER, smtpFromApp);
-	}
 	
 	public static void sendSMS(String phone, String text, MidataId eventId) {
 		AccessLog.log("trigger send SMS to="+phone);
@@ -229,7 +222,7 @@ public class Messager {
 		   }
 			
 		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.EMAIL_SENT).withActorUser(member).withApp(sourceApp).withMessage(subject));
-		   Messager.sendTextMail(email, fullname, subject, content, AuditManager.instance.convertLastEventToAsync(), sourceApp);
+		   Messager.sendTextMail(email, fullname, subject, content, messageDefinition.htmlFrame, AuditManager.instance.convertLastEventToAsync(), MailSenderType.USER, sourceApp);
 		   AuditManager.instance.success();
 		}
 	}
@@ -268,7 +261,7 @@ public class Messager {
 		if (channel.equals(MessageChannel.SMS)) {
 		  if (SMSUtils.isAvailable()) Messager.sendSMS(email, content, null);
 		} else {
-		  Messager.sendTextMail(email, fullname, subject, content, null, smtpFromApp);
+		  Messager.sendTextMail(email, fullname, subject, content, messageDefinition.htmlFrame, null, MailSenderType.USER , smtpFromApp);
 		}
 	}
 
@@ -321,7 +314,7 @@ class MailSender extends AbstractActor {
 				    return;	
 				}
 				
-			    MailUtils.sendTextMail(msg.getType(), msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText(), msg.getSmtpFromApp());
+			    MailUtils.sendTextMail(msg.getType(), msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText(), msg.getHtmlFrame(), msg.getSmtpFromApp());
 			}		
 			AuditManager.instance.success();
 		} catch (Exception e) {

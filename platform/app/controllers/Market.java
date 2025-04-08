@@ -912,6 +912,7 @@ public class Market extends APIController {
 			messageDef.code = JsonValidation.getStringOrNull(def, "code");
 			messageDef.text = JsonExtraction.extractStringMap(def.get("text"));
 			messageDef.title = JsonExtraction.extractStringMap(def.get("title"));
+			messageDef.htmlFrame = JsonValidation.getUnboundString(def, "htmlFrame");
 			
 			result.put(messageDef.reason.toString() + (messageDef.code != null ? "_"+messageDef.code : ""), messageDef);
 		}

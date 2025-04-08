@@ -108,6 +108,7 @@ public class Debug extends Controller {
 	}
 	
 	// wget --header="Authorization: Bearer xxx" http://localhost:9001/debug/patch/false
+	/*
 	@APICall	
 	public Result patch(Request request, String exec) throws AppException {
 		String param = request.header("Authorization").get();
@@ -139,10 +140,7 @@ public class Debug extends Controller {
 			  Date beginOfMonth = new GregorianCalendar(2025, Calendar.MARCH, 30).getTime();
 			  // for each patient
 			  for (Consent from : patientConsents) {
-				 /*if (from.dateOfCreation.after(beginOfMonth)) {
-					 System.out.println("skip: "+from._id.toString()+" owner="+from.owner.toString());
-					 continue;
-				 }*/
+				
 			  // get consent for project
 				 Set<Consent> targets = Consent.getAllActiveByAuthorizedAndOwners(project, Collections.singleton(from.owner));
 				 System.out.println("patient: "+from.owner.toString()+" targets="+targets.size());
@@ -173,7 +171,7 @@ public class Debug extends Controller {
 		  
 		  return ok("ok");
 	
-	}
+	}*/
 	
 	
 }
