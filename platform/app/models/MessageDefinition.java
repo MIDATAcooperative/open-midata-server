@@ -47,6 +47,11 @@ public class MessageDefinition implements JsonSerializable {
 	 */
 	public Map<String, String> title;
 	
+	/**
+	 * additional page frame for HTML messages. Must contain "{{message}}" which is replaced by actual message. 
+	 */
+	public String htmlFrame;
+	
 	
 	
 }

@@ -96,6 +96,12 @@
                         <code v-for="tag in tags[selmsg.reason]" :key="tag">&lt;{{ tag }}&gt; </code>
                     </div>
                 </form-group>
+                <form-group name="htmlFrame" label="appmessages.htmlFrame" :path="errors.htmlFrame">
+                   <textarea rows="5" id="htmlFrame" name="htmlFrame" class="form-control" v-validate v-model="selmsg.htmlFrame"></textarea>
+                   <div class="form-text text-muted">
+                     <span v-t="'appmessages.htmlFrame2'"></span>:
+                   </div>
+                </form-group>
                     
                 <form-group label="common.empty">
                     <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary me-1">Submit</button>	
@@ -188,6 +194,7 @@ export default {
             
                 for (let k in msg.text) if (msg.text[k]==="") { delete msg.text[k]; }
                 for (let k in msg.title) if (msg.title[k]==="") { delete msg.title[k]; }
+                if (msg.htmlFrame==="") delete msg.htmlFrame;
                                 
                 predefinedMessages[msg.reason+(msg.code ? ("_"+msg.code) : "")] = msg;
             }

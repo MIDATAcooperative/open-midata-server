@@ -52,6 +52,8 @@
     "text" : "Message Text",
     "smtp_btn" : "Configure SMTP Server",
     "available_tags" : "Available categories",
+    "htmlFrame" : "HTML message frame",
+    "htmlFrame2" : "Enter complete HTML page for mail. Use {{message}} as placeholder for actual message.", 
     "reasons" : {
        "REGISTRATION" : "Registration of new user",
        "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
