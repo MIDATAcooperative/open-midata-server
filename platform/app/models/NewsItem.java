@@ -36,7 +36,7 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	private static final String collection = "news";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Sets.create("creator", "created", "date", "layout", "expires", "language", "title", "content", "url", "studyId", "appId", /*"onlyParticipantsStudyId", "onlyUsersOfAppId",*/ "broadcast");
+	public final static Set<String> ALL = Sets.create("creator", "created", "date", "layout", "expires", "language", "title", "content", "url", "studyId", "appId", "onlyParticipantsStudyId", "dynamicDate",/*"onlyUsersOfAppId",*/ "broadcast");
 
 	/**
 	 * the creator of the news item
@@ -96,7 +96,12 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	/**
 	 * (optional) show only to participants of study
 	 */
-	//public MidataId onlyParticipantsStudyId;
+	public MidataId onlyParticipantsStudyId;
+	
+	/**
+	 * Sets news date to project participation date or app use date or today
+	 */
+	public boolean dynamicDate; 
 	
 	/**
 	 * (optional) show only to users of app

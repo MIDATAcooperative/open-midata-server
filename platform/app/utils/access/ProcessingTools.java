@@ -362,6 +362,32 @@ public class ProcessingTools {
 
 	}
 	
+	static class AddMetaTag extends FilterIterator<DBRecord> {
+		
+		private String tag;		
+
+		public AddMetaTag(DBIterator<DBRecord> chain, String tag) throws AppException {
+			super(chain);	
+			this.tag = tag;			
+			if (chain.hasNext())
+				next();
+		}
+
+		@Override
+		public boolean contained(DBRecord record) {
+			if (record.isStream!=null) return true;
+			Collection tags = (Collection) record.meta.get("tags");
+			if (tags != null) tags.add(tag);
+			return true;
+		}
+		
+		@Override
+		public String toString() {
+			return "add-tag("+tag+" "+chain.toString()+")";
+		}
+
+	}
+	
 	static class FilterByNonPseudonymizeTag extends FilterIterator<DBRecord> {
 				
 

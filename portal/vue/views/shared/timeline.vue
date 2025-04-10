@@ -21,13 +21,12 @@
 			<div class="panel-heading">
                 <span v-t="'timeline.title'"></span>
 		    </div>
-            <div class="panel-body">
-                <p v-t="'help_welcome.starts'"></p>
+            <div class="panel-body">                
                 <div class="row">
-                    <div v-if="role=='MEMBER'" class="col-6 col-md-3 col-lg-2 spacesiconbar" style="position:relative">
+                    <!--<div v-if="role=='MEMBER'" class="col-6 col-md-3 col-lg-2 spacesiconbar" style="position:relative">
                         <a href="javascript:" @click="use('fitness')"><img class="img-responsive" src="/images/fitness.jpeg"></a>
                         <div class="position:relative"><a href="javascript:" @click="use('fitness')">{{ $t('timeline.fitness') }}</a></div>
-                    </div>
+                    </div>-->
                     <div class="col-6 col-md-3 col-lg-2 spacesiconbar" style="position:relative">
                         <router-link :to="{ path : './market', query : { tag : 'Protocol', user : targetUser } }"><img class="img-responsive" src="/images/papers.jpg"></router-link>
                         <div class="position:relative"><router-link :to="{ path : './market', query : { tag : 'Protocol', user : targetUser } }">{{ $t('timeline.health') }}</router-link></div>

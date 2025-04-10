@@ -108,7 +108,11 @@
       "wide" : "Wide (2x1)",
       "high" : "High (1x2)",
       "large" : "Large (2x2)"
-    }
+    },
+    "dynamicDate" : "Dynamic date",
+    "dynamicDate2" : "Change news date to start date of project participation if applicable otherwise to current date.",
+    "onlyParticipantsStudyId" : "Only project participants"
+    
   },
   
   "admin_registration" : {
