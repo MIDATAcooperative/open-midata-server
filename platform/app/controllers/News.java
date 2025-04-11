@@ -20,26 +20,37 @@ package controllers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
+import actions.MobileCall;
 import actions.VisualizationCall;
 import models.MidataId;
 import models.NewsItem;
+import models.StudyParticipation;
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
+import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
+import utils.collections.Sets;
+import utils.context.AccessContext;
 import utils.db.ObjectIdConversion;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
@@ -49,7 +60,7 @@ import utils.json.JsonValidation.JsonValidationException;
  * functions for a "news" system. 
  *
  */
-public class News extends Controller {
+public class News extends APIController {
 
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -59,50 +70,110 @@ public class News extends Controller {
 		// validate json
 		JsonNode json = request.body().asJson();
 		
-		JsonValidation.validate(json, "properties", "fields");
+		JsonValidation.validate(json, "properties");
 		
 		// get news items
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		
+		Date from = null;
+		Date to = null;
+		Date official = new Date();
+				
 		if (properties.containsKey("from") && properties.containsKey("to")) {
-			properties.put("created", CMaps.map("$gte", JsonValidation.getDate(json.get("properties"), "from")).map("$lt", JsonValidation.getDate(json.get("properties"), "to")));
+			from = JsonValidation.getDate(json.get("properties"), "from");
+			to = JsonValidation.getDate(json.get("properties"), "to");
+			
+			properties.put("date", CMaps.map("$lt", to));
+			properties.put("expires", CMaps.map("$gte", from));
 			properties.remove("from");
 			properties.remove("to");
 		}
+		if (to != null && to.before(official)) official = to;
+		if (from != null && from.after(official)) official = from;
+		
 		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "studyId");
-		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-		List<NewsItem> newsItems;
 		
-		newsItems = new ArrayList<NewsItem>(NewsItem.getAll(properties, fields));
+		Set<NewsItem> newsItems = NewsItem.getAll(properties, NewsItem.ALL);
+		List<NewsItem> result = new ArrayList<NewsItem>(newsItems.size());
 		
-		Collections.sort(newsItems);
-		return ok(Json.toJson(newsItems));
+		
+		result.addAll(newsItems);			
+		Collections.sort(result);
+		
+		return ok(Json.toJson(result));
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)	
-	@VisualizationCall
-	public Result getPublic(Request request) throws JsonValidationException, InternalServerException {
+	@MobileCall
+	public Result getPublic(Request request) throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request.body().asJson();
 		
-		JsonValidation.validate(json, "properties", "fields");
+		JsonValidation.validate(json, "properties", "fields", "authToken");
+		AccessContext info = null;
+		String param = json.get("authToken").asText();//request.header("Authorization").get();
+		
+		if (param != null) {
+	          info = ExecutionInfo.checkToken(request, param, false, false);
+		}
+		
+        JsonValidation.validate(json, "properties");
 		
 		// get news items
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		
+		Date from = null;
+		Date to = null;
+		Date official = new Date();
+				
 		if (properties.containsKey("from") && properties.containsKey("to")) {
-			properties.put("date", CMaps.map("$gte", JsonValidation.getDate(json.get("properties"), "from")).map("$lt", JsonValidation.getDate(json.get("properties"), "to")));
+			from = JsonValidation.getDate(json.get("properties"), "from");
+			to = JsonValidation.getDate(json.get("properties"), "to");
+			
+			properties.put("date", CMaps.map("$lt", to));
+			properties.put("expires", CMaps.map("$gte", from));
 			properties.remove("from");
 			properties.remove("to");
 		}
-		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "studyId", "appId", "onlyParticipantsStudyId", "onlyUsersOfAppId");
-		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-		List<NewsItem> newsItems;
+		if (to != null && to.before(official)) official = to;
+		if (from != null && from.after(official)) official = from;
 		
-		newsItems = new ArrayList<NewsItem>(NewsItem.getAll(properties, fields));
+		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "studyId");
 		
-		Collections.sort(newsItems);
-		return ok(Json.toJson(newsItems));
+		Set<NewsItem> newsItems = NewsItem.getAll(properties, NewsItem.ALL);
+		List<NewsItem> result = new ArrayList<NewsItem>(newsItems.size());
+		
+		if (!newsItems.isEmpty()) {
+						
+			MidataId user = info.getAccessor();
+			Set<StudyParticipation> participations = StudyParticipation.getAllActiveByMember(user, Sets.create("study", "dateOfCreation", "pstatus"));
+			Map<MidataId, StudyParticipation> studyIds = new HashMap<MidataId, StudyParticipation>();
+			for (StudyParticipation part : participations) {			 
+			   studyIds.put(part.study, part);
+			}
+			for (NewsItem itm : newsItems) {
+				if (itm.onlyParticipantsStudyId != null) {
+					StudyParticipation part = studyIds.get(itm.onlyParticipantsStudyId);
+					if (part != null) {
+						if (itm.dynamicDate) {
+							if (part.dateOfCreation.after(itm.date)) {
+								itm.date = part.dateOfCreation;								
+							}
+							if (part.dateOfCreation.after(itm.expires)) continue;
+							if (to != null && itm.date.after(to)) continue;
+							if (from != null && itm.date.before(from)) continue;
+						}						
+						result.add(itm);
+					}
+				} else {
+					if (itm.dynamicDate) {
+						itm.date = official;
+					}					
+					result.add(itm);
+				}
+			}				 		 		 
+			 
+			Collections.sort(result);
+		}
+		return ok(Json.toJson(result));
 	}
 		
 
@@ -124,7 +195,7 @@ public class News extends Controller {
 		item.expires = JsonValidation.getDate(json, "expires");
 		item.appId = JsonValidation.getMidataId(json, "appId");
 		item.studyId = JsonValidation.getMidataId(json, "studyId");
-		//item.onlyParticipantsStudyId = JsonValidation.getMidataId(json, "onlyParticipantsStudyId");
+		item.onlyParticipantsStudyId = JsonValidation.getMidataId(json, "onlyParticipantsStudyId");
 		//item.onlyUsersOfAppId = JsonValidation.getMidataId(json, "onlyUsersOfAppId");
 		item.title = JsonValidation.getString(json, "title");
 		item.content = JsonValidation.getString(json, "content");
@@ -132,7 +203,8 @@ public class News extends Controller {
 		item.language = JsonValidation.getString(json, "language");
 		item.url = JsonValidation.getStringOrNull(json, "url");
 		item.broadcast = JsonValidation.getBoolean(json, "broadcast");
-		
+		item.dynamicDate = JsonValidation.getBoolean(json, "dynamicDate");
+		if (item.expires == null) item.expires = item.date;
 		NewsItem.add(item);
 		
 		return ok();
@@ -155,7 +227,7 @@ public class News extends Controller {
 		item.expires = JsonValidation.getDate(json, "expires");
 		item.appId = JsonValidation.getMidataId(json, "appId");
 		item.studyId = JsonValidation.getMidataId(json, "studyId");
-		//item.onlyParticipantsStudyId = JsonValidation.getMidataId(json, "onlyParticipantsStudyId");
+		item.onlyParticipantsStudyId = JsonValidation.getMidataId(json, "onlyParticipantsStudyId");
 		//item.onlyUsersOfAppId = JsonValidation.getMidataId(json, "onlyUsersOfAppId");
 		item.title = JsonValidation.getString(json, "title");
 		item.content = JsonValidation.getString(json, "content");
@@ -163,6 +235,7 @@ public class News extends Controller {
 		item.language = JsonValidation.getString(json, "language");
 		item.url = JsonValidation.getStringOrNull(json, "url");
 		item.broadcast = JsonValidation.getBoolean(json, "broadcast");
+		item.dynamicDate = JsonValidation.getBoolean(json, "dynamicDate");
 		
 		NewsItem.update(item);
 		

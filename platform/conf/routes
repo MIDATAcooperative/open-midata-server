@@ -53,7 +53,7 @@ POST    /api/common/password/set                         controllers.Application
 
 POST    /api/members/news/add                            controllers.News.add(request: Request)
 POST    /api/members/news/get                            controllers.News.get(request: Request)
-OPTIONS /v1/news/get                                     controllers.PluginsAPI.checkPreflight()
+OPTIONS /v1/news/get                                     controllers.MobileAPI.checkPreflight()
 POST    /v1/news/get                                     controllers.News.getPublic(request: Request)
 POST    /api/admin/news/update                           controllers.News.update(request: Request)
 POST    /api/admin/news/delete/:id                       controllers.News.delete(id: String)
