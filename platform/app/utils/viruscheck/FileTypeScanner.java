@@ -61,6 +61,7 @@ public class FileTypeScanner {
 		r("vnd.openxmlformats-officedocument","xlsx");
 		r("vnd.openxmlformats-officedocument","docx");
 		r("application/xml","xml");
+		r("application/rdf+xml","rdf");
 		r("application/x-compress","z");
 		r("application/x-dvi","dvi");
 		r("application/x-gtar","gtar");
