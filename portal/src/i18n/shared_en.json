@@ -988,7 +988,8 @@
 	"notifications" : "Notifications",
 	"notifications2" : "Do you want to be notified if your account is used?",
 	"change_settings_btn" : "Change Settings",
-	"change_settings_success" : "Settings have been updated"
+	"change_settings_success" : "Settings have been updated",
+	"using_apps" : "Your @PRODUCT account has been used with these applications:"
   },
 
   "visualization" : {

@@ -33,6 +33,13 @@
 				<span class="col-md-2 col-sm-5 col-12" v-t="'user.birthday'"></span>
 				<span class="col-md-10 col-sm-7 col-12">{{ $filters.date(user.birthday) }}</span>
 			</div>
+            
+            <div v-if="apps && apps.length">
+               <div class="mt-3 mb-1">{{ $t("user.using_apps")}}</div>
+               <ul>
+                 <li v-for="app in apps" :key="app._id">{{ getName(app) }}<span v-if="app.orgName"> ({{ app.orgName }}<span v-if="app.publisher && app.publisher != app.orgName">, {{ app.publisher }}</span>)</span></li>
+               </ul>
+            </div>
 													
 			<div class="row mt-3" v-if="true">
 			  <div class="col-12">			  
@@ -52,9 +59,10 @@ import Panel from "components/Panel.vue"
 import session from "services/session.js"
 import actions from "services/actions.js"
 import users from "services/users.js"
+import apps from "services/apps.js"
 import languages from "services/languages.js"
 import ENV from "config"
-import { setLocale } from 'services/lang.js';
+import { setLocale, getLocale } from 'services/lang.js';
 import { status, ErrorBox, FormGroup, RadioBox, Success } from 'basic-vue3-components'
 
 export default {
@@ -69,7 +77,8 @@ export default {
         notificationTypes : ["NONE", "LOGIN"],
         isSelf : false,
         stats : null,
-        actions : null
+        actions : null,
+        apps : []
 	}),	
 
     components: { RadioBox, Panel, FormGroup, ErrorBox, Success },
@@ -77,7 +86,12 @@ export default {
     mixins : [ status ],
   
     methods : {
-              
+             
+        getName(app) {            
+           if (app.i18n && app.i18n[getLocale()] && app.i18n[getLocale()].name) return app.i18n[getLocale()].name;
+           return app.name;
+        },
+                
         skip() {
             const { $data, $route, $router } = this, me = this;
             actions.showAction($router, $route);                
@@ -104,6 +118,16 @@ export default {
                     user.notifications = user.notifications || "NONE";
 			        $data.user = user;
                 });		
+                
+                /*me.doBusy(apps.listUserApps([ "name", "authorized", "type", "status", "applicationId"])
+                .then(function(data) {
+                    $data.apps = data.data;
+                }));*/
+                
+                me.doBusy(apps.getAppsOfUser(session, ["mobile"], ["name", "i18n", "orgName", "publisher"])
+                .then(function(data) {
+                    $data.apps = data.data;
+                }));
             }));
         }
 						
