@@ -21,7 +21,7 @@
 		<div id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">			
 			<div class="container">
 				<div class="navbar-header">
-					<button class="ms-1 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+					<button class="ms-1 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler"
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>
@@ -29,7 +29,7 @@
 							src="/images/logo.png" style="height: 36px;"></span>
 					</a>
 				</div>
-				<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<div class="collapse navbar-collapse navbar-ex1-collapse" id="navbarToggler">
 
 					<ul class="nav navbar-nav me-auto" :class="{'vishidden':locked()}">
 						
