@@ -48,7 +48,7 @@
 
 					<div class="navbar-header">
 
-						<button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+						<button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler"
 							aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 							<span class="fas fa-list"></span>
 						</button>
