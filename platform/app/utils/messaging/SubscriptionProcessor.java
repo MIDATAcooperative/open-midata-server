@@ -448,6 +448,14 @@ public class SubscriptionProcessor extends AbstractActor {
 		   
 	   });
 	}
+	
+	private void reportPluginProblem(Plugin plugin, String error) {
+	  try {
+		throw new PluginException(plugin._id, "error.plugin", error);
+	  } catch (PluginException e) {
+	    ErrorReporter.report("Script execution", null, e);
+	  }
+	}
 
 	private void runProcess(ActorRef sender, Plugin plugin, SubscriptionTriggered triggered, SubscriptionData subscription, User user, String token, String endpoint) {
 		boolean testing = InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable() && (plugin.status.equals(PluginStatus.DEVELOPMENT) || plugin.status.equals(PluginStatus.BETA));
@@ -502,7 +510,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		  }
 		  AccessLog.log("Build process...");
 		  //AccessLog.log("/usr/bin/firejail --quiet --whitelist="+visDir+" "+nodepath+" "+visPath+" "+token1+" "+lang+" http://localhost:9001 "+subscription.owner.toString()+" "+id+" "+token2);
-		  Process p = new ProcessBuilder("/usr/bin/firejail","--quiet","--whitelist="+visDir,nodepath, visPath, token1, lang, "http://localhost:9001", subscription.owner.toString(), id, token2).redirectError(Redirect.INHERIT).start();
+		  Process p = new ProcessBuilder("/usr/bin/firejail","--quiet","--whitelist="+visDir,nodepath, visPath, token1, lang, "http://localhost:9001", subscription.owner.toString(), id, token2).redirectError(Redirect.PIPE).start();
 		  //System.out.println("Output...");
 		  PrintWriter out = new PrintWriter(new OutputStreamWriter(p.getOutputStream()));		  
 		  out.println(triggered.resource);
@@ -510,22 +518,30 @@ public class SubscriptionProcessor extends AbstractActor {
 		  //System.out.println("Output done...");
 		  InputStreamCollector result = new InputStreamCollector(p.getInputStream());
 		  result.start();
+		  InputStreamCollector errors = new InputStreamCollector(p.getErrorStream());
+		  errors.start();
 		  //System.out.println("Input...");
 		  p.waitFor();
 		  //System.out.println("Wait for finished...");
 		  result.join();
 		  AccessLog.log("Wait for input...");
 		  AccessLog.log(result.getResult());
+		  AccessLog.log(errors.getResult());
 		  String r = result.getResult();
 		  
 		  Stats.finishRequest(TRIGGER, triggered.getDescription(), null, ""+p.exitValue(), Collections.emptySet());
 		  
-		  if (r != null && r.length() >0) {
+		  if (r != null && r.length() >0 && (errors.getResult() == null || errors.getResult().trim().length()==0)) {
+			 if (p.exitValue() != 0) {
+				 reportPluginProblem(plugin, errors.getResult());
+				 
+			 }
 			 sender.tell(new MessageResponse(r, p.exitValue(), plugin.filename), getSelf());  
 		  } else {
 			  String response = "";
 			  if (p.exitValue()==1) {
 				  response = "Script not found";
+				  reportPluginProblem(plugin, "Script not found: "+plugin.filename+"/"+cmd);
 				  AuditManager.instance.fail(400, "Script error", "error.plugin");
 			  }
 			 sender.tell(new MessageResponse(response, p.exitValue(), plugin.filename), getSelf());
@@ -534,6 +550,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		  AccessLog.log("Response sended");		 		  
 		} catch (Exception e) {			
 			sender.tell(new MessageResponse("Failed: "+e.toString(),-1, plugin.filename), getSelf());	
+			reportPluginProblem(plugin, "Failed: "+e.toString());
 			AuditManager.instance.fail(500, "Script error", "error.internal");
 			if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 		} 				

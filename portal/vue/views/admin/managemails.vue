@@ -80,6 +80,13 @@
 		            <code>&lt;unsubscribe&gt;</code>
 		        </div>		  
 		    </form-group>
+            
+            <form-group name="htmlFrame" label="appmessages.htmlFrame" :path="errors.htmlFrame">
+              <textarea rows="5" id="htmlFrame" name="htmlFrame" class="form-control" :readonly="!editable" @change="change()" v-validate v-model="mailItem.htmlFrame"></textarea>
+              <div class="form-text text-muted">
+                <span v-t="'appmessages.htmlFrame2'"></span>:
+              </div>
+            </form-group>
 		  		  		  
 		    <div>		  				  
                 <form-group label="admin_managemails.created" v-if="mailItem.created != null">

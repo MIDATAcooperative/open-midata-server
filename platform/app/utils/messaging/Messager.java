@@ -110,10 +110,12 @@ public class Messager {
 	
 	public static boolean sendProjectMessage(AccessContext context, StudyParticipation pp, MessageReason reason, String code) throws AppException {
 		Map<String, String> replacements = new HashMap<String, String>();
-		Pair<MidataId,String> p = Feature_Pseudonymization.pseudonymizeUser(context.getCache(), pp);
-		if (p!=null) {
-			replacements.put("pseudonym", p.getRight());
-			replacements.put("participation-id", p.getLeft().toString());
+		if (reason == MessageReason.PROJECT_PARTICIPATION_REQUEST || reason == MessageReason.PROJECT_PARTICIPATION_APPROVED) {
+			Pair<MidataId,String> p = Feature_Pseudonymization.pseudonymizeUser(context.getCache(), pp);
+			if (p!=null) {
+				replacements.put("pseudonym", p.getRight());
+				replacements.put("participation-id", p.getLeft().toString());
+			}
 		}
 		Plugin plugin = Plugin.getById(context.getUsedPlugin(), Sets.create("name"));
 		replacements.put("plugin-name", plugin.name);
