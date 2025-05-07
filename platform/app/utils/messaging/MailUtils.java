@@ -178,7 +178,7 @@ public class MailUtils {
 		
 		result.append(escaped);
 		
-		if (htmlFrame == null) {
+		if (htmlFrame == null || htmlFrame.trim().length() == 0) {
 		  return "<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body><p>"+result.toString()+"</p></body></html>";
 		}
 		return "<!DOCTYPE html>"+htmlFrame.replace("{{message}}", result.toString());
