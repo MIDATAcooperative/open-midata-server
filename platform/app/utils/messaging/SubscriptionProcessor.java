@@ -523,25 +523,31 @@ public class SubscriptionProcessor extends AbstractActor {
 		  //System.out.println("Input...");
 		  p.waitFor();
 		  //System.out.println("Wait for finished...");
-		  result.join();
 		  AccessLog.log("Wait for input...");
-		  AccessLog.log(result.getResult());
-		  AccessLog.log(errors.getResult());
+		  result.join();
+		  errors.join();
+		
 		  String r = result.getResult();
+		  String err = errors.getResult();
+		  AccessLog.log("result='"+r+"'");
+		  AccessLog.log("errors='"+err+"'");
+		  
 		  
 		  Stats.finishRequest(TRIGGER, triggered.getDescription(), null, ""+p.exitValue(), Collections.emptySet());
 		  
-		  if (r != null && r.length() >0 && (errors.getResult() == null || errors.getResult().trim().length()==0)) {
+		  if (r != null && r.length() >0) {
 			 if (p.exitValue() != 0) {
-				 reportPluginProblem(plugin, errors.getResult());
+				 if (err == null || err.trim().length()==0) err = "Status "+p.exitValue()+", script provided no error message.";
+				 reportPluginProblem(plugin, err);
 				 
 			 }
 			 sender.tell(new MessageResponse(r, p.exitValue(), plugin.filename), getSelf());  
 		  } else {
 			  String response = "";
-			  if (p.exitValue()==1) {
-				  response = "Script not found";
-				  reportPluginProblem(plugin, "Script not found: "+plugin.filename+"/"+cmd);
+			  if (p.exitValue()!=0) {
+				  response = "Script execution error";
+				  if (err == null || err.trim().length()==0) err = "Status "+p.exitValue()+", script provided no error message.";
+				  reportPluginProblem(plugin, err);
 				  AuditManager.instance.fail(400, "Script error", "error.plugin");
 			  }
 			 sender.tell(new MessageResponse(response, p.exitValue(), plugin.filename), getSelf());

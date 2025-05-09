@@ -110,6 +110,7 @@ public class Messager {
 	
 	public static boolean sendProjectMessage(AccessContext context, StudyParticipation pp, MessageReason reason, String code) throws AppException {
 		Map<String, String> replacements = new HashMap<String, String>();
+		// For rejection messages access to pseudonym may not always be given
 		if (reason == MessageReason.PROJECT_PARTICIPATION_REQUEST || reason == MessageReason.PROJECT_PARTICIPATION_APPROVED) {
 			Pair<MidataId,String> p = Feature_Pseudonymization.pseudonymizeUser(context.getCache(), pp);
 			if (p!=null) {
