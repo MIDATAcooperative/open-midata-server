@@ -1205,6 +1205,7 @@
   },
 
   "oauth2" : {
+    "title" : "Confirm access",
     "requests_permission" : "stores your personal data in your @PRODUCT account.",
     "no_account" : "You don't have an account?", 
     "have_account" : "You have a @PRODUCT account?",
@@ -1221,6 +1222,8 @@
     "confirm_btn" : "I agree",
     "reject_btn" : "Reject",
     "continue_btn" : "Continue",
+    
+    "request_access" : "With your consent, the application receives access to the following data:",
     "requests_access" : "Access requested by the application:",
     "requests_access_short" : "Data type",
     "requests_sharing" : "Data shared with the project:",
