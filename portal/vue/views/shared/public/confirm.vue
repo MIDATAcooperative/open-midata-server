@@ -19,77 +19,89 @@
     <div class="container">
        <div class="row">
 		  <div class="col-sm-12">
-             <panel :busy="!allLoaded" style="padding-top:20px; margin:0 auto;"  v-if="!terms.active">
+             <panel :busy="!allLoaded" style="padding-top:20px; margin:0 auto;" :title="$t('oauth2.title')" v-if="!terms.active">
                 <form ref="myform" name="myform" @submit.prevent="" novalidate>  
 				<div id="x">
 				<div v-if="pleaseConfirm">			
-					<section>
-						<p>{{ $t('oauth2.please_confirm', { consent }) }}</p>			
-					</section>			
+					
+				   <div class="mb-3">{{ $t('oauth2.please_confirm', { consent }) }}</div>			
+							
 				</div>
              						   	
                 <div v-if="showAppSection() && loginTemplatePage == 0">
-					<section>
-						<strong>{{ appname() }}</strong> <span v-t="'oauth2.requesting_app'"></span>
+					
+				  <strong>{{ appname() }}</strong> <span v-t="'oauth2.requesting_app'"></span>
 
-						<div>
-					  		<span>{{ appdescription() }}</span>
-						</div>										
-					</section>							
+				  <div class="mt-3 mb-3">
+					{{ appdescription() }}
+				  </div>										
+											
 				</div>
 				
 				<div v-if="showTermsSection()">								
-					<section v-if="app.termsOfUse && loginTemplatePage == 0">	
+					<div v-if="app.termsOfUse && loginTemplatePage == 0" class="mb-3">	
 						<terms :which="app.termsOfUse"></terms>						
-					</section>
+					</div>
 					<div v-for="link in extra" :key="link._id">
-						<section v-if="link.termsOfUse">	
+						<div v-if="link.termsOfUse" class="mb-3">	
 							<terms :which="link.termsOfUse"></terms>						
-						</section>
+						</div>
 					</div>
 				</div>
 
 				<div v-if="showLinkSection()">								
 					<div v-for="link in extra" :key="link._id">
-						<div>							
+						<div class="mb-1">							
 							<div>{{ getLinkHeading(link) }}</div>
 							<strong>{{ getLinkName(link) }}</strong>					
 						</div>
-						<section v-if="link.formatted.length">						
+						<div v-if="link.formatted.length" class="mb-3">						
 							<div v-for="line in link.formatted" :key="line">
 								<span>{{ line }}</span>
 							</div>																	
-						</section>
-						<section v-else-if="link.serviceApp">
+						</div>
+						<div v-else-if="link.serviceApp" class="mb-3">
 							{{ description(link.serviceApp) }}
-						</section>												
+						</div>												
 					</div>
 				</div>
 							
-			    <section class="summary" v-if="showSummary()">
-					
-					<p><strong v-t="'oauth2.sharing_summary'"></strong></p>
-					<div v-for="inp of input" :key="inp.letter">
-						<b>{{ inp.letter }}</b> : <span v-if="inp.mode">{{ $t(inp.mode) }} <i class="fas fa-arrow-right"></i></span> {{ inp.system }} ({{ inp.short}}) {{ inp.target }}
+			    <section v-if="showSummary()">
+				
+					<div v-if="showSimpleSummary()">
+						<div class="mb-3">{{ $t("oauth2.request_access") }}</div>
+						<ul>
+						  <li v-for="line in summary" :key="line.label">
+							{{ line.label }}							
+						  </li>
+						</ul>
 					</div>
-					<table class="table table-sm mt-2">
-						<thead>
-						<tr>
-							<th v-t="'oauth2.requests_access_short'"></th>
-							<th class="d-none d-sm-table-cell" v-for="sh in short" :key="sh">{{ sh }}</th>
+					<div v-else class="summary">
+					
+				  	  <p><strong v-t="'oauth2.sharing_summary'"></strong></p>
+					  <div v-for="inp of input" :key="inp.letter">
+						  <b>{{ inp.letter }}</b> : <span v-if="inp.mode">{{ $t(inp.mode) }} <i class="fas fa-arrow-right"></i></span> {{ inp.system }} ({{ inp.short}}) {{ inp.target }}
+					  </div>
+					  <table class="table table-sm mt-2">
+						  <thead>
+						  <tr>
+							  <th v-t="'oauth2.requests_access_short'"></th>
+							  <th class="d-none d-sm-table-cell" v-for="sh in short" :key="sh">{{ sh }}</th>
 							<!-- <td></td> -->
-						</tr>
-						</thead>
-						<tbody>
-						<tr v-for="line in summary" :key="line.label">
-							<td>{{ line.label }}
-								<div class="d-inline-block d-sm-none float-end text-muted">{{ line.letters }}</div>
-							</td>
-							<td class="d-none d-sm-table-cell" v-for="(sh,idx) in short" :key="idx"><i class="fas fa-check" v-if="line.checks[idx]"></i></td>
+					  	  </tr>
+						  </thead>
+						  <tbody>
+						  <tr v-for="line in summary" :key="line.label">
+							  <td>{{ line.label }}
+								  <div class="d-inline-block d-sm-none float-end text-muted">{{ line.letters }}</div>
+							  </td>
+							  <td class="d-none d-sm-table-cell" v-for="(sh,idx) in short" :key="idx"><i class="fas fa-check" v-if="line.checks[idx]"></i></td>
 							<!-- <td>{{ line.summary }}</td> -->
-						</tr>
-						</tbody>
-					</table>
+						  </tr>
+						  </tbody>
+					  </table>
+					
+					</div>
 					<p v-t="'oauth2.reshares_data'" v-if="app.resharesData"></p>
 					<p v-t="'oauth2.allows_user_search'" v-if="app.allowsUserSearch"></p>                    				
 				</section>
@@ -226,6 +238,10 @@ export default {
 
 	showSummary() {
        return this.$data.app.loginTemplate == "GENERATED" || this.$data.app.loginTemplate == "TERMS_OF_USE_AND_GENERATED";
+	},
+	
+	showSimpleSummary() {
+	   return this.$data.input.length == 1;
 	},
 
 	getMultiPage() {
@@ -455,8 +471,7 @@ export default {
 		const { $data, $t } = this, me = this;
 		let short = [];
 		let letters = ["", "A","B","C","D","E","F","G","H","I"];
-		let idx = 1;
-		let projectIdx = 0;
+		let idx = 1;		
 		let input = [];
 		let req = [];			
 
