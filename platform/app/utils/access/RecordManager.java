@@ -1355,7 +1355,7 @@ public class RecordManager {
 		
 		MidataId fileId;
 		byte[] key;
-		if (rec.meta.containsField("file") || idx>0) {
+		if ((rec.meta != null && rec.meta.containsField("file")) || idx>0) {
 			fileId = MidataId.from(rec.meta.get(getFileMetaName(idx)));
 			key = (byte[]) rec.meta.get(getFileMetaName(idx)+"-key");
 		} else {

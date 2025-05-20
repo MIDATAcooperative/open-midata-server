@@ -350,7 +350,7 @@ public class Feature_Pseudonymization extends Feature {
 	private final static Set<String> FIELDS_FOR_PSEUDONYMIZATION = Collections.unmodifiableSet(Sets.create("_id","format"));
 	
 	public static Pair<MidataId,String> pseudonymizeUser(AccessContext context, Consent consent) throws AppException {
-		if (consent.getOwnerName() != null && !consent.getOwnerName().equals("?")) return Pair.of(consent._id,consent.ownerName);
+		if (consent.getOwnerName() != null && !consent.getOwnerName().equals("?") && consent.getOwnerName().indexOf(",")<0) return Pair.of(consent._id,consent.ownerName);
 		if (!consent.isSharingData()) return Pair.of(consent._id, "???");
 		BasicBSONObject patient = (BasicBSONObject) RecordManager.instance.getMeta(context, consent._id, "_patient");
 		if (patient != null) {
@@ -363,7 +363,7 @@ public class Feature_Pseudonymization extends Feature {
 	}
 	
 	public static Pair<MidataId,String> pseudonymizeUser(APSCache cache, Consent consent) throws AppException {
-		if (consent.getOwnerName() != null && !consent.getOwnerName().equals("?")) return Pair.of(consent._id,consent.ownerName);
+		if (consent.getOwnerName() != null && !consent.getOwnerName().equals("?") && consent.getOwnerName().indexOf(",")<0) return Pair.of(consent._id,consent.ownerName);
 		if (consent.getOwnerName() == null) return Pair.of(consent.owner, null);
 		BasicBSONObject patient = Feature_UserGroups.findApsCacheToUse(cache, consent._id).getAPS(consent._id, consent.owner).getMeta("_patient");
 		if (patient != null) {
