@@ -84,7 +84,7 @@ public class FileStorage {
 		if (meta != null) filename = meta.getString("filename");
 		if (filename == null) 
 			filename = gridfile.getFilename();
-		AccessLog.log("from mets="+meta.getString("filename")+" fnm="+filename);		
+		
 		return new FileData(fileSystem.openDownloadStream(fileid), filename, contentType);		
 	}
 	
