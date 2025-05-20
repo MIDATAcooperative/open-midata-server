@@ -169,7 +169,7 @@ public class UserGroupAccessContext extends AccessContext {
 		if (study != null) {
 			Set<ProjectDataFilter> result = study.dataFilters;
 			Set<ProjectDataFilter> fromParent = parent.getProjectDataFilters();
-			if (fromParent.isEmpty()) return result;
+			if (fromParent == null || fromParent.isEmpty()) return result;
 			result = new HashSet<ProjectDataFilter>(result);
 			result.addAll(fromParent);
 			return result;

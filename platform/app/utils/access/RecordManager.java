@@ -1341,8 +1341,12 @@ public class RecordManager {
 	 * @return the attachment content
 	 * @throws AppException
 	 */
-	public FileData fetchFile(AccessContext context, RecordToken token, int idx) throws AppException {		
-		List<DBRecord> result = QueryEngine.listInternal(context.getCache(), new MidataId(token.apsId), context.forAps(MidataId.from(token.apsId)), CMaps.map("_id", new MidataId(token.recordId)), Sets.create("key", "data"));
+	public FileData fetchFile(AccessContext context, RecordToken token, int idx) throws AppException {
+		return fetchFile(context, null, token, idx);
+	}
+	
+	public FileData fetchFile(AccessContext context, String format, RecordToken token, int idx) throws AppException {		
+		List<DBRecord> result = QueryEngine.listInternal(context.getCache(), new MidataId(token.apsId), context.forAps(MidataId.from(token.apsId)), CMaps.map("_id", new MidataId(token.recordId)).map("format", format), Sets.create("key", "data"));
 				
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
 		DBRecord rec = result.get(0);
