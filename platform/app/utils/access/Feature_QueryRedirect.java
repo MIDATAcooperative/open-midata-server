@@ -196,6 +196,7 @@ public class Feature_QueryRedirect extends Feature {
 				Object val2 = query.get(key);
 				//if (val1 instanceof MidataId) val1 = val1.toString();
 				//if (val2 instanceof MidataId) val2 = val2.toString();
+				if (val2==null) continue;
 				if (val1.equals(val2) || val1.toString().equals(val2.toString())) continue;
 				if (val1 instanceof Collection<?>) {
 				 if (val2 instanceof Collection<?>) {
