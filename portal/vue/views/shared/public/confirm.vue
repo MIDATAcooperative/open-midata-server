@@ -272,19 +272,19 @@ export default {
 
 	appname() {
 		 const { $data } = this;
-		 if ($data.app && $data.app.i18n && $data.app.i18n[$data.lang] && $data.app.i18n[$data.lang].name) return $data.app.i18n[$data.lang].name;
+		 if ($data.app && $data.app.i18n && $data.app.i18n[getLocale()] && $data.app.i18n[getLocale()].name) return $data.app.i18n[getLocale()].name;
 		 return $data.app.name;
 	},
 
 	appdescription() {
 		 const { $data } = this;
-		 if ($data.app && $data.app.i18n && $data.app.i18n[$data.lang] && $data.app.i18n[$data.lang].description) return $data.app.i18n[$data.lang].description;
+		 if ($data.app && $data.app.i18n && $data.app.i18n[getLocale()] && $data.app.i18n[getLocale()].description) return $data.app.i18n[getLocale()].description;
 		 return $data.app.description;
 	},
 
 	description(app) {
 		 const { $data } = this;
-		 if (app && app.i18n && app.i18n[$data.lang] && app.i18n[$data.lang].description) return app.i18n[$data.lang].description;
+		 if (app && app.i18n && app.i18n[getLocale()] && app.i18n[getLocale()].description) return app.i18n[getLocale()].description;
 		 return app.description;
 	},
 	
