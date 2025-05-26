@@ -554,3 +554,13 @@
 {"_id":{"$oid":"6752d482f86a56786aa18e87"},"system":"http://form.brightfish.com","code":"hoos-ps-left-hip","display":"HOOS-PS (left hip)","content":"hoos-ps-left-hip"}
 {"_id":{"$oid":"6763f930942111073878a0c9"},"system":"http://midata.coop/sero","code":"treasure-chest","display":"SERO Schatzkiste","content":"treasure-chest"}
 {"_id":{"$oid":"6752d4b79c373606311052f3"},"system":"http://form.brightfish.com","code":"hoos-ps-right-hip","display":"HOOS-PS (right hip)","content":"hoos-ps-right-hip"}
+{"_id":{"$oid":"67d1b73199fad46b4fe8d5f2"},"system":"http://form.brightfish.com","code":"iief-5","display":"IIEF-5 questionnaire (International Index of Erectile Function - 5)","content":"iief-5"}
+{"_id":{"$oid":"67d1b7f399fad46b4fe8d5f5"},"system":"http://form.brightfish.com","code":"mshq-ejd","display":"MSHQ-EJD questionnaire (Men's Sexual Health Questionnaire for Ejaculatory Dysfunction)","content":"mshq-ejd"}
+{"_id":{"$oid":"67bdecd7fce3dc591a60b7eb"},"system":"http://form.brightfish.com","code":"breast-q-preoperative","display":"Satisfaction with Breasts Questionnaire","content":"breast-qtm-preoperative"}
+{"_id":{"$oid":"67d1b54099fad46b4fe8d5ed"},"system":"http://form.brightfish.com","code":"accompanying.questionnaire","display":"Accompanying questionnaire","content":"accompanying.questionnaire"}
+{"_id":{"$oid":"67d1b5e31552654a9eeaa769"},"system":"http://form.brightfish.com","code":"iciq.fluts","display":"ICIQ-FLUTS questionnaire (International Consultation on Incontinence Questionnaire - Female Lower Urinary Tract Symptoms)","content":"iciq.fluts"}
+{"_id":{"$oid":"67d1b7841552654a9eeaa770"},"system":"http://form.brightfish.com","code":"ipss","display":"IPSS questionnaire (International Prostate Symptom Score)","content":"ipss"}
+{"_id":{"$oid":"67bded93fce3dc591a60b7ec"},"system":"http://form.brightfish.com","code":"breast-q-reconstruction","display":"Breast-Q - Reconstruction - Satifsfaction with breasts","content":"breast-qtm-reconstruction"}
+{"_id":{"$oid":"67bded52573f9d1217469505"},"system":"http://form.brightfish.com","code":"breast-q-mastectomy","display":"Breast-Q - Mastectomy - Satifsfaction with breasts","content":"breast-qtm-mastectomy"}
+{"_id":{"$oid":"67d1b6541552654a9eeaa76b"},"system":"http://form.brightfish.com","code":"iciq.s","display":"ICIQ-S questionnaire (Consultation on Incontinence Questionnaire - Short Form)","content":"iciq.s"}
+{"_id":{"$oid":"67d1b6ba1552654a9eeaa76d"},"system":"http://form.brightfish.com","code":"iciq.ui.shortform","display":"ICIQ-UI Short Form questionnaire (International Consultation on Incontinence Questionnaire - Urinary Incontinence Short Form)","content":"iciq.ui.shortform"}
