@@ -124,7 +124,7 @@ export default {
             },
             {
                 name : "admin_members.testusers",
-                criteria : { testUserApp : { $exists : true } }
+                criteria : { testUserApp : { $exists : true }, status : { $ne : "WIPED" } }
             },
             {
                 name : "admin_members.overview",
