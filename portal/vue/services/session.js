@@ -41,6 +41,7 @@ import oauth from './oauth';
 						params.sessionToken = crypto.keyChallengeLocal(result.data.userid, result.data.recoverKey, result.data.challenge);
 						if (!params.sessionToken) {
 							params.sessionToken="no-recovery";
+							params.loginToken = undefined;
 							func(params);
 							return { data : { requirements : ["KEYRECOVERY"] , status : "BLOCKED" } };
 						}
