@@ -1148,7 +1148,7 @@ public class OAuth2 extends Controller {
 			obj.put("code", token.asCodeExchangeToken().encrypt());
 			obj.put("istatus", appInstance.status.toString());
 			
-			if (user.resettoken != null) OTPTools.clearToken(user);
+			if (user.resettoken != null && user.resettokenType.isOtp()) OTPTools.clearToken(user);
 			
 			AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
 			

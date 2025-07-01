@@ -57,4 +57,9 @@ public enum TokenType {
 		if (this == WELCOME_MAIL && (other == OTP_MAIL || other == PWRESET_MAIL)) return true;		
 		return false;
 	}
+	
+	public boolean isOtp() {
+		return this == OTP_MAIL || this == OTP_SMS || this == OTP_OTHER;
+	}
+	
 }

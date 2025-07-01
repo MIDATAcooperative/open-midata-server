@@ -19,6 +19,7 @@ package utils.auth;
 
 import models.User;
 import models.enums.TokenType;
+import utils.AccessLog;
 import utils.exceptions.AppException;
 
 public class OTPTools {
@@ -38,10 +39,10 @@ public class OTPTools {
 		return token;
 	}
 	
-	public static boolean checkToken(User targetUser, String token) {
+	public static boolean checkToken(User targetUser, String token) {		 
 		 boolean tokenOk = (token != null && targetUser.resettoken != null 		    		    
 	    		   && targetUser.resettoken.equals(token)
-	    		   && System.currentTimeMillis() - targetUser.resettokenTs < EMAIL_TOKEN_LIFETIME);
+	    		   && System.currentTimeMillis() - targetUser.resettokenTs < EMAIL_TOKEN_LIFETIME);		 
 		 return tokenOk;
 	}
 	
