@@ -366,8 +366,9 @@ public class Application extends APIController {
 		if (json.has("token")) {	
 			AccessLog.log("confirm with token");
 			// check status
-			PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
+			PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());			
 			if (passwordResetToken == null) throw new BadRequestException("error.missing.token", "Missing or bad token.");
+			AccessLog.log("got token");
 			
 			// execute
 			userId = passwordResetToken.userId;
@@ -416,7 +417,7 @@ public class Application extends APIController {
 		
 		User user = User.getById(userId, Sets.create(User.FOR_LOGIN, "resettoken", "resettokenTs", "resettokenType", "registeredAt", "confirmedAt", "previousEMail"));
 		if (user == null)  throw new BadRequestException("error.unknown.user", "User not found");
-				
+		AccessLog.log("got user");	
 		if (user!=null && password != null) {	
 			 AccessLog.log("trying to set password");
 			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, Actor.getActor(null, userId));
@@ -454,15 +455,16 @@ public class Application extends APIController {
 		
 		
 		if (wanted != null) {
+			AccessLog.log("wanted status="+wanted);
 			if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {
 				
 			    if (OTPTools.checkToken(user, token)) {	
-			    	
-				if (user.password == null) {	
-					AccessLog.log("password is still missing, but token is okay");
-					if (stoken != null) stoken.setIsAuthenticated();
-					return OAuth2.loginHelper(request);	
-				}
+			    	AccessLog.log("token is okay");
+					if (user.password == null) {	
+						AccessLog.log("password is still missing, but token is okay");
+						if (stoken != null) stoken.setIsAuthenticated();
+						return OAuth2.loginHelper(request);	
+					}
 			      				   
 			    	   
 			    	   if (wanted == EMailStatus.REJECTED) {
