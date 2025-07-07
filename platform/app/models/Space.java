@@ -84,7 +84,7 @@ public class Space extends Model implements Comparable<Space>, Serializable {
 	/**
 	 * automatically run import (deprecated. now use FHIR Subscription)
 	 */
-	public boolean autoImport;
+	public @NotMaterialized boolean autoImport;
 	
 	/**
 	 * the filter query that is applied to the users main APS when querying data using this space.

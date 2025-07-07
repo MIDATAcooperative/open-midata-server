@@ -402,7 +402,6 @@ public class AutoRun extends APIController {
 		private long endScheduling = 0;
 		private int countUnlinkedFiles = 0;
 		private int errorCount = 0;
-		private int countOldImports = 0;
 		private int countNewImports = 0;
 		private int openRecoveries = 0;
 		private boolean reportSend = true;
@@ -411,8 +410,6 @@ public class AutoRun extends APIController {
 		String handle;
 		List<SubscriptionData> datas;
 		Iterator<SubscriptionData> datasIt;
-		List<Space> autoImports;
-		Iterator<Space> autoImportsIt;
 		//Set<MidataId> done;
 		
 		private int countSlow = 0;
@@ -498,7 +495,6 @@ public class AutoRun extends APIController {
 			endScheduling = 0;
 			countUnlinkedFiles = 0;
 			errorCount = 0;
-			countOldImports = 0;
 			countNewImports = 0;
 			openRecoveries = 0;
 			numberSuccess = 0;
@@ -509,8 +505,7 @@ public class AutoRun extends APIController {
 			handle = null;
 			datas = null;
 			datasIt = null;
-			autoImports = null;
-			autoImportsIt = null;
+			
 		    //done = null;
 			errors = new StringBuffer();
 			
@@ -557,11 +552,6 @@ public class AutoRun extends APIController {
 				handle = KeyManager.instance.login(1000l*60l*60l*23l, false);
 				MidataId autorunner = RuntimeConstants.instance.autorunService;
 				KeyManager.instance.unlock(autorunner, null);
-				autoImports = new ArrayList<Space>(Space.getAll(CMaps.map("autoImport", true), Sets.create("_id", "owner", "visualization")));
-				autoImportsIt = autoImports.iterator();
-				
-				countOldImports = autoImports.size();
-				AccessLog.log("Done scheduling old autoimport size="+autoImports.size());
 				
 				datas = SubscriptionData.getAllActiveFormat("time", SubscriptionData.ALL);
 				datasIt = datas.iterator();
@@ -581,7 +571,7 @@ public class AutoRun extends APIController {
 				AccessLog.log("Done scheduling new autoimport size="+datas.size());
 				endScheduling = System.currentTimeMillis();
 				
-				if (countOldImports + countNewImports == 0) reportEnd();
+				if (countNewImports == 0) reportEnd();
 			} catch (Exception e) {
 				ErrorReporter.report("Autorun-Service", null, e);	
 				throw e;
@@ -593,7 +583,7 @@ public class AutoRun extends APIController {
 		}
 		
 public void startIntradayImport(StartIntradayImport message) throws Exception {
-			if (autoImportsIt != null || datasIt != null) return;
+			if (datasIt != null) return;
 			String path = "AutoRun/startIntradayImport";
 			long st = ActionRecorder.start(path);
 				
@@ -613,7 +603,6 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			endScheduling = 0;
 			countUnlinkedFiles = 0;
 			errorCount = 0;
-			countOldImports = 0;
 			countNewImports = 0;
 			openRecoveries = 0;
 			numberSuccess = 0;
@@ -624,8 +613,6 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			handle = null;
 			datas = null;
 			datasIt = null;
-			autoImports = null;
-			autoImportsIt = null;
 		    //done = null;
 			errors = new StringBuffer();
 			
@@ -681,16 +668,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			long st = ActionRecorder.start(path);
 			try {
 				AccessLog.logStart("jobs", "import tick");
-				//boolean foundone = false;
-				if (autoImportsIt != null && autoImportsIt.hasNext()) {
-					Space space = autoImportsIt.next();
-					MidataId autorunner = RuntimeConstants.instance.autorunService;
-					
-					isSlow = 0;
-					workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
-					
-					return true;
-				} else while (datasIt!=null && datasIt.hasNext()) {
+			    while (datasIt!=null && datasIt.hasNext()) {
 					SubscriptionData data = datasIt.next();
 					//if (!done.contains(data.owner)) {
 					//	  done.add(data.owner);
@@ -700,7 +678,6 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 						  return true;
 					//}
 				}		
-				autoImportsIt = null;
 				datasIt = null;
 				AccessLog.log("autoimport nothing to start left slow="+countSlow);						
 				
@@ -742,8 +719,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				report += "--------------------\n";
 				report += "Total time for service: "+(end-startTime)+" ms\n";
 				report += "\n\n";
-				report += "# Old style auto-imports: "+countOldImports+" \n";
-				report += "# New style auto-imports: "+countNewImports+" \n";			
+				report += "# Auto-imports: "+countNewImports+" \n";			
 				report += "# Errors during scheduling: "+errorCount+" \n";
 				report += "# Errors during import: "+numberFailure+" \n";
 				report += "# Success messages: "+numberSuccess+" \n";
@@ -754,8 +730,6 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				handle = null;
 				datas = null;
 				datasIt = null;
-				autoImports = null;
-				autoImportsIt = null;
 			    //done = null;
 				
 				String email = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
@@ -786,7 +760,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				}
 				AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
 				
-				if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
+				if (numberSuccess+numberFailure >= countNewImports) reportEnd();
 				else importTick();
 				
 				ActionRecorder.end(path, st);
@@ -803,7 +777,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				errors.append(result.getErrorcode()+" "+(result.getPlugin()!=null?result.getPlugin():"")+" "+msg+"\n");
 			}
 			AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
-			if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
+			if (numberSuccess+numberFailure >= countNewImports) reportEnd();
 			else importTick();
 			
             ActionRecorder.end(path, st);
