@@ -208,6 +208,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		   
 		   if (error != null) {
 			   try {
+				   SubscriptionData.fail(subscription);
 				   SubscriptionData.setError(subscription, new Date().toString()+": "+error);
 				   AuditManager.instance.fail(400, error, "error.plugin");
 			   } catch (Exception e) {
@@ -364,11 +365,13 @@ public class SubscriptionProcessor extends AbstractActor {
 								try { AuditManager.instance.success(); } catch (AppException e) {}
 						});
 					} else {
+						SubscriptionData.fail(subscription._id);
 						sender.tell(new MessageResponse("OAuth 2 no refresh token",-1, plugin.filename), getSelf());
 						AuditManager.instance.fail(400, "OAuth 2 no refresh token", "error.missing.token");
 						if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 					}
 				} else {
+					SubscriptionData.fail(subscription._id);
 					sender.tell(new MessageResponse("OAuth 2 no data",-1, plugin.filename), getSelf());
 					AuditManager.instance.fail(400, "OAuth 2 no data", "error.missing.consent_accept");
 					if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
@@ -421,6 +424,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		   
 		   if (error != null) {
 			   try {
+				   SubscriptionData.fail(subscription._id);
 				   SubscriptionData.setError(subscription._id, new Date().toString()+": "+error);
 				   AuditManager.instance.fail(400, error, "error.plugin");
 				   ErrorReporter.reportPluginProblem("subscription script", null, new PluginException(plugin._id, "error.plugin", error));
@@ -431,6 +435,7 @@ public class SubscriptionProcessor extends AbstractActor {
 				   ServerTools.endRequest();
 			   }
 		   } else {
+			   try { subscription.ok(); } catch (Exception e) {}
 			   Stats.finishRequest(TRIGGER, triggered.getDescription(), null, "0", Collections.emptySet());
 			   String r = out.getBody();
 			   if (r != null && r.length() >0) {
@@ -534,7 +539,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		  
 		  
 		  Stats.finishRequest(TRIGGER, triggered.getDescription(), null, ""+p.exitValue(), Collections.emptySet());
-		  
+		  subscription.ok();
 		  if (r != null && r.length() >0) {
 			 if (p.exitValue() != 0) {
 				 if (err == null || err.trim().length()==0) err = "Status "+p.exitValue()+", script provided no error message.";
@@ -554,7 +559,8 @@ public class SubscriptionProcessor extends AbstractActor {
 		  } 
 		  if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());	    
 		  AccessLog.log("Response sended");		 		  
-		} catch (Exception e) {			
+		} catch (Exception e) {		
+			try { SubscriptionData.fail(subscription._id); } catch (Exception e2) {}
 			sender.tell(new MessageResponse("Failed: "+e.toString(),-1, plugin.filename), getSelf());	
 			reportPluginProblem(plugin, "Failed: "+e.toString());
 			AuditManager.instance.fail(500, "Script error", "error.internal");
