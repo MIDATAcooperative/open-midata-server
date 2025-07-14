@@ -182,7 +182,7 @@ public class MailUtils {
 		escaped = escaped.replaceAll("qqx", "http");  
 		
 		if (htmlFrame == null || htmlFrame.trim().length() == 0) {
-		  return "<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body><p>"+result.toString()+"</p></body></html>";
+		  return "<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body><p>"+escaped+"</p></body></html>";
 		}
 		return "<!DOCTYPE html>"+htmlFrame.replace("{{message}}", escaped);
 		
