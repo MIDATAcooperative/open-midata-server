@@ -222,11 +222,11 @@ public class PluginsAPI extends APIController {
 		}
 		if (json.has("autoimport")) {
 			boolean auto = JsonValidation.getBoolean(json, "autoimport");
-			Space space = Space.getByIdAndOwner(inf.getTargetAps(), inf.getLegacyOwner(), Sets.create("autoImport", "owner", "visualization"));
+			Space space = Space.getByIdAndOwner(inf.getTargetAps(), inf.getLegacyOwner(), Sets.create("owner", "visualization"));
 			if (space==null) throw new InternalServerException("error.internal", "Space not found.");
 			
 			// Disable old style import
-			Space.set(space._id, "autoImport", false);
+			//Space.set(space._id, "autoImport", false);
 			
 			List<SubscriptionData> entries = SubscriptionData.getByOwnerAndFormatAndInstance(space.owner, "time", space._id, SubscriptionData.ALL);
 			SubscriptionData data = null;
