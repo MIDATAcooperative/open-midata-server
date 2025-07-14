@@ -1093,6 +1093,7 @@
 	"confirm_btn" : "Confirm this Consent",
 	"reject_btn" : "Reject this Consent",
     "delete_btn" : "Delete this Consent",
+    "delete_all_btn" : "Delete all for this app",
     "please_review1" : "Consent to review",
     "please_review2a" : "Please review this consent. Click on 'Confirm this Consent' if you agree. Click on 'Reject this Consent' if you do not agree.",
     "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.",

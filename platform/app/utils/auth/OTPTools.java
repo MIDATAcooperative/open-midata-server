@@ -39,6 +39,10 @@ public class OTPTools {
 		return token;
 	}
 	
+	public static boolean checkToken(User targetUser, String token, boolean allowExpired) {
+		return allowExpired ? checkTokenAllowExpired(targetUser, token) : checkToken(targetUser, token);
+	}
+	
 	public static boolean checkToken(User targetUser, String token) {		 
 		 boolean tokenOk = (token != null && targetUser.resettoken != null 		    		    
 	    		   && targetUser.resettoken.equals(token)

@@ -69,6 +69,19 @@ public class Messager {
 		smsSender = system.actorOf(Props.create(SMSSender.class).withDispatcher("medium-work-dispatcher"), "smsSender");
 	}
 	
+	private static String safeForReplace(String in) {
+		if (in==null) return in;
+		
+		int p = in.indexOf("$");
+		while (p>=0) {
+		  if (p==0) in = in.substring(1);
+		  else if (p == in.length()-1) in = in.substring(0, p);
+		  else in = in.substring(0, p)+in.substring(p+1);
+		  p = in.indexOf("$");
+		}
+		return in;
+	}
+	
 	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId) {	
 	    sendTextMail(email, fullname, subject, content, null, eventId, MailSenderType.USER, null);
 	}
@@ -205,8 +218,8 @@ public class Messager {
 			String key = "<"+replacement.getKey()+">";
 			String v = replacement.getValue();
 			if (v==null) v = "";
-		    subject = subject.replaceAll(key, v);
-		    content = content.replaceAll(key, v);
+		    subject = subject.replaceAll(key, safeForReplace(v));
+		    content = content.replaceAll(key, safeForReplace(v));
 		}
 		String phone = member.mobile;
 		
