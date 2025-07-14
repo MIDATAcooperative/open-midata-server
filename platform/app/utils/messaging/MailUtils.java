@@ -148,6 +148,7 @@ public class MailUtils {
 		StringBuilder result = new StringBuilder();
 		String escaped = StringEscapeUtils.escapeHtml4(text);
 		//escaped = escaped.replaceAll("\n\\*\s", "\n</p><p>");
+		escaped = escaped.replaceAll("\"", "&quot;");
 		escaped = escaped.replaceAll("\\_\\_([^\\n_*]+?)\\_\\_", "<i>$1</i>");
 		escaped = escaped.replaceAll("\\*\\*([^\\n_*]+?)\\*\\*", "<b>$1</b>");
 		
@@ -172,16 +173,18 @@ public class MailUtils {
 			result.append(escaped.substring(0, p)+"<a href=\""+escaped.substring(p, e)+"\">"+escaped.substring(p,e)+"</a>");
 			escaped = escaped.substring(e);
 			p = escaped.indexOf("https://");
-		}
-		// Finish newer rule for links
-		escaped = escaped.replaceAll("qqx", "http");  
+		}		
 		
 		result.append(escaped);
+		
+		escaped = result.toString();
+		// Finish newer rule for links
+		escaped = escaped.replaceAll("qqx", "http");  
 		
 		if (htmlFrame == null || htmlFrame.trim().length() == 0) {
 		  return "<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body><p>"+result.toString()+"</p></body></html>";
 		}
-		return "<!DOCTYPE html>"+htmlFrame.replace("{{message}}", result.toString());
+		return "<!DOCTYPE html>"+htmlFrame.replace("{{message}}", escaped);
 		
 	}
 	
