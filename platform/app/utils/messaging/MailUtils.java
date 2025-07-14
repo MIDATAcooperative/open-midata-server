@@ -59,7 +59,7 @@ public class MailUtils {
 		this.mailerClient.put(MailSenderType.STATUS, createInstance("play.mailer.status"));
 		this.mailerClient.put(MailSenderType.BULK, createInstance("play.mailer.bulk"));					
 	}
-	
+		
 	private MailerClient createInstance(String name) {
 		System.out.println(name);
 		Config sub = config.getConfig(name);
@@ -159,7 +159,7 @@ public class MailUtils {
 		escaped = escaped.replaceAll("[←→]", "");
 		
 		// Newer rule for links, replace http so that the second rule for links does not match
-		escaped = escaped.replaceAll("\\[(.+?)\\|http(.+)\\]", "<a href=\"¶$2\">$1</a>");
+		escaped = escaped.replaceAll("\\[(.+?)\\|http(.+)\\]", "<a href=\"qqx$2\">$1</a>");
 		escaped = escaped.replaceAll("\\{\\}", "</span>");
 		escaped = escaped.replaceAll("\\{(.+?)\\}", "<span style=\"$1\">");
 		
@@ -174,7 +174,7 @@ public class MailUtils {
 			p = escaped.indexOf("https://");
 		}
 		// Finish newer rule for links
-		escaped = escaped.replaceAll("¶", "http");  
+		escaped = escaped.replaceAll("qqx", "http");  
 		
 		result.append(escaped);
 		

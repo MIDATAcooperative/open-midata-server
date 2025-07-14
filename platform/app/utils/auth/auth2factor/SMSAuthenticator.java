@@ -21,6 +21,7 @@ import models.MidataId;
 import models.RateLimitedAction;
 import models.User;
 import models.enums.AuditEventType;
+import utils.audit.AuditManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.exceptions.AppException;
@@ -105,7 +106,7 @@ public class SMSAuthenticator implements Authenticator {
 			if (token.failedAttempts >= MAX_FAILED_ATTEMPTS) {
 			  KeyManager.instance.logout();
 			  throw new BadRequestException("error.expired.securitytoken", "Token expired.");
-			} else {
+			} else {			  
 			  throw new BadRequestException("error.invalid.securitytoken", "Token not correct.");
 			}
 		}

@@ -794,7 +794,12 @@ public class OAuth2 extends Controller {
 					notok.add(UserFeature.AUTH2FACTORSETUP);
 				} else {
 				
-					Authenticators.getInstance(SecondaryAuthType.SMS).checkAuthentication(user._id, user, securityToken);
+					try {
+ 					    Authenticators.getInstance(SecondaryAuthType.SMS).checkAuthentication(user._id, user, securityToken);
+					} catch (AppException e) {						
+						AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, token.appId);
+						throw e;
+					}
 					token.securityToken = securityToken;
 					notok.remove(UserFeature.AUTH2FACTOR);
 					notok.remove(UserFeature.PHONE_VERIFIED);
@@ -815,7 +820,12 @@ public class OAuth2 extends Controller {
 				notok.clear();
 				notok.add(UserFeature.AUTH2FACTOR);
 			} else {
-				Authenticators.getInstance(user.authType).checkAuthentication(user._id, user, securityToken);
+				try {
+					Authenticators.getInstance(user.authType).checkAuthentication(user._id, user, securityToken);
+				} catch (AppException e) {						
+					AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, token.appId);
+					throw e;
+				}
 				token.securityToken = securityToken;
 				notok.remove(UserFeature.AUTH2FACTOR);
 				if (notok.isEmpty()) {
