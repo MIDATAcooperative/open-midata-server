@@ -50,12 +50,16 @@
     "lang" : "Language",
     "msgtitle" : "Message Title",
     "text" : "Message Text",
+    "smtp_btn" : "Configure SMTP Server",
     "available_tags" : "Available categories",
+    "htmlFrame" : "HTML message frame",
+    "htmlFrame2" : "Enter complete HTML page for mail. Use {{message}} as placeholder for actual message.", 
     "reasons" : {
        "REGISTRATION" : "Registration of new user",
        "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
 	   "FIRSTUSE_ANYUSER" : "First use of application",
 	   "FIRSTUSE_EXISTINGUSER" : "First use of application (if no registration email sent)",
+	   "ONE_TIME_PASSWORD" : "One-time password sent",
 	   "SERVICE_WITHDRAW" : "Stop use of service",
 	   "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
        "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",
@@ -85,6 +89,20 @@
        "PROJECT_PARTICIPATION_GROUP_ASSIGNED" : "Group assigned",
        "PROJECT_PARTICIPATION_RETREAT" : "User retreated"
     }		      
+  },
+  
+  "appsmtp" : {
+    "title" : "App-specific SMTP Configuration",
+    "description" : "If a SMTP configuration is provided here the platform will send all emails defined for this application using the given SMTP server. Whenever the SMTP configuration is changed the platform will sent a test email to you.",
+    "host" : "Host",
+    "port" : "Port",
+    "user" : "Username",
+    "password" : "Password",
+    "tls" : "TLS",
+    "ssl" : "SSL",
+    "from" : "Sender",
+    "from2" : "Sender must contain sender name and email in the format: name<email>", 
+    "success" : "SMTP configuration successfully updated."
   },
   
   "manageapp" : {
@@ -159,6 +177,7 @@
     "accept_test_accounts" : "Allow Test-Users?",
     "accept_test_accounts_from_app" : "Allowed source applications",
     "test_accounts_max" : "Test accounts limit",
+    "home_url" : "Landing page",
     "info" : {
        "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
@@ -180,6 +199,7 @@
        "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
        "tags" : "Categories on the Store for which your plugin should be listed.",
        "url" : "URL of your plugins main page. If you use @PRODUCT's template, it is 'dist/index.html#!?authToken=:authToken''",
+       "home_url" : "URL of initial page (before login).",
        "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
        "defaultSpaceContext" : "Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.",
        "redirectUri" : "You may specifiy multiple possible redirect URIs by separating the URIs with a space.",

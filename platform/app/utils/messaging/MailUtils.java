@@ -31,11 +31,15 @@ import com.typesafe.config.Config;
 
 import akka.dispatch.Mailbox;
 import models.MidataId;
+import models.Plugin;
 import play.api.libs.mailer.SMTPConfiguration;
 import play.api.libs.mailer.SMTPMailer;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
 import scala.Option;
+import utils.collections.Sets;
+import utils.exceptions.InternalServerException;
+import com.typesafe.config.ConfigFactory;
 
 /**
  * function for sending mails
@@ -55,7 +59,7 @@ public class MailUtils {
 		this.mailerClient.put(MailSenderType.STATUS, createInstance("play.mailer.status"));
 		this.mailerClient.put(MailSenderType.BULK, createInstance("play.mailer.bulk"));					
 	}
-	
+		
 	private MailerClient createInstance(String name) {
 		System.out.println(name);
 		Config sub = config.getConfig(name);
@@ -66,6 +70,12 @@ public class MailUtils {
 				sub.getBoolean("tls"), 
 				false /*sub.getBoolean("tlsRequired")*/, Option.apply(sub.getString("user")), Option.apply(sub.getString("password")), false, Option.empty(), Option.empty(), sub, false);
         return new SMTPMailer(conf);		
+	}
+	
+	private MailerClient createInstance(SMTPConfig smtp) {
+
+		SMTPConfiguration conf = new SMTPConfiguration(smtp.host, smtp.port, smtp.ssl, smtp.tls, false, Option.apply(smtp.user), Option.apply(smtp.password), false, Option.empty(), Option.empty(), ConfigFactory.empty(), false);
+		return new SMTPMailer(conf);	
 	}
 	
 	private static MailUtils instance;
@@ -81,16 +91,30 @@ public class MailUtils {
 	 * @param subject title of email
 	 * @param content content of email
 	 */
-	public static void sendTextMail(MailSenderType sender, String email, String fullname, String subject, Object content) {		
+	public static void sendTextMail(MailSenderType sender, String email, String fullname, String subject, Object content, MidataId smtpFromApp) {		
+	  sendTextMail(sender, email, fullname, subject, content, null, smtpFromApp);
+	}
+	public static void sendTextMail(MailSenderType sender, String email, String fullname, String subject, Object content, String htmlFrame, MidataId smtpFromApp) {		
 		if (instance == null) throw new NullPointerException("MailUtils not initialized");
-		instance.sendEmail(sender, email, fullname, subject, content);
+		SMTPConfig config = null;
+		if (smtpFromApp != null) {
+			try {
+			  Plugin pl = Plugin.getById(smtpFromApp, Sets.create("smtp", "status"));
+		      if (pl != null && pl.smtp != null && pl.status.isUsable()) config = pl.smtp;
+			} catch (InternalServerException e) {}
+		}
+		instance.sendEmail(sender, config, email, htmlFrame, fullname, subject, content);
 	}
 	
 	public static void sendTextMailAsync(MailSenderType sender, String email, String fullname, String subject, Object content) {
-		Messager.sendTextMail(email, fullname, subject, content.toString(), null, sender);
+		sendTextMailAsync(sender, email, fullname, subject, content, null);
+	}
+	
+	public static void sendTextMailAsync(MailSenderType sender, String email, String fullname, String subject, Object content, MidataId smtpFromApp) {
+		Messager.sendTextMail(email, fullname, subject, content.toString(), null, null, sender, smtpFromApp);
 	}
 					 
-	public void sendEmail(MailSenderType sender, String email, String fullname, String subject, Object content) {
+	public void sendEmail(MailSenderType sender, SMTPConfig smtp, String email, String htmlFrame, String fullname, String subject, Object content) {
 		System.out.println("Start send mail to "+email+" at "+new Date().toString());
 		
 		if (email==null) return;
@@ -98,28 +122,49 @@ public class MailUtils {
 		Email mail = new Email();		    	
 		mail.setSubject(subject);
 		mail.addTo(getMailboxFromAddressAndDisplay(email, fullname));
-		mail.setFrom(config.getString("play.mailer."+sender.toString().toLowerCase()+".from"));	
+		if (smtp != null) {
+		  mail.setFrom(smtp.from);	
+		} else {
+		  mail.setFrom(config.getString("play.mailer."+sender.toString().toLowerCase()+".from"));
+		}
 		
 		if (sender == MailSenderType.STATUS) {
 		  mail.setBodyText(content.toString());
 		} else {		
-		  mail.setBodyHtml(getHTMLVersionFromText(content.toString()));
+		  mail.setBodyHtml(getHTMLVersionFromText(content.toString(), htmlFrame));
 		  mail.setBodyText(getTextOnlyVersion(content.toString()));
 		}
-		    
-		mailerClient.get(sender).send(mail);
+		
+		if (smtp != null) {
+			createInstance(smtp).send(mail);
+		} else {
+		    mailerClient.get(sender).send(mail);
+		}
 		System.out.println("End send mail to "+email);
 		System.out.flush();
 	}
 	
-	public static String getHTMLVersionFromText(String text) {
+	public static String getHTMLVersionFromText(String text, String htmlFrame) {
 		StringBuilder result = new StringBuilder();
-		result.append("<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body><p>");
 		String escaped = StringEscapeUtils.escapeHtml4(text);
-		escaped = escaped.replaceAll("\n", "\n</p><p>");
+		//escaped = escaped.replaceAll("\n\\*\s", "\n</p><p>");
+		escaped = escaped.replaceAll("\"", "&quot;");
 		escaped = escaped.replaceAll("\\_\\_([^\\n_*]+?)\\_\\_", "<i>$1</i>");
 		escaped = escaped.replaceAll("\\*\\*([^\\n_*]+?)\\*\\*", "<b>$1</b>");
-				
+		
+		// Bullets
+		escaped = escaped.replaceAll("\n", "←→");
+		escaped = escaped.replaceAll("→\\*\s*(.+?)←","<ul><li>$1</li></ul>");
+		escaped = escaped.replaceAll("<\\/ul><ul>", "");
+		escaped = escaped.replaceAll("←→", "\n</p><p>");
+		escaped = escaped.replaceAll("[←→]", "");
+		
+		// Newer rule for links, replace http so that the second rule for links does not match
+		escaped = escaped.replaceAll("\\[(.+?)\\|http(.+)\\]", "<a href=\"qqx$2\">$1</a>");
+		escaped = escaped.replaceAll("\\{\\}", "</span>");
+		escaped = escaped.replaceAll("\\{(.+?)\\}", "<span style=\"$1\">");
+		
+		// Old rule for links
 		int p = escaped.indexOf("https://");
 		while (p>=0) {
 			char[] chars = escaped.toCharArray();
@@ -128,14 +173,24 @@ public class MailUtils {
 			result.append(escaped.substring(0, p)+"<a href=\""+escaped.substring(p, e)+"\">"+escaped.substring(p,e)+"</a>");
 			escaped = escaped.substring(e);
 			p = escaped.indexOf("https://");
-		}
+		}		
+		
 		result.append(escaped);
-		result.append("</p></body></html>");
-		return result.toString();
+		
+		escaped = result.toString();
+		// Finish newer rule for links
+		escaped = escaped.replaceAll("qqx", "http");  
+		
+		if (htmlFrame == null || htmlFrame.trim().length() == 0) {
+		  return "<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body><p>"+escaped+"</p></body></html>";
+		}
+		return "<!DOCTYPE html>"+htmlFrame.replace("{{message}}", escaped);
+		
 	}
 	
 	public static String getTextOnlyVersion(String text) {
-	   return text.replaceAll("\\_\\_", "").replaceAll("\\*\\*", "");
+	   return text.replaceAll("\\_\\_", "").replaceAll("\\*\\*", "").replaceAll("\\[(.+?)\\|http(.+)\\]", "$1 ( http$2 )").replaceAll("\\{\\}", "").
+		  replaceAll("\\{(.+?)\\}", "");
 	}
 	
 	public static String getAddressFromMailbox(String mailbox) {

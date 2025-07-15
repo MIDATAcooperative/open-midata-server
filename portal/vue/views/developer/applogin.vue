@@ -33,7 +33,7 @@
                 </div>
 		    </form-group>		   
 		    		              
-		    <form-group name="requirements" label="Requirements" class="danger-change" v-if="app.type!='analyzer' && app.type!='endpoint'" :path="errors.requirements">
+		    <form-group name="requirements" label="Requirements" class="danger-change midata-checkbox-row" v-if="app.type!='analyzer' && app.type!='endpoint'" :path="errors.requirements">
 		        <check-box v-for="req in requirements" :key="req" :checked="app.requirements.indexOf(req)>=0" :name="'chk_'+req" @click="toggle(app.requirements, req);requireLogout();">
                     <span>{{ $t('enum.userfeature.'+req) }}</span>
 		        </check-box>		        
@@ -58,7 +58,7 @@
                 <p class="form-text">{{ $t('applogin.urlParams2') }}</p>
 		    </form-group>	
 		  
-		   <form-group name="withLogout" label="manageapp.logout" v-if="app._id">
+		   <form-group name="withLogout" label="manageapp.logout" v-if="app._id" class="midata-checkbox-row">
 		     <check-box name="withLogout" v-model="app.withLogout" :path="errors.withLogout" :required="logoutRequired">		      
 		        <span v-t="'manageapp.pleaseLogout1'"></span>
 		        <span v-if="app.targetUserRole=='RESEARCH'"> / </span>
@@ -355,7 +355,7 @@ export default {
 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "homeUrl", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "loginTemplateApprovedById", "loginTemplateApprovedByEmail", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax"])
 		    .then(function(data) { 
                 let app = data.data[0];					
                 if (!app.requirements) { app.requirements = []; }				                                

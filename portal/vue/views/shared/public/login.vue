@@ -35,18 +35,26 @@
 		</div><div class="container"><div class="row">
 			<div class="col-sm-12">
                 <panel :title="$t('member_login.sign_in')+getAppName()" style="max-width:330px; padding-top:20px; margin:0 auto;">                    
-				    <div class="alert alert-info" v-if="serviceLogin=='consent' && !app">
+                   <div v-if="app || serviceLogin=='account'" class="extraspace">
+                      <div class="midatalogo d-md-none">
+                        <img src="/images/logo.png" style="height: 36px;" alt="">
+                      </div>
+                      <div v-if="app" class="appicon" :style="getIconUrlBG()"></div>  
+                      <p v-if="app">
+                          <strong>{{ appname() }}</strong> <span v-t="'oauth2.requests_permission'"></span>
+                      </p>                                                                   
+                   </div>
+                    
+                    
+                    <div class="alert alert-info" v-if="serviceLogin=='consent'">
 		                <strong class="alert-heading" v-t="'login.service_login'"></strong>                 
                         <div v-if="!app" v-t="'login.service_login2'"></div>                                                     
                     </div>
-					<div class="alert alert-info" v-if="serviceLogin=='account' && !app">
+					<div class="alert alert-info" v-if="serviceLogin=='account'">
 		                <strong class="alert-heading" v-t="'login.account_login'"></strong>                 
-                        <div v-if="!app" v-t="'login.account_login2'"></div>                                                     
+                        <div v-t="'login.account_login2'"></div>                                                     
                     </div>
                             
-                    <div v-if="app" class="extraspace">
-                        <center><img v-if="hasIcon()" :src="getIconUrl()"></center>																        
-                    </div>
 		            	
 			        <error-box :error="error">
 			            <span v-if="error.code == 'error.invalid.credentials_hint'">
@@ -69,14 +77,18 @@
                                 <option v-for="role in roles" :key="role.value" :value="role.value">{{ $t(role.name) }}</option>
                             </select>
 						</div>
-								
-						<button type="submit" v-submit :disabled="action!=null" class="btn btn-lg btn-primary btn-block" v-t="'login.sign_in_btn'"></button>
+						
+						<div class="d-grid gap-2 mt-3 mb-2">						  	
+						  <button type="submit" v-submit :disabled="action!=null" class="btn btn-lg btn-primary" v-t="'login.sign_in_btn'"></button>
+						</div>
 						<div class="margin-top">
 						    <router-link :to="{ path : './lostpw' }" v-t="'login.forgot_your_password'"></router-link>
 						</div>
 						<div class="margin-top" v-if="serviceLogin=='consent'">
 							<hr>
-							<router-link class="btn btn-primary btn-block" :to="{ path : './registration', query : { actions : actions } }"  v-t="'login.no_account'"></router-link>
+							<div class="d-grid gap-2 mt-3 mb-2">	
+							  <router-link class="btn btn-primary" :to="{ path : './registration', query : { actions : actions } }"  v-t="'login.no_account'"></router-link>
+							</div>
 						</div>
 					</form>
                 </panel>
@@ -126,16 +138,26 @@ export default {
 	    },
     
         hasIcon() {
-            const { $data } = this;
-		    if (!$data.app || !$data.app.icons) return false;
-		    return $data.app.icons.indexOf("LOGINPAGE") >= 0;
-	    },
+           if (!this.$data.app || !this.$data.app.icons) return false;
+           return this.$data.app.icons.indexOf("LOGINPAGE") >= 0;
+        },
 	
 	    getIconUrl() {
             const { $data } = this;
 		    if (!$data.app) return null;
 		    return ENV.apiurl + "/api/shared/icon/LOGINPAGE/" + $data.app.filename;
         },
+            
+       getIconUrlBG() {
+            if (!this.$data.app) return null;
+            return { "background-image" : "url('"+ENV.apiurl + "/api/shared/icon/LOGINPAGE/" + this.$data.app.filename+"')" };
+       },
+       
+       appname() {
+         const { $data } = this;
+         if ($data.app && $data.app.i18n && $data.app.i18n[$data.lang]) return $data.app.i18n[$data.lang].name;
+         return $data.app.name;
+       },
         
         dologin() {
             const { $data, $router, $route } = this, me = this;
@@ -205,6 +227,14 @@ export default {
         }
         
         let appName = actions.getAppName($route);
+        if (!appName && $route.query.client_id) {
+            apps.getAppInfo($route.query.client_id)
+           .then(function(results) {
+               $data.app = results.data;
+               if (!$data.app) { me.fatalError("error.unknown.plugin"); }
+           }, function() { me.fatalError("error.unknown.plugin"); });
+        }  
+             
         if (appName) {    	
     	    apps.getAppInfo(appName, "visualization")
 		    .then(function(results) {
@@ -215,3 +245,20 @@ export default {
     }
 }
 </script>
+<style scoped>
+ .appicon {
+   width:90px;
+   height:90px;
+   background-size: 95px,95px,cover;    
+   position: relative;
+   border-radius: 18px;
+   background-position: center;
+   background-repeat: no-repeat;
+   background-color: white;
+   left: 50%;
+   -webkit-transform: translateX(-50%);
+   transform: translateX(-50%);
+   margin-top: -10px;
+   margin-bottom: 10px;
+ }
+</style>

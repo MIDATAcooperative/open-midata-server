@@ -124,7 +124,10 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.MailSenderType;
+import utils.messaging.MailUtils;
 import utils.messaging.Messager;
+import utils.messaging.SMTPConfig;
 import utils.plugins.DeploymentManager;
 import utils.plugins.DeploymentReport;
 
@@ -279,6 +282,7 @@ public class Market extends APIController {
 			app.description = JsonValidation.getStringOrNull(json, "description");	
 			setDeveloperTeam(app, JsonExtraction.extractStringSet(json.get("developerTeamLogins")));
 			app.url = JsonValidation.getStringOrNull(json, "url");
+			app.homeUrl = JsonValidation.getStringOrNull(json, "homeUrl");
 			app.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
 			app.addDataUrl = JsonValidation.getStringOrNull(json, "addDataUrl");
 			app.developmentServer = "https://localhost:9004/"+app.filename;
@@ -496,6 +500,49 @@ public class Market extends APIController {
 		   app.updateLicenceDef();		   
 		} catch (LostUpdateException e) {
 			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
+		}
+		
+		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(DeveloperSecured.class)
+	public Result updateSMTP(Request request, String pluginIdStr) throws JsonValidationException, AppException {
+		// validate json
+		JsonNode json = request.body().asJson();
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		// validate request		
+		MidataId pluginId = new MidataId(pluginIdStr);
+		
+		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+		
+		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.notauthorized.not_plugin_owner", "Not your plugin!");
+						
+		SMTPConfig config = new SMTPConfig();
+		config.host = JsonValidation.getStringOrNull(json, "host");
+		config.port = JsonValidation.getInteger(json, "port", 0, 10000);
+		config.ssl = JsonValidation.getBoolean(json, "ssl");
+		config.tls = JsonValidation.getBoolean(json, "tls");
+		config.user = JsonValidation.getStringOrNull(json, "user");
+		config.password = JsonValidation.getStringOrNull(json, "password");
+		config.from = JsonValidation.getStringOrNull(json, "from");
+		
+		if (config.host != null) app.smtp = config; else app.smtp = null;
+		
+		try {
+		   app.updateSMTP();		   
+		} catch (LostUpdateException e) {
+			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
+		}
+		
+		User user = User.getById(userId, Sets.create("email", "firstname", "lastname"));
+		
+		try {
+		    MailUtils.sendTextMail(MailSenderType.USER, user.email, user.firstname+" "+user.lastname, "SMTP Config Test", "This is just a test mail to check the SMTP configuration for app: "+app.filename, app._id);
+		} catch (Exception e) {
+			throw new BadRequestException("error.invalid.smtp", e.toString());
 		}
 		
 		return ok();
@@ -747,6 +794,7 @@ public class Market extends APIController {
 		plugin.spotlighted = JsonValidation.getBoolean(json, "spotlighted");
 		plugin.type = JsonValidation.getString(json, "type");
 		plugin.url = JsonValidation.getStringOrNull(json, "url");
+		plugin.homeUrl = JsonValidation.getStringOrNull(json, "homeUrl");
 		plugin.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
 		plugin.addDataUrl = JsonValidation.getStringOrNull(json, "addDataUrl");
 		plugin.developmentServer = "https://localhost:9004/"+plugin.filename; //JsonValidation.getStringOrNull(json, "developmentServer");
@@ -864,6 +912,7 @@ public class Market extends APIController {
 			messageDef.code = JsonValidation.getStringOrNull(def, "code");
 			messageDef.text = JsonExtraction.extractStringMap(def.get("text"));
 			messageDef.title = JsonExtraction.extractStringMap(def.get("title"));
+			messageDef.htmlFrame = JsonValidation.getUnboundString(def, "htmlFrame");
 			
 			result.put(messageDef.reason.toString() + (messageDef.code != null ? "_"+messageDef.code : ""), messageDef);
 		}
@@ -886,6 +935,7 @@ public class Market extends APIController {
 		app.description = JsonValidation.getStringOrNull(json, "description");		
 		app.type = JsonValidation.getString(json, "type");
 		app.url = JsonValidation.getStringOrNull(json, "url");
+		app.homeUrl = JsonValidation.getStringOrNull(json, "homeUrl");
 		app.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
 		app.addDataUrl = JsonValidation.getStringOrNull(json, "addDataUrl");
 		app.developmentServer = "https://localhost:9004/"+app.filename;
@@ -931,6 +981,18 @@ public class Market extends APIController {
 		if (json.has("loginButtonsTemplate")) {
 		  app.loginButtonsTemplate = JsonValidation.getEnum(json, "loginButtonsTemplate", LoginButtonsTemplate.class);
 		}
+		if (json.has("smtp")) {
+			JsonNode smtpJson = json.get("smtp");
+			SMTPConfig smtp = new SMTPConfig();
+			smtp.host = JsonValidation.getStringOrNull(smtpJson, "smtp");
+			smtp.port = JsonValidation.getInteger(smtpJson, "port", 0, 10000);
+			smtp.user = JsonValidation.getStringOrNull(smtpJson, "user");
+			smtp.password = JsonValidation.getStringOrNull(smtpJson, "password");
+			smtp.ssl = JsonValidation.getBoolean(smtpJson, "ssl");
+			smtp.tls = JsonValidation.getBoolean(smtpJson, "tls");
+			smtp.from = JsonValidation.getStringOrNull(smtpJson, "from");
+			app.smtp = smtp;
+		} else app.smtp = null;
 		
 		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
 		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;

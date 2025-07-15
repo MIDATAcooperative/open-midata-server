@@ -69,15 +69,28 @@ public class Messager {
 		smsSender = system.actorOf(Props.create(SMSSender.class).withDispatcher("medium-work-dispatcher"), "smsSender");
 	}
 	
-	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId) {	
-		AccessLog.log("trigger send text mail to="+email+" subject="+subject);		
-		mailSender.tell(new Message(email, fullname, subject, content, eventId), ActorRef.noSender());
+	private static String safeForReplace(String in) {
+		if (in==null) return in;
+		
+		int p = in.indexOf("$");
+		while (p>=0) {
+		  if (p==0) in = in.substring(1);
+		  else if (p == in.length()-1) in = in.substring(0, p);
+		  else in = in.substring(0, p)+in.substring(p+1);
+		  p = in.indexOf("$");
+		}
+		return in;
 	}
 	
-	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId, MailSenderType type) {	
-		AccessLog.log("trigger send text mail to="+email+" subject="+subject);
-		mailSender.tell(new Message(type, email, fullname, subject, content, eventId), ActorRef.noSender());
+	public static void sendTextMail(String email, String fullname, String subject, String content, MidataId eventId) {	
+	    sendTextMail(email, fullname, subject, content, null, eventId, MailSenderType.USER, null);
 	}
+	
+	public static void sendTextMail(String email, String fullname, String subject, String content, String htmlFrame, MidataId eventId, MailSenderType type, MidataId smtpFromApp) {	
+		AccessLog.log("trigger send text mail to="+email+" subject="+subject);		
+		mailSender.tell(new Message(type, email, fullname, subject, content, htmlFrame, eventId, smtpFromApp), ActorRef.noSender());
+	}
+	
 	
 	public static void sendSMS(String phone, String text, MidataId eventId) {
 		AccessLog.log("trigger send SMS to="+phone);
@@ -110,10 +123,13 @@ public class Messager {
 	
 	public static boolean sendProjectMessage(AccessContext context, StudyParticipation pp, MessageReason reason, String code) throws AppException {
 		Map<String, String> replacements = new HashMap<String, String>();
-		Pair<MidataId,String> p = Feature_Pseudonymization.pseudonymizeUser(context.getCache(), pp);
-		if (p!=null) {
-			replacements.put("pseudonym", p.getRight());
-			replacements.put("participation-id", p.getLeft().toString());
+		// For rejection messages access to pseudonym may not always be given
+		if (reason == MessageReason.PROJECT_PARTICIPATION_REQUEST || reason == MessageReason.PROJECT_PARTICIPATION_APPROVED) {
+			Pair<MidataId,String> p = Feature_Pseudonymization.pseudonymizeUser(context.getCache(), pp);
+			if (p!=null) {
+				replacements.put("pseudonym", p.getRight());
+				replacements.put("participation-id", p.getLeft().toString());
+			}
 		}
 		Plugin plugin = Plugin.getById(context.getUsedPlugin(), Sets.create("name"));
 		replacements.put("plugin-name", plugin.name);
@@ -154,6 +170,9 @@ public class Messager {
 		  if (footerDefs != null) footers = footerDefs.text;
 		}
 		
+		// Do not allow to sent password forgotten mail from another SMTP server
+		if (reason == MessageReason.PASSWORD_FORGOTTEN) sourceApp = RuntimeConstants.instance.portalPlugin;
+		
 		sendMessage(msg, footers, targets, defaultLanguage, replacements, channel, sourceApp);
 		
 		return true;
@@ -168,7 +187,7 @@ public class Messager {
 					sendMessage(messageDefinition, footers, user, replacements, channel, sourceApp);
 				}
 			} else if (target instanceof String) {
-				sendMessage(messageDefinition, footers, target.toString(), null, defaultLanguage, replacements, channel);
+				sendMessage(messageDefinition, footers, target.toString(), null, defaultLanguage, replacements, channel, sourceApp);
 			}
 			
 		}
@@ -199,8 +218,8 @@ public class Messager {
 			String key = "<"+replacement.getKey()+">";
 			String v = replacement.getValue();
 			if (v==null) v = "";
-		    subject = subject.replaceAll(key, v);
-		    content = content.replaceAll(key, v);
+		    subject = subject.replaceAll(key, safeForReplace(v));
+		    content = content.replaceAll(key, safeForReplace(v));
 		}
 		String phone = member.mobile;
 		
@@ -213,13 +232,18 @@ public class Messager {
 		   Messager.sendSMS(phone, content, AuditManager.instance.convertLastEventToAsync());
 		   AuditManager.instance.success();
 		} else {
+		   Plugin plugin = Plugin.getById(sourceApp, Sets.create("smtp"));
+		   if (plugin != null && plugin.smtp != null) {
+			   
+		   }
+			
 		   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.EMAIL_SENT).withActorUser(member).withApp(sourceApp).withMessage(subject));
-		   Messager.sendTextMail(email, fullname, subject, content, AuditManager.instance.convertLastEventToAsync());
+		   Messager.sendTextMail(email, fullname, subject, content, messageDefinition.htmlFrame, AuditManager.instance.convertLastEventToAsync(), MailSenderType.USER, sourceApp);
 		   AuditManager.instance.success();
 		}
 	}
 	
-	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, String email, String fullname, String language, Map<String, String> replacements, MessageChannel channel) {				
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, String email, String fullname, String language, Map<String, String> replacements, MessageChannel channel, MidataId smtpFromApp) {				
 
 		String subject = messageDefinition.title.get(language);
 		if (subject == null) subject = messageDefinition.title.get(InstanceConfig.getInstance().getDefaultLanguage());
@@ -253,7 +277,7 @@ public class Messager {
 		if (channel.equals(MessageChannel.SMS)) {
 		  if (SMSUtils.isAvailable()) Messager.sendSMS(email, content, null);
 		} else {
-		  Messager.sendTextMail(email, fullname, subject, content, null);
+		  Messager.sendTextMail(email, fullname, subject, content, messageDefinition.htmlFrame, null, MailSenderType.USER , smtpFromApp);
 		}
 	}
 
@@ -306,7 +330,7 @@ class MailSender extends AbstractActor {
 				    return;	
 				}
 				
-			    MailUtils.sendTextMail(msg.getType(), msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
+			    MailUtils.sendTextMail(msg.getType(), msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText(), msg.getHtmlFrame(), msg.getSmtpFromApp());
 			}		
 			AuditManager.instance.success();
 		} catch (Exception e) {
@@ -315,7 +339,7 @@ class MailSender extends AbstractActor {
 			
 			// We try resending once
 			try {
-			  MailUtils.sendTextMail(msg.getType(), msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
+			  MailUtils.sendTextMail(msg.getType(), msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText(), msg.getSmtpFromApp());
 			  AuditManager.instance.success();
 			} catch (Exception e2) {
 			  AuditManager.instance.fail(400, e2.toString(), "error.failed");

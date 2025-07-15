@@ -22,7 +22,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ecdcf"},"system":"v1","name":"healthworkflow","label":{"de":"Ablauf","en":"Workflow","fr":"Processus/Flux"},"parent":"health"}
 {"_id":{"$oid":"569915fc6281a61a232ecdd0"},"system":"v1","name":"healthdocuments","label":{"de":"Gesundheitsdokumente","en":"Health Documents","fr":"Documents médicaux"},"parent":"health"}
 {"_id":{"$oid":"569915fc6281a61a232ecdd1"},"system":"v1","name":"relatedpersons","label":{"de":"Personen","en":"Related Persons","fr":"Parenté/Proches"},"parent":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd2"},"system":"v1","name":"diagnostics","label":{"de":"Familie","en":"Family","fr":"Diagnostiques"},"parent":"other"}
+{"_id":{"$oid":"569915fc6281a61a232ecdd2"},"system":"v1","name":"diagnostics","label":{"de":"Diagnostik","en":"Diagnostics","fr":"Diagnostiques"},"parent":"health"}
 {"_id":{"$oid":"56fa3f4f6c19d1e1e9d2536e"},"system":"v1","name":"unknown","label":{"de":"Unbestimmt","en":"Undetermined Content","fr":"Indéterminé"},"parent":"other"}
 {"_id":{"$oid":"5718f43aaed645098e8cee26"},"system":"v1","name":"activities/calories","label":{"de":"Verbrannte Kalorien","en":"Calories burned","it":"Calorie bruciate","fr":"Calories brûlées"},"parent":"activities"}
 {"_id":{"$oid":"5718f43aaed645098e8cee27"},"system":"v1","name":"movement","label":{"de":"Bewegung","en":"Movement","it":"Movimento","fr":"Mobilité"},"parent":"activities"}
@@ -59,4 +59,4 @@
 {"_id":{"$oid":"6288d83102da8556e91f79e6"},"system":"v1","name":"vaccination","label":{"de":"Impfung","en":"Vaccination","it":"Vaccinazione","fr":"Vaccination"},"parent":"health"}
 {"_id":{"$oid":"628b54466020a06279c0d0be"},"system":"v1","name":"risks","label":{"de":"Risiken","en":"Risks","it":"Rischi","fr":"Risques"},"parent":"health"}
 {"_id":{"$oid":"628e2caaf91349166cef4ef0"},"system":"v1","name":"pain","label":{"de":"Schmerz","en":"Pain","it":"Dolore","fr":"Douleur"},"parent":"health"}
-{"_id":{"$oid":"65ce3dea38610a7aca972f02"},"system":"v1","name":"prom","label":{"de":"PROM","en":"PROM"},"parent":"assessment"}
+{"_id":{"$oid":"65ce3dea38610a7aca972f02"},"system":"v1","name":"prom","label":{"de":"Messung des Behandlungserfolges aus Patientensicht (PROMs)","en":"Patient Reported Outcome Measures (PROMs)","it":"Misurazioni dei Risultati Riferiti dal Paziente (PROMs)","fr":"Mesures des résultats rapportés par les patients (PROM)"},"parent":"assessment"}

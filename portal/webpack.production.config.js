@@ -17,7 +17,6 @@
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const My_Definitions = require('./webpack.definitions');
@@ -45,8 +44,7 @@ var CLIENT_IMG = path.resolve(CLIENT_DIR, "assets", "img");
 /**
  * Prepare the plugins
  */
-var My_Plugins = [
-    new CleanWebpackPlugin(),
+var My_Plugins = [  
     new CopyWebpackPlugin({ patterns : [
         { from: path.resolve(CLIENT_DIR, '**/*.html'), to: DIST_DIR, globOptions: {
             ignore: [ 'src/index_old.html', 'src/oauth_old.html' ] }, context: 'src/' },
@@ -73,7 +71,12 @@ var My_Plugins = [
        __VUE_OPTIONS_API__ : true,
        __VUE_PROD_DEVTOOLS__ : false
     }),
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+	
+	new webpack.ProvidePlugin({
+	   process: 'process/browser.js',
+	   Buffer: ['buffer', 'Buffer']
+	})
 ];
 
 for (let i = 0; i < My_Definitions.html_files_to_add.length; i++) {
@@ -105,7 +108,8 @@ module.exports = {
      */
     output: {
         filename: '[name].[contenthash].bundle.js',
-        path: DIST_DIR
+        path: DIST_DIR,
+		clean: true
     },
 
     /**
@@ -113,6 +117,13 @@ module.exports = {
      */
     module: {
         rules: [
+			{
+			   mimetype: 'image/svg+xml',			 
+			   type: 'asset/resource',
+			   generator: {
+			     filename: 'icons/[hash].svg'
+			   }
+			},
             {
                 test: /\.(le|c)ss$/,
                 use: [
@@ -147,18 +158,20 @@ module.exports = {
                     //'less-loader'
                 ]
             },
-            {
-                test: /\.(png|svg|jpg|gif)$/,
-                use: [
-                    'file-loader'
-                ]
-            },
-            {
-                test: /\.(woff|woff2|eot|ttf|otf)$/,
-                use: [
-                    'file-loader'
-                ]
-            },
+			{
+			  test: /\.(ico|png|jpg|jpeg|gif|svg|webp|tiff)$/i,
+			  type: "asset/resource",
+			  generator: {
+			    filename: "images/[name].[hash][ext]",
+			  },
+			},
+			{
+			  test: /\.(woff|woff2|eot|ttf|otf)$/i,
+			  type: "asset/resource",
+			  generator: {
+			     filename: "fonts/[name].[hash][ext]",
+			  },
+			},
             {
                 test: /\.vue$/,
                 loader: 'vue-loader'
@@ -186,7 +199,9 @@ module.exports = {
 	       "crypto": require.resolve("crypto-browserify"),
            "buffer": require.resolve("buffer/"),
            "stream": require.resolve("stream-browserify"),
-           "querystring": require.resolve("querystring-es3")  
+           "querystring": require.resolve("querystring-es3"),
+		   'process/browser': require.resolve('process/browser'),		   
+		   'process': require.resolve('process/browser')   
         }
     },
 

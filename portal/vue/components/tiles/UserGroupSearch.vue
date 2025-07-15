@@ -39,14 +39,16 @@
 					<div class="card-body">	  
 					    <div class="table-responsive">       
 						<table class="table">
+							<tbody>
 							<tr v-for="member in usergroup.members" :key="member._id">
 								<td>{{ member.user.firstname }}</td>
 								<td>{{ member.user.lastname }}</td>
 								<td>{{ member.user.email }}</td>
 							</tr>
+							</tbody>
 						</table>
 						</div>
-						<button class="btn btn-default col-5 mr-1" @click="addIndividuals(usergroup)" v-t="'usergroupsearch.add_individuals_btn'"></button>
+						<button class="btn btn-default col-5 me-1" @click="addIndividuals(usergroup)" v-t="'usergroupsearch.add_individuals_btn'"></button>
 						<button class="btn btn-default col-5" @click="addGroup(usergroup)" v-t="'usergroupsearch.add_group_btn'"></button>
 					</div>
 				</div>

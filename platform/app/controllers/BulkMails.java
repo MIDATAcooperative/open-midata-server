@@ -49,6 +49,7 @@ import play.mvc.Controller;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
@@ -151,6 +152,7 @@ public class BulkMails extends APIController {
 		item.content = JsonExtraction.extractStringMap(json.get("content"));		
 		item.type = JsonValidation.getEnum(json, "type", BulkMailType.class);
 		item.country = JsonValidation.getStringOrNull(json, "country");
+		item.htmlFrame = JsonValidation.getUnboundString(json, "htmlFrame");
 		item.studyGroup = JsonValidation.getStringOrNull(json, "studyGroup");
 		item.studyId = json.has("studyId") ? JsonValidation.getMidataId(json, "studyId") : null;
 		item.appId = json.has("appId") ? JsonValidation.getMidataId(json, "appId") : null;
@@ -325,6 +327,7 @@ public class BulkMails extends APIController {
 			
 			String content = mailItem.content.get(lang);
 			String title = mailItem.title.get(lang);
+			
 			if (isEmptyMail(content)) {
 				content = mailItem.content.get("int");
 				title = mailItem.title.get("int");
@@ -346,13 +349,14 @@ public class BulkMails extends APIController {
 			if (!restricted || (user.emailLC.endsWith("@midata.coop") || user.role==UserRole.ADMIN)) {
 			  if (restricted) title="(Restricted Test): "+title;
 			  try {
-			    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content);
+				AccessLog.log("send email to: "+user.email);
+			    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content, mailItem.htmlFrame, mailItem.appId);
 			  } catch (Exception e) {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e2) {}
 				try {
-				    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content);
+				    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content, mailItem.htmlFrame, mailItem.appId);
 				} catch (Exception e3) {
 				    mailItem.progressFailed++;
 				}

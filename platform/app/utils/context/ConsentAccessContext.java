@@ -109,7 +109,7 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public boolean mustPseudonymize() {
-		return (consent.type.equals(ConsentType.STUDYPARTICIPATION) && consent.ownerName != null && (parent == null || parent.mustPseudonymize()));
+		return (consent.type.equals(ConsentType.STUDYPARTICIPATION) && (consent.ownerName != null && /* comma check added for old data with user name in ownerName */ consent.ownerName.indexOf(",")<0) && (parent == null || parent.mustPseudonymize()));
 	}
 	
 	@Override
@@ -204,14 +204,15 @@ public class ConsentAccessContext extends AccessContext{
 		
 	}
 	
-	@Override
+	// Do not return access restrictions for consents. There may be additional records in the consent shared
+	/*@Override
 	public Map<String, Object> getAccessRestrictions() throws AppException {
 		loadSharingQuery();
 		if (parent==null) return consent.sharingQuery;
 		Map<String, Object> parentQuery = parent.getAccessRestrictions();
 		if (parentQuery==null) return consent.sharingQuery;
 		return Feature_QueryRedirect.combineQuery(consent.sharingQuery, parentQuery, this);
-	}
+	}*/
 
 	@Override
 	public String getContextName() {

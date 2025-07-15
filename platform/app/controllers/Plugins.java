@@ -209,6 +209,12 @@ public class Plugins extends APIController {
 				}
 			}
 		}
+		
+		// Remove password from SMTP server
+		for (Plugin pl : visualizations) {
+			if (pl.smtp != null) pl.smtp.password = null;
+		}
+		
 		return ok(JsonOutput.toJson(visualizations, "Plugin", fields)).as("application/json");
 	}
 
@@ -224,7 +230,7 @@ public class Plugins extends APIController {
 		if (type == null || !type.equals("visualization")) type = "mobile";
 
 		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "termsOfUse", "requirements",
-				"orgName", "publisher", "unlockCode", "targetUserRole", "icons", "filename", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "status");
+				"orgName", "publisher", "unlockCode", "targetUserRole", "icons", "filename", "loginTemplate", "loginButtonsTemplate", "loginTemplateApprovedDate", "status", "homeUrl");
 		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", type), fields);
 		if (plugin != null && plugin.unlockCode != null)
 			plugin.unlockCode = "true";

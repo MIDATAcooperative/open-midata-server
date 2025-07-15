@@ -21,7 +21,7 @@
 		<div id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">			
 			<div class="container">
 				<div class="navbar-header">
-					<button class="ml-1 navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
+					<button class="ms-1 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>
@@ -31,22 +31,22 @@
 				</div>
 				<div class="collapse navbar-collapse navbar-ex1-collapse">
 
-					<ul class="nav navbar-nav mr-auto" :class="{'vishidden':locked()}">
-						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-							:to="{ path : './studies' }" v-t="'researcher_navbar.studies'"></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-							:to="{ path : './circles' }" v-t="'navbar.consents'"></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-							:to="{ path : './dashboard', query : { dashId : 'workspace' }}" v-t="'researcher_navbar.workspace'"></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-							:to="{ path : './records' }" v-t="'researcher_navbar.data'"></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-							:to="{ path : './organization' }" v-t="'researcher_navbar.organization'"></router-link></li>
+					<ul class="nav navbar-nav me-auto" :class="{'vishidden':locked()}">
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+							@click="go({ path : './studies' })" v-t="'researcher_navbar.studies'"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+							@click="go({ path : './circles' })" v-t="'navbar.consents'"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+							@click="go({ path : './dashboard', query : { dashId : 'workspace' }})" v-t="'researcher_navbar.workspace'"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+							@click="go({ path : './records' })" v-t="'researcher_navbar.data'"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+							@click="go({ path : './organization' })" v-t="'researcher_navbar.organization'"></a></li>
 					</ul>
 
 					<ul class="nav navbar-nav">
-						<li class="nav-item"><router-link data-toggle="collapse" data-target=".navbar-ex1-collapse" class="nav-link" :to="{ name : 'research.user', query : { userId : user._id}}">{{user.name}}</router-link></li>
-						<li class="nav-item"><a data-toggle="collapse" data-target=".navbar-ex1-collapse" class="nav-link" @click="logout()" href="javascript:"> <span class="fas fa-power-off"></span> <span
+						<li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="go({ name : 'research.user', query : { userId : user._id}})">{{user.name}}</a></li>
+						<li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" @click="logout()" href="javascript:"> <span class="fas fa-power-off"></span> <span
 								v-t="'navbar.sign_out'"></span>
 						</a></li>
 					</ul>				
@@ -68,8 +68,8 @@
 
 		<ul>
 			<li><a :href="homepage" v-t="'footer.homepage'"></a></li>			
-			<li><router-link :to="{ path : './terms', query : {which : 'midata-terms-of-use'} }" v-t="'registration.agb3'">Terms of Use</router-link></li>
-			<li><router-link :to="{ path : './terms' ,query : {which : 'midata-privacy-policy'} }" v-t="'registration.privacypolicy3'">Privacy Policy</router-link></li>
+			<li><a @click="go({ path : './terms', query : {which : 'midata-terms-of-use'} })" v-t="'registration.agb3'">Terms of Use</a></li>
+			<li><a @click="go({ path : './terms' ,query : {which : 'midata-privacy-policy'} })" v-t="'registration.privacypolicy3'">Privacy Policy</a></li>
 
 		</ul>
 	</div>
@@ -166,7 +166,11 @@ export default {
 				});
 	    
 			});
-		}
+		},
+			  
+		go(to) {
+		  this.$router.push(to);
+		} 
 
 	},
 

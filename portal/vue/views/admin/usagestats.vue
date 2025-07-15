@@ -39,6 +39,7 @@
 		  
 		  
 		<table class="table table-striped table-sm" v-if="!isBusy">
+			<thead>
 		    <tr>
 		        <Sorter sortby="date" v-model="result" v-t="'usagestats.date'"></Sorter>
 		        <Sorter sortby="objectName" v-model="result" v-t="'usagestats.object'"></Sorter>
@@ -53,6 +54,8 @@
 		        <Sorter sortby="actions.ERROR.count" v-model="result" v-t="'usagestats.ERROR'"></Sorter>
 		        <Sorter sortby="actions.FAILURE.count" v-model="result" v-t="'usagestats.FAILURE'"></Sorter>
 		    </tr>
+			</thead>
+			<tbody>
 		    <tr v-for="(entry,idx) in result.filtered" :key="idx">
 		        <td>{{ entry.date }}</td>
 		        <td><router-link :to="{ path : './manageapp', query :  { appId : entry.object } }">{{ entry.objectName }}</router-link></td>
@@ -60,6 +63,7 @@
 		            <span v-if="entry.actions[ac]">{{ entry.actions[ac].count }}</span>
 		        </td>
 		    </tr>
+			</tbody>
 		</table>
     </panel>
 </template>

@@ -91,7 +91,9 @@
        "csvmapping" : "Invalid mapping provided.",
        "id" : "Invalid identifier",
        "usergroup" : "You must be member of this user group to perform this action.",
-       "project" : "Meta projects cannot be used as subprojects for other meta projects."
+       "project" : "Meta projects cannot be used as subprojects for other meta projects.",
+       "smtp" : "Test of SMTP configuration failed.",
+       "otp" : "Wrong one-time password."
      },
 
      "missing" : {
@@ -374,7 +376,8 @@
 	   "apikey-created" : "API-Key created",
        "apikey-deleted" : "API-Key deleted",
        "service-instance-created" : "Service-Instance created",
-       "service-instance-deleted" : "Service-Instance deleted"	   	   
+       "service-instance-deleted" : "Service-Instance deleted",
+       "otp-sent" : "One-time password sent"	   	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -813,6 +816,8 @@
     "securityToken_btn" : "Send",
     "no_token" : "Please wait up to a minute for the code to arrive.",
     "no_token_btn" : "I did not receive the code",
+    "otp" : "An email with a one time password has been sent to your email address. Please enter the code from the email:",
+    "otp_password" : "One time password",
     "auth2factorsetup" : "Please setup your security settings: Do you want to protect access to your account with a second factor in addition to your password?",
     "auth2factorsetup2" : "You can change your settings later in your profile. Log into {{domain}} and click on your name on the top right.",
     "auth_type" : "Authentication",
@@ -983,7 +988,8 @@
 	"notifications" : "Notifications",
 	"notifications2" : "Do you want to be notified if your account is used?",
 	"change_settings_btn" : "Change Settings",
-	"change_settings_success" : "Settings have been updated"
+	"change_settings_success" : "Settings have been updated",
+	"using_apps" : "Your @PRODUCT account has been used with these applications:"
   },
 
   "visualization" : {
@@ -1087,6 +1093,7 @@
 	"confirm_btn" : "Confirm this Consent",
 	"reject_btn" : "Reject this Consent",
     "delete_btn" : "Delete this Consent",
+    "delete_all_btn" : "Delete all for this app",
     "please_review1" : "Consent to review",
     "please_review2a" : "Please review this consent. Click on 'Confirm this Consent' if you agree. Click on 'Reject this Consent' if you do not agree.",
     "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.",
@@ -1199,6 +1206,7 @@
   },
 
   "oauth2" : {
+    "title" : "Confirm access",
     "requests_permission" : "stores your personal data in your @PRODUCT account.",
     "no_account" : "You don't have an account?", 
     "have_account" : "You have a @PRODUCT account?",
@@ -1215,6 +1223,8 @@
     "confirm_btn" : "I agree",
     "reject_btn" : "Reject",
     "continue_btn" : "Continue",
+    
+    "request_access" : "With your consent, the application receives access to the following data:",
     "requests_access" : "Access requested by the application:",
     "requests_access_short" : "Data type",
     "requests_sharing" : "Data shared with the project:",

@@ -25,7 +25,7 @@
         </div>
         <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="setRequiredInformation()" role="form">
             <div v-if="!isMetaProject()">    
-            <form-group name="identity" label="studyfields.member_identity" :path="errors.identity">
+            <form-group name="identity" label="studyfields.member_identity" :path="errors.identity" class="midata-checkbox-row">
                 <radio-box name="identity" :disabled="notDraft()" value="DEMOGRAPHIC" v-model="information.identity">
                     <div class="margin-left">
                         <strong v-t="'studyfields.not_anonymous1'"></strong><span v-t="'studyfields.not_anonymous2'"></span>
@@ -41,21 +41,21 @@
                         <strong v-t="'studyfields.pseudonymous1b'"></strong><span v-t="'studyfields.pseudonymous2b'"></span>
                     </div>
                 </radio-box>
-                <check-box :disabled="studyLocked()" name="anonymous" v-model="information.anonymous" :path="errors.anonymous">
+                <check-box :disabled="studyLocked()" name="anonymous" v-model="information.anonymous" :path="errors.anonymous" class="midata-checkbox-row">
                     <div class="margin-left">
                         <strong v-t="'studyfields.anonymous'"></strong><span v-t="'studyfields.anonymous2'"></span>
                     </div>
                 </check-box>
                                     
             </form-group>
-            <form-group v-if="information.identity!='DEMOGRAPHIC'" name="dataFilters" label="studyfields.data_filters" :path="errors.dataFilters">
+            <form-group v-if="information.identity!='DEMOGRAPHIC'" name="dataFilters" label="studyfields.data_filters" :path="errors.dataFilters" class="midata-checkbox-row">
                          
                 <check-box v-for="filter in dataFilters" :key="filter" :name="filter" :disabled="filtersLocked()" :checked="information.dataFilters.indexOf(filter)>=0" @click="toggle(information.dataFilters, filter);">
                    <span class="margin-left" v-t="'enum.projectdatafilter.'+filter"></span>
                 </check-box>         
                                              
             </form-group>
-            <form-group name="assistance" label="studyfields.assistance" :path="errors.assistance">
+            <form-group name="assistance" label="studyfields.assistance" :path="errors.assistance" class="midata-checkbox-row">
                 <radio-box :disabled="studyLocked()" name="assistance" value="NONE" v-model="information.assistance">
                     <div class="margin-left">
                         <strong v-t="'studyfields.no_assistance1'"></strong><span v-t="'studyfields.no_assistance2'"></span>
@@ -76,11 +76,14 @@
 	        <h2 v-t="'studyfields.groups'"></h2>
 	        <p v-if="!study.groups.length" v-t="'studyfields.groups_empty'"></p>
 	        <table v-else class="table table-striped">
+				<thead>
 	            <tr>
 	                <th v-t="'studyfields.group_name'"></th>
 	                <th v-t="'studyfields.group_description'"></th>
 	                <th>&nbsp;</th>
 	            </tr>
+				</thead>
+				<tbody>
 	            <tr v-for="(group,idx) in study.groups" :key="idx">
 	                <td><input class="form-control" type="text"  :disabled="notDraft()" v-validate v-model="group.name"></td>
 	                <td><input class="form-control" type="text"  :disabled="notDraft()" v-validate v-model="group.description"></td>
@@ -91,6 +94,7 @@
 	                <td><input name="description" class="form-control" type="text" v-validate v-model="newGroup.description"></td>
 	                <td><button type="button" class="btn btn-secondary btn-sm" @click="addNewGroup()" v-t="'common.add_btn'">Add</button></td>
 	            </tr>
+				</tbody>
 	        </table>
         
          </form>

@@ -17,6 +17,9 @@
 
 package controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -40,6 +43,7 @@ import models.HPUser;
 import models.KeyInfoExtern;
 import models.Member;
 import models.MidataId;
+import models.Plugin;
 import models.RateLimitedAction;
 import models.ResearchUser;
 import models.User;
@@ -54,6 +58,7 @@ import models.enums.MessageReason;
 import models.enums.ParticipationInterest;
 import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
+import models.enums.TokenType;
 import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -78,6 +83,7 @@ import utils.auth.ExecutionInfo;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
+import utils.auth.OTPTools;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
@@ -138,21 +144,23 @@ public class Application extends APIController {
 		JsonValidation.validate(json, "email", "role");				
 		String email = JsonValidation.getEMail(json, "email");
 		String role = JsonValidation.getString(json, "role");
-		
+		String appStr = JsonValidation.getStringOrNull(json, "app");
+		MidataId app = appStr != null ? MidataId.parse(appStr) : null;
+						
 		// execute
 		User user = null;
 		switch (role) {
-		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
-		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
-		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
+		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));break;
+		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));break;
+		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));break;
 		case "developer" : 
-			user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));
-			if (user == null) user = Admin.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));
+			user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));
+			if (user == null) user = Admin.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs","resettokenType"));
 			break;
 		default: break;		
 		}
 		if (user != null) {				
-		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, Actor.getActor(null, user._id));
+		  AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_PASSWORD_CHANGE_REQUEST).withActor(Actor.getActor(null, user._id)).withApp(app));
 		  if (user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
 		  
 		  if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.USER_PASSWORD_CHANGE_REQUEST, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
@@ -160,27 +168,28 @@ public class Application extends APIController {
 			  return ok();
 		  }
 		  		  
-		  PasswordResetToken token;
-		  if (user.resettoken != null && user.resettokenTs > 0 && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME - 1000l * 60l * 60l) {
-			  token = new PasswordResetToken(user._id, role, user.resettoken);
-		  } else {		  
-			  token = new PasswordResetToken(user._id, role);
-			  user.set("resettoken", token.token);
-			  user.set("resettokenTs", System.currentTimeMillis());
-		  }
+		  PasswordResetToken token = OTPTools.issueToken(user, TokenType.PWRESET_MAIL);		  
 		  String encrypted = token.encrypt();
 			   
 		  String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		  String url = site + "/#/portal/setpw?token=" + encrypted;
 		  if (user.security != AccountSecurityLevel.KEY_EXT_PASSWORD) url +="&ns=1";
 		  url += "&role="+role;
+		  if (app != null) {
+			  Plugin pl = Plugin.getById(app);
+			  try {
+			    if (pl != null && pl.homeUrl != null) url+="&app="+URLEncoder.encode(pl.filename, "UTF-8");
+			  } catch (UnsupportedEncodingException e) {}
+		  }
 		  
 		  Map<String,String> replacements = new HashMap<String, String>();
 		  replacements.put("site", site);
 		  replacements.put("password-link", url);
 		   				
-		  if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.PASSWORD_FORGOTTEN, null, Collections.singleton(user._id), null, replacements)) {			  		  		 
-		    Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString(), AuditManager.instance.convertLastEventToAsync());
+		  if (app == null || !Messager.sendMessage(app, MessageReason.PASSWORD_FORGOTTEN, null, Collections.singleton(user._id), null, replacements)) {			  		  		 
+			  if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.PASSWORD_FORGOTTEN, null, Collections.singleton(user._id), null, replacements)) {
+   		        Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString(), AuditManager.instance.convertLastEventToAsync());
+			  }
 		  }		
 		  AuditManager.instance.success();
 		}
@@ -216,7 +225,10 @@ public class Application extends APIController {
 	 * @param user user record which sould receive the mail
 	 */
 	public static void sendWelcomeMail(User user, Actor executingUser) throws AppException {
-		sendWelcomeMail(null, RuntimeConstants.instance.portalPlugin, user, executingUser);
+		
+		if (user.initialApp != null) {
+			sendWelcomeMail(null, user.initialApp, user, executingUser);
+		} else sendWelcomeMail(null, RuntimeConstants.instance.portalPlugin, user, executingUser);
 	}
 	
 	public static void sendWelcomeMail(AccessContext context, MidataId sourcePlugin, User user, Actor executingUser) throws AppException {
@@ -225,19 +237,19 @@ public class Application extends APIController {
 		   if (user.email == null || user.email.trim().length()==0) return;
 		   
 		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
-			   throw new InternalServerException("error.ratelimit", "Rate limit hit");
+			   return;
+			   //throw new InternalServerException("error.ratelimit", "Rate limit hit");
 		   }
 		   
-		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
-		   user.set("resettoken", token.token);
-		   user.set("resettokenTs", System.currentTimeMillis());
+		   PasswordResetToken token = OTPTools.issueToken(user, TokenType.WELCOME_MAIL);
 		   String encrypted = token.encrypt();
-	
+	       String lang = user.language != null ? "/"+user.language : "";
+		   
 		   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		   Map<String,String> replacements = new HashMap<String, String>();
 		   replacements.put("site", site);
-		   replacements.put("confirm-url", site + "/#/portal/confirm/" + encrypted);
-		   replacements.put("reject-url", site + "/#/portal/reject/" + encrypted);
+		   replacements.put("confirm-url", site + "/#/portal/confirm/" + encrypted+lang);
+		   replacements.put("reject-url", site + "/#/portal/reject/" + encrypted+lang);
 		   replacements.put("token", token.token);
 		   
 		   if (executingUser != null) {
@@ -285,6 +297,34 @@ public class Application extends APIController {
 	   }
 	}
 	
+	public static void sendOTP(AccessContext context, MidataId sourcePlugin, User user) throws AppException {
+		  		
+	   TokenType type = TokenType.OTP_MAIL;
+	   if (user.email == null || user.email.trim().length()==0) return;
+	   
+	   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.OTP_SENT, MIN_BETWEEN_MAILS, 4, PER_DAY)) {
+		   return;				  
+	   }
+	   
+	   PasswordResetToken token = OTPTools.issueToken(user, type);
+	   String encrypted = token.encrypt();
+       
+	   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
+	   Map<String,String> replacements = new HashMap<String, String>();
+	   replacements.put("site", site);			   
+	   replacements.put("token", token.token);
+	   			   			  		  
+	   AccessLog.log("send OTP mail: ", user.email);
+	   
+	   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.OTP_SENT).withApp(sourcePlugin).withActor(null, user._id));			   	  	  
+	   
+	   if (sourcePlugin==null || !Messager.sendMessage(sourcePlugin, MessageReason.ONE_TIME_PASSWORD, null, Collections.singleton(user._id), null, replacements)) {
+		   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.ONE_TIME_PASSWORD, user.role.toString(), Collections.singleton(user._id), null, replacements);
+	   }   
+	   
+	   AuditManager.instance.success();	   
+	}
+	
 	/**
 	 * Helper function to notification mail to admin
 	 * @param user new user record
@@ -321,18 +361,21 @@ public class Application extends APIController {
 		String role;
 		String handle = null;
 		
+		ExtendedSessionToken stoken = null;
+		
 		if (json.has("token")) {	
 			AccessLog.log("confirm with token");
 			// check status
-			PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
+			PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());			
 			if (passwordResetToken == null) throw new BadRequestException("error.missing.token", "Missing or bad token.");
+			AccessLog.log("got token");
 			
 			// execute
 			userId = passwordResetToken.userId;
 			token = passwordResetToken.token;
 			role = passwordResetToken.role.toUpperCase();	
 			
-			ExtendedSessionToken stoken = new ExtendedSessionToken();
+		    stoken = new ExtendedSessionToken();
 			stoken.userRole = UserRole.valueOf(role);
 			stoken.ownerId = userId;
 			stoken.created = System.currentTimeMillis();
@@ -372,16 +415,14 @@ public class Application extends APIController {
 		}
 		
 		
-		User user = User.getById(userId, Sets.create(User.FOR_LOGIN, "resettoken", "resettokenTs", "registeredAt", "confirmedAt", "previousEMail"));
+		User user = User.getById(userId, Sets.create(User.FOR_LOGIN, "resettoken", "resettokenTs", "resettokenType", "registeredAt", "confirmedAt", "previousEMail"));
 		if (user == null)  throw new BadRequestException("error.unknown.user", "User not found");
-				
+		AccessLog.log("got user");	
 		if (user!=null && password != null) {	
 			 AccessLog.log("trying to set password");
 			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, Actor.getActor(null, userId));
 			 
-			 boolean tokenOk = (token != null && user.resettoken != null 		    		    
-		    		   && user.resettoken.equals(token)
-		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME);
+			 boolean tokenOk = OTPTools.checkToken(user, token);
 			 boolean ok = tokenOk;
 			 if (!ok && user.flags != null && user.flags.contains(AccountActionFlags.CHANGE_PASSWORD)) ok = true;
 			 
@@ -401,28 +442,30 @@ public class Application extends APIController {
 		               }
 		    	   } else PWRecovery.changePassword(user, json);
 		    	   		
-		    	   if (user.emailStatus == EMailStatus.UNVALIDATED && wanted == null && tokenOk) {
+		    	   if (user.emailStatus == EMailStatus.UNVALIDATED && wanted == null && tokenOk && OTPTools.tokenConfirmsEMail(user)) {
 		    		   // Implicit confirmation of email address by having received password reset mail
 		    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);			       		    	   		         
 		               user.emailStatus = EMailStatus.VALIDATED;
 			           user.set("emailStatus", EMailStatus.VALIDATED);		 
 		    	   }
 		    	   
-		    	   if (tokenOk) user.set("resettoken", null);	
+		    	   if (tokenOk && wanted == null) OTPTools.clearToken(user);	
 		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 		}
 		
 		
 		if (wanted != null) {
+			AccessLog.log("wanted status="+wanted);
 			if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {
-				if (user.password == null) {	
-					AccessLog.log("password is still missing");
-					return OAuth2.loginHelper(request);	
-				}
-			       if (user.resettoken != null 		    		    
-			    		   && user.resettoken.equals(token)
-			    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
-				   
+				
+			    if (OTPTools.checkToken(user, token)) {	
+			    	AccessLog.log("token is okay");
+					if (user.password == null) {	
+						AccessLog.log("password is still missing, but token is okay");
+						if (stoken != null) stoken.setIsAuthenticated();
+						return OAuth2.loginHelper(request);	
+					}
+			      				   
 			    	   
 			    	   if (wanted == EMailStatus.REJECTED) {
 			    		   if (user.previousEMail != null) {
@@ -443,9 +486,8 @@ public class Application extends APIController {
 			    	   		          
 			           user.emailStatus = wanted;
 				       user.set("emailStatus", wanted);				       
-				       
-			       } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.resettoken != null 
-			    		   && user.resettoken.equals(token)) {
+				       OTPTools.clearToken(user);
+			       } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED) && OTPTools.checkTokenAllowExpired(user, token)) {
 			    	     sendWelcomeMail(user, null);
 			    	     throw new BadRequestException("error.expired.tokenresent", "Token has already expired. A new one has been requested.");
 			       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
@@ -759,7 +801,7 @@ public class Application extends APIController {
 						
 		ArrayNode ar = obj.putArray("requirements");
 		for (UserFeature feature : missing) ar.add(feature.toString());
-		token.setRemoteAddress(request);
+		if (request != null) token.setRemoteAddress(request);
 		obj.put("sessionToken", token.encrypt());
 			
 		AuditManager.instance.success();
@@ -1245,6 +1287,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.getReviews(),
 				controllers.routes.javascript.Market.getSoftwareChangeLog(),
 				controllers.routes.javascript.Market.updateLicence(),
+				controllers.routes.javascript.Market.updateSMTP(),
 				controllers.routes.javascript.Market.addLicence(),
 				controllers.routes.javascript.Market.searchLicenses(),
 				controllers.routes.javascript.Market.updateFromRepository(),

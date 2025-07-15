@@ -24,8 +24,10 @@
                 <div v-if="message" class="terms" v-html="message"></div>               
                 <hr>
                 <p v-t="'appexpired.intro'"></p>
-               
-                <button @click="showLogin()" type="button" class="btn btn-default btn-block" v-t="'appexpired.loginpage_btn'"></button>
+                
+				<div class="d-grid gap-2 mt-3 mb-2">	
+                   <button @click="showLogin()" type="button" class="btn btn-default" v-t="'appexpired.loginpage_btn'"></button>
+				</div>
                 <div class="extraspace"></div>                        
                 
             </panel>            

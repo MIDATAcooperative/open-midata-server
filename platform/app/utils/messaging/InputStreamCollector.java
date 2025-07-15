@@ -41,14 +41,14 @@ public class InputStreamCollector extends Thread {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             char[] buf = new char[1024];            
             while (!Thread.currentThread().isInterrupted()) {
-            	int c = reader.read(buf);
-            	if (c>0) out.append(buf,0,c);
-            	if (c<0) {
-            		System.out.println("EOI");
-            		return;
-            	}
+            	String line = reader.readLine();
+            	if (line == null) return;
+            	if (line.indexOf("Bearer ")<0 && line.indexOf("Authentication")<0 && line.indexOf("authToken")<0) {
+            		out.append(line);
+            		out.append("\n");
+            	}     	
             }
-            System.out.println("INTERRUPTED");
+            //System.out.println("INTERRUPTED");
         } catch (IOException ex) {
             ex.printStackTrace();
         }

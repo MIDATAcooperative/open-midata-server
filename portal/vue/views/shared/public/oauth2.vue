@@ -1,4 +1,4 @@
-<!--
+icex<!--
  This file is part of the Open MIDATA Server.
  
  The Open MIDATA Server is free software: you can redistribute it and/or modify
@@ -40,10 +40,12 @@
 							
 					<div v-if="!hideRegistration">				
 						<p v-t="'oauth2.no_account'"></p>
-							
-						<button class="btn btn-primary btn-block" type="button" @click="showRegister(true);">
-						<span v-t="'oauth2.sign_up_btn'"></span>					  
-						</button>					
+						
+						<div class="d-grid gap-2 mt-3 mb-2">	
+						  <button class="btn btn-primary btn-block" type="button" @click="showRegister(true);">
+						    <span v-t="'oauth2.sign_up_btn'"></span>					  
+						  </button>					
+						</div>
 						<hr>
 						<div style="margin-top:20px"></div>
 						<div v-t="'oauth2.have_account'"></div>
@@ -58,9 +60,8 @@
 								type="email" /> 
 						</FormGroup>
 
-						<FormGroup label="login.password" :path="errors.password">
-							<password required  name="password" :disabled="studies" v-model="login.password" class="form-control"
-								/>
+						<FormGroup v-if="!passwordless || askPassword" label="login.password" :path="errors.password">
+							<password required  name="password" ref="password" :disabled="studies" v-model="login.password" class="form-control"/>
 						</FormGroup>
 
 						<FormGroup label="oauth2.role" v-if="app.targetUserRole=='ANY'">
@@ -82,9 +83,11 @@
 						<span v-t="'error.offline'"></span>
 						</div>
 
-						<button class="btn btn-block btn-primary" v-submit type="submit" :disabled="action=='login' || doneLock">
+						<div class="d-grid gap-2 mt-3 mb-2">
+						  <button class="btn btn-primary" v-submit type="submit" :disabled="action=='login' || doneLock">
 							<span v-t="'oauth2.sign_in_btn'">login</span>
-						</button>
+						  </button>
+						</div>
 
 					</form>
 					<div class="extraspace"></div>
@@ -130,6 +133,8 @@ export default {
     lang : 'en',
 	pleaseConfirm : false,
 	hideRegistration : false,
+	passwordless : false,
+	askPassword : false,
 	offline : false,
 	labels : [],
 	roles : [
@@ -176,8 +181,8 @@ export default {
 	   },
 	
 	   lostpw() {
-		 const { $router } = this;
-		 $router.push({ path : "./lostpw" });
+		 const { $router, $data } = this;
+		 $router.push({ path : "./lostpw", query : { app : $data.app._id } });
 	   },
 
 	   appname() {
@@ -187,7 +192,7 @@ export default {
 	   },
 
 	   dologin() {
-		   let { $data, $route, $router } = this;
+		   let { $data, $route, $router, $refs, $nextTick } = this;
 		  
 		oauth.setUser($data.login.email, $data.login.password, $data.login.role, $data.login.studyLink);
 		if ($route.query.joincode) oauth.setJoinCode($route.query.joincode);
@@ -195,7 +200,14 @@ export default {
 		
 		this.doAction("login", oauth.login(false))
 		.then(function(result) {
-			
+		  
+		  if (result === "ask-password") {
+			 $data.askPassword = true;
+			 $nextTick(() => {
+			   let els = document.getElementsByName("password");
+			   if (els.length) { els[0].focus();setTimeout(function () { els[0].select(); }, 100); }
+			 });
+		  }
 		  if (result === "CONFIRM" || result === "CONFIRM-STUDYOK") {
 			  let params = JSON.parse(JSON.stringify($route.query)) || {};
 			  if (result === "CONFIRM-STUDYOK") { 
@@ -235,6 +247,10 @@ export default {
 	
 	  if ($route.query.login) {
 		$data.login.email = $route.query.login;
+	  }
+	  
+	  if ($route.query.pwl) {
+	 	$data.passwordless = true;
 	  }
 
 	  if (this.preview) {

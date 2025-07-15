@@ -40,7 +40,7 @@ public class SubscriptionData extends Model {
 	private static String collection = "subscriptions";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "owner", "app", "instance", "format", "content", "lastUpdated", "active", "endDate", "fhirSubscription", "session"));
+	public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "owner", "app", "instance", "format", "content", "lastUpdated", "active", "endDate", "fhirSubscription", "session", "failCount"));
 
 	/**
 	 * The owner of the subscription
@@ -91,6 +91,31 @@ public class SubscriptionData extends Model {
 	 * Session information
 	 */
 	public byte[] session;
+	
+	/**
+	 * How many times in a row did this subscription fail?
+	 */
+	public int failCount;
+	
+	public static void fail(MidataId sdId) throws InternalServerException  {
+		SubscriptionData sd = SubscriptionData.getById(sdId, ALL);
+		sd.fail();
+	}
+	public void fail() throws InternalServerException {
+		failCount++;
+		if (failCount > 10) {
+		  disable();
+		} else {
+		  Model.set(getClass(), collection, this._id, "failCount", this.failCount);
+		}	
+	}
+	
+	public void ok() throws InternalServerException {
+		if (failCount > 0) {
+			failCount = 0;
+			Model.set(getClass(), collection, this._id, "failCount", this.failCount);
+		}
+	}
 	
 	public void add() throws InternalServerException {
 		Model.upsert(collection, this);	

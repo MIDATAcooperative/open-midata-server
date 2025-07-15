@@ -30,20 +30,20 @@
 		     <p class="form-control-plaintext">{{ app.filename }}</p>
 		  </form-group>
 		  
-		  <form-group name="required" label="applicence.required">
+		  <form-group name="required" label="applicence.required" class="midata-checkbox-row">
 		    <check-box name="required" v-model="licence.required">		        
 		      
 		    </check-box>
 		  </form-group>  
 		  
-		  <form-group name="allowedEntities" label="applicence.allowedEntities" v-if="licence.required">
+		  <form-group name="allowedEntities" label="applicence.allowedEntities" v-if="licence.required" class="midata-checkbox-row">
 		    <check-box v-for="entity in entities" :key="entity" :name="entity" :checked="licence.allowedEntities.indexOf(entity)>=0" @click="toggle(licence.allowedEntities, entity)">		      
 		        {{ $t('enum.entitytype.'+entity) }}		      
 		    </check-box>		   
 		  </form-group>  			  
 		  		    		  
 		  <form-group label="common.empty">
-  		    <router-link :to="{ path : './manageapp' , query :  {appId:appId} }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>		      
+  		    <router-link :to="{ path : './manageapp' , query :  {appId:appId} }" class="btn btn-default me-1" v-t="'common.back_btn'"></router-link>		      
 		      <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
           <success :finished="finished" msg="applicence.success" action="submit"></success>
 		  </form-group>

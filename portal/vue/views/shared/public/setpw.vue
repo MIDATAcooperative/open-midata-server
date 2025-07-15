@@ -31,7 +31,12 @@
 
 							<div class="alert alert-success" v-if="success">
 								<p v-t="'setpw.success'"></p>
-								<p><router-link :to="{ path : '/public/login' }" v-t="'setpw.back_to_login'"></router-link></p>
+								<p v-if="homeUrl">
+								  <a :href="homeUrl" v-t="'setpw.back_to_login'"></a>
+								</p>
+								<p v-else>
+									<router-link :to="{ path : '/public/login' }" v-t="'setpw.back_to_login'"></router-link>
+								</p>
 							</div>
 							<div v-if="!success">
 								<p v-t="'setpw.enter_new'"></p>
@@ -41,7 +46,9 @@
 								<form @submit.prevent="submit()" name="myform" ref="myform" role="form" novalidate>
 									<password class="form-control" :placeholder="$t('setpw.new_password')" v-model="setpw.password" name="password" required style="margin-bottom:5px;" autofocus />								
 									<password class="form-control" :placeholder="$t('setpw.new_password_repeat')" v-model="setpw.passwordRepeat" name="passwordRepeat" required style="margin-bottom:5px;" />
-									<button type="submit" :disabled="action!=null" class="btn btn-primary btn-block" v-submit v-t="'setpw.set_new_btn'">Set New Password</button>
+									<div class="d-grid gap-2 mt-3 mb-2">
+									  <button type="submit" :disabled="action!=null" class="btn btn-primary" v-submit v-t="'setpw.set_new_btn'">Set New Password</button>
+									</div>
 								</form>
 							</div>
 		            	</div>
@@ -56,16 +63,25 @@
 import server from "services/server.js";
 import { status, FormGroup, ErrorBox, Password } from 'basic-vue3-components';
 import crypto from "services/crypto.js";
+import { setLocale } from "services/lang.js";
+
+function getAppInfo(name, type) {
+    var data = { "name": name };
+    if (type) data.type = type;
+    return server.post(jsRoutes.controllers.Plugins.getInfo().url, data);
+};
 
 export default {
   data: () => ({
      success : false,
      secure : false,
      role : "member",
+	 homeUrl : null,
      setpw : {
         token : "",
 		password : "",
-        passwordRepeat : ""
+        passwordRepeat : "",
+		app : null
      }
      
   }),
@@ -109,7 +125,16 @@ export default {
 			}
 			return server.post(jsRoutes.controllers.Application.setPasswordWithToken().url, data);
 		}).then(function() { 
-            $data.success = true;
+			
+			if ($data.setpw.app) {
+				getAppInfo($data.setpw.app)     	
+				.then(function(results) {
+				  if (results.data && results.data.homeUrl) {
+					$data.homeUrl = results.data.homeUrl;
+				  }
+				  $data.success = true;
+				});
+			} else $data.success = true;
         }));	
      }
   },
@@ -119,6 +144,10 @@ export default {
      $data.setpw.token = $route.query.token;
      $data.secure = $route.query.ns != 1;	
      $data.role = $route.query.role || "member";	
+	 $data.setpw.app = $route.query.app;
+     if ($route.query.language) {
+        setLocale($route.query.language); 
+     }
      this.loadEnd();
   }
 }

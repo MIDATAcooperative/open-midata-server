@@ -18,14 +18,20 @@
 
 $enable-rounded:                              true;
 $enable-shadows:                              true;
+$enable-transitions:                          true;
 $primary: #1C4982;
 $primary: #2E88CC;
+$info: #E0A442;
+$secondary: #333333;
 
+$primary-btn-color: white;
+
+/*
 $theme-colors: (
   "primary": #2E88CC,
   "secondary" : #333333,
   "info" : #E0A442
-);
+);*/
 
 
 $input-btn-padding-y-sm:      0;
@@ -43,6 +49,23 @@ $fa-font-path:                "../fonts";
 @import "../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
 @import "../../../node_modules/@fortawesome/fontawesome-free/scss/solid";
 
+.btn-primary { color: white; }
+.btn-primary:hover { color: white; }
+.btn-primary:active { color: white; }
+.btn-primary:checked { color: white; }
+
+.form-row {
+	@extend .row;
+	@extend .g-2;
+	@extend .mb-3;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.nav-link { cursor: pointer; }
+
 select,
 select option {
   color: #000000;
@@ -56,7 +79,7 @@ select option[value=""] {
 [hidden] {
   display: none;
 }
-
+select.form-control { @extend .form-select }
 
 .glyphicon { @extend .fas }
 .glyphicon-chevron-left { @extend .fa-chevron-left }
@@ -132,8 +155,7 @@ select option[value=""] {
 }
 
 .form-check { 
-  @include media-breakpoint-down(sm) {
-     padding-left: 3rem;
+  @include media-breakpoint-down(sm) {     
      min-height: 35px;
      margin-bottom: 10px;
   } 
@@ -142,18 +164,23 @@ select option[value=""] {
   @include media-breakpoint-down(sm) {
      margin-left: -3rem;
      min-height: 25px;
-     min-width: 25px;
+     min-width: 25px;	 
   }
 }
 .form-check-label {
   @include media-breakpoint-down(sm) {     
-     min-height: 25px;        
+     min-height: 25px;  
+	 padding-top: 5px;	   
   }
 }
-.form-check-label .margin-left {
+.form-check-label {
    @include media-breakpoint-down(sm) {
-	  margin-left: 0px;
+	  margin-left: 10px;
    }
+}
+
+.midata-checkbox-row .midata-label {
+	padding-top: 0px;
 }
 
 

@@ -54,7 +54,7 @@ public class ErrorHandler extends DefaultHttpErrorHandler {
 	protected CompletionStage<Result> onBadRequest(RequestHeader request, String message) {
         System.out.println("Bad request: "+message);		
 		if (message != null) {
-			if (message.indexOf("JsonParseException") >= 0) message = "Provided JSON is not valid.";
+			if (message.indexOf("Json") >= 0) message = "Provided JSON is not valid."; // JsonParseException
 			else {				
 				try {
 					throw new BadRequestException("errors.badrequest", message);

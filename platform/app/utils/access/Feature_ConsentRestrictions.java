@@ -23,6 +23,7 @@ import org.bson.BasicBSONObject;
 
 import controllers.Circles;
 import utils.AccessLog;
+import utils.QueryTagTools;
 import utils.exceptions.AppException;
 
 public class Feature_ConsentRestrictions extends Feature {
@@ -67,7 +68,9 @@ public class Feature_ConsentRestrictions extends Feature {
 		  if (historyDate != null && historyDate.after(new Date())) filter.remove("history-date");
 		  if (!filter.isEmpty()) {
 			 AccessLog.log("Applying consent filter");
-			 return QueryEngine.combineIterator(q, "consent-filter", filter.toMap(), new Feature_ProcessFilters(next));
+			 DBIterator<DBRecord> result = QueryEngine.combineIterator(q, "consent-filter", filter.toMap(), new Feature_ProcessFilters(next));
+			 if (filter.containsKey("history-date")) return new ProcessingTools.AddMetaTag(result, QueryTagTools.SECURITY_FROZEN);
+			 return result;
 		  }			
 		} 
 		return next.iterator(q);

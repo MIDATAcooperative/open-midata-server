@@ -49,7 +49,7 @@
                 <button v-if="mayRejectParticipation(participation)" @click="rejectParticipation(participation)" class="btn btn-danger space" v-t="'studyparticipants.reject_btn'"></button>
                     
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle space" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-default dropdown-toggle space" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Action <span class="caret"></span>
                     </button>
                     <div class="dropdown-menu">

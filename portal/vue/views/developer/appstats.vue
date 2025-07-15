@@ -24,7 +24,7 @@
         <div v-if="calls.length">
             <p><span v-t="'appstats.first'"></span>: <b>{{ $filters.dateTime(firstrun) }}</b></p>
             <table class="table table-striped" >
-             
+              <thead>
                 <tr>
                     <th v-t="'appstats.action'"></th>
                     <th v-t="'appstats.lastrun'"></th>              
@@ -33,6 +33,7 @@
                     <th><a href="javascript:" @click="showdb=true;">db</a></th>               
                     <th v-t="'appstats.results'"></th>               
                 </tr>
+              
                 <tr>
                     <th></th>
                     <th></th>              
@@ -43,7 +44,8 @@
                     <th></th>
                     <th></th>
                 </tr>
-           
+				</thead>
+				<tbody>
                 <tr v-for="(call,idx) in calls" :key="idx">
                     <td>{{ call.action }}<span v-if="call.params">?{{ call.params }}</span></td>               
                     <td>{{ $filters.dateTime(call.lastrun) }}</td>               
@@ -62,14 +64,15 @@
                     </td>
                
                 </tr>
+				</tbody>
             </table>
            
            
  		</div>
- 		<router-link class="btn btn-default mr-1" :to="{ path : './manageapp', query : { appId : appId } }" v-t="'common.back_btn'"></router-link>
+ 		<router-link class="btn btn-default me-1" :to="{ path : './manageapp', query : { appId : appId } }" v-t="'common.back_btn'"></router-link>
 		
-		<button type="button" class="btn btn-default mr-1" v-t="'appstats.reload_btn'" @click="reload();"></button>
-		<button type="button" class="btn btn-default mr-1" v-t="'appstats.reset_btn'" @click="reset();"></button>
+		<button type="button" class="btn btn-default me-1" v-t="'appstats.reload_btn'" @click="reload();"></button>
+		<button type="button" class="btn btn-default me-1" v-t="'appstats.reset_btn'" @click="reset();"></button>
 		   
 		<div v-if="calls.length">
 			<hr>

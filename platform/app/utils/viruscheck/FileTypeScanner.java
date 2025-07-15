@@ -61,6 +61,7 @@ public class FileTypeScanner {
 		r("vnd.openxmlformats-officedocument","xlsx");
 		r("vnd.openxmlformats-officedocument","docx");
 		r("application/xml","xml");
+		r("application/rdf+xml","rdf");
 		r("application/x-compress","z");
 		r("application/x-dvi","dvi");
 		r("application/x-gtar","gtar");
@@ -101,6 +102,7 @@ public class FileTypeScanner {
 		r("text/rtf","rtf");
 		r("text/tab-separated-values","tsv");
 		r("text/xml","xml");
+		r("text/turtle", "ttl");
 		r("video/mpeg","mpeg");
 		r("video/mpeg","mpg");
 		r("video/mpeg","mpe");
@@ -144,7 +146,9 @@ public class FileTypeScanner {
 	}
 	
 	public boolean isValidFile(String filename, String mimeType) throws AppException {		
+		if (filename == null || filename.trim().length()==0) throw new BadRequestException("error.invalid.filename", "Missing filename for attachment.");
 		if (filename.length() > 255) throw new BadRequestException("error.invalid.filename", "Filename too long.");
+		if (mimeType == null || mimeType.trim().length()==0) throw new BadRequestException("error.invalid.content", "Missing contentType for attachment.");
 		
 		AccessLog.log("check ", filename, " mimeType=", mimeType);
 		int p = filename.lastIndexOf('.');
@@ -155,7 +159,7 @@ public class FileTypeScanner {
 			if (mt == null) throw new BadRequestException("error.invalid.content", "File type not supported.");			
 						
 			if (!mimeType.toLowerCase().startsWith(mt)) throw new BadRequestException("error.invalid.content", "File type not supported. ext="+extension+" mt="+mimeType);
-		} else throw new InternalServerException("error.invalid.content", "File type not supported. file="+filename+" mt="+mimeType);
+		} else throw new InternalServerException("error.invalid.content", "Filename needs to have a '.' followed by a file extension. file="+filename+" mt="+mimeType);
 		
 		return true;
 	}

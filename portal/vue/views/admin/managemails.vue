@@ -80,6 +80,13 @@
 		            <code>&lt;unsubscribe&gt;</code>
 		        </div>		  
 		    </form-group>
+            
+            <form-group name="htmlFrame" label="appmessages.htmlFrame" :path="errors.htmlFrame">
+              <textarea rows="5" id="htmlFrame" name="htmlFrame" class="form-control" :readonly="!editable" @change="change()" v-validate v-model="mailItem.htmlFrame"></textarea>
+              <div class="form-text text-muted">
+                <span v-t="'appmessages.htmlFrame2'"></span>:
+              </div>
+            </form-group>
 		  		  		  
 		    <div>		  				  
                 <form-group label="admin_managemails.created" v-if="mailItem.created != null">
@@ -100,10 +107,10 @@
 		    </form-group>
 	
 		    <form-group label="common.empty">
-                <button type="submit" v-submit :disabled="action!=null" v-if="editable" class="btn btn-primary mr-1" v-t="'admin_managemails.save_btn'"></button>		    
-                <button type="button" class="btn btn-primary mr-1" v-if="allowSend" @click="test()" :disabled="action!=null" v-t="'admin_managemails.test_btn'"></button>
-                <button type="button" class="btn btn-primary mr-1" v-if="allowSend" @click="send()" :disabled="action!=null" v-t="'admin_managemails.send_btn'"></button>
-                <button type="button" class="btn btn-danger mr-1" v-if="allowDelete" @click="doDelete()" :disabled="action!=null" v-t="'common.delete_btn'"></button>
+                <button type="submit" v-submit :disabled="action!=null" v-if="editable" class="btn btn-primary me-1" v-t="'admin_managemails.save_btn'"></button>		    
+                <button type="button" class="btn btn-primary me-1" v-if="allowSend" @click="test()" :disabled="action!=null" v-t="'admin_managemails.test_btn'"></button>
+                <button type="button" class="btn btn-primary me-1" v-if="allowSend" @click="send()" :disabled="action!=null" v-t="'admin_managemails.send_btn'"></button>
+                <button type="button" class="btn btn-danger me-1" v-if="allowDelete" @click="doDelete()" :disabled="action!=null" v-t="'common.delete_btn'"></button>
                 <router-link :to="{ path : './mails' }" class="btn btn-default" v-t="'common.back_btn'"></router-link>
 		    </form-group>
 	    </form>	  		

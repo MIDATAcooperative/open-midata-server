@@ -36,17 +36,21 @@
             </form-group>
     
             <table class="table table-striped" v-if="infos.length">	
+				<thead>
                 <tr>
                     <th v-t="'studyrecords.group'">Data Group</th>
                     <th v-t="'studyrecords.number_of_records'"># Records</th>
                     <th colspan="2">&nbsp;</th>
                 </tr>
+				</thead>
+				<tbody>
                 <tr v-for="info in infos" :key="info.group">        
                     <td>{{ info.group }}</td>      
                     <td><span v-if="info.count==-1" v-t="'-1'"></span><span v-else>{{ info.count }}</span></td>
                     <td><button type="button" :disabled="action != null || !study.myRole.export" @click="fhirDownload(info, 'pseudonymized')" href="javascript:" class="btn btn-sm btn-primary" v-t="'studyrecords.fhir_download_btn'"></button></td>
                     <td><button type="button" v-if="!study.myRole.pseudo" :disabled="action != null || !study.myRole.export" @click="fhirDownload(info, 'original')" href="javascript:" class="btn btn-sm btn-primary" v-t="'studyrecords.fhir_download_original_btn'"></button></td>
                 </tr>
+				</tbody>
             </table>
             
             <p v-t="'studyrecords.csvdef'" v-if="csvEdit"></p>

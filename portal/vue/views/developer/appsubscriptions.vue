@@ -28,6 +28,7 @@
 		  
 		    <p v-if="!app.defaultSubscriptions || !app.defaultSubscriptions.length" v-t="'appsubscriptions.empty'"></p>
 		    <table class="table table-striped" v-if="app.defaultSubscriptions && app.defaultSubscriptions.length">
+			  <thead>
 		      <tr>
 		        <th v-t="'appsubscriptions.trigger'"></th>
 		        <th v-t="'appsubscriptions.triggerDetail'"></th>
@@ -35,6 +36,8 @@
 		        <th v-t="'appsubscriptions.params'"></th>
 		        <th>&nbsp;</th>
 		      </tr>
+			  </thead>
+			  <tbody>
 		      <tr v-for="(subscription,idx) in app.defaultSubscriptions" :key="idx">
 		        <td><select class="form-control" v-validate v-model="subscription.trigger">
                       <option v-for="trigger in triggers" :key="trigger" :value="trigger">{{ $t('appsubscriptions.triggers.'+trigger) }}</option>
@@ -51,13 +54,14 @@
 		        <td><input class="form-control" type="text" v-validate v-model="subscription.parameter"></td>
 		        <td><button class="btn btn-sm btn-default" @click="delete1(subscription)" v-t="'common.delete_btn'"></button></td>
 		      </tr>
+			  </tbody>
 		    </table>
 		    		   		   
 		    <form-group name="x" label="common.empty">
-		      <router-link class="btn btn-default mr-1" :to="{ path : './manageapp', query : { appId : appId }}" v-t="'common.back_btn'"></router-link>
+		      <router-link class="btn btn-default me-1" :to="{ path : './manageapp', query : { appId : appId }}" v-t="'common.back_btn'"></router-link>
 		
-		      <button class="btn btn-default mr-1" type="button" @click="add()" v-t="'common.add_btn'"></button>
-		      <button class="btn btn-primary mr-1" type="submit" v-submit v-t="'common.submit_btn'"></button>
+		      <button class="btn btn-default me-1" type="button" @click="add()" v-t="'common.add_btn'"></button>
+		      <button class="btn btn-primary me-1" type="submit" v-submit v-t="'common.submit_btn'"></button>
 		    </form-group>
 		    
 		     <div v-if="app._id" class="alert alert-warning">

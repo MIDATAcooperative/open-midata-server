@@ -76,6 +76,7 @@ export default {
         let pluginName2 = $route.query.open;        
 		if ($route.meta.account) {
             actions.push({ ac : "account"});
+            params.client_id=$route.query.client_id;
 		} else if (pluginName) {
 			actions.push({ ac : "use", c : pluginName });
 		} else if (pluginName2) {

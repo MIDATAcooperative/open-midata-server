@@ -29,6 +29,7 @@
       
       <pagination v-model="terms" search="name"></pagination>
       <table class="table" v-if="terms.filtered.length">
+		<thead>
         <tr>
           <Sorter v-model="terms" sortby="name" v-t="'admin_terms.name'"></Sorter>
           <Sorter v-model="terms" sortby="version" v-t="'admin_terms.version'"></Sorter>
@@ -36,6 +37,7 @@
           <Sorter v-model="terms" sortby="createdAt" v-t="'admin_terms.createdAt'"></Sorter>  
           <th></th>        
         </tr>
+		</thead>
         <tbody>
          <tr v-for="term in terms.filtered" :key="term._id">
            <td>{{ term.name }}</td>

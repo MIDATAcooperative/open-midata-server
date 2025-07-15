@@ -396,6 +396,8 @@ public class Feature_Indexes extends Feature {
 		Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException;
 
 		void revalidate(MidataId executor, List<DBRecord> result) throws AppException;
+		
+		void skipButUpdate(Query q, Set<MidataId> targetAps) throws AppException;
 
 		long version(MidataId aps) throws InternalServerException;
 		
@@ -495,6 +497,11 @@ public class Feature_Indexes extends Feature {
 			return matches;
 
 		}
+		
+		public void skipButUpdate(Query q, Set<MidataId> targetAps) throws AppException {
+			if (doupdate)
+				IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getAccessor(), index, targetAps);			
+		}
 
 		public void revalidate(MidataId executor, List<DBRecord> result) throws AppException {
 			if (index == null)
@@ -558,6 +565,7 @@ public class Feature_Indexes extends Feature {
 					AccessLog.log("coverage="+coverage+" divider="+divider+" #="+results.size());
 					 if (coverage > 10 && coverage > 100 * results.size() / divider) {
 						AccessLog.log("skip index "+partCount);
+						part.skipButUpdate(q, targetAps);
 						((IndexAccess) part).dontuse();
 						continue;
 					 }
@@ -586,6 +594,11 @@ public class Feature_Indexes extends Feature {
 				}
 			}
 			return results;
+		}
+		
+		@Override
+		public void skipButUpdate(Query q, Set<MidataId> targetAps) throws AppException {
+			for (IndexUse use : parts) use.skipButUpdate(q, targetAps);
 		}
 
 		@Override
@@ -642,6 +655,11 @@ public class Feature_Indexes extends Feature {
 		@Override
 		public void revalidate(MidataId executor, List<DBRecord> result) throws AppException {
 			// for (IndexUse part : parts) part.revalidate(result);
+		}
+		
+		@Override
+		public void skipButUpdate(Query q, Set<MidataId> targetAps) throws AppException {
+			for (IndexUse use : parts) use.skipButUpdate(q, targetAps);
 		}
 
 		public long version(MidataId aps) throws InternalServerException {

@@ -87,7 +87,9 @@ import utils.auth.KeyManager;
 import utils.auth.LicenceChecker;
 import utils.auth.MobileAppSessionToken;
 import utils.auth.OAuthRefreshToken;
+import utils.auth.OTPTools;
 import utils.auth.PortalSessionToken;
+import utils.auth.PreAuthSecured;
 import utils.auth.PreLoginSecured;
 import utils.auth.TokenCrypto;
 import utils.auth.auth2factor.Authenticators;
@@ -617,7 +619,10 @@ public class OAuth2 extends Controller {
 			}
 		}
 										    				
-		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+		if (user == null) {
+			if (JsonValidation.getStringOrNull(json, "password")==null) return null;
+			throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+		}
 		
 		if (user.developer != null) token.developerId = user.developer;
 		if (user instanceof HPUser) {
@@ -631,11 +636,40 @@ public class OAuth2 extends Controller {
 	}
 	
 	private static final Result checkPasswordAuthentication(ExtendedSessionToken token, JsonNode json, User user) throws AppException {
-		if (token.ownerId != null) return null;
-						
-		String password = JsonValidation.getString(json, "password");
-		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken");
-				
+		if (token.ownerId != null && token.getIsAuthenticated()) return null;			
+		String password = JsonValidation.getStringOrNull(json, "password");
+		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken");		
+		if (password == null) {
+		  if (user == null) return ok("ask-password");
+		  if (user.password == null) {
+			  String otp = JsonValidation.getStringOrNull(json, "otp");
+			  if (otp == null) {				 
+			    Application.sendOTP(token.currentContext, token.appId, user);			  
+			    token.ownerId = user._id;
+			    return Application.loginHelperResult(null, token, user, Collections.singleton(UserFeature.OTP_VERIFIED));
+			  } else {				
+				user.checkLoginAttempts();
+				if (OTPTools.checkToken(user, otp)) {					
+					token.setIsAuthenticated();
+					user.recordLoginAttempt(true);
+					
+					if (OTPTools.tokenConfirmsEMail(user) && user.emailStatus == EMailStatus.UNVALIDATED) {
+					   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
+				       			    	   		         
+			           user.emailStatus = EMailStatus.VALIDATED;
+				       user.set("emailStatus", EMailStatus.VALIDATED);		
+					}
+					
+					return null;
+				} else {					
+					user.recordLoginAttempt(false);
+					throw new BadRequestException("error.invalid.otp",  "Invalid one time password.");
+				}
+			  }
+		  }		
+		  return ok("ask-password");
+		}
+		AccessLog.log("Passed password verification");
 		if (user.publicExtKey == null) {
 			if (!json.has("nonHashed")) {
 			  if (password.length() > 50) return ok("compatibility-mode");
@@ -652,7 +686,8 @@ public class OAuth2 extends Controller {
 			throw e;
 		}
 		
-		token.ownerId = user._id;		
+		token.ownerId = user._id;	
+		token.setIsAuthenticated();
 		return null;
 		
 	}		
@@ -759,7 +794,12 @@ public class OAuth2 extends Controller {
 					notok.add(UserFeature.AUTH2FACTORSETUP);
 				} else {
 				
-					Authenticators.getInstance(SecondaryAuthType.SMS).checkAuthentication(user._id, user, securityToken);
+					try {
+ 					    Authenticators.getInstance(SecondaryAuthType.SMS).checkAuthentication(user._id, user, securityToken);
+					} catch (AppException e) {						
+						AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, token.appId);
+						throw e;
+					}
 					token.securityToken = securityToken;
 					notok.remove(UserFeature.AUTH2FACTOR);
 					notok.remove(UserFeature.PHONE_VERIFIED);
@@ -780,7 +820,12 @@ public class OAuth2 extends Controller {
 				notok.clear();
 				notok.add(UserFeature.AUTH2FACTOR);
 			} else {
-				Authenticators.getInstance(user.authType).checkAuthentication(user._id, user, securityToken);
+				try {
+					Authenticators.getInstance(user.authType).checkAuthentication(user._id, user, securityToken);
+				} catch (AppException e) {						
+					AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, token.appId);
+					throw e;
+				}
 				token.securityToken = securityToken;
 				notok.remove(UserFeature.AUTH2FACTOR);
 				if (notok.isEmpty()) {
@@ -901,12 +946,14 @@ public class OAuth2 extends Controller {
 	public Result login(Request request) throws AppException {
 			
         JsonNode json = request.body().asJson();		
-        JsonValidation.validate(json, "appname", "username", "password", "device", "state", "redirectUri");
+        JsonValidation.validate(json, "appname", "username", "device", "state", "redirectUri");
 
         ExtendedSessionToken token = new ExtendedSessionToken();
         if (json.has("loginToken")) {
         	ExtendedSessionToken token1 = ExtendedSessionToken.decrypt(JsonValidation.getString(json, "loginToken"));
-        	if (token1.getIsChallengeResponse()) token = token1;
+        	if (token1.getIsChallengeResponse()) {
+        	  token = token1;
+        	} else return unauthorized();
         } else {
 	        token.created = System.currentTimeMillis();                               
 	        token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
@@ -924,7 +971,7 @@ public class OAuth2 extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(PreLoginSecured.class)
+	@Security.Authenticated(PreAuthSecured.class)
 	public Result continuelogin(Request request) throws AppException {
 		JsonNode json = request.body().asJson();		
        
@@ -1111,6 +1158,8 @@ public class OAuth2 extends Controller {
 			obj.put("code", token.asCodeExchangeToken().encrypt());
 			obj.put("istatus", appInstance.status.toString());
 			
+			if (user.resettoken != null && user.resettokenType != null && user.resettokenType.isOtp()) OTPTools.clearToken(user);
+			
 			AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
 			
 			AuditManager.instance.success();
@@ -1141,7 +1190,10 @@ public class OAuth2 extends Controller {
 			token.setRemoteAddress(request);
 			obj.put("sessionToken", token.asPortalSession().encrypt());
 			  
-			User.set(user._id, "login", new Date());			    
+			User.set(user._id, "login", new Date());	
+			
+			if (user.resettoken != null) OTPTools.clearToken(user);
+			
 			AuditManager.instance.success();
 			
 			long ts5 = System.currentTimeMillis();

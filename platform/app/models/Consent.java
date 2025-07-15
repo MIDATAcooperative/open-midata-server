@@ -358,11 +358,12 @@ public class Consent extends Model implements Comparable<Consent> {
 	
 	public void setStatus(ConsentStatus status, boolean finish) throws InternalServerException {
 		setTargetStatus(status, finish);
-		this.lastUpdated = new Date();
+		this.lastUpdated = new Date();	
+		this.dataupdate = System.currentTimeMillis(); // May be important if consent gets rejected/deleted to clear old entries from indexes
 		if (this.createdAfter != null) {
-		   this.setMultiple(collection, Sets.create("status", "reportedStatus", "createdAfter", "lastUpdated"));
+		   this.setMultiple(collection, Sets.create("status", "reportedStatus", "createdAfter", "lastUpdated", "dataupdate"));
 		} else {
-		   this.setMultiple(collection, Sets.create("status", "reportedStatus", "lastUpdated"));
+		   this.setMultiple(collection, Sets.create("status", "reportedStatus", "lastUpdated", "dataupdate"));
 		}
 	}
 	

@@ -189,7 +189,7 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
-	public Result export(Request request, String p) throws AppException, IOException, ServletException {
+	public Result doExport(Request request, String p) throws AppException, IOException, ServletException {
 		return exportPatient(request, null, null);
 	}
 		

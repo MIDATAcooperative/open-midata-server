@@ -24,11 +24,7 @@
 		    <form-group name="title" label="admin_managenews.title" :path="errors.title">
 		        <input type="text" name="title" class="form-control" v-validate v-model="newsItem.title" autofocus>
 		    </form-group>
-		  
-		    <form-group name="date" label="admin_managenews.date" :path="errors.date">		      
-				<input type="date" class="form-control" name="date" v-validate v-date="newsItem.date" v-model="newsItem.date">			
-		    </form-group>
-		
+		  		    
 		    <form-group name="language" label="admin_managenews.language" :path="errors.language">
 		        <select id="language" class="form-control" v-validate v-model="newsItem.language">
                     <option v-for="lang in languages" :key="lang" :value="lang">{{ lang }}</option>
@@ -44,11 +40,21 @@
 		    </form-group>
 		  
 		    <hr>
-		  
+			<form-group name="date" label="admin_managenews.date" :path="errors.date">		      
+				<input type="date" class="form-control" name="date" v-validate v-date="newsItem.date" v-model="newsItem.date">			
+			</form-group>
+					
+			
 		    <form-group name="expires" label="admin_managenews.expires" :path="errors.expires">		      
 				<input type="date" name="expires" class="form-control" v-validate v-date="newsItem.expires" v-model="newsItem.expires">				  
 		    </form-group>
-		
+			
+			<form-group name="dynamicDate" label="admin_managenews.dynamicDate" :path="errors.dynamicDate">			  
+			   <check-box v-model="newsItem.dynamicDate" name="dynamicDate">
+				  <span v-t="'admin_managenews.dynamicDate2'"></span>
+			   </check-box>
+			</form-group>
+			
 		    <form-group name="layout" label="admin_managenews.layout" :path="errors.laqyout">
 		        <select id="layout" class="form-control" v-validate v-model="newsItem.layout">
                     <option v-for="layout in layouts" :key="layout" :value="layout">{{ $t('admin_managenews.layouts.'+layout) }}</option>
@@ -62,6 +68,17 @@
 	                </div>
 	                <div class="col-sm-9">
 	                    <p class="form-control-plaintext" v-if="selection && selection.study">{{ selection.study.name }}</p>
+	                </div>
+	            </div>
+	        </form-group> 	  
+			
+			<form-group name="study" label="admin_managenews.onlyParticipantsStudyId" :path="errors.onlyParticipantsStudyId">
+	            <div class="row">
+	                <div class="col-sm-3">
+                        <typeahead class="form-control" :suggestions="studies" field="code" @selection="studyselection(selection.onlyStudy, 'onlyParticipantsStudyId');" v-model="selection.onlyStudy.code"></typeahead>	                   
+	                </div>
+	                <div class="col-sm-9">
+	                    <p class="form-control-plaintext" v-if="selection && selection.onlyStudy">{{ selection.onlyStudy.name }}</p>
 	                </div>
 	            </div>
 	        </form-group> 	  
@@ -79,7 +96,7 @@
 		
 
 		    <form-group label="common.empty">
-		        <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary mr-1" v-t="'common.submit_btn'"></button>		    
+		        <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary me-1" v-t="'common.submit_btn'"></button>		    
 		        <button type="button" class="btn btn-danger" v-if="allowDelete" @click="doDelete()" :disabled="action!=null" v-t="'common.delete_btn'"></button>
 		    </form-group>
 
@@ -123,7 +140,7 @@ export default {
 
         loadNews(newsId) {
             const { $data, $filters, $router } = this, me = this;
-            me.doBusy(news.get({ "_id" : newsId }, ["content", "created", "date", "creator", "expires", "language", "studyId", "appId",  "title", "url", "layout"])
+            me.doBusy(news.get({ "_id" : newsId }, ["content", "created", "date", "creator", "expires", "language", "studyId", "appId",  "title", "url", "layout", "dynamicDate"])
             .then(function(data) { 
                 $data.newsItem = data.data[0];
                 $data.newsItem.date = $filters.usDate($data.newsItem.date);
@@ -131,6 +148,16 @@ export default {
                 
                 if ($data.newsItem.studyId) {
                     me.doBusy(studies.search({ _id : $data.newsItem.studyId }, ["_id", "code", "name" ])
+                    .then(function(data) {
+                        if (data.data && data.data.length == 1) {						 
+                        $data.selection.onlyStudy.code = data.data[0].code;
+                        $data.selection.onlyStudy.name = data.data[0].name;
+                        }
+                    }));
+                }
+				
+				if ($data.newsItem.onlyParticipantsStudyId) {
+                    me.doBusy(studies.search({ _id : $data.newsItem.onlyParticipantsStudyId }, ["_id", "code", "name" ])
                     .then(function(data) {
                         if (data.data && data.data.length == 1) {						 
                         $data.selection.study.code = data.data[0].code;

@@ -412,7 +412,7 @@ class MonitoringReporterActor extends AbstractActor {
 			String fullname = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
 			String server = InstanceConfig.getInstance().getPlatformServer();
 		
-			MailUtils.sendTextMail(MailSenderType.STATUS, email, fullname, "Monitoring "+server+" ("+events.size()+")", mail.toString());
+			MailUtils.sendTextMail(MailSenderType.STATUS, email, fullname, "Monitoring "+server+" ("+events.size()+")", mail.toString(), null);
 		}
 	}
 	

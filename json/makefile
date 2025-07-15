@@ -20,12 +20,12 @@ include /dev/shm/db.conf
 info:
 	$(info test)
 
-ifneq ("$(wildcard ../mongodb/bin/mongo)","")	
-client=../mongodb/bin/mongo
+ifneq ("$(wildcard ../mongodb/bin/mongosh)","")	
+client=../mongodb/bin/mongosh
 mongoexport=../mongodb/bin/mongoexport
 mongoimport=../mongodb/bin/mongoimport
 else
-client=mongo
+client=mongosh
 mongoexport=mongoexport
 mongoimport=mongoimport
 endif

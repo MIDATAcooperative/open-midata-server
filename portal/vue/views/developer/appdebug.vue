@@ -24,7 +24,7 @@
         <div v-if="saved.length">
         <label>Saved Requests:</label>
        <div class="list-group">
-        <a v-for="ext in saved" :key="ext.url" class="list-group-item clearfix" href="javascript:" @click="doload(ext);">[{{ ext.type }}] <b>{{ ext.url }}</b> (<span class="small text-info">{{ ext.body }}</span>)<div class="float-right"><button type="button" class="btn btn-sm btn-default" @click="dodelete(ext);">delete</button></div></a>
+        <a v-for="ext in saved" :key="ext.url" class="list-group-item clearfix" href="javascript:" @click="doload(ext);">[{{ ext.type }}] <b>{{ ext.url }}</b> (<span class="small text-info">{{ ext.body }}</span>)<div class="float-end"><button type="button" class="btn btn-sm btn-default" @click="dodelete(ext);">delete</button></div></a>
        </div>
        
        </div>
@@ -123,9 +123,9 @@
         
         <div class="row">
         <div class="col-12 extraspace">
-        <router-link :to="{ path : './manageapp', query : {appId:appId}}" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
-        <button class="btn btn-primary mr-1" :disabled="action!=null" type="button" @click="dosubmit();">submit</button> 
-        <button class="btn btn-default mr-1" :disabled="action!=null" type="button" @click="dosave();">save</button>
+        <router-link :to="{ path : './manageapp', query : {appId:appId}}" class="btn btn-default me-1" v-t="'common.back_btn'"></router-link>
+        <button class="btn btn-primary me-1" :disabled="action!=null" type="button" @click="dosubmit();">submit</button> 
+        <button class="btn btn-default me-1" :disabled="action!=null" type="button" @click="dosave();">save</button>
         </div>
         </div>
        

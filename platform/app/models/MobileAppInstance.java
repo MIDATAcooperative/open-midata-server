@@ -40,7 +40,7 @@ import utils.exceptions.InternalServerException;
 @JsonFilter("MobileAppInstance")
 public class MobileAppInstance extends Consent {
 
-	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.ALL, "applicationId", "appVersion", "licence", "serviceId", "deviceId", "passcode", "sharingQuery", "comment");
+	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.FHIR, "applicationId", "appVersion", "licence", "serviceId", "deviceId", "passcode", "sharingQuery", "comment");
 	
 	/**
 	 * public key of the application instance

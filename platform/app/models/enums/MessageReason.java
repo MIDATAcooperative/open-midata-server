@@ -35,6 +35,11 @@ public enum MessageReason {
 	REGISTRATION_BY_OTHER_PERSON, 
 	
 	/**
+	 * Message sent when a user without password tries to log in
+	 */
+	ONE_TIME_PASSWORD,
+	
+	/**
 	 * Message sent upon first use of app 
 	 */
 	FIRSTUSE_ANYUSER,

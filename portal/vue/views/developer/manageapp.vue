@@ -37,17 +37,17 @@
                 </select>
 		        <p class="form-text text-muted" v-t="'manageapp.info.targetUserRole'"></p>
 		    </form-group>			  	  
-		    <form-group name="requirements" label="Requirements" class="danger-change" v-if="app.type!='analyzer' && app.type!='endpoint'" :path="errors.requirements">
+		    <form-group name="requirements" label="Requirements" class="danger-change midata-checkbox-row" v-if="app.type!='analyzer' && app.type!='endpoint'" :path="errors.requirements">
 		        <check-box v-for="req in requirements" :key="req" :checked="app.requirements.indexOf(req)>=0" :name="'chk_'+req" @click="toggle(app.requirements, req);requireLogout();">
                     <span>{{ $t('enum.userfeature.'+req) }}</span>
 		        </check-box>		        
 		    </form-group>	
-		    <form-group name="decentral" label="manageapp.decentral" v-if="app.type=='broker'">
+		    <form-group name="decentral" label="manageapp.decentral" class="midata-checkbox-row" v-if="app.type=='broker'">
                 <check-box name="decentral" v-model="app.decentral" :path="errors.decentral">		    
 		            <span v-t="'manageapp.info.decentral'"></span>
                 </check-box>		    		    
 		    </form-group>
-		    <form-group name="organizationKeys" label="manageapp.organizationKeys" v-if="app.type=='broker'">
+		    <form-group name="organizationKeys" label="manageapp.organizationKeys" class="midata-checkbox-row" v-if="app.type=='broker'">
                 <check-box name="organizationKeys" v-model="app.organizationKeys" :path="errors.organizationKeys">		    
 		            <span v-t="'manageapp.info.organizationKeys'"></span>
                 </check-box>		    		    
@@ -105,7 +105,7 @@
           </form-group>
 		  <hr>		  
 		  </div>
-		  <form-group name="tags" label="Tags" v-if="app.type!='analyzer' && app.type!='endpoint'">
+		  <form-group name="tags" label="Tags" class="midata-checkbox-row" v-if="app.type!='analyzer' && app.type!='endpoint'">
 		    <check-box v-for="tagdef in tags" :key="tagdef" :name="tagdef" :checked="app.tags.indexOf(tagdef)>=0" @click="toggle(app.tags, tagdef)">
 		       {{ tagdef }}
 		    </check-box>
@@ -115,6 +115,11 @@
 		  <form-group name="url" label="URL" v-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'" :path="errors.url">
 		    <input type="text" id="url" name="url" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" v-validate v-model="app.url">		    
 		    <p class="form-text text-muted" v-t="'manageapp.info.url'"></p>
+		  </form-group>
+		  
+		  <form-group name="homeUrl" label="manageapp.home_url" v-if="app.type == 'mobile'" :path="errors.url">
+		    <input type="text" id="homeUrl" name="homeUrl" class="form-control" v-validate v-model="app.homeUrl">		    
+		  	<p class="form-text text-muted" v-t="'manageapp.info.home_url'"></p>
 		  </form-group>
 		 
 		  <form-group name="defaultSpaceContext" label="manageapp.default_context" v-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'" :path="errors.defaultSpaceContext">		    
@@ -134,13 +139,13 @@
                 <option v-for="mode in writemodes" :key="mode" :value="mode">{{ $t('enum.writepermissiontype.'+mode) }}</option>
             </select>
 		  </form-group>
-		   <form-group name="noUpdateHistory" label="manageapp.no_update_history" v-if="app.targetUserRole=='RESEARCH'" >
+		   <form-group name="noUpdateHistory" label="manageapp.no_update_history" class="midata-checkbox-row" v-if="app.targetUserRole=='RESEARCH'" >
             
                 <check-box name="noUpdateHistory" v-model="app.noUpdateHistory" :path="errors.noUpdateHistory">		    
 		            <span v-t="'manageapp.info.no_update_history'"></span>
                </check-box>		    
 		  </form-group>
-		  <form-group name="pseudonymize" label="manageapp.pseudonymize" v-if="app.type=='analyzer' || app.type=='endpoint'">
+		  <form-group name="pseudonymize" label="manageapp.pseudonymize" class="midata-checkbox-row" v-if="app.type=='analyzer' || app.type=='endpoint'">
                <check-box name="pseudonymize" v-model="app.pseudonymize" :path="errors.pseudonymize">		    
 		            <span v-t="'manageapp.info.pseudonymize'"></span>
                </check-box>		    
@@ -153,30 +158,30 @@
 		  <form-group name="endpoint" label="manageapp.endpoint" v-if="app.type == 'endpoint' && app.createendpoint" :path="errors.endpoint">
 		    <input type="text" id="endpoint" name="endpoint" class="form-control" v-validate v-model="app.endpoint">		    
 		    <p class="form-text text-muted" v-t="'manageapp.info.endpoint'"></p>
-		    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle mr-1"></i>{{ $t('manageapp.info.endpoint2') }}</div>
+		    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-1"></i>{{ $t('manageapp.info.endpoint2') }}</div>
 		  </form-group>	
-		  <form-group name="resharesData" label="Resharing" class="danger-change" v-if="app.type!='endpoint'">
+		  <form-group name="resharesData" label="Resharing" class="danger-change midata-checkbox-row" v-if="app.type!='endpoint'">
                 <check-box name="resharesData" v-model="app.resharesData" :path="errors.resharesData" @change="requireLogout();">		    
 		            <span v-t="'manageapp.info.resharesData'"></span>
                 </check-box>		    		    
 		  </form-group>
-		   <form-group name="allowsUserSearch" label="User Search" v-if="!(app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2' || app.type=='analyzer' || app.type=='endpoint')" class="danger-change">
+		   <form-group name="allowsUserSearch" label="User Search" class="danger-change midata-checkbox-row" v-if="!(app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2' || app.type=='analyzer' || app.type=='endpoint')">
                <check-box name="allowsUserSearch" v-model="app.allowsUserSearch" :path="errors.allowsUserSearch" @change="requireLogout();">		    
 		            <span v-t="'manageapp.info.allowsUserSearch'"></span>
                </check-box>		    
 		  </form-group>
-		  <form-group name="usePreconfirmed" label="manageapp.usePreconfirmed" v-if="!(app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2' || app.type=='endpoint')">
+		  <form-group name="usePreconfirmed" label="manageapp.usePreconfirmed" class="midata-checkbox-row" v-if="!(app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2' || app.type=='endpoint')">
                <check-box name="usePreconfirmed" v-model="app.usePreconfirmed" :path="errors.usePreconfirmed">		    
 		            <span v-t="'manageapp.info.usePreconfirmed'"></span>
                </check-box>		    
 		  </form-group>
-		  <form-group name="accountEmailsValidated" label="manageapp.accountEmailsValidated" v-if="!(app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2' || app.type=='endpoint')">
+		  <form-group name="accountEmailsValidated" label="manageapp.accountEmailsValidated" class="midata-checkbox-row" v-if="!(app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2' || app.type=='endpoint')">
                <check-box name="accountEmailsValidated" v-model="app.accountEmailsValidated" :path="errors.accountEmailsValidated">		    
 		            <span v-t="'manageapp.info.accountEmailsValidated'"></span>
                </check-box>		    
 		  </form-group>
 		  
-		   <form-group name="consentObserving" label="Consent Observing" v-if="app.type == 'external' || app.type=='broker'">
+		   <form-group name="consentObserving" label="Consent Observing" class="midata-checkbox-row" v-if="app.type == 'external' || app.type=='broker'">
                <check-box name="consentObserving" v-model="app.consentObserving" disabled>
                    <span v-t="'manageapp.info.consentObserving'"></span>
                </check-box>		    
@@ -230,7 +235,7 @@
 		    <input type="text" id="unlockCode" name="unlockCode" class="form-control" v-validate v-model="app.unlockCode">
 		    <p class="form-text text-muted" v-t="'manageapp.info.unlock_code'"></p>
 		  </form-group>
-		   <form-group name="codeChallenge" v-if="app.type == 'mobile'" label="manageapp.code_challenge" :path="errors.codeChallenge">
+		   <form-group name="codeChallenge" v-if="app.type == 'mobile'" label="manageapp.code_challenge" :path="errors.codeChallenge" class="midata-checkbox-row">
 		      <div class="form-check">
 		         <input type="checkbox" id="codeChallenge" name="codeChallenge" class="form-check-input" v-validate v-model="app.codeChallenge">
 		         <label for="codeChallenge" class="form-check-label">{{ $t('manageapp.info.code_challenge') }}</label>
@@ -260,7 +265,7 @@
              <p class="form-text text-muted" v-t="'manageapp.info.test_accounts_max'"></p>
           </form-group>
           
-		   <form-group name="sendReports" label="manageapp.send_reports" :path="errors.sendReports">
+		   <form-group name="sendReports" label="manageapp.send_reports" :path="errors.sendReports" class="midata-checkbox-row">
 		      <div class="form-check">
 		         <input type="checkbox" id="sendReports" name="sendReports" class="form-check-input" v-validate v-model="app.sendReports">
 		         <label for="sendReports" class="form-check-label">{{ $t('manageapp.info.send_reports', { user : app.creatorLogin}) }}</label>
@@ -268,7 +273,7 @@
 		  </form-group>
 		  
 		  
-		   <form-group name="withLogout" label="manageapp.logout" v-if="app._id">
+		   <form-group name="withLogout" label="manageapp.logout" class="midata-checkbox-row" v-if="app._id">
 		     <check-box name="withLogout" v-model="app.withLogout" :path="errors.withLogout" :required="logoutRequired">		      
 		        <span v-t="'manageapp.pleaseLogout1'"></span>
 		        <span v-if="app.targetUserRole=='RESEARCH'"> / </span>
@@ -380,7 +385,7 @@ export default {
                 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "homeUrl", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax"])
 		    .then(function(data) { 
                 let app = data.data[0];	
 				

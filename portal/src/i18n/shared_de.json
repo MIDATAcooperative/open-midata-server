@@ -1173,6 +1173,7 @@
     },
 
     "oauth2" : {
+        "title" : "Zugriff bestätigen",
         "requests_permission" : "speichert Ihre persönlichen Daten in Ihrem @PRODUCT Konto.",
         "no_account" : "Sie besitzen noch kein Konto?",
         "have_account" : "Sie besitzen ein @PRODUCT Konto?",
@@ -1186,6 +1187,7 @@
         "sign_in_btn" : "Anmelden",
         "device" : "Gerät: {{device}}",
         "please_confirm" : "Bestätigen Sie bitte die Aktivierung der Applikation auf dem @PRODUCT Portal, dann versuchen Sie es erneut. Zustimmungsbezeichnung: {{ consent }}",
+        "request_access" : "Mit Ihrer Zustimmung erhält die Applikation Zugriff auf folgende Daten:",
         "confirm_btn" : "Ich stimme zu",
         "reject_btn" : "Ablehnen",
         "continue_btn" : "Weiter",

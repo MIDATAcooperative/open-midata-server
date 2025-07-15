@@ -23,7 +23,7 @@
             <pagination v-model="members"></pagination>
 
 			<table class="table table-striped" v-if="members.filtered.length">
-
+               <thead>
 				<tr>
 				    <Sorter v-model="members" sortby="email" v-t="'common.user.email'"></Sorter>
 					<Sorter v-model="members" sortby="firstname" v-t="'common.user.firstname'"></Sorter>
@@ -31,6 +31,8 @@
 					<Sorter v-model="members" sortby="role" v-t="'developer_testusers.role'"></Sorter>
 					<th></th>					
 				</tr>
+               </thead>
+			   <tbody>
 								
 				<tr v-for="member in members.filtered" :key="member._id">
 				    <td>{{ member.email }}</td>					
@@ -39,14 +41,15 @@
 					<td>{{ $t('enum.userrole.'+member.role) }}</td>
 					<td><button type="button" class="btn btn-sm btn-default" @click="resetPassword(member);" v-t="'developer_testusers.resetpw'"></button></td>
 				</tr>
+			   </tbody>
 			</table>
 
             <p v-if="members.filtered.length == 0" v-t="'developer_testusers.empty'"></p>
 			
 			<div class="alert alert-info" v-t="'developer_testusers.description'"></div>
 			
-			<router-link class="btn btn-default mr-1" :to="{ path : './registration' ,query : { developer : userId, role : 'member' } }" v-t="'developer_testusers.register_member_btn'"></router-link>
-			<router-link class="btn btn-default mr-1" :to="{ path : './registration' ,query :  { developer : userId, role : 'provider' } }" v-t="'developer_testusers.register_hp_btn'"></router-link>
+			<router-link class="btn btn-default me-1" :to="{ path : './registration' ,query : { developer : userId, role : 'member' } }" v-t="'developer_testusers.register_member_btn'"></router-link>
+			<router-link class="btn btn-default me-1" :to="{ path : './registration' ,query :  { developer : userId, role : 'provider' } }" v-t="'developer_testusers.register_hp_btn'"></router-link>
 			<router-link class="btn btn-default" :to="{ path : './registration', query : { developer : userId, role : 'research' } }" v-t="'developer_testusers.register_researcher_btn'"></router-link>
 					 					
     </panel>

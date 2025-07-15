@@ -35,18 +35,14 @@
 		    </form-group>
 		    <form-group name="lastname" label="common.user.lastname" v-if="search.searchable">
 		        <div class="input-group">
-		            <input type="text" class="form-control" id="lastname" v-model="search.criteria.lastname" v-validate>
-		            <div class="input-group-append">
-		                <button class="btn btn-primary" :disabled="action!=null" @click="reload()" v-t="'common.search_btn'"></button>
-		            </div>
+		            <input type="text" class="form-control" id="lastname" v-model="search.criteria.lastname" v-validate>		            
+		            <button class="btn btn-primary" :disabled="action!=null" @click="reload()" v-t="'common.search_btn'"></button>		            
 		        </div>
 		    </form-group>
 		    <form-group name="email" label="common.user.email" v-if="search.searchable">
 		        <div class="input-group">
-		            <input type="text" class="form-control" id="email" v-model="search.criteria.email" v-validate>
-		            <div class="input-group-append">
-		                <button class="btn btn-primary" @click="reload()" :disabled="action!=null" v-t="'common.search_btn'"></button>
-		            </div>
+		            <input type="text" class="form-control" id="email" v-model="search.criteria.email" v-validate>		            
+		            <button class="btn btn-primary" @click="reload()" :disabled="action!=null" v-t="'common.search_btn'"></button>		           
 		        </div>
 		    </form-group>
 		</form>
@@ -54,7 +50,7 @@
         <pagination v-model="members" search="search"></pagination>
 						
 		<table class="table table-striped" v-if="members.filtered.length">
-
+          <thead>
 				<tr>
 					<Sorter sortby="midataID" v-model="members" v-t="'admin_members.midata_id'"></Sorter>
 					<Sorter sortby="firstname" v-model="members" v-t="'common.user.firstname'"></Sorter>
@@ -64,18 +60,19 @@
 					<Sorter sortby="role" v-model="members" v-t="'admin_members.role'"></Sorter>
 					<Sorter sortby="status" v-model="members" v-t="'admin_members.status'"></Sorter>
 				</tr>
-								
+          </thead>
+		  <tbody>				
 				<tr v-for="member in members.filtered" :key="member._id" >
 					<td><router-link :to="{ path : './address', query :  { userId : member._id } }">{{ member.midataID || 'none' }}</router-link></td>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.email }}</td>
 					<td>
-					  <span v-if="member.developer" class="fas fa-link mr-1" title="tied to developer"></span>
-					  <span v-if="member.emailStatus != 'VALIDATED' && member.emailStatus != 'EXTERN_VALIDATED'" class="fas fa-question-sign mr-1" title="email not confirmed"></span>					  
-					  <span v-if="!member.login || member.login &lt; dateLimit" class="fas fa-clock mr-1" title="last login older 1 month"></span>
-					  <span v-if="member.security != 'KEY_EXT_PASSWORD'" class="fas fa-eye mr-1" title="Non standard key protection"></span>
-					  <span v-if="member.testUserApp" class="fas fa-vial mr-1" title="Test User"></span>
+					  <span v-if="member.developer" class="fas fa-link me-1" title="tied to developer"></span>
+					  <span v-if="member.emailStatus != 'VALIDATED' && member.emailStatus != 'EXTERN_VALIDATED'" class="fas fa-question-sign me-1" title="email not confirmed"></span>					  
+					  <span v-if="!member.login || member.login &lt; dateLimit" class="fas fa-clock me-1" title="last login older 1 month"></span>
+					  <span v-if="member.security != 'KEY_EXT_PASSWORD'" class="fas fa-eye me-1" title="Non standard key protection"></span>
+					  <span v-if="member.testUserApp" class="fas fa-vial me-1" title="Test User"></span>
 					</td>
 					<td>{{ $t('enum.userrole.'+member.role) }}</td>
 					<td><select @change="changeUser(member);" v-model="member.status" class="form-control">
@@ -83,6 +80,7 @@
                         </select>
                     </td>
 				</tr>
+		  </tbody>
 		</table>
 
         <p v-if="members.filtered.length === 0" v-t="'admin_members.empty'"></p>
@@ -126,7 +124,7 @@ export default {
             },
             {
                 name : "admin_members.testusers",
-                criteria : { testUserApp : { $exists : true } }
+                criteria : { testUserApp : { $exists : true }, status : { $ne : "WIPED" } }
             },
             {
                 name : "admin_members.overview",

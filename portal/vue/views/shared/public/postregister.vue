@@ -59,8 +59,10 @@
 					<form-group name="unlockCode" label="registration.unlock_code" :path="errors.unlockCode">									
                     	  <input type="text" class="form-control" id="unlockCode"
 						   name="unlockCode" :placeholder="$t('registration.unlock_code')" v-model="unlockCode" v-validate required>
-					</form-group>									
-			    	<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'common.submit_btn'"></button>
+					</form-group>		
+					<div class="d-grid gap-2 mt-3 mb-2">							
+			    	  <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
+					</div>
 			      </form>
 				</div>
 						
@@ -71,15 +73,33 @@
 							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
 						</form-group>							  
 						<div class="extraspace"></div>
-						<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'postregister.securityToken_btn'"></button>
+						<div class="d-grid gap-2 mt-3 mb-2">
+						  <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'postregister.securityToken_btn'"></button>
+						</div>						  	
 						<div class="extraspace"></div>
                         <error-box :error="error"></error-box>
 							  
 						<div v-if="progress.PHONE_VERIFIED">							   							  
 							<p v-t="'postregister.no_token'"></p>
-							<button @click="noSecurityToken()" type="button" :disabled="action!=null" class="btn btn-default btn-block" v-t="'postregister.no_token_btn'"></button>
+							<div class="d-grid gap-2 mt-3 mb-2">
+							  <button @click="noSecurityToken()" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.no_token_btn'"></button>
+							</div>  
 						</div>
 						<div class="extraspace"></div>
+					</form>
+				</div>
+				
+				<div v-if="progress.OTP_VERIFIED">
+					<p v-t="'postregister.otp'"></p>
+					<form ref="myform" name="myform" @submit.prevent="otpsubmit()" role="form" class="form form-horizontal" novalidate>
+						<form-group name="password" label="postregister.otp_password" :path="errors.otp">
+							<password class="form-control" name="otp" v-model="otp.otp" style="margin-bottom:5px;" autofocus required />
+						</form-group>												
+						<div class="extraspace"></div>
+						<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'common.submit_btn'"></button>
+						<div class="extraspace"></div>
+                        <error-box :error="error"></error-box>
+						<!-- <p ng-show="error && !tokenIncluded" class="alert alert-danger" translate="{{ error.code || error }}"></p> -->
 					</form>
 				</div>
 							
@@ -109,7 +129,9 @@
 						  <a @click="showTerms({which : progress.termsOfUse});" href="javascript:" v-t="'registration.agb3'"></a>
 						</p>
 						<div class="extraspace"></div>
-						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.termsOfUse);" v-t="'postregister.noted_btn'"></button>
+						<div class="d-grid gap-2 mt-3 mb-2">
+						  <button class="btn btn-primary" :disabled="action!=null" @click="agreedToTerms(progress.termsOfUse);" v-t="'postregister.noted_btn'"></button>
+						</div>
 						<div class="extraspace"></div>
 						<error-box :error="error"></error-box>
 					</div>
@@ -121,7 +143,9 @@
 						  <a @click="showTerms({which : progress.privacyPolicy});" href="javascript:" v-t="'registration.privacypolicy3'"></a>
 						</p>
 						<div class="extraspace"></div>
-						<button class="btn btn-primary btn-block" :disabled="action!=null" @click="agreedToTerms(progress.privacyPolicy);" v-t="'postregister.noted_btn'"></button>
+						<div class="d-grid gap-2 mt-3 mb-2">
+						  <button class="btn btn-primary" :disabled="action!=null" @click="agreedToTerms(progress.privacyPolicy);" v-t="'postregister.noted_btn'"></button>
+						</div>
 						<div class="extraspace"></div>
 						<error-box :error="error"></error-box>
 					</div>
@@ -142,7 +166,9 @@
 						        </form-group>
 						    </form>
 							<div class="extraspace"></div>	
-							<button class="btn btn-primary btn-block" @click="enterMailCode(passphrase.code)" v-t="'postregister.enter_now_btn'"></button>
+							<div class="d-grid gap-2 mt-3 mb-2">
+							  <button class="btn btn-primary" @click="enterMailCode(passphrase.code)" v-t="'postregister.enter_now_btn'"></button>
+							</div>
 							<div class="extraspace"></div>
 							<error-box :error="error"></error-box>
 							<hr>
@@ -172,7 +198,9 @@
 										    <input class="form-control" v-model="passphrase.passphrase" type="text">
 									    </form-group>
 									</form>
-									<button class="btn btn-primary btn-block" @click="sendCode()" v-t="'postregister.enter_now_btn'"></button>
+									<div class="d-grid gap-2 mt-3 mb-2">
+									  <button class="btn btn-primary" @click="sendCode()" v-t="'postregister.enter_now_btn'"></button>
+									</div>
 									<div class="extraspace"></div>
                                     <error-box :error="error"></error-box>									
 								</div>
@@ -191,7 +219,7 @@
 							
 								
 								<div class="dynheight">
-									<form-group name="authType" label="postregister.auth_type">
+									<form-group name="authType" label="postregister.auth_type" class="midata-checkbox-row">
 										<radio-box name="authType" value="NONE" v-model="registration.authType" :path="errors.authType">                                     
 									       <span v-t="'postregister.auth_type_none'"></span>
 										</radio-box>
@@ -204,7 +232,7 @@
 									<input type="text" class="form-control" id="mobile" name="mobile" v-model="registration.mobile" v-validate :required="registration.authType=='SMS'">
 								</form-group>
 								<div class="dynheight">
-									<form-group name="emailnotify" label="postregister.emailnotify">
+									<form-group name="emailnotify" label="postregister.emailnotify" class="midata-checkbox-row">
 										<check-box name="emailnotify" v-model="registration.emailnotify" :path="errors.emailnotify">
 											{{ $t('postregister.emailnotify2', { domain : ENV.apiurl}) }}
 										</check-box>
@@ -337,6 +365,7 @@ import languages from "services/languages.js";
 import { status, CheckBox, RadioBox, ErrorBox, FormGroup, Password } from 'basic-vue3-components';
 import session from "services/session.js";
 import ENV from "config";
+import { setLocale } from "services/lang.js";
 
 export default {
 	data: () => ({
@@ -344,6 +373,7 @@ export default {
 		user : {},
 		passphrase : {},
 		setpw : { secure : true },
+		otp : { otp : "" },
 		progress : {},
 		mailSuccess : false,
 		codeSuccess : false,
@@ -424,8 +454,12 @@ export default {
 		   		else session.postLogin(funcresult, $router, $route);		
 	    	} else {
 				let r = me.doAction("login",session.retryLogin(params));				
-				r.then(function(result) {					
-					if (result.data.istatus === "ACTIVE") {						
+				r.then(function(result) {	
+					console.log(result.data);
+					if (result.data == "ask-password") {
+						$router.go(-1);	
+					}				
+					else if (result.data.istatus === "ACTIVE") {						
 						oauth.postLogin(result);
 					}
 					else {
@@ -446,6 +480,9 @@ export default {
 		   this.retry(null, { unlockCode : this.$data.unlockCode });
 		},
 
+		otpsubmit() {
+			this.retry(null, { otp : this.$data.otp.otp });
+		},
 		
 		pwsubmit() {
 			const { $data, $route, $t } = this, me = this;
@@ -492,7 +529,8 @@ export default {
 				.then(function(result) {
 					if (result.data.challenge) {
 					
-					} else {				
+					} else {	
+					oauth.setPassword($data.setpw.password);			
 					me.retry(result);
 					}
 				});
@@ -704,6 +742,9 @@ export default {
     },
     
 	created() {
+        if (this.$route.query.language) {
+            setLocale(this.$route.query.language);
+        }
 		this.prepare();
 	}
     

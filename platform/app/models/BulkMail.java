@@ -34,7 +34,7 @@ public class BulkMail extends Model implements Comparable<BulkMail> {
 	private static final String collection = "bulkmails";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Sets.create("type", "country", "creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "appId", "appName", "progressId", "progressCount", "progressFailed", "lastProgress");
+	public final static Set<String> ALL = Sets.create("type", "country", "creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "appId", "appName", "progressId", "progressCount", "progressFailed", "lastProgress", "htmlFrame");
 
 	/**
 	 * type of bulk mail
@@ -90,6 +90,11 @@ public class BulkMail extends Model implements Comparable<BulkMail> {
 	 * The content (text) of this mail
 	 */
 	public Map<String, String> content;
+	
+	/**
+	 * HTML template for message
+	 */
+	public String htmlFrame;
 		
 	/**
 	 * id of study this mail is about

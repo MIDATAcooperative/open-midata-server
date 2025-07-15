@@ -41,15 +41,15 @@
                 <form-group name="endpoint" label="studyactions.endpoint" v-if="crit.pluginType=='endpoint'" :path="errors.endpoint">
                     <input type="text" id="endpoint" name="endpoint"  v-validate v-model="crit.endpoint" class="form-control" required>
                 </form-group>
-                <form-group name="onlyAggregated" label="studyactions.only_aggregated" v-if="crit.pluginType=='endpoint'" :path="errors.onlyAggregated">
+                <form-group name="onlyAggregated" label="studyactions.only_aggregated" class="midata-checkbox-row" v-if="crit.pluginType=='endpoint'" :path="errors.onlyAggregated">
                     <check-box name="onlyAggregated" v-validate v-model="crit.onlyAggregated" :path="errors.onlyAggregated">                              
 					</check-box>
                 </form-group>
-                <form-group name="shareback" label="studyactions.shareback" v-if="crit.pluginType!='endpoint'">
+                <form-group name="shareback" label="studyactions.shareback" class="midata-checkbox-row" v-if="crit.pluginType!='endpoint'">
                     <check-box name="shareback" id="shareback" v-validate v-model="crit.shareback" :path="errors.shareback"> 
 					</check-box>
                 </form-group>
-                <form-group name="restrictread" label="studyactions.restrict" v-if="crit.group">
+                <form-group name="restrictread" label="studyactions.restrict" class="midata-checkbox-row" v-if="crit.group">
                     <check-box name="restrictread" v-validate v-model="crit.restrictread" :path="errors.restrictread">
 					</check-box>                               
                 </form-group>
@@ -62,31 +62,36 @@
     </div>
 </panel>
 <panel v-if="me_menu.length" :title="$t('studyactions.linked_spaces')" :busy="isBusy">
-	<table class="table table-striped"> 							
+	<table class="table table-striped"> 	
+		<tbody>						
 	    <tr v-for="entry in me_menu" :key="entry._id">
 			<td>
 			    <a href="javascript:" @click="showSpace(entry)" v-t="entry.name"></a>
-			    <a href="javascript:" @click="deleteSpace(entry)" :disabled="action!=null" class="float-right btn btn-danger btn-sm" v-t="'common.delete_btn'"></a>
+			    <a href="javascript:" @click="deleteSpace(entry)" :disabled="action!=null" class="float-end btn btn-danger btn-sm" v-t="'common.delete_btn'"></a>
 			</td>
 		</tr>
+		</tbody>
 	</table>
 </panel>
 <panel v-if="consents.length" :title="$t('studyactions.linked_apps')" :busy="isBusy">
 
 	<table class="table table-striped" v-if="consents.length">
-
+       <thead>
 		<tr>
 			<th v-t="'consents.name'"></th>					
 			<th v-t="'consents.status'"></th>					
 			<th v-t="'consents.number_of_records'"></th>
 			<th></th>
 		</tr>
+       </thead>
+	   <tbody>
 		<tr v-for="consent in consents" :key="consent._id" :class="{ 'table-warning' : consent.status == 'UNCONFIRMED' }">
 			<td><a @click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>					
 			<td>{{ $t('enum.consentstatus.'+consent.status) }}</td>					
 			<td>{{ consent.records }}</td>
 			<td><button @click="deleteConsent(consent)" :disabled="action!=null" class="btn btn-danger btn-sm" v-t="'common.delete_btn'"></button></td>
 		</tr>
+	   </tbody>
 	</table>
 </panel>
 <div v-if="showKeys">

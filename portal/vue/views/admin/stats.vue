@@ -18,6 +18,7 @@
     <panel :title="$t('admin_stats.health.title')" :busy="isBusy">
 		<error-box :error="error"></error-box>
 		<table class="table table-striped table-sm">
+			<tbody>
 		    <tr>
 		        <td v-t="'admin_stats.health.servicekey'"></td>
 		        <td>
@@ -38,18 +39,22 @@
 		            </div>
                 </td>
 		    </tr>
+			</tbody>
 		</table>
     </panel>
     <panel :title="$t('admin_stats.title')" :busy="isBusy">
 		
 		<p class="lead">{{ $filters.dateTime(today.date) }}</p>
 		<table class="table table-striped table-sm">
+			<thead>
 		    <tr>
 		        <th></th>
 		        <th class="text-right" v-t="'admin_stats.value'"></th>
 		        <th class="text-right" v-t="'admin_stats.diff_yesterday'"></th>
 		        <th class="text-right" v-t="'admin_stats.diff_week'"></th>
 		    </tr>
+			</thead>
+			<tbody>
 		  
 		    <tr class="info">
 		        <td v-t="'admin_stats.recordCount'"></td>
@@ -141,7 +146,7 @@
 		        <td class="text-right">{{ today.consentCount[type] - yesterday.consentCount[type] }}</td>
 		        <td class="text-right">{{ today.consentCount[type] - week.consentCount[type] }}</td>
 		    </tr>
-		     
+			</tbody>
 		  </table>
 		  <div class="margin-top" v-if="hasSubRole('PLUGINADMIN')">
 		    <router-link :to="{ path : './usagestats' }" v-t="'admin_stats.showusage'"></router-link>

@@ -23,16 +23,20 @@ import java.util.Set;
 
 import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DocumentReference;
+import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Media;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.rest.annotation.Create;
+import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
@@ -243,16 +247,13 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 		return "fhir/Media";
 	}
 	
-
-	/*
+	
 	@Update
-	public MethodOutcome updateMedia(@IdParam IdType theId, @ResourceParam Media theMedia) {
-		Record record = fetchCurrent(theId);
-		prepare(record, theMedia);
-		updateRecord(record, theMedia);
-		return outcome("Media", record, theMedia);
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Media theMedia) {
+		return super.updateResource(theId, theMedia);
 	}
-	*/
+	
 
 	public void prepare(Record record, Media theMedia) throws AppException {
 		// Set Record code and content

@@ -78,13 +78,13 @@ public class FileStorage {
 		Document meta = gridfile.getMetadata();
 		String contentType = null;		
 		if (meta != null) contentType = meta.getString("contentType");
-		if (contentType == null) contentType = gridfile.getContentType();
+		//if (contentType == null) contentType = gridfile.getContentType();
 		
 		String filename = null;
 		if (meta != null) filename = meta.getString("filename");
 		if (filename == null) 
 			filename = gridfile.getFilename();
-		AccessLog.log("from mets="+meta.getString("filename")+" fnm="+filename);		
+		
 		return new FileData(fileSystem.openDownloadStream(fileid), filename, contentType);		
 	}
 	

@@ -45,6 +45,7 @@ public class QueryTagTools {
 	public static String SECURITY_LOCALCOPY = "security:local-copy";
 	public static String SECURITY_NOT_PSEUDONYMISABLE = "security:not-pseudonymisable";
 	public static String SECURITY_TEST = "security:test";
+	public static String SECURITY_FROZEN = "security:frozen";
 	
 	public static List<SecurityTag> tags;
 	
@@ -106,6 +107,7 @@ public class QueryTagTools {
 		tags.add(new SecurityTag(SECURITY_RELIABLE, "http://terminology.hl7.org/CodeSystem/v3-ObservationValue", "reliable", null));
 		tags.add(new SecurityTag(SECURITY_NOT_PSEUDONYMISABLE, "http://midata.coop/codesystems/security", "not-pseudonymisable", null));
 		tags.add(new SecurityTag(SECURITY_PLATFORM_MAPPED, "http://midata.coop/codesystems/security", "platform-mapped", null));
+		tags.add(new SecurityTag(SECURITY_FROZEN, "http://midata.coop/codesystems/security", "frozen", null));
 		tags.add(new SecurityTag(SECURITY_TEST, "http://terminology.hl7.org/CodeSystem/v3-ActReason", "HTEST", null));
 	}
 		

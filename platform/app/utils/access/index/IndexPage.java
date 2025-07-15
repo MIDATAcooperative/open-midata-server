@@ -255,7 +255,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		for (int i=0;i<=mCurrentKeyNum;i++) {				
 			if (key.conditionCompare(i==0 ? null : mKeys[i-1], i == mCurrentKeyNum ? null : mKeys[i])) work++;									
 		}
-		return 100 * work / mCurrentKeyNum;
+		return 100 * work / (1+mCurrentKeyNum);
 	}
 	
 	protected Collection<A> findEntries(BaseLookup<A> key) throws InternalServerException, LostUpdateException {

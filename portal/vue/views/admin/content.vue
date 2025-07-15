@@ -26,7 +26,7 @@
 		</div><div class="col-sm-4 mt-1">
 		<div class="btn-group space mb-1">
 		  <button class="btn btn-default" :disabled="action!=null" @click="search()" v-t="'common.search_btn'"></button>
-		  <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false">
+		  <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
             <span class="sr-only">Toggle Dropdown</span>
           </button>
           <div class="dropdown-menu">
@@ -46,6 +46,7 @@
 		<div class="extraspace"></div>
 		<p v-t="'content.make_selection'" v-if="newentry.choices"></p>
 		<table class="table table-striped" v-if="newentry.choices">
+		  <tbody>
 		  <tr>
 		    <th v-t="'queryeditor.resultgroup'"></th>
 		    <th v-t="'queryeditor.resultdetail'"></th>
@@ -62,6 +63,7 @@
 		      <div v-for="content in orderDisplay(choice.contents)" :key="JSON.stringify(content)"><a href="javascript:" @click="addContent(content);">{{ content.display }}</a><span v-if="content.content" class="text-muted">(Content)</span><span v-else>(Group)</span></div>
 		    </td> 
 		  </tr>
+		  </tbody>
 		</table>
 		<p v-if="newentry.choices && newentry.choices.length == 0" v-t="'queryeditor.search_empty'"></p>
 		<hr v-show="currentCode || currentContent || currentGroup">
@@ -124,8 +126,8 @@
 	           </form-group>
 
 			   <form-group label="common.empty">
-				  <button class="btn btn-primary mr-1 mb-1" type="submit" v-submit :disabled="action!=null" v-t="'content.save_btn'">Save</button>
-				  <button class="btn btn-danger mr-1 mb-1" type="button" :disabled="action!=null" @click="deleteCode(true)" v-t="'content.delete_content_btn'">Delete Content</button>
+				  <button class="btn btn-primary me-1 mb-1" type="submit" v-submit :disabled="action!=null" v-t="'content.save_btn'">Save</button>
+				  <button class="btn btn-danger me-1 mb-1" type="button" :disabled="action!=null" @click="deleteCode(true)" v-t="'content.delete_content_btn'">Delete Content</button>
 				  <button class="btn btn-danger mb-1" type="button" :disabled="action!=null" @click="deleteCode(false)" v-t="'content.delete_code_btn'">Delete Code</button>
 			   </form-group>
         </div>
@@ -150,7 +152,7 @@
 	             <input class="form-control" type="text" name="system" v-validate v-model="currentGroup.system">
 	           </form-group>
 			   <form-group label="common.empty">
-				  <button class="btn btn-primary mr-1 mb-1" type="submit" v-submit :disabled="action!=null" v-t="'content.save_group_btn'">Save Group</button>
+				  <button class="btn btn-primary me-1 mb-1" type="submit" v-submit :disabled="action!=null" v-t="'content.save_group_btn'">Save Group</button>
 				  <button class="btn btn-danger mb-1" type="button" :disabled="action!=null" @click="deleteGroup()" v-t="'content.delete_group_btn'">Delete Group</button>				  
 			   </form-group>
 		</div>

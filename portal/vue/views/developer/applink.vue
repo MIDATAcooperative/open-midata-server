@@ -27,12 +27,15 @@
             <div v-if="!selection">
                 <p v-t="'studyactions.empty'" v-if="!links.length"></p>
                 <table class="table table-striped table-hover" v-if="links.length">
+					<thead>
                     <tr>
                         <th v-t="'applink.target'"></th>
                         <th v-t="'studyactions.type'"></th>
                         <th v-t="'studyactions.validation'"></th>
                         <th></th>
                     </tr>
+					</thead>
+					<tbody>
                     <tr v-for="link in links" :key="link._id">
                         <td @click="select(link);">{{ (link.study || {}).code }} {{ (link.study || {}).name }} {{ (link.provider || {}).name }} {{ (link.serviceApp || {}).name }}<span v-if="link.userLogin">{{ link.userLogin }}</span></td>
                         <td>
@@ -40,41 +43,42 @@
                         </td>
                         <td>
                             <div v-if="link.validationResearch != 'VALIDATED'">
-                                <span class="fas fa-times text-danger mr-1"></span>
+                                <span class="fas fa-times text-danger me-1"></span>
                                 <span v-t="'studyactions.status.not_validated_research'"></span>
                             </div>
                             <div v-if="link.validationDeveloper != 'VALIDATED'">
-                                <span class="fas fa-times text-danger mr-1"></span>
+                                <span class="fas fa-times text-danger me-1"></span>
                                 <span v-t="'studyactions.status.not_validated_developer'"></span>
                             </div>
                             <div v-if="link.validationDeveloper == 'VALIDATED' && link.validationResearch == 'VALIDATED'">
-                                <span class="fas fa-check text-success mr-1"></span>
+                                <span class="fas fa-check text-success me-1"></span>
                                 <span v-t="'studyactions.status.validated'"></span>
                             </div>
                             <div v-if="link.study && link.usePeriod.indexOf(link.study.executionStatus)<0">
-                                <span class="fas fa-times text-danger mr-1"></span>
+                                <span class="fas fa-times text-danger me-1"></span>
                                 <span v-t="'studyactions.status.study_wrong_status'"></span>
                             </div>
                             <div v-if="link.study && link.type.indexOf('AUTOADD_P')>=0 && link.study.participantSearchStatus != 'SEARCHING'">
-                                <span class="fas fa-times text-danger mr-1"></span>
+                                <span class="fas fa-times text-danger me-1"></span>
                                 <span v-t="'error.closed.study'"></span>
                             </div>
                             <div v-if="link.study && (link.type.indexOf('AUTOADD_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0">
-                                <span class="fas fa-times text-danger mr-1"></span>
+                                <span class="fas fa-times text-danger me-1"></span>
                                 <span v-t="'studyactions.status.study_no_app_participation'"></span>
                             </div>	                
                         </td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-default mr-1" @click="select(link);" v-t="'studyactions.select_btn'"></button>
-                            <button type="button" class="btn btn-sm btn-default mr-1" :disabled="action!=null" @click="validate(link);" v-t="'studyactions.validate_btn'"></button>
+                            <button type="button" class="btn btn-sm btn-default me-1" @click="select(link);" v-t="'studyactions.select_btn'"></button>
+                            <button type="button" class="btn btn-sm btn-default me-1" :disabled="action!=null" @click="validate(link);" v-t="'studyactions.validate_btn'"></button>
                             <button type="button" class="btn btn-sm btn-danger" :disabled="action!=null" @click="remove(link);" v-t="'common.delete_btn'"></button>
                         </td>
                     </tr>
+					</tbody>
                 </table>
-                <router-link :to="{ path : './manageapp', query :  {appId:app._id} }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
-			    <button type="button" class="btn btn-primary mr-1" v-t="'applink.add_research_btn'" @click="addNewResearch()"></button>
-			    <button type="button" class="btn btn-primary mr-1" v-t="'applink.add_service_btn'" @click="addNewService()"></button>
-	            <button type="button" class="btn btn-primary mr-1" v-t="'applink.add_provider_btn'" @click="addNewProvider()"></button>                
+                <router-link :to="{ path : './manageapp', query :  {appId:app._id} }" class="btn btn-default me-1" v-t="'common.back_btn'"></router-link>
+			    <button type="button" class="btn btn-primary me-1" v-t="'applink.add_research_btn'" @click="addNewResearch()"></button>
+			    <button type="button" class="btn btn-primary me-1" v-t="'applink.add_service_btn'" @click="addNewService()"></button>
+	            <button type="button" class="btn btn-primary me-1" v-t="'applink.add_provider_btn'" @click="addNewProvider()"></button>                
             </div>
             <div v-if="selection && (selection.linkTargetType=='STUDY' || !selection.linkTargetType)">
                 <form-group name="study" label="studyactions.study" :path="errors.study">
@@ -98,12 +102,12 @@
                     </p>
                     <p class="form-control-plaintext" v-if="!app.type" v-t="'studyactions.no_valid_app'"></p>
                 </form-group>
-                <form-group name="type" label="studyactions.type" :path="errors.type">	                
+                <form-group name="type" label="studyactions.type" :path="errors.type" class="midata-checkbox-row">	                
                     <check-box v-for="type in types" :key="type" :name="type" :disabled="checkType(app, type)" :checked="selection.type.indexOf(type)>=0" @click="toggle(selection.type, type);" >
                         <span>{{ $t('studyactions.types.'+type) }}</span>
                     </check-box>                
                 </form-group>
-                <form-group name="usePeriod" label="studyactions.use_period" :path="errors.usePeriod">
+                <form-group name="usePeriod" label="studyactions.use_period" :path="errors.usePeriod" class="midata-checkbox-row">
                     <check-box v-for="period in periods" :key="period" :name="period" :checked="selection.usePeriod.indexOf(period)>=0" @click="toggle(selection.usePeriod, period);" >
                         <span>{{ $t('studyactions.use_periods.'+period) }}</span>
                     </check-box>	                        
@@ -130,7 +134,7 @@
 	                  <p class="form-text text-muted" v-if="selection.termsOfUse"><router-link :to="{ path : './terms', query : { which:selection.termsOfUse }}" v-t="'applink.show_terms'"></router-link></p>
 	                  <p class="form-text text-muted" v-t="'applink.terms_of_use_hint'"></p> 
 	            </form-group>	            
-	            <form-group name="type" label="studyactions.type">
+	            <form-group name="type" label="studyactions.type" class="midata-checkbox-row">
 	              <div v-for="type in types2" :key="type" class="form-check">
 	                <label class="form-check-label">
 	                  <input class="form-check-input" type="checkbox" :disabled="checkType(app, type)" :checked="selection.type.indexOf(type)>=0" @click="toggle(selection.type, type)" >
@@ -140,8 +144,8 @@
 	            </form-group>
 	           	       
 	            <form-group label="common.empty">
-	                <button class="btn btn-primary mr-1" type="submit" v-submit v-t="'common.submit_btn'"></button>
-	                <button class="btn btn-default mr-1" type="button" v-t="'common.cancel_btn'" @click="cancel();"></button>
+	                <button class="btn btn-primary me-1" type="submit" v-submit v-t="'common.submit_btn'"></button>
+	                <button class="btn btn-default me-1" type="button" v-t="'common.cancel_btn'" @click="cancel();"></button>
 	            </form-group>
 			</div>
 			   
@@ -152,7 +156,7 @@
 	            <form-group name="app" label="studyactions.app">
 	               <p class="form-control-plaintext">{{ app.filename }}</p>	               
 	            </form-group>	       	                  
-	            <form-group name="type" label="studyactions.type">
+	            <form-group name="type" label="studyactions.type" class="midata-checkbox-row">
 	              <div v-for="type in types2" :key="type" class="form-check">
 	                <label class="form-check-label">
 	                  <input class="form-check-input" type="checkbox" :disabled="checkType(app, type)" :checked="selection.type.indexOf(type)>=0" @click="toggle(selection.type, type);" >
@@ -162,8 +166,8 @@
 	            </form-group>
 	           	       
 	             <form-group label="common.empty">
-	               <button class="btn btn-primary mr-1" type="submit" v-submit v-t="'common.submit_btn'"></button>
-	               <button class="btn btn-default mr-1" type="button" v-t="'common.cancel_btn'" @click="cancel();"></button>
+	               <button class="btn btn-primary me-1" type="submit" v-submit v-t="'common.submit_btn'"></button>
+	               <button class="btn btn-default me-1" type="button" v-t="'common.cancel_btn'" @click="cancel();"></button>
 	             </form-group>
 	        </div>       		   
         </form>       

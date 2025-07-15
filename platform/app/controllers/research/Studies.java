@@ -498,7 +498,7 @@ public class Studies extends APIController {
 							  attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
 							  if (attpos > 0) {
 								out.append(ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(context, new RecordToken(rec._id.toString(), rec.context.getTargetAps().toString()), idx);
+								FileData fileData = RecordManager.instance.fetchFile(context, rec.format, new RecordToken(rec._id.toString(), rec.context.getTargetAps().toString()), idx);
 
 								int BUFFER_SIZE = 3 * 1024;
 

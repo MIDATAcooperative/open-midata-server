@@ -23,12 +23,15 @@
 		<div v-if="!selmsg">
 	
             <table class="table table-striped" v-if="messages.length">
+				<thead>
                 <tr>
                     <th v-t="'appmessages.reason'"></th>
                     <th v-t="'appmessages.code'"></th>
                     <th v-t="'appmessages.languages'"></th>
                     <th>&nbsp;</th>
                 </tr>
+				</thead>
+				<tbody>
                 <tr v-for="msg in messages" :key="JSON.stringify(msg)">
                     <td><a @click="showMessage(msg)" href="javascript:">{{ $t('appmessages.reasons.' + msg.reason) }}</a></td>
                     <td>{{ msg.code }}</td>
@@ -41,11 +44,13 @@
                         <button class="btn btn-sm btn-default" @click="showMessage(msg)" v-t="'common.view_btn'"></button>
                     </td>
                 </tr>
+				</tbody>
             </table>
                             
             <p v-if="!messages.length" v-t="'appmessages.empty'"></p>
             
-            <router-link class="btn btn-default mr-1" :to="{ path : './manageapp', query : { appId : app._id } }" v-t="'common.back_btn'"></router-link>		
+            <router-link class="btn btn-default me-1" :to="{ path : './manageapp', query : { appId : app._id } }" v-t="'common.back_btn'"></router-link>
+			<router-link class="btn btn-default me-1" :to="{ path : './appsmtp', query : { appId : app._id } }" v-t="'appmessages.smtp_btn'"></router-link>		
             <button class="btn btn-default" @click="addMessage()" v-t="'common.add_btn'"></button>
             
 		</div>
@@ -91,9 +96,15 @@
                         <code v-for="tag in tags[selmsg.reason]" :key="tag">&lt;{{ tag }}&gt; </code>
                     </div>
                 </form-group>
+                <form-group name="htmlFrame" label="appmessages.htmlFrame" :path="errors.htmlFrame">
+                   <textarea rows="5" id="htmlFrame" name="htmlFrame" class="form-control" v-validate v-model="selmsg.htmlFrame"></textarea>
+                   <div class="form-text text-muted">
+                     <span v-t="'appmessages.htmlFrame2'"></span>:
+                   </div>
+                </form-group>
                     
                 <form-group label="common.empty">
-                    <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary mr-1">Submit</button>	
+                    <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary me-1">Submit</button>	
                     <button type="button" class="btn btn-danger" v-t="'common.delete_btn'" @click="deleteMessage(msg)"></button>	    
                 </form-group>
 	        </form>	  
@@ -117,7 +128,7 @@ export default {
         app : null,
 
         languages : languages.array,
-        reasons : ['REGISTRATION', 'REGISTRATION_BY_OTHER_PERSON', 'FIRSTUSE_ANYUSER', 'FIRSTUSE_EXISTINGUSER', 'LOGIN', 'SERVICE_WITHDRAW', 'ACCOUNT_UNLOCK', 'CONSENT_REQUEST_OWNER_INVITED', 'CONSENT_REQUEST_OWNER_EXISTING', 'CONSENT_REQUEST_AUTHORIZED_INVITED', 'CONSENT_REQUEST_AUTHORIZED_EXISTING', 'CONSENT_CONFIRM_OWNER', 'CONSENT_CONFIRM_AUTHORIZED', 'CONSENT_REJECT_OWNER', 'CONSENT_REJECT_AUTHORIZED', 'CONSENT_REJECT_ACTIVE_AUTHORIZED', 'CONSENT_VERIFIED_OWNER', 'CONSENT_VERIFIED_AUTHORIZED', 'EMAIL_CHANGED_OLDADDRESS', 'EMAIL_CHANGED_NEWADDRESS', 'PASSWORD_FORGOTTEN', 'USER_PRIVATE_KEY_RECOVERED', 'RESOURCE_CHANGE', 'PROCESS_MESSAGE', 'NON_PERFECT_ACCOUNT_MATCH', 'TRIED_USER_REREGISTRATION' ],
+        reasons : ['REGISTRATION', 'REGISTRATION_BY_OTHER_PERSON', 'FIRSTUSE_ANYUSER', 'FIRSTUSE_EXISTINGUSER', 'ONE_TIME_PASSWORD', 'LOGIN', 'SERVICE_WITHDRAW', 'ACCOUNT_UNLOCK', 'CONSENT_REQUEST_OWNER_INVITED', 'CONSENT_REQUEST_OWNER_EXISTING', 'CONSENT_REQUEST_AUTHORIZED_INVITED', 'CONSENT_REQUEST_AUTHORIZED_EXISTING', 'CONSENT_CONFIRM_OWNER', 'CONSENT_CONFIRM_AUTHORIZED', 'CONSENT_REJECT_OWNER', 'CONSENT_REJECT_AUTHORIZED', 'CONSENT_REJECT_ACTIVE_AUTHORIZED', 'CONSENT_VERIFIED_OWNER', 'CONSENT_VERIFIED_AUTHORIZED', 'EMAIL_CHANGED_OLDADDRESS', 'EMAIL_CHANGED_NEWADDRESS', 'PASSWORD_FORGOTTEN', 'USER_PRIVATE_KEY_RECOVERED', 'RESOURCE_CHANGE', 'PROCESS_MESSAGE', 'NON_PERFECT_ACCOUNT_MATCH', 'TRIED_USER_REREGISTRATION' ],
 	    sel : { lang : 'en' },
         selmsg : null,
         messages : [],
@@ -127,6 +138,7 @@ export default {
             'FIRSTUSE_ANYUSER' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
             'SERVICE_WITHDRAW' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
             'LOGIN' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+			'ONE_TIME_PASSWORD' : ["firstname", "lastname", "token", "plugin-name", "midata-portal-url"],
             'FIRSTUSE_EXISTINGUSER' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
             'EMAIL_CHANGED_OLDADDRESS' : ["firstname", "lastname", "old-email", "new-email", "midata-portal-url", "reject-url"],
             'EMAIL_CHANGED_NEWADDRESS' : ["firstname", "lastname", "old-email", "new-email", "midata-portal-url", "confirm-url"],
@@ -182,6 +194,7 @@ export default {
             
                 for (let k in msg.text) if (msg.text[k]==="") { delete msg.text[k]; }
                 for (let k in msg.title) if (msg.title[k]==="") { delete msg.title[k]; }
+                if (msg.htmlFrame==="") delete msg.htmlFrame;
                                 
                 predefinedMessages[msg.reason+(msg.code ? ("_"+msg.code) : "")] = msg;
             }

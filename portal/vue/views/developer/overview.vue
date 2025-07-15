@@ -18,13 +18,14 @@
     <panel :title="getTitle()" :busy="isBusy">		  	
 		<error-box :error="error"></error-box>
 		<div v-if="app">
-	      <div class="float-left" v-if="hasIcon()" style="margin-right:10px">
+	      <div class="float-start" v-if="hasIcon()" style="margin-right:10px">
 	        <img style="max-width:64px" :src="getIconUrl()">
 	      </div>	
 		  <p class="lead">{{ app.name }}</p>
 		  <p>{{ app.description }}</p>
 
           <table>
+			<tbody>
             <tr>
 		      <td style="padding-right:130px" v-t="'manageapp.filename'"></td>
 		      <td><b>{{ app.filename }}</b></td>
@@ -77,108 +78,110 @@
                 <div class="row">
                     <div v-for="check in checks" :key="check" class="col-lg-4"><span :class="{ 'text-success' : reviews[check] == 'ACCEPTED', 'text-danger' : reviews[check] == 'NEEDS_FIXING', 'text-dark' : !reviews[check] }"><span v-if="reviews[check]=='ACCEPTED'" class="fas fa-check"></span><span v-if="reviews[check]=='NEEDS_FIXING'" class="fas fa-exclamation"></span><span v-if="!reviews[check]" class="fas fa-times"></span> <span>{{ $t('appreviews.'+check) }}</span></span></div></div></div></td>
             </tr>
+			</tbody>
           </table>
           <div class="extraspace"></div>
 		  
 		  <p><b v-t="'manageapp.choose'"></b></p>
 		  <table class="table clickable">
+			<tbody>
 			<tr>
 			  <td @click="go('editapp')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/editapp.jpg"></div>														   
-				<div><b v-t="'manageapp.edit_btn'"></b> <span class="badge" :class="{ 'badge-success' : reviews.DESCRIPTION=='ACCEPTED', 'badge-danger' : reviews.DESCRIPTION=='NEEDS_FIXING', 'badge-light' : !reviews.DESCRIPTION }" style="margin-left:10px"><span v-if="reviews.DESCRIPTION">{{ $t('manageapp.'+reviews.DESCRIPTION) }}</span><span v-if="!reviews.DESCRIPTION" v-t="'manageapp.not_reviewed'"></span></span></div>
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/editapp.jpg"></div>														   
+				<div><b v-t="'manageapp.edit_btn'"></b> <span class="badge" :class="{ 'text-bg-success' : reviews.DESCRIPTION=='ACCEPTED', 'text-bg-danger' : reviews.DESCRIPTION=='NEEDS_FIXING', 'text-bg-light' : !reviews.DESCRIPTION }" style="margin-left:10px"><span v-if="reviews.DESCRIPTION">{{ $t('manageapp.'+reviews.DESCRIPTION) }}</span><span v-if="!reviews.DESCRIPTION" v-t="'manageapp.not_reviewed'"></span></span></div>
 				<div v-t="'manageapp.edit_help'"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td @click="go('query')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
-				<div><b v-t="'manageapp.query_btn'"></b><span class="badge" style="margin-left:10px" v-if="hasCount(app.defaultQuery)">1 <span v-t="'manageapp.defined'"></span></span><span class="badge badge-danger" style="margin-left:10px" v-if="!hasCount(app.defaultQuery)">0 <span v-t="'manageapp.defined'"></span></span> <span class="badge" :class="{ 'badge-success' : reviews.ACCESS_FILTER=='ACCEPTED', 'badge-danger' : reviews.ACCESS_FILTER=='NEEDS_FIXING', 'badge-light' : !reviews.ACCESS_FILTER }" style="margin-left:10px"><span v-if="reviews.ACCESS_FILTER">{{ $t('manageapp.'+reviews.ACCESS_FILTER) }}</span><span v-if="!reviews.ACCESS_FILTER" v-t="'manageapp.not_reviewed'"></span></span></div>
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
+				<div><b v-t="'manageapp.query_btn'"></b><span class="badge" style="margin-left:10px" v-if="hasCount(app.defaultQuery)">1 <span v-t="'manageapp.defined'"></span></span><span class="badge text-bg-danger" style="margin-left:10px" v-if="!hasCount(app.defaultQuery)">0 <span v-t="'manageapp.defined'"></span></span> <span class="badge" :class="{ 'text-bg-success' : reviews.ACCESS_FILTER=='ACCEPTED', 'text-bg-danger' : reviews.ACCESS_FILTER=='NEEDS_FIXING', 'text-bg-light' : !reviews.ACCESS_FILTER }" style="margin-left:10px"><span v-if="reviews.ACCESS_FILTER">{{ $t('manageapp.'+reviews.ACCESS_FILTER) }}</span><span v-if="!reviews.ACCESS_FILTER" v-t="'manageapp.not_reviewed'"></span></span></div>
 				<div v-t="'manageapp.query_help'"></div>																
 			  </td>
 			</tr>
 			<tr v-if="app.type=='mobile'">
 			  <td @click="go('applogin')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/editapp.jpg"></div>														   
-				<div><b v-t="'manageapp.applogin_btn'"></b> <span class="badge" :class="{ 'badge-success' : reviews.TERMS_OF_USE_MATCH_QUERY=='ACCEPTED', 'badge-danger' : reviews.TERMS_OF_USE_MATCH_QUERY=='NEEDS_FIXING', 'badge-light' : !reviews.TERMS_OF_USE_MATCH_QUERY }" style="margin-left:10px"><span v-if="reviews.TERMS_OF_USE_MATCH_QUERY">{{ $t('manageapp.'+reviews.TERMS_OF_USE_MATCH_QUERY) }}</span><span v-if="!reviews.TERMS_OF_USE_MATCH_QUERY" v-t="'manageapp.not_reviewed'"></span></span></div>
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/editapp.jpg"></div>														   
+				<div><b v-t="'manageapp.applogin_btn'"></b> <span class="badge" :class="{ 'text-bg-success' : reviews.TERMS_OF_USE_MATCH_QUERY=='ACCEPTED', 'text-bg-danger' : reviews.TERMS_OF_USE_MATCH_QUERY=='NEEDS_FIXING', 'text-bg-light' : !reviews.TERMS_OF_USE_MATCH_QUERY }" style="margin-left:10px"><span v-if="reviews.TERMS_OF_USE_MATCH_QUERY">{{ $t('manageapp.'+reviews.TERMS_OF_USE_MATCH_QUERY) }}</span><span v-if="!reviews.TERMS_OF_USE_MATCH_QUERY" v-t="'manageapp.not_reviewed'"></span></span></div>
 				<div v-t="'manageapp.applogin_help'"></div>																
 			  </td>
 			</tr>
 			<tr v-if="app.type!='endpoint'">
 			  <td @click="go('appsubscriptions')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/trigger.jpg"></div>														   
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/trigger.jpg"></div>														   
 				<div><b v-t="'manageapp.subscriptions_btn'"></b><span class="badge" style="margin-left:10px">{{ app.defaultSubscriptions.length || 0 }} <span v-t="'manageapp.defined'"></span></span> </div>
 				<div v-t="'manageapp.subscriptions_help'"></div>																
 			  </td>
 			</tr>
 			<tr v-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">
 			  <td @click="doInstall()">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/testfromlocal.jpg"></div>														   
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/testfromlocal.jpg"></div>														   
 				<div><b v-t="'manageapp.testfromlocal_btn'"></b></div>
 				<div v-t="'manageapp.testfromlocal_help'"></div>																
 			  </td>
 			</tr>
 			<tr v-if="(app.type == 'oauth1' || app.type == 'oauth2')">
 			  <td @click="go('autoimport')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/serverimport.jpg"></div>														   
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/serverimport.jpg"></div>														   
 				<div><b v-t="'manageapp.serverimport_btn'"></b></div>
 				<div v-t="'manageapp.serverimport_help'"></div>																
 			  </td>
 			</tr>
 			<tr v-if="!(app.type=='analyzer' || app.type=='external' || app.type=='endpoint')">
 			  <td @click="go('applink')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/link.jpg"></div>														   
-				<div><b v-t="'manageapp.link_btn'"></b> <span class="badge" :class="{ 'badge-success' : reviews.PROJECTS=='ACCEPTED', 'badge-danger' : reviews.PROJECTS=='NEEDS_FIXING', 'badge-light' : !reviews.PROJECTS }" style="margin-left:10px"><span v-if="reviews.PROJECTS">{{ $t('manageapp.'+reviews.PROJECTS) }}</span><span v-if="!reviews.PROJECTS" v-t="'manageapp.not_reviewed'"></span></span></div>
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/link.jpg"></div>														   
+				<div><b v-t="'manageapp.link_btn'"></b> <span class="badge" :class="{ 'text-bg-success' : reviews.PROJECTS=='ACCEPTED', 'text-bg-danger' : reviews.PROJECTS=='NEEDS_FIXING', 'text-bg-light' : !reviews.PROJECTS }" style="margin-left:10px"><span v-if="reviews.PROJECTS">{{ $t('manageapp.'+reviews.PROJECTS) }}</span><span v-if="!reviews.PROJECTS" v-t="'manageapp.not_reviewed'"></span></span></div>
 				<div v-t="'manageapp.link_help'"></div>																
 			  </td>
 			</tr>
 			<tr v-if="app.type!='endpoint'">
 			  <td @click="go('repository')">				    
-				<div class="float-left" ><img width="80" class="img-responsive" src="/images/repository.jpg"></div>														   
+				<div class="float-start" ><img width="80" class="img-responsive" src="/images/repository.jpg"></div>														   
 				<div><b v-t="'manageapp.repository_btn'"></b>
-                    <span class="badge" :class="{ 'badge-success' : reviews.CODE_REVIEW=='ACCEPTED', 'badge-danger' : reviews.CODE_REVIEW=='NEEDS_FIXING', 'badge-light' : !reviews.CODE_REVIEW }" style="margin-left:10px">
+                    <span class="badge" :class="{ 'text-bg-success' : reviews.CODE_REVIEW=='ACCEPTED', 'text-bg-danger' : reviews.CODE_REVIEW=='NEEDS_FIXING', 'text-bg-light' : !reviews.CODE_REVIEW }" style="margin-left:10px">
                         <span v-if="reviews.CODE_REVIEW">{{ $t('manageapp.'+reviews.CODE_REVIEW) }}</span><span v-if="!reviews.CODE_REVIEW" v-t="'manageapp.not_reviewed'"></span></span></div>
 				<div v-t="'manageapp.repository_help'"></div>																	
 			  </td>
 			</tr>
 			<tr v-if="app.type!='endpoint'">
 			  <td @click="go('appicon')">				    
-				<div class="float-left" ><img width="80" class="img-responsive" src="/images/editicons.jpg"></div>														   
-				<div><b v-t="'manageapp.icon_btn'"></b><span class="badge" style="margin-left:10px">{{ app.icons.length || 0 }} <span v-t="'manageapp.defined'"></span></span> <span class="badge" :class="{ 'badge-success' : reviews.ICONS=='ACCEPTED', 'badge-danger' : reviews.ICONS=='NEEDS_FIXING', 'badge-light' : !reviews.ICONS }" style="margin-left:10px"><span v-if="reviews.ICONS">{{ $t('manageapp.'+reviews.ICONS) }}</span><span v-if="!reviews.ICONS" v-t="'manageapp.not_reviewed'"></span></span></div>
+				<div class="float-start" ><img width="80" class="img-responsive" src="/images/editicons.jpg"></div>														   
+				<div><b v-t="'manageapp.icon_btn'"></b><span class="badge" style="margin-left:10px">{{ app.icons.length || 0 }} <span v-t="'manageapp.defined'"></span></span> <span class="badge" :class="{ 'text-bg-success' : reviews.ICONS=='ACCEPTED', 'text-bg-danger' : reviews.ICONS=='NEEDS_FIXING', 'text-bg-light' : !reviews.ICONS }" style="margin-left:10px"><span v-if="reviews.ICONS">{{ $t('manageapp.'+reviews.ICONS) }}</span><span v-if="!reviews.ICONS" v-t="'manageapp.not_reviewed'"></span></span></div>
 				<div v-t="'manageapp.icon_help'"></div>	
 																	
 			  </td>
 			</tr>
 			<tr  v-if="!(app.type=='endpoint')">
 			  <td @click="go('appmessages')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/mail.jpg"></div>														   
-				<div><b v-t="'manageapp.messages_btn'"></b><span class="badge" style="margin-left:10px">{{ keyCount(app.predefinedMessages) }} <span v-t="'manageapp.defined'"></span></span> <span class="badge" :class="{ 'badge-success' : reviews.MAILS=='ACCEPTED', 'badge-danger' : reviews.MAILS=='NEEDS_FIXING', 'badge-light' : !reviews.MAILS }" style="margin-left:10px"><span v-if="reviews.MAILS">{{ $t('manageapp.'+reviews.MAILS) }}</span><span v-if="!reviews.MAILS" v-t="'manageapp.not_reviewed'"></span></span></div>
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/mail.jpg"></div>														   
+				<div><b v-t="'manageapp.messages_btn'"></b><span class="badge" style="margin-left:10px">{{ keyCount(app.predefinedMessages) }} <span v-t="'manageapp.defined'"></span></span> <span class="badge" :class="{ 'text-bg-success' : reviews.MAILS=='ACCEPTED', 'text-bg-danger' : reviews.MAILS=='NEEDS_FIXING', 'text-bg-light' : !reviews.MAILS }" style="margin-left:10px"><span v-if="reviews.MAILS">{{ $t('manageapp.'+reviews.MAILS) }}</span><span v-if="!reviews.MAILS" v-t="'manageapp.not_reviewed'"></span></span></div>
 				<div v-t="'manageapp.messages_help'"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td @click="go('appstats')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/stats.jpg"></div>														   
-				<div><b v-t="'manageapp.stats_btn'"></b> <span class="badge" :class="{ 'badge-success' : reviews.QUERIES=='ACCEPTED', 'badge-danger' : reviews.QUERIES=='NEEDS_FIXING', 'badge-light' : !reviews.QUERIES }" style="margin-left:10px"><span v-if="reviews.QUERIES">{{ $t('manageapp.'+reviews.QUERIES) }}</span><span v-if="!reviews.QUERIES" v-t="'manageapp.not_reviewed'"></span></span></div>
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/stats.jpg"></div>														   
+				<div><b v-t="'manageapp.stats_btn'"></b> <span class="badge" :class="{ 'text-bg-success' : reviews.QUERIES=='ACCEPTED', 'text-bg-danger' : reviews.QUERIES=='NEEDS_FIXING', 'text-bg-light' : !reviews.QUERIES }" style="margin-left:10px"><span v-if="reviews.QUERIES">{{ $t('manageapp.'+reviews.QUERIES) }}</span><span v-if="!reviews.QUERIES" v-t="'manageapp.not_reviewed'"></span></span></div>
 				<div v-t="'manageapp.stats_help'"></div>																
 			  </td>
 			</tr>
 			<tr v-if="allowExport">
 			  <td @click="go('usagestats')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/usagestats.jpg"></div>														   
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/usagestats.jpg"></div>														   
 				<div><b v-t="'manageapp.usagestats_btn'"></b></div>
 				<div v-t="'manageapp.usagestats_help'"></div>																
 			  </td>
 			</tr>	
 			<tr v-if="allowExport && (app.type=='analyzer' || app.type=='external' || app.type=='endpoint' || app.type=='broker')">
 			  <td @click="go('services')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
 				<div><b v-t="'manageapp.services_btn'"></b></div>
 				<div v-t="'manageapp.services_help'"></div>																
 			  </td>
 			</tr>			
 			<tr>
 			  <td @click="go('appdebug')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/apitest.jpg"></div>														   
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/apitest.jpg"></div>														   
 				<div><b v-t="'manageapp.debug_btn'"></b></div>
 				<div v-t="'manageapp.debug_help'"></div>																
 			  </td>
@@ -186,7 +189,7 @@
 			
 			<tr v-if="app.type!='endpoint'">
 			  <td @click="go('applicence')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/licence.jpg"></div>														   
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/licence.jpg"></div>														   
 				<div><b v-t="'manageapp.applicence_btn'"></b></div>
 				<div v-t="'manageapp.applicence_help'"></div>																
 			  </td>
@@ -195,19 +198,19 @@
 			
 			<tr v-if="allowExport">
 			  <td @click="exportPlugin()">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/export.jpg"></div>														   
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/export.jpg"></div>														   
 				<div><b v-t="'manageapp.export_btn'"></b></div>
 				<div v-t="'manageapp.export_help'"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td @click="go('appreviews')">				    
-				<div class="float-left"><img width="80" class="img-responsive" src="/images/checked.jpg"></div>														   
+				<div class="float-start"><img width="80" class="img-responsive" src="/images/checked.jpg"></div>														   
 				<div><b v-t="'manageapp.appreviews_btn'"></b></div>
 				<div v-t="'manageapp.appreviews_help'"></div>																
 			  </td>
 			</tr>
-			
+			</tbody>
 		 </table>
 	  </div>								    	 
     </panel>
@@ -275,7 +278,7 @@ export default {
 
         loadApp(appId) {
 			const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "deployStatus", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax"])
+		    me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "homeUrl", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "codeChallenge", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports", "consentObserving", "loginTemplate", "loginButtonsTemplate", "usePreconfirmed", "accountEmailsValidated", "allowedIPs", "decentral", "organizationKeys", "deployStatus", "acceptTestAccounts", "acceptTestAccountsFromApp", "acceptTestAccountsFromAppNames", "testAccountsCurrent", "testAccountsMax"])
 		    .then(function(data) { 
                 let app = data.data[0];	
 				
