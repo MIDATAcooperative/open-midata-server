@@ -358,7 +358,8 @@ public class SubscriptionProcessor extends AbstractActor {
 									runProcess(sender, plugin, triggered, subscription, user1, token, endpoint);
 								} else {
 									System.out.println("NEW OAUTH2 - 4B");
-									sender.tell(new MessageResponse("OAuth 2 failed",-1, plugin.filename), getSelf());
+									sender.tell(new MessageResponse("OAuth 2 failed ("+subscription.failCount+")",-1, plugin.filename), getSelf());
+									SubscriptionData.fail(subscription._id);
 									AuditManager.instance.fail(400, "OAuth 2 failed", "error.missing.token");
 									if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 								}
@@ -366,13 +367,13 @@ public class SubscriptionProcessor extends AbstractActor {
 						});
 					} else {
 						SubscriptionData.fail(subscription._id);
-						sender.tell(new MessageResponse("OAuth 2 no refresh token",-1, plugin.filename), getSelf());
+						sender.tell(new MessageResponse("OAuth 2 no refresh token ("+subscription.failCount+")",-1, plugin.filename), getSelf());
 						AuditManager.instance.fail(400, "OAuth 2 no refresh token", "error.missing.token");
 						if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 					}
 				} else {
 					SubscriptionData.fail(subscription._id);
-					sender.tell(new MessageResponse("OAuth 2 no data",-1, plugin.filename), getSelf());
+					sender.tell(new MessageResponse("OAuth 2 no data ("+subscription.failCount+")",-1, plugin.filename), getSelf());
 					AuditManager.instance.fail(400, "OAuth 2 no data", "error.missing.consent_accept");
 					if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 				}	
