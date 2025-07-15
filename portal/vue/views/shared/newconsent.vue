@@ -364,16 +364,18 @@
 				<button type="button" :disabled="action!=null" @click="confirmConsent();" v-if="mayConfirm()" class="btn btn-primary btn-lg" v-t="'editconsent.confirm_btn'"></button>
 				<button type="button" :disabled="action!=null" @click="rejectConsent();" v-if="mayReject()" class="btn btn-danger" v-t="'editconsent.reject_btn'"></button>
     			<button type="button" :disabled="action!=null" @click="deleteConsent();" v-if="mayDelete()" class="btn btn-danger" v-t="'editconsent.delete_btn'"></button>
-    			<router-link :to="{ path : './circles' }" class="btn btn-default" v-if="mayBack()" v-t="'common.back_btn'"></router-link>
+				<button type="button" :disabled="action!=null" @click="deleteAllConsent();" v-if="mayDelete() && consent.type=='EXTERNALSERVICE'" class="btn btn-danger" v-t="'editconsent.delete_all_btn'"></button>
+    			<button type="button" :disabled="action!=null" @click="leave()" class="btn btn-default" v-if="mayBack()" v-t="'common.back_btn'"></button>
 				<button type="button" :disabled="action!=null" @click="skip();" v-if="maySkip()" class="btn btn-default" v-t="'common.skip_btn'"></button>
 				</div>
     		</div>
     		<div class="d-none d-md-block">
-				<router-link :to="{ path : './circles' }" class="btn btn-default space" v-if="mayBack()" v-t="'common.back_btn'"></router-link>    
+				<button type="button" :disabled="action!=null" @click="leave()" class="btn btn-default space" v-if="mayBack()" v-t="'common.back_btn'"></button>
 				<button type="button" :disabled="action!=null" @click="skip();" v-if="maySkip()" class="btn btn-default space" v-t="'common.skip_btn'"></button>
 				<button type="button" :disabled="action!=null" @click="confirmConsent();" v-if="mayConfirm()" class="btn btn-primary space" v-t="'editconsent.confirm_btn'"></button>
 				<button type="button" :disabled="action!=null" @click="rejectConsent();" v-if="mayReject()" class="btn btn-danger space" v-t="'editconsent.reject_btn'"></button>
-    			<button type="button" :disabled="action!=null" @click="deleteConsent();" v-if="mayDelete()" class="btn btn-danger" v-t="'editconsent.delete_btn'"></button>
+    			<button type="button" :disabled="action!=null" @click="deleteConsent();" v-if="mayDelete()" class="btn btn-danger space" v-t="'editconsent.delete_btn'"></button>
+				<button type="button" :disabled="action!=null" @click="deleteAllConsent();" v-if="mayDelete() && consent.type=='EXTERNALSERVICE'" class="btn btn-danger" v-t="'editconsent.delete_all_btn'"></button>
     		</div>
 		</div>
 
@@ -407,6 +409,7 @@
 import { status, CheckBox, ErrorBox, FormGroup, Modal } from 'basic-vue3-components';
 import server from 'services/server';
 import circles from 'services/circles';
+import apps from 'services/apps';
 import session from 'services/session';
 import actions from 'services/actions';
 import labels from 'services/labels';
@@ -801,19 +804,50 @@ export default {
 		.then(function(result) { $data.authpersons.push(result.data[0]); }));		
 	},
 	
+	leave() {
+		const { $data, $route, $router } = this, me = this;
+		if (session.user.role == "MEMBER" && ($data.consent.type == "EXTERNALSERVICE" || $data.consent.type == "API")) {
+			$router.push({ path : "./apps" });
+		} else if (session.user.role == "MEMBER" && $data.consent.type == "STUDYPARTICIPATION") {
+		    $router.push({ path : "./studies" });
+		} else {
+		    $router.push({ path : "./circles" });
+		}
+	},
+	
 	deleteConsent() {
         const { $data, $route, $router } = this, me = this;
 		circles.unconfirmed = 0;
 		me.doAction("delete", server.delete(jsRoutes.controllers.Circles["delete"]($data.consent._id).url).
 		then(function() {
-			if (session.user.role == "MEMBER" && ($data.consent.type == "EXTERNALSERVICE" || $data.consent.type == "API")) {
-				$router.push({ path : "./apps" });
-			} else if (session.user.role == "MEMBER" && $data.consent.type == "STUDYPARTICIPATION") {
-			    $router.push({ path : "./studies" });
-			} else {
-			    $router.push({ path : "./circles" });
-			}
+			me.leave();
 		}));
+	},
+	
+	deleteAllConsent() {
+	    const { $data, $route, $router } = this, me = this;
+		
+		me.doAction("delete", apps.listUserApps([ "type", "status", "applicationId"])
+		  .then(function(data) {
+			let allapps = data.data;
+			let applicationId = null;
+			for (let ac of allapps) {
+				if (ac._id == $data.consent._id) applicationId = ac.applicationId;
+			}
+			let all = [];
+			if (applicationId) {
+				for (let ac of allapps) {
+					if (ac.applicationId == applicationId && ac.status=='ACTIVE') {
+						all.push(server.delete(jsRoutes.controllers.Circles["delete"](ac._id).url));
+					}
+				}
+				return Promise.all(all);
+			}
+			
+		})
+		.then(function() {
+			me.leave();
+		}));				   		
 	},
 	
 	rejectConsent() {

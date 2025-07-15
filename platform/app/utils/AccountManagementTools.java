@@ -63,6 +63,7 @@ import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.StudyAppLinkType;
+import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -84,6 +85,7 @@ import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 import utils.messaging.Messager;
+import utils.stats.UsageStatsRecorder;
 
 public class AccountManagementTools {
 
@@ -221,7 +223,8 @@ public class AccountManagementTools {
 		user.flags = EnumSet.of(AccountActionFlags.CHANGE_PASSWORD);
 				
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, context.getUsedPlugin(), context.getLegacyOwner(), user);
-
+		UsageStatsRecorder.protokoll(context, UsageAction.REGISTRATION);
+		
 		TestAccountTools.createNewUser(context, user);
 		user.security = AccountSecurityLevel.KEY;
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);

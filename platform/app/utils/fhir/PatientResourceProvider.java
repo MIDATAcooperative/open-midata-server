@@ -113,6 +113,7 @@ import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.StudyAppLinkType;
 import models.enums.SubUserRole;
+import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -146,6 +147,7 @@ import utils.context.CreateParticipantContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonOutput;
+import utils.stats.UsageStatsRecorder;
 
 public class PatientResourceProvider extends RecordBasedResourceProvider<Patient> implements IResourceProvider {
 
@@ -838,6 +840,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		
 		// Otherwise reuse existing user
 		} else {		
+			UsageStatsRecorder.protokoll(context, UsageAction.LOGIN);
 			user = existing;										
 			Plugin plugin = Plugin.getById(info.getUsedPlugin());
 			if (plugin.usePreconfirmed) {
