@@ -840,7 +840,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		
 		// Otherwise reuse existing user
 		} else {		
-			UsageStatsRecorder.protokoll(context, UsageAction.LOGIN);
+			UsageStatsRecorder.protokoll(info, UsageAction.LOGIN);
 			user = existing;										
 			Plugin plugin = Plugin.getById(info.getUsedPlugin());
 			if (plugin.usePreconfirmed) {
