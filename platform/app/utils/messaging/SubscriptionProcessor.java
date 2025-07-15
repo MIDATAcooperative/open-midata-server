@@ -359,7 +359,7 @@ public class SubscriptionProcessor extends AbstractActor {
 								} else {
 									System.out.println("NEW OAUTH2 - 4B");
 									sender.tell(new MessageResponse("OAuth 2 failed ("+subscription.failCount+")",-1, plugin.filename), getSelf());
-									SubscriptionData.fail(subscription._id);
+									try { SubscriptionData.fail(subscription._id); } catch (Exception e) {}
 									AuditManager.instance.fail(400, "OAuth 2 failed", "error.missing.token");
 									if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
 								}
