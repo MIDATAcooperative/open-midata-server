@@ -1106,8 +1106,8 @@ public class RecordManager {
 					RecordManager.instance.unshare(targetContext, remove);
 				}
 			}
-			AccessLog.logEnd("END apply query");
 		}
+		AccessLog.logEnd("END apply query");
 		
 	}
 	

@@ -128,7 +128,10 @@ public class ExecutionInfo {
 				Consent c = Circles.getConsentById(session, authToken.userId, Sets.create("owner", "authorized"));
 				if (c != null) {
 					ownerId = c.owner;
-				} else throw new BadRequestException("error.internal", "Invalid authToken.");
+				} else {
+					AccessLog.log("check spaced token; user does not exist id="+authToken.userId.toString());
+					throw new BadRequestException("error.internal", "Invalid authToken.");
+				}
 			}
 			
 			session = ContextManager.instance.createSession(authToken.executorId, authToken.role, space.visualization, ownerId, null);
