@@ -108,9 +108,11 @@ class APSImplementation extends APS {
 		try {
 		   eaps.touch();
 		} catch (LostUpdateException e) {
+			int wait = ThreadLocalRandom.current().nextInt(1000);
+			AccessLog.log("APS touch: lost update wait="+wait);
 			try {
 				Stats.reportConflict();
-				Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
+				Thread.sleep(wait);
 			} catch (InterruptedException e2) {
 			}
 			eaps.reload();
@@ -145,9 +147,11 @@ class APSImplementation extends APS {
 			if (changed)
 				eaps.updateKeys();
 		} catch (LostUpdateException e) {
+			int wait = ThreadLocalRandom.current().nextInt(1000);
+			AccessLog.log("APS addAccess: lost update wait="+wait);
 			try {
 				Stats.reportConflict();
-				Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
+				Thread.sleep(wait);
 			} catch (InterruptedException e2) {
 			}
 			eaps.reload();
@@ -174,9 +178,11 @@ class APSImplementation extends APS {
 			if (changed)
 				eaps.updateKeys();
 		} catch (LostUpdateException e) {
+			int wait = ThreadLocalRandom.current().nextInt(1000);
+			AccessLog.log("APS addAccess: lost update wait="+wait);
 			try {
 				Stats.reportConflict();
-				Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
+				Thread.sleep(wait);
 			} catch (InterruptedException e2) {
 			}
 			eaps.reload();
@@ -213,9 +219,11 @@ class APSImplementation extends APS {
 			if (changed)
 				eaps.updateKeys();
 		} catch (LostUpdateException e) {
+			int wait = ThreadLocalRandom.current().nextInt(1000);
+			AccessLog.log("APS removeAccess: lost update wait="+wait);
 			try {
 				Stats.reportConflict();
-				Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
+				Thread.sleep(wait);
 			} catch (InterruptedException e2) {
 			}
 			eaps.reload();
@@ -555,9 +563,11 @@ class APSImplementation extends APS {
 	}
 
 	protected void recoverFromLostUpdate() throws InternalServerException {
+		int wait = ThreadLocalRandom.current().nextInt(1000);
+		AccessLog.log("APS recoverFromLostUpdate: wait="+wait);
 		try {
 			Stats.reportConflict();
-			Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
+			Thread.sleep(wait);
 		} catch (InterruptedException e) {
 		}
 		;

@@ -547,6 +547,7 @@ public class MongoDatabase extends Database {
 	}
 	
 	private void delay() {
+		AccessLog.log("DB delay() wait=100");
 		try { Thread.sleep(100); } catch (InterruptedException e) {}
 	}
 		

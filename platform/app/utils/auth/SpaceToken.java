@@ -212,14 +212,22 @@ public class SpaceToken {
 			long created = json.get("c").asLong();
 			String remoteAddr = json.get("i").asText();
 			
-			if (System.currentTimeMillis() > created + LIFETIME) return null;
+			if (System.currentTimeMillis() > created + LIFETIME) {
+				AccessLog.log("token expired "+(created+LIFETIME)+" < "+System.currentTimeMillis());
+				return null;
+			}
 			if (!remoteAddr.equals("all") && !remoteAddr.equals("::1")) {				
-			  if (!remoteAddr(request).equals(remoteAddr)) return null;
+			  if (!remoteAddr(request).equals(remoteAddr)) {
+				  AccessLog.log("token ip does not match "+remoteAddr+" vs "+remoteAddr(request));
+				  return null;
+			  }
 			}
 			UserRole role = UserRole.fromShortString(json.get("R").asText());
 			
 			return new SpaceToken(handle, spaceId, userId, role, recordId, pluginId, executorId, created, remoteAddr, json.has("a"), userGroup);
 		} catch (Exception e) {
+			AccessLog.log("exception during space token decrypt");
+			AccessLog.logException("decrypt", e);
 			return null;
 		}
 	}
