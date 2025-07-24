@@ -32,6 +32,7 @@ public class Authenticators {
 	 */
 	public static Authenticator getInstance(SecondaryAuthType authType) {
 		if (authType == SecondaryAuthType.SMS) return new SMSAuthenticator();
+		if (authType == SecondaryAuthType.TOTP) return new TOTPAuthenticator();
 		return null;
 	}
 }

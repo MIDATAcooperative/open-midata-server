@@ -45,7 +45,7 @@ POST    /api/common/account/email/confirm                controllers.Application
 POST    /api/common/account/email/request                controllers.Application.requestWelcomeMail(request: Request)
 POST    /api/common/account/address/confirm              controllers.Application.confirmAccountAddress(request: Request)
 POST    /api/common/token/get                            controllers.Application.downloadToken(request: Request)
-
+GET     /api/common/totp/qrcode                          controllers.Application.totpQrCode(request: Request) 
 
 POST    /api/common/password/lost                        controllers.Application.requestPasswordResetToken(request: Request)
 POST    /api/common/password/set                         controllers.Application.setPasswordWithToken(request: Request)

@@ -65,10 +65,10 @@ public class User extends Model implements Comparable<User>, Actor {
 	protected static final @NotMaterialized String collection = "users";
 	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString()));	
 	
-	public static final @NotMaterialized Set<String> ALL_USER = Collections.unmodifiableSet(Sets.create("_id", "email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "midataID", "termsAgreed", "security", "notifications", "marketingEmail", "testUserApp"));
-	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed", "termsAgreed", "publicExtKey", "recoverKey", "flags", "security", "authType", "notifications", "passwordAge", "marketingEmail", "testUserApp", "testUserCustomer"));
+	public static final @NotMaterialized Set<String> ALL_USER = Collections.unmodifiableSet(Sets.create("_id", "email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "totpStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "midataID", "termsAgreed", "security", "notifications", "marketingEmail", "testUserApp", "authType"));
+	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed", "termsAgreed", "publicExtKey", "recoverKey", "flags", "security", "authType", "notifications", "passwordAge", "marketingEmail", "testUserApp", "testUserCustomer", "totpStatus", "totpSecret"));
 	public static final @NotMaterialized Set<String> PUBLIC = Collections.unmodifiableSet(Sets.create("email", "role", "status", "firstname", "lastname", "gender", "midataID", "testUserApp"));
-	public static final @NotMaterialized Set<String> FOR_LOGIN = Collections.unmodifiableSet(Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed", "flags", "resettoken", "resettokenTs", "resettokenType", "termsAgreed", "publicExtKey", "recoverKey", "security", "phone", "mobile", "authType", "apps", "notifications", "confirmedAt", "birthday", "gender", "zip", "address1", "country", "city", "passwordAge", "testUserApp"));		
+	public static final @NotMaterialized Set<String> FOR_LOGIN = Collections.unmodifiableSet(Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed", "flags", "resettoken", "resettokenTs", "resettokenType", "termsAgreed", "publicExtKey", "recoverKey", "security", "phone", "mobile", "authType", "apps", "notifications", "confirmedAt", "birthday", "gender", "zip", "address1", "country", "city", "passwordAge", "testUserApp", "totpSecret", "totpStatus"));		
 			
 	/**
 	 * Email address of the user
@@ -172,6 +172,11 @@ public class User extends Model implements Comparable<User>, Actor {
      * 
      */
     public EMailStatus mobileStatus;
+    
+    /**
+     * Status of TOTP setup
+     */
+    public EMailStatus totpStatus;
     
     /**
      * Type of two factor authentication
@@ -352,6 +357,11 @@ public class User extends Model implements Comparable<User>, Actor {
 	 * is test user: customer string
 	 */
 	public String testUserCustomer;
+	
+	/**
+	 * Secret for TOTP 2FA authentication
+	 */
+	public byte[] totpSecret;
 
 	@Override
 	public int compareTo(User other) {
@@ -528,6 +538,8 @@ public class User extends Model implements Comparable<User>, Actor {
 		this.resettokenType = null;
 		this.status = UserStatus.WIPED;
 		this.contractStatus = null;
+		this.totpStatus = null;
+		this.totpSecret = null;
 		this.agbStatus = null;
 		this.emailStatus = null;
         this.confirmationCode = null;

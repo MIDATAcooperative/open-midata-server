@@ -32,5 +32,10 @@ public enum SecondaryAuthType {
 	/**
 	 * Use SMS for two factor authentication
 	 */
-	SMS
+	SMS,
+	
+	/**
+	 * Use a TOTP provider like Google Authenticator or Microsoft Authenticator
+	 */
+	TOTP
 }

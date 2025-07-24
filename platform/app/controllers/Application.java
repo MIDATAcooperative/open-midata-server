@@ -17,6 +17,7 @@
 
 package controllers;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -86,7 +87,9 @@ import utils.auth.KeyManager;
 import utils.auth.OTPTools;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
+import utils.auth.PreAuthSecured;
 import utils.auth.PreLoginSecured;
+import utils.auth.auth2factor.Authenticators;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -105,6 +108,7 @@ import utils.messaging.Messager;
 import utils.stats.UsageStatsRecorder;
 import views.txt.mails.adminnotify;
 import views.txt.mails.lostpwmail;
+import utils.auth.auth2factor.TOTPAuthenticator;
 
 /**
  * Member login, registration and password reset functions 
@@ -770,6 +774,7 @@ public class Application extends APIController {
 		return missing;
 	}
 	
+	
 	public static Result loginHelperResult(Request request, PortalSessionToken token, User user, Set<UserFeature> missing) throws AppException {
 		ObjectNode obj = Json.newObject();
 		if (user != null) {
@@ -778,6 +783,7 @@ public class Application extends APIController {
 			obj.put("agbStatus", user.agbStatus.toString());
 			obj.put("emailStatus", user.emailStatus.toString());
 			obj.put("mobileStatus", user.mobileStatus == null ? EMailStatus.UNVALIDATED.toString() : user.mobileStatus.toString());
+			obj.put("totpStatus", user.totpStatus == null ? EMailStatus.UNVALIDATED.toString() : user.totpStatus.toString());
 			obj.put("confirmationCode", user.confirmedAt != null);
 			obj.put("role", user.role.toString().toLowerCase());
 			obj.put("termsOfUse", InstanceConfig.getInstance().getTermsOfUse(user.role));
@@ -843,6 +849,21 @@ public class Application extends APIController {
 		obj.put("token", token.encrypt());
 		
 		return ok(obj).as("application/json");
+	}
+	
+	@APICall
+	@Security.Authenticated(PreAuthSecured.class)
+	public Result totpQrCode(Request request) throws AppException {
+		PortalSessionToken current = PortalSessionToken.session();
+		
+		User user = User.getById(current.ownerId, User.FOR_LOGIN);
+		if (user == null || (user.status != UserStatus.ACTIVE && user.status != UserStatus.NEW) || user.totpStatus == EMailStatus.VALIDATED) return ok();
+		
+		if (user.totpSecret == null) Authenticators.getInstance(SecondaryAuthType.TOTP).setupAuthentication(user);
+		
+		InputStream is = ((TOTPAuthenticator) Authenticators.getInstance(SecondaryAuthType.TOTP)).generateQRCode(user);
+		
+		return ok(is).as("image/png");
 	}
 	
 	/**

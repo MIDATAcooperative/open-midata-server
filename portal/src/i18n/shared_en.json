@@ -614,7 +614,8 @@
 	 },
 	 "secondaryauthtype" : {
 	   "NONE" : "No second authentication factor",
-	   "SMS" : "Two factor authentication using SMS"
+	   "SMS" : "Two factor authentication using SMS",
+	   "TOTP" : "Two factor authentication using an authenticator app"
 	 },
 	 "accountnotifications" : {
 	   "NONE" : "No login notifications",
@@ -823,6 +824,7 @@
     "auth_type" : "Authentication",
     "auth_type_none" : "I do not want to use two factor authentication.",
     "auth_type_sms" : "I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.",
+    "auth_type_totp" : "I want to use a authenticator app like Google Authenticator or Microsoft Authenticator. Please show me a QR code for setup.",
     "emailnotify" : "Notifications",
     "emailnotify2" : "Please send me an email everytime I log into the @PRODUCT portal at {{domain}}.",
     "agree_btn" : "I agree",

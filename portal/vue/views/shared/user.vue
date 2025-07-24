@@ -143,7 +143,7 @@ export default {
         repair : [],
         beta : ENV.instanceType == "test" || ENV.instanceType == "local" || ENV.instanceType == "demo",
         languages : languages.all,
-        authTypes : ["NONE", "SMS"],
+        authTypes : ["NONE", "SMS", "TOTP"],
         notificationTypes : ["NONE", "LOGIN"],
         isSelf : false,
         stats : null

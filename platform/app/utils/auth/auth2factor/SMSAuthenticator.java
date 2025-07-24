@@ -57,6 +57,11 @@ public class SMSAuthenticator implements Authenticator {
 	 */
 	public static final int MAX_FAILED_ATTEMPTS = 3;
 	
+    public void setupAuthentication(User user) throws AppException {
+		
+	}
+	
+	
 	/**
 	 * start new SMS authentication
 	 * @param executor user or appInstance

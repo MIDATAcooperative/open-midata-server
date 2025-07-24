@@ -731,18 +731,21 @@ public class OAuth2 extends Controller {
 		
 		String securityToken = JsonValidation.getStringOrNull(json, "securityToken");
 				
-		// If 2FA is already done we do not need to check again
-		if (notok!=null && token.securityToken != null) {
-			notok.remove(UserFeature.AUTH2FACTOR);
-			notok.remove(UserFeature.PHONE_VERIFIED);		
-			return;
-		}
+		AccessLog.log("checkTwoFactor: st="+token.securityToken+" st2="+securityToken+" notok="+(notok!=null?notok.toString():"null"));
 		
 		// If 2FA is enabled (for other apps) and address or birthday must be changed do 2FA 
 		if (notok!=null && (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.BIRTHDAY_SET) || notok.contains(UserFeature.GENDER_SET) || notok.contains(UserFeature.NEWEST_PRIVACY_POLICY_AGREED) || notok.contains(UserFeature.NEWEST_TERMS_AGREED))) {			
 			if (user.authType != null && user.authType != SecondaryAuthType.NONE) {
 				notok.add(UserFeature.AUTH2FACTOR);
 			}
+		}
+		
+		// If 2FA is already done we do not need to check again
+		if (notok!=null && token.securityToken != null) {
+			notok.remove(UserFeature.AUTH2FACTOR);
+			notok.remove(UserFeature.AUTH2FACTORSETUP);
+			notok.remove(UserFeature.PHONE_VERIFIED);		
+			return;
 		}
 		
 		// Do not do 2FA if no phone number present, account email not confirmed (but required) or admin unlock required 
@@ -765,6 +768,10 @@ public class OAuth2 extends Controller {
 			if (user.authType == SecondaryAuthType.SMS && user.mobileStatus != EMailStatus.VALIDATED) {
 			  notok.remove(UserFeature.AUTH2FACTOR);
 			  notok.add(UserFeature.PHONE_VERIFIED);
+			}
+			if (user.authType == SecondaryAuthType.TOTP && user.totpSecret == null) {
+		      notok.remove(UserFeature.AUTH2FACTOR);
+			  notok.add(UserFeature.AUTH2FACTORSETUP);
 			}
 		}
 		

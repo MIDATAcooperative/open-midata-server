@@ -368,7 +368,7 @@ export default {
 			if (!this.checkConfirmed($data.links[i])) return;			
 		}
 		
-		this.doAction("login", oauth.login(true, $data.login.confirmStudy))
+		this.doAction("login", oauth.login(true, $data.login.confirmStudy, true))
 		.then(function(result) {
 		  if (result !== "ACTIVE") {
 			  if (result.istatus) { $data.pleaseConfirm = true; }	

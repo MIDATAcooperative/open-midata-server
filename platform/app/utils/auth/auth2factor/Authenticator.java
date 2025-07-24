@@ -27,7 +27,13 @@ import utils.exceptions.AppException;
  */
 public interface Authenticator {
 
-	
+	/**
+	 * setup authentication before first use
+	 * @param user
+	 * @throws AppException
+	 */
+    public void setupAuthentication(User user) throws AppException;
+		
 	/**
 	 * start new authentication
 	 * @param executor user or appInstance

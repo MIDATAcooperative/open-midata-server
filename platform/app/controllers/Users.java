@@ -81,6 +81,7 @@ import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
 import utils.auth.Rights;
+import utils.auth.auth2factor.Authenticators;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -420,7 +421,7 @@ public class Users extends APIController {
 		User.set(user._id, "firstname", user.firstname);
 		User.set(user._id, "lastname", user.lastname);
 		User.set(user._id, "gender", user.gender);
-		User.set(user._id, "authType", user.authType);	
+		User.set(user._id, "authType", user.authType);		
 		User.set(user._id, "notifications", user.notifications);
 		
 		user.updateKeywords(true);
@@ -436,6 +437,10 @@ public class Users extends APIController {
 		}
 		
 		AuditManager.instance.success();
+		
+		if (json.has("totp")) {
+			requireUserFeature(request, UserFeature.AUTH2FACTOR);
+		}
 		
 		return ok();		
 	}
@@ -474,7 +479,7 @@ public class Users extends APIController {
 		
 		AccountNotifications sendMail = JsonValidation.getEnum(json, "notifications", AccountNotifications.class);
 		
-		User user = User.getById(userId, Sets.create("_id", "notifications")); 
+		User user = User.getById(userId, Sets.create("_id", "notifications", "totpStatus")); 
 		
 		User.set(user._id, "searchable", searchable);
 		User.set(user._id, "language", language);
@@ -486,6 +491,9 @@ public class Users extends APIController {
 		
 		if (authType.equals(SecondaryAuthType.SMS)) {
 			requireUserFeature(request, UserFeature.PHONE_ENTERED);
+		}
+		if (authType.equals(SecondaryAuthType.TOTP) ) {
+			requireUserFeature(request, UserFeature.AUTH2FACTORSETUP);
 		}
 		
 		return ok();		

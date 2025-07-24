@@ -172,10 +172,12 @@ public enum UserFeature {
 				return user.termsAgreed != null && user.termsAgreed.contains(ic.getPrivacyPolicy(user.role));
 			case AUTH2FACTOR:
 				if (user.authType == null || user.authType.equals(SecondaryAuthType.NONE)) return true;
+				if (user.authType == SecondaryAuthType.TOTP) return false;
 				// AUTH2FACTOR is handeled outside. If no phone is present this can be skipped. Use PHONE_ENTERED to force phone number to be present.
 				return user.mobile == null && user.phone == null;
 			case AUTH2FACTORSETUP:				
 				if (user.authType == null || (user.authType.equals(SecondaryAuthType.SMS) && user.mobile == null)) return false;
+				if (user.authType != null && user.authType.equals(SecondaryAuthType.TOTP) && user.totpStatus != EMailStatus.VALIDATED) return false;
 				return true;
 			case VALID_LICENCE:
 				return true;
