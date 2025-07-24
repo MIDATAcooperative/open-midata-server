@@ -846,7 +846,11 @@
       "reject_btn" : "Reject account creation",
       "intro3" : "If you clicked the wrong link and want to CONFIRM your email address instead, click here:",
       "confirm_btn" : "Confirm account creation"
-    }
+    },
+    "totpsetup" : "Please make sure you have an authenticator app like Google Authenticator or Microsoft Authenticator installed. Scan the QR-code with the authenticator app.",
+    "totpsetup2" : "To verify the correct installation enter the code shown by the authenticator.",
+    "no_totp_code_btn" : "Reconfigure",
+    "auth2factor_totp" : "Please enter the code from the authenticator app."
   },
 
   "changepassphrase" : {

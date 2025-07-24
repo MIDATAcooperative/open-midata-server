@@ -996,6 +996,7 @@ public class OAuth2 extends Controller {
 			token.created = token1.created;
             token.remoteAddress = token1.remoteAddress;
             token.setPortal();
+            token.setIsAuthenticated();
 		}
         
         Plugin app = token.getPortal() ? null : validatePlugin(token, json);
@@ -1142,7 +1143,11 @@ public class OAuth2 extends Controller {
 		  if (notok.contains(UserFeature.ADDRESS_VERIFIED)) notok = Collections.singleton(UserFeature.ADDRESS_VERIFIED);
 		  if (notok.contains(UserFeature.PHONE_VERIFIED)) notok = Collections.singleton(UserFeature.PHONE_VERIFIED);
 		  if (notok.contains(UserFeature.AUTH2FACTORSETUP)) notok = Collections.singleton(UserFeature.AUTH2FACTORSETUP);
-		  if (notok.contains(UserFeature.AUTH2FACTOR)) notok = Collections.singleton(UserFeature.AUTH2FACTOR);
+		  if (notok.contains(UserFeature.AUTH2FACTOR)) {
+			  if (user.authType == SecondaryAuthType.TOTP) {
+				notok = Collections.singleton(UserFeature.AUTH2FACTOR_TOTP);
+			  } else notok = Collections.singleton(UserFeature.AUTH2FACTOR);
+		  }
 		  
 		  return Application.loginHelperResult(request, token, user, notok);
 		}

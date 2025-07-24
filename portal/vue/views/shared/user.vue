@@ -208,7 +208,7 @@ export default {
 	            me.doBusy(users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt", "birthday", "midataID", "status", "gender", "authType", "notifications"]))
 		        .then(function(results) {
                     let user = results.data[0];
-                    user.authType = user.authType || "NONE";
+                    user.authType = user.authType || "NONE";					
                     user.notifications = user.notifications || "NONE";
 			        $data.user = user;
                 });		

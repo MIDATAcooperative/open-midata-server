@@ -112,6 +112,11 @@ public enum UserFeature {
 	AUTH2FACTOR,
 	
 	/**
+	 * user has been verified with 2-factory-authentication (TOTP auth)
+	 */
+	AUTH2FACTOR_TOTP,
+	
+	/**
 	 * two factor authentication needs to be setup
 	 */
 	AUTH2FACTORSETUP,

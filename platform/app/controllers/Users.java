@@ -393,6 +393,10 @@ public class Users extends APIController {
 			} else {
 				user.notifications = AccountNotifications.NONE;
 			}
+			
+			if (json.has("totp")) {
+				Authenticators.getInstance(SecondaryAuthType.TOTP).checkAuthentication(executorId, user, JsonValidation.getString(json, "totp"));
+			}
 		}
 		
 		if (json.has("country")) {
@@ -437,10 +441,7 @@ public class Users extends APIController {
 		}
 		
 		AuditManager.instance.success();
-		
-		if (json.has("totp")) {
-			requireUserFeature(request, UserFeature.AUTH2FACTOR);
-		}
+				
 		
 		return ok();		
 	}
@@ -472,14 +473,19 @@ public class Users extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		SecondaryAuthType authType = JsonValidation.getEnum(json, "authType", SecondaryAuthType.class);
-						
+		
+		User user = User.getById(userId, User.ALL_USER_INTERNAL);
+		
 		if (authType.equals(SecondaryAuthType.NONE) && InstanceConfig.getInstance().getInstanceType().is2FAMandatory(getRole())) {
 			throw new JsonValidationException("error.missing.auth_type", "authType", "missing", "Two factor authentication is mandantory");
 		}
 		
-		AccountNotifications sendMail = JsonValidation.getEnum(json, "notifications", AccountNotifications.class);
+		if (authType == SecondaryAuthType.TOTP && JsonValidation.getBoolean(json, "reset")) {
+			Authenticators.getInstance(SecondaryAuthType.TOTP).setupAuthentication(user);
+		}
 		
-		User user = User.getById(userId, Sets.create("_id", "notifications", "totpStatus")); 
+		AccountNotifications sendMail = JsonValidation.getEnum(json, "notifications", AccountNotifications.class);
+				
 		
 		User.set(user._id, "searchable", searchable);
 		User.set(user._id, "language", language);

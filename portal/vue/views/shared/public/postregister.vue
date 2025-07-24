@@ -67,8 +67,7 @@
 				</div>
 						
 				<div v-if="progress.AUTH2FACTOR || progress.PHONE_VERIFIED">
-					<p v-t="'postregister.auth2factor'"></p>	
-                    {{ progress.authType }}				
+					<p v-t="'postregister.auth2factor'"></p>	                    		
 					<form ref="myform" name="myform" @submit.prevent="setSecurityToken()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
 							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
@@ -87,6 +86,21 @@
 							</div>  
 						</div>
 						<div class="extraspace"></div>
+					</form>
+				</div>
+				
+				<div v-if="progress.AUTH2FACTOR_TOTP">
+					<p v-t="'postregister.auth2factor_totp'"></p>	                    		
+					<form ref="myform" name="myform" @submit.prevent="setSecurityToken()" role="form" class="form form-horizontal" novalidate>
+						<form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
+							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
+						</form-group>							  
+						<div class="extraspace"></div>
+						<div class="d-grid gap-2 mt-3 mb-2">
+						  <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'postregister.securityToken_btn'"></button>
+						</div>						  	
+						<div class="extraspace"></div>
+                        <error-box :error="error"></error-box>							  						
 					</form>
 				</div>
 				
@@ -219,8 +233,11 @@
                             <img :src="qrcodeUrl()">
                           </div>
                           <form ref="myform" name="myform" @submit.prevent="changeAuthType(true)" role="form" class="form form-horizontal" novalidate>
-                       
-                                      
+						  <div v-t="'postregister.totpsetup2'"></div>							                          
+			  			  <form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
+							 <input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
+						  </form-group>							  
+	          
                           <div class="extraspace"></div>
                           <div class="d-grid gap-2 mt-3 mb-2">
                             <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'postregister.securityToken_btn'"></button>
@@ -230,7 +247,7 @@
                                 
                          
                           <div class="d-grid gap-2 mt-3 mb-2">
-                            <button @click="registration.authType=null;" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.no_token_btn'"></button>
+                            <button @click="registration.authType=null;" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.no_totp_code_btn'"></button>
                           </div>  
                         
                           <div class="extraspace"></div>
@@ -568,10 +585,10 @@ export default {
 		changeAuthType(totp) {		
 			const { $data } = this, me = this;
 			$data.registration.user = $data.registration._id;
-			if ($data.registration.mobile === "") $data.registration.mobile = undefined;
-			me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : $data.registration.authType, mobile : $data.registration.mobile, emailnotify : $data.registration.emailnotify, totp : totp })).
+			if ($data.registration.mobile === "") $data.registration.mobile = undefined;			
+			me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : $data.registration.authType, mobile : $data.registration.mobile, emailnotify : $data.registration.emailnotify, totp : $data.setpw.securityToken })).
 			then(function(data) { 
-				me.retry();
+				me.retry(null, { securityToken : $data.setpw.securityToken });
 			});
 		},
 	
