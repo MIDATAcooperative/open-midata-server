@@ -310,6 +310,7 @@
 	   "user-status-change-blocked" : "User account blocked",
 	   "user-email-confirmed" : "Email confirmed by user",
 	   "user-email-rejected" : "Email rejected by user",
+	   "user-phone-confirmed" : "Phone number confirmed by user",
 	   "user-account-change-by-admin" : "User account changed by an administrator",
 	   "user-account-deleted" : "User account deleted",
 	   "app-first-use" : "First use of application",

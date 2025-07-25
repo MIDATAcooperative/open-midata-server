@@ -800,11 +800,11 @@ public class OAuth2 extends Controller {
 					notok.remove(UserFeature.AUTH2FACTOR);
 					notok.add(UserFeature.AUTH2FACTORSETUP);
 				} else {
-				
+					AuditManager.instance.addAuditEvent(AuditEventType.USER_PHONE_CONFIRMED, user, token.appId);
 					try {
  					    Authenticators.getInstance(SecondaryAuthType.SMS).checkAuthentication(user._id, user, securityToken);
 					} catch (AppException e) {						
-						AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, token.appId);
+						//AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, token.appId);
 						throw e;
 					}
 					token.securityToken = securityToken;
@@ -812,6 +812,7 @@ public class OAuth2 extends Controller {
 					notok.remove(UserFeature.PHONE_VERIFIED);
 					user.mobileStatus = EMailStatus.VALIDATED;
 					User.set(user._id, "mobileStatus", user.mobileStatus);
+					AuditManager.instance.success();
 					if (notok.isEmpty()) {
 						notok = null;
 						Authenticators.getInstance(user.authType).finishAuthentication(user._id, user);
@@ -1134,7 +1135,12 @@ public class OAuth2 extends Controller {
 		if (notok != null && !notok.isEmpty()) {
 		  if (token.handle != null) KeyManager.instance.persist(user._id);
 		  if (notok.contains(UserFeature.PASSWORD_SET)) notok = Collections.singleton(UserFeature.PASSWORD_SET);		  	
-		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);
+		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) {
+			  notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);
+			  if (!OTPTools.checkValidTokenExistsForConfirm(user)) {
+				  Application.sendWelcomeMail(user, null);
+			  }
+		  }
 		  if (notok.contains(UserFeature.APP_UNLOCK_CODE)) notok = Collections.singleton(UserFeature.APP_UNLOCK_CODE);
 		  if (notok.contains(UserFeature.BIRTHDAY_SET)) notok = Collections.singleton(UserFeature.BIRTHDAY_SET);
 		  if (notok.contains(UserFeature.GENDER_SET)) notok = Collections.singleton(UserFeature.GENDER_SET);

@@ -504,6 +504,7 @@ export default {
 
 		retry(funcresult, params) {			
 			const { $data, $route, $router } = this, me = this;
+			$data.error = null;
 	    	if (funcresult) {				
 		   		if (funcresult.data.istatus === "ACTIVE") oauth.postLogin(funcresult);
 		   		else session.postLogin(funcresult, $router, $route);		
@@ -541,6 +542,7 @@ export default {
 		
 		pwsubmit() {
 			const { $data, $route, $t } = this, me = this;
+			$data.error = null;
 		
 			if (!$data.setpw.passwordRepeat || $data.setpw.passwordRepeat !== $data.setpw.password) {
 				this.setError("password", $t('error.invalid.password_repetition'));
@@ -594,6 +596,7 @@ export default {
 
 		changeAuthType(totp) {		
 			const { $data } = this, me = this;
+			$data.error = null;
 			$data.registration.user = $data.registration._id;
 			if ($data.registration.mobile === "") $data.registration.mobile = undefined;			
 			me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : $data.registration.authType, mobile : $data.registration.mobile, emailnotify : $data.registration.emailnotify, totp : $data.setpw.securityToken })).
@@ -622,6 +625,7 @@ export default {
 			$data.resentSuccess = false;
 			$data.codeSuccess = false;
 			$data.mailSuccess = false;
+			$data.error = null;
 			var data = { token : $route.query.token, mode : $data.mode };
 			if (forceConfirm) {
 				data.mode = "VALIDATED";
@@ -643,6 +647,7 @@ export default {
 			$data.resentSuccess = false;
 			$data.codeSuccess = false;
 			$data.mailSuccess = false;
+			$data.error = null;
 
 			var data = { code : code, mode : "VALIDATED", userId : $data.progress.userId , role : $data.progress.role };
 	    	me.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, data ))
@@ -653,7 +658,7 @@ export default {
 
 		changeBirthday() {		
 			const { $data, $t } = this, me = this;
-			
+			$data.error = null;
 		
         	let d = $data.registration.birthdayDate;
         	let pad = function(n){
@@ -679,7 +684,7 @@ export default {
 		
 		changeGender() {		
 			const { $data, $t } = this, me = this;
-						
+			$data.error = null;		
 			let upd = { user : $data.registration._id, gender : $data.registration.gender };
 																	
 			$data.registration.user = $data.registration._id;									
@@ -708,6 +713,7 @@ export default {
 
 		changeAddress() {		
 			const { $data } = this, me = this;
+			$data.error = null;
         	if (!this.addressNeeded()) {
         		$data.registration = JSON.parse(JSON.stringify($data.registration));
 				$data.registration.firstname = $data.registration.lastname = $data.registration.gender = $data.registration.city = $data.registration.zip = $data.registration.country = $data.registration.address1 = undefined;			
@@ -727,6 +733,7 @@ export default {
 
 		resend() {	
 			const { $data } = this, me = this;
+			$data.error = null;
 			$data.resentSuccess = false;
 			$data.codeSuccess = false;
 			$data.mailSuccess = false;

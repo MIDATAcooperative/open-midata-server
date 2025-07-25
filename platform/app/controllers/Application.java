@@ -462,45 +462,58 @@ public class Application extends APIController {
 			AccessLog.log("wanted status="+wanted);
 			if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {
 				
+				if (wanted == EMailStatus.REJECTED) {
+					AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
+				} else {
+					AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
+				}
 			    if (OTPTools.checkToken(user, token)) {	
 			    	AccessLog.log("token is okay");
 					if (user.password == null) {	
 						AccessLog.log("password is still missing, but token is okay");
+						AuditManager.instance.fail(400, "error.missing.newpassword", "password is still missing, but token is okay");
 						if (stoken != null) stoken.setIsAuthenticated();
 						return OAuth2.loginHelper(request);	
 					}
 			      				   
 			    	   
 			    	   if (wanted == EMailStatus.REJECTED) {
-			    		   if (user.previousEMail != null) {
-			    			   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
+			    		   if (user.previousEMail != null) {			    			   
 			    			   user.email = user.previousEMail;
 			    			   user.emailLC = user.email.toLowerCase();
 			    			   wanted = EMailStatus.VALIDATED;
 			    			   user.set("email", user.email);
 			    			   user.set("emailLC", user.emailLC);
-			    		   } else {
-				    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
+			    		   } else {				    		   
 				    		   user.status = UserStatus.BLOCKED;
 					    	   user.set("status", user.status);
 			    		   }
 				       } else {
-				    	   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
+				    	   
 				       }
 			    	   		          
 			           user.emailStatus = wanted;
 				       user.set("emailStatus", wanted);				       
 				       OTPTools.clearToken(user);
-			       } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED) && OTPTools.checkTokenAllowExpired(user, token)) {
-			    	     sendWelcomeMail(user, null);
-			    	     throw new BadRequestException("error.expired.tokenresent", "Token has already expired. A new one has been requested.");
-			       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
+			     } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED)) {
+			    	 if (!OTPTools.checkValidTokenExistsForConfirm(user)) {
+				    	 AuditManager.instance.fail(400, "error.expired.tokenresent", "Token was expired. New token sent");
+				   	     sendWelcomeMail(user, null);
+				   	     throw new BadRequestException("error.expired.tokenresent", "Token has already expired. A new one has been requested.");
+			    	 } else {
+			    		 AuditManager.instance.fail(400, "error.invalid.confirmation_code", "Wrong token entered");
+				    	 throw new BadRequestException("error.invalid.confirmation_code", "Wrong token entered.");
+			    	 }
+			     } else {
+			    	 AuditManager.instance.fail(400, "error.invalid.confirmation_code", "Wrong token entered");
+			    	 throw new BadRequestException("error.invalid.confirmation_code", "Wrong token entered.");
+			     }
 			       
-			       checkAccount(user);
-			       
-			       
-			       
+			     checkAccount(user);
+			       			       			      
 			} else if (user != null) {
+				
+				AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
 				if (user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
 				throw new BadRequestException("error.already_done.email_verification", "E-Mail has already been verified.");
 			}
