@@ -67,7 +67,7 @@
 				</div>
 						
 				<div v-if="progress.AUTH2FACTOR || progress.PHONE_VERIFIED">
-					<p v-t="'postregister.auth2factor'"></p>	                    		
+					<p v-t="'postregister.auth2factor'"></p>	                  			
 					<form ref="myform" name="myform" @submit.prevent="setSecurityToken()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
 							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
@@ -85,6 +85,12 @@
 							  <button @click="noSecurityToken()" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.no_token_btn'"></button>
 							</div>  
 						</div>
+                        <div v-if="!progress.PHONE_VERIFIED && progress.totpStatus == 'VALIDATED'">                                                          
+                            <div class="d-grid gap-2 mt-3 mb-2">
+                              <button @click="useTOTPInstead()" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.use_totp_btn'"></button>
+                            </div>  
+                        </div>
+                        
 						<div class="extraspace"></div>
 					</form>
 				</div>
@@ -98,7 +104,10 @@
 						<div class="extraspace"></div>
 						<div class="d-grid gap-2 mt-3 mb-2">
 						  <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'postregister.securityToken_btn'"></button>
-						</div>						  	
+						</div>	
+                        <div v-if="progress.mobileStatus == 'VALIDATED'" class="d-grid gap-2 mt-3 mb-2">
+                          <button @click="sendSMSInstead()" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.use_sms_btn'"></button>
+                        </div>  					  	
 						<div class="extraspace"></div>
                         <error-box :error="error"></error-box>							  						
 					</form>
@@ -123,6 +132,7 @@
 					<form ref="myform" name="myform" @submit.prevent="pwsubmit()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="password" label="setpw.new_password" :path="errors.password">
 							<password class="form-control" name="password" v-model="setpw.password" style="margin-bottom:5px;" autofocus required />
+                            <password-strength :password="setpw.password" :advanced="progress.role !='member'"/>
 						</form-group>
 						<form-group name="passwordnew" label="setpw.new_password_repeat" :path="errors.passwordnew">
 							<password class="form-control" name="passwordnew" v-model="setpw.passwordRepeat" style="margin-bottom:5px;" required />
@@ -249,7 +259,6 @@
                           <div class="d-grid gap-2 mt-3 mb-2">
                             <button @click="registration.authType=null;" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.no_totp_code_btn'"></button>
                           </div>  
-                        
                           <div class="extraspace"></div>
                           </form>
                        </div>
@@ -400,6 +409,7 @@
 <script>
 import Panel from 'components/Panel.vue'
 import TermsModal from 'components/TermsModal.vue'
+import PasswordStrength from 'components/PasswordStrength.vue';
 
 import server from "services/server.js";
 import crypto from "services/crypto.js";
@@ -434,7 +444,7 @@ export default {
 
 	props: ['preview'],
 
-	components: { CheckBox, RadioBox, ErrorBox, FormGroup, Panel, TermsModal, Password },
+	components: { CheckBox, RadioBox, ErrorBox, FormGroup, Panel, TermsModal, Password, PasswordStrength },
 
 	mixins : [ status ],
 
@@ -591,6 +601,20 @@ export default {
 				me.retry(null, { securityToken : $data.setpw.securityToken });
 			});
 		},
+        
+        sendSMSInstead() {
+            me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : "SMS" })).
+            then(function(data) { 
+                me.retry();
+            });
+        },
+        
+        useTOTPInstead() {
+            me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : "TOTP" })).
+            then(function(data) { 
+                me.retry();
+            });
+        },
 	
 		confirm(forceConfirm) {
 			const { $data, $route } = this,me = this;

@@ -785,6 +785,14 @@
     "continue_btn" : "Continue",
     "if_lost" : "If you lost your passphrase contact @SUPPORT"
   },
+  
+  "pwstrength" : {
+    "min" : "Password must have at least 8 characters.",
+    "min_advanced" : "Password must have at least 12 characters.",
+    "letter" : "Password must contain at least one letter.",
+    "number" : "Password must contain at least one number.",
+    "special" : "Password must contain at least one special character." 
+  },
 
   "postregister" : {
     "title" : "Welcome to @PLATFORM",    
