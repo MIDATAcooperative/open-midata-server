@@ -859,7 +859,9 @@
     "totpsetup" : "Please make sure you have an authenticator app like Google Authenticator or Microsoft Authenticator installed. Scan the QR-code with the authenticator app.",
     "totpsetup2" : "To verify the correct installation enter the code shown by the authenticator.",
     "no_totp_code_btn" : "Reconfigure",
-    "auth2factor_totp" : "Please enter the code from the authenticator app."
+    "auth2factor_totp" : "Please enter the code from the authenticator app.",
+    "use_sms_btn" : "Send me a SMS instead",
+    "use_totp_btn" : "Use authenticator app instead"
   },
 
   "changepassphrase" : {

@@ -52,13 +52,13 @@ public class TOTPAuthenticator implements Authenticator {
 	/**
 	 * Minimum time between tries 
 	 */
-	public static final long MIN_TIME_BETWEEN_SMS = 1000l * 1l;
+	public static final long MIN_TIME_BETWEEN_TRIES = 1000l * 1l;
 	
 	/**
 	 * Allow 5 tries per hour
 	 */
-	public static final long SMS_TIMEFRAME = 1000l * 60l * 60l;
-	public static final int MAX_PER_TIMEFRAME = 10;
+	public static final long TIMEFRAME = SMSAuthenticator.SMS_TIMEFRAME;
+	public static final int MAX_PER_TIMEFRAME = SMSAuthenticator.MAX_PER_TIMEFRAME;
 	
 	/**
 	 * initialize TOTP authentication
@@ -81,7 +81,7 @@ public class TOTPAuthenticator implements Authenticator {
 	 * @throws AppException
 	 */
 	public void startAuthentication(MidataId executor, String prompt, User user) throws AppException {
-		if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.USER_AUTHENTICATION, MIN_TIME_BETWEEN_SMS, MAX_PER_TIMEFRAME, SMS_TIMEFRAME)) {
+		if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.USER_AUTHENTICATION, MIN_TIME_BETWEEN_TRIES, MAX_PER_TIMEFRAME, TIMEFRAME)) {
 			throw new BadRequestException("error.ratelimit", "Rate limit reached.");
 		}
 		

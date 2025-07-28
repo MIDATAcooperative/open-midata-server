@@ -329,6 +329,20 @@ public class Users extends APIController {
 		User user = User.getById(userId, User.ALL_USER_INTERNAL);
 		
 		if (!PortalSessionToken.session().is2FAVerified(user)) {
+			
+		  if (json.has("authType")) {
+			  SecondaryAuthType type = JsonValidation.getEnum(json, "authType", SecondaryAuthType.class);
+			  if (type == SecondaryAuthType.TOTP && user.totpStatus == EMailStatus.VALIDATED) {
+				  user.authType = SecondaryAuthType.TOTP;
+				  User.set(user._id, "authType", user.authType);
+				  return ok();
+			  } else if (type == SecondaryAuthType.SMS && user.mobileStatus == EMailStatus.VALIDATED) {
+				  user.authType = SecondaryAuthType.SMS;
+				  User.set(user._id, "authType", user.authType);
+				  return ok();
+			  }
+		  }
+		  
 		  throw new InternalServerException("error.internal", "address change tried without verification");	  
 		}
 				

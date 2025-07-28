@@ -606,14 +606,16 @@ export default {
 		},
         
         sendSMSInstead() {
-            me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : "SMS" })).
+			const { $data } = this, me = this;
+            me.doAction("changeAddress", users.updateAddress({ user : $data.progress.userId, authType : "SMS" })).
             then(function(data) { 
                 me.retry();
             });
         },
         
         useTOTPInstead() {
-            me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : "TOTP" })).
+			const { $data } = this, me = this;
+            me.doAction("changeAddress", users.updateAddress({ user : $data.progress.userId, authType : "TOTP" })).
             then(function(data) { 
                 me.retry();
             });
