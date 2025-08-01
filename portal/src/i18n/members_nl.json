@@ -1,0 +1,94 @@
+{
+   
+  "member_quickregistration" : {
+    "sign_up" : "Sign up",
+    "study" : "Research project*",
+    "app" : "Application to be used*",
+    "app_password" : "Password for application",
+    "account_password" : "Account Password",
+    "repeat_account_password" : "Repeat Account Password"
+  },
+  
+  "help_welcome" : {
+    "menu" : "The menu above contains these links:",
+    "menu_me" : "Dashboard",
+    "menu_me_text" : "Your personal dashboard, where you can place whatever functionality you need most.",
+    "menu_overview" : "Overview",
+    "menu_overview_text" : "Overview over all functions provided by the platform.",
+    "menu_config" : "Config",
+    "menu_config_text" : "Configure your dashboard and data imports.",
+    "menu_research" : "News",
+    "menu_research_text" : "News and announcements about the platform and research projects",
+    "menu_consents" : "Sharing",
+    "menu_consents_text" : "Manage data sharing with others.",
+    "starts" : "Some ideas to start:",
+    "answer_questions" : "In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.",
+    "answered_questions" : "Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.",
+    "answer_btn" : "Answer Setup Questions Now",
+    "dashboard_btn" : "Visit my Dashboard",
+    "answer_again_btn" : "Change Answers to Setup Questions"
+  },
+  
+  "help_setup" : {
+    "description" : "The answers to the following questions are only used to setup your account according to your needs.",
+    "question_measures" : "Which measures do you want to view in the portal?",
+    "question_devices" : "Do use any of these devices?", 
+    "question_devices_answer1" : "Fitbit",
+	"question_devices_answer2" : "Jawbone",
+	"question_devices_answer3" : "Withings",			 
+    "come_back" : "You can always come back and change these settings by visiting the \"Help\" page.",
+    "done_btn" : "Done"
+  },
+  
+  "accountdata" : {
+     "midata_id" : "@PRODUCT ID:",
+     "birthday" : "Birthdate:",
+     "change_btn" : "Change"
+  },
+  
+  "member_circles" : {
+    "number_available" : "Circles available:",
+    "empty" : "You do not have any circles.",
+    "add_btn" : "Add",
+    "manage_btn" : "Manage"
+  },
+  
+  "member_othercircles" : {
+    "number_available" : "Circles available:",
+    "empty" : "No account holders share data with you."
+  },
+  
+  "yourstudies" : {
+    "study" : "Research Project",
+    "status" : "Status",
+    "empty" : "You do not participate in any research project."
+  },
+  
+  "entercode" : {
+    "title" : "Join a research project by entering a participation code.",
+    "description" : "Join a research project by entering a code:",
+    "code" : "Participation Code",
+    "continue_btn" : "Continue"
+  },
+  
+  "providers" : {
+    "name" : "Name",
+	"status" : "Status",
+	"confirmation_date" : "Confirmation Date",
+    "confirm_btn" : "confirm",
+    "reject_btn" : "reject",
+    "empty" : "You have not registered any contacts as a health professional." 
+  },
+  
+  "smallstudies" : {
+    "greeting" : "Do you want to support a research project by sharing your data?",
+    "studies" : "Projects",
+    "status" : "Enrollment",
+    "recruiting" : "Recruiting",
+    "ongoing" : "Ongoing",
+    "completed" : "Completed",
+    "stopped" : "Stopped",
+    "infoapply" : "More Info & Participation",
+    "infoonly" : "More Information"
+  }
+}

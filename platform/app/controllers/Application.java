@@ -1152,6 +1152,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.FormatAPI.updateGroupContent(),
 				controllers.routes.javascript.FormatAPI.exportChanges(),
 				controllers.routes.javascript.FormatAPI.importChanges(),
+				controllers.routes.javascript.FormatAPI.exportTranslations(),
+				controllers.routes.javascript.FormatAPI.importTranslations(),
 				controllers.routes.javascript.FormatAPI.listFormats(),				
 				controllers.routes.javascript.FormatAPI.listContents(),
 				controllers.routes.javascript.FormatAPI.listContentsSpecial(),

@@ -230,6 +230,9 @@ DELETE  /api/common/codes/:code                          controllers.FormatAPI.d
 POST    /api/common/coding/search                        controllers.FormatAPI.searchCodingPortal(request: Request)
 GET     /api/common/exportchanges                        controllers.FormatAPI.exportChanges()
 POST    /api/common/importchanges                        controllers.FormatAPI.importChanges(request: Request)
+GET     /api/common/exporttranslations/:lang             controllers.FormatAPI.exportTranslations(lang: String)
+POST    /api/common/importtranslations                   controllers.FormatAPI.importTranslations(request: Request)
+
 
 GET     /api/members/participation                       controllers.members.Studies.list(request: Request)
 GET     /api/members/participation/:study                controllers.members.Studies.get(request: Request, study: String)
