@@ -17,6 +17,7 @@
 
 <template>
 <div class="container">
+	<error-modal :error="error" />
     <div class="row">
 		<div class="col-sm-12" v-if="!terms.active">
             <panel style="max-width: 600px; padding-top: 20px; margin: 0 auto;" :title="$t('postregister.title')" :busy="isBusy">  
@@ -409,6 +410,7 @@
 <script>
 import Panel from 'components/Panel.vue'
 import TermsModal from 'components/TermsModal.vue'
+import ErrorModal from 'components/ErrorModal.vue'
 import PasswordStrength from 'components/PasswordStrength.vue';
 
 import server from "services/server.js";
@@ -444,7 +446,7 @@ export default {
 
 	props: ['preview'],
 
-	components: { CheckBox, RadioBox, ErrorBox, FormGroup, Panel, TermsModal, Password, PasswordStrength },
+	components: { CheckBox, RadioBox, ErrorBox, ErrorModal, FormGroup, Panel, TermsModal, Password, PasswordStrength },
 
 	mixins : [ status ],
 

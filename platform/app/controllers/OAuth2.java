@@ -730,8 +730,18 @@ public class OAuth2 extends Controller {
 		if (user == null) throw new NullPointerException();
 		
 		String securityToken = JsonValidation.getStringOrNull(json, "securityToken");
-				
+		SecondaryAuthType authType = user.authType;		
+		
 		AccessLog.log("checkTwoFactor: st="+token.securityToken+" st2="+securityToken+" notok="+(notok!=null?notok.toString():"null"));
+		
+		if (user.flags != null && user.flags.contains(AccountActionFlags.VERIFY_PHONE) && user.mobileStatus != EMailStatus.VALIDATED) {
+			if (notok == null) notok = new HashSet<UserFeature>();
+			notok.add(UserFeature.AUTH2FACTOR);
+			notok.remove(UserFeature.AUTH2FACTORSETUP);
+			notok.remove(UserFeature.PHONE_VERIFIED);
+			authType = SecondaryAuthType.SMS;
+		}
+		
 		
 		// If 2FA is enabled (for other apps) and address or birthday must be changed do 2FA 
 		if (notok!=null && (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.BIRTHDAY_SET) || notok.contains(UserFeature.GENDER_SET) || notok.contains(UserFeature.NEWEST_PRIVACY_POLICY_AGREED) || notok.contains(UserFeature.NEWEST_TERMS_AGREED))) {			
@@ -812,6 +822,9 @@ public class OAuth2 extends Controller {
 					notok.remove(UserFeature.PHONE_VERIFIED);
 					user.mobileStatus = EMailStatus.VALIDATED;
 					User.set(user._id, "mobileStatus", user.mobileStatus);
+					if (user.flags != null && user.flags.contains(AccountActionFlags.VERIFY_PHONE)) {
+						user.removeFlag(AccountActionFlags.VERIFY_PHONE);
+					}
 					AuditManager.instance.success();
 					if (notok.isEmpty()) {
 						notok = null;
@@ -824,12 +837,12 @@ public class OAuth2 extends Controller {
 		// Do 2FA
 		if (notok!=null && notok.contains(UserFeature.AUTH2FACTOR)) {
 			if (securityToken == null) {
-				Authenticators.getInstance(user.authType).startAuthentication(user._id, "Code", user);
+				Authenticators.getInstance(authType).startAuthentication(user._id, "Code", user);
 				notok.clear();
 				notok.add(UserFeature.AUTH2FACTOR);
 			} else {
 				try {
-					Authenticators.getInstance(user.authType).checkAuthentication(user._id, user, securityToken);
+					Authenticators.getInstance(authType).checkAuthentication(user._id, user, securityToken);
 				} catch (AppException e) {						
 					AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, token.appId);
 					throw e;

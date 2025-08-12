@@ -17,6 +17,7 @@
 
 <template>
  	<div class="container">
+		<error-modal :error="error"/>
 		<div class="row">		
 			<div class="col-sm-12">
 	<div v-if="!terms.active && !welcomemsg">
@@ -258,6 +259,7 @@ import { getLocale, setLocale, addBundle } from "services/lang.js";
 import Panel from 'components/Panel.vue';
 import PasswordStrength from 'components/PasswordStrength.vue';
 import TermsModal from 'components/TermsModal.vue';
+import ErrorModal from 'components/ErrorModal.vue';
 
 
 export default {
@@ -285,7 +287,7 @@ export default {
   props: ['preview', 'previewlinks', 'query'],
 
   components : {
-     FormGroup, ErrorBox, Panel, TermsModal, CheckBox, Password, PasswordStrength 
+     FormGroup, ErrorBox, Panel, TermsModal, CheckBox, Password, PasswordStrength, ErrorModal 
   },
 
   mixins : [ status ],

@@ -66,12 +66,13 @@
 			                ?		
 			            </span>                           
                     </error-box>
+					<error-modal :error="error" />
 	                        
 	                <p v-if="offline" class="alert alert-danger" v-t="'error.offline'"></p>
 					<form name="myform" ref="myform" class="form" @submit.prevent="dologin()" role="form" v-if="!offline">
 						<div class="form-group">
 							<input type="email" class="form-control" :placeholder="$t('login.email_address')" required v-validate v-model="login.email" style="margin-bottom:5px;" autofocus>
-							<password class="form-control" :placeholder="$t('login.password')" required v-model="login.password" style="margin-bottom:5px;" ref="pwField"></password>
+							<password v-if="!passwordless || askPassword" class="form-control" :placeholder="$t('login.password')" required v-model="login.password" style="margin-bottom:5px;" ref="pwField"></password>
 							<select class="form-control" v-if="!fixedRole" v-model="login.role" v-validate required>
 							    <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                                 <option v-for="role in roles" :key="role.value" :value="role.value">{{ $t(role.name) }}</option>
@@ -99,6 +100,7 @@
 <script>
 
 import { status, ErrorBox, Password } from 'basic-vue3-components';
+import ErrorModal from 'components/ErrorModal.vue';
 import { addBundle, setLocale } from "services/lang.js";
 import server from "services/server";
 import session from "services/session";
@@ -114,6 +116,8 @@ export default {
         actions : null,
         offline : false,
         notPublic : ENV.instanceType == "prod",
+		passwordless : true,
+		askPassword : false,
         serviceLogin : null,
         roles : [
             { value : "MEMBER", name : "enum.userrole.MEMBER" },
@@ -125,7 +129,7 @@ export default {
         app : null			
     }),
 
-    components : { ErrorBox, Panel, Password },
+    components : { ErrorBox, Panel, Password, ErrorModal },
 
     mixins : [ status ],
 
@@ -160,22 +164,31 @@ export default {
        },
         
         dologin() {
-            const { $data, $router, $route } = this, me = this;
+            const { $data, $router, $route, $nextTick } = this, me = this;
 		    // check user input
-		    if (!$data.login.email || !$data.login.password) {
+		    if (!$data.login.email || (!$data.login.password && $data.askPassword )) {
 			    $data.error = { code : "error.missing.credentials" };
                 return;
             }
 				
 		    // send the request
-		    let data = {"email": $data.login.email, "password": crypto.getHash($data.login.password), "role" : $data.login.role  };
+		    let data = {"email": $data.login.email, "role" : $data.login.role  };
+			if ($data.login.password && $data.login.password != "") data.password = crypto.getHash($data.login.password);
+			
 		    let func = function(data) {
 			    return me.doAction("login", server.post(jsRoutes.controllers.Application.authenticate().url, data));
 		    };
 		
 		    session.performLogin(func, data, $data.login.password)
 		    .then(function(result) {
-		        session.postLogin(result, $router, $route);
+				
+				if (result && result.data === "ask-password") {
+					 $data.askPassword = true;
+					 $nextTick(() => {
+					   let els = document.getElementsByName("password");
+					   if (els.length) { els[0].focus();setTimeout(function () { els[0].select(); }, 100); }
+					 });
+				} else session.postLogin(result, $router, $route);
 		    });				
         },
         

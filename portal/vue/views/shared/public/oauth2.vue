@@ -17,7 +17,7 @@ icex<!--
 
 <template>
   <div class="container">
-
+     <error-modal :error="error"/>
      <div class="row">
 
 		<div class="col-sm-12">
@@ -118,6 +118,7 @@ import session from "services/session.js";
 import ENV from "config";
 import { getLocale, setLocale } from "services/lang.js";
 import Panel from 'components/Panel.vue';
+import ErrorModal from 'components/ErrorModal.vue';
 
 function getAppInfo(name, type) {
     var data = { "name": name };
@@ -151,7 +152,7 @@ export default {
   props: ['preview'],
 
   components : {
-     FormGroup, ErrorBox, Panel, Password
+     FormGroup, ErrorBox, Panel, Password, ErrorModal
   },
 
   mixins : [ status ],

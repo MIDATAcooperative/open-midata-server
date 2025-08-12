@@ -127,6 +127,11 @@ public class User extends Model implements Comparable<User>, Actor {
 	public Date login;
 	
 	/**
+	 * No welcome mail has been sent
+	 */
+	public boolean noWelcomeMail;
+	
+	/**
 	 * Timestamp of registration
 	 */
 	public Date registeredAt; 

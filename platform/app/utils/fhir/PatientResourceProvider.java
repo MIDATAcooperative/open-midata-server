@@ -722,6 +722,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 						foundEmail = true;
 					} else if (ContactPointSystem.PHONE.equals(point.getSystem())) {
 						user.phone = point.getValue();
+						if (user.mobile == null) user.mobile = user.phone;
 					} else if (ContactPointSystem.SMS.equals(point.getSystem())) {
 						user.mobile = point.getValue();
 					}

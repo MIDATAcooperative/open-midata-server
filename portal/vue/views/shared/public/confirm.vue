@@ -17,6 +17,7 @@
 
 <template>
     <div class="container">
+	   <error-modal :error="error" />
        <div class="row">
 		  <div class="col-sm-12">
              <panel :busy="!allLoaded" style="padding-top:20px; margin:0 auto;" :title="$t('oauth2.title')" v-if="!terms.active">
@@ -188,6 +189,7 @@ import oauth from "services/oauth.js";
 import { status, FormGroup, ErrorBox } from 'basic-vue3-components';
 import ENV from "config";
 import TermsModal from 'components/TermsModal.vue';
+import ErrorModal from 'components/ErrorModal.vue';
 import Terms from 'components/Terms.vue';
 import Panel from 'components/Panel.vue';
 import { getLocale } from 'services/lang';
@@ -216,7 +218,7 @@ export default {
   props: ['preview','previewpage'],
 
   components : {
-     FormGroup, ErrorBox, TermsModal, Panel, Terms
+     FormGroup, ErrorBox, TermsModal, Panel, Terms, ErrorModal
   },
 
   mixins : [ status ],

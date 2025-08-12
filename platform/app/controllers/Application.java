@@ -239,7 +239,7 @@ public class Application extends APIController {
 	   if (user.developer == null) {		
 		   		  		   
 		   if (user.email == null || user.email.trim().length()==0) return;
-		   
+		
 		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
 			   return;
 			   //throw new InternalServerException("error.ratelimit", "Rate limit hit");
@@ -323,8 +323,10 @@ public class Application extends APIController {
 	   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.OTP_SENT).withApp(sourcePlugin).withActor(null, user._id));			   	  	  
 	   
 	   if (sourcePlugin==null || !Messager.sendMessage(sourcePlugin, MessageReason.ONE_TIME_PASSWORD, null, Collections.singleton(user._id), null, replacements)) {
+		   AccessLog.log("inner sent OTP");
 		   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.ONE_TIME_PASSWORD, user.role.toString(), Collections.singleton(user._id), null, replacements);
 	   }   
+	   AccessLog.log("after sent OTP");
 	   
 	   AuditManager.instance.success();	   
 	}
@@ -713,7 +715,7 @@ public class Application extends APIController {
 	    	
 		} else { */
 		
-			JsonValidation.validate(json, "email", "password");	
+			JsonValidation.validate(json, "email");	
 				
 			token = new ExtendedSessionToken();
 			
@@ -773,7 +775,7 @@ public class Application extends APIController {
 			missing = new HashSet<UserFeature>();
 			missing.add(UserFeature.EMAIL_VERIFIED);
 		}
-		
+						
 		if (required != null) {
 			for (UserFeature feature : required) {
 				if (!feature.isSatisfiedBy(user)) {
