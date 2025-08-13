@@ -849,6 +849,15 @@ public class OAuth2 extends Controller {
 				}
 				token.securityToken = securityToken;
 				notok.remove(UserFeature.AUTH2FACTOR);
+				
+				if (user.flags != null && user.flags.contains(AccountActionFlags.VERIFY_PHONE) && authType==SecondaryAuthType.SMS) {
+					AuditManager.instance.addAuditEvent(AuditEventType.USER_PHONE_CONFIRMED, user, token.appId);
+					user.removeFlag(AccountActionFlags.VERIFY_PHONE);
+					user.mobileStatus = EMailStatus.VALIDATED;
+					User.set(user._id, "mobileStatus", user.mobileStatus);
+					AuditManager.instance.success();
+				}
+				
 				if (notok.isEmpty()) {
 					notok = null;
 					Authenticators.getInstance(user.authType).finishAuthentication(user._id, user);

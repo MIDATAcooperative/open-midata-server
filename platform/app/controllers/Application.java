@@ -804,6 +804,17 @@ public class Application extends APIController {
 			obj.put("termsOfUse", InstanceConfig.getInstance().getTermsOfUse(user.role));
 			obj.put("privacyPolicy", InstanceConfig.getInstance().getPrivacyPolicy(user.role));
 			obj.put("userId", user._id.toString());
+			String mobile = user.mobile;
+			if (mobile == null) mobile = "";
+			else if (mobile.length()>6) mobile = mobile.substring(0, 3)+"*********************************".substring(0,mobile.length()-6)+mobile.substring(mobile.length()-3, mobile.length());
+			obj.put("mobile", mobile);
+			String email = user.email;
+			if (email == null || email.indexOf("@")<0) email = "";
+			int p = email.indexOf("@");
+			if (p<5) email = "***"+email.substring(p);
+			else email = email.substring(0,3)+"**************************************".substring(0,p-3)+email.substring(p);
+			obj.put("email", email);
+			obj.put("resettokenTs", user.resettokenTs);
 			if (token.is2FAVerified(user)) {
 			  obj.set("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
 			}

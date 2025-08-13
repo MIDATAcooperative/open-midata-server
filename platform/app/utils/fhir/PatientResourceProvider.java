@@ -794,7 +794,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		Member user = buildMemberFromPatient(thePatient);
 		user.initialApp = info().getUsedPlugin();
 	
-		AccountManagementTools.validateUserAccountFilledOut(user);
+		AccountManagementTools.validateUserAccountFilledOut(user, user.initialApp);
 		Extension testCustomerExt = thePatient.getExtensionByUrl("http://midata.coop/extensions/test-user-customer");
 		String testCustomer = testCustomerExt != null ? testCustomerExt.getValue().toString() : null;
 		TestAccountTools.prepareNewUser(tempContext, user, testCustomer);
@@ -969,7 +969,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		Member user = buildMemberFromPatient(thePatient);
 		user.initialApp = info().getUsedPlugin();
 	
-		AccountManagementTools.validateUserAccountFilledOut(user);
+		AccountManagementTools.validateUserAccountFilledOut(user, user.initialApp);
 	
 		// Is there already a matching user account?
 		Member existing = AccountManagementTools.identifyExistingAccount(info(), user);

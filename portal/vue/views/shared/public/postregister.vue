@@ -116,10 +116,21 @@
 				
 				<div v-if="progress.OTP_VERIFIED">
 					<p v-t="'postregister.otp'"></p>
+                    <p v-if="progress.resettokenTs && progress.email">
+                      {{ $t("postregister.otp1") }} 
+                      <b>{{ progress.email }}</b> 
+                      {{ $t("postregister.otp2") }} 
+                      <b>{{ $filters.dateTime(progress.resettokenTs) }}</b>
+                      {{ $t("postregister.otp3") }}
+                    </p>
+                    <p>{{ $t("postregister.otp4") }}</p>    
+                   
 					<form ref="myform" name="myform" @submit.prevent="otpsubmit()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="password" label="postregister.otp_password" :path="errors.otp">
 							<password class="form-control" name="otp" v-model="otp.otp" style="margin-bottom:5px;" autofocus required />
-						</form-group>												
+						</form-group>	
+                     		
+						
 						<div class="extraspace"></div>
 						<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'common.submit_btn'"></button>
 						<div class="extraspace"></div>
@@ -550,10 +561,10 @@ export default {
 				this.setError("password", $t('error.invalid.password_repetition'));
 				return;
 			}
-			let pwvalid = crypto.isValidPassword($data.setpw.password, $data.progress.role != "MEMBER"); 
+			let pwvalid = crypto.isValidPassword($data.setpw.password, $data.progress.role != "member"); 
         
         	if (!pwvalid) {
-        		this.setError("password", ($data.progress.role != "MEMBER" ? $t('error.tooshort.password2') : $t('error.tooshort.password')));
+        		this.setError("password", ($data.progress.role != "member" ? $t('error.tooshort.password2') : $t('error.tooshort.password')));
 				return;				
         	}
 				
