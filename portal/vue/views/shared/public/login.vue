@@ -72,7 +72,7 @@
 					<form name="myform" ref="myform" class="form" @submit.prevent="dologin()" role="form" v-if="!offline">
 						<div class="form-group">
 							<input type="email" class="form-control" :placeholder="$t('login.email_address')" required v-validate v-model="login.email" style="margin-bottom:5px;" autofocus>
-							<password v-if="!passwordless || askPassword" class="form-control" :placeholder="$t('login.password')" required v-model="login.password" style="margin-bottom:5px;" ref="pwField"></password>
+							<password v-if="!passwordless || askPassword" name="password" class="form-control" :placeholder="$t('login.password')" required v-model="login.password" style="margin-bottom:5px;" ref="pwField"></password>
 							<select class="form-control" v-if="!fixedRole" v-model="login.role" v-validate required>
 							    <option value selected disabled hidden>{{ $t('common.fillout') }}</option>
                                 <option v-for="role in roles" :key="role.value" :value="role.value">{{ $t(role.name) }}</option>

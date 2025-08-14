@@ -68,7 +68,11 @@
 				</div>
 						
 				<div v-if="progress.AUTH2FACTOR || progress.PHONE_VERIFIED">
-					<p v-t="'postregister.auth2factor'"></p>	                  			
+					<p v-t="'postregister.auth2factor'"></p>
+					<p v-if="progress.mobile">
+                     {{ $t("postregister.mobile1") }}: 
+                     <b>{{ progress.mobile }}</b>                      
+                   </p>	                  			
 					<form ref="myform" name="myform" @submit.prevent="setSecurityToken()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
 							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
@@ -191,6 +195,14 @@
 						
 						<div v-if="progress.EMAIL_VERIFIED">
 						    <p v-t="'postregister.email_instructions'"></p>
+							<p v-if="progress.resettokenTs && progress.email">
+		                     {{ $t("postregister.email1") }} 
+		                     <b>{{ progress.email }}</b> 
+		                     {{ $t("postregister.otp2") }} 
+		                     <b>{{ $filters.dateTime(progress.resettokenTs) }}</b>
+		                     {{ $t("postregister.otp3") }}
+		                   </p>
+		                   <p>{{ $t("postregister.otp4") }}</p>    
 							<button class="btn btn-default" @click="resend()" v-t="'postregister.resend_btn'"></button>
 							<div class="extraspace"></div>
 							<p v-show="resentSuccess" class="alert alert-success" v-t="'postregister.resent_success'"></p>
