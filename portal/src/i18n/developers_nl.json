@@ -178,7 +178,6 @@
     "accept_test_accounts_from_app" : "Allowed source applications",
     "test_accounts_max" : "Test accounts limit",
     "home_url" : "Landing page",
-    "noWelcome" : "No welcome mail",
     "info" : {
        "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
@@ -216,8 +215,8 @@
        "decentral" : "API keys will be managed by multiple different organizations.",
        "organizationKeys" : "API keys are directly bound to a single organization.",
        "accept_test_accounts_from_app" : "Allow test users created by these applications. (Comma separted list of internal app names.)",
-       "test_accounts_max" : "Current number of test accounts created and maximum number of test accounts allowed.",
-       "noWelcome" : "Do not sent a welcome email upon registration."
+       "test_accounts_max" : "Current number of test accounts created and maximum number of test accounts allowed."
+       
     },
     "status" : {
       "title" : "Application Status",

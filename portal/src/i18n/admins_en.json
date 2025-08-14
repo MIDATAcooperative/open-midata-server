@@ -370,7 +370,8 @@
       "delete_group_btn" : "Delete Group",
       "save_btn" : "Save Code & Content type",
       "export_btn" : "Export Changes",
-      "import_btn" : "Import Changes",
+      "export_translations_btn" : "Export Translation",
+      "import_btn" : "Import",
       "autoAddedAt" : "Automatically added",
       "approvedAt" : "Approved"
    },

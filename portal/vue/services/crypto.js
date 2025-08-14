@@ -18,14 +18,16 @@
 import forge from 'node-forge';
 import Axios from 'axios';
 import process from 'process';
+import { Buffer } from 'buffer';
+
 
 	var service = {};
 
 	var rsa = forge.pki.rsa;
 	var ssss = require('./../../src/secrets.js');
-    if (!window.process) window.process = process;	
-	
-	
+    if (!window.process) window.process = process;
+	if (!window.Buffer) window.Buffer = Buffer;	
+		
 	var recoveryPubKeys = null;
 		
 	Axios.get("/config/recoverykeys.json").then(response => recoveryPubKeys = response.data );

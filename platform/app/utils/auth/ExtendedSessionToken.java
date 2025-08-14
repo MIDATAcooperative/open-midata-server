@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.User;
+import models.enums.AccountActionFlags;
 import models.enums.EMailStatus;
 import models.enums.SecondaryAuthType;
 import models.enums.UserRole;
@@ -37,7 +38,7 @@ import utils.json.JsonExtraction;
 
 public class ExtendedSessionToken extends PortalSessionToken {
 	
-	public final static long PORTAL_LIFETIME = 1000l * 60l * 60l * 8l;
+	public final static long LOGIN_LIFETIME = 1000l * 60l * 10l ;
 
 	public MidataId appInstanceId;
 	
@@ -203,10 +204,16 @@ public class ExtendedSessionToken extends PortalSessionToken {
 			JsonNode json = Json.parse(plaintext);
 			ExtendedSessionToken result = new ExtendedSessionToken();
 			result.fetch(json);
+			if (!result.stillValid()) return null;
 			return result;
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	@Override
+	public boolean stillValid() {
+		return this.created + LOGIN_LIFETIME > System.currentTimeMillis();
 	}
 	
 	public ExtendedSessionToken asCodeExchangeToken() {
@@ -275,7 +282,8 @@ public class ExtendedSessionToken extends PortalSessionToken {
     }
     
     public boolean is2FAVerified(User user) {
-    	if (user.mobileStatus == EMailStatus.VALIDATED && user.authType != null && user.authType != SecondaryAuthType.NONE && this.securityToken==null) return false;
+    	if (/*user.mobileStatus == EMailStatus.VALIDATED &&*/ user.authType != null && user.authType != SecondaryAuthType.NONE && this.securityToken==null) return false;
+    	if (user.flags != null && user.flags.contains(AccountActionFlags.VERIFY_PHONE)) return false;
     	return true;
 	}
     

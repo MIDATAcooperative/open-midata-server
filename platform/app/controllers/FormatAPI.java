@@ -51,6 +51,7 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.InstanceConfig;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.PreLoginSecured;
@@ -504,10 +505,15 @@ public class FormatAPI extends APIController {
 		JsonNode allJson = null;
 		try {
 			allJson = mapper.readTree(base64);
+			
+			if (allJson.has("language")) return importTranslations(request);
+			
 			contentinfo = (ArrayNode) allJson.get("contentinfo");
 			coding = (ArrayNode) allJson.get("coding");
 			formatgroups = (ArrayNode) allJson.get("formatgroups");
 			groupcontent = (ArrayNode) allJson.get("groupcontent");
+			
+			if (contentinfo == null || coding == null || formatgroups == null || groupcontent == null) throw new BadRequestException("error.failed", "Bad format");
 				
 			for (JsonNode c : contentinfo) {
 			   ContentInfo ci = mapper.treeToValue(c, ContentInfo.class);
@@ -537,4 +543,92 @@ public class FormatAPI extends APIController {
 		}
 		return ok();
 	}
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public Result exportTranslations(String language) throws InternalServerException {
+		ObjectNode obj = Json.newObject();
+		
+		Set<ContentInfo> ci = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), ContentInfo.ALL);		
+		Set<RecordGroup> rg = RecordGroup.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), RecordGroup.ALL);
+		String defaultLanguage = InstanceConfig.getInstance().getDefaultLanguage();
+		
+		ObjectNode ciOut = Json.newObject();
+		for (ContentInfo ciElem : ci) {
+			String label = ciElem.label.get(language);
+			if (label == null) label = ciElem.label.get(defaultLanguage);
+			if (label == null) label = ciElem.label.get("en");
+			if (label == null) label = ciElem.content;
+			ciOut.put(ciElem.content, label);
+		}
+						
+		ObjectNode rgOut = Json.newObject();
+		for (RecordGroup rgElem : rg) {
+			String label = rgElem.label.get(language);
+			if (label == null) label = rgElem.label.get(defaultLanguage);
+			if (label == null) label = rgElem.label.get("en");
+			if (label == null) label = rgElem.name;
+			rgOut.put(rgElem.system+"_"+rgElem.name, label);
+		}
+		
+		obj.put("language", language);
+		obj.put("generated", new Date().toString());
+		obj.put("instance", InstanceConfig.getInstance().getPortalServerDomain());
+		obj.set("contentinfo", ciOut);		
+		obj.set("formatgroups", rgOut);
+						
+		return ok(obj).as("application/json");
+		
+	}
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public Result importTranslations(Request request) throws AppException {
+		JsonNode json = request.body().asJson();		
+		JsonValidation.validate(json, "base64");
+		String base64 = JsonValidation.getJsonString(json, "base64");
+		
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode ciIn = null;		
+		JsonNode rgIn = null;		
+		JsonNode allJson = null;
+		try {
+			allJson = mapper.readTree(base64);
+			ciIn = allJson.get("contentinfo");			
+			rgIn =  allJson.get("formatgroups");
+			String language = JsonValidation.getString(allJson, "language");
+			if (ciIn == null || rgIn == null) throw new BadRequestException("error.failed", "Wrong input format");
+							
+			Set<ContentInfo> ci = ContentInfo.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), ContentInfo.ALL);		
+			Set<RecordGroup> rg = RecordGroup.getAll(CMaps.map("deleted", CMaps.map("$ne", true)), RecordGroup.ALL);
+									
+			for (ContentInfo ciElem : ci) {
+				String label = JsonValidation.getStringOrNull(ciIn, ciElem.content);
+				if (label != null && !label.equals(ciElem.label.get(language))) {
+					ciElem.label.put(language, label);
+					ciElem.lastUpdated = System.currentTimeMillis();
+					ContentInfo.upsert(ciElem);
+				}
+				
+			}
+										
+			for (RecordGroup rgElem : rg) {
+				String label = JsonValidation.getStringOrNull(rgIn, rgElem.system+"_"+rgElem.name);
+				if (label != null && !label.equals(rgElem.label.get(language))) {
+					rgElem.label.put(language, label);
+					rgElem.lastUpdated = System.currentTimeMillis();
+					RecordGroup.upsert(rgElem);
+				}				
+			}
+										
+		} catch (JsonProcessingException e) {
+			AccessLog.logException("parse json", e);
+		    throw new BadRequestException("error.invalid.json", "Invalid JSON provided");	
+		} finally {
+			Instances.cacheClear("content", null);
+		}
+		return ok();
+	}
+
 }

@@ -115,7 +115,7 @@ import server from './server.js';
 	
 	service.getProject = function() { return cred.project; };
 	
-	service.login = function(confirm, confirmStudy) {	    	
+	service.login = function(confirm, confirmStudy, isContinue) {	    	
 		cred.confirm = confirm || false;
 		cred.confirmStudy = confirmStudy || (confirm && cred.confirmStudy);
        		
@@ -126,9 +126,17 @@ import server from './server.js';
 		if (pw != null) {
 		  cred2.password = crypto.getHash(cred.password);
 		}		
-		var func = function(data) {
-			return server.post("/v1/authorize", cred2)
-		};
+		var func;
+        if (isContinue) {
+            func = function(data) {
+                return session.retryLogin(cred2)
+            };
+        } else {
+            func = function(data) {
+    			return server.post("/v1/authorize", cred2)
+    		};
+        }
+        
 		
 		return session.performLogin(func, cred2, pw)
 		.then(function(result) {

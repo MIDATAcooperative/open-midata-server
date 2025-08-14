@@ -17,6 +17,7 @@
 
 <template>
  	<div class="container">
+		<error-modal :error="error"/>
 		<div class="row">		
 			<div class="col-sm-12">
 	<div v-if="!terms.active && !welcomemsg">
@@ -82,7 +83,8 @@
 						<a href="javascript:" v-if="isNew" @click="showLogin()" v-t="'registration.already_have_account'"></a>
 					</form-group>
 					<form-group name="password" label="registration.password" :path="errors.password"> 
-						<password class="form-control" id="password" name="password" :placeholder="$t('registration.password')" v-model="registration.password1" required></password>							  
+						<password class="form-control" id="password" name="password" :placeholder="$t('registration.password')" v-model="registration.password1" required></password>
+                        <password-strength :password="registration.password1" :advanced="role && role !='member'"/>					  
 				    </form-group>
 					<form-group name="password2" label="registration.password_repetition" :path="errors.password2">
                         <password class="form-control" id="password2" name="password2" :placeholder="$t('registration.password')" v-model="registration.password2" required></password>
@@ -255,7 +257,9 @@ import session from "services/session.js";
 import ENV from "config";
 import { getLocale, setLocale, addBundle } from "services/lang.js";
 import Panel from 'components/Panel.vue';
+import PasswordStrength from 'components/PasswordStrength.vue';
 import TermsModal from 'components/TermsModal.vue';
+import ErrorModal from 'components/ErrorModal.vue';
 
 
 export default {
@@ -283,7 +287,7 @@ export default {
   props: ['preview', 'previewlinks', 'query'],
 
   components : {
-     FormGroup, ErrorBox, Panel, TermsModal, CheckBox, Password 
+     FormGroup, ErrorBox, Panel, TermsModal, CheckBox, Password, PasswordStrength, ErrorModal 
   },
 
   mixins : [ status ],

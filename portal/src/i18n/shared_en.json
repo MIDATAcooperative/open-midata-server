@@ -40,11 +40,16 @@
      "unsupported" : "Operation not supported",
      "failed" : "Action failed",
      "timeout" : "Timeout",
+     "contact_support" : "If you have persistent problems logging in, please contact support at @SUPPORT.",
      "notrialuser_title" : "Full membership required!",
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "@OPERATOR membership required!",
      "mustbemember_detail" : "In order to use this feature you must be member of the cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
      "ratelimit" : "The rate limit for the current action has been reached. Try again later.",
+     "ratelimit_show" : "@modal",
+     "ratelimit_title" : "Current action tried too often",
+     "ratelimit_1" : "Whoa, that’s a lot of requests! To keep things secure, we’re taking a short break.",
+     "ratelimit_2" : "Try again in a few minutes.",
      "no_code_challenge" : "Authorization endpoint called with insufficient parameters. Contact application developer.",
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
@@ -154,8 +159,20 @@
      "blocked" : {
        "user" : "This account has been blocked. Your email address is blocked for further registration. Contact @SUPPORT for assistance.",
        "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
+       "password1_show" : "@modal",
+       "password1_title" : "Too many missed login attempts",
+       "password1_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
+       "password1_2" : "Please try again in 1 minute or reset your password.",
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
+       "password5_show" : "@modal",
+       "password5_title" : "Too many missed login attempts",
+       "password5_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
+       "password5_2" : "Please try again in 5 minutes or reset your password.",      
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
+       "password60_show" : "@modal",
+       "password60_title" : "Too many missed login attempts",
+       "password60_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
+       "password60_2" : "Please try again in 1 hour or reset your password.",      
        "participation" : "You are not authorized to participate in this research project and therefore cannot use this application.",
        "projectconsent" : "You have withdrawn your participation in this research project and can therefore no longer use this application.",
        "consent" : "You have set in the @PRODUCT portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PRODUCT portal.",
@@ -310,6 +327,7 @@
 	   "user-status-change-blocked" : "User account blocked",
 	   "user-email-confirmed" : "Email confirmed by user",
 	   "user-email-rejected" : "Email rejected by user",
+	   "user-phone-confirmed" : "Phone number confirmed by user",
 	   "user-account-change-by-admin" : "User account changed by an administrator",
 	   "user-account-deleted" : "User account deleted",
 	   "app-first-use" : "First use of application",
@@ -614,7 +632,8 @@
 	 },
 	 "secondaryauthtype" : {
 	   "NONE" : "No second authentication factor",
-	   "SMS" : "Two factor authentication using SMS"
+	   "SMS" : "Two factor authentication using SMS",
+	   "TOTP" : "Two factor authentication using an authenticator app"
 	 },
 	 "accountnotifications" : {
 	   "NONE" : "No login notifications",
@@ -660,6 +679,7 @@
     "empty" : " ",
     "by" : "by",
     "done_btn" : "Done",
+    "close_btn" : "Close",
     "back_btn" : "Back",
     "search_btn" : "Search",
     "add_btn" : "Add",
@@ -784,6 +804,14 @@
     "continue_btn" : "Continue",
     "if_lost" : "If you lost your passphrase contact @SUPPORT"
   },
+  
+  "pwstrength" : {
+    "min" : "Password must have at least 8 characters.",
+    "min_advanced" : "Password must have at least 12 characters.",
+    "letter" : "Password must contain at least one letter.",
+    "number" : "Password must contain at least one number.",
+    "special" : "Password must contain at least one special character." 
+  },
 
   "postregister" : {
     "title" : "Welcome to @PLATFORM",    
@@ -816,13 +844,20 @@
     "securityToken_btn" : "Send",
     "no_token" : "Please wait up to a minute for the code to arrive.",
     "no_token_btn" : "I did not receive the code",
-    "otp" : "An email with a one time password has been sent to your email address. Please enter the code from the email:",
+    "otp" : "An email with a one time password has been sent to your email address. Please enter the code from the email.",
+    "otp1" : "The one time password has been sent to",
+    "email1" : "The email has been sent to",
+    "otp2" : "at",
+    "otp3" : ".",
+    "otp4" : "Please look also into your spam folder if you cannot find the email.",
     "otp_password" : "One time password",
+    "mobile1" : "Sent to",
     "auth2factorsetup" : "Please setup your security settings: Do you want to protect access to your account with a second factor in addition to your password?",
     "auth2factorsetup2" : "You can change your settings later in your profile. Log into {{domain}} and click on your name on the top right.",
     "auth_type" : "Authentication",
     "auth_type_none" : "I do not want to use two factor authentication.",
     "auth_type_sms" : "I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.",
+    "auth_type_totp" : "I want to use a authenticator app like Google Authenticator or Microsoft Authenticator. Please show me a QR code for setup.",
     "emailnotify" : "Notifications",
     "emailnotify2" : "Please send me an email everytime I log into the @PRODUCT portal at {{domain}}.",
     "agree_btn" : "I agree",
@@ -844,7 +879,13 @@
       "reject_btn" : "Reject account creation",
       "intro3" : "If you clicked the wrong link and want to CONFIRM your email address instead, click here:",
       "confirm_btn" : "Confirm account creation"
-    }
+    },
+    "totpsetup" : "Please make sure you have an authenticator app like Google Authenticator or Microsoft Authenticator installed. Scan the QR-code with the authenticator app.",
+    "totpsetup2" : "To verify the correct installation enter the code shown by the authenticator.",
+    "no_totp_code_btn" : "Reconfigure",
+    "auth2factor_totp" : "Please enter the code from the authenticator app.",
+    "use_sms_btn" : "Send me a SMS instead",
+    "use_totp_btn" : "Use authenticator app instead"
   },
 
   "changepassphrase" : {

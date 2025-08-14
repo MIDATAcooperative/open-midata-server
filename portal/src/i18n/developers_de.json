@@ -51,13 +51,19 @@
         "lang" : "Sprache",
         "msgtitle" : "Meldungsüberschrift",
         "text" : "Meldungstext",
+        "smtp_btn" : "SMTP-Server konfigurieren",
         "available_tags" : "Verfügbare Kategorien",
+        "htmlFrame" : "HTML message frame",
+        "htmlFrame2" : "Geben Sie die vollständige HTML-Seite für die E-Mail ein. Verwenden Sie {{message}} als Platzhalter für die eigentliche Nachricht.",
         "reasons" : {
             "REGISTRATION" : "Neue Benutzerregistrierung",
             "REGISTRATION_BY_OTHER_PERSON" : "Registrierung eines neuen Benutzers durch eine andere Person",
             "FIRSTUSE_ANYUSER" : "Erstanwendung der Applikation",
             "FIRSTUSE_EXISTINGUSER" : "Erstanwendung der Appplikation (wenn kein Registrierungs-E-Mail versendet)",
+
+            "ONE_TIME_PASSWORD" : "Einmalpasswort gesendet",
             "SERVICE_WITHDRAW" : "Nutzung des Dienstes einstellen",
+
             "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
             "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",
             "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Consent, unconfirmed : A ➞ (invited) / Sent to (invited)",
@@ -79,8 +85,28 @@
             "TRIED_USER_REREGISTRATION" : "Nutzer-Neuregistrierung aus der API: schlechte Übereinstimmung",
             "RESOURCE_CHANGE" : "Änderung einer Resource [code]",
             "PROCESS_MESSAGE" : "FHIR-Nachricht mit Ereignis [Code] verarbeiten",
-            "LOGIN" : "Anmeldungs-Benachrichtigung (falls vom Benutzer aktiviert)"
+            "LOGIN" : "Anmeldungs-Benachrichtigung (falls vom Benutzer aktiviert)",
+            "PROJECT_PARTICIPATION_REQUEST" : "Teilnahme angefragt",
+            "PROJECT_PARTICIPATION_APPROVED" : "Teilnahme bestätigt",
+            "PROJECT_PARTICIPATION_REJECTED" : "Teilnahme abgelehnt",
+            "PROJECT_PARTICIPATION_GROUP_ASSIGNED" : "Gruppe zugewiesen",
+            "PROJECT_PARTICIPATION_RETREAT" : "Teilnahme von Benutzer zurückgezogen"
         }
+    },
+
+    "appsmtp" : {
+
+        "title" : "App-spezifische SMTP Konfiguration",
+        "description" : "Wenn hier eine SMTP-Konfiguration angegeben ist, versendet die Plattform alle für diese Anwendung definierten E-Mails über den angegebenen SMTP-Server. Bei jeder Änderung der SMTP-Konfiguration sendet die Plattform eine Test-E-Mail an Sie.",
+        "host" : "Host",
+        "port" : "Port",
+        "user" : "Username",
+        "password" : "Password",
+        "tls" : "TLS",
+        "ssl" : "SSL",
+        "from" : "Sender",
+        "from2" : "Der Absender muss den Absendernamen und die email in diesem Format enthalten: name<email>",
+        "success" : "SMTP Konfiguration erfolgreich geändert."
     },
 
     "manageapp" : {
@@ -152,6 +178,11 @@
         "default_context_config" : "Konfiguration / Importe",
         "default_context_extern" : "Unabhängiges Plugin",
         "deploy_status" : "Status der Installation",
+        "accept_test_accounts" : "Test-User erlauben?",
+        "accept_test_accounts_from_app" : "Erlaubte Quellapplikationen",
+        "test_accounts_max" : "Testaccounts limit",
+        "home_url" : "Startseite",
+        "noWelcome" : "Keine Willkommensmail",
         "info" : {
             "filename" : "Dieser Name wird intern für die Kennung Ihrer Applikation verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Ist Ihre Applikation nur für eine spezifische Rolle bestimmt? Wenn nicht, wählen Sie 'Alle Rollen'.",
@@ -173,6 +204,7 @@
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
             "tags" : "Kategorien unter welchen das Plugin im Store erscheinen wird.",
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das @PRODUCT Template verwenden, ist es 'dist/index.html#!?authToken=:authToken''",
+            "home_url" : "URL der Startseite (vor dem Einloggen).",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
             "defaultSpaceContext" : "Wählen Sie 'Dashboard' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
             "redirectUri" : "Sie können mehrere mögliche Redirect-URIs angeben, indem Sie die URIs durch ein Leerzeichen trennen.",
@@ -186,7 +218,11 @@
             "endpoint" : "Der Pfad dieses nicht projektbezogenen FHIR-Endpoint lautet /opendata/endpointname/fhir",
             "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen.",
             "decentral" : "Die API-Schlüssel werden von mehreren verschiedenen Organisationen verwaltet.",
-            "organizationKeys" : "Die API-Schlüssel sind direkt an eine einzelne Organisation gebunden."
+            "organizationKeys" : "Die API-Schlüssel sind direkt an eine einzelne Organisation gebunden.",
+
+            "accept_test_accounts_from_app" : "Von diesen Anwendungen erstellte Testbenutzer zulassen. (Durch Kommas getrennte Liste interner App-Namen.)",
+            "test_accounts_max" : "Aktuelle Anzahl der erstellten Testkonten und maximal zulässige Anzahl der Testkonten.",
+            "noWelcome" : "Keine Willkommensmail bei der Registrierung schicken."
         },
         "status" : {
             "title" : "Applikationsstatus",

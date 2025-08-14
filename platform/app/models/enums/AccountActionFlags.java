@@ -36,6 +36,11 @@ public enum AccountActionFlags {
 	/**
 	 * User must change password
 	 */
-	CHANGE_PASSWORD
+	CHANGE_PASSWORD,
+	
+	/**
+	 * (Externally provided) phone number must be verified before first login
+	 */
+	VERIFY_PHONE
 		
 }

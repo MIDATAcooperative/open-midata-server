@@ -81,6 +81,7 @@ import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
 import utils.auth.Rights;
+import utils.auth.auth2factor.Authenticators;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -328,6 +329,20 @@ public class Users extends APIController {
 		User user = User.getById(userId, User.ALL_USER_INTERNAL);
 		
 		if (!PortalSessionToken.session().is2FAVerified(user)) {
+			
+		  if (json.has("authType")) {
+			  SecondaryAuthType type = JsonValidation.getEnum(json, "authType", SecondaryAuthType.class);
+			  if (type == SecondaryAuthType.TOTP && user.totpStatus == EMailStatus.VALIDATED) {
+				  user.authType = SecondaryAuthType.TOTP;
+				  User.set(user._id, "authType", user.authType);
+				  return ok();
+			  } else if (type == SecondaryAuthType.SMS && user.mobileStatus == EMailStatus.VALIDATED) {
+				  user.authType = SecondaryAuthType.SMS;
+				  User.set(user._id, "authType", user.authType);
+				  return ok();
+			  }
+		  }
+		  
 		  throw new InternalServerException("error.internal", "address change tried without verification");	  
 		}
 				
@@ -392,6 +407,10 @@ public class Users extends APIController {
 			} else {
 				user.notifications = AccountNotifications.NONE;
 			}
+			
+			if (json.has("totp")) {
+				Authenticators.getInstance(SecondaryAuthType.TOTP).checkAuthentication(executorId, user, JsonValidation.getString(json, "totp"));
+			}
 		}
 		
 		if (json.has("country")) {
@@ -420,7 +439,7 @@ public class Users extends APIController {
 		User.set(user._id, "firstname", user.firstname);
 		User.set(user._id, "lastname", user.lastname);
 		User.set(user._id, "gender", user.gender);
-		User.set(user._id, "authType", user.authType);	
+		User.set(user._id, "authType", user.authType);		
 		User.set(user._id, "notifications", user.notifications);
 		
 		user.updateKeywords(true);
@@ -436,6 +455,7 @@ public class Users extends APIController {
 		}
 		
 		AuditManager.instance.success();
+				
 		
 		return ok();		
 	}
@@ -467,14 +487,19 @@ public class Users extends APIController {
 		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
 		
 		SecondaryAuthType authType = JsonValidation.getEnum(json, "authType", SecondaryAuthType.class);
-						
+		
+		User user = User.getById(userId, User.ALL_USER_INTERNAL);
+		
 		if (authType.equals(SecondaryAuthType.NONE) && InstanceConfig.getInstance().getInstanceType().is2FAMandatory(getRole())) {
 			throw new JsonValidationException("error.missing.auth_type", "authType", "missing", "Two factor authentication is mandantory");
 		}
 		
-		AccountNotifications sendMail = JsonValidation.getEnum(json, "notifications", AccountNotifications.class);
+		if (authType == SecondaryAuthType.TOTP && JsonValidation.getBoolean(json, "reset")) {
+			Authenticators.getInstance(SecondaryAuthType.TOTP).setupAuthentication(user);
+		}
 		
-		User user = User.getById(userId, Sets.create("_id", "notifications")); 
+		AccountNotifications sendMail = JsonValidation.getEnum(json, "notifications", AccountNotifications.class);
+				
 		
 		User.set(user._id, "searchable", searchable);
 		User.set(user._id, "language", language);
@@ -486,6 +511,9 @@ public class Users extends APIController {
 		
 		if (authType.equals(SecondaryAuthType.SMS)) {
 			requireUserFeature(request, UserFeature.PHONE_ENTERED);
+		}
+		if (authType.equals(SecondaryAuthType.TOTP) ) {
+			requireUserFeature(request, UserFeature.AUTH2FACTORSETUP);
 		}
 		
 		return ok();		

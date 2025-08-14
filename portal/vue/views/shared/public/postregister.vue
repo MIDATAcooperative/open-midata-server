@@ -17,6 +17,7 @@
 
 <template>
 <div class="container">
+	<error-modal :error="error" />
     <div class="row">
 		<div class="col-sm-12" v-if="!terms.active">
             <panel style="max-width: 600px; padding-top: 20px; margin: 0 auto;" :title="$t('postregister.title')" :busy="isBusy">  
@@ -67,7 +68,11 @@
 				</div>
 						
 				<div v-if="progress.AUTH2FACTOR || progress.PHONE_VERIFIED">
-					<p v-t="'postregister.auth2factor'"></p>					
+					<p v-t="'postregister.auth2factor'"></p>
+					<p v-if="progress.mobile">
+                     {{ $t("postregister.mobile1") }}: 
+                     <b>{{ progress.mobile }}</b>                      
+                   </p>	                  			
 					<form ref="myform" name="myform" @submit.prevent="setSecurityToken()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
 							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
@@ -85,16 +90,51 @@
 							  <button @click="noSecurityToken()" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.no_token_btn'"></button>
 							</div>  
 						</div>
+                        <div v-if="!progress.PHONE_VERIFIED && progress.totpStatus == 'VALIDATED'">                                                          
+                            <div class="d-grid gap-2 mt-3 mb-2">
+                              <button @click="useTOTPInstead()" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.use_totp_btn'"></button>
+                            </div>  
+                        </div>
+                        
 						<div class="extraspace"></div>
+					</form>
+				</div>
+				
+				<div v-if="progress.AUTH2FACTOR_TOTP">
+					<p v-t="'postregister.auth2factor_totp'"></p>	                    		
+					<form ref="myform" name="myform" @submit.prevent="setSecurityToken()" role="form" class="form form-horizontal" novalidate>
+						<form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
+							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
+						</form-group>							  
+						<div class="extraspace"></div>
+						<div class="d-grid gap-2 mt-3 mb-2">
+						  <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'postregister.securityToken_btn'"></button>
+						</div>	
+                        <div v-if="progress.mobileStatus == 'VALIDATED'" class="d-grid gap-2 mt-3 mb-2">
+                          <button @click="sendSMSInstead()" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.use_sms_btn'"></button>
+                        </div>  					  	
+						<div class="extraspace"></div>
+                        <error-box :error="error"></error-box>							  						
 					</form>
 				</div>
 				
 				<div v-if="progress.OTP_VERIFIED">
 					<p v-t="'postregister.otp'"></p>
+                    <p v-if="progress.resettokenTs && progress.email">
+                      {{ $t("postregister.otp1") }} 
+                      <b>{{ progress.email }}</b> 
+                      {{ $t("postregister.otp2") }} 
+                      <b>{{ $filters.dateTime(progress.resettokenTs) }}</b>
+                      {{ $t("postregister.otp3") }}
+                    </p>
+                    <p>{{ $t("postregister.otp4") }}</p>    
+                   
 					<form ref="myform" name="myform" @submit.prevent="otpsubmit()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="password" label="postregister.otp_password" :path="errors.otp">
 							<password class="form-control" name="otp" v-model="otp.otp" style="margin-bottom:5px;" autofocus required />
-						</form-group>												
+						</form-group>	
+                     		
+						
 						<div class="extraspace"></div>
 						<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary btn-block" v-t="'common.submit_btn'"></button>
 						<div class="extraspace"></div>
@@ -108,6 +148,7 @@
 					<form ref="myform" name="myform" @submit.prevent="pwsubmit()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="password" label="setpw.new_password" :path="errors.password">
 							<password class="form-control" name="password" v-model="setpw.password" style="margin-bottom:5px;" autofocus required />
+                            <password-strength :password="setpw.password" :advanced="progress.role !='member'"/>
 						</form-group>
 						<form-group name="passwordnew" label="setpw.new_password_repeat" :path="errors.passwordnew">
 							<password class="form-control" name="passwordnew" v-model="setpw.passwordRepeat" style="margin-bottom:5px;" required />
@@ -154,6 +195,14 @@
 						
 						<div v-if="progress.EMAIL_VERIFIED">
 						    <p v-t="'postregister.email_instructions'"></p>
+							<p v-if="progress.resettokenTs && progress.email">
+		                     {{ $t("postregister.email1") }} 
+		                     <b>{{ progress.email }}</b> 
+		                     {{ $t("postregister.otp2") }} 
+		                     <b>{{ $filters.dateTime(progress.resettokenTs) }}</b>
+		                     {{ $t("postregister.otp3") }}
+		                   </p>
+		                   <p>{{ $t("postregister.otp4") }}</p>    
 							<button class="btn btn-default" @click="resend()" v-t="'postregister.resend_btn'"></button>
 							<div class="extraspace"></div>
 							<p v-show="resentSuccess" class="alert alert-success" v-t="'postregister.resent_success'"></p>
@@ -211,7 +260,33 @@
 							<hr>
 						</div>
 
-                       <div v-if="progress.AUTH2FACTORSETUP">
+                       <div v-if="progress.AUTH2FACTORSETUP && registration.authType=='TOTP' && progress.totpStatus != 'VALIDATED'">
+                          <div v-t="'postregister.totpsetup'"></div>
+                          <div class="extraspace"></div>
+                          <div class="text-center">
+                            <img :src="qrcodeUrl()">
+                          </div>
+                          <form ref="myform" name="myform" @submit.prevent="changeAuthType(true)" role="form" class="form form-horizontal" novalidate>
+						  <div v-t="'postregister.totpsetup2'"></div>							                          
+			  			  <form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
+							 <input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate ref="tokenInput" autofocus>
+						  </form-group>							  
+	          
+                          <div class="extraspace"></div>
+                          <div class="d-grid gap-2 mt-3 mb-2">
+                            <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'postregister.securityToken_btn'"></button>
+                          </div>                          
+                          <div class="extraspace"></div>
+                          <error-box :error="error"></error-box>
+                                
+                         
+                          <div class="d-grid gap-2 mt-3 mb-2">
+                            <button @click="registration.authType=null;" type="button" :disabled="action!=null" class="btn btn-default" v-t="'postregister.no_totp_code_btn'"></button>
+                          </div>  
+                          <div class="extraspace"></div>
+                          </form>
+                       </div>
+                       <div v-else-if="progress.AUTH2FACTORSETUP">
 							<div v-t="'postregister.auth2factorsetup'"></div>
 														
 							<div class="extraspace"></div>
@@ -226,6 +301,9 @@
 									    <radio-box name="authType" value="SMS" v-model="registration.authType" :path="errors.authType">                                     
 									       <span v-t="'postregister.auth_type_sms'"></span>
 										</radio-box>
+                                        <radio-box name="authType" value="TOTP" v-model="registration.authType" :path="errors.authType">                                     
+                                           <span v-t="'postregister.auth_type_totp'"></span>
+                                        </radio-box>
 									</form-group>									
 								</div>
 								<form-group name="mobile" label="registration.mobile_phone" :path="errors.mobile">
@@ -355,6 +433,8 @@
 <script>
 import Panel from 'components/Panel.vue'
 import TermsModal from 'components/TermsModal.vue'
+import ErrorModal from 'components/ErrorModal.vue'
+import PasswordStrength from 'components/PasswordStrength.vue';
 
 import server from "services/server.js";
 import crypto from "services/crypto.js";
@@ -389,7 +469,7 @@ export default {
 
 	props: ['preview'],
 
-	components: { CheckBox, RadioBox, ErrorBox, FormGroup, Panel, TermsModal, Password },
+	components: { CheckBox, RadioBox, ErrorBox, ErrorModal, FormGroup, Panel, TermsModal, Password, PasswordStrength },
 
 	mixins : [ status ],
 
@@ -449,6 +529,7 @@ export default {
 
 		retry(funcresult, params) {			
 			const { $data, $route, $router } = this, me = this;
+			$data.error = null;
 	    	if (funcresult) {				
 		   		if (funcresult.data.istatus === "ACTIVE") oauth.postLogin(funcresult);
 		   		else session.postLogin(funcresult, $router, $route);		
@@ -486,15 +567,16 @@ export default {
 		
 		pwsubmit() {
 			const { $data, $route, $t } = this, me = this;
+			$data.error = null;
 		
 			if (!$data.setpw.passwordRepeat || $data.setpw.passwordRepeat !== $data.setpw.password) {
 				this.setError("password", $t('error.invalid.password_repetition'));
 				return;
 			}
-			let pwvalid = crypto.isValidPassword($data.setpw.password, $data.progress.role != "MEMBER"); 
+			let pwvalid = crypto.isValidPassword($data.setpw.password, $data.progress.role != "member"); 
         
         	if (!pwvalid) {
-        		this.setError("password", ($data.progress.role != "MEMBER" ? $t('error.tooshort.password2') : $t('error.tooshort.password')));
+        		this.setError("password", ($data.progress.role != "member" ? $t('error.tooshort.password2') : $t('error.tooshort.password')));
 				return;				
         	}
 				
@@ -537,15 +619,32 @@ export default {
 			});
 		},
 
-		changeAuthType() {		
+		changeAuthType(totp) {		
 			const { $data } = this, me = this;
+			$data.error = null;
 			$data.registration.user = $data.registration._id;
-			if ($data.registration.mobile === "") $data.registration.mobile = undefined;
-			me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : $data.registration.authType, mobile : $data.registration.mobile, emailnotify : $data.registration.emailnotify })).
+			if ($data.registration.mobile === "") $data.registration.mobile = undefined;			
+			me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : $data.registration.authType, mobile : $data.registration.mobile, emailnotify : $data.registration.emailnotify, totp : $data.setpw.securityToken })).
 			then(function(data) { 
-				me.retry();
+				me.retry(null, { securityToken : $data.setpw.securityToken });
 			});
 		},
+        
+        sendSMSInstead() {
+			const { $data } = this, me = this;
+            me.doAction("changeAddress", users.updateAddress({ user : $data.progress.userId, authType : "SMS" })).
+            then(function(data) { 
+                me.retry();
+            });
+        },
+        
+        useTOTPInstead() {
+			const { $data } = this, me = this;
+            me.doAction("changeAddress", users.updateAddress({ user : $data.progress.userId, authType : "TOTP" })).
+            then(function(data) { 
+                me.retry();
+            });
+        },
 	
 		confirm(forceConfirm) {
 			const { $data, $route } = this,me = this;
@@ -553,6 +652,7 @@ export default {
 			$data.resentSuccess = false;
 			$data.codeSuccess = false;
 			$data.mailSuccess = false;
+			$data.error = null;
 			var data = { token : $route.query.token, mode : $data.mode };
 			if (forceConfirm) {
 				data.mode = "VALIDATED";
@@ -574,6 +674,7 @@ export default {
 			$data.resentSuccess = false;
 			$data.codeSuccess = false;
 			$data.mailSuccess = false;
+			$data.error = null;
 
 			var data = { code : code, mode : "VALIDATED", userId : $data.progress.userId , role : $data.progress.role };
 	    	me.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, data ))
@@ -584,7 +685,7 @@ export default {
 
 		changeBirthday() {		
 			const { $data, $t } = this, me = this;
-			
+			$data.error = null;
 		
         	let d = $data.registration.birthdayDate;
         	let pad = function(n){
@@ -610,7 +711,7 @@ export default {
 		
 		changeGender() {		
 			const { $data, $t } = this, me = this;
-						
+			$data.error = null;		
 			let upd = { user : $data.registration._id, gender : $data.registration.gender };
 																	
 			$data.registration.user = $data.registration._id;									
@@ -639,6 +740,7 @@ export default {
 
 		changeAddress() {		
 			const { $data } = this, me = this;
+			$data.error = null;
         	if (!this.addressNeeded()) {
         		$data.registration = JSON.parse(JSON.stringify($data.registration));
 				$data.registration.firstname = $data.registration.lastname = $data.registration.gender = $data.registration.city = $data.registration.zip = $data.registration.country = $data.registration.address1 = undefined;			
@@ -658,6 +760,7 @@ export default {
 
 		resend() {	
 			const { $data } = this, me = this;
+			$data.error = null;
 			$data.resentSuccess = false;
 			$data.codeSuccess = false;
 			$data.mailSuccess = false;
@@ -690,12 +793,13 @@ export default {
 				$data.progress = { requirements : [ $route.query.feature ] };
 		
 				this.doBusy(session.currentUser.then(function (userId) {
-					me.doBusy(users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt"])
+					me.doBusy(users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "totpStatus", "role", "subroles", "confirmedAt", "authType"])
 					.then(function(results) {
 						$data.registration = results.data[0];
 						$data.progress.emailStatus = $data.registration.emailStatus;
 						$data.progress.agbStatus = $data.registration.agbStatus;
 						$data.progress.contractStatus = $data.registration.contractStatus;
+                        $data.progress.totpStatus = $data.registration.totpStatus;
 						me.addAddressParams();
 					}));
 				}));
@@ -724,7 +828,11 @@ export default {
 			if (Object.keys($data.progress).length==0) {
 				$router.go(-1);
 			}
-		}
+		},
+        
+        qrcodeUrl() {
+            return ENV.apiurl+"/api/common/totp/qrcode?token="+encodeURIComponent(sessionStorage.token);
+        }
 	
 	},
 

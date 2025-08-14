@@ -36,6 +36,9 @@
         "study_description" : "Projektbeschreibung",
         "study_identifiers" : "Identifikatoren",
         "study_identifiers_info" : "Geben Sie hier alle Projektidentifikatoren von externen Institutionen ein. Geben Sie einen Identifikator pro Zeile ein. Verwenden Sie '|', um Codesystem und Wert zu trennen, falls gewünscht. Die Identifikatoren werden auf den Projektseiten des Portals nicht angezeigt.",
+        "study_categories" : "Kategorien",
+        "study_categories_info" : "Geben Sie hier alle weiteren Kategorien für Einwilligungen ein. Geben Sie pro Zeile eine Kodierung ein. Trennen Sie Codesystem und Code ggf. mit „|“. Kategorien werden auf Projektseiten im Portal nicht angezeigt.",
+
         "developer_nostart" : "Achtung!",
         "developer_nostart2" : "Als Entwickler können Sie ein Projekt nur einrichten, aber nicht durchführen. Als Entwickler ist es nicht möglich, die Teilnehmersuche zu starten."
     },
@@ -47,7 +50,9 @@
         "rules" : "Regeln",
         "actions" : "Applikationen",
         "participants" : "Teilnehmer",
+        "subprojects" : "Unterprojekte",
         "codes" : "Codes",
+        "messages" : "Kommunikation",
         "records" : "Einträge",
         "results" : "Ergebnisse",
         "team" : "Team",
@@ -56,6 +61,7 @@
 
     "studies" : {
         "title" : "Forschungsprojekte",
+        "code" : "Code",
         "name" : "Name",
         "validation" : "Validierung",
         "participants" : "Teilnehmer",
@@ -100,20 +106,21 @@
         "type" : "Wie sind sie verknüpft?",
         "types" : {
             "OFFER_P" : "Onboarding: Die Applikation bietet die Projektteilnahme beim Anmelden/Start an",
-            "OFFER_EXTRA_PAGE" : "Onboarding: Die Projektteilnahme wird auf einer zusätzliche Seite beschrieben",
-            "OFFER_INLINE_AGB" : "Onboarding: Die Nutzungsbedingungen als Projektbeschreibung verwenden",
-            "REQUIRE_P" : "Die Teilnahme am Forschungsprojekt ist zwingend für die Nutzung der Applikation",
+            "AUTOADD_P" : "Onboarding: Projektteilnahme wird bei login/start hinzugefügt",
+            "LINKED_P" : "Projektteilnahme ID wird mit der App in der Patient resource geteilt",
+            "CHECK_P" : "Projektteilnahme wird für die Nutzung der App Vorraussetzung",
             "RECOMMEND_A" : "Die Applikation wird vom Forschungsprojekt empfohlen",
             "AUTOADD_A" : "Das Plugin wird bei Projektteilnahme automatisch hinzugefügt",
             "DATALINK" : "Die Applikation teilt die Daten mit den Projektteilnehmern"
         },
         "types_short" : {
             "OFFER_P" : "Teilnahme vorschlagen",
-            "OFFER_EXTRA_PAGE" : "Zusätzliche Projektseite",
-            "OFFER_INLINE_AGB" : "Nutzungsbedingungen als Beschreibung",
-            "REQUIRE_P" : "Teilnahme erforderlich",
+
+            "AUTOADD_P" : "Teilnahme wird bei Appnutzung hinzugefügt",
+            "LINKED_P" : "Teilnahme ID wird mit App geteilt",
+            "CHECK_P" : "Teilnahme für Appnutzung benötigt",
             "RECOMMEND_A" : "Empfohlen",
-            "AUTOADD_A" : "Automatisch hinzufügen",
+            "AUTOADD_A" : "App automatisch hinzufügen",
             "DATALINK" : "Datenteilung"
         },
         "use_period" : "Wann werden sie verknüpft?",
@@ -137,6 +144,8 @@
         "anonymous2" : ", das Pseudonymisierungs-Mapping ist nicht zugänglich.",
         "not_anonymous1" : "Nicht pseudonymisiert",
         "not_anonymous2" : ", bedingt, dass das Mitglied seinen vollständigen Namen, Geburtsdatum und Kontaktinformationen (Adresse, Telefon, E-Mail) teilt",
+
+        "data_filters" : "Pseudonymisierung",
         "assistance" : "Unterstützung",
         "no_assistance1" : "Keine",
         "no_assistance2" : " - der Kontoinhaber nimmt alleine teil.",
@@ -192,6 +201,16 @@
         }
     },
 
+    "studysubprojects" : {
+        "project" : "Projektcode",
+        "projectName" : "Projektname",
+        "addproject_btn" : "Projekt hinzufügen",
+        "empty" : "There are currently no subprojects defined for this project",
+        "projectGroupMapping" : "Gruppenzuweisung",
+        "target" : "Ziel",
+        "source" : "Quelle"
+    },
+
     "studyparticipant" : {
         "participant" : "Teilnehmer:",
         "gender" : "Geschlecht:",
@@ -207,6 +226,8 @@
         "name" : "Name",
         "partName" : "Pseudonymisiert",
         "group" : "Gruppe",
+
+        "test_group" : "Gruppe für Testuser",
         "status" : "Status",
         "total" : "{{count}} Zustimmungen, die Ihren Kriterien entsprechen.",
         "only_first_shown" : "Es werden nur die ersten 1000 übereinstimmenden Zustimmungen angezeigt.",
@@ -388,6 +409,13 @@
         "manually" : "Manuelle Eingabe",
         "generated" : "Generiert",
         "codes" : "Neue Codes",
-        "add_btn" : "Jetzt hinzufügen"
+        "add_btn" : "Jetzt hinzufügen",
+        "link" : "Link zur Projektteilnahme",
+        "link2" : "Klicken Sie auf einen Code aus der obigen Liste, um den entsprechenden Link anzuzeigen, der zum Beitritt zum Projekt verwendet werden kann.",
+        "link_no" : "Bei diesem Projekt ist eine Teilnahme per Link nicht möglich."
+    },
+
+    "studymessages" : {
+        "all" : "Alle Teilnehmergruppen"
     }
 }

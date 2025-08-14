@@ -50,7 +50,9 @@ libraryDependencies ++= Seq(
     "javax.servlet" % "javax.servlet-api" % "3.1.0",
     "com.typesafe.play" %% "play-mailer" % "9.0.0",
     "com.typesafe.play" %% "play-mailer-guice" % "9.0.0",
-    "com.typesafe.play" %% "play-json" % "2.10.6"        
+    "com.typesafe.play" %% "play-json" % "2.10.6",    
+    "com.github.bastiaanjansen" % "otp-java" % "2.1.0",
+    "io.nayuki" % "qrcodegen" % "1.8.0"
 )
 routesGenerator := InjectedRoutesGenerator
 
