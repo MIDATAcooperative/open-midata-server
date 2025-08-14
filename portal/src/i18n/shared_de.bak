@@ -40,11 +40,16 @@
      "unsupported" : "Operation not supported",
      "failed" : "Action failed",
      "timeout" : "Timeout",
+     "contact_support" : "If you have persistent problems logging in, please contact support at @SUPPORT.",
      "notrialuser_title" : "Full membership required!",
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "@OPERATOR membership required!",
      "mustbemember_detail" : "In order to use this feature you must be member of the cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
      "ratelimit" : "The rate limit for the current action has been reached. Try again later.",
+     "ratelimit_show" : "@modal",
+     "ratelimit_title" : "Current action tried too often",
+     "ratelimit_1" : "Whoa, that’s a lot of requests! To keep things secure, we’re taking a short break.",
+     "ratelimit_2" : "Try again in a few minutes.",
      "no_code_challenge" : "Authorization endpoint called with insufficient parameters. Contact application developer.",
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
@@ -90,7 +95,10 @@
        "usePreconfirmed" : "Consent preconfirmation and resharing to 3rd party is not allowed at the same time.",
        "csvmapping" : "Invalid mapping provided.",
        "id" : "Invalid identifier",
-       "usergroup" : "You must be member of this user group to perform this action."
+       "usergroup" : "You must be member of this user group to perform this action.",
+       "project" : "Meta projects cannot be used as subprojects for other meta projects.",
+       "smtp" : "Test of SMTP configuration failed.",
+       "otp" : "Wrong one-time password."
      },
 
      "missing" : {
@@ -134,6 +142,7 @@
 
      "exists" : {
        "user" : "A person with this email is already registered.",
+       "email" : "Different account with same email already exists.",
        "member" : "A person with this email is already registered.",
        "provider" : "A health professional with this name already exists.",
        "organization" : "An organization with this name already exists.",
@@ -150,14 +159,27 @@
      "blocked" : {
        "user" : "This account has been blocked. Your email address is blocked for further registration. Contact @SUPPORT for assistance.",
        "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
+       "password1_show" : "@modal",
+       "password1_title" : "Too many missed login attempts",
+       "password1_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
+       "password1_2" : "Please try again in 1 minute or reset your password.",
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
+       "password5_show" : "@modal",
+       "password5_title" : "Too many missed login attempts",
+       "password5_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
+       "password5_2" : "Please try again in 5 minutes or reset your password.",      
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
+       "password60_show" : "@modal",
+       "password60_title" : "Too many missed login attempts",
+       "password60_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
+       "password60_2" : "Please try again in 1 hour or reset your password.",      
        "participation" : "You are not authorized to participate in this research project and therefore cannot use this application.",
        "projectconsent" : "You have withdrawn your participation in this research project and can therefore no longer use this application.",
        "consent" : "You have set in the @PRODUCT portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PRODUCT portal.",
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PRODUCT portal.",
        "app_test" : "You are allowed to use this application on a maximum of 10 devices. On this TEST instance consents have been reset for you. Please retry.",
-       "joinmethod" : "It is not allowed to join the project by this method." 
+       "joinmethod" : "It is not allowed to join the project by this method.",
+       "testuser" : "Application does not accept test accounts." 
      },
 
      "closed" : {
@@ -178,6 +200,9 @@
        "password" : "The password must contain at least one letter and one digit.",
        "passphrase" : "Passphrases should contain upper/lower case letters, numbers and special characters."
      },
+     "toomany" : {
+       "testuser" : "The maximum allowed number of test users has been reached."
+     },
 
      "concurrent" : {
        "update" : "Concurrent update. Please try again."
@@ -187,7 +212,8 @@
        "token" : "This activation token has already expired. Please request a new one.",
        "tokenresent" : "This activation token has already expired. A new token has been sent to your email address right now. Please confirm your email address within 24 hours using the new token.",
        "code" : "This participation code has expired.",
-       "securitytoken" : "This code has expired."
+       "securitytoken" : "This code has expired.",
+       "app" : "This application is no longer available for use." 
      },
 
      "already_done" : {
@@ -301,6 +327,7 @@
 	   "user-status-change-blocked" : "User account blocked",
 	   "user-email-confirmed" : "Email confirmed by user",
 	   "user-email-rejected" : "Email rejected by user",
+	   "user-phone-confirmed" : "Phone number confirmed by user",
 	   "user-account-change-by-admin" : "User account changed by an administrator",
 	   "user-account-deleted" : "User account deleted",
 	   "app-first-use" : "First use of application",
@@ -367,7 +394,8 @@
 	   "apikey-created" : "API-Key created",
        "apikey-deleted" : "API-Key deleted",
        "service-instance-created" : "Service-Instance created",
-       "service-instance-deleted" : "Service-Instance deleted"	   	   
+       "service-instance-deleted" : "Service-Instance deleted",
+       "otp-sent" : "One-time password sent"	   	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -440,7 +468,8 @@
 	   "CLINICAL" : "Clinical Study",
 	   "CITIZENSCIENCE" : "Citizen Science Project",
 	   "COMMUNITY" : "Community",
-	   "REGISTRY" : "Registry"
+	   "REGISTRY" : "Registry",
+	   "META" : "Meta Project"
 	 },
 	 "joinmethod" : {
 	   "APP" : "Participant uses the linked application",
@@ -448,7 +477,7 @@
 	   "RESEARCHER" : "Participant is manually registered by research team member",
 	   "API" : "Participant is registered by external software",
 	   "ALGORITHM" : "Participant has been proposed by an algorithm (not supported)",
-	   "CODE" : "Participant may join by entering a code (not supported)",
+	   "CODE" : "Participant may join by entering a code",
 	   "APP_CODE" : "Participant may join through application provided code",
 	   "TRANSFER" : "Data is transferred from another research project (not supported)"	
 	 },
@@ -460,6 +489,7 @@
 	 },
 	 "studyvalidationstatus" : {
 	   "DRAFT" : "Draft (Not Validated)",
+	   "PATCH" : "Re-edit (Not Validated)",
 	   "REJECTED" : "Project rejected by @OPERATOR",
 	   "VALIDATED" : "Project has been validated",
 	   "VALIDATION" : "Validation running"
@@ -473,6 +503,12 @@
      "NO_REJOIN" : "Participants cannot rejoin",
      "DELETE_LAST" : "Replace previous participation"
    },
+     "projectdatafilter" : {
+       "NO_TIME" : "Remove all time information from dates",
+       "ONLY_MONTH_YEAR" : "Remove day from dates.(Keep month and year)",
+       "NO_PRACTITIONER" : "Remove practitioner references",
+       "NO_NARRATIVES" : "Remove narrative texts"
+     },
 	 "pcodestatus" : {
 	    "UNUSED" : "Not used",
 	    "SHARED" : "Given away",
@@ -495,7 +531,7 @@
 	   "MONITOR" : "Monitor",
 	   "MASTER" : "Master User",
 	   "USERADMIN" : "User Admin",
-	   "KEYRECOVERY" : "Key Recoveries",
+	   "KEYRECOVERY" : "Key Recovery",
 	   "STUDYADMIN" : "Project Admin",
 	   "CONTENTADMIN" : "Content Admin",
 	   "PLUGINADMIN" : "Application Admin",
@@ -535,6 +571,7 @@
 	   "IT" : "Italian",
 	   "FR" : "French",
 	   "NL" : "Dutch",
+	   "ET" : "Estonian",
 	   "INT" : "Default / Non localized"
 	 },
 	 "month" : {
@@ -595,7 +632,8 @@
 	 },
 	 "secondaryauthtype" : {
 	   "NONE" : "No second authentication factor",
-	   "SMS" : "Two factor authentication using SMS"
+	   "SMS" : "Two factor authentication using SMS",
+	   "TOTP" : "Two factor authentication using an authenticator app"
 	 },
 	 "accountnotifications" : {
 	   "NONE" : "No login notifications",
@@ -629,12 +667,19 @@
 	    "RUNNING" : "Building",
 	    "FAILED" : "Failed",
 	    "DONE" : "Done"
+	 },
+	 "test_accounts" : {
+	    "ALL" : "Allow test users created by any application",
+	    "NONE": "Do not allow test users",
+	    "SOME" : "Allow test users created by some applications"
 	 }
    },
 
   "common" : {
     "empty" : " ",
+    "by" : "by",
     "done_btn" : "Done",
+    "close_btn" : "Close",
     "back_btn" : "Back",
     "search_btn" : "Search",
     "add_btn" : "Add",
@@ -759,6 +804,14 @@
     "continue_btn" : "Continue",
     "if_lost" : "If you lost your passphrase contact @SUPPORT"
   },
+  
+  "pwstrength" : {
+    "min" : "Password must have at least 8 characters.",
+    "min_advanced" : "Password must have at least 12 characters.",
+    "letter" : "Password must contain at least one letter.",
+    "number" : "Password must contain at least one number.",
+    "special" : "Password must contain at least one special character." 
+  },
 
   "postregister" : {
     "title" : "Welcome to @PLATFORM",    
@@ -791,11 +844,18 @@
     "securityToken_btn" : "Send",
     "no_token" : "Please wait up to a minute for the code to arrive.",
     "no_token_btn" : "I did not receive the code",
+    "otp" : "An email with a one time password has been sent to your email address. Please enter the code from the email.",
+    "otp1" : "The one time password has been sent to",
+    "otp2" : "at",
+    "otp3" : ".",
+    "otp4" : "Please look also into your spam folder if you cannot find the email.",
+    "otp_password" : "One time password",
     "auth2factorsetup" : "Please setup your security settings: Do you want to protect access to your account with a second factor in addition to your password?",
     "auth2factorsetup2" : "You can change your settings later in your profile. Log into {{domain}} and click on your name on the top right.",
     "auth_type" : "Authentication",
     "auth_type_none" : "I do not want to use two factor authentication.",
     "auth_type_sms" : "I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.",
+    "auth_type_totp" : "I want to use a authenticator app like Google Authenticator or Microsoft Authenticator. Please show me a QR code for setup.",
     "emailnotify" : "Notifications",
     "emailnotify2" : "Please send me an email everytime I log into the @PRODUCT portal at {{domain}}.",
     "agree_btn" : "I agree",
@@ -817,7 +877,13 @@
       "reject_btn" : "Reject account creation",
       "intro3" : "If you clicked the wrong link and want to CONFIRM your email address instead, click here:",
       "confirm_btn" : "Confirm account creation"
-    }
+    },
+    "totpsetup" : "Please make sure you have an authenticator app like Google Authenticator or Microsoft Authenticator installed. Scan the QR-code with the authenticator app.",
+    "totpsetup2" : "To verify the correct installation enter the code shown by the authenticator.",
+    "no_totp_code_btn" : "Reconfigure",
+    "auth2factor_totp" : "Please enter the code from the authenticator app.",
+    "use_sms_btn" : "Send me a SMS instead",
+    "use_totp_btn" : "Use authenticator app instead"
   },
 
   "changepassphrase" : {
@@ -877,6 +943,7 @@
     "created_on" : "Created at:",
     "content" : "@PRODUCT content type:",
     "format" : "Format:",
+    "tags" : "Tags:",
     "download_btn" : "Download",
     "content_visualization" : "Content Visualization",
     "no_visualization" : "No visualization available for this record.",
@@ -910,6 +977,8 @@
 	"history_comment" : "Comment",
 	"request_participation_help" : "If you want to be part of this research you may request participation.",
 	"request_participation_btn" : "Request Participation",
+	"accept_invitation_help" : "You have been invited to participate to this research.",
+	"accept_invitation_btn" : "Accept invitation",
 	"do_not_participate_help" : "If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.",
 	"do_not_participate_btn" : "Do not participate",
 	"retreat_help" : "You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.",
@@ -917,6 +986,7 @@
 	"status" : "Status",
 	"recommended_apps" : "Recommended Apps",
 	"use_app" : "Use now",
+	"pseudonym" : "Your pseudonym",
 	"for_participants" : "Participation Info",
 	"please_review1" : "Decide about participation",
     "please_review2" : "Please review this research project. Do you want to participate? Click on 'Skip (No change)' if you want to leave this page without any changes."
@@ -957,7 +1027,8 @@
 	"notifications" : "Notifications",
 	"notifications2" : "Do you want to be notified if your account is used?",
 	"change_settings_btn" : "Change Settings",
-	"change_settings_success" : "Settings have been updated"
+	"change_settings_success" : "Settings have been updated",
+	"using_apps" : "Your @PRODUCT account has been used with these applications:"
   },
 
   "visualization" : {
@@ -1061,6 +1132,7 @@
 	"confirm_btn" : "Confirm this Consent",
 	"reject_btn" : "Reject this Consent",
     "delete_btn" : "Delete this Consent",
+    "delete_all_btn" : "Delete all for this app",
     "please_review1" : "Consent to review",
     "please_review2a" : "Please review this consent. Click on 'Confirm this Consent' if you agree. Click on 'Reject this Consent' if you do not agree.",
     "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.",
@@ -1075,7 +1147,6 @@
     "reshare_usergroup" : "Team or project",
     "reshare_user" : "Single user",
     "reshare_project" : "Project"
-    
   },
   
   "editconsent2" : {
@@ -1117,7 +1188,8 @@
 
   "importrecords" : {
     "title" : "Import",
-    "authorize_btn" : "Authorize Now"
+    "authorize_btn" : "Start authorization",
+    "skip_btn" : "Skip for now"
   },
 
   "spaces" : {
@@ -1173,6 +1245,7 @@
   },
 
   "oauth2" : {
+    "title" : "Confirm access",
     "requests_permission" : "stores your personal data in your @PRODUCT account.",
     "no_account" : "You don't have an account?", 
     "have_account" : "You have a @PRODUCT account?",
@@ -1189,6 +1262,8 @@
     "confirm_btn" : "I agree",
     "reject_btn" : "Reject",
     "continue_btn" : "Continue",
+    
+    "request_access" : "With your consent, the application receives access to the following data:",
     "requests_access" : "Access requested by the application:",
     "requests_access_short" : "Data type",
     "requests_sharing" : "Data shared with the project:",
@@ -1500,6 +1575,8 @@
     "short_public_only" : "Only public data",
     "short_public_also" : "Public, shared and own data",
     "short_public_also_self" : "Public and own data",
+    "short_dynamic_true" : "dynamic",
+    "short_dynamic_extend" : "dynamic extend",
     "source_app" : "Source application",
     "short_app_all" : "All sources",
     "short_app_other" : "Only application:",
@@ -1510,6 +1587,10 @@
     "public_only" : "Use public data only",
     "public_also" : "Use public and other data",    
     "public_no" : "Do not use public data",
+    "dynamic" : "Dynamic",
+    "dynamic_yes" : "Always use current group content",
+    "dynamic_no" : "Use group content from time of creation",
+    "dynamic_extend" : "Autoregister new codes into current group content",
     "restrictions" : "Additional Restrictions",
     "data_period_restriction" : "Date",
     "time_restriction" : "Creation / Update date",
@@ -1550,7 +1631,8 @@
       "PseudonymizedPatient" : "Patient Records: pseudonym, year of birth, country of research project participants",
       "Practitioner" : "Practitioner Resource: search for health professionals or researchers",
       "Subscription" : "Access and manage subscriptions to external systems"
-    }
+    },
+    "creator_org" : "Creator Organization"
   },
   
   "timeline" : {
@@ -1601,6 +1683,12 @@
     "joinmethod1" : "The access to the research project is restricted.",
     "joinmethod2" : "Please contact the team responsible for the project. For more information, read the terms of use of the application.",
     "loginpage_btn" : "Return to login"
+  },
+  
+  "appexpired" : {
+    "title" : "Application no longer available",
+    "intro" : "This application is no longer available for use. If you have stored any data using this application, it will still be available in your @PRODUCT account.",
+    "loginpage_btn" : "Show @PRODUCT Portal"
   },
 
   "unsubscribe" : {

@@ -125,7 +125,8 @@
             "writeData" : "Daten schreiben",
             "changeTeam" : "Team wechseln",
             "setup" : "Organisation wechseln",
-            "applications" : "Applikationen verwalten"
+            "applications" : "Applikationen verwalten",
+            "participants" : "Teilnehmer verwalten"
         },
         "update_btn" : "Aktualisieren"
     },
@@ -138,6 +139,7 @@
         "role" : {
             "MANAGER" : "Verwaltungsorganisation",
             "SUBORGANIZATION" : "Unterorganisation",
+            "PARENTORGANIZATION" : "Übergeordnete Organisation",
             "HC" : "Andere"
         },
         "startDate" : "Mitglied von",

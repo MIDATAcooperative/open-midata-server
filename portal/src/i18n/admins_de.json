@@ -31,6 +31,7 @@
         "not_admin_confirmed" : "Nicht vom Administrator bestätigte Konten",
         "overview" : "Übersicht",
         "specific_user" : "Bestimmter Benutzer",
+        "testusers" : "Test User",
         "role" : "Rolle",
         "status" : "Status",
         "midata_id" : "@PRODUCT ID",
@@ -40,6 +41,7 @@
     "admin_organizations" : {
         "title" : "Organisationen",
         "name" : "Name",
+        "identifier" : "Identifier",
         "status" : "Status",
         "empty" : "Keine passende Organisation gefunden.",
         "members_btn" : "Mitglieder anzeigen"
@@ -77,7 +79,8 @@
         "change_address_btn" : "Profil ändern",
         "make_master_btn" : "Rolle Master-Benutzer hinzufügen",
         "remove_master_btn" : "Rolle Master-Benutzer zurücknehmen",
-        "history" : "Historie des Kontos"
+        "history" : "Historie des Kontos",
+        "test_user" : "Test User Konto"
     },
 
     "admin_news" : {
@@ -106,7 +109,13 @@
             "wide" : "Breit (2x1)",
             "high" : "Hoch (1x2)",
             "large" : "Gross (2x2)"
-        }
+        },
+        "dynamicDate" : "Dynamisches Datum",
+
+        "dynamicDate2" : "Ändert das Nachrichtendatum gegebenenfalls in das Startdatum der Projektteilnahme, andernfalls in das aktuelle Datum.",
+
+        "onlyParticipantsStudyId" : "Nur Projektteilnehmer"
+
     },
 
     "admin_registration" : {
@@ -192,6 +201,9 @@
         "infos_part" : "Informationen für die Teilnehmer",
         "infos_internal" : "Interne Informationen",
         "required_information" : "Benötigte Informationen",
+
+        "data_filters" : "Datenfilter für die Pseudonymisierung",
+        "none" : "Keine",
         "anonymous" : "Anonym",
         "required_assistance" : "Belegarzt benötigt",
         "termsOfUse" : "Allgemeine Geschäftsbedingungen",
@@ -207,7 +219,8 @@
         "end_validation_btn" : "Validierung abschliessen",
         "back_to_draft_btn" : "Zurück zum Entwurf",
         "delete_study_btn" : "Projekt löschen",
-        "export_btn" : "Exportieren"
+        "export_btn" : "Exportieren",
+        "messages" : "Kommunikation"
     },
 
     "admin_stats" : {
@@ -277,6 +290,8 @@
         "LOGIN" : "Login",
         "REFRESH" : "Session",
         "INSTALL" : "Activation",
+        "ERROR" : "Error",
+        "FAILURE" : "Failure",
         "GET" : "Read",
         "POST" : "Write",
         "PUT" : "Update",
@@ -326,6 +341,10 @@
 
     "content" : {
         "intro" : "Suche nach vorhandenen Codes, Inhaltstypen und Gruppen.",
+        "search_approved" : "Zeige alle bestätigten Einträge",
+        "search_not_approved" : "Zeige Einträge mit fehlender Bestätigung",
+        "search_modified" : "Zeige geänderte Einträge",
+        "search_deleted" : "Zeige kürzlich gelöschte Einträge",
         "createnew_btn" : "Neuer Code",
         "creategroup_btn" : "Neue Gruppe",
         "make_selection" : "Wählen Sie das Element, das Sie bearbeiten oder dem Sie einen neuen Code hinzufügen möchten",
@@ -355,7 +374,12 @@
         "delete_group_btn" : "Gruppe löschen",
         "save_btn" : "Code & Inhaltstyp speichern",
         "export_btn" : "Änderungen exportieren",
-        "import_btn" : "Änderungen importieren"
+
+        "export_translations_btn" : "Übersetzung exportieren",
+        "import_btn" : "Änderungen importieren",
+
+        "autoAddedAt" : "Automatisch hinzugefügt am",
+        "approvedAt" : "Bestätigt"
     },
 
     "admin_importcontent" : {
