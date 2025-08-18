@@ -125,7 +125,10 @@
             "writeData" : "Écrire des données",
             "changeTeam" : "Changer le team",
             "setup" : "Change l'organisation",
-            "applications" : "Gérer les applications"
+            "applications" : "Gérer les applications",
+
+            // TODO NEW: Manage consents
+            "participants" : "Manage consents"
         },
         "update_btn" : "Mettre à jour"
     },
@@ -138,6 +141,9 @@
         "role" : {
             "MANAGER" : "Organisation de gestion",
             "SUBORGANIZATION" : "Sous-organisation",
+
+            // TODO NEW: Parent Organization
+            "PARENTORGANIZATION" : "Parent Organization",
             "HC" : "Autre"
         },
         "startDate" : "Membre du",

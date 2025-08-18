@@ -51,25 +51,85 @@
         "lang" : "Lingua",
         "msgtitle" : "Titolo del messaggio",
         "text" : "Testo del messaggio",
+
+        // TODO NEW: Configure SMTP Server
+        "smtp_btn" : "Configure SMTP Server",
         "available_tags" : "Categorie disponibili",
+
+        // TODO NEW: HTML message frame
+        "htmlFrame" : "HTML message frame",
+
+        // TODO NEW: Enter complete HTML page for mail. Use {{message}} as placeholder for actual message.
+        "htmlFrame2" : "Enter complete HTML page for mail. Use {{message}} as placeholder for actual message.",
         "reasons" : {
             "REGISTRATION" : "Registrazione di un nuovo utente",
             "REGISTRATION_BY_OTHER_PERSON" : "Registrazione di un nuovo utente da parte di altre persone",
             "FIRSTUSE_ANYUSER" : "Primo utilizzo dell'applicazione",
             "FIRSTUSE_EXISTINGUSER" : "Primo utilizzo dell'applicazione (se non è stata inviata l'e-mail di registrazione)",
+
+            // TODO NEW: One-time password sent
+            "ONE_TIME_PASSWORD" : "One-time password sent",
             "SERVICE_WITHDRAW" : "Cessare l'utilizzo del servizio",
+
+            // TODO CHANGED
+            // OLD: undefined
+            // NEW: Consent, verified : A ➞ B / Sent to A
             "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
+
+            // TODO CHANGED
+            // OLD: undefined
+            // NEW: Consent, verified : A ➞ B / Sent to B
             "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",
+
+            // TODO CHANGED
+            // OLD: Proposed consent (Grantee, Invitation)
+            // NEW: Consent, unconfirmed : A ➞ (invited) / Sent to (invited)
             "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Consent, unconfirmed : A ➞ (invited) / Sent to (invited)",
+
+            // TODO CHANGED
+            // OLD: Proposed consent (Grantee, Account Holder)
+            // NEW: Consent, unconfirmed : A ➞ B / Sent to B
             "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Consent, unconfirmed : A ➞ B / Sent to B",
+
+            // TODO CHANGED
+            // OLD: Proposed consent (Grantor, Invitation)
+            // NEW: Consent, unconfirmed : (invited) ➞ B / Sent to (invited)
             "CONSENT_REQUEST_OWNER_INVITED" : "Consent, unconfirmed : (invited) ➞ B / Sent to (invited)",
+
+            // TODO CHANGED
+            // OLD: Proposed consent (Grantor, Account Holder)
+            // NEW: Consent, unconfirmed : A ➞ B / Sent to A
             "CONSENT_REQUEST_OWNER_EXISTING" : "Consent, unconfirmed : A ➞ B / Sent to A",
+
+            // TODO CHANGED
+            // OLD: Consent confirmation (Grantee)
+            // NEW: Consent, active : A ➞ B / Sent to B
             "CONSENT_CONFIRM_AUTHORIZED" : "Consent, active : A ➞ B / Sent to B",
+
+            // TODO CHANGED
+            // OLD: Consent confirmation (Grantor)
+            // NEW: Consent, active : A ➞ B / Sent to A
             "CONSENT_CONFIRM_OWNER" : "Consent, active : A ➞ B / Sent to A",
+
+            // TODO CHANGED
+            // OLD: undefined
+            // NEW: Consent, preconfirmed : A ➞ B / Sent to A
             "CONSENT_PRECONFIRMED_OWNER" : "Consent, preconfirmed : A ➞ B / Sent to A",
+
+            // TODO CHANGED
+            // OLD: Consent rejection (Grantor)
+            // NEW: Consent, * ➞ rejected : A ➞ B / Sent to A
             "CONSENT_REJECT_OWNER" : "Consent, * ➞ rejected : A ➞ B / Sent to A",
+
+            // TODO CHANGED
+            // OLD: Consent rejection (Active Consent, Grantee)
+            // NEW: Consent, active ➞ rejected : A ➞ B / Sent to B
             "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Consent, active ➞ rejected : A ➞ B / Sent to B",
-            "CONSENT_REJECT_AUTHORIZED" : "Consent, proposed ➞ rejected : A ➞ B / Sent to B",        
+
+            // TODO CHANGED
+            // OLD: Consent rejection (Proposed Consent, Grantee)
+            // NEW: Consent, proposed ➞ rejected : A ➞ B / Sent to B
+            "CONSENT_REJECT_AUTHORIZED" : "Consent, proposed ➞ rejected : A ➞ B / Sent to B",
             "ACCOUNT_UNLOCK" : "Account sbloccato dall'amministratore",
             "EMAIL_CHANGED_OLDADDRESS" : "E-mail di accesso modificata (inviare al vecchio indirizzo e-mail)",
             "EMAIL_CHANGED_NEWADDRESS" : "E-mail di accesso modificata (inviare al nuovo indirizzo e-mail)",
@@ -79,8 +139,59 @@
             "TRIED_USER_REREGISTRATION" : "Re-iscrizione dell'utente dall'API: corrispondenza errata",
             "RESOURCE_CHANGE" : "Cambio di risorsa [codice]",
             "PROCESS_MESSAGE" : "Elabora messaggio FHIR con evento [codice]",
-            "LOGIN" : "Notifica di accesso (se abilitata dall'utente)"
+            "LOGIN" : "Notifica di accesso (se abilitata dall'utente)",
+
+            // TODO NEW: Participation requested
+            "PROJECT_PARTICIPATION_REQUEST" : "Participation requested",
+
+            // TODO NEW: Participation approved
+            "PROJECT_PARTICIPATION_APPROVED" : "Participation approved",
+
+            // TODO NEW: Participation rejected
+            "PROJECT_PARTICIPATION_REJECTED" : "Participation rejected",
+
+            // TODO NEW: Group assigned
+            "PROJECT_PARTICIPATION_GROUP_ASSIGNED" : "Group assigned",
+
+            // TODO NEW: User retreated
+            "PROJECT_PARTICIPATION_RETREAT" : "User retreated"
         }
+    },
+
+    "appsmtp" : {
+
+        // TODO NEW: App-specific SMTP Configuration
+        "title" : "App-specific SMTP Configuration",
+
+        // TODO NEW: If a SMTP configuration is provided here the platform will send all emails defined for this application using the given SMTP server. Whenever the SMTP configuration is changed the platform will sent a test email to you.
+        "description" : "If a SMTP configuration is provided here the platform will send all emails defined for this application using the given SMTP server. Whenever the SMTP configuration is changed the platform will sent a test email to you.",
+
+        // TODO NEW: Host
+        "host" : "Host",
+
+        // TODO NEW: Port
+        "port" : "Port",
+
+        // TODO NEW: Username
+        "user" : "Username",
+
+        // TODO NEW: Password
+        "password" : "Password",
+
+        // TODO NEW: TLS
+        "tls" : "TLS",
+
+        // TODO NEW: SSL
+        "ssl" : "SSL",
+
+        // TODO NEW: Sender
+        "from" : "Sender",
+
+        // TODO NEW: Sender must contain sender name and email in the format: name<email>
+        "from2" : "Sender must contain sender name and email in the format: name<email>",
+
+        // TODO NEW: SMTP configuration successfully updated.
+        "success" : "SMTP configuration successfully updated."
     },
 
     "manageapp" : {
@@ -152,6 +263,21 @@
         "default_context_config" : "Configurazione /  Importazioni",
         "default_context_extern" : "Plugin autonomo",
         "deploy_status" : "Stato dell'installazione",
+
+        // TODO NEW: Allow Test-Users?
+        "accept_test_accounts" : "Allow Test-Users?",
+
+        // TODO NEW: Allowed source applications
+        "accept_test_accounts_from_app" : "Allowed source applications",
+
+        // TODO NEW: Test accounts limit
+        "test_accounts_max" : "Test accounts limit",
+
+        // TODO NEW: Landing page
+        "home_url" : "Landing page",
+
+        // TODO NEW: No welcome mail
+        "noWelcome" : "No welcome mail",
         "info" : {
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "La propria applicazione è destinata esclusivamente a un ruolo specifico? In caso contrario scegliere 'Qualsiasi ruolo'.",
@@ -173,6 +299,9 @@
             "defaultSpaceName" : "Il titolo del riquadro del proprio plugin sul pannello di controllo.",
             "tags" : "Categorie sul Store per le quali il proprio plugin deve essere elencato.",
             "url" : "La pagina iniziale con l'URL dei propri plugin. Se si utilizza il modello @PRODUCT, è 'dist/index.html#!?authToken=:authToken''",
+
+            // TODO NEW: URL of initial page (before login).
+            "home_url" : "URL of initial page (before login).",
             "previewUrl" : "Sezione del pannello di controllo con l'URL dei propri plugin. Lasciare vuoto se non si include questo riquadro.",
             "defaultSpaceContext" : "Scegliere 'Pannello' per il pannello di controllo predefinito. Scegliere 'Configurazione' se si scrive un plugin importato.",
             "redirectUri" : "È possibile specificare più URI possibili per il reindirizzamento separandoli con uno spazio.",
@@ -185,8 +314,21 @@
             "createendpoint" : "Creare un'istanza di questo endpoint non legata al progetto. Selezionare solo se NON si prevede di utilizzare questo endpoint con un progetto.",
             "endpoint" : "Il percorso di questo endpoint FHIR non legata a un progetto sarà /opendata/endpointname/fhir",
             "endpoint2" : "Non dimenticare: per attivare l'endpoint è necessario aggiungere una chiave API dopo.",
+
+            // TODO CHANGED
+            // OLD: Access keys will be managed by multiple different organizations.
+            // NEW: API keys will be managed by multiple different organizations.
             "decentral" : "Le chiavi API saranno gestite da più organizzazioni diverse.",
-            "organizationKeys" : "Le chiavi API sono direttamente legate a una singola organizzazione."
+            "organizationKeys" : "Le chiavi API sono direttamente legate a una singola organizzazione.",
+
+            // TODO NEW: Allow test users created by these applications. (Comma separted list of internal app names.)
+            "accept_test_accounts_from_app" : "Allow test users created by these applications. (Comma separted list of internal app names.)",
+
+            // TODO NEW: Current number of test accounts created and maximum number of test accounts allowed.
+            "test_accounts_max" : "Current number of test accounts created and maximum number of test accounts allowed.",
+
+            // TODO NEW: Do not sent a welcome email upon registration.
+            "noWelcome" : "Do not sent a welcome email upon registration."
         },
         "status" : {
             "title" : "Stato dell'applicazione",

@@ -36,6 +36,13 @@
         "study_description" : "Descrizione progetto",
         "study_identifiers" : "Identificatori",
         "study_identifiers_info" : "Inserire qui tutti gli identificatori dei progetti delle istituzioni esterne. Inserire un identificatore per riga. Se si desidera, usare '|' per separare il sistema di codici dal valore. Gli identificatori non saranno visualizzati nelle pagine del progetto nel portale.",
+
+        // TODO NEW: Categories
+        "study_categories" : "Categories",
+
+        // TODO NEW: Enter all additional categories for consents here. Enter one coding per line. Use '|' to separate code system and code if desired. Categories will not be shown on project pages in the portal.
+        "study_categories_info" : "Enter all additional categories for consents here. Enter one coding per line. Use '|' to separate code system and code if desired. Categories will not be shown on project pages in the portal.",
+
         "developer_nostart" : "Attenzione!",
         "developer_nostart2" : "Come sviluppatore puoi solo impostare un progetto ma non condurlo. Come sviluppatore non è possibile avviare la ricerca dei partecipanti."
     },
@@ -47,7 +54,13 @@
         "rules" : "Regole",
         "actions" : "Applicazioni",
         "participants" : "Partecipanti",
+
+        // TODO NEW: Sub-Projects
+        "subprojects" : "Sub-Projects",
         "codes" : "Codici",
+
+        // TODO NEW: Communication
+        "messages" : "Communication",
         "records" : "Record",
         "results" : "Risultati",
         "team" : "Team",
@@ -56,6 +69,9 @@
 
     "studies" : {
         "title" : "Progetti di ricerca",
+
+        // TODO NEW: Code
+        "code" : "Code",
         "name" : "Nome",
         "validation" : "Convalida",
         "participants" : "Partecipanti",
@@ -100,19 +116,35 @@
         "type" : "Come sono collegati?",
         "types" : {
             "OFFER_P" : "Onboarding: L'applicazione offre la partecipazione al progetto al momento del accedi/avvio",
-            "OFFER_EXTRA_PAGE" : "Onboarding: La partecipazione al progetto è descritta in una pagina extra",
-            "OFFER_INLINE_AGB" : "Onboarding: Utilizzare i condizioni d'uso come descrizione del progetto",
-            "REQUIRE_P" : "La partecipazione al progetto è necessaria per utilizzare l'applicazione",
+
+            // TODO NEW: Onboarding: Project participation is added upon login/start
+            "AUTOADD_P" : "Onboarding: Project participation is added upon login/start",
+
+            // TODO NEW: Project participation ID is shared with app in Patient resource
+            "LINKED_P" : "Project participation ID is shared with app in Patient resource",
+
+            // TODO NEW: Project participation is required to use the application
+            "CHECK_P" : "Project participation is required to use the application",
             "RECOMMEND_A" : "L'applicazione è raccomandato dal progetto",
             "AUTOADD_A" : "Il plugin viene aggiunto automaticamente alla partecipazione al progetto",
             "DATALINK" : "L'applicazione condivide i dati con i partecipanti al progetto"
         },
         "types_short" : {
             "OFFER_P" : "Suggerire la partecipazione",
-            "OFFER_EXTRA_PAGE" : "Pagina extra del progetto",
-            "OFFER_INLINE_AGB" : "Condizioni d'uso come descrizione",
-            "REQUIRE_P" : "Richiedere la partecipazione",
+
+            // TODO NEW: Add participation on application use
+            "AUTOADD_P" : "Add participation on application use",
+
+            // TODO NEW: Participation ID is shared with app
+            "LINKED_P" : "Participation ID is shared with app",
+
+            // TODO NEW: Participation required to use app
+            "CHECK_P" : "Participation required to use app",
             "RECOMMEND_A" : "Raccomandato",
+
+            // TODO CHANGED
+            // OLD: Add automatically
+            // NEW: Add app automatically
             "AUTOADD_A" : "Aggiungere automaticamente",
             "DATALINK" : "Condivisione dei dati"
         },
@@ -137,6 +169,9 @@
         "anonymous2" : ", la mappatura della pseudonimizzazione non è accessibile.",
         "not_anonymous1" : "Senza pseudonimo",
         "not_anonymous2" : ", richiede al membro di condividere il nome completo, la data di nascita e le informazioni di contatto (indirizzo, telefono, e-mail)",
+
+        // TODO NEW: Pseudonymization
+        "data_filters" : "Pseudonymization",
         "assistance" : "Assistenza",
         "no_assistance1" : "Nessuno",
         "no_assistance2" : " - il titolare di un account partecipa in modo autonomo.",
@@ -192,6 +227,30 @@
         }
     },
 
+    "studysubprojects" : {
+
+        // TODO NEW: Project Code
+        "project" : "Project Code",
+
+        // TODO NEW: Project Name
+        "projectName" : "Project Name",
+
+        // TODO NEW: Add project
+        "addproject_btn" : "Add project",
+
+        // TODO NEW: There are currently no subprojects defined for this project
+        "empty" : "There are currently no subprojects defined for this project",
+
+        // TODO NEW: Group mapping
+        "projectGroupMapping" : "Group mapping",
+
+        // TODO NEW: Destination
+        "target" : "Destination",
+
+        // TODO NEW: Source
+        "source" : "Source"
+    },
+
     "studyparticipant" : {
         "participant" : "Partecipante:",
         "gender" : "Sesso:",
@@ -207,6 +266,9 @@
         "name" : "Nome",
         "partName" : "Con pseudonimo",
         "group" : "Gruppo",
+
+        // TODO NEW: Group for Test-Users
+        "test_group" : "Group for Test-Users",
         "status" : "Stato",
         "total" : "Trovati {{count}} consensi corrispondenti ai suoi criteri.",
         "only_first_shown" : "Sono visualizzati solo i primi 1000 consensi corrispondenti.",
@@ -388,6 +450,21 @@
         "manually" : "Inserimento manuale",
         "generated" : "Generato",
         "codes" : "Nuovi codici",
-        "add_btn" : "Aggiungi ora"
+        "add_btn" : "Aggiungi ora",
+
+        // TODO NEW: Link to join project
+        "link" : "Link to join project",
+
+        // TODO NEW: Click on a code from the list above to view the corresponding link that may be used to join the project.
+        "link2" : "Click on a code from the list above to view the corresponding link that may be used to join the project.",
+
+        // TODO NEW: This project does not allow to participate via link.
+        "link_no" : "This project does not allow to participate via link."
+    },
+
+    "studymessages" : {
+
+        // TODO NEW: All participant groups
+        "all" : "All participant groups"
     }
 }

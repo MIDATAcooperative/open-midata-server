@@ -31,6 +31,9 @@
         "not_admin_confirmed" : "Non confermato dall'amministratore",
         "overview" : "Panoramica",
         "specific_user" : "Utente specifico",
+
+        // TODO NEW: Test Users
+        "testusers" : "Test Users",
         "role" : "Ruolo",
         "status" : "Stato",
         "midata_id" : "@PRODUCT ID",
@@ -40,6 +43,9 @@
     "admin_organizations" : {
         "title" : "Organizzazioni",
         "name" : "Nome",
+
+        // TODO NEW: Identifier
+        "identifier" : "Identifier",
         "status" : "Stato",
         "empty" : "Nessuna organizzazione corrispondente trovata.",
         "members_btn" : "mostra i membri"
@@ -77,7 +83,10 @@
         "change_address_btn" : "Modifica profilo",
         "make_master_btn" : "Aggiungi ruolo utente master",
         "remove_master_btn" : "Revoca il ruolo utente master",
-        "history" : "Storia dell'account"
+        "history" : "Storia dell'account",
+
+        // TODO NEW: Test User Account
+        "test_user" : "Test User Account"
     },
 
     "admin_news" : {
@@ -106,7 +115,17 @@
             "wide" : "Largo (2x1)",
             "high" : "Alto (1x2)",
             "large" : "Grande (2x2)"
-        }
+        },
+
+        // TODO NEW: Dynamic date
+        "dynamicDate" : "Dynamic date",
+
+        // TODO NEW: Change news date to start date of project participation if applicable otherwise to current date.
+        "dynamicDate2" : "Change news date to start date of project participation if applicable otherwise to current date.",
+
+        // TODO NEW: Only project participants
+        "onlyParticipantsStudyId" : "Only project participants"
+
     },
 
     "admin_registration" : {
@@ -192,6 +211,12 @@
         "infos_part" : "Informazioni per i partecipanti",
         "infos_internal" : "Informazioni interne",
         "required_information" : "Informazioni richieste",
+
+        // TODO NEW: Data filters for pseudonymization
+        "data_filters" : "Data filters for pseudonymization",
+
+        // TODO NEW: None
+        "none" : "None",
         "anonymous" : "Anonimo",
         "required_assistance" : "Assistenza richiesta",
         "termsOfUse" : "Condizioni generali di contratto",
@@ -207,7 +232,10 @@
         "end_validation_btn" : "Convalida completa",
         "back_to_draft_btn" : "Torna alla bozza",
         "delete_study_btn" : "Elimina progetto",
-        "export_btn" : "Esportare"
+        "export_btn" : "Esportare",
+
+        // TODO NEW: Communication
+        "messages" : "Communication"
     },
 
     "admin_stats" : {
@@ -277,6 +305,12 @@
         "LOGIN" : "Login",
         "REFRESH" : "Session",
         "INSTALL" : "Activation",
+
+        // TODO NEW: Error
+        "ERROR" : "Error",
+
+        // TODO NEW: Failure
+        "FAILURE" : "Failure",
         "GET" : "Read",
         "POST" : "Write",
         "PUT" : "Update",
@@ -326,6 +360,18 @@
 
     "content" : {
         "intro" : "Cerca codici, tipi di contenuto e gruppi esistenti.",
+
+        // TODO NEW: Show approved entries
+        "search_approved" : "Show approved entries",
+
+        // TODO NEW: Show entries missing approval
+        "search_not_approved" : "Show entries missing approval",
+
+        // TODO NEW: Show modified entries
+        "search_modified" : "Show modified entries",
+
+        // TODO NEW: Show recently deleted entries
+        "search_deleted" : "Show recently deleted entries",
         "createnew_btn" : "Nuovo codice",
         "creategroup_btn" : "Nuovo gruppo",
         "make_selection" : "Seleziona l'elemento che vuoi modificare o aggiungere un nuovo codice",
@@ -355,7 +401,20 @@
         "delete_group_btn" : "Cancella il gruppo",
         "save_btn" : "Salva codice e tipo di contenuto",
         "export_btn" : "Esportare le modifiche",
-        "import_btn" : "Importare le modifiche"
+
+        // TODO NEW: Export Translation
+        "export_translations_btn" : "Export Translation",
+
+        // TODO CHANGED
+        // OLD: Import Changes
+        // NEW: Import
+        "import_btn" : "Importare le modifiche",
+
+        // TODO NEW: Automatically added
+        "autoAddedAt" : "Automatically added",
+
+        // TODO NEW: Approved
+        "approvedAt" : "Approved"
     },
 
     "admin_importcontent" : {

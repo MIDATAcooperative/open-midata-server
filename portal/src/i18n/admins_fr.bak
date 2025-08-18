@@ -30,6 +30,7 @@
 	"not_admin_confirmed" : "Not confirmed by administrator",
     "overview" : "Overview",
     "specific_user" : "Specific User",
+    "testusers" : "Test Users",
     "role" : "Role",
     "status" : "Status",
     "midata_id" : "@PRODUCT ID",
@@ -39,6 +40,7 @@
   "admin_organizations" : {
     "title" : "Organizations",
     "name" : "Name",
+    "identifier" : "Identifier",
     "status" : "Status",    
     "empty" : "No matching organizations found.",
     "members_btn" : "show members"
@@ -76,7 +78,8 @@
     "change_address_btn" : "Change Profile",
     "make_master_btn" : "Add master user role",
     "remove_master_btn" : "Revoke master user role",
-    "history" : "Account history"
+    "history" : "Account history",
+    "test_user" : "Test User Account"
   },
   
   "admin_news" : {
@@ -105,7 +108,11 @@
       "wide" : "Wide (2x1)",
       "high" : "High (1x2)",
       "large" : "Large (2x2)"
-    }
+    },
+    "dynamicDate" : "Dynamic date",
+    "dynamicDate2" : "Change news date to start date of project participation if applicable otherwise to current date.",
+    "onlyParticipantsStudyId" : "Only project participants"
+    
   },
   
   "admin_registration" : {
@@ -191,6 +198,8 @@
      "infos_part" : "Information for participants",
      "infos_internal" : "Internal Information",     
      "required_information" : "Required Information",
+     "data_filters" : "Data filters for pseudonymization",
+     "none" : "None",
      "anonymous" : "Anonymous",
      "required_assistance" : "Required Assistance",
      "termsOfUse" : "General Terms and Conditions",
@@ -206,7 +215,8 @@
      "end_validation_btn" : "Complete Validation",
      "back_to_draft_btn" : "Back to Draft",
      "delete_study_btn" : "Delete Project",
-     "export_btn" : "Export"    
+     "export_btn" : "Export",
+     "messages" : "Communication"    
   },
   
   "admin_stats" : {
@@ -276,6 +286,8 @@
       "LOGIN" : "Login",
       "REFRESH" : "Session",
       "INSTALL" : "Activation",
+      "ERROR" : "Error",
+      "FAILURE" : "Failure",
       "GET" : "Read",
       "POST" : "Write",
       "PUT" : "Update",
@@ -325,6 +337,10 @@
 
    "content" : {
       "intro" : "Search for existing codes, content types and groups.",
+      "search_approved" : "Show approved entries",
+      "search_not_approved" : "Show entries missing approval",
+      "search_modified" : "Show modified entries",
+      "search_deleted" : "Show recently deleted entries",
       "createnew_btn" : "New Code",
       "creategroup_btn" : "New Group",
       "make_selection" : "Select the item you want to edit or add a new code to",
@@ -354,7 +370,10 @@
       "delete_group_btn" : "Delete Group",
       "save_btn" : "Save Code & Content type",
       "export_btn" : "Export Changes",
-      "import_btn" : "Import Changes"
+      "export_translations_btn" : "Export Translation",
+      "import_btn" : "Import",
+      "autoAddedAt" : "Automatically added",
+      "approvedAt" : "Approved"
    },
 
    "admin_importcontent" : {
