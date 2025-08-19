@@ -29,22 +29,22 @@
     "help": "Hulp"
   },
   "error": {
-    "offline": "De server is momenteel niet beschikbaar! Neem contact op met @support als het probleem doorgaat.",
-    "internal": "Er is een interne fout opgetreden. Neem contact op met @support als het probleem doorgaat.",
-    "internal_db": "Er is een interne databasefout opgetreden. Neem contact op met @support als het probleem doorgaat.",
-    "plugin": "Er is een applicatie -specifieke fout opgetreden. Neem contact op met de applicatie -ontwikkelaar of @support als het probleem doorgaat.",
+    "offline": "De server is momenteel niet beschikbaar! Neem contact op met @SUPPORT als het probleem doorgaat.",
+    "internal": "Er is een interne fout opgetreden. Neem contact op met @SUPPORT als het probleem doorgaat.",
+    "internal_db": "Er is een interne databasefout opgetreden. Neem contact op met @SUPPORT als het probleem doorgaat.",
+    "plugin": "Er is een applicatie -specifieke fout opgetreden. Neem contact op met de applicatie -ontwikkelaar of @SUPPORT als het probleem doorgaat.",
     "relogin": "Registreer je opnieuw",
     "noconsent": "Er is geen actieve toestemming waarmee gegevens aan de doelpersoon kunnen toevoegen.",
     "unsupported": "Operatie niet ondersteund",
     "failed": "Actie is mislukt",
     "timeout": "Time-out",
-    "contact_support": "Als u aanhoudende problemen heeft met het inlogproces, neemt u contact op met de ondersteuning op @Support.",
+    "contact_support": "Als u aanhoudende problemen heeft met het inlogproces, neemt u contact op met de ondersteuning op @SUPPORT.",
     "notrialuser_title": "Volledig lidmaatschap nodig!",
-    "notrialuser_detail": "Om deze functie te kunnen gebruiken, heeft u volledige registratie nodig. Solliciteer voor het verzenden van de algemene algemene voorwaarden en stuur ze getekend bij @Ooperator. U ontvangt ook een bevestigingscode om uw postadres te bevestigen. Als u uw accountstatus wilt controleren, klikt u op uw gebruikersnaam rechtsboven en controleer de sectie 'Accountstatus'",
-    "mustbemember_title": "Lidmaatschap bij @Operator vereist!",
+    "notrialuser_detail": "Om deze functie te kunnen gebruiken, heeft u volledige registratie nodig. Solliciteer voor het verzenden van de algemene algemene voorwaarden en stuur ze getekend bij @OPERATOR. U ontvangt ook een bevestigingscode om uw postadres te bevestigen. Als u uw accountstatus wilt controleren, klikt u op uw gebruikersnaam rechtsboven en controleer de sectie 'Accountstatus'",
+    "mustbemember_title": "Lidmaatschap bij @OPERATOR vereist!",
     "mustbemember_detail": "Om deze functie te kunnen gebruiken, moet u lid zijn van de coöperatie. Klik op uw gebruikersnaam rechtsboven en controleer de sectie 'Accountstatus'",
     "ratelimit": "De call -up limiet van de huidige campagne is bereikt. Probeer het later opnieuw.",
-    "ratelimit_show": "@Modal",
+    "ratelimit_show": "@modal",
     "ratelimit_title": "Actie te vaak uitgevoerd",
     "ratelimit_1": "Oha, dit zijn veel vragen! Om veiligheidsredenen nemen we een korte pauze.",
     "ratelimit_2": "Probeer het opnieuw over een paar minuten.",
@@ -150,26 +150,26 @@
       "code": "Er bestaat al een code met deze code en codenysteem."
     },
     "blocked": {
-      "user": "Dit account is opgeschort. Uw e -mailadres is gesloten voor verdere registratie. Neem contact op met @support voor ondersteuning.",
+      "user": "Dit account is opgeschort. Uw e -mailadres is gesloten voor verdere registratie. Neem contact op met @SUPPORT voor ondersteuning.",
       "password1": "Te veel valse registratiepogingen. Wacht 1 minuut voor de volgende poging.",
-      "password1_show": "@Modal",
+      "password1_show": "@modal",
       "password1_title": "Te veel mislukte inlogpogingen",
       "password1_1": "Voor hun veiligheid werd hun account tijdelijk geblokkeerd vanwege verschillende mislukte registratiepogingen.",
       "password1_2": "Probeer het opnieuw over 1 minuut of reset uw wachtwoord.",
       "password5": "Te veel valse registratiepogingen. Wacht 5 minuten voor de volgende poging.",
-      "password5_show": "@Modal",
+      "password5_show": "@modal",
       "password5_title": "Te veel mislukte inlogpogingen",
       "password5_1": "Voor hun veiligheid werd hun account tijdelijk geblokkeerd vanwege verschillende mislukte registratiepogingen.",
       "password5_2": "Probeer het opnieuw over 5 minuten of zet uw wachtwoord terug.",
       "password60": "Te veel valse registratiepogingen. Wacht 1 uur voor de volgende poging.",
-      "password60_show": "@Modal",
+      "password60_show": "@modal",
       "password60_title": "Te veel mislukte inlogpogingen",
       "password60_1": "Voor hun veiligheid werd hun account tijdelijk geblokkeerd vanwege verschillende mislukte registratiepogingen.",
       "password60_2": "Probeer het opnieuw over 1 uur of reset uw wachtwoord.",
       "participation": "U hebt geen recht om deel te nemen aan dit onderzoeksproject en kunt deze toepassing daarom niet gebruiken.",
       "projectconsent": "U hebt uw deelname aan dit onderzoeksproject ingetrokken en kunt deze toepassing daarom niet langer gebruiken.",
-      "consent": "U hebt de @Product -portal ingesteld dat deze toepassing niet langer toegang heeft tot uw gegevens. Als u deze applicatie opnieuw wilt gebruiken, moet u deze reorganiseren in de @productportal.",
-      "app": "U kunt deze toepassing maximaal 10 apparaten gebruiken. Verwijder alstublieft niet langer gebruikte toestemming in de @Product -portal.",
+      "consent": "U hebt de @PRODUCT-portal ingesteld dat deze toepassing niet langer toegang heeft tot uw gegevens. Als u deze applicatie opnieuw wilt gebruiken, moet u deze reorganiseren in de @PRODUCT portal.",
+      "app": "U kunt deze toepassing maximaal 10 apparaten gebruiken. Verwijder alstublieft niet langer gebruikte toestemming in de @PRODUCT-portal.",
       "app_test": "U kunt deze toepassing maximaal 10 apparaten gebruiken. De goedkeuringen voor u werden gereset op deze testinstantie. Probeer het opnieuw.",
       "joinmethod": "Het is niet toegestaan om met deze methode deel te nemen aan het project.",
       "testuser": "Deze toepassing ondersteunt geen testaccounts."
@@ -453,7 +453,7 @@
     },
     "joinmethod": {
       "APP": "De deelnemer gebruikt de gekoppelde applicatie",
-      "PORTAL": "De deelnemer is van toepassing op de @productportal",
+      "PORTAL": "De deelnemer is van toepassing op de @PRODUCT portal",
       "RESEARCHER": "De deelnemer wordt handmatig geregistreerd door het lid van het onderzoeksteam",
       "API": "De deelnemer is geregistreerd door externe software",
       "ALGORITHM": "De deelnemer werd voorgesteld door een algoritme (niet ondersteund)",
@@ -470,7 +470,7 @@
     "studyvalidationstatus": {
       "DRAFT": "Ontwerp (niet gevalideerd)",
       "PATCH": "Opnieuw bewerken (niet gevalideerd)",
-      "REJECTED": "Project afgewezen door @Operator",
+      "REJECTED": "Project afgewezen door @OPERATOR",
       "VALIDATED": "Project is gevalideerd",
       "VALIDATION": "Validatie loopt"
     },
@@ -570,7 +570,7 @@
     },
     "codesystems": {
       "loinc": "Loinc -code",
-      "midata": "@Productcode",
+      "midata": "@PRODUCT code",
       "fhir": "Voor middelen",
       "snowmed": "Snomed CT -code"
     },
@@ -716,7 +716,7 @@
     "country": "land",
     "phone": "telefoon",
     "mobile_phone": "Mobiele telefoon",
-    "coach": "Contactpersoon bij @Operator",
+    "coach": "Contactpersoon bij @OPERATOR",
     "reason": "Doel van registratie*",
     "agb": "Bepalingen",
     "study": "Onderzoek",
@@ -736,7 +736,7 @@
     "generous": "Ik ben genereus vandaag, laat me de invoervelden zien!",
     "hide_optional": "Verberg optionele velden",
     "welcome_title": "Welkom",
-    "welcome_text1": "Uw @Product -account is zojuist gemaakt. Er is een bevestigingsmail naar u verzonden.",
+    "welcome_text1": "Uw @PRODUCT-account is zojuist gemaakt. Er is een bevestigingsmail naar u verzonden.",
     "welcome_text2": "Klik binnen 24 uur op de link in de e -mail om uw registratie te voltooien.",
     "welcome_text3": "Als u de e -mail niet binnen de komende 30 minuten ontvangt, controleert u uw spamfilter.",
     "welcome_btn": "Doorgaan"
@@ -753,7 +753,7 @@
     "service_login2": "De volgende keer dat u zich registreert, wordt u gevraagd om de toestemming en/of deelname aan onderzoeksprojecten te bevestigen.",
     "account_login": "Registratie voor accountbeheer",
     "account_login2": "Registreer je om toegang te krijgen tot de functies voor accountbeheer.",
-    "no_account": "Ik heb nog geen @Product -account."
+    "no_account": "Ik heb nog geen @PRODUCT -account."
   },
   "lostpw": {
     "title": "Wachtwoordassistent - Stap 1",
@@ -776,7 +776,7 @@
     "description": "Uw account wordt beschermd door een wachtwoordzin.",
     "passphrase": "Wachtwoordzin",
     "continue_btn": "Verder",
-    "if_lost": "Als u uw wachtwoordzin bent vergeten, neem dan contact op met @support"
+    "if_lost": "Als u uw wachtwoordzin bent vergeten, neem dan contact op met @SUPPORT"
   },
   "pwstrength": {
     "min": "Het wachtwoord moet minimaal 8 tekens lang zijn.",
@@ -786,7 +786,7 @@
     "special": "Het wachtwoord moet ten minste één speciaal teken bevatten."
   },
   "postregister": {
-    "title": "Welkom bij @platform",
+    "title": "Welkom bij @PLATFORM",
     "email_confirmed": "E-mail bevestigd?",
     "contract_signed": "Contract ondertekend en teruggestuurd?",
     "resent_success": "De welkomst -e -mail is opnieuw verzonden.",
@@ -798,17 +798,17 @@
     "resend_btn": "Stuur opnieuw een e -mail",
     "retry_btn": "Probeer de registratie opnieuw",
     "unlock_code": "Deze toepassing kan alleen worden gebruikt met een activeringscode. Voer de code in om door te gaan.",
-    "contract_instructions": "Er is een contract naar uw postadres gestuurd. Stuur het naar @Operator terug.",
+    "contract_instructions": "Er is een contract naar uw postadres gestuurd. Stuur het naar @OPERATOR terug.",
     "pilot_phase": "Een beheerder zal uw account verifiëren en ontgrendelen. U wordt geïnformeerd wanneer uw account is ontgrendeld.",
     "code_intructions": "Een brief met een bevestigingscode werd naar uw postadres verzonden. Voer de bevestigingscode in om toegang te krijgen tot het platform.",
-    "code_done": "U hebt de bevestigingscode ingevoerd. U kunt zich registreren zodra uw ondertekende contract is aangekomen bij @Ooperator.",
+    "code_done": "U hebt de bevestigingscode ingevoerd. U kunt zich registreren zodra uw ondertekende contract is aangekomen bij @OPERATOR.",
     "enter_now_btn": "Voer nu in",
     "email_success": "Bedankt voor het bevestigen van uw e -mailadres.",
     "address_entered": "Voer uw postadres in, het is noodzakelijk om deze service te gebruiken.",
     "phone_entered": "Voer uw mobiele telefoonnummer in, het is noodzakelijk om deze service te gebruiken.",
     "birthday_entered": "Een geldige geboortedatum is vereist om deze service te gebruiken. Voeg uw geboortedatum toe aan uw accountgegevens. (Voorbeeld van formaat: 31 december 1999)",
     "gender_entered": "Uw geslacht moet worden gegeven om deze service te kunnen gebruiken. Geef uw geslacht aan.",
-    "admin_verified": "Uw account moet worden geactiveerd door een beheerder. Probeer het later opnieuw. Als uw account niet binnen 24 uur is ontgrendeld, neem dan contact op met @support.",
+    "admin_verified": "Uw account moet worden geactiveerd door een beheerder. Probeer het later opnieuw. Als uw account niet binnen 24 uur is ontgrendeld, neem dan contact op met @SUPPORT.",
     "terms_agreed": "De algemene algemene voorwaarden zijn bijgewerkt. Bevestig dat u nota hebt genomen van de nieuwe versie.",
     "privacy_policy_agreed": "De verklaring van gegevensbescherming is bijgewerkt. Bevestig dat u nota hebt genomen van de nieuwe versie.",
     "auth2factor": "Er is een autorisatiecode naar uw telefoon verzonden. Voer het in.",
@@ -831,7 +831,7 @@
     "auth_type_sms": "Ik zou de tweefactor-authenticatie met sms-codes willen gebruiken. Stuur bij het registreren een code naar mijn mobiele telefoon.",
     "auth_type_totp": "Ik zou graag een authenticatie -app willen gebruiken zoals Google Authenticator of Microsoft Authenticator. Laat me een QR -code zien voor de faciliteit.",
     "emailnotify": "Meldingen",
-    "emailnotify2": "Stuur me alsjeblieft een e -mail elke keer dat ik in de @Product -portal ben op {{domain}} registratie.",
+    "emailnotify2": "Stuur me alsjeblieft een e -mail elke keer dat ik in de @PRODUCT -portal ben op {{domain}} registratie.",
     "agree_btn": "Ik ben het ermee eens",
     "noted_btn": "Ik heb er rekening mee genomen",
     "keyrecovery": {
@@ -839,15 +839,15 @@
       "way1": "Heeft u een applicatie gebruikt waarmee u nog steeds bent geregistreerd? Open deze applicatie als dit het geval is en uw sleutel is hersteld. Probeer dan opnieuw te registreren.",
       "way2": "Heb je je ooit geregistreerd bij een browser? Als dit het geval is, probeer dan u te registreren met dezelfde browser en apparaat.",
       "way3": "Herinner je je je oude wachtwoord opnieuw? Als dit het geval is, probeer dan u te registreren bij uw oude wachtwoord.",
-      "way4": "Wacht tot de @Ooperator -medewerker handmatig herstel van de sleutel heeft uitgevoerd. @Operator stuurt u een e -mail wanneer het herstel is voltooid. Wacht tot vijf werkdagen tot de restauratie is voltooid."
+      "way4": "Wacht tot de @OPERATOR -medewerker handmatig herstel van de sleutel heeft uitgevoerd. @OPERATOR stuurt u een e -mail wanneer het herstel is voltooid. Wacht tot vijf werkdagen tot de restauratie is voltooid."
     },
     "licence": {
       "intro": "Een licentie is vereist om deze aanvraag te gebruiken.",
-      "text": "Neem contact op met @support om een geldige licentie te krijgen."
+      "text": "Neem contact op met @SUPPORT om een geldige licentie te krijgen."
     },
     "reject": {
       "intro1": "U klikte op de linkafwijzing van het account in de bevestigingsmail van het account.",
-      "intro2": "Bevestig dat u geen account wilt maken met @Platform. Uw e -mailadres wordt geblokkeerd voor verdere registratiepogingen totdat u contact opneemt met @Support.",
+      "intro2": "Bevestig dat u geen account wilt maken met @PLATFORM. Uw e -mailadres wordt geblokkeerd voor verdere registratiepogingen totdat u contact opneemt met @SUPPORT.",
       "reject_btn": "Bepaal het maken van accounts",
       "intro3": "Als u op de verkeerde link hebt geklikt en in plaats daarvan uw e -mailadres wilt bevestigen, klikt u hier:",
       "confirm_btn": "Bevestig het maken van accounts"
@@ -909,7 +909,7 @@
     "modified_by": "Laatst gewijzigd door:",
     "created_with": "Gemaakt met:",
     "created_on": "Gemaakt op:",
-    "content": "@Product Instalty:",
+    "content": "@PRODUCT Instalty:",
     "format": "Formaat:",
     "tags": "Tags:",
     "download_btn": "Downloaden",
@@ -964,7 +964,7 @@
     "name": "Naam:",
     "email": "E-mail:",
     "birthday": "Geboortedatum:",
-    "midataID": "@Product ID:",
+    "midataID": "@PRODUCT ID:",
     "action": "Meer...",
     "change_password_btn": "Wijzig het wachtwoord",
     "change_passphrase_btn": "Wijzig Passwoordzin",
@@ -994,7 +994,7 @@
     "notifications2": "Wilt u een melding krijgen als uw account wordt gebruikt?",
     "change_settings_btn": "Instellingen wijzigen",
     "change_settings_success": "De instellingen zijn bijgewerkt",
-    "using_apps": "Uw @Product -account is met deze toepassingen gebruikt:"
+    "using_apps": "Uw @PRODUCT -account is met deze toepassingen gebruikt:"
   },
   "visualization": {
     "title": "Informatie over de applicatie",
@@ -1062,19 +1062,19 @@
     "type": "Type goedkeuring",
     "status": "Status van goedkeuring",
     "people": "Met welke persoon/welke personen wilt u gegevens delen?",
-    "external": "Mensen zonder @productaccount",
+    "external": "Mensen zonder @PRODUCT account",
     "add_people_btn": "Voeg andere mensen toe",
     "add_hp_btn": "Voeg een gezondheidspersoon toe",
     "add_usergroup_btn": "Voeg team toe",
-    "reshare": "@: newConsent.Reshare",
-    "reshare2": "@: newConsent.Reshare2",
+    "reshare": "@:newconsent.reshare",
+    "reshare2": "@:newconsent.reshare2",
     "writes": "Het schrijven",
     "expiration_date": "Datum van goedkeuring van de goedkeuring:",
     "created_before": "Deel geen gegevens die zijn gemaakt volgens de:",
     "created_after": "Alleen gegevens gemaakt volgens de:",
     "what_is_shared": "Welke gegevens worden gedeeld?",
     "consent_empty": "Deze toestemming deelt momenteel geen gegevens.",
-    "type_circle": "Deze goedkeuring deelt gegevens met andere @Product -accounts.",
+    "type_circle": "Deze goedkeuring deelt gegevens met andere @PRODUCT -accounts.",
     "type_representative": "Deze goedkeuring machtigt een andere persoon om hun account te gebruiken. Alle gegevens van de accounthouder worden gedeeld met de vertegenwoordiger.",
     "type_healthcare": "Deze goedkeuring deelt gegevens met gezondheidspecialisten.",
     "type_studyparticipation": "Deze goedkeuring deelt gegevens met een onderzoeksproject.",
@@ -1151,7 +1151,7 @@
     "skip_btn": "Nu overslaan"
   },
   "spaces": {
-    "title": "@Platform -plug -in",
+    "title": "@PLAGTFORM -plug -in",
     "delete_btn": "Verwijder deze ruimte",
     "used_btn": "Gebruikte gegevenssets ..",
     "share_btn": "Split ...",
@@ -1202,19 +1202,19 @@
   },
   "oauth2": {
     "title": "Bevestig toegang",
-    "requests_permission": "Sla uw persoonlijke gegevens op in uw @Product -account.",
+    "requests_permission": "Sla uw persoonlijke gegevens op in uw @PRODUCT -account.",
     "no_account": "Heb je nog geen account?",
-    "have_account": "Heeft u een @Product -account?",
+    "have_account": "Heeft u een @PRODUCT -account?",
     "have_account2": "Perfect, registreer",
     "role": "rol",
     "sign_up_btn": "Register",
     "reshares_data": "De applicatie kan gegevens doorgeven waartoe hij toegang heeft tot derden.",
     "allows_user_search": "Uw naam en e -mailadres kunnen worden doorzocht door andere mensen die deze applicatie gebruiken.",
     "requesting_app": "Toegang nodig tot uw gegevens.",
-    "sign_in": "@Productregistratie voor:",
+    "sign_in": "@PRODUCT registratie voor:",
     "sign_in_btn": "Register",
     "device": "Apparaat: {{device}}",
-    "please_confirm": "Bevestig de activering van de toepassing op de @Product -portal en probeer het opnieuw. Toestemmingsnaam: {{ consent }}",
+    "please_confirm": "Bevestig de activering van de toepassing op de @PRODUCT -portal en probeer het opnieuw. Toestemmingsnaam: {{ consent }}",
     "confirm_btn": "Ik ben het ermee eens",
     "reject_btn": "Weigeren",
     "continue_btn": "Verder",
@@ -1270,7 +1270,7 @@
     "target_community": "Voor andere deelnemers"
   },
   "dashboard": {
-    "help_welcome": "Welkom bij @platform",
+    "help_welcome": "Welkom bij @PLATFORM",
     "myviews": "Mijn uitzichten",
     "mydata": "Mijn persoonlijke gegevens",
     "mydata_text": "Beheer uw gezondheidsgegevens. Voer nieuwe gegevens in en overweeg bestaande gegevens.",
@@ -1288,7 +1288,7 @@
     "newrecords_teaser": "Er zijn geen nieuwe inzendingen. Bezoek de pagina 'Mijn data' om naar alle vermeldingen te kijken.",
     "myaccount": "Mijn accountgegevens",
     "newsharedrecords": "Nieuwe inzendingen die met hen zijn gedeeld",
-    "newsharedrecords_teaser": "Andere gebruikers van @product kunnen hun gegevens met u delen.",
+    "newsharedrecords_teaser": "Andere gebruikers van @PRODUCT kunnen hun gegevens met u delen.",
     "circles": "Lid van de cirkel",
     "circles_teaser": "Vraag anderen om ze aan uw kringen toe te voegen.",
     "circles2": "Uw cirkels",
@@ -1435,7 +1435,7 @@
   },
   "changeemail": {
     "title": "Wijzig het e -mailadres van het account",
-    "midataId": "@Product ID",
+    "midataId": "@PRODUCT ID",
     "name": "naam",
     "old_email": "Huidig e -mailadres",
     "new_email": "Nieuw e -mailadres",
@@ -1459,34 +1459,34 @@
     "request_membership_btn": "Aanvraag contract"
   },
   "accountwipe": {
-    "title": "@Product -account sluit en verwijderd",
+    "title": "@PRODUCT -account sluit en verwijderd",
     "hello": "Beste) {{name}},,",
     "hello_m": "Beste {{name}},,",
     "hello_w": "Liefde {{name}},,",
-    "paragraph1": "Wilt u uw @Product -account onherroepelijk verwijderen? Dit is natuurlijk mogelijk.",
+    "paragraph1": "Wilt u uw @PRODUCT -account onherroepelijk verwijderen? Dit is natuurlijk mogelijk.",
     "paragraph2": "Lees eerst de volgende informatie:",
-    "point1": "Als u uw @Product -account verwijdert, verwijdert u alle persoonlijke gegevens op uw account onherroepelijk.",
+    "point1": "Als u uw @PRODUCT -account verwijdert, verwijdert u alle persoonlijke gegevens op uw account onherroepelijk.",
     "point2": "Gegevens die al in onderzoeksprojecten zijn opgenomen, zullen in deze projecten beschikbaar blijven.",
-    "point3": "@Operator heeft geen manier om een verwijderd account te herstellen.",
+    "point3": "@OPERATOR heeft geen manier om een verwijderd account te herstellen.",
     "warning": "waarschuwing",
     "final": "De verwijdering van het account kan niet worden teruggedraaid!",
-    "paragraph3": "Als u nog steeds het @Product -account wilt verwijderen, voer dan uw wachtwoord in",
+    "paragraph3": "Als u nog steeds het @PRODUCT -account wilt verwijderen, voer dan uw wachtwoord in",
     "password": "wachtwoord",
     "reason": "Reden (optioneel)",
-    "reason2": "We zouden dankbaar zijn als je ons zou kunnen vertellen waarom je je account verwijdert. We proberen constant @platform te verbeteren.",
-    "wipe_btn": "@Product -account sluit en verwijderd",
+    "reason2": "We zouden dankbaar zijn als je ons zou kunnen vertellen waarom je je account verwijdert. We proberen constant @PLATFORM te verbeteren.",
+    "wipe_btn": "@PRODUCT -account sluit en verwijderd",
     "error": "Wachtwoord niet correct. Het account is niet verwijderd."
   },
   "service": {
-    "title": "Token-linkservice voor @product",
+    "title": "Token-linkservice voor @PRODUCT",
     "success": "Uw tokenlink is verwerkt. U kunt dit venster nu sluiten."
   },
   "serviceleave": {
-    "title": "Je verlaat @product",
+    "title": "Je verlaat @PRODUCT",
     "thankyou": "Bedankt voor je hulp!",
     "logout_btn": "Uitloggen",
     "goodbye_btn": "Eind sessie en sluit Windows",
-    "logoutreturn": "U verlaat nu de @Product Account Management Portal."
+    "logoutreturn": "U verlaat nu de @PRODUCT Account Management Portal."
   },
   "queryeditor": {
     "title": "Filtereditor voor gegevenstoegang",
@@ -1598,7 +1598,7 @@
     "refresh": "Vernieuw token voor oAuth",
     "instructions_refresh": "Om de beveiliging te vergroten, ruil je dit vernieuwingstoken uit voor een nieuw paar Access Tokens en vernieuwing van tokens.",
     "common_name": "OU (organisatie -eenheid) en CN (gemeenschappelijke naam) voor het CSR (certificaatverzoek)",
-    "instructions_common_name": "Maak voor certificaat gebaseerde authenticatie een CSR met de opgegeven OU- en CN-velden. Stuur de CSR naar @support",
+    "instructions_common_name": "Maak voor certificaat gebaseerde authenticatie een CSR met de opgegeven OU- en CN-velden. Stuur de CSR naar @SUPPORT",
     "date": "Datum van creatie",
     "restrictions": "Beperkingen",
     "status": "status",
@@ -1610,15 +1610,15 @@
     "title": "Registratie is niet toegestaan",
     "intro": "U mag zich om de volgende reden niet registreren:",
     "withdrawn1": "U hebt deelname aan een project ingetrokken. Deelname is verplicht voor het gebruik van deze toepassing.",
-    "withdrawn2": "U kunt de applicatie niet langer gebruiken met uw @Product -account.",
+    "withdrawn2": "U kunt de applicatie niet langer gebruiken met uw @PRODUCT -account.",
     "joinmethod1": "De toegang tot het onderzoeksproject is beperkt.",
     "joinmethod2": "Neem contact op met het team dat verantwoordelijk is voor het project. Lees voor meer informatie de gebruiksvoorwaarden van de toepassing.",
     "loginpage_btn": "Terug naar registratie"
   },
   "appexpired": {
     "title": "Toepassing niet meer beschikbaar",
-    "intro": "Deze applicatie is niet langer beschikbaar. Als u gegevens in uw @Product -account hebt opgeslagen bij deze applicatie, zijn ze nog steeds beschikbaar in uw account.",
-    "loginpage_btn": "Naar de startpagina van de @Product Portal"
+    "intro": "Deze applicatie is niet langer beschikbaar. Als u gegevens in uw @PRODUCT -account hebt opgeslagen bij deze applicatie, zijn ze nog steeds beschikbaar in uw account.",
+    "loginpage_btn": "Naar de startpagina van de @PRODUCT Portal"
   },
   "unsubscribe": {
     "title": "Uitschrijven",

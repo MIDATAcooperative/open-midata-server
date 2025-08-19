@@ -1,94 +1,84 @@
 {
-   
-  "member_quickregistration" : {
-    "sign_up" : "Sign up",
-    "study" : "Research project*",
-    "app" : "Application to be used*",
-    "app_password" : "Password for application",
-    "account_password" : "Account Password",
-    "repeat_account_password" : "Repeat Account Password"
+  "member_quickregistration": {
+    "sign_up": "Register",
+    "study": "Onderzoeksproject*",
+    "app": "Gebruikte toepassing*",
+    "app_password": "Wachtwoord van de applicatie",
+    "account_password": "Wachtwoord van het account",
+    "repeat_account_password": "Herhaal het wachtwoord van het account"
   },
-  
-  "help_welcome" : {
-    "menu" : "The menu above contains these links:",
-    "menu_me" : "Dashboard",
-    "menu_me_text" : "Your personal dashboard, where you can place whatever functionality you need most.",
-    "menu_overview" : "Overview",
-    "menu_overview_text" : "Overview over all functions provided by the platform.",
-    "menu_config" : "Config",
-    "menu_config_text" : "Configure your dashboard and data imports.",
-    "menu_research" : "News",
-    "menu_research_text" : "News and announcements about the platform and research projects",
-    "menu_consents" : "Sharing",
-    "menu_consents_text" : "Manage data sharing with others.",
-    "starts" : "Some ideas to start:",
-    "answer_questions" : "In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.",
-    "answered_questions" : "Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.",
-    "answer_btn" : "Answer Setup Questions Now",
-    "dashboard_btn" : "Visit my Dashboard",
-    "answer_again_btn" : "Change Answers to Setup Questions"
+  "help_welcome": {
+    "menu": "Het bovenstaande menu bevat de volgende links:",
+    "menu_me": "Dashboard",
+    "menu_me_text": "Uw persoonlijke dashboard, waar u uw favorieten kunt plaatsen.",
+    "menu_overview": "Overzicht",
+    "menu_overview_text": "Overzicht van alle functies die het platform biedt.",
+    "menu_config": "configuratie",
+    "menu_config_text": "Configureer uw dashboard en gegevensimport.",
+    "menu_research": "Nieuws",
+    "menu_research_text": "Nieuws en aankondigingen over het platform- en onderzoeksprojecten",
+    "menu_consents": "Splitsen",
+    "menu_consents_text": "Beheer van de gegevens die met andere gebruikers worden gedeeld.",
+    "starts": "Een paar ideeën om te beginnen:",
+    "answer_questions": "We raden aan om enkele vragen te beantwoorden om te beginnen. Uw account wordt vooraf geconfigureerd op basis van uw antwoorden.",
+    "answered_questions": "Bedankt voor het beantwoorden van de configuratievragen! U kunt nu naar uw dashboard kijken of de configuratie opnieuw uitvoeren.",
+    "answer_btn": "Beantwoord nu configuratievragen",
+    "dashboard_btn": "Schakel over naar mijn dashboard",
+    "answer_again_btn": "Beantwoord de configuratievragen opnieuw"
   },
-  
-  "help_setup" : {
-    "description" : "The answers to the following questions are only used to setup your account according to your needs.",
-    "question_measures" : "Which measures do you want to view in the portal?",
-    "question_devices" : "Do use any of these devices?", 
-    "question_devices_answer1" : "Fitbit",
-	"question_devices_answer2" : "Jawbone",
-	"question_devices_answer3" : "Withings",			 
-    "come_back" : "You can always come back and change these settings by visiting the \"Help\" page.",
-    "done_btn" : "Done"
+  "help_setup": {
+    "description": "De antwoorden op deze vragen helpen ons om uw account te configureren volgens uw behoeften.",
+    "question_measures": "Welke metingen wilt u in het portaal laten zien?",
+    "question_devices": "Gebruikt u een van deze producten?",
+    "question_devices_answer1": "Fitbit",
+    "question_devices_answer2": "Kaakbeen",
+    "question_devices_answer3": "Verdorren",
+    "come_back": "U kunt uw instellingen op elk gewenst moment wijzigen via de pagina \"Help\".",
+    "done_btn": "Klaar"
   },
-  
-  "accountdata" : {
-     "midata_id" : "@PRODUCT ID:",
-     "birthday" : "Birthdate:",
-     "change_btn" : "Change"
+  "accountdata": {
+    "midata_id": "@PRODUCT ID:",
+    "birthday": "Geboortedatum:",
+    "change_btn": "Wijziging"
   },
-  
-  "member_circles" : {
-    "number_available" : "Circles available:",
-    "empty" : "You do not have any circles.",
-    "add_btn" : "Add",
-    "manage_btn" : "Manage"
+  "member_circles": {
+    "number_available": "Beschikbare cirkels:",
+    "empty": "Ze hebben geen cirkels.",
+    "add_btn": "Toevoegen",
+    "manage_btn": "Beheren"
   },
-  
-  "member_othercircles" : {
-    "number_available" : "Circles available:",
-    "empty" : "No account holders share data with you."
+  "member_othercircles": {
+    "number_available": "Beschikbare cirkels:",
+    "empty": "Geen boekhoudingsdatums gegevens met u."
   },
-  
-  "yourstudies" : {
-    "study" : "Research Project",
-    "status" : "Status",
-    "empty" : "You do not participate in any research project."
+  "yourstudies": {
+    "study": "Onderzoeksproject",
+    "status": "status",
+    "empty": "U neemt niet deel aan een onderzoeksproject."
   },
-  
-  "entercode" : {
-    "title" : "Join a research project by entering a participation code.",
-    "description" : "Join a research project by entering a code:",
-    "code" : "Participation Code",
-    "continue_btn" : "Continue"
+  "entercode": {
+    "title": "Voer naar het onderzoeksproject in met behulp van de participatiecode.",
+    "description": "Voer in het onderzoeksproject in door middel van code:",
+    "code": "Participatiecode",
+    "continue_btn": "Verder"
   },
-  
-  "providers" : {
-    "name" : "Name",
-	"status" : "Status",
-	"confirmation_date" : "Confirmation Date",
-    "confirm_btn" : "confirm",
-    "reject_btn" : "reject",
-    "empty" : "You have not registered any contacts as a health professional." 
+  "providers": {
+    "name": "naam",
+    "status": "status",
+    "confirmation_date": "Bevestigingsdatum",
+    "confirm_btn": "Bevestigen",
+    "reject_btn": "Afwijzen",
+    "empty": "U hebt geen contacten geregistreerd als gezondheidsspecialist."
   },
-  
-  "smallstudies" : {
-    "greeting" : "Do you want to support a research project by sharing your data?",
-    "studies" : "Projects",
-    "status" : "Enrollment",
-    "recruiting" : "Recruiting",
-    "ongoing" : "Ongoing",
-    "completed" : "Completed",
-    "stopped" : "Stopped",
-    "infoapply" : "More Info & Participation",
-    "infoonly" : "More Information"
+  "smallstudies": {
+    "greeting": "Wilt u een onderzoeksproject ondersteunen door uw gegevens te verstrekken?",
+    "studies": "Projecten",
+    "status": "Registratie",
+    "recruiting": "aanwerving",
+    "ongoing": "Rennen",
+    "completed": "Voltooid",
+    "stopped": "Gestopt",
+    "infoapply": "Meer informatie en deelname",
+    "infoonly": "Meer informatie"
   }
 }
