@@ -37,7 +37,7 @@
     "done_btn": "Klaar"
   },
   "accountdata": {
-    "midata_id": "@Product ID:",
+    "midata_id": "@PRODUCT ID:",
     "birthday": "Geboortedatum:",
     "change_btn": "Wijziging"
   },

@@ -21,7 +21,7 @@
     "name": "naam",
     "description": "Beschrijving",
     "researchers": "Alle onderzoekers in hun instelling",
-    "master_user": "U moet master -gebruikers zijn om uw organisatie bij te werken of nieuwe gebruikers voor de organisatie te registreren. Neem contact op met @support als u denkt dat u gebruikersrechten moet hebben."
+    "master_user": "U moet master -gebruikers zijn om uw organisatie bij te werken of nieuwe gebruikers voor de organisatie te registreren. Neem contact op met @SUPPORT als u denkt dat u gebruikersrechten moet hebben."
   },
   "createstudy": {
     "title": "Maak een nieuw onderzoeksproject",
@@ -251,7 +251,7 @@
     "endDate": "Officiële einddatum",
     "dataCreatedBefore": "Database bevroren van de",
     "sharing_query": "Gegevenstoegang filter",
-    "sharing_query_empty": "Het project vereist geen gegevens van @Product.",
+    "sharing_query_empty": "Het project vereist geen gegevens van @PRODUCT.",
     "join_methods": "Toegestane participatieprocedure",
     "leavePolicy": "Recht op ontslag van de deelnemers",
     "rejoinPolicy": "Het recht op terugkeer van de deelnemers",

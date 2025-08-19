@@ -32,7 +32,7 @@
     "testusers": "Testgebruiker",
     "role": "rol",
     "status": "status",
-    "midata_id": "@Product ID",
+    "midata_id": "@PRODUCT ID",
     "empty": "Geen geschikte gebruiker gevonden."
   },
   "admin_organizations": {
@@ -46,7 +46,7 @@
   "admin_address": {
     "title": "Gebruikersprofiel",
     "show_apps_created": "Toontoepassingen laten zien door deze ontwikkelaar",
-    "midata_id": "@Product ID",
+    "midata_id": "@PRODUCT ID",
     "role": "rol",
     "subroles": "Subrolle (n)",
     "developer": "Behoort tot de ontwikkelaar:",
@@ -324,7 +324,7 @@
     "make_selection": "Kies het element dat u wilt bewerken of om een nieuwe code toe te voegen",
     "new_code": "Nieuwe code die moet worden toegevoegd",
     "edit_code": "Bestaande code bewerken",
-    "edit_content": "Bewerk bestaand @product instalt type",
+    "edit_content": "Bewerk bestaand @PRODUCT instalt type",
     "new_content": "Om een nieuw @productvoorraadtype toe te voegen",
     "edit_group": "Bestaande groep bewerken in de database",
     "new_group": "Nieuwe groep in de database",
@@ -332,7 +332,7 @@
     "version": "versie",
     "code": "code",
     "display": "Aanduiding",
-    "content": "@Product instalt type",
+    "content": "@PRODUCT instalt type",
     "security": "Coderingssleutel van de gegevens",
     "medium": "Hergebruik van sleutels voor gegevens van hetzelfde type en dezelfde persoon",
     "high": "Gebruik een nieuwe sleutel voor elk gegevensrecord",
