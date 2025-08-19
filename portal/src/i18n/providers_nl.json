@@ -1,164 +1,149 @@
 {
-  "provider_registration" : {
-    "sign_up" : "Registration as a Health Professional",
-    "provider" : "Health Facility",
-    "user" : "Health Professional",
-    "name" : "Facility Name",
-    "description" : "Description",
-    "url" : "Homepage URL"
+  "provider_registration": {
+    "sign_up": "Registratie als gezondheidsspecialist",
+    "provider": "Gezondheidszorg",
+    "user": "Gezondheidsspecialist",
+    "name": "Naam inrichting",
+    "description": "Beschrijving",
+    "url": "Homepage URL"
   },
-  
-  "provider_login" : {
-    "title" : "Health Professional Login"
+  "provider_login": {
+    "title": "Log in als gezondheidsspecialist"
   },
-  
-  "provider_navbar" : {
-    "new_patient" : "New Patient",
-    "patients" : "Patients",
-    "research" : "Research",
-    "workspace" : "Workspace",
-    "market" : "Store",
-    "org" : "Enterprise",
-    "organization" : "Organization",    
-	"usergroups" : "Teams"
+  "provider_navbar": {
+    "new_patient": "Nieuwe patiënt",
+    "patients": "Geduldig",
+    "research": "Onderzoek",
+    "workspace": "Werkruimte",
+    "market": "Winkel",
+    "org": "Nastreven",
+    "organization": "organisatie",
+    "usergroups": "Team"
   },
-  
-  "provider_organization" : {
-    "title" : "Organization",
-    "empty" : "You are not part of an organization.",
-    "name" : "Name",
-    "address" : "Address",
-    "description" : "Description",
-    "url" : "Homepage URL",
-    "status" : "Status",
-    "members" : "Organization members",
-    "addprovider" : "Register New Member",
-    "edit_btn" : "Edit Organization",
-    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions.",
-    "parent" : "Part of Organization",
-    "identifiers" : "Identifier",
-    "identifiers_info" : "Enter all external organization identifiers here. Enter one identifier per line. Use '|' to separate code system and value if desired.",
-    "select_btn" : "Select",
-    "managerType" : "Organization Manager",
-    "managers" : {
-      "ME" : "Add yourself as manager only",
-      "ME2" : "Add yourself as member and manager",
-      "PARENT" : "Organization is managed by parent organization",
-      "OTHERMEMBER" : "Add another health professional as member and manager",
-      "EXTERNALUSER" : "Add another health professional as manager"
+  "provider_organization": {
+    "title": "organisatie",
+    "empty": "Ze behoren niet tot een organisatie.",
+    "name": "naam",
+    "address": "adres",
+    "description": "Beschrijving",
+    "url": "Homepage URL",
+    "status": "status",
+    "members": "Leden van de organisatie",
+    "addprovider": "Registreer een nieuw lid",
+    "edit_btn": "Bewerk organisatie",
+    "master_user": "U moet master -gebruikers zijn om uw organisatie bij te werken of nieuwe gebruikers voor de organisatie te registreren. Neem contact op met @support als u denkt dat u gebruikersrechten moet hebben.",
+    "parent": "Onderdeel van de organisatie",
+    "identifiers": "Identificatier",
+    "identifiers_info": "Voer hier alle externe organisatorische ID's in. Voer een identifier per regel in. Gebruik '|' Om het codenysteem en de waarde te scheiden indien gewenst.",
+    "select_btn": "Kiezen",
+    "managerType": "Manager van de organisatie",
+    "managers": {
+      "ME": "Voeg jezelf alleen toe als manager",
+      "ME2": "Voeg zichzelf toe als lid en manager",
+      "PARENT": "De organisatie wordt beheerd door de moederorganisatie",
+      "OTHERMEMBER": "Voeg een andere gezondheidsspecialist toe als lid en manager",
+      "EXTERNALUSER": "Voeg als manager een andere gezondheidsspecialist toe"
     },
-    "manager" : "Email of Manager",
-    "protection" : "Access protection",
-    "protection2" : "A second user must always confirm any use of this organization.", 
-    "request_btn" : "Request Access"
+    "manager": "E -mail van de manager",
+    "protection": "Bescherming van toegang",
+    "protection2": "Elk gebruik van deze organisatie moet altijd worden bevestigd door een tweede gebruiker.",
+    "request_btn": "Toegang aanvragen"
   },
-  
-  "addprovider" : {
-    "sign_up" : "Register health professional",
-    "success" : "User successfully registered"
+  "addprovider": {
+    "sign_up": "Registreer gezondheidspersoon",
+    "success": "Gebruiker met succes geregistreerd"
   },
-  
-  "provider_requestaccess" : {
-     "title" : "Request Access",
-     "reason" : "Reason",
-     "wait" : "Please wait until your request is confirmed...",
-     "retry_btn" : "Retry now"
+  "provider_requestaccess": {
+    "title": "Toegang aanvragen",
+    "reason": "Reden",
+    "wait": "Wacht tot uw verzoek wordt bevestigd ...",
+    "retry_btn": "Probeer het nu opnieuw"
   },
-  
-  "addpatient" : {
-    "sign_up" : "Register patient",
-    "success" : "User successfully registered",   
-    "initialPassword" : "Initial Password"
+  "addpatient": {
+    "sign_up": "Registreer patiënt",
+    "success": "Gebruiker met succes geregistreerd",
+    "initialPassword": "Eerste wachtwoord"
   },
-  
-  "provider_patientsearch" : {
-     "title" : "Patient Search",
-     "email" : "Email",
-     "or" : "or",
-     "midataid" : "@PRODUCT ID",
-     "birthday" : "Birthdate",
-     "searching" : "Searching...",
-     "address" : "Address",
-     "show_patient_btn" : "Show Patient",
-     "consents" : "Consents with this patient",
-     "add_new_consent" : "Add new consent",
-     "usergroup" : "Team (optional)",
-     "passcode" : "Access Code (optional)",
-     "add_new_consent_btn" : "Add new consent",
-     "add_new_account_btn" : "Create patient account"
+  "provider_patientsearch": {
+    "title": "Op zoek naar een patiënt",
+    "email": "e-mail",
+    "or": "of",
+    "midataid": "@Product ID",
+    "birthday": "geboortedatum",
+    "searching": "Zoekopdracht...",
+    "address": "adres",
+    "show_patient_btn": "Toon patiënt",
+    "consents": "Goedkeuring van deze patiënt",
+    "add_new_consent": "Voeg nieuwe goedkeuring toe",
+    "usergroup": "Team (optioneel)",
+    "passcode": "Toegangscode (optioneel)",
+    "add_new_consent_btn": "Voeg nieuwe goedkeuring toe",
+    "add_new_account_btn": "Patiëntaccount aanmaken"
   },
-  
-  "provider_patients" : {
-     "title" : "Patients",
-     "empty" : "No patients found."
+  "provider_patients": {
+    "title": "Geduldig",
+    "empty": "Geen patiënten gevonden."
   },
-  
-  "provider_usergroups" : {
-    "title" : "Teams",
-    "name" : "Team",
-    "type" : "Type",
-    "status" : "Status",
-    "searchable" : "Public",
-    "empty" : "You are not part of a team."
+  "provider_usergroups": {
+    "title": "Team",
+    "name": "team",
+    "type": "type",
+    "status": "status",
+    "searchable": "Openbaar",
+    "empty": "U bent geen lid van een team."
   },
-  
-  "provider_newusergroup" : {
-    "title" : "Create new Team",
-    "name" : "Team Name",
-    "create_btn" : "Create"
+  "provider_newusergroup": {
+    "title": "Maak een nieuw team",
+    "name": "Naam van het team",
+    "create_btn": "Creëren"
   },
-  
-  "provider_editusergroup" : {
-    "title" : "Edit Team",
-    "former_members" : "Former Members",
-    "name" : "Team Name",
-    "status" : "Status",
-    "searchable" : "Findable by Account Holders",
-    "startDate" : "Member From",
-    "endDate" : "Member Until",
-    "selected" : "Selected Member",
-    "rights" : "Permissions",
-    "notexists" : "This team does not (yet) exist.",
-    "right" : {
-      "readData" : "Read data",
-      "writeData" : "Write data",
-      "changeTeam" : "Change team",
-      "setup" : "Change organization",
-      "applications" : "Manage applications",
-      "participants" : "Manage consents"
+  "provider_editusergroup": {
+    "title": "Verander het team",
+    "former_members": "Voormalige leden",
+    "name": "Naam van het team",
+    "status": "status",
+    "searchable": "Findable voor accounthouder",
+    "startDate": "Lid sinds",
+    "endDate": "Lid tot",
+    "selected": "Geselecteerd lid",
+    "rights": "Autorisaties",
+    "notexists": "Dit team bestaat niet.",
+    "right": {
+      "readData": "Lees gegevens",
+      "writeData": "Schrijf gegevens",
+      "changeTeam": "Verander team",
+      "setup": "Verander organisatie",
+      "applications": "Beheer applicaties",
+      "participants": "Beheer deelnemers"
     },
-    "update_btn" : "Update"
+    "update_btn": "Update"
   },
-  
-  "provider_editgroups" : {
-    "title" : "Edit Sub-Entities",
-    "entityName" : "Entity Name",    
-    "entityType" : "Entity Type",
-    "roleName" : "Role",
-    "role" : {
-       "MANAGER" : "Managing Organization",
-       "SUBORGANIZATION" : "Sub-Organization",
-       "PARENTORGANIZATION" : "Parent Organization",
-       "HC" : "Other"
+  "provider_editgroups": {
+    "title": "Lagere titels bewerken",
+    "entityName": "Naam van entiteit",
+    "entityType": "Type entiteit",
+    "roleName": "rol",
+    "role": {
+      "MANAGER": "Administratieve organisatie",
+      "SUBORGANIZATION": "Sub -organisatie",
+      "PARENTORGANIZATION": "Superordinate organisatie",
+      "HC": "Ander"
     },
-    "startDate" : "Member From",
-    "endDate" : "Member Until",
-    "empty" : "No sub-entities found.",
-    "add_organization_btn" : "Create Sub-Organization",
-    "add_organization2_btn" : "Link to another Organization",
-    "add_broker_btn" : "Add API Access",
-    "add_group_btn" : "Add another Team",
-    "former_members" : "Former Sub-Entities"
+    "startDate": "Lid van",
+    "endDate": "Lid tot",
+    "empty": "Geen lagerheid gevonden.",
+    "add_organization_btn": "Creëer sub-organisatie",
+    "add_organization2_btn": "Link met een andere organisatie",
+    "add_broker_btn": "Voeg API -toegang toe",
+    "add_group_btn": "Voeg meer team toe",
+    "former_members": "Voormalige lagere titels"
   },
-  
-  "provider_memberdetails" : {
-    "propose_consent" : "Request Consent",
-    "pick_consent" : "Select a consent to display individual records",
-    "share_btn" : "Share data with the patient"
-   },
-   
-   "help_welcome" : {
-     "starts" : "Some ideas to start:"
-   }  
-  
+  "provider_memberdetails": {
+    "propose_consent": "Vraag goedkeuring",
+    "pick_consent": "Selecteer toestemming voor het weergeven van afzonderlijke gegevensrecords",
+    "share_btn": "Deel gegevens met de patiënt"
+  },
+  "help_welcome": {
+    "starts": "Een paar ideeën om te beginnen:"
+  }
 }
