@@ -31,7 +31,7 @@
         "not_admin_confirmed" : "Nicht vom Administrator bestätigte Konten",
         "overview" : "Übersicht",
         "specific_user" : "Bestimmter Benutzer",
-        "testusers" : "Test User",
+        "testusers" : "Testbenutzer",
         "role" : "Rolle",
         "status" : "Status",
         "midata_id" : "@PRODUCT ID",
@@ -80,7 +80,7 @@
         "make_master_btn" : "Rolle Master-Benutzer hinzufügen",
         "remove_master_btn" : "Rolle Master-Benutzer zurücknehmen",
         "history" : "Historie des Kontos",
-        "test_user" : "Test User Konto"
+        "test_user" : "Testbenutzer-Konto"
     },
 
     "admin_news" : {
