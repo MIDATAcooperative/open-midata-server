@@ -201,7 +201,7 @@
             "passphrase" : "Passphrasen müssen Klein-/Grossbuchstaben, Ziffern und Sonderzeichen enthalten."
         },
         "toomany" : {
-            "testuser" : "Die maximale Anzahl an Testusern wurde erreicht."
+            "testuser" : "Die maximale Anzahl an Testbenutzern wurde erreicht."
         },
 
         "concurrent" : {
@@ -669,9 +669,9 @@
             "DONE" : "Done"
         },
         "test_accounts" : {
-            "ALL" : "Test-User von allen Applikationen zulassen",
-            "NONE" : "Keine Test-User zulassen",
-            "SOME" : "Nur Test-User von bestimmten Applikationen zulassen"
+            "ALL" : "Testbenutzer von allen Applikationen zulassen",
+            "NONE" : "Keine Testbenutzer zulassen",
+            "SOME" : "Nur Testbenutzer von bestimmten Applikationen zulassen"
         }
     },
 

@@ -223,7 +223,7 @@
         "name" : "Name",
         "partName" : "Pseudonymisiert",
         "group" : "Gruppe",
-        "test_group" : "Gruppe für Testuser",
+        "test_group" : "Gruppe für Testbenutzer",
         "status" : "Status",
         "total" : "{{count}} Zustimmungen, die Ihren Kriterien entsprechen.",
         "only_first_shown" : "Es werden nur die ersten 1000 übereinstimmenden Zustimmungen angezeigt.",
