@@ -1280,7 +1280,7 @@
         "you" : "Lei",
         "restrictions" : "Altre restrizioni?",
         "project" : "Progetto",
-        "source" : "Fonte di questo consenso",
+        "source" : "Origine di questo consenso",
         "based_on" : "Link al consenso di base utilizzato",
         "base_created_at" : "Consenso di base creato il",
         "allowed_reshares" : "Se necessario, i dati possono essere condivisi con queste terze parti",
@@ -1732,11 +1732,11 @@
 
         // TODO NEW: dynamic extend
         "short_dynamic_extend" : "dynamic extend",
-        "source_app" : "Applicazione sorgente",
+        "source_app" : "Applicazione origine",
         "short_app_all" : "Tutti i sorgenti",
         "short_app_other" : "Solo l'applicazione:",
         "app_self" : "Utilizza solo i dati di questa applicazione",
-        "app_all" : "Utilizza dati da qualsiasi applicazione sorgente",
+        "app_all" : "Utilizza dati da qualsiasi applicazione origine",
         "app_other" : "Utilizzare i dati dall'applicazione:",
         "public" : "Dati pubblici",
         "public_only" : "Utilizzare solo dati pubblici",

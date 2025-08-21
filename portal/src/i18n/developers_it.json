@@ -175,7 +175,7 @@
         "default_context_extern" : "Plugin autonomo",
         "deploy_status" : "Stato dell'installazione",
         "accept_test_accounts" : "Autorizzare utenti di prova?",
-        "accept_test_accounts_from_app" : "Applicazioni sorgente autorizzate",
+        "accept_test_accounts_from_app" : "Applicazioni origine autorizzate",
         "test_accounts_max" : "Limite di conti di prova",
         "home_url" : "Pagina iniziale",
         "noWelcome" : "Nessuna e-mail di benvenuto",

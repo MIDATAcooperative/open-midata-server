@@ -15,12 +15,12 @@
         "sandbox" : "Sandbox",
         "workspace" : "Workspace",
         "records" : "Données de test",
-        "testusers" : "Utilisateurs de test"
+        "testusers" : "Utilisateurs test"
     },
 
     "developer_testusers" : {
-        "title" : "Utilisateurs de test",
-        "empty" : "Il n'y a aucun utilisateur de test inscrit sous ce compte.",
+        "title" : "Utilisateurs test",
+        "empty" : "Il n'y a aucun utilisateur test inscrit sous ce compte.",
         "role" : "Rôle",
         "resetpw" : "Nouveau mot de passe",
         "description" : "A l'aide de ces boutons, vous pouvez créer des utilisateurs additionnels afin de tester vos applications. Pour ces utilisateurs, les plugins sont exécutés localement (depuis 'localhost') et non pas sur le serveur.",
@@ -435,7 +435,7 @@
 
     "workspace" : {
         "title" : "Workspace",
-        "add_something" : "Veuillez ajouter une application ou un projet sur lequel vous travaillez. Vous pouvez également ajouter un utilisateur de test.",
+        "add_something" : "Veuillez ajouter une application ou un projet sur lequel vous travaillez. Vous pouvez également ajouter un utilisateur test.",
         "browser" : "Navigateur des utilisateurs",
         "midata" : "Back-end @PLATFORM",
         "useraccount" : "Compte utilisateur",
