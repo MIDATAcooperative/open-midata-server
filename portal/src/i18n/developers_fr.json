@@ -15,12 +15,12 @@
         "sandbox" : "Sandbox",
         "workspace" : "Workspace",
         "records" : "Données de test",
-        "testusers" : "Utilisateurs test"
+        "testusers" : "Utilisateurs de test"
     },
 
     "developer_testusers" : {
-        "title" : "Utilisateurs test",
-        "empty" : "Il n'y a aucun utilisateur test inscrit sous ce compte.",
+        "title" : "Utilisateurs de test",
+        "empty" : "Il n'y a aucun utilisateur de test inscrit sous ce compte.",
         "role" : "Rôle",
         "resetpw" : "Nouveau mot de passe",
         "description" : "A l'aide de ces boutons, vous pouvez créer des utilisateurs additionnels afin de tester vos applications. Pour ces utilisateurs, les plugins sont exécutés localement (depuis 'localhost') et non pas sur le serveur.",
@@ -59,7 +59,7 @@
             "REGISTRATION_BY_OTHER_PERSON" : "Inscription d'un nouvel utilisateur par une autre personne",
             "FIRSTUSE_ANYUSER" : "Première utilisation de l'application",
             "FIRSTUSE_EXISTINGUSER" : "Première utilisation de l'application (si pas d'e-mail d'inscription envoyé)",
-            "ONE_TIME_PASSWORD" : "Mot de passe unique envoyé",
+            "ONE_TIME_PASSWORD" : "Mot de passe à usage unique envoyé",
             "SERVICE_WITHDRAW" : "Cesser l'utilisation du service",
             "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
             "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",
@@ -174,7 +174,7 @@
         "default_context_config" : "Configuration / Importations",
         "default_context_extern" : "Plugin autonome",
         "deploy_status" : "État du déploiement",
-        "accept_test_accounts" : "Autoriser des utilisateurs tests?",
+        "accept_test_accounts" : "Autoriser des utilisateurs de test?",
         "accept_test_accounts_from_app" : "Applications sources autorisées",
         "test_accounts_max" : "Limite de comptes de test",
         "home_url" : "Page d'accueil",
@@ -215,7 +215,7 @@
             "endpoint2" : "N'oubliez pas: pour activer l'endpoint, vous devez ensuite ajouter une clé API.",
             "decentral" : "Les clés API seront gérées par plusieurs organisations différentes.",
             "organizationKeys" : "Les clés API sont directement liées à une seule organisation.",
-            "accept_test_accounts_from_app" : "Autoriser les utilisateurs test créés par ces applications (liste de noms d'applications internes séparée par des virgules).",
+            "accept_test_accounts_from_app" : "Autoriser les utilisateurs de test créés par ces applications (liste de noms d'applications internes séparée par des virgules).",
             "test_accounts_max" : "Nombre actuel de comptes de test créés et nombre maximal de comptes de test autorisés.",
             "noWelcome" : "Ne pas envoyer d'e-mail de bienvenue lors de l'inscription."
         },
@@ -435,7 +435,7 @@
 
     "workspace" : {
         "title" : "Workspace",
-        "add_something" : "Veuillez ajouter une application ou un projet sur lequel vous travaillez. Vous pouvez également ajouter un utilisateur test.",
+        "add_something" : "Veuillez ajouter une application ou un projet sur lequel vous travaillez. Vous pouvez également ajouter un utilisateur de test.",
         "browser" : "Navigateur des utilisateurs",
         "midata" : "Back-end @PLATFORM",
         "useraccount" : "Compte utilisateur",
@@ -457,7 +457,7 @@
         "summary" : "Résumé Data Access Filter",
         "add_app" : "Ajouter une application au Workspace",
         "add_user" : "Ajouter un utilisateur au Workspace",
-        "testusers_only" : "A utiliser uniquement avec des comptes de test ! Le mot de passe en texte clair sera stocké dans votre navigateur !",
+        "testusers_only" : "A utiliser uniquement avec des comptes de test! Le mot de passe en texte clair sera stocké dans votre navigateur!",
         "role" : "Rôle",
         "add_btn" : "Ajouter",
         "appname" : "Nom interne de l'application",

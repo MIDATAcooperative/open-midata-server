@@ -59,7 +59,7 @@
             "REGISTRATION_BY_OTHER_PERSON" : "Registrazione di un nuovo utente da parte di altre persone",
             "FIRSTUSE_ANYUSER" : "Primo utilizzo dell'applicazione",
             "FIRSTUSE_EXISTINGUSER" : "Primo utilizzo dell'applicazione (se non è stata inviata l'e-mail di registrazione)",
-            "ONE_TIME_PASSWORD" : "Password unica inviata",
+            "ONE_TIME_PASSWORD" : "Password monouso inviata",
             "SERVICE_WITHDRAW" : "Cessare l'utilizzo del servizio",
             "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
             "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",

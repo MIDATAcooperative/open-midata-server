@@ -121,7 +121,7 @@
             "AUTOADD_A" : "Ajouter automatiquement l'app",
             "DATALINK" : "Partage des données"
         },
-        "use_period" : "Quand sont-elles liées ?",
+        "use_period" : "Quand sont-elles liées?",
         "use_periods" : {
             "PRE" : "Avant que le projet n'ait débuté",
             "RUNNING" : "Pendant l'exécution du projet",
@@ -223,7 +223,7 @@
         "name" : "Nom",
         "partName" : "Pseudonymisé",
         "group" : "Groupe",
-        "test_group" : "Groupe pour les utilisateurs test",
+        "test_group" : "Groupe pour les utilisateurs de test",
         "status" : "État",
         "total" : "{{count}} consentements correspondant à vos critères trouvés.",
         "only_first_shown" : "Seuls les 1000 premiers consentements correspondants sont affichés",
