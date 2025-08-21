@@ -126,9 +126,7 @@
             "changeTeam" : "Changer le team",
             "setup" : "Change l'organisation",
             "applications" : "Gérer les applications",
-
-            // TODO NEW: Manage consents
-            "participants" : "Manage consents"
+            "participants" : "Gérer les consentements"
         },
         "update_btn" : "Mettre à jour"
     },
@@ -141,9 +139,7 @@
         "role" : {
             "MANAGER" : "Organisation de gestion",
             "SUBORGANIZATION" : "Sous-organisation",
-
-            // TODO NEW: Parent Organization
-            "PARENTORGANIZATION" : "Parent Organization",
+            "PARENTORGANIZATION" : "Organisation mère",
             "HC" : "Autre"
         },
         "startDate" : "Membre du",
