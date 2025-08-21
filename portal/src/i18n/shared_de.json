@@ -1,5 +1,4 @@
 {
-
     "footer" : {
         "for_members" : "Für Kontoinhabende",
         "for_researchers" : "Für Forschungseinrichtungen",
@@ -35,13 +34,12 @@
         "offline" : "Der Server ist momentan nicht verfügbar! Bitte wenden Sie sich an @SUPPORT, falls das Problem weiterhin besteht.",
         "internal" : "Ein interner Fehler ist aufgetreten. Bitte wenden Sie sich an @SUPPORT, falls das Problem weiterhin besteht.",
         "internal_db" : "Ein interner Datenbank-Fehler ist aufgetreten. Bitte wenden Sie sich an @SUPPORT, falls das Problem weiterhin besteht.",
-        "plugin" : "Es ist ein anwendungsspezifischer Fehler aufgetreten. Bitte wenden Sie sich an den Anwendungsentwickler oder an @SUPPORT, falls das Problem weiterhin besteht.",
+        "plugin" : "Es ist ein applikationsspezifischer Fehler aufgetreten. Bitte wenden Sie sich an den Applikationsentwickler oder an @SUPPORT, falls das Problem weiterhin besteht.",
         "relogin" : "Melden Sie sich bitte erneut an",
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
         "unsupported" : "Operation nicht unterstützt",
         "failed" : "Aktion fehlgeschlagen",
         "timeout" : "Timeout",
-
         "contact_support" : "Wenn Sie anhaltende Probleme beim Einlogvorgang haben, wenden Sie sich an den Support unter @SUPPORT.",
         "notrialuser_title" : "Vollständige Mitgliedschaft notwendig!",
         "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung der Allgemeinen Geschäftsbedingungen und senden Sie diese unterschrieben an @OPERATOR zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
@@ -144,7 +142,7 @@
 
         "exists" : {
             "user" : "Eine Person mit dieser E-Mail ist bereits registriert.",
-            "email" : "Ein anderes Benutzerkonto mit der gleichen Email-Adresse existiert bereits.",
+            "email" : "Ein anderes Benutzerkonto mit der gleichen E-Mail-Adresse existiert bereits.",
             "member" : "Eine Person mit dieser E-Mail ist bereits registriert.",
             "provider" : "Eine Gesundheitsfachperson mit diesem Namen existiert bereits.",
             "organization" : "Eine Organisation mit diesem Namen existiert bereits.",
@@ -162,17 +160,17 @@
             "user" : "Dieses Konto wurde gesperrt. Ihre E-Mail-Adresse ist für weitere Registrierung gesperrt. Für Unterstützung kontaktieren Sie bitte @SUPPORT.",
             "password1" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Minute vor dem nächsten Versuch.",
             "password1_show" : "@modal",
-            "password1_title" : "Zu viele gescheiterte Login Versuche",
+            "password1_title" : "Zu viele gescheiterte Anmeldeversuche",
             "password1_1" : "Zu Ihrer Sicherheit wurde Ihr Konto aufgrund mehrerer fehlgeschlagener Anmeldeversuche vorübergehend gesperrt.",
             "password1_2" : "Bitte versuchen Sie es in 1 Minute erneut oder setzen Sie ihr Passwort zurück.",
             "password5" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 5 Minuten vor dem nächsten Versuch.",
             "password5_show" : "@modal",
-            "password5_title" : "Zu viele gescheiterte Login Versuche",
+            "password5_title" : "Zu viele gescheiterte Anmeldeversuche",
             "password5_1" : "Zu Ihrer Sicherheit wurde Ihr Konto aufgrund mehrerer fehlgeschlagener Anmeldeversuche vorübergehend gesperrt.",
             "password5_2" : "Bitte versuchen Sie es in 5 Minuten erneut oder setzen Sie ihr Passwort zurück.",
             "password60" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Stunde vor dem nächsten Versuch.",
             "password60_show" : "@modal",
-            "password60_title" : "Zu viele gescheiterte Login Versuche",
+            "password60_title" : "Zu viele gescheiterte Anmeldeversuche",
             "password60_1" : "Zu Ihrer Sicherheit wurde Ihr Konto aufgrund mehrerer fehlgeschlagener Anmeldeversuche vorübergehend gesperrt.",
             "password60_2" : "Bitte versuchen Sie es in 1 Stunde erneut oder setzen Sie ihr Passwort zurück.",
             "participation" : "Sie sind nicht berechtigt, an diesem Forschungsprojekt teilzunehmen und können deshalb diese Applikation nicht benutzen.",
@@ -215,7 +213,7 @@
             "tokenresent" : "Dieses Aktivierungs-Token ist bereits abgelaufen. Ein neues Token wurde soeben an Ihre E-Mail-Adresse versandt. Bitte bestätigen Sie ihre E-Mail-Adresse innerhalb von 24 Stunden mit dem neuen Token.",
             "code" : "Dieser Teilnahmecode ist abgelaufen.",
             "securitytoken" : "Dieser Code ist abgelaufen.",
-            "app" : "Diese Anwendung steht nicht länger zur Verfügung."
+            "app" : "Diese Applikation ist nicht mehr verfügbar."
         },
 
         "already_done" : {
@@ -507,7 +505,7 @@
         },
         "projectdatafilter" : {
             "NO_TIME" : "Alle Uhrzeiten entfernen",
-            "ONLY_MONTH_YEAR" : "Tag von Datumsangaben entfernen.(Monat und Jahr behalten)",
+            "ONLY_MONTH_YEAR" : "Tag von Datumsangaben entfernen (Monat und Jahr behalten)",
             "NO_PRACTITIONER" : "Practitioner-Referenzen entfernen",
             "NO_NARRATIVES" : "Narratives entfernen"
         },
@@ -671,7 +669,6 @@
             "DONE" : "Done"
         },
         "test_accounts" : {
-
             "ALL" : "Test-User von allen Applikationen zulassen",
             "NONE" : "Keine Test-User zulassen",
             "SOME" : "Nur Test-User von bestimmten Applikationen zulassen"
@@ -883,7 +880,6 @@
             "intro3" : "Wenn Sie auf den falschen Link geklickt haben und stattdessen Ihre E-Mail-Adresse BESTÄTIGEN möchten, klicken Sie hier:",
             "confirm_btn" : "Kontoerstellung bestätigen"
         },
-
         "totpsetup" : "Installieren Sie eine Authentifizierungs-App wie z.B Google Authenticator oder Microsoft Authenticator. Scannen Sie den QR-Code mit der Authentifizierungs-App.",
         "totpsetup2" : "Um die korrekte Einrichtung zu überprüfen, geben Sie den Code aus der Authenticator-App ein.",
         "no_totp_code_btn" : "Neu konfigurieren",
@@ -981,10 +977,9 @@
         "history_who" : "Wer",
         "history_when" : "Wann",
         "history_comment" : "Bemerkung",
-        "request_participation_help" : "Wenn Sie an dieser Forschung teilnehmen möchten, können Sie die Teilnahme beantragen.",
+        "request_participation_help" : "Wenn Sie an diesem Forschungsprojekt teilnehmen möchten, können Sie die Teilnahme beantragen.",
         "request_participation_btn" : "Teilnahme anfordern",
         "accept_invitation_help" : "Sie wurden eingeladen, an dieser Forschung teilzunehmen.",
-
         "accept_invitation_btn" : "Einladung annehmen",
         "do_not_participate_help" : "Wenn Sie NICHT teilnehmen möchten, können Sie hier klicken. Sie werden nicht erneut gefragt und es werden keine Daten weitergegeben.",
         "do_not_participate_btn" : "Nicht teilnehmen",
@@ -993,7 +988,6 @@
         "status" : "Status",
         "recommended_apps" : "Empfohlene Applikationen",
         "use_app" : "Jetzt verwenden",
-
         "pseudonym" : "Ihr Pseudonym",
         "for_participants" : "Teilnahme-Informationen",
         "please_review1" : "Entscheidung über die Teilnahme",
@@ -1036,7 +1030,7 @@
         "notifications2" : "Möchten Sie benachrichtigt werden, wenn Ihr Konto genutzt wird?",
         "change_settings_btn" : "Einstellungen ändern",
         "change_settings_success" : "Die Einstellungen wurden aktualisiert",
-        "using_apps" : "Ihr @PRODUCT Konto wurde mit diesen Anwendungen verwendet:"
+        "using_apps" : "Ihr @PRODUCT Konto wurde mit diesen Applikationen verwendet:"
     },
 
     "visualization" : {
@@ -1140,7 +1134,6 @@
         "confirm_btn" : "Diese Zustimmung bestätigen",
         "reject_btn" : "Diese Zustimmung ablehnen",
         "delete_btn" : "Diese Zustimmung löschen",
-
         "delete_all_btn" : "Alle für diese App löschen",
         "please_review1" : "Zustimmung zu überprüfen",
         "please_review2a" : "Bitte überprüfen Sie diese Zustimmung. Klicken Sie auf 'Diese Zustimmung bestätigen', wenn Sie damit einverstanden sind. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht einverstanden sind.",
@@ -1197,9 +1190,7 @@
 
     "importrecords" : {
         "title" : "Import",
-
-      
-        "authorize_btn" : "Jetzt autorisieren",
+        "authorize_btn" : "Autorisierung starten",
         "skip_btn" : "Jetzt Überspringen"
     },
 
@@ -1256,7 +1247,6 @@
     },
 
     "oauth2" : {
-
         "title" : "Zugriff bestätigen",
         "requests_permission" : "speichert Ihre persönlichen Daten in Ihrem @PRODUCT Konto.",
         "no_account" : "Sie besitzen noch kein Konto?",
@@ -1580,31 +1570,27 @@
         "no_code_btn" : "Code-Einschränkung aufheben",
         "owner" : "Datenbesitzer",
         "owner_all" : "Geteilte Daten ebenfalls verwenden (von Projekten, Freunden, Patienten)",
-        "owner_self" : "Nur Daten vom Benutzer der Anwendung",
+        "owner_self" : "Nur Daten vom Benutzer der Applikation",
         "short_owner_all" : "Auch geteilte Daten",
         "short_owner_self" : "Nur eigene Daten",
         "short_public_only" : "Nur öffentliche Daten",
         "short_public_also" : "Öffentliche, freigegebene und eigene Daten",
         "short_public_also_self" : "Öffentliche und eigene Daten",
-
         "short_dynamic_true" : "Dynamisch",
-
         "short_dynamic_extend" : "Dynamisch erweitern",
         "source_app" : "Quellapplikation",
         "short_app_all" : "Alle Quellen",
         "short_app_other" : "Nur die Applikation:",
-        "app_self" : "Nur Daten aus dieser Anwendung verwenden",
-        "app_all" : "Daten aus beliebigen Quellanwendungen verwenden",
+        "app_self" : "Nur Daten aus dieser Applikation verwenden",
+        "app_all" : "Daten aus beliebigen Quellapplikationen verwenden",
         "app_other" : "Daten aus der Applikation verwenden:",
         "public" : "Öffentliche Daten",
         "public_only" : "Nur öffentliche Daten verwenden",
         "public_also" : "Öffentliche und andere Daten verwenden",
         "public_no" : "Keine öffentlichen Daten verwenden",
         "dynamic" : "Dynamisch",
-
         "dynamic_yes" : "Immer den aktuellen Gruppeninhalt verwenden",
         "dynamic_no" : "Gruppeninhalt vom Zeitpunkt der Zustimmung verwenden",
-
         "dynamic_extend" : "Neue Codes automatisch in aktuelle Gruppe aufnehmen",
         "restrictions" : "Zusätzliche Einschränkungen",
         "data_period_restriction" : "Datum",
@@ -1634,20 +1620,19 @@
         "resultgroup" : "Passt",
         "resultdetail" : "Enthaltene Typen oder Codes",
         "search_empty" : "Keinen passenden Datentyp gefunden.",
-        "select_resources" : "Wählen Sie aus, auf welche dieser häufig benötigten Ressourcen Ihre Anwendung zugreifen soll:",
+        "select_resources" : "Wählen Sie aus, auf welche dieser häufig benötigten Ressourcen Ihre Applikation zugreifen soll:",
         "save_exit_btn" : "Speichern und beenden",
         "cancel_btn" : "Abbrechen",
         "check_okay" : "Ist die Liste der benötigten Daten nun vollständig und korrekt?",
         "ask" : {
             "AuditEvent" : "Zugriff auf das Audit Log",
-            "Consent" : "Zugriff auf Einwilligungen des Anwenders mit anderen Nutzern oder Anwendungen",
+            "Consent" : "Zugriff auf Einwilligungen des Anwenders mit anderen Nutzern oder Applikationen",
             "Group" : "Zugriff auf Gruppendefinitionen (Teams von Gesundheitsfachpersonen oder Forschern sowie projektspezifische Gruppen)",
             "Patient" : "Patienten-Datensätze: Name, E-Mail, Adresse der Kontoinhabenden",
             "PseudonymizedPatient" : "Patienten-Datensätze: Pseudonym, Geburtsjahr, Land der Teilnehmer am Forschungsprojekt",
             "Practitioner" : "Ressource Practitioner: Suche nach Gesundheitsfachpersonen oder Forschern",
             "Subscription" : "Zugriff und Verwaltung von Abonnements auf externe Systeme"
         },
-
         "creator_org" : "Erzeugende Organisation"
     },
 
@@ -1702,9 +1687,8 @@
     },
 
     "appexpired" : {
-
-        "title" : "Anwendung nicht mehr verfügbar",
-        "intro" : "Diese Anwendung ist nicht länger verfügbar. Falls Sie mit dieser Anwendung Daten in ihrem @PRODUCT Konto gespeichert haben, sind diese noch in ihrem Account verfügbar.",
+        "title" : "Applikation nicht mehr verfügbar",
+        "intro" : "Diese Applikation ist nicht länger verfügbar. Falls Sie mit dieser Applikation Daten in ihrem @PRODUCT Konto gespeichert haben, sind diese noch in ihrem Account verfügbar.",
         "loginpage_btn" : "Zur Startseite des @PRODUCT Portal"
     },
 

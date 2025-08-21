@@ -1,5 +1,4 @@
 {
-
     "footer" : {
         "for_members" : "Per i titolari di un account",
         "for_researchers" : "Per le organizzazioni di ricerca",
@@ -41,26 +40,16 @@
         "unsupported" : "Operazione non supportata",
         "failed" : "Azione fallita",
         "timeout" : "Timeout",
-
-        // TODO NEW: If you have persistent problems logging in, please contact support at @SUPPORT.
-        "contact_support" : "If you have persistent problems logging in, please contact support at @SUPPORT.",
+        "contact_support" : "Se riscontri problemi persistenti nell'effettuare l'accesso, contatta l'assistenza all'indirizzo @SUPPORT.",
         "notrialuser_title" : "È richiesta l'iscrizione completa in qualità di membro!",
         "notrialuser_detail" : "Per utilizzare questa funzionalità, è necessario completare la propria registrazione. Richiedere una copia scritta dei Condizioni generali di contratto e restituirla firmata a @OPERATOR. Si riceverà inoltre un codice di conferma per verificare il proprio indirizzo postale. Se si desidera controllare lo stato del proprio account fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "mustbemember_title" : "È richiesta l'appartenenza a @OPERATOR!",
         "mustbemember_detail" : "Per utilizzare questa funzione è necessario essere membri della cooperativa. Per ulteriori informazioni fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "ratelimit" : "Il limite di frequenza delle chiamate dell'azione corrente è stato raggiunto. Riprova più tardi.",
-
-        // TODO NEW: @modal
         "ratelimit_show" : "@modal",
-
-        // TODO NEW: Current action tried too often
-        "ratelimit_title" : "Current action tried too often",
-
-        // TODO NEW: Whoa, that’s a lot of requests! To keep things secure, we’re taking a short break.
-        "ratelimit_1" : "Whoa, that’s a lot of requests! To keep things secure, we’re taking a short break.",
-
-        // TODO NEW: Try again in a few minutes.
-        "ratelimit_2" : "Try again in a few minutes.",
+        "ratelimit_title" : "Azione tentata troppo spesso",
+        "ratelimit_1" : "Wow, sono tantissime richieste! Per garantire la sicurezza, ci prendiamo una breve pausa.",
+        "ratelimit_2" : "Riprova tra qualche minuto.",
         "no_code_challenge" : "Endpoint di autorizzazione chiamato con parametri insufficienti. Contatta lo sviluppatore dell'applicazione.",
         "notauthorized" : {
             "action" : "Non si è autorizzati a eseguire questa azione",
@@ -107,15 +96,9 @@
             "csvmapping" : "Mappatura non valida fornita.",
             "id" : "Identificatore non valido",
             "usergroup" : "Per eseguire questa azione è necessario essere membri di questo gruppo di utenti.",
-
-            // TODO NEW: Meta projects cannot be used as subprojects for other meta projects.
-            "project" : "Meta projects cannot be used as subprojects for other meta projects.",
-
-            // TODO NEW: Test of SMTP configuration failed.
-            "smtp" : "Test of SMTP configuration failed.",
-
-            // TODO NEW: Wrong one-time password.
-            "otp" : "Wrong one-time password."
+            "project" : "I meta progetti non possono essere utilizzati come sottoprogetti per altri meta progetti.",
+            "smtp" : "Il test della configurazione SMTP non è riuscito.",
+            "otp" : "Password monouso errata."
         },
 
         "missing" : {
@@ -159,9 +142,7 @@
 
         "exists" : {
             "user" : "Una persona è già registrata con questo indirizzo e-mail.",
-
-            // TODO NEW: Different account with same email already exists.
-            "email" : "Different account with same email already exists.",
+            "email" : "Esiste già un account diverso con lo stesso indirizzo e-mail.",
             "member" : "Una persona è già registrata con questo indirizzo e-mail.",
             "provider" : "Un professionista sanitario con questo nome esiste già.",
             "organization" : "Esiste già un'organizzazione con questo nome.",
@@ -178,53 +159,27 @@
         "blocked" : {
             "user" : "Questo account è stato bloccato. Il suo indirizzo e-mail è bloccato per un'ulteriore registrazione. Contatta @SUPPORT per ottenere assistenza.",
             "password1" : "Troppi tentativi di mancato accesso. Attendere 1 minuto prima di tentare nuovamente.",
-
-            // TODO NEW: @modal
             "password1_show" : "@modal",
-
-            // TODO NEW: Too many missed login attempts
-            "password1_title" : "Too many missed login attempts",
-
-            // TODO NEW: For your security, your account has been temporarily locked due to multiple failed login attempts.
-            "password1_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
-
-            // TODO NEW: Please try again in 1 minute or reset your password.
-            "password1_2" : "Please try again in 1 minute or reset your password.",
+            "password1_title" : "Troppi tentativi di accesso non riusciti",
+            "password1_1" : "Per motivi di sicurezza, il vostro account è stato temporaneamente bloccato a causa di diversi tentativi di accesso non riusciti.",
+            "password1_2" : "Riprova tra 1 minuto o reimposta la password.",
             "password5" : "Troppi tentativi di mancato accesso. Attendere 5 minuti prima di tentare nuovamente.",
-
-            // TODO NEW: @modal
             "password5_show" : "@modal",
-
-            // TODO NEW: Too many missed login attempts
-            "password5_title" : "Too many missed login attempts",
-
-            // TODO NEW: For your security, your account has been temporarily locked due to multiple failed login attempts.
-            "password5_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
-
-            // TODO NEW: Please try again in 5 minutes or reset your password.
-            "password5_2" : "Please try again in 5 minutes or reset your password.",
+            "password5_title" : "Troppi tentativi di accesso non riusciti",
+            "password5_1" : "Per motivi di sicurezza, il vostro account è stato temporaneamente bloccato a causa di diversi tentativi di accesso non riusciti.",
+            "password5_2" : "Riprova tra 5 minuti o reimposta la password.",
             "password60" : "Troppi tentativi di mancato accesso. Attendere 1 ora prima di tentare nuovamente.",
-
-            // TODO NEW: @modal
             "password60_show" : "@modal",
-
-            // TODO NEW: Too many missed login attempts
-            "password60_title" : "Too many missed login attempts",
-
-            // TODO NEW: For your security, your account has been temporarily locked due to multiple failed login attempts.
-            "password60_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
-
-            // TODO NEW: Please try again in 1 hour or reset your password.
-            "password60_2" : "Please try again in 1 hour or reset your password.",
+            "password60_title" : "Troppi tentativi di accesso non riusciti",
+            "password60_1" : "Per motivi di sicurezza, il vostro account è stato temporaneamente bloccato a causa di diversi tentativi di accesso non riusciti.",
+            "password60_2" : "Riprova tra un'ora o reimposta la password.",
             "participation" : "Non sei autorizzati a partecipare a questo progetto di ricerca e quindi non può più utilizzare questa applicazione.",
             "projectconsent" : "Ha ritirato la sua partecipazione a questo progetto di ricerca e quindi non può più utilizzare questa applicazione.",
             "consent" : "Ha impostato nel portale @PRODUCT che questa applicazione non può più accedere ai suoi dati. Se si desidera utilizzare nuovamente questa applicazione, è necessario riautorizzarla nel portale @PRODUCT.",
             "app" : "Si è autorizzati a utilizzare questa applicazione su un numero massimo di 10 dispositivi. Eliminare i consensi non utilizzati sul portale @PRODUCT.",
             "app_test" : "Lei è autorizzato a utilizzare questa applicazione su un massimo di 10 dispositivi. Su questa istanza TEST i consensi sono stati resettati per lei. Si prega di riprovare.",
             "joinmethod" : "Non è consentito aderire al progetto con questo metodo.",
-
-            // TODO NEW: Application does not accept test accounts.
-            "testuser" : "Application does not accept test accounts."
+            "testuser" : "L'applicazione non accetta account di prova."
         },
 
         "closed" : {
@@ -246,9 +201,7 @@
             "passphrase" : "Le frasi password devono contenere lettere maiuscole/minuscole, numeri e caratteri speciali."
         },
         "toomany" : {
-
-            // TODO NEW: The maximum allowed number of test users has been reached.
-            "testuser" : "The maximum allowed number of test users has been reached."
+            "testuser" : "È stato raggiunto il numero massimo consentito di utenti di prova."
         },
 
         "concurrent" : {
@@ -260,9 +213,7 @@
             "tokenresent" : "Questo token di attivazione è già scaduto. Un nuovo token è stato appena inviato al suo indirizzo e-mail. Conferma il suo indirizzo e-mail entro 24 ore utilizzando il nuovo token.",
             "code" : "Questo codice di partecipazione è scaduto.",
             "securitytoken" : "Questo codice è scaduto.",
-
-            // TODO NEW: This application is no longer available for use.
-            "app" : "This application is no longer available for use."
+            "app" : "Questa applicazione non è più disponibile."
         },
 
         "already_done" : {
@@ -376,9 +327,7 @@
             "user-status-change-blocked" : "Account utente bloccato",
             "user-email-confirmed" : "E-mail confermata dall'utente",
             "user-email-rejected" : "E-mail rifiutata dall'utente",
-
-            // TODO NEW: Phone number confirmed by user
-            "user-phone-confirmed" : "Phone number confirmed by user",
+            "user-phone-confirmed" : "Numero di telefono confermato dall'utente",
             "user-account-change-by-admin" : "Account utente modificato dall'amministratore",
             "user-account-deleted" : "Account utente eliminato",
             "app-first-use" : "Primo utilizzo dell'applicazione",
@@ -446,9 +395,7 @@
             "apikey-deleted" : "Chiave API cancellata",
             "service-instance-created" : "Istanza di servizio creata",
             "service-instance-deleted" : "Istanza di servizio cancellata",
-
-            // TODO NEW: One-time password sent
-            "otp-sent" : "One-time password sent"
+            "otp-sent" : "Password monouso inviata"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
@@ -522,9 +469,7 @@
             "CITIZENSCIENCE" : "Progetto Scienza Cittadina",
             "COMMUNITY" : "Comunità",
             "REGISTRY" : "Registro",
-
-            // TODO NEW: Meta Project
-            "META" : "Meta Project"
+            "META" : "Meta progetto"
         },
         "joinmethod" : {
             "APP" : "Il partecipante utilizza un'applicazione collegata",
@@ -532,11 +477,7 @@
             "RESEARCHER" : "Il partecipante è registrato manualmente dal membro del team di ricerca",
             "API" : "Il partecipante è iscrivi da un software esterno",
             "ALGORITHM" : "Il partecipante è stato proposto da un algoritmo (non supportato)",
-
-            // TODO CHANGED
-            // OLD: Participant may join by entering a code (not supported)
-            // NEW: Participant may join by entering a code
-            "CODE" : "Il partecipante può aderire inserendo un codice (non supportato)",
+            "CODE" : "Il partecipante può aderire inserendo un codice",
             "APP_CODE" : "Il partecipante può aderire utilizzando un codice fornito dall'applicazione",
             "TRANSFER" : "I dati vengono trasferiti da un altro progetto di ricerca (non supportato)"
         },
@@ -548,9 +489,7 @@
         },
         "studyvalidationstatus" : {
             "DRAFT" : "Bozza (non convalidata)",
-
-            // TODO NEW: Re-edit (Not Validated)
-            "PATCH" : "Re-edit (Not Validated)",
+            "PATCH" : "Riedita (non convalidata)",
             "REJECTED" : "Progetto rifiutato da @OPERATOR",
             "VALIDATED" : "Lo progetto è stato convalidato",
             "VALIDATION" : "Convalida in esecuzione"
@@ -565,18 +504,10 @@
             "DELETE_LAST" : "Sostituire la partecipazione precedente"
         },
         "projectdatafilter" : {
-
-            // TODO NEW: Remove all time information from dates
-            "NO_TIME" : "Remove all time information from dates",
-
-            // TODO NEW: Remove day from dates.(Keep month and year)
-            "ONLY_MONTH_YEAR" : "Remove day from dates.(Keep month and year)",
-
-            // TODO NEW: Remove practitioner references
-            "NO_PRACTITIONER" : "Remove practitioner references",
-
-            // TODO NEW: Remove narrative texts
-            "NO_NARRATIVES" : "Remove narrative texts"
+            "NO_TIME" : "Rimuovere tutte le informazioni relative all'ora dalle date",
+            "ONLY_MONTH_YEAR" : "Rimuovere il giorno dalle date (mantieni mese e anno)",
+            "NO_PRACTITIONER" : "Rimuovere i riferimenti ai professionisti",
+            "NO_NARRATIVES" : "Rimuovere i testi narrativi"
         },
         "pcodestatus" : {
             "UNUSED" : "Non usato",
@@ -600,10 +531,6 @@
             "MONITOR" : "Supervisore",
             "MASTER" : "Utente master",
             "USERADMIN" : "Gestione utenti",
-
-            // TODO CHANGED
-            // OLD: Key Recoveries
-            // NEW: Key Recovery
             "KEYRECOVERY" : "Recupero della chiave",
             "STUDYADMIN" : "Gestione dei progetti",
             "CONTENTADMIN" : "Gestione dei tipi di dati",
@@ -644,9 +571,7 @@
             "IT" : "Italiano",
             "FR" : "Francese",
             "NL" : "Olandese",
-
-            // TODO NEW: Estonian
-            "ET" : "Estonian",
+            "ET" : "Estone",
             "INT" : "Default / Non localizzato"
         },
         "month" : {
@@ -708,9 +633,7 @@
         "secondaryauthtype" : {
             "NONE" : "Nessun secondo fattore di autenticazione",
             "SMS" : "Autenticazione a due fattori tramite SMS",
-
-            // TODO NEW: Two factor authentication using an authenticator app
-            "TOTP" : "Two factor authentication using an authenticator app"
+            "TOTP" : "Autenticazione a due fattori tramite app di autenticazione"
         },
         "accountnotifications" : {
             "NONE" : "Nessuna notifica di accesso",
@@ -746,27 +669,17 @@
             "DONE" : "Done"
         },
         "test_accounts" : {
-
-            // TODO NEW: Allow test users created by any application
-            "ALL" : "Allow test users created by any application",
-
-            // TODO NEW: Do not allow test users
-            "NONE" : "Do not allow test users",
-
-            // TODO NEW: Allow test users created by some applications
-            "SOME" : "Allow test users created by some applications"
+            "ALL" : "Autorizzare gli utenti di prova creati da qualsiasi applicazione",
+            "NONE" : "Non autorizzare gli utenti di prova",
+            "SOME" : "Autorizzare gli utenti di prova creati da alcune applicazioni"
         }
     },
 
     "common" : {
         "empty" : " ",
-
-        // TODO NEW: by
-        "by" : "by",
+        "by" : "da",
         "done_btn" : "OK",
-
-        // TODO NEW: Close
-        "close_btn" : "Close",
+        "close_btn" : "Chiudere",
         "back_btn" : "Indietro",
         "search_btn" : "Cerca",
         "add_btn" : "Aggiungi",
@@ -893,21 +806,11 @@
     },
 
     "pwstrength" : {
-
-        // TODO NEW: Password must have at least 8 characters.
-        "min" : "Password must have at least 8 characters.",
-
-        // TODO NEW: Password must have at least 12 characters.
-        "min_advanced" : "Password must have at least 12 characters.",
-
-        // TODO NEW: Password must contain at least one letter.
-        "letter" : "Password must contain at least one letter.",
-
-        // TODO NEW: Password must contain at least one number.
-        "number" : "Password must contain at least one number.",
-
-        // TODO NEW: Password must contain at least one special character.
-        "special" : "Password must contain at least one special character."
+        "min" : "La password deve contenere almeno 8 caratteri.",
+        "min_advanced" : "La password deve contenere almeno 12 caratteri.",
+        "letter" : "La password deve contenere almeno una lettera.",
+        "number" : "La password deve contenere almeno un numero.",
+        "special" : "La password deve contenere almeno un carattere speciale."
     },
 
     "postregister" : {
@@ -941,38 +844,20 @@
         "securityToken_btn" : "Inviare",
         "no_token" : "Si prega di attendere fino a un minuto per l'arrivo del codice.",
         "no_token_btn" : "Non ho ricevuto il codice",
-
-        // TODO NEW: An email with a one time password has been sent to your email address. Please enter the code from the email.
-        "otp" : "An email with a one time password has been sent to your email address. Please enter the code from the email.",
-
-        // TODO NEW: The one time password has been sent to
-        "otp1" : "The one time password has been sent to",
-
-        // TODO NEW: The email has been sent to
-        "email1" : "The email has been sent to",
-
-        // TODO NEW: at
-        "otp2" : "at",
-
-        // TODO NEW: .
+        "otp" : "È stata inviata un'e-mail con una password monouso al vostro indirizzo e-mail. Inserisci il codice riportato nell'e-mail.",
+        "otp1" : "La password monouso è stata inviata a",
+        "email1" : "L'e-mail è stata inviata a",
+        "otp2" : "alle",
         "otp3" : ".",
-
-        // TODO NEW: Please look also into your spam folder if you cannot find the email.
-        "otp4" : "Please look also into your spam folder if you cannot find the email.",
-
-        // TODO NEW: One time password
-        "otp_password" : "One time password",
-
-        // TODO NEW: Sent to
-        "mobile1" : "Sent to",
+        "otp4" : "Se non riesci a trovare l'e-mail, controlla anche nella cartella dello spam.",
+        "otp_password" : "Password monouso",
+        "mobile1" : "Inviato a",
         "auth2factorsetup" : "Configura le impostazioni di sicurezza: vuole proteggere l'accesso al suo account con un secondo fattore oltre alla sua password?",
         "auth2factorsetup2" : "È possibile modificare le impostazioni in un secondo momento nel proprio profilo. Accedi {{domain}}} e clicca sul suo nome in alto a destra.",
         "auth_type" : "Autenticazione",
         "auth_type_none" : "Non voglio usare l'autenticazione a due fattori.",
         "auth_type_sms" : "Voglio usare l'autenticazione a due fattori con codici SMS. Si prega di inviare un codice al mio telefono cellulare all'accesso.",
-
-        // TODO NEW: I want to use a authenticator app like Google Authenticator or Microsoft Authenticator. Please show me a QR code for setup.
-        "auth_type_totp" : "I want to use a authenticator app like Google Authenticator or Microsoft Authenticator. Please show me a QR code for setup.",
+        "auth_type_totp" : "Desidero utilizzare un'app di autenticazione come Google Authenticator o Microsoft Authenticator. Mostratemi il codice QR per la configurazione.",
         "emailnotify" : "Notifiche",
         "emailnotify2" : "Inviami un'e-mail ogni volta che accedo al portale @PRODUCT all'indirizzo {{domain}}.",
         "agree_btn" : "Sono d'accordo",
@@ -995,24 +880,12 @@
             "intro3" : "Se ha cliccato il link sbagliato e vuoi invece CONFERMARE il suo indirizzo e-mail, clicca qui:",
             "confirm_btn" : "Confermare la creazione del account"
         },
-
-        // TODO NEW: Please make sure you have an authenticator app like Google Authenticator or Microsoft Authenticator installed. Scan the QR-code with the authenticator app.
-        "totpsetup" : "Please make sure you have an authenticator app like Google Authenticator or Microsoft Authenticator installed. Scan the QR-code with the authenticator app.",
-
-        // TODO NEW: To verify the correct installation enter the code shown by the authenticator.
-        "totpsetup2" : "To verify the correct installation enter the code shown by the authenticator.",
-
-        // TODO NEW: Reconfigure
-        "no_totp_code_btn" : "Reconfigure",
-
-        // TODO NEW: Please enter the code from the authenticator app.
-        "auth2factor_totp" : "Please enter the code from the authenticator app.",
-
-        // TODO NEW: Send me a SMS instead
-        "use_sms_btn" : "Send me a SMS instead",
-
-        // TODO NEW: Use authenticator app instead
-        "use_totp_btn" : "Use authenticator app instead"
+        "totpsetup" : "Assicurati di avere installato un'app di autenticazione come Google Authenticator o Microsoft Authenticator. Scansiona il codice QR con l'app di autenticazione.",
+        "totpsetup2" : "Per verificare la corretta installazione, inserisci il codice visualizzato dall'autenticatore.",
+        "no_totp_code_btn" : "Riconfigurare",
+        "auth2factor_totp" : "Inserisci il codice dall'app di autenticazione.",
+        "use_sms_btn" : "Inviami invece un SMS",
+        "use_totp_btn" : "Utilizza invece l'app di autenticazione"
     },
 
     "changepassphrase" : {
@@ -1072,8 +945,6 @@
         "created_on" : "Creato il:",
         "content" : "Tipo di contenuto @PRODUCT:",
         "format" : "Formato:",
-
-        // TODO NEW: Tags:
         "tags" : "Tags:",
         "download_btn" : "Scarica",
         "content_visualization" : "Visualizzazione dei contenuti",
@@ -1108,12 +979,8 @@
         "history_comment" : "Commento",
         "request_participation_help" : "Se vuoi far parte di questa ricerca puoi richiedere la partecipazione.",
         "request_participation_btn" : "Richiedere la partecipazione",
-
-        // TODO NEW: You have been invited to participate to this research.
-        "accept_invitation_help" : "You have been invited to participate to this research.",
-
-        // TODO NEW: Accept invitation
-        "accept_invitation_btn" : "Accept invitation",
+        "accept_invitation_help" : "Sei stato invitato a partecipare a questo progetto di ricerca.",
+        "accept_invitation_btn" : "Accettare l'invito",
         "do_not_participate_help" : "Se NON vuoi partecipare puoi cliccare qui. Non ti verrà chiesto di nuovo e nessun dato verrà condiviso.",
         "do_not_participate_btn" : "Non partecipare",
         "retreat_help" : "Attualmente stai partecipando a questa ricerca. Se non vuoi più partecipare puoi ritirarti dalla partecipazione. I suoi dati condivisi saranno congelati al momento del ritiro e non verranno condivisi nuovi dati. Una volta ritirato non sarai in grado di partecipare di nuovo.",
@@ -1121,9 +988,7 @@
         "status" : "Stato",
         "recommended_apps" : "Applicazioni consigliate",
         "use_app" : "Utilizzare ora",
-
-        // TODO NEW: Your pseudonym
-        "pseudonym" : "Your pseudonym",
+        "pseudonym" : "Il vostro pseudonimo",
         "for_participants" : "Info sulla partecipazione",
         "please_review1" : "Decidere di partecipare",
         "please_review2" : "Si prega di rivedere questo progetto di ricerca. Vuoi partecipare? Clicca su 'Salta (nessuna modifica)' se vuoi lasciare questa pagina senza modifiche."
@@ -1165,9 +1030,7 @@
         "notifications2" : "Vuole essere avvisato se il suo account è utilizzato?",
         "change_settings_btn" : "Modifica impostazioni",
         "change_settings_success" : "Le impostazioni sono state aggiornate",
-
-        // TODO NEW: Your @PRODUCT account has been used with these applications:
-        "using_apps" : "Your @PRODUCT account has been used with these applications:"
+        "using_apps" : "Il vostro account @PRODUCT è stato utilizzato con queste applicazioni:"
     },
 
     "visualization" : {
@@ -1271,9 +1134,7 @@
         "confirm_btn" : "Conferma questo consenso",
         "reject_btn" : "Rifiuta questo consenso",
         "delete_btn" : "Elimina questo consenso",
-
-        // TODO NEW: Delete all for this app
-        "delete_all_btn" : "Delete all for this app",
+        "delete_all_btn" : "Eliminare tutto per questa applicazione",
         "please_review1" : "Consenso a rivedere",
         "please_review2a" : "Si prega di rivedere questo consenso. Clicca su 'Conferma questo consenso' se si è d'accordo. Clicca su 'Rifiuta questo consenso' se non sei d'accordo.",
         "please_review2b" : "Si prega di rivedere il consenso esistente. Clicca su 'Salta (nessuna modifica)' per lasciare questa pagina senza modifiche. Clicca su 'Rifiuta questo consenso' se non sei più d'accordo.",
@@ -1329,14 +1190,8 @@
 
     "importrecords" : {
         "title" : "Importazione",
-
-        // TODO CHANGED
-        // OLD: Authorize Now
-        // NEW: Start authorization
-        "authorize_btn" : "Autorizza ora",
-
-        // TODO NEW: Skip for now
-        "skip_btn" : "Skip for now"
+        "authorize_btn" : "Avviare l'autorizzazione",
+        "skip_btn" : "Salta per ora"
     },
 
     "spaces" : {
@@ -1388,13 +1243,11 @@
         "delete_all_btn" : "elimina tutti",
         "empty" : "Non è stato trovato alcun record disponibile.",
         "too_many_consents" : "Impossibile creare l'albero dei dati per questa selezione. Sono coinvolti troppi consensi.",
-        "close_btn" : "Chiudi"
+        "close_btn" : "Chiudere"
     },
 
     "oauth2" : {
-
-        // TODO NEW: Confirm access
-        "title" : "Confirm access",
+        "title" : "Confermare l'accesso",
         "requests_permission" : "memorizza i dati personali nell'account @PRODUCT.",
         "no_account" : "Non ha ancora un account?",
         "have_account" : "Ha un account @PRODUCT?",
@@ -1411,10 +1264,7 @@
         "confirm_btn" : "Sono d'accordo",
         "reject_btn" : "Rifiuta",
         "continue_btn" : "Continua",
-
-
-        // TODO NEW: With your consent, the application receives access to the following data:
-        "request_access" : "With your consent, the application receives access to the following data:",
+        "request_access" : "Con il vostro consenso, l'applicazione riceve l'accesso ai seguenti dati:",
         "requests_access" : "Accesso richiesto dall'applicazione:",
         "requests_access_short" : "Tipo di dati",
         "requests_sharing" : "Dati condivisi con il progetto:",
@@ -1604,7 +1454,7 @@
 
     "terms" : {
         "close_btn" : "<< Indietro",
-        "close_new_btn" : "Chiudi"
+        "close_new_btn" : "Chiudere"
     },
 
     "auditlog" : {
@@ -1672,7 +1522,7 @@
     },
 
     "accountwipe" : {
-        "title" : "Chiudi e cancella account @PRODUCT",
+        "title" : "Chiudere e cancellare account @PRODUCT",
         "hello" : "Cara/caro {{name}},",
         "hello_m" : "Caro {{name}},",
         "hello_w" : "Cara {{name}},",
@@ -1687,7 +1537,7 @@
         "password" : "Password",
         "reason" : "Motivo (opzionale)",
         "reason2" : "Le saremmo grati se volesse comunicarci perché sta cancellando il suo account. Siamo costantemente impegnati a migliorare @PLATFORM.",
-        "wipe_btn" : "Chiudi e cancella account @PRODUCT",
+        "wipe_btn" : "Chiudere e cancellare account @PRODUCT",
         "error" : "La password non è corretta. L'account non è stato eliminato."
     },
 
@@ -1700,7 +1550,7 @@
         "title" : "Stai lasciando @PRODUCT",
         "thankyou" : "Grazie per il suo aiuto!",
         "logout_btn" : "Disconnetti",
-        "goodbye_btn" : "Termina sessione e chiudi finestra",
+        "goodbye_btn" : "Terminare sessione e chiudere finestra",
         "logoutreturn" : "Ora state lasciando il portale di gestione dell'account @PRODUCT."
     },
 
@@ -1742,18 +1592,10 @@
         "public_only" : "Utilizzare solo dati pubblici",
         "public_also" : "Utilizzare dati pubblici e altri dati",
         "public_no" : "Non utilizzare dati pubblici",
-
-        // TODO NEW: Dynamic
-        "dynamic" : "Dynamic",
-
-        // TODO NEW: Always use current group content
-        "dynamic_yes" : "Always use current group content",
-
-        // TODO NEW: Use group content from time of creation
-        "dynamic_no" : "Use group content from time of creation",
-
-        // TODO NEW: Autoregister new codes into current group content
-        "dynamic_extend" : "Autoregister new codes into current group content",
+        "dynamic" : "Dinamico",
+        "dynamic_yes" : "Utilizzare sempre i contenuti attuali del gruppo",
+        "dynamic_no" : "Utilizzare i contenuti del gruppo dal momento della creazione",
+        "dynamic_extend" : "Registrare automaticamente i nuovi codici nel contenuto del gruppo corrente",
         "restrictions" : "Restrizioni aggiuntive",
         "data_period_restriction" : "Data",
         "time_restriction" : "Creazione / Aggiornamento tempo",
@@ -1795,9 +1637,7 @@
             "Practitioner" : "Risorsa Practitioner: ricerca di professionisti sanitari o ricercatori",
             "Subscription" : "Accedere e gestire gli abbonamenti a un sistema esterno"
         },
-
-        // TODO NEW: Creator Organization
-        "creator_org" : "Creator Organization"
+        "creator_org" : "Organizzazione creatrice"
     },
 
     "timeline" : {
@@ -1851,15 +1691,9 @@
     },
 
     "appexpired" : {
-
-        // TODO NEW: Application no longer available
-        "title" : "Application no longer available",
-
-        // TODO NEW: This application is no longer available for use. If you have stored any data using this application, it will still be available in your @PRODUCT account.
-        "intro" : "This application is no longer available for use. If you have stored any data using this application, it will still be available in your @PRODUCT account.",
-
-        // TODO NEW: Show @PRODUCT Portal
-        "loginpage_btn" : "Show @PRODUCT Portal"
+        "title" : "Applicazione non più disponibile",
+        "intro" : "Questa applicazione non è più disponibile per l'uso. Se hai salvato dei dati utilizzando questa applicazione, essi saranno ancora disponibili nel vostro account @PRODUCT.",
+        "loginpage_btn" : "Vai alla pagina iniziale del portale @PRODUCT"
     },
 
     "unsubscribe" : {

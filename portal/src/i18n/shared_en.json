@@ -47,7 +47,7 @@
      "mustbemember_detail" : "In order to use this feature you must be member of the cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
      "ratelimit" : "The rate limit for the current action has been reached. Try again later.",
      "ratelimit_show" : "@modal",
-     "ratelimit_title" : "Current action tried too often",
+     "ratelimit_title" : "Action tried too often",
      "ratelimit_1" : "Whoa, that’s a lot of requests! To keep things secure, we’re taking a short break.",
      "ratelimit_2" : "Try again in a few minutes.",
      "no_code_challenge" : "Authorization endpoint called with insufficient parameters. Contact application developer.",
@@ -213,7 +213,7 @@
        "tokenresent" : "This activation token has already expired. A new token has been sent to your email address right now. Please confirm your email address within 24 hours using the new token.",
        "code" : "This participation code has expired.",
        "securitytoken" : "This code has expired.",
-       "app" : "This application is no longer available for use." 
+       "app" : "This application is no longer available." 
      },
 
      "already_done" : {
@@ -505,7 +505,7 @@
    },
      "projectdatafilter" : {
        "NO_TIME" : "Remove all time information from dates",
-       "ONLY_MONTH_YEAR" : "Remove day from dates.(Keep month and year)",
+       "ONLY_MONTH_YEAR" : "Remove day from dates (keep month and year)",
        "NO_PRACTITIONER" : "Remove practitioner references",
        "NO_NARRATIVES" : "Remove narrative texts"
      },
@@ -979,7 +979,7 @@
 	"history_comment" : "Comment",
 	"request_participation_help" : "If you want to be part of this research you may request participation.",
 	"request_participation_btn" : "Request Participation",
-	"accept_invitation_help" : "You have been invited to participate to this research.",
+	"accept_invitation_help" : "You have been invited to participate to this research project.",
 	"accept_invitation_btn" : "Accept invitation",
 	"do_not_participate_help" : "If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.",
 	"do_not_participate_btn" : "Do not participate",
@@ -1264,7 +1264,6 @@
     "confirm_btn" : "I agree",
     "reject_btn" : "Reject",
     "continue_btn" : "Continue",
-    
     "request_access" : "With your consent, the application receives access to the following data:",
     "requests_access" : "Access requested by the application:",
     "requests_access_short" : "Data type",
@@ -1690,7 +1689,7 @@
   "appexpired" : {
     "title" : "Application no longer available",
     "intro" : "This application is no longer available for use. If you have stored any data using this application, it will still be available in your @PRODUCT account.",
-    "loginpage_btn" : "Show @PRODUCT Portal"
+    "loginpage_btn" : "Go to @PRODUCT Portal homepage"
   },
 
   "unsubscribe" : {
