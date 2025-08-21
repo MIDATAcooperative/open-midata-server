@@ -38,7 +38,6 @@
         "study_identifiers_info" : "Geben Sie hier alle Projektidentifikatoren von externen Institutionen ein. Geben Sie einen Identifikator pro Zeile ein. Verwenden Sie '|', um Codesystem und Wert zu trennen, falls gewünscht. Die Identifikatoren werden auf den Projektseiten des Portals nicht angezeigt.",
         "study_categories" : "Kategorien",
         "study_categories_info" : "Geben Sie hier alle weiteren Kategorien für Einwilligungen ein. Geben Sie pro Zeile eine Kodierung ein. Trennen Sie Codesystem und Code ggf. mit „|“. Kategorien werden auf Projektseiten im Portal nicht angezeigt.",
-
         "developer_nostart" : "Achtung!",
         "developer_nostart2" : "Als Entwickler können Sie ein Projekt nur einrichten, aber nicht durchführen. Als Entwickler ist es nicht möglich, die Teilnehmersuche zu starten."
     },
@@ -107,7 +106,7 @@
         "types" : {
             "OFFER_P" : "Onboarding: Die Applikation bietet die Projektteilnahme beim Anmelden/Start an",
             "AUTOADD_P" : "Onboarding: Projektteilnahme wird bei login/start hinzugefügt",
-            "LINKED_P" : "Projektteilnahme ID wird mit der App in der Patient resource geteilt",
+            "LINKED_P" : "Projektteilnahme ID wird mit der App in der Patient Resource geteilt",
             "CHECK_P" : "Projektteilnahme wird für die Nutzung der App Vorraussetzung",
             "RECOMMEND_A" : "Die Applikation wird vom Forschungsprojekt empfohlen",
             "AUTOADD_A" : "Das Plugin wird bei Projektteilnahme automatisch hinzugefügt",
@@ -115,7 +114,6 @@
         },
         "types_short" : {
             "OFFER_P" : "Teilnahme vorschlagen",
-
             "AUTOADD_P" : "Teilnahme wird bei Appnutzung hinzugefügt",
             "LINKED_P" : "Teilnahme ID wird mit App geteilt",
             "CHECK_P" : "Teilnahme für Appnutzung benötigt",
@@ -144,7 +142,6 @@
         "anonymous2" : ", das Pseudonymisierungs-Mapping ist nicht zugänglich.",
         "not_anonymous1" : "Nicht pseudonymisiert",
         "not_anonymous2" : ", bedingt, dass das Mitglied seinen vollständigen Namen, Geburtsdatum und Kontaktinformationen (Adresse, Telefon, E-Mail) teilt",
-
         "data_filters" : "Pseudonymisierung",
         "assistance" : "Unterstützung",
         "no_assistance1" : "Keine",
@@ -226,7 +223,6 @@
         "name" : "Name",
         "partName" : "Pseudonymisiert",
         "group" : "Gruppe",
-
         "test_group" : "Gruppe für Testuser",
         "status" : "Status",
         "total" : "{{count}} Zustimmungen, die Ihren Kriterien entsprechen.",
