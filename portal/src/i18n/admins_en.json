@@ -27,7 +27,7 @@
     "contract_confirm_required" : "Signed contract needs to be confirmed",
     "no_email_confirm" : "Email not yet confirmed by user",
     "email_rejected" : "Email confirmation rejected by user",
-	"not_admin_confirmed" : "Not confirmed by administrator",
+    "not_admin_confirmed" : "Not confirmed by administrator",
     "overview" : "Overview",
     "specific_user" : "Specific User",
     "testusers" : "Test Users",
@@ -112,7 +112,6 @@
     "dynamicDate" : "Dynamic date",
     "dynamicDate2" : "Change news date to start date of project participation if applicable otherwise to current date.",
     "onlyParticipantsStudyId" : "Only project participants"
-    
   },
   
   "admin_registration" : {

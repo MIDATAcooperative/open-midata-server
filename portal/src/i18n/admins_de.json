@@ -111,11 +111,8 @@
             "large" : "Gross (2x2)"
         },
         "dynamicDate" : "Dynamisches Datum",
-
         "dynamicDate2" : "Ändert das Nachrichtendatum gegebenenfalls in das Startdatum der Projektteilnahme, andernfalls in das aktuelle Datum.",
-
         "onlyParticipantsStudyId" : "Nur Projektteilnehmer"
-
     },
 
     "admin_registration" : {
@@ -201,7 +198,6 @@
         "infos_part" : "Informationen für die Teilnehmer",
         "infos_internal" : "Interne Informationen",
         "required_information" : "Benötigte Informationen",
-
         "data_filters" : "Datenfilter für die Pseudonymisierung",
         "none" : "Keine",
         "anonymous" : "Anonym",
@@ -374,10 +370,8 @@
         "delete_group_btn" : "Gruppe löschen",
         "save_btn" : "Code & Inhaltstyp speichern",
         "export_btn" : "Änderungen exportieren",
-
         "export_translations_btn" : "Übersetzung exportieren",
-        "import_btn" : "Änderungen importieren",
-
+        "import_btn" : "Importieren",
         "autoAddedAt" : "Automatisch hinzugefügt am",
         "approvedAt" : "Bestätigt"
     },
