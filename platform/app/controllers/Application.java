@@ -17,6 +17,7 @@
 
 package controllers;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -86,7 +87,9 @@ import utils.auth.KeyManager;
 import utils.auth.OTPTools;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
+import utils.auth.PreAuthSecured;
 import utils.auth.PreLoginSecured;
+import utils.auth.auth2factor.Authenticators;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -105,6 +108,7 @@ import utils.messaging.Messager;
 import utils.stats.UsageStatsRecorder;
 import views.txt.mails.adminnotify;
 import views.txt.mails.lostpwmail;
+import utils.auth.auth2factor.TOTPAuthenticator;
 
 /**
  * Member login, registration and password reset functions 
@@ -235,7 +239,7 @@ public class Application extends APIController {
 	   if (user.developer == null) {		
 		   		  		   
 		   if (user.email == null || user.email.trim().length()==0) return;
-		   
+		
 		   if (!RateLimitedAction.doRateLimited(user._id, AuditEventType.WELCOME_SENT, MIN_BETWEEN_MAILS, 2, PER_DAY)) {
 			   return;
 			   //throw new InternalServerException("error.ratelimit", "Rate limit hit");
@@ -319,8 +323,10 @@ public class Application extends APIController {
 	   AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.OTP_SENT).withApp(sourcePlugin).withActor(null, user._id));			   	  	  
 	   
 	   if (sourcePlugin==null || !Messager.sendMessage(sourcePlugin, MessageReason.ONE_TIME_PASSWORD, null, Collections.singleton(user._id), null, replacements)) {
+		   AccessLog.log("inner sent OTP");
 		   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.ONE_TIME_PASSWORD, user.role.toString(), Collections.singleton(user._id), null, replacements);
 	   }   
+	   AccessLog.log("after sent OTP");
 	   
 	   AuditManager.instance.success();	   
 	}
@@ -458,45 +464,58 @@ public class Application extends APIController {
 			AccessLog.log("wanted status="+wanted);
 			if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {
 				
+				if (wanted == EMailStatus.REJECTED) {
+					AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
+				} else {
+					AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
+				}
 			    if (OTPTools.checkToken(user, token)) {	
 			    	AccessLog.log("token is okay");
 					if (user.password == null) {	
 						AccessLog.log("password is still missing, but token is okay");
+						AuditManager.instance.fail(400, "error.missing.newpassword", "password is still missing, but token is okay");
 						if (stoken != null) stoken.setIsAuthenticated();
 						return OAuth2.loginHelper(request);	
 					}
 			      				   
 			    	   
 			    	   if (wanted == EMailStatus.REJECTED) {
-			    		   if (user.previousEMail != null) {
-			    			   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
+			    		   if (user.previousEMail != null) {			    			   
 			    			   user.email = user.previousEMail;
 			    			   user.emailLC = user.email.toLowerCase();
 			    			   wanted = EMailStatus.VALIDATED;
 			    			   user.set("email", user.email);
 			    			   user.set("emailLC", user.emailLC);
-			    		   } else {
-				    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
+			    		   } else {				    		   
 				    		   user.status = UserStatus.BLOCKED;
 					    	   user.set("status", user.status);
 			    		   }
 				       } else {
-				    	   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
+				    	   
 				       }
 			    	   		          
 			           user.emailStatus = wanted;
 				       user.set("emailStatus", wanted);				       
 				       OTPTools.clearToken(user);
-			       } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED) && OTPTools.checkTokenAllowExpired(user, token)) {
-			    	     sendWelcomeMail(user, null);
-			    	     throw new BadRequestException("error.expired.tokenresent", "Token has already expired. A new one has been requested.");
-			       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
+			     } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED)) {
+			    	 if (!OTPTools.checkValidTokenExistsForConfirm(user)) {
+				    	 AuditManager.instance.fail(400, "error.expired.tokenresent", "Token was expired. New token sent");
+				   	     sendWelcomeMail(user, null);
+				   	     throw new BadRequestException("error.expired.tokenresent", "Token has already expired. A new one has been requested.");
+			    	 } else {
+			    		 AuditManager.instance.fail(400, "error.invalid.confirmation_code", "Wrong token entered");
+				    	 throw new BadRequestException("error.invalid.confirmation_code", "Wrong token entered.");
+			    	 }
+			     } else {
+			    	 AuditManager.instance.fail(400, "error.invalid.confirmation_code", "Wrong token entered");
+			    	 throw new BadRequestException("error.invalid.confirmation_code", "Wrong token entered.");
+			     }
 			       
-			       checkAccount(user);
-			       
-			       
-			       
+			     checkAccount(user);
+			       			       			      
 			} else if (user != null) {
+				
+				AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
 				if (user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
 				throw new BadRequestException("error.already_done.email_verification", "E-Mail has already been verified.");
 			}
@@ -696,7 +715,7 @@ public class Application extends APIController {
 	    	
 		} else { */
 		
-			JsonValidation.validate(json, "email", "password");	
+			JsonValidation.validate(json, "email");	
 				
 			token = new ExtendedSessionToken();
 			
@@ -756,7 +775,7 @@ public class Application extends APIController {
 			missing = new HashSet<UserFeature>();
 			missing.add(UserFeature.EMAIL_VERIFIED);
 		}
-		
+						
 		if (required != null) {
 			for (UserFeature feature : required) {
 				if (!feature.isSatisfiedBy(user)) {
@@ -770,6 +789,7 @@ public class Application extends APIController {
 		return missing;
 	}
 	
+	
 	public static Result loginHelperResult(Request request, PortalSessionToken token, User user, Set<UserFeature> missing) throws AppException {
 		ObjectNode obj = Json.newObject();
 		if (user != null) {
@@ -778,11 +798,23 @@ public class Application extends APIController {
 			obj.put("agbStatus", user.agbStatus.toString());
 			obj.put("emailStatus", user.emailStatus.toString());
 			obj.put("mobileStatus", user.mobileStatus == null ? EMailStatus.UNVALIDATED.toString() : user.mobileStatus.toString());
+			obj.put("totpStatus", user.totpStatus == null ? EMailStatus.UNVALIDATED.toString() : user.totpStatus.toString());
 			obj.put("confirmationCode", user.confirmedAt != null);
 			obj.put("role", user.role.toString().toLowerCase());
 			obj.put("termsOfUse", InstanceConfig.getInstance().getTermsOfUse(user.role));
 			obj.put("privacyPolicy", InstanceConfig.getInstance().getPrivacyPolicy(user.role));
 			obj.put("userId", user._id.toString());
+			String mobile = user.mobile;
+			if (mobile == null) mobile = "";
+			else if (mobile.length()>6) mobile = mobile.substring(0, 3)+"*********************************".substring(0,mobile.length()-6)+mobile.substring(mobile.length()-3, mobile.length());
+			obj.put("mobile", mobile);
+			String email = user.email;
+			if (email == null || email.indexOf("@")<0) email = "";
+			int p = email.indexOf("@");
+			if (p<5) email = "***"+email.substring(p);
+			else email = email.substring(0,3)+"**************************************".substring(0,p-3)+email.substring(p);
+			obj.put("email", email);
+			obj.put("resettokenTs", user.resettokenTs);
 			if (token.is2FAVerified(user)) {
 			  obj.set("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
 			}
@@ -843,6 +875,21 @@ public class Application extends APIController {
 		obj.put("token", token.encrypt());
 		
 		return ok(obj).as("application/json");
+	}
+	
+	@APICall
+	@Security.Authenticated(PreAuthSecured.class)
+	public Result totpQrCode(Request request) throws AppException {
+		PortalSessionToken current = PortalSessionToken.session();
+		
+		User user = User.getById(current.ownerId, User.FOR_LOGIN);
+		if (user == null || (user.status != UserStatus.ACTIVE && user.status != UserStatus.NEW) || user.totpStatus == EMailStatus.VALIDATED) return ok();
+		
+		if (user.totpSecret == null) Authenticators.getInstance(SecondaryAuthType.TOTP).setupAuthentication(user);
+		
+		InputStream is = ((TOTPAuthenticator) Authenticators.getInstance(SecondaryAuthType.TOTP)).generateQRCode(user);
+		
+		return ok(is).as("image/png");
 	}
 	
 	/**
@@ -1118,6 +1165,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.FormatAPI.updateGroupContent(),
 				controllers.routes.javascript.FormatAPI.exportChanges(),
 				controllers.routes.javascript.FormatAPI.importChanges(),
+				controllers.routes.javascript.FormatAPI.exportTranslations(),
+				controllers.routes.javascript.FormatAPI.importTranslations(),
 				controllers.routes.javascript.FormatAPI.listFormats(),				
 				controllers.routes.javascript.FormatAPI.listContents(),
 				controllers.routes.javascript.FormatAPI.listContentsSpecial(),

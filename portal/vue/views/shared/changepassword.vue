@@ -30,7 +30,8 @@
         </form-group>
 		<form-group name="password" label="changepassword.new_password" :path="errors.password">
 			<password class="form-control" id="password" name="password"
-					:placeholder="$t('changepassword.new_password')" v-model="pw.password" required autocomplete="off" />				   
+					:placeholder="$t('changepassword.new_password')" v-model="pw.password" required autocomplete="off" />
+            <password-strength :password="pw.password" :advanced="role !='member'"/>				   
 		</form-group>
 		<form-group name="password2" label="changepassword.repeat_password" :path="errors.password2">
 			<password class="form-control" id="password2" name="password2" :placeholder="$t('changepassword.new_password')" v-model="pw.password2"
@@ -51,6 +52,7 @@ import session from "services/session.js"
 import actions from "services/actions.js"
 import crypto from "services/crypto.js"
 import { status, ErrorBox, FormGroup, CheckBox, Success, Password } from 'basic-vue3-components'
+import PasswordStrength from 'components/PasswordStrength.vue';
 
 export default {
   
@@ -60,7 +62,7 @@ export default {
 		actions : null
 	}),	
 
-    components: {  Panel, FormGroup, ErrorBox, Success, CheckBox, Password },
+    components: {  Panel, FormGroup, ErrorBox, Success, CheckBox, Password, PasswordStrength },
 
     mixins : [ status ],
   

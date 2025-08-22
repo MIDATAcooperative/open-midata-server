@@ -17,7 +17,7 @@ notv
 novideo
 protocol unix,inet,inet6,netlink,packet
 seccomp
-shell none
+#shell none
 disable-mnt
 private-dev
 private-tmp

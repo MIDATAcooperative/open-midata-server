@@ -27,6 +27,7 @@ import play.mvc.Controller;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -94,7 +95,9 @@ public abstract class APIController extends Controller {
 	public static void requireUserFeature(Request request, UserFeature feature) throws AuthException, InternalServerException {
 		MidataId userId = new MidataId(request.attrs().get(Security.USERNAME));
 		User user = User.getById(userId, User.ALL_USER);
+		AccessLog.log("CHECK REQUIRE FEATURE feature="+feature+" user="+user._id.toString());
 		if (!feature.isSatisfiedBy(user)) throw new AuthException("error.notauthorized.action", "You need to have feature '"+feature.toString()+"' for this action.", feature);
+	    AccessLog.log("IS SATISFIED");
 	}
 	
 	public static void requireSubUserRoleForRole(Request request, SubUserRole subUserRole, UserRole role) throws AuthException, InternalServerException {

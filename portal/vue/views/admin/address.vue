@@ -127,7 +127,7 @@ export default {
         criteria : null,
 	    stati : [ "NEW", "ACTIVE", "BLOCKED", "FAKE", "DELETED" ],
 	    contractStati : [ "NEW", "REQUESTED", "PRINTED", "SIGNED" ],
-	    authTypes : ["NONE", "SMS"],
+	    authTypes : ["NONE", "SMS", "TOTP"],
         comment : ""
     }),
 

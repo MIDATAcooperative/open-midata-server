@@ -59,6 +59,8 @@ public enum AuditEventType {
 	
 	USER_EMAIL_REJECTED(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-email-rejected", "User email rejected"), AuditEventAction.U),
 	
+	USER_PHONE_CONFIRMED(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-phone-confirmed", "User phone confirmed"), AuditEventAction.U),
+	
 	/**
 	 * an admin changed the user account status
 	 */

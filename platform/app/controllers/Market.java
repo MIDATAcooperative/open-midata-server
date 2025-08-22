@@ -203,6 +203,7 @@ public class Market extends APIController {
 			app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");			
 			app.decentral = JsonValidation.getBoolean(json, "decentral");
 			app.organizationKeys = JsonValidation.getBoolean(json, "organizationKeys");
+			app.noWelcome = JsonValidation.getBoolean(json, "noWelcome");
 			
 			if (withLogout) {
 				Map<String, Object> oldDefaultQuery = app.defaultQuery;
@@ -806,6 +807,7 @@ public class Market extends APIController {
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		plugin.noWelcome = JsonValidation.getBoolean(json, "noWelcome");
 		plugin.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
 		plugin.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
 		plugin.decentral = JsonValidation.getBoolean(json, "decentral");
@@ -950,6 +952,7 @@ public class Market extends APIController {
 		app.usePreconfirmed = JsonValidation.getBoolean(json, "usePreconfirmed");
 		app.accountEmailsValidated = JsonValidation.getBoolean(json, "accountEmailsValidated");
 		app.decentral = JsonValidation.getBoolean(json, "decentral");
+		app.noWelcome = JsonValidation.getBoolean(json, "noWelcome");
 		app.organizationKeys = JsonValidation.getBoolean(json, "organizationKeys");
 		app.allowedIPs = JsonValidation.getStringOrNull(json, "allowedIPs");
 		app.consentObserving = JsonValidation.getBoolean(json, "consentObserving");

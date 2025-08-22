@@ -386,6 +386,7 @@ public class IndexManager {
 			if (updateAllTs != 0 && (modCount>0 || targetAps==null || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {
+			AccessLog.log("indexUpdate: lostUpdate wait=50");
 			try {
 			  Stats.reportConflict();
 			  Thread.sleep(50);
@@ -573,6 +574,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 			index.flush();
 		} catch (LostUpdateException e) {
 			try {
+			  AccessLog.log("indexUpdate: lostUpdate wait=50");
 			  Stats.reportConflict();
 			  Thread.sleep(50);
 			} catch (InterruptedException e2) {}

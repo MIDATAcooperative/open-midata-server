@@ -44,7 +44,8 @@
 								<p v-else v-t="'registration.password_policy'"></p>
 								
 								<form @submit.prevent="submit()" name="myform" ref="myform" role="form" novalidate>
-									<password class="form-control" :placeholder="$t('setpw.new_password')" v-model="setpw.password" name="password" required style="margin-bottom:5px;" autofocus />								
+									<password class="form-control" :placeholder="$t('setpw.new_password')" v-model="setpw.password" name="password" required style="margin-bottom:5px;" autofocus />	
+                                    <password-strength :password="setpw.password" :advanced="role !='member'"/>							
 									<password class="form-control" :placeholder="$t('setpw.new_password_repeat')" v-model="setpw.passwordRepeat" name="passwordRepeat" required style="margin-bottom:5px;" />
 									<div class="d-grid gap-2 mt-3 mb-2">
 									  <button type="submit" :disabled="action!=null" class="btn btn-primary" v-submit v-t="'setpw.set_new_btn'">Set New Password</button>
@@ -64,6 +65,7 @@ import server from "services/server.js";
 import { status, FormGroup, ErrorBox, Password } from 'basic-vue3-components';
 import crypto from "services/crypto.js";
 import { setLocale } from "services/lang.js";
+import PasswordStrength from 'components/PasswordStrength.vue';
 
 function getAppInfo(name, type) {
     var data = { "name": name };
@@ -87,7 +89,7 @@ export default {
   }),
 
   components : {
-     FormGroup, ErrorBox, Password
+     FormGroup, ErrorBox, Password, PasswordStrength
   },
 
   mixins : [ status ],

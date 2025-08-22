@@ -674,7 +674,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		Member user = buildMemberFromPatient(thePatient);
 		user.initialApp = info().getUsedPlugin();
 	
-		AccountManagementTools.validateUserAccountFilledOut(user);
+		AccountManagementTools.validateUserAccountFilledOut(user, user.initialApp);
 		List<Extension> testCustomerExt = thePatient.getExtensionsByUrl("http://midata.coop/extensions/test-user-customer");
 		String testCustomer = testCustomerExt.isEmpty() ? null : testCustomerExt.get(0).getValue().toString();
 		TestAccountTools.prepareNewUser(tempContext, user, testCustomer);

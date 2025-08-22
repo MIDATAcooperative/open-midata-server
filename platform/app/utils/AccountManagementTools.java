@@ -89,17 +89,39 @@ import utils.stats.UsageStatsRecorder;
 
 public class AccountManagementTools {
 
-	public static void validateUserAccountFilledOut(Member user) {
+	public static void validateUserAccountFilledOut(Member user, MidataId plugin) throws InternalServerException {
 		if (user.firstname == null || user.firstname.trim().length()==0)
 			throw new UnprocessableEntityException("Patient 'given' name not given.");
 		if (user.lastname == null || user.lastname.trim().length()==0)
 			throw new UnprocessableEntityException("Patient family name not given.");	
 		if (user.country == null || user.country.trim().length()==0)
 			throw new UnprocessableEntityException("Patient country not given.");
-		if (user.gender == null)
-			throw new UnprocessableEntityException("Patient gender not given.");
-		if (user.birthday == null)
-			throw new UnprocessableEntityException("Patient birth date not given.");
+		
+		if (plugin != null) {
+			Plugin pl = Plugin.getById(plugin);
+			//Set<UserFeature> all = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(UserRole.MEMBER);
+			
+			if (pl.requirements.contains(UserFeature.PHONE_ENTERED)) {
+				if (user.mobile == null) throw new UnprocessableEntityException("Patient phone number not given.");
+			}
+			if (pl.requirements.contains(UserFeature.EMAIL_ENTERED)) {
+				if (user.email == null) throw new UnprocessableEntityException("Patient email not given.");
+			}
+			if (pl.requirements.contains(UserFeature.BIRTHDAY_SET)) {
+				if (user.birthday == null)
+					throw new UnprocessableEntityException("Patient birth date not given.");
+			}
+			if (pl.requirements.contains(UserFeature.GENDER_SET)) {
+			    if (user.gender == null)
+				    throw new UnprocessableEntityException("Patient gender not given.");
+			}
+			if (pl.requirements.contains(UserFeature.ADDRESS_ENTERED)) {
+			    if (user.city == null && user.zip == null && user.address1 == null) {
+				    throw new UnprocessableEntityException("Patient address not given.");
+			    }
+			}
+		}
+		
 
 	}
 	
@@ -228,14 +250,19 @@ public class AccountManagementTools {
 		TestAccountTools.createNewUser(context, user);
 		user.security = AccountSecurityLevel.KEY;
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
+						
 		Member.add(user);
+		
+		if (plugin.requirements.contains(UserFeature.PHONE_VERIFIED) && user.mobile != null && user.mobile.trim().length()>0) {
+			user.addFlag(AccountActionFlags.VERIFY_PHONE);
+		}
 		
 		KeyManager.instance.unlock(user._id, null);
 		AccessContext tempContext = new AccountCreationAccessContext(context, user._id);									
 		user.myaps = RecordManager.instance.createPrivateAPS(tempContext.getCache(), user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
 				
-		if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(context, context.getUsedPlugin(), user, Actor.getActor(context, context.getActor()));			
+		if (user.status == UserStatus.ACTIVE && !plugin.noWelcome) Application.sendWelcomeMail(context, context.getUsedPlugin(), user, Actor.getActor(context, context.getActor()));			
 		
 		return tempContext;
 	}

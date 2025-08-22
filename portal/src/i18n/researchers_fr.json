@@ -36,6 +36,8 @@
         "study_description" : "Description du projet",
         "study_identifiers" : "Identifiants",
         "study_identifiers_info" : "Saisissez ici tous les identifiants du projet provenant d'institutions externes. Saisissez un identifiant par ligne. Utilisez '|' pour séparer le système de code et la valeur si vous le souhaitez. Les identifiants ne seront pas affichés sur les pages du projet dans le portail.",
+        "study_categories" : "Catégories",
+        "study_categories_info" : "Indiquez ici toutes les catégories supplémentaires pour les consentements. Saisissez un code par ligne. Utilisez “|” pour séparer le système de code et le code si vous le souhaitez. Les catégories ne seront pas affichées sur les pages du projet dans le portail.",
         "developer_nostart" : "Attention!",
         "developer_nostart2" : "En tant que développeur, vous pouvez seulement mettre en place un projet mais pas le mener. En tant que développeur, il n'est pas possible de lancer la recherche de participants."
     },
@@ -47,7 +49,9 @@
         "rules" : "Règles",
         "actions" : "Applications",
         "participants" : "Participants",
+        "subprojects" : "Sous-projets",
         "codes" : "Codes",
+        "messages" : "Communication",
         "records" : "Données",
         "results" : "Résultats",
         "team" : "Team",
@@ -56,6 +60,7 @@
 
     "studies" : {
         "title" : "Projets de recherche",
+        "code" : "Code",
         "name" : "Nom",
         "validation" : "Validation",
         "participants" : "Participants",
@@ -100,23 +105,23 @@
         "type" : "Comment sont-elles liées?",
         "types" : {
             "OFFER_P" : "Onboarding: L'application propose la participation au projet lors de la connexion/du démarrage",
-            "OFFER_EXTRA_PAGE" : "Onboarding: La participation au projet est décrite sur une page supplémentaire",
-            "OFFER_INLINE_AGB" : "Onboarding: Utiliser les conditions d'utilisation comme description du projet",
-            "REQUIRE_P" : "La participation au projet est requise pour utiliser l'application",
+            "AUTOADD_P" : "Onboarding : La participation au projet est ajoutée lors de la connexion/démarrage",
+            "LINKED_P" : "L'identifiant de participation au projet est partagé avec l'application dans la ressource Patient.",
+            "CHECK_P" : "La participation au projet est nécessaire pour utiliser l'application",
             "RECOMMEND_A" : "L'application est recommandée par le projet",
             "AUTOADD_A" : "Le plugin est automatiquement ajouté lors de la participation au projet",
             "DATALINK" : "L'application partage les données avec les participants au projet"
         },
         "types_short" : {
             "OFFER_P" : "Suggérer la participation",
-            "OFFER_EXTRA_PAGE" : "Page de projet supplémentaire",
-            "OFFER_INLINE_AGB" : "Conditions d'utilisation comme description",
-            "REQUIRE_P" : "Exiger la participation",
+            "AUTOADD_P" : "Ajouter la participation à l'utilisation de l'app",
+            "LINKED_P" : "L'identifiant de participation est partagé avec l'app",
+            "CHECK_P" : "Participation requise pour utiliser l'app",
             "RECOMMEND_A" : "Recommandé",
-            "AUTOADD_A" : "Ajouter automatiquement",
+            "AUTOADD_A" : "Ajouter automatiquement l'app",
             "DATALINK" : "Partage des données"
         },
-        "use_period" : "Quand sont-elles liées ?",
+        "use_period" : "Quand sont-elles liées?",
         "use_periods" : {
             "PRE" : "Avant que le projet n'ait débuté",
             "RUNNING" : "Pendant l'exécution du projet",
@@ -137,6 +142,7 @@
         "anonymous2" : ", la cartographie de pseudonymisation n'est pas accessible.",
         "not_anonymous1" : "Pas pseudonymisé",
         "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, e-mail)",
+        "data_filters" : "Pseudonymisation",
         "assistance" : "Assistance",
         "no_assistance1" : "Aucune",
         "no_assistance2" : " - le titulaire de compte participe de façon autonome.",
@@ -192,6 +198,16 @@
         }
     },
 
+    "studysubprojects" : {
+        "project" : "Code du projet",
+        "projectName" : "Nom du projet",
+        "addproject_btn" : "Ajouter le projet",
+        "empty" : "Il n'y a actuellement aucun sous-projet défini pour ce projet.",
+        "projectGroupMapping" : "Affectation du groupe",
+        "target" : "Destination",
+        "source" : "Source"
+    },
+
     "studyparticipant" : {
         "participant" : "Participant:",
         "gender" : "Sexe:",
@@ -207,6 +223,7 @@
         "name" : "Nom",
         "partName" : "Pseudonymisé",
         "group" : "Groupe",
+        "test_group" : "Groupe pour les utilisateurs de test",
         "status" : "État",
         "total" : "{{count}} consentements correspondant à vos critères trouvés.",
         "only_first_shown" : "Seuls les 1000 premiers consentements correspondants sont affichés",
@@ -388,6 +405,13 @@
         "manually" : "Saisie manuelle",
         "generated" : "Généré",
         "codes" : "Nouveaux codes",
-        "add_btn" : "Ajouter maintenant"
+        "add_btn" : "Ajouter maintenant",
+        "link" : "Lien pour participer au projet",
+        "link2" : "Cliquez sur un code de la liste ci-dessus pour afficher le lien correspondant qui peut être utilisé pour rejoindre le projet.",
+        "link_no" : "Ce projet ne permet pas de participer via un lien."
+    },
+
+    "studymessages" : {
+        "all" : "Tous les groupes de participants"
     }
 }

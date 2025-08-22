@@ -730,19 +730,32 @@ public class OAuth2 extends Controller {
 		if (user == null) throw new NullPointerException();
 		
 		String securityToken = JsonValidation.getStringOrNull(json, "securityToken");
-				
-		// If 2FA is already done we do not need to check again
-		if (notok!=null && token.securityToken != null) {
-			notok.remove(UserFeature.AUTH2FACTOR);
-			notok.remove(UserFeature.PHONE_VERIFIED);		
-			return;
+		SecondaryAuthType authType = user.authType;		
+		
+		AccessLog.log("checkTwoFactor: st="+token.securityToken+" st2="+securityToken+" notok="+(notok!=null?notok.toString():"null"));
+		
+		if (user.flags != null && user.flags.contains(AccountActionFlags.VERIFY_PHONE) && user.mobileStatus != EMailStatus.VALIDATED) {
+			if (notok == null) notok = new HashSet<UserFeature>();
+			notok.add(UserFeature.AUTH2FACTOR);
+			notok.remove(UserFeature.AUTH2FACTORSETUP);
+			notok.remove(UserFeature.PHONE_VERIFIED);
+			authType = SecondaryAuthType.SMS;
 		}
+		
 		
 		// If 2FA is enabled (for other apps) and address or birthday must be changed do 2FA 
 		if (notok!=null && (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.BIRTHDAY_SET) || notok.contains(UserFeature.GENDER_SET) || notok.contains(UserFeature.NEWEST_PRIVACY_POLICY_AGREED) || notok.contains(UserFeature.NEWEST_TERMS_AGREED))) {			
 			if (user.authType != null && user.authType != SecondaryAuthType.NONE) {
 				notok.add(UserFeature.AUTH2FACTOR);
 			}
+		}
+		
+		// If 2FA is already done we do not need to check again
+		if (notok!=null && token.securityToken != null) {
+			notok.remove(UserFeature.AUTH2FACTOR);
+			notok.remove(UserFeature.AUTH2FACTORSETUP);
+			notok.remove(UserFeature.PHONE_VERIFIED);		
+			return;
 		}
 		
 		// Do not do 2FA if no phone number present, account email not confirmed (but required) or admin unlock required 
@@ -765,6 +778,10 @@ public class OAuth2 extends Controller {
 			if (user.authType == SecondaryAuthType.SMS && user.mobileStatus != EMailStatus.VALIDATED) {
 			  notok.remove(UserFeature.AUTH2FACTOR);
 			  notok.add(UserFeature.PHONE_VERIFIED);
+			}
+			if (user.authType == SecondaryAuthType.TOTP && user.totpSecret == null) {
+		      notok.remove(UserFeature.AUTH2FACTOR);
+			  notok.add(UserFeature.AUTH2FACTORSETUP);
 			}
 		}
 		
@@ -793,11 +810,11 @@ public class OAuth2 extends Controller {
 					notok.remove(UserFeature.AUTH2FACTOR);
 					notok.add(UserFeature.AUTH2FACTORSETUP);
 				} else {
-				
+					AuditManager.instance.addAuditEvent(AuditEventType.USER_PHONE_CONFIRMED, user, token.appId);
 					try {
  					    Authenticators.getInstance(SecondaryAuthType.SMS).checkAuthentication(user._id, user, securityToken);
 					} catch (AppException e) {						
-						AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, token.appId);
+						//AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, token.appId);
 						throw e;
 					}
 					token.securityToken = securityToken;
@@ -805,6 +822,10 @@ public class OAuth2 extends Controller {
 					notok.remove(UserFeature.PHONE_VERIFIED);
 					user.mobileStatus = EMailStatus.VALIDATED;
 					User.set(user._id, "mobileStatus", user.mobileStatus);
+					if (user.flags != null && user.flags.contains(AccountActionFlags.VERIFY_PHONE)) {
+						user.removeFlag(AccountActionFlags.VERIFY_PHONE);
+					}
+					AuditManager.instance.success();
 					if (notok.isEmpty()) {
 						notok = null;
 						Authenticators.getInstance(user.authType).finishAuthentication(user._id, user);
@@ -816,18 +837,27 @@ public class OAuth2 extends Controller {
 		// Do 2FA
 		if (notok!=null && notok.contains(UserFeature.AUTH2FACTOR)) {
 			if (securityToken == null) {
-				Authenticators.getInstance(user.authType).startAuthentication(user._id, "Code", user);
+				Authenticators.getInstance(authType).startAuthentication(user._id, "Code", user);
 				notok.clear();
 				notok.add(UserFeature.AUTH2FACTOR);
 			} else {
 				try {
-					Authenticators.getInstance(user.authType).checkAuthentication(user._id, user, securityToken);
+					Authenticators.getInstance(authType).checkAuthentication(user._id, user, securityToken);
 				} catch (AppException e) {						
 					AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, token.appId);
 					throw e;
 				}
 				token.securityToken = securityToken;
 				notok.remove(UserFeature.AUTH2FACTOR);
+				
+				if (user.flags != null && user.flags.contains(AccountActionFlags.VERIFY_PHONE) && authType==SecondaryAuthType.SMS) {
+					AuditManager.instance.addAuditEvent(AuditEventType.USER_PHONE_CONFIRMED, user, token.appId);
+					user.removeFlag(AccountActionFlags.VERIFY_PHONE);
+					user.mobileStatus = EMailStatus.VALIDATED;
+					User.set(user._id, "mobileStatus", user.mobileStatus);
+					AuditManager.instance.success();
+				}
+				
 				if (notok.isEmpty()) {
 					notok = null;
 					Authenticators.getInstance(user.authType).finishAuthentication(user._id, user);
@@ -989,6 +1019,7 @@ public class OAuth2 extends Controller {
 			token.created = token1.created;
             token.remoteAddress = token1.remoteAddress;
             token.setPortal();
+            token.setIsAuthenticated();
 		}
         
         Plugin app = token.getPortal() ? null : validatePlugin(token, json);
@@ -1126,7 +1157,12 @@ public class OAuth2 extends Controller {
 		if (notok != null && !notok.isEmpty()) {
 		  if (token.handle != null) KeyManager.instance.persist(user._id);
 		  if (notok.contains(UserFeature.PASSWORD_SET)) notok = Collections.singleton(UserFeature.PASSWORD_SET);		  	
-		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);
+		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) {
+			  notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);
+			  if (!OTPTools.checkValidTokenExistsForConfirm(user)) {
+				  Application.sendWelcomeMail(user, null);
+			  }
+		  }
 		  if (notok.contains(UserFeature.APP_UNLOCK_CODE)) notok = Collections.singleton(UserFeature.APP_UNLOCK_CODE);
 		  if (notok.contains(UserFeature.BIRTHDAY_SET)) notok = Collections.singleton(UserFeature.BIRTHDAY_SET);
 		  if (notok.contains(UserFeature.GENDER_SET)) notok = Collections.singleton(UserFeature.GENDER_SET);
@@ -1135,7 +1171,11 @@ public class OAuth2 extends Controller {
 		  if (notok.contains(UserFeature.ADDRESS_VERIFIED)) notok = Collections.singleton(UserFeature.ADDRESS_VERIFIED);
 		  if (notok.contains(UserFeature.PHONE_VERIFIED)) notok = Collections.singleton(UserFeature.PHONE_VERIFIED);
 		  if (notok.contains(UserFeature.AUTH2FACTORSETUP)) notok = Collections.singleton(UserFeature.AUTH2FACTORSETUP);
-		  if (notok.contains(UserFeature.AUTH2FACTOR)) notok = Collections.singleton(UserFeature.AUTH2FACTOR);
+		  if (notok.contains(UserFeature.AUTH2FACTOR)) {
+			  if (user.authType == SecondaryAuthType.TOTP) {
+				notok = Collections.singleton(UserFeature.AUTH2FACTOR_TOTP);
+			  } else notok = Collections.singleton(UserFeature.AUTH2FACTOR);
+		  }
 		  
 		  return Application.loginHelperResult(request, token, user, notok);
 		}

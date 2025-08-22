@@ -1,5 +1,4 @@
 {
-
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Utilisateurs",
@@ -31,6 +30,7 @@
         "not_admin_confirmed" : "Non confirmé par un administrateur",
         "overview" : "Aperçu",
         "specific_user" : "Utilisateur spécifique",
+        "testusers" : "Utilisateurs de test",
         "role" : "Rôle",
         "status" : "État",
         "midata_id" : "@PRODUCT ID",
@@ -40,6 +40,7 @@
     "admin_organizations" : {
         "title" : "Organisations",
         "name" : "Nom",
+        "identifier" : "Identifiant",
         "status" : "État",
         "empty" : "Aucune organisation correspondante n'a été trouvée.",
         "members_btn" : "afficher les membres"
@@ -77,7 +78,8 @@
         "change_address_btn" : "Changer le profil",
         "make_master_btn" : "Ajouter le rôle utilisateur maître",
         "remove_master_btn" : "Révoquer le rôle utilisateur maître",
-        "history" : "Historique du compte"
+        "history" : "Historique du compte",
+        "test_user" : "Compte d'utilisateur de test"
     },
 
     "admin_news" : {
@@ -106,7 +108,10 @@
             "wide" : "Large (2x1)",
             "high" : "Haut (1x2)",
             "large" : "Grand (2x2)"
-        }
+        },
+        "dynamicDate" : "Date dynamique",
+        "dynamicDate2" : "Modifier la date du message pour qu'elle corresponde à la date de début de la participation au projet, le cas échéant, sinon pour qu'elle corresponde à la date actuelle.",
+        "onlyParticipantsStudyId" : "Uniquement les participants au projet"
     },
 
     "admin_registration" : {
@@ -192,6 +197,8 @@
         "infos_part" : "Informations pour les participants",
         "infos_internal" : "Informations internes",
         "required_information" : "Informations requises",
+        "data_filters" : "Filtres de données pour la pseudonymisation",
+        "none" : "Aucun",
         "anonymous" : "Anonyme",
         "required_assistance" : "Médecin agréé requis",
         "termsOfUse" : "Conditions générales",
@@ -207,7 +214,8 @@
         "end_validation_btn" : "Finaliser la validation",
         "back_to_draft_btn" : "Revenir à l'ébauche",
         "delete_study_btn" : "Supprimer le projet",
-        "export_btn" : "Exporter"
+        "export_btn" : "Exporter",
+        "messages" : "Communication"
     },
 
     "admin_stats" : {
@@ -277,6 +285,8 @@
         "LOGIN" : "Login",
         "REFRESH" : "Session",
         "INSTALL" : "Activation",
+        "ERROR" : "Error",
+        "FAILURE" : "Failure",
         "GET" : "Read",
         "POST" : "Write",
         "PUT" : "Update",
@@ -326,6 +336,10 @@
 
     "content" : {
         "intro" : "Recherche de codes, types de contenu et groupes existants.",
+        "search_approved" : "Afficher les entrées approuvées",
+        "search_not_approved" : "Afficher les entrées en attente d'approbation",
+        "search_modified" : "Afficher les entrées modifiées",
+        "search_deleted" : "Afficher les entrées récemment supprimées",
         "createnew_btn" : "Nouveau code",
         "creategroup_btn" : "Nouveau groupe",
         "make_selection" : "Sélectionnez l'élément que vous voulez modifier ou auquel vous voulez ajouter un nouveau code",
@@ -355,7 +369,10 @@
         "delete_group_btn" : "Supprimer le groupe",
         "save_btn" : "Enregistrer le code et le type de contenu",
         "export_btn" : "Exporter les modifications",
-        "import_btn" : "Importer les modifications"
+        "export_translations_btn" : "Exporter la traduction",
+        "import_btn" : "Importer",
+        "autoAddedAt" : "Ajouté automatiquement",
+        "approvedAt" : "Approuvé"
     },
 
     "admin_importcontent" : {

@@ -108,7 +108,7 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 	public void checkLock() throws InternalServerException {
 		if (locked) return;
 		while (rootPage.model.getLockTime() > System.currentTimeMillis() - 1000l * 60l) {
-			AccessLog.log("waiting for lock release");
+			AccessLog.log("waiting for lock release wait=50");
 			try {
 			  Stats.reportConflict();
 			  Thread.sleep(50);
@@ -142,6 +142,7 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 			AccessLog.log("index-lookup: ", key.toString()+" #="+result.size());
 		    return result;
 		} catch (LostUpdateException e) {
+			AccessLog.log("lost Update wait=20");
 			try {
 			   Thread.sleep(20);
 			} catch (InterruptedException e2) {}
@@ -154,6 +155,7 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 		try {
 		  return rootPage.lookup(key, targetAps);
 		} catch (LostUpdateException e) {
+			AccessLog.log("lost Update wait=20");
 			try {
 			   Thread.sleep(20);
 			} catch (InterruptedException e2) {}

@@ -16,6 +16,7 @@
 -->
 <template>
     	<div class="container">
+		<error-modal :error="error" />
 		<div class="row">
 			<!-- Login -->
 			<div class="col-sm-12">
@@ -43,13 +44,14 @@
 import server from "services/server.js";
 import session from "services/session.js";
 import { status, ErrorBox } from 'basic-vue3-components';
+import ErrorModal from "components/ErrorModal.vue";
 export default {
    data: () => ({
      success : false,         
    }),
    
     components : {
-      ErrorBox
+      ErrorBox, ErrorModal
     },
     
     mixins : [ status ],

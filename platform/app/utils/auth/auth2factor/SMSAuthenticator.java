@@ -49,13 +49,18 @@ public class SMSAuthenticator implements Authenticator {
 	/**
 	 * Allow 5 SMS per hour
 	 */
-	public static final long SMS_TIMEFRAME = 1000l * 60l * 60l;
-	public static final int MAX_PER_TIMEFRAME = 6;
+	public static final long SMS_TIMEFRAME = 1000l * 60l * 60l * 3l;
+	public static final int MAX_PER_TIMEFRAME = 6 * 3;
 	
 	/**
 	 * Maximum number of failed attempts before token is invalid
 	 */
 	public static final int MAX_FAILED_ATTEMPTS = 3;
+	
+    public void setupAuthentication(User user) throws AppException {
+		
+	}
+	
 	
 	/**
 	 * start new SMS authentication

@@ -60,6 +60,12 @@ public class OTPTools {
 		targetUser.updateResetToken(null, targetUser.resettokenTs, null);
 	}
 	
+	public static boolean checkValidTokenExistsForConfirm(User targetUser) {
+		if (targetUser.resettoken == null) return false;
+		if (System.currentTimeMillis() - targetUser.resettokenTs >= EMAIL_TOKEN_LIFETIME) return false;
+		return tokenConfirmsEMail(targetUser);		
+	}
+	
 	public static boolean tokenConfirmsEMail(User targetUser) {
 		return (targetUser.resettokenType == null 
 			|| targetUser.resettokenType == TokenType.WELCOME_MAIL

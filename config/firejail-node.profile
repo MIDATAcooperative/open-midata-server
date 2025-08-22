@@ -18,7 +18,7 @@ notv
 novideo
 protocol unix,inet,inet6
 seccomp
-shell none
+#shell none
 disable-mnt
 private-dev
 private-tmp

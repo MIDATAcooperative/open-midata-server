@@ -150,7 +150,10 @@ public class Messager {
 	}
 	
 	public static boolean sendMessage(Map<String, MessageDefinition> messageDefinitions, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel, MidataId sourceApp) throws AppException {
-		if (targets.isEmpty()) return false;
+		if (targets.isEmpty()) {
+			AccessLog.log("no email targets");
+			return false;
+		}
 		
 		MessageDefinition msg = null; 
 		if (code != null) msg = messageDefinitions.get(reason.toString()+"_"+code);
@@ -178,13 +181,16 @@ public class Messager {
 		return true;
 	}
 	
-	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel, MidataId sourceApp) throws AppException {	
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel, MidataId sourceApp) throws AppException {
+		AccessLog.log("sending with #targets="+targets.size());
 		for (Object target : targets) {
 			if (target instanceof MidataId) {
 				MidataId userId = (MidataId) target;
 				User user = User.getByIdAlsoDeleted(userId, User.ALL_USER);
 				if (user != null && !("deleted".equals(user.email))) {					
 					sendMessage(messageDefinition, footers, user, replacements, channel, sourceApp);
+				} else {
+					AccessLog.log("sending to deleted/missing user");
 				}
 			} else if (target instanceof String) {
 				sendMessage(messageDefinition, footers, target.toString(), null, defaultLanguage, replacements, channel, sourceApp);
@@ -195,7 +201,10 @@ public class Messager {
 	
 	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, User member, Map<String, String> replacements, MessageChannel channel, MidataId sourceApp) throws AppException {		
 		String email = member.email;
-		if (email == null) return;
+		if (email == null) {
+			AccessLog.log("send email, but no email present");
+			return;
+		}
 		String fullname = member.firstname+" "+member.lastname;
 		String subject = messageDefinition.title.get(member.language);
 		if (subject == null) subject = messageDefinition.title.get(InstanceConfig.getInstance().getDefaultLanguage());
@@ -203,7 +212,10 @@ public class Messager {
 		if (content == null) content = messageDefinition.text.get(InstanceConfig.getInstance().getDefaultLanguage());
 		
 		if (subject==null) subject = "No subject";
-		if (content == null) return;
+		if (content == null) {
+			AccessLog.log("send email, but no mail content");
+			return;
+		}
 		
 		if (footers != null) {
 			String footer = footers.get(member.language);

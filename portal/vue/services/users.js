@@ -38,7 +38,7 @@ import server from './server';
 	};
 	
 	service.updateSettings = function(user) {
-		var data = {"language": user.language, "searchable": user.searchable, "authType" : user.authType, "notifications" : user.notifications };
+		var data = {"language": user.language, "searchable": user.searchable, "authType" : user.authType, "notifications" : user.notifications, "reset" : true };
 		return server.post(jsRoutes.controllers.Users.updateSettings().url, data);
 	};
 	

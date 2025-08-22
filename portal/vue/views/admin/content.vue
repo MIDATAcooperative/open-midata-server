@@ -40,7 +40,19 @@
 		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="createNew()" v-t="'content.createnew_btn'"></button>
 		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="createGroup()" v-t="'content.creategroup_btn'"></button>
 		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="exporter()" v-t="'content.export_btn'"></button>
+			
+		<div class="btn-group space mb-1">
+		  <button class="btn btn-default" :disabled="action!=null" type="button" v-t="'content.export_translations_btn'"></button>
+		  <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <div class="dropdown-menu">
+            <a v-for="lang in langs" :key="lang" class="dropdown-item" href="javascript:" @click="exportTranslations(lang)">{{ lang }}</a>                     
+          </div>
+        </div>
+		
 		<button class="btn btn-default space mb-1" :disabled="action!=null" @click="importer()" v-t="'content.import_btn'"></button>
+			
 		</div>
 		</div>
 		<div class="extraspace"></div>
@@ -172,6 +184,7 @@ import session from 'services/session.js';
 import formats from 'services/formats.js';
 import ENV from 'config';
 import labels from 'services/labels.js';
+import languages from 'services/languages.js';
 import _ from 'lodash';
 import { status, ErrorBox, FormGroup, Typeahead } from 'basic-vue3-components';
 
@@ -207,7 +220,7 @@ export default {
        currentCode : null,
        currentContent : null,
        currentGroup : null,
-       langs : ["en","de","fr","it"],
+       langs : languages.array,
 	   lang : "en",
        groups : [],
        formats : [],
@@ -585,6 +598,13 @@ export default {
             this.doAction("download", server.token())
 		    .then(function(response) {
 		        document.location.href = ENV.apiurl + jsRoutes.controllers.FormatAPI.exportChanges().url + "?token=" + encodeURIComponent(response.data.token);
+		    });
+		},
+		
+		exportTranslations(lang) {
+            this.doAction("download", server.token())
+		    .then(function(response) {
+		        document.location.href = ENV.apiurl + jsRoutes.controllers.FormatAPI.exportTranslations(lang).url + "?token=" + encodeURIComponent(response.data.token);
 		    });
 		},
 

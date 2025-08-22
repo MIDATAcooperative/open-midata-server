@@ -186,7 +186,7 @@ public class PortalSessionToken {
 			PortalSessionToken result = PortalSessionToken.decrypt(secret);
 			if (result == null) return null;			
 			
-			if (System.currentTimeMillis() > result.created + LIFETIME) {				
+			if (!result.stillValid()) {				
 				return null;
 			}
 			if (!result.remoteAddress.equals("all")) {
@@ -208,7 +208,7 @@ public class PortalSessionToken {
 		session.set(this);
 	}
 	
-	public static PortalSessionToken decrypt(String unsafeSecret) {
+	private static PortalSessionToken decrypt(String unsafeSecret) {
 		try {			
 			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
@@ -245,5 +245,9 @@ public class PortalSessionToken {
 	
 	public static void clear() {
 		session.set(null);
+	}
+	
+	public boolean stillValid() {
+		return this.created + LIFETIME > System.currentTimeMillis();
 	}
 }

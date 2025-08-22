@@ -1,5 +1,4 @@
 {
-
     "admin_navbar" : {
         "admin" : "Admin",
         "members" : "Utenti",
@@ -31,6 +30,7 @@
         "not_admin_confirmed" : "Non confermato dall'amministratore",
         "overview" : "Panoramica",
         "specific_user" : "Utente specifico",
+        "testusers" : "Utenti di test",
         "role" : "Ruolo",
         "status" : "Stato",
         "midata_id" : "@PRODUCT ID",
@@ -40,6 +40,7 @@
     "admin_organizations" : {
         "title" : "Organizzazioni",
         "name" : "Nome",
+        "identifier" : "Identificatore",
         "status" : "Stato",
         "empty" : "Nessuna organizzazione corrispondente trovata.",
         "members_btn" : "mostra i membri"
@@ -77,7 +78,8 @@
         "change_address_btn" : "Modifica profilo",
         "make_master_btn" : "Aggiungi ruolo utente master",
         "remove_master_btn" : "Revoca il ruolo utente master",
-        "history" : "Storia dell'account"
+        "history" : "Storia dell'account",
+        "test_user" : "Account utente di test"
     },
 
     "admin_news" : {
@@ -106,7 +108,10 @@
             "wide" : "Largo (2x1)",
             "high" : "Alto (1x2)",
             "large" : "Grande (2x2)"
-        }
+        },
+        "dynamicDate" : "Data dinamica",
+        "dynamicDate2" : "Modificare la data del messaggio con la data di inizio della partecipazione al progetto, se applicabile, altrimenti con la data attuale.",
+        "onlyParticipantsStudyId" : "Solo i partecipanti al progetto"
     },
 
     "admin_registration" : {
@@ -192,6 +197,8 @@
         "infos_part" : "Informazioni per i partecipanti",
         "infos_internal" : "Informazioni interne",
         "required_information" : "Informazioni richieste",
+        "data_filters" : "Filtri di dati per la pseudonimizzazione",
+        "none" : "Nessuno",
         "anonymous" : "Anonimo",
         "required_assistance" : "Assistenza richiesta",
         "termsOfUse" : "Condizioni generali di contratto",
@@ -207,7 +214,8 @@
         "end_validation_btn" : "Convalida completa",
         "back_to_draft_btn" : "Torna alla bozza",
         "delete_study_btn" : "Elimina progetto",
-        "export_btn" : "Esportare"
+        "export_btn" : "Esportare",
+        "messages" : "Comunicazione"
     },
 
     "admin_stats" : {
@@ -277,6 +285,8 @@
         "LOGIN" : "Login",
         "REFRESH" : "Session",
         "INSTALL" : "Activation",
+        "ERROR" : "Error",
+        "FAILURE" : "Failure",
         "GET" : "Read",
         "POST" : "Write",
         "PUT" : "Update",
@@ -326,6 +336,10 @@
 
     "content" : {
         "intro" : "Cerca codici, tipi di contenuto e gruppi esistenti.",
+        "search_approved" : "Mostra le voci approvate",
+        "search_not_approved" : "Mostra le voci che mancano all'approvazione",
+        "search_modified" : "Mostra le voci modificate",
+        "search_deleted" : "Mostra le voci eliminate di recente",
         "createnew_btn" : "Nuovo codice",
         "creategroup_btn" : "Nuovo gruppo",
         "make_selection" : "Seleziona l'elemento che vuoi modificare o aggiungere un nuovo codice",
@@ -355,7 +369,10 @@
         "delete_group_btn" : "Cancella il gruppo",
         "save_btn" : "Salva codice e tipo di contenuto",
         "export_btn" : "Esportare le modifiche",
-        "import_btn" : "Importare le modifiche"
+        "export_translations_btn" : "Esportare la traduzione",
+        "import_btn" : "Importare",
+        "autoAddedAt" : "Aggiunto automaticamente",
+        "approvedAt" : "Approvato"
     },
 
     "admin_importcontent" : {

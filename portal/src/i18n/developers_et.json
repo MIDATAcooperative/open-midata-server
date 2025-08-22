@@ -50,12 +50,16 @@
     "lang" : "Language",
     "msgtitle" : "Message Title",
     "text" : "Message Text",
+    "smtp_btn" : "Configure SMTP Server",
     "available_tags" : "Available categories",
+    "htmlFrame" : "HTML message frame",
+    "htmlFrame2" : "Enter complete HTML page for mail. Use {{message}} as placeholder for actual message.", 
     "reasons" : {
        "REGISTRATION" : "Registration of new user",
        "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
        "FIRSTUSE_ANYUSER" : "First use of application",
        "FIRSTUSE_EXISTINGUSER" : "First use of application (if no registration email sent)",
+       "ONE_TIME_PASSWORD" : "One-time password sent",
        "SERVICE_WITHDRAW" : "Stop use of service",
        "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
        "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",
@@ -75,11 +79,30 @@
        "PASSWORD_FORGOTTEN" : "Password forgotten",
        "USER_PRIVATE_KEY_RECOVERED" : "User key recovery completed",
        "NON_PERFECT_ACCOUNT_MATCH" : "User re-registration from API: weak match",
-       "TRIED_USER_REREGISTRATION" : "User re-registration from API: bad match",       
+       "TRIED_USER_REREGISTRATION" : "User re-registration from API: bad match",	   
        "RESOURCE_CHANGE" : "Change of resource [code]",
        "PROCESS_MESSAGE" : "Process FHIR message with event [code]",
-       "LOGIN" : "Login Notification (if enabled by user)"
-    }             
+       "LOGIN" : "Login Notification (if enabled by user)",
+       "PROJECT_PARTICIPATION_REQUEST" : "Participation requested",
+       "PROJECT_PARTICIPATION_APPROVED" : "Participation approved",
+       "PROJECT_PARTICIPATION_REJECTED" : "Participation rejected",
+       "PROJECT_PARTICIPATION_GROUP_ASSIGNED" : "Group assigned",
+       "PROJECT_PARTICIPATION_RETREAT" : "User retreated"
+    }		      
+  },
+  
+  "appsmtp" : {
+    "title" : "App-specific SMTP Configuration",
+    "description" : "If a SMTP configuration is provided here the platform will send all emails defined for this application using the given SMTP server. Whenever the SMTP configuration is changed the platform will sent a test email to you.",
+    "host" : "Host",
+    "port" : "Port",
+    "user" : "Username",
+    "password" : "Password",
+    "tls" : "TLS",
+    "ssl" : "SSL",
+    "from" : "Sender",
+    "from2" : "Sender must contain sender name and email address in the format: name<email>", 
+    "success" : "SMTP configuration successfully updated."
   },
   
   "manageapp" : {
@@ -151,6 +174,11 @@
     "default_context_config" : "Configuration / Imports",
     "default_context_extern" : "Standalone Plugin",
     "deploy_status" : "Deployment Status",
+    "accept_test_accounts" : "Allow test accounts?",
+    "accept_test_accounts_from_app" : "Allowed source applications",
+    "test_accounts_max" : "Test accounts limit",
+    "home_url" : "Landing page",
+    "noWelcome" : "No welcome mail",
     "info" : {
        "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
@@ -172,6 +200,7 @@
        "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
        "tags" : "Categories on the Store for which your plugin should be listed.",
        "url" : "URL of your plugins main page. If you use @PRODUCT's template, it is 'dist/index.html#!?authToken=:authToken''",
+       "home_url" : "URL of initial page (before login).",
        "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
        "defaultSpaceContext" : "Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.",
        "redirectUri" : "You may specifiy multiple possible redirect URIs by separating the URIs with a space.",
@@ -185,7 +214,10 @@
        "endpoint" : "The path of this non-project FHIR endpoint will be /opendata/endpointname/fhir",
        "endpoint2" : "Do not forget: to activate the endpoint you need to add an API key afterwards.",
        "decentral" : "API keys will be managed by multiple different organizations.",
-       "organizationKeys" : "API keys are directly bound to a single organization."
+       "organizationKeys" : "API keys are directly bound to a single organization.",
+       "accept_test_accounts_from_app" : "Allow test accounts created by these applications (comma separted list of internal app names).",
+       "test_accounts_max" : "Current number of test accounts created and maximum number of test accounts allowed.",
+       "noWelcome" : "Do not sent a welcome email upon registration."
     },
     "status" : {
       "title" : "Application Status",
@@ -534,8 +566,8 @@
         "logintemplate" : {
             "GENERATED" : "Generate application authorization from definition",
             "TERMS_OF_USE_AND_GENERATED" : "Show terms of use as text page with generated consent",
-            "TERMS_OF_USE" : "Show terms of use as text page (needs approval by an administrator)",
-            "REDUCED" : "Give consent on registration page (needs approval by an administrator)"
+	        "TERMS_OF_USE" : "Show terms of use as text page (needs approval by an administrator)",
+	        "REDUCED" : "Give consent on registration page (needs approval by an administrator)"
         },
         "loginbuttonstemplate" : {
             "ONE_CONFIRM_AND_OPTIONAL_CHECKBOXES" : "One required confirm button and optional checkboxes",
