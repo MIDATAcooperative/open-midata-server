@@ -125,10 +125,8 @@
             "writeData" : "Andmete kirjutamine",
             "changeTeam" : "Muuda meeskonda",
             "setup" : "Muuda organisatsiooni",
-            "applications" : "Rakenduste haldamine",
-
-            // TODO NEW: Manage consents
-            "participants" : "Manage consents"
+            "applications" : "Rakenduste haldamine",           
+            "participants" : "Nõusolekute haldamine"
         },
         "update_btn" : "Uuenda"
     },
@@ -140,10 +138,8 @@
         "roleName" : "Role",
         "role" : {
             "MANAGER" : "Juhtiv organisatsioon",
-            "SUBORGANIZATION" : "allorganisatsioon",
-
-            // TODO NEW: Parent Organization
-            "PARENTORGANIZATION" : "Parent Organization",
+            "SUBORGANIZATION" : "allorganisatsioon",          
+            "PARENTORGANIZATION" : "Vanemorganisatsioon",
             "HC" : "Muu"
         },
         "startDate" : "Liige alates",
@@ -152,10 +148,8 @@
         "add_organization_btn" : "Loo allorganisatsioon",
         "add_organization2_btn" : "Link teise organisatsiooniga",
         "add_broker_btn" : "Lisa API juurdepääs",
-        "add_group_btn" : "Lisa teine meeskond",
-
-        // TODO NEW: Former Sub-Entities
-        "former_members" : "Former Sub-Entities"
+        "add_group_btn" : "Lisa teine meeskond",      
+        "former_members" : "Endised allüksused"
     },
 
     "provider_memberdetails" : {
@@ -164,9 +158,7 @@
         "share_btn" : "Jaga andmeid patsiendiga"
     },
 
-    "help_welcome" : {
-
-        // TODO NEW: Some ideas to start:
-        "starts" : "Some ideas to start:"
+    "help_welcome" : {        
+        "starts" : "Mõned ideed alustamiseks:"
     }
 }

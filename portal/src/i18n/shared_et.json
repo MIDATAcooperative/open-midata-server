@@ -41,26 +41,20 @@
         "unsupported" : "Toiming ei ole toetatud.",
         "failed" : "Toiming nurjus",
         "timeout" : "Ajalõpp",
-
-        // TODO NEW: If you have persistent problems logging in, please contact support at @SUPPORT.
-        "contact_support" : "If you have persistent problems logging in, please contact support at @SUPPORT.",
+        
+        "contact_support" : "Kui teil on püsivaid sisselogimisprobleeme, võtke ühendust toega aadressil @SUPPORT.",
         "notrialuser_title" : "Nõutav on täisliikmesus.",
         "notrialuser_detail" : "Selle funktsiooni kasutamiseks peate registreerumise lõpule viima. Taotlege üldtingimuste kirjalikku koopiat ja saatke see allkirjastatult tagasi käitajale @OPERATOR. Saate ka kinnituskoodi oma postiaadressi kinnitamiseks. Kui soovite kontrollida oma konto olekut, klõpsake paremas ülanurgas oma kasutajanimel ja vaadake jaotist „Konto olek“.",
         "mustbemember_title" : "Nõutav on käitaja @OPERATOR liikmesus.",
         "mustbemember_detail" : "Selle funktsiooni kasutamiseks peate olema kooperatiivi liige. Lisateabe saamiseks klõpsake paremas ülanurgas oma kasutajanimel ja vaadake jaotist „Konto olek“.",
         "ratelimit" : "Praeguse toimingu piirmäär on täis saanud. Proovige hiljem uuesti.",
-
-        // TODO NEW: @modal
+        
         "ratelimit_show" : "@modal",
-
-        // TODO NEW: Current action tried too often
-        "ratelimit_title" : "Current action tried too often",
-
-        // TODO NEW: Whoa, that’s a lot of requests! To keep things secure, we’re taking a short break.
-        "ratelimit_1" : "Whoa, that’s a lot of requests! To keep things secure, we’re taking a short break.",
-
-        // TODO NEW: Try again in a few minutes.
-        "ratelimit_2" : "Try again in a few minutes.",
+        
+        "ratelimit_title" : "Praegust tegevust proovitakse liiga tihti",
+        
+        "ratelimit_1" : "Vau, see on palju palveid! Turvalisuse huvides teeme väikese pausi.",        
+        "ratelimit_2" : "Proovi mõne minuti pärast uuesti.",
         "no_code_challenge" : "Volitamise lõpp-punkti kutse sooritati ebapiisavate parameetritega. Võtke ühendust rakenduse arendajaga.",
         "notauthorized" : {
             "action" : "Teil ei ole selle toimingu tegemise luba",
@@ -107,15 +101,12 @@
             "csvmapping" : "Esitati kehtetu vastendus.",
             "id" : "Kehtetu identifikaator",
             "usergroup" : "Selle toimingu sooritamiseks peate olema selle kasutajarühma liige.",
+            
+            "project" : "Metaprojekte ei saa kasutada teiste metaprojektide alamprojektidena.",
 
-            // TODO NEW: Meta projects cannot be used as subprojects for other meta projects.
-            "project" : "Meta projects cannot be used as subprojects for other meta projects.",
-
-            // TODO NEW: Test of SMTP configuration failed.
-            "smtp" : "Test of SMTP configuration failed.",
-
-            // TODO NEW: Wrong one-time password.
-            "otp" : "Wrong one-time password."
+            
+            "smtp" : "SMTP konfiguratsiooni test nurjus.",            
+            "otp" : "Vale ühekordne parool."
         },
 
         "missing" : {
@@ -177,52 +168,36 @@
             "user" : "See konto on blokeeritud. Teie e-posti aadress on edasiseks registreerimiseks blokeeritud. Abi saamiseks võtke ühendust kasutajatoega @SUPPORT.",
             "password1" : "Liiga palju nurjunud sisselogimiskatseid. Palun oodake enne järgmist katset 1 minut.",
 
-            // TODO NEW: @modal
             "password1_show" : "@modal",
-
-            // TODO NEW: Too many missed login attempts
-            "password1_title" : "Too many missed login attempts",
-
-            // TODO NEW: For your security, your account has been temporarily locked due to multiple failed login attempts.
-            "password1_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
-
-            // TODO NEW: Please try again in 1 minute or reset your password.
-            "password1_2" : "Please try again in 1 minute or reset your password.",
+            
+            "password1_title" : "Liiga palju ebaõnnestunud sisselogimiskatseid",
+            
+            "password1_1" : "Teie turvalisuse huvides on teie konto mitme ebaõnnestunud sisselogimiskatse tõttu ajutiselt lukustatud.",
+            
+            "password1_2" : "Palun proovige uuesti 1 minuti pärast või lähtestage oma parool.",
             "password5" : "Liiga palju nurjunud sisselogimiskatseid. Palun oodake enne järgmist katset 5 minutit.",
 
-            // TODO NEW: @modal
             "password5_show" : "@modal",
-
-            // TODO NEW: Too many missed login attempts
-            "password5_title" : "Too many missed login attempts",
-
-            // TODO NEW: For your security, your account has been temporarily locked due to multiple failed login attempts.
-            "password5_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
-
-            // TODO NEW: Please try again in 5 minutes or reset your password.
-            "password5_2" : "Please try again in 5 minutes or reset your password.",
+            
+            "password5_title" : "Liiga palju ebaõnnestunud sisselogimiskatseid",
+            "password5_1" : "Teie turvalisuse huvides on teie konto mitme ebaõnnestunud sisselogimiskatse tõttu ajutiselt lukustatud.",
+            
+            "password5_2" : "Palun proovige uuesti 5 minuti pärast või lähtestage oma parool.",
             "password60" : "Liiga palju nurjunud sisselogimiskatseid. Palun oodake enne järgmist katset 1 tund.",
-
-            // TODO NEW: @modal
+            
             "password60_show" : "@modal",
-
-            // TODO NEW: Too many missed login attempts
-            "password60_title" : "Too many missed login attempts",
-
-            // TODO NEW: For your security, your account has been temporarily locked due to multiple failed login attempts.
-            "password60_1" : "For your security, your account has been temporarily locked due to multiple failed login attempts.",
-
-            // TODO NEW: Please try again in 1 hour or reset your password.
-            "password60_2" : "Please try again in 1 hour or reset your password.",
+            
+            "password60_title" : "Liiga palju ebaõnnestunud sisselogimiskatseid",            
+            "password60_1" : "Teie turvalisuse huvides on teie konto mitme ebaõnnestunud sisselogimiskatse tõttu ajutiselt lukustatud.",           
+            "password60_2" : "Palun proovige uuesti 1 tunni pärast või lähtestage oma parool.",
             "participation" : "Teil ei ole selles uuringuprojektis osalemise luba ja seetõttu ei saa te seda rakendust kasutada.",
             "projectconsent" : "Olete selles uuringuprojektis osalemisest loobunud ja seetõttu ei saa te seda rakendust enam kasutada.",
             "consent" : "Olete portaalis @PRODUCT määranud, et see rakendus ei tohi enam teie andmetele juurde pääseda. Kui soovite seda rakendust uuesti kasutada, peate selle portaalis @PRODUCT uuesti lubama.",
             "app" : "Teil on lubatud kasutada seda rakendust kuni 10 seadmes. Palun kustutage portaalis @PRODUCT kasutamata nõusolekud.",
             "app_test" : "Teil on lubatud kasutada seda rakendust kuni 10 seadmes. Selles TESTeksemplaris on nõusolekud teie jaoks lähtestatud. Proovige uuesti.",
             "joinmethod" : "Selle meetodi abil ei ole lubatud projektiga liituda.",
-
-            // TODO NEW: Application does not accept test accounts.
-            "testuser" : "Application does not accept test accounts."
+            
+            "testuser" : "Rakendus ei aktsepteeri testkontosid."
         },
 
         "closed" : {
@@ -243,10 +218,8 @@
             "password" : "Parool peab sisaldama vähemalt ühte tähte ja ühte numbrit.",
             "passphrase" : "Paroolfraasid peavad sisaldama suur- ja väiketähti, numbreid ja erimärke."
         },
-        "toomany" : {
-
-            // TODO NEW: The maximum allowed number of test users has been reached.
-            "testuser" : "The maximum allowed number of test users has been reached."
+        "toomany" : {            
+            "testuser" : "Testkontode maksimaalne lubatud arv on saavutatud."
         },
 
         "concurrent" : {
@@ -257,10 +230,8 @@
             "token" : "See aktiveerimistõend on juba aegunud. Taotlege uut.",
             "tokenresent" : "See aktiveerimistõend on juba aegunud. Teie e-posti aadressile saadeti praegu uus tõend. Kinnitage oma e-posti aadress uue tõendiga 24 tunni jooksul.",
             "code" : "See osaluskood on aegunud.",
-            "securitytoken" : "See kood on aegunud.",
-
-            // TODO NEW: This application is no longer available for use.
-            "app" : "This application is no longer available for use."
+            "securitytoken" : "See kood on aegunud.",            
+            "app" : "See rakendus pole enam kasutamiseks saadaval."
         },
 
         "already_done" : {
@@ -374,9 +345,8 @@
             "user-status-change-blocked" : "Kasutajakonto blokeerimine",
             "user-email-confirmed" : "Kasutaja kinnitas e-posti aadressi",
             "user-email-rejected" : "Kasutaja lükkas e-posti aadressi tagasi",
-
-            // TODO NEW: Phone number confirmed by user
-            "user-phone-confirmed" : "Phone number confirmed by user",
+            
+            "user-phone-confirmed" : "Kasutaja kinnitas telefoninumbri",
             "user-account-change-by-admin" : "Administraator muutis kasutajakontot",
             "user-account-deleted" : "Kasutajakonto kustutamine",
             "app-first-use" : "Rakenduse esmakordne kasutamine",
@@ -443,10 +413,8 @@
             "apikey-created" : "API võtme loomine",
             "apikey-deleted" : "API võtme kustutamine",
             "service-instance-created" : "Teenuse eksemplari loomine",
-            "service-instance-deleted" : "Teenuse eksemplari kustutamine",
-
-            // TODO NEW: One-time password sent
-            "otp-sent" : "One-time password sent"
+            "service-instance-deleted" : "Teenuse eksemplari kustutamine",           
+            "otp-sent" : "Ühekordne parool saadeti"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "Kasutaja e-posti aadress peab platvormile teada olema",
@@ -519,10 +487,8 @@
             "CLINICAL" : "Kliiniline uuring",
             "CITIZENSCIENCE" : "Kodanikuteaduse projekt",
             "COMMUNITY" : "Kogukond",
-            "REGISTRY" : "Register",
-
-            // TODO NEW: Meta Project
-            "META" : "Meta Project"
+            "REGISTRY" : "Register",            
+            "META" : "Metaprojekt"
         },
         "joinmethod" : {
             "APP" : "Osaleja kasutab seotud rakendust",
@@ -530,11 +496,7 @@
             "RESEARCHER" : "Uuringumeeskonna liige registreerib osaleja käsitsi",
             "API" : "Osaleja registreeritakse välise tarkvara kaudu",
             "ALGORITHM" : "Osaleja pakkus välja algoritm (ei ole toetatud)",
-
-            // TODO CHANGED
-            // OLD: Participant may join by entering a code (not supported)
-            // NEW: Participant may join by entering a code
-            "CODE" : "Osaleja võib liituda koodi sisestades (ei ole toetatud)",
+            "CODE" : "Osaleja võib liituda koodi sisestades",
             "APP_CODE" : "Osaleja võib liituda rakenduse antud koodi kaudu",
             "TRANSFER" : "Andmed edastatakse teisest uuringuprojektist (ei ole toetatud)"
         },
@@ -545,10 +507,8 @@
             "RUNNING" : "Praegu töös"
         },
         "studyvalidationstatus" : {
-            "DRAFT" : "Kavand (valideerimata)",
-
-            // TODO NEW: Re-edit (Not Validated)
-            "PATCH" : "Re-edit (Not Validated)",
+            "DRAFT" : "Kavand (valideerimata)",            
+            "PATCH" : "Re-edit (valideerimata)",
             "REJECTED" : "@OPERATOR lükkas projekti tagasi",
             "VALIDATED" : "Projekt on valideeritud",
             "VALIDATION" : "Valideerimine on töös"
@@ -563,19 +523,11 @@
             "DELETE_LAST" : "Varasem osalemine asendatakse"
         },
         "projectdatafilter" : {
-
-            // TODO NEW: Remove all time information from dates
-            "NO_TIME" : "Remove all time information from dates",
-
-            // TODO NEW: Remove day from dates.(Keep month and year)
-            "ONLY_MONTH_YEAR" : "Remove day from dates.(Keep month and year)",
-
-            // TODO NEW: Remove practitioner references
-            "NO_PRACTITIONER" : "Remove practitioner references",
-
-            // TODO NEW: Remove narrative texts
-            "NO_NARRATIVES" : "Remove narrative texts"
-        },
+			"NO_TIME" : "Eemalda kuupäevadelt kogu ajainfo",
+			"ONLY_MONTH_YEAR" : "Eemalda kuupäevadelt päev. (Säilita kuu ja aasta)",
+			"NO_PRACTITIONER" : "Eemalda praktikute viited",
+			"NO_NARRATIVES" : "Eemalda narratiivsed tekstid"
+		},
         "pcodestatus" : {
             "UNUSED" : "Ei ole kasutusel",
             "SHARED" : "Ära antud",
@@ -637,10 +589,8 @@
             "DE" : "Saksa",
             "IT" : "Itaalia",
             "FR" : "Prantsuse",
-            "NL" : "Hollandi",
-
-            // TODO NEW: Estonian
-            "ET" : "Estonian",
+            "NL" : "Hollandi",            
+            "ET" : "Eesti",
             "INT" : "Vaikevariant/lokaliseerimata"
         },
         "month" : {
@@ -701,10 +651,8 @@
         },
         "secondaryauthtype" : {
             "NONE" : "Teine autentimistegur puudub",
-            "SMS" : "Kaksikautentimine SMS-i abil",
-
-            // TODO NEW: Two factor authentication using an authenticator app
-            "TOTP" : "Two factor authentication using an authenticator app"
+            "SMS" : "Kaksikautentimine SMS-i abil",            
+            "TOTP" : "Kahefaktoriline autentimine autentimisrakenduse abil"
         },
         "accountnotifications" : {
             "NONE" : "Sisselogimisest ei teavitata",
@@ -740,27 +688,19 @@
             "DONE" : "Valmis"
         },
         "test_accounts" : {
-
-            // TODO NEW: Allow test users created by any application
-            "ALL" : "Allow test users created by any application",
-
-            // TODO NEW: Do not allow test users
-            "NONE" : "Do not allow test users",
-
-            // TODO NEW: Allow test users created by some applications
-            "SOME" : "Allow test users created by some applications"
-        }
+			"ALL" : "Luba mis tahes rakenduse loodud testkasutajad",			
+			"NONE" : "Ära luba testkasutajaid",			
+			"SOME" : "Luba mõnede rakenduste loodud testkasutajad"
+		}
     },
 
     "common" : {
         "empty" : " ",
-
-        // TODO NEW: by
+        
         "by" : "by",
         "done_btn" : "Valmis",
-
-        // TODO NEW: Close
-        "close_btn" : "Close",
+        
+        "close_btn" : "Sule",
         "back_btn" : "Tagasi",
         "search_btn" : "Otsi",
         "add_btn" : "Lisa",
@@ -887,22 +827,12 @@
     },
 
     "pwstrength" : {
-
-        // TODO NEW: Password must have at least 8 characters.
-        "min" : "Password must have at least 8 characters.",
-
-        // TODO NEW: Password must have at least 12 characters.
-        "min_advanced" : "Password must have at least 12 characters.",
-
-        // TODO NEW: Password must contain at least one letter.
-        "letter" : "Password must contain at least one letter.",
-
-        // TODO NEW: Password must contain at least one number.
-        "number" : "Password must contain at least one number.",
-
-        // TODO NEW: Password must contain at least one special character.
-        "special" : "Password must contain at least one special character."
-    },
+		"min" : "Parool peab olema vähemalt 8 tähemärki pikk.",
+		"min_advanced" : "Parool peab olema vähemalt 12 tähemärki pikk.",
+		"letter" : "Parool peab sisaldama vähemalt ühte tähte.",
+		"number" : "Parool peab sisaldama vähemalt ühte numbrit.",
+		"special" : "Parool peab sisaldama vähemalt ühte erimärki."
+	},
 
     "postregister" : {
         "title" : "Tere tulemast platvormile @PLATFORM!",
@@ -935,38 +865,22 @@
         "securityToken_btn" : "Saada",
         "no_token" : "Oodake koodi saabumist kuni üks minut.",
         "no_token_btn" : "Ma ei saanud koodi",
-
-        // TODO NEW: An email with a one time password has been sent to your email address. Please enter the code from the email.
-        "otp" : "An email with a one time password has been sent to your email address. Please enter the code from the email.",
-
-        // TODO NEW: The one time password has been sent to
-        "otp1" : "The one time password has been sent to",
-
-        // TODO NEW: The email has been sent to
-        "email1" : "The email has been sent to",
-
-        // TODO NEW: at
-        "otp2" : "at",
-
-        // TODO NEW: .
-        "otp3" : ".",
-
-        // TODO NEW: Please look also into your spam folder if you cannot find the email.
-        "otp4" : "Please look also into your spam folder if you cannot find the email.",
-
-        // TODO NEW: One time password
-        "otp_password" : "One time password",
-
-        // TODO NEW: Sent to
-        "mobile1" : "Sent to",
+        
+        "otp" : "Teie e-posti aadressile saadeti ühekordse parooliga kiri. Palun sisestage e-kirjas olev kood.",        
+        "otp1" : "Ühekordne parool saadeti",        
+        "email1" : "E-kiri saadeti",
+        "otp2" : "kell",        
+        "otp3" : ".",        
+        "otp4" : "Kui te e-kirja ei leia, vaadake palun ka oma rämpsposti kausta.",        
+        "otp_password" : "Ühekordne parool",        
+        "mobile1" : "Saadetud aadressile",
         "auth2factorsetup" : "Seadistage oma turvasätted. Kas soovite kaitsta juurdepääsu oma kontole peale parooli ka teise teguriga?",
         "auth2factorsetup2" : "Sätteid saate oma profiilis hiljem muuta. Logige sisse domeeni {{domain}} ja klõpsake paremas ülanurgas oma nimel.",
         "auth_type" : "Autentimine",
         "auth_type_none" : "Ma ei taha kaksikautentimist kasutada.",
         "auth_type_sms" : "Tahan kasutada kaksikautentimist SMS-i teel saadetava koodi abil. Palun saatke kood sisselogimisel minu mobiiltelefoni.",
-
-        // TODO NEW: I want to use a authenticator app like Google Authenticator or Microsoft Authenticator. Please show me a QR code for setup.
-        "auth_type_totp" : "I want to use a authenticator app like Google Authenticator or Microsoft Authenticator. Please show me a QR code for setup.",
+        
+        "auth_type_totp" : "Soovin kasutada autentimisrakendust, näiteks Google Authenticatorit või Microsoft Authenticatorit. Palun näidake mulle seadistamiseks QR-koodi.",
         "emailnotify" : "Teavitus",
         "emailnotify2" : "Palun saatke mulle e-kiri iga kord, kui domeenist {{domain}} portaali @PRODUCT sisse login.",
         "agree_btn" : "Olen nõus",
@@ -989,24 +903,20 @@
             "intro3" : "Kui klõpsasite valel lingil ja soovite selle asemel oma e-posti aadressi KINNITADA, klõpsake siin.",
             "confirm_btn" : "Kinnita konto loomine"
         },
+        
+        "totpsetup" : "Palun veenduge, et teil oleks installitud autentimisrakendus, näiteks Google Authenticator või Microsoft Authenticator. Skanneeri QR-koodi autentimisrakendusega.",
+      
+        "totpsetup2" : "Õige installimise kontrollimiseks sisestage autentija kuvatud kood.",
 
-        // TODO NEW: Please make sure you have an authenticator app like Google Authenticator or Microsoft Authenticator installed. Scan the QR-code with the authenticator app.
-        "totpsetup" : "Please make sure you have an authenticator app like Google Authenticator or Microsoft Authenticator installed. Scan the QR-code with the authenticator app.",
+        
+        "no_totp_code_btn" : "Konfigureeri uuesti",
+        
+        "auth2factor_totp" : "Palun sisesta autentimisrakendusest saadud kood.",
 
-        // TODO NEW: To verify the correct installation enter the code shown by the authenticator.
-        "totpsetup2" : "To verify the correct installation enter the code shown by the authenticator.",
-
-        // TODO NEW: Reconfigure
-        "no_totp_code_btn" : "Reconfigure",
-
-        // TODO NEW: Please enter the code from the authenticator app.
-        "auth2factor_totp" : "Please enter the code from the authenticator app.",
-
-        // TODO NEW: Send me a SMS instead
-        "use_sms_btn" : "Send me a SMS instead",
-
-        // TODO NEW: Use authenticator app instead
-        "use_totp_btn" : "Use authenticator app instead"
+        
+        "use_sms_btn" : "Saada mulle hoopis SMS",
+        
+        "use_totp_btn" : "Kasuta autentimisrakendust"
     },
 
     "changepassphrase" : {
@@ -1066,9 +976,8 @@
         "created_on" : "Koostatud:",
         "content" : "Portaali @PRODUCT sisutüüp:",
         "format" : "Vorming:",
-
-        // TODO NEW: Tags:
-        "tags" : "Tags:",
+        
+        "tags" : "Sildid:",
         "download_btn" : "Laadi alla",
         "content_visualization" : "Sisu visualiseerimine",
         "no_visualization" : "Selle kirje korral ei ole visualiseerimine saadaval.",
@@ -1102,12 +1011,9 @@
         "history_comment" : "Kommentaar",
         "request_participation_help" : "Kui soovite selles uuringus osaleda, võite taotleda osalemist.",
         "request_participation_btn" : "Taotlen osalemist",
-
-        // TODO NEW: You have been invited to participate to this research.
-        "accept_invitation_help" : "You have been invited to participate to this research.",
-
-        // TODO NEW: Accept invitation
-        "accept_invitation_btn" : "Accept invitation",
+        "accept_invitation_help" : "Teid on kutsutud selles uuringus osalema.",
+        
+        "accept_invitation_btn" : "Võta kutse vastu",
         "do_not_participate_help" : "Kui te EI soovi osaleda, võite klõpsata siin. Teilt ei küsita enam ja mingeid andmeid ei jagata.",
         "do_not_participate_btn" : "Ei soovi osaleda",
         "retreat_help" : "Te osalete praegu selles uuringus. Kui te ei soovi enam osaleda, võite osalemisest loobuda. Teie jagatud andmed külmutatakse loobumise hetkel ja mingeid uusi andmeid ei jagata. Pärast loobumist ei saa te enam osaleda.",
@@ -1115,9 +1021,8 @@
         "status" : "Olek",
         "recommended_apps" : "Soovitatud rakendused",
         "use_app" : "Kasuta kohe",
-
-        // TODO NEW: Your pseudonym
-        "pseudonym" : "Your pseudonym",
+        
+        "pseudonym" : "Teie pseudonüüm",
         "for_participants" : "Osalemisteave",
         "please_review1" : "Otsus osalemise kohta",
         "please_review2" : "Palun vaadake see uuringuprojekt üle. Kas soovite osaleda? Kui soovite sellelt lehelt muudatusi tegemata lahkuda, klõpsake nupul „Jäta vahele (jääb muutmata)“."
@@ -1159,9 +1064,7 @@
         "notifications2" : "Kas soovite, et teid teavitataks teie konto kasutamisest?",
         "change_settings_btn" : "Muuda sätteid",
         "change_settings_success" : "Sätted on uuendatud",
-
-        // TODO NEW: Your @PRODUCT account has been used with these applications:
-        "using_apps" : "Your @PRODUCT account has been used with these applications:"
+        "using_apps" : "Teie @PRODUCT kontot on kasutatud nende rakendustega:"
     },
 
     "visualization" : {
@@ -1265,9 +1168,8 @@
         "confirm_btn" : "Kinnita see nõusolek",
         "reject_btn" : "Keeldu sellest nõusolekust",
         "delete_btn" : "Kustuta see nõusolek",
-
-        // TODO NEW: Delete all for this app
-        "delete_all_btn" : "Delete all for this app",
+        
+        "delete_all_btn" : "Kustuta kõik selle rakenduse jaoks",
         "please_review1" : "Nõusolek läbivaatamiseks",
         "please_review2a" : "Palun vaadake see nõusolek läbi. Kui nõustute, klõpsake nupul „Kinnita see nõusolek“. Kui te ei nõustu, klõpsake nupul „Keeldu sellest nõusolekust“.",
         "please_review2b" : "Palun vaadake see olemasolev nõusolek läbi. Sellelt lehelt muudatusi tegemata lahkumiseks klõpsake nupul „Jäta vahele (jääb muutmata)“. Kui te enam ei nõustu, klõpsake nupul „Keeldu sellest nõusolekust“.",
@@ -1324,13 +1226,8 @@
     "importrecords" : {
         "title" : "Importimine",
 
-        // TODO CHANGED
-        // OLD: Authorize Now
-        // NEW: Start authorization
-        "authorize_btn" : "Volita kohe",
-
-        // TODO NEW: Skip for now
-        "skip_btn" : "Skip for now"
+        "authorize_btn" : "Volita kohe",        
+        "skip_btn" : "Jäta praegu vahele"
     },
 
     "spaces" : {
@@ -1386,9 +1283,8 @@
     },
 
     "oauth2" : {
-
-        // TODO NEW: Confirm access
-        "title" : "Confirm access",
+        
+        "title" : "Kinnita juurdepääs",
         "requests_permission" : "salvestab teie isiklikud andmed teie portaali @PRODUCT kontole.",
         "no_account" : "Kas teil ei ole kontot?",
         "have_account" : "Kas teil on portaali @PRODUCT konto?",
@@ -1406,9 +1302,7 @@
         "reject_btn" : "Keeldun",
         "continue_btn" : "Jätka",
 
-
-        // TODO NEW: With your consent, the application receives access to the following data:
-        "request_access" : "With your consent, the application receives access to the following data:",
+        "request_access" : "Teie nõusolekul saab rakendus juurdepääsu järgmistele andmetele:",
         "requests_access" : "Rakenduse taotletav juurdepääs:",
         "requests_access_short" : "Andmetüüp",
         "requests_sharing" : "Projektiga jagatud andmed:",
@@ -1720,12 +1614,8 @@
         "short_public_only" : "Ainult avalikud andmed",
         "short_public_also" : "Avalikud, jagatud ja enda andmed",
         "short_public_also_self" : "Avalikud ja enda andmed",
-
-        // TODO NEW: dynamic
-        "short_dynamic_true" : "dynamic",
-
-        // TODO NEW: dynamic extend
-        "short_dynamic_extend" : "dynamic extend",
+        "short_dynamic_true" : "dünaamiline",        
+        "short_dynamic_extend" : "dünaamiline pikendama",
         "source_app" : "Lähterakendus",
         "short_app_all" : "Kõik allikad",
         "short_app_other" : "Ainult rakendus:",
@@ -1737,13 +1627,10 @@
         "public_also" : "Kasuta avalikke ja muid andmeid",
         "public_no" : "Ära kasuta avalikke andmeid",
         "dynamic" : "Dünaamiline",
-        "dynamic_yes" : "Kasuta alati aktiivse rühma sisu",
-
-        // TODO NEW: Use group content from time of creation
-        "dynamic_no" : "Use group content from time of creation",
-
-        // TODO NEW: Autoregister new codes into current group content
-        "dynamic_extend" : "Autoregister new codes into current group content",
+        "dynamic_yes" : "Kasuta alati aktiivse rühma sisu",        
+        "dynamic_no" : "Kasutage grupi sisu loomise ajal",
+        
+        "dynamic_extend" : "Registreeri uued koodid automaatselt praegusesse grupi sisusse",
         "restrictions" : "Lisapiirangud",
         "data_period_restriction" : "Kuupäev",
         "time_restriction" : "Loomise/muutmise kuupäev",
@@ -1785,9 +1672,8 @@
             "Practitioner" : "Arsti ressurss: tervishoiutöötajate või teadurite otsing",
             "Subscription" : "Juurdepääs välissüsteemide tellimustele ja nende haldamine"
         },
-
-        // TODO NEW: Creator Organization
-        "creator_org" : "Creator Organization"
+        
+        "creator_org" : "Looja organisatsioon"
     },
 
     "timeline" : {
@@ -1841,15 +1727,10 @@
     },
 
     "appexpired" : {
-
-        // TODO NEW: Application no longer available
-        "title" : "Application no longer available",
-
-        // TODO NEW: This application is no longer available for use. If you have stored any data using this application, it will still be available in your @PRODUCT account.
-        "intro" : "This application is no longer available for use. If you have stored any data using this application, it will still be available in your @PRODUCT account.",
-
-        // TODO NEW: Show @PRODUCT Portal
-        "loginpage_btn" : "Show @PRODUCT Portal"
+        
+        "title" : "Rakendus pole enam saadaval",        
+        "intro" : "See rakendus pole enam kasutamiseks saadaval. Kui olete selle rakenduse abil andmeid salvestanud, on need endiselt saadaval teie @PRODUCT kontol.",        
+        "loginpage_btn" : "Näita @PRODUCT portaali"
     },
 
     "unsubscribe" : {
