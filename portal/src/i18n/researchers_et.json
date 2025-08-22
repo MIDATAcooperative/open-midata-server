@@ -36,12 +36,9 @@
         "study_description" : "Projekti kirjeldus",
         "study_identifiers" : "Identifitseerijad",
         "study_identifiers_info" : "Sisesta siia kõik väliste asutuste projektide identifikaatorid. Sisestage igale reale üks identifikaator. Kasutage '|' soovi korral eraldada koodisüsteem ja väärtus. Identifikaatoreid portaalis projektilehtedel ei kuvata.",
-
-        // TODO NEW: Categories
-        "study_categories" : "Categories",
-
-        // TODO NEW: Enter all additional categories for consents here. Enter one coding per line. Use '|' to separate code system and code if desired. Categories will not be shown on project pages in the portal.
-        "study_categories_info" : "Enter all additional categories for consents here. Enter one coding per line. Use '|' to separate code system and code if desired. Categories will not be shown on project pages in the portal.",
+        
+        "study_categories" : "Kategooriad",
+        "study_categories_info" : "Sisestage siia kõik nõusolekute lisakategooriad. Sisestage iga rea ​​kohta üks kood. Soovi korral kasutage koodisüsteemi ja koodi eraldamiseks tärni '|'. Kategooriaid portaali projektilehtedel ei kuvata.",
 
         "developer_nostart" : "Tähelepanu!",
         "developer_nostart2" : "Arendajana saate projekti ainult seadistada, kuid mitte seda läbi viia. Arendajana pole võimalik osalejaotsingut alustada."
@@ -53,14 +50,10 @@
         "details" : "Üksikasjad",
         "rules" : "Reeglid",
         "actions" : "Rakendused",
-        "participants" : "Osalejad",
-
-        // TODO NEW: Sub-Projects
-        "subprojects" : "Sub-Projects",
-        "codes" : "Koodid",
-
-        // TODO NEW: Communication
-        "messages" : "Communication",
+        "participants" : "Osalejad",        
+        "subprojects" : "Alamprojektid",
+        "codes" : "Koodid",        
+        "messages" : "Suhtlus",
         "records" : "Rekordid",
         "results" : "Tulemused",
         "team" : "meeskond",
@@ -69,9 +62,7 @@
 
     "studies" : {
         "title" : "Uurimisprojektid",
-
-        // TODO NEW: Code
-        "code" : "Code",
+        "code" : "Kood",
         "name" : "Nimi",
         "validation" : "Valideerimine",
         "participants" : "Osalejad",
@@ -115,37 +106,23 @@
         "no_valid_app" : "Ühtegi rakendust pole valitud",
         "type" : "Kuidas need on seotud?",
         "types" : {
-            "OFFER_P" : "Sissepääs: rakendus pakub sisselogimisel/käivitamisel projektis osalemist",
+            "OFFER_P" : "Sissepääs: rakendus pakub sisselogimisel/käivitamisel projektis osalemist",            
+            "AUTOADD_P" : "Sissepääs: Projekti osalemine lisatakse sisselogimisel/alustamisel",
 
-            // TODO NEW: Onboarding: Project participation is added upon login/start
-            "AUTOADD_P" : "Onboarding: Project participation is added upon login/start",
-
-            // TODO NEW: Project participation ID is shared with app in Patient resource
-            "LINKED_P" : "Project participation ID is shared with app in Patient resource",
-
-            // TODO NEW: Project participation is required to use the application
-            "CHECK_P" : "Project participation is required to use the application",
+            "LINKED_P" : "Projekti osalemise ID jagatakse rakendusega patsiendi ressursis",            
+            "CHECK_P" : "Rakenduse kasutamiseks on vajalik projektis osalemine",
             "RECOMMEND_A" : "Rakendust soovitab projekt",
             "AUTOADD_A" : "Plugin lisatakse projektis osalemisel automaatselt",
             "DATALINK" : "Rakendus jagab andmeid projektis osalejatega"
         },
         "types_short" : {
             "OFFER_P" : "Soovita osalemist",
-
-            // TODO NEW: Add participation on application use
-            "AUTOADD_P" : "Add participation on application use",
-
-            // TODO NEW: Participation ID is shared with app
-            "LINKED_P" : "Participation ID is shared with app",
-
-            // TODO NEW: Participation required to use app
-            "CHECK_P" : "Participation required to use app",
+            
+            "AUTOADD_P" : "Lisa osalemine rakenduse kasutamisel",           
+            "LINKED_P" : "Osalemise ID jagatakse rakendusega",            
+            "CHECK_P" : "Rakenduse kasutamiseks on vajalik osalemine",
             "RECOMMEND_A" : "Soovitatav",
-
-            // TODO CHANGED
-            // OLD: Add automatically
-            // NEW: Add app automatically
-            "AUTOADD_A" : "Lisa automaatselt",
+            "AUTOADD_A" : "Lisa rakendus automaatselt",
             "DATALINK" : "Andmete jagamine"
         },
         "use_period" : "Millal need on lingitud?",
@@ -168,10 +145,8 @@
         "anonymous" : "Anonüümne osalemine",
         "anonymous2" : ", pseudonüümide kaardistamisele ei pruugita juurde pääseda.",
         "not_anonymous1" : "Pole pseudonüümitud",
-        "not_anonymous2" : ", palub liikmel jagada täisnime, sünnikuupäeva ja kontaktteavet (aadress, telefon, e-post)",
-
-        // TODO NEW: Pseudonymization
-        "data_filters" : "Pseudonymization",
+        "not_anonymous2" : ", palub liikmel jagada täisnime, sünnikuupäeva ja kontaktteavet (aadress, telefon, e-post)",        
+        "data_filters" : "Pseudonüümiseerimine",
         "assistance" : "Abi",
         "no_assistance1" : "Puudub",
         "no_assistance2" : " - konto omanik osaleb üksi.",
@@ -228,28 +203,14 @@
     },
 
     "studysubprojects" : {
-
-        // TODO NEW: Project Code
-        "project" : "Project Code",
-
-        // TODO NEW: Project Name
-        "projectName" : "Project Name",
-
-        // TODO NEW: Add project
-        "addproject_btn" : "Add project",
-
-        // TODO NEW: There are currently no subprojects defined for this project
-        "empty" : "There are currently no subprojects defined for this project",
-
-        // TODO NEW: Group mapping
-        "projectGroupMapping" : "Group mapping",
-
-        // TODO NEW: Destination
-        "target" : "Destination",
-
-        // TODO NEW: Source
-        "source" : "Source"
-    },
+		"project" : "Projekti kood",		
+		"projectName" : "Projekti nimi",		
+		"addproject_btn" : "Lisa projekt",		
+		"empty" : "Selle projekti jaoks pole hetkel ühtegi alamprojekti määratletud",		
+		"projectGroupMapping" : "Grupi kaardistamine",	
+		"target" : "Sihtkoht",		
+		"source" : "Allikas"
+	},
 
     "studyparticipant" : {
         "participant" : "Participant:",
@@ -266,9 +227,8 @@
         "name" : "Nimi",
         "partName" : "Pseudonüümitud",
         "group" : "Rühm",
-
-        // TODO NEW: Group for Test-Users
-        "test_group" : "Group for Test-Users",
+        
+        "test_group" : "Testkasutajate grupp",
         "status" : "Olek",
         "total" : "Leiti {{count}} teie kriteeriumidele vastavat nõusolekut.",
         "only_first_shown" : "Kuvatakse ainult esimesed 1000 vastavat nõusolekut.",
@@ -283,10 +243,8 @@
         "rejected" : "Tagasi lükatud kandidaadid",
         "retreated" : "Osalejad, kes on taandunud",
         "acceptall" : "Nõustu kõik taotlused ja määrake osalejate rühma uued osalejad",
-        "autojoin" : "Automaatne aktsepteerimine",
-
-        // TODO NEW: Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this project connects.
-        "autojoin2" : "Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this project connects.",
+        "autojoin" : "Automaatne aktsepteerimine",        
+        "autojoin2" : "Nõustuge kõigi osalemistaotlustega ja määrake valitud gruppi uued osalejad niipea, kui selle projektiga lingitud uurimisrakendus ühendub.",
         "not_allowed" : "Teil ei ole lubatud osalejate nimekirja vaadata."
     },
 
@@ -377,10 +335,8 @@
         "dates_help" : "Osalejatele näidatakse algus- ja lõppkuupäeva. Andmete külmutamise hetkest alates projektist täiendavaid andmeid ei voola.",
         "terms" : "Pakutud üldtingimused",
         "terms_help" : "Kui osalejad peavad projekti üldtingimused veebis kinnitama, võtke ühendust platvormi administraatoriga.",
-        "validation" : "Projekti kinnitamine on taotletud",
-
-        // TODO NEW: The validation will be done after it has been requested. The project may no longer be changed after validation has been requested.
-        "validation_help" : "The validation will be done after it has been requested. The project may no longer be changed after validation has been requested.",
+        "validation" : "Projekti kinnitamine on taotletud",        
+        "validation_help" : "Valideerimine tehakse pärast selle taotlemist. Pärast valideerimise taotlemist ei saa projekti enam muuta.",
         "validation_passed" : "Projekt on kinnitatud",
         "validation_passed_help" : "Palun oodake, kuni projekt on kinnitatud.",
         "phase2" : "Phase 2 : Ettevalmistus",
@@ -454,21 +410,13 @@
         "manually" : "Käsitsi sisestamine",
         "generated" : "Loodud",
         "codes" : "Uued koodid",
-        "add_btn" : "Lisa kohe",
-
-        // TODO NEW: Link to join project
-        "link" : "Link to join project",
-
-        // TODO NEW: Click on a code from the list above to view the corresponding link that may be used to join the project.
-        "link2" : "Click on a code from the list above to view the corresponding link that may be used to join the project.",
-
-        // TODO NEW: This project does not allow to participate via link.
-        "link_no" : "This project does not allow to participate via link."
+        "add_btn" : "Lisa kohe",        
+        "link" : "Link projektiga liitumiseks",        
+        "link2" : "Projektiga liitumiseks kasutatava lingi kuvamiseks klõpsake ülaltoodud loendis oleval koodil.",        
+        "link_no" : "See projekt ei luba lingi kaudu osaleda."
     },
 
-    "studymessages" : {
-
-        // TODO NEW: All participant groups
-        "all" : "All participant groups"
+    "studymessages" : {        
+        "all" : "Kõik osalejate rühmad"
     }
 }
