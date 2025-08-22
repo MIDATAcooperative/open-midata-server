@@ -174,7 +174,7 @@
         "default_context_config" : "Konfiguration / Importe",
         "default_context_extern" : "Unabhängiges Plugin",
         "deploy_status" : "Status der Installation",
-        "accept_test_accounts" : "Testbenutzer erlauben?",
+        "accept_test_accounts" : "Testkonten erlauben?",
         "accept_test_accounts_from_app" : "Erlaubte Quellapplikationen",
         "test_accounts_max" : "Testkonten-Limit",
         "home_url" : "Startseite",
@@ -215,7 +215,7 @@
             "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen.",
             "decentral" : "Die API-Schlüssel werden von mehreren verschiedenen Organisationen verwaltet.",
             "organizationKeys" : "Die API-Schlüssel sind direkt an eine einzelne Organisation gebunden.",
-            "accept_test_accounts_from_app" : "Von diesen Applikationen erstellte Testbenutzer zulassen (durch Kommas getrennte Liste interner App-Namen).",
+            "accept_test_accounts_from_app" : "Von diesen Applikationen erstellte Testkonten zulassen (durch Kommas getrennte Liste interner App-Namen).",
             "test_accounts_max" : "Aktuelle Anzahl der erstellten Testkonten und maximal zulässige Anzahl der Testkonten.",
             "noWelcome" : "Keine Willkommensmail bei der Registrierung schicken."
         },

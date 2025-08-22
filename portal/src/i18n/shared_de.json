@@ -179,7 +179,7 @@
             "app" : "Sie dürfen diese Applikation auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen im @PRODUCT Portal.",
             "app_test" : "Sie dürfen diese Applikation auf maximal 10 Geräten verwenden. Auf dieser TEST-Instanz wurden die Zustimmungen für Sie zurückgesetzt. Bitte versuchen Sie es erneut.",
             "joinmethod" : "Es ist nicht zulässig, mit dieser Methode dem Projekt beizutreten.",
-            "testuser" : "Diese Applikation unterstützt keine Test-Accounts."
+            "testuser" : "Diese Applikation unterstützt keine Testkonten."
         },
 
         "closed" : {
@@ -537,7 +537,7 @@
             "PLUGINADMIN" : "Verwaltung der Applikationen",
             "NEWSWRITER" : "News-Author",
             "SUPERADMIN" : "Super-Administrator",
-            "TRIALUSER" : "Probebenutzer",
+            "TRIALUSER" : "Probeteilnehmer",
             "STUDYPARTICIPANT" : "Projektteilnehmer",
             "APPUSER" : "Applikationsbenutzer",
             "NONMEMBERUSER" : "Validierter Benutzer",

@@ -23,7 +23,7 @@
         "empty" : "Il n'y a aucun utilisateur de test inscrit sous ce compte.",
         "role" : "Rôle",
         "resetpw" : "Nouveau mot de passe",
-        "description" : "A l'aide de ces boutons, vous pouvez créer des utilisateurs additionnels afin de tester vos applications. Pour ces utilisateurs, les plugins sont exécutés localement (depuis 'localhost') et non pas sur le serveur.",
+        "description" : "A l'aide de ces boutons, vous pouvez créer des utilisateurs additionnels afin de tester vos applications. Pour ces utilisateurs de test, les plugins sont exécutés localement (depuis 'localhost') et non pas sur le serveur.",
         "register_member_btn" : "Créer un titulaire de compte",
         "register_hp_btn" : "Créer un compte professionnel de la santé",
         "register_researcher_btn" : "Créer un compte chercheur"
@@ -174,7 +174,7 @@
         "default_context_config" : "Configuration / Importations",
         "default_context_extern" : "Plugin autonome",
         "deploy_status" : "État du déploiement",
-        "accept_test_accounts" : "Autoriser des utilisateurs de test?",
+        "accept_test_accounts" : "Autoriser des comptes de test?",
         "accept_test_accounts_from_app" : "Applications sources autorisées",
         "test_accounts_max" : "Limite de comptes de test",
         "home_url" : "Page d'accueil",
@@ -215,7 +215,7 @@
             "endpoint2" : "N'oubliez pas: pour activer l'endpoint, vous devez ensuite ajouter une clé API.",
             "decentral" : "Les clés API seront gérées par plusieurs organisations différentes.",
             "organizationKeys" : "Les clés API sont directement liées à une seule organisation.",
-            "accept_test_accounts_from_app" : "Autoriser les utilisateurs de test créés par ces applications (liste de noms d'applications internes séparée par des virgules).",
+            "accept_test_accounts_from_app" : "Autoriser les comptes de test créés par ces applications (liste de noms d'applications internes séparée par des virgules).",
             "test_accounts_max" : "Nombre actuel de comptes de test créés et nombre maximal de comptes de test autorisés.",
             "noWelcome" : "Ne pas envoyer d'e-mail de bienvenue lors de l'inscription."
         },

@@ -179,7 +179,7 @@
             "app" : "Si è autorizzati a utilizzare questa applicazione su un numero massimo di 10 dispositivi. Eliminare i consensi non utilizzati sul portale @PRODUCT.",
             "app_test" : "Lei è autorizzato a utilizzare questa applicazione su un massimo di 10 dispositivi. Su questa istanza TEST i consensi sono stati resettati per lei. Si prega di riprovare.",
             "joinmethod" : "Non è consentito aderire al progetto con questo metodo.",
-            "testuser" : "L'applicazione non accetta account di prova."
+            "testuser" : "L'applicazione non accetta account di test."
         },
 
         "closed" : {
@@ -201,7 +201,7 @@
             "passphrase" : "Le frasi password devono contenere lettere maiuscole/minuscole, numeri e caratteri speciali."
         },
         "toomany" : {
-            "testuser" : "È stato raggiunto il numero massimo consentito di utenti di prova."
+            "testuser" : "È stato raggiunto il numero massimo consentito di utenti di test."
         },
 
         "concurrent" : {
@@ -381,7 +381,7 @@
             "user-searched" : "Cerca per utente",
             "welcome-sent" : "E-mail di benvenuto inviata",
             "tried-user-reregistration" : "Tentativo di registrazione dell'utente",
-            "non-perfect-account-match" : "Corrispondenza non perfetta del conto durante l'accesso da parte di terzi",
+            "non-perfect-account-match" : "Corrispondenza non perfetta del account durante l'accesso da parte di terzi",
             "signature-failure" : "Convalida del consenso fallita",
             "email-sent" : "E-mail inviata",
             "sms-sent" : "SMS inviato",
@@ -537,7 +537,7 @@
             "PLUGINADMIN" : "Gestione applicazioni",
             "NEWSWRITER" : "Autore notizie",
             "SUPERADMIN" : "Super amministratore",
-            "TRIALUSER" : "Utente di prova",
+            "TRIALUSER" : "Partecipante alla prova",
             "STUDYPARTICIPANT" : "Partecipante al progetto",
             "APPUSER" : "Utente applicazione",
             "NONMEMBERUSER" : "Titolare di un account convalidato",
@@ -669,9 +669,9 @@
             "DONE" : "Done"
         },
         "test_accounts" : {
-            "ALL" : "Autorizzare gli utenti di prova creati da qualsiasi applicazione",
-            "NONE" : "Non autorizzare gli utenti di prova",
-            "SOME" : "Autorizzare gli utenti di prova creati da alcune applicazioni"
+            "ALL" : "Autorizzare gli utenti di test creati da qualsiasi applicazione",
+            "NONE" : "Non autorizzare gli utenti di test",
+            "SOME" : "Autorizzare gli utenti di test creati da alcune applicazioni"
         }
     },
 
@@ -1511,7 +1511,7 @@
         "appuser" : "Il suo account è stato registrato da un'applicazione esterna. Le funzionalità sono limitate. Puoi aggiornare il suo account utente a un account completo.",
         "memberofcooperative" : "Sei membro della cooperativa.",
         "nonmemberuser" : "Possiedi un account utente completo ma non sei membro della cooperativa.",
-        "agb_not_requested" : "Facendo clic sul pulsante 'Richiedi contratto', i Condizioni generali di contratto (CGC) e il contratto ti saranno inviati per lettera. Restituisci i CGC firmato per convertire questo account di prova in un account completo.",
+        "agb_not_requested" : "Facendo clic sul pulsante 'Richiedi contratto', i Condizioni generali di contratto (CGC) e il contratto ti saranno inviati per lettera. Restituisci i CGC firmato per convertire questo account di test in un account completo.",
         "agb_requested" : "Ha richiesto i Condizioni generali di contratto e il contratto. La tua richiesta è in fase di elaborazione presso la cooperativa.",
         "agb_printed" : "Le Condizioni generali di contratto e il contratto da lei richiesto dovrebbero arrivare nei prossimi giorni.",
         "agb_signed" : "Ha firmato i Condizioni generali di contratto.",

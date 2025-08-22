@@ -223,7 +223,7 @@
         "name" : "Nome",
         "partName" : "Con pseudonimo",
         "group" : "Gruppo",
-        "test_group" : "Gruppo per utenti di prova",
+        "test_group" : "Gruppo per utenti di test",
         "status" : "Stato",
         "total" : "Trovati {{count}} consensi corrispondenti ai suoi criteri.",
         "only_first_shown" : "Sono visualizzati solo i primi 1000 consensi corrispondenti.",

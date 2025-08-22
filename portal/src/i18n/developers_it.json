@@ -23,7 +23,7 @@
         "empty" : "Non esistono utenti di test registrati per questo account.",
         "role" : "Ruolo",
         "resetpw" : "Nuova password",
-        "description" : "Utilizzando questi pulsanti è possibile registrare utenti aggiuntivi per testare i propri applicazioni. Utilizzando utenti di prova, i plugin vengono eseguiti localmente (da 'localhost') e non sul server.",
+        "description" : "Utilizzando questi pulsanti è possibile registrare utenti aggiuntivi per testare i propri applicazioni. Utilizzando utenti di test, i plugin vengono eseguiti localmente (da 'localhost') e non sul server.",
         "register_member_btn" : "Registrare un titolare di un account",
         "register_hp_btn" : "Registrare un professionista sanitario",
         "register_researcher_btn" : "Registrare un ricercatore"
@@ -174,9 +174,9 @@
         "default_context_config" : "Configurazione /  Importazioni",
         "default_context_extern" : "Plugin autonomo",
         "deploy_status" : "Stato dell'installazione",
-        "accept_test_accounts" : "Autorizzare utenti di prova?",
+        "accept_test_accounts" : "Autorizzare account di test?",
         "accept_test_accounts_from_app" : "Applicazioni origine autorizzate",
-        "test_accounts_max" : "Limite di conti di prova",
+        "test_accounts_max" : "Limite di account di test",
         "home_url" : "Pagina iniziale",
         "noWelcome" : "Nessuna e-mail di benvenuto",
         "info" : {
@@ -215,8 +215,8 @@
             "endpoint2" : "Non dimenticare: per attivare l'endpoint è necessario aggiungere una chiave API dopo.",
             "decentral" : "Le chiavi API saranno gestite da più organizzazioni diverse.",
             "organizationKeys" : "Le chiavi API sono direttamente legate a una singola organizzazione.",
-            "accept_test_accounts_from_app" : "Autorizzare gli utenti di prova creati da queste applicazioni (elenco separato da virgole di nomi di applicazioni interne).",
-            "test_accounts_max" : "Numero attuale di account di prova creati e numero massimo di account di prova consentiti.",
+            "accept_test_accounts_from_app" : "Autorizzare gli account di test creati da queste applicazioni (elenco separato da virgole di nomi di applicazioni interne).",
+            "test_accounts_max" : "Numero attuale di account di test creati e numero massimo di account di test consentiti.",
             "noWelcome" : "Non inviate un'e-mail di benvenuto al momento della registrazione."
         },
         "status" : {
@@ -435,7 +435,7 @@
 
     "workspace" : {
         "title" : "Workspace",
-        "add_something" : "Aggiungi un'applicazione o un progetto a cui stai lavorando. Puoi anche aggiungere un utente di prova.",
+        "add_something" : "Aggiungi un'applicazione o un progetto a cui stai lavorando. Puoi anche aggiungere un utente di test.",
         "browser" : "Browser degli utenti",
         "midata" : "Back-end @PLATFORM",
         "useraccount" : "Account utente",
@@ -457,7 +457,7 @@
         "summary" : "Riassunto Data Access Filter",
         "add_app" : "Aggiungere un'applicazione allo Workspace",
         "add_user" : "Aggiungere un utente allo Workspace",
-        "testusers_only" : "Utilizzare solo con account di prova! La password in testo semplice sarà memorizzata nel suo browser!",
+        "testusers_only" : "Utilizzare solo con account di test! La password in testo semplice sarà memorizzata nel suo browser!",
         "role" : "Ruolo",
         "add_btn" : "Aggiungi",
         "appname" : "Nome interno dell'applicazione",
@@ -474,8 +474,8 @@
             "has_comments" : "Commenti disponibili nelle statistiche degli errori e delle performance.",
             "project_not_validated" : "Il progetto non è stato ancora convalidato.",
             "project_not_searching" : "Il progetto che non cerca partecipanti.",
-            "no_user_for_app" : "Nessuno degli account di prova usa l'applicazione.",
-            "no_user_for_project" : "Nessuno dei conti di prova partecipa al progetto.",
+            "no_user_for_app" : "Nessuno degli account di test usa l'applicazione.",
+            "no_user_for_project" : "Nessuno dei account di test partecipa al progetto.",
             "appinstance_status" : "L'istanza dell'applicazione non attiva.",
             "appinstance_outdated" : "La versione dell'applicazione è più recente del consenso dell'applicazione. Deve essere riconfermata.",
             "not_accepted" : "Partecipazione non accettata",

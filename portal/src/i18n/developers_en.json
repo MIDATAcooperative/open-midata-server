@@ -174,7 +174,7 @@
     "default_context_config" : "Configuration / Imports",
     "default_context_extern" : "Standalone Plugin",
     "deploy_status" : "Deployment Status",
-    "accept_test_accounts" : "Allow test users?",
+    "accept_test_accounts" : "Allow test accounts?",
     "accept_test_accounts_from_app" : "Allowed source applications",
     "test_accounts_max" : "Test accounts limit",
     "home_url" : "Landing page",
@@ -215,7 +215,7 @@
        "endpoint2" : "Do not forget: to activate the endpoint you need to add an API key afterwards.",
        "decentral" : "API keys will be managed by multiple different organizations.",
        "organizationKeys" : "API keys are directly bound to a single organization.",
-       "accept_test_accounts_from_app" : "Allow test users created by these applications (comma separted list of internal app names).",
+       "accept_test_accounts_from_app" : "Allow test accounts created by these applications (comma separted list of internal app names).",
        "test_accounts_max" : "Current number of test accounts created and maximum number of test accounts allowed.",
        "noWelcome" : "Do not sent a welcome email upon registration."
     },
