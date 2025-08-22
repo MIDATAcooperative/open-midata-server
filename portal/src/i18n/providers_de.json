@@ -126,7 +126,7 @@
             "changeTeam" : "Team wechseln",
             "setup" : "Organisation wechseln",
             "applications" : "Applikationen verwalten",
-            "participants" : "Teilnehmer verwalten"
+            "participants" : "Einwilligungen verwalten"
         },
         "update_btn" : "Aktualisieren"
     },

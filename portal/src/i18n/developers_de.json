@@ -1,5 +1,4 @@
 {
-
     "developer_registration" : {
         "sign_up" : "Registrierung als Entwickler",
         "reason_fillout" : "Um die Wartezeit bis zur Freigabe des Kontos zu reduzieren, geben Sie bitte die Kontaktperson und der Zweck der Registrierung sorgfältig ein, damit ein Administrator ihr Anfrage rasch bearbeiten kann.",
@@ -60,10 +59,8 @@
             "REGISTRATION_BY_OTHER_PERSON" : "Registrierung eines neuen Benutzers durch eine andere Person",
             "FIRSTUSE_ANYUSER" : "Erstanwendung der Applikation",
             "FIRSTUSE_EXISTINGUSER" : "Erstanwendung der Appplikation (wenn kein Registrierungs-E-Mail versendet)",
-
             "ONE_TIME_PASSWORD" : "Einmalpasswort gesendet",
             "SERVICE_WITHDRAW" : "Nutzung des Dienstes einstellen",
-
             "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
             "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",
             "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Consent, unconfirmed : A ➞ (invited) / Sent to (invited)",
@@ -95,9 +92,8 @@
     },
 
     "appsmtp" : {
-
         "title" : "App-spezifische SMTP Konfiguration",
-        "description" : "Wenn hier eine SMTP-Konfiguration angegeben ist, versendet die Plattform alle für diese Anwendung definierten E-Mails über den angegebenen SMTP-Server. Bei jeder Änderung der SMTP-Konfiguration sendet die Plattform eine Test-E-Mail an Sie.",
+        "description" : "Wenn hier eine SMTP-Konfiguration angegeben ist, versendet die Plattform alle für diese Applikation definierten E-Mails über den angegebenen SMTP-Server. Bei jeder Änderung der SMTP-Konfiguration sendet die Plattform eine Test-E-Mail an Sie.",
         "host" : "Host",
         "port" : "Port",
         "user" : "Username",
@@ -105,7 +101,7 @@
         "tls" : "TLS",
         "ssl" : "SSL",
         "from" : "Sender",
-        "from2" : "Der Absender muss den Absendernamen und die email in diesem Format enthalten: name<email>",
+        "from2" : "Der Absender muss den Absendernamen und die E-Mail-Adresse in diesem Format enthalten: name<e-mail>",
         "success" : "SMTP Konfiguration erfolgreich geändert."
     },
 
@@ -178,9 +174,9 @@
         "default_context_config" : "Konfiguration / Importe",
         "default_context_extern" : "Unabhängiges Plugin",
         "deploy_status" : "Status der Installation",
-        "accept_test_accounts" : "Test-User erlauben?",
+        "accept_test_accounts" : "Testkonten erlauben?",
         "accept_test_accounts_from_app" : "Erlaubte Quellapplikationen",
-        "test_accounts_max" : "Testaccounts limit",
+        "test_accounts_max" : "Testkonten-Limit",
         "home_url" : "Startseite",
         "noWelcome" : "Keine Willkommensmail",
         "info" : {
@@ -212,15 +208,14 @@
             "mustParticipateInStudy" : "Benutzer müssen am Forschungsprojekt teilnehmen, um diese Applikation benutzen zu können.",
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei @PRODUCT über die Applikation eingegeben werden. Der Code ist nicht 'case sensitiv'.",
             "send_reports" : "Den Ersteller der Applikation und das Entwicklerteam per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.",
-            "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf diese @PRODUCT Instanz ein, die diese Anwendung entwickeln.",
+            "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf diese @PRODUCT Instanz ein, die diese Applikation entwickeln.",
             "code_challenge" : "Beim OAuth2-Login muss die aufrufende Applikation den PKCE-Standard (Proof Key for Code Exchange) verwenden",
             "createendpoint" : "Nicht projektbezogene Instanz des Endpoint erstellen. Nur ankreuzen, wenn Sie diesen Endpoint NICHT mit einem Projekt verwenden wollen.",
             "endpoint" : "Der Pfad dieses nicht projektbezogenen FHIR-Endpoint lautet /opendata/endpointname/fhir",
             "endpoint2" : "Bitte nicht vergessen: um den Endpoint zu aktivieren, müssen Sie anschliessend einen API-Schlüssel hinzufügen.",
             "decentral" : "Die API-Schlüssel werden von mehreren verschiedenen Organisationen verwaltet.",
             "organizationKeys" : "Die API-Schlüssel sind direkt an eine einzelne Organisation gebunden.",
-
-            "accept_test_accounts_from_app" : "Von diesen Anwendungen erstellte Testbenutzer zulassen. (Durch Kommas getrennte Liste interner App-Namen.)",
+            "accept_test_accounts_from_app" : "Von diesen Applikationen erstellte Testkonten zulassen (durch Kommas getrennte Liste interner App-Namen).",
             "test_accounts_max" : "Aktuelle Anzahl der erstellten Testkonten und maximal zulässige Anzahl der Testkonten.",
             "noWelcome" : "Keine Willkommensmail bei der Registrierung schicken."
         },
@@ -358,7 +353,7 @@
             "title" : "Testen Sie Ihren Backend-Code auf Ihrem Computer",
             "description" : "Sie können Ihren serverseitigen Verarbeitungscode für Abonnements (Subscriptions) auf Ihrem lokalen Computer testen.",
             "description2" : "Laden Sie den Abonnement-Tester (Subscription) herunter und führen Sie ihn mit dem angegebenen Verbindungscode aus.",
-            "description3" : "Dies funktioniert nur mit Ihrem Entwicklerkonto oder einem Konto, das mit Ihrem Entwicklerkonto erstellt wurde, und nur so lange, wie sich die Anwendung in der Entwicklung befindet.",
+            "description3" : "Dies funktioniert nur mit Ihrem Entwicklerkonto oder einem Konto, das mit Ihrem Entwicklerkonto erstellt wurde, und nur so lange, wie sich die Applikation in der Entwicklung befindet.",
             "start_btn" : "Debugging starten",
             "stop_btn" : "Debugging beenden",
             "cmd_to_run" : "Befehl zur Ausführung auf Ihrem Computer:"

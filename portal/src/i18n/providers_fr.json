@@ -125,7 +125,8 @@
             "writeData" : "Écrire des données",
             "changeTeam" : "Changer le team",
             "setup" : "Change l'organisation",
-            "applications" : "Gérer les applications"
+            "applications" : "Gérer les applications",
+            "participants" : "Gérer les consentements"
         },
         "update_btn" : "Mettre à jour"
     },
@@ -138,6 +139,7 @@
         "role" : {
             "MANAGER" : "Organisation de gestion",
             "SUBORGANIZATION" : "Sous-organisation",
+            "PARENTORGANIZATION" : "Organisation mère",
             "HC" : "Autre"
         },
         "startDate" : "Membre du",

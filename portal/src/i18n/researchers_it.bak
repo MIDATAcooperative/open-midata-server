@@ -35,6 +35,9 @@
     "study_description" : "Project description",
     "study_identifiers" : "Identifiers",
     "study_identifiers_info" : "Enter all project identifiers from external institutions here. Enter one identifier per line. Use '|' to separate code system and value if desired. Identifiers will not be shown on project pages in the portal.",
+    "study_categories" : "Categories",
+    "study_categories_info" : "Enter all additional categories for consents here. Enter one coding per line. Use '|' to separate code system and code if desired. Categories will not be shown on project pages in the portal.",
+    
     "developer_nostart" : "Attention!",
     "developer_nostart2" : "As developer you can only setup a project but not conduct it. As developer it is not possible to start the participant search."    
   },
@@ -46,7 +49,9 @@
     "rules" : "Rules",
     "actions" : "Applications",
     "participants" : "Participants",
+    "subprojects" : "Sub-Projects",
     "codes" : "Codes",
+    "messages" : "Communication",
     "records" : "Records",
     "results" : "Results",
     "team" : "Team",
@@ -55,6 +60,7 @@
   
   "studies" : {
     "title" : "Research Projects",
+    "code" : "Code",
     "name" : "Name",
     "validation" : "Validation",
     "participants" : "Participants",
@@ -99,20 +105,20 @@
     "type" : "How are they linked?",
     "types" : {
        "OFFER_P" : "Onboarding: The application offers project participation upon login/start",
-       "OFFER_EXTRA_PAGE" : "Onboarding: The project participation is described on an extra page",
-       "OFFER_INLINE_AGB" : "Onboarding: Use the terms of use as project description",
-       "REQUIRE_P" : "Project participation is required to use the application",
+       "AUTOADD_P" : "Onboarding: Project participation is added upon login/start",
+       "LINKED_P" : "Project participation ID is shared with app in Patient resource",
+       "CHECK_P" : "Project participation is required to use the application",
        "RECOMMEND_A" : "Application is recommended by project",
        "AUTOADD_A" : "Plugin is automatically added on project participation",
        "DATALINK" : "Application shares data to project participants"
     },
     "types_short" : {
        "OFFER_P" : "Suggest participation",
-       "OFFER_EXTRA_PAGE" : "Extra project page",
-       "OFFER_INLINE_AGB" : "Terms of use as description",
-       "REQUIRE_P" : "Require participation",
+       "AUTOADD_P" : "Add participation on application use",
+       "LINKED_P" : "Participation ID is shared with app",
+       "CHECK_P" : "Participation required to use app",
        "RECOMMEND_A" : "Recommended",
-       "AUTOADD_A" : "Add automatically",
+       "AUTOADD_A" : "Add app automatically",
        "DATALINK" : "Data Sharing"
     },
     "use_period" : "When are they linked?",
@@ -136,6 +142,7 @@
     "anonymous2" : ", the pseudonymization mapping may not be accessed.",
     "not_anonymous1" : "Not pseudonymized",
     "not_anonymous2" : ", requests member to share full name, birthdate and contact information (address, phone, email)",
+    "data_filters" : "Pseudonymization",
     "assistance" : "Assistance",
     "no_assistance1" : "None",
     "no_assistance2" : " - the account holder participates alone.",
@@ -191,6 +198,16 @@
     }
   },
   
+  "studysubprojects" : {
+     "project" : "Project Code",
+     "projectName" : "Project Name",
+     "addproject_btn" : "Add project",
+     "empty" : "There are currently no subprojects defined for this project",
+     "projectGroupMapping" : "Group mapping",
+     "target" : "Destination",
+     "source" : "Source"
+  },
+  
   "studyparticipant" : {
     "participant" : "Participant:",
     "gender" : "Gender:",
@@ -206,6 +223,7 @@
     "name" : "Name",
     "partName" : "Pseudonymized",
     "group" : "Group",
+    "test_group" : "Group for Test-Users",
     "status" : "Status",
     "total" : "{{count}} consents matching your criteria found.",
     "only_first_shown" : "Only the first 1000 matching consents are shown.",
@@ -387,6 +405,13 @@
      "manually" : "Manual entry",
      "generated" : "Generated",
      "codes" : "New codes",
-     "add_btn" : "Add now"
+     "add_btn" : "Add now",
+     "link" : "Link to join project",
+     "link2" : "Click on a code from the list above to view the corresponding link that may be used to join the project.",
+     "link_no" : "This project does not allow to participate via link."
+   },
+   
+   "studymessages" : {
+     "all" : "All participant groups"
    }
 }

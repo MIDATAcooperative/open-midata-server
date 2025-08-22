@@ -1,5 +1,4 @@
 {
-
     "developer_registration" : {
         "sign_up" : "Iscrizione come sviluppatore",
         "reason_fillout" : "Onde evitare tempi prolungati di attesa per la convalida del proprio account, compilare attentamente i campi relativi alla persona di contatto e allo scopo della registrazione. Ciò consentirà all'amministratore di decidere rapidamente in merito alla propria richiesta di accesso.",
@@ -24,7 +23,7 @@
         "empty" : "Non esistono utenti di test registrati per questo account.",
         "role" : "Ruolo",
         "resetpw" : "Nuova password",
-        "description" : "Utilizzando questi pulsanti è possibile registrare utenti aggiuntivi per testare i propri applicazioni. Utilizzando utenti di prova, i plugin vengono eseguiti localmente (da 'localhost') e non sul server.",
+        "description" : "Utilizzando questi pulsanti è possibile registrare utenti aggiuntivi per testare i propri applicazioni. Utilizzando utenti di test, i plugin vengono eseguiti localmente (da 'localhost') e non sul server.",
         "register_member_btn" : "Registrare un titolare di un account",
         "register_hp_btn" : "Registrare un professionista sanitario",
         "register_researcher_btn" : "Registrare un ricercatore"
@@ -51,12 +50,16 @@
         "lang" : "Lingua",
         "msgtitle" : "Titolo del messaggio",
         "text" : "Testo del messaggio",
+        "smtp_btn" : "Configurare il server SMTP",
         "available_tags" : "Categorie disponibili",
+        "htmlFrame" : "HTML message frame",
+        "htmlFrame2" : "Inserire la pagina HTML completa per l'e-mail. Utilizzare {{message}} come segnaposto per il messaggio vero e proprio.",
         "reasons" : {
             "REGISTRATION" : "Registrazione di un nuovo utente",
             "REGISTRATION_BY_OTHER_PERSON" : "Registrazione di un nuovo utente da parte di altre persone",
             "FIRSTUSE_ANYUSER" : "Primo utilizzo dell'applicazione",
             "FIRSTUSE_EXISTINGUSER" : "Primo utilizzo dell'applicazione (se non è stata inviata l'e-mail di registrazione)",
+            "ONE_TIME_PASSWORD" : "Password monouso inviata",
             "SERVICE_WITHDRAW" : "Cessare l'utilizzo del servizio",
             "CONSENT_VERIFIED_OWNER" : "Consent, verified : A ➞ B / Sent to A",
             "CONSENT_VERIFIED_AUTHORIZED" : "Consent, verified : A ➞ B / Sent to B",
@@ -69,7 +72,7 @@
             "CONSENT_PRECONFIRMED_OWNER" : "Consent, preconfirmed : A ➞ B / Sent to A",
             "CONSENT_REJECT_OWNER" : "Consent, * ➞ rejected : A ➞ B / Sent to A",
             "CONSENT_REJECT_ACTIVE_AUTHORIZED" : "Consent, active ➞ rejected : A ➞ B / Sent to B",
-            "CONSENT_REJECT_AUTHORIZED" : "Consent, proposed ➞ rejected : A ➞ B / Sent to B",        
+            "CONSENT_REJECT_AUTHORIZED" : "Consent, proposed ➞ rejected : A ➞ B / Sent to B",
             "ACCOUNT_UNLOCK" : "Account sbloccato dall'amministratore",
             "EMAIL_CHANGED_OLDADDRESS" : "E-mail di accesso modificata (inviare al vecchio indirizzo e-mail)",
             "EMAIL_CHANGED_NEWADDRESS" : "E-mail di accesso modificata (inviare al nuovo indirizzo e-mail)",
@@ -79,8 +82,27 @@
             "TRIED_USER_REREGISTRATION" : "Re-iscrizione dell'utente dall'API: corrispondenza errata",
             "RESOURCE_CHANGE" : "Cambio di risorsa [codice]",
             "PROCESS_MESSAGE" : "Elabora messaggio FHIR con evento [codice]",
-            "LOGIN" : "Notifica di accesso (se abilitata dall'utente)"
+            "LOGIN" : "Notifica di accesso (se abilitata dall'utente)",
+            "PROJECT_PARTICIPATION_REQUEST" : "Partecipazione richiesta",
+            "PROJECT_PARTICIPATION_APPROVED" : "Partecipazione approvata",
+            "PROJECT_PARTICIPATION_REJECTED" : "Partecipazione rifiutata",
+            "PROJECT_PARTICIPATION_GROUP_ASSIGNED" : "Gruppo assegnato",
+            "PROJECT_PARTICIPATION_RETREAT" : "Partecipazione ritirata dall'utente"
         }
+    },
+
+    "appsmtp" : {
+        "title" : "Configurazione SMTP specifica dell'applicazione",
+        "description" : "Se viene fornita una configurazione SMTP, la piattaforma invierà tutte le e-mail definite per questa applicazione utilizzando il server SMTP indicato. Ogni volta che la configurazione SMTP viene modificata, la piattaforma invia un'e-mail di prova.",
+        "host" : "Host",
+        "port" : "Port",
+        "user" : "Nome utente",
+        "password" : "Password",
+        "tls" : "TLS",
+        "ssl" : "SSL",
+        "from" : "Speditore",
+        "from2" : "Speditore deve contenere il nome del speditore e l'indirizzo e-mail nel formato: nome<e-mail>",
+        "success" : "La configurazione SMTP è stata aggiornata con successo."
     },
 
     "manageapp" : {
@@ -152,6 +174,11 @@
         "default_context_config" : "Configurazione /  Importazioni",
         "default_context_extern" : "Plugin autonomo",
         "deploy_status" : "Stato dell'installazione",
+        "accept_test_accounts" : "Autorizzare account di test?",
+        "accept_test_accounts_from_app" : "Applicazioni origine autorizzate",
+        "test_accounts_max" : "Limite di account di test",
+        "home_url" : "Pagina iniziale",
+        "noWelcome" : "Nessuna e-mail di benvenuto",
         "info" : {
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "La propria applicazione è destinata esclusivamente a un ruolo specifico? In caso contrario scegliere 'Qualsiasi ruolo'.",
@@ -173,6 +200,7 @@
             "defaultSpaceName" : "Il titolo del riquadro del proprio plugin sul pannello di controllo.",
             "tags" : "Categorie sul Store per le quali il proprio plugin deve essere elencato.",
             "url" : "La pagina iniziale con l'URL dei propri plugin. Se si utilizza il modello @PRODUCT, è 'dist/index.html#!?authToken=:authToken''",
+            "home_url" : "URL della pagina iniziale (prima del login).",
             "previewUrl" : "Sezione del pannello di controllo con l'URL dei propri plugin. Lasciare vuoto se non si include questo riquadro.",
             "defaultSpaceContext" : "Scegliere 'Pannello' per il pannello di controllo predefinito. Scegliere 'Configurazione' se si scrive un plugin importato.",
             "redirectUri" : "È possibile specificare più URI possibili per il reindirizzamento separandoli con uno spazio.",
@@ -186,7 +214,10 @@
             "endpoint" : "Il percorso di questo endpoint FHIR non legata a un progetto sarà /opendata/endpointname/fhir",
             "endpoint2" : "Non dimenticare: per attivare l'endpoint è necessario aggiungere una chiave API dopo.",
             "decentral" : "Le chiavi API saranno gestite da più organizzazioni diverse.",
-            "organizationKeys" : "Le chiavi API sono direttamente legate a una singola organizzazione."
+            "organizationKeys" : "Le chiavi API sono direttamente legate a una singola organizzazione.",
+            "accept_test_accounts_from_app" : "Autorizzare gli account di test creati da queste applicazioni (elenco separato da virgole di nomi di applicazioni interne).",
+            "test_accounts_max" : "Numero attuale di account di test creati e numero massimo di account di test consentiti.",
+            "noWelcome" : "Non inviate un'e-mail di benvenuto al momento della registrazione."
         },
         "status" : {
             "title" : "Stato dell'applicazione",
@@ -404,7 +435,7 @@
 
     "workspace" : {
         "title" : "Workspace",
-        "add_something" : "Aggiungi un'applicazione o un progetto a cui stai lavorando. Puoi anche aggiungere un utente di prova.",
+        "add_something" : "Aggiungi un'applicazione o un progetto a cui stai lavorando. Puoi anche aggiungere un utente di test.",
         "browser" : "Browser degli utenti",
         "midata" : "Back-end @PLATFORM",
         "useraccount" : "Account utente",
@@ -426,7 +457,7 @@
         "summary" : "Riassunto Data Access Filter",
         "add_app" : "Aggiungere un'applicazione allo Workspace",
         "add_user" : "Aggiungere un utente allo Workspace",
-        "testusers_only" : "Utilizzare solo con account di prova! La password in testo semplice sarà memorizzata nel suo browser!",
+        "testusers_only" : "Utilizzare solo con account di test! La password in testo semplice sarà memorizzata nel suo browser!",
         "role" : "Ruolo",
         "add_btn" : "Aggiungi",
         "appname" : "Nome interno dell'applicazione",
@@ -443,8 +474,8 @@
             "has_comments" : "Commenti disponibili nelle statistiche degli errori e delle performance.",
             "project_not_validated" : "Il progetto non è stato ancora convalidato.",
             "project_not_searching" : "Il progetto che non cerca partecipanti.",
-            "no_user_for_app" : "Nessuno degli account di prova usa l'applicazione.",
-            "no_user_for_project" : "Nessuno dei conti di prova partecipa al progetto.",
+            "no_user_for_app" : "Nessuno degli account di test usa l'applicazione.",
+            "no_user_for_project" : "Nessuno dei account di test partecipa al progetto.",
             "appinstance_status" : "L'istanza dell'applicazione non attiva.",
             "appinstance_outdated" : "La versione dell'applicazione è più recente del consenso dell'applicazione. Deve essere riconfermata.",
             "not_accepted" : "Partecipazione non accettata",
