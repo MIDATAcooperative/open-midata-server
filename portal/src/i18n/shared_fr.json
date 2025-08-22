@@ -489,7 +489,7 @@
         },
         "studyvalidationstatus" : {
             "DRAFT" : "Ébauche (non validée)",
-            "PATCH" : "Rééditée (non validée)",
+            "PATCH" : "Ré-édité (non validée)",
             "REJECTED" : "Projet rejeté par @OPERATOR",
             "VALIDATED" : "Le projet a été validé",
             "VALIDATION" : "En cours de validation"
@@ -1576,12 +1576,8 @@
         "short_public_only" : "Données publiques uniquement",
         "short_public_also" : "Données publiques, partagées et propres",
         "short_public_also_self" : "Données publiques et propres",
-
-        // TODO NEW: dynamic
-        "short_dynamic_true" : "dynamic",
-
-        // TODO NEW: dynamic extend
-        "short_dynamic_extend" : "dynamic extend",
+        "short_dynamic_true" : "dynamique",
+        "short_dynamic_extend" : "expansion dynamique",
         "source_app" : "Application source",
         "short_app_all" : "Toutes les sources",
         "short_app_other" : "Uniquement l'application:",
