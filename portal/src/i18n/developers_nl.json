@@ -265,7 +265,7 @@
   },
   "appdebug": {
     "title": "API -tester",
-    "login": "Register",
+    "login": "Inloggen",
     "oauth_login": "OAuth Login",
     "device": "Apparaat",
     "refresh_token": "Vernieuw token",
