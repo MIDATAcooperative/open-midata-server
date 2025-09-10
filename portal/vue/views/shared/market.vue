@@ -102,7 +102,7 @@ export default {
 	        if ($route.query.tag) $data.tag = $route.query.tag;
             let stati = ENV.beta ? [ "ACTIVE", "BETA" ] : "ACTIVE";
 	        let properties = {"spotlighted": true, "targetUserRole" : [ $route.meta.role.toUpperCase(), "ANY"], "status" : stati };
-	        let fields = ["name", "type", "description", "tags"];
+	        let fields = ["name", "type", "description", "tags", "i18n"];
 	        let data = {"properties": properties, "fields": fields};
 			
 	        me.doBusy(session.currentUser.then(function(userId) {
