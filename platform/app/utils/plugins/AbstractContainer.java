@@ -27,9 +27,9 @@ import java.util.Queue;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.AbstractActor.Receive;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.AbstractActor.Receive;
 import models.MidataId;
 import models.Plugin;
 import utils.AccessLog;

@@ -42,7 +42,7 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONDecoder;
 import org.bson.BasicBSONEncoder;
 
-import akka.japi.Pair;
+import org.apache.pekko.japi.Pair;
 import models.MidataId;
 import models.enums.APSSecurityLevel;
 import utils.auth.KeyManager;

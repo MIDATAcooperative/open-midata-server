@@ -47,10 +47,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
 import actions.APICall;
-import akka.NotUsed;
-import akka.stream.ActorAttributes;
-import akka.stream.javadsl.Source;
-import akka.util.ByteString;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.stream.ActorAttributes;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.util.ByteString;
 import controllers.APIController;
 import controllers.Circles;
 import controllers.Market;
@@ -415,7 +415,7 @@ public class Studies extends APIController {
 
 		final boolean firstWritten = first;
 
-		final akka.japi.function.Creator<Iterator<ByteString>> creator = new akka.japi.function.Creator<Iterator<ByteString>>() {
+		final org.apache.pekko.japi.function.Creator<Iterator<ByteString>> creator = new org.apache.pekko.japi.function.Creator<Iterator<ByteString>>() {
 
 			private static final long serialVersionUID = 1L;
 

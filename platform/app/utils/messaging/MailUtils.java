@@ -29,7 +29,7 @@ import org.hazlewood.connor.bottema.emailaddress.EmailAddressParser;
 
 import com.typesafe.config.Config;
 
-import akka.dispatch.Mailbox;
+import org.apache.pekko.dispatch.Mailbox;
 import models.MidataId;
 import models.Plugin;
 import play.api.libs.mailer.SMTPConfiguration;

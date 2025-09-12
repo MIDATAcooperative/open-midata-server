@@ -17,7 +17,7 @@
 
 package utils.messaging;
 
-import static akka.pattern.PatternsCS.ask;
+import static org.apache.pekko.pattern.PatternsCS.ask;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,17 +29,17 @@ import java.util.concurrent.CompletableFuture;
 import org.hl7.fhir.r4.model.Subscription;
 import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelType;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.PoisonPill;
-import akka.actor.Props;
-import akka.cluster.singleton.ClusterSingletonManager;
-import akka.cluster.singleton.ClusterSingletonManagerSettings;
-import akka.cluster.singleton.ClusterSingletonProxy;
-import akka.cluster.singleton.ClusterSingletonProxySettings;
-import akka.routing.ConsistentHashingPool;
-import akka.routing.ConsistentHashingRouter.ConsistentHashMapper;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.PoisonPill;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.cluster.singleton.ClusterSingletonManager;
+import org.apache.pekko.cluster.singleton.ClusterSingletonManagerSettings;
+import org.apache.pekko.cluster.singleton.ClusterSingletonProxy;
+import org.apache.pekko.cluster.singleton.ClusterSingletonProxySettings;
+import org.apache.pekko.routing.ConsistentHashingPool;
+import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashMapper;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import models.BackgroundAction;
 import models.Consent;

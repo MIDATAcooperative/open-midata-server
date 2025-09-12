@@ -19,9 +19,9 @@ package utils.access;
 
 import java.util.Optional;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.Props;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Props;
 import utils.ErrorReporter;
 import utils.ServerTools;
 import utils.access.index.IndexMsg;

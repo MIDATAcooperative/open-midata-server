@@ -23,9 +23,9 @@ import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.StreamConverters;
-import akka.util.ByteString;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.StreamConverters;
+import org.apache.pekko.util.ByteString;
 import play.libs.F.Either;
 import play.libs.streams.Accumulator;
 import play.mvc.BodyParser;

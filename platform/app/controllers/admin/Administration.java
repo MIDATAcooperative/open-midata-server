@@ -32,8 +32,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
-import akka.cluster.Cluster;
-import akka.cluster.ClusterEvent.CurrentClusterState;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.cluster.ClusterEvent.CurrentClusterState;
 import controllers.APIController;
 import controllers.Application;
 import controllers.Users;
@@ -603,7 +603,7 @@ public class Administration extends APIController {
 		
 		ArrayNode memberinfo = Json.newArray();
 		CurrentClusterState state = Cluster.get(Instances.system()).state();
-		for (akka.cluster.Member member : state.getMembers()) {
+		for (org.apache.pekko.cluster.Member member : state.getMembers()) {
 			ObjectNode info = Json.newObject();
 			info.put("address", member.address().toString());
 			info.put("status", member.status().toString());

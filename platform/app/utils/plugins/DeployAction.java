@@ -21,8 +21,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import akka.actor.ActorRef;
-import akka.stream.SourceRef;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.stream.SourceRef;
 import models.MidataId;
 
 public class DeployAction implements Serializable {

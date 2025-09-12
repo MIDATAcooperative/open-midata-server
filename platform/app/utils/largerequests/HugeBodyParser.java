@@ -24,10 +24,10 @@ import java.util.function.Function;
 
 import javax.inject.Inject;
 
-import akka.stream.Materializer;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.StreamConverters;
-import akka.util.ByteString;
+import org.apache.pekko.stream.Materializer;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.StreamConverters;
+import org.apache.pekko.util.ByteString;
 import play.core.parsers.Multipart;
 import play.libs.streams.Accumulator;
 import play.mvc.BodyParser.DelegatingMultipartFormDataBodyParser;

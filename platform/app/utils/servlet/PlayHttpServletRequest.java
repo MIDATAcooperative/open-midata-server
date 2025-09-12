@@ -47,7 +47,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
-import akka.util.ByteString;
+import org.apache.pekko.util.ByteString;
 import play.mvc.Http;
 import play.mvc.Http.RawBuffer;
 import utils.AccessLog;

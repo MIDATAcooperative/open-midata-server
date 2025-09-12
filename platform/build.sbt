@@ -22,7 +22,7 @@ version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
-scalaVersion := "2.13.14"
+scalaVersion := "2.13.16"
 
 libraryDependencies += guice
 
@@ -42,15 +42,15 @@ libraryDependencies ++= Seq(
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.13.2",
     "com.fasterxml.jackson.core" % "jackson-annotations" % "2.13.2",
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.2",
-    "com.typesafe.akka" %% "akka-remote" % "2.6.21",
-    "com.typesafe.akka" %% "akka-cluster" % "2.6.21",
-    "com.typesafe.akka" %% "akka-cluster-typed" % "2.6.21",
-    "com.typesafe.akka" %% "akka-stream" % "2.6.21",
-    "com.typesafe.akka" %% "akka-cluster-tools" % "2.6.21",    
+    "org.apache.pekko" %% "pekko-remote" % "1.1.5",
+    "org.apache.pekko" %% "pekko-cluster" % "1.1.5",
+    "org.apache.pekko" %% "pekko-cluster-typed" % "1.1.5",
+    "org.apache.pekko" %% "pekko-stream" % "1.1.5",
+    "org.apache.pekko" %% "pekko-cluster-tools" % "1.1.5",    
     "javax.servlet" % "javax.servlet-api" % "3.1.0",
-    "com.typesafe.play" %% "play-mailer" % "9.0.0",
-    "com.typesafe.play" %% "play-mailer-guice" % "9.0.0",
-    "com.typesafe.play" %% "play-json" % "2.10.6",    
+    "org.playframework" %% "play-mailer" % "10.1.0",
+    "org.playframework" %% "play-mailer-guice" % "10.1.0",
+    "org.playframework" %% "play-json" % "3.0.5",    
     "com.github.bastiaanjansen" % "otp-java" % "2.1.0",
     "io.nayuki" % "qrcodegen" % "1.8.0"
 )

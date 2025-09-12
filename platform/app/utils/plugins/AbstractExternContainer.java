@@ -4,13 +4,13 @@ import java.util.concurrent.CompletionStage;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import akka.actor.ActorRef;
-import akka.http.javadsl.Http;
-import akka.http.javadsl.model.HttpRequest;
-import akka.stream.SourceRef;
-import akka.stream.javadsl.Source;
-import akka.stream.javadsl.StreamRefs;
-import akka.util.ByteString;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.http.javadsl.Http;
+import org.apache.pekko.http.javadsl.model.HttpRequest;
+import org.apache.pekko.stream.SourceRef;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.stream.javadsl.StreamRefs;
+import org.apache.pekko.util.ByteString;
 import play.libs.ws.DefaultBodyWritables;
 import play.libs.ws.SourceBodyWritable;
 import play.libs.ws.WSClient;

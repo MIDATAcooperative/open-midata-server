@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
 
 import controllers.Circles;
 import controllers.Plugins;
