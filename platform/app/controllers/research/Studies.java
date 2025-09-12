@@ -2658,8 +2658,6 @@ public class Studies extends APIController {
 		} catch (JsonProcessingException e) {
 			AccessLog.logException("parse json", e);
 			throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
-		} catch (IOException e) {
-			throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
 		}
 
 		if (studyJson==null || !studyJson.has("_id")) throw new BadRequestException("error.invalid.json", "Invalid JSON provided");

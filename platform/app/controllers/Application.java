@@ -1195,7 +1195,6 @@ public class Application extends APIController {
 				controllers.routes.javascript.Records.shareRecord(),
 				controllers.routes.javascript.Records.unshareRecord(),
 				// Circles
-				controllers.routes.javascript.Circles.get(),
 				controllers.routes.javascript.Circles.add(),
 				controllers.routes.javascript.Circles.delete(),
 				controllers.routes.javascript.Circles.addUsers(),

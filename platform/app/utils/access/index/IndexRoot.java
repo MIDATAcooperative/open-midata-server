@@ -140,7 +140,7 @@ public class IndexRoot extends TsBaseIndexRoot<IndexKey,IndexMatch> {
 				for (Object obj : lst) {
 					if (obj instanceof Comparable) {
 					  if (obj instanceof String) inf.key[keyIdx] = (Comparable) ((String) obj).toUpperCase();
-					  else if (obj instanceof Integer) inf.key[keyIdx] = (Comparable) new Double(((Integer) obj).doubleValue());
+					  else if (obj instanceof Integer) inf.key[keyIdx] = (Comparable) Double.valueOf(((Integer) obj).doubleValue());
 					  else inf.key[keyIdx] = (Comparable) obj;
 					  extract(keyIdx+1, inf, null, null, null, 0, remove);
 					} else {
@@ -149,7 +149,7 @@ public class IndexRoot extends TsBaseIndexRoot<IndexKey,IndexMatch> {
 				}				
 			} else if (res != null) {
 			  if (res instanceof String) inf.key[keyIdx] = (Comparable) ((String) res).toUpperCase();
-			  else if (res instanceof Integer) inf.key[keyIdx] = (Comparable) new Double(((Integer) res).doubleValue());
+			  else if (res instanceof Integer) inf.key[keyIdx] = (Comparable) Double.valueOf(((Integer) res).doubleValue());
 			  else if (res instanceof Comparable) inf.key[keyIdx] = (Comparable) res;
 			  else inf.key[keyIdx] = null;
 			  extract(keyIdx+1, inf, null, null, null, 0, remove);
