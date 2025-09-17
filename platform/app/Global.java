@@ -22,7 +22,7 @@ import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import com.typesafe.config.Config;
 

@@ -26,9 +26,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 import play.http.HttpEntity;
 import play.mvc.Result;
@@ -189,17 +189,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 	}
 
 	@Override
-	public String encodeRedirectUrl(String arg0) {
-		throw new NotImplementedError();		
-	}
-
-	@Override
 	public String encodeURL(String arg0) {
-		throw new NotImplementedError();		
-	}
-
-	@Override
-	public String encodeUrl(String arg0) {
 		throw new NotImplementedError();		
 	}
 
@@ -263,11 +253,6 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 		this.status = arg0;		
 	}
 
-	@Override
-	public void setStatus(int arg0, String arg1) {
-		 throw new NotImplementedError();
-		
-	}
 		
 	public Result asPlayResult() {
 		Result result = null;;

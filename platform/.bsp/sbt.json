@@ -1,0 +1,1 @@
+{"name":"sbt","version":"1.10.1","bspVersion":"2.1.0-M1","languages":["scala"],"argv":["/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home/bin/java","-Xms100m","-Xmx100m","-classpath","/Users/alexander/git/platform-private/platform/sbt-dist/bin/sbt-launch.jar","-Dsbt.script=./sbt-dist/bin/sbt","xsbt.boot.Boot","-bsp"]}

@@ -194,12 +194,12 @@ public class MailUtils {
 	}
 	
 	public static String getAddressFromMailbox(String mailbox) {
-		String adr[] = EmailAddressParser.getAddressParts(mailbox, EmailAddressCriteria.RECOMMENDED, true);
+		String adr[] = EmailAddressParser.getAddressParts(mailbox, EmailAddressCriteria.DEFAULT, true);
 		return adr[1]+"@"+adr[2];
 	}
 	
 	public static String getDisplayFromMailbox(String mailbox) {
-		return EmailAddressParser.getPersonalName(mailbox, EmailAddressCriteria.RECOMMENDED, true);		
+		return EmailAddressParser.getPersonalName(mailbox, EmailAddressCriteria.DEFAULT, true);		
 	}
 	
 	public static String getMailboxFromAddressAndDisplay(String email, String fullname) {
