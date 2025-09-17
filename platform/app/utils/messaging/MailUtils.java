@@ -136,8 +136,12 @@ public class MailUtils {
 		}
 		
 		if (smtp != null) {
+			System.out.println("SMTP send");
 			createInstance(smtp).send(mail);
 		} else {
+			System.out.println("MAIL CLIENT send");
+			//System.out.println(mail.getBodyHtml());
+			//System.out.println(mail.getTo().toString());
 		    mailerClient.get(sender).send(mail);
 		}
 		System.out.println("End send mail to "+email);

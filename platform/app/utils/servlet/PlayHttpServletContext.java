@@ -180,8 +180,9 @@ public class PlayHttpServletContext implements ServletContext {
 
 	@Override
 	public String getInitParameter(String arg0) {
-		throw new RuntimeException("Not implemented");	
-
+		System.out.println("GET INIT PARAMETER:"+arg0);
+		return null;
+	
 	}
 
 	@Override
