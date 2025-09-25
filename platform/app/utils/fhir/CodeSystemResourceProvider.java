@@ -325,6 +325,7 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 	    }
 	    cse.display = cdc.getDisplay();
 	    cse.language = theResource.getLanguage();
+	    if (cse.language == null) cse.language = "en";
 	    cse.fhirResource = MidataId.from(theResource.getId());
 	    if (theResource.hasDate()) {
 	      cse.lastUpdated = theResource.getDate().getTime();
@@ -357,8 +358,11 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 	
 	@Override
 	public CodeSystem createExecute(Record record, CodeSystem theResource) throws AppException {
+		CodeSystem result = theResource;
+		if (!theResource.hasExtension("http://midata.coop/extensions/bulk-upload")) {
+		  result = super.createExecute(record, theResource);
+		}
 		
-		CodeSystem result = super.createExecute(record, theResource);
 		for (ConceptDefinitionComponent cdc : result.getConcept()) {
 			processConceptDefinition(theResource, cdc);
 		}
@@ -403,7 +407,7 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 					List<IPrimitiveType<String>> thePropertyNames,
 			RequestDetails theRequestDetails) throws AppException {
 
-			Set<CodeSystemEntry> results = CodeSystemEntry.lookup(theSystem.getValue(), theCode.getValue(), theVersion.getValue(), theDisplayLanguage.getValue());
+			Set<CodeSystemEntry> results = CodeSystemEntry.lookup((theSystem!=null?theSystem.getValue():null), (theCode!=null?theCode.getValue():null), (theVersion!=null?theVersion.getValue():null), (theDisplayLanguage!=null?theDisplayLanguage.getValue():null));
 			if (results.isEmpty()) throw new ResourceNotFoundException("Unable to find code in provided system");
 			CodeSystemEntry cse = results.iterator().next();
 			Parameters result = new Parameters();
