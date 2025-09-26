@@ -140,10 +140,10 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void setContentType(String arg0) {
-		AccessLog.log("content-type:", arg0);
 		if (arg0 == null) {
 			return;		
 		}
+		AccessLog.log("content-type:", arg0);
 		contentType = arg0;
 		//response.setContentType(arg0);				
 	}

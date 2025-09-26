@@ -25,6 +25,7 @@ import org.hl7.fhir.instance.model.api.IBaseParameters;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeSystem;
+import org.hl7.fhir.r4.model.CodeSystem.CodeSystemContentMode;
 import org.hl7.fhir.r4.model.CodeSystem.ConceptDefinitionComponent;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.IdType;
@@ -34,6 +35,7 @@ import org.hl7.fhir.r4.model.ValueSet;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.rest.annotation.Create;
+import ca.uhn.fhir.rest.annotation.Delete;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -56,12 +58,22 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
+import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.CodeSystemEntry;
 import models.MidataId;
 import models.Record;
+import models.enums.UserRole;
+import utils.ErrorReporter;
+import utils.access.RecordManager;
+import utils.collections.CMaps;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 import ca.uhn.fhir.rest.annotation.Operation;
 import ca.uhn.fhir.rest.annotation.OperationParam;
 
@@ -280,6 +292,12 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 	public String getRecordFormat() {	
 		return "fhir/CodeSystem";
 	}
+	
+	private boolean processConcepts(CodeSystem theCodeSystem) {
+		if (theCodeSystem.getContent() == CodeSystemContentMode.NOTPRESENT) return false;
+		if (theCodeSystem.getContent() == CodeSystemContentMode.SUPPLEMENT) return false;
+		return true;
+	}
 		
 
 	// This method is required if it is allowed to update the resource.
@@ -296,6 +314,10 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 	//    The name should describe the content, should not reveal secrets.
 	// c) If the "subject" is the record owner he should be removed from the FHIR representation
 	public void prepare(Record record, CodeSystem theCodeSystem) throws AppException {
+		if (info().getAccessorRole() != UserRole.ADMIN && info().getAccessorRole() != UserRole.DEVELOPER) {
+			throw new AuthenticationException();
+		}
+		
 		setRecordCodeByCodings(record, null, "CodeSystem");
 		
 		String display = theCodeSystem.getName();		
@@ -315,7 +337,7 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 		super.processResource(record, p);		
 	}
 	
-	private void processConceptDefinition(CodeSystem theResource, ConceptDefinitionComponent cdc) throws InternalServerException {
+	private void processConceptDefinition(CodeSystem theResource, ConceptDefinitionComponent cdc, boolean delete) throws InternalServerException {
 	    CodeSystemEntry cse = new CodeSystemEntry();
 	    cse.system = theResource.getUrl();
 	    cse.systemDisplay = theResource.getTitle();
@@ -341,17 +363,21 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 	      existing = CodeSystemEntry.getBySystemCodeLanguage(cse.system, cse.code, cse.language);	 	
 	    }
 	    
-	    if (existing != null) {
-	    	cse._id = existing._id;
+	    if (delete) { 
+	       if (existing != null) CodeSystemEntry.delete(existing._id);
 	    } else {
-	    	cse._id = new MidataId();
-	    }
+	    	if (existing != null) {
+	    	  cse._id = existing._id;
+	        } else {
+	    	  cse._id = new MidataId();
+	        }
 
-	    CodeSystemEntry.upsert(cse);
+	        CodeSystemEntry.upsert(cse);
+	    }
 	    
 	    if (cdc.getConcept() != null) {
 	    	for (ConceptDefinitionComponent scdc : cdc.getConcept()) {
-	    		processConceptDefinition(theResource, scdc);
+	    		processConceptDefinition(theResource, scdc, delete);
 	    	}
 	    }
 	}
@@ -363,8 +389,10 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 		  result = super.createExecute(record, theResource);
 		}
 		
-		for (ConceptDefinitionComponent cdc : result.getConcept()) {
-			processConceptDefinition(theResource, cdc);
+		if (processConcepts(theResource) && theResource.hasConcept()) {
+		  for (ConceptDefinitionComponent cdc : result.getConcept()) {
+			processConceptDefinition(theResource, cdc, false);
+		  }
 		}
 		
 		return result;
@@ -374,14 +402,53 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 	public void updateExecute(Record record, CodeSystem theResource) throws AppException {
 		super.updateExecute(record, theResource);
 		
-		for (ConceptDefinitionComponent cdc : theResource.getConcept()) {
-			processConceptDefinition(theResource, cdc);
+		if (processConcepts(theResource) && theResource.hasConcept()) {
+		  for (ConceptDefinitionComponent cdc : theResource.getConcept()) {
+			processConceptDefinition(theResource, cdc, false);
+		  }
 		}
 		
 	}
 
 	@Override
 	protected void convertToR4(Object in) {			
+	}
+	
+	@Delete()
+	public void deleteCodeSystem(@IdParam IdType theId) {
+		if (info().getAccessorRole() != UserRole.ADMIN && info().getAccessorRole() != UserRole.DEVELOPER) {
+			throw new AuthenticationException();
+		}
+		
+		try {
+	    	CodeSystem theResource = getResourceById(theId);
+	    	String system = theResource.getUrl();
+	    	
+	    	if (processConcepts(theResource) && theResource.hasConcept()) {
+	    		for (ConceptDefinitionComponent cdc : theResource.getConcept()) {
+	    			processConceptDefinition(theResource, cdc, true);
+	    		}
+	    	} else if (system != null && system.length() > 0 && theResource.getContent() == CodeSystemContentMode.NOTPRESENT) {
+	    		Set<CodeSystemEntry> entries = CodeSystemEntry.lookup(system, null, theResource.getVersion(), theResource.getLanguage());
+	    		for (CodeSystemEntry entry : entries) CodeSystemEntry.delete(entry._id);
+	    	}
+    	
+	    	RecordManager.instance.deleteFromPublic(info(), CMaps.map("format", "fhir/CodeSystem").map("content", "CodeSystem").map("_id", theResource.getIdPart()));
+		} catch (BaseServerResponseException e) {
+			throw e;
+		} catch (BadRequestException e2) {
+			throw new InvalidRequestException(e2.getMessage());
+		} catch (PluginException e4) {
+			ErrorReporter.reportPluginProblem("FHIR (delete resource)", null, e4);
+			throw new InternalErrorException(e4);
+		} catch (InternalServerException e3) {
+			ErrorReporter.report("FHIR (delete resource)", null, e3);
+			throw new InternalErrorException(e3.getMessage());
+		} catch (Exception e4) {
+			ErrorReporter.report("FHIR (delete resource)", null, e4);
+			throw new InternalErrorException("internal error during delete resource");
+		}		
+
 	}
 	
 	/**
@@ -407,6 +474,8 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 					List<IPrimitiveType<String>> thePropertyNames,
 			RequestDetails theRequestDetails) throws AppException {
 
+		    if (!checkAccessible()) throw new AuthenticationException();
+		
 			Set<CodeSystemEntry> results = CodeSystemEntry.lookup((theSystem!=null?theSystem.getValue():null), (theCode!=null?theCode.getValue():null), (theVersion!=null?theVersion.getValue():null), (theDisplayLanguage!=null?theDisplayLanguage.getValue():null));
 			if (results.isEmpty()) throw new ResourceNotFoundException("Unable to find code in provided system");
 			CodeSystemEntry cse = results.iterator().next();
