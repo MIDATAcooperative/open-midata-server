@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.bson.BSONObject;
 

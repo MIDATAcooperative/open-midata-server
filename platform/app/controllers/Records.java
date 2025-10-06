@@ -39,9 +39,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
-import akka.NotUsed;
-import akka.stream.javadsl.Source;
-import akka.util.ByteString;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.util.ByteString;
 import models.Consent;
 import models.FormatInfo;
 import models.Member;
@@ -617,7 +617,7 @@ public class Records extends APIController {
 
 		boolean first = true;
 
-		final akka.japi.function.Creator<Iterator<ByteString>> creator = new akka.japi.function.Creator<Iterator<ByteString>>() {
+		final org.apache.pekko.japi.function.Creator<Iterator<ByteString>> creator = new org.apache.pekko.japi.function.Creator<Iterator<ByteString>>() {
 
 			private static final long serialVersionUID = 1L;
 

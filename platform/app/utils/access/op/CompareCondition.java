@@ -68,7 +68,7 @@ public class CompareCondition implements Condition, Serializable {
 		if (obj == null) return nullTrue;
 		try {
 		  if (isDate) obj = ISODateTimeFormat.dateTimeParser().parseDateTime(obj.toString()).toDate();
-		  if (isNumber && !(obj instanceof Double)) obj = new Double(obj.toString());
+		  if (isNumber && !(obj instanceof Double)) obj = Double.valueOf(obj.toString());
 		} catch (IllegalArgumentException e) { return false; }
 		//AccessLog.debug(obj.toString()+" "+op.toString()+val.toString());
 		//AccessLog.debug(obj.getClass().getName()+" "+op.toString()+val.getClass().getName());
@@ -110,8 +110,8 @@ public class CompareCondition implements Condition, Serializable {
 			  if (low!=null) low = ISODateTimeFormat.dateTimeParser().parseDateTime(low.toString()).toDate();
 			  if (high!=null) high = ISODateTimeFormat.dateTimeParser().parseDateTime(high.toString()).toDate();
 		  }
-		  if (isNumber && low!=null && !(low instanceof Double)) low = new Double(low.toString());
-		  if (isNumber && high!=null && !(high instanceof Double)) high = new Double(high.toString());
+		  if (isNumber && low!=null && !(low instanceof Double)) low = Double.valueOf(low.toString());
+		  if (isNumber && high!=null && !(high instanceof Double)) high = Double.valueOf(high.toString());
 		} catch (IllegalArgumentException e) { return false; }
 		
 		

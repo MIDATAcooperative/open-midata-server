@@ -149,10 +149,10 @@ quick-work-dispatcher {
   throughput = 10
 }
 
-akka.actor.allow-java-serialization=on
-midata.akka.actor.allow-java-serialization=on
+pekko.actor.allow-java-serialization=on
+midata.pekko.actor.allow-java-serialization=on
 
-akka {   
+pekko {   
   actor {
                 
       default-dispatcher = {
@@ -168,15 +168,15 @@ akka {
 
 play {
    
-  akka {
-    event-handlers = ["akka.event.slf4j.Slf4jEventHandler"]
+  pekko {
+    event-handlers = ["org.apache.pekko.event.slf4j.Slf4jEventHandler"]
     loglevel = WARNING   
   }
     
 }
 
 midata {
-    akka {
+    pekko {
 	    loglevel = WARNING
 	    actor {      
 	      provider = "cluster"         

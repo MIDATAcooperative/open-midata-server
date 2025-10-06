@@ -17,8 +17,8 @@
 
 package utils.fhir;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 import ca.uhn.fhir.rest.server.IServerAddressStrategy;
 import utils.InstanceConfig;

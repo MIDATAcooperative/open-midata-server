@@ -21,8 +21,8 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Set;
 
-import akka.actor.AbstractActor;
-import akka.actor.AbstractActor.Receive;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.AbstractActor.Receive;
 import controllers.Circles;
 import models.AccessPermissionSet;
 import models.Circle;

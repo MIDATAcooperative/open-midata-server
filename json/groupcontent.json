@@ -510,3 +510,8 @@
 {"_id":{"$oid":"68146d91982cce33814c75d7"},"system":"v1","name":"prom","content":"lbp.baseline"}
 {"_id":{"$oid":"67d1b6541552654a9eeaa76c"},"system":"v1","name":"prom","content":"iciq.s"}
 {"_id":{"$oid":"67d1b5e31552654a9eeaa76a"},"system":"v1","name":"prom","content":"iciq.fluts"}
+{"_id":{"$oid":"689353318da17944ee5185cd"},"system":"v1","name":"prom","content":"hoos-12-left-hip"}
+{"_id":{"$oid":"6893520195807c7cf9093027"},"system":"v1","name":"prom","content":"koos-12-left-knee"}
+{"_id":{"$oid":"689352c18da17944ee5185cb"},"system":"v1","name":"prom","content":"koos-12-right-knee"}
+{"_id":{"$oid":"6893538695807c7cf9093043"},"system":"v1","name":"prom","content":"hoos-12-right-hip"}
+{"_id":{"$oid":"68d501ed23c8ce537c929477"},"system":"v1","name":"unknown","content":"CodeSystem"}

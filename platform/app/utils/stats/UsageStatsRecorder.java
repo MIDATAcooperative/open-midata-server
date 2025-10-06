@@ -25,11 +25,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Cancellable;
-import akka.actor.Props;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.actor.Props;
 import models.MidataId;
 import models.Plugin;
 import models.UserGroup;

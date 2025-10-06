@@ -4,11 +4,11 @@ import java.util.concurrent.CompletionStage;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import akka.actor.ActorRef;
-import akka.stream.SourceRef;
-import akka.stream.javadsl.Source;
-import akka.stream.javadsl.StreamRefs;
-import akka.util.ByteString;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.stream.SourceRef;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.stream.javadsl.StreamRefs;
+import org.apache.pekko.util.ByteString;
 import models.MidataId;
 import models.Plugin;
 import play.libs.ws.WSClient;

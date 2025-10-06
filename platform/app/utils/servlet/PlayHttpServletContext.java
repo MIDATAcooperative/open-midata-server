@@ -25,17 +25,17 @@ import java.util.EventListener;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.FilterRegistration.Dynamic;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-import javax.servlet.SessionCookieConfig;
-import javax.servlet.SessionTrackingMode;
-import javax.servlet.descriptor.JspConfigDescriptor;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.FilterRegistration.Dynamic;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.SessionCookieConfig;
+import jakarta.servlet.SessionTrackingMode;
+import jakarta.servlet.descriptor.JspConfigDescriptor;
 
 
 /**
@@ -77,17 +77,17 @@ public class PlayHttpServletContext implements ServletContext {
 	}
 
 	@Override
-	public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, String arg1) {
+	public jakarta.servlet.ServletRegistration.Dynamic addServlet(String arg0, String arg1) {
 		throw new RuntimeException("Not implemented");		
 	}
 
 	@Override
-	public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, Servlet arg1) {
+	public jakarta.servlet.ServletRegistration.Dynamic addServlet(String arg0, Servlet arg1) {
 		throw new RuntimeException("Not implemented");			
 	}
 
 	@Override
-	public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, Class<? extends Servlet> arg1) {
+	public jakarta.servlet.ServletRegistration.Dynamic addServlet(String arg0, Class<? extends Servlet> arg1) {
 		throw new RuntimeException("Not implemented");			
 	}
 
@@ -180,8 +180,9 @@ public class PlayHttpServletContext implements ServletContext {
 
 	@Override
 	public String getInitParameter(String arg0) {
-		throw new RuntimeException("Not implemented");	
-
+		System.out.println("GET INIT PARAMETER:"+arg0);
+		return null;
+	
 	}
 
 	@Override
@@ -254,20 +255,9 @@ public class PlayHttpServletContext implements ServletContext {
 
 	}
 
-	@Override
-	public Servlet getServlet(String arg0) throws ServletException {
-		throw new RuntimeException("Not implemented");	
-
-	}
 
 	@Override
 	public String getServletContextName() {
-		throw new RuntimeException("Not implemented");	
-
-	}
-
-	@Override
-	public Enumeration<String> getServletNames() {
 		throw new RuntimeException("Not implemented");	
 
 	}
@@ -284,11 +274,6 @@ public class PlayHttpServletContext implements ServletContext {
 
 	}
 
-	@Override
-	public Enumeration<Servlet> getServlets() {
-		throw new RuntimeException("Not implemented");	
-
-	}
 
 	@Override
 	public SessionCookieConfig getSessionCookieConfig() {
@@ -308,11 +293,6 @@ public class PlayHttpServletContext implements ServletContext {
 
 	}
 
-	@Override
-	public void log(Exception arg0, String arg1) {
-		throw new RuntimeException("Not implemented");	
-
-	}
 
 	@Override
 	public void log(String arg0, Throwable arg1) {
@@ -342,6 +322,44 @@ public class PlayHttpServletContext implements ServletContext {
 	public void setSessionTrackingModes(Set<SessionTrackingMode> arg0) {
 		throw new RuntimeException("Not implemented");	
 
+	}
+
+	@Override
+	public jakarta.servlet.ServletRegistration.Dynamic addJspFile(String servletName, String jspFile) {
+		throw new RuntimeException("Not implemented");	
+	}
+
+	@Override
+	public int getSessionTimeout() {
+		throw new RuntimeException("Not implemented");	
+	}
+
+	@Override
+	public void setSessionTimeout(int sessionTimeout) {
+		throw new RuntimeException("Not implemented");	
+		
+	}
+
+	@Override
+	public String getRequestCharacterEncoding() {
+		throw new RuntimeException("Not implemented");	
+	}
+
+	@Override
+	public void setRequestCharacterEncoding(String encoding) {
+		throw new RuntimeException("Not implemented");	
+		
+	}
+
+	@Override
+	public String getResponseCharacterEncoding() {
+		throw new RuntimeException("Not implemented");	
+	}
+
+	@Override
+	public void setResponseCharacterEncoding(String encoding) {
+		throw new RuntimeException("Not implemented");	
+		
 	}
 
 }

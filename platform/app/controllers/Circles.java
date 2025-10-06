@@ -125,7 +125,7 @@ public class Circles extends APIController {
 	 * @throws JsonValidationException
 	 * @throws InternalServerException
 	 */
-	@Deprecated
+	/*@Deprecated
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
@@ -152,7 +152,7 @@ public class Circles extends APIController {
 		}
 		Collections.sort(circles);
 		return ok(JsonOutput.toJson(circles, "Consent", Sets.create("name", "order", "owner", "authorized"))).as("application/json");
-	}
+	}*/
 	
 	/**
 	 * list either all consents of a user or all consents of others where the user is authorized 

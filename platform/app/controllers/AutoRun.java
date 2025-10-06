@@ -30,20 +30,20 @@ import org.joda.time.Seconds;
 
 import com.mongodb.MongoGridFSException;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.Cancellable;
-import akka.actor.PoisonPill;
-import akka.actor.Props;
-import akka.cluster.singleton.ClusterSingletonManager;
-import akka.cluster.singleton.ClusterSingletonManagerSettings;
-import akka.cluster.singleton.ClusterSingletonProxy;
-import akka.cluster.singleton.ClusterSingletonProxySettings;
-import akka.routing.ActorRefRoutee;
-import akka.routing.RoundRobinPool;
-import akka.routing.RoundRobinRoutingLogic;
-import akka.routing.Routee;
-import akka.routing.Router;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.actor.PoisonPill;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.cluster.singleton.ClusterSingletonManager;
+import org.apache.pekko.cluster.singleton.ClusterSingletonManagerSettings;
+import org.apache.pekko.cluster.singleton.ClusterSingletonProxy;
+import org.apache.pekko.cluster.singleton.ClusterSingletonProxySettings;
+import org.apache.pekko.routing.ActorRefRoutee;
+import org.apache.pekko.routing.RoundRobinPool;
+import org.apache.pekko.routing.RoundRobinRoutingLogic;
+import org.apache.pekko.routing.Routee;
+import org.apache.pekko.routing.Router;
 import controllers.admin.Administration;
 import models.KeyRecoveryProcess;
 import models.MidataId;
@@ -92,8 +92,6 @@ public class AutoRun extends APIController {
 	 * initialize import job launcher
 	 */
 	public static void init() {
-		
-		//manager = Akka.system().actorOf(Props.create(ImportManager.class), "manager");
 		
 		final ClusterSingletonManagerSettings settings =
 				  ClusterSingletonManagerSettings.create(Instances.system());
@@ -267,7 +265,7 @@ public class AutoRun extends APIController {
 	}
 	
 	/**
-	 * Akka actor that runs the plugin of a specific space
+	 * Pekko actor that runs the plugin of a specific space
 	 *
 	 */
 	public static class Importer extends AbstractActor {
@@ -379,7 +377,7 @@ public class AutoRun extends APIController {
 	}
 	
 	/**
-	 * Akka actor that manages the import process
+	 * Pekko actor that manages the import process
 	 *
 	 */
 	public static class ImportManager extends AbstractActor {

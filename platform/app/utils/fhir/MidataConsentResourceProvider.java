@@ -36,7 +36,7 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Consent.ConsentDataMeaning;
 import org.hl7.fhir.r4.model.Consent.ConsentState;
 import org.hl7.fhir.r4.model.Consent.provisionActorComponent;
-import org.hl7.fhir.r4.model.Consent.provisionComponent;
+import org.hl7.fhir.r4.model.Consent.ProvisionComponent;
 import org.hl7.fhir.r4.model.Consent.provisionDataComponent;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IdType;
@@ -282,7 +282,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		
 	}
 	
-	private void buildQuery(Map<String, Object> query, provisionComponent p) throws AppException {
+	private void buildQuery(Map<String, Object> query, ProvisionComponent p) throws AppException {
 		p.getClass_().clear();
 		p.getProvision().clear();
 		if (query.containsKey("code")) {
@@ -322,13 +322,13 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
         if (query.containsKey("$or")) {
         	Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) query.get("$or");
         	for (Map<String, Object> part : col) {
-        	  provisionComponent sub = p.addProvision();
+        	  ProvisionComponent sub = p.addProvision();
         	  buildQuery(part, sub);
         	}        	
         }
 	}
 	
-	private void createQuery(provisionComponent p, Map<String, Object> query) {
+	private void createQuery(ProvisionComponent p, Map<String, Object> query) {
 		if (p.getType() != org.hl7.fhir.r4.model.Consent.ConsentProvisionType.DENY) {
 			List<Coding> coding = p.getClass_();
 			Set<String> contents = null;
@@ -380,7 +380,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			if (p.hasProvision()) {
 				ArrayList<Map<String, Object>> subqueries = new ArrayList<Map<String, Object>>();
 				
-				for (provisionComponent prov : p.getProvision()) {
+				for (ProvisionComponent prov : p.getProvision()) {
 					Map<String, Object> subquery = new HashMap<String, Object>();
 					createQuery(prov, subquery);
 					if (subquery.containsKey("format") || subquery.containsKey("content") || subquery.containsKey("group")) {
@@ -399,7 +399,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 		processDataSharing(consent, p.getProvision());
 	}
 	
-	private void processDataSharing(Consent consent, provisionComponent prov) throws AppException {
+	private void processDataSharing(Consent consent, ProvisionComponent prov) throws AppException {
 		
 		if (prov.getType() != org.hl7.fhir.r4.model.Consent.ConsentProvisionType.DENY) {			
 			Set<MidataId> share = new HashSet<MidataId>();
@@ -426,7 +426,7 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 			}
 		}
 		if (prov.hasProvision()) {
-			for (provisionComponent sub : prov.getProvision()) {
+			for (ProvisionComponent sub : prov.getProvision()) {
 				processDataSharing(consent, sub);
 			}
 		}

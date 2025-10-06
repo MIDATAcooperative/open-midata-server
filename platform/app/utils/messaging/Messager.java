@@ -24,10 +24,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Props;
 import models.HealthcareProvider;
 import models.MessageDefinition;
 import models.MidataId;

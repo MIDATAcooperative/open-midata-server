@@ -19,10 +19,10 @@ package utils.access;
 
 import java.time.Duration;
 
-import akka.actor.AbstractActor;
-import akka.actor.Props;
-import akka.actor.ReceiveTimeout;
-import akka.japi.Creator;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.ReceiveTimeout;
+import org.apache.pekko.japi.Creator;
 import models.MidataId;
 import models.enums.UserRole;
 import utils.AccessLog;

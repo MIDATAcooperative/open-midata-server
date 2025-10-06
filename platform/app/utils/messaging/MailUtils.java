@@ -29,7 +29,7 @@ import org.hazlewood.connor.bottema.emailaddress.EmailAddressParser;
 
 import com.typesafe.config.Config;
 
-import akka.dispatch.Mailbox;
+import org.apache.pekko.dispatch.Mailbox;
 import models.MidataId;
 import models.Plugin;
 import play.api.libs.mailer.SMTPConfiguration;
@@ -136,8 +136,12 @@ public class MailUtils {
 		}
 		
 		if (smtp != null) {
+			System.out.println("SMTP send");
 			createInstance(smtp).send(mail);
 		} else {
+			System.out.println("MAIL CLIENT send");
+			//System.out.println(mail.getBodyHtml());
+			//System.out.println(mail.getTo().toString());
 		    mailerClient.get(sender).send(mail);
 		}
 		System.out.println("End send mail to "+email);
@@ -194,12 +198,12 @@ public class MailUtils {
 	}
 	
 	public static String getAddressFromMailbox(String mailbox) {
-		String adr[] = EmailAddressParser.getAddressParts(mailbox, EmailAddressCriteria.RECOMMENDED, true);
+		String adr[] = EmailAddressParser.getAddressParts(mailbox, EmailAddressCriteria.DEFAULT, true);
 		return adr[1]+"@"+adr[2];
 	}
 	
 	public static String getDisplayFromMailbox(String mailbox) {
-		return EmailAddressParser.getPersonalName(mailbox, EmailAddressCriteria.RECOMMENDED, true);		
+		return EmailAddressParser.getPersonalName(mailbox, EmailAddressCriteria.DEFAULT, true);		
 	}
 	
 	public static String getMailboxFromAddressAndDisplay(String email, String fullname) {
