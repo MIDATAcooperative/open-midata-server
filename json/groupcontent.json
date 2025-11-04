@@ -515,3 +515,6 @@
 {"_id":{"$oid":"689352c18da17944ee5185cb"},"system":"v1","name":"prom","content":"koos-12-right-knee"}
 {"_id":{"$oid":"6893538695807c7cf9093043"},"system":"v1","name":"prom","content":"hoos-12-right-hip"}
 {"_id":{"$oid":"68d501ed23c8ce537c929477"},"system":"v1","name":"unknown","content":"CodeSystem"}
+{"_id":{"$oid":"6909c3582d8d036437ccc122"},"system":"v1","name":"prom","content":"comi.lws"}
+{"_id":{"$oid":"6909c2bc2d8d036437ccc11e"},"system":"v1","name":"prom","content":"ndi"}
+{"_id":{"$oid":"6909c30e68420a62497463bc"},"system":"v1","name":"prom","content":"comi.hws"}
