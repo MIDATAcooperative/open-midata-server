@@ -56,6 +56,7 @@ import ca.uhn.fhir.util.FhirTerser;
 import ca.uhn.fhir.util.UrlUtil;
 import models.Model;
 import models.Record;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.VersionedDBRecord;
 import utils.context.AccessContext;
@@ -171,6 +172,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 			result.setTotal(0);
 			} else result.setTotal(res.size());
 		} catch (RequestTooLargeException e) {
+			AccessLog.log("Request too large. Wait t=10000");
 			try { Thread.sleep(1000*10); } catch (InterruptedException e2) {}
 			result.addLink().setRelation("next").setUrl(theDetails.getCompleteUrl());
 		}

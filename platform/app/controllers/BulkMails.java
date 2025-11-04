@@ -352,6 +352,7 @@ public class BulkMails extends APIController {
 				AccessLog.log("send email to: "+user.email);
 			    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content, mailItem.htmlFrame, mailItem.appId);
 			  } catch (Exception e) {
+				AccessLog.log("Error sending email. Wait t=500");
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e2) {}
