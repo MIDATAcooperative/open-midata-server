@@ -735,7 +735,7 @@ public class Studies extends APIController {
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
-		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
+		User user = User.getById(userId, Sets.create("firstname", "lastname"));
 		String userName = user.lastname + ", " + user.firstname;
 
 		int count = JsonValidation.getInteger(json, "count", 1, 1000);

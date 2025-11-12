@@ -75,17 +75,9 @@ export default {
 		}
         
         let pluginName = $route.query.pluginName || $route.params.pluginName;
-        let pluginName2 = $route.query.open;        
-		if ($route.meta.account) {
-            actions.push({ ac : "account"});
-            params.client_id=$route.query.client_id;
-		} else if (pluginName) {
-			actions.push({ ac : "use", c : pluginName });
-		} else if (pluginName2) {
-		    actions.push({ ac : "open", c : pluginName2 });
-		}					
-
-		if (!$route.meta.account && !pluginName2) {
+        let pluginName2 = $route.query.open;     
+		
+		if (!$route.meta.account) {
 		    if ($route.query.authorize && $route.query.data) {
 		        actions.push({ ac : "consent", s : $route.query.data, a: $route.query.authorize, w: $route.query["allow-write"] });
 			} else if ($route.query.consent) {
@@ -101,11 +93,19 @@ export default {
 					  actions.push({ ac : "study", s : prj });
 					}		
 				}					
-			} else {
+			} else if (!pluginName2) {
 				actions.push({ ac : "unconfirmed" });
 			}
 		}
-		
+		   
+		if ($route.meta.account) {
+            actions.push({ ac : "account"});
+            params.client_id=$route.query.client_id;
+		} else if (pluginName) {
+			actions.push({ ac : "use", c : pluginName });
+		} else if (pluginName2) {
+		    actions.push({ ac : "open", c : pluginName2 });
+		}									
 		
 		if ($route.query.callback) {
 			actions.push({ ac : "leave", c : $route.query.callback });
