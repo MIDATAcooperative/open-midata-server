@@ -785,8 +785,8 @@ public class Plugins extends APIController {
 
 			try {
 				KeyManager.instance.continueSession(sessionHandle, userId);
-				AccessLog.log("OAUTH POST: "+post);
-				AccessLog.log("OAUTH RESPONSE: "+response.getBody());
+				AccessLog.log("USER "+userId+" OAUTH2 POST: "+post);
+				AccessLog.log("USER "+userId+" OAUTH2 RESPONSE: "+response.getBody());
 				JsonNode jsonNode = response.asJson();
 				
 				// Try to deal with non-standard response formats.
@@ -807,7 +807,9 @@ public class Plugins extends APIController {
 					try {
 						tokens.put("accessToken", accessToken);
 						RecordManager.instance.setMeta(ContextManager.instance.createSessionForDownloadStream(userId, UserRole.MEMBER), spaceId, "_oauth", tokens);
+						AccessLog.log("USER "+userId+" OAUTH2: saved new token");
 					} catch (InternalServerException e) {
+						AccessLog.log("USER "+userId+" OAUTH2: Could not save token");
 						return false;
 					} finally {
 						ServerTools.endRequest();
@@ -819,10 +821,12 @@ public class Plugins extends APIController {
 					Stats.addComment("send:" + post);
 					Stats.addComment("extern server: " + response.getStatus() + " " + response.getBody());
 					Stats.finishRequest("intern", "/oauth2", null, "400", Collections.<String> emptySet());
-	
+					AccessLog.log("USER "+userId+" OAUTH2: Did not receive new token");
 					return false;
 				}
 			} catch (AppException e) {
+				AccessLog.log("USER "+userId+" OAUTH2: App exception");
+				AccessLog.logException("OAuth2 Exception", e);
 				return false;
 			} finally {
 				ServerTools.endRequest();
