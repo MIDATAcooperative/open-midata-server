@@ -179,7 +179,8 @@
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PRODUCT portal.",
        "app_test" : "You are allowed to use this application on a maximum of 10 devices. On this TEST instance consents have been reset for you. Please retry.",
        "joinmethod" : "It is not allowed to join the project by this method.",
-       "testuser" : "Application does not accept test accounts." 
+       "testuser" : "Application does not accept test accounts.",
+       "realuser" : "This application is currently in the testing phase. Only TEST accounts allowed. Come back after release."
      },
 
      "closed" : {
