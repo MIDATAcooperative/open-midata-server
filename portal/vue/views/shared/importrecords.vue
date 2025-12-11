@@ -150,8 +150,8 @@ export default {
 		const { $data, $route } = this, me = this;
 		
 		if (sessionStorage.returnActions) {
-			let actions = JSON.parse(sessionStorage.returnActions);
-			actions.restoreAfterLeave(actions);
+			let ac = JSON.parse(sessionStorage.returnActions);
+			actions.restoreAfterLeave(ac);
 			delete sessionStorage.returnActions;
 		}
 		
