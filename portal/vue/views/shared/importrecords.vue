@@ -1,4 +1,4 @@
-<!--
+A<!--
  This file is part of the Open MIDATA Server.
  
  The Open MIDATA Server is free software: you can redistribute it and/or modify
@@ -124,6 +124,7 @@ export default {
 			var parameters = "response_type=code" + "&client_id=" + app.consumerKey + "&scope=" + app.scopeParameters +
 				"&redirect_uri=" + redirectUri;
 			sessionStorage.returnTo=document.location.href;
+			sessionStorage.returnActions=JSON.stringify(actions.getActions(this.$route) || []);
 			if (app.authorizationUrl.indexOf("?")>=0) parameters = "&"+parameters; else parameters = "?"+parameters;
 			document.location.href = app.authorizationUrl + encodeURI(parameters);
 		
@@ -147,6 +148,13 @@ export default {
 	
 	onAuthorized(url) {
 		const { $data, $route } = this, me = this;
+		
+		if (sessionStorage.returnActions) {
+			let actions = JSON.parse(sessionStorage.returnActions);
+			actions.restoreAfterLeave(actions);
+			delete sessionStorage.returnActions;
+		}
+		
 		var message = null;
 		var error = null;
 
