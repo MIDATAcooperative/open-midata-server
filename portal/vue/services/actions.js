@@ -36,6 +36,10 @@ import circles from './circles';
 		return true;
 	};
 	
+	service.restoreAfterLeave = function(ac) {
+		acarray = ac || acarray;
+	};
+	
 	service.addOut = function(outMsg) {
 		if (this.hasMore()) {
 		    outMsgs.push(outMsg);
