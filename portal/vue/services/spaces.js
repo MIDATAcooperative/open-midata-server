@@ -131,17 +131,23 @@ import actions from "./actions";
 						return apps.installPlugin(app._id, { applyRules : true, context : data.context, study : data.study })
 						.then(function(result) {				
 							//session.login();
+                            let query = {};
+                            let action = actions.getActions($route);
+                            if (action && action.length) query.actions = JSON.stringify(action); 
+                            
 							if (result.data && result.data._id) {
 								if (app.type === "oauth1" || app.type === "oauth2") {
-									$router.push({ path : "./importrecords", query : { "spaceId" : result.data._id, params : JSON.stringify(data.params) } });
+                                    Object.assign(query, { "spaceId" : result.data._id, params : JSON.stringify(data.params) }); 
+									$router.push({ path : "./importrecords", query : query });
 								} else { 
-									$router.push({ path : './spaces', query : { spaceId : result.data._id, user : data.user, params : JSON.stringify(data.params || {})  } });
+                                    Object.assign(query, { spaceId : result.data._id, user : data.user, params : JSON.stringify(data.params || {})  });
+									$router.push({ path : './spaces', query : query });
 								}
 							} else {
 								if (app.type === "external" || app.type === "service") {
-									$router.push({ path : './apps' });
+									$router.push({ path : './apps', query:query });
 								} else {					
-									$router.push({ path : "./timeline" });                         
+									$router.push({ path : "./timeline", query:query });                         
 								}
 								//$router.push({ path : './dashboard', query : { dashId : $scope.options.context } });
 							}
