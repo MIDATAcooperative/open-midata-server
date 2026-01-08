@@ -73,7 +73,7 @@ let studyById = {};
 	
 let tabs = [
     function(study) {
-        return study.participantSearchStatus == "SEARCHING";
+        return study.participantSearchStatus == "SEARCHING" && study.joinMethods.indexOf('PORTAL') >= 0;
     },
     function(study) {
         return study.pstatus == "ACCEPTED" && study.executionStatus == "RUNNING";

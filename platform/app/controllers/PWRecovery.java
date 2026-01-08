@@ -56,6 +56,7 @@ import utils.PasswordHash;
 import utils.RuntimeConstants;
 import utils.access.EncryptionUtils;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
@@ -104,6 +105,8 @@ public class PWRecovery extends APIController {
 	public Result storeRecoveryShare(Request request) throws AppException {
 		requireSubUserRole(request, SubUserRole.KEYRECOVERY);
 		
+		AccessContext context = portalContext(request);
+		
 		JsonNode json = request.body().asJson();		
 		JsonValidation.validate(json, "_id", "shares");	
 				
@@ -111,9 +114,12 @@ public class PWRecovery extends APIController {
 										
 		KeyRecoveryProcess proc = KeyRecoveryProcess.getById(user);
 		
-		if (proc == null) throw new InternalServerException("error.internal", "Unknown recovery process");		
-		proc.shares = JsonExtraction.extractStringMap(json.get("shares"));		
+		if (proc == null) throw new InternalServerException("error.internal", "Unknown recovery process");	
+		proc.shares = JsonExtraction.extractStringMap(json.get("shares"));	
+		
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_KEY_RECOVERY).withActor(context, context.getActor()).withModifiedActor(context, user).withMessage(proc.shares.keySet().toString()));
 		KeyRecoveryProcess.update(proc);
+		AuditManager.instance.success();
 		
 		return ok();
 	}
@@ -157,7 +163,6 @@ public class PWRecovery extends APIController {
 			provideServiceKey(context, user);
 			proc.nextPassword = null;
 		}
-		
 		
 		user.publicExtKey = proc.nextPublicExtKey;
 		user.password = proc.nextPassword;
