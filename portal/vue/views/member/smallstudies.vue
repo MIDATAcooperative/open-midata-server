@@ -15,17 +15,22 @@
  along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-    <div  class="autosize body" v-if="!isBusy">    
+	<panel :title="$t('smallstudies.studies')">
+	  <p>{{ $t('smallstudies.description') }}</p>
+	  <a :href="homepage" target="_blank" v-t="'footer.homepage'"></a>
+	</panel>
+    <div  class="autosize body" v-if="!isBusy && (counter[0]+counter[1]+counter[2]+counter[3])>0">    
         <div class="mb-2">
             <ul class="borderless nav nav-pills flex-column flex-sm-row">
-                <li class="nav-item" role="presentation"><a :class="{'active' : tab==0 }" class="nav-link" href="javascript:" @click="setTab(0)" v-t="'smallstudies.recruiting'">Home</a></li>
-                <li class="nav-item" role="presentation"><a :class="{'active' : tab==1 }" class="nav-link" href="javascript:" @click="setTab(1)" v-t="'smallstudies.ongoing'">Profile</a></li>
-                <li class="nav-item" role="presentation"><a :class="{'active' : tab==2 }" class="nav-link" href="javascript:" @click="setTab(2)" v-t="'smallstudies.completed'">Messages</a></li>
-                <li class="nav-item" role="presentation"><a :class="{'active' : tab==3 }" class="nav-link" href="javascript:" @click="setTab(3)" v-t="'smallstudies.stopped'">Messages</a></li>
+                <li v-if="counter[0]" class="nav-item" role="presentation"><a :class="{'active' : tab==0 }" class="nav-link" href="javascript:" @click="setTab(0)" v-t="'smallstudies.recruiting'">Home</a></li>
+                <li v-if="counter[1]" class="nav-item" role="presentation"><a :class="{'active' : tab==1 }" class="nav-link" href="javascript:" @click="setTab(1)" v-t="'smallstudies.ongoing'">Profile</a></li>
+                <li v-if="counter[2]" class="nav-item" role="presentation"><a :class="{'active' : tab==2 }" class="nav-link" href="javascript:" @click="setTab(2)" v-t="'smallstudies.completed'">Messages</a></li>
+                <li v-if="counter[3]" class="nav-item" role="presentation"><a :class="{'active' : tab==3 }" class="nav-link" href="javascript:" @click="setTab(3)" v-t="'smallstudies.stopped'">Messages</a></li>
             </ul>
         </div>
         <div class="tab-content">
-	        <div class="tab-pane active">	
+	        <div class="tab-pane active">
+				<p>{{ $t("smallstudies.tab"+tab) }}</p>	
                 <pagination v-model="results" search="studyName"></pagination>
                 <div class="" v-if="results && results.filtered && results.filtered.length > 0">                    
                     <table class="table table-hover">
@@ -67,13 +72,13 @@ import studies from 'services/studies.js';
 import server from 'services/server.js';
 import { rl, status, ErrorBox } from 'basic-vue3-components';
 import { getLocale } from 'services/lang.js';
-
+import ENV from "config";
 
 let studyById = {};
 	
 let tabs = [
     function(study) {
-        return study.participantSearchStatus == "SEARCHING" && study.joinMethods.indexOf('PORTAL') >= 0;
+        return study.participantSearchStatus == "SEARCHING" && (study.joinMethods || []).indexOf('PORTAL') >= 0;
     },
     function(study) {
         return study.pstatus == "ACCEPTED" && study.executionStatus == "RUNNING";
@@ -90,8 +95,19 @@ export default {
     data: () => ({       
         tab : 0,
         selection : null,
-        results : null
+        results : null,
+		homepage : ENV.homepage,		
 	}),				
+	
+	computed: {
+		counter() {
+			let r = [0,0,0,0];
+			for (let x of this.$data.results.all) {
+				for (let i=0;i<4;i++) if (tabs[i](x)) r[i]++;
+			}			
+			return r;
+		}
+	},
 
 	components : { ErrorBox, Panel },
 
@@ -108,7 +124,7 @@ export default {
 		    	    studyById[study.study] = study;
                     ids.push(study.study);
                 }
-		  
+		        if (ids.length>0) me.setTab(1);
 		    
                 me.doBusy(studies.search({ participantSearchStatus : "SEARCHING" }, ["name", "type", "infos", "description", "participantSearchStatus", "executionStatus", "createdAt", "joinMethods"]).
                 then(function (result) {

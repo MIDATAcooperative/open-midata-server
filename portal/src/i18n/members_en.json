@@ -81,6 +81,11 @@
   },
   
   "smallstudies" : {
+	"description" : "You may inform yourself about ongoing projects on the @PLATFORM homepage.",
+	"tab0" : "These projects are currently searching for participants through the @PLATFORM portal:",
+	"tab1" : "You are currently participating in these projects:",
+	"tab2" : "You have participated in these projects that have ended:",
+	"tab3" : "You have participated in these projects that have been aborted:",
     "greeting" : "Do you want to support a research project by sharing your data?",
     "studies" : "Projects",
     "status" : "Enrollment",

@@ -34,6 +34,7 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import models.Model;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.audit.AuditManager;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
@@ -123,6 +124,7 @@ public abstract class TransactionStep {
 		
 		if (e instanceof BaseServerResponseException) {
 			BaseServerResponseException e2 = (BaseServerResponseException) e;
+			AuditManager.instance.fail(e2.getStatusCode(), e2.getMessage(), "error.failed");
 		    response.setStatus(""+e2.getStatusCode());		
 		    IBaseOperationOutcome out = e2.getOperationOutcome();
 		    if (out != null) { response.setOutcome((Resource) out); }
@@ -135,15 +137,18 @@ public abstract class TransactionStep {
 		} else if (e instanceof BadRequestException) {
 			response.setStatus("400 "+e.getMessage());
 			response.setOutcome(outcomeFromException(e));
+			AuditManager.instance.fail(400, e.getMessage(), ((BadRequestException) e).getLocaleKey());
 			Stats.addComment("Transaction Bad Request: "+e.getMessage());
 		} else if (e instanceof InternalServerException) {
 			ErrorReporter.report("FHIR (transaction)", null, e);	
 			response.setStatus("500 "+e.getMessage());	
 			response.setOutcome(outcomeFromException(e));
+			AuditManager.instance.fail(500, e.getMessage(), ((InternalServerException) e).getLocaleKey());
 		} else {
 			ErrorReporter.report("FHIR (transaction)", null, e);
 			response.setStatus("500 "+e.getMessage());
 			response.setOutcome(outcomeFromException(e));
+			AuditManager.instance.fail(500, e.getMessage(), "error.failed");
 		}
 		result.setResponse(response);
 	}
