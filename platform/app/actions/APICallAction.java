@@ -29,6 +29,7 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.audit.AuditManager;
@@ -103,14 +104,14 @@ public class APICallAction extends Action<APICall> {
     		
     		
     	} catch (BadRequestException e5) {
-    		AuditManager.instance.fail(400, e5.getMessage(), e5.getLocaleKey());
+    		Errors.handleRequest("Portal", request, e5);    		
     		return withHeaders(CompletableFuture.completedFuture((Result) badRequest(
 				    Json.newObject()
                     .put("code", e5.getLocaleKey())
                     .put("message", e5.getMessage()))));
     	} catch (AuthException e3) {
     		if (e3.getRequiredSubUserRole() == null && e3.getRequiredFeature() == null) {
-    			ErrorReporter.report("Portal", request, e3);
+    			Errors.handleRequest("Portal", request, e3);    			
     			return withHeaders(CompletableFuture.completedFuture((Result) forbidden(e3.getMessage())));
     		} else {
     			ObjectNode node = Json.newObject();
@@ -120,22 +121,19 @@ public class APICallAction extends Action<APICall> {
     			return withHeaders(CompletableFuture.completedFuture((Result) forbidden(node)));
     		}
     	} catch (PluginException e3) {
-    		ErrorReporter.reportPluginProblem("Portal", request, e3);
-    		AuditManager.instance.fail(400, e3.getMessage(), null);
+    		Errors.handleRequest("Portal", request, e3);    		
     		return withHeaders(CompletableFuture.completedFuture((Result) badRequest(
 				    Json.newObject()
                     .put("code", e3.getLocaleKey())
                     .put("message", e3.getMessage()))));
-    	} catch (InternalServerException e4) {	
-			ErrorReporter.report("Portal", request, e4);
-			AuditManager.instance.fail(500, e4.getMessage(), null);
+    	} catch (InternalServerException e4) {
+    		Errors.handleRequest("Portal", request, e4);			
 			return withHeaders(CompletableFuture.completedFuture((Result) internalServerError(
 				    Json.newObject()
                     .put("code", e4.getLocaleKey())
                     .put("message", e4.getMessage()))));					
-		} catch (Exception e2) {	
-			ErrorReporter.report("Portal", request, e2);
-			AuditManager.instance.fail(500, e2.getMessage(), null);
+		} catch (Exception e2) {
+			Errors.handleRequest("Portal", request, e2);			
 			return withHeaders(CompletableFuture.completedFuture((Result) internalServerError("an internal error occured")));			
 		} finally {
 			long endTime = System.currentTimeMillis();

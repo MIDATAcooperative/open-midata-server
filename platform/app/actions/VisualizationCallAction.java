@@ -26,6 +26,7 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.audit.AuditManager;
@@ -101,22 +102,19 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     		return withHeaders(origin, CompletableFuture.completedFuture((Result) status(202, e4.getMessage())));
     	} catch (BadRequestException e3) {
     		Stats.finishRequest(request, e3.getStatusCode()+"");
-    		AuditManager.instance.fail(400, e3.getMessage(), e3.getLocaleKey());
+    		Errors.handleRequest("Plugin API", request, e3);    		
     		return withHeaders(origin, CompletableFuture.completedFuture((Result) badRequest(e3.getMessage())));
     	} catch (PluginException e4) {
-    		ErrorReporter.reportPluginProblem("Plugin API", request, e4);
-    		Stats.finishRequest(request, "400");
-    		AuditManager.instance.fail(400, e4.getMessage(), e4.getLocaleKey());
+    		Errors.handleRequest("Plugin API", request, e4);    		
+    		Stats.finishRequest(request, "400");    		
     		return withHeaders(origin, CompletableFuture.completedFuture((Result) badRequest(e4.getMessage())));
-    	} catch (InternalServerException e5) {					
-			ErrorReporter.report("Plugin API", request, e5);
-			Stats.finishRequest(request, "500");
-			AuditManager.instance.fail(500, e5.getMessage(), null);
+    	} catch (InternalServerException e5) {	
+    		Errors.handleRequest("Plugin API", request, e5);			
+			Stats.finishRequest(request, "500");			
 			return withHeaders(origin, CompletableFuture.completedFuture((Result) internalServerError("err:"+e5.getMessage())));	
-		} catch (Exception e2) {					
-			ErrorReporter.report("Plugin API", request, e2);
-			Stats.finishRequest(request, "500");
-			AuditManager.instance.fail(500, e2.getMessage(), null);
+		} catch (Exception e2) {				
+			Errors.handleRequest("Plugin API", request, e2);			
+			Stats.finishRequest(request, "500");			
 			return withHeaders(origin, CompletableFuture.completedFuture((Result) internalServerError("an internal error occured")));			
 		} finally {
 			long endTime = System.currentTimeMillis();

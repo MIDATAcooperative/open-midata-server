@@ -362,8 +362,7 @@ class MonitoringReporterActor extends AbstractActor {
 		try {			
 		   closeTimeslot(currentTimeslot);		 
 		} catch (Exception e) {
-			AccessLog.logException("MonitoringReporterActor", e);
-			ErrorReporter.report("MonitoringReporterActor", null, e);				
+			Errors.handleAllFatal("MonitoringReporterActor", null, e);				
 		} finally {
 		    currentTimeslot = getCurrentTimeslot();
 			ServerTools.endRequest();	

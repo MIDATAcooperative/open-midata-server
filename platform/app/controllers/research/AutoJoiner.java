@@ -147,7 +147,7 @@ class AutoJoinerActor extends AbstractActor {
 			}
 					
 		} catch (Exception e) {
-			ErrorReporter.report("AutoJoiner", null, e);	
+			Errors.handleAllFatal("AutoJoiner", null, e);	
 			throw e;
 		} finally {
 			ServerTools.endRequest();

@@ -119,6 +119,7 @@ import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ConsentQueryTools;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.ProjectTools;
 import utils.RuntimeConstants;
@@ -452,7 +453,7 @@ public class Studies extends APIController {
 						// System.out.println("next = "+v);
 						return v;
 					} catch (Exception e) {
-						ErrorReporter.report("study export", null, e);
+						Errors.handleAllFatal("study export", null, e);
 						throw new RuntimeException(e);
 					}
 				}
@@ -529,7 +530,7 @@ public class Studies extends APIController {
 						System.out.println(AccessLog.getReport());
 						e.printStackTrace();
 						if (e instanceof Exception)
-							ErrorReporter.report("study export", null, (Exception) e);
+							Errors.handleAllFatal("study export", null, (Exception) e);
 						throw new RuntimeException(e);
 					} finally {
 						// System.out.println("FINALLY:"+AccessLog.getReport());

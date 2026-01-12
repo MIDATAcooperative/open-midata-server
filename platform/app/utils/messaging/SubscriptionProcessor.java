@@ -213,8 +213,7 @@ public class SubscriptionProcessor extends AbstractActor {
 				   SubscriptionData.setError(subscription, new Date().toString()+": "+error);
 				   AuditManager.instance.fail(400, error, "error.plugin");
 			   } catch (Exception e) {
-				   AccessLog.logException("Error during Subscription.setError", e);				   
-				   ErrorReporter.report("SubscriptionManager", null, e);
+				   Errors.handleAllFatal("SubscriptionManager", null, e);
 			   } finally {
 				   ServerTools.endRequest();
 			   }
@@ -435,8 +434,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			   try {
 				   SubscriptionData.fail(subscription._id);
 				   SubscriptionData.setError(subscription._id, new Date().toString()+": "+error);
-				   AuditManager.instance.fail(400, error, "error.plugin");
-				   ErrorReporter.reportPluginProblem("subscription script", null, new PluginException(plugin._id, "error.plugin", error));
+				   Errors.handle("subscription script", null, new PluginException(plugin._id, "error.plugin", error));
 			   } catch (Exception e) {
 				   Errors.handleAllFatal("Error during Subscription.setError", null, e);				   
 			   } finally {

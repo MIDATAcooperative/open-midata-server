@@ -109,19 +109,19 @@ public class Transactions {
 				     step.prepare();
 				   } catch (BaseServerResponseException e) {
 					 failed = true;
-					 step.setResultBasedOnException(e);					 
+					 step.setResultBasedOnException(inf, e);					 
 					 throw e;
 				   } catch (BadRequestException e1) {
 					  failed = true;
-					 step.setResultBasedOnException(e1);
+					 step.setResultBasedOnException(inf, e1);
 					 throw new UnprocessableEntityException(e1.getMessage());
 				   } catch (AppException e2) {					   
 					 failed = true;
-					  step.setResultBasedOnException(e2);
+					  step.setResultBasedOnException(inf, e2);
 					 throw e2;
 				   } catch (NullPointerException e3) {
 					  failed = true;
-					  step.setResultBasedOnException(e3);
+					  step.setResultBasedOnException(inf, e3);
 					 throw e3;
 				   }
 			   }		   
@@ -130,10 +130,10 @@ public class Transactions {
 			    	 try {
 			    	 step.execute();
 			    	 } catch (Exception e) {
-			    		 if (!failed && e instanceof PluginException) {
+			    		 /*if (!failed && e instanceof PluginException) {
 			    			 ErrorReporter.reportPluginProblem("FHIR Transaction", null, (PluginException) e); 
-			    		 }
-			    		 step.setResultBasedOnException(e);
+			    		 }*/
+			    		 step.setResultBasedOnException(inf, e);
 			    		 failed = true;
 			    	 }
 			     }
@@ -147,12 +147,12 @@ public class Transactions {
 				     step.prepare();
 				     step.execute();
 				   } catch (BaseServerResponseException e) {
-					  step.setResultBasedOnException(e);			
+					  step.setResultBasedOnException(inf, e);			
 				   } catch (AppException e2) {
-					   if (!failed && e2 instanceof PluginException) {
+					   /*if (!failed && e2 instanceof PluginException) {
 						   ErrorReporter.reportPluginProblem("FHIR Batch", null, (PluginException) e2);
-					   }
-					  step.setResultBasedOnException(e2);
+					   }*/
+					  step.setResultBasedOnException(inf, e2);
 					  failed = true;
 				   }
 			   }

@@ -425,7 +425,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 				  ContentTypeTools.setRecordCodeAndContent(info(), record, null, defaultContent, display);
 			  }
 		  } catch (PluginException e) {
-			    ErrorReporter.reportPluginProblem("FHIR (set record code)", null, e);	
+			    Errors.handle("FHIR (set record code)", info(), e);	
 				throw new UnprocessableEntityException("Error determining MIDATA record code.");
 		  }
 		  return display;

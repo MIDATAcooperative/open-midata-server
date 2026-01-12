@@ -582,8 +582,7 @@ class SubscriptionChecker extends AbstractActor {
 						  AccessLog.log("non matching external API consent:"+consent._id);
 					  }
 					} catch (Exception e) {
-					  ErrorReporter.report("Subscripion processing", null, e);
-					  AccessLog.logException("subscription processing", e);
+					  Errors.handleAllFatal("Subscripion processing", null, e);					  
 					}
 				}
 			} else AccessLog.log("no external APIs found.");				
@@ -627,8 +626,7 @@ class SubscriptionChecker extends AbstractActor {
 			}
 		}
 		} catch (Exception e) {
-			ErrorReporter.report("Subscripion processing", null, e);
-			AccessLog.logException("subscription processing", e);
+			Errors.handleAllFatal("Subscripion processing", null, e);			
 		} finally {
 			if (triggerStatus != null && triggerStatus.running<=0) {
 				triggerStatus.getStarter().tell(new SubscriptionsDoneMessage(triggerStatus.getTransactionId()), getSelf());

@@ -24,9 +24,11 @@ import utils.audit.AuditManager;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.DoNotLogError;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 import utils.exceptions.RequestTooLargeException;
+import play.mvc.Http.Request;
 
 public class Errors {
 
@@ -36,11 +38,22 @@ public class Errors {
 	}
 	
 	public static RuntimeException handle(String action, AccessContext context, Exception ex) {
+		return handle(action, context, null, ex);
+	}
+	
+	public static RuntimeException handleRequest(String action, Request request, Exception ex) {
+		return handle(action, null, request, ex);
+	}
+	
+	public static RuntimeException handle(String action, AccessContext context, Request request, Exception ex) {
+		
 	    try {
 		    throw ex;
-		} catch (BaseServerResponseException e) {
-			log(action, context, 400, e.getClass().getName()+": "+e.getMessage());
+		} catch (BaseServerResponseException e) {			
 			AuditManager.instance.fail(400, e.getMessage(), "error.failed");
+			if (! (e instanceof DoNotLogError)) {
+				log(action, context, 400, e.getClass().getName()+": "+e.getMessage());	
+			}			
 			return e;
 		} catch (RequestTooLargeException e2) {
 			log(action, context, 400, e2.getClass().getName()+": "+e2.getMessage());
@@ -52,17 +65,17 @@ public class Errors {
 		} catch (PluginException e4) {
 			log(action, context, 500, e4.getClass().getName()+": "+e4.getMessage());
 			AuditManager.instance.fail(500, e4.getMessage(), e4.getLocaleKey());
-			ErrorReporter.reportPluginProblem(action, null, e4);
+			ErrorReporter.reportPluginProblem(action, request, e4);
 			return new InternalErrorException(e4);
 		} catch (InternalServerException e3) {
 			log(action, context, 500, e3.getClass().getName()+": "+e3.getMessage());
 			AuditManager.instance.fail(500, e3.getMessage(), e3.getLocaleKey());
-			ErrorReporter.report(action, null, e3);
+			ErrorReporter.report(action, request, e3);
 			return new InternalErrorException(e3.getMessage());
 		} catch (Exception e4) {
 			log(action, context, 500, e4.getClass().getName()+": "+e4.getMessage());
 			AuditManager.instance.fail(500, e4.getMessage(), "error.failed");
-			ErrorReporter.report(action, null, e4);
+			ErrorReporter.report(action, request, e4);
 			return new InternalErrorException("internal error during "+action);
 		}		
 	}

@@ -34,7 +34,9 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import models.Model;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.audit.AuditManager;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
@@ -117,38 +119,29 @@ public abstract class TransactionStep {
 	 * Convert and store an exception from HAPI FHIR into a bundle entry component to be returned for transactions/batches
 	 * @param e
 	 */
-	public void setResultBasedOnException(Exception e) {
+	public void setResultBasedOnException(AccessContext context, Exception e) {
 		result = new BundleEntryComponent();
 		AccessLog.log("SET RESULT BASED ON EXCEPTION:"+e.getClass().getName());
+		Errors.handle("Transaction error", context, e);
 		BundleEntryResponseComponent response = new BundleEntryResponseComponent();		
 		
 		if (e instanceof BaseServerResponseException) {
-			BaseServerResponseException e2 = (BaseServerResponseException) e;
-			AuditManager.instance.fail(e2.getStatusCode(), e2.getMessage(), "error.failed");
+			BaseServerResponseException e2 = (BaseServerResponseException) e;			
 		    response.setStatus(""+e2.getStatusCode());		
 		    IBaseOperationOutcome out = e2.getOperationOutcome();
 		    if (out != null) { response.setOutcome((Resource) out); }
-		    else response.setOutcome(outcomeFromException(e));
-		    /*else {
-		    	Throwable cause = e2.getCause();
-		    	if (cause != null && cause instanceof Exception) response.setOutcome(outcomeFrom)
-		    }*/
+		    else response.setOutcome(outcomeFromException(e));		    
 		    Stats.addComment("Transaction-Error: "+e2.getStatusCode()+" "+e2.getMessage());
 		} else if (e instanceof BadRequestException) {
 			response.setStatus("400 "+e.getMessage());
-			response.setOutcome(outcomeFromException(e));
-			AuditManager.instance.fail(400, e.getMessage(), ((BadRequestException) e).getLocaleKey());
+			response.setOutcome(outcomeFromException(e));			
 			Stats.addComment("Transaction Bad Request: "+e.getMessage());
-		} else if (e instanceof InternalServerException) {
-			ErrorReporter.report("FHIR (transaction)", null, e);	
+		} else if (e instanceof InternalServerException) {			
 			response.setStatus("500 "+e.getMessage());	
-			response.setOutcome(outcomeFromException(e));
-			AuditManager.instance.fail(500, e.getMessage(), ((InternalServerException) e).getLocaleKey());
-		} else {
-			ErrorReporter.report("FHIR (transaction)", null, e);
+			response.setOutcome(outcomeFromException(e));			
+		} else {			
 			response.setStatus("500 "+e.getMessage());
-			response.setOutcome(outcomeFromException(e));
-			AuditManager.instance.fail(500, e.getMessage(), "error.failed");
+			response.setOutcome(outcomeFromException(e));			
 		}
 		result.setResponse(response);
 	}
