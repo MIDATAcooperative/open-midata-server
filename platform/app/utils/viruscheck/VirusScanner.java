@@ -30,6 +30,7 @@ import com.typesafe.config.Config;
 
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.exceptions.InternalServerException;
 
@@ -73,8 +74,8 @@ public class VirusScanner {
 	public String scan(InputStream inputStream) throws InternalServerException {
 		try {
 		  return scan(inputStream, this.address, this.timeout);
-		} catch (IOException e) {			
-			ErrorReporter.report("VirusScanner", null, e);
+		} catch (IOException e) {
+			Errors.handle("VirusScanner", null, e);
 			AccessLog.logException("Virus Scanner IO", e);
 			throw new InternalServerException("error.internal", "IO Problem while scanning for virus");
 		}

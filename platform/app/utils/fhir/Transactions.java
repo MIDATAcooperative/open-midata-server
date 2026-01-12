@@ -46,6 +46,7 @@ import models.MidataId;
 import models.Model;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -58,7 +59,7 @@ public class Transactions {
 
 	@Transaction
 	public Bundle transaction(@TransactionParam Bundle theInput) {
-		
+	   AccessContext inf = null;
 	   try {
 	   BundleType type = theInput.getType();
 	   if (type == null) throw new UnprocessableEntityException("No type given for Bundle!");
@@ -134,7 +135,7 @@ public class Transactions {
 	   steps.addAll(lateSteps);
 	   lateSteps = null;
 	   	  
-	   AccessContext inf = ResourceProvider.info();
+	   inf = ResourceProvider.info();
 	   inf.getRequestCache().getStudyPublishBuffer().setLazy(true);
 	   
 	   try {
@@ -226,16 +227,11 @@ public class Transactions {
 	   
 	   for (TransactionStep step : originalOrder) retVal.addEntry(step.getResult());	   
 	   return retVal;
-	   } catch (BaseServerResponseException e2) {
-		   throw e2;
 	   } catch (BadRequestException e4) {
+		   Errors.handle("FHIR Transaction", inf, e4);
 		   throw new InvalidRequestException(e4.getMessage(), TransactionStep.outcomeFromException(e4));
-	   } catch (PluginException e3) {
-		   ErrorReporter.reportPluginProblem("FHIR Transaction", null, e3);
-		   throw new InternalErrorException(e3.getMessage());
-	   } catch (Exception e) {
-		   ErrorReporter.report("FHIR Transaction", null, e);
-		   throw new InternalErrorException(e.getMessage());
+	   } catch (Exception e3) {
+		   throw Errors.handle("FHIR Transaction", inf, e3);
 		   
 	   }
 	}

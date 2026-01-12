@@ -38,6 +38,7 @@ import models.Plugin;
 import models.RecordGroup;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.collections.Sets;
 import utils.messaging.ServiceHandler;
@@ -192,7 +193,7 @@ class InstanceSync extends AbstractActor {
 			   ServiceHandler.shareKey();
 		   }
 		} catch (Exception e) {
-			ErrorReporter.report("Messager", null, e);	
+			Errors.handle("Messager", null, e);
 			throw e;
 		} finally {			
 			AccessLog.newRequest();	

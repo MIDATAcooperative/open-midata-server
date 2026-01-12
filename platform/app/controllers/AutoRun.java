@@ -56,6 +56,7 @@ import models.enums.UserRole;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.ServerTools;
@@ -331,7 +332,7 @@ public class AutoRun extends APIController {
 											sender.tell(new ImportResult(-1, "Authorization failed (OAuth2)", plugin.filename), getSelf());
 										}
 									} catch (IOException e) {
-										ErrorReporter.report("Autorun-Service", null, e);
+										Errors.handleAllFatal("Autorun-Service", null, e);
 									}
 								});
 		
@@ -366,7 +367,7 @@ public class AutoRun extends APIController {
 					
 					}
 		    	} catch (Exception e) {
-		    		ErrorReporter.report("Autorun-Service", null, e);	
+		    		Errors.handleAllFatal("Autorun-Service", null, e);	
 		    		throw e;
 		    	} finally {
 		    		ServerTools.endRequest();	
@@ -530,7 +531,7 @@ public class AutoRun extends APIController {
 					   file.delete();
 				   }
 				} catch (AppException e) {
-					ErrorReporter.report("remove unlinked files", null, e);
+					Errors.handleAllFatal("remove unlinked files", null, e);
 					errorCount++;
 				}
 				
@@ -540,7 +541,7 @@ public class AutoRun extends APIController {
 				   Administration.createStats();
 				   openRecoveries = (int) KeyRecoveryProcess.count();
 				} catch (AppException e) {
-					ErrorReporter.report("stats service", null, e);
+					Errors.handleAllFatal("stats service", null, e);
 					errorCount++;
 				}
 				
@@ -571,7 +572,7 @@ public class AutoRun extends APIController {
 				
 				if (countNewImports == 0) reportEnd();
 			} catch (Exception e) {
-				ErrorReporter.report("Autorun-Service", null, e);	
+				Errors.handleAllFatal("Autorun-Service", null, e);	
 				throw e;
 			} finally {
 				ServerTools.endRequest();	
@@ -636,7 +637,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				AccessLog.log("Done scheduling new autoimport size="+datas.size());
 									
 			} catch (Exception e) {
-				ErrorReporter.report("Autorun-Service", null, e);	
+				Errors.handleAllFatal("Autorun-Service", null, e);	
 				throw e;
 			} finally {
 				ServerTools.endRequest();		

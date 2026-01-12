@@ -62,6 +62,7 @@ import models.Model;
 import models.Record;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.QueryTagTools;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
@@ -145,18 +146,8 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 			  } else params.setFrom(null);
 			} while (params.getFrom() != null);
 			return count;
-	 	} catch (InternalServerException e3) {
-	 	   AuditManager.instance.fail(500, e3.getMessage(), e3.getLocaleKey());
-		   ErrorReporter.report("FHIR (count)", null, e3);
-		   throw new InternalErrorException("Internal error during search (count)");
-	    } catch (AppException e) {
-	    	AuditManager.instance.fail(400, e.getMessage(), e.getLocaleKey());
-	       ErrorReporter.report("FHIR (count)", null, e);	      
-		   throw new InvalidRequestException(e.getMessage());
-	    } catch (NullPointerException e2) {
-	    	AuditManager.instance.fail(500, e2.getMessage(), "error.failed");
-			ErrorReporter.report("FHIR (count)", null, e2);	 
-			throw new InternalErrorException("internal error during FHIR search (count)");
+	 	} catch (Exception e3) {
+	 		throw Errors.handle("FHIR (count)", info(), e3);
 		}
 	}
 	
@@ -310,21 +301,9 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		   }
 		   
 		   return results;
-
-		} catch (RequestTooLargeException e2) {
-			throw e2;
-		} catch (InternalServerException e3) {
-		   AuditManager.instance.fail(500, e3.getMessage(), e3.getLocaleKey());
-		   ErrorReporter.report("FHIR (search)", null, e3);
-		   throw new InternalErrorException("Internal error during search");
-	    } catch (AppException e) {
-	    	AuditManager.instance.fail(400, e.getMessage(), e.getLocaleKey());
-	       ErrorReporter.report("FHIR (search)", null, e);	      
-		   throw new InvalidRequestException(e.getMessage());
-	    } catch (NullPointerException e2) {
-	    	AuditManager.instance.fail(500, e2.getMessage(), "error.failed");
-			ErrorReporter.report("FHIR (search)", null, e2);	 
-			throw new InternalErrorException("internal error during FHIR search");
+		} catch (Exception e3) {
+			throw Errors.handle("FHIR (search)", info(), e3);
+		  
 		}
      }
 	

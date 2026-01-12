@@ -65,6 +65,7 @@ import models.enums.AuditEventType;
 import utils.AccessLog;
 import utils.ContentTypeTools;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.QueryTagTools;
 import utils.TestAccountTools;
 import utils.access.EncryptedFileHandle;
@@ -255,12 +256,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			   }
 			}		
 			return record;
-		} catch (AppException e) {
-			ErrorReporter.report("FHIR (fetch current record)", null, e);	 
-			throw new InternalErrorException(e);
-		} catch (NullPointerException e2) {
-			ErrorReporter.report("FHIR (fetch current record)", null, e2);	 
-			throw new InternalErrorException(e2);
+		} catch (Exception e) {
+			throw Errors.handle("FHIR (fetch current record STU3)", info(), e);
 		}
 	}
 	

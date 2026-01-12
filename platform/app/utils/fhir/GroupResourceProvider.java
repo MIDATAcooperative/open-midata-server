@@ -75,6 +75,7 @@ import models.enums.ConsentStatus;
 import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.QueryTagTools;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -337,12 +338,11 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 			//AccessLog.log("non resource size="+result.size());
 			return result;
 		 } catch (AppException e) {
-		       ErrorReporter.report("FHIR (search)", null, e);	       
+			   Errors.handle("FHIR (search)", info(), e);     
 			   return null;
-		 } catch (NullPointerException e2) {
-		   	    ErrorReporter.report("FHIR (search)", null, e2);	 
-				throw new InternalErrorException("internal error during FHIR search");
-		}
+		 } catch (Exception e2) {
+		   	    throw Errors.handle("FHIR (search)",  info(), e2);
+		 }
 	}
 	
 	@Override
@@ -361,7 +361,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 					if (group.fhirGroup != null) result.add(readGroupFromMidataUserGroup(group, addMembers));
 				}
 			} catch (AppException e) {
-			    ErrorReporter.report("FHIR (search)", null, e);	       
+				Errors.handle("FHIR (search)", info(), e);
 			    return null;
 			}
 			

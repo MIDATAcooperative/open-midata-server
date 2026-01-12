@@ -55,6 +55,7 @@ import play.mvc.Security;
 import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.ServerTools;
 import utils.access.DBIterator;
 import utils.access.RecordManager;
@@ -260,7 +261,7 @@ public class CSVDownload extends APIController {
 						boolean v = itNext || converter.hasData();					
 						return v;
 					} catch (Exception e) {
-						ErrorReporter.report("study export", null, e);
+						Errors.handleAllFatal("study export", null, e);
 						throw new RuntimeException(e);
 					}
 				}
@@ -343,7 +344,7 @@ public class CSVDownload extends APIController {
 						System.out.println(AccessLog.getReport());
 						e.printStackTrace();
 						if (e instanceof Exception)
-							ErrorReporter.report("study export", null, (Exception) e);
+							Errors.handleAllFatal("study export", null, (Exception) e);
 						throw new RuntimeException(e);
 					} finally {
 						// System.out.println("FINALLY:"+AccessLog.getReport());

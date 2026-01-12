@@ -43,6 +43,7 @@ import org.apache.pekko.util.ByteString;
 import models.MidataId;
 import models.Plugin;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.ServerTools;
 import utils.exceptions.AppException;
 import utils.messaging.AccountWipeMessage;
@@ -75,8 +76,8 @@ public class MultiServerContainer extends AbstractContainer {
 		long st = ActionRecorder.start(path);
 		try {
 			defaultMessages(msg);
-		} catch (AppException e) {			
-		   ErrorReporter.report("MultiServerContainer", null, e);
+		} catch (Exception e) {			
+		   Errors.handleAllFatal("MultiServerContainer", null, e);
 		} finally {
 		  ServerTools.endRequest();
 		  ActionRecorder.end(path, st);

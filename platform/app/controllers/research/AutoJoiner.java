@@ -38,6 +38,7 @@ import models.enums.StudyExecutionStatus;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.RecordManager;
@@ -123,7 +124,7 @@ class AutoJoinerActor extends AbstractActor {
 								try {
 									throw new InternalServerException("error.internal", "Missing service key for study:"+theStudy.code+"("+theStudy.name+")");
 								} catch (InternalServerException e) {
-									ErrorReporter.report("Auto-Join", null, e);
+									Errors.handleAllFatal("Auto-Join", null, e);
 								}
 								return;
 							}
@@ -194,7 +195,7 @@ class AutoJoinerActor extends AbstractActor {
 				}
 						
 			} catch (Exception e) {
-				ErrorReporter.report("AutoJoiner", null, e);	
+				Errors.handleAllFatal("AutoJoiner", null, e);	
 				throw e;
 			} finally {
 				ServerTools.endRequest();

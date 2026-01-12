@@ -34,6 +34,7 @@ import models.stats.PluginDevStats;
 import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.ServerTools;
 
@@ -224,7 +225,7 @@ class StatsRecorder extends AbstractActor {
 			
 			stats.update();	
 		} catch (Exception e) {
-			ErrorReporter.report("Messager", null, e);	
+			Errors.handle("Messager", null, e);	
 			throw e;
 		} finally {
 			ServerTools.endRequest();	

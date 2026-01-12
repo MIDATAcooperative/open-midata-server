@@ -67,6 +67,7 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.TestAccountTools;
@@ -697,7 +698,7 @@ public class Plugins extends APIController {
 						return badRequest("Access token not found.");
 					}
 				} catch (AppException e) {
-					ErrorReporter.report("oauth2", null, e);
+					Errors.handleAllFatal("oauth2", context, e);
 					return internalServerError("Error requesting access token");
 				} finally {
 					ServerTools.endRequest();

@@ -33,6 +33,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.Model;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.audit.AuditManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -50,25 +51,8 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 
 		try {
 			return create(theResource);
-		} catch (BaseServerResponseException e) {
-			AuditManager.instance.fail(400, e.getMessage(), "error.failed");
-			throw e;
-		} catch (BadRequestException e2) {
-			AuditManager.instance.fail(400, e2.getMessage(), e2.getLocaleKey());
-			throw new InvalidRequestException(e2.getMessage());
-		} catch (PluginException e4) {
-			AuditManager.instance.fail(500, e4.getMessage(), e4.getLocaleKey());
-			ErrorReporter.reportPluginProblem("FHIR (create resource)", null, e4);
-			throw new InternalErrorException(e4);
-		} catch (InternalServerException e3) {
-			AuditManager.instance.fail(500, e3.getMessage(), e3.getLocaleKey());
-			ErrorReporter.report("FHIR (create resource)", null, e3);
-			throw new InternalErrorException(e3.getMessage());
-		} catch (Exception e4) {
-			e4.printStackTrace();
-			AuditManager.instance.fail(500, e4.getMessage(), "error.failed");
-			ErrorReporter.report("FHIR (create resource)", null, e4);
-			throw new InternalErrorException("internal error during create resource");
+		} catch (Exception e) {
+			throw Errors.handle("FHIR (create resource)", info(), e);
 		}		
 
 	}
@@ -84,24 +68,8 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 		try {
 			if (theId.getVersionIdPart() == null && (theResource.getMeta() == null || theResource.getMeta().getVersionId() == null)) throw new PreconditionFailedException("Resource version missing!");
 			return update(theId, theResource);
-		} catch (BaseServerResponseException e) {
-			AuditManager.instance.fail(400, e.getMessage(), "error.failed");
-			throw e;
-		} catch (BadRequestException e2) {
-			AuditManager.instance.fail(400, e2.getMessage(), e2.getLocaleKey());
-			throw new InvalidRequestException(e2.getMessage());
-		} catch (PluginException e4) {
-			AuditManager.instance.fail(500, e4.getMessage(), e4.getLocaleKey());
-			ErrorReporter.reportPluginProblem("FHIR (update resource)", null, e4);
-			throw new InternalErrorException(e4);
-		} catch (InternalServerException e3) {
-			AuditManager.instance.fail(500, e3.getMessage(), e3.getLocaleKey());
-			ErrorReporter.report("FHIR (update resource)", null, e3);
-			throw new InternalErrorException(e3.getMessage());
-		} catch (Exception e4) {
-			AuditManager.instance.fail(500, e4.getMessage(), "error.failed");
-			ErrorReporter.report("FHIR (update resource)", null, e4);
-			throw new InternalErrorException("internal error during update resource");
+		} catch (Exception e) {
+			throw Errors.handle("FHIR (update resource)", info(), e);
 		}		
 
 	}

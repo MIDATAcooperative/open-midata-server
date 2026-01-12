@@ -65,6 +65,7 @@ import models.SubscriptionData;
 import utils.AccessLog;
 import utils.ConsentQueryTools;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.access.Feature_FormatGroups;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
@@ -289,17 +290,9 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Subscription theSubscription) {		
 		try {			
 			return update(theId, theSubscription);
-		} catch (BaseServerResponseException e) {
-			throw e;
-		} catch (BadRequestException e2) {
-			throw new InvalidRequestException(e2.getMessage());
-		} catch (InternalServerException e3) {
-			ErrorReporter.report("FHIR (update resource)", null, e3);
-			throw new InternalErrorException(e3);
-		} catch (Exception e4) {
-			ErrorReporter.report("FHIR (update resource)", null, e4);
-			throw new InternalErrorException(e4);
-		}	
+		} catch (Exception e) {
+			throw Errors.handle("FHIR (update resource STU3)", info(), e);
+		} 
 	}
 				
 	

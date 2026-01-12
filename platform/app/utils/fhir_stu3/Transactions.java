@@ -43,6 +43,7 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -55,7 +56,7 @@ public class Transactions {
 
 	@Transaction
 	public Bundle transaction(@TransactionParam Bundle theInput) {
-		
+	   AccessContext inf = null;
 	   try {
 	   BundleType type = theInput.getType();
 	   if (type == null) throw new UnprocessableEntityException("No type given for Bundle!");
@@ -93,7 +94,7 @@ public class Transactions {
 		   
 	   }
 	   	  
-	   AccessContext inf = ResourceProvider.info();
+	   inf = ResourceProvider.info();
 	   inf.getRequestCache().getStudyPublishBuffer().setLazy(true);
 	   
 	   try {
@@ -163,16 +164,9 @@ public class Transactions {
 	   Bundle retVal = new Bundle();		 
 	   for (TransactionStep step : steps) retVal.addEntry(step.getResult());	   
 	   return retVal;
-	   } catch (BaseServerResponseException e2) {
-		   throw e2;
-	   } catch (PluginException e3) {
-		   ErrorReporter.reportPluginProblem("FHIR Transaction", null, e3);
-		   throw new InternalErrorException(e3.getMessage());
-	   } catch (Exception e) {
-		   ErrorReporter.report("FHIR Transaction", null, e);
-		   throw new InternalErrorException(e.getMessage());
-		   
-	   }
+	   } catch (Exception e2) {
+		   throw Errors.handle("FHIR Transaction STU3", inf, e2);
+	   } 
 	}
 	
 	

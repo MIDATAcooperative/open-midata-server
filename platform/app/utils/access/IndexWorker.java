@@ -27,6 +27,7 @@ import models.MidataId;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.ServerTools;
 import utils.access.index.BaseIndexRoot;
 import utils.access.index.IndexDefinition;
@@ -122,7 +123,7 @@ public class IndexWorker extends AbstractActor {
 			  }
 							
 		} catch (Exception e) {
-			ErrorReporter.report("Messager", null, e);	
+			Errors.handleAllFatal("indexUpdate", null, e);	
 			throw e;
 		} finally {
 			AccessLog.logEnd("END INDEX UPDATE");
@@ -153,7 +154,7 @@ public class IndexWorker extends AbstractActor {
 			  IndexManager.instance.removeRecords(cache, executor, msg.getRecords(), msg.getIndexId(), msg.getCondition(), pseudo);
 				
 		} catch (Exception e) {
-			ErrorReporter.report("Messager", null, e);	
+			Errors.handleAllFatal("indexRemove", null, e);	
 			throw e;
 		} finally {
 			AccessLog.logEnd("END INDEX UPDATE");

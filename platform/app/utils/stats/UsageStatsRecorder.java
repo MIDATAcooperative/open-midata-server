@@ -38,6 +38,7 @@ import models.enums.UsageAction;
 import models.stats.UsageStats;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.InternalServerException;
@@ -175,7 +176,7 @@ class UsageStatsActor extends AbstractActor {
 				stat.date = today;
 				stat.add();
 			} catch (InternalServerException e) {
-				ErrorReporter.report("usage stats writer", null, e);
+				Errors.handleAllFatal("usage stats writer", null, e);
 			}
 		}
 		today = today();
