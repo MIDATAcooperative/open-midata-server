@@ -36,7 +36,7 @@ import play.Logger.ALogger;
 import utils.exceptions.AuthException;
 
 /**
- * Intra-Request logging
+ * Intra-Request logging 
  *
  */
 public class AccessLog {
