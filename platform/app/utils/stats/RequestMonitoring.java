@@ -47,6 +47,7 @@ import models.stats.MonitoringStats;
 import models.stats.MonitoringType;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.ServerTools;
@@ -348,8 +349,7 @@ class MonitoringReporterActor extends AbstractActor {
 				stats.upsert();
 			}	
 		} catch (Exception e) {
-			AccessLog.logException("MonitoringReporterActor", e);
-			ErrorReporter.report("MonitoringReporterActor", null, e);	
+			Errors.handleAllFatal("MonitoringReporterAction", null, e);
 		} finally {
 			ServerTools.endRequest();	
 			ActionRecorder.end(path, st);
@@ -362,8 +362,7 @@ class MonitoringReporterActor extends AbstractActor {
 		try {			
 		   closeTimeslot(currentTimeslot);		 
 		} catch (Exception e) {
-			AccessLog.logException("MonitoringReporterActor", e);
-			ErrorReporter.report("MonitoringReporterActor", null, e);				
+			Errors.handleAllFatal("MonitoringReporterActor", null, e);				
 		} finally {
 		    currentTimeslot = getCurrentTimeslot();
 			ServerTools.endRequest();	

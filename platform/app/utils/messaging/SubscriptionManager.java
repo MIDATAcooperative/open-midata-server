@@ -64,6 +64,7 @@ import models.enums.UserStatus;
 import play.libs.ws.WSClient;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.PluginLoginCache;
 import utils.RuntimeConstants;
 import utils.ServerTools;
@@ -142,7 +143,7 @@ public class SubscriptionManager {
 		      resourceChange(context, new ResourceChange("fhir/Consent", consent, false, resource, consent.owner, null));
 			}
 		} catch (AppException e) {
-			ErrorReporter.report("Subscripion processing", null, e);
+			Errors.handleAllFatal("Subscripion processing", context, e);
 		}
 											
 	}
@@ -547,8 +548,7 @@ class SubscriptionChecker extends AbstractActor {
 					  Set<ServiceInstance> instances = ServiceInstance.getByApp(appId, Sets.create("_id","executorAccount","status"));
 					  for (ServiceInstance instance : instances) if (instance.status == UserStatus.ACTIVE) affected.add(instance.executorAccount);
 					} catch (InternalServerException e) {
-					  AccessLog.logException("subscription processing", e);
-					  ErrorReporter.report("Subscripion processing", null, e);
+					  Errors.handleAllFatal("subscription processing", null, e);
 					}
 				}
 								
@@ -582,8 +582,7 @@ class SubscriptionChecker extends AbstractActor {
 						  AccessLog.log("non matching external API consent:"+consent._id);
 					  }
 					} catch (Exception e) {
-					  ErrorReporter.report("Subscripion processing", null, e);
-					  AccessLog.logException("subscription processing", e);
+					  Errors.handleAllFatal("Subscripion processing", null, e);					  
 					}
 				}
 			} else AccessLog.log("no external APIs found.");				
@@ -627,8 +626,7 @@ class SubscriptionChecker extends AbstractActor {
 			}
 		}
 		} catch (Exception e) {
-			ErrorReporter.report("Subscripion processing", null, e);
-			AccessLog.logException("subscription processing", e);
+			Errors.handleAllFatal("Subscripion processing", null, e);			
 		} finally {
 			if (triggerStatus != null && triggerStatus.running<=0) {
 				triggerStatus.getStarter().tell(new SubscriptionsDoneMessage(triggerStatus.getTransactionId()), getSelf());
@@ -739,7 +737,7 @@ class SubscriptionChecker extends AbstractActor {
 				withSubscription.remove(owner);
 			}
 		} catch (Exception e) {
-			ErrorReporter.report("SubscriptionChecker", null, e);
+			Errors.handleAllFatal("SubscriptionChecker", null, e);
 		} finally {
 			ServerTools.endRequest();
 			ActionRecorder.end(path, st);

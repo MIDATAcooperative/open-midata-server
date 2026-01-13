@@ -41,6 +41,7 @@ import models.enums.MessageChannel;
 import models.enums.MessageReason;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.ServerTools;
@@ -394,8 +395,7 @@ class SMSSender extends AbstractActor {
 			}		
 			AuditManager.instance.success();
 		} catch (Exception e) {
-			ErrorReporter.report("Messager (SMS)", null, e);
-			AuditManager.instance.fail(400, e.toString(), "error.failed");
+			Errors.handle("Messager (SMS)", null, e);
 			throw e;
 		} finally {
 			ServerTools.endRequest();	

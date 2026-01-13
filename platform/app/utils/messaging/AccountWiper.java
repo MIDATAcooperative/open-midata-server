@@ -49,6 +49,7 @@ import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.ServerTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -86,12 +87,12 @@ public class AccountWiper extends AbstractActor {
 	void accountWipe(AccountWipeMessage msg) throws Exception {
 		String path = "AccountWiper/phase "+msg.getPhase();
 		long st = ActionRecorder.start(path);
-		
+		AccessContext context = null;
 		try {
 			AccessLog.logStart("jobs", "Account Wipe");
 			AccessLog.logBegin("START ACCOUNT WIPE: "+msg.getAccountToWipe()+" / "+msg.getPhase());		
 			KeyManager.instance.continueSession(msg.getHandle(), msg.getExecutorId());
-			AccessContext context = ContextManager.instance.createSessionForDownloadStream(msg.getExecutorId(), UserRole.ANY);			
+		    context = ContextManager.instance.createSessionForDownloadStream(msg.getExecutorId(), UserRole.ANY);			
 	
 			switch(msg.getPhase()) {
 			case 0: retreatPhase(context, msg.getAccountToWipe(), msg.isFakeAccount());
@@ -113,8 +114,7 @@ public class AccountWiper extends AbstractActor {
 		
 		} catch (Exception e) {
 			AuditManager.instance.resumeAsyncEvent(msg.getAudit());
-			AuditManager.instance.fail(500, e.toString(), "error.internal");
-			ErrorReporter.report("AccountWiper", null, e);	
+			Errors.handle("AccountWiper", context, e);
 			throw e;
 		} finally {
 			AccessLog.logEnd("END ACCOUNT WIPE");
@@ -140,8 +140,7 @@ public class AccountWiper extends AbstractActor {
 			try {
 			  controllers.members.Studies.retreatParticipation(context, userId, study.study, isFakeAccount);
 			} catch (Exception e) {
-			  AccessLog.logException("Error retreating from project", e);
-			  ErrorReporter.report("Account wiper", null, e);
+			  Errors.handleAllFatal("Account wiper (retreat from project)", null, e);
 			}			
 		}
 		AccessLog.logEnd("end retreat from all projects");

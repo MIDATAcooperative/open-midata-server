@@ -55,6 +55,7 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.RecordManager;
@@ -109,9 +110,8 @@ public class DelayedActionsProcessor extends AbstractActor {
 			} else {
 				ba.delete();
 			}
-		} catch (Exception e) {			
-			ErrorReporter.report("DelayedActionsProcessor", null, e);
-				
+		} catch (Exception e) {	
+			Errors.handleAllFatal("DelayedActionsProcessor", null, e);
 		} finally {
 			ServerTools.endRequest();
 			ActionRecorder.end(path, st);

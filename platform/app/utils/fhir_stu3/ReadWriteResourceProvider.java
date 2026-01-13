@@ -32,6 +32,7 @@ import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.Model;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -48,19 +49,8 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 
 		try {
 			return create(theResource);
-		} catch (BaseServerResponseException e) {
-			throw e;
-		} catch (BadRequestException e2) {
-			throw new InvalidRequestException(e2.getMessage());
-		} catch (PluginException e4) {
-			ErrorReporter.reportPluginProblem("FHIR (create resource)", null, e4);
-			throw new InternalErrorException(e4);
-		} catch (InternalServerException e3) {
-			ErrorReporter.report("FHIR (create resource)", null, e3);
-			throw new InternalErrorException(e3);
-		} catch (Exception e4) {
-			ErrorReporter.report("FHIR (create resource)", null, e4);
-			throw new InternalErrorException(e4);
+		} catch (Exception e) {
+			throw Errors.handle("FHIR (create resource STU3)", info(), e);
 		}		
 
 	}
@@ -76,19 +66,8 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 		try {
 			if (theId.getVersionIdPart() == null && (theResource.getMeta() == null || theResource.getMeta().getVersionId() == null)) throw new PreconditionFailedException("Resource version missing!");
 			return update(theId, theResource);
-		} catch (BaseServerResponseException e) {
-			throw e;
-		} catch (BadRequestException e2) {
-			throw new InvalidRequestException(e2.getMessage());
-		} catch (InternalServerException e3) {
-			ErrorReporter.report("FHIR (update resource)", null, e3);
-			throw new InternalErrorException(e3);
-		} catch (PluginException e4) {
-			ErrorReporter.reportPluginProblem("FHIR (update resource)", null, e4);
-			throw new InternalErrorException(e4);
-		} catch (Exception e4) {
-			ErrorReporter.report("FHIR (update resource)", null, e4);
-			throw new InternalErrorException(e4);
+		} catch (Exception e) {
+			throw Errors.handle("FHIR (update resource STU3)", info(), e);
 		}		
 
 	}

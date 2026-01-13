@@ -344,7 +344,8 @@ public class FHIR extends Controller {
 		}
 		AccessLog.logEnd("end FHIR get request");
 			
-		if (info != null && info.getUsedPlugin() != null) UsageStatsRecorder.protokoll(info.getUsedPlugin(), res.getStatus());
+		// We do not want to log failed CodeSystem lookups
+		if (info != null && info.getUsedPlugin() != null && (res.getStatus() != 404 || !req.getRequestURI().endsWith("$lookup"))) UsageStatsRecorder.protokoll(info.getUsedPlugin(), res.getStatus());
 		Stats.finishRequest(request, String.valueOf(res.getStatus()));
 							
 		return res.asPlayResult();

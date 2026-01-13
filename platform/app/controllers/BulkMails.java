@@ -51,6 +51,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.audit.AuditEventBuilder;
@@ -222,7 +223,7 @@ public class BulkMails extends APIController {
 			        	try {
 			                sendMails(mailCampaign);
 			        	} catch (Exception e) {
-			        		ErrorReporter.report("bulk mail sender", null, e);			        		
+			        		Errors.handleAllFatal("bulk mail sender", null, e);			        		
 			        	} finally {
 			        		ServerTools.endRequest();
 			        		ActionRecorder.end("BulkMails/send", st);

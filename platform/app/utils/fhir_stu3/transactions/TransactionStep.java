@@ -27,6 +27,8 @@ import org.hl7.fhir.dstu3.model.Resource;
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import models.Model;
 import utils.ErrorReporter;
+import utils.Errors;
+import utils.context.AccessContext;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -106,7 +108,8 @@ public abstract class TransactionStep {
 	 * Convert and store an exception from HAPI FHIR into a bundle entry component to be returned for transactions/batches
 	 * @param e
 	 */
-	public void setResultBasedOnException(Exception e) {
+	public void setResultBasedOnException(AccessContext context, Exception e) {
+		Errors.handle("FHIR Transaction STU3", context, e);
 		result = new BundleEntryComponent();
 		BundleEntryResponseComponent response = new BundleEntryResponseComponent();		
 		
@@ -116,11 +119,9 @@ public abstract class TransactionStep {
 		    response.setOutcome((Resource) e2.getOperationOutcome());
 		} else if (e instanceof BadRequestException) {
 			response.setStatus("400 "+e.getMessage());				    
-		} else if (e instanceof InternalServerException) {
-			ErrorReporter.report("FHIR (transaction)", null, e);	
+		} else if (e instanceof InternalServerException) {			
 			response.setStatus("500 "+e.getMessage());			
-		} else {
-			ErrorReporter.report("FHIR (transaction)", null, e);
+		} else {			
 			response.setStatus("500 "+e.getMessage());
 		}
 		result.setResponse(response);

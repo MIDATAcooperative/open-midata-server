@@ -23,6 +23,7 @@ import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.Props;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.ServerTools;
 import utils.access.index.IndexMsg;
 import utils.access.index.TerminateMsg;
@@ -52,7 +53,7 @@ public class IndexSupervisor extends AbstractActor {
 			  
 			  ref.get().forward(msg, getContext());			
 		} catch (Exception e) {
-			ErrorReporter.report("Messager", null, e);	
+			Errors.handleAllFatal("Messager", null, e);	
 			throw e;
 		} finally {
 			ServerTools.endRequest();

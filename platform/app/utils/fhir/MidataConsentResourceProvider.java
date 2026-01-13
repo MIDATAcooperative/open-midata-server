@@ -110,6 +110,7 @@ import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ConsentQueryTools;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.LinkTools;
 import utils.PluginLoginCache;
 import utils.QueryTagTools;
@@ -677,17 +678,9 @@ public class MidataConsentResourceProvider extends ReadWriteResourceProvider<org
 	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam org.hl7.fhir.r4.model.Consent theConsent) {		
 		try {			
 			return update(theId, theConsent);
-		} catch (BaseServerResponseException e) {
-			throw e;
-		} catch (BadRequestException e2) {
-			throw new InvalidRequestException(e2.getMessage());
-		} catch (InternalServerException e3) {
-			ErrorReporter.report("FHIR (update resource)", null, e3);
-			throw new InternalErrorException(e3.getMessage());
-		} catch (Exception e4) {
-			ErrorReporter.report("FHIR (update resource)", null, e4);
-			throw new InternalErrorException("internal error during resource update");
-		}	
+		} catch (Exception e) {
+			throw Errors.handle("FHIR (update resource)", info(), e);
+		} 
 	}
 				
 	

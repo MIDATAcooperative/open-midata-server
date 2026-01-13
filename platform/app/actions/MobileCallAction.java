@@ -26,6 +26,7 @@ import play.mvc.Http.Request;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.ServerTools;
 import utils.audit.AuditManager;
 import utils.exceptions.BadRequestException;
@@ -83,25 +84,22 @@ public class MobileCallAction extends Action<MobileCall> {
     		}
     	} catch (BadRequestException e3) {
     		Stats.finishRequest(request, e3.getStatusCode()+"");
-    		AuditManager.instance.fail(400, e3.getMessage(), e3.getLocaleKey());
+    		Errors.handleRequest("Mobile API", request, e3);    		
     		return withHeaders(CompletableFuture.completedFuture((Result) status(e3.getStatusCode(), e3.getMessage())));
     	} catch (RequestTooLargeException e4) {
     		Stats.finishRequest(request, "202");
     		return withHeaders(CompletableFuture.completedFuture((Result) status(202, e4.getMessage())));
     	} catch (PluginException e5) {
-    		ErrorReporter.reportPluginProblem("Mobile API", request, e5);
-    		Stats.finishRequest(request, "400");
-			AuditManager.instance.fail(400, e5.getMessage(), e5.getLocaleKey());
+    		Errors.handleRequest("Mobile API", request, e5);    		
+    		Stats.finishRequest(request, "400");			
 			return withHeaders(CompletableFuture.completedFuture((Result) status(400, e5.getMessage())));
-    	} catch (InternalServerException e4) {			
-			ErrorReporter.report("Mobile API", request, e4);
-			Stats.finishRequest(request, "500");
-			AuditManager.instance.fail(500, e4.getMessage(), null);
+    	} catch (InternalServerException e4) {	
+    		Errors.handleRequest("Mobile API", request, e4);			
+			Stats.finishRequest(request, "500");			
 			return withHeaders(CompletableFuture.completedFuture((Result) internalServerError("err:"+e4.getMessage())));		
 		} catch (Exception e2) {			
-			ErrorReporter.report("Mobile API", request, e2);
-			Stats.finishRequest(request, "500");
-			AuditManager.instance.fail(500, e2.getMessage(), null);
+			Errors.handleRequest("Mobile API", request, e2);			
+			Stats.finishRequest(request, "500");			
 			return withHeaders(CompletableFuture.completedFuture((Result) internalServerError("an internal error occured")));			
 		} finally {
 			try {

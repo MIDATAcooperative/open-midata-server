@@ -57,6 +57,7 @@ import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.RecordManager;
@@ -163,8 +164,8 @@ public class SubscriptionProcessor extends AbstractActor {
 				getSender().tell(new MessageResponse("No matching subscription",-1, app), getSelf());
 			}
 			
-		} catch (Exception e) {			
-			ErrorReporter.report("Subscriptions", null, e);
+		} catch (Exception e) {		
+			Errors.handleAllFatal("Subscriptions", null, e);
 			getSender().tell(new MessageResponse("Exception while processing subscription: "+e.toString(),-1, null), getSelf());
 			
 		} finally {
@@ -212,8 +213,7 @@ public class SubscriptionProcessor extends AbstractActor {
 				   SubscriptionData.setError(subscription, new Date().toString()+": "+error);
 				   AuditManager.instance.fail(400, error, "error.plugin");
 			   } catch (Exception e) {
-				   AccessLog.logException("Error during Subscription.setError", e);				   
-				   ErrorReporter.report("SubscriptionManager", null, e);
+				   Errors.handleAllFatal("SubscriptionManager", null, e);
 			   } finally {
 				   ServerTools.endRequest();
 			   }
@@ -279,7 +279,7 @@ public class SubscriptionProcessor extends AbstractActor {
 				try {
 					throw new InternalServerException("error.internal", "Missing service key subscription: "+subscription._id);
 				} catch (InternalServerException e) {
-					ErrorReporter.report("Subscription-Processor", null, e);
+					Errors.handleAllFatal("Subscription-Processor", null, e);
 				}
 				
 				AuditManager.instance.fail(500, "Service key expired", "error.missing.token");
@@ -434,11 +434,9 @@ public class SubscriptionProcessor extends AbstractActor {
 			   try {
 				   SubscriptionData.fail(subscription._id);
 				   SubscriptionData.setError(subscription._id, new Date().toString()+": "+error);
-				   AuditManager.instance.fail(400, error, "error.plugin");
-				   ErrorReporter.reportPluginProblem("subscription script", null, new PluginException(plugin._id, "error.plugin", error));
+				   Errors.handle("subscription script", null, new PluginException(plugin._id, "error.plugin", error));
 			   } catch (Exception e) {
-				   AccessLog.logException("Error during Subscription.setError", e);				   
-				   ErrorReporter.report("SubscriptionManager", null, e);
+				   Errors.handleAllFatal("Error during Subscription.setError", null, e);				   
 			   } finally {
 				   ServerTools.endRequest();
 			   }
@@ -466,7 +464,7 @@ public class SubscriptionProcessor extends AbstractActor {
 	  try {
 		throw new PluginException(plugin._id, "error.plugin", error);
 	  } catch (PluginException e) {
-	    ErrorReporter.report("Script execution", null, e);
+	    Errors.handle("Script execution", null, e);
 	  }
 	}
 

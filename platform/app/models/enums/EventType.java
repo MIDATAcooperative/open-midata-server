@@ -142,4 +142,5 @@ public enum EventType {
 	 * a user agreed to terms of use
 	 */
 	TERMS_OF_USE_AGREED
+	
 }

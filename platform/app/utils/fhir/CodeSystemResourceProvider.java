@@ -68,10 +68,12 @@ import models.MidataId;
 import models.Record;
 import models.enums.UserRole;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.access.RecordManager;
 import utils.collections.CMaps;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.IgnorableResourceNotFoundExcxeption;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 import ca.uhn.fhir.rest.annotation.Operation;
@@ -434,21 +436,9 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 	    	}
     	
 	    	RecordManager.instance.deleteFromPublic(info(), CMaps.map("format", "fhir/CodeSystem").map("content", "CodeSystem").map("_id", theResource.getIdPart()));
-		} catch (BaseServerResponseException e) {
-			throw e;
-		} catch (BadRequestException e2) {
-			throw new InvalidRequestException(e2.getMessage());
-		} catch (PluginException e4) {
-			ErrorReporter.reportPluginProblem("FHIR (delete resource)", null, e4);
-			throw new InternalErrorException(e4);
-		} catch (InternalServerException e3) {
-			ErrorReporter.report("FHIR (delete resource)", null, e3);
-			throw new InternalErrorException(e3.getMessage());
-		} catch (Exception e4) {
-			ErrorReporter.report("FHIR (delete resource)", null, e4);
-			throw new InternalErrorException("internal error during delete resource");
-		}		
-
+		} catch (Exception e) {
+			throw Errors.handle("FHIR (delete resource)", info(), e);
+		} 
 	}
 	
 	/**
@@ -477,7 +467,7 @@ public class CodeSystemResourceProvider extends RecordBasedResourceProvider<Code
 		    if (!checkAccessible()) throw new AuthenticationException();
 		
 			Set<CodeSystemEntry> results = CodeSystemEntry.lookup((theSystem!=null?theSystem.getValue():null), (theCode!=null?theCode.getValue():null), (theVersion!=null?theVersion.getValue():null), (theDisplayLanguage!=null?theDisplayLanguage.getValue():null));
-			if (results.isEmpty()) throw new ResourceNotFoundException("Unable to find code in provided system");
+			if (results.isEmpty()) throw new IgnorableResourceNotFoundExcxeption("Unable to find code in provided system");
 			CodeSystemEntry cse = results.iterator().next();
 			Parameters result = new Parameters();
 			
