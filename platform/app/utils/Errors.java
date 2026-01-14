@@ -21,7 +21,9 @@ import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import utils.audit.AuditManager;
+import utils.auth.PortalSessionToken;
 import utils.context.AccessContext;
+import utils.context.ContextManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.DoNotLogError;
@@ -32,9 +34,9 @@ import play.mvc.Http.Request;
 
 public class Errors {
 
-	private static void log(String action, AccessContext context, int status, String msg) {
+	private static void log(String action, String path, AccessContext context, int status, String msg) {
 		String session = (context != null) ? context.toString() : "-";
-		AccessLog.logError(action, session, status, msg);
+		AccessLog.logError(action+(path != null ? (" "+path) : ""), session, status, msg);
 	}
 	
 	public static RuntimeException handle(String action, AccessContext context, Exception ex) {
@@ -46,34 +48,40 @@ public class Errors {
 	}
 	
 	public static RuntimeException handle(String action, AccessContext context, Request request, Exception ex) {
+		if (context == null) context = ContextManager.instance.currentForErrorReporting();
+		
+		String path = null;
+		if (request != null) {
+			   path = "["+request.method()+"] "+request.host()+request.path();
+		}
 		
 	    try {
 		    throw ex;
 		} catch (BaseServerResponseException e) {			
 			AuditManager.instance.fail(400, e.getMessage(), "error.failed");
 			if (! (e instanceof DoNotLogError)) {
-				log(action, context, 400, e.getClass().getName()+": "+e.getMessage());	
+				log(action, path, context, 400, e.getClass().getName()+": "+e.getMessage());	
 			}			
 			return e;
 		} catch (RequestTooLargeException e2) {
-			log(action, context, 400, e2.getClass().getName()+": "+e2.getMessage());
+			log(action, path, context, 400, e2.getClass().getName()+": "+e2.getMessage());
 			throw e2;
 		} catch (BadRequestException e2) {
-			log(action, context, 400, e2.getClass().getName()+": "+e2.getMessage());
+			log(action, path, context, 400, e2.getClass().getName()+": "+e2.getMessage());
 			AuditManager.instance.fail(400, e2.getMessage(), e2.getLocaleKey());
 			return new InvalidRequestException(e2.getMessage());
 		} catch (PluginException e4) {
-			log(action, context, 500, e4.getClass().getName()+": "+e4.getMessage());
+			log(action, path, context, 500, e4.getClass().getName()+": "+e4.getMessage());
 			AuditManager.instance.fail(500, e4.getMessage(), e4.getLocaleKey());
 			ErrorReporter.reportPluginProblem(action, request, e4);
 			return new InternalErrorException(e4);
 		} catch (InternalServerException e3) {
-			log(action, context, 500, e3.getClass().getName()+": "+e3.getMessage());
+			log(action, path, context, 500, e3.getClass().getName()+": "+e3.getMessage());
 			AuditManager.instance.fail(500, e3.getMessage(), e3.getLocaleKey());
 			ErrorReporter.report(action, request, e3);
 			return new InternalErrorException(e3.getMessage());
 		} catch (Exception e4) {
-			log(action, context, 500, e4.getClass().getName()+": "+e4.getMessage());
+			log(action, path, context, 500, e4.getClass().getName()+": "+e4.getMessage());
 			AuditManager.instance.fail(500, e4.getMessage(), "error.failed");
 			ErrorReporter.report(action, request, e4);
 			return new InternalErrorException("internal error during "+action);
@@ -82,7 +90,7 @@ public class Errors {
 	
 	public static RuntimeException handleAllFatal(String action, AccessContext context, Exception ex) {
 	   
-			log(action, context, 500, ex.getClass().getName()+": "+ex.getMessage());
+			log(action, null, context, 500, ex.getClass().getName()+": "+ex.getMessage());
 			AccessLog.logException(action, ex);
 			String lk = (ex instanceof AppException) ? ((AppException) ex).getLocaleKey() : "errors.internal";
 			AuditManager.instance.fail(500, ex.getMessage(), lk);
