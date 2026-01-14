@@ -34,7 +34,7 @@
   <appender name="FILE_ERRORS" class="ch.qos.logback.core.FileAppender">
     <file>/var/log/midata/errors.log</file>
     <encoder>
-      <pattern>%message%n%xException</pattern>
+      <pattern>%date [%level/%thread]: %message%n%xException</pattern>
     </encoder>
   </appender>
 
