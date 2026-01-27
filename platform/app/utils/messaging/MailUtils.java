@@ -164,7 +164,7 @@ public class MailUtils {
 		escaped = escaped.replaceAll("[←→]", "");
 		
 		// Newer rule for links, replace http so that the second rule for links does not match
-		escaped = escaped.replaceAll("\\[(.+?)\\|http(.+)\\]", "<a href=\"qqx$2\">$1</a>");
+		escaped = escaped.replaceAll("\\[(.+?)\\|http(.+?)\\]", "<a href=\"qqx$2\">$1</a>");
 		escaped = escaped.replaceAll("\\{\\}", "</span>");
 		escaped = escaped.replaceAll("\\{(.+?)\\}", "<span style=\"$1\">");
 		
@@ -193,7 +193,7 @@ public class MailUtils {
 	}
 	
 	public static String getTextOnlyVersion(String text) {
-	   return text.replaceAll("\\_\\_", "").replaceAll("\\*\\*", "").replaceAll("\\[(.+?)\\|http(.+)\\]", "$1 ( http$2 )").replaceAll("\\{\\}", "").
+	   return text.replaceAll("\\_\\_", "").replaceAll("\\*\\*", "").replaceAll("\\[(.+?)\\|http(.+?)\\]", "$1 ( http$2 )").replaceAll("\\{\\}", "").
 		  replaceAll("\\{(.+?)\\}", "");
 	}
 	
