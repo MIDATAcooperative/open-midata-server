@@ -107,7 +107,7 @@
 			</form-group>
 			
 			<form-group label="admin_managemails.estimation" v-if="mailItem.estimatedAudience<0">
-			    <p class="form-control-plaintext">{{ $t("admin_managemails.estimating") }})</p>
+			    <p class="form-control-plaintext">{{ $t("admin_managemails.estimating") }}</p>
 			</form-group>
 			
 		    <form-group label="admin_managemails.progressCount" v-if="mailItem.progressCount">

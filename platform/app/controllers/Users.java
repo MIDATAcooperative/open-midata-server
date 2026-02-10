@@ -336,6 +336,10 @@ public class Users extends APIController {
 				  user.authType = SecondaryAuthType.TOTP;
 				  User.set(user._id, "authType", user.authType);
 				  return ok();
+			  } else if (type == SecondaryAuthType.TOTP && user.authType==SecondaryAuthType.TOTP && user.totpStatus == EMailStatus.UNVALIDATED && json.has("totp")) {
+				  // Allow user to get out of unvalidated state
+				  Authenticators.getInstance(SecondaryAuthType.TOTP).checkAuthentication(executorId, user, JsonValidation.getString(json, "totp"));				  
+				  return ok();
 			  } else if (type == SecondaryAuthType.SMS && user.mobileStatus == EMailStatus.VALIDATED) {
 				  user.authType = SecondaryAuthType.SMS;
 				  User.set(user._id, "authType", user.authType);
