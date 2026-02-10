@@ -494,7 +494,7 @@ public class Users extends APIController {
 			throw new JsonValidationException("error.missing.auth_type", "authType", "missing", "Two factor authentication is mandantory");
 		}
 		
-		if (authType == SecondaryAuthType.TOTP && JsonValidation.getBoolean(json, "reset")) {
+		if (user.authType != SecondaryAuthType.TOTP && authType == SecondaryAuthType.TOTP && JsonValidation.getBoolean(json, "reset")) {
 			Authenticators.getInstance(SecondaryAuthType.TOTP).setupAuthentication(user);
 		}
 		
@@ -512,7 +512,7 @@ public class Users extends APIController {
 		if (authType.equals(SecondaryAuthType.SMS)) {
 			requireUserFeature(request, UserFeature.PHONE_ENTERED);
 		}
-		if (authType.equals(SecondaryAuthType.TOTP) ) {
+		if (authType.equals(SecondaryAuthType.TOTP) && user.totpStatus != EMailStatus.VALIDATED ) {
 			requireUserFeature(request, UserFeature.AUTH2FACTORSETUP);
 		}
 		
