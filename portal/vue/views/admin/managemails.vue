@@ -102,6 +102,14 @@
 		        <p class="form-control-plaintext">{{ $filters.dateTime(mailItem.finished) }}</p>
 		    </form-group>
 		  
+			<form-group label="admin_managemails.estimation" v-if="mailItem.estimatedAudience>0">
+			    <p class="form-control-plaintext">{{ mailItem.estimatedAudience }} ( - {{ mailItem.estimatedAudienceExcluded }})</p>
+			</form-group>
+			
+			<form-group label="admin_managemails.estimation" v-if="mailItem.estimatedAudience<0">
+			    <p class="form-control-plaintext">{{ $t("admin_managemails.estimating") }})</p>
+			</form-group>
+			
 		    <form-group label="admin_managemails.progressCount" v-if="mailItem.progressCount">
 		        <p class="form-control-plaintext">{{ mailItem.progressCount }} ( - {{ mailItem.progressFailed }})</p>
 		    </form-group>
@@ -109,6 +117,7 @@
 		    <form-group label="common.empty">
                 <button type="submit" v-submit :disabled="action!=null" v-if="editable" class="btn btn-primary me-1" v-t="'admin_managemails.save_btn'"></button>		    
                 <button type="button" class="btn btn-primary me-1" v-if="allowSend" @click="test()" :disabled="action!=null" v-t="'admin_managemails.test_btn'"></button>
+				<button type="button" class="btn btn-primary me-1" v-if="allowSend" @click="estimate()" :disabled="action!=null" v-t="'admin_managemails.estimate_btn'"></button>
                 <button type="button" class="btn btn-primary me-1" v-if="allowSend" @click="send()" :disabled="action!=null" v-t="'admin_managemails.send_btn'"></button>
                 <button type="button" class="btn btn-danger me-1" v-if="allowDelete" @click="doDelete()" :disabled="action!=null" v-t="'common.delete_btn'"></button>
                 <router-link :to="{ path : './mails' }" class="btn btn-default" v-t="'common.back_btn'"></router-link>
@@ -225,9 +234,15 @@ export default {
 	    },
 	
 	    test() {		
-            const { $data, $route, $router } = this, me = this;
+            const { $data } = this, me = this;
 		    me.doAction('send', server.post(jsRoutes.controllers.BulkMails.test($data.mailItem._id).url));		
-	    }
+	    },
+		
+		estimate() {		
+		    const { $data } = this, me = this;
+		    me.doAction('send', server.post(jsRoutes.controllers.BulkMails.estimate($data.mailItem._id).url));			
+			$data.mailItem.estimatedAudience = -1;		
+		}
 		
     },
 

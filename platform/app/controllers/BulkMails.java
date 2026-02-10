@@ -237,6 +237,44 @@ public class BulkMails extends APIController {
 	
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
+	public Result estimate(Request request, String mailItemIdString) throws AppException {
+		requireSubUserRole(request, SubUserRole.NEWSWRITER);
+		MidataId mailItemId = MidataId.from(mailItemIdString);
+		
+		BulkMail mailCampaign = BulkMail.getById(mailItemId, BulkMail.ALL);
+		if (mailCampaign == null) throw new BadRequestException("error.unknown.bulkmail", "Mail not found");		
+		if (mailCampaign.status == BulkMailStatus.DRAFT) {
+			mailCampaign.estimatedAudience = -1;
+			mailCampaign.setEstimation();
+			Runnable mySender =
+				    new Runnable(){
+				        public void run(){
+				        	long st = ActionRecorder.start("BulkMails/estimate");
+				        	try {
+				        		List<MidataId> targets = getTargetUsers(mailCampaign);
+				        		mailCampaign.estimatedAudience = targets.size();
+				        		mailCampaign.estimatedAudienceExcluded = 0;
+				        		for (MidataId id : targets) {
+				        			if (!checkTargetUser(id)) {				        				
+				        				mailCampaign.estimatedAudienceExcluded++;
+				        			}
+				        		}
+				        		mailCampaign.setEstimation();
+				        	} catch (Exception e) {
+				        		Errors.handleAllFatal("bulk mail estimate", null, e);			        		
+				        	} finally {
+				        		ServerTools.endRequest();
+				        		ActionRecorder.end("BulkMails/estimate", st);
+				        	}
+				        }
+				    };
+		    new Thread(mySender).start();
+		}
+		return ok();		
+	}
+	
+	@Security.Authenticated(AdminSecured.class)
+	@APICall
     public Result test(Request request, String mailItemIdString) throws AppException {
 		requireSubUserRole(request, SubUserRole.NEWSWRITER);
 		MidataId mailItemId = MidataId.from(mailItemIdString);
@@ -313,11 +351,22 @@ public class BulkMails extends APIController {
 		}
 		mailItem.status = BulkMailStatus.FINISHED;
 		mailItem.finished = new Date();
+		mailItem.estimatedAudience = 0;
+		mailItem.estimatedAudienceExcluded = 0;
 		mailItem.setProgress();
+		mailItem.setEstimation();
 	}
 	
 	private boolean isEmptyMail(String content) {
 		return content == null || content.trim().length()<10;
+	}
+	
+	private boolean checkTargetUser(MidataId targetUser) throws AppException {
+		User user = User.getById(targetUser, Sets.create("status", "email", "emailLC", "firstname", "lastname", "language", "emailStatus", "role"));
+		if (user != null && user.email != null && (user.emailStatus == EMailStatus.VALIDATED || user.emailStatus == EMailStatus.EXTERN_VALIDATED)) {
+		  return true;
+		}
+		return false;
 	}
 	
 	private boolean sendMail(BulkMail mailItem, MidataId targetUser, MidataId study) throws AppException {

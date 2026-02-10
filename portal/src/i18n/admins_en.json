@@ -331,7 +331,10 @@
      "content" : "Mail Content",
      "test_btn" : "Test: send to yourself",
      "save_btn" : "Store Mail",
-     "send_btn" : "Send"
+     "send_btn" : "Send",
+	 "estimation" : "Estimated # to be sent",
+	 "estimating" : "Currently estimating. Reload page after some time.",
+	 "estimate_btn" : "Estimate # targeted"
    },
 
    "content" : {

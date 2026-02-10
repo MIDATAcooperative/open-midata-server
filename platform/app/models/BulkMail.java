@@ -34,7 +34,7 @@ public class BulkMail extends Model implements Comparable<BulkMail> {
 	private static final String collection = "bulkmails";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Sets.create("type", "country", "creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "appId", "appName", "progressId", "progressCount", "progressFailed", "lastProgress", "htmlFrame");
+	public final static Set<String> ALL = Sets.create("type", "country", "creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "appId", "appName", "progressId", "progressCount", "progressFailed", "lastProgress", "htmlFrame", "estimatedAudience", "estimatedAudienceExcluded");
 
 	/**
 	 * type of bulk mail
@@ -123,6 +123,16 @@ public class BulkMail extends Model implements Comparable<BulkMail> {
 	
 	public int progressFailed;
 	
+	/**
+	 * Estimated number of target accounts
+	 */
+	public int estimatedAudience;
+	
+	/**
+	 * Estimated target accounts that are excluded because of email unconfirmed
+	 */
+	public int estimatedAudienceExcluded;
+	
 	public long lastProgress;
 		
 	@Override
@@ -149,6 +159,10 @@ public class BulkMail extends Model implements Comparable<BulkMail> {
 
 	public void setProgress() throws InternalServerException {
 		this.setMultiple(collection, Sets.create("started", "finished", "status", "progressId", "progressCount", "progressFailed", "lastProgress"));
+	}
+	
+	public void setEstimation() throws InternalServerException {
+		this.setMultiple(collection, Sets.create("estimatedAudience", "estimatedAudienceExcluded" ));
 	}
 
 	public static void add(BulkMail mailCampaign) throws InternalServerException {

@@ -623,8 +623,9 @@ export default {
 			const { $data } = this, me = this;
 			$data.error = null;
 			$data.registration.user = $data.registration._id;
-			if ($data.registration.mobile === "") $data.registration.mobile = undefined;			
-			me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : $data.registration.authType, mobile : $data.registration.mobile, emailnotify : $data.registration.emailnotify, totp : $data.setpw.securityToken })).
+			if ($data.registration.mobile === "") $data.registration.mobile = undefined;
+			if (!totp) $data.setpw.securityToken = undefined;			
+			me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id || $data.progress.userId, authType : $data.registration.authType, mobile : $data.registration.mobile, emailnotify : $data.registration.emailnotify, totp : $data.setpw.securityToken })).
 			then(function(data) { 
 				me.retry(null, { securityToken : $data.setpw.securityToken });
 			});
