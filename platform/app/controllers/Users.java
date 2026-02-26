@@ -130,6 +130,7 @@ public class Users extends APIController {
 		
 		Map<String, Object> properties_mod = new HashMap<String, Object>(properties);
 		// check authorization
+		if (!properties_mod.containsKey("status")) properties_mod.put("status", User.NON_DELETED);
 		
 		if (!getRole().equals(UserRole.ADMIN) && 
 			!(getRole().equals(UserRole.RESEARCH) && properties.containsKey("role") && properties.get("role").equals("RESEARCH")) &&
