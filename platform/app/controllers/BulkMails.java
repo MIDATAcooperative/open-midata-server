@@ -20,6 +20,7 @@ package controllers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.MailSenderType;
 import utils.messaging.MailUtils;
+import utils.messaging.Messager;
 import utils.stats.ActionRecorder;
 
 public class BulkMails extends APIController {
@@ -393,7 +395,23 @@ public class BulkMails extends APIController {
 				
 				link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.consentToken(sp._id);
 			} else link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.userToken(targetUser);
-			content = content.replaceAll("<unsubscribe>", link);
+			
+			Map<String, String> replacements = new HashMap<String, String>();			
+			replacements.put("unsubscribe", link);
+			replacements.put("firstname", user.firstname);
+			replacements.put("lastname", user.lastname);
+			replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
+			replacements.put("site", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
+			replacements.put("email", user.email);
+			
+			for (Map.Entry<String, String> replacement : replacements.entrySet()) {
+				String key = "<"+replacement.getKey()+">";
+				String v = replacement.getValue();
+				if (v==null) v = "";
+			    title = title.replaceAll(key, Messager.safeForReplace(v));
+			    content = content.replaceAll(key, Messager.safeForReplace(v));
+			}
+									
 			boolean restricted = InstanceConfig.getInstance().getInstanceType().restrictBulkMails(); 
 			//System.out.println(user.email+" "+user.firstname+" "+user.lastname+" "+title+" "+content);
 			if (!restricted || (user.emailLC.endsWith("@midata.coop") || user.role==UserRole.ADMIN)) {

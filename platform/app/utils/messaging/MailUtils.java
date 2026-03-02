@@ -160,7 +160,7 @@ public class MailUtils {
 		escaped = escaped.replaceAll("\n", "←→");
 		escaped = escaped.replaceAll("→\\*\s*(.+?)←","<ul><li>$1</li></ul>");
 		escaped = escaped.replaceAll("<\\/ul><ul>", "");
-		escaped = escaped.replaceAll("←→", "\n</p><p>");
+		escaped = escaped.replaceAll("←→", "\n<br>");
 		escaped = escaped.replaceAll("[←→]", "");
 		
 		// Newer rule for links, replace http so that the second rule for links does not match

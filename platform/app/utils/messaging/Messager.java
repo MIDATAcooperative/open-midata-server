@@ -70,7 +70,7 @@ public class Messager {
 		smsSender = system.actorOf(Props.create(SMSSender.class).withDispatcher("medium-work-dispatcher"), "smsSender");
 	}
 	
-	private static String safeForReplace(String in) {
+	public static String safeForReplace(String in) {
 		if (in==null) return in;
 		
 		int p = in.indexOf("$");
