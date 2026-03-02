@@ -290,7 +290,11 @@ public class BulkMails extends APIController {
 		MidataId studyId = null;
 		if (mailCampaign.type==BulkMailType.PROJECT) studyId = mailCampaign.studyId;
 		
-		sendMail(mailCampaign, executor, studyId);
+		User user = User.getById(executor, Sets.create("status", "email", "emailLC", "firstname", "lastname", "language", "emailStatus", "role"));
+		
+		for (String lang : mailCampaign.content.keySet()) {		
+		  sendMail(mailCampaign, user, studyId, lang);
+		}
 		
 		return ok();
     }
@@ -376,64 +380,67 @@ public class BulkMails extends APIController {
 		if (user != null && user.email != null && (user.emailStatus == EMailStatus.VALIDATED || user.emailStatus == EMailStatus.EXTERN_VALIDATED)) {
 			String lang = user.language;
 			if (lang == null) lang = InstanceConfig.getInstance().getDefaultLanguage();
-			
-			String content = mailItem.content.get(lang);
-			String title = mailItem.title.get(lang);
-			
-			if (isEmptyMail(content)) {
-				content = mailItem.content.get("int");
-				title = mailItem.title.get("int");
-			}
-			
-			if (isEmptyMail(content)) return false;
-			if (title == null) return false;
-			
-			String link;
-			if (study!=null && user.role != UserRole.ADMIN) {
-				StudyParticipation sp = StudyParticipation.getByStudyAndMember(study, targetUser, Sets.create("_id","status"));
-				if (sp == null || ! sp.isActive()) return false;
-				
-				link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.consentToken(sp._id);
-			} else link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.userToken(targetUser);
-			
-			Map<String, String> replacements = new HashMap<String, String>();			
-			replacements.put("unsubscribe", link);
-			replacements.put("firstname", user.firstname);
-			replacements.put("lastname", user.lastname);
-			replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
-			replacements.put("site", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
-			replacements.put("email", user.email);
-			
-			for (Map.Entry<String, String> replacement : replacements.entrySet()) {
-				String key = "<"+replacement.getKey()+">";
-				String v = replacement.getValue();
-				if (v==null) v = "";
-			    title = title.replaceAll(key, Messager.safeForReplace(v));
-			    content = content.replaceAll(key, Messager.safeForReplace(v));
-			}
-									
-			boolean restricted = InstanceConfig.getInstance().getInstanceType().restrictBulkMails(); 
-			//System.out.println(user.email+" "+user.firstname+" "+user.lastname+" "+title+" "+content);
-			if (!restricted || (user.emailLC.endsWith("@midata.coop") || user.role==UserRole.ADMIN)) {
-			  if (restricted) title="(Restricted Test): "+title;
-			  try {
-				AccessLog.log("send email to: "+user.email);
-			    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content, mailItem.htmlFrame, mailItem.appId);
-			  } catch (Exception e) {
-				AccessLog.log("Error sending email. Wait t=500");
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e2) {}
-				try {
-				    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content, mailItem.htmlFrame, mailItem.appId);
-				} catch (Exception e3) {
-				    mailItem.progressFailed++;
-				}
-			  }
-			}
-			return true;
+			return sendMail(mailItem, user, study, lang);
 		}
 		return false;
+	}
+			
+	private boolean sendMail(BulkMail mailItem, User user, MidataId study, String lang) throws AppException {
+		String content = mailItem.content.get(lang);
+		String title = mailItem.title.get(lang);
+		
+		if (isEmptyMail(content)) {
+			content = mailItem.content.get("int");
+			title = mailItem.title.get("int");
+		}
+		
+		if (isEmptyMail(content)) return false;
+		if (title == null) return false;
+		
+		String link;
+		if (study!=null && user.role != UserRole.ADMIN) {
+			StudyParticipation sp = StudyParticipation.getByStudyAndMember(study, user._id, Sets.create("_id","status"));
+			if (sp == null || ! sp.isActive()) return false;
+			
+			link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.consentToken(sp._id);
+		} else link = "https://" + InstanceConfig.getInstance().getPortalServerDomain()+"/#/portal/unsubscribe?token="+UnsubscribeToken.userToken(user._id);
+		
+		Map<String, String> replacements = new HashMap<String, String>();			
+		replacements.put("unsubscribe", link);
+		replacements.put("firstname", user.firstname);
+		replacements.put("lastname", user.lastname);
+		replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
+		replacements.put("site", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
+		replacements.put("email", user.email);
+		
+		for (Map.Entry<String, String> replacement : replacements.entrySet()) {
+			String key = "<"+replacement.getKey()+">";
+			String v = replacement.getValue();
+			if (v==null) v = "";
+		    title = title.replaceAll(key, Messager.safeForReplace(v));
+		    content = content.replaceAll(key, Messager.safeForReplace(v));
+		}
+								
+		boolean restricted = InstanceConfig.getInstance().getInstanceType().restrictBulkMails(); 
+		//System.out.println(user.email+" "+user.firstname+" "+user.lastname+" "+title+" "+content);
+		if (!restricted || (user.emailLC.endsWith("@midata.coop") || user.role==UserRole.ADMIN)) {
+		  if (restricted) title="(Restricted Test): "+title;
+		  try {
+			AccessLog.log("send email to: "+user.email);
+		    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content, mailItem.htmlFrame, mailItem.appId);
+		  } catch (Exception e) {
+			AccessLog.log("Error sending email. Wait t=500");
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e2) {}
+			try {
+			    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content, mailItem.htmlFrame, mailItem.appId);
+			} catch (Exception e3) {
+			    mailItem.progressFailed++;
+			}
+		  }
+		}
+		return true;	
 	};
 	
 	@BodyParser.Of(BodyParser.Json.class)	
