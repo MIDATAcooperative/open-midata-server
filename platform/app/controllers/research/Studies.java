@@ -499,18 +499,22 @@ public class Studies extends APIController {
 							  attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
 							  if (attpos > 0) {
 								out.append(ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(context, rec.format, new RecordToken(rec._id.toString(), rec.context.getTargetAps().toString()), idx);
-
-								int BUFFER_SIZE = 3 * 1024;
-
-								try (InputStreamReader in = new InputStreamReader(new Base64InputStream(fileData.inputStream, true, -1, null));) {
-
-									char[] chunk = new char[BUFFER_SIZE];
-									int len = 0;
-									while ((len = in.read(chunk)) != -1) {
-										out.append(String.valueOf(chunk, 0, len));
+								try {
+									FileData fileData = RecordManager.instance.fetchFile(rec.context, rec.format, new RecordToken(rec._id.toString(), rec.context.getTargetAps().toString()), idx);
+	
+									int BUFFER_SIZE = 3 * 1024;
+	
+									try (InputStreamReader in = new InputStreamReader(new Base64InputStream(fileData.inputStream, true, -1, null));) {
+	
+										char[] chunk = new char[BUFFER_SIZE];
+										int len = 0;
+										while ((len = in.read(chunk)) != -1) {
+											out.append(String.valueOf(chunk, 0, len));
+										}
+	
 									}
-
+								} catch (AppException e) {
+									Errors.handleAllFatal("FHIR Download", context, e);										
 								}
                                 ser = ser.substring(attpos + FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length());
                                 idx++;
