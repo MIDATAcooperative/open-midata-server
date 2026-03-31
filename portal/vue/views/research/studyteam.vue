@@ -53,6 +53,9 @@
             <form-group name="person" label="studyteam.person" :path="errors.person">
                 <typeahead class="form-control" id="person" :disabled="lockChanges" name="person" v-model="add.personemail" field="email" :suggestions="persons" required />
             </form-group>
+			<form-group name="isDeveloper" label="studyteam.personRole" :path="errors.isDeveloper" class="midata-checkbox-row">
+				<check-box name="isDeveloper" v-model="add.isDeveloper" :disabled="lockChanges"><span>{{ $t('studyteam.is_developer') }}</span></check-box>
+            </form-group>
             <form-group name="_role" label="studyteam.role">
                 <select name="_role" id="_role" class="form-control" :disabled="lockChanges" v-validate v-model="add.roleTemplate" @change="updateRole();" required>
                     <option v-for="role in roles" :key="role.id" :value="role.id">{{ $t('enum.researcherrole.'+role.id) }}</option>
@@ -154,12 +157,11 @@ export default {
 			
 	    addPerson() {	
             const { $data } = this, me = this;			       			
-            me.doAction("change", users.getMembers({ email : $data.add.personemail, role : "RESEARCH" },["email", "role"]))
+            me.doAction("change", users.getMembers({ email : $data.add.personemail, role : $data.add.isDeveloper ? "DEVELOPER" : "RESEARCH" },["email", "role"]))
             .then(function(result) {
                 if (result.data && result.data.length) {
                     $data.add.person = result.data[0];
-                
-                
+                                
                     me.doAction("change", usergroups.addMembersToUserGroup($data.groupId, [ $data.add.person._id ], $data.add.role).
                     then(function() {
                         $data.add = { role:{}, personemail : "", roleTemplate:null };
@@ -187,7 +189,7 @@ export default {
 	
 	    select(member) {
             const { $data } = this;
-            $data.add = { personemail : member.user.email, role : JSON.parse(JSON.stringify(member.role)), roleTemplate : "Other" };            
+            $data.add = { personemail : member.user.email, role : JSON.parse(JSON.stringify(member.role)), roleTemplate : "Other", isDeveloper : member.user.role == "DEVELOPER" || member.user.role == "ADMIN" };            
             for (let r of $data.roles) if (r.id==member.role.id) $data.add.roleTemplate = r.id;
 	    }
     },

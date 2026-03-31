@@ -298,6 +298,8 @@
     "roleName" : "Role Name",
     "defineself" : "You may change your own rights by readding yourself to the team with different rights. You may only do this as long as you are the only team member. You can't deprive yourself of the right to manage the team.",
     "addperson_btn" : "Add Person",
+	"personRole" : "Account type",
+	"is_developer" : "Team member has developer account",
     "rights" : "Rights",
     "right" : {
       "readData" : "Read data records",
