@@ -214,16 +214,18 @@ public class OAuth2 extends Controller {
 		String token = param.get().substring("Bearer ".length());
 	    AccessContext inf = ExecutionInfo.checkToken(request, token, false, false);
 	    User user = User.getById(inf.getAccessor(), User.ALL_USER);
+	    
 	    ObjectNode obj = Json.newObject();	 
 	    
-	    obj.put("sub", user._id.toString());
-	    obj.put("name", user.firstname+" "+user.lastname);
-	    obj.put("family_name", user.lastname);
-	    obj.put("given_name", user.firstname);
-	    obj.put("email", user.email);
-	    obj.put("email_verified", (user.emailStatus == EMailStatus.VALIDATED || user.emailStatus == EMailStatus.EXTERN_VALIDATED));
-        if (user.gender != null) obj.put("gender", user.gender.toString().toLowerCase());
-        	    
+	    obj.put("sub", inf.getAccessor().toString());
+	    if (user != null) {
+		    obj.put("name", user.firstname+" "+user.lastname);
+		    obj.put("family_name", user.lastname);
+		    obj.put("given_name", user.firstname);
+		    obj.put("email", user.email);
+		    obj.put("email_verified", (user.emailStatus == EMailStatus.VALIDATED || user.emailStatus == EMailStatus.EXTERN_VALIDATED));
+	        if (user.gender != null) obj.put("gender", user.gender.toString().toLowerCase());
+	    }
 	    return ok(obj).withHeader("Cache-Control", "no-store").withHeader("Pragma", "no-cache");
 	}
 	
