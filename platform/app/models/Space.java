@@ -45,7 +45,7 @@ public class Space extends Model implements Comparable<Space>, Serializable {
 	/**
 	 * constant set containing all fields of this class
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name","owner", "visualization", "type", "order", "type", "context", "autoShare", "licence");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name","owner", "visualization", "type", "order", "type", "context", "autoShare", "licence", "testing");
 
 	private @NotMaterialized static final long serialVersionUID = 6535855157383731147L;
 	
@@ -97,6 +97,8 @@ public class Space extends Model implements Comparable<Space>, Serializable {
 	 * Licence used for access
 	 */
 	public MidataId licence;
+	
+	public boolean testing;
 	
 
 	@Override

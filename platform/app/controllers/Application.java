@@ -1210,6 +1210,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Spaces.getUrl(),
 				controllers.routes.javascript.Spaces.regetUrl(),
 				controllers.routes.javascript.Spaces.reset(),
+				controllers.routes.javascript.Spaces.toggleTesting(),
 				// Users
 				controllers.routes.javascript.Users.get(),		
 				controllers.routes.javascript.Users.getCurrentUser(),
