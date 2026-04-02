@@ -38,6 +38,7 @@ import models.Space;
 import models.SubscriptionData;
 import models.enums.PluginStatus;
 import models.enums.UserFeature;
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Http.Request;
@@ -140,7 +141,7 @@ public class Spaces extends APIController {
 		if (json.has("query")) query = JsonExtraction.extractMap(json.get("query"));
 		if (json.has("config")) config = JsonExtraction.extractMap(json.get("config"));
 		
-		Plugin plg = Plugin.getById(visualizationId, Sets.create("type","licenceDef","status"));
+		Plugin plg = Plugin.getById(visualizationId, Sets.create("type","licenceDef","status", "creator", "developerTeam"));
 		if (plg.status == PluginStatus.DELETED || plg.status == PluginStatus.END_OF_LIFE) throw new BadRequestException("error.expired.app", "Plugin expired");
 		MidataId licence = null;
 		if (LicenceChecker.licenceRequired(plg)) {
@@ -150,6 +151,11 @@ public class Spaces extends APIController {
 		
 		// execute		
 		Space space = add(userId, name, visualizationId, plg.type, context, licence);
+		
+		if (InstanceConfig.getInstance().getInstanceType().allowTestingFromLocalhost() && (PortalSessionToken.session().userRole == UserRole.DEVELOPER || PortalSessionToken.session().userRole == UserRole.ADMIN) && plg.isDeveloper(userId)) {
+			space.testing = true;
+			Space.set(space._id, "testing", space.testing);
+		}
 		
 		if (query != null) {
 			RecordManager.instance.shareByQuery(context1, space._id, query);		
@@ -296,7 +302,7 @@ public class Spaces extends APIController {
 			throw new BadRequestException("error.unknown.space", "Space does not exist");
 		}
 		
-		if (PortalSessionToken.session().getDeveloperId() == null) {
+		if (PortalSessionToken.session().getDeveloperId() == null || !InstanceConfig.getInstance().getInstanceType().allowTestingFromLocalhost()) {
 			throw new BadRequestException("error.internal", "Only supported for test users");
 		}
   
@@ -333,7 +339,8 @@ public class Spaces extends APIController {
 		AccessLog.log("check testing: id="+space._id+" testing="+space.testing);
 		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters", "licenceDef", "developerTeam"));		
 	
-		boolean testing = PortalSessionToken.session().getDeveloperId() != null && space.testing;// || visualization.isDeveloper(userId); 
+		boolean testing = PortalSessionToken.session().getDeveloperId() != null && space.testing;// || visualization.isDeveloper(userId);
+		testing = testing && InstanceConfig.getInstance().getInstanceType().allowTestingFromLocalhost();
 		AccessLog.log("get url devid="+PortalSessionToken.session().getDeveloperId()+" userid="+userId+" testing="+testing);
 		if (!testing && LicenceChecker.licenceRequired(visualization)) {
 			LicenceChecker.checkSpace(userId, visualization, space);

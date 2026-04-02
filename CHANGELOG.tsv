@@ -128,4 +128,5 @@ id0135	20.01.2025	a.kreutz	F	Configurable SMTP Server	Each application may now u
 id0136	07.03.2025	a.kreutz	F	OTP login	For users without a password, applications may now support login with one time password.
 id0137	14.08.2025	a.kreutz	I	Registration	Registration process has been improved. 
 id0138	10.02.2026	a.kreutz	I	Estimate bulkmail targets	Before sending bulk mails it is now possible to estimate the number of recipients.
+id0139	02.04.2026	a.kreutz	I	Switchable Localhost testing	As development test user you can now turn localhost testing on and off directly below the plugin view.
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

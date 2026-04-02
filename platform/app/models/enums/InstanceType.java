@@ -201,7 +201,7 @@ public enum InstanceType {
 	 * @return
 	 */
 	public boolean allowTestingFromLocalhost() {
-		return this == TEST || this == PERFTEST; 
+		return this == TEST || this == PERFTEST || this == LOCAL; 
 	}
 	
 	/**
