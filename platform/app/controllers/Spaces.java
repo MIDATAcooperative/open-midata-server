@@ -38,6 +38,7 @@ import models.Space;
 import models.SubscriptionData;
 import models.enums.PluginStatus;
 import models.enums.UserFeature;
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Http.Request;
@@ -140,7 +141,7 @@ public class Spaces extends APIController {
 		if (json.has("query")) query = JsonExtraction.extractMap(json.get("query"));
 		if (json.has("config")) config = JsonExtraction.extractMap(json.get("config"));
 		
-		Plugin plg = Plugin.getById(visualizationId, Sets.create("type","licenceDef","status"));
+		Plugin plg = Plugin.getById(visualizationId, Sets.create("type","licenceDef","status", "creator", "developerTeam"));
 		if (plg.status == PluginStatus.DELETED || plg.status == PluginStatus.END_OF_LIFE) throw new BadRequestException("error.expired.app", "Plugin expired");
 		MidataId licence = null;
 		if (LicenceChecker.licenceRequired(plg)) {
@@ -150,6 +151,11 @@ public class Spaces extends APIController {
 		
 		// execute		
 		Space space = add(userId, name, visualizationId, plg.type, context, licence);
+		
+		if (InstanceConfig.getInstance().getInstanceType().allowTestingFromLocalhost() && (PortalSessionToken.session().userRole == UserRole.DEVELOPER || PortalSessionToken.session().userRole == UserRole.ADMIN) && plg.isDeveloper(userId)) {
+			space.testing = true;
+			Space.set(space._id, "testing", space.testing);
+		}
 		
 		if (query != null) {
 			RecordManager.instance.shareByQuery(context1, space._id, query);		
@@ -286,6 +292,28 @@ public class Spaces extends APIController {
 	}
 	
 	@APICall
+	public Result toggleTesting(Request request, String spaceIdString) throws AppException {
+		MidataId userId = new MidataId(request.attrs().get(play.mvc.Security.USERNAME));
+		MidataId spaceId = new MidataId(spaceIdString);
+		
+		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("_id", "aps", "testing"));
+		
+		if (space==null) {
+			throw new BadRequestException("error.unknown.space", "Space does not exist");
+		}
+		
+		if (PortalSessionToken.session().getDeveloperId() == null || !InstanceConfig.getInstance().getInstanceType().allowTestingFromLocalhost()) {
+			throw new BadRequestException("error.internal", "Only supported for test users");
+		}
+  
+		space.testing = !space.testing;
+		Space.set(space._id, "testing", space.testing);
+		AccessLog.log("toggle testing: id="+space._id+" status="+space.testing);
+		
+		return ok();
+	}
+	
+	@APICall
 	public CompletionStage<Result> getUrl(Request request, String spaceIdString, String userId) throws AppException {
 		return getUrl(request, spaceIdString, true, userId);
 	}
@@ -302,15 +330,17 @@ public class Spaces extends APIController {
 		MidataId spaceId = new MidataId(spaceIdString);
 		MidataId targetUserId = (targetUser != null && targetUser.trim().length()>0) ? MidataId.from(targetUser) : userId;		
 		
-		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization", "type", "name","licence"));
+		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization", "type", "name","licence", "testing"));
 		
 		if (space==null) {
 		  throw new InternalServerException("error.internal", "No space with this id exists.");
 		}
 		
+		AccessLog.log("check testing: id="+space._id+" testing="+space.testing);
 		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters", "licenceDef", "developerTeam"));		
 	
-		boolean testing = visualization.isDeveloper(PortalSessionToken.session().getDeveloperId()) || visualization.isDeveloper(userId); 
+		boolean testing = PortalSessionToken.session().getDeveloperId() != null && space.testing;// || visualization.isDeveloper(userId);
+		testing = testing && InstanceConfig.getInstance().getInstanceType().allowTestingFromLocalhost();
 		AccessLog.log("get url devid="+PortalSessionToken.session().getDeveloperId()+" userid="+userId+" testing="+testing);
 		if (!testing && LicenceChecker.licenceRequired(visualization)) {
 			LicenceChecker.checkSpace(userId, visualization, space);

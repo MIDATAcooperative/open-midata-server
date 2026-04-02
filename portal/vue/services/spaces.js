@@ -47,6 +47,10 @@ import actions from "./actions";
 	   return server.get(jsRoutes.controllers.Spaces.getUrl(spaceId, user).url);
 	};
 	
+	service.toggleTesting = function(spaceId, user) {
+	   return server.post(jsRoutes.controllers.Spaces.toggleTesting(spaceId, user).url, {});
+	};
+	
 	service.regetUrl = function(spaceId) {
 	   return server.get(jsRoutes.controllers.Spaces.regetUrl(spaceId).url);
 	};

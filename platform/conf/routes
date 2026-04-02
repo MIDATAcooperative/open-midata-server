@@ -88,6 +88,7 @@ POST    /api/members/spaces                              controllers.Spaces.add(
 POST    /api/members/spaces/get                          controllers.Spaces.get(request: Request)
 DELETE  /api/members/spaces/:id                          controllers.Spaces.delete(request: Request, id: String)
 POST    /api/members/spaces/:id/records                  controllers.Spaces.addRecords(request: Request,id: String)
+POST    /api/members/spaces/:id/testing                  controllers.Spaces.toggleTesting(request: Request,id: String)
 GET     /api/members/spaces/:id/url                      controllers.Spaces.getUrl(request: Request, id: String, user:String ?= null)
 GET     /api/members/spaces/:id/url/noauth               controllers.Spaces.regetUrl(request: Request, id: String)
 DELETE  /api/members/spaces                              controllers.Spaces.reset(request: Request)
