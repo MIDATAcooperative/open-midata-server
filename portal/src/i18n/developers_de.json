@@ -322,7 +322,9 @@
             "REQUIRE_P" : "Die Zustimmung muss akzeptiert werden",
             "OFFER_P" : "Die Zustimmung wird bei der Anmeldung/Registrierung erteilt",
             "OFFER_EXTRA_PAGE" : "Onboarding: Die Zustimmung wird auf einer separaten Seite angeboten.",
-            "OFFER_INLINE_AGB" : "Onboarding: Nutzungsbedingungen als Beschreibung verwenden."
+            "OFFER_INLINE_AGB" : "Onboarding: Nutzungsbedingungen als Beschreibung verwenden.",
+            "AUTOADD_P" : "Die Zustimmung wird bei login/start hinzugefügt",
+            "CHECK_P" : "Die Zustimmung ist für die Nutzung der App Vorraussetzung"
         }
     },
 

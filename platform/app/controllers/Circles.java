@@ -73,6 +73,7 @@ import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ConsentQueryTools;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
@@ -125,7 +126,7 @@ public class Circles extends APIController {
 	 * @throws JsonValidationException
 	 * @throws InternalServerException
 	 */
-	@Deprecated
+	/*@Deprecated
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
@@ -152,7 +153,7 @@ public class Circles extends APIController {
 		}
 		Collections.sort(circles);
 		return ok(JsonOutput.toJson(circles, "Consent", Sets.create("name", "order", "owner", "authorized"))).as("application/json");
-	}
+	}*/
 	
 	/**
 	 * list either all consents of a user or all consents of others where the user is authorized 
@@ -250,7 +251,7 @@ public class Circles extends APIController {
 				    if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
 				  } catch (RequestTooLargeException e) { consent.records = -1; }
 				  catch (AppException e) {
-					ErrorReporter.report("consent info", null, e);
+					Errors.handleAllFatal("consent info", context, e);
 					consent.records = -1;
 				  }
 				  

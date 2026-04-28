@@ -33,10 +33,10 @@ import org.hl7.fhir.r4.model.DomainResource;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
-import akka.NotUsed;
-import akka.stream.ActorAttributes;
-import akka.stream.javadsl.Source;
-import akka.util.ByteString;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.stream.ActorAttributes;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.util.ByteString;
 import controllers.APIController;
 import models.MidataId;
 import models.Model;
@@ -55,6 +55,7 @@ import play.mvc.Security;
 import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.ServerTools;
 import utils.access.DBIterator;
 import utils.access.RecordManager;
@@ -222,7 +223,7 @@ public class CSVDownload extends APIController {
 		}
 
 	
-		final akka.japi.function.Creator<Iterator<ByteString>> creator = new akka.japi.function.Creator<Iterator<ByteString>>() {
+		final org.apache.pekko.japi.function.Creator<Iterator<ByteString>> creator = new org.apache.pekko.japi.function.Creator<Iterator<ByteString>>() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -260,7 +261,7 @@ public class CSVDownload extends APIController {
 						boolean v = itNext || converter.hasData();					
 						return v;
 					} catch (Exception e) {
-						ErrorReporter.report("study export", null, e);
+						Errors.handleAllFatal("study export", null, e);
 						throw new RuntimeException(e);
 					}
 				}
@@ -343,7 +344,7 @@ public class CSVDownload extends APIController {
 						System.out.println(AccessLog.getReport());
 						e.printStackTrace();
 						if (e instanceof Exception)
-							ErrorReporter.report("study export", null, (Exception) e);
+							Errors.handleAllFatal("study export", null, (Exception) e);
 						throw new RuntimeException(e);
 					} finally {
 						// System.out.println("FINALLY:"+AccessLog.getReport());

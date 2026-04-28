@@ -321,6 +321,8 @@
     "types" : {
       "REQUIRE_P" : "Consent must be accepted",
       "OFFER_P" : "Consent is offered upon login/registration",
+      "AUTOADD_P" : "Consent is added upon login/start",
+      "CHECK_P" : "Consent is required to use the application",
       "OFFER_EXTRA_PAGE" : "Onboarding: Consent is offered on a separate page.",
       "OFFER_INLINE_AGB" : "Onboarding: Use terms of use as description."
     }

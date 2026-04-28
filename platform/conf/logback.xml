@@ -30,6 +30,13 @@
       <pattern>%message%n%xException</pattern>
     </encoder>
   </appender>
+  
+  <appender name="FILE_ERRORS" class="ch.qos.logback.core.FileAppender">
+    <file>/var/log/midata/errors.log</file>
+    <encoder>
+      <pattern>%date [%level/%thread]: %message{1024}%n</pattern>
+    </encoder>
+  </appender>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
@@ -53,6 +60,10 @@
     <appender-ref ref="FILE_ACTIONS" />
   </appender>
   
+  <appender name="ASYNCFILE_ERRORS" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="FILE_ERRORS" />
+  </appender>
+  
   <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
     <appender-ref ref="STDOUT" />
   </appender>
@@ -71,6 +82,10 @@
   
   <logger name="actions" level="DEBUG" additivity="false">
     <appender-ref ref="ASYNCFILE_ACTIONS" />
+  </logger>
+  
+  <logger name="errors" level="DEBUG" additivity="false">
+    <appender-ref ref="ASYNCFILE_ERRORS" />
   </logger>
 
   <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->

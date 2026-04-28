@@ -25,6 +25,7 @@ import java.util.Set;
 import models.MidataId;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.access.DBRecord;
 import utils.access.RecordLifecycle;
 
@@ -47,7 +48,7 @@ public class WatchesChangeBuffer {
 				try {
 				  RecordLifecycle.addWatchingAps(entry.getKey(), entry.getValue());
 				} catch (Exception e) {
-					ErrorReporter.report("permission cache flush", null, e);					
+					Errors.handleAllFatal("permission cache flush", null, e);					
 				}
 			}
 			addWatchingAps = null;
@@ -58,7 +59,7 @@ public class WatchesChangeBuffer {
 				try {
 				   RecordLifecycle.removeWatchingAps(entry.getKey(), entry.getValue());
 				} catch (Exception e) {
-					ErrorReporter.report("permission cache flush", null, e);					
+					Errors.handleAllFatal("permission cache flush", null, e);					
 				}
 			}
 			removeWatchingAps = null;

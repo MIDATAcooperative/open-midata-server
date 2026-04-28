@@ -491,8 +491,10 @@ public class Feature_Indexes extends Feature {
 			} else {
 				matches = IndexManager.instance.queryIndex(root, condition);
 			}
-			if (doupdate)
+			if (doupdate) {
 				IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getAccessor(), index, targetAps);
+				doupdate = false;
+			}
 			AccessLog.log("Index use: prep=", Long.toString(t2 - t1)," query=", Long.toString(System.currentTimeMillis() - t2));
 			return matches;
 
@@ -501,6 +503,7 @@ public class Feature_Indexes extends Feature {
 		public void skipButUpdate(Query q, Set<MidataId> targetAps) throws AppException {
 			if (doupdate)
 				IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getAccessor(), index, targetAps);			
+			doupdate = false;
 		}
 
 		public void revalidate(MidataId executor, List<DBRecord> result) throws AppException {
@@ -590,6 +593,9 @@ public class Feature_Indexes extends Feature {
 				}
 				if (results.size() < NO_SECOND_INDEX_COUNT) {
 					AccessLog.log("terminate index search at "+partCount+"/"+parts.size()+" #="+results.size());
+					for (IndexUse p : parts) {
+						p.skipButUpdate(q, targetAps);
+					}					
 					return results;
 				}
 			}

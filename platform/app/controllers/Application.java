@@ -1195,7 +1195,6 @@ public class Application extends APIController {
 				controllers.routes.javascript.Records.shareRecord(),
 				controllers.routes.javascript.Records.unshareRecord(),
 				// Circles
-				controllers.routes.javascript.Circles.get(),
 				controllers.routes.javascript.Circles.add(),
 				controllers.routes.javascript.Circles.delete(),
 				controllers.routes.javascript.Circles.addUsers(),
@@ -1211,6 +1210,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Spaces.getUrl(),
 				controllers.routes.javascript.Spaces.regetUrl(),
 				controllers.routes.javascript.Spaces.reset(),
+				controllers.routes.javascript.Spaces.toggleTesting(),
 				// Users
 				controllers.routes.javascript.Users.get(),		
 				controllers.routes.javascript.Users.getCurrentUser(),
@@ -1377,6 +1377,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.BulkMails.delete(),
 				controllers.routes.javascript.BulkMails.send(),
 				controllers.routes.javascript.BulkMails.test(),
+				controllers.routes.javascript.BulkMails.estimate(),
 				controllers.routes.javascript.BulkMails.unsubscribe(),
 				
 				controllers.routes.javascript.TokenActions.action(),

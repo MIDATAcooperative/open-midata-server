@@ -626,8 +626,6 @@ public class Market extends APIController {
 		} catch (JsonProcessingException e) {
 			AccessLog.logException("parse json", e);
 		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
-		} catch (IOException e) {
-		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
 		}
 		    							     
 		MidataId pluginId = new MidataId(pluginJson.get("_id").asText());

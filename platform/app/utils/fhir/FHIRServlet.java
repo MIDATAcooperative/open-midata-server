@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
@@ -121,6 +121,7 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("Specimen", new SpecimenResourceProvider());
       myProviders.put("Location", new LocationResourceProvider());
       myProviders.put("ValueSet", new ValueSetResourceProvider());
+      myProviders.put("CodeSystem", new CodeSystemResourceProvider());
       myProviders.put("ResearchStudy", new ResearchStudyResourceProvider());
       myProviders.put("Provenance", new ProvenanceResourceProvider());
       myProviders.put("Organization", new OrganizationResourceProvider());

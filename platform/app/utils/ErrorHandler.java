@@ -33,7 +33,8 @@ public class ErrorHandler extends DefaultHttpErrorHandler {
 
 	  protected CompletionStage<Result> onProdServerError(
 	      RequestHeader request, UsefulException exception) {
-		ErrorReporter.report("Status-500 Handler", null, exception);
+		  Errors.handleAllFatal("Status-500 Handler", null, exception);
+		  ServerTools.endRequest();
 	    return CompletableFuture.completedFuture(
 	        Results.internalServerError("an internal error occured"));
 	  }
@@ -41,7 +42,8 @@ public class ErrorHandler extends DefaultHttpErrorHandler {
 	  
 	  @Override
 	protected CompletionStage<Result> onDevServerError(RequestHeader request, UsefulException exception) {
-		  ErrorReporter.report("Status-500 Handler", null, exception);
+		  Errors.handleAllFatal("Status-500 Handler", null, exception);
+		  ServerTools.endRequest();
 		  return super.onDevServerError(request, exception);		  
 	}
 
@@ -59,11 +61,12 @@ public class ErrorHandler extends DefaultHttpErrorHandler {
 				try {
 					throw new BadRequestException("errors.badrequest", message);
 				} catch (BadRequestException e) {
-				    ErrorReporter.report("Status-400 Handler", null, e);
+				    Errors.handleAllFatal("Status-400 Handler", null, e);
 				}
 				message = "Provided request is not valid.";
 			}
 		}
+		ServerTools.endRequest();
 		return super.onBadRequest(request, message);
 	}
 	

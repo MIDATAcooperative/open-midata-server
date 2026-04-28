@@ -22,6 +22,8 @@
                 <error-box :error="error"></error-box>
                 <div id="iframe" style="min-height:200px;width:100%;" v-pluginframe="url"></div>								
             </panel>
+			<a v-if="allowTesting && testing" href="javascript:" class="float-end text-muted" style="margin-top:-18px" @click="toggleTesting()">Localhost: On</a>
+			<a v-if="allowTesting && !testing" href="javascript:" class="float-end text-muted" style="margin-top:-18px" @click="toggleTesting()">Localhost: Off</a>
         </div>
     </div>
 </template>
@@ -41,7 +43,9 @@ export default {
 		userId : null,
 		spaceId : null,
 		url : null,
-		params : null		
+		params : null,
+		allowTesting : false,
+		testing : false		
 	}),				
 
 	components : { ErrorBox, Panel },
@@ -74,9 +78,13 @@ export default {
 				.then(function(result) {   
 					$data.title = result.data.name;
 					$data.url = spaces.mainUrl(result.data, getLocale(), $data.params);	
-					
+					if ($data.url.startsWith("https://localhost")) $data.testing = true; else $data.testing = false;
 				}));
 			}
+		},
+		
+		toggleTesting() {
+			this.doBusy(spaces.toggleTesting(this.$data.spaceId)).then(() => { this.init(); });
 		},
 	
 		init() {
@@ -86,7 +94,8 @@ export default {
 			this.doBusy(session.currentUser
 			.then(function(userId) {
 				$data.userId = userId;
-			
+				$data.allowTesting = session.user.developer;
+			   
 				if ($route.query.app && !$route.query.spaceId) {				
 					me.openAppLink({ app : $route.query.app });
 				} else me.getAuthToken($data.spaceId/*, $state.params.user*/);

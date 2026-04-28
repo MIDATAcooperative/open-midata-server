@@ -25,6 +25,7 @@ import models.enums.UserRole;
 import utils.AccessLog;
 import utils.ConsentQueryTools;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.RuntimeConstants;
 import utils.access.APSCache;
 import utils.access.DBRecord;
@@ -150,15 +151,14 @@ public class PreLoginAccessContext extends AccessContext {
 		AccessLog.log("[pre-login session] close");
 		try {
 			getCache().finishTouch();
-		} catch (AppException e) {
-		 	AccessLog.logException("clearCache", e);
-		 	ErrorReporter.report("context clean up", null, e);
+		} catch (AppException e) {		 	
+		 	Errors.handleAllFatal("context clean up", null, e);
 		}
 		try {
 		   requestCache.save();
 		} catch (AppException e) {
 		   AccessLog.logException("requestCache", e);
-		   ErrorReporter.report("context clean up", null, e);
+		   Errors.handleAllFatal("context clean up", null, e);
 		}
 	}
 			

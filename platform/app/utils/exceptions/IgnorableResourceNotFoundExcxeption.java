@@ -15,19 +15,14 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package utils.fhir;
+package utils.exceptions;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 
-import ca.uhn.fhir.rest.server.IServerAddressStrategy;
-import utils.InstanceConfig;
+public class IgnorableResourceNotFoundExcxeption extends ResourceNotFoundException implements DoNotLogError {
 
-public class ServerAddressStrategy implements IServerAddressStrategy {
-
-	@Override
-	public String determineServerBase(ServletContext theServletContext, HttpServletRequest theRequest) {		
-		return "https://"+InstanceConfig.getInstance().getPlatformServer()+theRequest.getServletPath();
+	public IgnorableResourceNotFoundExcxeption(String theMessage) {
+		super(theMessage);
 	}
 
 }

@@ -130,6 +130,7 @@ public class Users extends APIController {
 		
 		Map<String, Object> properties_mod = new HashMap<String, Object>(properties);
 		// check authorization
+		if (!properties_mod.containsKey("status")) properties_mod.put("status", User.NON_DELETED);
 		
 		if (!getRole().equals(UserRole.ADMIN) && 
 			!(getRole().equals(UserRole.RESEARCH) && properties.containsKey("role") && properties.get("role").equals("RESEARCH")) &&
@@ -336,6 +337,10 @@ public class Users extends APIController {
 				  user.authType = SecondaryAuthType.TOTP;
 				  User.set(user._id, "authType", user.authType);
 				  return ok();
+			  } else if (type == SecondaryAuthType.TOTP && user.authType==SecondaryAuthType.TOTP && user.totpStatus == EMailStatus.UNVALIDATED && json.has("totp")) {
+				  // Allow user to get out of unvalidated state
+				  Authenticators.getInstance(SecondaryAuthType.TOTP).checkAuthentication(executorId, user, JsonValidation.getString(json, "totp"));				  
+				  return ok();
 			  } else if (type == SecondaryAuthType.SMS && user.mobileStatus == EMailStatus.VALIDATED) {
 				  user.authType = SecondaryAuthType.SMS;
 				  User.set(user._id, "authType", user.authType);
@@ -494,7 +499,7 @@ public class Users extends APIController {
 			throw new JsonValidationException("error.missing.auth_type", "authType", "missing", "Two factor authentication is mandantory");
 		}
 		
-		if (authType == SecondaryAuthType.TOTP && JsonValidation.getBoolean(json, "reset")) {
+		if (user.authType != SecondaryAuthType.TOTP && authType == SecondaryAuthType.TOTP && JsonValidation.getBoolean(json, "reset")) {
 			Authenticators.getInstance(SecondaryAuthType.TOTP).setupAuthentication(user);
 		}
 		
@@ -512,7 +517,7 @@ public class Users extends APIController {
 		if (authType.equals(SecondaryAuthType.SMS)) {
 			requireUserFeature(request, UserFeature.PHONE_ENTERED);
 		}
-		if (authType.equals(SecondaryAuthType.TOTP) ) {
+		if (authType.equals(SecondaryAuthType.TOTP) && user.totpStatus != EMailStatus.VALIDATED ) {
 			requireUserFeature(request, UserFeature.AUTH2FACTORSETUP);
 		}
 		

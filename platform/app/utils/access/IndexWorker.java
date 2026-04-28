@@ -19,14 +19,15 @@ package utils.access;
 
 import java.time.Duration;
 
-import akka.actor.AbstractActor;
-import akka.actor.Props;
-import akka.actor.ReceiveTimeout;
-import akka.japi.Creator;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.ReceiveTimeout;
+import org.apache.pekko.japi.Creator;
 import models.MidataId;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.ServerTools;
 import utils.access.index.BaseIndexRoot;
 import utils.access.index.IndexDefinition;
@@ -122,7 +123,7 @@ public class IndexWorker extends AbstractActor {
 			  }
 							
 		} catch (Exception e) {
-			ErrorReporter.report("Messager", null, e);	
+			Errors.handleAllFatal("indexUpdate", null, e);	
 			throw e;
 		} finally {
 			AccessLog.logEnd("END INDEX UPDATE");
@@ -153,7 +154,7 @@ public class IndexWorker extends AbstractActor {
 			  IndexManager.instance.removeRecords(cache, executor, msg.getRecords(), msg.getIndexId(), msg.getCondition(), pseudo);
 				
 		} catch (Exception e) {
-			ErrorReporter.report("Messager", null, e);	
+			Errors.handleAllFatal("indexRemove", null, e);	
 			throw e;
 		} finally {
 			AccessLog.logEnd("END INDEX UPDATE");

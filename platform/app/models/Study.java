@@ -277,26 +277,32 @@ public class Study extends Model implements HasPredefinedMessages {
 	}
     
     public void setValidationStatus(StudyValidationStatus newstatus) throws InternalServerException {
+    	this.validationStatus = newstatus;
 		Model.set(Study.class, collection, this._id, "validationStatus", newstatus);
 	}
     
     public void setParticipantSearchStatus(ParticipantSearchStatus newstatus) throws InternalServerException {
+    	this.participantSearchStatus = newstatus;
 		Model.set(Study.class, collection, this._id, "participantSearchStatus", newstatus);
 	}
     
     public void setExecutionStatus(StudyExecutionStatus newstatus) throws InternalServerException {
+    	this.executionStatus = newstatus;
 		Model.set(Study.class, collection, this._id, "executionStatus", newstatus);
 	}
     
     public void setRequiredInformation(InformationType inf) throws InternalServerException {
+    	this.requiredInformation = inf;
 		Model.set(Study.class, collection, this._id, "requiredInformation", inf);
 	}
     
     public void setAnonymous(boolean anonymous) throws InternalServerException {
+    	this.anonymous = anonymous;
 		Model.set(Study.class, collection, this._id, "anonymous", anonymous);
 	}
     
     public void setAssistance(AssistanceType inf) throws InternalServerException {
+    	this.assistance = inf;
 		Model.set(Study.class, collection, this._id, "assistance", inf);
 	}
     

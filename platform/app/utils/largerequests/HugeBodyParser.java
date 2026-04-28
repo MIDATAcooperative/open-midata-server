@@ -24,16 +24,17 @@ import java.util.function.Function;
 
 import javax.inject.Inject;
 
-import akka.stream.Materializer;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.StreamConverters;
-import akka.util.ByteString;
+import org.apache.pekko.stream.Materializer;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.StreamConverters;
+import org.apache.pekko.util.ByteString;
 import play.core.parsers.Multipart;
 import play.libs.streams.Accumulator;
 import play.mvc.BodyParser.DelegatingMultipartFormDataBodyParser;
 import play.mvc.Http;
 import play.mvc.Http.MultipartFormData.FilePart;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.exceptions.AppException;
@@ -72,7 +73,7 @@ public class HugeBodyParser extends DelegatingMultipartFormDataBodyParser<Encryp
                            contentType,
                            p);
             		 } catch (AppException e) {
-            			 ErrorReporter.report("File Part Parser", null, e);            			 
+            			 Errors.handleAllFatal("File Part Parser", null, e);            			 
             			 throw new NullPointerException();
             		 }
             	 });

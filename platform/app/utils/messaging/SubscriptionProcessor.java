@@ -36,8 +36,8 @@ import org.hl7.fhir.r4.model.Subscription;
 import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelComponent;
 import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelType;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
 import controllers.Plugins;
 import models.APSNotExistingException;
 import models.MidataId;
@@ -57,6 +57,7 @@ import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.RecordManager;
@@ -163,8 +164,8 @@ public class SubscriptionProcessor extends AbstractActor {
 				getSender().tell(new MessageResponse("No matching subscription",-1, app), getSelf());
 			}
 			
-		} catch (Exception e) {			
-			ErrorReporter.report("Subscriptions", null, e);
+		} catch (Exception e) {		
+			Errors.handleAllFatal("Subscriptions", null, e);
 			getSender().tell(new MessageResponse("Exception while processing subscription: "+e.toString(),-1, null), getSelf());
 			
 		} finally {
@@ -212,8 +213,7 @@ public class SubscriptionProcessor extends AbstractActor {
 				   SubscriptionData.setError(subscription, new Date().toString()+": "+error);
 				   AuditManager.instance.fail(400, error, "error.plugin");
 			   } catch (Exception e) {
-				   AccessLog.logException("Error during Subscription.setError", e);				   
-				   ErrorReporter.report("SubscriptionManager", null, e);
+				   Errors.handleAllFatal("SubscriptionManager", null, e);
 			   } finally {
 				   ServerTools.endRequest();
 			   }
@@ -259,138 +259,145 @@ public class SubscriptionProcessor extends AbstractActor {
 	}
 	
 	boolean processApplication(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws AppException {
-		AccessLog.log("prcApp app="+subscription.app);
+		AccessLog.logBegin("processApp app="+subscription.app+" owner="+subscription.owner);
 		try {
-		Plugin plugin = Plugin.getById(subscription.app);
-		if (plugin == null) {
-			subscription.disable();
-			return false;
-		}
-		if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), 1), getSelf());
-		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SCRIPT_INVOCATION).withActor(null, subscription.owner).withModifiedActor(null, triggered.getSourceOwner()).withApp(subscription.app));
-		//System.out.println("prcApp2");
-		String endpoint = channel.getEndpoint();		
-		
-		//System.out.println("prcApp3");
-		//AccessLog.log("sub session="+subscription.session);
-		String handle = ServiceHandler.decrypt(subscription.session);
-		
-		if (handle == null) {
-			SubscriptionData.setError(subscription._id, "Background service key expired");
-			getSender().tell(new MessageResponse("Service key expired",-1, plugin.filename), getSelf());
-			try {
-				throw new InternalServerException("error.internal", "Missing service key subscription: "+subscription._id);
-			} catch (InternalServerException e) {
-				ErrorReporter.report("Subscription-Processor", null, e);
+			Plugin plugin = Plugin.getById(subscription.app);
+			if (plugin == null) {
+				subscription.disable();
+				AccessLog.log("plugin not found -> disable");
+				return false;
+			}
+			if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), 1), getSelf());
+			AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.SCRIPT_INVOCATION).withActor(null, subscription.owner).withModifiedActor(null, triggered.getSourceOwner()).withApp(subscription.app));
+			String endpoint = channel.getEndpoint();		
+			
+			String handle = ServiceHandler.decrypt(subscription.session);
+			
+			if (handle == null) {
+				SubscriptionData.setError(subscription._id, "Background service key expired");
+				getSender().tell(new MessageResponse("Service key expired",-1, plugin.filename), getSelf());
+				try {
+					throw new InternalServerException("error.internal", "Missing service key subscription: "+subscription._id);
+				} catch (InternalServerException e) {
+					Errors.handleAllFatal("Subscription-Processor", null, e);
+				}
+				
+				AuditManager.instance.fail(500, "Service key expired", "error.missing.token");
+				if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
+				AccessLog.log("Service key expired -> leave");
+				return true;
 			}
 			
-			AuditManager.instance.fail(500, "Service key expired", "error.missing.token");
-			if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
-			return true;
-		}
-		
-		User user = null;
-		
-		if (!plugin.type.equals("analyzer") && !plugin.type.equals("external") && !plugin.type.equals("broker") && !plugin.type.equals("endpoint")) {
-			user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
-			//System.out.println("prcApp4");
-			if (user==null || user.status.isDeleted() || user.status.equals(UserStatus.BLOCKED)) {
-				subscription.disable();
-				AuditManager.instance.fail(400, "Subscription owner bad status", "error.unknown.user");
-				if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
-				return false;
-			}
-		}
-        final ActorRef sender = getSender();						
-		SpaceToken tk = null;
-		if (plugin.type.equals("mobile") || plugin.type.equals("service") || plugin.type.equals("analyzer") || plugin.type.equals("external") || plugin.type.equals("broker")) {
-			AccessLog.log("RIGHT PATH");
-			System.out.println("RIGHT PATH "+plugin.name);
-			Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(plugin._id, subscription.owner, Sets.create("status", "dateOfCreation"));
-			if (mais.isEmpty()) {
-				AuditManager.instance.fail(400, "No application instance", "error.unknown.consent");
-				if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
-				return false;
-			}
-			MidataId appInstanceId = null;
-			Date best = null;
-			for (MobileAppInstance mai : mais) {
-				if (mai.status.equals(ConsentStatus.ACTIVE)) {
-					if (appInstanceId == null || (mai.dateOfCreation != null && mai.dateOfCreation.after(best))) {
-					  appInstanceId = mai._id;
-					  best = mai.dateOfCreation;
-					}
+			User user = null;
+			
+			if (!plugin.type.equals("analyzer") && !plugin.type.equals("external") && !plugin.type.equals("broker") && !plugin.type.equals("endpoint")) {
+				user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
+				//System.out.println("prcApp4");
+				if (user==null || user.status.isDeleted() || user.status.equals(UserStatus.BLOCKED)) {
+					subscription.disable();
+					AuditManager.instance.fail(400, "Subscription owner bad status", "error.unknown.user");
+					if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
+					AccessLog.log("user blocked or deleted -> disable");
+					return false;
 				}
 			}
-			if (appInstanceId == null) {
-				AuditManager.instance.fail(400, "No application instance", "error.unknown.consent");
-				if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
-				return false;	
-			}
-			//AccessLog.log("HANDLE="+handle);
-
-			if (subscription.app == null) throw new NullPointerException(); 
-			tk = new SpaceToken(handle, appInstanceId, subscription.owner, user != null ? user.getRole() : UserRole.ANY, null, subscription.app, subscription.owner, triggered.getUserGroupId());			
-			AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
-			
-			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
-			
-		} else if (plugin.type.equals("oauth2")) {
-			System.out.println("NEW OAUTH2 - 1");
-			try {
-				KeyManager.instance.continueSession(handle, subscription.owner);
-               	AccessContext context = ContextManager.instance.createSessionForDownloadStream(subscription.owner, UserRole.MEMBER);	
-				BSONObject oauthmeta = RecordManager.instance.getMeta(context, subscription.instance, "_oauth");
-				if (oauthmeta != null) {
-					System.out.println("NEW OAUTH2 - 2");
-					if (oauthmeta.get("refreshToken") != null) {
-						tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner, triggered.getUserGroupId());
-						final String token = tk.encrypt();
-						System.out.println("NEW OAUTH2 - 3");
-						Plugin plugin2 = Plugin.getById(plugin._id, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams"));
-						final User user1 = user;
-						final MidataId eventId = AuditManager.instance.convertLastEventToAsync();
-						Plugins.requestAccessTokenOAuth2FromRefreshToken(handle, subscription.owner, plugin2, subscription.instance.toString(), oauthmeta.toMap()).thenAcceptAsync(success1 -> {
-							    AuditManager.instance.resumeAsyncEvent(eventId);
-							    boolean success = (Boolean) success1;
-								if (success) {
-									System.out.println("NEW OAUTH2 - 4");							
-									runProcess(sender, plugin, triggered, subscription, user1, token, endpoint);
-								} else {
-									System.out.println("NEW OAUTH2 - 4B");
-									sender.tell(new MessageResponse("OAuth 2 failed ("+subscription.failCount+")",-1, plugin.filename), getSelf());
-									try { SubscriptionData.fail(subscription._id); } catch (Exception e) {}
-									AuditManager.instance.fail(400, "OAuth 2 failed", "error.missing.token");
-									if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
-								}
-								try { AuditManager.instance.success(); } catch (AppException e) {}
-						});
-					} else {
-						SubscriptionData.fail(subscription._id);
-						sender.tell(new MessageResponse("OAuth 2 no refresh token ("+subscription.failCount+")",-1, plugin.filename), getSelf());
-						AuditManager.instance.fail(400, "OAuth 2 no refresh token", "error.missing.token");
-						if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
-					}
-				} else {
-					SubscriptionData.fail(subscription._id);
-					sender.tell(new MessageResponse("OAuth 2 no data ("+subscription.failCount+")",-1, plugin.filename), getSelf());
-					AuditManager.instance.fail(400, "OAuth 2 no data", "error.missing.consent_accept");
+	        final ActorRef sender = getSender();						
+			SpaceToken tk = null;
+			if (plugin.type.equals("mobile") || plugin.type.equals("service") || plugin.type.equals("analyzer") || plugin.type.equals("external") || plugin.type.equals("broker")) {
+				
+				Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(plugin._id, subscription.owner, Sets.create("status", "dateOfCreation"));
+				if (mais.isEmpty()) {
+					AuditManager.instance.fail(400, "No application instance", "error.unknown.consent");
 					if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
-				}	
-			} catch (APSNotExistingException e) {
-				subscription.disable();
-				sender.tell(new MessageResponse("Space no longer existing - disabled",-1, plugin.filename), getSelf());
-				AuditManager.instance.fail(400, "No application instance", "error.missing.plugin");
-				if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
-			} 
-		} else {
-			//AccessLog.log("BPART HANDLE="+handle);
-			tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner, triggered.getUserGroupId());
-			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
-		}
-		AuditManager.instance.success();
-		return true;
+					AccessLog.log("No application instance -> leave");
+					return false;
+				}
+				MidataId appInstanceId = null;
+				Date best = null;
+				for (MobileAppInstance mai : mais) {
+					if (mai.status.equals(ConsentStatus.ACTIVE)) {
+						if (appInstanceId == null || (mai.dateOfCreation != null && mai.dateOfCreation.after(best))) {
+						  appInstanceId = mai._id;
+						  best = mai.dateOfCreation;
+						}
+					}
+				}
+				if (appInstanceId == null) {
+					AuditManager.instance.fail(400, "No application instance", "error.unknown.consent");
+					if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
+					AccessLog.log("No application instance (2) -> leave");
+					return false;	
+				}
+				//AccessLog.log("HANDLE="+handle);
+	
+				if (subscription.app == null) throw new NullPointerException(); 
+				tk = new SpaceToken(handle, appInstanceId, subscription.owner, user != null ? user.getRole() : UserRole.ANY, null, subscription.app, subscription.owner, triggered.getUserGroupId());			
+				AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
+				
+				runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
+				
+			} else if (plugin.type.equals("oauth2")) {
+				AccessLog.log("OAUTH2: get session owner="+subscription.owner);
+				try {
+					KeyManager.instance.continueSession(handle, subscription.owner);
+	               	AccessContext context = ContextManager.instance.createSessionForDownloadStream(subscription.owner, UserRole.MEMBER);	
+					BSONObject oauthmeta = RecordManager.instance.getMeta(context, subscription.instance, "_oauth");
+					if (oauthmeta != null) {
+						AccessLog.log("OAUTH2: Session data found");
+						if (oauthmeta.get("refreshToken") != null) {
+							AccessLog.log("OAUTH2: Refreshtoken found");
+							tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner, triggered.getUserGroupId());
+							final String token = tk.encrypt();
+							System.out.println("NEW OAUTH2 - 3");
+							Plugin plugin2 = Plugin.getById(plugin._id, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "refreshTkExchangeParams"));
+							final User user1 = user;
+							final MidataId eventId = AuditManager.instance.convertLastEventToAsync();
+				
+							Plugins.requestAccessTokenOAuth2FromRefreshToken(handle, subscription.owner, plugin2, subscription.instance.toString(), oauthmeta.toMap()).thenAcceptAsync(success1 -> {
+								    AuditManager.instance.resumeAsyncEvent(eventId);
+								    boolean success = (Boolean) success1;
+									if (success) {
+										System.out.println("NEW OAUTH2 - 4");							
+										runProcess(sender, plugin, triggered, subscription, user1, token, endpoint);
+									} else {
+										System.out.println("NEW OAUTH2 - 4B");
+										sender.tell(new MessageResponse("OAuth 2 failed ("+subscription.failCount+")",-1, plugin.filename), getSelf());
+										try { SubscriptionData.fail(subscription._id); } catch (Exception e) {}
+										AuditManager.instance.fail(400, "OAuth 2 failed", "error.missing.token");
+										if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
+									}
+									try { AuditManager.instance.success(); } catch (AppException e) {}
+							});
+						} else {
+							AccessLog.log("OAUTH2: No refresh token found -> disable");
+							SubscriptionData.fail(subscription._id);
+							sender.tell(new MessageResponse("OAuth 2 no refresh token ("+subscription.failCount+")",-1, plugin.filename), getSelf());
+							AuditManager.instance.fail(400, "OAuth 2 no refresh token", "error.missing.token");
+							if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
+						}
+					} else {
+						AccessLog.log("OAUTH2: No data found -> fail owner="+subscription.owner);
+						SubscriptionData.fail(subscription._id);
+						sender.tell(new MessageResponse("OAuth 2 no data ("+subscription.failCount+")",-1, plugin.filename), getSelf());
+						AuditManager.instance.fail(400, "OAuth 2 no data", "error.missing.consent_accept");
+						if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
+					}	
+				} catch (APSNotExistingException e) {
+					AccessLog.log("OAUTH2: Space not existing -> disable owner="+subscription.owner);
+					subscription.disable();
+					sender.tell(new MessageResponse("Space no longer existing - disabled",-1, plugin.filename), getSelf());
+					AuditManager.instance.fail(400, "No application instance", "error.missing.plugin");
+					if (triggered.getTransactionId()!=null) getSender().tell(new TriggerCountMessage(triggered.getTransactionId(), -1), getSelf());
+				} 
+			} else {
+				//AccessLog.log("BPART HANDLE="+handle);
+				tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner, triggered.getUserGroupId());
+				runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
+			}
+			AuditManager.instance.success();
+			return true;
 		} finally {
+			AccessLog.logEnd("processApp app="+subscription.app+" owner="+subscription.owner);
 			ServerTools.endRequest();
 		}
 	}	
@@ -427,11 +434,9 @@ public class SubscriptionProcessor extends AbstractActor {
 			   try {
 				   SubscriptionData.fail(subscription._id);
 				   SubscriptionData.setError(subscription._id, new Date().toString()+": "+error);
-				   AuditManager.instance.fail(400, error, "error.plugin");
-				   ErrorReporter.reportPluginProblem("subscription script", null, new PluginException(plugin._id, "error.plugin", error));
+				   Errors.handle("subscription script", null, new PluginException(plugin._id, "error.plugin", error));
 			   } catch (Exception e) {
-				   AccessLog.logException("Error during Subscription.setError", e);				   
-				   ErrorReporter.report("SubscriptionManager", null, e);
+				   Errors.handleAllFatal("Error during Subscription.setError", null, e);				   
 			   } finally {
 				   ServerTools.endRequest();
 			   }
@@ -459,7 +464,7 @@ public class SubscriptionProcessor extends AbstractActor {
 	  try {
 		throw new PluginException(plugin._id, "error.plugin", error);
 	  } catch (PluginException e) {
-	    ErrorReporter.report("Script execution", null, e);
+	    Errors.handle("Script execution", null, e);
 	  }
 	}
 

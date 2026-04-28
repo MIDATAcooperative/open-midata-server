@@ -23,7 +23,7 @@
 	  "messages" : "Messages",
 	  "my_data" : "My Data",
 	  "consents" : "Sharing",
-	  "research" : "Research",
+	  "research" : "Projects",
 	  "apps" : "Applications",
 	  "config" : "Configuration",
 	  "language" : "Language",
@@ -179,7 +179,8 @@
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PRODUCT portal.",
        "app_test" : "You are allowed to use this application on a maximum of 10 devices. On this TEST instance consents have been reset for you. Please retry.",
        "joinmethod" : "It is not allowed to join the project by this method.",
-       "testuser" : "Application does not accept test accounts." 
+       "testuser" : "Application does not accept test accounts.",
+       "realuser" : "This application is currently in the testing phase. Only TEST accounts allowed. Come back after release."
      },
 
      "closed" : {
@@ -395,7 +396,8 @@
        "apikey-deleted" : "API-Key deleted",
        "service-instance-created" : "Service-Instance created",
        "service-instance-deleted" : "Service-Instance deleted",
-       "otp-sent" : "One-time password sent"	   	   
+       "otp-sent" : "One-time password sent",
+       "user-key-recovery" : "User private key recovery"
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",

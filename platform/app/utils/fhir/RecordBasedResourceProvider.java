@@ -69,6 +69,7 @@ import models.enums.AuditEventType;
 import utils.AccessLog;
 import utils.ContentTypeTools;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.QueryTagTools;
 import utils.TestAccountTools;
@@ -166,15 +167,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			}			
 			AccessContext info = info();
 			return query.executeCount(info);
-		} catch (InternalServerException e3) {
-		   ErrorReporter.report("FHIR (count)", null, e3);
-		   throw new InternalErrorException("Internal error during search (count)");
-	    } catch (AppException e) {
-	       ErrorReporter.report("FHIR (count)", null, e);	      
-		   throw new InvalidRequestException(e.getMessage());
-	    } catch (NullPointerException e2) {
-			ErrorReporter.report("FHIR (count)", null, e2);	 
-			throw new InternalErrorException("internal error during FHIR search (count)");
+		} catch (Exception e3) {
+			throw Errors.handle("FHIR (count)", info(), e3);
 		}
 	}
 	
@@ -350,12 +344,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			   }
 			}		
 			return record;
-		} catch (AppException e) {
-			ErrorReporter.report("FHIR (fetch current record)", null, e);	 
-			throw new InternalErrorException(e.getMessage());
-		} catch (NullPointerException e2) {
-			ErrorReporter.report("FHIR (fetch current record)", null, e2);	 
-			throw new InternalErrorException("internal error during fetch current record");
+		} catch (Exception e) {
+			throw Errors.handle("FHIR (fetch current record)", info(), e);
 		}
 	}
 	
@@ -585,7 +575,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 				  ContentTypeTools.setRecordCodeAndContent(info(), record, null, defaultContent, display, category);
 			  }
 		  } catch (PluginException e) {
-			    ErrorReporter.reportPluginProblem("FHIR (set record code)", null, e);	
+			    Errors.handle("FHIR (set record code)", info(), e);	
 				throw new UnprocessableEntityException("Error determining MIDATA record code.");
 		  }
 		  return display;

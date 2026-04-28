@@ -83,6 +83,10 @@ public class ContextManager {
 		return current == null ? null : current.getCache();
 	}
 	
+	public AccessContext currentForErrorReporting() {
+		return threadContext.get();
+	}
+	
 	public void setAccountOwner(MidataId executor, MidataId accountOwner) throws InternalServerException {
 		getCache(executor).setAccountOwner(accountOwner);
 	}

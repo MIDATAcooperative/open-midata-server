@@ -76,6 +76,7 @@ import models.enums.ConsentStatus;
 import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -331,12 +332,8 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 			
 			return result;
 			
-		 } catch (AppException e) {
-		       ErrorReporter.report("FHIR (search)", null, e);	       
-			   return null;
-		 } catch (NullPointerException e2) {
-		   	    ErrorReporter.report("FHIR (search)", null, e2);	 
-				throw new InternalErrorException(e2);
+		 } catch (Exception e) {
+			 throw Errors.handle("FHIR (search STU3)", info(), e);   
 		}
 		
 	}

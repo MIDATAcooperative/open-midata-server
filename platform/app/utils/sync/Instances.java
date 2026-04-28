@@ -22,22 +22,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
-import akka.Done;
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.CoordinatedShutdown;
-import akka.actor.Props;
-import akka.cluster.Cluster;
-import akka.cluster.routing.ClusterRouterGroup;
-import akka.cluster.routing.ClusterRouterGroupSettings;
-import akka.routing.BroadcastGroup;
+import org.apache.pekko.Done;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.CoordinatedShutdown;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.cluster.routing.ClusterRouterGroup;
+import org.apache.pekko.cluster.routing.ClusterRouterGroupSettings;
+import org.apache.pekko.routing.BroadcastGroup;
 import models.ContentCode;
 import models.MidataId;
 import models.Plugin;
 import models.RecordGroup;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.collections.Sets;
 import utils.messaging.ServiceHandler;
@@ -192,7 +193,7 @@ class InstanceSync extends AbstractActor {
 			   ServiceHandler.shareKey();
 		   }
 		} catch (Exception e) {
-			ErrorReporter.report("Messager", null, e);	
+			Errors.handle("Messager", null, e);
 			throw e;
 		} finally {			
 			AccessLog.newRequest();	

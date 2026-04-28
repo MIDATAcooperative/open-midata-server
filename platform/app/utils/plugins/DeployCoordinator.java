@@ -24,14 +24,15 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import akka.actor.ActorRef;
-import akka.actor.Props;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Props;
 import models.MidataId;
 import models.Plugin;
 import models.enums.AuditEventType;
 import models.enums.DeploymentStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.audit.AuditEventBuilder;
@@ -71,7 +72,7 @@ public class DeployCoordinator extends AbstractContainer {
 				Plugin.set(pl._id, "deployStatus", DeploymentStatus.FAILED);			
 			}
 		} catch (AppException e) {
-			ErrorReporter.report("deploy", null, e);
+			Errors.handleAllFatal("deploy", null, e);
 		}
 		/*
 		if (InstanceConfig.getInstance().getInternalBuilderUrl() != null) {
@@ -311,7 +312,7 @@ public class DeployCoordinator extends AbstractContainer {
 									
 		}
 		} catch (AppException e) {			
-		  ErrorReporter.report("DeployCoordinator", null, e);
+		  Errors.handleAllFatal("DeployCoordinator", null, e);
 		} finally {
 			ServerTools.endRequest();
 			ActionRecorder.end(path, st);

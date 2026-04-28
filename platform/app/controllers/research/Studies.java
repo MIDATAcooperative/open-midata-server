@@ -47,10 +47,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
 import actions.APICall;
-import akka.NotUsed;
-import akka.stream.ActorAttributes;
-import akka.stream.javadsl.Source;
-import akka.util.ByteString;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.stream.ActorAttributes;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.util.ByteString;
 import controllers.APIController;
 import controllers.Circles;
 import controllers.Market;
@@ -119,6 +119,7 @@ import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ConsentQueryTools;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.ProjectTools;
 import utils.RuntimeConstants;
@@ -415,7 +416,7 @@ public class Studies extends APIController {
 
 		final boolean firstWritten = first;
 
-		final akka.japi.function.Creator<Iterator<ByteString>> creator = new akka.japi.function.Creator<Iterator<ByteString>>() {
+		final org.apache.pekko.japi.function.Creator<Iterator<ByteString>> creator = new org.apache.pekko.japi.function.Creator<Iterator<ByteString>>() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -452,7 +453,7 @@ public class Studies extends APIController {
 						// System.out.println("next = "+v);
 						return v;
 					} catch (Exception e) {
-						ErrorReporter.report("study export", null, e);
+						Errors.handleAllFatal("study export", null, e);
 						throw new RuntimeException(e);
 					}
 				}
@@ -498,18 +499,22 @@ public class Studies extends APIController {
 							  attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
 							  if (attpos > 0) {
 								out.append(ser.substring(0, attpos));
-								FileData fileData = RecordManager.instance.fetchFile(context, rec.format, new RecordToken(rec._id.toString(), rec.context.getTargetAps().toString()), idx);
-
-								int BUFFER_SIZE = 3 * 1024;
-
-								try (InputStreamReader in = new InputStreamReader(new Base64InputStream(fileData.inputStream, true, -1, null));) {
-
-									char[] chunk = new char[BUFFER_SIZE];
-									int len = 0;
-									while ((len = in.read(chunk)) != -1) {
-										out.append(String.valueOf(chunk, 0, len));
+								try {
+									FileData fileData = RecordManager.instance.fetchFile(rec.context, rec.format, new RecordToken(rec._id.toString(), rec.context.getTargetAps().toString()), idx);
+	
+									int BUFFER_SIZE = 3 * 1024;
+	
+									try (InputStreamReader in = new InputStreamReader(new Base64InputStream(fileData.inputStream, true, -1, null));) {
+	
+										char[] chunk = new char[BUFFER_SIZE];
+										int len = 0;
+										while ((len = in.read(chunk)) != -1) {
+											out.append(String.valueOf(chunk, 0, len));
+										}
+	
 									}
-
+								} catch (AppException e) {
+									Errors.handleAllFatal("FHIR Download", context, e);										
 								}
                                 ser = ser.substring(attpos + FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length());
                                 idx++;
@@ -529,7 +534,7 @@ public class Studies extends APIController {
 						System.out.println(AccessLog.getReport());
 						e.printStackTrace();
 						if (e instanceof Exception)
-							ErrorReporter.report("study export", null, (Exception) e);
+							Errors.handleAllFatal("study export", null, (Exception) e);
 						throw new RuntimeException(e);
 					} finally {
 						// System.out.println("FINALLY:"+AccessLog.getReport());
@@ -735,7 +740,7 @@ public class Studies extends APIController {
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
-		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
+		User user = User.getById(userId, Sets.create("firstname", "lastname"));
 		String userName = user.lastname + ", " + user.firstname;
 
 		int count = JsonValidation.getInteger(json, "count", 1, 1000);
@@ -2657,8 +2662,6 @@ public class Studies extends APIController {
 			studyJson = allJson.get(0);
 		} catch (JsonProcessingException e) {
 			AccessLog.logException("parse json", e);
-			throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
-		} catch (IOException e) {
 			throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
 		}
 

@@ -30,16 +30,16 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Cancellable;
-import akka.actor.PoisonPill;
-import akka.actor.Props;
-import akka.cluster.singleton.ClusterSingletonManager;
-import akka.cluster.singleton.ClusterSingletonManagerSettings;
-import akka.cluster.singleton.ClusterSingletonProxy;
-import akka.cluster.singleton.ClusterSingletonProxySettings;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.actor.PoisonPill;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.cluster.singleton.ClusterSingletonManager;
+import org.apache.pekko.cluster.singleton.ClusterSingletonManagerSettings;
+import org.apache.pekko.cluster.singleton.ClusterSingletonProxy;
+import org.apache.pekko.cluster.singleton.ClusterSingletonProxySettings;
 import models.MidataId;
 import models.Plugin;
 import models.stats.MonitoringEvent;
@@ -47,6 +47,7 @@ import models.stats.MonitoringStats;
 import models.stats.MonitoringType;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.ServerTools;
@@ -348,8 +349,7 @@ class MonitoringReporterActor extends AbstractActor {
 				stats.upsert();
 			}	
 		} catch (Exception e) {
-			AccessLog.logException("MonitoringReporterActor", e);
-			ErrorReporter.report("MonitoringReporterActor", null, e);	
+			Errors.handleAllFatal("MonitoringReporterAction", null, e);
 		} finally {
 			ServerTools.endRequest();	
 			ActionRecorder.end(path, st);
@@ -362,8 +362,7 @@ class MonitoringReporterActor extends AbstractActor {
 		try {			
 		   closeTimeslot(currentTimeslot);		 
 		} catch (Exception e) {
-			AccessLog.logException("MonitoringReporterActor", e);
-			ErrorReporter.report("MonitoringReporterActor", null, e);				
+			Errors.handleAllFatal("MonitoringReporterActor", null, e);				
 		} finally {
 		    currentTimeslot = getCurrentTimeslot();
 			ServerTools.endRequest();	

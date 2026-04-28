@@ -23,8 +23,6 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.regex.Pattern;
 
-import org.hazlewood.connor.bottema.emailaddress.EmailAddressParser;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.MidataId;

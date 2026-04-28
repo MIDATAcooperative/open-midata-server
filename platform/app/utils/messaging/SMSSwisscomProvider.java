@@ -26,6 +26,7 @@ import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.ServerTools;
 import utils.exceptions.InternalServerException;
 
@@ -64,8 +65,7 @@ public class SMSSwisscomProvider implements SMSProvider {
 					String msg = response.getStatus()+" "+response.asJson().toString();
 					throw new InternalServerException("error.internal", msg);
 				} catch (InternalServerException e) {
-					ErrorReporter.report("SwisscomSMS Sender", null, e);
-					AccessLog.logException("SwisscomSMS Sender Error", e);
+					Errors.handleAllFatal("SwisscomSMS Sender", null, e);
 				} finally {
 					ServerTools.endRequest();
 				}

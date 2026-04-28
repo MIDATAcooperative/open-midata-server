@@ -56,7 +56,9 @@ import ca.uhn.fhir.util.FhirTerser;
 import ca.uhn.fhir.util.UrlUtil;
 import models.Model;
 import models.Record;
+import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.access.VersionedDBRecord;
 import utils.context.AccessContext;
 import utils.exceptions.AppException;
@@ -171,6 +173,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 			result.setTotal(0);
 			} else result.setTotal(res.size());
 		} catch (RequestTooLargeException e) {
+			AccessLog.log("Request too large. Wait t=10000");
 			try { Thread.sleep(1000*10); } catch (InterruptedException e2) {}
 			result.addLink().setRelation("next").setUrl(theDetails.getCompleteUrl());
 		}
@@ -257,18 +260,9 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		   
 		   return results;
 
-		} catch (RequestTooLargeException e2) {
-			throw e2;
-		} catch (InternalServerException e3) {
-		   ErrorReporter.report("FHIR (search)", null, e3);
-		   throw new InternalErrorException("Internal error during search");
-	    } catch (AppException e) {
-	       ErrorReporter.report("FHIR (search)", null, e);	      
-		   throw new InvalidRequestException(e.getMessage());
-	    } catch (NullPointerException e2) {
-			ErrorReporter.report("FHIR (search)", null, e2);	 
-			throw new InternalErrorException("internal error during FHIR search");
-		}
+		} catch (Exception e2) {
+		   throw Errors.handle("FHIR (search STU3)", info(), e2);
+		} 
      }
 	
 	

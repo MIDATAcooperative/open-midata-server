@@ -201,7 +201,15 @@ public enum InstanceType {
 	 * @return
 	 */
 	public boolean allowTestingFromLocalhost() {
-		return this == TEST || this == PERFTEST; 
+		return this == TEST || this == PERFTEST || this == LOCAL; 
+	}
+	
+	/**
+	 * Is it allowed to register non-test accounts with BETA apps?
+	 * @return
+	 */
+	public boolean allowUsersFromBetaApps() {
+		return this == TEST || this == PERFTEST || this == DEMO; 
 	}
 		
 	

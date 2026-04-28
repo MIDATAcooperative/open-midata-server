@@ -28,21 +28,22 @@ import java.util.concurrent.CompletionStage;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import akka.NotUsed;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.stream.IOResult;
-import akka.stream.SourceRef;
-import akka.stream.javadsl.FileIO;
-import akka.stream.javadsl.Flow;
-import akka.stream.javadsl.Keep;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
-import akka.stream.javadsl.StreamRefs;
-import akka.util.ByteString;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.stream.IOResult;
+import org.apache.pekko.stream.SourceRef;
+import org.apache.pekko.stream.javadsl.FileIO;
+import org.apache.pekko.stream.javadsl.Flow;
+import org.apache.pekko.stream.javadsl.Keep;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.stream.javadsl.StreamRefs;
+import org.apache.pekko.util.ByteString;
 import models.MidataId;
 import models.Plugin;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.ServerTools;
 import utils.exceptions.AppException;
 import utils.messaging.AccountWipeMessage;
@@ -75,8 +76,8 @@ public class MultiServerContainer extends AbstractContainer {
 		long st = ActionRecorder.start(path);
 		try {
 			defaultMessages(msg);
-		} catch (AppException e) {			
-		   ErrorReporter.report("MultiServerContainer", null, e);
+		} catch (Exception e) {			
+		   Errors.handleAllFatal("MultiServerContainer", null, e);
 		} finally {
 		  ServerTools.endRequest();
 		  ActionRecorder.end(path, st);

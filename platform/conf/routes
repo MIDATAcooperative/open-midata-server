@@ -27,8 +27,8 @@ GET     /test/autorun                                    controllers.AutoRun.run
 
 OPTIONS /opendata/:project/fhir/*all                     controllers.FHIR.checkPreflightProject(project: String, all)
 GET     /opendata/:project/fhir/*all                     controllers.FHIR.getWithEndpoint(request: Request, project: String, all)
-OPTIONS /opendata/:project/fhir                          controllers.FHIR.checkPreflightProject(project: String, all="/")
-GET     /opendata/:project/fhir                          controllers.FHIR.getWithEndpoint(request: Request, project: String, all="/")
+#OPTIONS /opendata/:project/fhir                          controllers.FHIR.checkPreflightProject(project: String, all="/")
+#GET     /opendata/:project/fhir                          controllers.FHIR.getWithEndpoint(request: Request, project: String, all="/")
 
 # Home page
 
@@ -62,7 +62,8 @@ POST	/api/admin/mails/add							 controllers.BulkMails.add(request: Request)
 POST	/api/admin/mails/update							 controllers.BulkMails.update(request: Request)
 POST    /api/admin/mails/delete/:id	   					 controllers.BulkMails.delete(request: Request, id: String)
 POST    /api/admin/mails/send/:id                        controllers.BulkMails.send(request: Request, id: String)
-POST    /api/admin/mails/test/:id                        controllers.BulkMails.test(request: Request,id: String) 
+POST    /api/admin/mails/test/:id                        controllers.BulkMails.test(request: Request,id: String)
+POST    /api/admin/mails/estimate/:id                    controllers.BulkMails.estimate(request: Request,id: String) 
 POST    /api/members/mail/unsubscribe                    controllers.BulkMails.unsubscribe(request: Request)
 
 
@@ -87,6 +88,7 @@ POST    /api/members/spaces                              controllers.Spaces.add(
 POST    /api/members/spaces/get                          controllers.Spaces.get(request: Request)
 DELETE  /api/members/spaces/:id                          controllers.Spaces.delete(request: Request, id: String)
 POST    /api/members/spaces/:id/records                  controllers.Spaces.addRecords(request: Request,id: String)
+POST    /api/members/spaces/:id/testing                  controllers.Spaces.toggleTesting(request: Request,id: String)
 GET     /api/members/spaces/:id/url                      controllers.Spaces.getUrl(request: Request, id: String, user:String ?= null)
 GET     /api/members/spaces/:id/url/noauth               controllers.Spaces.regetUrl(request: Request, id: String)
 DELETE  /api/members/spaces                              controllers.Spaces.reset(request: Request)
@@ -94,7 +96,7 @@ DELETE  /api/members/spaces                              controllers.Spaces.rese
 
 # Circles
 POST    /api/members/circles                             controllers.Circles.add(request: Request)
-POST    /api/members/circles/get                         controllers.Circles.get(request: Request)
+#POST    /api/members/circles/get                         controllers.Circles.get(request: Request)
 POST    /api/members/circles/join                        controllers.Circles.joinByPasscode(request: Request)
 POST    /api/members/consents                            controllers.Circles.listConsents(request: Request)
 POST    /api/members/apps                                controllers.Circles.listApps(request: Request)

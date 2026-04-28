@@ -25,11 +25,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Cancellable;
-import akka.actor.Props;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.actor.Props;
 import models.MidataId;
 import models.Plugin;
 import models.UserGroup;
@@ -38,6 +38,7 @@ import models.enums.UsageAction;
 import models.stats.UsageStats;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.collections.Sets;
 import utils.context.AccessContext;
 import utils.exceptions.InternalServerException;
@@ -175,7 +176,7 @@ class UsageStatsActor extends AbstractActor {
 				stat.date = today;
 				stat.add();
 			} catch (InternalServerException e) {
-				ErrorReporter.report("usage stats writer", null, e);
+				Errors.handleAllFatal("usage stats writer", null, e);
 			}
 		}
 		today = today();

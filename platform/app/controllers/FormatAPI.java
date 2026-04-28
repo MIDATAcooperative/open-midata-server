@@ -17,12 +17,10 @@
 
 package controllers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,14 +44,12 @@ import models.User;
 import models.enums.APSSecurityLevel;
 import play.libs.Json;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.auth.AdminSecured;
-import utils.auth.AnyRoleSecured;
 import utils.auth.PreLoginSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -535,8 +531,6 @@ public class FormatAPI extends APIController {
 			
 		} catch (JsonProcessingException e) {
 			AccessLog.logException("parse json", e);
-		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
-		} catch (IOException e) {
 		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
 		} finally {
 			Instances.cacheClear("content", null);

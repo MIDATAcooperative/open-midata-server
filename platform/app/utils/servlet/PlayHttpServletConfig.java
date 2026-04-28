@@ -19,8 +19,8 @@ package utils.servlet;
 
 import java.util.Enumeration;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 
 /**
  * HttpServletConfig emulation for Play Framework
@@ -32,7 +32,8 @@ public class PlayHttpServletConfig implements ServletConfig {
 	
 	@Override
 	public String getInitParameter(String arg0) {
-		throw new RuntimeException("Not implemented");	
+		System.out.println("GET INIT CONFIG PARAM:"+arg0);
+		return null;
 		
 	}
 

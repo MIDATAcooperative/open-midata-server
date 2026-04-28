@@ -27,13 +27,14 @@ import java.util.Queue;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.AbstractActor.Receive;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.AbstractActor.Receive;
 import models.MidataId;
 import models.Plugin;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.ServerTools;
 import utils.exceptions.AppException;
 import utils.messaging.InputStreamCollector;
@@ -56,7 +57,7 @@ public abstract class AbstractContainer extends AbstractActor {
 		try {
 			defaultMessages(msg);
 		} catch (AppException e) {			
-		   ErrorReporter.report(getClass().getName(), null, e);
+		   Errors.handleAllFatal(getClass().getName(), null, e);
 		} finally {
 		  ServerTools.endRequest();
 		  ActionRecorder.end(path, st);

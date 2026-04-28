@@ -25,6 +25,7 @@ import models.Study;
 import models.StudyParticipation;
 import models.User;
 import models.enums.ConsentType;
+import models.enums.PluginStatus;
 import models.enums.TestAccountsAcceptance;
 import utils.collections.Sets;
 import utils.context.AccessContext;
@@ -77,6 +78,12 @@ public class TestAccountTools {
     	return false;
     }
     
+    public static boolean doesAcceptRealUsers(Plugin plugin) {
+    	if (plugin.status == PluginStatus.ACTIVE) return true;
+    	if ((plugin.status == PluginStatus.BETA || plugin.status == PluginStatus.DEVELOPMENT) && InstanceConfig.getInstance().getInstanceType().allowUsersFromBetaApps()) return true;
+    	return false;
+    }
+    
     public static void prepareNewUser(AccessContext context, User user, String testUserExtension) throws AppException {
         String customer = testCustomerFromName(user.lastname);
         if (customer == null) customer = testUserExtension;
@@ -86,6 +93,8 @@ public class TestAccountTools {
             user.testUserCustomer = customer;
             
             if (!doesAcceptTestUsers(context, context.getUsedPlugin())) throw new PluginException(context.getUsedPlugin(), "error.blocked.testuser", "Application does not accept test users.");
+        } else if (context.getUsedPlugin() != null) {
+        	if (!doesAcceptRealUsers(Plugin.getById(context.getUsedPlugin()))) throw new PluginException(context.getUsedPlugin(), "error.blocked.realuser", "Application does not accept real users.");
         }
     }
     

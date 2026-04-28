@@ -22,12 +22,12 @@ import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import com.typesafe.config.Config;
 
-import akka.Done;
-import akka.actor.ActorSystem;
+import org.apache.pekko.Done;
+import org.apache.pekko.actor.ActorSystem;
 import controllers.AutoRun;
 import controllers.FHIR;
 import controllers.Market;

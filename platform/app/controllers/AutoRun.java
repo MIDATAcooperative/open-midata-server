@@ -30,20 +30,20 @@ import org.joda.time.Seconds;
 
 import com.mongodb.MongoGridFSException;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.Cancellable;
-import akka.actor.PoisonPill;
-import akka.actor.Props;
-import akka.cluster.singleton.ClusterSingletonManager;
-import akka.cluster.singleton.ClusterSingletonManagerSettings;
-import akka.cluster.singleton.ClusterSingletonProxy;
-import akka.cluster.singleton.ClusterSingletonProxySettings;
-import akka.routing.ActorRefRoutee;
-import akka.routing.RoundRobinPool;
-import akka.routing.RoundRobinRoutingLogic;
-import akka.routing.Routee;
-import akka.routing.Router;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.actor.PoisonPill;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.cluster.singleton.ClusterSingletonManager;
+import org.apache.pekko.cluster.singleton.ClusterSingletonManagerSettings;
+import org.apache.pekko.cluster.singleton.ClusterSingletonProxy;
+import org.apache.pekko.cluster.singleton.ClusterSingletonProxySettings;
+import org.apache.pekko.routing.ActorRefRoutee;
+import org.apache.pekko.routing.RoundRobinPool;
+import org.apache.pekko.routing.RoundRobinRoutingLogic;
+import org.apache.pekko.routing.Routee;
+import org.apache.pekko.routing.Router;
 import controllers.admin.Administration;
 import models.KeyRecoveryProcess;
 import models.MidataId;
@@ -56,6 +56,7 @@ import models.enums.UserRole;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.ServerTools;
@@ -92,8 +93,6 @@ public class AutoRun extends APIController {
 	 * initialize import job launcher
 	 */
 	public static void init() {
-		
-		//manager = Akka.system().actorOf(Props.create(ImportManager.class), "manager");
 		
 		final ClusterSingletonManagerSettings settings =
 				  ClusterSingletonManagerSettings.create(Instances.system());
@@ -267,7 +266,7 @@ public class AutoRun extends APIController {
 	}
 	
 	/**
-	 * Akka actor that runs the plugin of a specific space
+	 * Pekko actor that runs the plugin of a specific space
 	 *
 	 */
 	public static class Importer extends AbstractActor {
@@ -333,7 +332,7 @@ public class AutoRun extends APIController {
 											sender.tell(new ImportResult(-1, "Authorization failed (OAuth2)", plugin.filename), getSelf());
 										}
 									} catch (IOException e) {
-										ErrorReporter.report("Autorun-Service", null, e);
+										Errors.handleAllFatal("Autorun-Service", null, e);
 									}
 								});
 		
@@ -368,7 +367,7 @@ public class AutoRun extends APIController {
 					
 					}
 		    	} catch (Exception e) {
-		    		ErrorReporter.report("Autorun-Service", null, e);	
+		    		Errors.handleAllFatal("Autorun-Service", null, e);	
 		    		throw e;
 		    	} finally {
 		    		ServerTools.endRequest();	
@@ -379,7 +378,7 @@ public class AutoRun extends APIController {
 	}
 	
 	/**
-	 * Akka actor that manages the import process
+	 * Pekko actor that manages the import process
 	 *
 	 */
 	public static class ImportManager extends AbstractActor {
@@ -532,7 +531,7 @@ public class AutoRun extends APIController {
 					   file.delete();
 				   }
 				} catch (AppException e) {
-					ErrorReporter.report("remove unlinked files", null, e);
+					Errors.handleAllFatal("remove unlinked files", null, e);
 					errorCount++;
 				}
 				
@@ -542,7 +541,7 @@ public class AutoRun extends APIController {
 				   Administration.createStats();
 				   openRecoveries = (int) KeyRecoveryProcess.count();
 				} catch (AppException e) {
-					ErrorReporter.report("stats service", null, e);
+					Errors.handleAllFatal("stats service", null, e);
 					errorCount++;
 				}
 				
@@ -573,7 +572,7 @@ public class AutoRun extends APIController {
 				
 				if (countNewImports == 0) reportEnd();
 			} catch (Exception e) {
-				ErrorReporter.report("Autorun-Service", null, e);	
+				Errors.handleAllFatal("Autorun-Service", null, e);	
 				throw e;
 			} finally {
 				ServerTools.endRequest();	
@@ -638,7 +637,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				AccessLog.log("Done scheduling new autoimport size="+datas.size());
 									
 			} catch (Exception e) {
-				ErrorReporter.report("Autorun-Service", null, e);	
+				Errors.handleAllFatal("Autorun-Service", null, e);	
 				throw e;
 			} finally {
 				ServerTools.endRequest();		

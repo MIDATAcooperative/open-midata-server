@@ -24,10 +24,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Props;
 import models.HealthcareProvider;
 import models.MessageDefinition;
 import models.MidataId;
@@ -41,6 +41,7 @@ import models.enums.MessageChannel;
 import models.enums.MessageReason;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.Errors;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.ServerTools;
@@ -69,7 +70,7 @@ public class Messager {
 		smsSender = system.actorOf(Props.create(SMSSender.class).withDispatcher("medium-work-dispatcher"), "smsSender");
 	}
 	
-	private static String safeForReplace(String in) {
+	public static String safeForReplace(String in) {
 		if (in==null) return in;
 		
 		int p = in.indexOf("$");
@@ -394,8 +395,7 @@ class SMSSender extends AbstractActor {
 			}		
 			AuditManager.instance.success();
 		} catch (Exception e) {
-			ErrorReporter.report("Messager (SMS)", null, e);
-			AuditManager.instance.fail(400, e.toString(), "error.failed");
+			Errors.handle("Messager (SMS)", null, e);
 			throw e;
 		} finally {
 			ServerTools.endRequest();	

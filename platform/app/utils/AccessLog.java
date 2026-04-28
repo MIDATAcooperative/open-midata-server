@@ -36,7 +36,7 @@ import play.Logger.ALogger;
 import utils.exceptions.AuthException;
 
 /**
- * Intra-Request logging
+ * Intra-Request logging 
  *
  */
 public class AccessLog {
@@ -61,6 +61,7 @@ public class AccessLog {
 	private static final ALogger application = Logger.of("application");
 	private static final ALogger index = Logger.of("index");
 	private static final ALogger jobs = Logger.of("jobs");
+	private static final ALogger errors = Logger.of("errors");
 	
 	/**
 	 * add a line of text to the log
@@ -407,6 +408,11 @@ public class AccessLog {
 			e.printStackTrace(msgs.get().writer);
 		}
 		if (logToFile) msgs.get().context.error(msg, e);
+	}
+	
+	public static void logError(String context, String session, int status, String message) {
+		errors.error(status+": "+context+" - "+session+" - "+message);
+		log("Error: "+context+" - "+session+" - "+message);
 	}
 	
     /**

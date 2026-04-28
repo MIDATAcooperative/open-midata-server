@@ -1,4 +1,4 @@
-<!--
+A<!--
  This file is part of the Open MIDATA Server.
  
  The Open MIDATA Server is free software: you can redistribute it and/or modify
@@ -36,6 +36,8 @@
 				  <div id="iframe" style="min-height:200px;width:100%;" v-pluginframe="url"></div>								
 				</div>                
             </panel>
+			<a v-if="allowTesting && testing" href="javascript:" class="float-end text-muted" style="margin-top:-18px" @click="toggleTesting()">Localhost: On</a>
+			<a v-if="allowTesting && !testing" href="javascript:" class="float-end text-muted" style="margin-top:-18px" @click="toggleTesting()">Localhost: Off</a>
         </div>
     </div>
 </template>
@@ -63,7 +65,9 @@ export default {
         authorized : false,
         authorizing : false,
         hasActions : false,
-        message : null
+        message : null,
+		allowTesting : false,
+		testing : false	
 	}),				
 
 	components : { ErrorBox, Panel },
@@ -81,6 +85,10 @@ export default {
 		done() {
 		  const { $route, $router } = this;
 		  actions.showAction($router, $route);
+		},
+		
+		toggleTesting() {
+			this.doBusy(spaces.toggleTesting(this.$data.spaceId)).then(() => { this.init(); });
 		},
 				   
         getAuthToken(space, again) {
@@ -107,7 +115,8 @@ export default {
 					  var url = spaces.mainUrl(result.data, getLocale());			  
 					  $data.url = url;			  			  
 					  $data.message = null;			  			  
-					  $data.authorized = true;			 
+					  $data.authorized = true;	
+					  if ($data.url.startsWith("https://localhost")) $data.testing = true; else $data.testing = false;		 
 				  //}
 				}
 	     });
@@ -124,6 +133,7 @@ export default {
 			var parameters = "response_type=code" + "&client_id=" + app.consumerKey + "&scope=" + app.scopeParameters +
 				"&redirect_uri=" + redirectUri;
 			sessionStorage.returnTo=document.location.href;
+			sessionStorage.returnActions=JSON.stringify(actions.getActions(this.$route) || []);
 			if (app.authorizationUrl.indexOf("?")>=0) parameters = "&"+parameters; else parameters = "?"+parameters;
 			document.location.href = app.authorizationUrl + encodeURI(parameters);
 		
@@ -147,6 +157,13 @@ export default {
 	
 	onAuthorized(url) {
 		const { $data, $route } = this, me = this;
+		
+		if (sessionStorage.returnActions) {
+			let ac = JSON.parse(sessionStorage.returnActions);
+			actions.restoreAfterLeave(ac);
+			delete sessionStorage.returnActions;
+		}
+		
 		var message = null;
 		var error = null;
 
@@ -211,7 +228,8 @@ export default {
 			$data.params = $route.query.params ? JSON.parse($route.query.params) : null;
 			this.doBusy(session.currentUser
 			.then(function(userId) {
-				$data.userId = userId;			
+				$data.userId = userId;	
+				$data.allowTesting = session.user.developer;		
 				me.getAuthToken($data.spaceId/*, $state.params.user*/);
 			}));
 		}
